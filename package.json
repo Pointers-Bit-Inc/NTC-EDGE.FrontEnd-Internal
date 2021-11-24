@@ -11,21 +11,25 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",
+    "@react-native-community/datetimepicker": "^3.5.2",
+    "@react-native-picker/picker": "2.1.0",
     "@react-navigation/bottom-tabs": "^6.0.5",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
-    "@react-native-community/datetimepicker": "^3.5.2",
-    "@react-native-picker/picker": "2.1.0",
     "expo": "~43.0.2",
     "expo-status-bar": "~1.1.0",
+    "immutable": "^4.0.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
-    "react-native-safe-area-context": "3.3.2",
-    "react-native-screens": "~3.8.0",
     "react-native-modal-datetime-picker": "^13.0.0",
     "react-native-picker-select": "^8.0.4",
+    "react-native-safe-area-context": "3.3.2",
+    "react-native-screens": "~3.8.0",
     "react-native-web": "0.17.1",
+    "react-redux": "^7.2.6",
+    "redux": "^4.1.2",
+    "redux-thunk": "^2.4.0",
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
@@ -33,6 +37,7 @@
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.64.12",
     "@types/styled-components": "^5.1.15",
+    "key-mirror": "^1.0.1",
     "typescript": "~4.3.5"
   },
   "resolutions": {
