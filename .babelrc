@@ -1,0 +1,28 @@
+{
+  "presets": ["babel-preset-expo"],
+  "plugins": [
+    ["module-resolver", {
+      "cwd": "babelrc",
+      "root": ["./"],
+      "extensions": [
+        ".ios.ts",
+        ".android.ts",
+        ".ts",
+        ".ios.tsx",
+        ".android.tsx",
+        ".tsx",
+        ".jsx",
+        ".js",
+        ".json"
+      ],
+      "alias": {
+        "@assets": "./src/assets",
+        "@components": "./src/components",
+        "@atoms": "./src/components/atoms",
+        "@molecules": "./src/components/molecules",
+        "@organisms": "./src/components/organisms",
+        "@screens": "./src/scenes"
+      }
+    }]
+  ]
+}
