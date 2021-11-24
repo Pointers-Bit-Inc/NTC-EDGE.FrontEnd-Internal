@@ -1,24 +1,38 @@
-import React from 'react';
+import React, { ReactChildren, ReactChild, FC } from 'react';
 import { StyleSheet, Text as RNText } from 'react-native';
 
 const styles = StyleSheet.create({
-  main: {
+  default: {
+    color: 'black',
     fontSize: 12,
-  },
-});
+    fontWeight: 'normal',
+  }
+})
 
-const Text = ({
+interface Props {
+  color?: string,
+  size?: number,
+  weight?: string,
+  children: ReactChildren | ReactChild,
+  style?: any,
+  align?: string,
+  [x:string]: any,
+}
+
+const Text: FC<Props> = ({
+  color,
+  size,
+  weight,
   children,
   style,
-  color = 'black',
-  weight = 'normal',
-  fontSize = 12,
-  numberOfLines = 2,
-}: any) => {
+  align,
+  ...otherProps
+}) => {
+
   return (
     <RNText
-      style={[styles.main, { color, fontWeight: weight, fontSize }, style]}
-      numberOfLines={numberOfLines}>
+      style={[styles.default, { color, fontSize: size, fontWeight: weight, textAlign: align }, style]}
+      {...otherProps}>
       {children}
     </RNText>
   );
