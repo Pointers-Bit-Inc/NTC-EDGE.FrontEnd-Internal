@@ -1,6 +1,6 @@
 import React from 'react'
 import { SafeAreaView, Text, StyleSheet } from 'react-native'
-import RegistrationForm from '../components/organisms/forms/registration';
+import RegistrationForm from '@organisms/forms/registration';
 
 const styles = StyleSheet.create({
   container: {

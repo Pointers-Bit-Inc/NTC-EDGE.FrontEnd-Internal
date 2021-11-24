@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-import Text from '../../atoms/text';
-import TextInput from '../../atoms/text-input';
+import Text from '@atoms/text';
+import TextInput from '@atoms/text-input';
 
 const styles = StyleSheet.create({
   container: {

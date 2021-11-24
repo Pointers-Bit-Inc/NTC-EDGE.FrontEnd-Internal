@@ -1,8 +1,8 @@
 import React from 'react'
 import { View, Platform } from 'react-native'
-import { InputField } from '../../molecules/form-fields';
-import Text from '../../atoms/text';
-import Button from '../../atoms/button';
+import { InputField } from '@molecules/form-fields';
+import Text from '@atoms/text';
+import Button from '@atoms/button';
 
 const LoginForm = () => {
   return (

@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-import Text from '../../atoms/text';
-import DateTimePicker from '../../atoms/datetime-picker';
+import Text from '@atoms/text';
+import DateTimePicker from '@atoms/datetime-picker';
 
 const styles = StyleSheet.create({
   container: {

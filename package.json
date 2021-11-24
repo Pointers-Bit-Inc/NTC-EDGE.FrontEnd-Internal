@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",
+    "@expo/webpack-config": "^0.16.7",
     "@react-native-community/datetimepicker": "^3.5.2",
     "@react-native-picker/picker": "2.1.0",
     "@react-navigation/bottom-tabs": "^6.0.5",
@@ -37,6 +38,7 @@
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.64.12",
     "@types/styled-components": "^5.1.15",
+    "babel-loader": "^8.2.3",
     "key-mirror": "^1.0.1",
     "typescript": "~4.3.5"
   },

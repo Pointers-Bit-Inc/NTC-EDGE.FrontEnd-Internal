@@ -1,9 +1,9 @@
 import React from 'react'
 import { View } from 'react-native'
 import { useNavigation } from '@react-navigation/core';
-import { InputField, DateTimeField, DropdownField } from '../../molecules/form-fields';
-import Text from '../../atoms/text';
-import Button from '../../atoms/button';
+import { InputField, DateTimeField, DropdownField } from '@molecules/form-fields';
+import Text from '@atoms/text';
+import Button from '@atoms/button';
 
 const RegistrationForm = () => {
   const navigation = useNavigation();

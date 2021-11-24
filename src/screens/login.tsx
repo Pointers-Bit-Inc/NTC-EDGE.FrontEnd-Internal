@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, StyleSheet, SafeAreaView } from 'react-native'
-import LoginForm from '../components/organisms/forms/login';
+import LoginForm from '@organisms/forms/login';
 
 const styles = StyleSheet.create({
   container: {
