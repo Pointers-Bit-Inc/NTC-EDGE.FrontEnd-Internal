@@ -12,10 +12,10 @@ const RegistrationForm = () => {
       <InputField title={'FirstName'} placeholder='FirstName' />
       <InputField title={'LastName'} placeholder='LastName' />
       <DateTimeField title={'Birthday'} borderColor={'red'} placeholder='Birthday' />
-      <DropdownField title={'Gender'} />
+      {/* <DropdownField title={'Gender'} /> */}
       <InputField title={'Email'} placeholder='Email Address' />
       <InputField title={'Password'} placeholder='Password' secureTextEntry={true} style={{ marginBottom: 15 }} />
-      <Button style={{ backgroundColor: '#2B23FF' }} onPress={() => navigation.navigate('Login')}>
+      <Button style={{ backgroundColor: '#2B23FF' }}>
         <Text fontSize={16} color={'white'}>Save</Text>
       </Button>
     </View>

@@ -1,17 +1,22 @@
-import React from 'react'
+import React, { ReactNode, FC } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
-  container: {
+  default: {
     padding: 15,
-    backgroundColor: 'red',
     alignItems: 'center',
   }
 })
 
-const Button = ({ children, style, onPress }:any) => {
+interface Props {
+  children: ReactNode,
+  style?: any,
+  [x:string]: any,
+}
+
+const Button: FC<Props> = ({ children, style, ...otherProps }:any) => {
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.container, style]}>
+    <TouchableOpacity style={[styles.default, style]} {...otherProps}>
       {children}
     </TouchableOpacity>
   )

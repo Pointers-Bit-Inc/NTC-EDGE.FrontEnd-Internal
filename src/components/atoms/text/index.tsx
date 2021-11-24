@@ -1,4 +1,4 @@
-import React, { ReactChildren, ReactChild, FC } from 'react';
+import React, { ReactNode, FC } from 'react';
 import { StyleSheet, Text as RNText } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -13,7 +13,7 @@ interface Props {
   color?: string,
   size?: number,
   weight?: string,
-  children: ReactChildren | ReactChild,
+  children: ReactNode,
   style?: any,
   align?: string,
   [x:string]: any,
