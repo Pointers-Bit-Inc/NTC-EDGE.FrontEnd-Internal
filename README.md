@@ -6,7 +6,7 @@ yarn: https://classic.yarnpkg.com/en/docs/install#mac-stable
 
 For node, you can use nvm https://github.com/nvm-sh/nvm
 
-#Installation
+# Installation
 
  $ yarn install
 
