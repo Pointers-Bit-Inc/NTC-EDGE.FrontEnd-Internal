@@ -1,5 +1,5 @@
 import React, { ReactNode, FC } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { TouchableOpacity, StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
   default: {

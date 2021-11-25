@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/core';
 import { useDispatch } from 'react-redux';
 import { setUser } from 'src/reducers/user/actions';
 import LoginForm from '@organisms/forms/login';
+import Row from '@components/atoms/row';
+import Column from '@components/atoms/column';
 import Api from 'src/services/api';
 
 const api = Api();
@@ -37,12 +39,14 @@ const Login = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.form}>
-        <LoginForm
-          onSubmit={value => request(value)}
-          loading={loading}
-        />
-      </View>
+      <Row>
+        <Column xs={12} lg={12}>
+          <LoginForm
+            onSubmit={value => request(value)}
+            loading={loading}
+          />
+        </Column>
+      </Row>
     </SafeAreaView>
   )
 }

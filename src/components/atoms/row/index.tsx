@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { ReactNode, FC } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
   &::before, &::after {
-    content: "",
-    clear: both,
-    display: table,
+    content: "";
+    clear: both;
+    display: table;
   }
 `;
 
-const Row = ({ children, style }) => {
+interface Props {
+  children: ReactNode,
+  style?: any,
+};
+
+const Row: FC<Props> = ({ children, style }) => {
   return (
     <Container style={style}>
       {children}

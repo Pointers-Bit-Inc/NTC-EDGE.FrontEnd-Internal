@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, ActivityIndicator } from 'react-native'
 import { InputField } from '@molecules/form-fields';
+import { validateEmail, validatePassword } from 'src/utils/form-validations';
 import Text from '@atoms/text';
 import Button from '@atoms/button';
 
@@ -15,9 +16,10 @@ const styles = StyleSheet.create({
 
 const errorResponse = {
   'email': 'Please enter a valid email address',
+  'password': 'Password must be atleast 6 characters'
 }
 
-const LoginForm = ({ onSubmit = () => {}, loading = false }) => {
+const LoginForm = ({ onSubmit = ({}) => {}, loading = false }) => {
   const [formValue, setFormValue] = useState({
     email: {
       value: '',
@@ -30,28 +32,32 @@ const LoginForm = ({ onSubmit = () => {}, loading = false }) => {
       error: '',
     }
   });
-  const checkIsEmail = (text:string) => {
-    const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    return regex.test(text);
-  }
 
-  const onChangeText = (key, value) => {
-    if (key === 'email') {
-      return setFormValue({
+  const onChangeText = (key: string, value: string) => {
+    switch(key) {
+      case 'email': return setFormValue({
         ...formValue,
         [key]: {
           value: value,
-          isValid: checkIsEmail(value),
-          error: !checkIsEmail(value) ? 'Please enter a valid email address' : '',
+          isValid: validateEmail(value),
+          error: !validateEmail(value) ? errorResponse['email'] : '',
         }
-      }) 
-    }
-    return setFormValue({
-      ...formValue,
-      [key]: {
-        value: value
-      }
-    })
+      });
+      case 'password': return setFormValue({
+        ...formValue,
+        [key]: {
+          value: value,
+          isValid: validatePassword(value),
+          error: !validatePassword(value) ? errorResponse['password'] : '',
+        }
+      });
+      default: return setFormValue({
+        ...formValue,
+        [key]: {
+          value: value
+        }
+      })
+    };
   }
 
   const onPressSubmit = () => {
@@ -62,6 +68,15 @@ const LoginForm = ({ onSubmit = () => {}, loading = false }) => {
           value: formValue.email.value,
           isValid: false,
           error: errorResponse['email'],
+        }
+      });
+    } else if (!formValue.password.isValid) {
+      return setFormValue({
+        ...formValue,
+        ['password']: {
+          value: formValue.password.value,
+          isValid: false,
+          error: errorResponse['password'],
         }
       });
     }
@@ -80,18 +95,18 @@ const LoginForm = ({ onSubmit = () => {}, loading = false }) => {
         activeColor={'#2B23FF'}
         errorColor={'red'}
         error={formValue?.email?.error}
-        onChangeText={text => onChangeText('email', text)}
+        onChangeText={(text:string) => onChangeText('email', text)}
         value={formValue?.email?.value}
       />
       <InputField
         label={'Password'}
         placeholder='Password'
         secureTextEntry={true}
-        containerStyle={{ marginBottom: 15 }}
         required={true}
         activeColor={'#2B23FF'}
         errorColor={'red'}
-        onChangeText={text => onChangeText('password', text)}
+        error={formValue?.password?.error}
+        onChangeText={(text:string) => onChangeText('password', text)}
         value={formValue?.password?.value}
       />
       <Button disabled={loading} style={styles.button} onPress={onPressSubmit}>

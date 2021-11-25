@@ -1,8 +1,8 @@
 
-import React from 'react';
+import React, { ReactNode, FC } from 'react';
 import styled from 'styled-components';
 
-const getWidthString = (span) => {
+const getWidthString = (span: any) => {
   if (!span) return;
 
   let width = span / 12 * 100
@@ -11,22 +11,26 @@ const getWidthString = (span) => {
 
 const Container = styled.div`
   float: left;
-  ${({ xs }) => (xs ? getWidthString(xs) : "width: 100%")}
+  ${({ xs }: any) => (xs ? getWidthString(xs) : "width: 100%")}
 
   @media only screen and (min-width: 768px) {
-    ${({ sm }) => (sm && getWidthString(sm))}
+    ${({ sm }: any) => (sm && getWidthString(sm))}
   }
 
   @media only screen and (min-width: 992px) {
-    ${({ md }) => (md && getWidthString(md))}
+    ${({ md }: any) => (md && getWidthString(md))}
   }
 
   @media only screen and (min-width: 1200px) {
-    ${({ lg }) => (lg && getWidthString(lg))}
+    ${({ lg }: any) => (lg && getWidthString(lg))}
   }
 `
 
-const Column = ({ children }) => {
+interface Props {
+  children: ReactNode,
+}
+
+const Column: FC<Props> = ({ children }) => {
   return (
     <Container>
       {children}
