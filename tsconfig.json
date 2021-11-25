@@ -12,5 +12,6 @@
       "@screens/*": ["./src/screens/*"],
       "@reducers": ["./src/reducers/*"]
     }
-  }
+  },
+  "exclude": ["__tests__/**/*-test.ts"]
 }

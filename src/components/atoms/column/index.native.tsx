@@ -1,21 +1,16 @@
-
 import React, { ReactNode, FC } from 'react';
 import styled from 'styled-components/native';
 
 const Container = styled.View`
-  flexDirection: column;
-`
+  flexdirection: column;
+`;
 
 interface Props {
-  children: ReactNode,
+  children: ReactNode;
 }
 
 const Column: FC<Props> = ({ children }) => {
-  return (
-    <Container>
-      {children}
-    </Container>
-  )
-}
+  return <Container>{children}</Container>;
+};
 
 export default Column;

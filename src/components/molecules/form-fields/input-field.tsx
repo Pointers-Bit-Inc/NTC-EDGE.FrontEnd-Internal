@@ -1,11 +1,11 @@
-import React, { useState, FC } from 'react'
-import { View, StyleSheet } from 'react-native'
+import React, { useState, FC } from 'react';
+import { View, StyleSheet } from 'react-native';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 10,
+    paddingVertical: 10
   },
   label: {
     position: 'absolute',
@@ -21,27 +21,27 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderRadius: 10,
     overflow: 'hidden',
-    width: '100%',
+    width: '100%'
   },
   description: {
     paddingHorizontal: 10,
-    paddingVertical: 2,
-  },
-})
+    paddingVertical: 2
+  }
+});
 
 interface Props {
-  label?: string,
-  placeholder?: string,
-  secureTextEntry?: boolean,
-  required?: boolean,
-  containerStyle?: any,
-  labelStyle?: any,
-  outlineStyle?: any,
-  description?: string,
-  error?: string,
-  errorColor?: string,
-  activeColor?: string,
-  [x:string]: any,
+  label?: string;
+  placeholder?: string;
+  secureTextEntry?: boolean;
+  required?: boolean;
+  containerStyle?: any;
+  labelStyle?: any;
+  outlineStyle?: any;
+  description?: string;
+  error?: string;
+  errorColor?: string;
+  activeColor?: string;
+  [x: string]: any;
 }
 
 const InputField: FC<Props> = ({
@@ -64,40 +64,45 @@ const InputField: FC<Props> = ({
 
   return (
     <View style={[styles.container, containerStyle]}>
-      {
-        (isFocused || !!otherProps.value || !!error) && !!label && (
-          <View style={styles.label}>
+      {(isFocused || !!otherProps.value || !!error) && !!label && (
+        <View style={styles.label}>
+          <Text
+            style={[
+              labelStyle,
+              (isFocused || !!otherProps.value || !!error) && {
+                color: activeColor
+              }
+            ]}
+            weight={'bold'}
+            size={14}
+          >
+            {label}
+          </Text>
+          {required && (
             <Text
               style={[
                 labelStyle,
-                (isFocused || !!otherProps.value || !!error) && {
+                (isFocused || !!otherProps.value) && {
                   color: activeColor
+                },
+                !!error && {
+                  color: errorColor
                 }
               ]}
-              weight={'bold'}
-              size={14}>
-              {label}
+            >
+              {' *'}
             </Text>
-            {
-              required && (
-                <Text
-                  style={[
-                    labelStyle,
-                    (isFocused || !!otherProps.value) && {
-                      color: activeColor
-                    },
-                    !!error && {
-                      color: errorColor
-                    },
-                  ]}>
-                  {' *'}
-                </Text>
-              )
-            }
-          </View>
-        )
-      }
-      <View style={[styles.inputContainer, outlineStyle, (isFocused || !!otherProps.value) && { borderColor: activeColor }, !!error && { borderColor: errorColor }]}>
+          )}
+        </View>
+      )}
+      <View
+        style={[
+          styles.inputContainer,
+          outlineStyle,
+          (isFocused || !!otherProps.value) && { borderColor: activeColor },
+          !!error && { borderColor: errorColor }
+        ]}
+      >
         <TextInput
           placeholder={placeholder || label}
           secureTextEntry={secureTextEntry}
@@ -112,13 +117,14 @@ const InputField: FC<Props> = ({
             labelStyle,
             !!error && {
               color: errorColor
-            },
-          ]}>
+            }
+          ]}
+        >
           {error || description}
         </Text>
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default InputField
+export default InputField;

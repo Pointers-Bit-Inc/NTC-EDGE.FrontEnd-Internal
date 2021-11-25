@@ -1,21 +1,28 @@
-import React from 'react'
-import { View, StyleSheet } from 'react-native'
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
 import Text from '@atoms/text';
 import Dropdown from '@atoms/dropdown';
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 10,
+    paddingVertical: 10
   }
-})
+});
 
-const DateTimeField = ({ title = '', value = '', placeholder = '', style }:any) => {
+const DateTimeField = ({
+  title = '',
+  value = '',
+  placeholder = '',
+  style
+}: any) => {
   return (
     <View style={[styles.container, style]}>
-      <Text style={{ marginBottom: 5 }} weight={'bold'} fontSize={16}>{title}</Text>
+      <Text style={{ marginBottom: 5 }} weight={'bold'} fontSize={16}>
+        {title}
+      </Text>
       <Dropdown />
     </View>
-  )
-}
+  );
+};
 
-export default DateTimeField
+export default DateTimeField;

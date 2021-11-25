@@ -9,23 +9,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     ...Platform.select({
       web: {
-        outlineStyle: 'none',
-      },
+        outlineStyle: 'none'
+      }
     })
   }
 });
 
 interface Props {
-  value?: string,
-  secureTextEntry?: boolean,
-  placeholder?: string,
-  placeholderTextColor?: string,
-  style?: any,
-  [x:string]: any,
+  value?: string;
+  secureTextEntry?: boolean;
+  placeholder?: string;
+  placeholderTextColor?: string;
+  style?: any;
+  [x: string]: any;
 }
 
-const Input: FC<Props> = ({ value = '', style, placeholderTextColor, secureTextEntry = false, placeholder = '', ...otherProps }) => {
-
+const Input: FC<Props> = ({
+  value = '',
+  style,
+  placeholderTextColor,
+  secureTextEntry = false,
+  placeholder = '',
+  ...otherProps
+}) => {
   return (
     <TextInput
       style={[styles.input, style]}
@@ -37,7 +43,7 @@ const Input: FC<Props> = ({ value = '', style, placeholderTextColor, secureTextE
       underlineColorAndroid={'transparent'}
       {...otherProps}
     />
-  )
-}
+  );
+};
 
 export default Input;

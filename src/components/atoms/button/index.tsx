@@ -1,25 +1,25 @@
-import React, { ReactNode, FC } from 'react'
-import { TouchableOpacity, StyleSheet } from 'react-native'
+import React, { ReactNode, FC } from 'react';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   default: {
     padding: 15,
-    alignItems: 'center',
+    alignItems: 'center'
   }
-})
+});
 
 interface Props {
-  children: ReactNode,
-  style?: any,
-  [x:string]: any,
+  children: ReactNode;
+  style?: any;
+  [x: string]: any;
 }
 
-const Button: FC<Props> = ({ children, style, ...otherProps }:any) => {
+const Button: FC<Props> = ({ children, style, ...otherProps }: any) => {
   return (
     <TouchableOpacity style={[styles.default, style]} {...otherProps}>
       {children}
     </TouchableOpacity>
-  )
-}
+  );
+};
 
-export default Button
+export default Button;

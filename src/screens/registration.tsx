@@ -1,11 +1,11 @@
-import React from 'react'
-import { SafeAreaView, ScrollView, View, StyleSheet } from 'react-native'
+import React from 'react';
+import { SafeAreaView, ScrollView, View, StyleSheet } from 'react-native';
 import RegistrationForm from '@organisms/forms/registration';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: 'white'
   }
 });
 
@@ -16,7 +16,7 @@ const Registration = () => {
         <RegistrationForm />
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default Registration
+export default Registration;

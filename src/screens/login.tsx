@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react'
-import { StyleSheet, SafeAreaView, View } from 'react-native'
+import React, { useCallback, useState } from 'react';
+import { StyleSheet, SafeAreaView, View } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { useDispatch } from 'react-redux';
 import { setUser } from 'src/reducers/user/actions';
@@ -13,16 +13,16 @@ const api = Api();
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: 'white'
   },
   content: {
     flex: 1,
     paddingHorizontal: 30,
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   form: {
     padding: 30,
-    width: '100%',
+    width: '100%'
   }
 });
 
@@ -32,9 +32,10 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const request = useCallback(async (value) => {
     setLoading(true);
-    await api.get('/', value)
-    .then(res => console.log('response', res))
-    .catch(err => console.log('error', err));
+    await api
+      .get('/', value)
+      .then((res) => console.log('response', res))
+      .catch((err) => console.log('error', err));
     setLoading(false);
     dispatch(setUser({ email: value.email }));
     navigation.replace('Home');
@@ -42,14 +43,11 @@ const Login = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}> 
-        <LoginForm
-          onSubmit={value => request(value)}
-          loading={loading}
-        />
+      <View style={styles.content}>
+        <LoginForm onSubmit={(value) => request(value)} loading={loading} />
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

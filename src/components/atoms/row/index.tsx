@@ -3,23 +3,19 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   &::after {
-    content: "";
+    content: '';
     clear: both;
     display: table;
   }
 `;
 
 interface Props {
-  children: ReactNode,
-  style?: any,
-};
+  children: ReactNode;
+  style?: any;
+}
 
 const Row: FC<Props> = ({ children, style }) => {
-  return (
-    <Container style={style}>
-      {children}
-    </Container>
-  );
-}
+  return <Container style={style}>{children}</Container>;
+};
 
 export default Row;

@@ -5,18 +5,18 @@ const styles = StyleSheet.create({
   default: {
     color: 'black',
     fontSize: 12,
-    fontWeight: 'normal',
+    fontWeight: 'normal'
   }
-})
+});
 
 interface Props {
-  color?: string,
-  size?: number,
-  weight?: string,
-  children: ReactNode,
-  style?: any,
-  align?: string,
-  [x:string]: any,
+  color?: string;
+  size?: number;
+  weight?: string;
+  children: ReactNode;
+  style?: any;
+  align?: string;
+  [x: string]: any;
 }
 
 const Text: FC<Props> = ({
@@ -28,11 +28,15 @@ const Text: FC<Props> = ({
   align,
   ...otherProps
 }) => {
-
   return (
     <RNText
-      style={[styles.default, { color, fontSize: size, fontWeight: weight, textAlign: align }, style]}
-      {...otherProps}>
+      style={[
+        styles.default,
+        { color, fontSize: size, fontWeight: weight, textAlign: align },
+        style
+      ]}
+      {...otherProps}
+    >
       {children}
     </RNText>
   );
