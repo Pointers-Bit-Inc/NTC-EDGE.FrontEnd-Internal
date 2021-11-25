@@ -5,7 +5,13 @@ import Registration from '@screens/registration';
 import Login from '@screens/login';
 import Home from '@screens/home';
 
-const Stack = createNativeStackNavigator();
+
+type RootStackParamList = {
+  Login: undefined;
+  Registration: undefined;
+  Home: undefined;
+};
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
   return (
