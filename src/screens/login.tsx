@@ -14,8 +14,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 30,
     justifyContent: 'center',
-    alignItems: 'center',
   },
   form: {
     padding: 30,
@@ -39,14 +42,12 @@ const Login = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Row>
-        <Column xs={12} lg={12}>
-          <LoginForm
-            onSubmit={value => request(value)}
-            loading={loading}
-          />
-        </Column>
-      </Row>
+      <View style={styles.content}> 
+        <LoginForm
+          onSubmit={value => request(value)}
+          loading={loading}
+        />
+      </View>
     </SafeAreaView>
   )
 }

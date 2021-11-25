@@ -1,6 +1,6 @@
 import React from 'react'
 import { SafeAreaView, Text, StyleSheet } from 'react-native'
-import { useSelector } from 'react-redux';
+import { RootStateOrAny, useSelector } from 'react-redux';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
 });
 
 const Home = () => {
-  const user = useSelector(state => state.user);
+  const user = useSelector((state: RootStateOrAny) => state.user);
 
   return (
     <SafeAreaView style={styles.container}>

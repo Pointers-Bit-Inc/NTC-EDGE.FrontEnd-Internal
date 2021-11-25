@@ -36,6 +36,7 @@ interface Props {
   required?: boolean,
   containerStyle?: any,
   labelStyle?: any,
+  outlineStyle?: any,
   description?: string,
   error?: string,
   errorColor?: string,
@@ -50,6 +51,7 @@ const InputField: FC<Props> = ({
   required = false,
   containerStyle,
   labelStyle,
+  outlineStyle,
   description,
   error,
   errorColor,
@@ -63,12 +65,12 @@ const InputField: FC<Props> = ({
   return (
     <View style={[styles.container, containerStyle]}>
       {
-        isFocused && !!label && (
+        (isFocused || !!otherProps.value || !!error) && !!label && (
           <View style={styles.label}>
             <Text
               style={[
                 labelStyle,
-                isFocused && {
+                (isFocused || !!otherProps.value || !!error) && {
                   color: activeColor
                 }
               ]}
@@ -81,7 +83,7 @@ const InputField: FC<Props> = ({
                 <Text
                   style={[
                     labelStyle,
-                    isFocused && {
+                    (isFocused || !!otherProps.value) && {
                       color: activeColor
                     },
                     !!error && {
@@ -95,7 +97,7 @@ const InputField: FC<Props> = ({
           </View>
         )
       }
-      <View style={[styles.inputContainer, isFocused && { borderColor: activeColor }, !!error && { borderColor: errorColor }]}>
+      <View style={[styles.inputContainer, outlineStyle, (isFocused || !!otherProps.value) && { borderColor: activeColor }, !!error && { borderColor: errorColor }]}>
         <TextInput
           placeholder={placeholder || label}
           secureTextEntry={secureTextEntry}

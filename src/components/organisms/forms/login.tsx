@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, StyleSheet, ActivityIndicator } from 'react-native'
 import { InputField } from '@molecules/form-fields';
 import { validateEmail, validatePassword } from 'src/utils/form-validations';
+import useTheme from 'src/hooks/useTheme';
 import Text from '@atoms/text';
 import Button from '@atoms/button';
 
@@ -10,7 +11,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   button: {
-    backgroundColor: '#2B23FF'
   }
 })
 
@@ -20,6 +20,7 @@ const errorResponse = {
 }
 
 const LoginForm = ({ onSubmit = ({}) => {}, loading = false }) => {
+  const { text, outline, button, roundness, thickness } = useTheme();
   const [formValue, setFormValue] = useState({
     email: {
       value: '',
@@ -89,27 +90,31 @@ const LoginForm = ({ onSubmit = ({}) => {}, loading = false }) => {
   return (
     <View style={styles.container}>
       <InputField
+        style={{ color: text.default }}
+        outlineStyle={{ borderColor: outline.default, borderRadius: roundness, borderWidth: thickness }}
         label={'Email'}
         placeholder='Email Address'
         required={true}
-        activeColor={'#2B23FF'}
-        errorColor={'red'}
+        activeColor={text.primary}
+        errorColor={text.error}
         error={formValue?.email?.error}
         onChangeText={(text:string) => onChangeText('email', text)}
         value={formValue?.email?.value}
       />
       <InputField
+        style={{ color: text.default }}
+        outlineStyle={{ borderColor: outline.default, borderRadius: roundness, borderWidth: thickness }}
         label={'Password'}
         placeholder='Password'
         secureTextEntry={true}
         required={true}
-        activeColor={'#2B23FF'}
-        errorColor={'red'}
+        activeColor={text.primary}
+        errorColor={text.error}
         error={formValue?.password?.error}
         onChangeText={(text:string) => onChangeText('password', text)}
         value={formValue?.password?.value}
       />
-      <Button disabled={loading} style={styles.button} onPress={onPressSubmit}>
+      <Button disabled={loading} style={[styles.button, { backgroundColor: button.primary }]} onPress={onPressSubmit}>
         {
           loading ? (
             <ActivityIndicator color={'white'} size={'small'} />

@@ -2,7 +2,7 @@ import React, { ReactNode, FC } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  &::before, &::after {
+  &::after {
     content: "";
     clear: both;
     display: table;
