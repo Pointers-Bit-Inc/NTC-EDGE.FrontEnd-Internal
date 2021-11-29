@@ -1,5 +1,6 @@
 import React, { useState, FC } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { ExclamationIcon } from '@atoms/icon';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
 
@@ -24,8 +25,11 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   description: {
-    paddingHorizontal: 10,
-    paddingVertical: 2
+    paddingTop: 2,
+  },
+  info: {
+    flexDirection: 'row',
+    alignItems: 'center',
   }
 });
 
@@ -34,13 +38,16 @@ interface Props {
   placeholder?: string;
   secureTextEntry?: boolean;
   required?: boolean;
+  hasValidation?: boolean;
   containerStyle?: any;
+  inputStyle?: any;
   labelStyle?: any;
   outlineStyle?: any;
   description?: string;
   error?: string;
   errorColor?: string;
   activeColor?: string;
+  requiredColor?: string;
   [x: string]: any;
 }
 
@@ -49,13 +56,16 @@ const InputField: FC<Props> = ({
   placeholder = '',
   secureTextEntry = false,
   required = false,
+  hasValidation = false,
   containerStyle,
+  inputStyle,
   labelStyle,
   outlineStyle,
   description,
   error,
   errorColor,
   activeColor,
+  requiredColor,
   ...otherProps
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -73,8 +83,8 @@ const InputField: FC<Props> = ({
                 color: activeColor
               }
             ]}
-            weight={'bold'}
-            size={14}
+            weight={'600'}
+            size={12}
           >
             {label}
           </Text>
@@ -82,15 +92,12 @@ const InputField: FC<Props> = ({
             <Text
               style={[
                 labelStyle,
-                (isFocused || !!otherProps.value) && {
-                  color: activeColor
-                },
-                !!error && {
-                  color: errorColor
+                !!requiredColor && {
+                  color: requiredColor
                 }
               ]}
             >
-              {' *'}
+              {'*'}
             </Text>
           )}
         </View>
@@ -99,11 +106,12 @@ const InputField: FC<Props> = ({
         style={[
           styles.inputContainer,
           outlineStyle,
-          (isFocused || !!otherProps.value) && { borderColor: activeColor },
+          isFocused && { borderColor: activeColor },
           !!error && { borderColor: errorColor }
         ]}
       >
         <TextInput
+          style={inputStyle}
           placeholder={placeholder || label}
           secureTextEntry={secureTextEntry}
           onFocus={onFocus}
@@ -111,18 +119,34 @@ const InputField: FC<Props> = ({
           {...otherProps}
         />
       </View>
-      <View style={styles.description}>
-        <Text
-          style={[
-            labelStyle,
-            !!error && {
-              color: errorColor
-            }
-          ]}
-        >
-          {error || description}
-        </Text>
-      </View>
+      {
+        hasValidation && (
+          <View style={styles.description}>
+            <View style={styles.info}>
+              {
+                !!error && (
+                  <ExclamationIcon
+                    size={12}
+                    color={errorColor}
+                  />
+                )
+              }
+              <Text
+                style={[
+                  labelStyle,
+                  !!error && {
+                    marginLeft: 10,
+                    color: errorColor
+                  }
+                ]}
+                size={12}
+              >
+                {error || description}
+              </Text>
+            </View>
+          </View>
+        )
+      }
     </View>
   );
 };

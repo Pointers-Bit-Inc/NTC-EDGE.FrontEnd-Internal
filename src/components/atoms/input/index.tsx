@@ -1,5 +1,6 @@
-import React, { useState, FC } from 'react';
-import { TextInput, View, StyleSheet, Platform } from 'react-native';
+import React, { FC } from 'react';
+import { TextInput, StyleSheet, Platform } from 'react-native';
+import { defaultColor } from 'src/styles/color';
 
 const styles = StyleSheet.create({
   input: {
@@ -27,7 +28,7 @@ interface Props {
 const Input: FC<Props> = ({
   value = '',
   style,
-  placeholderTextColor,
+  placeholderTextColor = defaultColor,
   secureTextEntry = false,
   placeholder = '',
   ...otherProps

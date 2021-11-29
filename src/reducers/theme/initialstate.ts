@@ -6,24 +6,27 @@ const InitialState = Record({
     secondary: '#000000'
   },
   text: {
-    primary: '#2B23FF',
+    primary: '#274AD7',
     secondary: '#FFFFFF',
-    default: '#000000',
-    error: '#EB0000',
+    default: '#787A80',
+    success: '#2C9669',
+    error: '#CE1026',
   },
   button: {
-    primary: '#2B23FF',
+    primary: '#274AD7',
     secondary: '#FFFFFF',
-    default: '#000000',
-    error: '#EB0000',
+    default: '#C4C4C4',
+    success: '#2C9669',
+    error: '#CE1026',
   },
   outline: {
-    primary: '#2B23FF',
+    primary: '#274AD7',
     secondary: '#FFFFFF',
     default: '#000000',
-    error: '#EB0000',
+    success: '#2C9669',
+    error: '#CE1026',
   },
-  roundness: 10,
+  roundness: 2,
   thickness: 1,
 });
 
