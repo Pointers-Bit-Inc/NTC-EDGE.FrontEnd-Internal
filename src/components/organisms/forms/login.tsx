@@ -64,25 +64,25 @@ const LoginForm = ({ onSubmit = ({}) => {}, loading = false }) => {
   };
 
   const onPressSubmit = () => {
-    if (!formValue.email.isValid) {
-      return setFormValue({
-        ...formValue,
-        ['email']: {
-          value: formValue.email.value,
-          isValid: false,
-          error: errorResponse['email']
-        }
-      });
-    } else if (!formValue.password.isValid) {
-      return setFormValue({
-        ...formValue,
-        ['password']: {
-          value: formValue.password.value,
-          isValid: false,
-          error: errorResponse['password']
-        }
-      });
-    }
+    // if (!formValue.email.isValid) {
+    //   return setFormValue({
+    //     ...formValue,
+    //     ['email']: {
+    //       value: formValue.email.value,
+    //       isValid: false,
+    //       error: errorResponse['email']
+    //     }
+    //   });
+    // } else if (!formValue.password.isValid) {
+    //   return setFormValue({
+    //     ...formValue,
+    //     ['password']: {
+    //       value: formValue.password.value,
+    //       isValid: false,
+    //       error: errorResponse['password']
+    //     }
+    //   });
+    // }
     onSubmit({
       email: formValue?.email?.value || '',
       password: formValue?.password?.value || ''
