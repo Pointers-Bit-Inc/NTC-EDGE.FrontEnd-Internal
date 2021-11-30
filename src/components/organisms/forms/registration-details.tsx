@@ -40,11 +40,11 @@ const styles = StyleSheet.create({
 })
 
 interface Props {
-  formValue?: any;
-  onChangeText?: any;
+  form?: any;
+  onChangeValue?: any;
 }
 
-const RegistrationForm: FC<Props> = ({ formValue = {}, onChangeText = () => {} }) => {
+const RegistrationForm: FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
   const handlePress = useCallback(() => {
     Linking.openURL('https://ntc.gov.ph/');
   }, []);
@@ -86,10 +86,10 @@ const RegistrationForm: FC<Props> = ({ formValue = {}, onChangeText = () => {} }
         outlineStyle={InputStyles.outlineStyle}
         activeColor={text.primary}
         errorColor={text.error}
-        error={formValue?.firstname?.error}
+        error={form?.firstname?.error}
         requiredColor={text.error}
-        value={formValue?.firstname?.value}
-        onChangeText={(value: string) => onChangeText('firstname', value)}
+        value={form?.firstname?.value}
+        onChangeText={(value: string) => onChangeValue('firstname', value)}
       />
       <InputField
         inputStyle={InputStyles.text}
@@ -101,9 +101,9 @@ const RegistrationForm: FC<Props> = ({ formValue = {}, onChangeText = () => {} }
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
-        error={formValue?.middlename?.error}
-        value={formValue?.middlename?.value}
-        onChangeText={(value: string) => onChangeText('middlename', value)}
+        error={form?.middlename?.error}
+        value={form?.middlename?.value}
+        onChangeText={(value: string) => onChangeValue('middlename', value)}
       />
       <InputField
         inputStyle={InputStyles.text}
@@ -115,9 +115,9 @@ const RegistrationForm: FC<Props> = ({ formValue = {}, onChangeText = () => {} }
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
-        error={formValue?.lastname?.error}
-        value={formValue?.lastname?.value}
-        onChangeText={(value: string) => onChangeText('lastname', value)}
+        error={form?.lastname?.error}
+        value={form?.lastname?.value}
+        onChangeText={(value: string) => onChangeValue('lastname', value)}
       />
       <InputField
         inputStyle={[InputStyles.text, { marginVertical: 10 }]}
@@ -130,13 +130,13 @@ const RegistrationForm: FC<Props> = ({ formValue = {}, onChangeText = () => {} }
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
-        error={formValue?.address?.error}
-        value={formValue?.address?.value}
-        onChangeText={(value: string) => onChangeText('address', value)}
+        error={form?.address?.error}
+        value={form?.address?.value}
+        onChangeText={(value: string) => onChangeValue('address', value)}
       />
       <View style={styles.horizontal}>
-        <TouchableOpacity onPress={() => onChangeText('agreed', !formValue?.agreed?.value)}>
-          {renderAgreedChecker(formValue?.agreed?.value)}
+        <TouchableOpacity onPress={() => onChangeValue('agreed', !form?.agreed?.value)}>
+          {renderAgreedChecker(form?.agreed?.value)}
         </TouchableOpacity>
         <Text
           style={[InputStyles.text, styles.label]}
