@@ -122,7 +122,7 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         </TouchableOpacity>
         <Text
           style={[InputStyles.text, styles.label]}
-          size={14}
+          size={12}
         >
           Keep me logged in
         </Text>
