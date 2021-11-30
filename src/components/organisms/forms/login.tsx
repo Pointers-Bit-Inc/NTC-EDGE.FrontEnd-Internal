@@ -1,142 +1,132 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
-import { InputField } from '@molecules/form-fields';
-import { validateEmail, validatePassword } from 'src/utils/form-validations';
-import useTheme from 'src/hooks/useTheme';
+import React, { FC } from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { CheckIcon } from '@atoms/icon';
+import {
+  InputField,
+  PasswordField,
+} from '@molecules/form-fields';
+import InputStyles from 'src/styles/input-style';
+import { text } from 'src/styles/color';
 import Text from '@atoms/text';
-import Button from '@atoms/button';
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%'
+    flex: 1,
   },
-  button: {}
+  label: {
+    marginLeft: 10
+  },
+  passwordValidationContainer: {
+    paddingVertical: 5,
+    marginBottom: 10,
+    marginTop: 5,
+  },
+  strengthBar: {
+    height: 4,
+    borderRadius: 4,
+    marginTop: 10,
+    flex: 1,
+  },
+  horizontal: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  unchecked: {
+    height: 18,
+    width: 18,
+    backgroundColor: '#DBDFE5',
+    borderRadius: 3,
+  }
 });
 
-const errorResponse = {
-  email: 'Please enter a valid email address',
-  password: 'Password must be atleast 6 characters'
-};
+interface Props {
+  form?: any;
+  onChangeValue?: any;
+}
 
-const LoginForm = ({ onSubmit = ({}) => {}, loading = false }) => {
-  const { text, outline, button, roundness, thickness } = useTheme();
-  const [formValue, setFormValue] = useState({
-    email: {
-      value: '',
-      isValid: false,
-      error: ''
-    },
-    password: {
-      value: '',
-      isValid: false,
-      error: ''
+const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
+  const keepMeLoggedInChecker = (checked:boolean) => {
+    if (checked) {
+      return (
+        <View
+          style={[
+            styles.unchecked,
+            {
+              backgroundColor: text.primary,
+              justifyContent: 'center',
+              alignItems: 'center'
+            }
+          ]}
+        >
+          <CheckIcon
+            type="check"
+            color="white"
+            size={14}
+          />
+        </View>
+      );
     }
-  });
-
-  const onChangeText = (key: string, value: string) => {
-    switch (key) {
-      case 'email':
-        return setFormValue({
-          ...formValue,
-          [key]: {
-            value: value,
-            isValid: validateEmail(value),
-            error: !validateEmail(value) ? errorResponse['email'] : ''
-          }
-        });
-      case 'password':
-        return setFormValue({
-          ...formValue,
-          [key]: {
-            value: value,
-            isValid: validatePassword(value),
-            error: !validatePassword(value) ? errorResponse['password'] : ''
-          }
-        });
-      default:
-        return setFormValue({
-          ...formValue,
-          [key]: {
-            value: value
-          }
-        });
-    }
-  };
-
-  const onPressSubmit = () => {
-    if (!formValue.email.isValid) {
-      return setFormValue({
-        ...formValue,
-        ['email']: {
-          value: formValue.email.value,
-          isValid: false,
-          error: errorResponse['email']
-        }
-      });
-    } else if (!formValue.password.isValid) {
-      return setFormValue({
-        ...formValue,
-        ['password']: {
-          value: formValue.password.value,
-          isValid: false,
-          error: errorResponse['password']
-        }
-      });
-    }
-    onSubmit({
-      email: formValue?.email?.value || '',
-      password: formValue?.password?.value || ''
-    });
-  };
-
+    return (
+      <View style={styles.unchecked} />
+    );
+  }
   return (
     <View style={styles.container}>
       <InputField
-        style={{ color: text.default }}
-        outlineStyle={{
-          borderColor: outline.default,
-          borderRadius: roundness,
-          borderWidth: thickness
-        }}
+        inputStyle={InputStyles.text}
         label={'Email'}
-        placeholder="Email Address"
+        placeholder="Email address"
         required={true}
+        hasValidation={true}
+        outlineStyle={InputStyles.outlineStyle}
         activeColor={text.primary}
         errorColor={text.error}
-        error={formValue?.email?.error}
-        onChangeText={(text: string) => onChangeText('email', text)}
-        value={formValue?.email?.value}
+        requiredColor={text.error}
+        error={form?.email?.error}
+        value={form?.email?.value}
+        keyboardType={'email-address'}
+        onChangeText={(value: string) => onChangeValue('email', value)}
+        onSubmitEditing={(event:any) => onChangeValue('email', event.nativeEvent.text)}
       />
-      <InputField
-        style={{ color: text.default }}
-        outlineStyle={{
-          borderColor: outline.default,
-          borderRadius: roundness,
-          borderWidth: thickness
-        }}
+      <View style={[styles.horizontal, { justifyContent: 'flex-end' }]}>
+        <TouchableOpacity onPress={() => onChangeValue('forgotPassword')}>
+          <Text
+            style={[InputStyles.text, styles.label, { color: text.primary }]}
+            size={12}
+          >
+            Forgot your password?
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <PasswordField
+        inputStyle={[InputStyles.text, { flex: 1 }]}
         label={'Password'}
         placeholder="Password"
-        secureTextEntry={true}
+        textContentType="oneTimeCode"
         required={true}
+        hasValidation={false}
+        outlineStyle={InputStyles.outlineStyle}
         activeColor={text.primary}
         errorColor={text.error}
-        error={formValue?.password?.error}
-        onChangeText={(text: string) => onChangeText('password', text)}
-        value={formValue?.password?.value}
+        requiredColor={text.error}
+        secureTextEntry={!form?.showPassword?.value}
+        error={form?.password?.error}
+        value={form?.password?.value}
+        showPassword={() => onChangeValue('showPassword')}
+        onChangeText={(value: string) => onChangeValue('password', value)}
+        onSubmitEditing={(event:any) => onChangeValue('password', event.nativeEvent.text)}
       />
-      <Button
-        disabled={loading}
-        style={[styles.button, { backgroundColor: button.primary }]}
-        onPress={onPressSubmit}
-      >
-        {loading ? (
-          <ActivityIndicator color={'white'} size={'small'} />
-        ) : (
-          <Text fontSize={16} color={'white'}>
-            Login
-          </Text>
-        )}
-      </Button>
+      <View style={[styles.horizontal, { marginTop: 20 }]}>
+        <TouchableOpacity onPress={() => onChangeValue('keepLoggedIn', !form?.keepLoggedIn?.value)}>
+          {keepMeLoggedInChecker(form?.keepLoggedIn?.value)}
+        </TouchableOpacity>
+        <Text
+          style={[InputStyles.text, styles.label]}
+          size={14}
+        >
+          Keep me logged in
+        </Text>
+      </View>
     </View>
   );
 };
