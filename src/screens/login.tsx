@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import {
+  ImageBackground,
   SafeAreaView,
   ScrollView,
   View,
@@ -21,13 +22,14 @@ import Text from '@atoms/text';
 import Button from '@components/atoms/button';
 import { text, button, outline } from 'src/styles/color';
 const logo = require('../../assets/logo.png');
+const background = require('../../assets/background.png');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
   },
   header: {
     marginVertical: '20%',
+    marginBottom: '25%',
   },
   image: {
     height: 55,
@@ -168,13 +170,17 @@ const Login = ({ navigation }:any) => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ImageBackground
+      resizeMode={'stretch'}
+      source={background}
+      style={styles.container}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
       <ScrollView
-        style={{ paddingHorizontal: 20 }}
+        style={{ padding: 20 }}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
@@ -220,7 +226,7 @@ const Login = ({ navigation }:any) => {
         </View>
       </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </ImageBackground>
   );
 };
 
