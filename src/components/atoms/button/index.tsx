@@ -1,5 +1,6 @@
 import React, { ReactNode, FC } from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
+import lodash from 'lodash'; 
 
 const styles = StyleSheet.create({
   default: {
@@ -10,13 +11,25 @@ const styles = StyleSheet.create({
 
 interface Props {
   children: ReactNode;
+  onPress?: any;
   style?: any;
   [x: string]: any;
 }
 
-const Button: FC<Props> = ({ children, style, ...otherProps }: any) => {
+const Button: FC<Props> = ({
+  children,
+  onPress = () => {},
+  style,
+  ...otherProps
+}: any) => {
+  const debouncedOnPress = lodash.debounce(onPress, 300, { leading: true, trailing: false });
+  
   return (
-    <TouchableOpacity style={[styles.default, style]} {...otherProps}>
+    <TouchableOpacity
+      style={[styles.default, style]}
+      onPress={debouncedOnPress}
+      {...otherProps}
+    >
       {children}
     </TouchableOpacity>
   );
