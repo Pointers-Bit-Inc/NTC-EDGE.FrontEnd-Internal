@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 import Text from '@components/atoms/text';
+import {
+  validateEmail,
+  validatePassword,
+  validatePhone,
+} from 'src/utils/form-validations';
 import { InputField } from '@molecules/form-fields';
 import Button from '@components/atoms/button';
 import { ArrowLeftIcon } from '@components/atoms/icon';
@@ -37,8 +42,99 @@ const styles = StyleSheet.create({
   }
 })
 
+const errorResponse = {
+  password: 'Password must be atleast 6 characters',
+  confirm: 'password does not match',
+};
+
 const OneTimePin = ({ navigation }) => {
-  const [account, setAccount] = useState('');
+  const [formValue, setFormValue] = useState({
+    password: {
+      value: '',
+      isValid: false,
+      error: '',
+      characterLength: false,
+      upperAndLowerCase: false,
+      atLeastOneNumber: false,
+      strength: 'Weak',
+    },
+    confirmPassword: {
+      value: '',
+      isValid: false,
+      error: '',
+    },
+    showPassword: {
+      value: false,
+    }
+  });
+
+  const onChangeText = (key: string, value: any) => {
+    switch (key) {
+      case 'password': {
+        const passwordTest = validatePassword(value);
+        const checked = validatePasswordMatch(value, formValue.confirmPassword.value);
+        return setFormValue({
+          ...formValue,
+          [key]: {
+            value: value,
+            isValid: passwordTest?.isValid,
+            error: !passwordTest?.isValid ? errorResponse['password'] : '',
+            characterLength: passwordTest.characterLength,
+            upperAndLowerCase: passwordTest.upperAndLowerCase,
+            atLeastOneNumber: passwordTest.atLeastOneNumber,
+            strength: passwordTest.strength,
+          },
+          'confirmPassword': {
+            ...formValue.confirmPassword,
+            isValid: checked,
+            error: !checked ? errorResponse['confirm'] : ''
+          }
+        });
+      }
+      case 'confirmPassword': {
+        const checked = validatePasswordMatch(value, formValue.password.value);
+        return setFormValue({
+          ...formValue,
+          [key]: {
+            value: value,
+            isValid: checked,
+            error: !checked ? errorResponse['confirm'] : ''
+          }
+        });
+      }
+      case 'showPassword': {
+        return setFormValue({
+          ...formValue,
+          [key]: {
+            value: value,
+          }
+        });
+      }
+      default:
+        return setFormValue({
+          ...formValue,
+          [key]: {
+            value: value,
+            isValid: !!value,
+            error: '',
+          }
+        });
+    }
+  };
+
+  const validatePasswordMatch = (value:string, password:string) => {
+    return value === password;
+  }
+
+  const onCheckValidation = () => {
+    if (!formValue.password.isValid) {
+      return onChangeText('password', formValue.password.value);
+    } else if (!formValue.confirmPassword.isValid) {
+      return onChangeText('confirmPassword', formValue.confirmPassword.value);
+    } else {
+      return navigation.navigate('ForgotPasswordSuccess')
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -69,10 +165,10 @@ const OneTimePin = ({ navigation }) => {
         >
           Reset password
         </Text>
-        <PasswordForm />
+        <PasswordForm onChangeValue={onChangeText} form={formValue} />
         <Button
           style={styles.button}
-          onPress={() => navigation.navigate('ForgotPasswordSuccess')}
+          onPress={onCheckValidation}
         >
           <Text
             color="white"
