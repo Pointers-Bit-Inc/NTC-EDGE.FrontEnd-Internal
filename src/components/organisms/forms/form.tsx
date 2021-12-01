@@ -1,11 +1,10 @@
 import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import Text from '@atoms/text';
-import DateTimePicker from '@atoms/datetime-picker';
-import PropTypes from "prop-types";
 import {InputField} from "@molecules/form-fields";
 import DateTimeField from "@molecules/form-fields/dropdown-field";
 import RNPickerSelect from "react-native-picker-select";
+import Button from "@atoms/button";
+import Text from "@atoms/text";
 
 const styles = StyleSheet.create({
 
@@ -19,13 +18,20 @@ const FormField = ({
     const inputColor = color ? color : "#486c86";
     const renderElements = (element: any, color: any, styleProps: any) =>  {
         element.color = color;
-        const { type, pickerData, ...otherProps } = element;
+        const { label, type, pickerData, ...otherProps } = element;
         switch (type) {
             case "text":
+                return <Text {...styleProps} {...otherProps} >{label}</Text>;
+            case "input":
                 return <InputField {...styleProps} {...otherProps} />;
-
             case "date":
                 return <DateTimeField {...styleProps} {...otherProps} />;
+            case "button":
+                return <Button {...styleProps} {...otherProps}>
+                    <Text fontSize={16} color={'white'}>
+                        {label}
+                    </Text>
+                </Button>
             case "picker":
                 return <RNPickerSelect
                         {...styleProps} {...otherProps}

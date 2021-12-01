@@ -373,9 +373,9 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
                 display="default"
                 onChange={onTimeChange}/></> }
 
-            <Button style={{ backgroundColor: '#2B23FF' }}>
+            <Button onPress={onSubmit} style={{ backgroundColor: '#2B23FF' }}>
                 <Text fontSize={16} color={'white'}>
-                    Save
+                    Previous
                 </Text>
             </Button>
         </View>
