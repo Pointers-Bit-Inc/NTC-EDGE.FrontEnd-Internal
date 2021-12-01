@@ -12,7 +12,8 @@ const styles = StyleSheet.create({
       web: {
         outlineStyle: 'none'
       }
-    })
+    }),
+    paddingVertical: Platform.OS === 'android' ? 5 : 10,
   }
 });
 
