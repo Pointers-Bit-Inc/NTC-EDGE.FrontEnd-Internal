@@ -4,7 +4,7 @@ import Step from '@atoms/step';
 import styles from './styles';
 
 interface Props {
-	steps: object;
+	steps: any;
 };
 
 const renderEveryStep = (steps = []) => {
@@ -18,7 +18,7 @@ const renderEveryStep = (steps = []) => {
 	});
 };
 
-const Steps: FC<Props> = ({ steps = [] }: any) => {
+const Steps: FC<Props> = ({ steps = [] }) => {
 	return (
 		<ProgressSteps {...styles}>
 			{renderEveryStep(steps)}

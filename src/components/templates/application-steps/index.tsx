@@ -7,7 +7,7 @@ interface Props {
 	[x: string]: any;
 };
 
-const ApplicationSteps: FC<Props> = ({ ...props }: any) => {
+const ApplicationSteps: FC<Props> = ({ ...props }) => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<Steps {...props} />

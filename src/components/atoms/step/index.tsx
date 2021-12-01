@@ -23,7 +23,7 @@ const Step: FC<Props> = ({
 	onNext = () => {},
 	onSubmit = () => {},
 	errors = false,
-}: any) => {
+}) => {
 	return (
 		<ProgressStep
 			{...styles}

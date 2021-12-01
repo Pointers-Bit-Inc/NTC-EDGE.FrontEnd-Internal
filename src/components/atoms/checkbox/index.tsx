@@ -10,7 +10,7 @@ interface Props {
 const CheckBox: FC<Props> = ({
 	isChecked = false,
 	onClick = () => {},
-}: any) => {
+}) => {
 	return (
 		<Checkbox
 			disabled={false}

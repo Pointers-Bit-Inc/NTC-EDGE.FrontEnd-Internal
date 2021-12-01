@@ -17,7 +17,7 @@ const TC: FC<Props> = ({
 	termsAndConditions = '',
 	onCancel = () => {},
 	onAgree = () => {},
-}: any) => {
+}) => {
 	const [isChecked, setIsChecked] = useState(false);
   return (
 		<Modal
