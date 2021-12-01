@@ -23,15 +23,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white'
   },
-  title: {
-    marginBottom: 10,
-    fontWeight: '500',
-    color: '#37405B',
-    marginTop: '18%',
-  },
   header: {
-    paddingVertical: 50,
-    marginBottom: 50,
+    marginVertical: '20%',
   },
   image: {
     height: 55,
@@ -47,7 +40,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 35,
-    marginBottom: 20,
+    marginBottom: 30,
   },
   button: {
     borderRadius: 5,

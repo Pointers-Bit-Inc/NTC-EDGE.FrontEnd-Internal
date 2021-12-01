@@ -116,7 +116,7 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         onChangeText={(value: string) => onChangeValue('password', value)}
         onSubmitEditing={(event:any) => onChangeValue('password', event.nativeEvent.text)}
       />
-      <View style={[styles.horizontal, { marginTop: 20 }]}>
+      <View style={[styles.horizontal, { marginTop: 15 }]}>
         <TouchableOpacity onPress={() => onChangeValue('keepLoggedIn', !form?.keepLoggedIn?.value)}>
           {keepMeLoggedInChecker(form?.keepLoggedIn?.value)}
         </TouchableOpacity>
