@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Modal, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import CheckBox from '@atoms/checkbox';
 import Button from '@atoms/button';
 import { CloseIcon } from '@atoms/icon';
 import styles from './styles';
 
-export default ({
+interface Props {
+	visible: boolean;
+	termsAndConditions: string;
+	onCancel: any;
+	onAgree: any;
+};
+
+const TC: FC<Props> = ({
 	visible,
 	termsAndConditions = '',
 	onCancel = () => {},
 	onAgree = () => {},
-}) => {
+}: any) => {
 	const [isChecked, setIsChecked] = useState(false);
   return (
 		<Modal
@@ -62,3 +69,5 @@ export default ({
 		</Modal>
 	)
 };
+
+export default TC;

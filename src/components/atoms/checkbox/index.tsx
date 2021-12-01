@@ -1,19 +1,24 @@
-import React from 'react';
-import { View } from 'react-native';
-import CheckBox from 'react-native-check-box';
-import styles from './styles';
+import React, { FC } from 'react';
+import Checkbox from 'expo-checkbox';
+import { primaryColor } from '@styles/color';
 
-export default ({
+interface Props {
+	isChecked: boolean;
+	onClick: any;
+};
+
+const CheckBox: FC<Props> = ({
 	isChecked = false,
 	onClick = () => {},
-}) => {
+}: any) => {
 	return (
-		<View>
-			<CheckBox
-				{...styles}
-				isChecked={isChecked}
-				onClick={() => onClick()}
-			/>
-		</View>
+		<Checkbox
+			disabled={false}
+			value={isChecked}
+			onValueChange={onClick}
+			color={isChecked ? primaryColor : undefined}
+		/>
 	)
 };
+
+export default CheckBox;

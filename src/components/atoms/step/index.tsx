@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { ReactNode, FC } from 'react';
 import { View } from 'react-native';
 import { ProgressStep } from 'react-native-progress-steps';
 import styles from './styles';
 
-export default ({
+interface Props {
+	label: string;
+	content: ReactNode;
+	stepCount: number;
+	activeStep: number;
+	setActiveStep: any;
+	onNext: any;
+	onSubmit: any;
+	errors: boolean;
+};
+
+const Step: FC<Props> = ({
 	label = '',
 	content = <View />,
 	stepCount = 0,
@@ -12,7 +23,7 @@ export default ({
 	onNext = () => {},
 	onSubmit = () => {},
 	errors = false,
-}) => {
+}: any) => {
 	return (
 		<ProgressStep
 			{...styles}
@@ -28,3 +39,5 @@ export default ({
 		</ProgressStep>
 	)
 };
+
+export default Step;

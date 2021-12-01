@@ -1,10 +1,9 @@
-import React from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import { primaryColor, disabledColor } from '@styles/color';
 
 const { height } = Dimensions.get('window');
 
-export default {
+export default StyleSheet.create({
 	modal: {
 		flex: 1,
 		backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -40,4 +39,4 @@ export default {
 	buttonTxt: {
 		color: '#fff',
 	},
-};
+});
