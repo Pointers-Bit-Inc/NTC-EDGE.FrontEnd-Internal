@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import RegistrationPageOne from '@screens/registration';
-import RegistrationPageTwo from '@screens/registration-signup';
-import RegistrationSuccess from '@screens/registration-success';
+import RegistrationPageTwo from '@screens/registration/signup';
+import RegistrationSuccess from '@screens/registration/success';
 
 
 type RootStackParamList = {
@@ -15,6 +15,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const RegistrationNavigator = () => {
   return (
     <Stack.Navigator
+      initialRouteName="RegistrationPageOne"
       screenOptions={{
         gestureEnabled: false,
         headerShown: false
