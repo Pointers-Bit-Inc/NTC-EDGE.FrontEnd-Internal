@@ -49,7 +49,9 @@ const OneTimePin = ({ navigation }) => {
             color={text.default}
           />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Login')}
+        >
           <Text
             size={18}
             color={text.default}

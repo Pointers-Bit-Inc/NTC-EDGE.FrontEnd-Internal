@@ -81,7 +81,9 @@ const ForgotPassword = ({ navigation }:any) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Login')}
+        >
           <Text
             size={18}
             color={text.default}
