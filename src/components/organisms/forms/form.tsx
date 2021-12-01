@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import Text from '@atoms/text';
 import DateTimePicker from '@atoms/datetime-picker';
 import PropTypes from "prop-types";
@@ -39,7 +39,7 @@ const FormField = ({
         }
     }
     return (
-        <View >
+        <ScrollView >
             {formElements.map((element: any, key:number) => {
                 return (
                     <View key={key}>
@@ -51,7 +51,7 @@ const FormField = ({
                     </View>
                 );
             })}
-        </View>
+        </ScrollView>
     );
 };
 
