@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -8,7 +8,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  ActivityIndicator,
 } from 'react-native';
+import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
+import { setUser } from 'src/reducers/user/actions'
 import {
   validateEmail,
   validatePassword,
@@ -59,6 +62,17 @@ const errorResponse = {
 };
 
 const Login = ({ navigation }:any) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state:RootStateOrAny) => state.user);
+  const [loading, setLoading] = useState(false);
+  const onLogin = useCallback(async (data) => {
+    setLoading(true);
+    await setTimeout(() => {
+      setLoading(false);
+      dispatch(setUser(data));
+      navigation.navigate('Home');
+    }, 3000);
+  }, []);
   const [formValue, setFormValue] = useState({
     email: {
       value: '',
@@ -81,7 +95,6 @@ const Login = ({ navigation }:any) => {
       value: false,
     }
   });
-
   const onChangeValue = (key: string, value: any) => {
     switch (key) {
       case 'email': {
@@ -132,26 +145,27 @@ const Login = ({ navigation }:any) => {
         });
     }
   };
-
   const onCheckValidation = () => {
     if (!formValue.email.isValid) {
       return onChangeValue('email', formValue.email.value);
     } if (!formValue.password.isValid) {
       return onChangeValue('password', formValue.password.value);
     } else {
-      return navigation.navigate(
-        'Home',
-        {
-          email: formValue?.email?.value,
-          password: formValue?.password?.value,
-        }
-      );
+      return onLogin({
+        email: formValue?.email?.value,
+        password: formValue?.password?.value,
+      });
     }
   }
-
   const isValid =
     formValue.email.isValid &&
     formValue.password.isValid;
+
+  useEffect(() => {
+    if (user && user.email) {
+      navigation.replace('Home');
+    }
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -181,9 +195,16 @@ const Login = ({ navigation }:any) => {
           <View style={styles.footer}>
             <Button
               style={[styles.button, { backgroundColor: isValid ? button.primary : button.default }]}
+              disabled={loading}
               onPress={onCheckValidation}
             >
-              <Text color="white" size={18}>Login</Text>
+              {
+                loading ? (
+                  <ActivityIndicator color={'white'} size={'small'} />
+                ) : (
+                  <Text color="white" size={18}>Login</Text>
+                )
+              }
             </Button>
           </View>
           <View style={styles.horizontal}>
