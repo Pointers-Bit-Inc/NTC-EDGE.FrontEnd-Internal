@@ -207,7 +207,6 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
             setTime(currenttime)
         }
     };
-
     const [radio_operation_servicesDefaultValue, setRadio_operation_servicesDefaultValue] = useState(radio_operation_services.length ? radio_operation_services[0].id  : 0)
     const [radio_operation_exam_typesDefaultValue, setRadio_operation_exam_typesDefaultValue] = useState(radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == radio_operation_servicesDefaultValue  )
         .map((radio_operation_exam_type) => {
