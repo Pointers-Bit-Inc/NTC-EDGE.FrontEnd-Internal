@@ -24,12 +24,6 @@ interface RadioOperationExamType {
 }
 
 
-interface User {
-    id: number,
-    first_name: string,
-    last_name: string,
-}
-
 interface City {
 
     id: number,
@@ -48,7 +42,6 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
     });
 
   const navigation = useNavigation();
-    const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [is24Hours, set24Hours] = useState(false);
@@ -200,6 +193,7 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
     const [userSelectedValue, setUserSelectedValue] = useState(0);
     const onTimeChange = (event: any, newTime: any) => {
         const currenttime = newTime || time
+        alert(currenttime)
         setTimeShow(Platform.OS === 'ios');
         if (Platform.OS === 'windows') {
             setTime(currenttime);
@@ -211,7 +205,7 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
     const [radio_operation_exam_typesDefaultValue, setRadio_operation_exam_typesDefaultValue] = useState(radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == radio_operation_servicesDefaultValue  )
         .map((radio_operation_exam_type) => {
             return {label: radio_operation_exam_type.name, id: radio_operation_exam_type.id}
-        })[0]["id"])
+        })?.[0]?.["id"])
     const [radioOperationServiceSelectedValue, setRadioOperationServiceSelectedValue] = useState(radio_operation_servicesDefaultValue );
     const [radioOperationExamTypeSelectedValue, setRadioOperationExamTypeSelectedValue] = useState(radio_operation_exam_typesDefaultValue);
     const [citySelectedValue, setCitySelectedValue] = useState(cities.length ? cities[0].id : 0)
@@ -264,27 +258,18 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
 
     return (
         <View style={styles.container}>
-            <Text>APPLICANT'S</Text>
-            <RNPickerSelect
-                value={userSelectedValue}
-                onValueChange={(itemValue: any, itemIndex: number) => setUserSelectedValue(itemValue)}
-                items={
-                    users.map((user : User, index: number ) => {
-                        return  { label: user.first_name + " " + user.last_name , value: user.id }
-                    })
 
-                   }
-            />
             <Text>Radio Operation Service</Text>
             <RNPickerSelect
                 value={radioOperationServiceSelectedValue}
                 onValueChange={(itemValue: any, itemIndex: number) => {
-
+                    if(!itemValue) return
                     setRadioOperationServiceSelectedValue(itemValue)
                     setRadioOperationExamTypeSelectedValue(radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue  )
                         .map((radio_operation_exam_type) => {
                             return {label: radio_operation_exam_type.name, id: radio_operation_exam_type.id}
                         })[0]["id"])
+
                 }}
                 items={
 
@@ -298,7 +283,10 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
             <Text>Radio Operation Exam Type</Text>
             <RNPickerSelect
                 value={radioOperationExamTypeSelectedValue}
-                onValueChange={(itemValue: any, itemIndex: number) => setRadioOperationExamTypeSelectedValue(itemValue)}
+                onValueChange={(itemValue: any, itemIndex: number) => {
+                    if(!itemValue) return;
+                    return  setRadioOperationExamTypeSelectedValue(itemValue)
+                }}
                 items={
                     radioOperationExamTypeItems
                 }
@@ -355,7 +343,7 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
                 />
 
 
-
+            <Text>{time.toString()}</Text>
             {Platform.OS !== 'ios' && <Button onPress={showTimepicker} style={{ backgroundColor: '#2B23FF'}} >
 
                     <Text fontSize={16} color={'white'}>
@@ -364,7 +352,7 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
                 </Button>}
 
 
-            {Platform.OS !== 'ios' ? timeShow: !timeShow &&
+            {Platform.OS === 'ios'  &&
             <><Text weight={'bold'}>Time of Exam</Text><SelectTimePicker
                 testID="timePicker"
                 mode="time"

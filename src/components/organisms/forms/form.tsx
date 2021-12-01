@@ -6,50 +6,52 @@ import RNPickerSelect from "react-native-picker-select";
 import Button from "@atoms/button";
 import Text from "@atoms/text";
 
-const styles = StyleSheet.create({
-
-});
+const styles = StyleSheet.create({});
 
 const FormField = ({
-                  color,
-                  formElements,
-                  ...otherProps
-              }: any) => {
+                       color,
+                       formElements,
+                       onChange,
+                       ...otherProps
+                   }: any) => {
     const inputColor = color ? color : "#486c86";
-    const renderElements = (element: any, color: any, styleProps: any) =>  {
+    const renderElements = (id: number, element: any, color: any, styleProps: any) => {
         element.color = color;
-        const { label, type, pickerData, ...otherProps } = element;
+        const {type, pickerData, ...otherProps} = element;
         switch (type) {
             case "text":
-                return <Text {...styleProps} {...otherProps} >{label}</Text>;
+                return <Text key={id} {...styleProps} {...otherProps} >{otherProps.label}</Text>;
             case "input":
-                return <InputField {...styleProps} {...otherProps} />;
+                return <InputField key={id}  {...styleProps} {...otherProps}
+                                   onChangeText={(text: string) => onChange(id, text)}/>;
             case "date":
-                return <DateTimeField {...styleProps} {...otherProps} />;
+                return <DateTimeField key={id}  {...styleProps} {...otherProps} />;
             case "button":
-                return <Button {...styleProps} {...otherProps}>
+                return <Button key={id}  {...styleProps} {...otherProps}>
                     <Text fontSize={16} color={'white'}>
-                        {label}
+                        {otherProps.label}
                     </Text>
                 </Button>
             case "picker":
                 return <RNPickerSelect
-                        {...styleProps} {...otherProps}
-                        onValueChange={(value) => console.log(value)}
-                        items ={
-                            pickerData.map((pick:any, index: number) => {
-                                return  { label: pick.label , value: pick.value }
-                            })
-                        }
-                    />;
+                    key={id}
+                    {...styleProps} {...otherProps}
+                    onValueChange={(value) => onChange(id, value)}
+                    items={
+                        pickerData.map((pick: any, index: number) => {
+                            return {label: pick.label, value: pick.value}
+                        })
+                    }
+                />;
         }
     }
     return (
-        <ScrollView >
-            {formElements.map((element: any, key:number) => {
+        <ScrollView>
+            {formElements.map((element: any, key: number) => {
                 return (
                     <View key={key}>
                         {renderElements(
+                            key,
                             element,
                             inputColor,
                             otherProps
