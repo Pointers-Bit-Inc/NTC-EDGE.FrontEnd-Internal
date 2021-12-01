@@ -221,7 +221,7 @@ const Registration = ({ navigation }:any) => {
         <View style={styles.footer}>
           <View style={{ alignItems: 'flex-start' }}>
             <TouchableOpacity
-              onPress={() => navigation.replace('Login')}
+              onPress={() => navigation.navigate('Login')}
             >
               <Text
                 weight={'500'}
