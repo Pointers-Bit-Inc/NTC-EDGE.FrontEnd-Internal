@@ -15,6 +15,7 @@
     "@expo/match-media": "^0.1.0",
     "@expo/vector-icons": "^12.0.0",
     "@expo/webpack-config": "^0.16.7",
+    "@react-native-async-storage/async-storage": "~1.15.0",
     "@react-native-community/datetimepicker": "^3.5.2",
     "@react-native-picker/picker": "2.1.0",
     "@react-navigation/bottom-tabs": "^6.0.5",
@@ -43,6 +44,7 @@
     "react-redux": "^7.2.6",
     "react-responsive": "^9.0.0-beta.5",
     "redux": "^4.1.2",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.0",
     "styled-components": "^5.3.3"
   },
