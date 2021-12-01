@@ -64,7 +64,7 @@ const RegistrationSuccess = ({ navigation }:any) => {
         </Text>
       </View>
       <View style={{ alignItems: 'center' }}>
-        <TouchableOpacity onPress={() => navigation.replace('Home')}>
+        <TouchableOpacity onPress={() => navigation.replace('Login')}>
           <View style={styles.horizontal}>
             <Text
               color={button.primary}
