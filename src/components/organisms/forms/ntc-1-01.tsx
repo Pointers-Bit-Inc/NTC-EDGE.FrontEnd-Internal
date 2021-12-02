@@ -9,7 +9,6 @@ import RNPickerSelect from "react-native-picker-select";
 import SelectTimePicker from '@react-native-community/datetimepicker';
 import {Ionicons} from "@expo/vector-icons";
 import InputStyles from "../../../styles/input-style";
-import {text} from "../../../styles/color";
 import FormField from "@organisms/forms/form";
 
 interface RadioOperationServices {
@@ -244,7 +243,7 @@ const NTC101 = ({
     const [radioOperationServiceSelectedValue, setRadioOperationServiceSelectedValue] = useState(radio_operation_servicesDefaultValue);
     const [radioOperationExamTypeSelectedValue, setRadioOperationExamTypeSelectedValue] = useState(radio_operation_exam_typesDefaultValue);
     const [citySelectedValue, setCitySelectedValue] = useState(cities.length ? cities[0].id : 0)
-    const [radioOperationExamTypeItems, setRadioOperationExamTypeItems ] = useState(radio_operation_exam_types.filter((radio_operation_exam_type: RadioOperationExamType) => {
+    const [radioOperationExamTypeItems, setRadioOperationExamTypeItems] = useState(radio_operation_exam_types.filter((radio_operation_exam_type: RadioOperationExamType) => {
         return radioOperationServiceSelectedValue == radio_operation_exam_type.radio_operator_service_id && {
             label: radio_operation_exam_type.name,
             value: radio_operation_exam_type.id
@@ -256,7 +255,7 @@ const NTC101 = ({
     const onPressSubmit = () => {
         let error = false
         for (var i = 0; i < applicationFormValue.length; i++) {
-            if(applicationFormValue[i]['error']) {
+            if (applicationFormValue[i]['error']) {
                 error = true
                 break
             }
@@ -483,14 +482,14 @@ const NTC101 = ({
             error: false
         },
         {
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
             label: "Email Address",
             type: "input",
             placeholder: "Email Address",
             value: '',
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
             inputStyle: InputStyles.text,
             error: false
         },
@@ -505,7 +504,7 @@ const NTC101 = ({
             onPress: onPressSubmit
 
         }])
-    const  onCheckmarkPress = (check:any, index: number) => {
+    const onCheckmarkPress = (check: any, index: number) => {
         let newArr = [...radioOperationExamTypeItems];
         newArr[index].checked = !check.checked
         setRadioOperationExamTypeItems(newArr);
@@ -538,9 +537,13 @@ const NTC101 = ({
                 value={radioOperationServiceSelectedValue}
                 onValueChange={(itemValue: any, itemIndex: number) => {
                     if (!itemValue) return
-                    const radioOperationExam  = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
+                    const radioOperationExam = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
                         .map((radio_operation_exam_type) => {
-                            return {label: radio_operation_exam_type.name, value: radio_operation_exam_type.id, checked: false}
+                            return {
+                                label: radio_operation_exam_type.name,
+                                value: radio_operation_exam_type.id,
+                                checked: false
+                            }
                         })
                     setRadioOperationServiceSelectedValue(itemValue)
                     setRadioOperationExamTypeSelectedValue(radioOperationExam[0]["value"])
@@ -572,32 +575,28 @@ const NTC101 = ({
             })}
 
             <InputField
-                style={{color: text.default}}
-                outlineStyle={{
-                    borderColor: outline.default,
-                    borderRadius: roundness,
-                    borderWidth: thickness
-                }}
                 label={'Name'}
-                placeholder="Name"
-                required={true}
+                placeholder={"Name"}
+                outlineStyle={InputStyles.outlineStyle}
                 activeColor={text.primary}
                 errorColor={text.error}
+                requiredColor={text.error}
+                inputStyle={InputStyles.text}
+                onSubmitEditing={(event: any) => onChangeText('name', event.nativeEvent.text)}
                 onChangeText={(text: string) => onChangeText('name', text)}
                 value={formValue?.name?.value}
+
             />
             <InputField
-                style={{color: text.default}}
-                outlineStyle={{
-                    borderColor: outline.default,
-                    borderRadius: roundness,
-                    borderWidth: thickness
-                }}
+
                 label={'Place'}
                 placeholder="Place"
-                required={true}
+                outlineStyle={InputStyles.outlineStyle}
                 activeColor={text.primary}
                 errorColor={text.error}
+                requiredColor={text.error}
+                inputStyle={InputStyles.text}
+                onSubmitEditing={(event: any) => onChangeText('name', event.nativeEvent.text)}
                 onChangeText={(text: string) => onChangeText('place', text)}
                 value={formValue?.place?.value}
             />
