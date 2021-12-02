@@ -1,20 +1,22 @@
 import React, {useState} from 'react';
-import {View, Picker, SafeAreaView, TextInput, Platform, StyleSheet, TouchableOpacity} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import {
-  InputField,
-  DateTimeField,
-  DropdownField
-} from '@molecules/form-fields';
+import {Platform, Pressable, ScrollView, StyleSheet, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {DateTimeField, InputField} from '@molecules/form-fields';
 import Text from '@atoms/text';
 import Button from '@atoms/button';
 import useTheme from "../../../hooks/useTheme";
 import RNPickerSelect from "react-native-picker-select";
 import SelectTimePicker from '@react-native-community/datetimepicker';
+import {Ionicons} from "@expo/vector-icons";
+import InputStyles from "../../../styles/input-style";
+import {text} from "../../../styles/color";
+import FormField from "@organisms/forms/form";
+
 interface RadioOperationServices {
     id: number,
     name: string
 }
+
 interface RadioOperationExamType {
     id: number,
     radio_operator_service_id: number,
@@ -32,35 +34,70 @@ interface City {
 }
 
 
-const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
+const NTC101 = ({
+                    onSubmit = ({}) => {
+                    }, loading = false
+                }) => {
     const styles = StyleSheet.create({
-        container: {
-            width: '100%'
+        checkboxBase: {
+            width: 24,
+            height: 24,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 4,
+            borderWidth: 2,
+            borderColor: 'coral',
+            backgroundColor: 'transparent',
         },
-        button: {},
 
+        checkboxChecked: {
+            backgroundColor: 'coral',
+        },
+
+        appContainer: {
+            flex: 1,
+            alignItems: 'center',
+        },
+
+        appTitle: {
+            marginVertical: '16',
+            fontWeight: 'bold',
+            fontSize: 24,
+        },
+
+        checkboxContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
+
+        checkboxLabel: {
+            marginLeft: 8,
+            fontWeight: '500',
+            fontSize: 12,
+        },
     });
-
-  const navigation = useNavigation();
+    const [sexType, setSexType] = useState([
+        {value: 1, label: "Male"}
+        ,
+        {value: 0, label: "Female"}
+        ,
+    ]);
+    const navigation = useNavigation();
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [is24Hours, set24Hours] = useState(false);
     const [time, setTime] = useState(new Date)
     const [timeShow, setTimeShow] = useState(false)
-    const [users, setUsers] = useState([
-
-        {id: 1, first_name: 'first', last_name: 'last'}
-    ])
     const [cities, setCities] = useState([
         {id: 1, city: 'CDO', zipcode: '9000'}
     ])
-    const [radio_operation_services , setRadioOperationServices ] = useState<RadioOperationServices[]>([
+    const [radio_operation_services, setRadioOperationServices] = useState<RadioOperationServices[]>([
         {id: 1, name: 'RADIOTELEGRAPHY'},
         {id: 2, name: 'RADIOTELEPHONY'},
         {id: 3, name: 'AMATEUR'},
         {id: 4, name: 'RESTRICTED RADIOTELEPHONE OPERATOR CERTIFICATE - AIRCRAFT'}
     ]);
-    const [radio_operation_exam_types , setRadioOperationExamType  ] = useState<RadioOperationExamType[]>([
+    const [radio_operation_exam_types, setRadioOperationExamType] = useState<RadioOperationExamType[]>([
         {
             id: 1,
             radio_operator_service_id: 1,
@@ -189,38 +226,50 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
             note: 'RROC - Aircraft - Element 1',
         },
     ]);
-    const { text, outline, button, roundness, thickness } = useTheme();
-    const [userSelectedValue, setUserSelectedValue] = useState(0);
+    const {text, outline, button, roundness, thickness} = useTheme();
     const onTimeChange = (event: any, newTime: any) => {
         const currenttime = newTime || time
-        alert(currenttime)
         setTimeShow(Platform.OS === 'ios');
         if (Platform.OS === 'windows') {
             setTime(currenttime);
-        }else{
+        } else {
             setTime(currenttime)
         }
     };
-    const [radio_operation_servicesDefaultValue, setRadio_operation_servicesDefaultValue] = useState(radio_operation_services.length ? radio_operation_services[0].id  : 0)
-    const [radio_operation_exam_typesDefaultValue, setRadio_operation_exam_typesDefaultValue] = useState(radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == radio_operation_servicesDefaultValue  )
+    const [radio_operation_servicesDefaultValue, setRadio_operation_servicesDefaultValue] = useState(radio_operation_services.length ? radio_operation_services[0].id : 0)
+    const [radio_operation_exam_typesDefaultValue, setRadio_operation_exam_typesDefaultValue] = useState(radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == radio_operation_servicesDefaultValue)
         .map((radio_operation_exam_type) => {
             return {label: radio_operation_exam_type.name, id: radio_operation_exam_type.id}
         })?.[0]?.["id"])
-    const [radioOperationServiceSelectedValue, setRadioOperationServiceSelectedValue] = useState(radio_operation_servicesDefaultValue );
+    const [radioOperationServiceSelectedValue, setRadioOperationServiceSelectedValue] = useState(radio_operation_servicesDefaultValue);
     const [radioOperationExamTypeSelectedValue, setRadioOperationExamTypeSelectedValue] = useState(radio_operation_exam_typesDefaultValue);
     const [citySelectedValue, setCitySelectedValue] = useState(cities.length ? cities[0].id : 0)
-    const radioOperationExamTypeItems = radio_operation_exam_types.filter((radio_operation_exam_type : RadioOperationExamType ) => {
-        return radioOperationServiceSelectedValue == radio_operation_exam_type.radio_operator_service_id &&  {label:radio_operation_exam_type.name,  value: radio_operation_exam_type.id}
+    const [radioOperationExamTypeItems, setRadioOperationExamTypeItems ] = useState(radio_operation_exam_types.filter((radio_operation_exam_type: RadioOperationExamType) => {
+        return radioOperationServiceSelectedValue == radio_operation_exam_type.radio_operator_service_id && {
+            label: radio_operation_exam_type.name,
+            value: radio_operation_exam_type.id
+        }
     }).map((radio_operation_exam_type: RadioOperationExamType) => {
-        return   { label: radio_operation_exam_type.name , value: radio_operation_exam_type.id }
-    })
-    const showMode = (currentMode:string) => {
+        return {label: radio_operation_exam_type.name, value: radio_operation_exam_type.id, checked: false}
+    }))
 
-        if(currentMode == 'date'){
+    const onPressSubmit = () => {
+        let error = false
+        for (var i = 0; i < applicationFormValue.length; i++) {
+            if(applicationFormValue[i]['error']) {
+                error = true
+                break
+            }
+        }
+        onSubmit({success: !error})
+    }
+    const showMode = (currentMode: string) => {
+
+        if (currentMode == 'date') {
             show ? setShow(false) : setShow(true);
-        }else{
+        } else {
 
-            Platform.OS !== 'ios' && timeShow? setTimeShow(false) : setTimeShow(true)
+            Platform.OS !== 'ios' && timeShow ? setTimeShow(false) : setTimeShow(true)
         }
 
         setMode(currentMode);
@@ -242,6 +291,226 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
         },
 
     });
+
+    const [applicationFormValue, setApplicationFormValue] = useState([
+        {label: "APPLICANT'S DETAILS ", type: "text"},
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Last Name ",
+            type: "input",
+            placeholder: "Last Name",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false,
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "First Name",
+            type: "input",
+            placeholder: "First Name",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Middle Name",
+            type: "input",
+            placeholder: "Middle Name",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Unit/Rm/House/Bldg No.",
+            type: "input",
+            placeholder: "Unit/Rm/House/Bldg No.",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Barangay",
+            type: "input",
+            placeholder: "Barangay",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Province",
+            type: "input",
+            placeholder: "Province",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Contact Number",
+            type: "input",
+            placeholder: "Contact Number",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "School Attended",
+            type: "input",
+            placeholder: "School Attended",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Course Taken",
+            type: "input",
+            placeholder: "Course Taken",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Year Graduated",
+            type: "input",
+            placeholder: "Year Graduated",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Date of Birth (mm/dd/yy)",
+            type: "date",
+            placeholder: "Date of Birth (mm/dd/yy)",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+
+            value: 1,
+            label: "Sex",
+            type: "picker",
+            pickerData: sexType,
+            placeholder: {label: "Sex"},
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Nationality",
+            type: "input",
+            placeholder: "Nationality",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Street",
+            type: "input",
+            placeholder: "Street",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "City/Municipality",
+            type: "input",
+            placeholder: "City/Municipality",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Zip Code",
+            type: "input",
+            placeholder: "Zip Code",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Email Address",
+            type: "input",
+            placeholder: "Email Address",
+            value: '',
+            inputStyle: InputStyles.text,
+            error: false
+        },
+        {
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Next",
+            type: "button",
+            style: {backgroundColor: '#2B23FF'},
+            onPress: onPressSubmit
+
+        }])
+    const  onCheckmarkPress = (check:any, index: number) => {
+        let newArr = [...radioOperationExamTypeItems];
+        newArr[index].checked = !check.checked
+        setRadioOperationExamTypeItems(newArr);
+    }
+
     const onChangeText = (key: string, value: string) => {
         switch (key) {
 
@@ -255,45 +524,55 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
         }
     };
 
+    const onChangeApplicantForm = (index: number, text: string | number) => {
 
+        let newArr = [...applicationFormValue];
+        newArr[index].value = text;
+        setApplicationFormValue(newArr);
+    };
     return (
-        <View style={styles.container}>
+        <ScrollView>
 
             <Text>Radio Operation Service</Text>
             <RNPickerSelect
                 value={radioOperationServiceSelectedValue}
                 onValueChange={(itemValue: any, itemIndex: number) => {
-                    if(!itemValue) return
-                    setRadioOperationServiceSelectedValue(itemValue)
-                    setRadioOperationExamTypeSelectedValue(radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue  )
+                    if (!itemValue) return
+                    const radioOperationExam  = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
                         .map((radio_operation_exam_type) => {
-                            return {label: radio_operation_exam_type.name, id: radio_operation_exam_type.id}
-                        })[0]["id"])
-
+                            return {label: radio_operation_exam_type.name, value: radio_operation_exam_type.id, checked: false}
+                        })
+                    setRadioOperationServiceSelectedValue(itemValue)
+                    setRadioOperationExamTypeSelectedValue(radioOperationExam[0]["value"])
+                    setRadioOperationExamTypeItems(radioOperationExam)
                 }}
                 items={
 
                     radio_operation_services.map((radio_operation_service: RadioOperationServices) => {
-                            return { label:radio_operation_service.name,  value: radio_operation_service.id}
-                })
+                        return {label: radio_operation_service.name, value: radio_operation_service.id}
+                    })
                 }
             />
 
 
             <Text>Radio Operation Exam Type</Text>
-            <RNPickerSelect
-                value={radioOperationExamTypeSelectedValue}
-                onValueChange={(itemValue: any, itemIndex: number) => {
-                    if(!itemValue) return;
-                    return  setRadioOperationExamTypeSelectedValue(itemValue)
-                }}
-                items={
-                    radioOperationExamTypeItems
-                }
-            />
+            {radioOperationExamTypeItems.map((pick: any, key: number) => {
+                return <>
+                    <View style={styles.checkboxContainer}>
+                        <Pressable
+                            key={key}
+                            style={[styles.checkboxBase, pick.checked && styles.checkboxChecked]}
+                            onPress={() => onCheckmarkPress(pick, key)}>
+                            {pick.checked && <Ionicons name="checkmark" size={24} color="black"/>}
+
+                        </Pressable>
+                        <Text style={styles.checkboxLabel}>{pick.label}</Text>
+                    </View>
+                </>
+            })}
 
             <InputField
-                style={{ color: text.default }}
+                style={{color: text.default}}
                 outlineStyle={{
                     borderColor: outline.default,
                     borderRadius: roundness,
@@ -308,7 +587,7 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
                 value={formValue?.name?.value}
             />
             <InputField
-                style={{ color: text.default }}
+                style={{color: text.default}}
                 outlineStyle={{
                     borderColor: outline.default,
                     borderRadius: roundness,
@@ -320,7 +599,7 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
                 activeColor={text.primary}
                 errorColor={text.error}
                 onChangeText={(text: string) => onChangeText('place', text)}
-                value={formValue?.place ?.value}
+                value={formValue?.place?.value}
             />
             <Text weight={'bold'}>City</Text>
             <RNPickerSelect
@@ -329,44 +608,45 @@ const NTC101 = ({ onSubmit = ({}) => {}, loading = false }) => {
                 onValueChange={(itemValue: any, itemIndex: number) => setCitySelectedValue(itemValue)}
                 items={
                     cities.map((city: City) => {
-                        return  { label: city.city,  value: city.id }
+                        return {label: city.city, value: city.id}
                     })
                 }
             />
 
 
-
-                <DateTimeField
-                    title={'Date of Exam: (mm/dd/yy)'}
-                    borderColor={'red'}
-                    placeholder="Date of Exam: (mm/dd/yy)"
-                />
+            <DateTimeField
+                title={'Date of Exam: (mm/dd/yy)'}
+                borderColor={'red'}
+                placeholder="Date of Exam: (mm/dd/yy)"
+            />
 
 
             <Text>{time.toString()}</Text>
-            {Platform.OS !== 'ios' && <Button onPress={showTimepicker} style={{ backgroundColor: '#2B23FF'}} >
+            {Platform.OS !== 'ios' && <Button onPress={showTimepicker} style={{backgroundColor: '#2B23FF'}}>
 
-                    <Text fontSize={16} color={'white'}>
-                        Time of Exam
-                    </Text>
-                </Button>}
+                <Text fontSize={16} color={'white'}>
+                    Time of Exam
+                </Text>
+            </Button>}
 
 
-            {Platform.OS === 'ios'  &&
+            {Platform.OS === 'ios' &&
             <><Text weight={'bold'}>Time of Exam</Text><SelectTimePicker
                 testID="timePicker"
                 mode="time"
                 value={time}
                 is24Hour={is24Hours}
                 display="default"
-                onChange={onTimeChange}/></> }
+                onChange={onTimeChange}/></>}
 
-            <Button onPress={onSubmit} style={{ backgroundColor: '#2B23FF' }}>
+            {/*<Button onPress={onSubmit} style={{backgroundColor: '#2B23FF'}}>
                 <Text fontSize={16} color={'white'}>
                     Previous
                 </Text>
-            </Button>
-        </View>
+            </Button>*/}
+
+            <FormField formElements={applicationFormValue} onChange={onChangeApplicantForm}/>
+        </ScrollView>
     );
 };
 
