@@ -231,7 +231,7 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
         style={styles.container}
       >
       <ScrollView
-        style={{ paddingHorizontal: 20 }}
+        style={{ paddingHorizontal: 20, paddingBottom: 30 }}
         showsVerticalScrollIndicator={false}
       >
         <View style={{ marginTop: 35 }}>

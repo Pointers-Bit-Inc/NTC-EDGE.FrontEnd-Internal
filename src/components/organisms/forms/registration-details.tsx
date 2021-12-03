@@ -292,13 +292,12 @@ const RegistrationForm: FC<Props> = ({ form = {}, onChangeValue = () => {} }) =>
         onSubmitEditing={(event:any) => onChangeValue('phone', event.nativeEvent.text)}
       />
       <InputField
-        inputStyle={[InputStyles.text, { marginVertical: 10 }]}
+        inputStyle={InputStyles.text}
         label={'Address'}
         placeholder="Address"
         required={true}
         hasValidation={true}
-        multiline={true}
-        outlineStyle={[InputStyles.outlineStyle, { height: 110 }]}
+        outlineStyle={InputStyles.outlineStyle}
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
