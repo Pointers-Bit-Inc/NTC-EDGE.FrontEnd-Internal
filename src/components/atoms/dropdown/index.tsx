@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Platform } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import { Entypo } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { defaultColor, text } from 'src/styles/color';
 
 const styles = StyleSheet.create({
@@ -44,6 +44,7 @@ const Dropdown = ({
   onChangeValue = () => {},
   items = [],
   placeholder = {},
+  ...otherProps
 }) => {
 
   return (
@@ -61,12 +62,13 @@ const Dropdown = ({
       items={items}
       useNativeAndroidPickerStyle={false}
       Icon={() => (
-        <Entypo
-          name="chevron-thin-down"
+        <Ionicons
+          name="md-caret-down"
           size={18}
           color={text.default}
         />
       )}
+      {...otherProps}
     />
   );
 };

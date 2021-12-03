@@ -8,7 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { validateText } from 'src/utils/form-validations';
+import { validateText, validatePhone } from 'src/utils/form-validations';
 import { ArrowLeftIcon } from '@atoms/icon';
 import RegistrationDetailsForm from '@organisms/forms/registration-details';
 import Text from '@atoms/text';
@@ -47,6 +47,16 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
     password,
   } = route.params;
   const [formValue, setFormValue] = useState({
+    userType: {
+      value: 'Individual',
+      isValid: false,
+      error: '',
+    },
+    permitType: {
+      value: '',
+      isValid: false,
+      error: '',
+    },
     firstname: {
       value: '',
       isValid: false,
@@ -62,6 +72,11 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
       isValid: false,
       error: '',
     },
+    phone: {
+      value: '',
+      isValid: false,
+      error: '',
+    },
     address: {
       value: '',
       isValid: false,
@@ -73,14 +88,37 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
   });
 
   const errorResponse = {
+    userType: 'Please select a user type',
+    permitType: 'Please select a permit type',
     firstname: 'Enter First name',
     middlename: 'Enter Middle name',
     lastname: 'Enter Last name',
+    phone: 'Please enter a valid phone number',
     address: 'Enter Address',
   };
 
   const onChangeText = (key: string, value: any) => {
     switch (key) {
+      case 'userType': {
+        return setFormValue({
+          ...formValue,
+          [key]: {
+            value: value,
+            isValid: !!value,
+            error: !value ? errorResponse['userType'] : ''
+          }
+        });
+      }
+      case 'permitType': {
+        return setFormValue({
+          ...formValue,
+          [key]: {
+            value: value,
+            isValid: !!value,
+            error: !value ? errorResponse['permitType'] : ''
+          }
+        });
+      }
       case 'firstname': {
         const test = validateText(value);
         return setFormValue({
@@ -111,6 +149,17 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
             value: value,
             isValid: test,
             error: !test ? errorResponse['lastname'] : ''
+          }
+        });
+      }
+      case 'phone': {
+        const checked = validatePhone(value);
+        return setFormValue({
+          ...formValue,
+          [key]: {
+            value: value,
+            isValid: checked,
+            error: !checked ? errorResponse['phone'] : ''
           }
         });
       }
@@ -146,12 +195,18 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
   };
 
   const onCheckValidation = () => {
-    if (!formValue.firstname.isValid) {
+    if (!formValue.userType.isValid) {
+      return onChangeText('userType', formValue.userType.value);
+    } else if (!formValue.permitType.isValid) {
+      return onChangeText('userType', formValue.permitType.value);
+    } else if (!formValue.firstname.isValid) {
       return onChangeText('firstname', formValue.firstname.value);
     } else if (!formValue.middlename.isValid) {
       return onChangeText('middlename', formValue.middlename.value);
     } else if (!formValue.lastname.isValid) {
       return onChangeText('lastname', formValue.lastname.value);
+    } else if (!formValue.phone.isValid) {
+      return onChangeText('phone', formValue.phone.value);
     } else if (!formValue.address.isValid) {
       return onChangeText('address', formValue.address.value);
     } else if (!formValue.agreed.value) {
@@ -165,6 +220,7 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
     formValue.firstname.isValid &&
     formValue.middlename.isValid &&
     formValue.lastname.isValid &&
+    formValue.phone.isValid &&
     formValue.address.isValid &&
     formValue.agreed.value;
 
@@ -178,7 +234,7 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
         style={{ paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
       >
-        <View style={{ marginTop: 20 }}>
+        <View style={{ marginTop: 35 }}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <ArrowLeftIcon color={'#37405B'} size={26} />
           </TouchableOpacity>

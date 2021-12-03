@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { ExclamationIcon } from '@atoms/icon';
 import Text from '@atoms/text';
@@ -48,12 +48,17 @@ const DateTimeField = ({
   hasValidation = false,
   error = '',
   description = '',
-  style
+  style,
+  ...otherProps
 }: any) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const onFocus = () => setIsFocused(true);
+  const onBlur = () => setIsFocused(false);
+
   return (
     <View style={[styles.container, style]}>
       {
-        !!label && (
+        (isFocused || !!value || !!error) && !!label && (
           <View style={styles.label}>
             <Text
               style={[
@@ -88,6 +93,9 @@ const DateTimeField = ({
           placeholder={placeholder}
           items={items}
           onChangeValue={onChangeValue}
+          onOpen={onFocus}
+          onDonePress={onBlur}
+          onClose={onBlur}
         />
       </View>
       {

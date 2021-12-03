@@ -62,100 +62,6 @@ const styles = StyleSheet.create({
     borderWidth: 5,
   }
 });
-
-const companyType = [
-  {
-    label: 'Radio Station',
-    value: 'Radio Station',
-  },
-  {
-    label: 'Aeronautical Station',
-    value: 'Aeronautical Station',
-  },
-  {
-    label: 'Aircraft Station',
-    value: 'Aircraft Station',
-  },
-  {
-    label: 'Ship Station',
-    value: 'Ship Station',
-  },
-  {
-    label: 'Coastal Station',
-    value: 'Coastal Station',
-  },
-  {
-    label: 'Public Coastal Station',
-    value: 'Public Coastal Station',
-  },
-  {
-    label: 'Public Telecommunications Entities (PTEs)',
-    value: 'Public Telecommunications Entities (PTEs)',
-  },
-  {
-    label: 'Government and Private Radio Stations',
-    value: 'Government and Private Radio Stations',
-  },
-  {
-    label: 'Individuals and Private and Government Entities',
-    value: 'Individuals and Private and Government Entities',
-  },
-  {
-    label: 'Mobile Phone Service Center',
-    value: 'Mobile Phone Service Center',
-  },
-];
-
-const individualType = [
-  {
-    label: 'Radio Operator',
-    value: 'Radio Operator',
-  },
-  {
-    label: 'Dealer of Radio Communication Equipment',
-    value: 'Dealer of Radio Communication Equipment',
-  },
-  {
-    label: 'Retailer/Reseller of Radio Communication Equipment',
-    value: 'Retailer/Reseller of Radio Communication Equipment',
-  },
-  {
-    label: 'Service Center of Radio Communication Equipment',
-    value: 'Service Center of Radio Communication Equipment',
-  },
-  {
-    label: 'Mobile Phone Dealer',
-    value: 'Mobile Phone Dealer',
-  },
-  {
-    label: 'Mobile Phone Retailer/Reseller',
-    value: 'Mobile Phone Retailer/Reseller',
-  },
-  {
-    label: 'Accredited Radio Dealers/Manufacturers',
-    value: 'Accredited Radio Dealers/Manufacturers',
-  },
-  {
-    label: 'Cable TV Operators and Private and Government Entities',
-    value: 'Cable TV Operators and Private and Government Entities',
-  },
-  {
-    label: 'Value Added Service (VAS) Provider',
-    value: 'Value Added Service (VAS) Provider',
-  }
-];
-
-const type = [
-  {
-    label: 'Company',
-    value: 'Company',
-  },
-  {
-    label: 'Individual',
-    value: 'Individual',
-  }
-]
-
 interface Props {
   form?: any;
   onChangeValue?: any;
@@ -216,39 +122,6 @@ const RegistrationForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) =
   }
   return (
     <View style={styles.container}>
-      <View style={styles.typeContainer}>
-        <Text color={text.default} size={14}>User Type</Text>
-        {
-          type.map(item => (
-            <TouchableOpacity
-              key={item.value}
-              onPress={() => onChangeValue('type', item.value)}
-            >
-              <View style={styles.buttonContainer}>
-                <View style={[styles.circle, item.value === form.type.value && styles.circleActive]} />
-                <Text color={text.default} size={14}>{item.label}</Text>
-              </View>
-            </TouchableOpacity>
-          ))
-        }
-      </View>
-      <DropdownField
-        outlineStyle={InputStyles.outlineStyle}
-        items={form.type.value === 'Company' ? companyType : individualType}
-        required={true}
-        hasValidation={true}
-        requiredColor={text.error}
-        activeColor={text.primary}
-        errorColor={text.error}
-        placeholder={{
-          label: 'Select a user type...',
-          value: null,
-          color: 'black',
-        }}
-        error={form?.userType?.error}
-        value={form?.userType?.value}
-        onChangeValue={(value: string) => onChangeValue('userType', value)}
-      />
       <InputField
         inputStyle={InputStyles.text}
         label={'Username'}
@@ -279,22 +152,6 @@ const RegistrationForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) =
         keyboardType={'email-address'}
         onChangeText={(value: string) => onChangeValue('email', value)}
         onSubmitEditing={(event:any) => onChangeValue('email', event.nativeEvent.text)}
-      />
-      <InputField
-        inputStyle={InputStyles.text}
-        label={'Phone'}
-        placeholder="Phone number"
-        required={true}
-        hasValidation={true}
-        outlineStyle={InputStyles.outlineStyle}
-        activeColor={text.primary}
-        errorColor={text.error}
-        requiredColor={text.error}
-        error={form?.phone?.error}
-        value={form?.phone?.value}
-        keyboardType={'phone-pad'}
-        onChangeText={(value: string) => onChangeValue('phone', value)}
-        onSubmitEditing={(event:any) => onChangeValue('phone', event.nativeEvent.text)}
       />
       <InputField
         inputStyle={InputStyles.text}

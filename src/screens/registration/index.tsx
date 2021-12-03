@@ -11,7 +11,6 @@ import {
 import {
   validateEmail,
   validatePassword,
-  validatePhone,
 } from 'src/utils/form-validations';
 import RegistrationForm from '@organisms/forms/registration';
 import Text from '@atoms/text';
@@ -42,36 +41,21 @@ const styles = StyleSheet.create({
 
 const errorResponse = {
   userType: 'Please select a user type',
+  permitType: 'Please select a permit type',
   username: 'Please enter a valid username',
   email: 'Please enter a valid email address',
   password: 'Password must be atleast 6 characters',
-  phone: 'Please enter a valid phone number',
   confirm: 'password does not match',
 };
 
 const Registration = ({ navigation }:any) => {
   const [formValue, setFormValue] = useState({
-    type: {
-      value: 'Company',
-      isValid: true,
-      error: '',
-    },
-    userType: {
-      value: '',
-      isValid: false,
-      error: '',
-    },
     username: {
       value: '',
       isValid: false,
       error: '',
     },
     email: {
-      value: '',
-      isValid: false,
-      error: '',
-    },
-    phone: {
       value: '',
       isValid: false,
       error: '',
@@ -97,16 +81,6 @@ const Registration = ({ navigation }:any) => {
 
   const onChangeText = (key: string, value: any) => {
     switch (key) {
-      case 'userType': {
-        return setFormValue({
-          ...formValue,
-          [key]: {
-            value: value,
-            isValid: !!value,
-            error: !value ? errorResponse['userType'] : ''
-          }
-        });
-      }
       case 'username': {
         return setFormValue({
           ...formValue,
@@ -125,17 +99,6 @@ const Registration = ({ navigation }:any) => {
             value: value,
             isValid: checked,
             error: !checked ? errorResponse['email'] : ''
-          }
-        });
-      }
-      case 'phone': {
-        const checked = validatePhone(value);
-        return setFormValue({
-          ...formValue,
-          [key]: {
-            value: value,
-            isValid: checked,
-            error: !checked ? errorResponse['phone'] : ''
           }
         });
       }
@@ -196,14 +159,10 @@ const Registration = ({ navigation }:any) => {
   }
 
   const onCheckValidation = () => {
-    if (!formValue.userType.isValid) {
-      return onChangeText('userType', formValue.userType.value);
-    } else if (!formValue.username.isValid) {
+    if (!formValue.username.isValid) {
       return onChangeText('username', formValue.username.value);
     } else if (!formValue.email.isValid) {
       return onChangeText('email', formValue.email.value);
-    } else if (!formValue.phone.isValid) {
-      return onChangeText('phone', formValue.phone.value);
     } else if (!formValue.password.isValid) {
       return onChangeText('password', formValue.password.value);
     } else if (!formValue.confirmPassword.isValid) {
@@ -212,10 +171,8 @@ const Registration = ({ navigation }:any) => {
       return navigation.navigate(
         'RegistrationPageTwo',
         {
-          userType: formValue?.userType?.value,
           username: formValue?.username?.value,
           email: formValue?.email?.value,
-          phone: formValue?.phone?.value,
           password: formValue?.password?.value,
         }
       );
@@ -223,10 +180,8 @@ const Registration = ({ navigation }:any) => {
   }
 
   const isValid =
-    formValue.userType.isValid &&
     formValue.username.isValid &&
     formValue.email.isValid &&
-    formValue.phone.isValid &&
     formValue.password.isValid &&
     formValue.confirmPassword.isValid;
 
