@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
+import { KeyboardAvoidingView, Platform, Dimensions, View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 import Text from '@components/atoms/text';
 import {
   validateEmail,
@@ -12,7 +12,7 @@ import { ArrowLeftIcon } from '@components/atoms/icon';
 import PasswordForm from '@components/organisms/forms/reset-password';
 import { text, button } from 'src/styles/color';
 import InputStyles from 'src/styles/input-style';
-
+const { height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -35,11 +35,14 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: button.primary,
     borderRadius: 5,
-    position: 'absolute',
-    bottom: 30,
     marginHorizontal: 20,
     width: '100%',
-  }
+  },
+  keyboardAvoiding: {
+    position: 'absolute',
+    bottom: 30,
+    width: '100%',
+  },
 })
 
 const errorResponse = {
@@ -136,6 +139,8 @@ const OneTimePin = ({ navigation }) => {
     }
   }
 
+  const isValid = formValue.password.isValid && formValue.confirmPassword.isValid;
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -166,18 +171,24 @@ const OneTimePin = ({ navigation }) => {
           Reset password
         </Text>
         <PasswordForm onChangeValue={onChangeText} form={formValue} />
-        <Button
-          style={styles.button}
-          onPress={onCheckValidation}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+          keyboardVerticalOffset={height * 0.12}
+          style={styles.keyboardAvoiding}
         >
-          <Text
-            color="white"
-            size={16}
-            weight={'500'}
+          <Button
+            style={[styles.button, { backgroundColor: isValid ? button.primary : button.default }]}
+            onPress={onCheckValidation}
           >
-            Submit
-          </Text>
-        </Button>
+            <Text
+              color="white"
+              size={16}
+              weight={'500'}
+            >
+              Submit
+            </Text>
+          </Button>
+        </KeyboardAvoidingView>
       </View>
     </SafeAreaView>
   )

@@ -1,11 +1,14 @@
 import React, { useState, useCallback } from 'react';
-import { ActivityIndicator, View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Dimensions, ActivityIndicator, View, SafeAreaView, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import Text from '@components/atoms/text';
 import InputField from '@atoms/input';
+import { OTPField } from '@molecules/form-fields';
 import Button from '@components/atoms/button';
 import { ArrowLeftIcon } from '@components/atoms/icon';
 import { text, button } from 'src/styles/color';
 import InputStyles from 'src/styles/input-style';
+
+const { height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -29,18 +32,28 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: button.primary,
     borderRadius: 5,
-    position: 'absolute',
-    bottom: 30,
     marginHorizontal: 20,
-    width: '100%',
     flexDirection: 'row',
+    width: '100%',
     justifyContent: 'center',
   },
   input: {
     letterSpacing: 10,
     fontSize: 36,
     fontWeight: 'bold',
-  }
+  },
+  outlineStyle: {
+    paddingHorizontal: 0,
+    borderWidth: 0,
+  },
+  labelStyle: {
+    fontSize: 16,
+  },
+  keyboardAvoiding: {
+    position: 'absolute',
+    bottom: 30,
+    width: '100%',
+  },
 })
 
 const OneTimePin = ({ navigation, route }:any) => {
@@ -97,61 +110,68 @@ const OneTimePin = ({ navigation, route }:any) => {
             }
           </Text>
         </View>
-        <InputField
+        <OTPField
           style={[InputStyles.text, styles.input]}
           maxLength={4}
           placeholder="••••"
+          label={'OTP'}
+          labelStyle={styles.labelStyle}
           required={true}
           hasValidation={true}
-          outlineStyle={InputStyles.outlineStyle}
-          activeColor={text.primary}
+          outlineStyle={[InputStyles.outlineStyle, styles.outlineStyle]}
           errorColor={text.error}
           requiredColor={text.error}
           error={''}
           value={otp}
-          keyboardType={'email-address'}
+          keyboardType={'number-pad'}
           onChangeText={setOtp}
         />
-        <Button
-          disabled={!otp || loading}
-          style={[
-            styles.button,
-            !otp && {
-              backgroundColor: button.default
-            },
-            loading && {
-              backgroundColor: '#60A5FA'
-            }
-          ]}
-          onPress={onSubmit}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+          keyboardVerticalOffset={height * 0.12}
+          style={styles.keyboardAvoiding}
         >
-          {
-            loading ? (
-              <>
-                <ActivityIndicator
-                  color={'white'}
-                  size={'small'}
-                />
+          <Button
+            disabled={otp.length < 4 || loading}
+            style={[
+              styles.button,
+              otp.length < 4 && {
+                backgroundColor: button.default
+              },
+              loading && {
+                backgroundColor: '#60A5FA'
+              }
+            ]}
+            onPress={onSubmit}
+          >
+            {
+              loading ? (
+                <>
+                  <ActivityIndicator
+                    color={'white'}
+                    size={'small'}
+                  />
+                  <Text
+                    style={{ marginLeft: 10 }}
+                    color="white"
+                    size={16}
+                    weight={'500'}
+                  >
+                    Confirming...
+                  </Text>
+                </>
+              ) : (
                 <Text
-                  style={{ marginLeft: 10 }}
                   color="white"
                   size={16}
                   weight={'500'}
                 >
-                  Confirming...
+                  Confirm
                 </Text>
-              </>
-            ) : (
-              <Text
-                color="white"
-                size={16}
-                weight={'500'}
-              >
-                Confirm
-              </Text>
-            )
-          }
-        </Button>
+              )
+            }
+          </Button>
+        </KeyboardAvoidingView>
       </View>
     </SafeAreaView>
   )

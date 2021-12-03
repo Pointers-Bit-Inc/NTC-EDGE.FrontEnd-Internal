@@ -1,12 +1,12 @@
 import React, { useState, useCallback } from 'react';
-import { ActivityIndicator, View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Platform, KeyboardAvoidingView, Dimensions, ActivityIndicator, View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 import Text from '@components/atoms/text';
 import { InputField } from '@molecules/form-fields';
 import Button from '@components/atoms/button';
 import { text, button } from 'src/styles/color';
 import { validateEmail, validatePhone } from 'src/utils/form-validations';
 import InputStyles from 'src/styles/input-style';
-
+const { height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -28,13 +28,16 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: button.primary,
     borderRadius: 5,
-    position: 'absolute',
-    bottom: 30,
     marginHorizontal: 20,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
-  }
+  },
+  keyboardAvoiding: {
+    position: 'absolute',
+    bottom: 30,
+    width: '100%',
+  },
 })
 
 const errorResponse = {
@@ -123,47 +126,53 @@ const ForgotPassword = ({ navigation }:any) => {
           keyboardType={'email-address'}
           onChangeText={onChangeText}
         />
-        <Button
-          disabled={!account.isValid || loading}
-          style={[
-            styles.button,
-            !account.isValid && {
-              backgroundColor: button.default
-            },
-            loading && {
-              backgroundColor: '#60A5FA'
-            }
-          ]}
-          onPress={onSubmit}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+          keyboardVerticalOffset={height * 0.12}
+          style={styles.keyboardAvoiding}
         >
-          {
-            loading ? (
-              <>
-                <ActivityIndicator
-                  color={'white'}
-                  size={'small'}
-                />
+          <Button
+            disabled={!account.isValid || loading}
+            style={[
+              styles.button,
+              !account.isValid && {
+                backgroundColor: button.default
+              },
+              loading && {
+                backgroundColor: '#60A5FA'
+              }
+            ]}
+            onPress={onSubmit}
+          >
+            {
+              loading ? (
+                <>
+                  <ActivityIndicator
+                    color={'white'}
+                    size={'small'}
+                  />
+                  <Text
+                    style={{ marginLeft: 10 }}
+                    color="white"
+                    size={16}
+                    weight={'500'}
+                  >
+                    Submitting...
+                  </Text>
+                </>
+              ) : (
                 <Text
-                  style={{ marginLeft: 10 }}
                   color="white"
                   size={16}
                   weight={'500'}
                 >
-                  Submitting...
+                  Submit
                 </Text>
-              </>
-            ) : (
-              <Text
-                color="white"
-                size={16}
-                weight={'500'}
-              >
-                Submit
-              </Text>
-            )
-          }
-          
-        </Button>
+              )
+            }
+            
+          </Button>
+        </KeyboardAvoidingView>
       </View>
     </SafeAreaView>
   )
