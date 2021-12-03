@@ -68,7 +68,7 @@ const OneTimePin = ({ navigation, route }:any) => {
     setTimeout(() => {
       setLoading(false);
       navigation.navigate('ForgotPasswordReset')
-    }, 5000);
+    }, 3000);
   }, []);
 
   return (

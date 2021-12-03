@@ -62,7 +62,7 @@ const ForgotPassword = ({ navigation }:any) => {
         account: account.value,
         accountType,
       })
-    }, 5000);
+    }, 3000);
   }, [accountType]);
 
   const onChangeText = (value: string) => {
