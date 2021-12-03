@@ -642,53 +642,55 @@ key: 1,
             </View>
             <View style={head.childContainer}>
                 <ScrollView>
-
-                    <Text>Radio Operation Service</Text>
+                    {onNavigation == 0 &&
+                         <Text>Radio Operation Service</Text>}
+                    {onNavigation == 0 &&
                     <RNPickerSelect
                         style={{
-                            ...pickerSelectStyles,
-                            iconContainer: {
-                                top: 10,
-                                right: 12,
-                            },
-                        }}
+                        ...pickerSelectStyles,
+                        iconContainer: {
+                        top: 10,
+                        right: 12,
+                    },
+                    }}
                         value={radioOperationServiceSelectedValue}
                         onValueChange={(itemValue: any, itemIndex: number) => {
-                            if (!itemValue) return
-                            const radioOperationExam = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
-                                .map((radio_operation_exam_type) => {
-                                    return {
-                                        label: radio_operation_exam_type.name,
-                                        value: radio_operation_exam_type.id,
-                                        checked: false
-                                    }
-                                })
-                            setRadioOperationServiceSelectedValue(itemValue)
-                            setRadioOperationExamTypeSelectedValue(radioOperationExam[0]["value"])
-                            setRadioOperationExamTypeItems(radioOperationExam)
-                        }}
+                        if (!itemValue) return
+                        const radioOperationExam = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
+                        .map((radio_operation_exam_type) => {
+                        return {
+                        label: radio_operation_exam_type.name,
+                        value: radio_operation_exam_type.id,
+                        checked: false
+                    }
+                    })
+                        setRadioOperationServiceSelectedValue(itemValue)
+                        setRadioOperationExamTypeSelectedValue(radioOperationExam[0]["value"])
+                        setRadioOperationExamTypeItems(radioOperationExam)
+                    }}
                         items={
 
-                            radio_operation_services.map((radio_operation_service: RadioOperationServices) => {
-                                return {label: radio_operation_service.name, value: radio_operation_service.id}
-                            })
-                        }
-                    />
+                        radio_operation_services.map((radio_operation_service: RadioOperationServices) => {
+                        return {label: radio_operation_service.name, value: radio_operation_service.id}
+                    })
+                    }
+                        />}
 
+                    {onNavigation == 0 &&
+                    <Text>Radio Operation Exam Type</Text>}
 
-                    <Text>Radio Operation Exam Type</Text>
                     {radioOperationExamTypeItems.map((pick: any, key: number) => {
                         return <>
-                            <View style={styles.checkboxContainer}>
-                                <Pressable
-                                    key={key}
-                                    style={[styles.checkboxBase, pick.checked && styles.checkboxChecked]}
-                                    onPress={() => onCheckmarkPress(pick, key)}>
-                                    {pick.checked && <Ionicons name="checkmark" size={16} color="white"/>}
+                        <View style={styles.checkboxContainer}>
+                        <Pressable
+                        key={key}
+                        style={[styles.checkboxBase, pick.checked && styles.checkboxChecked]}
+                        onPress={() => onCheckmarkPress(pick, key)}>
+                    {pick.checked && <Ionicons name="checkmark" size={16} color="white"/>}
 
-                                </Pressable>
-                                <Text style={styles.checkboxLabel}>{pick.label}</Text>
-                            </View>
+                        </Pressable>
+                        <Text style={styles.checkboxLabel}>{pick.label}</Text>
+                        </View>
                         </>
                     })}
 
