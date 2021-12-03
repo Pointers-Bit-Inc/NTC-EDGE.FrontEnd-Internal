@@ -6,8 +6,7 @@ const Header = (props:any) => {
     return (
         <View style={styles.containerHeader}>
             <View style={styles.textContainer}>
-                <Text style={styles.textWhite}>Holi</Text>
-                <Text style={styles.textWhite}>1,004 tweets</Text>
+                <Text style={styles.textWhite}>Applicant's Details</Text>
             </View>
             <View style={styles.tabContainer}>
                 <View>
@@ -34,11 +33,10 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     textContainer: {
-        marginTop: 70
+        marginTop: 10
     },
     textWhite: {
         color: "black",
-        marginVertical: 10
     },
     tabContainer: {
         backgroundColor: "white",
