@@ -12,19 +12,25 @@ const Applicant = ({
 
 
     const [sexType, setSexType] = useState([
-        {value: 1, label: "Male"}
-        ,
-        {value: 0, label: "Female"}
-        ,
+        {value: 1, label: "Male"},
+        {value: 0, label: "Female"},
     ]);
     const onPressSubmit = () => {
+        console.log(1)
         let error = false
         for (var i = 0; i < formValue.length; i++) {
-            if(formValue[i]['error']) {
+            if(formValue[i]['error'] ) {
+                console.log(1)
+                error = true
+                break
+            }else if(formValue[i]?.['required'] &&  formValue[i]?.['value']){
+                console.log(2)
                 error = true
                 break
             }
         }
+
+        console.log(3)
         onSubmit({success: !error})
     }
     const [formValue, setFormValue] = useState([
@@ -54,6 +60,7 @@ const Applicant = ({
             error: false
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,

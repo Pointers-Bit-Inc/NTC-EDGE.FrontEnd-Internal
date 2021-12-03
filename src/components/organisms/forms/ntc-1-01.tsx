@@ -10,6 +10,7 @@ import SelectTimePicker from '@react-native-community/datetimepicker';
 import {Ionicons} from "@expo/vector-icons";
 import InputStyles from "../../../styles/input-style";
 import FormField from "@organisms/forms/form";
+import {primaryColor} from "../../../styles/color";
 
 interface RadioOperationServices {
     id: number,
@@ -37,7 +38,31 @@ const NTC101 = ({
                     onSubmit = ({}) => {
                     }, loading = false
                 }) => {
+
+
+    const pickerSelectStyles = StyleSheet.create({
+        inputIOS: {
+            overflow: 'hidden',
+            fontSize: 16,
+            paddingVertical: 10,
+            paddingHorizontal: 5,
+            borderWidth: 1,
+            borderColor: 'gray',
+            borderRadius: 10,
+            color: 'gray',// to ensure the text is never behind the icon
+        },
+        inputAndroid: {
+            fontSize: 16,
+            paddingHorizontal: 10,
+            paddingVertical: 8,
+            borderWidth: 0.5,
+            borderColor: 'purple',
+            borderRadius: 10,
+            color: 'black', // to ensure the text is never behind the icon
+        },
+    })
     const styles = StyleSheet.create({
+
         checkboxBase: {
             width: 24,
             height: 24,
@@ -45,12 +70,12 @@ const NTC101 = ({
             alignItems: 'center',
             borderRadius: 4,
             borderWidth: 2,
-            borderColor: 'coral',
+            borderColor: primaryColor,
             backgroundColor: 'transparent',
         },
 
         checkboxChecked: {
-            backgroundColor: 'coral',
+            backgroundColor: 'blue',
         },
 
         appContainer: {
@@ -225,7 +250,7 @@ const NTC101 = ({
             note: 'RROC - Aircraft - Element 1',
         },
     ]);
-    const {text, outline, button, roundness, thickness} = useTheme();
+    const {text} = useTheme();
     const onTimeChange = (event: any, newTime: any) => {
         const currenttime = newTime || time
         setTimeShow(Platform.OS === 'ios');
@@ -244,10 +269,7 @@ const NTC101 = ({
     const [radioOperationExamTypeSelectedValue, setRadioOperationExamTypeSelectedValue] = useState(radio_operation_exam_typesDefaultValue);
     const [citySelectedValue, setCitySelectedValue] = useState(cities.length ? cities[0].id : 0)
     const [radioOperationExamTypeItems, setRadioOperationExamTypeItems] = useState(radio_operation_exam_types.filter((radio_operation_exam_type: RadioOperationExamType) => {
-        return radioOperationServiceSelectedValue == radio_operation_exam_type.radio_operator_service_id && {
-            label: radio_operation_exam_type.name,
-            value: radio_operation_exam_type.id
-        }
+        return radioOperationServiceSelectedValue == radio_operation_exam_type.radio_operator_service_id
     }).map((radio_operation_exam_type: RadioOperationExamType) => {
         return {label: radio_operation_exam_type.name, value: radio_operation_exam_type.id, checked: false}
     }))
@@ -256,10 +278,14 @@ const NTC101 = ({
         let error = false
         for (var i = 0; i < applicationFormValue.length; i++) {
             if (applicationFormValue[i]['error']) {
-                error = true
+                onChangeApplicantForm(i, true, 'error' )
+                break
+            }else if(applicationFormValue[i]?.['required']){
+                onChangeApplicantForm(i, true, 'error' )
                 break
             }
         }
+
         onSubmit({success: !error})
     }
     const showMode = (currentMode: string) => {
@@ -294,6 +320,7 @@ const NTC101 = ({
     const [applicationFormValue, setApplicationFormValue] = useState([
         {label: "APPLICANT'S DETAILS ", type: "text"},
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -306,6 +333,7 @@ const NTC101 = ({
             error: false,
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -318,6 +346,7 @@ const NTC101 = ({
             error: false
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -330,6 +359,7 @@ const NTC101 = ({
             error: false
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -342,6 +372,7 @@ const NTC101 = ({
             error: false
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -354,6 +385,7 @@ const NTC101 = ({
             error: false
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -366,6 +398,7 @@ const NTC101 = ({
             error: false
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -378,6 +411,7 @@ const NTC101 = ({
             error: false
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -390,6 +424,7 @@ const NTC101 = ({
             error: false
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -402,6 +437,7 @@ const NTC101 = ({
             error: false
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -414,6 +450,7 @@ const NTC101 = ({
             error: false
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -426,7 +463,7 @@ const NTC101 = ({
             error: false
         },
         {
-
+            required: true,
             value: 1,
             label: "Sex",
             type: "picker",
@@ -434,6 +471,7 @@ const NTC101 = ({
             placeholder: {label: "Sex"},
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -446,6 +484,7 @@ const NTC101 = ({
             error: false
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -458,6 +497,7 @@ const NTC101 = ({
             error: false
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -470,6 +510,7 @@ const NTC101 = ({
             error: false
         },
         {
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -482,6 +523,7 @@ const NTC101 = ({
             error: false
         },
         {
+            required: true,
             label: "Email Address",
             type: "input",
             placeholder: "Email Address",
@@ -523,17 +565,30 @@ const NTC101 = ({
         }
     };
 
-    const onChangeApplicantForm = (index: number, text: string | number) => {
+    const onChangeApplicantForm = (index: number,  text: any, element: string) => {
 
         let newArr = [...applicationFormValue];
-        newArr[index].value = text;
+        if(element == 'error'){
+            newArr[index]['error'] = text;
+        }else{
+            newArr[index]['value'] = text;
+        }
+
         setApplicationFormValue(newArr);
     };
+
     return (
         <ScrollView>
 
             <Text>Radio Operation Service</Text>
             <RNPickerSelect
+                style={{
+                    ...pickerSelectStyles,
+                    iconContainer: {
+                        top: 10,
+                        right: 12,
+                    },
+                }}
                 value={radioOperationServiceSelectedValue}
                 onValueChange={(itemValue: any, itemIndex: number) => {
                     if (!itemValue) return
@@ -566,7 +621,7 @@ const NTC101 = ({
                             key={key}
                             style={[styles.checkboxBase, pick.checked && styles.checkboxChecked]}
                             onPress={() => onCheckmarkPress(pick, key)}>
-                            {pick.checked && <Ionicons name="checkmark" size={24} color="black"/>}
+                            {pick.checked && <Ionicons name="checkmark" size={18} color="white"/>}
 
                         </Pressable>
                         <Text style={styles.checkboxLabel}>{pick.label}</Text>
@@ -600,9 +655,15 @@ const NTC101 = ({
                 onChangeText={(text: string) => onChangeText('place', text)}
                 value={formValue?.place?.value}
             />
-            <Text weight={'bold'}>City</Text>
-            <RNPickerSelect
 
+            <RNPickerSelect
+                style={{
+                    ...pickerSelectStyles,
+                    iconContainer: {
+                        top: 10,
+                        right: 12,
+                    },
+                }}
                 value={citySelectedValue}
                 onValueChange={(itemValue: any, itemIndex: number) => setCitySelectedValue(itemValue)}
                 items={
@@ -637,12 +698,6 @@ const NTC101 = ({
                 is24Hour={is24Hours}
                 display="default"
                 onChange={onTimeChange}/></>}
-
-            {/*<Button onPress={onSubmit} style={{backgroundColor: '#2B23FF'}}>
-                <Text fontSize={16} color={'white'}>
-                    Previous
-                </Text>
-            </Button>*/}
 
             <FormField formElements={applicationFormValue} onChange={onChangeApplicantForm}/>
         </ScrollView>
