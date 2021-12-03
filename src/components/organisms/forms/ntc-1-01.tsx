@@ -822,7 +822,7 @@ const head = StyleSheet.create({
         flexDirection: "column"
     },
     childContainer: {
-        alignItems:"center" ,
+        padding:10,
         marginVertical: 18,
         flex:1
     },
