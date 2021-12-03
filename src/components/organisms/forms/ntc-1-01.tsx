@@ -11,6 +11,7 @@ import {Ionicons} from "@expo/vector-icons";
 import InputStyles from "../../../styles/input-style";
 import FormField from "@organisms/forms/form";
 import {primaryColor} from "../../../styles/color";
+import Header from "@organisms/forms/tab-header";
 
 interface RadioOperationServices {
     id: number,
@@ -100,6 +101,7 @@ const NTC101 = ({
             fontSize: 12,
         },
     });
+
     const [sexType, setSexType] = useState([
         {value: 1, label: "Male"}
         ,
@@ -274,19 +276,19 @@ const NTC101 = ({
         return {label: radio_operation_exam_type.name, value: radio_operation_exam_type.id, checked: false}
     }))
 
+    const [onNavigation,setOnNavigation] = useState(0)
     const onPressSubmit = () => {
         let error = false
         for (var i = 0; i < applicationFormValue.length; i++) {
             if (applicationFormValue[i]['error']) {
                 onChangeApplicantForm(i, true, 'error' )
-                break
             }else if(applicationFormValue[i]?.['required']){
                 onChangeApplicantForm(i, true, 'error' )
-                break
             }
         }
 
         onSubmit({success: !error})
+
     }
     const showMode = (currentMode: string) => {
 
@@ -316,11 +318,14 @@ const NTC101 = ({
         },
 
     });
-
+    const [formFieldKey, setFormFieldKey ] = useState(Math.random())
     const [applicationFormValue, setApplicationFormValue] = useState([
-        {label: "APPLICANT'S DETAILS ", type: "text"},
+
         {
-            required: true,
+            id: 1,
+key: 1,
+           navigation: 0,
+
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -333,7 +338,9 @@ const NTC101 = ({
             error: false,
         },
         {
-            required: true,
+            id: 2,
+            navigation: 0,
+            key: 2,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -346,7 +353,9 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 3,
+            navigation: 0,
+            key: 3,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -359,7 +368,9 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 4,
+            navigation: 1,
+            key: 4,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -372,7 +383,9 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 5,
+            navigation: 1,
+            key: 5,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -385,7 +398,9 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 6,
+            navigation: 1,
+            key: 6,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -398,7 +413,9 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 7,
+            navigation: 3,
+            key: 7,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -411,7 +428,9 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 8,
+            navigation: 2,
+            key: 8,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -424,7 +443,9 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 9,
+            navigation: 2,
+            key: 9,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -437,7 +458,9 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 10,
+            navigation: 2,
+            key: 10,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -450,7 +473,9 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 11,
+            navigation: 0,
+            key: 11,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -463,15 +488,21 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 12,
+            navigation: 0,
+            key: 12,
             value: 1,
             label: "Sex",
-            type: "picker",
+            type: "radiobutton",
             pickerData: sexType,
+            checked: 0,
             placeholder: {label: "Sex"},
         },
         {
-            required: true,
+            id: 13,
+            key: 13,
+            navigation: 0,
+            required: false,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -484,7 +515,9 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 14,
+            navigation: 1,
+            key: 14,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -497,7 +530,9 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 15,
+            navigation: 1,
+            key: 15,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -510,7 +545,9 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 16,
+            navigation: 1,
+            key: 16,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -523,7 +560,9 @@ const NTC101 = ({
             error: false
         },
         {
-            required: true,
+            id: 17,
+            navigation: 3,
+            key: 17,
             label: "Email Address",
             type: "input",
             placeholder: "Email Address",
@@ -536,6 +575,10 @@ const NTC101 = ({
             error: false
         },
         {
+
+            id: 18,
+            key: 18,
+            navigation: 'element',
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -543,9 +586,12 @@ const NTC101 = ({
             label: "Next",
             type: "button",
             style: {backgroundColor: '#2B23FF'},
-            onPress: onPressSubmit
 
         }])
+    const onFormSubmit = () =>{
+        console.log(1)
+        setOnNavigation(onNavigation+1)
+    }
     const onCheckmarkPress = (check: any, index: number) => {
         let newArr = [...radioOperationExamTypeItems];
         newArr[index].checked = !check.checked
@@ -565,143 +611,175 @@ const NTC101 = ({
         }
     };
 
-    const onChangeApplicantForm = (index: number,  text: any, element: string) => {
+    const onChangeApplicantForm = (id: number,  text: any, element: string) => {
+
+        const index =  applicationFormValue.findIndex(app => app.id == id)
+
 
         let newArr = [...applicationFormValue];
         if(element == 'error'){
             newArr[index]['error'] = text;
+        }else if(element == 'checked'){
+            newArr[index]['checked'] = text;
         }else{
             newArr[index]['value'] = text;
         }
 
         setApplicationFormValue(newArr);
+
     };
 
     return (
-        <ScrollView>
+        <View style={head.container}>
+            <View style={head.header}>
+                <Header  />
+            </View>
+            <View style={head.childContainer}>
+                <ScrollView>
 
-            <Text>Radio Operation Service</Text>
-            <RNPickerSelect
-                style={{
-                    ...pickerSelectStyles,
-                    iconContainer: {
-                        top: 10,
-                        right: 12,
-                    },
-                }}
-                value={radioOperationServiceSelectedValue}
-                onValueChange={(itemValue: any, itemIndex: number) => {
-                    if (!itemValue) return
-                    const radioOperationExam = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
-                        .map((radio_operation_exam_type) => {
-                            return {
-                                label: radio_operation_exam_type.name,
-                                value: radio_operation_exam_type.id,
-                                checked: false
-                            }
-                        })
-                    setRadioOperationServiceSelectedValue(itemValue)
-                    setRadioOperationExamTypeSelectedValue(radioOperationExam[0]["value"])
-                    setRadioOperationExamTypeItems(radioOperationExam)
-                }}
-                items={
+                    <Text>Radio Operation Service</Text>
+                    <RNPickerSelect
+                        style={{
+                            ...pickerSelectStyles,
+                            iconContainer: {
+                                top: 10,
+                                right: 12,
+                            },
+                        }}
+                        value={radioOperationServiceSelectedValue}
+                        onValueChange={(itemValue: any, itemIndex: number) => {
+                            if (!itemValue) return
+                            const radioOperationExam = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
+                                .map((radio_operation_exam_type) => {
+                                    return {
+                                        label: radio_operation_exam_type.name,
+                                        value: radio_operation_exam_type.id,
+                                        checked: false
+                                    }
+                                })
+                            setRadioOperationServiceSelectedValue(itemValue)
+                            setRadioOperationExamTypeSelectedValue(radioOperationExam[0]["value"])
+                            setRadioOperationExamTypeItems(radioOperationExam)
+                        }}
+                        items={
 
-                    radio_operation_services.map((radio_operation_service: RadioOperationServices) => {
-                        return {label: radio_operation_service.name, value: radio_operation_service.id}
-                    })
-                }
-            />
-
-
-            <Text>Radio Operation Exam Type</Text>
-            {radioOperationExamTypeItems.map((pick: any, key: number) => {
-                return <>
-                    <View style={styles.checkboxContainer}>
-                        <Pressable
-                            key={key}
-                            style={[styles.checkboxBase, pick.checked && styles.checkboxChecked]}
-                            onPress={() => onCheckmarkPress(pick, key)}>
-                            {pick.checked && <Ionicons name="checkmark" size={18} color="white"/>}
-
-                        </Pressable>
-                        <Text style={styles.checkboxLabel}>{pick.label}</Text>
-                    </View>
-                </>
-            })}
-
-            <InputField
-                label={'Name'}
-                placeholder={"Name"}
-                outlineStyle={InputStyles.outlineStyle}
-                activeColor={text.primary}
-                errorColor={text.error}
-                requiredColor={text.error}
-                inputStyle={InputStyles.text}
-                onSubmitEditing={(event: any) => onChangeText('name', event.nativeEvent.text)}
-                onChangeText={(text: string) => onChangeText('name', text)}
-                value={formValue?.name?.value}
-
-            />
-            <InputField
-
-                label={'Place'}
-                placeholder="Place"
-                outlineStyle={InputStyles.outlineStyle}
-                activeColor={text.primary}
-                errorColor={text.error}
-                requiredColor={text.error}
-                inputStyle={InputStyles.text}
-                onSubmitEditing={(event: any) => onChangeText('name', event.nativeEvent.text)}
-                onChangeText={(text: string) => onChangeText('place', text)}
-                value={formValue?.place?.value}
-            />
-
-            <RNPickerSelect
-                style={{
-                    ...pickerSelectStyles,
-                    iconContainer: {
-                        top: 10,
-                        right: 12,
-                    },
-                }}
-                value={citySelectedValue}
-                onValueChange={(itemValue: any, itemIndex: number) => setCitySelectedValue(itemValue)}
-                items={
-                    cities.map((city: City) => {
-                        return {label: city.city, value: city.id}
-                    })
-                }
-            />
+                            radio_operation_services.map((radio_operation_service: RadioOperationServices) => {
+                                return {label: radio_operation_service.name, value: radio_operation_service.id}
+                            })
+                        }
+                    />
 
 
-            <DateTimeField
-                title={'Date of Exam: (mm/dd/yy)'}
-                borderColor={'red'}
-                placeholder="Date of Exam: (mm/dd/yy)"
-            />
+                    <Text>Radio Operation Exam Type</Text>
+                    {radioOperationExamTypeItems.map((pick: any, key: number) => {
+                        return <>
+                            <View style={styles.checkboxContainer}>
+                                <Pressable
+                                    key={key}
+                                    style={[styles.checkboxBase, pick.checked && styles.checkboxChecked]}
+                                    onPress={() => onCheckmarkPress(pick, key)}>
+                                    {pick.checked && <Ionicons name="checkmark" size={18} color="white"/>}
+
+                                </Pressable>
+                                <Text style={styles.checkboxLabel}>{pick.label}</Text>
+                            </View>
+                        </>
+                    })}
+
+                    {/*<InputField
+                        label={'Name'}
+                        placeholder={"Name"}
+                        outlineStyle={InputStyles.outlineStyle}
+                        activeColor={text.primary}
+                        errorColor={text.error}
+                        requiredColor={text.error}
+                        inputStyle={InputStyles.text}
+                        onSubmitEditing={(event: any) => onChangeText('name', event.nativeEvent.text)}
+                        onChangeText={(text: string) => onChangeText('name', text)}
+                        value={formValue?.name?.value}
+
+                    />
+                    <InputField
+
+                        label={'Place'}
+                        placeholder="Place"
+                        outlineStyle={InputStyles.outlineStyle}
+                        activeColor={text.primary}
+                        errorColor={text.error}
+                        requiredColor={text.error}
+                        inputStyle={InputStyles.text}
+                        onSubmitEditing={(event: any) => onChangeText('name', event.nativeEvent.text)}
+                        onChangeText={(text: string) => onChangeText('place', text)}
+                        value={formValue?.place?.value}
+                    />
+
+                    <RNPickerSelect
+                        style={{
+                            ...pickerSelectStyles,
+                            iconContainer: {
+                                top: 10,
+                                right: 12,
+                            },
+                        }}
+                        value={citySelectedValue}
+                        onValueChange={(itemValue: any, itemIndex: number) => setCitySelectedValue(itemValue)}
+                        items={
+                            cities.map((city: City) => {
+                                return {label: city.city, value: city.id}
+                            })
+                        }
+                    />
 
 
-            <Text>{time.toString()}</Text>
-            {Platform.OS !== 'ios' && <Button onPress={showTimepicker} style={{backgroundColor: '#2B23FF'}}>
-
-                <Text fontSize={16} color={'white'}>
-                    Time of Exam
-                </Text>
-            </Button>}
+                    <DateTimeField
+                        title={'Date of Exam: (mm/dd/yy)'}
+                        borderColor={'red'}
+                        placeholder="Date of Exam: (mm/dd/yy)"
+                    />
 
 
-            {Platform.OS === 'ios' &&
-            <><Text weight={'bold'}>Time of Exam</Text><SelectTimePicker
-                testID="timePicker"
-                mode="time"
-                value={time}
-                is24Hour={is24Hours}
-                display="default"
-                onChange={onTimeChange}/></>}
+                    <Text>{time.toString()}</Text>
+                    {Platform.OS !== 'ios' && <Button onPress={showTimepicker} style={{backgroundColor: '#2B23FF'}}>
 
-            <FormField formElements={applicationFormValue} onChange={onChangeApplicantForm}/>
-        </ScrollView>
+                        <Text fontSize={16} color={'white'}>
+                            Time of Exam
+                        </Text>
+                    </Button>}
+
+
+                    {Platform.OS === 'ios' &&
+                    <><Text weight={'bold'}>Time of Exam</Text><SelectTimePicker
+                        testID="timePicker"
+                        mode="time"
+                        value={time}
+                        is24Hour={is24Hours}
+                        display="default"
+                        onChange={onTimeChange}/></>}
+*/}
+                    <FormField  key={formFieldKey} formElements={applicationFormValue.filter(app => {
+                        return app.navigation == onNavigation || app.navigation == 'element'
+                    })}  onChange={onChangeApplicantForm} onSubmit={onFormSubmit}/>
+                </ScrollView>
+            </View>
+        </View>
+
     );
 };
-
+const head = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#eef",
+        flexDirection: "column"
+    },
+    childContainer: {
+        alignItems:"center" ,
+        marginVertical: 18,
+        flex:1
+    },
+    header: {
+        backgroundColor: "grey",
+        width: "100%",
+        height: "15%"
+    }
+});
 export default NTC101;

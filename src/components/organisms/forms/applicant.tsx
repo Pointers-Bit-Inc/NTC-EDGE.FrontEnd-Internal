@@ -16,7 +16,7 @@ const Applicant = ({
         {value: 0, label: "Female"},
     ]);
     const onPressSubmit = () => {
-        console.log(1)
+
         let error = false
         for (var i = 0; i < formValue.length; i++) {
             if(formValue[i]['error'] ) {
