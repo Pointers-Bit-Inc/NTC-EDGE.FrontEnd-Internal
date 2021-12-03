@@ -11,14 +11,18 @@ const styles = StyleSheet.create({
   inputIOS: {
     color: text.default,
     fontSize: 14,
+    paddingRight: 25,
   },
   inputAndroid: {
     backgroundColor: 'transparent',
     color: text.default,
     fontSize: 14,
+    paddingVertical: 5,
+    paddingLeft: 10,
+    paddingRight: 25,
   },
   iconContainer: {
-    top: 0,
+    top: Platform.OS === 'ios' ? 0 : 10,
   },
   inputWeb: {
     ...Platform.select({
@@ -55,6 +59,7 @@ const Dropdown = ({
       value={value}
       onValueChange={onChangeValue}
       items={items}
+      useNativeAndroidPickerStyle={false}
       Icon={() => (
         <Entypo
           name="chevron-thin-down"
