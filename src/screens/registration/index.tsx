@@ -41,6 +41,8 @@ const styles = StyleSheet.create({
 });
 
 const errorResponse = {
+  userType: 'Please select a user type',
+  username: 'Please enter a valid username',
   email: 'Please enter a valid email address',
   password: 'Password must be atleast 6 characters',
   phone: 'Please enter a valid phone number',
@@ -49,6 +51,16 @@ const errorResponse = {
 
 const Registration = ({ navigation }:any) => {
   const [formValue, setFormValue] = useState({
+    type: {
+      value: 'Company',
+      isValid: true,
+      error: '',
+    },
+    userType: {
+      value: '',
+      isValid: false,
+      error: '',
+    },
     username: {
       value: '',
       isValid: false,
@@ -85,13 +97,23 @@ const Registration = ({ navigation }:any) => {
 
   const onChangeText = (key: string, value: any) => {
     switch (key) {
+      case 'userType': {
+        return setFormValue({
+          ...formValue,
+          [key]: {
+            value: value,
+            isValid: !!value,
+            error: !value ? errorResponse['userType'] : ''
+          }
+        });
+      }
       case 'username': {
         return setFormValue({
           ...formValue,
           [key]: {
             value: value,
             isValid: !!value,
-            error: !value ? 'Enter Username' : ''
+            error: !value ? errorResponse['username'] : ''
           }
         });
       }
@@ -174,7 +196,9 @@ const Registration = ({ navigation }:any) => {
   }
 
   const onCheckValidation = () => {
-    if (!formValue.username.isValid) {
+    if (!formValue.userType.isValid) {
+      return onChangeText('userType', formValue.userType.value);
+    } else if (!formValue.username.isValid) {
       return onChangeText('username', formValue.username.value);
     } else if (!formValue.email.isValid) {
       return onChangeText('email', formValue.email.value);
@@ -188,6 +212,7 @@ const Registration = ({ navigation }:any) => {
       return navigation.navigate(
         'RegistrationPageTwo',
         {
+          userType: formValue?.userType?.value,
           username: formValue?.username?.value,
           email: formValue?.email?.value,
           phone: formValue?.phone?.value,
@@ -198,6 +223,7 @@ const Registration = ({ navigation }:any) => {
   }
 
   const isValid =
+    formValue.userType.isValid &&
     formValue.username.isValid &&
     formValue.email.isValid &&
     formValue.phone.isValid &&

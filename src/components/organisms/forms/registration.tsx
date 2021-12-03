@@ -3,9 +3,10 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { CheckIcon, CloseIcon } from '@atoms/icon';
 import {
   InputField,
+  DropdownField
 } from '@molecules/form-fields';
 import InputStyles from 'src/styles/input-style';
-import { text } from 'src/styles/color';
+import { text, outline } from 'src/styles/color';
 import Text from '@atoms/text';
 
 const styles = StyleSheet.create({
@@ -14,6 +15,17 @@ const styles = StyleSheet.create({
   },
   label: {
     marginLeft: 10
+  },
+  typeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 10 ,
   },
   passwordValidationContainer: {
     paddingVertical: 5,
@@ -36,8 +48,110 @@ const styles = StyleSheet.create({
     width: 18,
     backgroundColor: '#DBDFE5',
     borderRadius: 3,
+  },
+  circle: {
+    height: 15,
+    width: 15,
+    borderColor: outline.default,
+    borderWidth: 1.2,
+    borderRadius: 15,
+    marginRight: 5,
+  },
+  circleActive: {
+    borderColor: outline.primary,
+    borderWidth: 5,
   }
 });
+
+const userType = [
+  {
+    label: 'Radio Operator',
+    value: 'Radio Operator',
+  },
+  {
+    label: 'Radio Station',
+    value: 'Radio Station',
+  },
+  {
+    label: 'Aeronautical Station',
+    value: 'Aeronautical Station',
+  },
+  {
+    label: 'Aircraft Station',
+    value: 'Aircraft Station',
+  },
+  {
+    label: 'Ship Station',
+    value: 'Ship Station',
+  },
+  {
+    label: 'Coastal Station',
+    value: 'Coastal Station',
+  },
+  {
+    label: 'Public Coastal Station',
+    value: 'Public Coastal Station',
+  },
+  {
+    label: 'Public Telecommunications Entities (PTEs)',
+    value: 'Public Telecommunications Entities (PTEs)',
+  },
+  {
+    label: 'Government and Private Radio Stations',
+    value: 'Government and Private Radio Stations',
+  },
+  {
+    label: 'Individuals and Private and Government Entities',
+    value: 'Individuals and Private and Government Entities',
+  },
+  {
+    label: 'Dealer of Radio Communication Equipment',
+    value: 'Dealer of Radio Communication Equipment',
+  },
+  {
+    label: 'Retailer/Reseller of Radio Communication Equipment',
+    value: 'Retailer/Reseller of Radio Communication Equipment',
+  },
+  {
+    label: 'Service Center of Radio Communication Equipment',
+    value: 'Service Center of Radio Communication Equipment',
+  },
+  {
+    label: 'Mobile Phone Dealer',
+    value: 'Mobile Phone Dealer',
+  },
+  {
+    label: 'Mobile Phone Retailer/Reseller',
+    value: 'Mobile Phone Retailer/Reseller',
+  },
+  {
+    label: 'Mobile Phone Service Center',
+    value: 'Mobile Phone Service Center',
+  },
+  {
+    label: 'Accredited Radio Dealers/Manufacturers',
+    value: 'Accredited Radio Dealers/Manufacturers',
+  },
+  {
+    label: 'Cable TV Operators and Private and Government Entities',
+    value: 'Cable TV Operators and Private and Government Entities',
+  },
+  {
+    label: 'Value Added Service (VAS) Provider',
+    value: 'Value Added Service (VAS) Provider',
+  }
+];
+
+const type = [
+  {
+    label: 'Company',
+    value: 'Company',
+  },
+  {
+    label: 'Individual',
+    value: 'Individual',
+  }
+]
 
 interface Props {
   form?: any;
@@ -99,6 +213,39 @@ const RegistrationForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) =
   }
   return (
     <View style={styles.container}>
+      <View style={styles.typeContainer}>
+        <Text color={text.default} size={14}>User Type</Text>
+        {
+          type.map(item => (
+            <TouchableOpacity
+              key={item.value}
+              onPress={() => onChangeValue('type', item.value)}
+            >
+              <View style={styles.buttonContainer}>
+                <View style={[styles.circle, item.value === form.type.value && styles.circleActive]} />
+                <Text color={text.default} size={14}>{item.label}</Text>
+              </View>
+            </TouchableOpacity>
+          ))
+        }
+      </View>
+      <DropdownField
+        outlineStyle={InputStyles.outlineStyle}
+        items={userType}
+        required={true}
+        hasValidation={true}
+        requiredColor={text.error}
+        activeColor={text.primary}
+        errorColor={text.error}
+        placeholder={{
+          label: 'Select a user type...',
+          value: null,
+          color: 'black',
+        }}
+        error={form?.userType?.error}
+        value={form?.userType?.value}
+        onChangeValue={(value: string) => onChangeValue('userType', value)}
+      />
       <InputField
         inputStyle={InputStyles.text}
         label={'Username'}
