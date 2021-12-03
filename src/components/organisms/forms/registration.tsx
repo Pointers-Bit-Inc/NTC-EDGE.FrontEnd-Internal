@@ -63,11 +63,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const userType = [
-  {
-    label: 'Radio Operator',
-    value: 'Radio Operator',
-  },
+const companyType = [
   {
     label: 'Radio Station',
     value: 'Radio Station',
@@ -105,6 +101,17 @@ const userType = [
     value: 'Individuals and Private and Government Entities',
   },
   {
+    label: 'Mobile Phone Service Center',
+    value: 'Mobile Phone Service Center',
+  },
+];
+
+const individualType = [
+  {
+    label: 'Radio Operator',
+    value: 'Radio Operator',
+  },
+  {
     label: 'Dealer of Radio Communication Equipment',
     value: 'Dealer of Radio Communication Equipment',
   },
@@ -123,10 +130,6 @@ const userType = [
   {
     label: 'Mobile Phone Retailer/Reseller',
     value: 'Mobile Phone Retailer/Reseller',
-  },
-  {
-    label: 'Mobile Phone Service Center',
-    value: 'Mobile Phone Service Center',
   },
   {
     label: 'Accredited Radio Dealers/Manufacturers',
@@ -231,7 +234,7 @@ const RegistrationForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) =
       </View>
       <DropdownField
         outlineStyle={InputStyles.outlineStyle}
-        items={userType}
+        items={form.type.value === 'Company' ? companyType : individualType}
         required={true}
         hasValidation={true}
         requiredColor={text.error}
