@@ -97,6 +97,8 @@ const OneTimePin = ({ navigation, route }:any) => {
     setStarted(true);
     setEnded(false);
     setTimer(timerLimit);
+    setError('');
+    setOtp('');
   }
 
   const format = (time:number) => {   
