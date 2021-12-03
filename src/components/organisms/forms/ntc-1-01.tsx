@@ -10,7 +10,7 @@ import SelectTimePicker from '@react-native-community/datetimepicker';
 import {Ionicons} from "@expo/vector-icons";
 import InputStyles from "../../../styles/input-style";
 import FormField from "@organisms/forms/form";
-import {primaryColor} from "../../../styles/color";
+import {defaultColor, outline, primaryColor} from "../../../styles/color";
 import Header from "@organisms/forms/tab-header";
 
 interface RadioOperationServices {
@@ -57,7 +57,7 @@ const NTC101 = ({
             paddingHorizontal: 10,
             paddingVertical: 8,
             borderWidth: 0.5,
-            borderColor: 'purple',
+            borderColor: 'gray',
             borderRadius: 10,
             color: 'black', // to ensure the text is never behind the icon
         },
@@ -65,18 +65,18 @@ const NTC101 = ({
     const styles = StyleSheet.create({
 
         checkboxBase: {
-            width: 24,
-            height: 24,
+            width: 20,
+            height: 20,
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: 4,
             borderWidth: 2,
-            borderColor: primaryColor,
+            borderColor: outline.default,
             backgroundColor: 'transparent',
         },
 
         checkboxChecked: {
-            backgroundColor: 'blue',
+            backgroundColor: outline.primary,
         },
 
         appContainer: {
@@ -93,6 +93,7 @@ const NTC101 = ({
         checkboxContainer: {
             flexDirection: 'row',
             alignItems: 'center',
+            paddingBottom:10
         },
 
         checkboxLabel: {
@@ -277,47 +278,8 @@ const NTC101 = ({
     }))
 
     const [onNavigation,setOnNavigation] = useState(0)
-    const onPressSubmit = () => {
-        let error = false
-        for (var i = 0; i < applicationFormValue.length; i++) {
-            if (applicationFormValue[i]['error']) {
-                onChangeApplicantForm(i, true, 'error' )
-            }else if(applicationFormValue[i]?.['required']){
-                onChangeApplicantForm(i, true, 'error' )
-            }
-        }
 
-        onSubmit({success: !error})
 
-    }
-    const showMode = (currentMode: string) => {
-
-        if (currentMode == 'date') {
-            show ? setShow(false) : setShow(true);
-        } else {
-
-            Platform.OS !== 'ios' && timeShow ? setTimeShow(false) : setTimeShow(true)
-        }
-
-        setMode(currentMode);
-    };
-    const showTimepicker = () => {
-
-        showMode('time');
-    };
-    const [formValue, setFormValue] = useState({
-        name: {
-            value: '',
-            isValid: false,
-            error: ''
-        },
-        place: {
-            value: '',
-            isValid: false,
-            error: ''
-        },
-
-    });
     const [formFieldKey, setFormFieldKey ] = useState(Math.random())
     const [applicationFormValue, setApplicationFormValue] = useState([
 
@@ -607,32 +569,38 @@ key: 1,
         }])
     const onFormSubmit = () =>{
         let error = []
-        for (var i = 0; i < applicationFormValue.length; i++) {
-            if (applicationFormValue[i]?.['error'] && applicationFormValue[i]?.['value'] == "") {
-                onChangeApplicantForm(applicationFormValue[i].id, true, 'error' )
-            }else if(applicationFormValue[i]?.['required'] && applicationFormValue[i]?.['value'] == ""){
-                onChangeApplicantForm(applicationFormValue[i].id, true, 'error' )
-            }else if(applicationFormValue[i]?.['value']){
-                onChangeApplicantForm(applicationFormValue[i].id, false, 'error' )
+
+            for (var i = 0; i < applicationFormValue.length; i++) {
+                if (applicationFormValue[i]?.['error'] && applicationFormValue[i]?.['value'] == "") {
+                    onChangeApplicantForm(applicationFormValue[i].id, true, 'error' )
+                }else if(applicationFormValue[i]?.['required'] && applicationFormValue[i]?.['value'] == ""){
+                    onChangeApplicantForm(applicationFormValue[i].id, true, 'error' )
+                }else if(applicationFormValue[i]?.['value']){
+                    onChangeApplicantForm(applicationFormValue[i].id, false, 'error' )
+                }
+
+            }
+            for (var j = 0; j< applicationFormValue.length; j++) {
+
+                if(applicationFormValue[j].navigation == onNavigation){
+                    if(!applicationFormValue[j].value){
+                        error.push(applicationFormValue[j])
+
+                    }
+                }
+
             }
 
-        }
 
 
-        for (var j = 0; j< applicationFormValue.length; j++) {
-
-           if(applicationFormValue[j].navigation == onNavigation){
-               if(!applicationFormValue[j].value){
-                   error.push(applicationFormValue[j])
-
-               }
-           }
-
-        }
         if(!error.length){
+            let newArr = [...tab];
+            newArr[onNavigation].isRouteActive = !newArr[onNavigation].isRouteActive
+            newArr[onNavigation + 1].isRouteActive = !newArr[onNavigation + 1].isRouteActive
+            setTab(newArr);
             setOnNavigation(onNavigation + 1)
-        }
 
+        }
 
 
     //
@@ -641,7 +609,7 @@ key: 1,
 
         let newArr = [...radioOperationExamTypeItems];
         for (let i = 0; i < newArr.length; i++) {
-           if(newArr[i].checked){
+           if(newArr[i].checked && newArr[i].checked != newArr[index].checked ){
                newArr[i].checked = !newArr[i].checked
            }
         }
@@ -649,18 +617,6 @@ key: 1,
         setRadioOperationExamTypeItems(newArr);
     }
 
-    const onChangeText = (key: string, value: string) => {
-        switch (key) {
-
-            default:
-                return setFormValue({
-                    ...formValue,
-                    [key]: {
-                        value: value
-                    }
-                });
-        }
-    };
 
     const onChangeApplicantForm = (id: number,  text: any, element: string) => {
         const index =  applicationFormValue.findIndex(app => app.id == id)
@@ -678,11 +634,11 @@ key: 1,
         setApplicationFormValue(newArr);
 
     };
-
+    const [tab, setTab] = useState([{name: 'Basic Info', tintColor: true, isRouteActive: true}, {name: 'Address', tintColor: true, isRouteActive: false}, {name: 'Additional Details', tintColor: true, isRouteActive: false}, {name: 'Contacts', tintColor: true, isRouteActive: false}])
     return (
         <View style={head.container}>
-            <View style={head.header}>
-                <Header  />
+        <View style={head.header}>
+                <Header tab={tab} />
             </View>
             <View style={head.childContainer}>
                 <ScrollView>
@@ -728,7 +684,7 @@ key: 1,
                                     key={key}
                                     style={[styles.checkboxBase, pick.checked && styles.checkboxChecked]}
                                     onPress={() => onCheckmarkPress(pick, key)}>
-                                    {pick.checked && <Ionicons name="checkmark" size={18} color="white"/>}
+                                    {pick.checked && <Ionicons name="checkmark" size={16} color="white"/>}
 
                                 </Pressable>
                                 <Text style={styles.checkboxLabel}>{pick.label}</Text>
@@ -807,6 +763,7 @@ key: 1,
                         onChange={onTimeChange}/></>}
 */}
                     <FormField  key={formFieldKey} formElements={applicationFormValue.filter(app => {
+
                         return app.navigation == onNavigation || app.navigation == 'element'
                     })}  onChange={onChangeApplicantForm} onSubmit={onFormSubmit}/>
                 </ScrollView>
@@ -816,9 +773,10 @@ key: 1,
     );
 };
 const head = StyleSheet.create({
+
     container: {
         flex: 1,
-        backgroundColor: "#eef",
+        backgroundColor: "#fff",
         flexDirection: "column"
     },
     childContainer: {

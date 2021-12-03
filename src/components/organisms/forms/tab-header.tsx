@@ -1,42 +1,65 @@
-import React from "react";
+import React from 'react';
+import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import {primaryColor} from "../../../styles/color";
 
-import { View, Text, StyleSheet } from "react-native";
+const Header = (props:any)=> {
+    const {
+       tab
+    } = props;
 
-const Header = (props:any) => {
     return (
         <View style={styles.containerHeader}>
             <View style={styles.textContainer}>
-                <Text style={styles.textWhite}>Applicant's Details</Text>
+                <Text style={styles.textWhite}>Attendant's Detail</Text>
             </View>
             <View style={styles.tabContainer}>
-                <View>
-                    <Text>Basic Info</Text>
-                </View>
-                <View>
-                    <Text>Address</Text>
-                </View>
-                <View>
-                    <Text>Additional Details</Text>
-                </View>
-                <View>
-                    <Text>Contact</Text>
-                </View>
+
+                {
+                    tab.map((t:any) =>{
+                        return <View>
+                            <Text
+                                style={{
+
+                                    fontSize: 10,
+                                    textTransform: "uppercase",
+                                    color: `${t.tintColor}`,
+                                    fontWeight: `${t.isRouteActive ? "bold" : "normal"}`
+                                }}
+                            >
+                                {t.name}
+                            </Text>
+                            <View style={{
+                                height: 1,
+                                marginBottom: -30,
+                                borderWidth: 1,
+                                borderColor: primaryColor,
+                                borderStyle: 'solid'
+                            }}></View>
+                        </View>
+                    })
+
+                }
+
             </View>
         </View>
     );
 };
+
 const styles = StyleSheet.create({
+
     containerHeader: {
         flex: 1,
         flexDirection: "column",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems:"flex-start",
+
     },
     textContainer: {
-        marginTop: 10
+        marginTop: 20,
+        marginLeft: 10
     },
     textWhite: {
-        color: "black",
+        color: 'black',
     },
     tabContainer: {
         backgroundColor: "white",
@@ -47,6 +70,11 @@ const styles = StyleSheet.create({
         height: "20%",
         alignItems: "center",
         marginTop: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        elevation: 5,
         flex: 1
     }
 });
