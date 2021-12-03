@@ -1,6 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Dimensions, ActivityIndicator, View, SafeAreaView, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import Text from '@components/atoms/text';
+import * as Progress from 'react-native-progress';
 import InputField from '@atoms/input';
 import { OTPField } from '@molecules/form-fields';
 import Button from '@components/atoms/button';
@@ -38,16 +39,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    letterSpacing: 10,
+    letterSpacing: 8,
     fontSize: 36,
     fontWeight: 'bold',
+    flex: 1,
   },
   outlineStyle: {
     paddingHorizontal: 0,
     borderWidth: 0,
   },
   labelStyle: {
-    fontSize: 16,
+    fontSize: 14,
   },
   keyboardAvoiding: {
     position: 'absolute',
@@ -56,20 +58,181 @@ const styles = StyleSheet.create({
   },
 })
 
+const timerLimit = 90;
+const errorResponse = 'Invalid verification code. Please try again';
+const code = '1234';
+
 const OneTimePin = ({ navigation, route }:any) => {
   const {
     account,
     accountType
   } = route.params;
+  const [timer, setTimer] = useState(timerLimit);
+  const [started, setStarted] = useState(false);
+  const [ended, setEnded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
+  const [error, setError] = useState('');
   const onSubmit = useCallback(() => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      navigation.navigate('ForgotPasswordReset')
+      setEnded(true);
+      if (otp === code) {
+        navigation.navigate('ForgotPasswordReset')
+      } else {
+        setError(errorResponse);
+      }
+    }, 3000);
+  }, [otp]);
+  const onResend = useCallback(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      resetTimer();
     }, 3000);
   }, []);
+
+  const resetTimer = () => {
+    setStarted(true);
+    setEnded(false);
+    setTimer(timerLimit);
+  }
+
+  const format = (time:number) => {   
+    var mins = ~~((time % 3600) / 60);
+    var secs = ~~time % 60;
+    var format = "";
+    format += (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "");
+    format += "" + secs;
+    return format;
+  }
+
+  useEffect(() => {
+    resetTimer();
+  }, []);
+
+  useEffect(() => {
+    let interval:any = null;
+    if (started && !ended) {
+      interval = setInterval(() => {
+        setTimer(timer => timer - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [started, ended]);
+
+  useEffect(() => {
+    if (timer === 0) {
+      setStarted(false);
+      setEnded(true);
+    }
+  }, [timer]);
+  
+  const renderButton = () => {
+    if (ended || error) {
+      return (
+        <Button
+            disabled={otp.length < 4 || loading}
+            style={[
+              styles.button,
+              {
+                backgroundColor: button.success
+              },
+              loading && {
+                backgroundColor: '#3BC759'
+              }
+            ]}
+            onPress={onResend}
+          >
+            {
+              loading ? (
+                <>
+                  <ActivityIndicator
+                    color={'white'}
+                    size={'small'}
+                  />
+                  <Text
+                    style={{ marginLeft: 10 }}
+                    color="white"
+                    size={16}
+                    weight={'500'}
+                  >
+                    Sending code...
+                  </Text>
+                </>
+              ) : (
+                <Text
+                  color="white"
+                  size={16}
+                  weight={'500'}
+                >
+                  Resend code
+                </Text>
+              )
+            }
+          </Button>
+      )
+    }
+    return (
+      <Button
+        disabled={otp.length < 4 || loading}
+        style={[
+          styles.button,
+          otp.length < 4 && {
+            backgroundColor: button.default
+          },
+          loading && {
+            backgroundColor: '#60A5FA'
+          }
+        ]}
+        onPress={onSubmit}
+      >
+        {
+          loading ? (
+            <>
+              <ActivityIndicator
+                color={'white'}
+                size={'small'}
+              />
+              <Text
+                style={{ marginLeft: 10 }}
+                color="white"
+                size={16}
+                weight={'500'}
+              >
+                Confirming...
+              </Text>
+            </>
+          ) : (
+            <Text
+              color="white"
+              size={16}
+              weight={'500'}
+            >
+              Confirm
+            </Text>
+          )
+        }
+      </Button>
+    )
+  }
+
+  const renderDetail = () => {
+    if (accountType === 'phone') {
+      const lastFour = account.substr(account.length - 4);
+      return `**** ${lastFour}`;
+    }
+    const email = account.split('@');
+    return `****@${email[1]}`;
+  }
+
+  const onChangeText = (value:string) => {
+    if (!!error) {
+      setError('');
+    }
+    setOtp(value);
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -105,13 +268,19 @@ const OneTimePin = ({ navigation, route }:any) => {
             color={text.default}
           >
             {accountType === 'phone' ?
-              `Enter the OTP code we sent view SMS to your\nregistered phone number.` :
-              `Enter the OTP code we sent view EMAIL to your\nregistered email address.`
+              `Enter the OTP code we sent view SMS to your\nregistered phone number ${renderDetail()}.` :
+              `Enter the OTP code we sent view EMAIL to your\nregistered email address ${renderDetail()}.`
             }
           </Text>
         </View>
         <OTPField
-          style={[InputStyles.text, styles.input]}
+          style={[
+            InputStyles.text,
+            styles.input,
+            !!error && {
+              color: text.error
+            }
+          ]}
           maxLength={4}
           placeholder="••••"
           label={'OTP'}
@@ -121,56 +290,42 @@ const OneTimePin = ({ navigation, route }:any) => {
           outlineStyle={[InputStyles.outlineStyle, styles.outlineStyle]}
           errorColor={text.error}
           requiredColor={text.error}
-          error={''}
+          error={error}
           value={otp}
           keyboardType={'number-pad'}
-          onChangeText={setOtp}
-        />
+          onChangeText={onChangeText}
+        >
+          {
+            !ended && (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Progress.Pie
+                  style={{
+                    transform: [
+                        {scaleX: -1},
+                    ]
+                  }}
+                  color={text.success}
+                  borderWidth={0}
+                  progress={timer/timerLimit}
+                  size={16}
+                />
+                <Text
+                  style={{ marginLeft: 5 }}
+                  size={16}
+                  color={text.default}
+                >
+                  {format(timer)}
+                </Text>
+              </View>
+            )
+          }
+        </OTPField>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'position' : 'height'}
           keyboardVerticalOffset={height * 0.12}
           style={styles.keyboardAvoiding}
         >
-          <Button
-            disabled={otp.length < 4 || loading}
-            style={[
-              styles.button,
-              otp.length < 4 && {
-                backgroundColor: button.default
-              },
-              loading && {
-                backgroundColor: '#60A5FA'
-              }
-            ]}
-            onPress={onSubmit}
-          >
-            {
-              loading ? (
-                <>
-                  <ActivityIndicator
-                    color={'white'}
-                    size={'small'}
-                  />
-                  <Text
-                    style={{ marginLeft: 10 }}
-                    color="white"
-                    size={16}
-                    weight={'500'}
-                  >
-                    Confirming...
-                  </Text>
-                </>
-              ) : (
-                <Text
-                  color="white"
-                  size={16}
-                  weight={'500'}
-                >
-                  Confirm
-                </Text>
-              )
-            }
-          </Button>
+          {renderButton()}
         </KeyboardAvoidingView>
       </View>
     </SafeAreaView>

@@ -123,7 +123,6 @@ const ForgotPassword = ({ navigation }:any) => {
           requiredColor={text.error}
           error={account.error}
           value={account.value}
-          keyboardType={'email-address'}
           onChangeText={onChangeText}
         />
         <KeyboardAvoidingView

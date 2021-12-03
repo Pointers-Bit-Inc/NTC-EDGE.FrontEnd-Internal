@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, ReactNode } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { ExclamationIcon } from '@atoms/icon';
 import Text from '@atoms/text';
@@ -21,7 +21,9 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderRadius: 10,
     overflow: 'hidden',
-    width: '100%'
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   description: {
     paddingTop: 2,
@@ -47,6 +49,7 @@ interface Props {
   errorColor?: string;
   activeColor?: string;
   requiredColor?: string;
+  children: ReactNode;
   [x: string]: any;
 }
 
@@ -65,6 +68,7 @@ const OTPField: FC<Props> = ({
   errorColor,
   activeColor,
   requiredColor,
+  children,
   ...otherProps
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -114,6 +118,7 @@ const OTPField: FC<Props> = ({
           onBlur={onBlur}
           {...otherProps}
         />
+        {children}
       </View>
       {
         hasValidation && (
