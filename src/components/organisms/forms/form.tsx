@@ -9,13 +9,11 @@ import {
     View
 } from 'react-native';
 import {InputField} from "@molecules/form-fields";
-import DateTimeField from "@molecules/form-fields/datetime-field";
+import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 import Button from "@atoms/button";
 import Text from "@atoms/text";
 import {Ionicons} from "@expo/vector-icons";
-import styles from "../../../styles/input-style";
-
 const FormField = ({
                        color,
                        formElements,
@@ -37,7 +35,9 @@ const FormField = ({
                                    onChangeText={(text: string) => onChange(id, text)}
                                    onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text)}/>;
             case "date":
-                return <DateTimeField  key={id}  {...styleProps} {...otherProps} />;
+                return <DateTimePicker onChange={ (event:any, selectedDate:any) => {
+                  alert(event)
+                }} key={id}  {...styleProps} {...otherProps} />;
             case "radiobutton":
                 return <><Text>Gender</Text>
             {pickerData.map((data:any, key: number) => {

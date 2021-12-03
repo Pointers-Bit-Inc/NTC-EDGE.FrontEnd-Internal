@@ -325,7 +325,7 @@ const NTC101 = ({
             id: 1,
 key: 1,
            navigation: 0,
-
+            required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -338,6 +338,7 @@ key: 1,
             error: false,
         },
         {
+            required: true,
             id: 2,
             navigation: 0,
             key: 2,
@@ -353,6 +354,7 @@ key: 1,
             error: false
         },
         {
+            required: true,
             id: 3,
             navigation: 0,
             key: 3,
@@ -368,6 +370,7 @@ key: 1,
             error: false
         },
         {
+            required: true,
             id: 4,
             navigation: 1,
             key: 4,
@@ -383,6 +386,7 @@ key: 1,
             error: false
         },
         {
+            required: true,
             id: 5,
             navigation: 1,
             key: 5,
@@ -398,6 +402,7 @@ key: 1,
             error: false
         },
         {
+            required: true,
             id: 6,
             navigation: 1,
             key: 6,
@@ -413,6 +418,7 @@ key: 1,
             error: false
         },
         {
+            required: true,
             id: 7,
             navigation: 3,
             key: 7,
@@ -428,6 +434,7 @@ key: 1,
             error: false
         },
         {
+            required: true,
             id: 8,
             navigation: 2,
             key: 8,
@@ -443,6 +450,7 @@ key: 1,
             error: false
         },
         {
+            required: true,
             id: 9,
             navigation: 2,
             key: 9,
@@ -458,6 +466,7 @@ key: 1,
             error: false
         },
         {
+            required: true,
             id: 10,
             navigation: 2,
             key: 10,
@@ -473,6 +482,7 @@ key: 1,
             error: false
         },
         {
+            required: true,
             id: 11,
             navigation: 0,
             key: 11,
@@ -483,11 +493,13 @@ key: 1,
             label: "Date of Birth (mm/dd/yy)",
             type: "date",
             placeholder: "Date of Birth (mm/dd/yy)",
-            value: '',
+            value: new Date,
             inputStyle: InputStyles.text,
             error: false
         },
         {
+            error: false,
+            required: true,
             id: 12,
             navigation: 0,
             key: 12,
@@ -499,10 +511,10 @@ key: 1,
             placeholder: {label: "Sex"},
         },
         {
+            required: true,
             id: 13,
             key: 13,
             navigation: 0,
-            required: false,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -515,6 +527,7 @@ key: 1,
             error: false
         },
         {
+            required: true,
             id: 14,
             navigation: 1,
             key: 14,
@@ -530,6 +543,7 @@ key: 1,
             error: false
         },
         {
+            required: true,
             id: 15,
             navigation: 1,
             key: 15,
@@ -545,6 +559,7 @@ key: 1,
             error: false
         },
         {
+            required: true,
             id: 16,
             navigation: 1,
             key: 16,
@@ -560,6 +575,7 @@ key: 1,
             error: false
         },
         {
+            required: true,
             id: 17,
             navigation: 3,
             key: 17,
@@ -575,9 +591,10 @@ key: 1,
             error: false
         },
         {
-
+            required: true,
             id: 18,
             key: 18,
+            error: false,
             navigation: 'element',
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
@@ -589,11 +606,45 @@ key: 1,
 
         }])
     const onFormSubmit = () =>{
-        console.log(1)
-        setOnNavigation(onNavigation+1)
+        let error = []
+        for (var i = 0; i < applicationFormValue.length; i++) {
+            if (applicationFormValue[i]?.['error'] && applicationFormValue[i]?.['value'] == "") {
+                onChangeApplicantForm(applicationFormValue[i].id, true, 'error' )
+            }else if(applicationFormValue[i]?.['required'] && applicationFormValue[i]?.['value'] == ""){
+                onChangeApplicantForm(applicationFormValue[i].id, true, 'error' )
+            }else if(applicationFormValue[i]?.['value']){
+                onChangeApplicantForm(applicationFormValue[i].id, false, 'error' )
+            }
+
+        }
+
+
+        for (var j = 0; j< applicationFormValue.length; j++) {
+
+           if(applicationFormValue[j].navigation == onNavigation){
+               if(!applicationFormValue[j].value){
+                   error.push(applicationFormValue[j])
+
+               }
+           }
+
+        }
+        if(!error.length){
+            setOnNavigation(onNavigation + 1)
+        }
+
+
+
+    //
     }
     const onCheckmarkPress = (check: any, index: number) => {
+
         let newArr = [...radioOperationExamTypeItems];
+        for (let i = 0; i < newArr.length; i++) {
+           if(newArr[i].checked){
+               newArr[i].checked = !newArr[i].checked
+           }
+        }
         newArr[index].checked = !check.checked
         setRadioOperationExamTypeItems(newArr);
     }
@@ -612,7 +663,6 @@ key: 1,
     };
 
     const onChangeApplicantForm = (id: number,  text: any, element: string) => {
-
         const index =  applicationFormValue.findIndex(app => app.id == id)
 
 
