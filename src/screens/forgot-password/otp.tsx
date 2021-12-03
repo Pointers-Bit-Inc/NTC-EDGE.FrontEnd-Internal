@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: 'bold',
     flex: 1,
+    paddingHorizontal: 0,
   },
   outlineStyle: {
     paddingHorizontal: 0,
@@ -51,6 +52,7 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     fontSize: 14,
+    color: text.default,
   },
   keyboardAvoiding: {
     position: 'absolute',
@@ -78,8 +80,8 @@ const OneTimePin = ({ navigation, route }:any) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      setEnded(true);
       if (otp === code) {
+        setEnded(true);
         navigation.navigate('ForgotPasswordReset')
       } else {
         setError(errorResponse);
@@ -136,45 +138,45 @@ const OneTimePin = ({ navigation, route }:any) => {
     if (ended || error) {
       return (
         <Button
-            disabled={otp.length < 4 || loading}
-            style={[
-              styles.button,
-              {
-                backgroundColor: button.success
-              },
-              loading && {
-                backgroundColor: '#3BC759'
-              }
-            ]}
-            onPress={onResend}
-          >
+          disabled={loading}
+          style={[
+            styles.button,
             {
-              loading ? (
-                <>
-                  <ActivityIndicator
-                    color={'white'}
-                    size={'small'}
-                  />
-                  <Text
-                    style={{ marginLeft: 10 }}
-                    color="white"
-                    size={16}
-                    weight={'500'}
-                  >
-                    Sending code...
-                  </Text>
-                </>
-              ) : (
+              backgroundColor: button.success
+            },
+            loading && {
+              backgroundColor: '#3BC759'
+            }
+          ]}
+          onPress={onResend}
+        >
+          {
+            loading ? (
+              <>
+                <ActivityIndicator
+                  color={'white'}
+                  size={'small'}
+                />
                 <Text
+                  style={{ marginLeft: 10 }}
                   color="white"
                   size={16}
                   weight={'500'}
                 >
-                  Resend code
+                  Sending code...
                 </Text>
-              )
-            }
-          </Button>
+              </>
+            ) : (
+              <Text
+                color="white"
+                size={16}
+                weight={'500'}
+              >
+                Resend code
+              </Text>
+            )
+          }
+        </Button>
       )
     }
     return (
@@ -271,8 +273,8 @@ const OneTimePin = ({ navigation, route }:any) => {
             color={text.default}
           >
             {accountType === 'phone' ?
-              `Enter the OTP code we sent view SMS to your\nregistered phone number ${renderDetail()}.` :
-              `Enter the OTP code we sent view EMAIL to your\nregistered email address ${renderDetail()}.`
+              `Enter the OTP code we sent view SMS to your registered phone number ${renderDetail()}.` :
+              `Enter the OTP code we sent view EMAIL to your registered email address ${renderDetail()}.`
             }
           </Text>
         </View>
