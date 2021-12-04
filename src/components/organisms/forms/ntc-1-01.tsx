@@ -626,8 +626,8 @@ key: 1,
         <View style={head.header}>
                 <Header tab={tab} />
             </View>
-            <View style={head.childContainer}>
-                <ScrollView>
+            <View style={{flex:1}}>
+                <ScrollView style={head.childContainer}>
                     {onNavigation == 0 &&
                          <Text>Radio Operation Service</Text>}
                     {onNavigation == 0 &&
@@ -756,14 +756,15 @@ key: 1,
                         return app.navigation == onNavigation
                     })}  onChange={onChangeApplicantForm} onSubmit={onFormSubmit}/>
                 </ScrollView>
-                <View>
+                <View  style={bottom.bottomView}>
                     <Button onPress={onFormSubmit} style={{backgroundColor: '#2B23FF'}}>
                         <Text fontSize={16} color={'white'}>
-                           Next
+                            Next
                         </Text>
                     </Button>
                 </View>
             </View>
+
         </View>
 
     );
@@ -778,7 +779,7 @@ const head = StyleSheet.create({
     childContainer: {
         padding:10,
         marginVertical: 18,
-        flex:1
+
     },
     header: {
         backgroundColor: "grey",
@@ -786,6 +787,22 @@ const head = StyleSheet.create({
         height: "15%"
     }
 });
+const bottom = StyleSheet.create({
 
+    bottomView: {
+        width: '100%',
+        backgroundColor: '#fff',
+        position: 'absolute',
+        bottom: 0,
+        shadowColor: "#000000",
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        shadowOffset: {
+            height: 1,
+            width: 1
+        },
+        padding: 30
+    },
+});
 
 export default NTC101;
