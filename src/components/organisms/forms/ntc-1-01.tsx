@@ -780,7 +780,7 @@ key: 1,
                     })}  onChange={onChangeApplicantForm} onSubmit={onFormSubmit}/>
                 </ScrollView>
                 <View  style={bottom.bottomView}>
-                    <Button onPress={onFormSubmit} style={{backgroundColor: '#2B23FF'}}>
+                    <Button  onPress={onFormSubmit} style={[button.color, button.borderRadius]}>
                         <Text fontSize={16} color={'white'}>
                             Next
                         </Text>
@@ -792,6 +792,17 @@ key: 1,
 
     );
 };
+const button= StyleSheet.create({
+    color: {
+        backgroundColor: primaryColor
+    },
+    borderRadius: {
+
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#fff',
+    },
+})
 const head = StyleSheet.create({
 
     container: {
