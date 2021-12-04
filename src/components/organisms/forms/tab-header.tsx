@@ -1,6 +1,8 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Platform, Pressable, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {primaryColor, text} from "../../../styles/color";
+import RNPickerSelect from "react-native-picker-select";
+import {Ionicons} from "@expo/vector-icons";
 
 const Header = (props: any) => {
     const {
@@ -9,10 +11,7 @@ const Header = (props: any) => {
     } = props;
 
     return (
-        <View style={styles.containerHeader}>
-            <View style={styles.textContainer}>
-                <Text style={styles.textWhite}>Attendant's Detail</Text>
-            </View>
+
             <View style={styles.tabContainer}>
 
                 {
@@ -48,26 +47,12 @@ const Header = (props: any) => {
                 }
 
             </View>
-        </View>
     );
 };
 
 const styles = StyleSheet.create({
 
-    containerHeader: {
-        flex: 1,
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "flex-start",
 
-    },
-    textContainer: {
-        marginTop: 20,
-        marginLeft: 10
-    },
-    textWhite: {
-        color: '#565961',
-    },
     tabContainer: {
         backgroundColor: "white",
         width: "100%",

@@ -98,7 +98,7 @@ const FormField = ({
         }
     }
     return (
-        <ScrollView>
+        <>
             {formElements.map((element: any, key: number) => {
                 return element.type != 'submit' && (
                     <View key={element.id}>
@@ -111,7 +111,7 @@ const FormField = ({
                     </View>
                 );
             })}
-        </ScrollView>
+        </>
     );
 };
 const pickerSelectStyles = StyleSheet.create({

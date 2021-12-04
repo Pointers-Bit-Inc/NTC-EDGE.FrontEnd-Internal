@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Platform, Pressable, ScrollView, StyleSheet, View} from 'react-native';
+import {Platform, Pressable, ScrollView, StyleSheet, View, Animated} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Text from '@atoms/text';
 import Button from '@atoms/button';
@@ -38,7 +38,7 @@ const NTC101 = ({
                     }, loading = false
                 }) => {
 
-
+    const [headerShown, setHeaderShown] = useState(false);
     const pickerSelectStyles = StyleSheet.create({
         inputIOS: {
             overflow: 'hidden',
@@ -69,8 +69,8 @@ const NTC101 = ({
             alignItems: 'center',
             borderRadius: 4,
             borderWidth: 2,
-            borderColor: outline.default,
-            backgroundColor: 'transparent',
+
+            backgroundColor: 'white',
         },
 
         checkboxChecked: {
@@ -99,8 +99,41 @@ const NTC101 = ({
             fontWeight: '500',
             fontSize: 12,
         },
-    });
+        containerHeader: {
+            flex: 1,
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "flex-start",
 
+        },
+        textContainer: {
+            marginTop: "5%",
+            marginLeft: 10
+        },
+        textWhite: {
+            color: '#565961',
+        },
+
+
+    });
+    const head = StyleSheet.create({
+
+        container: {
+            flex: 1,
+            backgroundColor: "#fff",
+            flexDirection: "column"
+        },
+        childContainer: {
+            padding: 10,
+            marginVertical: 18,
+
+        },
+        header: {
+            backgroundColor: "#f0f0f0",
+            width: "100%",
+            height: '15%'
+        }
+    });
     const [sexType, setSexType] = useState([
         {value: 1, label: "Male"}
         ,
@@ -569,25 +602,25 @@ const NTC101 = ({
         },])
     const onFormSubmit = () => {
         let error = []
-            for (var i = 0; i < applicationFormValue.length; i++) {
-                if (applicationFormValue[i]?.['error'] && applicationFormValue[i]?.['value'] == "") {
-                    onChangeApplicantForm(applicationFormValue[i].id, true, 'error')
-                } else if (applicationFormValue[i]?.['required'] && applicationFormValue[i]?.['value'] == "") {
-                    onChangeApplicantForm(applicationFormValue[i].id, true, 'error')
-                } else if (applicationFormValue[i]?.['value']) {
-                    onChangeApplicantForm(applicationFormValue[i].id, false, 'error')
-                }
-
+        for (var i = 0; i < applicationFormValue.length; i++) {
+            if (applicationFormValue[i]?.['error'] && applicationFormValue[i]?.['value'] == "") {
+                onChangeApplicantForm(applicationFormValue[i].id, true, 'error')
+            } else if (applicationFormValue[i]?.['required'] && applicationFormValue[i]?.['value'] == "") {
+                onChangeApplicantForm(applicationFormValue[i].id, true, 'error')
+            } else if (applicationFormValue[i]?.['value']) {
+                onChangeApplicantForm(applicationFormValue[i].id, false, 'error')
             }
-            for (var j = 0; j < applicationFormValue.length; j++) {
 
-                if (applicationFormValue[j].navigation == onNavigation) {
-                    if (!applicationFormValue[j].value) {
-                        error.push(applicationFormValue[j])
+        }
+        for (var j = 0; j < applicationFormValue.length; j++) {
 
-                    }
+            if (applicationFormValue[j].navigation == onNavigation) {
+                if (!applicationFormValue[j].value) {
+                    error.push(applicationFormValue[j])
+
                 }
             }
+        }
 
 
         if (!error.length) {
@@ -608,7 +641,7 @@ const NTC101 = ({
                     }
                 }
             }
-        }else{
+        } else {
             let newArr = [...tab]
             newArr[onNavigation].isComplete = false
             setTab(newArr)
@@ -670,90 +703,111 @@ const NTC101 = ({
             isRouteActive: false,
             isComplete: false
         }])
-    const changeNavigation = (nav:any)=>{
+    const changeNavigation = (nav: any) => {
         let index = -1;
 
         for (let j = 0; j < tab.length; j++) {
-            if(tab[j].isRouteActive){
+            if (tab[j].isRouteActive) {
                 tab[j].isRouteActive = !tab[j].isRouteActive
             }
 
-            if(tab[j].id == nav.id){
+            if (tab[j].id == nav.id) {
                 index = j
-                tab[j].isRouteActive =  !tab[j].isRouteActive
+                tab[j].isRouteActive = !tab[j].isRouteActive
 
             }
 
         }
         setTab(tab)
-        if(index > -1 && tab[index].isComplete){
+        if (index > -1 && tab[index].isComplete) {
             setOnNavigation(index)
         }
     }
+
     return (
         <View style={head.container}>
+            {onNavigation == 0  && !headerShown &&
+            <Text>Radio Operation Service</Text>}
+            {onNavigation == 0 && !headerShown &&
+            <RNPickerSelect
+                Icon={() => {
+                    return Platform.OS == 'ios' ?
+                        <Ionicons name="chevron-down-outline" size={16} color="gray"/> : <></>;
+                }}
+                style={{
+                    ...pickerSelectStyles,
+                    iconContainer: {
+                        top: 10,
+                        right: 12,
+                    },
+                }}
+                value={radioOperationServiceSelectedValue}
+                onValueChange={(itemValue: any, itemIndex: number) => {
+                    if (!itemValue) return
+                    const radioOperationExam = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
+                        .map((radio_operation_exam_type) => {
+                            return {
+                                label: radio_operation_exam_type.name,
+                                value: radio_operation_exam_type.id,
+                                checked: false
+                            }
+                        })
+                    setRadioOperationServiceSelectedValue(itemValue)
+                    setRadioOperationExamTypeSelectedValue(radioOperationExam[0]["value"])
+                    setRadioOperationExamTypeItems(radioOperationExam)
+                }}
+                items={
+
+                    radio_operation_services.map((radio_operation_service: RadioOperationServices) => {
+                        return {label: radio_operation_service.name, value: radio_operation_service.id}
+                    })
+                }
+            />}
+
+            {onNavigation == 0 && !headerShown &&
+            radioOperationExamTypeItems.map((pick: any, key: number) => {
+                return <>
+                    <View style={styles.checkboxContainer}>
+                        <Pressable
+
+                            key={key}
+                            style={[{ borderColor: pick.value == radioOperationExamTypeSelectedValue? '#fff': '#a1a1aa'}, styles.checkboxBase, pick.value == radioOperationExamTypeSelectedValue && styles.checkboxChecked]}
+                            onPress={() => onCheckmarkPress(pick, key)}>
+                            {pick.value == radioOperationExamTypeSelectedValue &&
+                            <Ionicons name="checkmark" size={16} color="white"/>}
+
+                        </Pressable>
+                        <Text style={styles.checkboxLabel}>{pick.label}</Text>
+                    </View>
+                </>
+            })
+            }
             <View style={head.header}>
+                <View style={styles.containerHeader}>
+                    <View  style={styles.textContainer}>
+
+
+                        <Text style={styles.textWhite}>Attendant's Detail</Text>
+                    </View>
                 <Header onChangeNavigation={changeNavigation} tab={tab}/>
+                </View>
             </View>
             <View style={{flex: 1}}>
-                <ScrollView style={head.childContainer}>
-                    {onNavigation == 0 &&
-                    <Text>Radio Operation Service</Text>}
-                    {onNavigation == 0 &&
-                    <RNPickerSelect
-                        Icon={() => {
-                            return Platform.OS == 'ios' ?
-                                <Ionicons name="chevron-down-outline" size={16} color="gray"/> : <></>;
-                        }}
-                        style={{
-                            ...pickerSelectStyles,
-                            iconContainer: {
-                                top: 10,
-                                right: 12,
-                            },
-                        }}
-                        value={radioOperationServiceSelectedValue}
-                        onValueChange={(itemValue: any, itemIndex: number) => {
-                            if (!itemValue) return
-                            const radioOperationExam = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
-                                .map((radio_operation_exam_type) => {
-                                    return {
-                                        label: radio_operation_exam_type.name,
-                                        value: radio_operation_exam_type.id,
-                                        checked: false
-                                    }
-                                })
-                            setRadioOperationServiceSelectedValue(itemValue)
-                            setRadioOperationExamTypeSelectedValue(radioOperationExam[0]["value"])
-                            setRadioOperationExamTypeItems(radioOperationExam)
-                        }}
-                        items={
+                <ScrollView
+                    onScroll={(event) => {
+                        const scrolling = event.nativeEvent.contentOffset.y;
 
-                            radio_operation_services.map((radio_operation_service: RadioOperationServices) => {
-                                return {label: radio_operation_service.name, value: radio_operation_service.id}
-                            })
+                        if (scrolling > 100) {
+                            setHeaderShown(true);
+                        } else if(scrolling < 0) {
+                            setHeaderShown(false);
                         }
-                    />}
+                    }}
+                    // onScroll will be fired every 16ms
+                    scrollEventThrottle={16}
+                    style={head.childContainer}
+                    >
 
-                    {onNavigation == 0 &&
-                    <Text>Radio Operation Exam Type</Text>}
-                    {onNavigation == 0 &&
-                    radioOperationExamTypeItems.map((pick: any, key: number) => {
-                        return <>
-                            <View style={styles.checkboxContainer}>
-                                <Pressable
-                                    key={key}
-                                    style={[styles.checkboxBase, pick.value == radioOperationExamTypeSelectedValue && styles.checkboxChecked]}
-                                    onPress={() => onCheckmarkPress(pick, key)}>
-                                    {pick.value == radioOperationExamTypeSelectedValue &&
-                                    <Ionicons name="checkmark" size={16} color="white"/>}
-
-                                </Pressable>
-                                <Text style={styles.checkboxLabel}>{pick.label}</Text>
-                            </View>
-                        </>
-                    })
-                    }
 
                     {/*<InputField
                         label={'Name'}
@@ -854,24 +908,7 @@ const button = StyleSheet.create({
         borderColor: '#fff',
     },
 })
-const head = StyleSheet.create({
 
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        flexDirection: "column"
-    },
-    childContainer: {
-        padding: 10,
-        marginVertical: 18,
-
-    },
-    header: {
-        backgroundColor: "#f0f0f0",
-        width: "100%",
-        height: "15%"
-    }
-});
 const bottom = StyleSheet.create({
 
     bottomView: {
