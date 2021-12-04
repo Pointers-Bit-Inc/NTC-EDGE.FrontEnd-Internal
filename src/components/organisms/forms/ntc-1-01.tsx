@@ -569,25 +569,27 @@ const NTC101 = ({
         },])
     const onFormSubmit = () => {
         let error = []
+            for (var i = 0; i < applicationFormValue.length; i++) {
+                if (applicationFormValue[i]?.['error'] && applicationFormValue[i]?.['value'] == "") {
+                    onChangeApplicantForm(applicationFormValue[i].id, true, 'error')
+                } else if (applicationFormValue[i]?.['required'] && applicationFormValue[i]?.['value'] == "") {
+                    onChangeApplicantForm(applicationFormValue[i].id, true, 'error')
+                } else if (applicationFormValue[i]?.['value']) {
+                    onChangeApplicantForm(applicationFormValue[i].id, false, 'error')
+                }
 
-        for (var i = 0; i < applicationFormValue.length; i++) {
-            if (applicationFormValue[i]?.['error'] && applicationFormValue[i]?.['value'] == "") {
-                onChangeApplicantForm(applicationFormValue[i].id, true, 'error')
-            } else if (applicationFormValue[i]?.['required'] && applicationFormValue[i]?.['value'] == "") {
-                onChangeApplicantForm(applicationFormValue[i].id, true, 'error')
-            } else if (applicationFormValue[i]?.['value']) {
-                onChangeApplicantForm(applicationFormValue[i].id, false, 'error')
             }
+            for (var j = 0; j < applicationFormValue.length; j++) {
 
-        }
-        for (var j = 0; j < applicationFormValue.length; j++) {
+                if (applicationFormValue[j].navigation == onNavigation) {
+                    if (!applicationFormValue[j].value) {
+                        error.push(applicationFormValue[j])
 
-            if (applicationFormValue[j].navigation == onNavigation) {
-                if (!applicationFormValue[j].value) {
-                    error.push(applicationFormValue[j])
+                    }
                 }
             }
-        }
+
+
         if (!error.length) {
             let newArr = [...tab];
             if (onNavigation < tab.length - 1) {
@@ -597,9 +599,19 @@ const NTC101 = ({
                 setTab(newArr);
 
                 setOnNavigation(onNavigation + 1)
+
+                for (var k = 0; k < applicationFormValue.length; k++) {
+
+                    if (applicationFormValue[k].navigation == onNavigation + 1) {
+                        onChangeApplicantForm(applicationFormValue[k].id, false, 'error')
+
+                    }
+                }
             }
-
-
+        }else{
+            let newArr = [...tab]
+            newArr[onNavigation].isComplete = false
+            setTab(newArr)
         }
     }
     const onCheckmarkPress = (check: any, index: number) => {
@@ -654,10 +666,13 @@ const NTC101 = ({
             isRouteActive: false,
             isComplete: false
         }])
+    const changeNavigation = ()=>{
+
+    }
     return (
         <View style={head.container}>
             <View style={head.header}>
-                <Header tab={tab}/>
+                <Header onChangeNavigation={changeNavigation} tab={tab}/>
             </View>
             <View style={{flex: 1}}>
                 <ScrollView style={head.childContainer}>
@@ -831,7 +846,7 @@ const head = StyleSheet.create({
 
     },
     header: {
-        backgroundColor: "grey",
+        backgroundColor: "#f0f0f0",
         width: "100%",
         height: "15%"
     }
@@ -849,7 +864,7 @@ const bottom = StyleSheet.create({
             height: 1,
             width: 1
         },
-        padding: 30
+        padding: 20
     },
 });
 

@@ -19,15 +19,15 @@ const Header = (props: any) => {
 
                         return <View key={key} style={{
                             alignSelf: 'flex-start',
-                            borderBottomColor: primaryColor,
-                            borderBottomWidth: t.isRouteActive ? 2 : 0
+                            borderBottomColor: '#2f5bfa',
+                            borderBottomWidth: t.isRouteActive ?  5 : 0
                         }}>
                             <Text
                                 style={{
                                     fontSize: 10,
                                     lineHeight: 50,
                                     textTransform: "uppercase",
-                                    color: `${t.tintColor}`,
+                                    color: `${t.isRouteActive ? '#2f5bfa' : '#000'}`,
                                     fontWeight: `${t.isRouteActive ? "bold" : "normal"}`
                                 }}
                             >
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     textWhite: {
-        color: 'black',
+        color: '#565961',
     },
     tabContainer: {
         backgroundColor: "white",
