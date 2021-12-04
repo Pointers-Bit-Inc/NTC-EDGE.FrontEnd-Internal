@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Platform, Pressable, ScrollView, StyleSheet, View} from 'react-native';
+import {Platform, Pressable, ScrollView, StyleSheet, View,Dimensions} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {DateTimeField, InputField} from '@molecules/form-fields';
 import Text from '@atoms/text';
@@ -253,6 +253,8 @@ const NTC101 = ({
             note: 'RROC - Aircraft - Element 1',
         },
     ]);
+    const WIDTH = Dimensions.get('window').width;
+    const HEIGHT = Dimensions.get('window').height;
     const {text} = useTheme();
     const onTimeChange = (event: any, newTime: any) => {
         const currenttime = newTime || time
@@ -282,7 +284,6 @@ const NTC101 = ({
 
     const [formFieldKey, setFormFieldKey ] = useState(Math.random())
     const [applicationFormValue, setApplicationFormValue] = useState([
-
         {
             id: 1,
 key: 1,
@@ -551,22 +552,7 @@ key: 1,
             requiredColor: text.error,
             inputStyle: InputStyles.text,
             error: false
-        },
-        {
-            required: true,
-            id: 18,
-            key: 18,
-            error: false,
-            navigation: 'element',
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
-            label: "Next",
-            type: "button",
-            style: {backgroundColor: '#2B23FF'},
-
-        }])
+        },])
     const onFormSubmit = () =>{
         let error = []
 
@@ -678,21 +664,22 @@ key: 1,
 
                     {onNavigation == 0 &&
                     <Text>Radio Operation Exam Type</Text>}
+                    {onNavigation == 0 &&
+                        radioOperationExamTypeItems.map((pick: any, key: number) => {
+                            return <>
+                                <View style={styles.checkboxContainer}>
+                                    <Pressable
+                                        key={key}
+                                        style={[styles.checkboxBase, pick.checked && styles.checkboxChecked]}
+                                        onPress={() => onCheckmarkPress(pick, key)}>
+                                        {pick.checked && <Ionicons name="checkmark" size={16} color="white"/>}
 
-                    {radioOperationExamTypeItems.map((pick: any, key: number) => {
-                        return <>
-                        <View style={styles.checkboxContainer}>
-                        <Pressable
-                        key={key}
-                        style={[styles.checkboxBase, pick.checked && styles.checkboxChecked]}
-                        onPress={() => onCheckmarkPress(pick, key)}>
-                    {pick.checked && <Ionicons name="checkmark" size={16} color="white"/>}
-
-                        </Pressable>
-                        <Text style={styles.checkboxLabel}>{pick.label}</Text>
-                        </View>
-                        </>
-                    })}
+                                    </Pressable>
+                                    <Text style={styles.checkboxLabel}>{pick.label}</Text>
+                                </View>
+                            </>
+                        })
+                    }
 
                     {/*<InputField
                         label={'Name'}
@@ -766,9 +753,16 @@ key: 1,
 */}
                     <FormField  key={formFieldKey} formElements={applicationFormValue.filter(app => {
 
-                        return app.navigation == onNavigation || app.navigation == 'element'
+                        return app.navigation == onNavigation
                     })}  onChange={onChangeApplicantForm} onSubmit={onFormSubmit}/>
                 </ScrollView>
+                <View>
+                    <Button onPress={onFormSubmit} style={{backgroundColor: '#2B23FF'}}>
+                        <Text fontSize={16} color={'white'}>
+                           Next
+                        </Text>
+                    </Button>
+                </View>
             </View>
         </View>
 
@@ -792,4 +786,6 @@ const head = StyleSheet.create({
         height: "15%"
     }
 });
+
+
 export default NTC101;
