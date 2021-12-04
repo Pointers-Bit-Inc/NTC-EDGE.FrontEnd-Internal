@@ -30,22 +30,22 @@ const DateTimePicker = ({ value, placeholder }: any) => {
   };
 
   return (
-    <View>
-      <TextInput
-        style={styles.input}
-        ref={textInputRef}
-        value={datetime}
-        placeholder={placeholder}
-        underlineColorAndroid={'transparent'}
-        onPressIn={showDatePicker}
-      />
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="date"
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker}
-      />
-    </View>
+      <View>
+        <TextInput
+            style={styles.input}
+            ref={textInputRef}
+            value={datetime}
+            placeholder={placeholder}
+            underlineColorAndroid={'transparent'}
+            onPressIn={showDatePicker}
+        />
+        <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+        />
+      </View>
   );
 };
 

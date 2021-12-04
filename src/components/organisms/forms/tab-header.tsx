@@ -15,8 +15,8 @@ const Header = (props:any)=> {
             <View style={styles.tabContainer}>
 
                 {
-                    tab.map((t:any) =>{
-                        return <View>
+                    tab.map((t:any, key: number) =>{
+                        return <View key={ key}>
                             <Text
                                 style={{
 

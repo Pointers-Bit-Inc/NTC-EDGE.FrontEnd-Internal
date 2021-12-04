@@ -1,12 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, Platform } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
+import { Ionicons } from '@expo/vector-icons';
+import { defaultColor, text } from 'src/styles/color';
 
 const styles = StyleSheet.create({
   viewContainer: {
     padding: 10,
-    borderColor: 'black',
-    borderWidth: 1
+  },
+  inputIOS: {
+    color: text.default,
+    fontSize: 14,
+    paddingRight: 25,
+  },
+  inputAndroid: {
+    backgroundColor: 'transparent',
+    color: text.default,
+    fontSize: 14,
+    paddingVertical: 5,
+    paddingLeft: 10,
+    paddingRight: 25,
+  },
+  iconContainer: {
+    top: Platform.OS === 'ios' ? 0 : 10,
   },
   inputWeb: {
     ...Platform.select({
@@ -23,19 +39,37 @@ const styles = StyleSheet.create({
   }
 });
 
-const Dropdown = ({ value = '' }) => {
-  const [selectedValue, setSelectedValue] = useState(value);
+const Dropdown = ({
+                    value = '',
+                    onChangeValue = () => {},
+                    items = [],
+                    placeholder = {},
+                    ...otherProps
+                  }) => {
 
   return (
-    <RNPickerSelect
-      style={{ ...styles }}
-      value={selectedValue}
-      onValueChange={setSelectedValue}
-      items={[
-        { label: 'Male', value: 'male' },
-        { label: 'Female', value: 'female' }
-      ]}
-    />
+      <RNPickerSelect
+          style={{
+            ...styles,
+            placeholder: {
+              color: defaultColor,
+              fontSize: 14,
+            },
+          }}
+          placeholder={placeholder}
+          value={value}
+          onValueChange={onChangeValue}
+          items={items}
+          useNativeAndroidPickerStyle={false}
+          Icon={() => (
+              <Ionicons
+                  name="md-caret-down"
+                  size={18}
+                  color={text.default}
+              />
+          )}
+          {...otherProps}
+      />
   );
 };
 
