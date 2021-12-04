@@ -253,8 +253,7 @@ const NTC101 = ({
             note: 'RROC - Aircraft - Element 1',
         },
     ]);
-    const WIDTH = Dimensions.get('window').width;
-    const HEIGHT = Dimensions.get('window').height;
+
     const {text} = useTheme();
     const onTimeChange = (event: any, newTime: any) => {
         const currenttime = newTime || time
@@ -284,6 +283,21 @@ const NTC101 = ({
 
     const [formFieldKey, setFormFieldKey ] = useState(Math.random())
     const [applicationFormValue, setApplicationFormValue] = useState([
+
+        {
+            id: 0,
+            key: 0,
+            required: true,
+            label: 'Radio Operation Exam Type',
+            value: radioOperationExamTypeSelectedValue
+        },
+        {
+            id: 18,
+            key: 18,
+            required: true,
+            label: 'Radio Operation Service',
+            value: radioOperationServiceSelectedValue,
+        },
         {
             id: 1,
 key: 1,
@@ -581,10 +595,15 @@ key: 1,
 
         if(!error.length){
             let newArr = [...tab];
-            newArr[onNavigation].isRouteActive = !newArr[onNavigation].isRouteActive
-            newArr[onNavigation + 1].isRouteActive = !newArr[onNavigation + 1].isRouteActive
-            setTab(newArr);
-            setOnNavigation(onNavigation + 1)
+            if(onNavigation< tab.length-1){
+
+                newArr[onNavigation].isRouteActive = !newArr[onNavigation].isRouteActive
+                newArr[onNavigation + 1].isRouteActive = !newArr[onNavigation + 1].isRouteActive
+                setTab(newArr);
+
+                setOnNavigation(onNavigation + 1)
+            }
+
 
         }
 
@@ -600,6 +619,7 @@ key: 1,
            }
         }
         newArr[index].checked = !check.checked
+        setRadioOperationExamTypeSelectedValue(newArr[index]['value'])
         setRadioOperationExamTypeItems(newArr);
     }
 
@@ -632,6 +652,9 @@ key: 1,
                          <Text>Radio Operation Service</Text>}
                     {onNavigation == 0 &&
                     <RNPickerSelect
+                        Icon={() => {
+                            return Platform.OS == 'ios' ? <Ionicons name="chevron-down-outline" size={16} color="gray" /> : <></>;
+                        }}
                         style={{
                         ...pickerSelectStyles,
                         iconContainer: {
@@ -670,9 +693,9 @@ key: 1,
                                 <View style={styles.checkboxContainer}>
                                     <Pressable
                                         key={key}
-                                        style={[styles.checkboxBase, pick.checked && styles.checkboxChecked]}
+                                        style={[styles.checkboxBase, pick.value == radioOperationExamTypeSelectedValue && styles.checkboxChecked]}
                                         onPress={() => onCheckmarkPress(pick, key)}>
-                                        {pick.checked && <Ionicons name="checkmark" size={16} color="white"/>}
+                                        {pick.value == radioOperationExamTypeSelectedValue && <Ionicons name="checkmark" size={16} color="white"/>}
 
                                     </Pressable>
                                     <Text style={styles.checkboxLabel}>{pick.label}</Text>
@@ -792,7 +815,6 @@ const bottom = StyleSheet.create({
     bottomView: {
         width: '100%',
         backgroundColor: '#fff',
-        position: 'absolute',
         bottom: 0,
         shadowColor: "#000000",
         shadowOpacity: 0.8,

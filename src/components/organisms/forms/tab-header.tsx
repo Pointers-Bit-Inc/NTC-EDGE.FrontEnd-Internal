@@ -28,13 +28,14 @@ const Header = (props:any)=> {
                             >
                                 {t.name}
                             </Text>
-                            <View style={{
+
+                            {t.isRouteActive && <View style={{
                                 height: 1,
                                 marginBottom: -30,
                                 borderWidth: 1,
                                 borderColor: primaryColor,
                                 borderStyle: 'solid'
-                            }}></View>
+                            }}></View>}
                         </View>
                     })
 
