@@ -16,11 +16,12 @@ const Header = (props:any)=> {
 
                 {
                     tab.map((t:any, key: number) =>{
-                        return <View key={ key}>
+
+                        return <View key={ key} style={{ alignSelf: 'flex-start', borderBottomColor: primaryColor, borderBottomWidth:t.isRouteActive?  2 : 0}}>
                             <Text
                                 style={{
-
-                                    fontSize: 10,
+                                    fontSize: 12,
+                                    lineHeight: 50,
                                     textTransform: "uppercase",
                                     color: `${t.tintColor}`,
                                     fontWeight: `${t.isRouteActive ? "bold" : "normal"}`
@@ -29,13 +30,7 @@ const Header = (props:any)=> {
                                 {t.name}
                             </Text>
 
-                            {t.isRouteActive && <View style={{
-                                height: 1,
-                                marginBottom: -30,
-                                borderWidth: 1,
-                                borderColor: primaryColor,
-                                borderStyle: 'solid'
-                            }}></View>}
+
                         </View>
                     })
 
