@@ -1,24 +1,17 @@
-import React, {Component, useReducer, useRef, useState} from 'react';
-import {
-    InputAccessoryView,
-    Picker,
-    Pressable,
-    ScrollView,
-    StyleSheet, TouchableOpacity,
-    TouchableWithoutFeedback,
-    View
-} from 'react-native';
-import {InputField} from "@molecules/form-fields";
+import React from 'react';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {DropdownField, InputField} from "@molecules/form-fields";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import RNPickerSelect from 'react-native-picker-select';
 import Button from "@atoms/button";
 import Text from "@atoms/text";
 import {Ionicons} from "@expo/vector-icons";
+import {outline, text} from "../../../styles/color";
+
 const FormField = ({
                        color,
                        formElements,
                        onChange,
-                        onSubmit,
+                       onSubmit,
                        ...otherProps
                    }: any) => {
     const inputColor = color ? color : "#486c86";
@@ -34,31 +27,38 @@ const FormField = ({
                 return <InputField key={id}  {...styleProps} {...otherProps}
                                    onChangeText={(text: string) => onChange(id, text)}
                                    onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text)}/>;
+
+
             case "date":
-                return <DateTimePicker onChange={ (event:any, selectedDate:any) => {
-                  alert(event)
-                }} key={id}  {...styleProps} {...otherProps} />;
+
+                return (
+                    <View>
+                        <Text>{otherProps.label}</Text>
+                        <DateTimePicker style={{width: '100%'}}
+                                        onChange={(event: any, selectedDate: any) => {
+                                            onChange(id, selectedDate)
+                                        }}
+                                        key={id} {...styleProps} {...otherProps}  />
+                    </View>
+                );
             case "radiobutton":
-                return <><Text>Gender</Text>
-            {pickerData.map((data:any, key: number) => {
-                        return (<>
-                            <View key={data.value}>
-                                {otherProps.checked == data.value ?
-                                    <TouchableOpacity onPress={ ()=> onChange(id, data.value, 'checked')} style={radioButton.btn}>
-                                        <Ionicons name={'radio-button-on'}/>
-                                        <Text>{data.label}</Text>
-                                    </TouchableOpacity>
-                                    :
-                                    <TouchableOpacity onPress={ ()=> onChange(id, data.value, 'checked')} style={radioButton.btn}>
-                                        <Ionicons name={'radio-button-off'}/>
-                                        <Text>{data.label}</Text>
-                                    </TouchableOpacity>
-                                }
-                            </View>
-                            </>
-                        )
-                    })}
-                    </>
+                return (<View style={radioButton.typeContainer}>
+                    <Text color={text.default} size={14}>Gender</Text>
+                    {
+                        pickerData.map((item: any) => (
+                            <TouchableOpacity
+                                key={item.value}
+                                onPress={() => onChange(id, item.value)}
+                            >
+                                <View style={radioButton.buttonContainer}>
+                                    <View
+                                        style={[radioButton.circle, item.value === otherProps.value && radioButton.circleActive]}/>
+                                    <Text color={text.default} size={14}>{item.label}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        ))
+                    }
+                </View>)
             case "button":
                 return <Button onPress={onSubmit} key={id}   {...styleProps} {...otherProps}>
                     <Text fontSize={16} color={'white'}>
@@ -66,10 +66,9 @@ const FormField = ({
                     </Text>
                 </Button>
 
-
             case "picker":
 
-                return <RNPickerSelect
+                return <DropdownField
                     style={{
                         ...pickerSelectStyles,
                         iconContainer: {
@@ -78,19 +77,22 @@ const FormField = ({
                         },
                     }}
                     Icon={() => {
-                        return <Ionicons name="chevron-down-outline" size={24} color="gray" />;
+                        return <Ionicons name="chevron-down-outline" size={24} color="gray"/>;
                     }}
                     key={id}
+                    label={otherProps.label}
+                    placeholder={{
+                        label: otherProps.label,
+                        value: null,
+                        color: 'black',
+                    }}
                     itemKey={'value'}
                     {...styleProps} {...otherProps}
-                    value={otherProps.value}
-                    onValueChange={(value) => {
-                            onChange(id, value)
-                    }}
+                    onChangeValue={(value: string) => onChange(id, value)}
                     items={
                         pickerData.map((pick: any, key: number) => {
                             return {label: pick.label, value: pick.value, key: key}
-                    })
+                        })
                     }/>
 
         }
@@ -98,8 +100,8 @@ const FormField = ({
     return (
         <ScrollView>
             {formElements.map((element: any, key: number) => {
-                return (
-                    <View >
+                return element.type != 'submit' && (
+                    <View key={element.id}>
                         {renderElements(
                             element.id,
                             element,
@@ -134,12 +136,30 @@ const pickerSelectStyles = StyleSheet.create({
 });
 
 const radioButton = StyleSheet.create({
-    img:{
-        height:20,
-        width: 20
+    buttonContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingLeft: 15,
     },
-    btn:{
-        flexDirection: 'row'
+    typeContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 20,
+        paddingHorizontal: 5,
+    },
+    circle: {
+        height: 15,
+        width: 15,
+        borderColor: outline.default,
+        borderWidth: 1.2,
+        borderRadius: 15,
+        marginRight: 5,
+    },
+    circleActive: {
+        borderColor: outline.primary,
+        borderWidth: 5,
     }
 });
+
+
 export default FormField;

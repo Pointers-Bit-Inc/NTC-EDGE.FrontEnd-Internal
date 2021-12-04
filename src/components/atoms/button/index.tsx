@@ -16,7 +16,7 @@ interface Props {
 
 const Button: FC<Props> = ({ children, style, ...otherProps }: any) => {
   return (
-    <TouchableOpacity style={[styles.default, style]} {...otherProps}>
+    <TouchableOpacity  style={[styles.default, style]} {...otherProps}>
       {children}
     </TouchableOpacity>
   );

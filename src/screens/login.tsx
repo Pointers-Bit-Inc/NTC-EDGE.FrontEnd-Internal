@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, SafeAreaView, View } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { setUser } from 'src/reducers/user/actions';
 import LoginForm from '@organisms/forms/login';
 import Row from '@components/atoms/row';
 import Column from '@components/atoms/column';
 import Api from 'src/services/api';
+import RegistrationForm from "@organisms/forms/registration";
 
 const api = Api();
 
@@ -44,7 +45,8 @@ const Login = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <LoginForm onSubmit={(value) => request(value)} loading={loading} />
+
+       <LoginForm onSubmit={(value) => request(value)} loading={loading} />
       </View>
     </SafeAreaView>
   );
