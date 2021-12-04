@@ -258,7 +258,7 @@ const RegistrationForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) =
         onChangeText={(value: string) => onChangeValue('confirmPassword', value)}
         onSubmitEditing={(event:any) => onChangeValue('confirmPassword', event.nativeEvent.text)}
       />
-      <View style={[styles.horizontal, { marginTop: 20 }]}>
+      <View style={[styles.horizontal]}>
         <TouchableOpacity onPress={() => onChangeValue('showPassword', !form?.showPassword?.value)}>
           {renderPasswordChecker(form?.showPassword?.value)}
         </TouchableOpacity>

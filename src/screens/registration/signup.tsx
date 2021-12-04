@@ -11,6 +11,7 @@ import {
 import { validateText, validatePhone } from 'src/utils/form-validations';
 import { ArrowLeftIcon } from '@atoms/icon';
 import RegistrationDetailsForm from '@organisms/forms/registration-details';
+import useKeyboard from 'src/hooks/useKeyboard';
 import Text from '@atoms/text';
 import Button from '@components/atoms/button';
 import { button } from 'src/styles/color';
@@ -27,23 +28,37 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   footer: {
-    position: 'absolute',
-    width: '100%',
     paddingHorizontal: 20,
-    bottom: 45,
+    paddingTop: 15,
+    paddingBottom: 60,
+    backgroundColor: 'white',
   },
   button: {
-    marginTop: 35,
     borderRadius: 5,
     paddingVertical: 12,
-  }
+  },
+  keyboardAvoiding: {
+    position: 'absolute',
+    width: '100%',
+    bottom: 0,
+  },
+  shadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
 });
 
 const RegistrationSignUp = ({ route, navigation }:any) => {
+  const isKeyboardVisible = useKeyboard();
   const {
     username,
     email,
-    phone,
     password,
   } = route.params;
   const [formValue, setFormValue] = useState({
@@ -195,10 +210,8 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
   };
 
   const onCheckValidation = () => {
-    if (!formValue.userType.isValid) {
-      return onChangeText('userType', formValue.userType.value);
-    } else if (!formValue.permitType.isValid) {
-      return onChangeText('userType', formValue.permitType.value);
+    if (!formValue.permitType.isValid) {
+      return onChangeText('permitType', formValue.permitType.value);
     } else if (!formValue.firstname.isValid) {
       return onChangeText('firstname', formValue.firstname.value);
     } else if (!formValue.middlename.isValid) {
@@ -228,10 +241,11 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={75}
         style={styles.container}
       >
       <ScrollView
-        style={{ paddingHorizontal: 20, paddingBottom: 30 }}
+        style={{ paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
       >
         <View style={{ marginTop: 35 }}>
@@ -244,14 +258,27 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
         </View>
         <RegistrationDetailsForm onChangeValue={onChangeText} form={formValue} />
       </ScrollView>
-      <View style={styles.footer}>
-        <Button
-          style={[styles.button, { backgroundColor: isValid ? button.primary : button.default }]}
-          onPress={onCheckValidation}
-        >
-          <Text color="white" size={18}>Sign up</Text>
-        </Button>
-      </View>
+      </KeyboardAvoidingView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+        keyboardVerticalOffset={-45}
+        style={styles.keyboardAvoiding}
+      >
+        <View style={[styles.footer, isKeyboardVisible && styles.shadow]}>
+          <Button
+            style={[
+              styles.button,
+              {
+                backgroundColor: isValid ?
+                  button.primary :
+                  button.default
+              }
+            ]}
+            onPress={onCheckValidation}
+          >
+            <Text color="white" size={18}>Sign up</Text>
+          </Button>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

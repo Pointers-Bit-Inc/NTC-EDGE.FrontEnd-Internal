@@ -7,6 +7,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  Dimensions,
 } from 'react-native';
 import {
   validateEmail,
@@ -16,27 +17,47 @@ import RegistrationForm from '@organisms/forms/registration';
 import Text from '@atoms/text';
 import Button from '@components/atoms/button';
 import { text, button } from 'src/styles/color';
-
+import useKeyboard from 'src/hooks/useKeyboard';
+const { height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
   },
   title: {
-    marginBottom: 10,
+    marginBottom: 15,
     fontWeight: '500',
     color: '#37405B',
-    marginTop: '18%',
+    marginTop: 90,
   },
   footer: {
     paddingVertical: 45,
   },
   button: {
-    marginTop: 35,
-    marginBottom: 35,
     borderRadius: 5,
     paddingVertical: 12,
-  }
+  },
+  buttonContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 15,
+    paddingBottom: 60,
+    backgroundColor: 'white',
+  },
+  keyboardAvoiding: {
+    position: 'absolute',
+    width: '100%',
+    bottom: 0,
+  },
+  shadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
 });
 
 const errorResponse = {
@@ -49,6 +70,7 @@ const errorResponse = {
 };
 
 const Registration = ({ navigation }:any) => {
+  const isKeyboardVisible = useKeyboard();
   const [formValue, setFormValue] = useState({
     username: {
       value: '',
@@ -189,6 +211,7 @@ const Registration = ({ navigation }:any) => {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={75}
         style={styles.container}
       >
       <ScrollView
@@ -213,14 +236,29 @@ const Registration = ({ navigation }:any) => {
               </Text>
             </TouchableOpacity>
           </View>
+        </View>
+      </ScrollView>
+      </KeyboardAvoidingView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+        keyboardVerticalOffset={-45}
+        style={styles.keyboardAvoiding}
+      >
+        <View style={[styles.buttonContainer, isKeyboardVisible && styles.shadow]}>
           <Button
-            style={[styles.button, { backgroundColor: isValid ? button.primary : button.default }]}
+            style={[
+              styles.button,
+              {
+                backgroundColor: isValid ?
+                  button.primary :
+                  button.default
+              }
+            ]}
             onPress={onCheckValidation}
           >
             <Text color="white" size={18}>Next</Text>
           </Button>
         </View>
-      </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
