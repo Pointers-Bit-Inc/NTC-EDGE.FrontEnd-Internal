@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   footer: {
     paddingHorizontal: 20,
     paddingTop: 15,
-    paddingBottom: 60,
+    paddingBottom: 30,
     backgroundColor: 'white',
   },
   button: {
@@ -51,7 +51,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    paddingBottom: 15,
   },
+  blankSpace: {
+    height: 150,
+  }
 });
 
 const RegistrationSignUp = ({ route, navigation }:any) => {
@@ -257,11 +261,11 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
           </Text>
         </View>
         <RegistrationDetailsForm onChangeValue={onChangeText} form={formValue} />
+        <View style={styles.blankSpace} />
       </ScrollView>
       </KeyboardAvoidingView>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-        keyboardVerticalOffset={-45}
         style={styles.keyboardAvoiding}
       >
         <View style={[styles.footer, isKeyboardVisible && styles.shadow]}>

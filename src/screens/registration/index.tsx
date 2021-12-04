@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
     marginTop: 90,
   },
   footer: {
+    paddingTop: 30,
     paddingVertical: 45,
   },
   button: {
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     paddingHorizontal: 20,
     paddingTop: 15,
-    paddingBottom: 60,
+    paddingBottom: 30,
     backgroundColor: 'white',
   },
   keyboardAvoiding: {
@@ -57,7 +58,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    paddingBottom: 15,
   },
+  blankSpace: {
+    height: 150,
+  }
 });
 
 const errorResponse = {
@@ -237,11 +242,11 @@ const Registration = ({ navigation }:any) => {
             </TouchableOpacity>
           </View>
         </View>
+        <View style={styles.blankSpace} />
       </ScrollView>
       </KeyboardAvoidingView>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-        keyboardVerticalOffset={-45}
         style={styles.keyboardAvoiding}
       >
         <View style={[styles.buttonContainer, isKeyboardVisible && styles.shadow]}>
