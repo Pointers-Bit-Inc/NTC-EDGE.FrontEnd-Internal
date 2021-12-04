@@ -646,28 +646,49 @@ const NTC101 = ({
     };
     const [tab, setTab] = useState([
         {
+            id: 1,
             name: 'Basic Info',
             tintColor: true,
             isRouteActive: true,
             isComplete: false
         }, {
+            id: 2,
             name: 'Address',
             tintColor: true,
             isRouteActive: false,
             isComplete: false
         }, {
+            id: 3,
             name: 'Additional Details',
             tintColor: true,
             isRouteActive: false,
             isComplete: false
         }, {
+            id: 4,
             name: 'Contacts',
             tintColor: true,
             isRouteActive: false,
             isComplete: false
         }])
-    const changeNavigation = ()=>{
+    const changeNavigation = (nav:any)=>{
+        let index = -1;
 
+        for (let j = 0; j < tab.length; j++) {
+            if(tab[j].isRouteActive){
+                tab[j].isRouteActive = !tab[j].isRouteActive
+            }
+
+            if(tab[j].id == nav.id){
+                index = j
+                tab[j].isRouteActive =  !tab[j].isRouteActive
+
+            }
+
+        }
+        setTab(tab)
+        if(index > -1 && tab[index].isComplete){
+            setOnNavigation(index)
+        }
     }
     return (
         <View style={head.container}>

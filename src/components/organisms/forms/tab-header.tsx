@@ -1,10 +1,11 @@
 import React from 'react';
-import {StyleSheet, Text, View} from "react-native";
-import {primaryColor} from "../../../styles/color";
+import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {primaryColor, text} from "../../../styles/color";
 
 const Header = (props: any) => {
     const {
-        tab
+        tab,
+        onChangeNavigation
     } = props;
 
     return (
@@ -17,26 +18,31 @@ const Header = (props: any) => {
                 {
                     tab.map((t: any, key: number) => {
 
-                        return <View key={key} style={{
-                            alignSelf: 'flex-start',
-                            borderBottomColor: '#2f5bfa',
-                            borderBottomWidth: t.isRouteActive ?  5 : 0
-                        }}>
-                            <Text
-                                style={{
-                                    fontSize: 10,
-                                    lineHeight: 50,
-                                    textTransform: "uppercase",
-                                    color: `${t.isRouteActive ? '#2f5bfa' : '#000'}`,
-                                    fontWeight: `${t.isRouteActive ? "bold" : "normal"}`
-                                }}
-                            >
-                                {t.name} {t.isComplete ? "" : "🔴"}
-                            </Text>
+                        return <TouchableOpacity
+                            key={key}
+                            onPress={() => onChangeNavigation(t)}
+                        >
+                            <View  style={{
+                                alignSelf: 'flex-start',
+                                borderBottomColor: '#2f5bfa',
+                                borderBottomWidth: t.isRouteActive ?  5 : 0
+                            }}>
+                                <Text
+                                    style={{
+                                        fontSize: 10,
+                                        lineHeight: 50,
+                                        textTransform: "uppercase",
+                                        color: `${t.isRouteActive ? '#2f5bfa' : '#000'}`,
+                                        fontWeight: `${t.isRouteActive ? "bold" : "normal"}`
+                                    }}
+                                >
+                                    {t.name} {t.isComplete ? "" : "🔴"}
+                                </Text>
 
 
 
-                        </View>
+                            </View>
+                        </TouchableOpacity>
                     })
 
                 }
