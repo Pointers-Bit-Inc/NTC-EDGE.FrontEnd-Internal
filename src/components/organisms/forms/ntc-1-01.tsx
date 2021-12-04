@@ -1,16 +1,14 @@
 import React, {useState} from 'react';
-import {Platform, Pressable, ScrollView, StyleSheet, View,Dimensions} from 'react-native';
+import {Platform, Pressable, ScrollView, StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {DateTimeField, InputField} from '@molecules/form-fields';
 import Text from '@atoms/text';
 import Button from '@atoms/button';
 import useTheme from "../../../hooks/useTheme";
 import RNPickerSelect from "react-native-picker-select";
-import SelectTimePicker from '@react-native-community/datetimepicker';
 import {Ionicons} from "@expo/vector-icons";
 import InputStyles from "../../../styles/input-style";
 import FormField from "@organisms/forms/form";
-import {defaultColor, outline, primaryColor} from "../../../styles/color";
+import {outline, primaryColor} from "../../../styles/color";
 import Header from "@organisms/forms/tab-header";
 
 interface RadioOperationServices {
@@ -93,7 +91,7 @@ const NTC101 = ({
         checkboxContainer: {
             flexDirection: 'row',
             alignItems: 'center',
-            paddingBottom:10
+            paddingBottom: 10
         },
 
         checkboxLabel: {
@@ -118,6 +116,8 @@ const NTC101 = ({
     const [cities, setCities] = useState([
         {id: 1, city: 'CDO', zipcode: '9000'}
     ])
+
+
     const [radio_operation_services, setRadioOperationServices] = useState<RadioOperationServices[]>([
         {id: 1, name: 'RADIOTELEGRAPHY'},
         {id: 2, name: 'RADIOTELEPHONY'},
@@ -278,10 +278,10 @@ const NTC101 = ({
         return {label: radio_operation_exam_type.name, value: radio_operation_exam_type.id, checked: false}
     }))
 
-    const [onNavigation,setOnNavigation] = useState(0)
+    const [onNavigation, setOnNavigation] = useState(0)
 
 
-    const [formFieldKey, setFormFieldKey ] = useState(Math.random())
+    const [formFieldKey, setFormFieldKey] = useState(Math.random())
     const [applicationFormValue, setApplicationFormValue] = useState([
 
         {
@@ -300,8 +300,8 @@ const NTC101 = ({
         },
         {
             id: 1,
-key: 1,
-           navigation: 0,
+            key: 1,
+            navigation: 0,
             required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
@@ -567,36 +567,31 @@ key: 1,
             inputStyle: InputStyles.text,
             error: false
         },])
-    const onFormSubmit = () =>{
+    const onFormSubmit = () => {
         let error = []
 
-            for (var i = 0; i < applicationFormValue.length; i++) {
-                if (applicationFormValue[i]?.['error'] && applicationFormValue[i]?.['value'] == "") {
-                    onChangeApplicantForm(applicationFormValue[i].id, true, 'error' )
-                }else if(applicationFormValue[i]?.['required'] && applicationFormValue[i]?.['value'] == ""){
-                    onChangeApplicantForm(applicationFormValue[i].id, true, 'error' )
-                }else if(applicationFormValue[i]?.['value']){
-                    onChangeApplicantForm(applicationFormValue[i].id, false, 'error' )
-                }
-
-            }
-            for (var j = 0; j< applicationFormValue.length; j++) {
-
-                if(applicationFormValue[j].navigation == onNavigation){
-                    if(!applicationFormValue[j].value){
-                        error.push(applicationFormValue[j])
-
-                    }
-                }
-
+        for (var i = 0; i < applicationFormValue.length; i++) {
+            if (applicationFormValue[i]?.['error'] && applicationFormValue[i]?.['value'] == "") {
+                onChangeApplicantForm(applicationFormValue[i].id, true, 'error')
+            } else if (applicationFormValue[i]?.['required'] && applicationFormValue[i]?.['value'] == "") {
+                onChangeApplicantForm(applicationFormValue[i].id, true, 'error')
+            } else if (applicationFormValue[i]?.['value']) {
+                onChangeApplicantForm(applicationFormValue[i].id, false, 'error')
             }
 
+        }
+        for (var j = 0; j < applicationFormValue.length; j++) {
 
-
-        if(!error.length){
+            if (applicationFormValue[j].navigation == onNavigation) {
+                if (!applicationFormValue[j].value) {
+                    error.push(applicationFormValue[j])
+                }
+            }
+        }
+        if (!error.length) {
             let newArr = [...tab];
-            if(onNavigation< tab.length-1){
-
+            if (onNavigation < tab.length - 1) {
+                newArr[onNavigation].isComplete = true
                 newArr[onNavigation].isRouteActive = !newArr[onNavigation].isRouteActive
                 newArr[onNavigation + 1].isRouteActive = !newArr[onNavigation + 1].isRouteActive
                 setTab(newArr);
@@ -606,17 +601,14 @@ key: 1,
 
 
         }
-
-
-    //
     }
     const onCheckmarkPress = (check: any, index: number) => {
 
         let newArr = [...radioOperationExamTypeItems];
         for (let i = 0; i < newArr.length; i++) {
-           if(newArr[i].checked && newArr[i].checked != newArr[index].checked ){
-               newArr[i].checked = !newArr[i].checked
-           }
+            if (newArr[i].checked && newArr[i].checked != newArr[index].checked) {
+                newArr[i].checked = !newArr[i].checked
+            }
         }
         newArr[index].checked = !check.checked
         setRadioOperationExamTypeSelectedValue(newArr[index]['value'])
@@ -624,84 +616,107 @@ key: 1,
     }
 
 
-    const onChangeApplicantForm = (id: number,  text: any, element: string) => {
-        const index =  applicationFormValue.findIndex(app => app.id == id)
+    const onChangeApplicantForm = (id: number, text: any, element: string) => {
+        const index = applicationFormValue.findIndex(app => app.id == id)
 
 
         let newArr = [...applicationFormValue];
-        if(element == 'error'){
+        if (element == 'error') {
             newArr[index]['error'] = text;
-        }else if(element == 'checked'){
+        } else if (element == 'checked') {
             newArr[index]['checked'] = text;
-        }else{
+        } else {
             newArr[index]['value'] = text;
         }
 
         setApplicationFormValue(newArr);
 
     };
-    const [tab, setTab] = useState([{name: 'Basic Info', tintColor: true, isRouteActive: true}, {name: 'Address', tintColor: true, isRouteActive: false}, {name: 'Additional Details', tintColor: true, isRouteActive: false}, {name: 'Contacts', tintColor: true, isRouteActive: false}])
+    const [tab, setTab] = useState([
+        {
+            name: 'Basic Info',
+            tintColor: true,
+            isRouteActive: true,
+            isComplete: false
+        }, {
+            name: 'Address',
+            tintColor: true,
+            isRouteActive: false,
+            isComplete: false
+        }, {
+            name: 'Additional Details',
+            tintColor: true,
+            isRouteActive: false,
+            isComplete: false
+        }, {
+            name: 'Contacts',
+            tintColor: true,
+            isRouteActive: false,
+            isComplete: false
+        }])
     return (
         <View style={head.container}>
-        <View style={head.header}>
-                <Header tab={tab} />
+            <View style={head.header}>
+                <Header tab={tab}/>
             </View>
-            <View style={{flex:1}}>
+            <View style={{flex: 1}}>
                 <ScrollView style={head.childContainer}>
                     {onNavigation == 0 &&
-                         <Text>Radio Operation Service</Text>}
+                    <Text>Radio Operation Service</Text>}
                     {onNavigation == 0 &&
                     <RNPickerSelect
                         Icon={() => {
-                            return Platform.OS == 'ios' ? <Ionicons name="chevron-down-outline" size={16} color="gray" /> : <></>;
+                            return Platform.OS == 'ios' ?
+                                <Ionicons name="chevron-down-outline" size={16} color="gray"/> : <></>;
                         }}
                         style={{
-                        ...pickerSelectStyles,
-                        iconContainer: {
-                        top: 10,
-                        right: 12,
-                    },
-                    }}
+                            ...pickerSelectStyles,
+                            iconContainer: {
+                                top: 10,
+                                right: 12,
+                            },
+                        }}
                         value={radioOperationServiceSelectedValue}
                         onValueChange={(itemValue: any, itemIndex: number) => {
-                        if (!itemValue) return
-                        const radioOperationExam = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
-                        .map((radio_operation_exam_type) => {
-                        return {
-                        label: radio_operation_exam_type.name,
-                        value: radio_operation_exam_type.id,
-                        checked: false
-                    }
-                    })
-                        setRadioOperationServiceSelectedValue(itemValue)
-                        setRadioOperationExamTypeSelectedValue(radioOperationExam[0]["value"])
-                        setRadioOperationExamTypeItems(radioOperationExam)
-                    }}
+                            if (!itemValue) return
+                            const radioOperationExam = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
+                                .map((radio_operation_exam_type) => {
+                                    return {
+                                        label: radio_operation_exam_type.name,
+                                        value: radio_operation_exam_type.id,
+                                        checked: false
+                                    }
+                                })
+                            setRadioOperationServiceSelectedValue(itemValue)
+                            setRadioOperationExamTypeSelectedValue(radioOperationExam[0]["value"])
+                            setRadioOperationExamTypeItems(radioOperationExam)
+                        }}
                         items={
 
-                        radio_operation_services.map((radio_operation_service: RadioOperationServices) => {
-                        return {label: radio_operation_service.name, value: radio_operation_service.id}
-                    })
-                    }
-                        />}
+                            radio_operation_services.map((radio_operation_service: RadioOperationServices) => {
+                                return {label: radio_operation_service.name, value: radio_operation_service.id}
+                            })
+                        }
+                    />}
 
                     {onNavigation == 0 &&
                     <Text>Radio Operation Exam Type</Text>}
                     {onNavigation == 0 &&
-                        radioOperationExamTypeItems.map((pick: any, key: number) => {
-                            return <>
-                                <View style={styles.checkboxContainer}>
-                                    <Pressable
-                                        key={key}
-                                        style={[styles.checkboxBase, pick.value == radioOperationExamTypeSelectedValue && styles.checkboxChecked]}
-                                        onPress={() => onCheckmarkPress(pick, key)}>
-                                        {pick.value == radioOperationExamTypeSelectedValue && <Ionicons name="checkmark" size={16} color="white"/>}
+                    radioOperationExamTypeItems.map((pick: any, key: number) => {
+                        return <>
+                            <View style={styles.checkboxContainer}>
+                                <Pressable
+                                    key={key}
+                                    style={[styles.checkboxBase, pick.value == radioOperationExamTypeSelectedValue && styles.checkboxChecked]}
+                                    onPress={() => onCheckmarkPress(pick, key)}>
+                                    {pick.value == radioOperationExamTypeSelectedValue &&
+                                    <Ionicons name="checkmark" size={16} color="white"/>}
 
-                                    </Pressable>
-                                    <Text style={styles.checkboxLabel}>{pick.label}</Text>
-                                </View>
-                            </>
-                        })
+                                </Pressable>
+                                <Text style={styles.checkboxLabel}>{pick.label}</Text>
+                            </View>
+                        </>
+                    })
                     }
 
                     {/*<InputField
@@ -774,13 +789,13 @@ key: 1,
                         display="default"
                         onChange={onTimeChange}/></>}
 */}
-                    <FormField  key={formFieldKey} formElements={applicationFormValue.filter(app => {
+                    <FormField key={formFieldKey} formElements={applicationFormValue.filter(app => {
 
                         return app.navigation == onNavigation
-                    })}  onChange={onChangeApplicantForm} onSubmit={onFormSubmit}/>
+                    })} onChange={onChangeApplicantForm} onSubmit={onFormSubmit}/>
                 </ScrollView>
-                <View  style={bottom.bottomView}>
-                    <Button  onPress={onFormSubmit} style={[button.color, button.borderRadius]}>
+                <View style={bottom.bottomView}>
+                    <Button onPress={onFormSubmit} style={[button.color, button.borderRadius]}>
                         <Text fontSize={16} color={'white'}>
                             Next
                         </Text>
@@ -792,7 +807,7 @@ key: 1,
 
     );
 };
-const button= StyleSheet.create({
+const button = StyleSheet.create({
     color: {
         backgroundColor: primaryColor
     },
@@ -811,7 +826,7 @@ const head = StyleSheet.create({
         flexDirection: "column"
     },
     childContainer: {
-        padding:10,
+        padding: 10,
         marginVertical: 18,
 
     },

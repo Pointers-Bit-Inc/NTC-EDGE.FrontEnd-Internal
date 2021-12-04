@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import {primaryColor} from "../../../styles/color";
 
-const Header = (props:any)=> {
+const Header = (props: any) => {
     const {
-       tab
+        tab
     } = props;
 
     return (
@@ -15,20 +15,25 @@ const Header = (props:any)=> {
             <View style={styles.tabContainer}>
 
                 {
-                    tab.map((t:any, key: number) =>{
+                    tab.map((t: any, key: number) => {
 
-                        return <View key={ key} style={{ alignSelf: 'flex-start', borderBottomColor: primaryColor, borderBottomWidth:t.isRouteActive?  2 : 0}}>
+                        return <View key={key} style={{
+                            alignSelf: 'flex-start',
+                            borderBottomColor: primaryColor,
+                            borderBottomWidth: t.isRouteActive ? 2 : 0
+                        }}>
                             <Text
                                 style={{
-                                    fontSize: 12,
+                                    fontSize: 10,
                                     lineHeight: 50,
                                     textTransform: "uppercase",
                                     color: `${t.tintColor}`,
                                     fontWeight: `${t.isRouteActive ? "bold" : "normal"}`
                                 }}
                             >
-                                {t.name}
+                                {t.name} {t.isComplete ? "" : "🔴"}
                             </Text>
+
 
 
                         </View>
@@ -47,7 +52,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "column",
         justifyContent: "center",
-        alignItems:"flex-start",
+        alignItems: "flex-start",
 
     },
     textContainer: {
@@ -67,7 +72,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 10,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
+        shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.2,
         shadowRadius: 2,
         elevation: 5,
