@@ -111,6 +111,7 @@ const NTC101 = ({
             marginLeft: 10
         },
         textWhite: {
+            fontWeight: 'bold',
             color: '#565961',
         },
 
