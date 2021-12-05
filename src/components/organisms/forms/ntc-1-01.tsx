@@ -615,11 +615,18 @@ const NTC101 = ({
             }
 
         }
+        let newArr = [...tab];
         for (var j = 0; j < applicationFormValue.length; j++) {
 
             if (applicationFormValue[j].navigation == onNavigation) {
                 if (!applicationFormValue[j].value) {
                     error.push(applicationFormValue[j])
+                    for(var l=0; l < newArr.length; l++){
+                        newArr[l].isRouteActive = false
+                    }
+                    newArr[onNavigation].isComplete = false
+                    newArr[onNavigation].isRouteActive = true
+                    setTab(newArr);
 
                 }
             }
@@ -627,7 +634,7 @@ const NTC101 = ({
 
 
         if (!error.length) {
-            let newArr = [...tab];
+
             if (onNavigation < tab.length - 1) {
                 newArr[onNavigation].isComplete = true
                 newArr[onNavigation].isRouteActive = !newArr[onNavigation].isRouteActive
