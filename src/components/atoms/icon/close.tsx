@@ -9,19 +9,33 @@ interface Props {
 }
 
 const CloseIcon: FC<Props> = ({
+  type,
   size = 24,
   color = 'black',
   ...otherProps
 }) => {
 
-  return (
-    <AntDesign
-      name="closecircleo"
-      size={size}
-      color={color}
-      {...otherProps}
-    />
-  );
+  switch(type) {
+    case 'close':
+      return (
+        <AntDesign
+          name="close"
+          size={size}
+          color={color}
+          {...otherProps}
+        />
+      );
+    default:
+      return (
+        <AntDesign
+          name="closecircleo"
+          size={size}
+          color={color}
+          {...otherProps}
+        />
+      );
+  }
+  
 }
 
 export default CloseIcon

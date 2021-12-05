@@ -134,7 +134,7 @@ const Login = ({ navigation }:any) => {
         });
       }
       case 'forgotPassword': {
-        return;
+        return navigation.navigate('ForgotPassword');
       }
       default:
         return setFormValue({

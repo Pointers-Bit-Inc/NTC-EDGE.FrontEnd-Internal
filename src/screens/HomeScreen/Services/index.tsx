@@ -20,18 +20,21 @@ const Services: FC<Props> = ({ navigation }) => {
                 </View>
         })
     }, [])
+
+    const onSelectService = () => navigation.navigate('ApplicationSteps');
+
     return (
         <ScrollView
             style={[styles.container]}
             showsVerticalScrollIndicator={false}
         >
             {
-                Array(10).fill(0).map((_, i) => <Service key={i} index={i} />)
+                Array(10).fill(0).map((_, i) => <Service onSelectService={onSelectService} key={i} index={i} />)
             }
         </ScrollView>
     )
 }
-const Service = ({ index }: any) => {
+const Service = ({ index, onSelectService }: any) => {
     const [collapsed, setCollapsed] = React.useState(true)
     return (
         <View style={styles.serviceContainer}>
@@ -42,16 +45,16 @@ const Service = ({ index }: any) => {
                 </TouchableOpacity>
 
             </View>
-            <SubService isCollapsed={collapsed} />
+            <SubService onSelectService={onSelectService} isCollapsed={collapsed} />
         </View>
     )
 }
-const SubService = ({ isCollapsed }: any) => {
+const SubService = ({ isCollapsed, onSelectService }: any) => {
     return (
         <Collapsible collapsed={isCollapsed}>
             {
                 Array(3).fill(0).map((_, i) =>
-                    <TouchableOpacity key={i}>
+                    <TouchableOpacity key={i} onPress={onSelectService}>
                         <View style={styles.subServiceTitle}>
                             <Text style={{ color: primaryColor }}>Sub-service {i + 1}</Text>
                             <SimpleLineIcons name="arrow-right" size={15} color={primaryColor} style={{ marginEnd: 5 }} />

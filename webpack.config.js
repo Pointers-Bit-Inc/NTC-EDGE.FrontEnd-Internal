@@ -2,11 +2,14 @@ const path = require('path');
 const createExpoWebpackConfigAsync = require('@expo/webpack-config');
 
 const aliases = {
-  "@assets": "./src/assets",
+  "@assets": "./assets",
+  "@styles": "./src/styles",
   "@components": "./src/components",
   "@atoms": "./src/components/atoms",
   "@molecules": "./src/components/molecules",
   "@organisms": "./src/components/organisms",
+  "@templates": "./src/components/templates",
+  "@pages": "./src/components/pages",
   "@screens": "./src/screens",
   "@reducers": "./src/reducers"
 };
