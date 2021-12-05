@@ -41,23 +41,20 @@ const NTC101 = ({
     const [headerShown, setHeaderShown] = useState(false);
     const pickerSelectStyles = StyleSheet.create({
         inputIOS: {
+            backgroundColor: '#dbdee2',
             overflow: 'hidden',
             fontSize: 16,
             paddingVertical: 10,
             paddingHorizontal: 5,
             borderWidth: 1,
-            borderColor: 'gray',
-            borderRadius: 10,
-            color: 'gray',// to ensure the text is never behind the icon
+            borderRadius: 5,
         },
         inputAndroid: {
             fontSize: 16,
             paddingHorizontal: 10,
             paddingVertical: 8,
             borderWidth: 0.5,
-            borderColor: 'gray',
-            borderRadius: 10,
-            color: 'black', // to ensure the text is never behind the icon
+            borderRadius: 5,
         },
     })
     const styles = StyleSheet.create({
@@ -748,9 +745,7 @@ const NTC101 = ({
 
                     }}
                     placeholder={{
-                        label: 'Radio Operator Service',
-                        value: radioOperationServiceSelectedValue,
-
+                        color:'black'
                     }}
                     value={radioOperationServiceSelectedValue}
                     onValueChange={(itemValue: any, itemIndex: number) => {
