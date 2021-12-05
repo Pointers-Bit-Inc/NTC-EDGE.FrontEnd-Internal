@@ -710,15 +710,33 @@ const NTC101 = ({
             isRouteActive: false,
             isComplete: false
         }])
+
     const changeNavigation = (nav: any) => {
         let index = -1
        onFormSubmit()
         for (let j = 0; j < tab.length; j++) {
-            if (tab[onNavigation]?.id == tab[j].id ) {
-                if(tab[onNavigation].isRouteActive){
-                    tab[j].isRouteActive = !tab[j].isRouteActive
+            if (tab[j].isRouteActive) {
+                tab[j].isRouteActive = !tab[j].isRouteActive
+            }else{
+                let checkIfRouteActive = false
+                for(let h = 0; h < tab.length; h++ ){
+                    if(tab[h].isRouteActive){
+                        checkIfRouteActive = true
+                        break;
+                    }
                 }
+                if(!checkIfRouteActive){
+                    let newArr = [...tab];
+                    newArr[onNavigation].isRouteActive = true
+                    setTab(newArr)
+                }
+            }
 
+            if (tab[j].id == nav.id && tab[j].isRouteActive && !tab[j].isComplete ) {
+                if(tab[j + 1].isComplete ){
+                    tab[j].isRouteActive = !tab[j].isRouteActive
+
+                }
             }
             if (!error.length || tab[j].isComplete) {
 
@@ -736,6 +754,7 @@ const NTC101 = ({
 
 
         }
+
         if(index > -1){
             let checkIsNotComplete = false
 
