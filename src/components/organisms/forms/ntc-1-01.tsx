@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Platform, Pressable, ScrollView, StyleSheet, View, Animated} from 'react-native';
+import {Platform, Pressable, ScrollView, StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Text from '@atoms/text';
 import Button from '@atoms/button';
@@ -11,12 +11,12 @@ import FormField from "@organisms/forms/form";
 import {outline, primaryColor} from "../../../styles/color";
 import Header from "@organisms/forms/tab-header";
 
-interface RadioOperationServices {
+interface RadioOperatorServices {
     id: number,
     name: string
 }
 
-interface RadioOperationExamType {
+interface RadioOperatorExamType {
     id: number,
     radio_operator_service_id: number,
     code: string,
@@ -117,7 +117,7 @@ const NTC101 = ({
 
     });
     const head = StyleSheet.create({
-        services:{
+        services: {
             backgroundColor: "#f0f0f0",
             padding: 15,
         },
@@ -154,13 +154,13 @@ const NTC101 = ({
     ])
 
 
-    const [radio_operation_services, setRadioOperationServices] = useState<RadioOperationServices[]>([
+    const [radio_operator_services, setRadioOperatorServices] = useState<RadioOperatorServices[]>([
         {id: 1, name: 'RADIOTELEGRAPHY'},
         {id: 2, name: 'RADIOTELEPHONY'},
         {id: 3, name: 'AMATEUR'},
         {id: 4, name: 'RESTRICTED RADIOTELEPHONE OPERATOR CERTIFICATE - AIRCRAFT'}
     ]);
-    const [radio_operation_exam_types, setRadioOperationExamType] = useState<RadioOperationExamType[]>([
+    const [radio_operator_exam_types, setRadioOperatorExamType] = useState<RadioOperatorExamType[]>([
         {
             id: 1,
             radio_operator_service_id: 1,
@@ -300,18 +300,18 @@ const NTC101 = ({
             setTime(currenttime)
         }
     };
-    const [radio_operation_servicesDefaultValue, setRadio_operation_servicesDefaultValue] = useState(radio_operation_services.length ? radio_operation_services[0].id : 0)
-    const [radio_operation_exam_typesDefaultValue, setRadio_operation_exam_typesDefaultValue] = useState(radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == radio_operation_servicesDefaultValue)
-        .map((radio_operation_exam_type) => {
-            return {label: radio_operation_exam_type.name, id: radio_operation_exam_type.id}
+    const [radio_operator_servicesDefaultValue, setRadio_operator_servicesDefaultValue] = useState(radio_operator_services.length ? radio_operator_services[0].id : 0)
+    const [radio_operator_exam_typesDefaultValue, setRadio_operator_exam_typesDefaultValue] = useState(radio_operator_exam_types.filter(radio_operator_exam_type => radio_operator_exam_type.radio_operator_service_id == radio_operator_servicesDefaultValue)
+        .map((radio_operator_exam_type) => {
+            return {label: radio_operator_exam_type.name, id: radio_operator_exam_type.id}
         })?.[0]?.["id"])
-    const [radioOperationServiceSelectedValue, setRadioOperationServiceSelectedValue] = useState(radio_operation_servicesDefaultValue);
-    const [radioOperationExamTypeSelectedValue, setRadioOperationExamTypeSelectedValue] = useState(radio_operation_exam_typesDefaultValue);
+    const [radioOperatorServiceSelectedValue, setRadioOperatorServiceSelectedValue] = useState(radio_operator_servicesDefaultValue);
+    const [radioOperatorExamTypeSelectedValue, setRadioOperatorExamTypeSelectedValue] = useState(radio_operator_exam_typesDefaultValue);
     const [citySelectedValue, setCitySelectedValue] = useState(cities.length ? cities[0].id : 0)
-    const [radioOperationExamTypeItems, setRadioOperationExamTypeItems] = useState(radio_operation_exam_types.filter((radio_operation_exam_type: RadioOperationExamType) => {
-        return radioOperationServiceSelectedValue == radio_operation_exam_type.radio_operator_service_id
-    }).map((radio_operation_exam_type: RadioOperationExamType) => {
-        return {label: radio_operation_exam_type.name, value: radio_operation_exam_type.id, checked: false}
+    const [radioOperatorExamTypeItems, setRadioOperatorExamTypeItems] = useState(radio_operator_exam_types.filter((radio_operator_exam_type: RadioOperatorExamType) => {
+        return radioOperatorServiceSelectedValue == radio_operator_exam_type.radio_operator_service_id
+    }).map((radio_operator_exam_type: RadioOperatorExamType) => {
+        return {label: radio_operator_exam_type.name, value: radio_operator_exam_type.id, checked: false}
     }))
 
     const [onNavigation, setOnNavigation] = useState(0)
@@ -324,15 +324,15 @@ const NTC101 = ({
             id: 0,
             key: 0,
             required: true,
-            label: 'Radio Operation Exam Type',
-            value: radioOperationExamTypeSelectedValue
+            label: 'Radio Operator Exam Type',
+            value: radioOperatorExamTypeSelectedValue
         },
         {
             id: 18,
             key: 18,
             required: true,
-            label: 'Radio Operation Service',
-            value: radioOperationServiceSelectedValue,
+            label: 'Radio Operator Service',
+            value: radioOperatorServiceSelectedValue,
         },
         {
             id: 1,
@@ -617,34 +617,27 @@ const NTC101 = ({
         }
         let newArr = [...tab];
         for (var j = 0; j < applicationFormValue.length; j++) {
-
             if (applicationFormValue[j].navigation == onNavigation) {
-                if (!applicationFormValue[j].value) {
-                    error.push(applicationFormValue[j])
-                    for(var l=0; l < newArr.length; l++){
+                if (!applicationFormValue[j].value  ) {
+                    error.push(applicationFormValue[j] )
+                    for (var l = 0; l < newArr.length; l++) {
+
                         newArr[l].isRouteActive = false
                     }
                     newArr[onNavigation].isComplete = false
                     newArr[onNavigation].isRouteActive = true
                     setTab(newArr);
-
                 }
             }
         }
-
-
         if (!error.length) {
-
             if (onNavigation < tab.length - 1) {
                 newArr[onNavigation].isComplete = true
                 newArr[onNavigation].isRouteActive = !newArr[onNavigation].isRouteActive
                 newArr[onNavigation + 1].isRouteActive = !newArr[onNavigation + 1].isRouteActive
                 setTab(newArr);
-
                 setOnNavigation(onNavigation + 1)
-
                 for (var k = 0; k < applicationFormValue.length; k++) {
-
                     if (applicationFormValue[k].navigation == onNavigation + 1) {
                         onChangeApplicantForm(applicationFormValue[k].id, false, 'error')
 
@@ -659,15 +652,15 @@ const NTC101 = ({
     }
     const onCheckmarkPress = (check: any, index: number) => {
 
-        let newArr = [...radioOperationExamTypeItems];
+        let newArr = [...radioOperatorExamTypeItems];
         for (let i = 0; i < newArr.length; i++) {
             if (newArr[i].checked && newArr[i].checked != newArr[index].checked) {
                 newArr[i].checked = !newArr[i].checked
             }
         }
         newArr[index].checked = !check.checked
-        setRadioOperationExamTypeSelectedValue(newArr[index]['value'])
-        setRadioOperationExamTypeItems(newArr);
+        setRadioOperatorExamTypeSelectedValue(newArr[index]['value'])
+        setRadioOperatorExamTypeItems(newArr);
     }
 
 
@@ -726,10 +719,21 @@ const NTC101 = ({
                 tab[j].isRouteActive = !tab[j].isRouteActive
 
             }
-
         }
 
-        if (index > -1 && tab[index].isComplete) {
+        let checkIsNotComplete = false
+
+        for(let l = 0; l < tab.length; l++){
+            if(tab[index].isComplete == tab[l].isComplete){
+
+            }else if(index < l){
+                if(!tab[index].isComplete == tab[l].isComplete){
+                    checkIsNotComplete = true
+                }
+            }
+        }
+
+        if (index > -1 && tab[index].isComplete || checkIsNotComplete) {
             setTab(tab)
             setOnNavigation(index)
         }
@@ -753,41 +757,42 @@ const NTC101 = ({
 
                     }}
                     placeholder={{
-                        color:'black'
+                        color: 'black'
                     }}
-                    value={radioOperationServiceSelectedValue}
+                    value={radioOperatorServiceSelectedValue}
                     onValueChange={(itemValue: any, itemIndex: number) => {
                         if (!itemValue) return
-                        const radioOperationExam = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
-                            .map((radio_operation_exam_type) => {
+                        const radioOperatorExam = radio_operator_exam_types.filter(
+                            radio_operator_exam_type => radio_operator_exam_type.radio_operator_service_id == itemValue)
+                            .map((radio_operator_exam_type) => {
                                 return {
-                                    label: radio_operation_exam_type.name,
-                                    value: radio_operation_exam_type.id,
+                                    label: radio_operator_exam_type.name,
+                                    value: radio_operator_exam_type.id,
                                     checked: false
                                 }
                             })
-                        setRadioOperationServiceSelectedValue(itemValue)
-                        setRadioOperationExamTypeSelectedValue(radioOperationExam[0]["value"])
-                        setRadioOperationExamTypeItems(radioOperationExam)
+                        setRadioOperatorServiceSelectedValue(itemValue)
+                        setRadioOperatorExamTypeSelectedValue(radioOperatorExam[0]["value"])
+                        setRadioOperatorExamTypeItems(radioOperatorExam)
                     }}
                     items={
 
-                        radio_operation_services.map((radio_operation_service: RadioOperationServices) => {
-                            return {label: radio_operation_service.name, value: radio_operation_service.id}
+                        radio_operator_services.map((radio_operator_service: RadioOperatorServices) => {
+                            return {label: radio_operator_service.name, value: radio_operator_service.id}
                         })
                     }
                 />}
 
                 {onNavigation == 0 && !headerShown &&
-                radioOperationExamTypeItems.map((pick: any, key: number) => {
+                radioOperatorExamTypeItems.map((pick: any, key: number) => {
                     return <>
                         <View style={styles.checkboxContainer}>
                             <Pressable
 
                                 key={key}
-                                style={[{ borderColor: pick.value == radioOperationExamTypeSelectedValue? '#fff': '#a1a1aa'}, styles.checkboxBase, pick.value == radioOperationExamTypeSelectedValue && styles.checkboxChecked]}
+                                style={[{borderColor: pick.value == radioOperatorExamTypeSelectedValue ? '#fff' : '#a1a1aa'}, styles.checkboxBase, pick.value == radioOperatorExamTypeSelectedValue && styles.checkboxChecked]}
                                 onPress={() => onCheckmarkPress(pick, key)}>
-                                {pick.value == radioOperationExamTypeSelectedValue &&
+                                {pick.value == radioOperatorExamTypeSelectedValue &&
                                 <Ionicons name="checkmark" size={12} color="white"/>}
 
                             </Pressable>
@@ -800,10 +805,10 @@ const NTC101 = ({
 
             <View style={head.header}>
                 <View style={styles.containerHeader}>
-                    <View  style={styles.textContainer}>
+                    <View style={styles.textContainer}>
                         <Text style={styles.textWhite}>Attendant's Detail</Text>
                     </View>
-                <Header onChangeNavigation={changeNavigation} tab={tab}/>
+                    <Header onChangeNavigation={changeNavigation} tab={tab}/>
                 </View>
             </View>
             <View style={{flex: 1}}>
@@ -813,13 +818,13 @@ const NTC101 = ({
 
                         if (scrolling > 100) {
                             setHeaderShown(true);
-                        } else if(scrolling < 0) {
+                        } else if (scrolling < 0) {
                             setHeaderShown(false);
                         }
                     }}
                     scrollEventThrottle={16}
                     style={head.childContainer}
-                    >
+                >
 
 
                     {/*<InputField
