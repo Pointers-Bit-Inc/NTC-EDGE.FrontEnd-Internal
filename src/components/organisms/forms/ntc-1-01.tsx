@@ -63,12 +63,12 @@ const NTC101 = ({
     const styles = StyleSheet.create({
 
         checkboxBase: {
-            width: 20,
-            height: 20,
+            width: 16,
+            height: 16,
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: 4,
-            borderWidth: 2,
+            borderWidth: 1,
 
             backgroundColor: 'white',
         },
@@ -91,12 +91,14 @@ const NTC101 = ({
         checkboxContainer: {
             flexDirection: 'row',
             alignItems: 'center',
-            paddingBottom: 10
+            paddingLeft: 15,
+            paddingBottom: 5,
+            paddingTop: 10,
         },
 
         checkboxLabel: {
             marginLeft: 8,
-            fontWeight: '500',
+            fontWeight: '300',
             fontSize: 12,
         },
         containerHeader: {
@@ -119,8 +121,8 @@ const NTC101 = ({
     const head = StyleSheet.create({
         services:{
             backgroundColor: "#f0f0f0",
-            padding: 10,
-
+            padding: 20,
+            paddingLeft:20
         },
         container: {
             flex: 1,
@@ -732,8 +734,6 @@ const NTC101 = ({
     return (
         <View style={head.container}>
             <View style={head.services}>
-                {onNavigation == 0  && !headerShown &&
-                <Text>Radio Operation Service</Text>}
                 {onNavigation == 0 && !headerShown &&
                 <RNPickerSelect
                     Icon={() => {
@@ -780,7 +780,7 @@ const NTC101 = ({
                                 style={[{ borderColor: pick.value == radioOperationExamTypeSelectedValue? '#fff': '#a1a1aa'}, styles.checkboxBase, pick.value == radioOperationExamTypeSelectedValue && styles.checkboxChecked]}
                                 onPress={() => onCheckmarkPress(pick, key)}>
                                 {pick.value == radioOperationExamTypeSelectedValue &&
-                                <Ionicons name="checkmark" size={16} color="white"/>}
+                                <Ionicons name="checkmark" size={12} color="white"/>}
 
                             </Pressable>
                             <Text style={styles.checkboxLabel}>{pick.label}</Text>
