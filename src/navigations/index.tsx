@@ -4,12 +4,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Registration from './registration';
 import ForgotPassword from './forgot-password';
 import App from '@screens/app';
+import AppIntro from '@screens/intro';
 import Login from '@screens/login';
 import Home from '@screens/home';
 
 
 type RootStackParamList = {
   App: undefined;
+  AppIntro: undefined;
   Login: undefined;
   ForgotPassword: undefined;
   Registration: undefined;
@@ -27,6 +29,7 @@ const RootNavigator = () => {
         }}
       >
         <Stack.Screen name="App" component={App} />
+        <Stack.Screen name="AppIntro" component={AppIntro} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         <Stack.Screen name="Registration" component={Registration} />
