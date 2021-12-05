@@ -45,7 +45,7 @@ const RegistrationSuccess = ({ navigation, route }:any) => {
     await setTimeout(() => {
       setLoading(false);
       dispatch(setUser(data));
-      navigation.navigate('HomeScreen');
+      navigation.replace('HomeScreen');
     }, 100);
   }, []);
 

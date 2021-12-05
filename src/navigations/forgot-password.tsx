@@ -20,6 +20,7 @@ const RegistrationNavigator = () => {
         gestureEnabled: false,
         headerShown: false
       }}
+      initialRouteName="ForgotPasswordInitial"
     >
       <Stack.Screen name="ForgotPasswordInitial" component={ForgotPasswordInitial} />
       <Stack.Screen name="ForgotPasswordOTP" component={ForgotPasswordOTP} />
