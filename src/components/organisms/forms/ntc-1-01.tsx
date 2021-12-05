@@ -117,7 +117,11 @@ const NTC101 = ({
 
     });
     const head = StyleSheet.create({
+        services:{
+            backgroundColor: "#f0f0f0",
+            padding: 10,
 
+        },
         container: {
             flex: 1,
             backgroundColor: "#fff",
@@ -727,62 +731,65 @@ const NTC101 = ({
 
     return (
         <View style={head.container}>
-            {onNavigation == 0  && !headerShown &&
-            <Text>Radio Operation Service</Text>}
-            {onNavigation == 0 && !headerShown &&
-            <RNPickerSelect
-                Icon={() => {
-                    return Platform.OS == 'ios' ?
-                        <Ionicons name="chevron-down-outline" size={16} color="gray"/> : <></>;
-                }}
-                style={{
-                    ...pickerSelectStyles,
-                    iconContainer: {
-                        top: 10,
-                        right: 12,
-                    },
-                }}
-                value={radioOperationServiceSelectedValue}
-                onValueChange={(itemValue: any, itemIndex: number) => {
-                    if (!itemValue) return
-                    const radioOperationExam = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
-                        .map((radio_operation_exam_type) => {
-                            return {
-                                label: radio_operation_exam_type.name,
-                                value: radio_operation_exam_type.id,
-                                checked: false
-                            }
+            <View style={head.services}>
+                {onNavigation == 0  && !headerShown &&
+                <Text>Radio Operation Service</Text>}
+                {onNavigation == 0 && !headerShown &&
+                <RNPickerSelect
+                    Icon={() => {
+                        return Platform.OS == 'ios' ?
+                            <Ionicons name="chevron-down-outline" size={16} color="gray"/> : <></>;
+                    }}
+                    style={{
+                        ...pickerSelectStyles,
+                        iconContainer: {
+                            top: 10,
+                            right: 12,
+                        },
+                    }}
+                    value={radioOperationServiceSelectedValue}
+                    onValueChange={(itemValue: any, itemIndex: number) => {
+                        if (!itemValue) return
+                        const radioOperationExam = radio_operation_exam_types.filter(radio_operation_exam_type => radio_operation_exam_type.radio_operator_service_id == itemValue)
+                            .map((radio_operation_exam_type) => {
+                                return {
+                                    label: radio_operation_exam_type.name,
+                                    value: radio_operation_exam_type.id,
+                                    checked: false
+                                }
+                            })
+                        setRadioOperationServiceSelectedValue(itemValue)
+                        setRadioOperationExamTypeSelectedValue(radioOperationExam[0]["value"])
+                        setRadioOperationExamTypeItems(radioOperationExam)
+                    }}
+                    items={
+
+                        radio_operation_services.map((radio_operation_service: RadioOperationServices) => {
+                            return {label: radio_operation_service.name, value: radio_operation_service.id}
                         })
-                    setRadioOperationServiceSelectedValue(itemValue)
-                    setRadioOperationExamTypeSelectedValue(radioOperationExam[0]["value"])
-                    setRadioOperationExamTypeItems(radioOperationExam)
-                }}
-                items={
+                    }
+                />}
 
-                    radio_operation_services.map((radio_operation_service: RadioOperationServices) => {
-                        return {label: radio_operation_service.name, value: radio_operation_service.id}
-                    })
+                {onNavigation == 0 && !headerShown &&
+                radioOperationExamTypeItems.map((pick: any, key: number) => {
+                    return <>
+                        <View style={styles.checkboxContainer}>
+                            <Pressable
+
+                                key={key}
+                                style={[{ borderColor: pick.value == radioOperationExamTypeSelectedValue? '#fff': '#a1a1aa'}, styles.checkboxBase, pick.value == radioOperationExamTypeSelectedValue && styles.checkboxChecked]}
+                                onPress={() => onCheckmarkPress(pick, key)}>
+                                {pick.value == radioOperationExamTypeSelectedValue &&
+                                <Ionicons name="checkmark" size={16} color="white"/>}
+
+                            </Pressable>
+                            <Text style={styles.checkboxLabel}>{pick.label}</Text>
+                        </View>
+                    </>
+                })
                 }
-            />}
+            </View>
 
-            {onNavigation == 0 && !headerShown &&
-            radioOperationExamTypeItems.map((pick: any, key: number) => {
-                return <>
-                    <View style={styles.checkboxContainer}>
-                        <Pressable
-
-                            key={key}
-                            style={[{ borderColor: pick.value == radioOperationExamTypeSelectedValue? '#fff': '#a1a1aa'}, styles.checkboxBase, pick.value == radioOperationExamTypeSelectedValue && styles.checkboxChecked]}
-                            onPress={() => onCheckmarkPress(pick, key)}>
-                            {pick.value == radioOperationExamTypeSelectedValue &&
-                            <Ionicons name="checkmark" size={16} color="white"/>}
-
-                        </Pressable>
-                        <Text style={styles.checkboxLabel}>{pick.label}</Text>
-                    </View>
-                </>
-            })
-            }
             <View style={head.header}>
                 <View style={styles.containerHeader}>
                     <View  style={styles.textContainer}>
