@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, View, Image } from 'react-native';
+import { View, Image } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
+import { useSelector, RootStateOrAny } from 'react-redux';
 const splash = require('../../assets/splash.png');
 
-export default function App() {
+export default function App({ navigation }:any) {
+  const user = useSelector((state:RootStateOrAny) => state.user);
   const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
@@ -36,6 +38,11 @@ export default function App() {
       // we hide the splash screen once we know the root view has already
       // performed layout.
       await SplashScreen.hideAsync();
+      if (user && user.email) {
+        navigation.replace('Home');
+      } else {
+        navigation.replace('AppIntro');
+      }
     }
   }, [appIsReady]);
 
@@ -44,9 +51,13 @@ export default function App() {
   }
 
   return (
-    <Image
-      source={splash}
-      style={{ height: '100%', width: '100%' }}
-    />
+    <View
+      style={{ flex: 1 }}
+      onLayout={onLayoutRootView}>
+      <Image
+        source={splash}
+        style={{ height: '100%', width: '100%' }}
+      />
+    </View>
   );
 }
