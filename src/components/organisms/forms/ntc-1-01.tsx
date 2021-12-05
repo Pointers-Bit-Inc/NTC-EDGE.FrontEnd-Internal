@@ -62,13 +62,12 @@ const NTC101 = ({
     const styles = StyleSheet.create({
 
         checkboxBase: {
-            width: 16,
-            height: 16,
+            width: 20,
+            height: 20,
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: 4,
             borderWidth: 1,
-
             backgroundColor: 'white',
         },
 
@@ -714,15 +713,17 @@ const NTC101 = ({
         let index = -1;
         onFormSubmit()
         for (let j = 0; j < tab.length; j++) {
-            if (tab[j].isRouteActive) {
+            if (tab[j].isRouteActive && tab[j].isComplete || tab[j].isRouteActive  ) {
                 tab[j].isRouteActive = !tab[j].isRouteActive
             }
 
             if (tab[j].id == nav.id) {
                 index = j
-                tab[j].isRouteActive = !tab[j].isRouteActive
-
+                if(tab[j].isComplete){
+                    tab[j].isRouteActive = !tab[j].isRouteActive
+                }
             }
+
         }
 
         let checkIsNotComplete = false
@@ -765,7 +766,7 @@ const NTC101 = ({
 
                     }}
                     placeholder={{
-                        color: 'black'
+                        color: '#243244'
                     }}
                     value={radioOperatorServiceSelectedValue}
                     onValueChange={(itemValue: any, itemIndex: number) => {
@@ -801,7 +802,8 @@ const NTC101 = ({
                                 style={[{borderColor: pick.value == radioOperatorExamTypeSelectedValue ? '#fff' : '#a1a1aa'}, styles.checkboxBase, pick.value == radioOperatorExamTypeSelectedValue && styles.checkboxChecked]}
                                 onPress={() => onCheckmarkPress(pick, key)}>
                                 {pick.value == radioOperatorExamTypeSelectedValue &&
-                                <Ionicons name="checkmark" size={12} color="white"/>}
+
+                                <Ionicons name="checkmark" bold size={12} color="white"/>}
 
                             </Pressable>
                             <Text style={styles.checkboxLabel}>{pick.label}</Text>
