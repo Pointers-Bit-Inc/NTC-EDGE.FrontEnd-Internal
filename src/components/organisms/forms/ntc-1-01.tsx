@@ -719,22 +719,6 @@ const NTC101 = ({
         for (let j = 0; j < tab.length; j++) {
             if (tab[j].isRouteActive) {
                 tab[j].isRouteActive = !tab[j].isRouteActive
-            } else {
-                let checkIfRouteActive = false
-                for (let h = 0; h < tab.length; h++) {
-                    if (tab[h].isRouteActive) {
-                        checkIfRouteActive = true
-                        break;
-                    }
-                }
-                if (!checkIfRouteActive) {
-
-                    let newArr = [...tab];
-                    console.log(nav, newArr[j] , newArr[onNavigation])
-                    newArr[onNavigation].isRouteActive = true
-
-                    setTab(newArr)
-                }
             }
 
             if (!error.length || tab[j].isComplete) {
