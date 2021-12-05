@@ -712,14 +712,23 @@ const NTC101 = ({
         }])
     const changeNavigation = (nav: any) => {
         let index = -1
-        onFormSubmit()
+       onFormSubmit()
         for (let j = 0; j < tab.length; j++) {
+            if (tab[onNavigation]?.id == tab[j].id ) {
+                if(tab[onNavigation].isRouteActive){
+                    tab[j].isRouteActive = !tab[j].isRouteActive
+                }
+
+            }
             if (!error.length || tab[j].isComplete) {
+
                 if (tab[j].isRouteActive) {
+
                     tab[j].isRouteActive = !tab[j].isRouteActive
                 }
 
                 if (tab[j].id == nav.id) {
+
                     index = j
                     tab[j].isRouteActive = !tab[j].isRouteActive
                 }
