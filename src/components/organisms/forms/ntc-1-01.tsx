@@ -735,7 +735,19 @@ const NTC101 = ({
                     setTab(newArr)
                 }
             }
+            if (!error.length || tab[j].isComplete) {
 
+                if (tab[j].isRouteActive) {
+
+                    tab[j].isRouteActive = !tab[j].isRouteActive
+                }
+
+                if (tab[j].id == nav.id) {
+
+                    index = j
+                    tab[j].isRouteActive = !tab[j].isRouteActive
+                }
+            }
 
 
 
