@@ -717,11 +717,6 @@ const NTC101 = ({
         let index = -1
         onFormSubmit()
         for (let j = 0; j < tab.length; j++) {
-            if (tab[j].isRouteActive) {
-                tab[j].isRouteActive = !tab[j].isRouteActive
-            }
-
-            if (!error.length || tab[j].isComplete) {
 
                 if (tab[j].isRouteActive) {
 
@@ -733,25 +728,15 @@ const NTC101 = ({
                     index = j
                     tab[j].isRouteActive = !tab[j].isRouteActive
                 }
-            }
 
 
         }
 
         if (index > -1) {
-            let checkIsNotComplete = false
 
-            for (let l = 0; l < tab.length; l++) {
-                if (tab[index].isComplete == tab[l].isComplete) {
 
-                } else if (index <= l) {
-                    if (!tab[index].isComplete == tab[l].isComplete) {
-                        checkIsNotComplete = true
-                    }
-                }
-            }
 
-            if (index > -1 && tab[index].isComplete || checkIsNotComplete) {
+            if (index > -1 ) {
                 if (tab[index].id == 1) {
                     setHeaderShown(false)
                 }
