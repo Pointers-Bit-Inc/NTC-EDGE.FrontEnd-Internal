@@ -726,18 +726,18 @@ const NTC101 = ({
                     }
                 }
                 if (!checkIfRouteActive) {
+
                     let newArr = [...tab];
-                    newArr[onNavigation].isRouteActive = true
+                    if(newArr[onNavigation].isRouteActive){
+                        newArr[onNavigation].isRouteActive = false
+                    }else{
+                        newArr[onNavigation].isRouteActive = true
+                    }
+
                     setTab(newArr)
                 }
             }
 
-            if (tab[j].id == nav.id && tab[j].isRouteActive && !tab[j].isComplete) {
-                if (tab[j + 1].isComplete) {
-                    tab[j].isRouteActive = !tab[j].isRouteActive
-
-                }
-            }
             if (!error.length || tab[j].isComplete) {
 
                 if (tab[j].isRouteActive) {
