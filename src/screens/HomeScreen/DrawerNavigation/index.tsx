@@ -72,7 +72,7 @@ const DrawerNavigation = ({ navigation }:any) => {
         show={showAlert}
         showProgress={false}
         titleStyle={styles.alertMessage}
-        title={'Are you sure you would\nlike to log out?'}
+        title={'Are you sure you would like to log out?'}
         contentStyle={styles.contentStyle}
         closeOnTouchOutside={false}
         closeOnHardwareBackPress={false}

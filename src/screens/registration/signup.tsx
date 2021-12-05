@@ -230,7 +230,7 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
       return onChangeText('agreed', formValue.agreed.value);
     } else {
       return navigation.navigate(
-        'RegistrationSuccess',
+        'RegistrationOTP',
         {
           username,
           email,
@@ -259,7 +259,6 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={75}
         style={styles.container}
       >
       <ScrollView

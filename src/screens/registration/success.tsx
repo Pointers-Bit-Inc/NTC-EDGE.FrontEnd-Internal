@@ -34,6 +34,10 @@ const styles = StyleSheet.create({
   horizontal: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  footer: {
+    alignItems: 'center',
+    marginBottom: 30,
   }
 });
 
@@ -75,7 +79,7 @@ const RegistrationSuccess = ({ navigation, route }:any) => {
           {`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Pharetra sit amet aliquam id diam maecenas ultricies mi eget.`}
         </Text>
       </View>
-      <View style={{ alignItems: 'center' }}>
+      <View style={styles.footer}>
         <TouchableOpacity
           disabled={loading}
           onPress={() => onContinue(route.params)}
