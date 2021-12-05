@@ -14,7 +14,7 @@ export default () => {
 
   const [currentStep, setCurrentStep] = useState(0);
   const [agree, setAgree] = useState(false);
-  const [completed, setSubmitted] = useState(false);
+  const [completed, setCompleted] = useState(false);
 
   const steps = [
     {
@@ -60,7 +60,7 @@ export default () => {
       onPrevious: () => setCurrentStep(currentStep - 1),
       onNext: () => {
         if (completed) navigation.navigate('Home');
-        else if (agree) setSubmitted(true);
+        else if (agree) setCompleted(true);
       },
       buttonLabel: completed ? 'Close' : 'Submit',
       buttonDisabled: completed ? !completed : !agree,
