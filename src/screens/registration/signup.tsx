@@ -108,7 +108,7 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
 
   const errorResponse = {
     userType: 'Please select a user type',
-    permitType: 'Please select a permit type',
+    permitType: 'Please select a user type',
     firstname: 'Enter First name',
     middlename: 'Enter Middle name',
     lastname: 'Enter Last name',
@@ -229,7 +229,21 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
     } else if (!formValue.agreed.value) {
       return onChangeText('agreed', formValue.agreed.value);
     } else {
-      return navigation.navigate('RegistrationSuccess');
+      return navigation.navigate(
+        'RegistrationSuccess',
+        {
+          username,
+          email,
+          password,
+          userType: formValue.userType.value,
+          permitType: formValue.permitType.value,
+          firstname: formValue.firstname.value,
+          middlename: formValue.middlename.value,
+          lastname: formValue.lastname.value,
+          phone: formValue.phone.value,
+          address: formValue.address.value,
+        }
+      );
     }
   }
 

@@ -11,7 +11,7 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setUser } from 'src/reducers/user/actions'
 import {
   validateEmail,
@@ -65,7 +65,6 @@ const errorResponse = {
 
 const Login = ({ navigation }:any) => {
   const dispatch = useDispatch();
-  const user = useSelector((state:RootStateOrAny) => state.user);
   const [loading, setLoading] = useState(false);
   const onLogin = useCallback(async (data) => {
     setLoading(true);
@@ -162,12 +161,6 @@ const Login = ({ navigation }:any) => {
   const isValid =
     formValue.email.isValid &&
     formValue.password.isValid;
-
-  useEffect(() => {
-    if (user && user.email) {
-      navigation.replace('HomeScreen');
-    }
-  }, []);
 
   return (
     <ImageBackground

@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { SafeAreaView, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { setUser } from 'src/reducers/user/actions'
 import { CheckIcon, ArrowRightIcon } from '@atoms/icon';
 import Text from '@atoms/text';
 import { text, button } from 'src/styles/color';
@@ -35,7 +37,17 @@ const styles = StyleSheet.create({
   }
 });
 
-const RegistrationSuccess = ({ navigation }:any) => {
+const RegistrationSuccess = ({ navigation, route }:any) => {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const onContinue = useCallback(async (data) => {
+    setLoading(true);
+    await setTimeout(() => {
+      setLoading(false);
+      dispatch(setUser(data));
+      navigation.navigate('HomeScreen');
+    }, 100);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -64,7 +76,10 @@ const RegistrationSuccess = ({ navigation }:any) => {
         </Text>
       </View>
       <View style={{ alignItems: 'center' }}>
-        <TouchableOpacity onPress={() => navigation.replace('Login')}>
+        <TouchableOpacity
+          disabled={loading}
+          onPress={() => onContinue(route.params)}
+        >
           <View style={styles.horizontal}>
             <Text
               color={button.primary}
