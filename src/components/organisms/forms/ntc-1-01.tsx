@@ -619,6 +619,7 @@ const NTC101 = ({
         let newArr = [...tab];
         for (let j = 0; j < applicationFormValue.length; j++) {
             if (applicationFormValue[j].navigation == onNavigation) {
+                newArr[onNavigation].isEditing = true
                 if (!applicationFormValue[j].value) {
                     error.push(applicationFormValue[j])
                     for (let l = 0; l < newArr.length; l++) {
@@ -634,7 +635,7 @@ const NTC101 = ({
         if (!error.length) {
             if (onNavigation < tab.length) {
                 newArr[onNavigation].isComplete = true
-                newArr[onNavigation].isEditing = true
+
                 newArr[onNavigation].isRouteActive = !newArr[onNavigation].isRouteActive
                 if (onNavigation < tab.length - 1) {
                     newArr[onNavigation + 1].isRouteActive = !newArr[onNavigation + 1].isRouteActive
