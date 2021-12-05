@@ -713,27 +713,27 @@ const NTC101 = ({
 
     const changeNavigation = (nav: any) => {
         let index = -1
-       onFormSubmit()
+        onFormSubmit()
         for (let j = 0; j < tab.length; j++) {
             if (tab[j].isRouteActive) {
                 tab[j].isRouteActive = !tab[j].isRouteActive
-            }else{
+            } else {
                 let checkIfRouteActive = false
-                for(let h = 0; h < tab.length; h++ ){
-                    if(tab[h].isRouteActive){
+                for (let h = 0; h < tab.length; h++) {
+                    if (tab[h].isRouteActive) {
                         checkIfRouteActive = true
                         break;
                     }
                 }
-                if(!checkIfRouteActive){
+                if (!checkIfRouteActive) {
                     let newArr = [...tab];
                     newArr[onNavigation].isRouteActive = true
                     setTab(newArr)
                 }
             }
 
-            if (tab[j].id == nav.id && tab[j].isRouteActive && !tab[j].isComplete ) {
-                if(tab[j + 1].isComplete ){
+            if (tab[j].id == nav.id && tab[j].isRouteActive && !tab[j].isComplete) {
+                if (tab[j + 1].isComplete) {
                     tab[j].isRouteActive = !tab[j].isRouteActive
 
                 }
@@ -755,7 +755,7 @@ const NTC101 = ({
 
         }
 
-        if(index > -1){
+        if (index > -1) {
             let checkIsNotComplete = false
 
             for (let l = 0; l < tab.length; l++) {
@@ -831,7 +831,13 @@ const NTC101 = ({
                             <Pressable
 
                                 key={key}
-                                style={[{borderColor: pick.value == radioOperatorExamTypeSelectedValue ? '#fff' : '#a1a1aa'}, styles.checkboxBase, pick.value == radioOperatorExamTypeSelectedValue && styles.checkboxChecked]}
+                                style={[
+                                    {
+                                        borderColor: pick.value == radioOperatorExamTypeSelectedValue ? '#fff' : '#a1a1aa'
+                                    },
+                                    styles.checkboxBase,
+                                    pick.value == radioOperatorExamTypeSelectedValue && styles.checkboxChecked
+                                ]}
                                 onPress={() => onCheckmarkPress(pick, key)}>
                                 {pick.value == radioOperatorExamTypeSelectedValue &&
 
@@ -940,7 +946,6 @@ const NTC101 = ({
                         onChange={onTimeChange}/></>}
 */}
                     <FormField key={formFieldKey} formElements={applicationFormValue.filter(app => {
-
                         return app.navigation == onNavigation
                     })} onChange={onChangeApplicantForm} onSubmit={onFormSubmit}/>
                 </ScrollView>
@@ -951,6 +956,7 @@ const NTC101 = ({
                         </Text>
                     </Button>
                 </View>
+
             </View>
 
         </View>
