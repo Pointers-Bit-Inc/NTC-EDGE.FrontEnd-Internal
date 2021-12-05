@@ -108,7 +108,6 @@ const NTC101 = ({
 
         },
         textContainer: {
-            marginTop: "5%",
             marginLeft: 10
         },
         textWhite: {
@@ -135,7 +134,7 @@ const NTC101 = ({
         header: {
             backgroundColor: "#f0f0f0",
             width: "100%",
-            height: '15%'
+            height: '12%'
         }
     });
     const [sexType, setSexType] = useState([
@@ -795,8 +794,6 @@ const NTC101 = ({
             <View style={head.header}>
                 <View style={styles.containerHeader}>
                     <View  style={styles.textContainer}>
-
-
                         <Text style={styles.textWhite}>Attendant's Detail</Text>
                     </View>
                 <Header onChangeNavigation={changeNavigation} tab={tab}/>
@@ -813,7 +810,6 @@ const NTC101 = ({
                             setHeaderShown(false);
                         }
                     }}
-                    // onScroll will be fired every 16ms
                     scrollEventThrottle={16}
                     style={head.childContainer}
                     >
