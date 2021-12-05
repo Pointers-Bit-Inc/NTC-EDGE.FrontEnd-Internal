@@ -62,8 +62,8 @@ const NTC101 = ({
     const styles = StyleSheet.create({
 
         checkboxBase: {
-            width: 20,
-            height: 20,
+            width: 16,
+            height: 16,
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: 4,
@@ -91,7 +91,7 @@ const NTC101 = ({
             alignItems: 'center',
             paddingLeft: 15,
             paddingBottom: 5,
-            paddingTop: 10,
+            paddingTop: 5,
         },
 
         checkboxLabel: {
@@ -717,9 +717,7 @@ const NTC101 = ({
         let index = -1
         onFormSubmit()
         for (let j = 0; j < tab.length; j++) {
-            if (tab[j].isRouteActive) {
-                tab[j].isRouteActive = !tab[j].isRouteActive
-            } else {
+
                 let checkIfRouteActive = false
                 for (let h = 0; h < tab.length; h++) {
                     if (tab[h].isRouteActive) {
@@ -730,11 +728,18 @@ const NTC101 = ({
                 if (!checkIfRouteActive) {
 
                     let newArr = [...tab];
+
+                    if(nav.id == newArr[j]){
+                        newArr[onNavigation].isRouteActive = false
+                        newArr[j].isRouteActive = true
+                    }else{
                         newArr[onNavigation].isRouteActive = true
+                    }
+
 
                     setTab(newArr)
                 }
-            }
+
             if (!error.length || tab[j].isComplete) {
 
                 if (tab[j].isRouteActive) {
