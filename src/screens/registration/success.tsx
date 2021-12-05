@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { SafeAreaView, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { setUser } from 'src/reducers/user/actions'
 import { CheckIcon, ArrowRightIcon } from '@atoms/icon';
 import Text from '@atoms/text';
 import { text, button } from 'src/styles/color';
@@ -32,10 +34,24 @@ const styles = StyleSheet.create({
   horizontal: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  footer: {
+    alignItems: 'center',
+    marginBottom: 30,
   }
 });
 
-const RegistrationSuccess = ({ navigation }:any) => {
+const RegistrationSuccess = ({ navigation, route }:any) => {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const onContinue = useCallback(async (data) => {
+    setLoading(true);
+    await setTimeout(() => {
+      setLoading(false);
+      dispatch(setUser(data));
+      navigation.replace('HomeScreen');
+    }, 100);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -63,8 +79,11 @@ const RegistrationSuccess = ({ navigation }:any) => {
           {`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Pharetra sit amet aliquam id diam maecenas ultricies mi eget.`}
         </Text>
       </View>
-      <View style={{ alignItems: 'center' }}>
-        <TouchableOpacity onPress={() => navigation.replace('Login')}>
+      <View style={styles.footer}>
+        <TouchableOpacity
+          disabled={loading}
+          onPress={() => onContinue(route.params)}
+        >
           <View style={styles.horizontal}>
             <Text
               color={button.primary}
