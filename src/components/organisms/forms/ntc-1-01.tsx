@@ -631,10 +631,13 @@ const NTC101 = ({
             }
         }
         if (!error.length) {
-            if (onNavigation < tab.length - 1) {
+            if (onNavigation < tab.length) {
                 newArr[onNavigation].isComplete = true
+
                 newArr[onNavigation].isRouteActive = !newArr[onNavigation].isRouteActive
-                newArr[onNavigation + 1].isRouteActive = !newArr[onNavigation + 1].isRouteActive
+                if(onNavigation < tab.length - 1 ){
+                    newArr[onNavigation + 1].isRouteActive = !newArr[onNavigation + 1].isRouteActive
+                }
                 setTab(newArr);
                 setOnNavigation(onNavigation + 1)
                 for (var k = 0; k < applicationFormValue.length; k++) {
@@ -726,7 +729,7 @@ const NTC101 = ({
         for(let l = 0; l < tab.length; l++){
             if(tab[index].isComplete == tab[l].isComplete){
 
-            }else if(index < l){
+            }else if(index <= l){
                 if(!tab[index].isComplete == tab[l].isComplete){
                     checkIsNotComplete = true
                 }
@@ -734,6 +737,9 @@ const NTC101 = ({
         }
 
         if (index > -1 && tab[index].isComplete || checkIsNotComplete) {
+            if(tab[index].id == 1){
+                setHeaderShown(false)
+            }
             setTab(tab)
             setOnNavigation(index)
         }

@@ -31,7 +31,7 @@ const Header = (props: any) => {
                                         fontSize: 10,
                                         lineHeight: 50,
                                         textTransform: "uppercase",
-                                        color: `${t.isRouteActive ? '#2f5bfa' : '#000'}`,
+                                        color: `${t.isRouteActive ? '#2f5bfa' : '#808196'}`,
                                         fontWeight: `${t.isRouteActive ? "bold" : "normal"}`
                                     }}
                                 >
