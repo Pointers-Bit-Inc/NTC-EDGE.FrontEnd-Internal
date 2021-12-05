@@ -3,9 +3,10 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { CheckIcon, CloseIcon } from '@atoms/icon';
 import {
   InputField,
+  DropdownField
 } from '@molecules/form-fields';
 import InputStyles from 'src/styles/input-style';
-import { text } from 'src/styles/color';
+import { text, outline } from 'src/styles/color';
 import Text from '@atoms/text';
 
 const styles = StyleSheet.create({
@@ -14,6 +15,17 @@ const styles = StyleSheet.create({
   },
   label: {
     marginLeft: 10
+  },
+  typeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 10 ,
   },
   passwordValidationContainer: {
     paddingVertical: 5,
@@ -36,15 +48,26 @@ const styles = StyleSheet.create({
     width: 18,
     backgroundColor: '#DBDFE5',
     borderRadius: 3,
+  },
+  circle: {
+    height: 15,
+    width: 15,
+    borderColor: outline.default,
+    borderWidth: 1.2,
+    borderRadius: 15,
+    marginRight: 5,
+  },
+  circleActive: {
+    borderColor: outline.primary,
+    borderWidth: 5,
   }
 });
-
 interface Props {
-  formValue?: any;
-  onChangeText?: any;
+  form?: any;
+  onChangeValue?: any;
 }
 
-const RegistrationForm : FC<Props> = ({ formValue = {}, onChangeText = () => {} }) => {
+const RegistrationForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
   const validateIcon = (valid:boolean) => {
     if (valid) {
       return (
@@ -108,11 +131,11 @@ const RegistrationForm : FC<Props> = ({ formValue = {}, onChangeText = () => {} 
         outlineStyle={InputStyles.outlineStyle}
         activeColor={text.primary}
         errorColor={text.error}
-        error={formValue?.username?.error}
+        error={form?.username?.error}
         requiredColor={text.error}
-        value={formValue?.username?.value}
-        onChangeText={(value: string) => onChangeText('username', value)}
-        onSubmitEditing={(event:any) => onChangeText('username', event.nativeEvent.text)}
+        value={form?.username?.value}
+        onChangeText={(value: string) => onChangeValue('username', value)}
+        onSubmitEditing={(event:any) => onChangeValue('username', event.nativeEvent.text)}
       />
       <InputField
         inputStyle={InputStyles.text}
@@ -124,27 +147,11 @@ const RegistrationForm : FC<Props> = ({ formValue = {}, onChangeText = () => {} 
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
-        error={formValue?.email?.error}
-        value={formValue?.email?.value}
+        error={form?.email?.error}
+        value={form?.email?.value}
         keyboardType={'email-address'}
-        onChangeText={(value: string) => onChangeText('email', value)}
-        onSubmitEditing={(event:any) => onChangeText('email', event.nativeEvent.text)}
-      />
-      <InputField
-        inputStyle={InputStyles.text}
-        label={'Phone'}
-        placeholder="Phone number"
-        required={true}
-        hasValidation={true}
-        outlineStyle={InputStyles.outlineStyle}
-        activeColor={text.primary}
-        errorColor={text.error}
-        requiredColor={text.error}
-        error={formValue?.phone?.error}
-        value={formValue?.phone?.value}
-        keyboardType={'phone-pad'}
-        onChangeText={(value: string) => onChangeText('phone', value)}
-        onSubmitEditing={(event:any) => onChangeText('phone', event.nativeEvent.text)}
+        onChangeText={(value: string) => onChangeValue('email', value)}
+        onSubmitEditing={(event:any) => onChangeValue('email', event.nativeEvent.text)}
       />
       <InputField
         inputStyle={InputStyles.text}
@@ -157,11 +164,11 @@ const RegistrationForm : FC<Props> = ({ formValue = {}, onChangeText = () => {} 
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
-        secureTextEntry={!formValue?.showPassword?.value}
-        error={formValue?.password?.error}
-        value={formValue?.password?.value}
-        onChangeText={(value: string) => onChangeText('password', value)}
-        onSubmitEditing={(event:any) => onChangeText('password', event.nativeEvent.text)}
+        secureTextEntry={!form?.showPassword?.value}
+        error={form?.password?.error}
+        value={form?.password?.value}
+        onChangeText={(value: string) => onChangeValue('password', value)}
+        onSubmitEditing={(event:any) => onChangeValue('password', event.nativeEvent.text)}
       />
       <View style={{ marginBottom: 20, marginTop: 5 }}>
         <Text
@@ -173,31 +180,31 @@ const RegistrationForm : FC<Props> = ({ formValue = {}, onChangeText = () => {} 
         </Text>
         <View style={styles.passwordValidationContainer}>
           <View style={styles.horizontal}>
-            {validateIcon(formValue?.password?.characterLength)}
+            {validateIcon(form?.password?.characterLength)}
             <Text
               style={styles.label}
               size={12}
-              color={validateColor(formValue?.password?.characterLength)}
+              color={validateColor(form?.password?.characterLength)}
             >
               8 or more characters
             </Text>
           </View>
           <View style={styles.horizontal}>
-            {validateIcon(formValue?.password?.upperAndLowerCase)}
+            {validateIcon(form?.password?.upperAndLowerCase)}
             <Text
               style={styles.label}
               size={12}
-              color={validateColor(formValue?.password?.upperAndLowerCase)}
+              color={validateColor(form?.password?.upperAndLowerCase)}
             >
               Uppercase and lowercase letters
             </Text>
           </View>
           <View style={styles.horizontal}>
-            {validateIcon(formValue?.password?.atLeastOneNumber)}
+            {validateIcon(form?.password?.atLeastOneNumber)}
             <Text
               style={styles.label}
               size={12}
-              color={validateColor(formValue?.password?.atLeastOneNumber)}
+              color={validateColor(form?.password?.atLeastOneNumber)}
             >
               At least one number
             </Text>
@@ -215,12 +222,12 @@ const RegistrationForm : FC<Props> = ({ formValue = {}, onChangeText = () => {} 
             style={[InputStyles.text,
               {
                 fontWeight: '600',
-                color: passwordMeterColor(formValue?.password?.strength),
+                color: passwordMeterColor(form?.password?.strength),
               }
             ]}
             size={12}
           >
-            {` ${formValue?.password?.strength || 'Weak'}`}
+            {` ${form?.password?.strength || 'Weak'}`}
           </Text>
         </View>
         <View style={styles.horizontal}>
@@ -228,7 +235,7 @@ const RegistrationForm : FC<Props> = ({ formValue = {}, onChangeText = () => {} 
             style={[
               styles.strengthBar,
               {
-                backgroundColor: passwordMeterColor(formValue?.password?.strength)
+                backgroundColor: passwordMeterColor(form?.password?.strength)
               }]
             }
           />
@@ -245,15 +252,15 @@ const RegistrationForm : FC<Props> = ({ formValue = {}, onChangeText = () => {} 
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
-        secureTextEntry={!formValue?.showPassword?.value}
-        error={formValue?.confirmPassword?.error}
-        value={formValue?.confirmPassword?.value}
-        onChangeText={(value: string) => onChangeText('confirmPassword', value)}
-        onSubmitEditing={(event:any) => onChangeText('confirmPassword', event.nativeEvent.text)}
+        secureTextEntry={!form?.showPassword?.value}
+        error={form?.confirmPassword?.error}
+        value={form?.confirmPassword?.value}
+        onChangeText={(value: string) => onChangeValue('confirmPassword', value)}
+        onSubmitEditing={(event:any) => onChangeValue('confirmPassword', event.nativeEvent.text)}
       />
-      <View style={[styles.horizontal, { marginTop: 20 }]}>
-        <TouchableOpacity onPress={() => onChangeText('showPassword', !formValue?.showPassword?.value)}>
-          {renderPasswordChecker(formValue?.showPassword?.value)}
+      <View style={[styles.horizontal]}>
+        <TouchableOpacity onPress={() => onChangeValue('showPassword', !form?.showPassword?.value)}>
+          {renderPasswordChecker(form?.showPassword?.value)}
         </TouchableOpacity>
         <Text
           style={[InputStyles.text, styles.label]}
