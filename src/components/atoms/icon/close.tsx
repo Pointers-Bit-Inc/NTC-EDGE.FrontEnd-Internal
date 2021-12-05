@@ -5,18 +5,20 @@ interface Props {
   type?: string;
   size?: number;
   color?: string;
+  circle?: boolean;
   [x: string]: any;
 }
 
 const CloseIcon: FC<Props> = ({
   size = 24,
   color = 'black',
+  circle,
   ...otherProps
 }) => {
 
   return (
     <AntDesign
-      name="closecircleo"
+      name={circle ? 'closecircleo' : 'close'}
       size={size}
       color={color}
       {...otherProps}

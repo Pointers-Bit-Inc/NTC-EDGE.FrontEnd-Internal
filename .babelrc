@@ -17,7 +17,7 @@
       ],
       "alias": {
         "src": "./src",
-        "@assets": "./src/assets",
+        "@assets": "./assets",
         "@styles": "./src/styles",
         "@components": "./src/components",
         "@atoms": "./src/components/atoms",
