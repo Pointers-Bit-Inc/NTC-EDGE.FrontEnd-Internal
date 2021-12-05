@@ -603,8 +603,9 @@ const NTC101 = ({
             inputStyle: InputStyles.text,
             error: false
         },])
+    let error = []
     const onFormSubmit = () => {
-        let error = []
+
         for (var i = 0; i < applicationFormValue.length; i++) {
             if (applicationFormValue[i]?.['error'] && applicationFormValue[i]?.['value'] == "") {
                 onChangeApplicantForm(applicationFormValue[i].id, true, 'error')
@@ -618,8 +619,8 @@ const NTC101 = ({
         let newArr = [...tab];
         for (let j = 0; j < applicationFormValue.length; j++) {
             if (applicationFormValue[j].navigation == onNavigation) {
-                if (!applicationFormValue[j].value  ) {
-                    error.push(applicationFormValue[j] )
+                if (!applicationFormValue[j].value) {
+                    error.push(applicationFormValue[j])
                     for (let l = 0; l < newArr.length; l++) {
 
                         newArr[l].isRouteActive = false
@@ -635,7 +636,7 @@ const NTC101 = ({
                 newArr[onNavigation].isComplete = true
 
                 newArr[onNavigation].isRouteActive = !newArr[onNavigation].isRouteActive
-                if(onNavigation < tab.length - 1 ){
+                if (onNavigation < tab.length - 1) {
                     newArr[onNavigation + 1].isRouteActive = !newArr[onNavigation + 1].isRouteActive
                 }
                 setTab(newArr);
@@ -710,41 +711,44 @@ const NTC101 = ({
             isComplete: false
         }])
     const changeNavigation = (nav: any) => {
-        let index = -1;
+        let index = -1
         onFormSubmit()
         for (let j = 0; j < tab.length; j++) {
-            if (tab[j].isRouteActive && tab[j].isComplete || tab[j].isRouteActive  ) {
-                tab[j].isRouteActive = !tab[j].isRouteActive
-            }
+            if (!error.length || tab[j].isComplete) {
+                if (tab[j].isRouteActive) {
+                    tab[j].isRouteActive = !tab[j].isRouteActive
+                }
 
-            if (tab[j].id == nav.id) {
-                index = j
-                if(tab[j].isComplete){
+                if (tab[j].id == nav.id) {
+                    index = j
                     tab[j].isRouteActive = !tab[j].isRouteActive
                 }
             }
 
+
         }
+        if(index > -1){
+            let checkIsNotComplete = false
 
-        let checkIsNotComplete = false
+            for (let l = 0; l < tab.length; l++) {
+                if (tab[index].isComplete == tab[l].isComplete) {
 
-        for(let l = 0; l < tab.length; l++){
-            if(tab[index].isComplete == tab[l].isComplete){
-
-            }else if(index <= l){
-                if(!tab[index].isComplete == tab[l].isComplete){
-                    checkIsNotComplete = true
+                } else if (index <= l) {
+                    if (!tab[index].isComplete == tab[l].isComplete) {
+                        checkIsNotComplete = true
+                    }
                 }
             }
+
+            if (index > -1 && tab[index].isComplete || checkIsNotComplete) {
+                if (tab[index].id == 1) {
+                    setHeaderShown(false)
+                }
+                setTab(tab)
+                setOnNavigation(index)
+            }
         }
 
-        if (index > -1 && tab[index].isComplete || checkIsNotComplete) {
-            if(tab[index].id == 1){
-                setHeaderShown(false)
-            }
-            setTab(tab)
-            setOnNavigation(index)
-        }
 
     }
 
