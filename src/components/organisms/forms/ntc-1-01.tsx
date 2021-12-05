@@ -854,7 +854,7 @@ const NTC101 = ({
             <View style={head.header}>
                 <View style={styles.containerHeader}>
                     <View style={styles.textContainer}>
-                        <Text style={styles.textWhite}>Attendant's Detail</Text>
+                        <Text style={styles.textWhite}>Applicant's Details</Text>
                     </View>
                     <Header onChangeNavigation={changeNavigation} tab={tab}/>
                 </View>

@@ -33,7 +33,7 @@ const FormField = ({
 
                 return (
                     <View>
-                        <Text>{otherProps.label}</Text>
+                        <Text style={{color: text.default}} >{otherProps.label}</Text>
                         <DateTimePicker style={{width: '100%'}}
                                         onChange={(event: any, selectedDate: any) => {
                                             onChange(id, selectedDate)
