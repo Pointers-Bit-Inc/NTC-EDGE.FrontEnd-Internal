@@ -121,8 +121,7 @@ const NTC101 = ({
     const head = StyleSheet.create({
         services:{
             backgroundColor: "#f0f0f0",
-            padding: 20,
-            paddingLeft:20
+            padding: 15,
         },
         container: {
             flex: 1,
@@ -746,6 +745,12 @@ const NTC101 = ({
                             top: 10,
                             right: 12,
                         },
+
+                    }}
+                    placeholder={{
+                        label: 'Radio Operator Service',
+                        value: radioOperationServiceSelectedValue,
+
                     }}
                     value={radioOperationServiceSelectedValue}
                     onValueChange={(itemValue: any, itemIndex: number) => {
