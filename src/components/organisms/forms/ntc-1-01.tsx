@@ -680,7 +680,9 @@ const NTC101 = ({
         } else {
             newArr[index]['value'] = text;
         }
-
+        if (element == 'input'){
+            setHeaderShown(true)
+        }
         setApplicationFormValue(newArr);
 
     };
@@ -728,29 +730,13 @@ const NTC101 = ({
                 if (!checkIfRouteActive) {
 
                     let newArr = [...tab];
-                    if(newArr[onNavigation].isRouteActive){
-                        newArr[onNavigation].isRouteActive = false
-                    }else{
                         newArr[onNavigation].isRouteActive = true
-                    }
 
                     setTab(newArr)
                 }
             }
 
-            if (!error.length || tab[j].isComplete) {
 
-                if (tab[j].isRouteActive) {
-
-                    tab[j].isRouteActive = !tab[j].isRouteActive
-                }
-
-                if (tab[j].id == nav.id) {
-
-                    index = j
-                    tab[j].isRouteActive = !tab[j].isRouteActive
-                }
-            }
 
 
         }
