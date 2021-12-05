@@ -72,7 +72,7 @@ const Login = ({ navigation }:any) => {
     await setTimeout(() => {
       setLoading(false);
       dispatch(setUser(data));
-      navigation.navigate('Home');
+      navigation.navigate('HomeScreen');
     }, 3000);
   }, []);
   const [formValue, setFormValue] = useState({
@@ -165,7 +165,7 @@ const Login = ({ navigation }:any) => {
 
   useEffect(() => {
     if (user && user.email) {
-      navigation.replace('Home');
+      navigation.replace('HomeScreen');
     }
   }, []);
 

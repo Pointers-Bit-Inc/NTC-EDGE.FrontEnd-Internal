@@ -7,6 +7,7 @@ import App from '@screens/app';
 import AppIntro from '@screens/intro';
 import Login from '@screens/login';
 import Home from '@screens/home';
+import DrawerNavigation from '@screens/HomeScreen/DrawerNavigation';
 
 
 type RootStackParamList = {
@@ -15,7 +16,7 @@ type RootStackParamList = {
   Login: undefined;
   ForgotPassword: undefined;
   Registration: undefined;
-  Home: undefined;
+  HomeScreen: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -27,13 +28,14 @@ const RootNavigator = () => {
           gestureEnabled: false,
           headerShown: false
         }}
+        initialRouteName="App"
       >
         <Stack.Screen name="App" component={App} />
         <Stack.Screen name="AppIntro" component={AppIntro} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         <Stack.Screen name="Registration" component={Registration} />
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
       </Stack.Navigator>
     </NavigationContainer>
   );

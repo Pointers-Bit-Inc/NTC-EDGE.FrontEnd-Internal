@@ -6,7 +6,7 @@ import * as Font from 'expo-font';
 import { useSelector, RootStateOrAny } from 'react-redux';
 const splash = require('../../assets/splash.png');
 
-export default function App({ navigation }:any) {
+const App = ({ navigation }:any) => {
   const user = useSelector((state:RootStateOrAny) => state.user);
   const [appIsReady, setAppIsReady] = useState(false);
 
@@ -39,7 +39,7 @@ export default function App({ navigation }:any) {
       // performed layout.
       await SplashScreen.hideAsync();
       if (user && user.email) {
-        navigation.replace('Home');
+        navigation.replace('HomeScreen');
       } else {
         navigation.replace('AppIntro');
       }
@@ -61,3 +61,5 @@ export default function App({ navigation }:any) {
     </View>
   );
 }
+
+export default App
