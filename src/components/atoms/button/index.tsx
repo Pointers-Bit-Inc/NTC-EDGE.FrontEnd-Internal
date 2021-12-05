@@ -21,7 +21,7 @@ const Button: FC<Props> = ({
   onPress = () => {},
   style,
   ...otherProps
-}: any) => {
+}) => {
   const debouncedOnPress = lodash.debounce(onPress, 300, { leading: true, trailing: false });
   
   return (
