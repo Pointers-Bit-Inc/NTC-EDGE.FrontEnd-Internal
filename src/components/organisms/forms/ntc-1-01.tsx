@@ -617,11 +617,11 @@ const NTC101 = ({
 
         }
         let newArr = [...tab];
-        for (var j = 0; j < applicationFormValue.length; j++) {
+        for (let j = 0; j < applicationFormValue.length; j++) {
             if (applicationFormValue[j].navigation == onNavigation) {
                 if (!applicationFormValue[j].value  ) {
                     error.push(applicationFormValue[j] )
-                    for (var l = 0; l < newArr.length; l++) {
+                    for (let l = 0; l < newArr.length; l++) {
 
                         newArr[l].isRouteActive = false
                     }
@@ -712,7 +712,7 @@ const NTC101 = ({
         }])
     const changeNavigation = (nav: any) => {
         let index = -1;
-
+        onFormSubmit()
         for (let j = 0; j < tab.length; j++) {
             if (tab[j].isRouteActive) {
                 tab[j].isRouteActive = !tab[j].isRouteActive
@@ -744,6 +744,7 @@ const NTC101 = ({
             setTab(tab)
             setOnNavigation(index)
         }
+
     }
 
     return (
