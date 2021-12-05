@@ -718,8 +718,9 @@ const NTC101 = ({
             }
 
         }
-        setTab(tab)
+
         if (index > -1 && tab[index].isComplete) {
+            setTab(tab)
             setOnNavigation(index)
         }
     }
