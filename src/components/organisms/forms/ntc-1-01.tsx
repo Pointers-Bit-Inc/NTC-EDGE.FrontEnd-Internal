@@ -634,7 +634,7 @@ const NTC101 = ({
         if (!error.length) {
             if (onNavigation < tab.length) {
                 newArr[onNavigation].isComplete = true
-
+                newArr[onNavigation].isEditing = true
                 newArr[onNavigation].isRouteActive = !newArr[onNavigation].isRouteActive
                 if (onNavigation < tab.length - 1) {
                     newArr[onNavigation + 1].isRouteActive = !newArr[onNavigation + 1].isRouteActive
@@ -681,6 +681,7 @@ const NTC101 = ({
             newArr[index]['value'] = text;
         }
         if (element == 'input'){
+
             setHeaderShown(true)
         }
         setApplicationFormValue(newArr);
@@ -690,23 +691,27 @@ const NTC101 = ({
         {
             id: 1,
             name: 'Basic Info',
+            isEditing: false,
             tintColor: true,
             isRouteActive: true,
             isComplete: false
         }, {
             id: 2,
+            isEditing: false,
             name: 'Address',
             tintColor: true,
             isRouteActive: false,
             isComplete: false
         }, {
             id: 3,
+            isEditing: false,
             name: 'Additional Details',
             tintColor: true,
             isRouteActive: false,
             isComplete: false
         }, {
             id: 4,
+            isEditing: false,
             name: 'Contacts',
             tintColor: true,
             isRouteActive: false,
@@ -718,23 +723,20 @@ const NTC101 = ({
         onFormSubmit()
         for (let j = 0; j < tab.length; j++) {
 
-                if (tab[j].isRouteActive) {
+                if (tab[j].isRouteActive && nav.isEditing) {
 
                     tab[j].isRouteActive = !tab[j].isRouteActive
                 }
 
-                if (tab[j].id == nav.id) {
+                if (tab[j].id == nav.id && tab[j].isEditing ) {
 
                     index = j
+
                     tab[j].isRouteActive = !tab[j].isRouteActive
                 }
 
 
         }
-
-        if (index > -1) {
-
-
 
             if (index > -1 ) {
                 if (tab[index].id == 1) {
@@ -743,7 +745,6 @@ const NTC101 = ({
                 setTab(tab)
                 setOnNavigation(index)
             }
-        }
 
 
     }
