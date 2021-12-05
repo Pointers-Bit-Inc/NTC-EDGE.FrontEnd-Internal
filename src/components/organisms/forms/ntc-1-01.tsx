@@ -41,6 +41,7 @@ const NTC101 = ({
     const [headerShown, setHeaderShown] = useState(false);
     const pickerSelectStyles = StyleSheet.create({
         inputIOS: {
+            borderColor: 'transparent',
             backgroundColor: '#dbdee2',
             overflow: 'hidden',
             fontSize: 16,
@@ -50,6 +51,7 @@ const NTC101 = ({
             borderRadius: 5,
         },
         inputAndroid: {
+            borderColor: 'transparent',
             fontSize: 16,
             paddingHorizontal: 10,
             paddingVertical: 8,
