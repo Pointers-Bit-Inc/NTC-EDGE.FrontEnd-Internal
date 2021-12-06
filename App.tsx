@@ -9,8 +9,8 @@ export default function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <Navigation />
         <StatusBar />
+        <Navigation />
       </PersistGate>
     </Provider>
   );
