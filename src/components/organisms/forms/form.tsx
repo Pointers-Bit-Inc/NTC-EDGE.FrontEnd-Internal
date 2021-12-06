@@ -25,8 +25,12 @@ const FormField = ({
             case "input":
 
                 return <InputField key={id}  {...styleProps} {...otherProps}
-                                   onChangeText={(text: string) => onChange(id, text)}
-                                   onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text)}/>;
+                                   onEndEditing={(e: any) => {
+                                       onChange(id, e.nativeEvent.text, 'input')
+                                   }
+                                   }
+                                   onChangeText={(text: string) => onChange(id, text, 'input')}
+                                   onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'input')}/>;
 
 
             case "date":
