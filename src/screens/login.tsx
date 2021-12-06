@@ -206,16 +206,6 @@ const Login = ({ navigation }:any) => {
               }
             </Button>
           </View>
-          <View style={styles.horizontal}>
-            <Text color={text.default} size={14}>
-              {`Don't have an account? `}
-            </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
-              <Text color={text.primary} size={14}>
-                Sign up
-              </Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </ScrollView>
       </KeyboardAvoidingView>

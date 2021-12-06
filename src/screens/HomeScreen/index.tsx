@@ -39,7 +39,6 @@ const HomeScreen: FC<Props> = ({navigation}) => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <TabNavigation/>
         </SafeAreaView>
     )
 }
