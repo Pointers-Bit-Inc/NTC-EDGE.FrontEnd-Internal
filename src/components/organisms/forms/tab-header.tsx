@@ -1,5 +1,8 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Platform, Pressable, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {primaryColor, text} from "../../../styles/color";
+import RNPickerSelect from "react-native-picker-select";
+import {Ionicons} from "@expo/vector-icons";
 
 const Header = (props: any) => {
     const {

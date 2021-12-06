@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
   }
 });
 
-const DateTimeField = ({
+const DropDowneField = ({
+  title = '',
   value = '',
   label = '',
   labelStyle,
@@ -130,4 +131,4 @@ const DateTimeField = ({
   );
 };
 
-export default DateTimeField;
+export default DropDowneField;
