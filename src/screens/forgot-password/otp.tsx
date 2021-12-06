@@ -273,8 +273,8 @@ const OneTimePin = ({ navigation, route }:any) => {
             color={text.default}
           >
             {accountType === 'phone' ?
-              `Enter the OTP code we sent view SMS to your registered phone number ${renderDetail()}.` :
-              `Enter the OTP code we sent view EMAIL to your registered email address ${renderDetail()}.`
+              `Enter the OTP code we sent via SMS to your registered phone number ${renderDetail()}.` :
+              `Enter the OTP code we sent via EMAIL to your registered email address ${renderDetail()}.`
             }
           </Text>
         </View>
