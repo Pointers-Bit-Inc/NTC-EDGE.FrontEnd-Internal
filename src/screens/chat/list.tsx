@@ -121,7 +121,7 @@ const data = [
   },
 ]
 
-const ChatList = () => {
+const ChatList = ({ navigation }:any) => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [messages, setMessages] = useState(data);
@@ -130,10 +130,6 @@ const ChatList = () => {
     setTimeout(() => {
       setLoading(false);
     }, 5000);
-  }, []);
-
-  useEffect(() => {
-    onFetchData();
   }, []);
 
   return (
@@ -193,7 +189,7 @@ const ChatList = () => {
         }
       />
       <View style={styles.floating}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('NewChat')}>
           <View style={[styles.button, styles.shadow]}>
             <WriteIcon
               size={28}
