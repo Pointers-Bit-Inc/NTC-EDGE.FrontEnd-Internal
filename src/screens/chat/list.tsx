@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { StyleSheet, View, FlatList, TouchableOpacity, Image } from 'react-native'
+import React, { useState, useCallback, useEffect } from 'react'
+import { RefreshControl, StyleSheet, View, FlatList, TouchableOpacity, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { SearchField } from '@components/molecules/form-fields';
 import { ChatItem } from '@components/molecules/list-item';
-import { FilterIcon } from '@components/atoms/icon';
+import { FilterIcon, WriteIcon } from '@components/atoms/icon';
 import { primaryColor, outline } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
@@ -64,6 +64,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  floating: {
+    position: 'absolute',
+    bottom: 60,
+    right: 20,
+  },
+  button: {
+    height: 65,
+    width: 65,
+    borderRadius: 65,
+    backgroundColor: primaryColor,
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 });
 
@@ -109,8 +122,19 @@ const data = [
 ]
 
 const ChatList = () => {
+  const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [messages, setMessages] = useState(data);
+  const onFetchData = useCallback(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+  }, []);
+
+  useEffect(() => {
+    onFetchData();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -147,6 +171,15 @@ const ChatList = () => {
       <View style={styles.shadow} />
       <FlatList
         data={messages}
+        refreshControl={
+          <RefreshControl
+            tintColor={primaryColor} // ios
+            progressBackgroundColor={primaryColor} // android
+            colors={['white']} // android
+            refreshing={loading}
+            onRefresh={onFetchData}
+          />
+        }
         renderItem={({ item }) => (
           <ChatItem
             image={item.image}
@@ -159,6 +192,16 @@ const ChatList = () => {
           () => <View style={styles.separator} />
         }
       />
+      <View style={styles.floating}>
+        <TouchableOpacity>
+          <View style={[styles.button, styles.shadow]}>
+            <WriteIcon
+              size={28}
+              color={'white'}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }

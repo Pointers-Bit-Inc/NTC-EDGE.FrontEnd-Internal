@@ -8,6 +8,7 @@ import GroupIcon from './group';
 import SearchIcon from './search';
 import MenuIcon from './menu';
 import FilterIcon from './filter';
+import WriteIcon from './write';
 
 export {
   ExclamationIcon,
@@ -20,4 +21,5 @@ export {
   SearchIcon,
   MenuIcon,
   FilterIcon,
+  WriteIcon,
 };
