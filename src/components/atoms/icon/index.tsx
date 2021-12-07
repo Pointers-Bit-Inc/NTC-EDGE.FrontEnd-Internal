@@ -4,6 +4,10 @@ import CloseIcon from './close';
 import ArrowLeftIcon from './arrow-left';
 import ArrowRightIcon from './arrow-right';
 import EyeIcon from './eye';
+import GroupIcon from './group';
+import SearchIcon from './search';
+import MenuIcon from './menu';
+import FilterIcon from './filter';
 
 export {
   ExclamationIcon,
@@ -12,4 +16,8 @@ export {
   ArrowLeftIcon,
   ArrowRightIcon,
   EyeIcon,
+  GroupIcon,
+  SearchIcon,
+  MenuIcon,
+  FilterIcon,
 };
