@@ -57,6 +57,7 @@ const ChatItem: FC<Props> = ({
         <ProfileImage
           image={image}
           name={name}
+          textSize={12}
         />
         <View style={styles.content}>
           <Text

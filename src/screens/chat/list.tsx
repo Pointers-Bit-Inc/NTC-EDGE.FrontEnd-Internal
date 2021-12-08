@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, FlatList, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, View, FlatList, TouchableOpacity, Dimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector } from 'react-redux';
+import lodash from 'lodash';
 import dayjs from 'dayjs';
 import { SearchField } from '@components/molecules/form-fields';
 import { ChatItem } from '@components/molecules/list-item';
 import { FilterIcon, WriteIcon } from '@components/atoms/icon';
 import { primaryColor, outline, text } from '@styles/color';
+import { getChannelName, getChannelImage } from 'src/utils/formatting';
 import useFirebase from 'src/hooks/useFirebase';
 import Text from '@atoms/text';
 import ProfileImage from '@components/atoms/image/profile';
 import InputStyles from 'src/styles/input-style';
+
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -41,21 +45,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-  profile: {
-    height: 40,
-    width: 40,
-    borderRadius: 40,
-    backgroundColor: primaryColor,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   titleContainer: {
     flex: 1,
     paddingHorizontal: 20,
   },
   separator: {
     height: StyleSheet.hairlineWidth,
-    width: '82%',
+    width: width - 70,
     alignSelf: 'flex-end',
     backgroundColor: outline.default,
   },
@@ -143,7 +139,6 @@ const ChatList = ({ navigation }:any) => {
     }
     return '';
   }
-  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -181,9 +176,19 @@ const ChatList = ({ navigation }:any) => {
         data={channels}
         renderItem={({ item }:any) => (
           <ChatItem
-            image={item.image}
-            name={item.channelName}
+            image={getChannelImage(item, user)}
+            name={getChannelName(item, user)}
             message={item.lastMessage}
+            isGroup={item.isGroup}
+            isSender={item.lastMessage.sender._id === user._id}
+            seen={
+              !!lodash.size(
+                lodash.find(
+                  item.seen,
+                  s => s._id === user._id
+                )
+              )
+            }
             time={getTimeString(item?.updatedAt?.seconds)}
             onPress={() => navigation.navigate('ViewChat', item)}
           />

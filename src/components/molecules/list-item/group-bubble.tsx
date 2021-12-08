@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   bubble: {
     backgroundColor: primaryColor,
     borderRadius: 8,
-    padding: 8,
+    padding: 5,
     paddingHorizontal: 10,
     marginTop: 2
   },
@@ -32,7 +32,7 @@ interface Props {
   message?: string;
   sender?: any;
   isSender?: boolean,
-  maxWidth?: string,
+  maxWidth?: any,
   style?: any,
 }
 

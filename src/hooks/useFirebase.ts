@@ -19,6 +19,7 @@ import {
   where,
   serverTimestamp,
   orderBy,
+  arrayUnion,
 } from 'firebase/firestore';
 import lodash from 'lodash';
 import { firebaseConfig } from "src/services/config";
@@ -165,6 +166,12 @@ const useFirebase = (user:any) => {
         d._id = doc.id;
         data.push(d);
       });
+      if (data[0]) {
+        const seen = lodash.find(data[0].seen, s => s._id === user._id);
+        if (!lodash.size(seen)) {
+          seenMessage(channelId, data[0]._id);
+        }
+      }
       setMessages(data);
     });
   
@@ -178,7 +185,7 @@ const useFirebase = (user:any) => {
       const addRef = await addDoc(collection(firestore.current, "channels"), {
         channelName: _getInitialChannelName(participantsWithUser, isGroup),
         participantsId: _getParticipantsId(participantsWithUser),
-        participants,
+        participants: participantsWithUser,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         lastMessage: {
@@ -186,7 +193,7 @@ const useFirebase = (user:any) => {
           sender: user,
         },
         isGroup,
-        seen: [user._id],
+        seen: [user],
       });
       const docRef = await getDoc(doc(firestore.current, "channels", addRef.id));
       const data:any = docRef.data();
@@ -205,7 +212,7 @@ const useFirebase = (user:any) => {
       updatedAt: serverTimestamp(),
       message,
       channelId,
-      seen: [user._id],
+      seen: [user],
       sender: user,
     });
     await updateDoc(doc(firestore.current, "channels", channelId), {
@@ -214,7 +221,16 @@ const useFirebase = (user:any) => {
         message: message,
         sender: user,
       },
-      seen: [user._id],
+      seen: [user],
+    });
+  }, []);
+
+  const seenMessage = useCallback(async (channelId, messageId) => {
+    await updateDoc(doc(firestore.current, "messages", messageId), {
+      seen: arrayUnion(user),
+    });
+    await updateDoc(doc(firestore.current, "channels", channelId), {
+      seen: arrayUnion(user),
     });
   }, []);
 

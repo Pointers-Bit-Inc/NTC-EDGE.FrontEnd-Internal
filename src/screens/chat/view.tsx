@@ -1,12 +1,25 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { SafeAreaView, StyleSheet, View, TouchableOpacity, FlatList } from 'react-native'
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  FlatList,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native'
 import { useSelector } from 'react-redux';
 import useFirebase from 'src/hooks/useFirebase';
-import { ArrowLeftIcon, VideoIcon } from '@components/atoms/icon';
+import { ArrowLeftIcon, VideoIcon, SendIcon } from '@components/atoms/icon';
 import Text from '@components/atoms/text';
 import { InputField } from '@components/molecules/form-fields';
 import { ChatBubble, GroupBubble } from '@components/molecules/list-item';
-import { outline, text } from '@styles/color';
+import { outline, primaryColor, text } from '@styles/color';
+import { getChannelName } from 'src/utils/formatting';
+import InputStyles from 'src/styles/input-style';
+
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -17,7 +30,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingBottom: 15,
     borderBottomColor: outline.default,
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   horizontal: {
     flexDirection: 'row',
@@ -31,8 +44,14 @@ const styles = StyleSheet.create({
   bubbleContainer: {
     alignItems: 'flex-start',
     paddingHorizontal: 10,
-    paddingVertical: 3,
+    paddingVertical: 4,
   },
+  keyboardAvoiding: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  }
 });
 
 const ChatView = ({ navigation, route }:any) => {
@@ -74,7 +93,7 @@ const ChatView = ({ navigation, route }:any) => {
         color={text.default}
         size={14}
       >
-        No messages
+        No messages yet
       </Text>
     </View>
   )
@@ -89,13 +108,13 @@ const ChatView = ({ navigation, route }:any) => {
               message={item.message}
               isSender={isSender}
               sender={item.sender}
-              maxWidth={'60%'}
+              maxWidth={width * 0.6}
             />
           ) : (
             <ChatBubble
               message={item.message}
               isSender={isSender}
-              maxWidth={'60%'}
+              maxWidth={width * 0.6}
             />
           )
         }
@@ -117,7 +136,7 @@ const ChatView = ({ navigation, route }:any) => {
             size={16}
             numberOfLines={1}
           >
-            {channelName}
+            {getChannelName(route.params, user)}
           </Text>
         </View>
         <TouchableOpacity>
@@ -136,11 +155,31 @@ const ChatView = ({ navigation, route }:any) => {
           ListEmptyComponent={emptyComponent}
         />
       </View>
-      <InputField
-        value={inputText}
-        onChangeText={setInputText}
-        onSubmitEditing={onSendMessage}
-      />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <View style={styles.keyboardAvoiding}>
+          <View style={{ flex: 1 }}>
+            <InputField
+              placeholder={'Type a message'}
+              inputStyle={InputStyles.text}
+              outlineStyle={InputStyles.outlineStyle}
+              value={inputText}
+              onChangeText={setInputText}
+              onSubmitEditing={onSendMessage}
+              returnKeyType={'send'}
+            />
+          </View>
+          <TouchableOpacity onPress={onSendMessage}>
+            <View style={{ paddingLeft: 10 }}>
+              <SendIcon
+                size={32}
+                color={primaryColor}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }

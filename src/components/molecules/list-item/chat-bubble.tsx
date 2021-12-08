@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: primaryColor,
     borderRadius: 8,
-    padding: 8,
+    padding: 5,
     paddingHorizontal: 10,
   }
 })
@@ -17,7 +17,7 @@ interface Props {
   backgroundColor?: string,
   TextColor?: string,
   isSender?: boolean,
-  maxWidth?: string,
+  maxWidth?: any,
   style?: any,
 }
 

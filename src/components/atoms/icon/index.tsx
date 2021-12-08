@@ -10,6 +10,7 @@ import MenuIcon from './menu';
 import FilterIcon from './filter';
 import WriteIcon from './write';
 import VideoIcon from './video';
+import SendIcon from './send';
 
 export {
   ExclamationIcon,
@@ -24,4 +25,5 @@ export {
   FilterIcon,
   WriteIcon,
   VideoIcon,
+  SendIcon,
 };

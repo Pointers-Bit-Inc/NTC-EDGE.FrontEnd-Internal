@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 10,
     borderBottomColor: outline.default,
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   horizontal: {
     flexDirection: 'row',
@@ -61,22 +61,36 @@ const styles = StyleSheet.create({
 const data = [
   {
     _id: '1',
-    name: 'Nino Paul Cervantes',
-    email: 'ninscervantes@gmail.com',
+    name: 'Guy Hawkins',
+    firstname: 'Guy',
+    lastname: 'Hawkins',
+    email: 'guy.hawkins@gmail.com',
     image: '',
   },
   {
     _id: '2',
-    name: 'JM Grills',
-    email: 'jm.grills@gmail.com',
-    image: '',
+    name: 'Dianne Russell',
+    firstname: 'Dianne',
+    lastname: 'Russell',
+    email: 'dianne.russell@gmail.com',
+    image: 'https://www.himalmag.com/wp-content/uploads/2019/07/sample-profile-picture.png',
   },
   {
     _id: '3',
-    name: 'Vash Salarda',
-    email: 'vashsalarda@gmail.com',
+    name: 'Ralph Edwards',
+    firstname: 'Ralph',
+    lastname: 'Edwards',
+    email: 'ralph.edwards@gmail.com',
     image: '',
   },
+  {
+    _id: '4',
+    name: 'Wade Warren',
+    firstname: 'Wade',
+    lastname: 'Warren',
+    email: 'wade.warren@gmail.com',
+    image: '',
+  }
 ];
 
 const NewChat = ({ navigation }:any) => {

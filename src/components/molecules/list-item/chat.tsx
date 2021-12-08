@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import Text from '@components/atoms/text'
+import ProfileImage from '@components/atoms/image/profile';
 import { text, primaryColor } from 'src/styles/color';
 import { GroupIcon } from '@components/atoms/icon';
 
@@ -15,9 +16,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    height: 55,
-    width: 55,
-    borderRadius: 55,
+    height: 45,
+    width: 45,
+    borderRadius: 45,
     backgroundColor: primaryColor,
     justifyContent: 'center',
     alignItems: 'center',
@@ -33,6 +34,12 @@ const styles = StyleSheet.create({
   message: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  seenIndicator: {
+    width: 10,
+    height: 10,
+    borderRadius: 10,
+    backgroundColor: primaryColor
   }
 })
 
@@ -40,6 +47,9 @@ interface Props {
   image?: string;
   name?: string;
   time?: string;
+  seen?: boolean,
+  isSender?: boolean,
+  isGroup?: boolean,
   message?: any;
   onPress?: any;
   [x: string]: any;
@@ -49,6 +59,9 @@ const ChatItem: FC<Props> = ({
   image = '',
   name = '',
   time = '',
+  seen = false,
+  isSender = false,
+  isGroup = false,
   message = {},
   onPress = () => {},
 }) => {
@@ -56,15 +69,16 @@ const ChatItem: FC<Props> = ({
     <TouchableOpacity onPress={onPress}>
       <View style={[styles.container, styles.horizontal]}>
         {
-          !!image ? (
-            <Image
-              style={styles.image}
-              resizeMode={'contain'}
-              source={{ uri: image }}
+          !isGroup ? (
+            <ProfileImage
+              image={image}
+              name={name}
+              size={45}
+              textSize={14}
             />
           ) : (
             <View style={styles.image}>
-              <GroupIcon color={'white'} />
+              <GroupIcon size={18} color={'white'} />
             </View>
           )
         }
@@ -72,6 +86,7 @@ const ChatItem: FC<Props> = ({
           <View style={[styles.horizontal, styles.channelInfo]}>
             <View style={{ flex: 1, paddingRight: 5 }}>
               <Text
+                weight={!seen ? 'bold' : 'normal'}
                 size={16}
                 numberOfLines={1}
               >
@@ -85,13 +100,23 @@ const ChatItem: FC<Props> = ({
               {time}
             </Text>
           </View>
-          <Text
-            color={text.default}
-            size={14}
-            numberOfLines={1}
-          >
-            {`${message?.sender?.firstname}: ${message.message}`}
-          </Text>
+          <View style={styles.horizontal}>
+            <View style={{ flex: 1, paddingRight: 5 }}>
+              <Text
+                weight={!seen ? 'bold' : 'normal'}
+                color={text.default}
+                size={14}
+                numberOfLines={1}
+              >
+                {`${isSender ? 'You' : message?.sender?.firstname}: ${message.message}`}
+              </Text>
+            </View>
+            {
+              !seen && (
+                <View style={styles.seenIndicator} />
+              )
+            }
+          </View>
         </View>
       </View>
     </TouchableOpacity>
