@@ -1,11 +1,15 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import { RefreshControl, StyleSheet, View, FlatList, TouchableOpacity, Image } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, View, FlatList, TouchableOpacity, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useSelector } from 'react-redux';
+import dayjs from 'dayjs';
 import { SearchField } from '@components/molecules/form-fields';
 import { ChatItem } from '@components/molecules/list-item';
 import { FilterIcon, WriteIcon } from '@components/atoms/icon';
-import { primaryColor, outline } from '@styles/color';
+import { primaryColor, outline, text } from '@styles/color';
+import useFirebase from 'src/hooks/useFirebase';
 import Text from '@atoms/text';
+import ProfileImage from '@components/atoms/image/profile';
 import InputStyles from 'src/styles/input-style';
 
 const styles = StyleSheet.create({
@@ -80,65 +84,73 @@ const styles = StyleSheet.create({
   }
 });
 
-const data = [
-  {
-    _id: '1',
-    member: [],
-    channelName: 'Test Group',
-    recipient: [],
-    sender: [],
-    image: 'https://www.himalmag.com/wp-content/uploads/2019/07/sample-profile-picture.png',
-    lastMessage: {
-      sender: 'You',
-      message: 'Thanks',
-      time: '9:31 AM',
-    },
-  },
-  {
-    _id: '2',
-    member: [],
-    channelName: 'Test Group',
-    recipient: [],
-    sender: [],
-    lastMessage: {
-      sender: 'You',
-      message: 'Thanks',
-      time: '9:31 AM',
-    },
-  },
-  {
-    _id: '3',
-    member: [],
-    channelName: 'Test Group',
-    recipient: [],
-    sender: [],
-    image: 'https://www.himalmag.com/wp-content/uploads/2019/07/sample-profile-picture.png',
-    lastMessage: {
-      sender: 'You',
-      message: 'Thanks',
-      time: '9:31 AM',
-    },
-  },
-]
-
 const ChatList = ({ navigation }:any) => {
-  const [loading, setLoading] = useState(false);
+  const user = useSelector(state => state.user);
+  const {
+    channels,
+    getChannelRealtime,
+    initializeFirebaseApp,
+    deleteFirebaseApp
+  } = useFirebase({
+    _id: user._id,
+    name: user.name,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email,
+    image: user.image,
+  });
   const [searchText, setSearchText] = useState('');
-  const [messages, setMessages] = useState(data);
-  const onFetchData = useCallback(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 5000);
+
+  useEffect(() => {
+    initializeFirebaseApp();
+    const unsubscriber = getChannelRealtime();
+    return () => {
+      unsubscriber();
+      deleteFirebaseApp();
+    };
   }, []);
 
+  const emptyComponent = () => (
+    <View
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 30,
+      }}>
+      <Text
+        color={text.default}
+        size={14}
+      >
+        No matches found
+      </Text>
+    </View>
+  )
+
+  const getTimeString = (time:any) => {
+    if (time) {
+      const dateNow = dayjs();
+      const dateUpdate = dayjs(new Date(time * 1000));
+      const diff = dateNow.diff(dateUpdate, 'days');
+
+      if (diff === 0) {
+        return dayjs(new Date(time * 1000)).format('hh:mm A');
+      } else if (diff === 1) {
+        return 'Yesterday';
+      } else if (diff <= 7) {
+        return dayjs(new Date(time * 1000)).format('dddd');
+      }
+      return dayjs(new Date(time * 1000)).format('DD/MM/YY');
+    }
+    return '';
+  }
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerContent}>
-          <Image
-            style={styles.profile}
-            source={{ uri: 'https://www.himalmag.com/wp-content/uploads/2019/07/sample-profile-picture.png' }}
+          <ProfileImage
+            image={user.image}
+            name={`${user.firstname} ${user.lastname}`}
           />
           <View style={styles.titleContainer}>
             <Text
@@ -166,27 +178,21 @@ const ChatList = ({ navigation }:any) => {
       </View>
       <View style={styles.shadow} />
       <FlatList
-        data={messages}
-        refreshControl={
-          <RefreshControl
-            tintColor={primaryColor} // ios
-            progressBackgroundColor={primaryColor} // android
-            colors={['white']} // android
-            refreshing={loading}
-            onRefresh={onFetchData}
-          />
-        }
-        renderItem={({ item }) => (
+        data={channels}
+        renderItem={({ item }:any) => (
           <ChatItem
             image={item.image}
             name={item.channelName}
             message={item.lastMessage}
+            time={getTimeString(item?.updatedAt?.seconds)}
+            onPress={() => navigation.navigate('ViewChat', item)}
           />
         )}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item:any) => item._id}
         ItemSeparatorComponent={
           () => <View style={styles.separator} />
         }
+        ListEmptyComponent={emptyComponent}
       />
       <View style={styles.floating}>
         <TouchableOpacity onPress={() => navigation.navigate('NewChat')}>

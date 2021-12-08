@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import {
   RefreshControl,
+  ActivityIndicator,
   Dimensions,
   SafeAreaView,
   StyleSheet,
@@ -8,6 +9,7 @@ import {
   TouchableOpacity,
   FlatList
 } from 'react-native'
+import { useSelector } from 'react-redux';
 import lodash from 'lodash';
 import { outline, text } from '@styles/color';
 import Text from '@atoms/text';
@@ -16,6 +18,7 @@ import { ContactItem, SelectedContact } from '@components/molecules/list-item';
 import { ArrowLeftIcon } from '@components/atoms/icon'
 import { SearchField } from '@components/molecules/form-fields'
 import { primaryColor } from '@styles/color';
+import useFirebase from 'src/hooks/useFirebase';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -59,27 +62,40 @@ const data = [
   {
     _id: '1',
     name: 'Nino Paul Cervantes',
-    contact: 'ninscervantes@gmail.com',
+    email: 'ninscervantes@gmail.com',
     image: '',
   },
   {
     _id: '2',
-    name: 'Vash Salarda',
-    contact: 'vashsalarda@gmail.com',
+    name: 'JM Grills',
+    email: 'jm.grills@gmail.com',
     image: '',
   },
   {
     _id: '3',
-    name: 'JM Grills',
-    contact: 'jm.grills@gmail.com',
+    name: 'Vash Salarda',
+    email: 'vashsalarda@gmail.com',
     image: '',
-  }
-]
+  },
+];
 
 const NewChat = ({ navigation }:any) => {
+  const user = useSelector(state => state.user);
+  const { createChannel } = useFirebase({
+    _id: user._id,
+    name: user.name,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email,
+    image: user.image,
+  });
   const [loading, setLoading] = useState(false);
+  const [nextLoading, setNextLoading] = useState(false);
   const [participants, setParticipants]:any = useState([]);
-  const [contacts, setContacts]:any = useState(data);
+  const [contacts, setContacts]:any = useState(() => {
+    const result = lodash.reject(data, d => d._id === user._id);
+    return result;
+  });
   const [searchText, setSearchText] = useState('');
   const onFetchData = useCallback(() => {
     setLoading(true);
@@ -88,6 +104,15 @@ const NewChat = ({ navigation }:any) => {
     }, 1000);
   }, []);
   const onBack = () => navigation.goBack();
+  const onNext = () => {
+    setNextLoading(true);
+    createChannel(participants, (error, data) => {
+      setNextLoading(false);
+      if (!error) {
+        navigation.replace('ViewChat', data);
+      }
+    });
+  };
 
   const onSelectParticipants = (selectedId) => {
     const result = lodash.reject(contacts, c => c._id === selectedId);
@@ -151,9 +176,19 @@ const NewChat = ({ navigation }:any) => {
               New Chat
             </Text>
           </View>
-          <TouchableOpacity>
-            <Text size={16}>Next</Text>
-          </TouchableOpacity>
+          {
+            !!lodash.size(participants) && (
+              <TouchableOpacity disabled={nextLoading} onPress={onNext}>
+                {
+                  nextLoading ? (
+                    <ActivityIndicator color={text.default} size={'small'} />
+                  ) : (
+                    <Text size={16}>Next</Text>
+                  )
+                }
+              </TouchableOpacity>
+            )
+          }
         </View>
         <SearchField
           inputStyle={[InputStyles.text, styles.input]}
@@ -180,6 +215,7 @@ const NewChat = ({ navigation }:any) => {
           <ContactItem
             image={item.image}
             name={item.name}
+            contact={item.email || ''}
             onPress={() => onSelectParticipants(item._id)}
           />
         )}

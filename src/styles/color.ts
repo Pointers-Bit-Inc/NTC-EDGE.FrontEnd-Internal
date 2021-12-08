@@ -29,6 +29,11 @@ const button = {
   error: '#CE1026',
 };
 
+const bubble = {
+  primary: '#274AD7',
+  secondary: '#F3F2F0',
+};
+
 export {
   primaryColor,
   secondaryColor,
@@ -38,5 +43,6 @@ export {
   disabledColor,
   outline,
   text,
-  button
+  button,
+  bubble,
 }

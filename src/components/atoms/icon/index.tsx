@@ -9,6 +9,7 @@ import SearchIcon from './search';
 import MenuIcon from './menu';
 import FilterIcon from './filter';
 import WriteIcon from './write';
+import VideoIcon from './video';
 
 export {
   ExclamationIcon,
@@ -22,4 +23,5 @@ export {
   MenuIcon,
   FilterIcon,
   WriteIcon,
+  VideoIcon,
 };

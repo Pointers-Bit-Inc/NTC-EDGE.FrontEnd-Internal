@@ -70,7 +70,7 @@ const ChatItem: FC<Props> = ({
         }
         <View style={styles.content}>
           <View style={[styles.horizontal, styles.channelInfo]}>
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, paddingRight: 5 }}>
               <Text
                 size={16}
                 numberOfLines={1}
@@ -82,7 +82,7 @@ const ChatItem: FC<Props> = ({
               color={text.default}
               size={12}
             >
-              {message?.time}
+              {time}
             </Text>
           </View>
           <Text
@@ -90,7 +90,7 @@ const ChatItem: FC<Props> = ({
             size={14}
             numberOfLines={1}
           >
-            {`${message.sender}: ${message.message}`}
+            {`${message?.sender?.firstname}: ${message.message}`}
           </Text>
         </View>
       </View>
