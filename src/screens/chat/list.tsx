@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, FlatList, TouchableOpacity, Dimensions } from 'react-native'
+import React, { useState, useEffect, useCallback } from 'react'
+import { StyleSheet, View, FlatList, TouchableOpacity, Dimensions, Platform } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import lodash from 'lodash';
 import dayjs from 'dayjs';
+import {setChannelList, updateChannel, removeChannel } from 'src/reducers/channel/actions';
 import { SearchField } from '@components/molecules/form-fields';
 import { ChatItem } from '@components/molecules/list-item';
 import { FilterIcon, WriteIcon } from '@components/atoms/icon';
@@ -81,12 +82,18 @@ const styles = StyleSheet.create({
 });
 
 const ChatList = ({ navigation }:any) => {
-  const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
+  const user = useSelector((state:RootStateOrAny) => state.user);
+  const channelList = useSelector((state:RootStateOrAny) => {
+    const { channelList } = state.channel;
+    const sortedChannel = lodash.orderBy(channelList, 'updatedAt', 'desc');
+    return sortedChannel;
+  });
   const {
-    channels,
-    getChannelRealtime,
+    channelSubscriber,
     initializeFirebaseApp,
-    deleteFirebaseApp
+    deleteFirebaseApp,
+    getChannel,
   } = useFirebase({
     _id: user._id,
     name: user.name,
@@ -96,15 +103,65 @@ const ChatList = ({ navigation }:any) => {
     image: user.image,
   });
   const [searchText, setSearchText] = useState('');
+  const [init, setInit] = useState(false);
+  const [error, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const onFetchChannel = useCallback(() => {
+    setLoading(true);
+    getChannel((err:any, snapshot:any) => {
+      setLoading(false);
+      if (err) {
+        return setError(err);
+      }
+      const data:any = [];
+      snapshot.forEach((doc:any) => {
+        const d = doc.data();
+        d._id = doc.id;
+        d.channelId = doc.id;
+        data.push(d);
+      });
+      dispatch(setChannelList(data));
+      if (!init) {
+        setInit(true);
+      }
+    });
+  }, [init]);
 
   useEffect(() => {
     initializeFirebaseApp();
-    const unsubscriber = getChannelRealtime();
+    onFetchChannel();
     return () => {
-      unsubscriber();
       deleteFirebaseApp();
     };
   }, []);
+
+  useEffect(() => {
+    if (init) {
+      const unsubscriber = channelSubscriber((querySnapshot:any) => {
+        querySnapshot.docChanges().forEach((change:any) => {
+          const data = change.doc.data();
+          data._id = change.doc.id;
+          data.channelId = change.doc.id;
+          if (change.type === 'added') {
+            const hasSave = lodash.find(channelList, (ch:any) => ch._id === data._id);
+            if (!hasSave) {
+              dispatch(updateChannel(data));
+            }
+          }
+          if (change.type === 'modified') {
+            dispatch(updateChannel(data));
+          }
+          if (change.type === 'removed') {
+            dispatch(removeChannel(data._id));
+          }
+        });
+      });
+      return () => {
+        unsubscriber();
+      }
+    }
+  }, [init])
 
   const emptyComponent = () => (
     <View
@@ -173,7 +230,7 @@ const ChatList = ({ navigation }:any) => {
       </View>
       <View style={styles.shadow} />
       <FlatList
-        data={channels}
+        data={channelList}
         renderItem={({ item }:any) => (
           <ChatItem
             image={getChannelImage(item, user)}

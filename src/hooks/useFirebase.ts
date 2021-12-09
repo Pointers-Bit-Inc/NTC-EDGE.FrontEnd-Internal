@@ -20,6 +20,7 @@ import {
   serverTimestamp,
   orderBy,
   arrayUnion,
+  writeBatch
 } from 'firebase/firestore';
 import lodash from 'lodash';
 import { firebaseConfig } from "src/services/config";
@@ -31,8 +32,6 @@ const useFirebase = (user:any) => {
     getFirestore()
   );
   const firebaseApp:any = useRef();
-  const [channels, setChannels] = useState([]);
-  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     const app = getApps().length === 0 ?
@@ -52,20 +51,12 @@ const useFirebase = (user:any) => {
     deleteApp(firebaseApp.current);
   }
 
-  const useExample = useCallback(async () => {
-    await setDoc(doc(firestore.current, "characters", "mario"), {
-      employment: "plumber",
-      outfitColor: "red",
-      specialAttack: "fireball"
-    });
-  }, []);
-
   const _getParticipants = (participants:any) => ([
     ...participants,
     user,
   ]);
 
-  const _getInitialChannelName = (participants = [], isGroup = false) => {
+  const _getInitialChannelName = (participants = []) => {
     let channelName = ''
     participants.map(
       (participant:any, index) => {
@@ -87,45 +78,7 @@ const useFirebase = (user:any) => {
     return ids;
   }
 
-  const fetchChannelWithParticipants = useCallback(async (participants, callback = () => {}) => {
-    const q = query(
-      collection(firestore.current, "channels"),
-      where(
-        'participants',
-        'array-contains-any',
-        participants
-      )
-    );
-    const docRef = await getDocs(q);
-    const result:any = [];
-    await docRef.forEach((doc) => {
-      console.log('doc.data()', doc.data());
-      result.push(doc.data());
-      return doc.data();
-    });
-    return callback(result);
-  }, []);
-
-  const fetchChannelWithParticipantId = useCallback(async (participantId, callback = () => {}) => {
-    const q = query(
-      collection(firestore.current, "channels"),
-      where(
-        'participants',
-        'array-contains',
-        { _id: participantId }
-      )
-    );
-    const docRef = await getDocs(q);
-    const result:any = [];
-    await docRef.forEach((doc) => {
-      console.log('doc.data()', doc.data());
-      result.push(doc.data());
-      return doc.data();
-    });
-    return callback(result);
-  }, []);
-
-  const getChannelRealtime = () => {
+  const channelSubscriber = useCallback((callback = () => {}) => {
     const q = query(
       collection(firestore.current, "channels"),
       where(
@@ -135,21 +88,11 @@ const useFirebase = (user:any) => {
       ),
       orderBy('updatedAt', 'desc')
     );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const data:any = [];
-      querySnapshot.forEach((doc) => {
-        const d = doc.data();
-        d._id = doc.id;
-        d.channelId = doc.id;
-        data.push(d);
-      });
-      setChannels(data);
-    });
-  
+    const unsubscribe = onSnapshot(q, callback);
     return unsubscribe;
-  }
+  }, [user]);
 
-  const getMessagesRealtime = (channelId:string) => {
+  const messagesSubscriber = useCallback((channelId:string, callback = () => {}) => {
     const q = query(
       collection(firestore.current, "messages"),
       where(
@@ -159,31 +102,16 @@ const useFirebase = (user:any) => {
       ),
       orderBy('createdAt', 'desc')
     );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const data:any = [];
-      querySnapshot.forEach((doc) => {
-        const d = doc.data();
-        d._id = doc.id;
-        data.push(d);
-      });
-      if (data[0]) {
-        const seen = lodash.find(data[0].seen, s => s._id === user._id);
-        if (!lodash.size(seen)) {
-          seenMessage(channelId, data[0]._id);
-        }
-      }
-      setMessages(data);
-    });
-  
+    const unsubscribe = onSnapshot(q, callback);
     return unsubscribe;
-  }
+  }, [user]);
 
   const createChannel = useCallback(async (participants, callback = () => {}) => {
     try {
       const participantsWithUser:any = _getParticipants(participants);
       const isGroup = lodash.size(participantsWithUser) > 2;
       const addRef = await addDoc(collection(firestore.current, "channels"), {
-        channelName: _getInitialChannelName(participantsWithUser, isGroup),
+        channelName: _getInitialChannelName(participantsWithUser),
         participantsId: _getParticipantsId(participantsWithUser),
         participants: participantsWithUser,
         createdAt: serverTimestamp(),
@@ -204,6 +132,36 @@ const useFirebase = (user:any) => {
       console.log('ERROR', e);
       return callback(e);
     }
+  }, [user]);
+
+  const getChannel = useCallback(async (callback) => {
+    const q = query(
+      collection(firestore.current, "channels"),
+      where(
+        'participantsId',
+        'array-contains',
+        user._id,
+      ),
+      orderBy('updatedAt', 'desc')
+    );
+    await getDocs(q)
+    .then((data) => callback(null, data))
+    .catch((e) => callback(e));
+  }, [user]);
+
+  const getMessages = useCallback(async (channelId:string, callback = () => {}) => {
+    const q = query(
+      collection(firestore.current, "messages"),
+      where(
+        'channelId',
+        '==',
+        channelId,
+      ),
+      orderBy('createdAt', 'desc')
+    );
+    await getDocs(q)
+    .then((data) => callback(null, data))
+    .catch((e) => callback(e));
   }, []);
 
   const sendMessage = useCallback(async (channelId, message) => {
@@ -223,26 +181,33 @@ const useFirebase = (user:any) => {
       },
       seen: [user],
     });
-  }, []);
+  }, [user]);
 
   const seenMessage = useCallback(async (channelId, messageId) => {
-    await updateDoc(doc(firestore.current, "messages", messageId), {
+    const batch = writeBatch(firestore.current);
+    if (messageId) {
+      const messageRef = doc(firestore.current, "messages", messageId);
+      batch.update(messageRef, {
+        seen: arrayUnion(user),
+      });
+    }
+    const channelRef = doc(firestore.current, "channels", channelId);
+    batch.update(channelRef, {
       seen: arrayUnion(user),
     });
-    await updateDoc(doc(firestore.current, "channels", channelId), {
-      seen: arrayUnion(user),
-    });
-  }, []);
+    await batch.commit();
+  }, [user]);
 
   return {
-    channels,
-    messages,
     initializeFirebaseApp,
     deleteFirebaseApp,
-    getChannelRealtime,
-    getMessagesRealtime,
+    channelSubscriber,
+    messagesSubscriber,
     createChannel,
+    getChannel,
+    getMessages,
     sendMessage,
+    seenMessage,
   }
 }
 

@@ -9,7 +9,8 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
+import lodash from 'lodash';
 import useFirebase from 'src/hooks/useFirebase';
 import { ArrowLeftIcon, VideoIcon, SendIcon } from '@components/atoms/icon';
 import Text from '@components/atoms/text';
@@ -17,6 +18,7 @@ import { InputField } from '@components/molecules/form-fields';
 import { ChatBubble, GroupBubble } from '@components/molecules/list-item';
 import { outline, primaryColor, text } from '@styles/color';
 import { getChannelName } from 'src/utils/formatting';
+import { setMessages, updateMessages, removeMessages } from 'src/reducers/message/actions';
 import InputStyles from 'src/styles/input-style';
 
 const { width } = Dimensions.get('window');
@@ -55,8 +57,15 @@ const styles = StyleSheet.create({
 });
 
 const ChatView = ({ navigation, route }:any) => {
-  const user = useSelector(state => state.user);
-  const { sendMessage, getMessagesRealtime, messages } = useFirebase({
+  const dispatch = useDispatch();
+  const { channelId, isGroup } = route.params;
+  const user = useSelector((state:RootStateOrAny) => state.user);
+  const messages = useSelector((state:RootStateOrAny) => {
+    const { messages } = state.message;
+    const sortedMessages = lodash.orderBy(messages, 'updatedAt', 'desc');
+    return sortedMessages;
+  });
+  const { getMessages, seenMessage, sendMessage, messagesSubscriber } = useFirebase({
     _id: user._id,
     name: user.name,
     firstname: user.firstname,
@@ -65,16 +74,57 @@ const ChatView = ({ navigation, route }:any) => {
     image: user.image,
   });
   const [inputText, setInputText] = useState('');
-  const { channelId, channelName, isGroup } = route.params;
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState({});
   const onSendMessage = useCallback(() => {
     sendMessage(channelId, inputText);
     setInputText('');
   }, [channelId, inputText])
 
+  const onFetchMessages = useCallback(() => {
+    setLoading(true);
+    getMessages(channelId, (err:any, snapshot:any) => {
+      setLoading(false);
+      if(err) {
+        return setError(err);
+      }
+      const data:any = [];
+      snapshot.forEach((doc:any) => {
+        const d = doc.data();
+        d._id = doc.id;
+        data.push(d);
+      });
+      if (data && data[0]) {
+        const seen = lodash.find(data[0].seen, s => s._id === user._id);
+        if (!lodash.size(seen)) {
+          seenMessage(channelId, data[0]._id);
+        }
+      } else {
+        seenMessage(channelId, null);
+      }
+      if (data) {
+        dispatch(setMessages(data));
+      }
+    });
+  }, [channelId]);
+
   const onBack = () => navigation.goBack();
 
   useEffect(() => {
-    const unsubscriber = getMessagesRealtime(channelId);
+    onFetchMessages();
+    const unsubscriber = messagesSubscriber(channelId, (querySnapshot:any) => {
+      querySnapshot.docChanges().forEach((change:any) => {
+        const data = change.doc.data();
+        data._id = change.doc.id;
+        seenMessage(channelId, data._id);
+        if (change.type === 'modified') {
+          dispatch(updateMessages(data));
+        }
+        if (change.type === 'removed') {
+          dispatch(removeMessages(data._id));
+        }
+      })
+    });
     return () => unsubscriber();
   }, [])
 
