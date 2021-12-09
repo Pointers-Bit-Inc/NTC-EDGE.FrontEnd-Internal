@@ -196,7 +196,7 @@ const NewChat = ({ navigation }:any) => {
       />
       <View style={styles.contactTitle}>
         <ArrowDownIcon
-          style={{ marginTop: 2 }}
+          style={{ marginTop: 2, marginRight: 3 }}
           color={text.default}
           size={24}
         />
