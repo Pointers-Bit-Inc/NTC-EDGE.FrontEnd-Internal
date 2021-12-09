@@ -1,17 +1,17 @@
 import React, { FC } from 'react'
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import Text from '@components/atoms/text'
-import { button, primaryColor } from 'src/styles/color';
+import { text, primaryColor } from 'src/styles/color';
 import { CloseIcon } from '@components/atoms/icon';
+import ProfileImage from '@components/atoms/image/profile'
 
-const imageSize = 45;
+const imageSize = 42;
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingHorizontal: 10,
     alignItems: 'center',
-    width: imageSize + 30,
+    width: imageSize + 15,
   },
   horizontal: {
     flexDirection: 'row',
@@ -39,16 +39,26 @@ const styles = StyleSheet.create({
   floating: {
     position: 'absolute',
     zIndex: 9,
-    right: 10,
-    top: 10,
+    right: 3,
+    top: 0,
   },
   button: {
-    height: 20,
-    width: 20,
-    borderRadius: 20,
-    backgroundColor: '#707070',
+    height: 18,
+    width: 18,
+    borderRadius: 18,
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  shadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   }
 })
 
@@ -67,44 +77,28 @@ const ChatItem: FC<Props> = ({
   onPress = () => {},
   ...otherProps
 }) => {
-  const getInitial = (value:any) => {
-    return value.match(/(\b\S)?/g).join("").match(/(^\S|\S$)?/g).join("").toUpperCase()
-  }
 
   return (
     <View style={[styles.container]} {...otherProps}>
       <View style={styles.floating}>
         <TouchableOpacity onPress={onPress}>
-          <View style={styles.button}>
+          <View style={[styles.button, styles.shadow]}>
             <CloseIcon
-              type={'close'}
-              color={'white'}
-              size={12}
+              type={'md-close'}
+              color={text.default}
+              size={14}
             />
           </View>
         </TouchableOpacity>
       </View>
-      {
-        !!image ? (
-          <Image
-            style={styles.image}
-            resizeMode={'contain'}
-            source={{ uri: image }}
-          />
-        ) : (
-          <View style={styles.image}>
-            <Text
-              size={14}
-              weight={'bold'}
-              color={'white'}
-            >
-              {getInitial(name)}
-            </Text>
-          </View>
-        )
-      }
+      <ProfileImage
+        image={image}
+        name={name}
+        size={imageSize}
+        textSize={10}
+      />
       <Text
-        size={14}
+        size={10}
         numberOfLines={1}
       >
         {name}

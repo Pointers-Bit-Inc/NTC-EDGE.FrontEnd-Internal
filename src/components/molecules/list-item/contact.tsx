@@ -41,6 +41,7 @@ interface Props {
   name?: string;
   contact?: string;
   onPress?: any;
+  rightIcon?: any;
   [x: string]: any;
 }
 
@@ -49,6 +50,7 @@ const ChatItem: FC<Props> = ({
   name = '',
   contact = '',
   onPress = () => {},
+  rightIcon,
   ...otherProps
 }) => {
   return (
@@ -62,7 +64,8 @@ const ChatItem: FC<Props> = ({
         <View style={styles.content}>
           <Text
             color={text.default}
-            size={14}
+            weight={'bold'}
+            size={16}
             numberOfLines={1}
           >
             {name}
@@ -75,6 +78,7 @@ const ChatItem: FC<Props> = ({
             {contact}
           </Text>
         </View>
+        {rightIcon}
       </View>
     </TouchableOpacity>
   )

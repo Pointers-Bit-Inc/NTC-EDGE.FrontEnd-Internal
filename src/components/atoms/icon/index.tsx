@@ -15,6 +15,7 @@ import PhoneIcon from './phone';
 import PlusIcon from './plus';
 import CameraIcon from './camera';
 import MicIcon from './mic';
+import ArrowDownIcon from './arrow-down';
 
 export {
   ExclamationIcon,
@@ -34,4 +35,5 @@ export {
   PlusIcon,
   CameraIcon,
   MicIcon,
+  ArrowDownIcon,
 };

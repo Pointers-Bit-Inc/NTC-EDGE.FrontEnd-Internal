@@ -12,11 +12,11 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
 import lodash from 'lodash';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
-import { outline, text } from '@styles/color';
+import { outline, button, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
 import { ContactItem, SelectedContact } from '@components/molecules/list-item';
-import { ArrowLeftIcon } from '@components/atoms/icon'
+import { ArrowLeftIcon, ArrowDownIcon, CheckIcon } from '@components/atoms/icon'
 import { SearchField } from '@components/molecules/form-fields'
 import { primaryColor } from '@styles/color';
 import useFirebase from 'src/hooks/useFirebase';
@@ -29,8 +29,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 15,
-    borderBottomColor: outline.default,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingBottom: 0,
   },
   horizontal: {
     flexDirection: 'row',
@@ -39,6 +38,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flex: 1,
     paddingHorizontal: 20,
+    alignItems: 'center',
   },
   input: {
     fontWeight: '500',
@@ -57,6 +57,30 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     backgroundColor: outline.default,
   },
+  notSelected: {
+    height: 20,
+    width: 20,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: button.default,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selected: {
+    height: 20,
+    width: 20,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: button.primary,
+    backgroundColor: button.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  contactTitle: {
+    paddingHorizontal: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+  }
 })
 
 const data = [
@@ -131,33 +155,60 @@ const NewChat = ({ navigation }:any) => {
     });
   };
 
-  const onSelectParticipants = (selectedId) => {
-    const result = lodash.reject(contacts, c => c._id === selectedId);
+  const onSelectParticipants = (selectedId:string) => {
     const selected = lodash.find(contacts, c => c._id === selectedId);
     setParticipants(p => ([...p, selected]));
-    setContacts(result);
   }
 
-  const onRemoveParticipants = (selectedId) => {
+  const onRemoveParticipants = (selectedId:string) => {
     const result = lodash.reject(participants, c => c._id === selectedId);
-    const selected = lodash.find(participants, c => c._id === selectedId);
-    setContacts(p => ([...p, selected]));
     setParticipants(result);
   }
 
+  const onTapCheck = (selectedId:string) => {
+    const isSelected = checkIfSelected(selectedId);
+    if (isSelected) {
+      onRemoveParticipants(selectedId);
+    } else {
+      onSelectParticipants(selectedId);
+    }
+  }
+
+  const checkIfSelected = (contactId:string) => {
+    const selected = lodash.find(participants, c => c._id === contactId);
+    return !!selected;
+  }
+
   const headerComponent = () => (
-    <FlatList
-      horizontal
-      data={participants}
-      renderItem={({ item }) => (
-        <SelectedContact
+    <View>
+      <FlatList
+        style={{ paddingHorizontal: 10, paddingBottom: 10 }}
+        horizontal
+        data={participants}
+        renderItem={({ item }) => (
+          <SelectedContact
             image={item.image}
             name={item.name}
             onPress={() => onRemoveParticipants(item._id)}
           />
-      )}
-      keyExtractor={(item) => item._id}
-    />
+        )}
+        keyExtractor={(item) => item._id}
+      />
+      <View style={styles.contactTitle}>
+        <ArrowDownIcon
+          style={{ marginTop: 2 }}
+          color={text.default}
+          size={24}
+        />
+        <Text
+          size={16}
+          weight={'bold'}
+          color={text.default}
+        >
+          My contacts
+        </Text>
+      </View>
+    </View>
   )
 
   const emptyComponent = () => (
@@ -189,9 +240,9 @@ const NewChat = ({ navigation }:any) => {
             <Text
               color={text.default}
               weight={'600'}
-              size={16}
+              size={14}
             >
-              New Chat
+              New message
             </Text>
           </View>
           {
@@ -201,7 +252,13 @@ const NewChat = ({ navigation }:any) => {
                   nextLoading ? (
                     <ActivityIndicator color={text.default} size={'small'} />
                   ) : (
-                    <Text size={16}>Next</Text>
+                    <Text
+                      weight={'600'}
+                      color={text.primary}
+                      size={14}
+                    >
+                      Next
+                    </Text>
                   )
                 }
               </TouchableOpacity>
@@ -231,10 +288,29 @@ const NewChat = ({ navigation }:any) => {
         }
         renderItem={({ item }) => (
           <ContactItem
+            disabled={true}
             image={item.image}
             name={item.name}
+            rightIcon={
+              <TouchableOpacity
+                onPress={() => onTapCheck(item._id)}
+              >
+                {
+                  checkIfSelected(item._id) ? (
+                    <View style={styles.selected}>
+                      <CheckIcon
+                        type={'check1'}
+                        size={16}
+                        color="white"
+                      />
+                    </View>
+                  ) : (
+                    <View style={styles.notSelected} />
+                  )
+                }
+              </TouchableOpacity>
+            }
             contact={item.email || ''}
-            onPress={() => onSelectParticipants(item._id)}
           />
         )}
         keyExtractor={(item) => item._id}
