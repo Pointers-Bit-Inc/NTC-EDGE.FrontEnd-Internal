@@ -3,7 +3,7 @@ import { StyleSheet, View, FlatList, TouchableOpacity, Dimensions, Platform } fr
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import lodash from 'lodash';
-import { setChannelList, updateChannel, removeChannel } from 'src/reducers/channel/actions';
+import { setSelectedChannel, setChannelList, updateChannel, removeChannel } from 'src/reducers/channel/actions';
 import { SearchField } from '@components/molecules/form-fields';
 import { ChatItem } from '@components/molecules/list-item';
 import { VideoIcon, WriteIcon } from '@components/atoms/icon';
@@ -252,7 +252,10 @@ const ChatList = ({ navigation }:any) => {
             isGroup={item.isGroup}
             seen={item.hasSeen}
             time={getTimeString(item?.updatedAt?.seconds)}
-            onPress={() => navigation.navigate('ViewChat', item)}
+            onPress={() => {
+              dispatch(setSelectedChannel(item));
+              navigation.navigate('ViewChat', item)
+            }}
           />
         )}
         keyExtractor={(item:any) => item._id}

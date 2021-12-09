@@ -22,6 +22,7 @@ import {
   arrayUnion,
   writeBatch
 } from 'firebase/firestore';
+import { checkSeen, getOtherParticipants } from 'src/utils/formatting';
 import lodash from 'lodash';
 import { firebaseConfig } from "src/services/config";
 
@@ -127,6 +128,8 @@ const useFirebase = (user:any) => {
       const data:any = docRef.data();
       data._id = addRef.id;
       data.channelId = addRef.id;
+      data.otherParticipants = getOtherParticipants(data.participants, user);
+      data.hasSeen = checkSeen(data.seen, user);
       return callback(null, data);
     } catch(e) {
       console.log('ERROR', e);

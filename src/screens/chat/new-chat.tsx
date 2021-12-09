@@ -9,8 +9,9 @@ import {
   FlatList
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import lodash from 'lodash';
+import { setSelectedChannel } from 'src/reducers/channel/actions';
 import { outline, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
@@ -94,6 +95,7 @@ const data = [
 ];
 
 const NewChat = ({ navigation }:any) => {
+  const dispatch = useDispatch();
   const user = useSelector(state => state.user);
   const { createChannel } = useFirebase({
     _id: user._id,
@@ -123,6 +125,7 @@ const NewChat = ({ navigation }:any) => {
     createChannel(participants, (error, data) => {
       setNextLoading(false);
       if (!error) {
+        dispatch(setSelectedChannel(data));
         navigation.replace('ViewChat', data);
       }
     });

@@ -1,26 +1,22 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback } from 'react'
 import {
   StyleSheet,
   View,
   TouchableOpacity,
-  FlatList,
-  Dimensions,
   KeyboardAvoidingView,
   Platform,
   useWindowDimensions,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
-import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
-import lodash from 'lodash';
+import { useSelector, RootStateOrAny } from 'react-redux';
 import useFirebase from 'src/hooks/useFirebase';
-import ChatList from '@components/organisms/chat/list';
+import ChatList from '@screens/chat/chat-list';
 import FileList from '@components/organisms/chat/files';
 import {
   ArrowLeftIcon,
   PhoneIcon,
   VideoIcon,
-  SendIcon,
   MenuIcon,
   PlusIcon,
   CameraIcon,
@@ -29,13 +25,9 @@ import {
 import Text from '@components/atoms/text';
 import GroupImage from '@components/molecules/image/group';
 import { InputField } from '@components/molecules/form-fields';
-import { ChatBubble, GroupBubble } from '@components/molecules/list-item';
-import { outline, primaryColor, text, button } from '@styles/color';
+import { outline, text, button } from '@styles/color';
 import { getChannelName } from 'src/utils/formatting';
-import { setMessages, updateMessages, removeMessages } from 'src/reducers/channel/actions';
 import InputStyles from 'src/styles/input-style';
-
-const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -83,17 +75,20 @@ const styles = StyleSheet.create({
   }
 });
 
+const ChatRoute = () => (<ChatList />);
+const FileRoute = () => (<FileList />);
+const renderScene = SceneMap({
+  chat: ChatRoute,
+  files: FileRoute,
+});
+
 const ChatView = ({ navigation, route }:any) => {
   const layout = useWindowDimensions();
-  const dispatch = useDispatch();
-  const { channelId, isGroup, otherParticipants } = route.params;
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const messages = useSelector((state:RootStateOrAny) => {
-    const { messages } = state.channel;
-    const sortedMessages = lodash.orderBy(messages, 'updatedAt', 'desc');
-    return sortedMessages;
-  });
-  const { getMessages, seenMessage, sendMessage, messagesSubscriber } = useFirebase({
+  const { channelId, otherParticipants } = useSelector(
+    (state:RootStateOrAny) => state.channel.selectedChannel
+  );
+  const { sendMessage } = useFirebase({
     _id: user._id,
     name: user.name,
     firstname: user.firstname,
@@ -102,84 +97,20 @@ const ChatView = ({ navigation, route }:any) => {
     image: user.image,
   });
   const [inputText, setInputText] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'chat', title: 'Chat' },
     { key: 'files', title: 'Files' },
   ]);
 
-  const ChatRoute = () => (
-    <ChatList
-      user={user}
-      messages={messages}
-      isGroup={isGroup}
-      loading={loading}
-      error={error}
-    />
-  );
-  
-  const FileRoute = () => (<FileList />);
-  
-  const renderScene = SceneMap({
-    chat: ChatRoute,
-    files: FileRoute,
-  });
-
   const onSendMessage = useCallback(() => {
     sendMessage(channelId, inputText);
     setInputText('');
   }, [channelId, inputText])
 
-  const onFetchMessages = useCallback(() => {
-    setLoading(true);
-    getMessages(channelId, (err:any, snapshot:any) => {
-      setLoading(false);
-      if(err) {
-        return setError(!!err);
-      }
-      const data:any = [];
-      snapshot.forEach((doc:any) => {
-        const d = doc.data();
-        d._id = doc.id;
-        data.push(d);
-      });
-      if (data && data[0]) {
-        const seen = lodash.find(data[0].seen, s => s._id === user._id);
-        if (!lodash.size(seen)) {
-          seenMessage(channelId, data[0]._id);
-        }
-      } else {
-        seenMessage(channelId, null);
-      }
-      if (data) {
-        dispatch(setMessages(data));
-      }
-    });
-  }, [channelId]);
-
   const onBack = () => navigation.goBack();
 
-  useEffect(() => {
-    onFetchMessages();
-    const unsubscriber = messagesSubscriber(channelId, (querySnapshot:any) => {
-      querySnapshot.docChanges().forEach((change:any) => {
-        const data = change.doc.data();
-        data._id = change.doc.id;
-        seenMessage(channelId, data._id);
-        if (change.type === 'modified') {
-          dispatch(updateMessages(data));
-        }
-        if (change.type === 'removed') {
-          dispatch(removeMessages(data._id));
-        }
-      })
-    });
-    return () => unsubscriber();
-  }, [])
-
-  const renderTabBar = props => (
+  const renderTabBar = (props:any) => (
     <TabBar
       {...props}
       labelStyle={{ color: text.default }}
