@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { SimpleLineIcons } from '@expo/vector-icons'; 
+import { SimpleLineIcons, Feather } from '@expo/vector-icons'; 
 
 interface Props {
   type?: string;
@@ -9,11 +9,21 @@ interface Props {
 }
 
 const MenuIcon: FC<Props> = ({
+  type = '',
   size = 24,
   color = 'black',
   ...otherProps
 }) => {
-
+  if (type === 'more') {
+    return (
+      <Feather
+        name="more-vertical"
+        size={size}
+        color={color}
+        {...otherProps}
+      />
+    );
+  }
   return (
     <SimpleLineIcons
       name="menu"

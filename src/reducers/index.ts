@@ -4,7 +4,6 @@ import { persistReducer } from 'redux-persist';
 import user from './user/reducers';
 import theme from './theme/reducers';
 import channel from './channel/reducers';
-import message from './message/reducers';
 
 const persistConfig = {
   key: 'root',
@@ -15,5 +14,4 @@ export default combineReducers({
   user: persistReducer(persistConfig, user),
   theme,
   channel,
-  message,
 });

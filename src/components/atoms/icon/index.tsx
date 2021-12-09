@@ -11,6 +11,10 @@ import FilterIcon from './filter';
 import WriteIcon from './write';
 import VideoIcon from './video';
 import SendIcon from './send';
+import PhoneIcon from './phone';
+import PlusIcon from './plus';
+import CameraIcon from './camera';
+import MicIcon from './mic';
 
 export {
   ExclamationIcon,
@@ -26,4 +30,8 @@ export {
   WriteIcon,
   VideoIcon,
   SendIcon,
+  PhoneIcon,
+  PlusIcon,
+  CameraIcon,
+  MicIcon,
 };

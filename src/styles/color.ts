@@ -31,7 +31,7 @@ const button = {
 
 const bubble = {
   primary: '#274AD7',
-  secondary: '#F3F2F0',
+  secondary: '#E5E5E5',
 };
 
 export {

@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import {
-  SafeAreaView,
   StyleSheet,
   View,
   TouchableOpacity,
@@ -8,17 +7,32 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
+  useWindowDimensions,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import lodash from 'lodash';
 import useFirebase from 'src/hooks/useFirebase';
-import { ArrowLeftIcon, VideoIcon, SendIcon } from '@components/atoms/icon';
+import ChatList from '@components/organisms/chat/list';
+import FileList from '@components/organisms/chat/files';
+import {
+  ArrowLeftIcon,
+  PhoneIcon,
+  VideoIcon,
+  SendIcon,
+  MenuIcon,
+  PlusIcon,
+  CameraIcon,
+  MicIcon,
+} from '@components/atoms/icon';
 import Text from '@components/atoms/text';
+import GroupImage from '@components/molecules/image/group';
 import { InputField } from '@components/molecules/form-fields';
 import { ChatBubble, GroupBubble } from '@components/molecules/list-item';
-import { outline, primaryColor, text } from '@styles/color';
+import { outline, primaryColor, text, button } from '@styles/color';
 import { getChannelName } from 'src/utils/formatting';
-import { setMessages, updateMessages, removeMessages } from 'src/reducers/message/actions';
+import { setMessages, updateMessages, removeMessages } from 'src/reducers/channel/actions';
 import InputStyles from 'src/styles/input-style';
 
 const { width } = Dimensions.get('window');
@@ -29,10 +43,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    paddingHorizontal: 15,
-    paddingBottom: 15,
-    borderBottomColor: outline.default,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    padding: 15,
+    paddingBottom: 0,
   },
   horizontal: {
     flexDirection: 'row',
@@ -40,12 +52,12 @@ const styles = StyleSheet.create({
   },
   info: {
     flex: 1,
-    paddingHorizontal: 15,
-    alignItems: 'center',
+    paddingHorizontal: 10,
+    justifyContent: 'center',
   },
   bubbleContainer: {
     alignItems: 'flex-start',
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     paddingVertical: 4,
   },
   keyboardAvoiding: {
@@ -53,15 +65,31 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  outline: {
+    borderRadius: 10,
+  },
+  input: {
+    fontSize: 16,
+  },
+  plus: {
+    backgroundColor: button.primary,
+    borderRadius: 26,
+    width: 26,
+    height: 26,
+    marginRight: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 
 const ChatView = ({ navigation, route }:any) => {
+  const layout = useWindowDimensions();
   const dispatch = useDispatch();
-  const { channelId, isGroup } = route.params;
+  const { channelId, isGroup, otherParticipants } = route.params;
   const user = useSelector((state:RootStateOrAny) => state.user);
   const messages = useSelector((state:RootStateOrAny) => {
-    const { messages } = state.message;
+    const { messages } = state.channel;
     const sortedMessages = lodash.orderBy(messages, 'updatedAt', 'desc');
     return sortedMessages;
   });
@@ -75,7 +103,30 @@ const ChatView = ({ navigation, route }:any) => {
   });
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState({});
+  const [error, setError] = useState(false);
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'chat', title: 'Chat' },
+    { key: 'files', title: 'Files' },
+  ]);
+
+  const ChatRoute = () => (
+    <ChatList
+      user={user}
+      messages={messages}
+      isGroup={isGroup}
+      loading={loading}
+      error={error}
+    />
+  );
+  
+  const FileRoute = () => (<FileList />);
+  
+  const renderScene = SceneMap({
+    chat: ChatRoute,
+    files: FileRoute,
+  });
+
   const onSendMessage = useCallback(() => {
     sendMessage(channelId, inputText);
     setInputText('');
@@ -86,7 +137,7 @@ const ChatView = ({ navigation, route }:any) => {
     getMessages(channelId, (err:any, snapshot:any) => {
       setLoading(false);
       if(err) {
-        return setError(err);
+        return setError(!!err);
       }
       const data:any = [];
       snapshot.forEach((doc:any) => {
@@ -128,49 +179,23 @@ const ChatView = ({ navigation, route }:any) => {
     return () => unsubscriber();
   }, [])
 
-  const emptyComponent = () => (
-    <View
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        transform: [
-          {
-            scaleY: -1
-          }
-        ]
-      }}>
-      <Text
-        color={text.default}
-        size={14}
-      >
-        No messages yet
-      </Text>
-    </View>
-  )
-
-  const renderItem = ({ item }:any) => {
-    const isSender = item.sender._id === user._id;
-    return (
-      <View style={[styles.bubbleContainer, { alignItems: isSender ? 'flex-end' : 'flex-start' }]}>
-        {
-          isGroup ? (
-            <GroupBubble
-              message={item.message}
-              isSender={isSender}
-              sender={item.sender}
-              maxWidth={width * 0.6}
-            />
-          ) : (
-            <ChatBubble
-              message={item.message}
-              isSender={isSender}
-              maxWidth={width * 0.6}
-            />
-          )
-        }
-      </View>
-    )
-  }
+  const renderTabBar = props => (
+    <TabBar
+      {...props}
+      labelStyle={{ color: text.default }}
+      indicatorStyle={{ backgroundColor: outline.primary }}
+      style={{ backgroundColor: 'white' }}
+      renderLabel={({ route, focused, color }) => (
+        <Text
+          color={color}
+          size={16}
+          weight={focused ? '600' : 'normal'}
+        >
+          {route.title}
+        </Text>
+      )}
+    />
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -180,51 +205,95 @@ const ChatView = ({ navigation, route }:any) => {
             size={22}
           />
         </TouchableOpacity>
+        <View style={{ paddingLeft: 10 }}>
+          <GroupImage
+            participants={otherParticipants}
+            size={50}
+            textSize={18}
+          />
+        </View>
         <View style={styles.info}>
           <Text
-            weight={'700'}
-            size={16}
+            color={text.default}
+            weight={'500'}
+            size={18}
             numberOfLines={1}
           >
-            {getChannelName(route.params, user)}
+            {getChannelName(route.params)}
           </Text>
         </View>
         <TouchableOpacity>
-          <VideoIcon
-            size={28}
-          />
+          <View style={{ paddingRight: 5 }}>
+            <PhoneIcon
+              size={20}
+              color={text.primary}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View style={{ paddingHorizontal: 8 }}>
+            <VideoIcon
+              size={20}
+              color={text.primary}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View style={{ paddingLeft: 5 }}>
+            <MenuIcon
+              type={'more'}
+              size={22}
+              color={text.default}
+            />
+          </View>
         </TouchableOpacity>
       </View>
       <View style={{ flex: 1 }}>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          inverted={true}
-          data={messages}
-          renderItem={renderItem}
-          keyExtractor={(item:any) => item._id}
-          ListEmptyComponent={emptyComponent}
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{ width: layout.width }}
+          renderTabBar={renderTabBar}
         />
+        {/*  */}
       </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.keyboardAvoiding}>
+          <TouchableOpacity>
+            <View style={styles.plus}>
+              <PlusIcon
+                color="white"
+                size={16}
+              />
+            </View>
+          </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <InputField
               placeholder={'Type a message'}
-              inputStyle={InputStyles.text}
-              outlineStyle={InputStyles.outlineStyle}
+              inputStyle={[InputStyles.text, styles.input]}
+              outlineStyle={[InputStyles.outlineStyle, styles.outline]}
               value={inputText}
               onChangeText={setInputText}
               onSubmitEditing={onSendMessage}
               returnKeyType={'send'}
             />
           </View>
-          <TouchableOpacity onPress={onSendMessage}>
-            <View style={{ paddingLeft: 10 }}>
-              <SendIcon
-                size={32}
-                color={primaryColor}
+          <TouchableOpacity>
+            <View style={{ paddingLeft: 15 }}>
+              <CameraIcon
+                size={22}
+                color={text.default}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={{ paddingLeft: 15 }}>
+              <MicIcon
+                size={20}
+                color={text.default}
               />
             </View>
           </TouchableOpacity>

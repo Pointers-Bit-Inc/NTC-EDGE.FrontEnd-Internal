@@ -61,6 +61,7 @@ const ChatItem: FC<Props> = ({
         />
         <View style={styles.content}>
           <Text
+            color={text.default}
             size={14}
             numberOfLines={1}
           >

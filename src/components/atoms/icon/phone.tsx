@@ -8,7 +8,7 @@ interface Props {
   [x: string]: any;
 }
 
-const VideoIcon: FC<Props> = ({
+const PhoneIcon: FC<Props> = ({
   size = 24,
   color = 'black',
   ...otherProps
@@ -16,7 +16,7 @@ const VideoIcon: FC<Props> = ({
 
   return (
     <Feather
-      name="video"
+      name="phone"
       size={size}
       color={color}
       {...otherProps}
@@ -24,4 +24,4 @@ const VideoIcon: FC<Props> = ({
   );
 }
 
-export default VideoIcon
+export default PhoneIcon

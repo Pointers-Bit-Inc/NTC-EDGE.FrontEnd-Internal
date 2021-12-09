@@ -1,8 +1,7 @@
 import React, { FC } from 'react'
-import { View, StyleSheet, Image } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import Text from '@components/atoms/text'
 import { primaryColor, bubble, text } from '@styles/color'
-import { getInitial } from 'src/utils/formatting'
 import ProfileImage from '@components/atoms/image/profile'
 
 const styles = StyleSheet.create({
@@ -34,6 +33,7 @@ interface Props {
   isSender?: boolean,
   maxWidth?: any,
   style?: any,
+  [x: string]: any;
 }
 
 const ChatBubble:FC<Props> = ({
@@ -41,46 +41,49 @@ const ChatBubble:FC<Props> = ({
   sender = {},
   isSender = false,
   maxWidth = '60%',
-  style
+  style,
+  ...otherProps
 }) => {
   return (
-    <View style={[styles.container, { maxWidth }, style]}>
-      {
-        !isSender ?(
-          <ProfileImage
-            image={sender.image}
-            name={`${sender.firstname} ${sender.lastname}`}
-            size={25}
-            textSize={10}
-          />
-        ) : null
-      }
-      <View style={{ marginLeft: 5 }}>
+    <TouchableOpacity {...otherProps}>
+      <View style={[styles.container, { maxWidth }, style]}>
         {
-          !isSender ? (
-            <Text
-              size={10}
-              color={text.default}
-            >
-              {sender.firstname}
-            </Text>
+          !isSender ?(
+            <ProfileImage
+              image={sender.image}
+              name={`${sender.firstname} ${sender.lastname}`}
+              size={25}
+              textSize={10}
+            />
           ) : null
         }
-        <View style={[
-          styles.bubble,
+        <View style={{ marginLeft: 10 }}>
           {
-            backgroundColor: isSender ? bubble.primary : bubble.secondary
+            !isSender ? (
+              <Text
+                size={10}
+                color={text.default}
+              >
+                {sender.firstname}
+              </Text>
+            ) : null
           }
-        ]}>
-          <Text
-            size={14}
-            color={isSender ? 'white' : text.default}
-          >
-            {message}
-          </Text>
+          <View style={[
+            styles.bubble,
+            {
+              backgroundColor: isSender ? bubble.primary : bubble.secondary
+            }
+          ]}>
+            <Text
+              size={14}
+              color={isSender ? 'white' : text.default}
+            >
+              {message}
+            </Text>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }
 

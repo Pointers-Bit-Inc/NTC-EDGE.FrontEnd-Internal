@@ -3,6 +3,10 @@ const {
   SET_CHANNEL_LIST,
   UPDATE_CHANNEL,
   REMOVE_CHANNEL,
+
+  SET_MESSAGES,
+  UPDATE_MESSAGES,
+  REMOVE_MESSAGES,
 } = require('./types').default;
 
 interface ChannelProps {
@@ -14,8 +18,20 @@ interface ChannelProps {
   isGroup: boolean;
   lastMessage: any;
   participants: any;
+  otherParticipants: any;
+  hasSeen: boolean,
   participantsId: any;
   seen: any
+}
+
+interface MessageProps {
+  _id: string;
+  createdAt: any;
+  updatedAt: any;
+  channelId: string;
+  message: string;
+  seen: any;
+  sender: any;
 }
 
 export function setSelectedChannel(payload:ChannelProps) {
@@ -45,3 +61,25 @@ export function removeChannel(payload:string) {
     payload,
   };
 }
+
+export function setMessages(payload:MessageProps) {
+  return {
+    type: SET_MESSAGES,
+    payload,
+  };
+}
+
+export function updateMessages(payload:[MessageProps]) {
+  return {
+    type: UPDATE_MESSAGES,
+    payload,
+  };
+}
+
+export function removeMessages(payload:MessageProps) {
+  return {
+    type: REMOVE_MESSAGES,
+    payload,
+  };
+}
+

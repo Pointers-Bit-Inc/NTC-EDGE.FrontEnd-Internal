@@ -117,7 +117,7 @@ const useFirebase = (user:any) => {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         lastMessage: {
-          message: 'New chat created.',
+          message: `created a new ${isGroup ? 'group ' : ' '}chat`,
           sender: user,
         },
         isGroup,

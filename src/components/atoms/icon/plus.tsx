@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Feather } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons'; 
 
 interface Props {
   type?: string;
@@ -8,15 +8,15 @@ interface Props {
   [x: string]: any;
 }
 
-const VideoIcon: FC<Props> = ({
+const PlusIcon: FC<Props> = ({
   size = 24,
   color = 'black',
   ...otherProps
 }) => {
 
   return (
-    <Feather
-      name="video"
+    <FontAwesome5
+      name="plus"
       size={size}
       color={color}
       {...otherProps}
@@ -24,4 +24,4 @@ const VideoIcon: FC<Props> = ({
   );
 }
 
-export default VideoIcon
+export default PlusIcon

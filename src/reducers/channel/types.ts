@@ -5,4 +5,8 @@ export default keyMirror({
   SET_CHANNEL_LIST: null,
   UPDATE_CHANNEL: null,
   REMOVE_CHANNEL: null,
+
+  SET_MESSAGES: null,
+  UPDATE_MESSAGES: null,
+  REMOVE_MESSAGES: null,
 });

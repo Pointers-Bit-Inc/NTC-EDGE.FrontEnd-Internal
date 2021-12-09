@@ -21,6 +21,7 @@ const ProfileImage = ({
   size = 35,
   textSize = 14,
   backgroundColor = primaryColor,
+  style = {},
 }) => {
   if (image) {
     return (
@@ -32,9 +33,10 @@ const ProfileImage = ({
             height: size,
             width: size,
             borderRadius: size,
-          }
+          },
+          style
         ]}
-        resizeMode={'contain'}
+        borderRadius={size}
         source={{ uri: image }}
       />
     );
@@ -48,7 +50,8 @@ const ProfileImage = ({
           height: size,
           width: size,
           borderRadius: size,
-        }
+        },
+        style
       ]}>
       <Text
         size={textSize}

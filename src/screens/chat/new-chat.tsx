@@ -3,12 +3,12 @@ import {
   RefreshControl,
   ActivityIndicator,
   Dimensions,
-  SafeAreaView,
   StyleSheet,
   View,
   TouchableOpacity,
   FlatList
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector } from 'react-redux';
 import lodash from 'lodash';
 import { outline, text } from '@styles/color';
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    paddingHorizontal: 10,
+    padding: 15,
     borderBottomColor: outline.default,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
@@ -184,6 +184,7 @@ const NewChat = ({ navigation }:any) => {
           </TouchableOpacity>
           <View style={styles.titleContainer}>
             <Text
+              color={text.default}
               weight={'600'}
               size={16}
             >

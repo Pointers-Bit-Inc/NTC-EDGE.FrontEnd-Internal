@@ -3,13 +3,18 @@ import { StyleSheet, View, FlatList, TouchableOpacity, Dimensions, Platform } fr
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import lodash from 'lodash';
-import dayjs from 'dayjs';
-import {setChannelList, updateChannel, removeChannel } from 'src/reducers/channel/actions';
+import { setChannelList, updateChannel, removeChannel } from 'src/reducers/channel/actions';
 import { SearchField } from '@components/molecules/form-fields';
 import { ChatItem } from '@components/molecules/list-item';
-import { FilterIcon, WriteIcon } from '@components/atoms/icon';
+import { VideoIcon, WriteIcon } from '@components/atoms/icon';
 import { primaryColor, outline, text } from '@styles/color';
-import { getChannelName, getChannelImage } from 'src/utils/formatting';
+import {
+  getChannelName,
+  getChannelImage,
+  getTimeString,
+  getOtherParticipants,
+  checkSeen,
+} from 'src/utils/formatting';
 import useFirebase from 'src/hooks/useFirebase';
 import Text from '@atoms/text';
 import ProfileImage from '@components/atoms/image/profile';
@@ -25,10 +30,10 @@ const styles = StyleSheet.create({
   header: {
     paddingBottom: 5,
     backgroundColor: 'white',
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
   },
   input: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '500',
     flex: 1,
   },
@@ -36,15 +41,17 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: '#F1F1F1',
     paddingVertical: 3,
+    borderRadius: 10,
   },
   icon: {
     paddingHorizontal: 5,
+    color: text.default,
+    fontSize: 18,
   },
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 10,
   },
   titleContainer: {
     flex: 1,
@@ -119,6 +126,8 @@ const ChatList = ({ navigation }:any) => {
         const d = doc.data();
         d._id = doc.id;
         d.channelId = doc.id;
+        d.otherParticipants = getOtherParticipants(d.participants, user);
+        d.hasSeen = checkSeen(d.seen, user);
         data.push(d);
       });
       dispatch(setChannelList(data));
@@ -126,7 +135,7 @@ const ChatList = ({ navigation }:any) => {
         setInit(true);
       }
     });
-  }, [init]);
+  }, [init, user]);
 
   useEffect(() => {
     initializeFirebaseApp();
@@ -146,13 +155,19 @@ const ChatList = ({ navigation }:any) => {
           if (change.type === 'added') {
             const hasSave = lodash.find(channelList, (ch:any) => ch._id === data._id);
             if (!hasSave) {
+              data.otherParticipants = getOtherParticipants(data.participants, user);
+              data.hasSeen = checkSeen(data.seen, user);
               dispatch(updateChannel(data));
             }
           }
           if (change.type === 'modified') {
+            data.otherParticipants = getOtherParticipants(data.participants, user);
+            data.hasSeen = checkSeen(data.seen, user);
             dispatch(updateChannel(data));
           }
           if (change.type === 'removed') {
+            data.otherParticipants = getOtherParticipants(data.participants, user);
+            data.hasSeen = checkSeen(data.seen, user);
             dispatch(removeChannel(data._id));
           }
         });
@@ -179,42 +194,36 @@ const ChatList = ({ navigation }:any) => {
     </View>
   )
 
-  const getTimeString = (time:any) => {
-    if (time) {
-      const dateNow = dayjs();
-      const dateUpdate = dayjs(new Date(time * 1000));
-      const diff = dateNow.diff(dateUpdate, 'days');
-
-      if (diff === 0) {
-        return dayjs(new Date(time * 1000)).format('hh:mm A');
-      } else if (diff === 1) {
-        return 'Yesterday';
-      } else if (diff <= 7) {
-        return dayjs(new Date(time * 1000)).format('dddd');
-      }
-      return dayjs(new Date(time * 1000)).format('DD/MM/YY');
-    }
-    return '';
-  }
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <ProfileImage
+            size={40}
             image={user.image}
             name={`${user.firstname} ${user.lastname}`}
           />
           <View style={styles.titleContainer}>
             <Text
+              color={text.default}
               weight={'600'}
               size={24}
             >
               Chat
             </Text>
           </View>
-          <TouchableOpacity>
-            <FilterIcon
-              size={28}
+          <TouchableOpacity onPress={() => navigation.navigate('NewChat')}>
+            <VideoIcon
+              size={24}
+              color={primaryColor}
+            />
+          </TouchableOpacity>
+          <View style={{ width: 25 }} />
+          <TouchableOpacity onPress={() => navigation.navigate('NewChat')}>
+            <WriteIcon
+              size={22}
+              color={primaryColor}
             />
           </TouchableOpacity>
         </View>
@@ -233,39 +242,22 @@ const ChatList = ({ navigation }:any) => {
         data={channelList}
         renderItem={({ item }:any) => (
           <ChatItem
-            image={getChannelImage(item, user)}
-            name={getChannelName(item, user)}
+            image={getChannelImage(item)}
+            imageSize={50}
+            textSize={18}
+            name={getChannelName(item)}
+            user={user}
+            participants={item.otherParticipants}
             message={item.lastMessage}
             isGroup={item.isGroup}
-            isSender={item.lastMessage.sender._id === user._id}
-            seen={
-              !!lodash.size(
-                lodash.find(
-                  item.seen,
-                  s => s._id === user._id
-                )
-              )
-            }
+            seen={item.hasSeen}
             time={getTimeString(item?.updatedAt?.seconds)}
             onPress={() => navigation.navigate('ViewChat', item)}
           />
         )}
         keyExtractor={(item:any) => item._id}
-        ItemSeparatorComponent={
-          () => <View style={styles.separator} />
-        }
         ListEmptyComponent={emptyComponent}
       />
-      <View style={styles.floating}>
-        <TouchableOpacity onPress={() => navigation.navigate('NewChat')}>
-          <View style={[styles.button, styles.shadow]}>
-            <WriteIcon
-              size={28}
-              color={'white'}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   )
 }
