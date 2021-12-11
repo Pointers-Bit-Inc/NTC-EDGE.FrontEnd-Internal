@@ -19,7 +19,11 @@
       "googleServicesFile": "./google-services.json",
       "supportsTablet": true,
       "bundleIdentifier": "ntc.edge.internal",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This will be used for video call and live streaming.",
+        "NSMicrophoneUsageDescription": "This will be used for video call and live streaming."
+      }
     },
     "android": {
       "googleServicesFile": "./GoogleService-Info.plist",
