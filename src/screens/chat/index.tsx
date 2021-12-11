@@ -3,7 +3,7 @@ import { StyleSheet, View, FlatList, TouchableOpacity, Dimensions, Platform } fr
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import lodash from 'lodash';
-import { setSelectedChannel, setChannelList, updateChannel, removeChannel } from 'src/reducers/channel/actions';
+import { setSelectedChannel, addChannel, updateChannel, removeChannel } from 'src/reducers/channel/actions';
 import { SearchField } from '@components/molecules/form-fields';
 import { ChatItem } from '@components/molecules/list-item';
 import { VideoIcon, WriteIcon } from '@components/atoms/icon';
@@ -114,69 +114,52 @@ const ChatList = ({ navigation }:any) => {
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const onFetchChannel = useCallback(() => {
-    setLoading(true);
-    getChannel((err:any, snapshot:any) => {
-      setLoading(false);
-      if (err) {
-        return setError(err);
-      }
-      const data:any = [];
-      snapshot.forEach((doc:any) => {
-        const d = doc.data();
-        d._id = doc.id;
-        d.channelId = doc.id;
-        d.otherParticipants = getOtherParticipants(d.participants, user);
-        d.hasSeen = checkSeen(d.seen, user);
-        data.push(d);
-      });
-      dispatch(setChannelList(data));
-      if (!init) {
-        setInit(true);
-      }
-    });
-  }, [init, user]);
-
   useEffect(() => {
-    initializeFirebaseApp();
-    onFetchChannel();
-    return () => {
-      deleteFirebaseApp();
-    };
+    if(Platform.OS === 'web') {
+      initializeFirebaseApp();
+      return () => {
+        deleteFirebaseApp();
+      };
+    }
   }, []);
 
   useEffect(() => {
-    if (init) {
-      const unsubscriber = channelSubscriber((querySnapshot:any) => {
-        querySnapshot.docChanges().forEach((change:any) => {
-          const data = change.doc.data();
-          data._id = change.doc.id;
-          data.channelId = change.doc.id;
-          if (change.type === 'added') {
+    const unsubscriber = channelSubscriber((querySnapshot:any) => {
+      querySnapshot.docChanges().forEach((change:any) => {
+        const data = change.doc.data();
+        data._id = change.doc.id;
+        data.channelId = change.doc.id;
+        switch(change.type) {
+          case 'added': {
             const hasSave = lodash.find(channelList, (ch:any) => ch._id === data._id);
+            data.otherParticipants = getOtherParticipants(data.participants, user);
+            data.hasSeen = checkSeen(data.seen, user);
             if (!hasSave) {
-              data.otherParticipants = getOtherParticipants(data.participants, user);
-              data.hasSeen = checkSeen(data.seen, user);
-              dispatch(updateChannel(data));
+              dispatch(addChannel(data));
             }
+            return;
           }
-          if (change.type === 'modified') {
+          case 'modified': {
             data.otherParticipants = getOtherParticipants(data.participants, user);
             data.hasSeen = checkSeen(data.seen, user);
             dispatch(updateChannel(data));
+            return;
           }
-          if (change.type === 'removed') {
+          case 'removed': {
             data.otherParticipants = getOtherParticipants(data.participants, user);
             data.hasSeen = checkSeen(data.seen, user);
             dispatch(removeChannel(data._id));
+            return;
           }
-        });
+          default:
+            return;
+        }
       });
-      return () => {
-        unsubscriber();
-      }
+    });
+    return () => {
+      unsubscriber();
     }
-  }, [init])
+  }, [])
 
   const emptyComponent = () => (
     <View

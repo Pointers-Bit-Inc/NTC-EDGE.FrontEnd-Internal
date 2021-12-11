@@ -8,7 +8,7 @@
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "updates": {
@@ -16,20 +16,25 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "googleServicesFile": "./google-services.json",
       "supportsTablet": true,
-      "bundleIdentifier": "com.ntc.edge",
+      "bundleIdentifier": "ntc.edge.internal",
       "buildNumber": "1.0.0"
     },
     "android": {
+      "googleServicesFile": "./GoogleService-Info.plist",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.ntc.edge",
+      "package": "ntc.edge.internal",
       "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "@react-native-firebase/app"
+    ]
   }
 }

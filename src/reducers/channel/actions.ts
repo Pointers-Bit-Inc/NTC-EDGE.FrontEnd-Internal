@@ -1,10 +1,12 @@
 const {
   SET_SELECTED_CHANNEL,
   SET_CHANNEL_LIST,
+  ADD_CHANNEL,
   UPDATE_CHANNEL,
   REMOVE_CHANNEL,
 
   SET_MESSAGES,
+  ADD_MESSAGES,
   UPDATE_MESSAGES,
   REMOVE_MESSAGES,
 } = require('./types').default;
@@ -48,6 +50,13 @@ export function setChannelList(payload:[ChannelProps]) {
   };
 }
 
+export function addChannel(payload:ChannelProps) {
+  return {
+    type: ADD_CHANNEL,
+    payload,
+  }
+}
+
 export function updateChannel(payload:ChannelProps) {
   return {
     type: UPDATE_CHANNEL,
@@ -65,6 +74,13 @@ export function removeChannel(payload:string) {
 export function setMessages(payload:MessageProps) {
   return {
     type: SET_MESSAGES,
+    payload,
+  };
+}
+
+export function addMessages(payload:[MessageProps]) {
+  return {
+    type: ADD_MESSAGES,
     payload,
   };
 }

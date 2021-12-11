@@ -3,7 +3,7 @@ import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import lodash from 'lodash';
 import useFirebase from 'src/hooks/useFirebase';
 import { checkSeen } from 'src/utils/formatting';
-import { setMessages, updateMessages, removeMessages } from 'src/reducers/channel/actions';
+import { setMessages, addMessages, updateMessages, removeMessages } from 'src/reducers/channel/actions';
 import ChatList from '@components/organisms/chat/list';
 
 const List = () => {
@@ -28,45 +28,37 @@ const List = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const onFetchMessages = useCallback(() => {
-    setLoading(true);
-    getMessages(channelId, (err:any, snapshot:any) => {
-      setLoading(false);
-      if(err) {
-        return setError(!!err);
-      }
-      const data:any = [];
-      snapshot.forEach((doc:any) => {
-        const d = doc.data();
-        d._id = doc.id;
-        data.push(d);
-      });
-      if (data && data[0]) {
-        const seen = checkSeen(data[0].seen, user);
-        if (!lodash.size(seen)) {
-          seenMessage(channelId, data[0]._id);
-        }
-      } else {
-        seenMessage(channelId, null);
-      }
-      if (data) {
-        dispatch(setMessages(data));
-      }
-    });
-  }, [channelId]);
-
   useEffect(() => {
-    onFetchMessages();
     const unsubscriber = messagesSubscriber(channelId, (querySnapshot:any) => {
       querySnapshot.docChanges().forEach((change:any) => {
         const data = change.doc.data();
         data._id = change.doc.id;
-        seenMessage(channelId, data._id);
-        if (change.type === 'modified') {
-          dispatch(updateMessages(data));
-        }
-        if (change.type === 'removed') {
-          dispatch(removeMessages(data._id));
+        switch(change.type) {
+          case 'added': {
+            const hasSave = lodash.find(messages, (msg:any) => msg._id === data._id);
+            const seen = checkSeen(data.seen, user);
+            if (!seen) {
+              seenMessage(channelId, data._id);
+            }
+            if (!hasSave) {
+              dispatch(addMessages(data));
+            }
+            return;
+          }
+          case 'modified': {
+            const seen = checkSeen(data.seen, user);
+            if (!seen) {
+              seenMessage(channelId, data._id);
+            }
+            dispatch(updateMessages(data));
+            return;
+          }
+          case 'removed': {
+            dispatch(removeMessages(data._id));
+            return;
+          }
+          default:
+            return;
         }
       })
     });

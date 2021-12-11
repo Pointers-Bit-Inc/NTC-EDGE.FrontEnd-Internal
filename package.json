@@ -16,6 +16,8 @@
     "@expo/webpack-config": "^0.16.7",
     "@react-native-async-storage/async-storage": "~1.15.0",
     "@react-native-community/datetimepicker": "^3.5.2",
+    "@react-native-firebase/app": "^13.1.0",
+    "@react-native-firebase/firestore": "^13.1.0",
     "@react-native-picker/picker": "2.1.0",
     "@react-navigation/bottom-tabs": "^6.0.5",
     "@react-navigation/drawer": "^6.1.8",
@@ -37,6 +39,7 @@
     "expo-screen-orientation": "~4.0.3",
     "expo-splash-screen": "~0.13.5",
     "expo-status-bar": "~1.1.0",
+    "expo-updates": "~0.10.13",
     "firebase": "^9.6.0",
     "immutable": "^4.0.0",
     "lodash": "^4.17.21",
@@ -65,8 +68,7 @@
     "redux": "^4.1.2",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.0",
-    "styled-components": "^5.3.3",
-    "expo-updates": "~0.10.13"
+    "styled-components": "^5.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

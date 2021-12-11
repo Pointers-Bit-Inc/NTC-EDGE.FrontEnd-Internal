@@ -1,4 +1,4 @@
-package com.ntc.edge;
+package ntc.edge.internal;
 import expo.modules.devmenu.react.DevMenuAwareReactActivity;
 import android.content.Intent;
 import expo.modules.devlauncher.DevLauncherController;
