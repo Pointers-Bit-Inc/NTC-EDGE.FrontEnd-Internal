@@ -5,6 +5,7 @@ import useFirebase from 'src/hooks/useFirebase';
 import { checkSeen } from 'src/utils/formatting';
 import { setMessages, addMessages, updateMessages, removeMessages } from 'src/reducers/channel/actions';
 import ChatList from '@components/organisms/chat/list';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
 const List = () => {
   const dispatch = useDispatch();
@@ -29,7 +30,9 @@ const List = () => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const unsubscriber = messagesSubscriber(channelId, (querySnapshot:any) => {
+    setLoading(true);
+    const unsubscriber = messagesSubscriber(channelId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
+      setLoading(false);
       querySnapshot.docChanges().forEach((change:any) => {
         const data = change.doc.data();
         data._id = change.doc.id;

@@ -1,5 +1,6 @@
-import React, { useState, FC } from 'react';
+import React, { useState, useCallback, FC } from 'react';
 import { View, StyleSheet } from 'react-native';
+import lodash from 'lodash';
 import { ExclamationIcon, SearchIcon } from '@atoms/icon';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
@@ -54,6 +55,9 @@ interface Props {
   errorColor?: string;
   activeColor?: string;
   requiredColor?: string;
+  onChangeText?: Function | undefined;
+  onChangeTextDebounce?: Function | undefined;
+  debounceTime?: number;
   [x: string]: any;
 }
 
@@ -73,11 +77,20 @@ const InputField: FC<Props> = ({
   errorColor,
   activeColor,
   requiredColor,
+  onChangeText = () => {},
+  onChangeTextDebounce = () => {},
+  debounceTime = 500,
   ...otherProps
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const onFocus = () => setIsFocused(true);
   const onBlur = () => setIsFocused(false);
+  const onChangeTextFn = (text:string) => {
+    onChangeText(text);
+    changeValueDebouncer(text);
+  }
+  const changeTextDebounced = (text:string) => onChangeTextDebounce(text);
+  const changeValueDebouncer = useCallback(lodash.debounce(changeTextDebounced, debounceTime), []);
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -128,6 +141,7 @@ const InputField: FC<Props> = ({
           onFocus={onFocus}
           onBlur={onBlur}
           numberOfLines={1}
+          onChangeText={onChangeTextFn}
           {...otherProps}
         />
       </View>

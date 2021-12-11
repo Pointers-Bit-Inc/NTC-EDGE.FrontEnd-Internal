@@ -79,7 +79,7 @@ const useFirebase = (user:any) => {
     return ids;
   }
 
-  const channelSubscriber = useCallback((callback = () => {}) => {
+  const channelSubscriber = useCallback((searchText:string, callback = () => {}) => {
     const q = query(
       collection(firestore.current, "channels"),
       where(

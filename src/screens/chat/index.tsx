@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { StyleSheet, View, FlatList, TouchableOpacity, Dimensions, Platform } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+  Platform,
+  ActivityIndicator,
+} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import lodash from 'lodash';
@@ -19,6 +27,7 @@ import useFirebase from 'src/hooks/useFirebase';
 import Text from '@atoms/text';
 import ProfileImage from '@components/atoms/image/profile';
 import InputStyles from 'src/styles/input-style';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
 const { width } = Dimensions.get('window');
 
@@ -100,7 +109,6 @@ const ChatList = ({ navigation }:any) => {
     channelSubscriber,
     initializeFirebaseApp,
     deleteFirebaseApp,
-    getChannel,
   } = useFirebase({
     _id: user._id,
     name: user.name,
@@ -110,8 +118,7 @@ const ChatList = ({ navigation }:any) => {
     image: user.image,
   });
   const [searchText, setSearchText] = useState('');
-  const [init, setInit] = useState(false);
-  const [error, setError] = useState({});
+  const [searchValue, setSearchValue] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -124,7 +131,9 @@ const ChatList = ({ navigation }:any) => {
   }, []);
 
   useEffect(() => {
-    const unsubscriber = channelSubscriber((querySnapshot:any) => {
+    setLoading(true);
+    const unsubscriber = channelSubscriber(searchValue, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
+      setLoading(false);
       querySnapshot.docChanges().forEach((change:any) => {
         const data = change.doc.data();
         data._id = change.doc.id;
@@ -159,7 +168,7 @@ const ChatList = ({ navigation }:any) => {
     return () => {
       unsubscriber();
     }
-  }, [])
+  }, [searchValue])
 
   const emptyComponent = () => (
     <View
@@ -177,7 +186,6 @@ const ChatList = ({ navigation }:any) => {
     </View>
   )
 
-  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -217,33 +225,48 @@ const ChatList = ({ navigation }:any) => {
           outlineStyle={[InputStyles.outlineStyle, styles.outline]}
           value={searchText}
           onChangeText={setSearchText}
+          onChangeTextDebounce={setSearchValue}
           onSubmitEditing={(event:any) => setSearchText(event.nativeEvent.text)}
         />
       </View>
       <View style={styles.shadow} />
-      <FlatList
-        data={channelList}
-        renderItem={({ item }:any) => (
-          <ChatItem
-            image={getChannelImage(item)}
-            imageSize={50}
-            textSize={18}
-            name={getChannelName(item)}
-            user={user}
-            participants={item.otherParticipants}
-            message={item.lastMessage}
-            isGroup={item.isGroup}
-            seen={item.hasSeen}
-            time={getTimeString(item?.updatedAt?.seconds)}
-            onPress={() => {
-              dispatch(setSelectedChannel(item));
-              navigation.navigate('ViewChat', item)
-            }}
+      {
+        loading ? (
+          <View style={{ alignItems: 'center' }}>
+            <ActivityIndicator size={'small'} color={text.default} />
+            <Text
+              size={14}
+              color={text.default}
+            >
+              Fetching chat...
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={channelList}
+            renderItem={({ item }:any) => (
+              <ChatItem
+                image={getChannelImage(item)}
+                imageSize={50}
+                textSize={18}
+                name={getChannelName(item)}
+                user={user}
+                participants={item.otherParticipants}
+                message={item.lastMessage}
+                isGroup={item.isGroup}
+                seen={item.hasSeen}
+                time={getTimeString(item?.updatedAt?.seconds)}
+                onPress={() => {
+                  dispatch(setSelectedChannel(item));
+                  navigation.navigate('ViewChat', item)
+                }}
+              />
+            )}
+            keyExtractor={(item:any) => item._id}
+            ListEmptyComponent={emptyComponent}
           />
-        )}
-        keyExtractor={(item:any) => item._id}
-        ListEmptyComponent={emptyComponent}
-      />
+        )
+      }
     </SafeAreaView>
   )
 }

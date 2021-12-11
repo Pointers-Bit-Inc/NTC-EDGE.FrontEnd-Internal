@@ -31,7 +31,7 @@ const useFirebase = (user:any) => {
     return ids;
   }
 
-  const channelSubscriber = useCallback((callback = () => {}) => {
+  const channelSubscriber = useCallback((searchText:string, callback = () => {}) => {
     const unsubscribe = firestore()
       .collection('channels')
       .where(
@@ -120,7 +120,6 @@ const useFirebase = (user:any) => {
   }, []);
 
   const sendMessage = useCallback(async (channelId, message) => {
-    console.log('MESSAGE', message);
     await firestore()
       .collection('messages')
       .add({
