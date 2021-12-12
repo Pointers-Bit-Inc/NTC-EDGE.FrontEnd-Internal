@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
         marginTop: 3
     },
     rect2: {
+        borderRadius: 25,
         height: 50,
         backgroundColor: "rgba(181,181,181,1)",
         width: 50,
