@@ -4,6 +4,7 @@ import {BarCodeScanner, BarCodeScannerResult} from 'expo-barcode-scanner';
 import BarcodeMask from 'react-native-barcode-mask';
 import Button from '@components/atoms/button';
 import axios from "axios";
+import { Ionicons } from '@expo/vector-icons';
 
 const finderWidth: number = 280;
 const finderHeight: number = 230;
@@ -54,56 +55,86 @@ export default function QrCodeScan(props: any) {
         return <Text>No access to camera</Text>;
     }
     return (
-        <View style={styles.root}>
-            <View style={styles.upperSection}>
+        <View style={styles.container}>
+            <View style={styles.group1}>
+                <View style={styles.rect}>
+                    <View style={styles.iconRow}>
+                        <TouchableOpacity onPress={()=>{
+                            props.onBack()
+                        }}>
+                            <Ionicons name="md-arrow-back" style={styles.icon}></Ionicons>
+                        </TouchableOpacity>
 
-                    <View style={{flex: 1}}>
-                        <BarCodeScanner onBarCodeScanned={handleBarCodeScanned}
-                                        type={type}
-                                        barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
-                                        style={[StyleSheet.absoluteFillObject, styles.container]}>
-
-                            <BarcodeMask edgeColor="#62B1F6" showAnimatedLine/>
-
-                        </BarCodeScanner>
+                        <View style={styles.rect2}></View>
+                        <Text style={styles.testTester}>Test Tester</Text>
                     </View>
-
+                    <View style={styles.iconRowFiller}></View>
+                    <Text style={styles.scanQr}>SCAN{"\n"}QR</Text>
+                </View>
             </View>
+            <View style={{flex: 1}}>
+                <BarCodeScanner onBarCodeScanned={handleBarCodeScanned}
+                                type={type}
+                                barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
+                                style={[StyleSheet.absoluteFillObject, styles.container]}>
 
+                    <BarcodeMask edgeColor="#62B1F6" showAnimatedLine/>
 
+                </BarCodeScanner>
+            </View>
         </View>
-
     );
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    separator: {
-        marginVertical: 30,
-
-        height: 1,
-
-        width: '80%',
-    },
-    root: {
-        flex: 1,
-    },
-    upperSection: {
         flex: 1
     },
-    lowerSection: {
-        paddingVertical: 30,
-        paddingHorizontal: 20,
-        backgroundColor: 'white',
+    group1: {
+        height: 124,
+        width: "100%",
+        alignSelf: "center"
     },
-    camera: {
-        height: '100%',
+    rect: {
+        height: 124,
+        backgroundColor: "#E6E6E6",
+        flexDirection: "row"
     },
+    icon: {
+        color: "rgba(128,128,128,1)",
+        fontSize: 40,
+        height: 44,
+        width: 27,
+        marginTop: 3
+    },
+    rect2: {
+        height: 50,
+        backgroundColor: "rgba(181,181,181,1)",
+        width: 50,
+        marginLeft: 7
+    },
+    testTester: {
+        fontFamily: "roboto-700",
+        color: "#121212",
+        fontSize: 20,
+        marginLeft: 9,
+        marginTop: 13
+    },
+    iconRow: {
+        height: 50,
+        flexDirection: "row",
+        marginLeft: 23,
+        marginTop: 53
+    },
+    iconRowFiller: {
+        flex: 1,
+        flexDirection: "row"
+    },
+    scanQr: {
+        fontWeight: 'bold',
+        color: "#121212",
+        marginRight: 28,
+        marginTop: 62
+    }
 });
+
+

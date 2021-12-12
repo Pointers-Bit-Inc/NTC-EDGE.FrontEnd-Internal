@@ -112,7 +112,7 @@ export default function TabBar() {
             <Tab.Screen options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
             <Tab.Screen name={CHAT} component={ActivitiesScreen}/>
             <Tab.Screen name={MEET} component={ActivitiesScreen}/>
-            <Tab.Screen name={SCANQR} component={QrCodeScanner}/>
+            <Tab.Screen options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>
             <Tab.Screen options={{headerShown: false}} name={MORE} component={ActivitiesScreen}/>
 
         </Tab.Navigator>

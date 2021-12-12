@@ -21,7 +21,7 @@ const Scan = (props: any) => {
     return <>
         {scanner && <>
 
-            <QrCodeScan onScanned={() => props.navigation.navigate("Activities")}/>
+            <QrCodeScan onBack={()=> props.navigation.goBack()} onScanned={() => props.navigation.navigate("Activities")}/>
         </>}
 
     </>
