@@ -8,7 +8,7 @@ import RNPickerSelect from "react-native-picker-select";
 import {Ionicons} from "@expo/vector-icons";
 import InputStyles from "../../../styles/input-style";
 import FormField from "@organisms/forms/form";
-import {outline, primaryColor} from "../../../styles/color";
+import {outline, primaryColor} from "@styles/color";
 import Header from "@organisms/forms/tab-header";
 
 interface RadioOperatorServices {

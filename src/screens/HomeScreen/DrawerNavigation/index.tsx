@@ -9,6 +9,8 @@ import Text from '@atoms/text';
 import { Entypo, Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { primaryColor, button } from 'src/styles/color';
 import styles from './styles';
+import UserProfileScreen from "@screens/HomeScreen/UserProfile";
+import UserProfile from "@pages/user-profile";
 
 type DrawerScreenList = {
     Home: undefined,
@@ -61,7 +63,7 @@ const DrawerNavigation = ({ navigation }:any) => {
         }}
         drawerContent={props => <CustomDrawerContent onLogout={onShow} {...props} />}
       >
-        <Drawer.Screen name="Profile" options={{ title: "Wave C. Ambray", drawerIcon: ({ color, size }) => <Ionicons name="ios-person-circle-outline" color={color} size={size} /> }} component={HomeScreen} />
+        <Drawer.Screen name="Profile" options={{ title: "Wave C. Ambray", drawerIcon: ({ color, size }) => <Ionicons name="ios-person-circle-outline" color={color} size={size} /> }} component={UserProfile} />
         <Drawer.Screen name="Home" options={{ drawerIcon: ({ color, size }) => <Feather name="home" color={color} size={size} /> }} component={HomeScreen} />
         <Drawer.Screen name="Account" options={{ drawerIcon: ({ color, size }) => <Feather name="settings" color={color} size={size} /> }} component={HomeScreen} />
         <Drawer.Screen name="Notifications" options={{ drawerIcon: ({ color, size }) => <Ionicons name="ios-megaphone-outline" color={color} size={size} /> }} component={HomeScreen} />

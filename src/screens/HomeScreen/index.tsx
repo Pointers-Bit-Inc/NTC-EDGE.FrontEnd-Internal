@@ -3,7 +3,7 @@ import React, { FC } from 'react'
 import { Image, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styles from './styles'
-import TabNavigation from './TabNavigation'
+import Button from "@atoms/button";
 
 interface Props {
     navigation: any
@@ -38,7 +38,13 @@ const HomeScreen: FC<Props> = ({navigation}) => {
                         <MaterialCommunityIcons name="menu" size={24} color="black" />
                     </TouchableOpacity>
                 </View>
+
             </View>
+            <Button onPress={()=>{
+                navigation.push("ActivitiesScreen")
+            }}>
+                <Text>{'Qrcode'}</Text>
+            </Button>
         </SafeAreaView>
     )
 }
