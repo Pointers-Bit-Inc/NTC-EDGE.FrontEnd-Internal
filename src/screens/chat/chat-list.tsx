@@ -15,10 +15,10 @@ const List = () => {
     const sortedMessages = lodash.orderBy(messages, 'updatedAt', 'desc');
     return sortedMessages;
   });
-  const { channelId, isGroup, otherParticipants } = useSelector(
+  const { channelId, isGroup, lastMessage } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
-  const { getMessages, seenMessage, messagesSubscriber } = useFirebase({
+  const { seenChannel, seenMessage, messagesSubscriber } = useFirebase({
     _id: user._id,
     name: user.name,
     firstname: user.firstname,
@@ -33,15 +33,35 @@ const List = () => {
     setLoading(true);
     const unsubscriber = messagesSubscriber(channelId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
       setLoading(false);
+      if (
+        lastMessage &&
+        lastMessage.message &&
+        (!lastMessage.message.messageId)
+      ) {
+        const seen = checkSeen(lastMessage.seen, user);
+        if (!seen) {
+          seenChannel(channelId);
+        }
+      }
       querySnapshot.docChanges().forEach((change:any) => {
         const data = change.doc.data();
         data._id = change.doc.id;
+        if (
+          lastMessage &&
+          lastMessage.message &&
+          (lastMessage.message.messageId === data._id)
+        ) {
+          const seen = checkSeen(lastMessage.seen, user);
+          if (!seen) {
+            seenChannel(channelId);
+          }
+        }
         switch(change.type) {
           case 'added': {
             const hasSave = lodash.find(messages, (msg:any) => msg._id === data._id);
             const seen = checkSeen(data.seen, user);
             if (!seen) {
-              seenMessage(channelId, data._id);
+              seenMessage(data._id);
             }
             if (!hasSave) {
               dispatch(addMessages(data));
@@ -51,7 +71,7 @@ const List = () => {
           case 'modified': {
             const seen = checkSeen(data.seen, user);
             if (!seen) {
-              seenMessage(channelId, data._id);
+              seenMessage(data._id);
             }
             dispatch(updateMessages(data));
             return;

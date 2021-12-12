@@ -83,6 +83,11 @@ const useFirebase = (user:any) => {
     const q = query(
       collection(firestore.current, "channels"),
       where(
+        'deleted',
+        '==',
+        false
+      ),
+      where(
         'participantsId',
         'array-contains',
         user._id,
@@ -123,6 +128,8 @@ const useFirebase = (user:any) => {
         },
         isGroup,
         seen: [user],
+        author: user,
+        deleted: false,
       });
       const docRef = await getDoc(doc(firestore.current, "channels", addRef.id));
       const data:any = docRef.data();
@@ -135,6 +142,12 @@ const useFirebase = (user:any) => {
       console.log('ERROR', e);
       return callback(e);
     }
+  }, [user]);
+
+  const deleteChannel = useCallback(async (channelId) => {
+    await updateDoc(doc(firestore.current, "channels", channelId), {
+      deleted: true,
+    });
   }, [user]);
 
   const getChannel = useCallback(async (callback) => {
@@ -186,19 +199,16 @@ const useFirebase = (user:any) => {
     });
   }, [user]);
 
-  const seenMessage = useCallback(async (channelId, messageId) => {
-    const batch = writeBatch(firestore.current);
-    if (messageId) {
-      const messageRef = doc(firestore.current, "messages", messageId);
-      batch.update(messageRef, {
-        seen: arrayUnion(user),
-      });
-    }
-    const channelRef = doc(firestore.current, "channels", channelId);
-    batch.update(channelRef, {
+  const seenMessage = useCallback(async (messageId) => {
+    await updateDoc(doc(firestore.current, "messages", messageId), {
       seen: arrayUnion(user),
     });
-    await batch.commit();
+  }, [user]);
+
+  const seenChannel = useCallback(async (channelId) => {
+    await updateDoc(doc(firestore.current, "channels", channelId), {
+      seen: arrayUnion(user),
+    });
   }, [user]);
 
   return {
@@ -207,10 +217,12 @@ const useFirebase = (user:any) => {
     channelSubscriber,
     messagesSubscriber,
     createChannel,
+    deleteChannel,
     getChannel,
     getMessages,
     sendMessage,
     seenMessage,
+    seenChannel,
   }
 }
 

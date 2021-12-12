@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import {
   StyleSheet,
   View,
@@ -14,7 +14,7 @@ import lodash from 'lodash';
 import { setSelectedChannel, addChannel, updateChannel, removeChannel } from 'src/reducers/channel/actions';
 import { SearchField } from '@components/molecules/form-fields';
 import { ChatItem } from '@components/molecules/list-item';
-import { VideoIcon, WriteIcon } from '@components/atoms/icon';
+import { VideoIcon, WriteIcon, DeleteIcon } from '@components/atoms/icon';
 import { primaryColor, outline, text } from '@styles/color';
 import {
   getChannelName,
@@ -28,6 +28,7 @@ import Text from '@atoms/text';
 import ProfileImage from '@components/atoms/image/profile';
 import InputStyles from 'src/styles/input-style';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 
 const { width } = Dimensions.get('window');
 
@@ -94,10 +95,17 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  delete: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
   }
 });
 
 const ChatList = ({ navigation }:any) => {
+  const modalRef = useRef<BottomModalRef>(null);
+  const selectedChatRef = useRef(null);
   const dispatch = useDispatch();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const channelList = useSelector((state:RootStateOrAny) => {
@@ -109,6 +117,7 @@ const ChatList = ({ navigation }:any) => {
     channelSubscriber,
     initializeFirebaseApp,
     deleteFirebaseApp,
+    deleteChannel,
   } = useFirebase({
     _id: user._id,
     name: user.name,
@@ -260,6 +269,12 @@ const ChatList = ({ navigation }:any) => {
                   dispatch(setSelectedChannel(item));
                   navigation.navigate('ViewChat', item)
                 }}
+                onLongPress={() => {
+                  if (user._id === item.author?._id) {
+                    selectedChatRef.current = item._id;
+                    modalRef.current?.open();
+                  }
+                }}
               />
             )}
             keyExtractor={(item:any) => item._id}
@@ -267,6 +282,30 @@ const ChatList = ({ navigation }:any) => {
           />
         )
       }
+      <BottomModal ref={modalRef}>
+        <View style={{ paddingTop: 10 }}>
+          <TouchableOpacity
+            onPress={() => {
+              deleteChannel(selectedChatRef.current);
+              modalRef.current?.close();
+            }}
+          >
+            <View style={styles.delete}>
+              <DeleteIcon
+                color={text.error}
+                size={18}
+              />
+              <Text
+                style={{ marginLeft: 5 }}
+                color={text.error}
+                size={16}
+              >
+                Delete
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </BottomModal>
     </SafeAreaView>
   )
 }
