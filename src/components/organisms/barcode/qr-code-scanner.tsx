@@ -69,7 +69,10 @@ export default function QrCodeScan(props: any) {
                         <Text style={styles.testTester}>Test Tester</Text>
                     </View>
                     <View style={styles.iconRowFiller}></View>
-                    <Text style={styles.scanQr}>SCAN{"\n"}QR</Text>
+                   <TouchableOpacity onPress={handleBarCodeScanned}>
+                        <Text style={styles.scanQr}>SCAN{"\n"}QR</Text>
+                   </TouchableOpacity>
+
                 </View>
             </View>
             <View style={{flex: 1}}>
