@@ -181,8 +181,7 @@ export default function ActivitiesPage() {
         }
         let newDate = ""
         for (let i = 0; i < isoStringSplit.length; i++) {
-
-           newDate += isoStringSplit[i] + (i != 2 ? "/": "")
+           newDate += isoStringSplit[i] + (i != isoStringSplit.length-1 ? "/": "")
         }
         date = newDate
         let d = new Date(date),
