@@ -146,7 +146,6 @@ const useFirebase = (user:any) => {
         seen: [user],
         sender: user,
       });
-    console.log('MESSAGEID', messageRef.id);
     await firestore()
       .collection('channels')
       .doc(channelId)

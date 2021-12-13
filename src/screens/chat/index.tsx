@@ -100,6 +100,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
+  },
+  bar: {
+    marginTop: 10,
+    height: 4,
+    width: 35,
+    backgroundColor: outline.default,
+    alignSelf: 'center',
+    borderRadius: 4,
   }
 });
 
@@ -282,8 +290,13 @@ const ChatList = ({ navigation }:any) => {
           />
         )
       }
-      <BottomModal ref={modalRef}>
-        <View style={{ paddingTop: 10 }}>
+      <BottomModal
+        ref={modalRef}
+        header={
+          <View style={styles.bar} />
+        }
+      >
+        <View>
           <TouchableOpacity
             onPress={() => {
               deleteChannel(selectedChatRef.current);
@@ -292,12 +305,12 @@ const ChatList = ({ navigation }:any) => {
           >
             <View style={styles.delete}>
               <DeleteIcon
-                color={text.error}
+                color={text.default}
                 size={18}
               />
               <Text
                 style={{ marginLeft: 5 }}
-                color={text.error}
+                color={text.default}
                 size={16}
               >
                 Delete
