@@ -71,9 +71,10 @@ const ChatItem: FC<Props> = ({
   message = {},
   onPress = () => {},
   participants = [],
+  ...otherProps
 }) => {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} {...otherProps}>
       <View style={[styles.container, styles.horizontal]}>
         {
           !isGroup ? (

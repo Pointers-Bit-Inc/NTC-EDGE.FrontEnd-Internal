@@ -35,6 +35,11 @@ const useFirebase = (user:any) => {
     const unsubscribe = firestore()
       .collection('channels')
       .where(
+        'deleted',
+        '==',
+        false
+      )
+      .where(
         'participantsId',
         'array-contains',
         user._id,
@@ -74,6 +79,8 @@ const useFirebase = (user:any) => {
         },
         isGroup,
         seen: [user],
+        author: user,
+        deleted: false,
       })
       .then(data => {
         data
@@ -89,6 +96,15 @@ const useFirebase = (user:any) => {
           .catch(err => callback(err));
       })
       .catch(err => callback(err));
+  }, [user]);
+
+  const deleteChannel = useCallback(async (channelId) => {
+    await firestore()
+      .collection('channels')
+      .doc(channelId)
+      .update({
+        deleted: true,
+      });
   }, [user]);
 
   const getChannel = useCallback(async (callback) => {
@@ -120,7 +136,7 @@ const useFirebase = (user:any) => {
   }, []);
 
   const sendMessage = useCallback(async (channelId, message) => {
-    await firestore()
+    const messageRef = await firestore()
       .collection('messages')
       .add({
         createdAt: firestore.FieldValue.serverTimestamp(),
@@ -136,6 +152,7 @@ const useFirebase = (user:any) => {
       .update({
         updatedAt: firestore.FieldValue.serverTimestamp(),
         lastMessage: {
+          messageId: messageRef.id,
           message: message,
           sender: user,
         },
@@ -143,29 +160,34 @@ const useFirebase = (user:any) => {
       });
   }, [user]);
 
-  const seenMessage = useCallback(async (channelId, messageId) => {
-    const batch = firestore().batch();
-    if (messageId) {
-      const messageRef = firestore().collection('messages').doc(messageId);
-      batch.update(messageRef, {
+  const seenMessage = useCallback(async (messageId) => {
+    await firestore()
+      .collection('messages')
+      .doc(messageId)
+      .update({
         seen: firestore.FieldValue.arrayUnion(user),
       });
-    }
-    const channelRef = firestore().collection('channels').doc(channelId);
-    batch.update(channelRef, {
-      seen: firestore.FieldValue.arrayUnion(user),
-    });
-    await batch.commit();
+  }, [user]);
+
+  const seenChannel = useCallback(async (channelId) => {
+    await firestore()
+      .collection('channels')
+      .doc(channelId)
+      .update({
+        seen: firestore.FieldValue.arrayUnion(user),
+      })
   }, [user]);
 
   return {
     channelSubscriber,
     messagesSubscriber,
     createChannel,
+    deleteChannel,
     getChannel,
     getMessages,
     sendMessage,
     seenMessage,
+    seenChannel,
   }
 }
 
