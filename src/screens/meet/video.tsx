@@ -1,26 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { View, StyleSheet, StatusBar, TouchableOpacity, Platform } from 'react-native'
 import { useSelector, RootStateOrAny } from 'react-redux'
-import { ArrowLeftIcon, ChatIcon, PeopleIcon, VideoIcon, MenuIcon, PhoneIcon } from '@components/atoms/icon'
-import {
-  RtcLocalView,
-  RtcRemoteView,
-  VideoRenderMode,
-  VideoRemoteState,
-} from 'react-native-agora';
+import { ArrowLeftIcon, ChatIcon, PeopleIcon } from '@components/atoms/icon'
 import Text from '@components/atoms/text'
-import ConnectingVideo from '@components/molecules/video/connecting'
-import VideoButtons from '@components/molecules/video/buttons'
 import VideoLayout from '@components/molecules/video/layout'
-import { useInitializeAgora } from 'src/hooks/useAgora';
-import { text } from 'src/styles/color';
 import { getChannelName } from 'src/utils/formatting'
-import { agoraTestConfig } from 'src/services/config'
-
-const AgoraLocalView =
-  Platform.OS === 'android'
-    ? RtcLocalView.TextureView
-    : RtcLocalView.SurfaceView;
 
 const styles = StyleSheet.create({
   container: {
@@ -43,12 +27,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 10,
   },
-  footer: {
-    width: '100%',
-    paddingTop: 10,
-    position: 'absolute',
-    bottom: 30,
-  },
   layout: {
     flex: 1,
     backgroundColor: 'grey',
@@ -63,67 +41,55 @@ const Dial = ({ navigation }) => {
   const { channelId, isGroup, channelName, otherParticipants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
-  const [isSpeakerEnabled, setIsSpeakerEnabled] = useState(true);
-  const [isMute, setIsMute] = useState(false);
-  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+
+  const header = () => (
+    <View style={styles.header}>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <ArrowLeftIcon
+          color='white'
+        />
+      </TouchableOpacity>
+      <View style={styles.channelName}>
+        <Text
+          color={'white'}
+          size={16}
+          numberOfLines={1}
+        >
+          {getChannelName({ otherParticipants, isGroup, channelName })}
+        </Text>
+        <Text
+          color='white'
+        >
+          01:26
+        </Text>
+      </View>
+      <TouchableOpacity>
+        <View style={styles.icon}>
+          <ChatIcon
+            size={24}
+            color='white'
+          />
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <View style={styles.icon}>
+          <PeopleIcon
+            size={32}
+            color='white'
+          />
+        </View>
+      </TouchableOpacity>
+    </View>
+  )
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
       <VideoLayout
-        header={
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <ArrowLeftIcon
-                color='white'
-              />
-            </TouchableOpacity>
-            <View style={styles.channelName}>
-              <Text
-                color={'white'}
-                size={16}
-                numberOfLines={1}
-              >
-                {getChannelName({ otherParticipants, isGroup, channelName })}
-              </Text>
-              <Text
-                color='white'
-              >
-                01:26
-              </Text>
-            </View>
-            <TouchableOpacity>
-              <View style={styles.icon}>
-                <ChatIcon
-                  size={26}
-                  color='white'
-                />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={styles.icon}>
-                <PeopleIcon
-                  size={32}
-                  color='white'
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        }
+        header={header()}
         participants={otherParticipants}
+        uid={Math.floor(Math.random() * 100000)}
       />
-      <View style={styles.footer}>
-        <VideoButtons
-          onSpeakerEnable={() => setIsSpeakerEnabled(!isSpeakerEnabled)}
-          onMute={() => setIsMute(!isMute)}
-          onVideoEnable={() => setIsVideoEnabled(!isVideoEnabled)}
-          onMore={() => {}}
-          onEndCall={() => navigation.goBack()}
-          isSpeakerEnabled={isSpeakerEnabled}
-          isMute={isMute}
-          isVideoEnabled={isVideoEnabled}
-        />
-      </View>
     </View>
   )
 }

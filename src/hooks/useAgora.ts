@@ -72,7 +72,6 @@ export const useInitializeAgora = ({
     rtcEngine.current?.addListener(
       'JoinChannelSuccess',
       (channel, uid, elapsed) => {
-        console.log('TOKEN', channel, uid, elapsed);
         setMyId(uid);
         setJoinSucceed(true);
       },
@@ -137,7 +136,6 @@ export const useInitializeAgora = ({
       initAgora();
     }
     return () => {
-      console.log('destroyAgoraEngine');
       destroyAgoraEngine();
     };
   }, [destroyAgoraEngine, initAgora, appId]);
