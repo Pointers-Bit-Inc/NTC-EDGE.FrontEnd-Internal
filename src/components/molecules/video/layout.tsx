@@ -199,6 +199,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             <View style={styles.videoList}>
               <FlatList
                 data={peerIds}
+                bounces={false}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 renderItem={({ item, index }) => (
