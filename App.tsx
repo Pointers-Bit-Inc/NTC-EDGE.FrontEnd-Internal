@@ -5,6 +5,10 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from 'src/services/store';
 import Navigation from 'src/navigations';
 
+if(__DEV__) {
+  import("./ReactotronConfig")
+}
+
 export default function App() {
   return (
     <Provider store={store}>

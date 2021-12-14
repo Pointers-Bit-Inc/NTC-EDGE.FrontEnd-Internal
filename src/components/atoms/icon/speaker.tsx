@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 interface Props {
   type?: string;
@@ -8,17 +8,17 @@ interface Props {
   [x: string]: any;
 }
 
-const PhoneIcon: FC<Props> = ({
+const SpeakerIcon: FC<Props> = ({
   type = '',
   size = 24,
   color = 'black',
   ...otherProps
 }) => {
 
-  if (type === 'hangup') {
+  if (type === 'speaker-off') {
     return (
-      <MaterialCommunityIcons
-        name="phone-hangup"
+      <Ionicons
+        name="md-volume-off"
         size={size}
         color={color}
         {...otherProps}
@@ -27,8 +27,8 @@ const PhoneIcon: FC<Props> = ({
   }
 
   return (
-    <Feather
-      name="phone"
+    <Ionicons
+      name="md-volume-medium-sharp"
       size={size}
       color={color}
       {...otherProps}
@@ -36,4 +36,4 @@ const PhoneIcon: FC<Props> = ({
   );
 }
 
-export default PhoneIcon
+export default SpeakerIcon

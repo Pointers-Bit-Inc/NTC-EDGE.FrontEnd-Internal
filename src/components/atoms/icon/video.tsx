@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Feather } from '@expo/vector-icons';
+import { Feather, FontAwesome5 } from '@expo/vector-icons';
 
 interface Props {
   type?: string;
@@ -9,10 +9,31 @@ interface Props {
 }
 
 const VideoIcon: FC<Props> = ({
+  type = '',
   size = 24,
   color = 'black',
   ...otherProps
 }) => {
+
+  if (type === 'video') {
+    return (
+      <FontAwesome5
+        name="video"
+        size={size}
+        color={color}
+        {...otherProps}
+      />
+    )
+  } else if (type === 'muted') {
+    return (
+      <FontAwesome5
+        name="video-slash"
+        size={size}
+        color={color}
+        {...otherProps}
+      />
+    )
+  }
 
   return (
     <Feather

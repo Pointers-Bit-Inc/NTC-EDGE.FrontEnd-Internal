@@ -18,6 +18,9 @@ import MicIcon from './mic';
 import ArrowDownIcon from './arrow-down';
 import FileIcon from './file';
 import DeleteIcon from './delete';
+import SpeakerIcon from './speaker';
+import ChatIcon from './chat';
+import PeopleIcon from './people';
 
 export {
   ExclamationIcon,
@@ -40,4 +43,7 @@ export {
   ArrowDownIcon,
   FileIcon,
   DeleteIcon,
+  SpeakerIcon,
+  ChatIcon,
+  PeopleIcon,
 };

@@ -23,6 +23,15 @@ const MenuIcon: FC<Props> = ({
         {...otherProps}
       />
     );
+  } else if (type === 'more-horizontal') {
+    return (
+      <Feather
+        name="more-horizontal"
+        size={size}
+        color={color}
+        {...otherProps}
+      />
+    );
   }
   return (
     <SimpleLineIcons

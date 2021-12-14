@@ -7,6 +7,7 @@ import {
   Dimensions,
   Platform,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
@@ -24,6 +25,7 @@ import {
   checkSeen,
 } from 'src/utils/formatting';
 import useFirebase from 'src/hooks/useFirebase';
+import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
 import ProfileImage from '@components/atoms/image/profile';
 import InputStyles from 'src/styles/input-style';
@@ -112,6 +114,7 @@ const styles = StyleSheet.create({
 });
 
 const ChatList = ({ navigation }:any) => {
+  useRequestCameraAndAudioPermission();
   const modalRef = useRef<BottomModalRef>(null);
   const selectedChatRef = useRef(null);
   const dispatch = useDispatch();
@@ -205,10 +208,11 @@ const ChatList = ({ navigation }:any) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle={'dark-content'} />
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <ProfileImage
-            size={40}
+            size={35}
             image={user.image}
             name={`${user.firstname} ${user.lastname}`}
           />
@@ -216,7 +220,7 @@ const ChatList = ({ navigation }:any) => {
             <Text
               color={text.default}
               weight={'600'}
-              size={24}
+              size={22}
             >
               Chat
             </Text>

@@ -52,6 +52,10 @@
         </dict>
       </dict>
     </dict>
+    <key>NSCameraUsageDescription</key>
+    <string>This will be used for video call and live streaming.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This will be used for video call and live streaming.</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>

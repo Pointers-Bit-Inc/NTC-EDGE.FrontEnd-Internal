@@ -362,6 +362,8 @@ PODS:
     - ExpoModulesCore
   - EXManifests (0.2.2):
     - EXJSONUtils
+  - EXPermissions (13.0.3):
+    - ExpoModulesCore
   - Expo (43.0.3):
     - ExpoModulesCore
   - expo-dev-client (0.6.3):
@@ -815,6 +817,7 @@ DEPENDENCIES:
   - EXJSONUtils (from `../node_modules/expo-json-utils/ios`)
   - EXKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - EXManifests (from `../node_modules/expo-manifests/ios`)
+  - EXPermissions (from `../node_modules/expo-permissions/ios`)
   - Expo (from `../node_modules/expo/ios`)
   - expo-dev-client (from `../node_modules/expo-dev-client`)
   - expo-dev-launcher (from `../node_modules/expo-dev-launcher`)
@@ -905,6 +908,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-keep-awake/ios"
   EXManifests:
     :path: "../node_modules/expo-manifests/ios"
+  EXPermissions:
+    :path: "../node_modules/expo-permissions/ios"
   Expo:
     :path: "../node_modules/expo/ios"
   expo-dev-client:
@@ -1020,6 +1025,7 @@ SPEC CHECKSUMS:
   EXJSONUtils: f515cf71710855d7ba5bfc6752af3b9a6f6aad01
   EXKeepAwake: 8aa32396a5972d26e75e538603aad0f032396503
   EXManifests: 50e42e01335df4e54109dee7be5a91bfd37347db
+  EXPermissions: 7696f4c16e89981f84c04d96327f7e1e592373c0
   Expo: 5316c3ecdc34eb0cad340d01dc8beec97c7e879e
   expo-dev-client: f7417249bbede98f5fa3f151ae49c46cabfce82b
   expo-dev-launcher: 3a2b9470ed2b4ae0c60615f911c347c50cfc2526
