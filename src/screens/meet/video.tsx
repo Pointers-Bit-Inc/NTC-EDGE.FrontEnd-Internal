@@ -36,8 +36,9 @@ const styles = StyleSheet.create({
   }
 })
 
-const Dial = ({ navigation }) => {
+const Dial = ({ navigation, route }) => {
   const user = useSelector((state:RootStateOrAny) => state.user);
+  const { options } = route.params;
   const { channelId, isGroup, channelName, otherParticipants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
@@ -87,6 +88,7 @@ const Dial = ({ navigation }) => {
       <StatusBar barStyle={'light-content'} />
       <VideoLayout
         header={header()}
+        options={options}
         participants={otherParticipants}
         uid={Math.floor(Math.random() * 100000)}
       />

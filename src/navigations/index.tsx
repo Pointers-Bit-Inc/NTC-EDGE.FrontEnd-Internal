@@ -2,6 +2,7 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ForgotPassword from './forgot-password';
+import Dial from '@screens/meet/video';
 import App from '@screens/app';
 import AppIntro from '@screens/intro';
 import Login from '@screens/login';
@@ -13,6 +14,7 @@ type RootStackParamList = {
   Login: undefined;
   ForgotPassword: undefined;
   HomeScreen: undefined;
+  Dial: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -31,6 +33,7 @@ const RootNavigator = () => {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
+        <Stack.Screen name="Dial" component={Dial} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -21,6 +21,8 @@ import DeleteIcon from './delete';
 import SpeakerIcon from './speaker';
 import ChatIcon from './chat';
 import PeopleIcon from './people';
+import CalendarIcon from './calendar';
+import ToggleIcon from './toggle';
 
 export {
   ExclamationIcon,
@@ -46,4 +48,6 @@ export {
   SpeakerIcon,
   ChatIcon,
   PeopleIcon,
+  CalendarIcon,
+  ToggleIcon,
 };

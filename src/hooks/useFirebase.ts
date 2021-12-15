@@ -144,6 +144,38 @@ const useFirebase = (user:any) => {
     }
   }, [user]);
 
+  const createMeeting = useCallback(async (participants, callback = () => {}) => {
+    try {
+      const participantsWithUser:any = _getParticipants(participants);
+      const isGroup = lodash.size(participantsWithUser) > 2;
+      const addRef = await addDoc(collection(firestore.current, "channels"), {
+        channelName: _getInitialChannelName(participantsWithUser),
+        participantsId: _getParticipantsId(participantsWithUser),
+        participants: participantsWithUser,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        lastMessage: {
+          message: `created a new ${isGroup ? 'group ' : ' '}chat`,
+          sender: user,
+        },
+        isGroup,
+        seen: [user],
+        author: user,
+        deleted: false,
+      });
+      const docRef = await getDoc(doc(firestore.current, "channels", addRef.id));
+      const data:any = docRef.data();
+      data._id = addRef.id;
+      data.channelId = addRef.id;
+      data.otherParticipants = getOtherParticipants(data.participants, user);
+      data.hasSeen = checkSeen(data.seen, user);
+      return callback(null, data);
+    } catch(e) {
+      console.log('ERROR', e);
+      return callback(e);
+    }
+  }, [user]);
+
   const deleteChannel = useCallback(async (channelId) => {
     await updateDoc(doc(firestore.current, "channels", channelId), {
       deleted: true,
@@ -217,6 +249,7 @@ const useFirebase = (user:any) => {
     channelSubscriber,
     messagesSubscriber,
     createChannel,
+    createMeeting,
     deleteChannel,
     getChannel,
     getMessages,

@@ -161,7 +161,15 @@ const ChatView = ({ navigation, route }:any) => {
             />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Dial')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Dial',
+          {
+            options: {
+              isMute: true,
+              isVideoEnable: true,
+            }
+          })
+        }>
           <View style={{ paddingHorizontal: 8 }}>
             <VideoIcon
               size={20}

@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { MaterialIcons } from '@expo/vector-icons'; 
+import { MaterialIcons, AntDesign } from '@expo/vector-icons'; 
 
 interface Props {
   type?: string;
@@ -9,10 +9,22 @@ interface Props {
 }
 
 const PeopleIcon: FC<Props> = ({
+  type = '',
   size = 24,
   color = 'black',
   ...otherProps
 }) => {
+
+  if (type === 'add') {
+    return (
+      <AntDesign
+        name="adduser"
+        size={size}
+        color={color}
+        {...otherProps}
+      />
+    );
+  }
 
   return (
     <MaterialIcons

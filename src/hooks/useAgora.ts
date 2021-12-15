@@ -43,17 +43,17 @@ export const useInitializeAgora = ({
   const [peerVideoState, setPeerVideState] = useState({});
   const [peerAudioState, setPeerAudioState] = useState({});
   const [myId, setMyId] = useState<number|null>(null);
-  const [isMute, setIsMute] = useState(false);
+  const [isMute, setIsMute] = useState(options?.isMute);
   const [isSpeakerEnable, setIsSpeakerEnable] = useState(true);
-  const [isVideoEnable, setIsVideoEnable] = useState(true);
+  const [isVideoEnable, setIsVideoEnable] = useState(options?.isVideoEnable);
   const rtcEngine = useRef<RtcEngine|null>(null);
 
   const initAgora = useCallback(async () => {
     rtcEngine.current = await RtcEngine.create(appId);
     await rtcEngine.current?.enableVideo();
     await rtcEngine.current?.enableAudio();
-    await rtcEngine.current?.muteLocalAudioStream(false);
-    await rtcEngine.current?.muteLocalVideoStream(false);
+    await rtcEngine.current?.muteLocalAudioStream(options?.isMute);
+    await rtcEngine.current?.muteLocalVideoStream(!options?.isVideoEnable);
     await rtcEngine.current?.setEnableSpeakerphone(true);
 
     rtcEngine.current?.addListener('UserJoined', (uid) => {

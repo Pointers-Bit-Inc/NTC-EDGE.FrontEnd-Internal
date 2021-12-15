@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
 
 interface Props {
   participants?: [],
+  options: any,
   header?: ReactNode,
   uid?: any,
 }
@@ -137,6 +138,7 @@ export type VideoLayoutRef =  {
 
 const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   participants = [],
+  options = {},
   header,
   uid,
 }, ref) => {
@@ -159,11 +161,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   } = useInitializeAgora({
     ...agoraTestConfig,
     uid: uid,
-    options: {
-      isMute: false,
-      isVideoEnabled: true,
-      isSpeakerPhoneEnabled: false,
-    },
+    options: options,
   })
 
   useEffect(() => {
