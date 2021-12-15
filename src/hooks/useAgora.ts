@@ -52,6 +52,9 @@ export const useInitializeAgora = ({
     rtcEngine.current = await RtcEngine.create(appId);
     await rtcEngine.current?.enableVideo();
     await rtcEngine.current?.enableAudio();
+    await rtcEngine.current?.muteLocalAudioStream(false);
+    await rtcEngine.current?.muteLocalVideoStream(false);
+    await rtcEngine.current?.setEnableSpeakerphone(true);
 
     rtcEngine.current?.addListener('UserJoined', (uid) => {
       console.log('USER JOINED');
