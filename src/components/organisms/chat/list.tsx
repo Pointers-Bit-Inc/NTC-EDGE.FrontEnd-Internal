@@ -71,7 +71,7 @@ const ChatList: FC<Props> = ({
         seen._id === item.sender._id ||
         seen._id === user._id
     );
-    const seenByEveryone = lodash.size(seenByOthers) === lodash.size(participants);
+    const seenByEveryone = lodash.size(item.seen) - 1 === lodash.size(participants);
     return (
       <View style={[styles.bubbleContainer, { alignItems: isSender ? 'flex-end' : 'flex-start' }]}>
         {

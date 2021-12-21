@@ -2,8 +2,9 @@ import React, { FC, useState } from 'react'
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
+import { CheckIcon } from '@components/atoms/icon';
 import { getChatTimeString } from 'src/utils/formatting'
-import { primaryColor, bubble, text } from '@styles/color'
+import { primaryColor, bubble, text, outline } from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
 
 const styles = StyleSheet.create({
@@ -41,6 +42,17 @@ const styles = StyleSheet.create({
         scaleX: -1
       }
     ]
+  },
+  check: {
+    borderRadius: 12,
+    width: 12,
+    height: 12,
+    borderColor: outline.primary,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 5,
+    paddingLeft: 0.5,
   }
 })
 
@@ -135,6 +147,19 @@ const ChatBubble:FC<Props> = ({
               </Text>
             </View>
           </View>
+          {
+            (!lodash.size(seenByOthers) && isSender) && (
+              <View
+                style={styles.check}
+              >
+                <CheckIcon
+                  type='check1'
+                  size={8}
+                  color={text.primary}
+                />
+              </View>
+            )
+          }
         </View>
       </TouchableOpacity>
       {
