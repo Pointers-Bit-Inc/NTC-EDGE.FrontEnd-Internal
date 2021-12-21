@@ -15,7 +15,7 @@ const List = () => {
     const sortedMessages = lodash.orderBy(messages, 'updatedAt', 'desc');
     return sortedMessages;
   });
-  const { channelId, isGroup, lastMessage } = useSelector(
+  const { channelId, isGroup, lastMessage, otherParticipants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
   const { seenChannel, seenMessage, messagesSubscriber } = useFirebase({
@@ -87,11 +87,12 @@ const List = () => {
     });
     return () => unsubscriber();
   }, [])
-
   return (
     <ChatList
       user={user}
       messages={messages}
+      participants={otherParticipants}
+      lastMessage={lastMessage}
       isGroup={isGroup}
       loading={loading}
       error={error}

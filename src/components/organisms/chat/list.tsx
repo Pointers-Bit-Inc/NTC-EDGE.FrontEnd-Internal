@@ -1,6 +1,8 @@
 import React, { FC } from 'react'
 import { View, FlatList, Dimensions, StyleSheet, ActivityIndicator } from 'react-native'
+import lodash from 'lodash';
 import Text from '@components/atoms/text';
+import { chatSameDate } from 'src/utils/formatting'; 
 import { ChatBubble, GroupBubble } from '@components/molecules/list-item';
 import { text } from 'src/styles/color';
 
@@ -34,6 +36,8 @@ interface Props {
   isGroup: boolean;
   loading: boolean;
   error: boolean;
+  participants?: any;
+  lastMessage?: any;
   [x: string]: any;
 }
 
@@ -43,6 +47,8 @@ const ChatList: FC<Props> = ({
   isGroup,
   loading,
   error,
+  participants = [],
+  lastMessage,
   ...otherProps
 }) => {
   const emptyComponent = () => (
@@ -56,8 +62,16 @@ const ChatList: FC<Props> = ({
     </View>
   )
 
-  const renderItem = ({ item }:any) => {
+  const renderItem = ({ item, index }:any) => {
     const isSender = item.sender._id === user._id;
+    const isSameDate = chatSameDate(messages[index + 1]?.createdAt?.seconds, item.createdAt?.seconds);
+    const seenByOthers = lodash.reject(
+      item.seen,
+      (seen:any) =>
+        seen._id === item.sender._id ||
+        seen._id === user._id
+    );
+    const seenByEveryone = lodash.size(seenByOthers) === lodash.size(participants);
     return (
       <View style={[styles.bubbleContainer, { alignItems: isSender ? 'flex-end' : 'flex-start' }]}>
         {
@@ -66,12 +80,22 @@ const ChatList: FC<Props> = ({
               message={item.message}
               isSender={isSender}
               sender={item.sender}
+              seenByOthers={seenByOthers}
+              seenByEveryone={seenByEveryone}
+              showSeen={lastMessage?.messageId === item._id}
+              showDate={!isSameDate}
+              createdAt={item.createdAt}
               maxWidth={width * 0.6}
             />
           ) : (
             <ChatBubble
               message={item.message}
               isSender={isSender}
+              createdAt={item.createdAt}
+              seenByOthers={seenByOthers}
+              seenByEveryone={seenByEveryone}
+              showSeen={lastMessage?.messageId === item._id}
+              showDate={!isSameDate}
               maxWidth={width * 0.6}
             />
           )
@@ -88,7 +112,6 @@ const ChatList: FC<Props> = ({
       </View>
     )
   }
-
   return (
     <FlatList
       showsVerticalScrollIndicator={false}

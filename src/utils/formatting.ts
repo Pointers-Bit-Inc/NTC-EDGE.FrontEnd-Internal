@@ -34,15 +34,44 @@ const getTimeString = (time:any) => {
     const diff = dateNow.diff(dateUpdate, 'days');
 
     if (diff === 0) {
-      return dayjs(new Date(time * 1000)).format('h:mm A');
+      return dateUpdate.format('h:mm A');
     } else if (diff === 1) {
       return 'Yesterday';
     } else if (diff <= 7) {
-      return dayjs(new Date(time * 1000)).format('dddd');
+      return dateUpdate.format('dddd');
     }
-    return dayjs(new Date(time * 1000)).format('DD/MM/YY');
+    return dateUpdate.format('DD/MM/YY');
   }
   return '';
+}
+
+const getChatTimeString = (time:any) => {
+  if (time) {
+    const dateNow = dayjs();
+    const dateUpdate = dayjs(new Date(time * 1000));
+    const diff = dateNow.diff(dateUpdate, 'days');
+    const yearNow = dateNow.format('YYYY');
+    const yearUpdate = dateUpdate.format('YYYY');
+
+    if (diff === 0) {
+      return dateUpdate.format('h:mm A');
+    } else if (diff === 1) {
+      return 'Yesterday';
+    } else if (diff <= 7) {
+      return dateUpdate.format('dddd');
+    } else if (yearNow === yearUpdate) {
+      return dateUpdate.format('MMM DD, h:mm A');
+    }
+    return dateUpdate.format('DD/MM/YY');
+  }
+  return '';
+}
+
+const chatSameDate = (time1:number, time2:number) => {
+  const time1format = dayjs(time1 && new Date(time1 * 1000)).format('DD/MM/YY');
+  const time2format = dayjs(time2 && new Date(time2 * 1000)).format('DD/MM/YY');
+  console.log(time1format, time2format);
+  return time1format === time2format;
 }
 
 const checkSeen = (seen = [], user:any) => {
@@ -66,6 +95,8 @@ export {
   getChannelName,
   getChannelImage,
   getTimeString,
+  getChatTimeString,
+  chatSameDate,
   checkSeen,
   getOtherParticipants,
 }

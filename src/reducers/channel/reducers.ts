@@ -33,7 +33,8 @@ export default function basket(state = initialState, action:any) {
     case UPDATE_CHANNEL: {
       const updatedList = lodash.reject(state.channelList, ch => ch._id === action.payload._id);
       updatedList.push(action.payload);
-      return state.setIn(['channelList'], updatedList);
+      return state.setIn(['channelList'], updatedList)
+      .setIn(['selectedChannel'], action.payload);
     }
     case REMOVE_CHANNEL: {
       const updatedList = lodash.reject(state.channelList, ch => ch._id === action.payload);
