@@ -245,17 +245,39 @@ const useFirebase = (user:any) => {
     });
   }, [user]);
 
-  const unSendEveryone = useCallback(async (messageId) => {
-    await updateDoc(doc(firestore.current, "messages", messageId), {
+  const unSendEveryone = useCallback(async (messageId, channelId) => {
+    const batch = writeBatch(firestore.current);
+    const messageRef = doc(firestore.current, "messages", messageId);
+    const channelRef = doc(firestore.current, "channels", channelId);
+    batch.update(messageRef, {
+      updatedAt: firestore.FieldValue.serverTimestamp(),
       deleted: true,
       message: '',
     });
+    batch.update(channelRef, {
+      updatedAt: firestore.FieldValue.serverTimestamp(),
+      lastMessage: {
+        message: `${user.firstname} deleted a message`,
+        sender: user,
+      },
+      seen: [user],
+    });
+    batch.commit();
   }, [user]);
 
   const unSendForYou = useCallback(async (messageId) => {
     await updateDoc(doc(firestore.current, "messages", messageId), {
       unSend: true,
     });
+  }, [user]);
+
+  const leaveChannel = useCallback(async (channelId, participants) => {
+    const filterParticipants = lodash.reject(participants, p => p._id === user._id);
+    await updateDoc(doc(firestore.current, "channels", channelId), {
+        updatedAt: firestore.FieldValue.serverTimestamp(),
+        participantsId: _getParticipantsId(filterParticipants),
+        participants: filterParticipants,
+      });
   }, [user]);
 
   return {
@@ -272,7 +294,8 @@ const useFirebase = (user:any) => {
     seenMessage,
     seenChannel,
     unSendEveryone,
-    unSendForYou
+    unSendForYou,
+    leaveChannel
   }
 }
 

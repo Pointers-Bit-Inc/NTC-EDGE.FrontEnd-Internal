@@ -8,15 +8,18 @@ import {
   Platform,
   ActivityIndicator,
   StatusBar,
+  Animated,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
 import { setSelectedChannel, addChannel, updateChannel, removeChannel } from 'src/reducers/channel/actions';
 import { SearchField } from '@components/molecules/form-fields';
 import { ChatItem } from '@components/molecules/list-item';
 import { VideoIcon, WriteIcon, DeleteIcon } from '@components/atoms/icon';
-import { primaryColor, outline, text } from '@styles/color';
+import { primaryColor, outline, text, button } from '@styles/color';
 import {
   getChannelName,
   getChannelImage,
@@ -110,6 +113,30 @@ const styles = StyleSheet.create({
     backgroundColor: outline.default,
     alignSelf: 'center',
     borderRadius: 4,
+  },
+  cancelText: {
+    fontSize: 16,
+    color: text.primary,
+  },
+  confirmText: {
+    fontSize: 16,
+    color: text.error,
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1F2022'
+  },
+  message: {
+    textAlign: 'center',
+    fontSize: 14,
+    marginHorizontal: 15,
+    marginBottom: 15,
+  },
+  content: {
+    borderBottomColor: outline.default,
+    borderBottomWidth: 1,
   }
 });
 
@@ -129,6 +156,7 @@ const ChatList = ({ navigation }:any) => {
     initializeFirebaseApp,
     deleteFirebaseApp,
     deleteChannel,
+    leaveChannel,
   } = useFirebase({
     _id: user._id,
     name: user.name,
@@ -139,6 +167,8 @@ const ChatList = ({ navigation }:any) => {
   });
   const [searchText, setSearchText] = useState('');
   const [searchValue, setSearchValue] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [selectedItem, setSelectedItem]:any = useState({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -206,6 +236,42 @@ const ChatList = ({ navigation }:any) => {
     </View>
   )
 
+  const renderRightActions = (progress, dragX, item) => {
+    const trans = dragX.interpolate({
+      inputRange: [-50, 100],
+      outputRange: [10, 100],
+    });
+    return (
+      <TouchableOpacity onPress={() => {
+        setSelectedItem(item);
+        setShowAlert(true)
+      }}>
+        <Animated.View
+          style={{
+            paddingHorizontal: 15,
+            marginLeft: 10,
+            backgroundColor: button.error,
+            flex: 1,
+            transform: [{ translateX: trans }],
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <DeleteIcon
+              style={{ marginBottom: 5 }}
+              color={'white'}
+              size={18}
+            />
+            <Text
+              color='white'
+              size={12}
+            >
+              Delete
+            </Text>
+        </Animated.View>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'dark-content'} />
@@ -260,28 +326,32 @@ const ChatList = ({ navigation }:any) => {
           <FlatList
             data={channelList}
             renderItem={({ item }:any) => (
-              <ChatItem
-                image={getChannelImage(item)}
-                imageSize={50}
-                textSize={18}
-                name={getChannelName(item)}
-                user={user}
-                participants={item.otherParticipants}
-                message={item.lastMessage}
-                isGroup={item.isGroup}
-                seen={item.hasSeen}
-                time={getTimeString(item?.updatedAt?.seconds)}
-                onPress={() => {
-                  dispatch(setSelectedChannel(item));
-                  navigation.navigate('ViewChat', item)
-                }}
-                onLongPress={() => {
-                  if (user._id === item.author?._id) {
-                    selectedChatRef.current = item._id;
-                    modalRef.current?.open();
-                  }
-                }}
-              />
+              <Swipeable
+                renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, item)}
+              >
+                <ChatItem
+                  image={getChannelImage(item)}
+                  imageSize={50}
+                  textSize={18}
+                  name={getChannelName(item)}
+                  user={user}
+                  participants={item.otherParticipants}
+                  message={item.lastMessage}
+                  isGroup={item.isGroup}
+                  seen={item.hasSeen}
+                  time={getTimeString(item?.updatedAt?.seconds)}
+                  onPress={() => {
+                    dispatch(setSelectedChannel(item));
+                    navigation.navigate('ViewChat', item)
+                  }}
+                  onLongPress={() => {
+                    if (user._id === item.author?._id) {
+                      selectedChatRef.current = item._id;
+                      modalRef.current?.open();
+                    }
+                  }}
+                />
+              </Swipeable>
             )}
             keyExtractor={(item:any) => item._id}
             ListEmptyComponent={emptyComponent}
@@ -317,6 +387,34 @@ const ChatList = ({ navigation }:any) => {
           </TouchableOpacity>
         </View>
       </BottomModal>
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        contentContainerStyle={{ borderRadius: 15 }}
+        titleStyle={styles.title}
+        message={'Are you sure you want to delete this conversation?'}
+        messageStyle={styles.title}
+        contentStyle={styles.content}
+        closeOnTouchOutside={false}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        cancelButtonColor={'white'}
+        confirmButtonColor={'white'}
+        cancelButtonTextStyle={styles.cancelText}
+        confirmButtonTextStyle={styles.confirmText}
+        actionContainerStyle={{ justifyContent: 'space-around' }}
+        cancelText="Cancel"
+        confirmText="Delete"
+        onCancelPressed={() => setShowAlert(false)}
+        onConfirmPressed={() => {
+          setShowAlert(false);
+          setTimeout(() => 
+            leaveChannel(selectedItem._id, selectedItem.participants),
+            500
+          );
+        }} 
+      />
     </SafeAreaView>
   )
 }

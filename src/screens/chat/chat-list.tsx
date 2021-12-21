@@ -249,10 +249,10 @@ const List = () => {
 
   const unSendMessageEveryone = useCallback(
     () => {
-      unSendEveryone(message._id);
-      setShowAlert(false);
+      unSendEveryone(message._id, channelId);
+      setTimeout(() => setShowAlert(false), 500);
     },
-    [message]
+    [message, channelId]
   );
 
   const unSendMessageForYou = useCallback(

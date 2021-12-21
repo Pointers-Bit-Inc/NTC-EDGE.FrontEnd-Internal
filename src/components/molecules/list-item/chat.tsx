@@ -104,15 +104,9 @@ const ChatItem: FC<Props> = ({
                 {name}
               </Text>
             </View>
-            <Text
-              color={'#9FBCF2'}
-              size={12}
-            >
-              {time}
-            </Text>
           </View>
           <View style={styles.horizontal}>
-            <View style={{ flex: 1, paddingRight: 5 }}>
+            <View style={[styles.horizontal, { flex: 1, paddingRight: 60 }]}>
               <Text
                 weight={!seen ? 'bold' : 'normal'}
                 color={text.default}
@@ -121,14 +115,20 @@ const ChatItem: FC<Props> = ({
               >
                 {message.message}
               </Text>
+              <Text
+                color={text.default}
+                size={12}
+              >
+                {` · ${time}`}
+              </Text>
             </View>
-            {
-              !seen && (
-                <View style={styles.seenIndicator} />
-              )
-            }
           </View>
         </View>
+        {
+          !seen && (
+            <View style={styles.seenIndicator} />
+          )
+        }
       </View>
     </TouchableOpacity>
     

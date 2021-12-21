@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import { checkSeen, getOtherParticipants } from 'src/utils/formatting';
 import lodash from 'lodash';
+import { writeBatch } from 'firebase/firestore';
 
 const useFirebase = (user:any) => {
   const _getParticipants = (participants:any) => ([
@@ -216,14 +217,24 @@ const useFirebase = (user:any) => {
       })
   }, [user]);
 
-  const unSendEveryone = useCallback(async (messageId) => {
-    await firestore()
-      .collection('messages')
-      .doc(messageId)
-      .update({
-        deleted: true,
-        message: '',
-      });
+  const unSendEveryone = useCallback(async (messageId, channelId) => {
+    const batch = firestore().batch();
+    const messageRef = firestore().collection('messages').doc(messageId);
+    const channelRef = firestore().collection('channels').doc(channelId);
+    batch.update(messageRef, {
+      updatedAt: firestore.FieldValue.serverTimestamp(),
+      deleted: true,
+      message: '',
+    })
+    batch.update(channelRef, {
+      updatedAt: firestore.FieldValue.serverTimestamp(),
+      lastMessage: {
+        message: `${user.firstname} deleted a message`,
+        sender: user,
+      },
+      seen: [user],
+    })
+    batch.commit();
   }, [user]);
 
   const unSendForYou = useCallback(async (messageId) => {
@@ -232,6 +243,18 @@ const useFirebase = (user:any) => {
       .doc(messageId)
       .update({
         unSend: true,
+      });
+  }, [user]);
+
+  const leaveChannel = useCallback(async (channelId, participants) => {
+    const filterParticipants = lodash.reject(participants, p => p._id === user._id);
+    await firestore()
+      .collection('channels')
+      .doc(channelId)
+      .update({
+        updatedAt: firestore.FieldValue.serverTimestamp(),
+        participantsId: _getParticipantsId(filterParticipants),
+        participants: filterParticipants,
       });
   }, [user]);
 
@@ -247,7 +270,8 @@ const useFirebase = (user:any) => {
     seenMessage,
     seenChannel,
     unSendEveryone,
-    unSendForYou
+    unSendForYou,
+    leaveChannel
   }
 }
 
