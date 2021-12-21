@@ -60,7 +60,7 @@ const useFirebase = (user:any) => {
       .orderBy('createdAt', 'desc')
       .onSnapshot(callback);
     return unsubscribe;
-  }, []);
+  }, [user]);
 
   const createChannel = useCallback(async (participants, callback = () => {}) => {
     const participantsWithUser:any = _getParticipants(participants);
@@ -181,6 +181,8 @@ const useFirebase = (user:any) => {
         channelId,
         seen: [user],
         sender: user,
+        deleted: false,
+        unSend: false,
       });
     await firestore()
       .collection('channels')
@@ -214,6 +216,25 @@ const useFirebase = (user:any) => {
       })
   }, [user]);
 
+  const unSendEveryone = useCallback(async (messageId) => {
+    await firestore()
+      .collection('messages')
+      .doc(messageId)
+      .update({
+        deleted: true,
+        message: '',
+      });
+  }, [user]);
+
+  const unSendForYou = useCallback(async (messageId) => {
+    await firestore()
+      .collection('messages')
+      .doc(messageId)
+      .update({
+        unSend: true,
+      });
+  }, [user]);
+
   return {
     channelSubscriber,
     messagesSubscriber,
@@ -225,6 +246,8 @@ const useFirebase = (user:any) => {
     sendMessage,
     seenMessage,
     seenChannel,
+    unSendEveryone,
+    unSendForYou
   }
 }
 

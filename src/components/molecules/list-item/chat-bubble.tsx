@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
-import { CheckIcon } from '@components/atoms/icon'
+import { CheckIcon, DeleteIcon } from '@components/atoms/icon'
 import { getChatTimeString } from 'src/utils/formatting'
 import { primaryColor, bubble, text, outline } from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
@@ -10,9 +10,11 @@ import ProfileImage from '@components/atoms/image/profile'
 const styles = StyleSheet.create({
   container: {
     backgroundColor: primaryColor,
-    borderRadius: 8,
-    padding: 5,
+    borderRadius: 15,
+    padding: 8,
     paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   seenContainer: {
     paddingTop: 5,
@@ -22,6 +24,7 @@ const styles = StyleSheet.create({
   seenTimeContainer: {
     alignSelf: 'center',
     paddingHorizontal: 10,
+    marginBottom: 5,
   },
   flipX: {
     transform: [
@@ -46,6 +49,7 @@ const styles = StyleSheet.create({
 interface Props {
   message?: string;
   isSender?: boolean;
+  sender?: any;
   maxWidth?: any;
   style?: any;
   createdAt?: any;
@@ -53,12 +57,16 @@ interface Props {
   seenByEveryone?: boolean;
   showSeen?: boolean;
   showDate?: boolean;
+  onLongPress?: any;
+  deleted?: boolean;
+  unSend?: boolean;
   [x: string]: any;
 }
 
 const ChatBubble:FC<Props> = ({
   message,
   isSender = false,
+  sender = {},
   maxWidth = '60%',
   style,
   createdAt,
@@ -66,6 +74,10 @@ const ChatBubble:FC<Props> = ({
   seenByEveryone = false,
   showSeen = false,
   showDate = false,
+  onLongPress,
+  deleted = false,
+  unSend = false,
+  ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
   const getSeen = () => {
@@ -91,7 +103,11 @@ const ChatBubble:FC<Props> = ({
           </View>
         )
       }
-      <TouchableOpacity onPress={() => setShowDetails(!showDetails)}>
+      <TouchableOpacity
+        onPress={() => setShowDetails(!showDetails)}
+        onLongPress={(isSender && !(deleted || unSend)) ? onLongPress : null}
+        {...otherProps}
+      >
         <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
           <View style={[
             styles.container,
@@ -99,14 +115,35 @@ const ChatBubble:FC<Props> = ({
               backgroundColor: isSender ? bubble.primary : bubble.secondary,
               maxWidth,
             },
+            (deleted || (unSend && isSender)) && {
+              backgroundColor: '#E5E5E5'
+            },
             style
           ]}>
-            <Text
-              size={14}
-              color={isSender ? 'white' : text.default}
-            >
-              {message}
-            </Text>
+            {
+              (deleted || (unSend && isSender)) ? (
+                <>
+                  <DeleteIcon
+                    size={18}
+                    color={'#979797'}
+                  />
+                  <Text
+                    style={{ marginLeft: 5 }}
+                    size={14}
+                    color={'#979797'}
+                  >
+                    {`${isSender ? 'You' : sender.firstname } deleted a message`}
+                  </Text>
+                </>
+              ) : (
+                <Text
+                  size={14}
+                  color={isSender ? 'white' : text.default}
+                >
+                  {message}
+                </Text>
+              )
+            }
           </View>
           {
             (!lodash.size(seenByOthers) && isSender) && (

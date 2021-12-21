@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { MaterialIcons } from '@expo/vector-icons'; 
+import { AntDesign } from '@expo/vector-icons'; 
 
 interface Props {
   type?: string;
@@ -15,7 +15,7 @@ const WriteIcon: FC<Props> = ({
 }) => {
 
   return (
-    <MaterialIcons
+    <AntDesign
       name="delete"
       size={size}
       color={color}

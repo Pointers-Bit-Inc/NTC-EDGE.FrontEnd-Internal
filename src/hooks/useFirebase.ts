@@ -220,6 +220,8 @@ const useFirebase = (user:any) => {
       channelId,
       seen: [user],
       sender: user,
+      deleted: false,
+      unSend: false,
     });
     await updateDoc(doc(firestore.current, "channels", channelId), {
       updatedAt: serverTimestamp(),
@@ -243,6 +245,19 @@ const useFirebase = (user:any) => {
     });
   }, [user]);
 
+  const unSendEveryone = useCallback(async (messageId) => {
+    await updateDoc(doc(firestore.current, "messages", messageId), {
+      deleted: true,
+      message: '',
+    });
+  }, [user]);
+
+  const unSendForYou = useCallback(async (messageId) => {
+    await updateDoc(doc(firestore.current, "messages", messageId), {
+      unSend: true,
+    });
+  }, [user]);
+
   return {
     initializeFirebaseApp,
     deleteFirebaseApp,
@@ -256,6 +271,8 @@ const useFirebase = (user:any) => {
     sendMessage,
     seenMessage,
     seenChannel,
+    unSendEveryone,
+    unSendForYou
   }
 }
 

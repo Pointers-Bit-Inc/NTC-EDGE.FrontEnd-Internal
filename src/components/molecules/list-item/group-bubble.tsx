@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react'
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
-import { CheckIcon } from '@components/atoms/icon';
+import { CheckIcon, DeleteIcon } from '@components/atoms/icon';
 import { getChatTimeString } from 'src/utils/formatting'
 import { primaryColor, bubble, text, outline } from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
@@ -14,10 +14,12 @@ const styles = StyleSheet.create({
   },
   bubble: {
     backgroundColor: primaryColor,
-    borderRadius: 8,
-    padding: 5,
+    borderRadius: 15,
+    padding: 8,
     paddingHorizontal: 10,
-    marginTop: 2
+    marginTop: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   image: {
     width: 25,
@@ -35,6 +37,7 @@ const styles = StyleSheet.create({
   seenTimeContainer: {
     alignSelf: 'center',
     paddingHorizontal: 10,
+    marginBottom: 5,
   },
   flipX: {
     transform: [
@@ -67,6 +70,9 @@ interface Props {
   seenByEveryone?: boolean;
   showSeen?: boolean;
   showDate?: boolean;
+  onLongPress?: any;
+  deleted?: boolean;
+  unSend?: boolean;
   [x: string]: any;
 }
 
@@ -81,6 +87,9 @@ const ChatBubble:FC<Props> = ({
   seenByEveryone = false,
   showSeen = false,
   showDate = false,
+  onLongPress,
+  deleted = false,
+  unSend = false,
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -109,6 +118,7 @@ const ChatBubble:FC<Props> = ({
       }
       <TouchableOpacity
         onPress={() => setShowDetails(!showDetails)}
+        onLongPress={(isSender && !(deleted || unSend)) ? onLongPress : null}
         {...otherProps}
       >
         <View style={[styles.container, { maxWidth }, style]}>
@@ -137,14 +147,39 @@ const ChatBubble:FC<Props> = ({
               styles.bubble,
               {
                 backgroundColor: isSender ? bubble.primary : bubble.secondary
-              }
+              },
+              (deleted || (unSend && isSender)) && {
+                backgroundColor: '#E5E5E5'
+              },
             ]}>
-              <Text
-                size={14}
-                color={isSender ? 'white' : text.default}
-              >
-                {message}
-              </Text>
+              {
+                (deleted || (unSend && isSender)) ? (
+                  <>
+                    <DeleteIcon
+                      size={18}
+                      color={'#979797'}
+                    />
+                    <Text
+                      style={{ marginLeft: 5 }}
+                      size={14}
+                      color={'#979797'}
+                    >
+                      {
+                      (unSend && isSender) ?
+                      'Unsent for you'
+                      : `${isSender ? 'You' : sender.firstname } deleted a message`
+                      }
+                    </Text>
+                  </>
+                ) : (
+                  <Text
+                    size={14}
+                    color={isSender ? 'white' : text.default}
+                  >
+                    {message}
+                  </Text>
+                )
+              }
             </View>
           </View>
           {

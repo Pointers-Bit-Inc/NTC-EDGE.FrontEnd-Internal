@@ -38,6 +38,7 @@ interface Props {
   error: boolean;
   participants?: any;
   lastMessage?: any;
+  showOption?: any;
   [x: string]: any;
 }
 
@@ -49,6 +50,7 @@ const ChatList: FC<Props> = ({
   error,
   participants = [],
   lastMessage,
+  showOption = () => {},
   ...otherProps
 }) => {
   const emptyComponent = () => (
@@ -86,17 +88,24 @@ const ChatList: FC<Props> = ({
               showDate={!isSameDate}
               createdAt={item.createdAt}
               maxWidth={width * 0.6}
+              onLongPress={() => showOption(item)}
+              deleted={item.deleted}
+              unSend={item.unSend}
             />
           ) : (
             <ChatBubble
               message={item.message}
               isSender={isSender}
+              sender={item.sender}
               createdAt={item.createdAt}
               seenByOthers={seenByOthers}
               seenByEveryone={seenByEveryone}
               showSeen={lastMessage?.messageId === item._id}
               showDate={!isSameDate}
               maxWidth={width * 0.6}
+              onLongPress={() => showOption(item)}
+              deleted={item.deleted}
+              unSend={item.unSend}
             />
           )
         }

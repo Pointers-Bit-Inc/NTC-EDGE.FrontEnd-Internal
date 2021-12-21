@@ -225,12 +225,6 @@ const ChatList = ({ navigation }:any) => {
               Chat
             </Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('NewChat')}>
-            <VideoIcon
-              size={24}
-              color={primaryColor}
-            />
-          </TouchableOpacity>
           <View style={{ width: 25 }} />
           <TouchableOpacity onPress={() => navigation.navigate('NewChat')}>
             <WriteIcon

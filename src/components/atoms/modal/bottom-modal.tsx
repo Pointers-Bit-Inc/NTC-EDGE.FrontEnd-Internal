@@ -39,7 +39,7 @@ export type BottomModalRef =  {
 }
 
 const BottomModal: ForwardRefRenderFunction<BottomModalRef, Props> = (
-  { children, header, footer, contentStyle = {}, avoidKeyboard = true },
+  { children, header, footer, contentStyle = {}, avoidKeyboard = true, ...otherProps },
   ref,
 ) => {
   const modalRef = useRef(null);
@@ -56,7 +56,9 @@ const BottomModal: ForwardRefRenderFunction<BottomModalRef, Props> = (
       avoidKeyboard={avoidKeyboard}
       onBackdropPress={() => setShowModal(false)}
       onSwipeComplete={() => setShowModal(false)}
-      style={styles.view}>
+      style={styles.view}
+      {...otherProps}
+    >
       <View style={styles.container}>
         {header}
         <View style={contentStyle}>{children}</View>
