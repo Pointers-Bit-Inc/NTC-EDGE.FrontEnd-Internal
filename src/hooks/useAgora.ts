@@ -134,17 +134,18 @@ export const useInitializeAgora = ({
     await rtcEngine.current?.destroy();
   }, []);
 
-  useEffect(() => {
-    if (appId) {
-      initAgora();
-    }
-    return () => {
-      destroyAgoraEngine();
-    };
-  }, [destroyAgoraEngine, initAgora, appId]);
+  // useEffect(() => {
+  //   if (appId) {
+  //     initAgora();
+  //   }
+  //   return () => {
+  //     destroyAgoraEngine();
+  //   };
+  // }, [destroyAgoraEngine, initAgora, appId]);
 
   return {
     isInit,
+    initAgora,
     destroyAgoraEngine,
     channelName,
     isMute,

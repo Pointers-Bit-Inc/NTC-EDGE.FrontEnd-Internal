@@ -120,10 +120,12 @@ const styles = StyleSheet.create({
 })
 
 interface Props {
-  participants?: [],
-  options: any,
-  header?: ReactNode,
-  uid?: any,
+  loading?: boolean;
+  participants?: [];
+  user: any;
+  options: any;
+  header?: ReactNode;
+  agora?: any;
 }
 
 export type VideoLayoutRef =  {
@@ -137,13 +139,17 @@ export type VideoLayoutRef =  {
 }
 
 const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
+  loading = false,
   participants = [],
+  user = {},
   options = {},
   header,
-  uid,
+  agora = {},
 }, ref) => {
   const navigation = useNavigation();
   const {
+    initAgora,
+    destroyAgoraEngine,
     joinChannel,
     isInit,
     myId,
@@ -159,10 +165,16 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     toggleIsSpeakerEnable,
     toggleIsVideoEnable,
   } = useInitializeAgora({
-    ...agoraTestConfig,
-    uid: uid,
+    ...agora,
     options: options,
   })
+
+  useEffect(() => {
+    if (!loading && agora.appId) {
+      initAgora();
+      return () => destroyAgoraEngine();
+    }
+  }, [loading, agora.appId]);
 
   useEffect(() => {
     if (isInit) {

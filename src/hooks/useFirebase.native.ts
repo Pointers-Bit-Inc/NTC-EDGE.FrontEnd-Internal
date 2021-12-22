@@ -63,6 +63,19 @@ const useFirebase = (user:any) => {
     return unsubscribe;
   }, [user]);
 
+  const meetingSubscriber = useCallback((channelId:string, callback = () => {}) => {
+    const unsubscribe = firestore()
+      .collection('messages')
+      .where(
+        'channelId',
+        '==',
+        channelId,
+      )
+      .orderBy('createdAt', 'desc')
+      .onSnapshot(callback);
+    return unsubscribe;
+  }, [user]);
+
   const createChannel = useCallback(async (participants, callback = () => {}) => {
     const participantsWithUser:any = _getParticipants(participants);
     const isGroup = lodash.size(participantsWithUser) > 2;
@@ -122,12 +135,22 @@ const useFirebase = (user:any) => {
       .then(data => {
         data
           .get()
-          .then((res) => {
+          .then(async (res) => {
             const result:any = res.data();
             result._id = res.id;
             result.channelId = res.id;
             result.otherParticipants = getOtherParticipants(result.participants, user);
             result.hasSeen = checkSeen(result.seen, user);
+            await firestore()
+              .collection('meetings')
+              .add({
+                channelId: result._id,
+                createdAt: firestore.FieldValue.serverTimestamp(),
+                updatedAt: firestore.FieldValue.serverTimestamp(),
+                endedAt: null,
+                ended: false,
+                joinedMembers: [],
+              });
             return callback(null, result);
           })
           .catch(err => callback(err));
@@ -271,6 +294,15 @@ const useFirebase = (user:any) => {
       });
   }, [user]);
 
+  const joinMeeting = useCallback(async (meetingId, uid) => {
+    await firestore()
+      .collection('meetings')
+      .doc(meetingId)
+      .update({
+        joinedMembers: firestore.FieldValue.arrayUnion({ ...user, uid })
+      })
+  }, [user]);
+
   return {
     channelSubscriber,
     messagesSubscriber,
@@ -285,7 +317,9 @@ const useFirebase = (user:any) => {
     unSendEveryone,
     unSendForYou,
     leaveChannel,
-    editMessage
+    editMessage,
+    joinMeeting,
+    meetingSubscriber
   }
 }
 

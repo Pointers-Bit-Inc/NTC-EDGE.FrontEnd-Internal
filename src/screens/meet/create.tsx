@@ -96,6 +96,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
       if (!error) {
         dispatch(setSelectedChannel(data));
         navigation.replace('VideoCall', {
+          isHost: true,
           options: {
             isMute: !micOn,
             isVideoEnable: videoOn,
@@ -137,7 +138,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
           <View style={styles.section}>
             <Text
               color='#687287'
-              size={22}
+              size={18}
             >
               Video {videoOn ? 'On' : 'Off'}
             </Text>
@@ -150,14 +151,14 @@ const CreateMeeting = ({ navigation, route }:any) => {
                     styles.toggleActive :
                     styles.toggleDefault
                 }
-                size={38}
+                size={28}
               />
             </TouchableOpacity>
           </View>
           <View style={styles.section}>
             <Text
               color='#687287'
-              size={22}
+              size={18}
             >
               Mic {micOn ? 'On' : 'Off'}
             </Text>
@@ -170,7 +171,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
                     styles.toggleActive :
                     styles.toggleDefault
                 }
-                size={38}
+                size={28}
               />
             </TouchableOpacity>
           </View>

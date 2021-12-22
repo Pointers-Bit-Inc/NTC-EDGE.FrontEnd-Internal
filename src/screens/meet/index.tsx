@@ -134,7 +134,7 @@ const Meet = ({ navigation }) => {
                 <Text
                   color={text.primary}
                   weight='600'
-                  size={18}
+                  size={16}
                 >
                   Create Meeting
                 </Text>
@@ -151,7 +151,7 @@ const Meet = ({ navigation }) => {
                 <Text
                   color={text.primary}
                   weight='600'
-                  size={18}
+                  size={16}
                 >
                   Schedule Meeting
                 </Text>
@@ -168,7 +168,7 @@ const Meet = ({ navigation }) => {
                 <Text
                   color={text.primary}
                   weight='600'
-                  size={18}
+                  size={16}
                 >
                   Join Meeting
                 </Text>

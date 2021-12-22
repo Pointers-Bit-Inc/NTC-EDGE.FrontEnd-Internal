@@ -199,6 +199,7 @@ const ChatView = ({ navigation, route }:any) => {
         <TouchableOpacity
           onPress={() => navigation.navigate('Dial',
           {
+            isHost: false,
             options: {
               isMute: true,
               isVideoEnable: true,

@@ -20,7 +20,8 @@ import {
   serverTimestamp,
   orderBy,
   arrayUnion,
-  writeBatch
+  writeBatch,
+  limit
 } from 'firebase/firestore';
 import { checkSeen, getOtherParticipants } from 'src/utils/formatting';
 import lodash from 'lodash';
@@ -100,6 +101,20 @@ const useFirebase = (user:any) => {
 
   const messagesSubscriber = useCallback((channelId:string, callback = () => {}) => {
     const q = query(
+      collection(firestore.current, "meetings"),
+      where(
+        'channelId',
+        '==',
+        channelId,
+      ),
+      orderBy('createdAt', 'desc'),
+    );
+    const unsubscribe = onSnapshot(q, callback);
+    return unsubscribe;
+  }, [user]);
+
+  const meetingSubscriber = useCallback((channelId:string, callback = () => {}) => {
+    const q = query(
       collection(firestore.current, "messages"),
       where(
         'channelId',
@@ -169,6 +184,16 @@ const useFirebase = (user:any) => {
       data.channelId = addRef.id;
       data.otherParticipants = getOtherParticipants(data.participants, user);
       data.hasSeen = checkSeen(data.seen, user);
+      await addDoc(
+        collection(firestore.current, "meetings"), {
+          channelId: data._id,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          endedAt: null,
+          ended: false,
+          joinedMembers: [],
+        }
+      );
       return callback(null, data);
     } catch(e) {
       console.log('ERROR', e);
@@ -289,6 +314,12 @@ const useFirebase = (user:any) => {
     });
   }, [user]);
 
+  const joinMeeting = useCallback(async (meetingId, uid) => {
+    await updateDoc(doc(firestore.current, "meetingId", meetingId), {
+      joinedMembers: firestore.FieldValue.arrayUnion({ ...user, uid })
+    });
+  }, [user]);
+
   return {
     initializeFirebaseApp,
     deleteFirebaseApp,
@@ -305,7 +336,9 @@ const useFirebase = (user:any) => {
     unSendEveryone,
     unSendForYou,
     leaveChannel,
-    editMessage
+    editMessage,
+    joinMeeting,
+    meetingSubscriber
   }
 }
 

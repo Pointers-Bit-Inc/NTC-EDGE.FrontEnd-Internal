@@ -1,10 +1,20 @@
-import React from 'react'
-import { View, StyleSheet, StatusBar, TouchableOpacity, Platform } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import {
+  Alert,
+  View,
+  StyleSheet,
+  StatusBar,
+  TouchableOpacity,
+  Platform
+} from 'react-native'
 import { useSelector, RootStateOrAny } from 'react-redux'
 import { ArrowLeftIcon, ChatIcon, PeopleIcon } from '@components/atoms/icon'
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
 import { getChannelName } from 'src/utils/formatting'
+import useFirebase from 'src/hooks/useFirebase';
+import useApi from 'src/services/api';
 
 const styles = StyleSheet.create({
   container: {
@@ -37,11 +47,44 @@ const styles = StyleSheet.create({
 })
 
 const Dial = ({ navigation, route }) => {
+  const api = useApi();
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { options } = route.params;
-  const { channelId, isGroup, channelName, otherParticipants } = useSelector(
+  const { options, isHost = false } = route.params;
+  const { channelId, meetingId, isGroup, channelName, otherParticipants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
+  const { joinMeeting, meetingSubscriber } = useFirebase({
+    _id: user._id,
+    name: user.name,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email,
+    image: user.image,
+  });
+  const [loading, setLoading] = useState(true);
+  const [agora, setAgora] = useState({});
+
+  useEffect(() => {
+    let unmounted = false;
+    api.post('/meeting/token', {
+      channelName: channelId,
+      isHost,
+    }).then((res) => {
+      if (!unmounted) {
+        setLoading(false);
+        setAgora(res.data);
+      }
+    })
+    .catch(() => {
+      if (!unmounted) {
+        setLoading(false);
+        Alert.alert('Something went wrong.');
+      }
+    });
+    return () => {
+      unmounted = true;
+    }
+  }, []);
 
   const header = () => (
     <View style={styles.header}>
@@ -64,7 +107,7 @@ const Dial = ({ navigation, route }) => {
           01:26
         </Text>
       </View>
-      <TouchableOpacity>
+      {/* <TouchableOpacity>
         <View style={styles.icon}>
           <ChatIcon
             size={24}
@@ -79,7 +122,7 @@ const Dial = ({ navigation, route }) => {
             color='white'
           />
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   )
 
@@ -87,10 +130,12 @@ const Dial = ({ navigation, route }) => {
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
       <VideoLayout
+        loading={loading}
         header={header()}
         options={options}
+        user={user}
         participants={otherParticipants}
-        uid={Math.floor(Math.random() * 100000)}
+        agora={agora}
       />
     </View>
   )
