@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   RefreshControl,
   ActivityIndicator,
@@ -20,7 +20,7 @@ import { ContactItem, SelectedContact } from '@components/molecules/list-item';
 import { CloseIcon, ArrowDownIcon, CheckIcon } from '@components/atoms/icon'
 import { SearchField } from '@components/molecules/form-fields'
 import { primaryColor } from '@styles/color';
-import useFirebase from 'src/hooks/useFirebase';
+import useApi from 'src/services/api';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -82,59 +82,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   }
-})
-
-const data = [
-  {
-    _id: '1',
-    name: 'Guy Hawkins',
-    firstname: 'Guy',
-    lastname: 'Hawkins',
-    email: 'guy.hawkins@gmail.com',
-    image: '',
-  },
-  {
-    _id: '2',
-    name: 'Dianne Russell',
-    firstname: 'Dianne',
-    lastname: 'Russell',
-    email: 'dianne.russell@gmail.com',
-    image: 'https://www.himalmag.com/wp-content/uploads/2019/07/sample-profile-picture.png',
-  },
-  {
-    _id: '3',
-    name: 'Ralph Edwards',
-    firstname: 'Ralph',
-    lastname: 'Edwards',
-    email: 'ralph.edwards@gmail.com',
-    image: '',
-  },
-  {
-    _id: '4',
-    name: 'Wade Warren',
-    firstname: 'Wade',
-    lastname: 'Warren',
-    email: 'wade.warren@gmail.com',
-    image: '',
-  }
-];
+});
 
 const Participants = ({ navigation }:any) => {
   const user = useSelector(state => state.user);
+  const api = useApi(user.sessionToken);
   const [loading, setLoading] = useState(false);
   const [nextLoading, setNextLoading] = useState(false);
   const [participants, setParticipants]:any = useState([]);
-  const [contacts, setContacts]:any = useState(() => {
-    const result = lodash.reject(data, d => d._id === user._id);
-    return result;
-  });
+  const [contacts, setContacts]:any = useState([]);
   const [searchText, setSearchText] = useState('');
   const onFetchData = useCallback(() => {
     setLoading(true);
-    setTimeout(() => {
+    api.post('/internal/users')
+    .then(res => {
       setLoading(false);
-    }, 1000);
+      setContacts(res.data);
+    })
+    .catch(e => {
+      setLoading(false);
+    });
   }, []);
+
+  useEffect(() => {
+    onFetchData();
+  }, []);
+
   const onBack = () => navigation.goBack();
   const onNext = () => navigation.replace('CreateMeeting', { participants });
 

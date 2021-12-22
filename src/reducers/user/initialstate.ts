@@ -6,9 +6,9 @@ const InitialState = Record({
   password: '',
   userType: '',
   permitType: '',
-  firstname: '',
-  middlename: '',
-  lastname: '',
+  firstName: '',
+  middleName: '',
+  lastName: '',
   phone: '',
   address: '',
 });

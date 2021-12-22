@@ -161,8 +161,8 @@ const ChatList = ({ navigation }:any) => {
   } = useFirebase({
     _id: user._id,
     name: user.name,
-    firstname: user.firstname,
-    lastname: user.lastname,
+    firstName: user.firstName,
+    lastName: user.lastName,
     email: user.email,
     image: user.image,
   });
@@ -281,7 +281,7 @@ const ChatList = ({ navigation }:any) => {
           <ProfileImage
             size={45}
             image={user.image}
-            name={`${user.firstname} ${user.lastname}`}
+            name={`${user.firstName} ${user.lastName}`}
           />
           <View style={styles.titleContainer}>
             <Text

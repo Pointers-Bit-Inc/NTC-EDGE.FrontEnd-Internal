@@ -85,9 +85,9 @@ const ChatBubble:FC<Props> = ({
   const getSeen = () => {
     return seenByOthers.map((seen:any, index:number) => {
       if (index === 0) {
-        return seen.firstname;
+        return seen.firstName;
       }
-      return `, ${seen.firstname}`;
+      return `, ${seen.firstName}`;
     });
   }
 
@@ -148,7 +148,7 @@ const ChatBubble:FC<Props> = ({
                     {
                       (unSend && isSender) ?
                       'Unsent for you'
-                      : `${isSender ? 'You' : sender.firstname } deleted a message`
+                      : `${isSender ? 'You' : sender.firstName } deleted a message`
                     }
                   </Text>
                 </>
@@ -199,7 +199,7 @@ const ChatBubble:FC<Props> = ({
                   style={[{ marginHorizontal: 1, }, isSender && styles.flipX]}
                   key={seen._id}
                   image={seen.image}
-                  name={`${seen.firstname} ${seen.lastname}`}
+                  name={`${seen.firstName} ${seen.lastName}`}
                   size={12}
                   textSize={5}
                 />

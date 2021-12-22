@@ -79,8 +79,8 @@ const CreateMeeting = ({ navigation, route }:any) => {
   const { createMeeting } = useFirebase({
     _id: user._id,
     name: user.name,
-    firstname: user.firstname,
-    lastname: user.lastname,
+    firstName: user.firstName,
+    lastName: user.lastName,
     email: user.email,
     image: user.image,
   });

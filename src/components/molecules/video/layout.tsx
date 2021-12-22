@@ -225,7 +225,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                       ) : (
                         <ProfileImage
                           image={participants[index].image}
-                          name={`${participants[index].firstname} ${participants[index].lastname}`}
+                          name={`${participants[index].firstName} ${participants[index].lastName}`}
                           size={50}
                           textSize={16}
                         />
@@ -240,7 +240,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                       size={12}
                       color={'white'}
                     >
-                      {participants[index].firstname}
+                      {participants[index].firstName}
                     </Text>
                     {
                       peerAudioState[item] === 0 ? (

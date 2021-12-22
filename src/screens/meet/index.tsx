@@ -86,7 +86,7 @@ const Meet = ({ navigation }) => {
         <ProfileImage
           size={45}
           image={user.image}
-          name={`${user.firstname} ${user.lastname}`}
+          name={`${user.firstName} ${user.lastName}`}
         />
         <View style={styles.titleContainer}>
           <Text

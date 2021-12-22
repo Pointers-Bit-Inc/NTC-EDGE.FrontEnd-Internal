@@ -282,7 +282,7 @@ const useFirebase = (user:any) => {
     batch.update(channelRef, {
       updatedAt: firestore.FieldValue.serverTimestamp(),
       lastMessage: {
-        message: `${user.firstname} deleted a message`,
+        message: `${user.firstName} deleted a message`,
         sender: user,
       },
       seen: [user],
