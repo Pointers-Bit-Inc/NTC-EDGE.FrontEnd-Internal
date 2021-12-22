@@ -41,11 +41,11 @@ function ActivityModal(props: any) {
             id: 3,
             name: 'Requirements',
             active: false,
-            isShow: ['cashier', 'director', 'evaluator']
+            isShow: [ 'director', 'evaluator']
         },
         {
             id: 4,
-            name: 'Payment',
+            name: 'SOA & Payment',
             active: false,
             isShow: ['cashier']
         },
@@ -133,7 +133,7 @@ function ActivityModal(props: any) {
                                                             }
                                                         }
                                                         newArr[index].active = true
-                                                        if(newArr[index].id == 3 || newArr[index].id == 4){
+                                                        if(newArr[index].id == 3 ){
                                                             setBackgroundColour("#f0f0f0")
                                                         }else{
                                                             setBackgroundColour("#fff")
@@ -173,7 +173,6 @@ function ActivityModal(props: any) {
                                     {
                                         tabs.map((tab, index) =>{
                                             const isShow = tab.isShow.indexOf(user?.role?.key) != -1
-                                            console.log(isShow)
                                             if(isShow && tab.id == 1 && tab.active){
                                                 return <BasicInfo key={index}/>
                                             }else if(isShow && tab.id == 2 && tab.active){

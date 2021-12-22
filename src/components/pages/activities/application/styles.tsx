@@ -94,3 +94,4 @@ export const styles = StyleSheet.create({
         marginRight: 1
     }
 });
+
