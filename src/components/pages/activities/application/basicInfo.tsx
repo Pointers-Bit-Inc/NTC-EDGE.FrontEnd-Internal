@@ -111,13 +111,13 @@ const BasicInfo = () => {
         })}*/}
         <View style={styles.container}>
         {basicInfo.map((info, index) => {
-            return  <View style={styles.group2}>
+            return  <View key={index} style={styles.group2}>
                     <View style={styles.rect}>
                         <Text style={styles.basicInfo}>{info.title}</Text>
                     </View>
                 <View style={styles.group}>
-                {info.detail.map((item)=>{
-                    return <View style={styles.rect3}>
+                {info.detail.map((item, i)=>{
+                    return <View key={i} style={styles.rect3}>
                         <Text style={styles.label}>{item.label}</Text>
                         <View style={styles.labelFiller}></View>
                         <Text style={styles.input}>{item.input}</Text>

@@ -47,7 +47,7 @@ function TopModal(props:any) {
                 </View>
                 <View style={styles.group7}>
                     {statusCode.map((top: any, index: number)=> {
-                        return<><View key={index} style={styles.group6}>
+                        return<React.Fragment key={index}><View style={styles.group6}>
                             <View style={styles.group5}>
                                 <View style={styles.icon4Row}>
 
@@ -80,7 +80,7 @@ function TopModal(props:any) {
 
                         </View>
                             <View style={styles.rect7}></View>
-                        </>
+                      </React.Fragment>
                     })}
 
                 </View>

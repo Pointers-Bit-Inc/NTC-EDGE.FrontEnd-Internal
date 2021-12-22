@@ -21,6 +21,7 @@ import LoginForm from '@organisms/forms/login';
 import Text from '@atoms/text';
 import Button from '@components/atoms/button';
 import { text, button, outline } from 'src/styles/color';
+import axios from "axios";
 const logo = require('../../assets/logo.png');
 const background = require('../../assets/background.png');
 const styles = StyleSheet.create({
@@ -67,12 +68,17 @@ const Login = ({ navigation }:any) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const onLogin = useCallback(async (data) => {
-    setLoading(true);
+    axios.post('http://localhost:3000/user/signin', {email:data.email, password: data.password}).then((response) =>{
+      setLoading(false);
+      dispatch(setUser(response.data));
+      navigation.navigate('HomeScreen');
+    })
+   /* setLoading(true);
     await setTimeout(() => {
       setLoading(false);
-      dispatch(setUser(data));
+     dispatch(setUser(data));
       navigation.navigate('HomeScreen');
-    }, 3000);
+    }, 3000);*/
   }, []);
   const [formValue, setFormValue] = useState({
     email: {

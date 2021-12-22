@@ -9,7 +9,8 @@ import Approval from "@pages/activities/approval";
 import BasicInfo from "@pages/activities/application/basicInfo";
 import Requirement from "@pages/activities/application/requirement";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
-
+import Payment from "@pages/activities/application/payment";
+import {RootStateOrAny, useSelector} from "react-redux";
 const {width} = Dimensions.get('window');
 
 function handleInfinityScroll(event: any) {
@@ -21,22 +22,32 @@ function handleInfinityScroll(event: any) {
 }
 
 function ActivityModal(props: any) {
+    const user = useSelector((state: RootStateOrAny) => state.user);
     const [groupButtonVisible, setGroupButtonVisible] = useState(false)
     const [tabs, setTabs] = useState([
         {
             id: 1,
             name: 'Basic Info',
-            active: true
+            active: true,
+            isShow: ['cashier', 'director', 'evaluator']
         },
         {
             id: 2,
             name: 'Application Details',
-            active: false
+            active: false,
+            isShow: ['cashier', 'director', 'evaluator']
         },
         {
             id: 3,
             name: 'Requirements',
-            active: false
+            active: false,
+            isShow: ['cashier', 'director', 'evaluator']
+        },
+        {
+            id: 4,
+            name: 'Payment',
+            active: false,
+            isShow: ['cashier']
         },
     ])
     const [visible, setVisible ] = useState(false)
@@ -113,7 +124,8 @@ function ActivityModal(props: any) {
                                         <View style={styles.group5Row}>
                                             {
                                                 tabs.map((tab, index) => {
-                                                    return <TouchableOpacity key={index} onPress={() => {
+
+                                                    return tab.isShow.indexOf(user?.role?.key) != -1 &&   <TouchableOpacity key={index} onPress={() => {
                                                         let newArr = [...tabs]
                                                         for (let i = 0; i < newArr.length; i++) {
                                                             if(newArr[i].active){
@@ -121,7 +133,7 @@ function ActivityModal(props: any) {
                                                             }
                                                         }
                                                         newArr[index].active = true
-                                                        if(newArr[index].id == 3 ){
+                                                        if(newArr[index].id == 3 || newArr[index].id == 4){
                                                             setBackgroundColour("#f0f0f0")
                                                         }else{
                                                             setBackgroundColour("#fff")
@@ -130,11 +142,11 @@ function ActivityModal(props: any) {
                                                         setTabs(newArr)
                                                     }
                                                     }>
-                                                        <View style={[styles.group5]}>
+                                                        { <View style={[styles.group5]}>
                                                             <Text style={{color: tab.active ? primaryColor : text.default }}>{tab.name}</Text>
                                                             <View
                                                                 style={[styles.rect6, {backgroundColor: tab.active ? primaryColor : "rgba(255,255,255,0)"}]}></View>
-                                                        </View>
+                                                        </View>}
                                                     </TouchableOpacity>
                                                 })
                                             }
@@ -159,14 +171,17 @@ function ActivityModal(props: any) {
                                 } scrollEventThrottle={16} style={[styles.group10]}>
 
                                     {
-                                        tabs.map((tab) =>{
-                                            if(tab.id == 1 && tab.active){
-
-                                                return <BasicInfo/>
-                                            }else if(tab.id == 2 && tab.active){
-                                                return  <ApplicationDetails/>
-                                            }else if(tab.id == 3 && tab.active){
-                                                return  <Requirement/>
+                                        tabs.map((tab, index) =>{
+                                            const isShow = tab.isShow.indexOf(user?.role?.key) != -1
+                                            console.log(isShow)
+                                            if(isShow && tab.id == 1 && tab.active){
+                                                return <BasicInfo key={index}/>
+                                            }else if(isShow && tab.id == 2 && tab.active){
+                                                return  <ApplicationDetails key={index}/>
+                                            }else if(isShow && tab.id == 3 && tab.active){
+                                                return  <Requirement key={index}/>
+                                            }else if(isShow && tab.id == 4 && tab.active){
+                                                return  <Payment key={index}/>
                                             }
                                         })
                                     }

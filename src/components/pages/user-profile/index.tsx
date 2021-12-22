@@ -7,8 +7,6 @@ import {Image, ScrollView, StyleSheet, View,} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import Button from "@atoms/button";
-import {Ionicons} from "@expo/vector-icons";
-import {CommonActions, useNavigation} from "@react-navigation/native";
 import {setUser} from "../../../reducers/user/actions";
 
 const styles = StyleSheet.create({
