@@ -2,7 +2,7 @@ import React, {useEffect, useState,} from 'react';
 import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {BarCodeScanner, BarCodeScannerResult} from 'expo-barcode-scanner';
 import BarcodeMask from 'react-native-barcode-mask';
-import Button from '@components/atoms/button';
+import Button from '@atoms/button';
 import axios from "axios";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
         marginLeft: 7
     },
     testTester: {
-        fontFamily: "roboto-700",
         color: "#121212",
         fontSize: 20,
         marginLeft: 9,

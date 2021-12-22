@@ -39,8 +39,10 @@ const RootNavigator = () => {
         <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
         <Stack.Screen name="ActivitiesScreen" component={ActivitiesScreen} options={{ headerShown: false }} />
         <Stack.Screen name="UserProfileScreen" component={UserProfile} />
+
       </Stack.Navigator>
     </NavigationContainer>
+
   );
 };
 

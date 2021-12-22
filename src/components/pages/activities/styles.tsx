@@ -1,257 +1,458 @@
 import {StyleSheet} from "react-native";
 
 export const styles = StyleSheet.create({
-    container1: {
-        width: 130,
-        height: 25
-    },
-    icon7: {
-        color: "rgba(22,55,118,1)",
-        fontSize: 17,
-        marginLeft: 11,
-        marginTop: 3
-    },
-    loremIpsum: {
-        color: "rgba(22,55,118,1)",
-        marginLeft: 3,
-        marginTop: 4
-    },
-    overlay: {
-        backgroundColor: 'rgba(0,0,0,0.2)',
-        flex: 1,
-        justifyContent: 'flex-end',
-    },
     container: {
         flex: 1,
-        backgroundColor: "#fff",
-        height: 185
+        backgroundColor: "rgba(230, 230, 230,1)"
     },
     group: {
-    },
-    rect7: {
-        width: 40,
-        height: 40,
-        borderRadius: 40,
-    },
-    textInput: {
-        fontWeight: 'bold',
-        color: "#121212",
-        fontSize: 20,
-        marginLeft: 20,
-        marginTop: 12
-    },
-    rect7Row: {
-        height: 40,
-        flexDirection: "row"
-    },
-    rect7RowFiller: {
-        flex: 1,
-        flexDirection: "row"
-    },
-    icon: {
-        color: "#2863d6",
-        fontSize: 29,
-        marginTop: 6
-    },
-    rect7RowRow: {
-        height: 40,
-        flexDirection: "row"
+        height: 100
     },
     rect: {
-        backgroundColor: "#E6E6E6",
-        borderTopRightRadius: 10,
-        borderRadius: 10,
+        height: 100,
+        backgroundColor: "rgba(0,65,172,1)",
         flexDirection: "row"
     },
-    icon20Row: {
-        height: 35,
-        flexDirection: "row",
-        flex: 1,
-        marginRight: 202,
-        marginLeft: 4,
-        marginTop: 3
-    },
-
-    textInput2: {
-        color: "#121212",
-        width: 83,
-        height: 16,
-        marginTop: 9
-    },
-    rect2: {
-        height: 2,
-        backgroundColor: "#E6E6E6",
-        marginTop: 15,
-        marginLeft: -20,
-        marginRight: -20
-    },
-    ellipse2: {
-        top: 0,
-        left: 0,
-        width: 50,
-        height: 50,
-        position: "absolute",
-        opacity: 0.5
-    },
-    rect6: {
-        top: 0,
-        left: 0,
-        width: 50,
-        height: 50,
-        position: "absolute",
+    rect4: {
         borderRadius: 25,
-        backgroundColor: "#E6E6E6"
+        width: 40,
+        height: 40,
+        backgroundColor: "#fff"
     },
-    ellipse2Stack: {
-        width: 50,
-        height: 50
+    activity: {
+        color: "rgba(255,255,255,1)",
+        fontSize: 20,
+        marginLeft: 10,
+        marginTop: 8,
+        fontWeight: "bold"
     },
-    ellipse2StackFiller: {
+    rect4Row: {
+        height: 40,
+        flexDirection: "row",
+        marginLeft: 18,
+        marginTop: 40
+    },
+    rect4RowFiller: {
         flex: 1,
-        flexDirection: "row"
-    },
-    name: {
-
-        color: "#121212",
-        flex: 1,
-        marginRight: 5
-    },
-    submitted999999: {
-        paddingBottom: 6,
-        color: "#121212",
-        fontSize: 12,
-        textAlign: "right",
-        marginTop: 8
-    },
-    nameRow: {
         flexDirection: "row"
     },
     rect5: {
-        backgroundColor: "rgba(255,255,255,1)",
-        flexDirection: "row",
-        borderWidth: 1,
-        borderColor: "rgba(204,204,204,1)",
-        borderRadius: 4,
-        flex: 1
+        marginRight: 24,
+        marginTop: 50
     },
-    rect5Filler: {
-        flex: 1,
-        flexDirection: "row"
+    group9: {
+
     },
-    forEvaluation: {
-        fontWeight: "bold",
-        fontSize: 14,
-        textAlign: "right"
+    searcg: {
+
     },
-    rect5Row: {
-        height: 32,
-        flexDirection: "row",
-        marginTop: 2
+    rect26: {
+        height: 83,
+        backgroundColor: "rgba(255,255,255,1)"
     },
-    nameRowColumn: {
-        width: "80%"
-    },
-    ellipse2StackRow: {
-        height: 50,
+    rect7: {
+
+        width: "90%",
+        backgroundColor: "#E6E6E6",
+        borderRadius: 10,
         flexDirection: "row",
         marginTop: 20,
-        marginRight: 9
+        marginLeft: 20
     },
-    rect9: {
-        width: '80%',
-        height: 2,
-        backgroundColor: "#E6E6E6",
-        alignSelf: "flex-end",
-        marginTop: 26,
-        marginRight: 10
+    icon: {
+        color: "rgba(190,199,218,1)",
+        fontSize: 26,
+        height: 23,
+        width: 26,
+        marginTop: 9
     },
-    groupColumn: {
-        backgroundColor: "#fff",
-        marginTop: 50,
-        marginLeft: 20,
-        marginRight: 12
+    textInput: {
+        color: "rgba(149,157,175,1)",
+        width: 272,
+        height: 40,
+        marginLeft: 7
     },
-    groupColumnFiller: {
-        flex: 1
+    iconRow: {
+        height: 40,
+        flexDirection: "row",
+        flex: 1,
+        marginRight: 17,
+        marginLeft: 12
     },
-    rect10: {
-
-        height: 100,
-        backgroundColor: "rgba(255,255,255,1)",
-        borderWidth: 1,
-        borderColor: "rgba(229,229,229,1)"
+    rect27: {
+        width: "100%",
+        height: 10,
+        backgroundColor: "#E6E6E6"
     },
-    group7Filler: {
-        flex: 1
+    group26: {
+        marginTop: 6
     },
-    group7: {
+    group27:{
         height: 60,
         flexDirection: "row",
         justifyContent: "space-around",
         marginBottom: 32
     },
-    icon2: {
-        textAlign: 'center',
-        color: "rgba(128,128,128,1)",
-        fontSize: 25,
-
+    group25: {
     },
-    activity: {
-        textAlign: 'center',
-        color: "#606a80"
+    rect34: {
+        height: 57,
+        flexDirection: "row",
+        backgroundColor: "rgba(255,255,255,1)"
     },
-    icon6: {
-        color: "rgba(128,128,128,1)",
-        fontSize: 32,
-        marginLeft: 7,
-        marginRight: 6
+    group24: {
+        width: 59,
+        height: 57
     },
-    activity4: {
-
-        color: "#121212"
+    pinnedgroup: {
+        width: "100%",
+        height: 16,
     },
-    icon3: {
-        color: "rgba(128,128,128,1)",
-        fontSize: 32,
-        marginLeft: 7,
-        marginRight: 6
+    pinnedcontainer: {
+        backgroundColor: "rgba(255,255,255,1)"
     },
-    activity1: {
-
-        color: "#121212"
+    pinnedActivity: {
+        color: "rgba(0,65,172,1)",
+        textAlign: "left",
+        marginLeft: 20
+    },
+    date: {
+        fontWeight: "bold",
+        top: 24,
+        left: 31,
+        position: "absolute",
+        color: "rgba(87,98,121,1)"
+    },
+    rect36: {
+        top: 0,
+        left: 0,
+        width: 58,
+        height: 57,
+        position: "absolute"
+    },
+    dateStack: {
+        width: 100,
+        height: 57
+    },
+    group24Filler: {
+        flex: 1,
+        flexDirection: "row"
+    },
+    group23: {
+        width: 32,
+        height: 57,
+        flexDirection: "row"
+    },
+    stackFiller: {
+        flex: 1,
+        flexDirection: "row"
     },
     icon4: {
+        top: 22,
+        position: "absolute",
         color: "rgba(128,128,128,1)",
-        fontSize: 32,
-        marginLeft: 7,
-        marginRight: 6
+        fontSize: 12,
+        right: 20
     },
-    activity2: {
-
-        color: "#121212"
+    rect35: {
+        top: 0,
+        width: 32,
+        height: 57,
+        position: "absolute",
+        right: 0
     },
-    icon5: {
-        color: "rgba(128,128,128,1)",
-        fontSize: 32,
-        marginLeft: 7,
-        marginRight: 6
+    icon4Stack: {
+        width: 33,
+        height: 57
     },
-    activity3: {
-
-        color: "#121212"
+    group17: {
+        height: 80
     },
-
-    rect13: {
-        width: '97%',
-        height: 40,
-        marginTop: 19,
+    group8: {
+        height: 80,
+        backgroundColor: "rgba(255,255,255,1)"
     },
-    icon20:{
-        color: "rgba(128,128,128,1)",
-        fontSize: 32,
-        height: 35,
+    rect8: {
+        backgroundColor: "#fff",
+        flexDirection: "row"
+    },
+    active: {
         width: 40,
+        height: 80
+    },
+    rect12: {
+        width: 40,
+        height: 80
+    },
+    rect13: {
+        width: 40,
+        height: 40,
+        marginTop: 27
+    },
+    ellipse: {
+        width: 10,
+        height: 10,
+        marginTop: 15,
+        marginLeft: 15
+    },
+    profile: {
+        width: 40,
+        height: 80
+    },
+    rect11: {
+        borderRadius: 25,
+        top: 27,
+        left: 0,
+        width: 40,
+        height: 40,
+        position: "absolute",
+        backgroundColor: "rgba(99,97,97,1)"
+    },
+    rect14: {
+        top: 0,
+        left: 0,
+        width: 40,
+        height: 80,
+        position: "absolute"
+    },
+    rect11Stack: {
+        width: 40,
+        height: 80
+    },
+    activeRow: {
+        height: 80,
+        flexDirection: "row"
+    },
+    activeRowFiller: {
+        flex: 1,
+        flexDirection: "row"
+    },
+    group4: {
+        top: 0,
+        left: 3,
+        width: 135,
+        height: 80,
+        position: "absolute"
+    },
+    rect16: {
+        width: 135,
+        height: 80
+    },
+    group3: {
+        width: 135,
+        height: 41,
+        marginTop: 26
+    },
+    name: {
+        fontWeight:  "bold",
+        color: "#121212",
+        fontSize: 12
+    },
+    group2: {
+        width: 135,
+        height: 20,
+        marginTop: 7
+    },
+    rect18: {
+        top: 0,
+        left: 0,
+        width: 135,
+        height: 20,
+        position: "absolute",
+        backgroundColor: "rgba(255,255,255,1)",
+        borderWidth: 1,
+        borderColor: "rgba(28,61,121,1)",
+        borderRadius: 4
+    },
+    group21: {
+        width: 113,
+        height: 18,
+        marginTop: 1,
+        marginLeft: 21
+    },
+    rect32: {
+        width: 113,
+        height: 18
+    },
+    application: {
+        color: "rgba(28,61,121,1)",
+        fontSize: 9,
+        marginTop: 3
+    },
+    group20: {
+        top: 0,
+        left: 0,
+        width: 22,
+        height: 21,
+        position: "absolute"
+    },
+    rect31: {
+        width: 22,
+        height: 21
+    },
+    icon2: {
+        color: "rgba(28,61,121,1)",
+        fontSize: 13,
+        height: 15,
+        width: 10,
         marginTop: 3,
-        marginLeft: 4
+        marginLeft: 7
+    },
+    rect18Stack: {
+        width: 135,
+        height: 21
+    },
+    rect28: {
+        top: 79,
+        left: 0,
+        width: 273,
+        height: 1,
+        position: "absolute",
+        backgroundColor: "#E6E6E6"
+    },
+    group4Stack: {
+        top: 0,
+        left: 0,
+        width: 273,
+        height: 80,
+        position: "absolute"
+    },
+    group5: {
+        top: 0,
+        width: 147,
+        height: 40,
+        position: "absolute",
+        right: 0
+    },
+    group22: {
+        top: 0,
+        left: 1,
+        width: 125,
+        height: 43,
+        position: "absolute"
+    },
+    rect33: {
+        width: 125,
+        height: 43,
+        flexDirection: "row"
+    },
+    loremIpsumFiller: {
+        flex: 1,
+        flexDirection: "row"
+    },
+    loremIpsum: {
+        color: "rgba(133,141,158,1)",
+        textAlign: "right",
+        fontSize: 10,
+        marginTop: 25
+    },
+    rect24: {
+        top: 0,
+        left: 0,
+        width: 147,
+        height: 40,
+        position: "absolute"
+    },
+    group22Stack: {
+        width: 147,
+        height: 43
+    },
+
+    group7: {
+        top: 42,
+        width: 147,
+        height: 38,
+        position: "absolute",
+        right: 0,
+        flexDirection: "row"
+    },
+    group6: {
+        top: 0,
+        width: 126,
+        height: 28,
+        position: "absolute",
+        right: 21
+    },
+    rect10:{
+        height: 100,
+        backgroundColor: "rgba(255,255,255,1)",
+        borderWidth: 1,
+        borderColor: "rgba(229,229,229,1)"
+    },
+    group7Filler:{
+        flex: 1
+    },
+    rect23: {
+        width: 126,
+        height: 28,
+
+        borderRadius: 7
+    },
+    group19: {
+        width: 126,
+        height: 28,
+        flexDirection: "row"
+    },
+    group18: {
+        width: 43,
+        height: 26,
+        marginTop: 1
+    },
+    icon3: {
+        top: 4,
+        left: 25,
+        position: "absolute",
+
+        fontSize: 16
+    },
+    rect29: {
+        top: 0,
+        left: 0,
+        width: 43,
+        height: 26,
+    },
+    icon3Stack: {
+        width: 43,
+        height: 26
+    },
+    rect30: {
+        top: 0,
+        left: 1,
+        width: 80,
+        height: 27,
+        position: "absolute"
+    },
+    approved: {
+        top: 8,
+        position: "absolute",
+
+        right: 35,
+        fontSize: 10
+    },
+    rect30Stack: {
+        width: 81,
+        height: 27
+    },
+    group18Row: {
+        height: 30,
+        flexDirection: "row",
+        flex: 1,
+        marginRight: 1,
+        marginLeft: 1
+    },
+    rect25: {
+        top: 0,
+        width: 147,
+        height: 38,
+        position: "absolute",
+        left: 0
+    },
+    group6Stack: {
+        width: 147,
+        height: 38
+    },
+    group4StackStack: {
+        width: 292,
+        height: 80
     }
 });

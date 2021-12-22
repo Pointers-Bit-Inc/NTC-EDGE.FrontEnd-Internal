@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import QrCodeScan from "@organisms/barcode/qr-code-scanner";
+import QrCodeScan from "@pages/barcode/qr-code-scanner";
 import {Dimensions, StatusBar, Text} from "react-native";
 
 const Scan = (props: any) => {

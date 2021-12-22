@@ -1,9 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import FormField from "@organisms/forms/form";
 import InputStyles from "@styles/input-style";
 import Text from '@atoms/text';
 import {primaryColor, text} from "@styles/color";
-import {Image, SafeAreaView, ScrollView, StyleSheet, View,} from 'react-native';
+import {Image, ScrollView, StyleSheet, View,} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import Button from "@atoms/button";
@@ -59,12 +59,12 @@ const styles = StyleSheet.create({
 const UserProfile = ({ navigation }: any) => {
     const FIRST_NAME_LABEL = "First Name",
         MIDDLE_NAME_LABEL = "Middle Name",
-        LAST_NAME_LABEL = "Last Name";
+        LAST_NAME_LABEL = "Last Name",
+        FIRST_NAME_INDEX = 5,
+        MIDDLE_NAME_INDEX = 6,
+        LAST_NAME_INDEX = 7,
+        PROFILE_IMAGE_INDEX = 10;
     const dispatch = useDispatch();
-    const [firstName, setFirstName] = useState("")
-    const [middleName, setMiddleName] = useState("")
-    const [lastName, setLastName] = useState("")
-    const [fullName, setFullName] = useState("")
     const [profileImage, setProfile] = useState("")
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [userProfile, setUserProfile] = useState()
@@ -210,7 +210,7 @@ const UserProfile = ({ navigation }: any) => {
             label: "Phone",
             type: "input",
             placeholder: "Phone",
-            value: '',
+            value: user.phone || '',
             inputStyle: InputStyles.text,
             error: false,
         },
@@ -230,45 +230,46 @@ const UserProfile = ({ navigation }: any) => {
             inputStyle: InputStyles.text,
             error: false,
         },
-
+        {
+            id: 11,
+            stateName: 'profileImage',
+            value: user.profileImage
+        },
     ])
 
-    const set_FullName = () => {
-        for (let i = 0; i < userProfileForm.length; i++) {
-
-            if (userProfileForm[i].label == FIRST_NAME_LABEL) {
-                 setFirstName(userProfileForm[i].value)
-            } else if (userProfileForm[i].label == MIDDLE_NAME_LABEL) {
-                 setMiddleName(userProfileForm[i].value)
-            } else if (userProfileForm[i].label == LAST_NAME_LABEL) {
-                 setLastName(userProfileForm[i].value)
-            }
-        }
-        setFullName(`${firstName} ${middleName} ${lastName}`)
-    }
 
     const onChangeUserProfile = (id: number, text: any, element?: string) => {
 
         const index = userProfileForm.findIndex(app => app.id == id)
         let newArr = [...userProfileForm];
-        if (element == 'password') {
+        if (element == 'password' && !text.trim.length) {
+            newArr[index]["error"] = false
             newArr[index]['value'] = text;
-        } else if (element == "input") {
+        } else if (element == "input" && !text.trim.length ) {
+            newArr[index]["error"] = false
             newArr[index]['value'] = text;
-            if (newArr[index].label === FIRST_NAME_LABEL || newArr[index].label === MIDDLE_NAME_LABEL || newArr[index].label === LAST_NAME_LABEL) {
-                set_FullName()
-            }
+
         }
         setUserProfileForm(newArr);
     }
 
     const onPressed = (id?: number, type?: string | number) => {
-        let index, newArr;
+        let index, newArr:any[]= [];
 
         if (type === 'image-picker') {
-            openImagePickerAsync().then((r: any) => {
-                setUserProfile(r?.uri)
-            })
+
+                newArr = [...userProfileForm]
+                for (let i = 0; i < newArr.length; i++) {
+                    if (newArr[i].stateName == "profileImage" && newArr[i].id == id) {
+
+                        openImagePickerAsync().then((r: any) => {
+                            newArr[i].value = r?.uri
+                            setUserProfileForm(newArr)
+                        })
+                    }
+            }
+
+
         }
     }
     let openImagePickerAsync = async () => {
@@ -283,13 +284,21 @@ const UserProfile = ({ navigation }: any) => {
     }
 
     const onUserSubmit = () =>{
-        let userInput = {} as any;
-
-        for (let i = 0; i < userProfileForm.length; i++) {
+        let userInput = {} as any, error = [];
+        let newArr = [...userProfileForm];
+        for (let i = 0; i < newArr.length; i++) {
+            if (!newArr[i].value) {
+                newArr[i].error = true
+            }
             userInput[`${userProfileForm[i]?.stateName}`] = userProfileForm[i].value
         }
-        dispatch(setUser(userInput))
+        setUserProfileForm(newArr)
+        if(!error.length){
+            dispatch(setUser(userInput))
+        }
     }
+    
+    
     return <>
 
             <View style={{ flex: 1, backgroundColor: "white",   padding: 20}}>
@@ -297,19 +306,19 @@ const UserProfile = ({ navigation }: any) => {
                     showsVerticalScrollIndicator={false}
                 >
                     <View style={styles.profile}>
-                        {userProfile ? <Image
+                        {userProfileForm[PROFILE_IMAGE_INDEX].value ? <Image
                                 style={styles.avatar}
-                                source={{uri: userProfile}}
+                                source={{uri: userProfileForm[PROFILE_IMAGE_INDEX].value}}
                                 resizeMode={"cover"}/>
                             : <Image style={styles.avatar}
                                      source={require('@assets/favicon.png')}/>}
 
                         <Text style={styles.name}>
-                            {fullName}
+                           {userProfileForm[FIRST_NAME_INDEX].value + " " + userProfileForm[MIDDLE_NAME_INDEX].value + " " + userProfileForm[LAST_NAME_INDEX].value}
                         </Text>
 
                     </View>
-                    <Button style={styles.shareButton} onPress={() => onPressed(0, 'image-picker')}>
+                    <Button style={styles.shareButton} onPress={() => onPressed(11, 'image-picker')}>
                         <Text fontSize={16} color={'white'}>Pick an image</Text>
                     </Button>
 
@@ -325,6 +334,7 @@ const UserProfile = ({ navigation }: any) => {
                     </Text>
                 </Button>
             </View>
+
 
     </>
 }

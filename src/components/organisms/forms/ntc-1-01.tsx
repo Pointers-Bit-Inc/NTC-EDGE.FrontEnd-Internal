@@ -625,16 +625,16 @@ const NTC101 = ({
         for (let j = 0; j < applicationFormValue.length; j++) {
             if (applicationFormValue[j].navigation == onNavigation) {
                 newArr[onNavigation].isView = true
-                if (!applicationFormValue[j].value) {
-                    error.push(applicationFormValue[j])
-                    for (let l = 0; l < newArr.length; l++) {
+                    if (!applicationFormValue[j].value) {
+                        error.push(applicationFormValue[j])
+                        for (let l = 0; l < newArr.length; l++) {
 
-                        newArr[l].isRouteActive = false
+                            newArr[l].isRouteActive = false
+                        }
+                        newArr[onNavigation].isComplete = false
+                        newArr[onNavigation].isRouteActive = true
+                        setTab(newArr);
                     }
-                    newArr[onNavigation].isComplete = false
-                    newArr[onNavigation].isRouteActive = true
-                    setTab(newArr);
-                }
             }
         }
         if (!error.length) {

@@ -129,8 +129,8 @@ const FormField = ({
     return (
         <>
             {formElements.map((element: any, key: number) => {
-                return element.type != 'submit' && element && (
-                    <View key={element.id}>
+                return element.type != 'submit' && element.type && (
+                    <View  key={element.id}>
                         {renderElements(
                             element.id,
                             element,
