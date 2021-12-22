@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 20,
     backgroundColor: primaryColor,
-    paddingTop: 60,
+    paddingTop: 40,
   },
   titleContainer: {
     flex: 1,
@@ -345,12 +345,6 @@ const ChatList = ({ navigation }:any) => {
                   onPress={() => {
                     dispatch(setSelectedChannel(item));
                     navigation.navigate('ViewChat', item)
-                  }}
-                  onLongPress={() => {
-                    if (user._id === item.author?._id) {
-                      selectedChatRef.current = item._id;
-                      modalRef.current?.open();
-                    }
                   }}
                 />
               </Swipeable>

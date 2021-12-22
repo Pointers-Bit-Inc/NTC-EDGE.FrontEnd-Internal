@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 15,
-    paddingTop: 60,
+    paddingTop: 40,
     backgroundColor: primaryColor
   },
   horizontal: {

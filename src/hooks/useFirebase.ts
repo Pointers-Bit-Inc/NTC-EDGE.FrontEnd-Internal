@@ -144,12 +144,12 @@ const useFirebase = (user:any) => {
     }
   }, [user]);
 
-  const createMeeting = useCallback(async (participants, callback = () => {}) => {
+  const createMeeting = useCallback(async ({ participants, channelName }, callback = () => {}) => {
     try {
       const participantsWithUser:any = _getParticipants(participants);
       const isGroup = lodash.size(participantsWithUser) > 2;
       const addRef = await addDoc(collection(firestore.current, "channels"), {
-        channelName: _getInitialChannelName(participantsWithUser),
+        channelName: channelName || _getInitialChannelName(participantsWithUser),
         participantsId: _getParticipantsId(participantsWithUser),
         participants: participantsWithUser,
         createdAt: serverTimestamp(),
@@ -275,8 +275,9 @@ const useFirebase = (user:any) => {
     const filterParticipants = lodash.reject(participants, p => p._id === user._id);
     await updateDoc(doc(firestore.current, "channels", channelId), {
         updatedAt: firestore.FieldValue.serverTimestamp(),
-        participantsId: _getParticipantsId(filterParticipants),
-        participants: filterParticipants,
+        // participantsId: _getParticipantsId(filterParticipants),
+        // participants: filterParticipants,
+        deleted: true,
       });
   }, [user]);
   

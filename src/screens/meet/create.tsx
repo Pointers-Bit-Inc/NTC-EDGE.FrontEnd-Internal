@@ -6,7 +6,8 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  StatusBar
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
@@ -90,7 +91,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
   const onBack = () => navigation.goBack();
   const onStartMeeting = () => {
     setLoading(true);
-    createMeeting(participants, (error, data) => {
+    createMeeting({ participants, channelName: meetingName }, (error, data) => {
       setLoading(false);
       if (!error) {
         dispatch(setSelectedChannel(data));
@@ -106,6 +107,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle={'dark-content'} />
       <View style={styles.header}>
         <View style={[styles.horizontal, { paddingVertical: 5 }]}>
           <TouchableOpacity onPress={onBack}>
@@ -117,7 +119,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
             <Text
               color={text.default}
               weight={'600'}
-              size={18}
+              size={16}
             >
               Create Meeting
             </Text>

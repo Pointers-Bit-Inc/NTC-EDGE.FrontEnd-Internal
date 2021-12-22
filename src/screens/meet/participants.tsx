@@ -6,7 +6,8 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  StatusBar
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
@@ -211,6 +212,7 @@ const Participants = ({ navigation }:any) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle={'dark-content'} />
       <View style={styles.header}>
         <View style={[styles.horizontal, { paddingVertical: 5 }]}>
           <TouchableOpacity onPress={onBack}>
@@ -223,30 +225,29 @@ const Participants = ({ navigation }:any) => {
             <Text
               color={text.default}
               weight={'600'}
-              size={18}
+              size={16}
             >
               Participants
             </Text>
           </View>
-          {
-            !!lodash.size(participants) && (
-              <TouchableOpacity disabled={nextLoading} onPress={onNext}>
-                {
-                  nextLoading ? (
-                    <ActivityIndicator color={text.default} size={'small'} />
-                  ) : (
-                    <Text
-                      weight={'600'}
-                      color={text.primary}
-                      size={18}
-                    >
-                      Next
-                    </Text>
-                  )
-                }
-              </TouchableOpacity>
-            )
-          }
+          <TouchableOpacity
+            disabled={!lodash.size(participants) || nextLoading}
+            onPress={onNext}
+          >
+            {
+              nextLoading ? (
+                <ActivityIndicator color={text.default} size={'small'} />
+              ) : (
+                <Text
+                  weight={'600'}
+                  color={!!lodash.size(participants) ? text.primary : text.default}
+                  size={14}
+                >
+                  Next
+                </Text>
+              )
+            }
+          </TouchableOpacity>
         </View>
         <SearchField
           inputStyle={[InputStyles.text, styles.input]}

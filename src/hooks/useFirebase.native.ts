@@ -99,13 +99,13 @@ const useFirebase = (user:any) => {
       .catch(err => callback(err));
   }, [user]);
 
-  const createMeeting = useCallback(async (participants, callback = () => {}) => {
+  const createMeeting = useCallback(async ({ participants, channelName }, callback = () => {}) => {
     const participantsWithUser:any = _getParticipants(participants);
     const isGroup = lodash.size(participantsWithUser) > 2;
     await firestore()
       .collection('channels')
       .add({
-        channelName: _getInitialChannelName(participantsWithUser),
+        channelName: channelName || _getInitialChannelName(participantsWithUser),
         participantsId: _getParticipantsId(participantsWithUser),
         participants: participantsWithUser,
         createdAt: firestore.FieldValue.serverTimestamp(),
@@ -254,8 +254,9 @@ const useFirebase = (user:any) => {
       .doc(channelId)
       .update({
         updatedAt: firestore.FieldValue.serverTimestamp(),
-        participantsId: _getParticipantsId(filterParticipants),
-        participants: filterParticipants,
+        // participantsId: _getParticipantsId(filterParticipants),
+        // participants: filterParticipants,
+        deleted: true,
       });
   }, [user]);
 

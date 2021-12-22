@@ -1,5 +1,12 @@
 import React from 'react'
-import { View, StyleSheet, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  ScrollView,
+  StatusBar,
+} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, RootStateOrAny } from 'react-redux'
 import ProfileImage from '@components/atoms/image/profile'
@@ -20,6 +27,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     paddingHorizontal: 20,
+    paddingTop: 40,
+    paddingBottom: 20,
+    backgroundColor: primaryColor
   },
   titleContainer: {
     flex: 1,
@@ -70,16 +80,17 @@ const Meet = ({ navigation }) => {
   const user = useSelector((state:RootStateOrAny) => state.user);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
         <ProfileImage
-          size={35}
+          size={45}
           image={user.image}
           name={`${user.firstname} ${user.lastname}`}
         />
         <View style={styles.titleContainer}>
           <Text
-            color={text.default}
+            color={'white'}
             weight={'600'}
             size={22}
           >
@@ -95,7 +106,7 @@ const Meet = ({ navigation }) => {
               style={styles.text}
               color={'black'}
               weight={'bold'}
-              size={26}
+              size={24}
             >
               Start a meeting
             </Text>
@@ -103,7 +114,7 @@ const Meet = ({ navigation }) => {
               style={styles.text}
               color={'#606A80'}
               weight={'600'}
-              size={20}
+              size={18}
             >
               Get everyone together
             </Text>
@@ -166,7 +177,7 @@ const Meet = ({ navigation }) => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   )
 }
 
