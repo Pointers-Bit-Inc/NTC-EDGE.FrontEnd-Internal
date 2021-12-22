@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
   header: {
     paddingBottom: 5,
     backgroundColor: 'white',
-    paddingHorizontal: 20,
   },
   input: {
     fontSize: 16,
@@ -55,7 +54,6 @@ const styles = StyleSheet.create({
   outline: {
     borderWidth: 0,
     backgroundColor: '#F1F1F1',
-    paddingVertical: 3,
     borderRadius: 10,
   },
   icon: {
@@ -66,7 +64,10 @@ const styles = StyleSheet.create({
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    backgroundColor: primaryColor,
+    paddingTop: 60,
   },
   titleContainer: {
     flex: 1,
@@ -273,18 +274,18 @@ const ChatList = ({ navigation }:any) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'dark-content'} />
+    <View style={styles.container}>
+      <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <ProfileImage
-            size={35}
+            size={45}
             image={user.image}
             name={`${user.firstname} ${user.lastname}`}
           />
           <View style={styles.titleContainer}>
             <Text
-              color={text.default}
+              color={'white'}
               weight={'600'}
               size={22}
             >
@@ -295,11 +296,12 @@ const ChatList = ({ navigation }:any) => {
           <TouchableOpacity onPress={() => navigation.navigate('NewChat')}>
             <WriteIcon
               size={22}
-              color={primaryColor}
+              color={'white'}
             />
           </TouchableOpacity>
         </View>
         <SearchField
+          containerStyle={{ paddingHorizontal: 20, paddingVertical: 20 }}
           inputStyle={[InputStyles.text, styles.input]}
           iconStyle={styles.icon}
           placeholder="Search"
@@ -415,7 +417,7 @@ const ChatList = ({ navigation }:any) => {
           );
         }} 
       />
-    </SafeAreaView>
+    </View>
   )
 }
 

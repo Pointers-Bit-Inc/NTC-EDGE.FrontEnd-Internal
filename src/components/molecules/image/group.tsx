@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   border: {
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: 'white',
   },
   topPosition: {

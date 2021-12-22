@@ -6,7 +6,8 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  StatusBar
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
@@ -47,6 +48,7 @@ const styles = StyleSheet.create({
   outline: {
     borderWidth: 0,
     backgroundColor: '#F1F1F1',
+    borderRadius: 10,
   },
   icon: {
     fontSize: 16
@@ -229,6 +231,7 @@ const NewChat = ({ navigation }:any) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle={'dark-content'} />
       <View style={styles.header}>
         <View style={[styles.horizontal, { paddingVertical: 5 }]}>
           <TouchableOpacity onPress={onBack}>
@@ -240,30 +243,29 @@ const NewChat = ({ navigation }:any) => {
             <Text
               color={text.default}
               weight={'600'}
-              size={14}
+              size={16}
             >
               New message
             </Text>
           </View>
-          {
-            !!lodash.size(participants) && (
-              <TouchableOpacity disabled={nextLoading} onPress={onNext}>
-                {
-                  nextLoading ? (
-                    <ActivityIndicator color={text.default} size={'small'} />
-                  ) : (
-                    <Text
-                      weight={'600'}
-                      color={text.primary}
-                      size={14}
-                    >
-                      Next
-                    </Text>
-                  )
-                }
-              </TouchableOpacity>
-            )
-          }
+          <TouchableOpacity
+            disabled={!lodash.size(participants) || nextLoading}
+            onPress={onNext}
+          >
+            {
+              nextLoading ? (
+                <ActivityIndicator color={text.default} size={'small'} />
+              ) : (
+                <Text
+                  weight={'600'}
+                  color={!!lodash.size(participants) ? text.primary : text.default}
+                  size={14}
+                >
+                  Next
+                </Text>
+              )
+            }
+          </TouchableOpacity>
         </View>
         <SearchField
           inputStyle={[InputStyles.text, styles.input]}

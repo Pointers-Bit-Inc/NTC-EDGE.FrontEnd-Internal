@@ -12,6 +12,8 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: 'white',
   },
 });
 
@@ -20,7 +22,7 @@ const ProfileImage = ({
   name = '',
   size = 35,
   textSize = 14,
-  backgroundColor = primaryColor,
+  backgroundColor = '#42495B',
   style = {},
 }) => {
   if (image) {

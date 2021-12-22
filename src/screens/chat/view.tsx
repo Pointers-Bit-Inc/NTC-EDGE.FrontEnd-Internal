@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   useWindowDimensions,
+  StatusBar,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
@@ -27,7 +28,7 @@ import {
 import Text from '@components/atoms/text';
 import GroupImage from '@components/molecules/image/group';
 import { InputField } from '@components/molecules/form-fields';
-import { outline, text, button } from '@styles/color';
+import { outline, text, button, primaryColor } from '@styles/color';
 import { getChannelName } from 'src/utils/formatting';
 import InputStyles from 'src/styles/input-style';
 import {
@@ -41,7 +42,8 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 15,
-    paddingBottom: 0,
+    paddingTop: 60,
+    backgroundColor: primaryColor
   },
   horizontal: {
     flexDirection: 'row',
@@ -143,7 +145,7 @@ const ChatView = ({ navigation, route }:any) => {
       style={{ backgroundColor: 'white' }}
       renderLabel={({ route, focused, color }) => (
         <Text
-          color={color}
+          color={focused ? text.primary : color}
           size={16}
           weight={focused ? '600' : 'normal'}
         >
@@ -159,14 +161,17 @@ const ChatView = ({ navigation, route }:any) => {
   }, [selectedMessage])
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <StatusBar barStyle={'light-content'} />
       <View style={[styles.header, styles.horizontal]}>
         <TouchableOpacity onPress={onBack}>
           <ArrowLeftIcon
-            size={22}
+            type='arrow-left'
+            color={'white'}
+            size={18}
           />
         </TouchableOpacity>
-        <View style={{ paddingLeft: 10 }}>
+        <View style={{ paddingLeft: 15 }}>
           <GroupImage
             participants={otherParticipants}
             size={50}
@@ -175,7 +180,7 @@ const ChatView = ({ navigation, route }:any) => {
         </View>
         <View style={styles.info}>
           <Text
-            color={text.default}
+            color={'white'}
             weight={'500'}
             size={18}
             numberOfLines={1}
@@ -187,7 +192,7 @@ const ChatView = ({ navigation, route }:any) => {
           <View style={{ paddingRight: 5 }}>
             <PhoneIcon
               size={20}
-              color={text.primary}
+              color={'white'}
             />
           </View>
         </TouchableOpacity>
@@ -203,16 +208,7 @@ const ChatView = ({ navigation, route }:any) => {
           <View style={{ paddingHorizontal: 8 }}>
             <VideoIcon
               size={20}
-              color={text.primary}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View style={{ paddingLeft: 5 }}>
-            <MenuIcon
-              type={'more'}
-              size={22}
-              color={text.default}
+              color={'white'}
             />
           </View>
         </TouchableOpacity>
@@ -305,7 +301,7 @@ const ChatView = ({ navigation, route }:any) => {
           }
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   )
 }
 
