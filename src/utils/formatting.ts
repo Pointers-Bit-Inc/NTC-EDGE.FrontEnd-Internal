@@ -70,7 +70,6 @@ const getChatTimeString = (time:any) => {
 const chatSameDate = (time1:number, time2:number) => {
   const time1format = dayjs(time1 && new Date(time1 * 1000)).format('DD/MM/YY');
   const time2format = dayjs(time2 && new Date(time2 * 1000)).format('DD/MM/YY');
-  console.log(time1format, time2format);
   return time1format === time2format;
 }
 

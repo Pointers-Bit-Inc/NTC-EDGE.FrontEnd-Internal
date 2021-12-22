@@ -208,7 +208,7 @@ const List = () => {
         <TouchableOpacity
           onPress={() => {
             modalRef.current?.close();
-            unSendMessageForYou();
+            setTimeout(() => setShowAlert(true), 500);
           }}
         >
           <View style={[styles.button, { justifyContent: 'center' }]}>
@@ -224,7 +224,7 @@ const List = () => {
         <TouchableOpacity
           onPress={() => {
             modalRef.current?.close();
-            setTimeout(() => setShowAlert(true), 500);
+            setTimeout(() => unSendMessageEveryone(), 500);
           }}
         >
           <View style={[styles.button, { borderBottomWidth: 0, justifyContent: 'center' }]}>
@@ -248,15 +248,15 @@ const List = () => {
   }
 
   const unSendMessageEveryone = useCallback(
-    () => {
-      unSendEveryone(message._id, channelId);
-      setTimeout(() => setShowAlert(false), 500);
-    },
+    () => unSendEveryone(message._id, channelId),
     [message, channelId]
   );
 
   const unSendMessageForYou = useCallback(
-    () => unSendForYou(message._id),
+    () => {
+      setShowAlert(false)
+      setTimeout(() => unSendForYou(message._id), 500);
+    },
     [message]
   );
 
@@ -304,7 +304,7 @@ const List = () => {
         cancelText="Cancel"
         confirmText="Unsend"
         onCancelPressed={() => setShowAlert(false)}
-        onConfirmPressed={unSendMessageEveryone}
+        onConfirmPressed={unSendMessageForYou}
       />
     </>
   )
