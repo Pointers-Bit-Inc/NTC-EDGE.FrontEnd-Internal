@@ -5,6 +5,7 @@ const InitialState = Record({
   agora: {},
   channelList: [],
   messages: [],
+  selectedMessage: {},
 });
 
 export default InitialState;

@@ -91,6 +91,7 @@ const ChatList: FC<Props> = ({
               onLongPress={() => showOption(item)}
               deleted={item.deleted}
               unSend={item.unSend}
+              edited={item.edited}
             />
           ) : (
             <ChatBubble
@@ -106,6 +107,7 @@ const ChatList: FC<Props> = ({
               onLongPress={() => showOption(item)}
               deleted={item.deleted}
               unSend={item.unSend}
+              edited={item.edited}
             />
           )
         }

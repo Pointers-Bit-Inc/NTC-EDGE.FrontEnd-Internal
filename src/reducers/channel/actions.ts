@@ -9,6 +9,9 @@ const {
   ADD_MESSAGES,
   UPDATE_MESSAGES,
   REMOVE_MESSAGES,
+
+  SET_SELECTED_MESSAGES,
+  REMOVE_SELECTED_MESSAGES,
 } = require('./types').default;
 
 interface ChannelProps {
@@ -34,6 +37,9 @@ interface MessageProps {
   message: string;
   seen: any;
   sender: any;
+  deleted: boolean;
+  unSend: boolean;
+  edited: boolean;
 }
 
 export function setSelectedChannel(payload:ChannelProps) {
@@ -96,6 +102,19 @@ export function removeMessages(payload:MessageProps) {
   return {
     type: REMOVE_MESSAGES,
     payload,
+  };
+}
+
+export function setSelectedMessage(payload:MessageProps) {
+  return {
+    type: SET_SELECTED_MESSAGES,
+    payload,
+  };
+}
+
+export function removeSelectedMessage() {
+  return {
+    type: REMOVE_SELECTED_MESSAGES,
   };
 }
 

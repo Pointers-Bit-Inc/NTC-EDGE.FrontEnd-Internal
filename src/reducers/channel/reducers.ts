@@ -10,6 +10,9 @@ const {
   ADD_MESSAGES,
   UPDATE_MESSAGES,
   REMOVE_MESSAGES,
+
+  SET_SELECTED_MESSAGES,
+  REMOVE_SELECTED_MESSAGES,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -56,6 +59,12 @@ export default function basket(state = initialState, action:any) {
     case REMOVE_MESSAGES: {
       const updatedList = lodash.reject(state.messages, ch => ch._id === action.payload);
       return state.setIn(['messages'], updatedList);
+    }
+    case SET_SELECTED_MESSAGES: {
+      return state.setIn(['selectedMessage'], action.payload);
+    }
+    case REMOVE_SELECTED_MESSAGES: {
+      return state.setIn(['selectedMessage'], {});
     }
     default:
       return state;

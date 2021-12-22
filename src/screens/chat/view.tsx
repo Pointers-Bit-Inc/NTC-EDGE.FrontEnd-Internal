@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useRef, useState, useCallback, useEffect } from 'react'
 import {
   StyleSheet,
   View,
@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
-import { useSelector, RootStateOrAny } from 'react-redux';
+import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
 import useFirebase from 'src/hooks/useFirebase';
 import ChatList from '@screens/chat/chat-list';
 import FileList from '@components/organisms/chat/files';
@@ -19,6 +19,7 @@ import {
   VideoIcon,
   MenuIcon,
   PlusIcon,
+  CheckIcon,
   CameraIcon,
   MicIcon,
 } from '@components/atoms/icon';
@@ -28,6 +29,9 @@ import { InputField } from '@components/molecules/form-fields';
 import { outline, text, button } from '@styles/color';
 import { getChannelName } from 'src/utils/formatting';
 import InputStyles from 'src/styles/input-style';
+import {
+  removeSelectedMessage
+} from 'src/reducers/channel/actions';
 
 const styles = StyleSheet.create({
   container: {
@@ -72,6 +76,15 @@ const styles = StyleSheet.create({
     marginRight: 15,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  circle: {
+    backgroundColor: button.primary,
+    borderRadius: 26,
+    width: 26,
+    height: 26,
+    marginLeft: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 
@@ -83,12 +96,15 @@ const renderScene = SceneMap({
 });
 
 const ChatView = ({ navigation, route }:any) => {
+  const dispatch = useDispatch();
+  const inputRef:any = useRef(null);
   const layout = useWindowDimensions();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { channelId, otherParticipants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
-  const { sendMessage } = useFirebase({
+  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
+  const { sendMessage, editMessage } = useFirebase({
     _id: user._id,
     name: user.name,
     firstname: user.firstname,
@@ -104,8 +120,13 @@ const ChatView = ({ navigation, route }:any) => {
   ]);
 
   const onSendMessage = useCallback(() => {
-    sendMessage(channelId, inputText);
-    setInputText('');
+    if (selectedMessage.message) {
+      editMessage(selectedMessage._id, inputText);
+      dispatch(removeSelectedMessage())
+    } else {
+      sendMessage(channelId, inputText);
+      setInputText('');
+    }
   }, [channelId, inputText])
 
   const onBack = () => navigation.goBack();
@@ -127,6 +148,11 @@ const ChatView = ({ navigation, route }:any) => {
       )}
     />
   );
+
+  useEffect(() => {
+    setInputText(selectedMessage?.message || '');
+    inputRef.current?.blur();
+  }, [selectedMessage])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -211,6 +237,7 @@ const ChatView = ({ navigation, route }:any) => {
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <InputField
+              ref={inputRef}
               placeholder={'Type a message'}
               inputStyle={[InputStyles.text, styles.input]}
               outlineStyle={[InputStyles.outlineStyle, styles.outline]}
@@ -220,22 +247,43 @@ const ChatView = ({ navigation, route }:any) => {
               returnKeyType={'send'}
             />
           </View>
-          <TouchableOpacity>
-            <View style={{ paddingLeft: 15 }}>
-              <CameraIcon
-                size={22}
-                color={text.default}
-              />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={{ paddingLeft: 15 }}>
-              <MicIcon
-                size={20}
-                color={text.default}
-              />
-            </View>
-          </TouchableOpacity>
+          {
+            !!selectedMessage.message ? (
+              <TouchableOpacity
+                onPress={() => {
+                  editMessage(selectedMessage._id, inputText);
+                  dispatch(removeSelectedMessage())
+                }}
+              >
+                <View style={styles.circle}>
+                  <CheckIcon
+                    type='check1'
+                    color="white"
+                    size={16}
+                  />
+                </View>
+              </TouchableOpacity>
+            ) : (
+              <>
+                <TouchableOpacity>
+                  <View style={{ paddingLeft: 15 }}>
+                    <CameraIcon
+                      size={22}
+                      color={text.default}
+                    />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <View style={{ paddingLeft: 15 }}>
+                    <MicIcon
+                      size={20}
+                      color={text.default}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </>
+            )
+          }
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

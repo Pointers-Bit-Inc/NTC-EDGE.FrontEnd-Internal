@@ -1,4 +1,10 @@
-import React, { useState, FC } from 'react';
+import React, {
+  useRef,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  ForwardRefRenderFunction,
+} from 'react';
 import { View, StyleSheet } from 'react-native';
 import { ExclamationIcon } from '@atoms/icon';
 import Text from '@atoms/text';
@@ -51,7 +57,11 @@ interface Props {
   [x: string]: any;
 }
 
-const InputField: FC<Props> = ({
+export type TextInputRef =  {
+  blur: () => void,
+}
+
+const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
   label = '',
   placeholder = '',
   secureTextEntry = false,
@@ -67,11 +77,14 @@ const InputField: FC<Props> = ({
   activeColor,
   requiredColor,
   ...otherProps
-}) => {
+}, ref) => {
+  const inputRef:any = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
   const onFocus = () => setIsFocused(true);
   const onBlur = () => setIsFocused(false);
-
+  useImperativeHandle(ref, () => ({
+    blur: inputRef.current.blur,
+  }));
   return (
     <View style={[styles.container, containerStyle]}>
       {(isFocused || !!otherProps.value || !!error) && !!label && (
@@ -111,6 +124,7 @@ const InputField: FC<Props> = ({
         ]}
       >
         <TextInput
+          ref={inputRef}
           style={inputStyle}
           placeholder={placeholder || label}
           secureTextEntry={secureTextEntry}
@@ -151,4 +165,4 @@ const InputField: FC<Props> = ({
   );
 };
 
-export default InputField;
+export default forwardRef(InputField);

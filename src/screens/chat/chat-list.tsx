@@ -7,7 +7,13 @@ import lodash from 'lodash';
 import useFirebase from 'src/hooks/useFirebase';
 import { checkSeen } from 'src/utils/formatting';
 import { DeleteIcon, WriteIcon } from '@components/atoms/icon';
-import { setMessages, addMessages, updateMessages, removeMessages } from 'src/reducers/channel/actions';
+import {
+  setMessages,
+  addMessages,
+  updateMessages,
+  removeMessages,
+  setSelectedMessage
+} from 'src/reducers/channel/actions';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import Text from '@atoms/text';
 import Button from '@components/atoms/button';
@@ -69,7 +75,7 @@ const List = () => {
   const user = useSelector((state:RootStateOrAny) => state.user);
   const messages = useSelector((state:RootStateOrAny) => {
     const { messages } = state.channel;
-    const sortedMessages = lodash.orderBy(messages, 'updatedAt', 'desc');
+    const sortedMessages = lodash.orderBy(messages, 'createdAt', 'desc');
     return sortedMessages;
   });
   const { channelId, isGroup, lastMessage, otherParticipants } = useSelector(
@@ -164,6 +170,7 @@ const List = () => {
       <>
         <TouchableOpacity
           onPress={() => {
+            dispatch(setSelectedMessage(message));
             modalRef.current?.close();
           }}
         >

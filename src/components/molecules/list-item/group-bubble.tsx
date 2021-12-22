@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react'
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
-import { CheckIcon, DeleteIcon } from '@components/atoms/icon';
+import { CheckIcon, DeleteIcon, WriteIcon } from '@components/atoms/icon';
 import { getChatTimeString } from 'src/utils/formatting'
 import { primaryColor, bubble, text, outline } from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
@@ -73,6 +73,7 @@ interface Props {
   onLongPress?: any;
   deleted?: boolean;
   unSend?: boolean;
+  edited?: boolean;
   [x: string]: any;
 }
 
@@ -90,6 +91,7 @@ const ChatBubble:FC<Props> = ({
   onLongPress,
   deleted = false,
   unSend = false,
+  edited = false,
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -131,6 +133,17 @@ const ChatBubble:FC<Props> = ({
                 textSize={10}
               />
             ) : null
+          }
+          {
+            (edited && isSender && !(deleted || unSend)) && (
+              <View style={{ alignSelf: 'center', marginRight: -5 }}>
+                <WriteIcon
+                  type='pen'
+                  color={text.primary}
+                  size={14}
+                />
+              </View>
+            )
           }
           <View style={{ marginLeft: 10 }}>
             {
@@ -182,6 +195,17 @@ const ChatBubble:FC<Props> = ({
               }
             </View>
           </View>
+          {
+            (edited && !isSender && !(deleted || unSend)) && (
+              <View style={{ alignSelf: 'center', marginTop: 10, marginLeft: 5 }}>
+                <WriteIcon
+                  type='pen'
+                  color={text.default}
+                  size={14}
+                />
+              </View>
+            )
+          }
           {
             (!lodash.size(seenByOthers) && isSender) && (
               <View

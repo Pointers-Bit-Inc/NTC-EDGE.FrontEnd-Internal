@@ -279,6 +279,14 @@ const useFirebase = (user:any) => {
         participants: filterParticipants,
       });
   }, [user]);
+  
+  const editMessage = useCallback(async (messageId, message) => {
+    await updateDoc(doc(firestore.current, "messages", messageId), {
+      updatedAt: firestore.FieldValue.serverTimestamp(),
+      edited: true,
+      message,
+    });
+  }, [user]);
 
   return {
     initializeFirebaseApp,
@@ -295,7 +303,8 @@ const useFirebase = (user:any) => {
     seenChannel,
     unSendEveryone,
     unSendForYou,
-    leaveChannel
+    leaveChannel,
+    editMessage
   }
 }
 

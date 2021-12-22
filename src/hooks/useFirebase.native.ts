@@ -184,6 +184,7 @@ const useFirebase = (user:any) => {
         sender: user,
         deleted: false,
         unSend: false,
+        edited: false,
       });
     await firestore()
       .collection('channels')
@@ -258,6 +259,17 @@ const useFirebase = (user:any) => {
       });
   }, [user]);
 
+  const editMessage = useCallback(async (messageId, message) => {
+    await firestore()
+      .collection('messages')
+      .doc(messageId)
+      .update({
+        updatedAt: firestore.FieldValue.serverTimestamp(),
+        edited: true,
+        message,
+      });
+  }, [user]);
+
   return {
     channelSubscriber,
     messagesSubscriber,
@@ -271,7 +283,8 @@ const useFirebase = (user:any) => {
     seenChannel,
     unSendEveryone,
     unSendForYou,
-    leaveChannel
+    leaveChannel,
+    editMessage
   }
 }
 

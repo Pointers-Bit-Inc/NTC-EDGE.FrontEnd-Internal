@@ -11,4 +11,7 @@ export default keyMirror({
   ADD_MESSAGES: null,
   UPDATE_MESSAGES: null,
   REMOVE_MESSAGES: null,
+
+  SET_SELECTED_MESSAGES: null,
+  REMOVE_SELECTED_MESSAGES: null,
 });
