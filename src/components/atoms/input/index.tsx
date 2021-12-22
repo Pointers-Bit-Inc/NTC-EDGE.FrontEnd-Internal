@@ -32,7 +32,7 @@ interface Props {
 }
 
 export type TextInputRef =  {
-  blur: () => void,
+  blur: any,
 }
 
 const Input: ForwardRefRenderFunction<TextInputRef, Props> = ({

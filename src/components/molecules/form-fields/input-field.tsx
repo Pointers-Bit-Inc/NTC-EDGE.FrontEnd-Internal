@@ -54,11 +54,13 @@ interface Props {
   errorColor?: string;
   activeColor?: string;
   requiredColor?: string;
+  onBlur?: () => void;
+  onFocus?: () => void;
   [x: string]: any;
 }
 
 export type TextInputRef =  {
-  blur: () => void,
+  blur: any,
 }
 
 const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
@@ -76,12 +78,20 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
   errorColor,
   activeColor,
   requiredColor,
+  onBlur = () => {},
+  onFocus = () => {},
   ...otherProps
 }, ref) => {
   const inputRef:any = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
-  const onFocus = () => setIsFocused(true);
-  const onBlur = () => setIsFocused(false);
+  const onFocusFN = () => {
+    setIsFocused(true)
+    onFocus();
+  };
+  const onBlurFN = () => {
+    setIsFocused(false)
+    onBlur();
+  };
   useImperativeHandle(ref, () => ({
     blur: inputRef.current.blur,
   }));
@@ -128,8 +138,8 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
           style={inputStyle}
           placeholder={placeholder || label}
           secureTextEntry={secureTextEntry}
-          onFocus={onFocus}
-          onBlur={onBlur}
+          onFocus={onFocusFN}
+          onBlur={onBlurFN}
           {...otherProps}
         />
       </View>

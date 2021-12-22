@@ -22,6 +22,7 @@ import {
   CheckIcon,
   CameraIcon,
   MicIcon,
+  SendIcon,
 } from '@components/atoms/icon';
 import Text from '@components/atoms/text';
 import GroupImage from '@components/molecules/image/group';
@@ -79,9 +80,9 @@ const styles = StyleSheet.create({
   },
   circle: {
     backgroundColor: button.primary,
-    borderRadius: 26,
-    width: 26,
-    height: 26,
+    borderRadius: 28,
+    width: 28,
+    height: 28,
     marginLeft: 15,
     justifyContent: 'center',
     alignItems: 'center',
@@ -114,17 +115,20 @@ const ChatView = ({ navigation, route }:any) => {
   });
   const [inputText, setInputText] = useState('');
   const [index, setIndex] = useState(0);
+  const [isFocused, setIsFocused] = useState(false);
   const [routes] = useState([
     { key: 'chat', title: 'Chat' },
     { key: 'files', title: 'Files' },
   ]);
 
   const onSendMessage = useCallback(() => {
-    if (selectedMessage.message) {
+    if (selectedMessage._id) {
       editMessage(selectedMessage._id, inputText);
+      inputRef.current?.blur();
       dispatch(removeSelectedMessage())
     } else {
       sendMessage(channelId, inputText);
+      inputRef.current?.blur();
       setInputText('');
     }
   }, [channelId, inputText])
@@ -245,10 +249,12 @@ const ChatView = ({ navigation, route }:any) => {
               onChangeText={setInputText}
               onSubmitEditing={onSendMessage}
               returnKeyType={'send'}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
             />
           </View>
           {
-            !!selectedMessage.message ? (
+            !!selectedMessage._id ? (
               <TouchableOpacity
                 onPress={() => {
                   editMessage(selectedMessage._id, inputText);
@@ -264,24 +270,37 @@ const ChatView = ({ navigation, route }:any) => {
                 </View>
               </TouchableOpacity>
             ) : (
-              <>
-                <TouchableOpacity>
-                  <View style={{ paddingLeft: 15 }}>
-                    <CameraIcon
-                      size={22}
-                      color={text.default}
+              isFocused ? (
+                <TouchableOpacity
+                  onPress={onSendMessage}
+                >
+                  <View style={{ marginLeft: 15 }}>
+                    <SendIcon
+                      color={text.primary}
+                      size={28}
                     />
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                  <View style={{ paddingLeft: 15 }}>
-                    <MicIcon
-                      size={20}
-                      color={text.default}
-                    />
-                  </View>
-                </TouchableOpacity>
-              </>
+              ) : (
+                <>
+                  <TouchableOpacity>
+                    <View style={{ paddingLeft: 15 }}>
+                      <CameraIcon
+                        size={22}
+                        color={text.default}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <View style={{ paddingLeft: 15 }}>
+                      <MicIcon
+                        size={20}
+                        color={text.default}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </>
+              )
             )
           }
         </View>
