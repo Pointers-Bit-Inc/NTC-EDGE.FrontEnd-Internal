@@ -145,7 +145,11 @@ const ChatBubble:FC<Props> = ({
                     size={14}
                     color={'#979797'}
                   >
-                    {`${isSender ? 'You' : sender.firstname } deleted a message`}
+                    {
+                      (unSend && isSender) ?
+                      'Unsent for you'
+                      : `${isSender ? 'You' : sender.firstname } deleted a message`
+                    }
                   </Text>
                 </>
               ) : (
