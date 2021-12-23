@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { View, TouchableOpacity, StyleSheet, FlatList, Dimensions } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -7,7 +7,6 @@ import lodash from 'lodash';
 import useFirebase from 'src/hooks/useFirebase';
 import { checkSeen } from 'src/utils/formatting';
 import { DeleteIcon, WriteIcon } from '@components/atoms/icon';
-import { useNavigation } from '@react-navigation/native';
 import {
   setMessages,
   addMessages,
@@ -15,15 +14,11 @@ import {
   removeMessages,
   setSelectedMessage
 } from 'src/reducers/channel/actions';
-import { setMeetings, addMeeting, removeMeeting, updateMeeting, setMeetingId } from 'src/reducers/meeting/actions';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import Text from '@atoms/text';
 import Button from '@components/atoms/button';
 import ChatList from '@components/organisms/chat/list';
-import { MeetingNotif } from '@components/molecules/list-item';
 import { primaryColor, outline, text, button } from '@styles/color';
-
-const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   button: {
@@ -75,11 +70,9 @@ const styles = StyleSheet.create({
 })
 
 const List = () => {
-  const navigation = useNavigation();
   const dispatch = useDispatch();
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const meetingList = useSelector((state:RootStateOrAny) => state.meeting.list);
   const messages = useSelector((state:RootStateOrAny) => {
     const { messages } = state.channel;
     const sortedMessages = lodash.orderBy(messages, 'createdAt', 'desc');
@@ -167,40 +160,6 @@ const List = () => {
     });
     return () => unsubscriber();
   }, [])
-
-  useEffect(() => {
-    dispatch(setMeetings([]));
-    if (channelId) {
-      const unsubscriber = channelMeetingSubscriber(channelId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
-        querySnapshot.docChanges().forEach((change:any) => {
-          const data = change.doc.data();
-          data._id = change.doc.id;
-          switch(change.type) {
-            case 'added': {
-              const hasSave = lodash.find(meetingList, (ch:any) => ch._id === data._id);
-              if (!hasSave) {
-                dispatch(addMeeting(data));
-              }
-              return;
-            }
-            case 'modified': {
-              dispatch(updateMeeting(data));
-              return;
-            }
-            case 'removed': {
-              dispatch(removeMeeting(data._id));
-              return;
-            }
-            default:
-              return;
-          }
-        });
-      })
-      return () => {
-        unsubscriber();
-      }
-    }
-  }, [channelId]);
 
   const showOption = (item) => {
     setMessage(item);
@@ -309,38 +268,8 @@ const List = () => {
     [message]
   );
 
-  const onJoin = (item) => {
-    dispatch(setMeetingId(item._id));
-    navigation.navigate('Dial', {
-      isHost: item.host._id === user._id,
-      options: {
-        isMute: false,
-        isVideoEnable: true,
-      }
-    });
-  }
-
   return (
     <>
-      <View>
-        {
-          !!lodash.size(meetingList) && (
-            <FlatList
-              data={meetingList}
-              horizontal
-              keyExtractor={(item:any) => item._id}
-              renderItem={({ item }) => (
-                <MeetingNotif
-                  style={{ width }}
-                  name={item.channelName}
-                  time={item.createdAt}
-                  onJoin={() => onJoin(item)}
-                />
-              )}
-            />
-          )
-        }
-      </View>
       <ChatList
         user={user}
         messages={messages}

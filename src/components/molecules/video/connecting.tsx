@@ -18,7 +18,7 @@ const ConnectingVideo = ({ participants = [], callEnded = false }) => {
       <GroupImage
         participants={participants}
         size={80}
-        textSize={18}
+        textSize={24}
       />
       <View
         style={{

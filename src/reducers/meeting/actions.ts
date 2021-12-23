@@ -3,9 +3,11 @@ const {
   ADD_MEETING,
   UPDATE_MEETING,
   REMOVE_MEETING,
+  SET_MEETING,
   SET_MEETING_ID,
   SET_MEETING_PARTICIPANTS,
   ADD_MEETING_PARTICIPANTS,
+  UPDATE_MEETING_PARTICIPANTS,
   REMOVE_MEETING_PARTICIPANTS
 } = require('./types').default;
 
@@ -37,6 +39,13 @@ export function removeMeeting(payload) {
   };
 }
 
+export function setMeeting(payload) {
+  return {
+    type: SET_MEETING,
+    payload,
+  };
+}
+
 export function setMeetingId(payload) {
   return {
     type: SET_MEETING_ID,
@@ -54,6 +63,13 @@ export function setMeetingParticipants(payload) {
 export function addMeetingParticipants(payload) {
   return {
     type: ADD_MEETING_PARTICIPANTS,
+    payload,
+  };
+}
+
+export function updateMeetingParticipants(payload) {
+  return {
+    type: UPDATE_MEETING_PARTICIPANTS,
     payload,
   };
 }

@@ -16,6 +16,7 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
 import { setSelectedChannel, addChannel, updateChannel, removeChannel } from 'src/reducers/channel/actions';
+import { setMeetings } from 'src/reducers/meeting/actions';
 import { SearchField } from '@components/molecules/form-fields';
 import { ChatItem } from '@components/molecules/list-item';
 import { VideoIcon, WriteIcon, DeleteIcon } from '@components/atoms/icon';
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 20,
     backgroundColor: primaryColor,
-    paddingTop: 40,
+    paddingTop: 45,
   },
   titleContainer: {
     flex: 1,
@@ -318,6 +319,7 @@ const ChatList = ({ navigation }:any) => {
           <View style={{ alignItems: 'center' }}>
             <ActivityIndicator size={'small'} color={text.default} />
             <Text
+              style={{ marginTop: 10 }}
               size={14}
               color={text.default}
             >
@@ -344,6 +346,7 @@ const ChatList = ({ navigation }:any) => {
                   time={getTimeString(item?.updatedAt?.seconds)}
                   onPress={() => {
                     dispatch(setSelectedChannel(item));
+                    dispatch(setMeetings([]));
                     navigation.navigate('ViewChat', item)
                   }}
                 />

@@ -22,7 +22,6 @@ import ProfileImage from '@components/atoms/image/profile';
 import Text from '@components/atoms/text';
 import { text } from '@styles/color';
 import VideoButtons from '@components/molecules/video/buttons'
-import { agoraTestConfig } from 'src/services/config'
 const { width, height } = Dimensions.get('window');
 
 const AgoraLocalView =
@@ -97,6 +96,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.1)',
   },
   videoList: {
     position: 'absolute',
@@ -181,6 +182,16 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     options: options,
   })
 
+  useImperativeHandle(ref, () => ({
+    joinSucceed,
+    isMute,
+    isSpeakerEnable,
+    isVideoEnable,
+    toggleIsMute,
+    toggleIsSpeakerEnable,
+    toggleIsVideoEnable,
+  }));
+
   useEffect(() => {
     if (!loading && agora.appId) {
       initAgora();
@@ -198,37 +209,23 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     if (meetingParticipants) {
       const findFocus = lodash.find(meetingParticipants, p => p.isFocused);
       if (findFocus) {
+        const filterPeer = lodash.reject(peerIds, p => p === findFocus.uid);
         setSelectedPeer(findFocus.uid);
+        setPeerList(filterPeer);
       } else {
+        const filterPeer = lodash.reject(peerIds, p => p === myId);
         setSelectedPeer(myId);
+        setPeerList(filterPeer);
       }
     }
   }, [meetingParticipants, peerIds])
-
-  useEffect(() => {
-    if (selectedPeer) {
-      const filterPeer = lodash.reject(peerIds, p => p === selectedPeer);
-      setPeerList(filterPeer);
-    } else {
-      const filterPeer = lodash.reject(peerIds, p => p === myId);
-      setPeerList(filterPeer);
-    }
-  }, [selectedPeer, peerIds]);
-  useImperativeHandle(ref, () => ({
-    joinSucceed,
-    isMute,
-    isSpeakerEnable,
-    isVideoEnable,
-    toggleIsMute,
-    toggleIsSpeakerEnable,
-    toggleIsVideoEnable,
-  }));
 
   const separator = () => (
     <View style={{ width: 15 }} />
   );
   
   const fullVideo = (isFocused) => {
+    const findParticipant = lodash.find(meetingParticipants, p => p.uid === selectedPeer);
     if (isFocused) {
       return (
         <View style={styles.fullVideo}>
@@ -249,6 +246,18 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             )
           }
           {
+          isVideoEnable ? null : (
+            <Text
+              style={styles.name}
+              numberOfLines={1}
+              size={16}
+              color={'white'}
+            >
+              {findParticipant.firstName}
+            </Text>
+          )
+        }
+          {
             isMute ? (
               <MicIcon
                 style={[styles.mic, { top: 120, left: 20 }]}
@@ -261,7 +270,6 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
         </View>
       );
     }
-    const findParticipant = lodash.find(meetingParticipants, p => p.uid === selectedPeer);
     return (
       <View style={styles.fullVideo}>
         {
@@ -277,21 +285,22 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               image={findParticipant.image}
               name={`${findParticipant.firstName} ${findParticipant.lastName}`}
               size={80}
-              textSize={16}
+              textSize={24}
             />
           )
         }
-        <Text
-          style={
-            peerVideoState[selectedPeer] === VideoRemoteState.Decoding ?
-            styles.floatingName : styles.name
-          }
-          numberOfLines={1}
-          size={18}
-          color={'white'}
-        >
-          {findParticipant.firstName}
-        </Text>
+        {
+          peerVideoState[selectedPeer] === VideoRemoteState.Decoding ? null : (
+            <Text
+              style={styles.name}
+              numberOfLines={1}
+              size={16}
+              color={'white'}
+            >
+              {findParticipant.firstName}
+            </Text>
+          )
+        }
         {
           peerAudioState[selectedPeer] === 0 ? (
             <MicIcon
@@ -305,7 +314,6 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
       </View>
     )
   }
-  
   const renderItem = ({ item }) => {
     const findParticipant = lodash.find(meetingParticipants, p => p.uid === item);
     if (findParticipant) {

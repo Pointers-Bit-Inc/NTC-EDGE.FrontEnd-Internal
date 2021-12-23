@@ -1,16 +1,24 @@
-import React from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-  ScrollView,
+  ActivityIndicator,
   StatusBar,
+  FlatList,
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { useSelector, RootStateOrAny } from 'react-redux'
+import lodash from 'lodash';
+import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
+import { addMeeting, removeMeeting, updateMeeting, setMeetingId } from 'src/reducers/meeting/actions';
+import { setSelectedChannel } from 'src/reducers/channel/actions';
+import useFirebase from 'src/hooks/useFirebase';
 import ProfileImage from '@components/atoms/image/profile'
+import Meeting from '@components/molecules/list-item/meeting';
 import Text from '@components/atoms/text'
+import { getChannelName, getDayMonthString } from 'src/utils/formatting';
 import { PeopleIcon, CalendarIcon, VideoIcon } from '@atoms/icon';
 import { text, outline, primaryColor } from 'src/styles/color';
 import Button from '@components/atoms/button';
@@ -27,7 +35,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 45,
     paddingBottom: 20,
     backgroundColor: primaryColor
   },
@@ -77,7 +85,96 @@ const styles = StyleSheet.create({
 })
 
 const Meet = ({ navigation }) => {
+  const dispatch = useDispatch();
+  useRequestCameraAndAudioPermission();
   const user = useSelector((state:RootStateOrAny) => state.user);
+  const meetingList = useSelector((state:RootStateOrAny) => {
+    const { list } = state.meeting;
+    const sortedMeeting = lodash.orderBy(list, 'updatedAt', 'desc');
+    return sortedMeeting;
+  });
+  const { userMeetingSubscriber } = useFirebase({
+    _id: user._id,
+    name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    image: user.image,
+  });
+  const [loading, setLoading] = useState(false);
+
+  const onJoin = (item) => {
+    dispatch(setSelectedChannel(item.channel));
+    dispatch(setMeetingId(item._id));
+    navigation.navigate('Dial', {
+      isHost: item.host._id === user._id,
+      options: {
+        isMute: false,
+        isVideoEnable: true,
+      }
+    });
+  }
+
+  useEffect(() => {
+    setLoading(true);
+    const unsubscriber = userMeetingSubscriber((querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
+      setLoading(false);
+      querySnapshot.docChanges().forEach((change:any) => {
+        const data = change.doc.data();
+        data._id = change.doc.id;
+        switch(change.type) {
+          case 'added': {
+            const hasSave = lodash.find(meetingList, (ch:any) => ch._id === data._id);
+            if (!hasSave) {
+              dispatch(addMeeting(data));
+            }
+            return;
+          }
+          case 'modified': {
+            dispatch(updateMeeting(data));
+            return;
+          }
+          case 'removed': {
+            dispatch(removeMeeting(data._id));
+            return;
+          }
+          default:
+            return;
+        }
+      });
+    })
+    return () => {
+      unsubscriber();
+    }
+  }, []);
+
+  const emptyComponent = () => (
+    <View
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 30,
+      }}>
+      <Text
+        color={text.default}
+        size={14}
+      >
+        No meetings yet
+      </Text>
+    </View>
+  )
+
+  const renderItem = ({ item }) => {
+    return (
+      <Meeting
+        name={getChannelName(item)}
+        time={item.createdAt}
+        participants={lodash.take(item?.channel?.otherParticipants, 5)}
+        ended={item.ended}
+        onJoin={() => onJoin(item)}
+      />
+    )
+  }
 
   return (
     <View style={styles.container}>
@@ -97,86 +194,47 @@ const Meet = ({ navigation }) => {
             Meet
           </Text>
         </View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Participants')}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <VideoIcon
+              style={styles.icon}
+              color={'white'}
+              type='add'
+              size={28}
+            />
+            <Text
+              color={'white'}
+              weight='bold'
+              size={20}
+            >
+              Create
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
-      <ScrollView style={styles.scrollview}>
-        <View style={styles.content}>
-          <View style={styles.image} />
-          <View style={styles.section}>
+      {
+        loading ? (
+          <View style={{ alignItems: 'center', marginTop: 15 }}>
+            <ActivityIndicator size={'small'} color={text.default} />
             <Text
-              style={styles.text}
-              color={'black'}
-              weight={'bold'}
-              size={24}
+              style={{ marginTop: 10 }}
+              size={14}
+              color={text.default}
             >
-              Start a meeting
-            </Text>
-            <Text
-              style={styles.text}
-              color={'#606A80'}
-              weight={'600'}
-              size={18}
-            >
-              Get everyone together
+              Fetching meetings...
             </Text>
           </View>
-          <View style={styles.section}>
-            <Button
-              style={styles.button}
-              onPress={() => navigation.navigate('Participants')}
-            >
-              <View style={styles.buttonContainer}>
-                <VideoIcon
-                  style={styles.icon}
-                  color={text.primary}
-                  type='add'
-                  size={24}
-                />
-                <Text
-                  color={text.primary}
-                  weight='600'
-                  size={16}
-                >
-                  Create Meeting
-                </Text>
-              </View>
-            </Button>
-            <Button style={styles.button}>
-              <View style={styles.buttonContainer}>
-                <CalendarIcon
-                  style={styles.icon}
-                  color={text.primary}
-                  type='add'
-                  size={24}
-                />
-                <Text
-                  color={text.primary}
-                  weight='600'
-                  size={16}
-                >
-                  Schedule Meeting
-                </Text>
-              </View>
-            </Button>
-            <Button style={styles.button}>
-              <View style={styles.buttonContainer}>
-                <PeopleIcon
-                  style={styles.icon}
-                  color={text.primary}
-                  type='add'
-                  size={24}
-                />
-                <Text
-                  color={text.primary}
-                  weight='600'
-                  size={16}
-                >
-                  Join Meeting
-                </Text>
-              </View>
-            </Button>
-          </View>
-        </View>
-      </ScrollView>
+        ) : (
+          <FlatList
+            data={meetingList}
+            renderItem={renderItem}
+            keyExtractor={(item:any) => item._id}
+            ListEmptyComponent={emptyComponent}
+          />
+        )
+      }
     </View>
   )
 }

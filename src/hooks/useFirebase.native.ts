@@ -86,11 +86,6 @@ const useFirebase = (user:any) => {
     const unsubscribe = firestore()
       .collection('meetings')
       .where(
-        'ended',
-        '==',
-        false,
-      )
-      .where(
         'participantsId',
         'array-contains',
         user._id,
@@ -193,12 +188,14 @@ const useFirebase = (user:any) => {
             result._id = res.id;
             result.channelId = res.id;
             result.otherParticipants = getOtherParticipants(result.participants, user);
+            const channelData = result;
             result.hasSeen = checkSeen(result.seen, user);
             const meetingRef = firestore().collection('meetings').doc();
             await meetingRef.set({
+              channelId: result._id,
               channelName: channelName || initialChannelName,
               meetingId: meetingRef.id,
-              channelId: result._id,
+              channel: channelData,
               createdAt: serverTimeStamp,
               updatedAt: serverTimeStamp,
               endedAt: null,
@@ -206,6 +203,7 @@ const useFirebase = (user:any) => {
               host: user,
               participants: participantsWithUser,
               participantsId: participantsId,
+              meetingParticipants: [],
             });
             result.meetingId = meetingRef.id;
             return callback(null, result);
@@ -352,15 +350,16 @@ const useFirebase = (user:any) => {
   }, [user]);
 
   const joinMeeting = useCallback(async (meetingId, uid, isFocused = false) => {
+    const data = {
+      isFocused,
+      uid,
+      ...user,
+    }
     await firestore()
-      .collection('joinMeetings')
-      .add({
-        createdAt: firestore.FieldValue.serverTimestamp(),
-        updatedAt: firestore.FieldValue.serverTimestamp(),
-        meetingId,
-        isFocused,
-        uid,
-        ...user,
+      .collection('meetings')
+      .doc(meetingId)
+      .update({
+        meetingParticipants: firestore.FieldValue.arrayUnion(data),
       });
   }, [user]);
 

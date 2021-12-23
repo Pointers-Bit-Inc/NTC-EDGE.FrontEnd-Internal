@@ -97,6 +97,23 @@ const getOtherParticipants = (participants = [], user:any) => {
   );
 }
 
+const getTimerString = (time:number) => {
+  var mins = ~~((time % 3600) / 60);
+    var secs = ~~time % 60;
+    var format = "";
+    format += (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "");
+    format += "" + secs;
+    return format;
+}
+
+const getDayMonthString = (time:number) => {
+  if (time) {
+    const dateTime = dayjs(new Date(time * 1000));
+    return dateTime.format('MM/DD');
+  }
+  return '';
+}
+
 export {
   getInitial,
   getChannelName,
@@ -107,4 +124,6 @@ export {
   checkSeen,
   getOtherParticipants,
   getDateTimeString,
+  getTimerString,
+  getDayMonthString,
 }

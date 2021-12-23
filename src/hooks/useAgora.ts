@@ -57,7 +57,6 @@ export const useInitializeAgora = ({
     await rtcEngine.current?.setEnableSpeakerphone(true);
 
     rtcEngine.current?.addListener('UserJoined', (uid) => {
-      console.log('USER JOINED');
       setPeerIds(peerIdsLocal => {
         if (peerIdsLocal.indexOf(uid) === -1) {
           return [...peerIdsLocal, uid];

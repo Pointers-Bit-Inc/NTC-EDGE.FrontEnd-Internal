@@ -7,10 +7,15 @@ import {
   Platform,
   useWindowDimensions,
   StatusBar,
+  Dimensions,
+  FlatList,
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import lodash from 'lodash';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
+import { setMeetings, addMeeting, removeMeeting, updateMeeting, setMeetingId } from 'src/reducers/meeting/actions';
+import { MeetingNotif } from '@components/molecules/list-item';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import useFirebase from 'src/hooks/useFirebase';
 import ChatList from '@screens/chat/chat-list';
 import FileList from '@components/organisms/chat/files';
@@ -34,6 +39,7 @@ import InputStyles from 'src/styles/input-style';
 import {
   removeSelectedMessage
 } from 'src/reducers/channel/actions';
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -42,7 +48,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 15,
-    paddingTop: 40,
+    paddingTop: 45,
     backgroundColor: primaryColor
   },
   horizontal: {
@@ -88,6 +94,12 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  floatingNotif: {
+    width,
+    position: 'absolute',
+    top: 110,
+    zIndex: 9,
   }
 });
 
@@ -103,11 +115,12 @@ const ChatView = ({ navigation, route }:any) => {
   const inputRef:any = useRef(null);
   const layout = useWindowDimensions();
   const user = useSelector((state:RootStateOrAny) => state.user);
+  const meetingList = useSelector((state:RootStateOrAny) => state.meeting.list);
   const { channelId, otherParticipants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
-  const { sendMessage, editMessage } = useFirebase({
+  const { sendMessage, editMessage, channelMeetingSubscriber } = useFirebase({
     _id: user._id,
     name: user.name,
     firstName: user.firstName,
@@ -155,10 +168,58 @@ const ChatView = ({ navigation, route }:any) => {
     />
   );
 
+  const onJoin = (item) => {
+    dispatch(setMeetingId(item._id));
+    navigation.navigate('Dial', {
+      isHost: item.host._id === user._id,
+      options: {
+        isMute: false,
+        isVideoEnable: true,
+      }
+    });
+  }
+
+  const onClose = (item) => {
+    dispatch(removeMeeting(item._id));
+  }
+
   useEffect(() => {
     setInputText(selectedMessage?.message || '');
     inputRef.current?.blur();
-  }, [selectedMessage])
+  }, [selectedMessage]);
+
+  useEffect(() => {
+    if (channelId) {
+      const unsubscriber = channelMeetingSubscriber(channelId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
+        querySnapshot.docChanges().forEach((change:any) => {
+          const data = change.doc.data();
+          data._id = change.doc.id;
+          switch(change.type) {
+            case 'added': {
+              const hasSave = lodash.find(meetingList, (ch:any) => ch._id === data._id);
+              if (!hasSave) {
+                dispatch(addMeeting(data));
+              }
+              return;
+            }
+            case 'modified': {
+              dispatch(updateMeeting(data));
+              return;
+            }
+            case 'removed': {
+              dispatch(removeMeeting(data._id));
+              return;
+            }
+            default:
+              return;
+          }
+        });
+      })
+      return () => {
+        unsubscriber();
+      }
+    }
+  }, [channelId]);
 
   return (
     <View style={styles.container}>
@@ -196,16 +257,7 @@ const ChatView = ({ navigation, route }:any) => {
             />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Dial',
-          {
-            isHost: false,
-            options: {
-              isMute: true,
-              isVideoEnable: true,
-            }
-          })
-        }>
+        <TouchableOpacity>
           <View style={{ paddingHorizontal: 8 }}>
             <VideoIcon
               size={20}
@@ -213,6 +265,27 @@ const ChatView = ({ navigation, route }:any) => {
             />
           </View>
         </TouchableOpacity>
+      </View>
+      <View style={styles.floatingNotif}>
+        {
+          !!lodash.size(meetingList) && (
+            <FlatList
+              data={meetingList}
+              bounces={false}
+              horizontal
+              keyExtractor={(item:any) => item._id}
+              renderItem={({ item }) => (
+                <MeetingNotif
+                  style={{ width }}
+                  name={getChannelName(item)}
+                  time={item.createdAt}
+                  onJoin={() => onJoin(item)}
+                  onClose={() => onClose(item)}
+                />
+              )}
+            />
+          )
+        }
       </View>
       <View style={{ flex: 1 }}>
         <TabView
@@ -222,7 +295,6 @@ const ChatView = ({ navigation, route }:any) => {
           initialLayout={{ width: layout.width }}
           renderTabBar={renderTabBar}
         />
-        {/*  */}
       </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}

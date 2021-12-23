@@ -4,9 +4,11 @@ const {
   ADD_MEETING,
   UPDATE_MEETING,
   REMOVE_MEETING,
+  SET_MEETING,
   SET_MEETING_ID,
   SET_MEETING_PARTICIPANTS,
   ADD_MEETING_PARTICIPANTS,
+  UPDATE_MEETING_PARTICIPANTS,
   REMOVE_MEETING_PARTICIPANTS,
 } = require('./types').default;
 
@@ -33,6 +35,10 @@ export default function basket(state = initialState, action = {}) {
       const updatedList = lodash.reject(state.list, l => l._id === action.payload);
       return state.setIn(['list'], updatedList);
     }
+    case SET_MEETING: {
+      return state.setIn(['meeting'], action.payload)
+      .setIn(['meetingParticipants'], action.payload.meetingParticipants);
+    }
     case SET_MEETING_ID: {
       return state.setIn(['meetingId'], action.payload);
     }
@@ -43,6 +49,11 @@ export default function basket(state = initialState, action = {}) {
       const list = lodash.clone(state.meetingParticipants);
       list.push(action.payload);
       return state.setIn(['meetingParticipants'], list);
+    }
+    case UPDATE_MEETING_PARTICIPANTS: {
+      const updatedList = lodash.reject(state.meetingParticipants, l => l._id === action.payload._id);
+      updatedList.push(action.payload);
+      return state.setIn(['meetingParticipants'], updatedList);
     }
     case REMOVE_MEETING_PARTICIPANTS: {
       const updatedList = lodash.reject(state.meetingParticipants, l => l._id === action.payload);

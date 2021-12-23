@@ -81,7 +81,7 @@ const MeetingNotif: FC<Props> = ({
           Join
         </Text>
       </Button>
-      {/* <Button
+      <Button
         style={styles.closeButton}
         onPress={onClose}
       >
@@ -91,7 +91,7 @@ const MeetingNotif: FC<Props> = ({
         >
           Close
         </Text>
-      </Button> */}
+      </Button>
     </View>
   )
 }

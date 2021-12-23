@@ -11,10 +11,13 @@ import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import lodash from 'lodash';
 import { ArrowLeftIcon, ChatIcon, PeopleIcon } from '@components/atoms/icon'
-import { setMeetingParticipants, addMeetingParticipants, removeMeetingParticipants } from 'src/reducers/meeting/actions';
+import {
+  setMeeting,
+  setMeetingParticipants,
+} from 'src/reducers/meeting/actions';
 import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
-import { getChannelName } from 'src/utils/formatting'
+import { getChannelName, getTimerString } from 'src/utils/formatting'
 import useFirebase from 'src/hooks/useFirebase';
 import useApi from 'src/services/api';
 
@@ -52,7 +55,7 @@ const Dial = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const api = useApi('');
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { meetingId, meetingParticipants } = useSelector((state:RootStateOrAny) => state.meeting);
+  const { meetingId, meeting, meetingParticipants } = useSelector((state:RootStateOrAny) => state.meeting);
   const { options, isHost = false } = route.params;
   const { channelId, isGroup, channelName, otherParticipants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
@@ -60,7 +63,6 @@ const Dial = ({ navigation, route }) => {
   const {
     joinMeeting,
     meetingSubscriber,
-    memberMeetingSubscriber,
     endMeeting
   } = useFirebase({
     _id: user._id,
@@ -72,16 +74,18 @@ const Dial = ({ navigation, route }) => {
   });
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
-  const [meeting, setMeeting]:any = useState({});
+  const [timer, setTimer] = useState(0);
 
   useEffect(() => {
     let unmounted = false;
+    console.log('CHANNELID', channelId);
     api.post('/meeting/token', {
       channelName: channelId,
       isHost,
     }).then((res) => {
       if (!unmounted) {
         setLoading(false);
+        dispatch(setMeetingParticipants([]));
         joinMeeting(meetingId, res.data.uid, isHost);
         setAgora(res.data);
       }
@@ -103,7 +107,7 @@ const Dial = ({ navigation, route }) => {
         querySnapshot.docChanges().forEach((change:any) => {
           const data = change.doc.data();
           data._id = change.doc.id;
-          setMeeting(data);
+          dispatch(setMeeting(data));
         });
       })
       return () => {
@@ -113,31 +117,14 @@ const Dial = ({ navigation, route }) => {
   }, [meetingId])
 
   useEffect(() => {
-    dispatch(setMeetingParticipants([]));
-    if (meetingId) {
-      const unsubscriber = memberMeetingSubscriber(meetingId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
-        querySnapshot.docChanges().forEach((change:any) => {
-          const data = change.doc.data();
-          data._id = change.doc.id;
-          switch(change.type) {
-            case 'removed': {
-              dispatch(removeMeetingParticipants(data._id));
-              return;
-            }
-            default:
-              const hasSave = lodash.find(meetingParticipants, (ch:any) => ch._id === data._id);
-              if (!hasSave) {
-                dispatch(addMeetingParticipants(data))
-              }
-              return;
-          }
-        });
-      })
-      return () => {
-        unsubscriber();
-      }
+    let interval:any = null;
+    if (!meeting.ended) {
+      interval = setInterval(() => {
+        setTimer(timer => timer + 1);
+      }, 1000);
     }
-  }, [meetingId])
+    return () => clearInterval(interval);
+  }, [meeting.ended]);
 
   useEffect(() => {
     let timeRef:any = null
@@ -146,6 +133,7 @@ const Dial = ({ navigation, route }) => {
     }
     return () => clearTimeout(timeRef);
   }, [meeting.ended]);
+
   const header = () => (
     <View style={styles.header}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -164,7 +152,7 @@ const Dial = ({ navigation, route }) => {
         <Text
           color='white'
         >
-          01:26
+          {getTimerString(timer)}
         </Text>
       </View>
       {/* <TouchableOpacity>

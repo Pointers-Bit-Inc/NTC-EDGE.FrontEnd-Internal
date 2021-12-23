@@ -136,11 +136,6 @@ const useFirebase = (user:any) => {
     const q = query(
       collection(firestore.current, "meetings"),
       where(
-        'ended',
-        '==',
-        false,
-      ),
-      where(
         'participantsId',
         'array-contains',
         user._id,
@@ -215,9 +210,12 @@ const useFirebase = (user:any) => {
     try {
       const participantsWithUser:any = _getParticipants(participants);
       const isGroup = lodash.size(participantsWithUser) > 2;
+      const initalChannelName = _getInitialChannelName(participantsWithUser);
+      const participantsId = _getParticipantsId(participantsWithUser);
+      
       const addRef = await addDoc(collection(firestore.current, "channels"), {
-        channelName: channelName || _getInitialChannelName(participantsWithUser),
-        participantsId: _getParticipantsId(participantsWithUser),
+        channelName: channelName || initalChannelName,
+        participantsId: participantsId,
         participants: participantsWithUser,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -235,18 +233,23 @@ const useFirebase = (user:any) => {
       data._id = addRef.id;
       data.channelId = addRef.id;
       data.otherParticipants = getOtherParticipants(data.participants, user);
+      const channelData = data;
       data.hasSeen = checkSeen(data.seen, user);
       const meetingRef = doc(firestore.current, 'meetings');
       await setDoc(
         meetingRef, {
-          meetingId: meetingRef.id,
           channelId: data._id,
+          channelName: channelName || initalChannelName,
+          meetingId: meetingRef.id,
+          channel: channelData,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
           endedAt: null,
           ended: false,
           host: user,
           participants: participantsWithUser,
+          participantsId: participantsId,
+          meetingParticipants: [],
         }
       );
       return callback(null, data);
@@ -370,13 +373,13 @@ const useFirebase = (user:any) => {
   }, [user]);
 
   const joinMeeting = useCallback(async (meetingId, uid, isFocused = false) => {
-    await addDoc(collection(firestore.current, "joinMeetings"), {
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-      meetingId,
+    const data = {
       isFocused,
       uid,
       ...user,
+    };
+    await updateDoc(doc(firestore.current, "meetings", meetingId), {
+      meetingParticipants: arrayUnion(data)
     });
   }, [user]);
 
