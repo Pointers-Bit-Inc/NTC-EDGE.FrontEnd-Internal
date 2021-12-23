@@ -202,12 +202,12 @@ const Meet = ({ navigation }) => {
               style={styles.icon}
               color={'white'}
               type='add'
-              size={28}
+              size={24}
             />
             <Text
               color={'white'}
               weight='bold'
-              size={20}
+              size={16}
             >
               Create
             </Text>

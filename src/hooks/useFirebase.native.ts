@@ -64,7 +64,6 @@ const useFirebase = (user:any) => {
   }, [user]);
 
   const channelMeetingSubscriber = useCallback((channelId:string, callback = () => {}) => {
-    console.log('CHANNEL ID', channelId);
     const unsubscribe = firestore()
       .collection('meetings')
       .where(
@@ -209,6 +208,51 @@ const useFirebase = (user:any) => {
             return callback(null, result);
           })
           .catch(err => callback(err));
+      })
+      .catch(err => callback(err));
+  }, [user]);
+
+  const initiateMeeting = useCallback(async (channelId, callback = () => {}) => {
+    const serverTimeStamp = firestore.FieldValue.serverTimestamp();
+    const channelRef = firestore().collection('channels').doc(channelId);
+    await channelRef
+      .update({
+        updatedAt: serverTimeStamp,
+        lastMessage: {
+          message: `Created a new meeting.`,
+          sender: user,
+        },
+        seen: [user],
+      })
+      .then(data => {
+        channelRef
+        .get()
+        .then(async (res) => {
+          const result:any = res.data();
+          result._id = res.id;
+          result.channelId = res.id;
+          result.otherParticipants = getOtherParticipants(result.participants, user);
+          const channelData = result;
+          result.hasSeen = checkSeen(result.seen, user);
+          const meetingRef = firestore().collection('meetings').doc();
+          await meetingRef.set({
+            channelId: result._id,
+            channelName: result.channelName,
+            meetingId: meetingRef.id,
+            channel: channelData,
+            createdAt: serverTimeStamp,
+            updatedAt: serverTimeStamp,
+            endedAt: null,
+            ended: false,
+            host: user,
+            participants: result.participants,
+            participantsId: result.participantsId,
+            meetingParticipants: [],
+          });
+          result.meetingId = meetingRef.id;
+          return callback(null, result);
+        })
+        .catch(err => callback(err));
       })
       .catch(err => callback(err));
   }, [user]);
@@ -383,6 +427,7 @@ const useFirebase = (user:any) => {
     memberMeetingSubscriber,
     createChannel,
     createMeeting,
+    initiateMeeting,
     deleteChannel,
     getChannel,
     getMessages,

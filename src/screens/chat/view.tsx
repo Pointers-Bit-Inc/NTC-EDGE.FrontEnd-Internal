@@ -116,7 +116,7 @@ const ChatView = ({ navigation, route }:any) => {
   const layout = useWindowDimensions();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const meetingList = useSelector((state:RootStateOrAny) => state.meeting.list);
-  const { channelId, otherParticipants } = useSelector(
+  const { channelId, otherParticipants, participants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
@@ -221,6 +221,17 @@ const ChatView = ({ navigation, route }:any) => {
     }
   }, [channelId]);
 
+  const onInitiateCall = (isVideoEnable = false) =>
+    navigation.navigate(
+      'InitiateVideoCall',
+      {
+        participants,
+        isVideoEnable,
+        isChannelExist: true,
+        channelId,
+      }
+    );
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
@@ -249,7 +260,7 @@ const ChatView = ({ navigation, route }:any) => {
             {getChannelName(route.params)}
           </Text>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => onInitiateCall(false)}>
           <View style={{ paddingRight: 5 }}>
             <PhoneIcon
               size={20}
@@ -257,7 +268,7 @@ const ChatView = ({ navigation, route }:any) => {
             />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => onInitiateCall(true)}>
           <View style={{ paddingHorizontal: 8 }}>
             <VideoIcon
               size={20}

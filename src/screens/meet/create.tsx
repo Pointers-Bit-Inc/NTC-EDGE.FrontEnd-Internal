@@ -76,8 +76,14 @@ const styles = StyleSheet.create({
 const CreateMeeting = ({ navigation, route }:any) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
-  const { participants = [] } = route.params;
-  const { createMeeting } = useFirebase({
+  const {
+    participants = [],
+    isChannelExist = false,
+    isVideoEnable = true,
+    isMute = false,
+    channelId,
+  } = route.params;
+  const { createMeeting, initiateMeeting } = useFirebase({
     _id: user._id,
     name: user.name,
     firstName: user.firstName,
@@ -87,25 +93,42 @@ const CreateMeeting = ({ navigation, route }:any) => {
   });
   const [loading, setLoading] = useState(false);
   const [meetingName, setMeetingName] = useState('');
-  const [videoOn, setVideoOn] = useState(true);
-  const [micOn, setMicOn] = useState(false);
+  const [videoOn, setVideoOn] = useState(isVideoEnable);
+  const [micOn, setMicOn] = useState(!isMute);
   const onBack = () => navigation.goBack();
   const onStartMeeting = () => {
     setLoading(true);
-    createMeeting({ participants, channelName: meetingName }, (error, data) => {
-      setLoading(false);
-      if (!error) {
-        dispatch(setSelectedChannel(data));
-        dispatch(setMeetingId(data.meetingId));
-        navigation.replace('VideoCall', {
-          isHost: true,
-          options: {
-            isMute: !micOn,
-            isVideoEnable: videoOn,
-          }
-        });
-      }
-    });
+    if (isChannelExist) {
+      initiateMeeting(channelId, (error, data) => {
+        setLoading(false);
+        if (!error) {
+          dispatch(setSelectedChannel(data));
+          dispatch(setMeetingId(data.meetingId));
+          navigation.replace('JoinVideoCall', {
+            isHost: true,
+            options: {
+              isMute: !micOn,
+              isVideoEnable: videoOn,
+            }
+          });
+        }
+      });
+    } else {
+      createMeeting({ participants, channelName: meetingName }, (error, data) => {
+        setLoading(false);
+        if (!error) {
+          dispatch(setSelectedChannel(data));
+          dispatch(setMeetingId(data.meetingId));
+          navigation.replace('VideoCall', {
+            isHost: true,
+            options: {
+              isMute: !micOn,
+              isVideoEnable: videoOn,
+            }
+          });
+        }
+      });
+    }
   };
 
   return (
@@ -128,14 +151,18 @@ const CreateMeeting = ({ navigation, route }:any) => {
             </Text>
           </View>
         </View>
-        <InputField
-          inputStyle={[InputStyles.text, styles.input]}
-          placeholder="Meeting name"
-          outlineStyle={[InputStyles.outlineStyle, styles.outline]}
-          value={meetingName}
-          onChangeText={setMeetingName}
-          onSubmitEditing={(event:any) => setMeetingName(event.nativeEvent.text)}
-        />
+        {
+          !isChannelExist && (
+            <InputField
+              inputStyle={[InputStyles.text, styles.input]}
+              placeholder="Meeting name"
+              outlineStyle={[InputStyles.outlineStyle, styles.outline]}
+              value={meetingName}
+              onChangeText={setMeetingName}
+              onSubmitEditing={(event:any) => setMeetingName(event.nativeEvent.text)}
+            />
+          )
+        }
         <View style={{ paddingTop: 20, paddingBottom: 60 }}>
           <View style={styles.section}>
             <Text

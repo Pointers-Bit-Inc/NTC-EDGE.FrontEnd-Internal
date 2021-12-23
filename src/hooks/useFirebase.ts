@@ -201,7 +201,6 @@ const useFirebase = (user:any) => {
       data.hasSeen = checkSeen(data.seen, user);
       return callback(null, data);
     } catch(e) {
-      console.log('ERROR', e);
       return callback(e);
     }
   }, [user]);
@@ -254,9 +253,50 @@ const useFirebase = (user:any) => {
       );
       return callback(null, data);
     } catch(e) {
-      console.log('ERROR', e);
       return callback(e);
     }
+  }, [user]);
+
+  const initiateMeeting = useCallback(async (channelId, callback = () => {}) => {
+    const channelRef = doc(firestore.current, "channels", channelId)
+    try {
+      await updateDoc(channelRef, {
+        updatedAt: serverTimestamp(),
+        lastMessage: {
+          message: `Created a new meeting.`,
+          sender: user,
+        },
+        seen: [user],
+      });
+      const docRef = await getDoc(channelRef);
+      const data:any = docRef.data();
+      data._id = channelRef.id;
+      data.channelId = channelRef.id;
+      data.otherParticipants = getOtherParticipants(data.participants, user);
+      const channelData = data;
+      data.hasSeen = checkSeen(data.seen, user);
+      const meetingRef = doc(firestore.current, 'meetings');
+      await setDoc(
+        meetingRef, {
+          channelId: data._id,
+          channelName: data.channelName,
+          meetingId: meetingRef.id,
+          channel: channelData,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          endedAt: null,
+          ended: false,
+          host: user,
+          participants: data.participants,
+          participantsId: data.participantsId,
+          meetingParticipants: [],
+        }
+      );
+      return callback(null, data);
+    } catch(e) {
+      return callback(e);
+    }
+
   }, [user]);
 
   const deleteChannel = useCallback(async (channelId) => {
@@ -402,6 +442,7 @@ const useFirebase = (user:any) => {
     memberMeetingSubscriber,
     createChannel,
     createMeeting,
+    initiateMeeting,
     deleteChannel,
     getChannel,
     getMessages,
