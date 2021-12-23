@@ -17,68 +17,13 @@ import EvaluationStatus from "@assets/svg/evaluationstatus";
 import CheckMarkIcon from "@assets/svg/checkmark";
 import DeclineStatusIcon from "@assets/svg/declineStatus";
 import {checkFormatIso, formatDate} from "@pages/activities/formatDate";
+import FileIcon from "@assets/svg/file";
+import {Activities} from "@pages/activities/interface";
+import SearchIcon from "@assets/svg/search";
 
 export default function ActivitiesPage() {
 
 
-    interface Barangay {
-        _id: string;
-        name: string;
-    }
-
-     interface City {
-        _id: string;
-        name: string;
-    }
-
-     interface Province {
-        _id: string;
-        name: string;
-    }
-
-     interface User {
-        _id: string;
-        contactNumber: string;
-        dateOfBirth: Date;
-        firstName: string;
-        gender: string;
-        lastName: string;
-        middleName: string;
-    }
-
-     interface Applicant {
-        _id: string;
-        barangay: Barangay;
-        category: string;
-        city: City;
-        courseTaken: string;
-        province: Province;
-        schoolAttended: string;
-        street: string;
-        unit: string;
-        user: User;
-        yearGraduated: string;
-        zipCode: string;
-    }
-
-     interface ActivityDetails {
-        applicant: Applicant;
-        applicationType: string;
-        dateTime: Date;
-        description: string;
-        status: string;
-        subject: string;
-    }
-
-     interface Activities {
-        __v: number;
-        _id: string;
-        activityDetails: ActivityDetails;
-        activityType: string;
-        createdAt: Date;
-        isPinned: boolean;
-        updatedAt: Date;
-    }
 
 
 const user = useSelector((state: RootStateOrAny) => state.user);
@@ -108,7 +53,6 @@ const user = useSelector((state: RootStateOrAny) => state.user);
     const [totalPages, setTotalPages] = useState(0)
     const [numberCollapsed, setNumberCollapsed] = useState<number[]>([])
     const [isPinnedActivity, setIsPinnedActivity] = useState(0)
-    const [isNotPinnedActivity, setIsNotPinnedActivity] = useState(0)
 
     const usersList = useMemo(() => {
         setTotalPages(Math.ceil(mockList.length / 10));
@@ -282,10 +226,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                         <View style={styles.rect26}>
                             <View style={styles.rect7}>
                                 <View style={styles.iconRow}>
-                                    <EvilIcons
-                                        name="search"
-                                        style={styles.icon}
-                                    ></EvilIcons>
+                                    <SearchIcon style={styles.icon}></SearchIcon>
                                     <TextInput
                                         placeholder="search"
                                         style={styles.textInput}
@@ -363,10 +304,8 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                                                                         </View>
                                                                         <View style={styles.group20}>
                                                                             <View style={styles.rect31}>
-                                                                                <Octicons
-                                                                                    name="file"
-                                                                                    style={styles.icon2}
-                                                                                />
+                                                                                <FileIcon width={13} height={13} style={styles.icon2}></FileIcon>
+
                                                                             </View>
                                                                         </View>
                                                                     </View>
@@ -546,10 +485,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                                                                                     </View>
                                                                                     <View style={styles.group20}>
                                                                                         <View style={styles.rect31}>
-                                                                                            <Octicons
-                                                                                                name="file"
-                                                                                                style={styles.icon2}
-                                                                                            />
+                                                                                            <FileIcon width={13} height={13} style={styles.icon2}></FileIcon>
                                                                                         </View>
                                                                                     </View>
                                                                                 </View>

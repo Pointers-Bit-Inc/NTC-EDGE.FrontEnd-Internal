@@ -1,6 +1,6 @@
 export  const formatDate = (date: string) => {
 
-    date = checkFormatIso(date)
+    date = !date.split("T") ? checkFormatIso(date) :  date
     let d = new Date(date),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
@@ -13,6 +13,7 @@ export  const formatDate = (date: string) => {
     return [year, month, day].join('/');
 }
 export const checkFormatIso = (date: string, separator?: string) => {
+
 
     let isoStringSplit = date.split("T")[0].split("-")
     let checkIfCorrectMonth = isoStringSplit[2],

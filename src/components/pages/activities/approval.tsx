@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {StyleSheet, View, Text, Modal, TouchableOpacity} from "react-native";
-import {MaterialCommunityIcons} from "@expo/vector-icons";
 import ApplicationApproved from "@assets/svg/application-approved";
 
 function Approval(props: any){
