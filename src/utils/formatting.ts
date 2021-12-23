@@ -67,6 +67,14 @@ const getChatTimeString = (time:any) => {
   return '';
 }
 
+const getDateTimeString = (time:any) => {
+  if (time) {
+    const dateTime = dayjs(new Date(time * 1000));
+    return dateTime.format('MMM. DD, hh:mm A');
+  }
+  return '';
+}
+
 const chatSameDate = (time1:number, time2:number) => {
   const time1format = dayjs(time1 && new Date(time1 * 1000)).format('DD/MM/YY');
   const time2format = dayjs(time2 && new Date(time2 * 1000)).format('DD/MM/YY');
@@ -98,4 +106,5 @@ export {
   chatSameDate,
   checkSeen,
   getOtherParticipants,
+  getDateTimeString,
 }

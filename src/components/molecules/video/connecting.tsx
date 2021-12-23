@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const ConnectingVideo = ({ participants = [] }) => {
+const ConnectingVideo = ({ participants = [], callEnded = false }) => {
   return (
     <View style={styles.container}>
       <GroupImage
@@ -27,20 +27,33 @@ const ConnectingVideo = ({ participants = [] }) => {
           flexDirection: 'row',
         }}
       >
-        <Text
-          size={14}
-          color='white'
-        >
-          Connecting
-        </Text>
-        <Loading
-          size={2}
-          space={1}
-          numberOfDots={3}
-          color={'white'}
-          speed={3000}
-          style={{ marginBottom: 4, marginLeft: 1 }}
-        />
+        {
+          callEnded ? (
+            <Text
+              size={14}
+              color='white'
+            >
+              Call ended
+            </Text>
+          ) : (
+            <>
+              <Text
+                size={14}
+                color='white'
+              >
+                Connecting
+              </Text>
+              <Loading
+                size={2}
+                space={1}
+                numberOfDots={3}
+                color={'white'}
+                speed={3000}
+                style={{ marginBottom: 4, marginLeft: 1 }}
+              />
+            </>
+          )
+        }
       </View>
     </View>
   )

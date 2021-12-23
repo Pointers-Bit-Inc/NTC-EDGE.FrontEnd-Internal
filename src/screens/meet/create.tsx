@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
+import { setMeetingId } from 'src/reducers/meeting/actions';
 import { outline, button, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
@@ -95,6 +96,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
       setLoading(false);
       if (!error) {
         dispatch(setSelectedChannel(data));
+        dispatch(setMeetingId(data.meetingId));
         navigation.replace('VideoCall', {
           isHost: true,
           options: {

@@ -77,6 +77,12 @@ export const useInitializeAgora = ({
       (channel, uid, elapsed) => {
         setMyId(uid);
         setJoinSucceed(true);
+        const hasAlreadyJoined = _.find(peerIds, id => id === uid);
+        if (!hasAlreadyJoined) {
+          setPeerIds(peerIdsLocal => {
+            return [...peerIdsLocal, uid];
+          });
+        }
       },
     );
 

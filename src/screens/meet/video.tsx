@@ -7,9 +7,11 @@ import {
   TouchableOpacity,
   Platform
 } from 'react-native'
-import { useSelector, RootStateOrAny } from 'react-redux'
-import { ArrowLeftIcon, ChatIcon, PeopleIcon } from '@components/atoms/icon'
+import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import lodash from 'lodash';
+import { ArrowLeftIcon, ChatIcon, PeopleIcon } from '@components/atoms/icon'
+import { setMeetingParticipants, addMeetingParticipants, removeMeetingParticipants } from 'src/reducers/meeting/actions';
 import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
 import { getChannelName } from 'src/utils/formatting'
@@ -47,13 +49,20 @@ const styles = StyleSheet.create({
 })
 
 const Dial = ({ navigation, route }) => {
-  const api = useApi();
+  const dispatch = useDispatch();
+  const api = useApi('');
   const user = useSelector((state:RootStateOrAny) => state.user);
+  const { meetingId, meetingParticipants } = useSelector((state:RootStateOrAny) => state.meeting);
   const { options, isHost = false } = route.params;
-  const { channelId, meetingId, isGroup, channelName, otherParticipants } = useSelector(
+  const { channelId, isGroup, channelName, otherParticipants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
-  const { joinMeeting, meetingSubscriber } = useFirebase({
+  const {
+    joinMeeting,
+    meetingSubscriber,
+    memberMeetingSubscriber,
+    endMeeting
+  } = useFirebase({
     _id: user._id,
     name: user.name,
     firstName: user.firstName,
@@ -63,6 +72,7 @@ const Dial = ({ navigation, route }) => {
   });
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
+  const [meeting, setMeeting]:any = useState({});
 
   useEffect(() => {
     let unmounted = false;
@@ -72,6 +82,7 @@ const Dial = ({ navigation, route }) => {
     }).then((res) => {
       if (!unmounted) {
         setLoading(false);
+        joinMeeting(meetingId, res.data.uid, isHost);
         setAgora(res.data);
       }
     })
@@ -86,6 +97,55 @@ const Dial = ({ navigation, route }) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (meetingId) {
+      const unsubscriber = meetingSubscriber(meetingId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
+        querySnapshot.docChanges().forEach((change:any) => {
+          const data = change.doc.data();
+          data._id = change.doc.id;
+          setMeeting(data);
+        });
+      })
+      return () => {
+        unsubscriber();
+      }
+    }
+  }, [meetingId])
+
+  useEffect(() => {
+    dispatch(setMeetingParticipants([]));
+    if (meetingId) {
+      const unsubscriber = memberMeetingSubscriber(meetingId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
+        querySnapshot.docChanges().forEach((change:any) => {
+          const data = change.doc.data();
+          data._id = change.doc.id;
+          switch(change.type) {
+            case 'removed': {
+              dispatch(removeMeetingParticipants(data._id));
+              return;
+            }
+            default:
+              const hasSave = lodash.find(meetingParticipants, (ch:any) => ch._id === data._id);
+              if (!hasSave) {
+                dispatch(addMeetingParticipants(data))
+              }
+              return;
+          }
+        });
+      })
+      return () => {
+        unsubscriber();
+      }
+    }
+  }, [meetingId])
+
+  useEffect(() => {
+    let timeRef:any = null
+    if (meeting.ended) {
+      timeRef = setTimeout(() => navigation.goBack(), 500);
+    }
+    return () => clearTimeout(timeRef);
+  }, [meeting.ended]);
   const header = () => (
     <View style={styles.header}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -126,6 +186,14 @@ const Dial = ({ navigation, route }) => {
     </View>
   )
 
+  const onEndCall = () => {
+    if (isHost) {
+      endMeeting(meetingId)
+    } else {
+      navigation.goBack();
+    }
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
@@ -135,7 +203,10 @@ const Dial = ({ navigation, route }) => {
         options={options}
         user={user}
         participants={otherParticipants}
+        meetingParticipants={meetingParticipants}
         agora={agora}
+        callEnded={meeting?.ended}
+        onEndCall={onEndCall}
       />
     </View>
   )

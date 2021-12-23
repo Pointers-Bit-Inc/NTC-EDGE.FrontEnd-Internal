@@ -4,6 +4,7 @@ import { persistReducer } from 'redux-persist';
 import user from './user/reducers';
 import theme from './theme/reducers';
 import channel from './channel/reducers';
+import meeting from './meeting/reducers';
 
 const persistConfig = {
   key: 'root',
@@ -14,4 +15,5 @@ export default combineReducers({
   user: persistReducer(persistConfig, user),
   theme,
   channel,
+  meeting,
 });

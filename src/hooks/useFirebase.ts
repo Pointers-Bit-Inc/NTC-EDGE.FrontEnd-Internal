@@ -113,13 +113,65 @@ const useFirebase = (user:any) => {
     return unsubscribe;
   }, [user]);
 
-  const meetingSubscriber = useCallback((channelId:string, callback = () => {}) => {
+  const channelMeetingSubscriber = useCallback((channelId:string, callback = () => {}) => {
     const q = query(
-      collection(firestore.current, "messages"),
+      collection(firestore.current, "meetings"),
+      where(
+        'ended',
+        '==',
+        false,
+      ),
       where(
         'channelId',
         '==',
         channelId,
+      ),
+      orderBy('createdAt', 'desc')
+    );
+    const unsubscribe = onSnapshot(q, callback);
+    return unsubscribe;
+  }, [user]);
+
+  const userMeetingSubscriber = useCallback((callback = () => {}) => {
+    const q = query(
+      collection(firestore.current, "meetings"),
+      where(
+        'ended',
+        '==',
+        false,
+      ),
+      where(
+        'participantsId',
+        'array-contains',
+        user._id,
+      ),
+      orderBy('createdAt', 'desc')
+    );
+    const unsubscribe = onSnapshot(q, callback);
+    return unsubscribe;
+  }, [user]);
+
+  const meetingSubscriber = useCallback((meetingId:string, callback = () => {}) => {
+    const q = query(
+      collection(firestore.current, "meetings"),
+      where(
+        'meetingId',
+        '==',
+        meetingId,
+      ),
+      orderBy('createdAt', 'desc')
+    );
+    const unsubscribe = onSnapshot(q, callback);
+    return unsubscribe;
+  }, [user]);
+
+  const memberMeetingSubscriber = useCallback((meetingId:string, callback = () => {}) => {
+    const q = query(
+      collection(firestore.current, "joinMeetings"),
+      where(
+        'meetingId',
+        '==',
+        meetingId,
       ),
       orderBy('createdAt', 'desc')
     );
@@ -184,14 +236,17 @@ const useFirebase = (user:any) => {
       data.channelId = addRef.id;
       data.otherParticipants = getOtherParticipants(data.participants, user);
       data.hasSeen = checkSeen(data.seen, user);
-      await addDoc(
-        collection(firestore.current, "meetings"), {
+      const meetingRef = doc(firestore.current, 'meetings');
+      await setDoc(
+        meetingRef, {
+          meetingId: meetingRef.id,
           channelId: data._id,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
           endedAt: null,
           ended: false,
-          joinedMembers: [],
+          host: user,
+          participants: participantsWithUser,
         }
       );
       return callback(null, data);
@@ -314,10 +369,23 @@ const useFirebase = (user:any) => {
     });
   }, [user]);
 
-  const joinMeeting = useCallback(async (meetingId, uid) => {
-    await updateDoc(doc(firestore.current, "meetingId", meetingId), {
-      joinedMembers: firestore.FieldValue.arrayUnion({ ...user, uid })
+  const joinMeeting = useCallback(async (meetingId, uid, isFocused = false) => {
+    await addDoc(collection(firestore.current, "joinMeetings"), {
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      meetingId,
+      isFocused,
+      uid,
+      ...user,
     });
+  }, [user]);
+
+  const endMeeting = useCallback(async (meetingId) => {
+    await updateDoc(doc(firestore.currnet, 'meetings', meetingId), {
+      updatedAt: serverTimestamp(),
+      endedAt: serverTimestamp(),
+      ended: true,
+    })
   }, [user]);
 
   return {
@@ -325,6 +393,10 @@ const useFirebase = (user:any) => {
     deleteFirebaseApp,
     channelSubscriber,
     messagesSubscriber,
+    channelMeetingSubscriber,
+    userMeetingSubscriber,
+    meetingSubscriber,
+    memberMeetingSubscriber,
     createChannel,
     createMeeting,
     deleteChannel,
@@ -338,7 +410,7 @@ const useFirebase = (user:any) => {
     leaveChannel,
     editMessage,
     joinMeeting,
-    meetingSubscriber
+    endMeeting,
   }
 }
 

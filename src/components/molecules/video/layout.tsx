@@ -1,5 +1,6 @@
 import React, {
   useEffect,
+  useState,
   ReactNode,
   FC,
   useImperativeHandle,
@@ -8,7 +9,6 @@ import React, {
 } from 'react'
 import { View, StyleSheet, FlatList, Dimensions, Platform } from 'react-native'
 import lodash from 'lodash';
-import { useNavigation } from '@react-navigation/native';
 import { useInitializeAgora } from 'src/hooks/useAgora';
 import { MicIcon } from '@components/atoms/icon';
 import {
@@ -84,6 +84,11 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: 'grey',
   },
+  fullVideo: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   smallVideo: {
     backgroundColor: '#606A80',
     width: width * 0.30,
@@ -122,10 +127,13 @@ const styles = StyleSheet.create({
 interface Props {
   loading?: boolean;
   participants?: [];
+  meetingParticipants?: [];
   user: any;
   options: any;
   header?: ReactNode;
   agora?: any;
+  callEnded?: false;
+  onEndCall?: () => void;
 }
 
 export type VideoLayoutRef =  {
@@ -141,12 +149,16 @@ export type VideoLayoutRef =  {
 const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   loading = false,
   participants = [],
+  meetingParticipants = [],
   user = {},
   options = {},
   header,
   agora = {},
+  callEnded = false,
+  onEndCall = () => {},
 }, ref) => {
-  const navigation = useNavigation();
+  const [selectedPeer, setSelectedPeer]:any = useState(null);
+  const [peerList, setPeerList]:any = useState([]);
   const {
     initAgora,
     destroyAgoraEngine,
@@ -182,6 +194,26 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     }
   }, [isInit, joinChannel]);
 
+  useEffect(() => {
+    if (meetingParticipants) {
+      const findFocus = lodash.find(meetingParticipants, p => p.isFocused);
+      if (findFocus) {
+        setSelectedPeer(findFocus.uid);
+      } else {
+        setSelectedPeer(myId);
+      }
+    }
+  }, [meetingParticipants, peerIds])
+
+  useEffect(() => {
+    if (selectedPeer) {
+      const filterPeer = lodash.reject(peerIds, p => p === selectedPeer);
+      setPeerList(filterPeer);
+    } else {
+      const filterPeer = lodash.reject(peerIds, p => p === myId);
+      setPeerList(filterPeer);
+    }
+  }, [selectedPeer, peerIds]);
   useImperativeHandle(ref, () => ({
     joinSucceed,
     isMute,
@@ -195,65 +227,191 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   const separator = () => (
     <View style={{ width: 15 }} />
   );
-  return (
-    <View style={styles.container}>
-      {joinSucceed ? header : null}
-      {
-        joinSucceed ? (
-          <>
-            <AgoraLocalView
+  
+  const fullVideo = (isFocused) => {
+    if (isFocused) {
+      return (
+        <View style={styles.fullVideo}>
+          {
+            isVideoEnable ? (
+              <AgoraLocalView
+                style={styles.video}
+                channelId={channelName}
+                renderMode={VideoRenderMode.Hidden}
+              />
+            ) : (
+              <ProfileImage
+                size={80}
+                textSize={24}
+                image={user.image}
+                name={`${user.firstName} ${user.lastName}`}
+              />
+            )
+          }
+          {
+            isMute ? (
+              <MicIcon
+                style={[styles.mic, { top: 120, left: 20 }]}
+                size={20}
+                type='muted'
+                color={text.error}
+              />
+            ) : null
+          }
+        </View>
+      );
+    }
+    const findParticipant = lodash.find(meetingParticipants, p => p.uid === selectedPeer);
+    return (
+      <View style={styles.fullVideo}>
+        {
+          peerVideoState[selectedPeer] === VideoRemoteState.Decoding ? (
+            <AgoraRemoteView
               style={styles.video}
               channelId={channelName}
+              uid={selectedPeer}
               renderMode={VideoRenderMode.Hidden}
             />
+          ) : (
+            <ProfileImage
+              image={findParticipant.image}
+              name={`${findParticipant.firstName} ${findParticipant.lastName}`}
+              size={80}
+              textSize={16}
+            />
+          )
+        }
+        <Text
+          style={
+            peerVideoState[selectedPeer] === VideoRemoteState.Decoding ?
+            styles.floatingName : styles.name
+          }
+          numberOfLines={1}
+          size={18}
+          color={'white'}
+        >
+          {findParticipant.firstName}
+        </Text>
+        {
+          peerAudioState[selectedPeer] === 0 ? (
+            <MicIcon
+              style={[styles.mic, { top: 120, left: 20 }]}
+              size={16}
+              type='muted'
+              color={text.error}
+            />
+          ) : null
+        }
+      </View>
+    )
+  }
+  
+  const renderItem = ({ item }) => {
+    const findParticipant = lodash.find(meetingParticipants, p => p.uid === item);
+    if (findParticipant) {
+      if (item === myId) {
+        return (
+          <View style={styles.smallVideo}>
+            {
+              isVideoEnable ? (
+                <AgoraLocalView
+                  style={styles.video}
+                  channelId={channelName}
+                  renderMode={VideoRenderMode.Hidden}
+                />
+              ) : (
+                <ProfileImage
+                  image={findParticipant.image}
+                  name={`${findParticipant.firstName} ${findParticipant.lastName}`}
+                  size={50}
+                  textSize={16}
+                />
+              )
+            }
+            <Text
+              style={
+                isVideoEnable ?
+                styles.floatingName : styles.name
+              }
+              numberOfLines={1}
+              size={12}
+              color={'white'}
+            >
+              {findParticipant.firstName}
+            </Text>
+            {
+              isMute ? (
+                <MicIcon
+                  style={styles.mic}
+                  size={16}
+                  type='muted'
+                  color={text.error}
+                />
+              ) : null
+            }
+          </View>
+        );
+      }
+      return (
+        <View style={styles.smallVideo}>
+          {
+            peerVideoState[item] === VideoRemoteState.Decoding ? (
+              <AgoraRemoteView
+                style={styles.video}
+                channelId={channelName}
+                uid={item}
+                renderMode={VideoRenderMode.Hidden}
+              />
+            ) : (
+              <ProfileImage
+                image={findParticipant.image}
+                name={`${findParticipant.firstName} ${findParticipant.lastName}`}
+                size={50}
+                textSize={16}
+              />
+            )
+          }
+          <Text
+            style={
+              peerVideoState[item] === VideoRemoteState.Decoding ?
+              styles.floatingName : styles.name
+            }
+            numberOfLines={1}
+            size={12}
+            color={'white'}
+          >
+            {findParticipant.firstName}
+          </Text>
+          {
+            peerAudioState[item] === 0 ? (
+              <MicIcon
+                style={styles.mic}
+                size={16}
+                type='muted'
+                color={text.error}
+              />
+            ) : null
+          }
+        </View>
+      );
+    }
+    return null;
+  }
+
+  return (
+    <View style={styles.container}>
+      {(joinSucceed && !callEnded) ? header : null}
+      {
+        (joinSucceed && !callEnded) ? (
+          <>
+            {fullVideo(!selectedPeer || selectedPeer === myId)}
             <View style={styles.videoList}>
               <FlatList
-                data={peerIds}
+                data={peerList}
                 bounces={false}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                renderItem={({ item, index }) => (
-                  <View style={styles.smallVideo}>
-                    {
-                      peerVideoState[item] === VideoRemoteState.Decoding ? (
-                        <AgoraRemoteView
-                          style={styles.video}
-                          channelId={channelName}
-                          uid={item}
-                          renderMode={VideoRenderMode.Hidden}
-                        />
-                      ) : (
-                        <ProfileImage
-                          image={participants[index].image}
-                          name={`${participants[index].firstName} ${participants[index].lastName}`}
-                          size={50}
-                          textSize={16}
-                        />
-                      )
-                    }
-                    <Text
-                      style={
-                        peerVideoState[item] === VideoRemoteState.Decoding ?
-                        styles.floatingName : styles.name
-                      }
-                      numberOfLines={1}
-                      size={12}
-                      color={'white'}
-                    >
-                      {participants[index].firstName}
-                    </Text>
-                    {
-                      peerAudioState[item] === 0 ? (
-                        <MicIcon
-                          style={styles.mic}
-                          size={16}
-                          type='muted'
-                          color={text.error}
-                        />
-                      ) : null
-                    }
-                  </View>
-                )}
+                renderItem={renderItem}
                 ItemSeparatorComponent={separator}
                 ListHeaderComponent={separator}
                 ListFooterComponent={separator}
@@ -264,21 +422,26 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
         ) : (
           <ConnectingVideo
             participants={participants}
+            callEnded={callEnded}
           />
         )
       }
-      <View style={styles.footer}>
-        <VideoButtons
-          onSpeakerEnable={toggleIsSpeakerEnable}
-          onMute={toggleIsMute}
-          onVideoEnable={toggleIsVideoEnable}
-          onMore={() => {}}
-          onEndCall={() => navigation.goBack()}
-          isSpeakerEnabled={isSpeakerEnable}
-          isMute={isMute}
-          isVideoEnabled={isVideoEnable}
-        />
-      </View>
+      {
+        !callEnded && (
+          <View style={styles.footer}>
+            <VideoButtons
+              onSpeakerEnable={toggleIsSpeakerEnable}
+              onMute={toggleIsMute}
+              onVideoEnable={toggleIsVideoEnable}
+              onMore={() => {}}
+              onEndCall={onEndCall}
+              isSpeakerEnabled={isSpeakerEnable}
+              isMute={isMute}
+              isVideoEnabled={isVideoEnable}
+            />
+          </View>
+        )
+      }
     </View>
   );
 }

@@ -3,7 +3,7 @@
     "name": "ntc-edge",
     "slug": "ntc-edge",
     "owner": "ntc-edge",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -19,7 +19,7 @@
       "googleServicesFile": "./google-services.json",
       "supportsTablet": true,
       "bundleIdentifier": "ntc.edge.internal",
-      "buildNumber": "1.0.1",
+      "buildNumber": "1.0.2",
       "infoPlist": {
         "NSCameraUsageDescription": "This will be used for video call and live streaming.",
         "NSMicrophoneUsageDescription": "This will be used for video call and live streaming."
@@ -32,7 +32,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "ntc.edge.internal",
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -63,13 +63,63 @@ const useFirebase = (user:any) => {
     return unsubscribe;
   }, [user]);
 
-  const meetingSubscriber = useCallback((channelId:string, callback = () => {}) => {
+  const channelMeetingSubscriber = useCallback((channelId:string, callback = () => {}) => {
+    console.log('CHANNEL ID', channelId);
     const unsubscribe = firestore()
-      .collection('messages')
+      .collection('meetings')
+      .where(
+        'ended',
+        '==',
+        false,
+      )
       .where(
         'channelId',
         '==',
         channelId,
+      )
+      .orderBy('createdAt', 'desc')
+      .onSnapshot(callback);
+    return unsubscribe;
+  }, [user]);
+
+  const userMeetingSubscriber = useCallback((callback = () => {}) => {
+    const unsubscribe = firestore()
+      .collection('meetings')
+      .where(
+        'ended',
+        '==',
+        false,
+      )
+      .where(
+        'participantsId',
+        'array-contains',
+        user._id,
+      )
+      .orderBy('createdAt', 'desc')
+      .onSnapshot(callback);
+    return unsubscribe;
+  }, [user]);
+
+  const meetingSubscriber = useCallback((meetingId:string, callback = () => {}) => {
+    const unsubscribe = firestore()
+      .collection('meetings')
+      .where(
+        'meetingId',
+        '==',
+        meetingId,
+      )
+      .orderBy('createdAt', 'desc')
+      .onSnapshot(callback);
+    return unsubscribe;
+  }, [user]);
+
+  const memberMeetingSubscriber = useCallback((meetingId:string, callback = () => {}) => {
+    const unsubscribe = firestore()
+      .collection('joinMeetings')
+      .where(
+        'meetingId',
+        '==',
+        meetingId,
       )
       .orderBy('createdAt', 'desc')
       .onSnapshot(callback);
@@ -115,14 +165,17 @@ const useFirebase = (user:any) => {
   const createMeeting = useCallback(async ({ participants, channelName }, callback = () => {}) => {
     const participantsWithUser:any = _getParticipants(participants);
     const isGroup = lodash.size(participantsWithUser) > 2;
+    const initialChannelName = _getInitialChannelName(participantsWithUser);
+    const participantsId = _getParticipantsId(participantsWithUser);
+    const serverTimeStamp = firestore.FieldValue.serverTimestamp();
     await firestore()
       .collection('channels')
       .add({
-        channelName: channelName || _getInitialChannelName(participantsWithUser),
-        participantsId: _getParticipantsId(participantsWithUser),
+        channelName: channelName || initialChannelName,
+        participantsId: participantsId,
         participants: participantsWithUser,
-        createdAt: firestore.FieldValue.serverTimestamp(),
-        updatedAt: firestore.FieldValue.serverTimestamp(),
+        createdAt: serverTimeStamp,
+        updatedAt: serverTimeStamp,
         lastMessage: {
           message: `created a new meeting.`,
           sender: user,
@@ -141,16 +194,20 @@ const useFirebase = (user:any) => {
             result.channelId = res.id;
             result.otherParticipants = getOtherParticipants(result.participants, user);
             result.hasSeen = checkSeen(result.seen, user);
-            await firestore()
-              .collection('meetings')
-              .add({
-                channelId: result._id,
-                createdAt: firestore.FieldValue.serverTimestamp(),
-                updatedAt: firestore.FieldValue.serverTimestamp(),
-                endedAt: null,
-                ended: false,
-                joinedMembers: [],
-              });
+            const meetingRef = firestore().collection('meetings').doc();
+            await meetingRef.set({
+              channelName: channelName || initialChannelName,
+              meetingId: meetingRef.id,
+              channelId: result._id,
+              createdAt: serverTimeStamp,
+              updatedAt: serverTimeStamp,
+              endedAt: null,
+              ended: false,
+              host: user,
+              participants: participantsWithUser,
+              participantsId: participantsId,
+            });
+            result.meetingId = meetingRef.id;
             return callback(null, result);
           })
           .catch(err => callback(err));
@@ -294,18 +351,37 @@ const useFirebase = (user:any) => {
       });
   }, [user]);
 
-  const joinMeeting = useCallback(async (meetingId, uid) => {
+  const joinMeeting = useCallback(async (meetingId, uid, isFocused = false) => {
+    await firestore()
+      .collection('joinMeetings')
+      .add({
+        createdAt: firestore.FieldValue.serverTimestamp(),
+        updatedAt: firestore.FieldValue.serverTimestamp(),
+        meetingId,
+        isFocused,
+        uid,
+        ...user,
+      });
+  }, [user]);
+
+  const endMeeting = useCallback(async (meetingId) => {
     await firestore()
       .collection('meetings')
       .doc(meetingId)
       .update({
-        joinedMembers: firestore.FieldValue.arrayUnion({ ...user, uid })
+        updatedAt: firestore.FieldValue.serverTimestamp(),
+        endedAt: firestore.FieldValue.serverTimestamp(),
+        ended: true,
       })
   }, [user]);
 
   return {
     channelSubscriber,
     messagesSubscriber,
+    channelMeetingSubscriber,
+    userMeetingSubscriber,
+    meetingSubscriber,
+    memberMeetingSubscriber,
     createChannel,
     createMeeting,
     deleteChannel,
@@ -319,7 +395,7 @@ const useFirebase = (user:any) => {
     leaveChannel,
     editMessage,
     joinMeeting,
-    meetingSubscriber
+    endMeeting,
   }
 }
 
