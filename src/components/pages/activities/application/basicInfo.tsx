@@ -1,6 +1,69 @@
-import React, {useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {StyleSheet, Text, View} from "react-native";
-const BasicInfo = () => {
+import axios from "axios";
+
+interface User {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    middleName: string;
+    contactNumber: string;
+    dateOfBirth: string;
+    gender: string;
+}
+
+interface Barangay {
+    id: string;
+    name: string;
+}
+interface City {
+    id: string;
+    name: string;
+}
+interface Province {
+    id: string;
+    name: string;
+}
+
+interface Applicant {
+    id: string;
+    createdAt: string;
+    user: User;
+    street: string;
+    unit: string;
+    barangay: Barangay;
+    city: City;
+    province: Province;
+    zipCode: string;
+    company: string;
+    schoolAttended: string;
+    courseTaken: string;
+    yearGraduated: string;
+    category: string;
+}
+
+interface Service {
+    id: string;
+    createdAt: Date;
+    name: string;
+    revisionNumber: string;
+    serviceCode: string;
+    revisionDate: Date;
+}
+
+interface Application {
+    id: string;
+    createdAt: string;
+    applicant: Applicant;
+    service: Service;
+    status: string;
+    totalFee: string;
+    paymentStatus: string;
+}
+
+const BasicInfo = (props: any) => {
+
     const [basicInfo, setBasicInfo] = useState([
         {
             id: 1,
@@ -93,6 +156,14 @@ const BasicInfo = () => {
             ]
         }
     ])
+    const [info, setInfo] = useState<Application>()
+
+    useEffect(() => {
+           axios.get('https://private-anon-c8cd4eafe8-ntcedgeustp.apiary-mock.com/applications/' + props.applicantId).then((response) => {
+                setInfo(response.data)
+
+            })
+    }, [props.applicantId])
     return <>
         {/* {basicInfo.map((basicinfo, index)=>{
             return <View key={index} style={styles.group9Stack}>
@@ -109,30 +180,143 @@ const BasicInfo = () => {
                 </View>
             </View>
         })}*/}
-        <View style={styles.container}>
-        {basicInfo.map((info, index) => {
-            return  <View key={index} style={styles.group2}>
-                    <View style={styles.rect}>
-                        <Text style={styles.basicInfo}>{info.title}</Text>
-                    </View>
+
+        {info && <View style={styles.container}>
+            <View style={styles.group2}>
+                <View style={styles.rect}>
+                    <Text style={styles.basicInfo}>Basic Information</Text>
+                </View>
                 <View style={styles.group}>
-                {info.detail.map((item, i)=>{
-                    return <View key={i} style={styles.rect3}>
-                        <Text style={styles.label}>{item.label}</Text>
+                    <View style={styles.rect3}>
+                    <Text style={styles.label}>Last Name</Text>
+                    <View style={styles.labelFiller}></View>
+                    <Text style={styles.input}>{info.applicant.user.lastName}</Text>
+                </View>
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>Middle Name</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{item.input}</Text>
+                        <Text style={styles.input}>{info.applicant.user.middleName}</Text>
                     </View>
-                })}
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>First Name</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.user.firstName}</Text>
+                    </View>
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>Date of Birth</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.user.dateOfBirth}</Text>
+                    </View>
                 </View>
 
-
-                    <View style={[styles.rect4]}></View>
-                    <View style={[styles.rect4, {backgroundColor: "#E6E6E6"}]}></View>
+                <View style={[styles.rect4]}></View>
+                <View style={[styles.rect4, {backgroundColor: "#E6E6E6"}]}></View>
+            </View>
+            <View style={styles.group2}>
+                <View style={styles.rect}>
+                    <Text style={styles.basicInfo}>Address</Text>
                 </View>
-
-        })
-        }
-        </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>Unit/Rm/House/Bldg No.:</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.unit}</Text>
+                    </View>
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>Barangay:</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.barangay.name}</Text>
+                    </View>
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>Province:</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.province.name}</Text>
+                    </View>
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>City/Municipality:</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.city.name}</Text>
+                    </View>
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>Zip Code:</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.zipCode}</Text>
+                    </View>
+                </View>
+                <View style={[styles.rect4]}></View>
+                <View style={[styles.rect4, {backgroundColor: "#E6E6E6"}]}></View>
+            </View>
+            <View style={styles.group2}>
+                <View style={styles.rect}>
+                    <Text style={styles.basicInfo}>Additional Details</Text>
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>School Attended:</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.schoolAttended}</Text>
+                    </View>
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>Course Taken:</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.courseTaken}</Text>
+                    </View>
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>Year Graduated:</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.yearGraduated}</Text>
+                    </View>
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>Contact Number:</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.user.contactNumber}</Text>
+                    </View>
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>Email:</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.user.email}</Text>
+                    </View>
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>City/Municipality:</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.city.name}</Text>
+                    </View>
+                </View>
+                <View style={styles.group}>
+                    <View style={styles.rect3}>
+                        <Text style={styles.label}>Zip Code:</Text>
+                        <View style={styles.labelFiller}></View>
+                        <Text style={styles.input}>{info.applicant.zipCode}</Text>
+                    </View>
+                </View>
+                <View style={[styles.rect4]}></View>
+                <View style={[styles.rect4, {backgroundColor: "#E6E6E6"}]}></View>
+            </View>
+        </View>}
     </>
 
 }

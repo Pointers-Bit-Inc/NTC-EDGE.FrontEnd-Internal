@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
         marginLeft: 20
     },
     statementOfAccount: {
+        fontWeight: "bold",
         color: "#121212",
         fontSize: 16
     },
@@ -95,6 +96,7 @@ const styles = StyleSheet.create({
         marginLeft: 9
     },
     loremIpsum2: {
+        fontWeight: "bold",
         top: 0,
         left: 0,
         position: "absolute",

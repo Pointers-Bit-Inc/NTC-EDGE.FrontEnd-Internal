@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, { useState} from "react";
+import {Image, Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Entypo, Ionicons} from "@expo/vector-icons";
 import Svg, {Ellipse} from "react-native-svg";
 import {primaryColor, text} from "@styles/color";
@@ -11,6 +11,7 @@ import Requirement from "@pages/activities/application/requirement";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Payment from "@pages/activities/application/payment";
 import {RootStateOrAny, useSelector} from "react-redux";
+import {formatDate} from "@pages/activities/formatDate";
 const {width} = Dimensions.get('window');
 
 function handleInfinityScroll(event: any) {
@@ -107,16 +108,10 @@ function ActivityModal(props: any) {
                                 <View style={styles.group3}>
                                     <View style={styles.rect4Stack}>
                                         <View style={styles.rect4}></View>
-                                        <Svg viewBox="0 0 80.5 80.5" style={styles.ellipse}>
-                                            <Ellipse
-                                                strokeWidth={0}
-                                                fill="rgba(230, 230, 230,1)"
-                                                cx={40}
-                                                cy={40}
-                                                rx={40}
-                                                ry={40}
-                                            ></Ellipse>
-                                        </Svg>
+                                        <Image source={{
+                                            uri: 'https://reactnative.dev/img/tiny_logo.png'
+                                        }} style={styles.ellipse} />
+
                                     </View>
                                 </View>
                                 <View style={styles.group8}>
@@ -174,7 +169,7 @@ function ActivityModal(props: any) {
                                         tabs.map((tab, index) =>{
                                             const isShow = tab.isShow.indexOf(user?.role?.key) != -1
                                             if(isShow && tab.id == 1 && tab.active){
-                                                return <BasicInfo key={index}/>
+                                                return <BasicInfo applicantId={props?.details?.activityDetails?.applicant?._id} key={index}/>
                                             }else if(isShow && tab.id == 2 && tab.active){
                                                 return  <ApplicationDetails key={index}/>
                                             }else if(isShow && tab.id == 3 && tab.active){
@@ -197,16 +192,16 @@ function ActivityModal(props: any) {
                                         <View style={styles.rect19}></View>
                                         <View style={styles.group15}>
                                             <View style={styles.button3Row}>
-                                                <TouchableOpacity onPress={()=>{
+                                                {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1  && <TouchableOpacity onPress={()=>{
                                                     setApproveVisible(true)
-                                                }} style={styles.button3}>
+                                                }} style={[styles.button3, { width: user?.role?.key == "cashier"?  220 : 100,}]}>
                                                     <View style={styles.rect22Filler}></View>
                                                     <View style={styles.rect22}>
                                                         <View style={styles.approvedFiller}></View>
                                                         <Text style={styles.approved}>Approved</Text>
                                                     </View>
-                                                </TouchableOpacity>
-                                                <TouchableOpacity onPress={()=>{
+                                                </TouchableOpacity>}
+                                                { ["director", 'evaluator'].indexOf(user?.role?.key) != -1  &&  <TouchableOpacity onPress={()=>{
                                                 setEndorseVisible(true)
                                                 }
                                                 } style={styles.button2}>
@@ -215,18 +210,20 @@ function ActivityModal(props: any) {
                                                         <View style={styles.endorseFiller}></View>
                                                         <Text style={styles.endorse}>Endorse</Text>
                                                     </View>
-                                                </TouchableOpacity>
+                                                </TouchableOpacity>}
                                             </View>
-                                            <View style={styles.button3RowFiller}></View>
-                                            <TouchableOpacity onPress={()=>{
-                                                setVisible(true)
-                                            }} style={styles.button}>
-                                                <View style={styles.rect24Filler}></View>
-                                                <View style={styles.rect24}>
-                                                    <View style={styles.endorse1Filler}></View>
-                                                    <Text style={styles.endorse1}>Decline</Text>
-                                                </View>
-                                            </TouchableOpacity>
+                                            {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1  &&
+                                            <><View style={styles.button3RowFiller}></View>
+                                                <TouchableOpacity onPress={()=>{
+                                                    setVisible(true)
+                                                }} style={styles.button}>
+                                                    <View style={styles.rect24Filler}></View>
+                                                    <View style={styles.rect24}>
+                                                        <View style={styles.endorse1Filler}></View>
+                                                        <Text style={styles.endorse1}>Decline</Text>
+                                                    </View>
+                                                </TouchableOpacity></>
+                                            }
                                         </View>
                                     </View>
                                 </View>
@@ -237,18 +234,18 @@ function ActivityModal(props: any) {
                         <View style={styles.rect5Stack}>
                             <View style={styles.rect5}>
                                 <View style={styles.group11}>
-                                    <Text style={styles.name}>Name</Text>
-                                    <Text style={styles.job}>Radio Operator</Text>
+                                    <Text style={styles.name}>{props?.details?.activityDetails?.applicant?.user?.firstName + " "+ props?.details?.activityDetails?.applicant?.user?.lastName }</Text>
+                                    <Text style={styles.job}>{props?.details?.activityDetails?.applicationType}</Text>
                                 </View>
                                 <View style={styles.group2}>
                                     <View style={styles.icon2Row}>
                                         <Entypo name="circle" style={styles.icon2}></Entypo>
-                                        <Text style={styles.role}>FOR EVALUATION</Text>
+                                        <Text style={styles.role}>{props?.details?.activityDetails?.applicant?.status}</Text>
                                     </View>
                                 </View>
                             </View>
                             <View style={styles.group12}>
-                                <Text style={styles.submitted}>Submitted:{"\n"}99/99/99</Text>
+                                <Text style={styles.submitted}>Submitted:{"\n"}{props?.details?.createdAt ? formatDate(props?.details?.createdAt) : ""}</Text>
                             </View>
                         </View>
                     </View>
@@ -309,10 +306,11 @@ const styles = StyleSheet.create({
         position: "absolute"
     },
     ellipse: {
+        borderRadius:40,
         top: 17,
         left: 20,
-        width: 81,
-        height: 81,
+        width: 80,
+        height: 80,
         position: "absolute"
     },
     rect4Stack: {
@@ -418,7 +416,7 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     button3: {
-        width: 100,
+
         height: 31
     },
     rect22Filler: {
@@ -462,7 +460,7 @@ const styles = StyleSheet.create({
     button3Row: {
         height: 31,
         flexDirection: "row",
-        alignItems: "flex-end",
+        alignItems: "center",
         marginBottom: 1
     },
     button3RowFiller: {

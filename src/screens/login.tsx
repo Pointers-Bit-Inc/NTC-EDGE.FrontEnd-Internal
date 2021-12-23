@@ -68,17 +68,12 @@ const Login = ({ navigation }:any) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const onLogin = useCallback(async (data) => {
-    axios.post('http://localhost:3000/user/signin', {email:data.email, password: data.password}).then((response) =>{
+    setLoading(true);
+    axios.post('https://ntc.astrotechenergy.com/user/signin', {email:data.email, password: data.password}).then((response) =>{
       setLoading(false);
       dispatch(setUser(response.data));
       navigation.navigate('HomeScreen');
     })
-   /* setLoading(true);
-    await setTimeout(() => {
-      setLoading(false);
-     dispatch(setUser(data));
-      navigation.navigate('HomeScreen');
-    }, 3000);*/
   }, []);
   const [formValue, setFormValue] = useState({
     email: {
