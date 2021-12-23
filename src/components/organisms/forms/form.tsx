@@ -1,11 +1,11 @@
 import React from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {DropdownField, InputField} from "@molecules/form-fields";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Button from "@atoms/button";
 import Text from "@atoms/text";
 import {Ionicons} from "@expo/vector-icons";
-import {outline, text} from "../../../styles/color";
+import {outline, text} from "@styles/color";
 
 const FormField = ({
                        color,
@@ -17,13 +17,34 @@ const FormField = ({
     const inputColor = color ? color : "#486c86";
 
     const renderElements = (id: number, element: any, color: any, styleProps: any) => {
+
         element.color = color;
         const {type, pickerData, ...otherProps} = element;
+        const buttonElement = () => {
+
+            return <Button onPress={() => onSubmit(id, type)} key={id}   {...styleProps} {...otherProps}>
+                <Text fontSize={16} color={'white'}>
+                    {otherProps.label}
+                </Text>
+            </Button>
+        }
         switch (type) {
+            case 'image':
+                return otherProps.value ? <Image
+                    {...styleProps}
+
+                    {...otherProps}
+                    source={{uri: otherProps.value}}
+                    resizeMode={"cover"}
+                /> : <Image
+                    {...styleProps}
+                    {...otherProps}
+                    source={require('../../../../assets/favicon.png')}
+                    resizeMode={"cover"}
+                />
             case "text":
                 return <Text key={id} {...styleProps} {...otherProps} >{otherProps.label}</Text>;
             case "input":
-
                 return <InputField key={id}  {...styleProps} {...otherProps}
                                    onEndEditing={(e: any) => {
                                        onChange(id, e.nativeEvent.text, 'input')
@@ -31,13 +52,19 @@ const FormField = ({
                                    }
                                    onChangeText={(text: string) => onChange(id, text, 'input')}
                                    onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'input')}/>;
-
-
+            case 'password':
+                return <InputField  {...styleProps} {...otherProps}
+                                    onEndEditing={(e: any) => {
+                                        onChange(id, e.nativeEvent.text, 'password')
+                                    }
+                                    }
+                                    onChangeText={(text: string) => onChange(id, text, 'password')}
+                                    onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'password')}/>
             case "date":
 
                 return (
                     <View>
-                        <Text style={{color: text.default}} >{otherProps.label}</Text>
+                        <Text style={{color: text.default}}>{otherProps.label}</Text>
                         <DateTimePicker style={{width: '100%'}}
                                         onChange={(event: any, selectedDate: any) => {
                                             onChange(id, selectedDate)
@@ -63,13 +90,11 @@ const FormField = ({
                         ))
                     }
                 </View>)
-            case "button":
-                return <Button onPress={onSubmit} key={id}   {...styleProps} {...otherProps}>
-                    <Text fontSize={16} color={'white'}>
-                        {otherProps.label}
-                    </Text>
-                </Button>
 
+            case "button":
+                return buttonElement()
+            case "image-picker":
+                return buttonElement()
             case "picker":
 
                 return <DropdownField
@@ -104,8 +129,8 @@ const FormField = ({
     return (
         <>
             {formElements.map((element: any, key: number) => {
-                return element.type != 'submit' && (
-                    <View key={element.id}>
+                return element.type != 'submit' && element.type && (
+                    <View  key={element.id}>
                         {renderElements(
                             element.id,
                             element,

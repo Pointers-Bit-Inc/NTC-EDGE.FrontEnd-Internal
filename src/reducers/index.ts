@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistReducer } from 'redux-persist';
 import user from './user/reducers';
 import theme from './theme/reducers';
+import activity from './activity/reducers';
 
 const persistConfig = {
   key: 'root',
@@ -12,4 +13,5 @@ const persistConfig = {
 export default combineReducers({
   user: persistReducer(persistConfig, user),
   theme,
+  activity,
 });

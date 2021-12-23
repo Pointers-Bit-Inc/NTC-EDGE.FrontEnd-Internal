@@ -2,7 +2,7 @@ import {View} from "react-native";
 import React, {useState} from "react";
 import FormField from "@organisms/forms/form";
 import InputStyles from 'src/styles/input-style';
-import {text} from "../../../styles/color";
+import {primaryColor, text} from "../../../styles/color";
 
 const Applicant = ({
                        onSubmit = ({}) => {
@@ -20,17 +20,13 @@ const Applicant = ({
         let error = false
         for (var i = 0; i < formValue.length; i++) {
             if(formValue[i]['error'] ) {
-                console.log(1)
                 error = true
                 break
             }else if(formValue[i]?.['required'] &&  formValue[i]?.['value']){
-                console.log(2)
                 error = true
                 break
             }
         }
-
-        console.log(3)
         onSubmit({success: !error})
     }
     const [formValue, setFormValue] = useState([
@@ -243,13 +239,12 @@ const Applicant = ({
             requiredColor: text.error,
             label: "Next",
             type: "button",
-            style: {backgroundColor: '#2B23FF'},
+            style: {backgroundColor: primaryColor},
             onPress: onPressSubmit
 
         }
     ]);
     const onChangeText = (index: number, text: string | number) => {
-
         let newArr = [...formValue];
         newArr[index].value = text;
         setFormValue(newArr);

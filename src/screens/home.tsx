@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { SafeAreaView, Text, StyleSheet } from 'react-native';
+import {SafeAreaView, Text, StyleSheet, View} from 'react-native';
 import { RootStateOrAny, useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { setUser } from 'src/reducers/user/actions'
@@ -59,7 +59,11 @@ const Home = ({ navigation }:any) => {
 
   return (
     <SafeAreaView style={styles.container}>
+
       <Text onPress={() => setShowAlert(true)}>Welcome, {user.email}</Text>
+
+
+
       <AwesomeAlert
         show={showAlert}
         showProgress={false}
@@ -82,6 +86,8 @@ const Home = ({ navigation }:any) => {
         onCancelPressed={onLogout}
         onConfirmPressed={onHide}
       />
+
+
     </SafeAreaView>
   );
 };

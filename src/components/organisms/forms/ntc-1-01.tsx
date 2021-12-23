@@ -8,7 +8,7 @@ import RNPickerSelect from "react-native-picker-select";
 import {Ionicons} from "@expo/vector-icons";
 import InputStyles from "../../../styles/input-style";
 import FormField from "@organisms/forms/form";
-import {outline, primaryColor} from "../../../styles/color";
+import {outline, primaryColor} from "@styles/color";
 import Header from "@organisms/forms/tab-header";
 
 interface RadioOperatorServices {
@@ -625,16 +625,16 @@ const NTC101 = ({
         for (let j = 0; j < applicationFormValue.length; j++) {
             if (applicationFormValue[j].navigation == onNavigation) {
                 newArr[onNavigation].isView = true
-                if (!applicationFormValue[j].value) {
-                    error.push(applicationFormValue[j])
-                    for (let l = 0; l < newArr.length; l++) {
+                    if (!applicationFormValue[j].value) {
+                        error.push(applicationFormValue[j])
+                        for (let l = 0; l < newArr.length; l++) {
 
-                        newArr[l].isRouteActive = false
+                            newArr[l].isRouteActive = false
+                        }
+                        newArr[onNavigation].isComplete = false
+                        newArr[onNavigation].isRouteActive = true
+                        setTab(newArr);
                     }
-                    newArr[onNavigation].isComplete = false
-                    newArr[onNavigation].isRouteActive = true
-                    setTab(newArr);
-                }
             }
         }
         if (!error.length) {
