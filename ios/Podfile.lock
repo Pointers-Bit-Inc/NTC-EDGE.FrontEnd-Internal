@@ -19,11 +19,15 @@ PODS:
   - EXImageLoader (3.0.0):
     - ExpoModulesCore
     - React-Core
+  - EXImagePicker (11.0.3):
+    - ExpoModulesCore
   - EXJSONUtils (0.2.0)
   - EXKeepAwake (10.0.0):
     - ExpoModulesCore
   - EXManifests (0.2.2):
     - EXJSONUtils
+  - EXPermissions (13.0.3):
+    - ExpoModulesCore
   - Expo (43.0.3):
     - ExpoModulesCore
   - ExpoModulesCore (0.4.8):
@@ -332,7 +336,7 @@ PODS:
     - React-Core
   - RNPermissions (3.1.0):
     - React-Core
-  - RNReanimated (2.3.0):
+  - RNReanimated (2.2.4):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -358,6 +362,7 @@ PODS:
     - React-RCTNetwork
     - React-RCTSettings
     - React-RCTText
+    - React-RCTVibration
     - ReactCommon/turbomodule/core
     - Yoga
   - RNScreens (3.8.0):
@@ -381,9 +386,11 @@ DEPENDENCIES:
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
   - EXFont (from `../node_modules/expo-font/ios`)
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
+  - EXImagePicker (from `../node_modules/expo-image-picker/ios`)
   - EXJSONUtils (from `../node_modules/expo-json-utils/ios`)
   - EXKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - EXManifests (from `../node_modules/expo-manifests/ios`)
+  - EXPermissions (from `../node_modules/expo-permissions/ios`)
   - Expo (from `../node_modules/expo/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core/ios`)
   - EXScreenOrientation (from `../node_modules/expo-screen-orientation/ios`)
@@ -455,12 +462,16 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-font/ios"
   EXImageLoader:
     :path: "../node_modules/expo-image-loader/ios"
+  EXImagePicker:
+    :path: "../node_modules/expo-image-picker/ios"
   EXJSONUtils:
     :path: "../node_modules/expo-json-utils/ios"
   EXKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
   EXManifests:
     :path: "../node_modules/expo-manifests/ios"
+  EXPermissions:
+    :path: "../node_modules/expo-permissions/ios"
   Expo:
     :path: "../node_modules/expo/ios"
   ExpoModulesCore:
@@ -564,9 +575,11 @@ SPEC CHECKSUMS:
   EXFileSystem: 99aac7962c11c680681819dd9cbca24e20e5b1e7
   EXFont: 2e1c6fe726d008a039db80df95f48b4921b7fe59
   EXImageLoader: 939451be6f7b731aaa6588920b90743f20121a4d
+  EXImagePicker: bf704ef8e9171b05696a24114b44c6629565b45d
   EXJSONUtils: f515cf71710855d7ba5bfc6752af3b9a6f6aad01
   EXKeepAwake: 8aa32396a5972d26e75e538603aad0f032396503
   EXManifests: 50e42e01335df4e54109dee7be5a91bfd37347db
+  EXPermissions: 7696f4c16e89981f84c04d96327f7e1e592373c0
   Expo: 5316c3ecdc34eb0cad340d01dc8beec97c7e879e
   ExpoModulesCore: a9a9bf32b2da35cd9b7299c80790c03a91ac7d15
   EXScreenOrientation: 80c8c07ab3f2beb8e83ba94ab6ee4fb7a6bf01a6
@@ -575,7 +588,7 @@ SPEC CHECKSUMS:
   EXUpdates: 061b67c33f0e7f8fd335bbb48697c4a4fc8a5157
   EXUpdatesInterface: e1c01b4f5ec76bd1d6cc714938f9edf5ef6379b9
   FBLazyVector: c71c5917ec0ad2de41d5d06a5855f6d5eda06971
-  FBReactNativeSpec: 3bb4d3c588f60e42a770b7fa0a4a177afb1a25e0
+  FBReactNativeSpec: 7e58ad096d3608082e2f41a0ccb7dc6a02126b2d
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
   Permission-Camera: 0db4fd6e1c556c1cf47f38b989a8084cea3ec3dd
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
@@ -609,7 +622,7 @@ SPEC CHECKSUMS:
   RNDateTimePicker: 7658208086d86d09e1627b5c34ba0cf237c60140
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNPermissions: 4b54095940aea8c03fa3e6c92d4ac3647b31ed4e
-  RNReanimated: eb7b06098f064677394249e9a5f797cac1f0004f
+  RNReanimated: 024eff8202342abf4b24e11575a16afc441dabfe
   RNScreens: 6e1ea5787989f92b0671049b808aef64fa1ef98c
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   Yoga: e6ecf3fa25af9d4c87e94ad7d5d292eedef49749
