@@ -166,6 +166,7 @@ const useFirebase = (user:any) => {
       .collection('channels')
       .add({
         channelName: channelName || initialChannelName,
+        hasChannelName: !!channelName,
         participantsId: participantsId,
         participants: participantsWithUser,
         createdAt: serverTimeStamp,
@@ -193,6 +194,7 @@ const useFirebase = (user:any) => {
             await meetingRef.set({
               channelId: result._id,
               channelName: channelName || initialChannelName,
+              hasChannelName: !!channelName,
               meetingId: meetingRef.id,
               channel: channelData,
               createdAt: serverTimeStamp,
@@ -212,7 +214,7 @@ const useFirebase = (user:any) => {
       .catch(err => callback(err));
   }, [user]);
 
-  const initiateMeeting = useCallback(async ({ channelId, isVoiceCall }, callback = () => {}) => {
+  const initiateMeeting = useCallback(async ({ channelId, isVoiceCall, meetingName }, callback = () => {}) => {
     const serverTimeStamp = firestore.FieldValue.serverTimestamp();
     const channelRef = firestore().collection('channels').doc(channelId);
     await channelRef
@@ -237,7 +239,8 @@ const useFirebase = (user:any) => {
           const meetingRef = firestore().collection('meetings').doc();
           await meetingRef.set({
             channelId: result._id,
-            channelName: result.channelName,
+            channelName: meetingName || result.channelName,
+            hasChannelName: !!meetingName,
             meetingId: meetingRef.id,
             channel: channelData,
             createdAt: serverTimeStamp,

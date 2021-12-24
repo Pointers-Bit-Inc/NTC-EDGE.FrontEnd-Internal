@@ -19,7 +19,7 @@ import useFirebase from 'src/hooks/useFirebase';
 import ProfileImage from '@components/atoms/image/profile'
 import Meeting from '@components/molecules/list-item/meeting';
 import Text from '@components/atoms/text'
-import { getChannelName, getDayMonthString } from 'src/utils/formatting';
+import { getChannelName, getDayMonthString, getOtherParticipants } from 'src/utils/formatting';
 import { PeopleIcon, CalendarIcon, VideoIcon } from '@atoms/icon';
 import { text, outline, primaryColor } from 'src/styles/color';
 import Button from '@components/atoms/button';
@@ -175,6 +175,7 @@ const Meet = ({ navigation }) => {
   )
 
   const renderItem = ({ item }) => {
+    item.channel.otherParticipants = getOtherParticipants(item.participants, user);
     return (
       <Meeting
         name={getChannelName(item)}

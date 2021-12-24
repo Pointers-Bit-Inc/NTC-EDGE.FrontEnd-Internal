@@ -100,7 +100,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
   const onStartMeeting = () => {
     setLoading(true);
     if (isChannelExist) {
-      initiateMeeting({ channelId, isVoiceCall }, (error, data) => {
+      initiateMeeting({ channelId, isVoiceCall, meetingName }, (error, data) => {
         setLoading(false);
         if (!error) {
           dispatch(setSelectedChannel(data));
@@ -155,18 +155,14 @@ const CreateMeeting = ({ navigation, route }:any) => {
             </Text>
           </View>
         </View>
-        {
-          !isChannelExist && (
-            <InputField
-              inputStyle={[InputStyles.text, styles.input]}
-              placeholder="Meeting name"
-              outlineStyle={[InputStyles.outlineStyle, styles.outline]}
-              value={meetingName}
-              onChangeText={setMeetingName}
-              onSubmitEditing={(event:any) => setMeetingName(event.nativeEvent.text)}
-            />
-          )
-        }
+        <InputField
+          inputStyle={[InputStyles.text, styles.input]}
+          placeholder="Meeting name"
+          outlineStyle={[InputStyles.outlineStyle, styles.outline]}
+          value={meetingName}
+          onChangeText={setMeetingName}
+          onSubmitEditing={(event:any) => setMeetingName(event.nativeEvent.text)}
+        />
         <View style={{ paddingTop: 20, paddingBottom: 60 }}>
           <View style={styles.section}>
             <Text

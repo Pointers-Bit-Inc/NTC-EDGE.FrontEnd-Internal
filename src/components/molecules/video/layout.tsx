@@ -299,8 +299,8 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             />
           ) : (
             <ProfileImage
-              image={findParticipant.image}
-              name={`${findParticipant.firstName} ${findParticipant.lastName}`}
+              image={findParticipant?.image}
+              name={`${findParticipant?.firstName} ${findParticipant?.lastName}`}
               size={80}
               textSize={24}
             />
@@ -314,7 +314,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               size={16}
               color={'white'}
             >
-              {findParticipant.firstName}
+              {findParticipant?.firstName}
             </Text>
           )
         }

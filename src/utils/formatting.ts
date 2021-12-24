@@ -6,7 +6,7 @@ const getInitial = (value:any) => {
 }
 
 const getChannelName = (channel:any) => {
-  if (!channel.isGroup) {
+  if (!channel.isGroup && !channel.hasChannelName) {
     const result = channel.otherParticipants;
     if (result && result[0]) {
       const data = result[0];

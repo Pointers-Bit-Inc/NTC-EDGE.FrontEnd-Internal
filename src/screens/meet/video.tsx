@@ -80,7 +80,7 @@ const Dial = ({ navigation, route }) => {
     let unmounted = false;
     console.log('CHANNELID', channelId);
     api.post('/meeting/token', {
-      channelName: channelId,
+      channelName: meetingId,
       isHost,
     }).then((res) => {
       if (!unmounted) {
@@ -147,7 +147,7 @@ const Dial = ({ navigation, route }) => {
           size={16}
           numberOfLines={1}
         >
-          {getChannelName({ otherParticipants, isGroup, channelName })}
+          {getChannelName({ otherParticipants, isGroup, channelName: meeting.channelName })}
         </Text>
         <Text
           color='white'

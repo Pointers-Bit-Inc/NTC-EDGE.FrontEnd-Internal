@@ -214,6 +214,7 @@ const useFirebase = (user:any) => {
       
       const addRef = await addDoc(collection(firestore.current, "channels"), {
         channelName: channelName || initalChannelName,
+        hasChannelName: !!channelName,
         participantsId: participantsId,
         participants: participantsWithUser,
         createdAt: serverTimestamp(),
@@ -239,6 +240,7 @@ const useFirebase = (user:any) => {
         meetingRef, {
           channelId: data._id,
           channelName: channelName || initalChannelName,
+          hasChannelName: !!channelName,
           meetingId: meetingRef.id,
           channel: channelData,
           createdAt: serverTimestamp(),
@@ -257,7 +259,7 @@ const useFirebase = (user:any) => {
     }
   }, [user]);
 
-  const initiateMeeting = useCallback(async ({ channelId, isVoiceCall }, callback = () => {}) => {
+  const initiateMeeting = useCallback(async ({ channelId, isVoiceCall, meetingName }, callback = () => {}) => {
     const channelRef = doc(firestore.current, "channels", channelId)
     try {
       await updateDoc(channelRef, {
@@ -279,7 +281,8 @@ const useFirebase = (user:any) => {
       await setDoc(
         meetingRef, {
           channelId: data._id,
-          channelName: data.channelName,
+          channelName: meetingName || data.channelName,
+          hasChannelName: !!meetingName,
           meetingId: meetingRef.id,
           channel: channelData,
           createdAt: serverTimestamp(),

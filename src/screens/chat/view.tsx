@@ -303,6 +303,8 @@ const ChatView = ({ navigation, route }:any) => {
               bounces={false}
               horizontal
               showsHorizontalScrollIndicator={false}
+              snapToInterval={width}
+              decelerationRate={0}
               keyExtractor={(item:any) => item._id}
               renderItem={({ item }) => (
                 <MeetingNotif
