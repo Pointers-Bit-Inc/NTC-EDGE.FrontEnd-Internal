@@ -123,7 +123,7 @@ const ChatView = ({ navigation, route }:any) => {
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
   const { selectedMessage, meetingList } = useSelector((state:RootStateOrAny) => state.channel);
-  const { sendMessage, editMessage, channelMeetingSubscriber } = useFirebase({
+  const { sendMessage, editMessage, channelMeetingSubscriber, endMeeting } = useFirebase({
     _id: user._id,
     name: user.name,
     firstName: user.firstName,
@@ -176,6 +176,7 @@ const ChatView = ({ navigation, route }:any) => {
     dispatch(setMeetingId(item._id));
     navigation.navigate('Dial', {
       isHost: item.host._id === user._id,
+      isVoiceCall: item.isVoiceCall,
       options: {
         isMute: false,
         isVideoEnable: true,
@@ -184,7 +185,11 @@ const ChatView = ({ navigation, route }:any) => {
   }
 
   const onClose = (item) => {
-    dispatch(removeMeeting(item._id));
+    if (item.host._id === user._id) {
+      endMeeting(item._id);
+    } else {
+      dispatch(removeMeeting(item._id));
+    }
   }
 
   useEffect(() => {
@@ -239,6 +244,7 @@ const ChatView = ({ navigation, route }:any) => {
       {
         participants,
         isVideoEnable,
+        isVoiceCall: !isVideoEnable,
         isChannelExist: true,
         channelId,
       }
@@ -305,6 +311,9 @@ const ChatView = ({ navigation, route }:any) => {
                   time={item.createdAt}
                   onJoin={() => onJoin(item)}
                   onClose={() => onClose(item)}
+                  closeText={
+                    item.host._id === user._id ? 'End' : 'Close'
+                  }
                 />
               )}
             />

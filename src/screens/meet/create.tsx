@@ -80,6 +80,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
     participants = [],
     isChannelExist = false,
     isVideoEnable = true,
+    isVoiceCall = false,
     isMute = false,
     channelId,
   } = route.params;
@@ -99,13 +100,15 @@ const CreateMeeting = ({ navigation, route }:any) => {
   const onStartMeeting = () => {
     setLoading(true);
     if (isChannelExist) {
-      initiateMeeting(channelId, (error, data) => {
+      initiateMeeting({ channelId, isVoiceCall }, (error, data) => {
         setLoading(false);
         if (!error) {
           dispatch(setSelectedChannel(data));
           dispatch(setMeetingId(data.meetingId));
+          dispatch(setMeeting({}));
           navigation.replace('JoinVideoCall', {
             isHost: true,
+            isVoiceCall,
             options: {
               isMute: !micOn,
               isVideoEnable: videoOn,

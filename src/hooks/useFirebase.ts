@@ -257,7 +257,7 @@ const useFirebase = (user:any) => {
     }
   }, [user]);
 
-  const initiateMeeting = useCallback(async (channelId, callback = () => {}) => {
+  const initiateMeeting = useCallback(async ({ channelId, isVoiceCall }, callback = () => {}) => {
     const channelRef = doc(firestore.current, "channels", channelId)
     try {
       await updateDoc(channelRef, {
@@ -287,6 +287,7 @@ const useFirebase = (user:any) => {
           endedAt: null,
           ended: false,
           host: user,
+          isVoiceCall,
           participants: data.participants,
           participantsId: data.participantsId,
           meetingParticipants: [],

@@ -134,6 +134,7 @@ interface Props {
   header?: ReactNode;
   agora?: any;
   callEnded?: false;
+  isVoiceCall?: false;
   onEndCall?: () => void;
 }
 
@@ -156,6 +157,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   header,
   agora = {},
   callEnded = false,
+  isVoiceCall = false,
   onEndCall = () => {},
 }, ref) => {
   const [selectedPeer, setSelectedPeer]:any = useState(null);
@@ -179,7 +181,10 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     toggleIsVideoEnable,
   } = useInitializeAgora({
     ...agora,
-    options: options,
+    options: {
+      ...options,
+      isVideoEnable: isVoiceCall ? !isVoiceCall : options?.isVideoEnable,
+    },
   })
 
   useImperativeHandle(ref, () => ({
@@ -265,7 +270,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               size={16}
               color={'white'}
             >
-              {findParticipant.firstName}
+              {findParticipant?.firstName}
             </Text>
           )
         }

@@ -56,7 +56,7 @@ const Dial = ({ navigation, route }) => {
   const api = useApi('');
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { meetingId, meeting, meetingParticipants } = useSelector((state:RootStateOrAny) => state.meeting);
-  const { options, isHost = false } = route.params;
+  const { options, isHost = false, isVoiceCall } = route.params;
   const { channelId, isGroup, channelName, otherParticipants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
@@ -193,6 +193,7 @@ const Dial = ({ navigation, route }) => {
         participants={otherParticipants}
         meetingParticipants={meetingParticipants}
         agora={agora}
+        isVoiceCall={isVoiceCall}
         callEnded={meeting?.ended}
         onEndCall={onEndCall}
       />

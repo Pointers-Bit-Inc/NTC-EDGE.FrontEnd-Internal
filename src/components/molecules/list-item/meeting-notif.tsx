@@ -32,11 +32,12 @@ const styles = StyleSheet.create({
 })
 
 interface Props {
-  name?: string,
-  time?: any,
-  onJoin?: () => void,
-  onClose?: () => void,
-  style?: any,
+  name?: string;
+  time?: any;
+  onJoin?: () => void;
+  onClose?: () => void;
+  closeText?: string;
+  style?: any;
 }
 
 const MeetingNotif: FC<Props> = ({
@@ -44,6 +45,7 @@ const MeetingNotif: FC<Props> = ({
   time,
   onJoin = () => {},
   onClose = () => {},
+  closeText = 'Close',
   style,
 }) => {
   return (
@@ -89,7 +91,7 @@ const MeetingNotif: FC<Props> = ({
           color={text.error}
           size={12}
         >
-          Close
+          {closeText}
         </Text>
       </Button>
     </View>

@@ -212,7 +212,7 @@ const useFirebase = (user:any) => {
       .catch(err => callback(err));
   }, [user]);
 
-  const initiateMeeting = useCallback(async (channelId, callback = () => {}) => {
+  const initiateMeeting = useCallback(async ({ channelId, isVoiceCall }, callback = () => {}) => {
     const serverTimeStamp = firestore.FieldValue.serverTimestamp();
     const channelRef = firestore().collection('channels').doc(channelId);
     await channelRef
@@ -245,6 +245,7 @@ const useFirebase = (user:any) => {
             endedAt: null,
             ended: false,
             host: user,
+            isVoiceCall,
             participants: result.participants,
             participantsId: result.participantsId,
             meetingParticipants: [],

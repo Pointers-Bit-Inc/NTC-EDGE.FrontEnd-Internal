@@ -109,6 +109,7 @@ const Meet = ({ navigation }) => {
     dispatch(setMeeting({}));
     navigation.navigate('Dial', {
       isHost: item.host._id === user._id,
+      isVoiceCall: item.isVoiceCall,
       options: {
         isMute: false,
         isVideoEnable: true,
