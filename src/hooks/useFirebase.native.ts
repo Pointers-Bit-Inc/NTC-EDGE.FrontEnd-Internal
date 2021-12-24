@@ -15,10 +15,10 @@ const useFirebase = (user:any) => {
     participants.map(
       (participant:any, index) => {
         if (index === lodash.size(participants) - 1) {
-          channelName += participant.name;
+          channelName += participant.firstName;
           return;
         }
-        channelName += `${participant.name}, `;
+        channelName += `${participant.firstName}, `;
         return;
       });
     return channelName;

@@ -13,7 +13,7 @@ import {
 import lodash from 'lodash';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
-import { setMeetings, addMeeting, removeMeeting, updateMeeting, setMeetingId } from 'src/reducers/meeting/actions';
+import { setMeetingId } from 'src/reducers/meeting/actions';
 import { MeetingNotif } from '@components/molecules/list-item';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import useFirebase from 'src/hooks/useFirebase';
@@ -37,7 +37,10 @@ import { outline, text, button, primaryColor } from '@styles/color';
 import { getChannelName } from 'src/utils/formatting';
 import InputStyles from 'src/styles/input-style';
 import {
-  removeSelectedMessage
+  removeSelectedMessage,
+  addMeeting,
+  removeMeeting,
+  updateMeeting,
 } from 'src/reducers/channel/actions';
 const { width } = Dimensions.get('window');
 
@@ -115,11 +118,10 @@ const ChatView = ({ navigation, route }:any) => {
   const inputRef:any = useRef(null);
   const layout = useWindowDimensions();
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const meetingList = useSelector((state:RootStateOrAny) => state.meeting.list);
   const { channelId, otherParticipants, participants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
-  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
+  const { selectedMessage, meetingList } = useSelector((state:RootStateOrAny) => state.channel);
   const { sendMessage, editMessage, channelMeetingSubscriber } = useFirebase({
     _id: user._id,
     name: user.name,
@@ -187,7 +189,6 @@ const ChatView = ({ navigation, route }:any) => {
     setInputText(selectedMessage?.message || '');
     inputRef.current?.blur();
   }, [selectedMessage]);
-
   useEffect(() => {
     if (channelId) {
       const unsubscriber = channelMeetingSubscriber(channelId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {

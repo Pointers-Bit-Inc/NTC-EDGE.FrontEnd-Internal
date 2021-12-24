@@ -14,4 +14,9 @@ export default keyMirror({
 
   SET_SELECTED_MESSAGES: null,
   REMOVE_SELECTED_MESSAGES: null,
+
+  ADD_MEETING_CHANNEL: null,
+  UPDATE_MEETING_CHANNEL: null,
+  REMOVE_MEETING_CHANNEL: null,
+  SET_MEETINGS_CHANNEL: null,
 });

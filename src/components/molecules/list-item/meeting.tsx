@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native'
 import Text from '@components/atoms/text'
 import Button from '@components/atoms/button'
 import ProfileImage from '@components/atoms/image/profile'
+import { VideoIcon } from '@components/atoms/icon'
 import { text, outline, button, primaryColor } from 'src/styles/color';
 import { getDayMonthString } from 'src/utils/formatting';
 
@@ -55,7 +56,13 @@ const Meeting: FC<Props> = ({
 }) => {
   return (
     <View style={[styles.container, style]}>
-      <View style={styles.circle} />
+      <View style={styles.circle}>
+        <VideoIcon
+          type='video'
+          color='white'
+          size={18}
+        />
+      </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
         <View style={{ flex: 1, paddingHorizontal: 15 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>

@@ -12,6 +12,10 @@ const {
 
   SET_SELECTED_MESSAGES,
   REMOVE_SELECTED_MESSAGES,
+  ADD_MEETING_CHANNEL,
+  UPDATE_MEETING_CHANNEL,
+  REMOVE_MEETING_CHANNEL,
+  SET_MEETINGS_CHANNEL,
 } = require('./types').default;
 
 interface ChannelProps {
@@ -115,6 +119,34 @@ export function setSelectedMessage(payload:MessageProps) {
 export function removeSelectedMessage() {
   return {
     type: REMOVE_SELECTED_MESSAGES,
+  };
+}
+
+export function setMeetings(payload) {
+  return {
+    type: SET_MEETINGS_CHANNEL,
+    payload,
+  };
+}
+
+export function addMeeting(payload) {
+  return {
+    type: ADD_MEETING_CHANNEL,
+    payload,
+  };
+}
+
+export function updateMeeting(payload) {
+  return {
+    type: UPDATE_MEETING_CHANNEL,
+    payload,
+  };
+}
+
+export function removeMeeting(payload) {
+  return {
+    type: REMOVE_MEETING_CHANNEL,
+    payload,
   };
 }
 

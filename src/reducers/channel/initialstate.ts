@@ -6,6 +6,7 @@ const InitialState = Record({
   channelList: [],
   messages: [],
   selectedMessage: {},
+  meetingList: [],
 });
 
 export default InitialState;

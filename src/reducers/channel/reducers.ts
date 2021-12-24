@@ -13,6 +13,10 @@ const {
 
   SET_SELECTED_MESSAGES,
   REMOVE_SELECTED_MESSAGES,
+  ADD_MEETING_CHANNEL,
+  UPDATE_MEETING_CHANNEL,
+  REMOVE_MEETING_CHANNEL,
+  SET_MEETINGS_CHANNEL,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -65,6 +69,23 @@ export default function basket(state = initialState, action:any) {
     }
     case REMOVE_SELECTED_MESSAGES: {
       return state.setIn(['selectedMessage'], {});
+    }
+    case SET_MEETINGS_CHANNEL: {
+      return state.setIn(['meetingList'], action.payload);
+    }
+    case ADD_MEETING_CHANNEL: {
+      const list = lodash.clone(state.meetingList);
+      list.push(action.payload);
+      return state.setIn(['meetingList'], list);
+    }
+    case UPDATE_MEETING_CHANNEL: {
+      const updatedList = lodash.reject(state.meetingList, l => l._id === action.payload._id);
+      updatedList.push(action.payload);
+      return state.setIn(['meetingList'], updatedList);
+    }
+    case REMOVE_MEETING_CHANNEL: {
+      const updatedList = lodash.reject(state.meetingList, l => l._id === action.payload);
+      return state.setIn(['meetingList'], updatedList);
     }
     default:
       return state;

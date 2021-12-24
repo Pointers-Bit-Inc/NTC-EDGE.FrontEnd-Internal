@@ -207,15 +207,27 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 
   useEffect(() => {
     if (meetingParticipants) {
-      const findFocus = lodash.find(meetingParticipants, p => p.isFocused);
-      if (findFocus) {
-        const filterPeer = lodash.reject(peerIds, p => p === findFocus.uid);
-        setSelectedPeer(findFocus.uid);
-        setPeerList(filterPeer);
-      } else {
+      if (lodash.size(meetingParticipants) === 2) {
         const filterPeer = lodash.reject(peerIds, p => p === myId);
-        setSelectedPeer(myId);
-        setPeerList(filterPeer);
+        setSelectedPeer(filterPeer[0]);
+        setPeerList([myId]);
+      } else {
+        const findFocus = lodash.find(meetingParticipants, p => {
+          if (p.isFocused) {
+            const findPeer = lodash.find(peerIds, pd => pd === p.uid)
+            return !!findPeer;
+          }
+          return false
+        });
+        if (findFocus) {
+          const filterPeer = lodash.reject(peerIds, p => p === findFocus.uid);
+          setSelectedPeer(findFocus.uid);
+          setPeerList(filterPeer);
+        } else {
+          const filterPeer = lodash.reject(peerIds, p => p === myId);
+          setSelectedPeer(myId);
+          setPeerList(filterPeer);
+        }
       }
     }
   }, [meetingParticipants, peerIds])
@@ -405,7 +417,6 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     }
     return null;
   }
-
   return (
     <View style={styles.container}>
       {(joinSucceed && !callEnded) ? header : null}
