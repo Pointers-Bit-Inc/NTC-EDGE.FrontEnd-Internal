@@ -145,7 +145,7 @@ const ChatBubble:FC<Props> = ({
               </View>
             )
           }
-          <View style={{ marginLeft: 10 }}>
+          <View style={{ marginLeft: 5 }}>
             {
               !isSender ? (
                 <Text

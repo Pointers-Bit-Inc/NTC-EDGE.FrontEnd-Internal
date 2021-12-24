@@ -9,6 +9,7 @@ import {
   StatusBar,
   Dimensions,
   FlatList,
+  InteractionManager,
 } from 'react-native'
 import lodash from 'lodash';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
@@ -133,6 +134,7 @@ const ChatView = ({ navigation, route }:any) => {
   const [inputText, setInputText] = useState('');
   const [index, setIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
+  const [rendered, setRendered] = useState(false);
   const [routes] = useState([
     { key: 'chat', title: 'Chat' },
     { key: 'files', title: 'Files' },
@@ -186,11 +188,20 @@ const ChatView = ({ navigation, route }:any) => {
   }
 
   useEffect(() => {
-    setInputText(selectedMessage?.message || '');
-    inputRef.current?.blur();
-  }, [selectedMessage]);
+    InteractionManager.runAfterInteractions(() => {
+      setRendered(true);
+    })
+  }, []);
+
   useEffect(() => {
-    if (channelId) {
+    if (rendered) {
+      setInputText(selectedMessage?.message || '');
+      inputRef.current?.blur();
+    }
+  }, [selectedMessage, rendered]);
+
+  useEffect(() => {
+    if (channelId && rendered) {
       const unsubscriber = channelMeetingSubscriber(channelId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
         querySnapshot.docChanges().forEach((change:any) => {
           const data = change.doc.data();
@@ -220,7 +231,7 @@ const ChatView = ({ navigation, route }:any) => {
         unsubscriber();
       }
     }
-  }, [channelId]);
+  }, [channelId, rendered]);
 
   const onInitiateCall = (isVideoEnable = false) =>
     navigation.navigate(
@@ -285,6 +296,7 @@ const ChatView = ({ navigation, route }:any) => {
               data={meetingList}
               bounces={false}
               horizontal
+              showsHorizontalScrollIndicator={false}
               keyExtractor={(item:any) => item._id}
               renderItem={({ item }) => (
                 <MeetingNotif

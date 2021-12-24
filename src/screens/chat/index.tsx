@@ -328,6 +328,7 @@ const ChatList = ({ navigation }:any) => {
         ) : (
           <FlatList
             data={channelList}
+            showsVerticalScrollIndicator={false}
             renderItem={({ item }:any) => (
               <Swipeable
                 renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, item)}

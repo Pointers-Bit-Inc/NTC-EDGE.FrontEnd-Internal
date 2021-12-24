@@ -140,6 +140,7 @@ const Participants = ({ navigation }:any) => {
       <FlatList
         style={{ paddingHorizontal: 10, paddingBottom: 10 }}
         horizontal
+        showsHorizontalScrollIndicator={false}
         data={participants}
         renderItem={({ item }) => (
           <SelectedContact
@@ -234,6 +235,7 @@ const Participants = ({ navigation }:any) => {
       </View>
       <FlatList
         data={contacts}
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             tintColor={primaryColor} // ios

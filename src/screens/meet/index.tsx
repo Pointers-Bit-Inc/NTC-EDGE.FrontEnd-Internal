@@ -12,7 +12,7 @@ import lodash from 'lodash';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
-import { addMeeting, removeMeeting, updateMeeting, setMeetingId } from 'src/reducers/meeting/actions';
+import { addMeeting, removeMeeting, updateMeeting, setMeetingId, setMeeting } from 'src/reducers/meeting/actions';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import useFirebase from 'src/hooks/useFirebase';
 import ProfileImage from '@components/atoms/image/profile'
@@ -106,6 +106,7 @@ const Meet = ({ navigation }) => {
   const onJoin = (item) => {
     dispatch(setSelectedChannel(item.channel));
     dispatch(setMeetingId(item._id));
+    dispatch(setMeeting({}));
     navigation.navigate('Dial', {
       isHost: item.host._id === user._id,
       options: {
@@ -229,6 +230,7 @@ const Meet = ({ navigation }) => {
         ) : (
           <FlatList
             data={meetingList}
+            showsVerticalScrollIndicator={false}
             renderItem={renderItem}
             keyExtractor={(item:any) => item._id}
             ListEmptyComponent={emptyComponent}
