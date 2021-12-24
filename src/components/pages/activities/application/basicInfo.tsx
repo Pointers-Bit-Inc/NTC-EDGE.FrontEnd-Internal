@@ -20,7 +20,6 @@ const BasicInfo = (props: any) => {
         }).then((response) => {
 
                 setInfo(response.data)
-                console.log(response.data)
             })
     }, [props.applicantId])
     return <>
@@ -34,28 +33,28 @@ const BasicInfo = (props: any) => {
                     <View style={styles.rect3}>
                     <Text style={styles.label}>Last Name</Text>
                     <View style={styles.labelFiller}></View>
-                    <Text style={styles.input}>{info.user.lastName}</Text>
+                    <Text style={styles.input}>{info?.user.lastName}</Text>
                 </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Middle Name</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.user.middleName}</Text>
+                        <Text style={styles.input}>{info?.user.middleName}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>First Name</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.user.firstName}</Text>
+                        <Text style={styles.input}>{info?.user.firstName}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Date of Birth</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{formatDate(info.user.dateOfBirth)}</Text>
+                        <Text style={styles.input}>{formatDate(info?.user?.dateOfBirth)}</Text>
                     </View>
                 </View>
 
@@ -70,35 +69,35 @@ const BasicInfo = (props: any) => {
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Unit/Rm/House/Bldg No.:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.unit}</Text>
+                        <Text style={styles.input}>{info?.unit}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Barangay:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.barangay.name}</Text>
+                        <Text style={styles.input}>{info?.barangay?.name}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Province:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.province.name}</Text>
+                        <Text style={styles.input}>{info?.province?.name}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>City/Municipality:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.city.name}</Text>
+                        <Text style={styles.input}>{info?.city?.name}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Zip Code:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.zipCode}</Text>
+                        <Text style={styles.input}>{info?.zipCode}</Text>
                     </View>
                 </View>
                 <View style={[styles.rect4]}></View>
@@ -140,7 +139,7 @@ const BasicInfo = (props: any) => {
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Email:</Text>
                         <View style={styles.labelFiller}></View>
-                        {/*<Text style={styles.input}>{info.user.email}</Text>*/}
+                        <Text style={styles.input}>{info.user.email}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>

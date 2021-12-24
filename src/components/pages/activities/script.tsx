@@ -80,3 +80,11 @@ export const statusDimension = (status: any) => {
         return {width: 70}
     }
 }
+
+export function handleInfinityScroll(event: any) {
+    let mHeight = event.nativeEvent.layoutMeasurement.height;
+    let cSize = event.nativeEvent.contentSize.height;
+    let Y = event.nativeEvent.contentOffset.y;
+    if (Math.ceil(mHeight + Y) >= cSize) return true;
+    return false;
+}

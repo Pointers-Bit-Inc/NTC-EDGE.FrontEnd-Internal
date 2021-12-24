@@ -2,29 +2,20 @@ import React, {useEffect, useMemo, useState} from "react";
 import {Image, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import {Entypo, EvilIcons, Octicons} from '@expo/vector-icons'
 import {styles} from "@pages/activities/styles";
-import Svg, {Ellipse} from "react-native-svg";
 import Collapsible from "react-native-collapsible";
-import {Swipeable} from "react-native-gesture-handler";
-import {APPROVED, DATE_ADDED, DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
+import {DATE_ADDED} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {setVisible} from "../../../reducers/activity/actions";
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
-import MoreIcon from "@assets/svg/more";
-import UnseeIcon from "@assets/svg/unsee";
 import {
     checkFormatIso,
-    formatDate,
-    statusBackgroundColor,
-    statusColor,
-    statusDimension,
-    statusIcon
 } from "@pages/activities/script";
-import FileIcon from "@assets/svg/file";
 import {Activities} from "@pages/activities/interface";
 import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
+import {renderSwiper} from "@pages/activities/swiper";
 
 
 
@@ -118,45 +109,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
         setModalVisible(false)
     }
     const [details, setDetails] = useState({})
-    const renderSwiper = (index: number, progress: any, dragX: any) => {
 
-        return <>
-
-            <View style={{
-                paddingRight: 20,
-                paddingLeft: 20,
-                backgroundColor: '#2863d6',
-                alignItems: "center",
-                justifyContent: 'center'
-            }}>
-                <UnseeIcon width={18} height={18} fill={"#fff"}/>
-                <Text
-                    style={{
-                        color: 'white',
-                        fontWeight: '600',
-
-                    }}>
-                    Unread
-                </Text>
-            </View>
-            <View style={{
-                paddingRight: 40,
-                paddingLeft: 40,
-                backgroundColor: '#e5e5e5',
-                justifyContent: 'center',
-                alignItems: "center"
-            }}>
-                <MoreIcon width={18} height={18} fill={"#000"}/>
-                <Text
-                    style={{
-                        color: '#000',
-                        fontWeight: '600',
-                    }}>
-                    More
-                </Text>
-            </View>
-        </>
-    }
     return (
         <>
 

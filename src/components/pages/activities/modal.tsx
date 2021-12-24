@@ -1,7 +1,6 @@
 import React, { useState} from "react";
 import {Image, Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Entypo, Ionicons} from "@expo/vector-icons";
-import Svg, {Ellipse} from "react-native-svg";
 import {primaryColor, text} from "@styles/color";
 import Disapproval from "@pages/activities/disapproval";
 import Endorsed from "@pages/activities/endorse";
@@ -11,16 +10,10 @@ import Requirement from "@pages/activities/application/requirement";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Payment from "@pages/activities/application/payment";
 import {RootStateOrAny, useSelector} from "react-redux";
-import {formatDate} from "@pages/activities/script";
+import {formatDate, handleInfinityScroll} from "@pages/activities/script";
 const {width} = Dimensions.get('window');
 
-function handleInfinityScroll(event: any) {
-    let mHeight = event.nativeEvent.layoutMeasurement.height;
-    let cSize = event.nativeEvent.contentSize.height;
-    let Y = event.nativeEvent.contentOffset.y;
-    if (Math.ceil(mHeight + Y) >= cSize) return true;
-    return false;
-}
+
 
 function ActivityModal(props: any) {
     const user = useSelector((state: RootStateOrAny) => state.user);
@@ -306,6 +299,7 @@ const styles = StyleSheet.create({
         position: "absolute"
     },
     ellipse: {
+        borderRadius: 40,
         top: 17,
         left: 20,
         width: 81,
