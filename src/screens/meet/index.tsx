@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   StatusBar,
   FlatList,
+  RefreshControl,
 } from 'react-native'
 import lodash from 'lodash';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
@@ -102,6 +103,7 @@ const Meet = ({ navigation }) => {
     image: user.image,
   });
   const [loading, setLoading] = useState(false);
+  const [sendRequest, setSendRequest] = useState(0);
 
   const onJoin = (item) => {
     dispatch(setSelectedChannel(item.channel));
@@ -117,38 +119,44 @@ const Meet = ({ navigation }) => {
     });
   }
 
+  const onRequestData = () => setSendRequest(request => request + 1);
+
   useEffect(() => {
     setLoading(true);
+    let unMount = false;
     const unsubscriber = userMeetingSubscriber((querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
-      setLoading(false);
-      querySnapshot.docChanges().forEach((change:any) => {
-        const data = change.doc.data();
-        data._id = change.doc.id;
-        switch(change.type) {
-          case 'added': {
-            const hasSave = lodash.find(meetingList, (ch:any) => ch._id === data._id);
-            if (!hasSave) {
-              dispatch(addMeeting(data));
+      if (!unMount) {
+        setLoading(false);
+        querySnapshot.docChanges().forEach((change:any) => {
+          const data = change.doc.data();
+          data._id = change.doc.id;
+          switch(change.type) {
+            case 'added': {
+              const hasSave = lodash.find(meetingList, (ch:any) => ch._id === data._id);
+              if (!hasSave) {
+                dispatch(addMeeting(data));
+              }
+              return;
             }
-            return;
+            case 'modified': {
+              dispatch(updateMeeting(data));
+              return;
+            }
+            case 'removed': {
+              dispatch(removeMeeting(data._id));
+              return;
+            }
+            default:
+              return;
           }
-          case 'modified': {
-            dispatch(updateMeeting(data));
-            return;
-          }
-          case 'removed': {
-            dispatch(removeMeeting(data._id));
-            return;
-          }
-          default:
-            return;
-        }
-      });
+        });
+      }
     })
     return () => {
+      unMount = true;
       unsubscriber();
     }
-  }, []);
+  }, [sendRequest]);
 
   const emptyComponent = () => (
     <View
@@ -231,6 +239,15 @@ const Meet = ({ navigation }) => {
         ) : (
           <FlatList
             data={meetingList}
+            refreshControl={
+              <RefreshControl
+                tintColor={primaryColor} // ios
+                progressBackgroundColor={primaryColor} // android
+                colors={['white']} // android
+                refreshing={loading}
+                onRefresh={onRequestData}
+              />
+            }
             showsVerticalScrollIndicator={false}
             renderItem={renderItem}
             keyExtractor={(item:any) => item._id}

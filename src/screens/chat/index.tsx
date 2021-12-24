@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   StatusBar,
   Animated,
+  RefreshControl,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
@@ -171,6 +172,9 @@ const ChatList = ({ navigation }:any) => {
   const [showAlert, setShowAlert] = useState(false);
   const [selectedItem, setSelectedItem]:any = useState({});
   const [loading, setLoading] = useState(false);
+  const [sendRequest, setSendRequest] = useState(0);
+
+  const onRequestData = () => setSendRequest(request => request + 1);
 
   useEffect(() => {
     if(Platform.OS === 'web') {
@@ -183,43 +187,47 @@ const ChatList = ({ navigation }:any) => {
 
   useEffect(() => {
     setLoading(true);
+    let unMount = false;
     const unsubscriber = channelSubscriber(searchValue, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
-      setLoading(false);
-      querySnapshot.docChanges().forEach((change:any) => {
-        const data = change.doc.data();
-        data._id = change.doc.id;
-        data.channelId = change.doc.id;
-        switch(change.type) {
-          case 'added': {
-            const hasSave = lodash.find(channelList, (ch:any) => ch._id === data._id);
-            data.otherParticipants = getOtherParticipants(data.participants, user);
-            data.hasSeen = checkSeen(data.seen, user);
-            if (!hasSave) {
-              dispatch(addChannel(data));
+      if (!unMount) {
+        setLoading(false);
+        querySnapshot.docChanges().forEach((change:any) => {
+          const data = change.doc.data();
+          data._id = change.doc.id;
+          data.channelId = change.doc.id;
+          switch(change.type) {
+            case 'added': {
+              const hasSave = lodash.find(channelList, (ch:any) => ch._id === data._id);
+              data.otherParticipants = getOtherParticipants(data.participants, user);
+              data.hasSeen = checkSeen(data.seen, user);
+              if (!hasSave) {
+                dispatch(addChannel(data));
+              }
+              return;
             }
-            return;
+            case 'modified': {
+              data.otherParticipants = getOtherParticipants(data.participants, user);
+              data.hasSeen = checkSeen(data.seen, user);
+              dispatch(updateChannel(data));
+              return;
+            }
+            case 'removed': {
+              data.otherParticipants = getOtherParticipants(data.participants, user);
+              data.hasSeen = checkSeen(data.seen, user);
+              dispatch(removeChannel(data._id));
+              return;
+            }
+            default:
+              return;
           }
-          case 'modified': {
-            data.otherParticipants = getOtherParticipants(data.participants, user);
-            data.hasSeen = checkSeen(data.seen, user);
-            dispatch(updateChannel(data));
-            return;
-          }
-          case 'removed': {
-            data.otherParticipants = getOtherParticipants(data.participants, user);
-            data.hasSeen = checkSeen(data.seen, user);
-            dispatch(removeChannel(data._id));
-            return;
-          }
-          default:
-            return;
-        }
-      });
+        });
+      }
     });
     return () => {
+      unMount = true;
       unsubscriber();
     }
-  }, [searchValue])
+  }, [searchValue, sendRequest])
 
   const emptyComponent = () => (
     <View
@@ -329,6 +337,15 @@ const ChatList = ({ navigation }:any) => {
           <FlatList
             data={channelList}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                tintColor={primaryColor} // ios
+                progressBackgroundColor={primaryColor} // android
+                colors={['white']} // android
+                refreshing={loading}
+                onRefresh={onRequestData}
+              />
+            }
             renderItem={({ item }:any) => (
               <Swipeable
                 renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, item)}
