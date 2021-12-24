@@ -74,10 +74,12 @@ const Payment = () => {
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        alignSelf: "center",
     },
     group: {
-        width: 328,
+
+        width: 375,
         marginLeft: 20
     },
     statementOfAccount: {

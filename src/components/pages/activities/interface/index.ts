@@ -1,3 +1,8 @@
+
+
+
+
+
 export interface Barangay {
     _id: string;
     name: string;
@@ -22,36 +27,72 @@ export interface Role {
 export interface User {
     _id: string;
     contactNumber: string;
-    dateOfBirth: string;
+    dateOfBirth: Date;
+    email: string;
     firstName: string;
     gender: string;
     lastName: string;
     middleName: string;
+    nationality: string;
     role: Role;
 }
 
 export interface Applicant {
-    __v: number;
     _id: string;
     barangay: Barangay;
     category: string;
     city: City;
     courseTaken: string;
-    createdAt: Date;
     province: Province;
     schoolAttended: string;
     street: string;
     unit: string;
-    updatedAt: Date;
     user: User;
     yearGraduated: string;
     zipCode: string;
 }
 
+export interface Requirement {
+    _id: string;
+    name: string;
+    path: string;
+}
 
+export interface SelectedType {
+    _id: string;
+    name: string;
+    selectedItems: string[];
+}
+
+export interface Service {
+    _id: string;
+    name: string;
+    revisionDate: Date;
+    revisionNumber: string;
+    serviceCode: string;
+}
+
+export interface Soa {
+    _id: string;
+    amount: number;
+    item: string;
+}
+
+export interface Application {
+    _id: string;
+    applicant: Applicant;
+    applicationType: string;
+    paymentStatus: string;
+    requirements: Requirement[];
+    selectedTypes: SelectedType[];
+    service: Service;
+    soa: Soa[];
+    status: string;
+    totalFee: number;
+}
 
 export interface ActivityDetails {
-    applicant: Applicant;
+    application: Application;
     applicationType: string;
     dateTime: Date;
     description: string;

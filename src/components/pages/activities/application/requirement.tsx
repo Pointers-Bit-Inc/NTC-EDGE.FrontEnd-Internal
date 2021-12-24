@@ -34,8 +34,6 @@ const Requirement = () =>{
                 <View style={styles.group3}>
                     <View style={styles.group4}>
                 <Collapsible collapsed={1 != selectCollapsed}>
-
-
                             <View style={styles.rect}>
                                 <View style={styles.rect5}></View>
                                 <View style={styles.group2}>
