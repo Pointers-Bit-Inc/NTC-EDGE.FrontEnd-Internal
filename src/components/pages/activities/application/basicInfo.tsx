@@ -20,7 +20,7 @@ const BasicInfo = (props: any) => {
         }).then((response) => {
 
                 setInfo(response.data)
-
+                console.log(response.data)
             })
     }, [props.applicantId])
     return <>

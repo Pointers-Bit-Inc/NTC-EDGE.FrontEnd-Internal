@@ -284,13 +284,13 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                                 </TouchableWithoutFeedback>
                                 <Collapsible collapsed={numberCollapsed[index] == 1}>
                                     {activities.map((activity: any, i: number) => {
-
                                         return !activity.isPinned ? <ActivityItem
+                                            key={i}
                                             activity={activity}
                                             onPressUser={() => {
                                             setDetails(activity)
                                             setModalVisible(true)
-                                        }} index={i} swiper = {renderSwiper}/> : false
+                                        }} index={i} swiper={renderSwiper}/> : false
                                     })}
                                 </Collapsible>
 

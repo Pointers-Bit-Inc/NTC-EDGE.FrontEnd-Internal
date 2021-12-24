@@ -169,7 +169,7 @@ function ActivityModal(props: any) {
                                         tabs.map((tab, index) =>{
                                             const isShow = tab.isShow.indexOf(user?.role?.key) != -1
                                             if(isShow && tab.id == 1 && tab.active){
-                                                return <BasicInfo applicantId={props?.details?.activityDetails?.applicant?._id} key={index}/>
+                                                return <BasicInfo applicantId={props?.details?.activityDetails?.application?.applicant?._id} key={index}/>
                                             }else if(isShow && tab.id == 2 && tab.active){
                                                 return  <ApplicationDetails key={index}/>
                                             }else if(isShow && tab.id == 3 && tab.active){
@@ -234,7 +234,7 @@ function ActivityModal(props: any) {
                         <View >
                             <View style={styles.rect5}>
                                 <View style={styles.group11}>
-                                    <Text style={styles.name}>{props?.details?.activityDetails?.applicant?.user?.firstName + " "+ props?.details?.activityDetails?.applicant?.user?.lastName }</Text>
+                                    <Text style={styles.name}>{props?.details?.activityDetails?.application?.applicant?.user?.firstName + " "+ props?.details?.activityDetails?.application?.applicant?.user?.lastName }</Text>
                                     <Text style={styles.job}>{props?.details?.activityDetails?.applicationType}</Text>
                                 </View>
                                 <View style={styles.group2}>
@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
         left: 0,
         width: width,
         height: 812,
+        position: "absolute"
     },
     rect16: {
         backgroundColor: "rgba(255,255,255,1)",
@@ -295,6 +296,7 @@ const styles = StyleSheet.create({
     group3: {
         width: 100,
         height: 97,
+        flex: 0
     },
     rect4: {
         top: 0,
@@ -304,11 +306,10 @@ const styles = StyleSheet.create({
         position: "absolute"
     },
     ellipse: {
-        borderRadius:40,
         top: 17,
         left: 20,
-        width: 80,
-        height: 80,
+        width: 81,
+        height: 81,
         position: "absolute"
     },
     rect4Stack: {
@@ -375,10 +376,18 @@ const styles = StyleSheet.create({
         marginLeft: -33
     },
     group10: {
-        height: "80%",
-        marginTop: 10
+        height: "60%",
+        marginTop: 30
     },
 
+
+
+
+
+
+
+
+    groupColumn: {},
     groupColumnFiller: {
         flex: 1,
 
@@ -406,7 +415,7 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     button3: {
-
+        width: 100,
         height: 31
     },
     rect22Filler: {
@@ -435,6 +444,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     rect23: {
+        height: 31,
         backgroundColor: "rgba(40,99,214,1)",
         borderRadius: 6
     },
@@ -449,7 +459,7 @@ const styles = StyleSheet.create({
     button3Row: {
         height: 31,
         flexDirection: "row",
-        alignItems: "center",
+        alignItems: "flex-end",
         marginBottom: 1
     },
     button3RowFiller: {
@@ -486,10 +496,11 @@ const styles = StyleSheet.create({
     group4: {
         top: 100,
         width: 264,
-        height: 300,
+        height: 97,
         position: "absolute",
         right: 0,
         flex: 0,
+        backgroundColor: "rgba(230, 230, 230,1)"
     },
     rect5: {
         top: 0,
@@ -510,15 +521,16 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "#121212",
         textAlign: "left",
-        fontSize: 18
+        fontSize: 20
     },
     job: {
         color: "rgba(98,108,130,1)",
-        fontSize: 12,
+        fontSize: 10,
         textAlign: "left"
     },
     group2: {
         width: 264,
+        height: 21,
         backgroundColor: "rgba(255,255,255,1)",
         flexDirection: "row",
         marginLeft: -264,
@@ -547,13 +559,17 @@ const styles = StyleSheet.create({
         left: 195,
         width: 69,
         height: 72,
+        position: "absolute"
     },
     submitted: {
         color: "rgba(105,114,135,1)",
         textAlign: "right",
         fontSize: 10
     },
-
+    rect5Stack: {
+        width: 264,
+        height: 98
+    },
     group13Stack: {
         width: 376,
         height: 812
