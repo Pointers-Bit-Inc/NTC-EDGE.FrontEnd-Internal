@@ -4,6 +4,7 @@ import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import Dropdown from "@atoms/dropdown";
 import axios from "axios";
 import EndorseToIcon from "@assets/svg/endorseTo";
+import {SWAGGER_URL} from "../../../services/config";
 function Endorsed(props:any) {
     interface Picked {
         value: string|number;
@@ -13,7 +14,7 @@ function Endorsed(props:any) {
     const [pickedEndorsed, setPickedEndorsed] = useState<Picked[]>()
     const [endorsed, setEndorsed] = useState()
     useEffect(()=>{
-        axios.get('https://private-anon-45a305b5a8-ntcedgeustp.apiary-mock.com/employees').then((response)=>{
+        axios.get(SWAGGER_URL + '/users').then((response)=>{
             let res = [...response.data].map((item) =>{
                 return {value: item.id, label: item.user.firstName + " " + item.user.lastName}
             })

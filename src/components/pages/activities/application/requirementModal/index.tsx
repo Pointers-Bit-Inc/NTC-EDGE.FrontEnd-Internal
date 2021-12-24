@@ -1,6 +1,6 @@
 import React from "react";
 import BackgroundPayment from "@assets/svg/backgroundpayment";
-import {Modal, View, Text, StyleSheet, Dimensions, TouchableOpacity} from "react-native";
+import {Modal, View, Text, StyleSheet, Dimensions, TouchableOpacity, Image} from "react-native";
 const { width } = Dimensions.get('window');
 
 const RequirementModal = (props:any) => {
@@ -33,7 +33,12 @@ const RequirementModal = (props:any) => {
                     </View>
                 </View>
                 <View style={styles.group8}>
-
+                    <Image
+                        style={{width: 350, height: 350}}
+                        source={{
+                            uri: props.image,
+                        }}
+                    />
                 </View>
             </View>
 

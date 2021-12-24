@@ -1,4 +1,6 @@
-const { SET_ACTIVITY, ON_CHECKED, SELECTED_CHANGE_STATUS, SET_VISIBLE } = require('./types').default;
+import {APPROVED} from "./initialstate";
+
+const { SET_ACTIVITY, ON_CHECKED, UPDATE_ACTIVITY_STATUS, SET_VISIBLE } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
 
@@ -8,9 +10,21 @@ export default function basket(state = initialState, action = {}) {
 
   switch (action.type) {
     case SET_ACTIVITY: {
-      return {
-        ...action.payload,
-      };
+      state = state.set('activities', action.payload);
+      return state
+    }
+    case UPDATE_ACTIVITY_STATUS: {
+      const newArr = state.activities;
+      const index = newArr.findIndex((app:any) => {
+        console.log(app.activityDetails.application._id, action.payload._id)
+        return app.activityDetails.application._id == action.payload._id
+      })
+      if(index != -1){
+        newArr[index].activityDetails.status = APPROVED
+        state = state.set("activities", newArr)
+      }
+
+      return state
     }
     case ON_CHECKED:{
       const newArr = state.get("statusCode");

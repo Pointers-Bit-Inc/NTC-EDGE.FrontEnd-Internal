@@ -39,7 +39,7 @@ const InitialState = Record({
     }
   ],
   selectedChangeStatus:[],
-
+  activities:[]
 });
 
 export default InitialState;

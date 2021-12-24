@@ -9,13 +9,18 @@ import BasicInfo from "@pages/activities/application/basicInfo";
 import Requirement from "@pages/activities/application/requirement";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Payment from "@pages/activities/application/payment";
-import {RootStateOrAny, useSelector} from "react-redux";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {formatDate, handleInfinityScroll} from "@pages/activities/script";
+import axios from "axios";
+import {SWAGGER_URL} from "../../../services/config";
+import {APPROVED} from "../../../reducers/activity/initialstate";
+import {updateActivityStatus} from "../../../reducers/activity/actions";
 
 const {width} = Dimensions.get('window');
 
 
 function ActivityModal(props: any) {
+    const dispatch = useDispatch();
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [groupButtonVisible, setGroupButtonVisible] = useState(false)
     const [tabs, setTabs] = useState([
@@ -57,7 +62,27 @@ function ActivityModal(props: any) {
     const onApproveDismissed = () => {
         setApproveVisible(false)
     }
+    const onApprove = async () => {
+        const id = props?.details?.activityDetails?.application?._id,
+            config = {
+                headers: {
+                    Authorization: "Bearer ".concat(user.sessionToken)
+                }
+            }
 
+        if (id) {
+            await axios.patch(SWAGGER_URL + `/applications/${id}/update-status`, {
+                status: APPROVED
+            }, config ).then((response) => {
+
+                return axios.get(SWAGGER_URL + `/applications/${id}`, config)
+            }).then((response) => {
+                dispatch(updateActivityStatus(response.data))
+            })
+        }
+
+        setApproveVisible(true)
+    }
     const [backgroundColour, setBackgroundColour] = useState("#fff")
 
     return (
@@ -169,7 +194,8 @@ function ActivityModal(props: any) {
                                                 applicationType = props?.details?.activityDetails?.application?.applicationType,
                                                 service = props?.details?.activityDetails?.application?.service,
                                                 soa = props?.details?.activityDetails?.application?.soa,
-                                                totalFee = props?.details?.activityDetails?.application?.totalFee
+                                                totalFee = props?.details?.activityDetails?.application?.totalFee,
+                                                requirements = props?.details?.activityDetails?.application?.requirements
                                             if (isShow && tab.id == 1 && tab.active) {
                                                 return <BasicInfo
                                                     applicant={applicant}
@@ -181,9 +207,10 @@ function ActivityModal(props: any) {
                                                     applicantType={applicationType}
                                                     key={index}/>
                                             } else if (isShow && tab.id == 3 && tab.active) {
-                                                return <Requirement  key={index} />
+                                                return <Requirement requirements={requirements} key={index}/>
                                             } else if (isShow && tab.id == 4 && tab.active) {
-                                                return <Payment totalFee={totalFee} soa={soa}  key={index}/>
+                                                return <Payment totalFee={totalFee}
+                                                                soa={soa} key={index}/>
                                             }
                                         })
                                     }
@@ -201,9 +228,7 @@ function ActivityModal(props: any) {
                                         <View style={styles.group15}>
                                             <View style={styles.button3Row}>
                                                 {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1 &&
-                                                <TouchableOpacity onPress={() => {
-                                                    setApproveVisible(true)
-                                                }}
+                                                <TouchableOpacity onPress={onApprove}
                                                                   style={[styles.button3, {width: user?.role?.key == "cashier" ? 220 : 100,}]}>
                                                     <View style={styles.rect22Filler}></View>
                                                     <View style={styles.rect22}>
@@ -583,3 +608,7 @@ const styles = StyleSheet.create({
         height: 812
     }
 });
+
+
+
+

@@ -1,11 +1,11 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {Image, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
-import {Entypo, EvilIcons, Octicons} from '@expo/vector-icons'
+import {Entypo} from '@expo/vector-icons'
 import {styles} from "@pages/activities/styles";
 import Collapsible from "react-native-collapsible";
 import {DATE_ADDED} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {setVisible} from "../../../reducers/activity/actions";
+import {setActivity, setVisible} from "../../../reducers/activity/actions";
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
@@ -16,6 +16,7 @@ import {Activities} from "@pages/activities/interface";
 import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
+import {SWAGGER_URL} from "../../../services/config";
 
 
 
@@ -25,12 +26,12 @@ export default function ActivitiesPage() {
 
 
 const user = useSelector((state: RootStateOrAny) => state.user);
-    const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
+    const {selectedChangeStatus, activities} = useSelector((state: RootStateOrAny) => state.activity)
     const dispatch = useDispatch()
-    const [mockList, setMockList] = useState<Activities[]>([])
+
 
     useEffect(() => {
-        axios.get(`https://ntc.astrotechenergy.com/activities`,
+        axios.get(SWAGGER_URL + '/activities',
             {
                 headers: {
                     Authorization: "Bearer ".concat(user.sessionToken)
@@ -38,7 +39,8 @@ const user = useSelector((state: RootStateOrAny) => state.user);
             }).then((response) => {
 
             let res = [...response.data]
-            setMockList(res)
+            dispatch(setActivity(res))
+
         }).catch((err) =>{
             console.log(err)
         })
@@ -53,19 +55,21 @@ const user = useSelector((state: RootStateOrAny) => state.user);
     const [isPinnedActivity, setIsPinnedActivity] = useState(0)
 
     const usersList = useMemo(() => {
-        setTotalPages(Math.ceil(mockList.length / 10));
+        setTotalPages(Math.ceil(activities.length / 10));
         const sortByDate = (arr: any) => {
             const sorter = (a: any, b: any) => {
                 return new Date(checkFormatIso(a.createdAt, "-")).getTime() - new Date(checkFormatIso(b.createdAt, "-")).getTime();
             }
-            return arr.sort(sorter);
+            return arr?.sort(sorter);
         };
-        const selectedClone = selectedChangeStatus.filter((status: string) => {
+
+
+        const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
-        const list = (selectedChangeStatus.indexOf(DATE_ADDED) != -1 ? sortByDate(mockList) : mockList).filter((item: Activities) => {
+        const list = (selectedChangeStatus?.indexOf(DATE_ADDED) != -1 ? sortByDate(activities) : activities).filter((item: Activities) => {
             return item?.activityDetails?.application?.applicant?.user?.firstName.includes(searchTerm) &&
-                (selectedClone.length ? selectedClone.indexOf(item.activityDetails.status) != -1 : true)
+                (selectedClone?.length ? selectedClone.indexOf(item.activityDetails.status) != -1 : true)
         });
         setIsPinnedActivity(0)
         const groups = list.reduce((groups: any, activity: any) => {
@@ -94,7 +98,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
         }
         setNumberCollapsed(a)
         return groupArrays.slice(0, currentPage * 10);
-    }, [searchTerm, selectedChangeStatus.length, mockList.length, currentPage])
+    }, [searchTerm, selectedChangeStatus?.length, activities?.length, currentPage])
 
 
 

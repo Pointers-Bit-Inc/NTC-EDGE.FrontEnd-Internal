@@ -14,7 +14,7 @@ const ApplicationDetails = (props:any) =>{
                 {props.selectedType.map((type:any, idx:number) => {
                     return <Text key={idx} style={styles.text}>
                         {type.name} {type.selectedItems.map((item:string, index:number)=>{
-                            return <Text>{`\n\u2022${item}`}</Text>
+                            return <Text key={index}>{`\n\u2022${item}`}</Text>
                             })}
                     </Text>
                 })

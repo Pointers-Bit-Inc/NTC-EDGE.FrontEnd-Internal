@@ -23,7 +23,7 @@ const Payment = (props:any) => {
                 <View style={styles.rect4Stack}>
                     <View style={styles.rect4}>
                         { props.soa.map((soa: any, index:number)=>{
-                            return <Text >{soa.item}:{soa.amount} </Text>
+                            return <Text key={index}>{soa.item}:{soa.amount} </Text>
                         })
 
                         }
@@ -146,13 +146,10 @@ const styles = StyleSheet.create({
         marginLeft: 9
     },
     rect4: {
-        top: 0,
-        left: 0,
         width: 328,
         height: 65,
         position: "absolute",
         borderWidth: 1,
-        borderColor: "rgba(128,129,150,1)",
         borderStyle: "dashed",
         borderTopWidth: 2,
         borderBottomWidth: 2,
