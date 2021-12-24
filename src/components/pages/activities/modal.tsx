@@ -10,11 +10,13 @@ import Requirement from "@pages/activities/application/requirement";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Payment from "@pages/activities/application/payment";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {formatDate, handleInfinityScroll} from "@pages/activities/script";
+import {formatDate, handleInfinityScroll, statusIcon} from "@pages/activities/script";
 import axios from "axios";
 import {SWAGGER_URL} from "../../../services/config";
-import {APPROVED} from "../../../reducers/activity/initialstate";
+import {APPROVED, DECLINED} from "../../../reducers/activity/initialstate";
 import {updateActivityStatus} from "../../../reducers/activity/actions";
+import EvaluationIcon from "@assets/svg/evaluation";
+import EvaluationStatus from "@assets/svg/evaluationstatus";
 
 const {width} = Dimensions.get('window');
 
@@ -62,7 +64,9 @@ function ActivityModal(props: any) {
     const onApproveDismissed = () => {
         setApproveVisible(false)
     }
-    const onApprove = async () => {
+    const onChangeApplicationStatus = async (status:string) => {
+
+
         const id = props?.details?.activityDetails?.application?._id,
             config = {
                 headers: {
@@ -77,11 +81,11 @@ function ActivityModal(props: any) {
 
                 return axios.get(SWAGGER_URL + `/applications/${id}`, config)
             }).then((response) => {
-                dispatch(updateActivityStatus(response.data))
+                dispatch(updateActivityStatus({application: response.data, status: status}))
             })
         }
 
-        setApproveVisible(true)
+
     }
     const [backgroundColour, setBackgroundColour] = useState("#fff")
 
@@ -228,7 +232,10 @@ function ActivityModal(props: any) {
                                         <View style={styles.group15}>
                                             <View style={styles.button3Row}>
                                                 {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1 &&
-                                                <TouchableOpacity onPress={onApprove}
+                                                <TouchableOpacity onPress={() => {
+                                                    onChangeApplicationStatus(APPROVED).then(r =>  setApproveVisible(true))
+
+                                                }}
                                                                   style={[styles.button3, {width: user?.role?.key == "cashier" ? 220 : 100,}]}>
                                                     <View style={styles.rect22Filler}></View>
                                                     <View style={styles.rect22}>
@@ -276,7 +283,7 @@ function ActivityModal(props: any) {
                                 </View>
                                 <View style={styles.group2}>
                                     <View style={styles.icon2Row}>
-                                        <Entypo name="circle" style={styles.icon2}></Entypo>
+                                        {statusIcon(props?.details?.activityDetails?.status, styles.icon2)}
                                         <Text style={styles.role}>{props?.details?.activityDetails?.status}</Text>
                                     </View>
                                 </View>
@@ -289,8 +296,10 @@ function ActivityModal(props: any) {
                     </View>
                 </View>
             </View>
-            <Approval visible={approveVisible} onDismissed={onApproveDismissed}/>
-            <Disapproval visible={visible} onDismissed={onDismissed}/>
+            <Approval  visible={approveVisible} onDismissed={onApproveDismissed}/>
+            <Disapproval onChangeApplicationStatus={()=>{
+                onChangeApplicationStatus(DECLINED)
+            }} visible={visible} onDismissed={onDismissed}/>
             <Endorsed visible={endorseVisible} onDismissed={onEndorseDismissed}/>
         </Modal>
 

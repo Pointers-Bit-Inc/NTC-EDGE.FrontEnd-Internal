@@ -170,6 +170,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                         {isPinnedActivity > 0 && usersList.map((item, index) => {
                             return item.activity.map((activity: any, i: number) => {
                                 return activity.isPinned &&  <ActivityItem
+
                                     activity={activity}
                                     onPressUser={() => {
                                         setDetails(activity)

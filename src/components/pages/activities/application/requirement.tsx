@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import {Image, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import {EvilIcons} from "@expo/vector-icons";
 import Collapsible from "react-native-collapsible";
 import ChevronUpIcon from "@assets/svg/chevron-up";
@@ -37,7 +37,14 @@ const Requirement = (props:any) =>{
                         <View style={styles.group4}>
                             <Collapsible collapsed={index != selectCollapsed}>
                                 <View style={styles.rect}>
-                                    <View style={styles.rect5}/>
+                                    <View style={styles.rect5}>
+                                        <Image
+                                            style={{width: 350, height: 216}}
+                                            source={{
+                                                uri: requirement.path,
+                                            }}
+                                        />
+                                    </View>
                                     <View style={styles.group2}>
                                         <View style={styles.rect6}>
                                             <View style={styles.group}>

@@ -16,11 +16,10 @@ export default function basket(state = initialState, action = {}) {
     case UPDATE_ACTIVITY_STATUS: {
       const newArr = state.activities;
       const index = newArr.findIndex((app:any) => {
-        console.log(app.activityDetails.application._id, action.payload._id)
-        return app.activityDetails.application._id == action.payload._id
+        return app.activityDetails.application._id == action.payload.application._id
       })
       if(index != -1){
-        newArr[index].activityDetails.status = APPROVED
+        newArr[index].activityDetails.status = action.payload.status
         state = state.set("activities", newArr)
       }
 

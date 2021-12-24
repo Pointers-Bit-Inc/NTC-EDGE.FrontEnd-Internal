@@ -41,9 +41,12 @@ function Disapproval(props:any) {
                     </View>
                     <View style={styles.iconColumnFiller}></View>
                     <View style={styles.group2}>
-                        <View style={styles.rect3}>
-                            <Text style={styles.confirm}>Confirm</Text>
-                        </View>
+                        <TouchableOpacity onPress={props.onChangeApplicationStatus}>
+                            <View  style={styles.rect3}>
+                                <Text style={styles.confirm}>Confirm</Text>
+                            </View>
+                        </TouchableOpacity>
+
                     </View>
                 </View>
             </View>
