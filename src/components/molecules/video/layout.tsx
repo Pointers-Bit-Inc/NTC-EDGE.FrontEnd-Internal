@@ -207,7 +207,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 
   useEffect(() => {
     if (meetingParticipants) {
-      if (lodash.size(meetingParticipants) === 2) {
+      if (lodash.size(peerIds) === 2) {
         const filterPeer = lodash.reject(peerIds, p => p === myId);
         setSelectedPeer(filterPeer[0]);
         setPeerList([myId]);

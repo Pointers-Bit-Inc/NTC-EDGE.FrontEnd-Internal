@@ -1,33 +1,29 @@
-import { PermissionsAndroid, Platform } from 'react-native';
-import { Camera } from 'expo-camera';
+import { requestMultiple, PERMISSIONS, openSettings } from 'react-native-permissions'
 
 export const requestCameraAndAudioPermission = async () => {
   try {
-    if (Platform.OS === 'ios') {
-      const camera = await Camera.requestCameraPermissionsAsync();
-      const microphone = await Camera.requestMicrophonePermissionsAsync();
-
-      if (camera.granted && microphone.granted) {
-        console.log('You can use the cameras & mic');
-      } else {
-        console.log('Permission denied');
-      }
-    } else {
-      const granted = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-      ]);
+    await requestMultiple([
+      PERMISSIONS.IOS.CAMERA,
+      PERMISSIONS.ANDROID.CAMERA,
+      PERMISSIONS.IOS.MICROPHONE,
+      PERMISSIONS.ANDROID.RECORD_AUDIO,
+    ])
+    .then(status => {
       if (
-        granted['android.permission.RECORD_AUDIO'] ===
-          PermissionsAndroid.RESULTS.GRANTED &&
-        granted['android.permission.CAMERA'] ===
-          PermissionsAndroid.RESULTS.GRANTED
+        (
+          status[PERMISSIONS.IOS.CAMERA] === 'granted' &&
+          status[PERMISSIONS.IOS.MICROPHONE] === 'granted'
+        ) || (
+          status[PERMISSIONS.ANDROID.CAMERA] === 'granted' &&
+          status[PERMISSIONS.ANDROID.RECORD_AUDIO] === 'granted'
+        )
       ) {
-        console.log('You can use the cameras & mic');
+        console.log('You can now use mic & camera');
       } else {
-        console.log('Permission denied');
+        console.log('Permissions denied');
+        openSettings().catch(() => console.warn('cannot open settings'));
       }
-    }
+    });
   } catch (err) {
     console.warn(err);
   }
