@@ -1,5 +1,5 @@
-import React, { useState} from "react";
-import {Image, Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {useState} from "react";
+import {Dimensions, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Entypo, Ionicons} from "@expo/vector-icons";
 import {primaryColor, text} from "@styles/color";
 import Disapproval from "@pages/activities/disapproval";
@@ -11,8 +11,8 @@ import ApplicationDetails from "@pages/activities/application/applicationDetails
 import Payment from "@pages/activities/application/payment";
 import {RootStateOrAny, useSelector} from "react-redux";
 import {formatDate, handleInfinityScroll} from "@pages/activities/script";
-const {width} = Dimensions.get('window');
 
+const {width} = Dimensions.get('window');
 
 
 function ActivityModal(props: any) {
@@ -35,7 +35,7 @@ function ActivityModal(props: any) {
             id: 3,
             name: 'Requirements',
             active: false,
-            isShow: [ 'director', 'evaluator']
+            isShow: ['director', 'evaluator']
         },
         {
             id: 4,
@@ -44,18 +44,18 @@ function ActivityModal(props: any) {
             isShow: ['cashier']
         },
     ])
-    const [visible, setVisible ] = useState(false)
-    const [endorseVisible, setEndorseVisible ] = useState(false)
-    const [approveVisible, setApproveVisible ] = useState(false)
+    const [visible, setVisible] = useState(false)
+    const [endorseVisible, setEndorseVisible] = useState(false)
+    const [approveVisible, setApproveVisible] = useState(false)
 
-    const onDismissed = () =>{
+    const onDismissed = () => {
         setVisible(false)
     }
-    const onEndorseDismissed = () =>{
+    const onEndorseDismissed = () => {
         setEndorseVisible(false)
     }
     const onApproveDismissed = () => {
-      setApproveVisible(false)
+        setApproveVisible(false)
     }
 
     const [backgroundColour, setBackgroundColour] = useState("#fff")
@@ -76,7 +76,8 @@ function ActivityModal(props: any) {
                 left: 0,
                 width: '100%',
                 height: '100%',
-                backgroundColor: "rgba(0, 0, 0, 0.5)",}: {}}/>
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+            } : {}}/>
 
             <View style={styles.container}>
                 <View style={styles.group13Stack}>
@@ -103,7 +104,7 @@ function ActivityModal(props: any) {
                                         <View style={styles.rect4}></View>
                                         <Image source={{
                                             uri: 'https://reactnative.dev/img/tiny_logo.png'
-                                        }} style={styles.ellipse} />
+                                        }} style={styles.ellipse}/>
 
                                     </View>
                                 </View>
@@ -113,29 +114,31 @@ function ActivityModal(props: any) {
                                             {
                                                 tabs.map((tab, index) => {
 
-                                                    return tab.isShow.indexOf(user?.role?.key) != -1 &&   <TouchableOpacity key={index} onPress={() => {
-                                                        let newArr = [...tabs]
-                                                        for (let i = 0; i < newArr.length; i++) {
-                                                            if(newArr[i].active){
-                                                                newArr[i].active = !newArr[i].active
+                                                    return tab.isShow.indexOf(user?.role?.key) != -1 &&
+                                                        <TouchableOpacity key={index} onPress={() => {
+                                                            let newArr = [...tabs]
+                                                            for (let i = 0; i < newArr.length; i++) {
+                                                                if (newArr[i].active) {
+                                                                    newArr[i].active = !newArr[i].active
+                                                                }
                                                             }
-                                                        }
-                                                        newArr[index].active = true
-                                                        if(newArr[index].id == 3 ){
-                                                            setBackgroundColour("#f0f0f0")
-                                                        }else{
-                                                            setBackgroundColour("#fff")
-                                                        }
+                                                            newArr[index].active = true
+                                                            if (newArr[index].id == 3) {
+                                                                setBackgroundColour("#f0f0f0")
+                                                            } else {
+                                                                setBackgroundColour("#fff")
+                                                            }
 
-                                                        setTabs(newArr)
-                                                    }
-                                                    }>
-                                                        { <View style={[styles.group5]}>
-                                                            <Text style={{color: tab.active ? primaryColor : text.default }}>{tab.name}</Text>
-                                                            <View
-                                                                style={[styles.rect6, {backgroundColor: tab.active ? primaryColor : "rgba(255,255,255,0)"}]}></View>
-                                                        </View>}
-                                                    </TouchableOpacity>
+                                                            setTabs(newArr)
+                                                        }
+                                                        }>
+                                                            {<View style={[styles.group5]}>
+                                                                <Text
+                                                                    style={{color: tab.active ? primaryColor : text.default}}>{tab.name}</Text>
+                                                                <View
+                                                                    style={[styles.rect6, {backgroundColor: tab.active ? primaryColor : "rgba(255,255,255,0)"}]}></View>
+                                                            </View>}
+                                                        </TouchableOpacity>
                                                 })
                                             }
 
@@ -159,16 +162,28 @@ function ActivityModal(props: any) {
                                 } scrollEventThrottle={16} style={[styles.group10]}>
 
                                     {
-                                        tabs.map((tab, index) =>{
-                                            const isShow = tab.isShow.indexOf(user?.role?.key) != -1
-                                            if(isShow && tab.id == 1 && tab.active){
-                                                return <BasicInfo applicantId={props?.details?.activityDetails?.application?.applicant?._id} key={index}/>
-                                            }else if(isShow && tab.id == 2 && tab.active){
-                                                return  <ApplicationDetails key={index}/>
-                                            }else if(isShow && tab.id == 3 && tab.active){
-                                                return  <Requirement key={index}/>
-                                            }else if(isShow && tab.id == 4 && tab.active){
-                                                return  <Payment key={index}/>
+                                        tabs.map((tab, index) => {
+                                            const isShow = tab.isShow.indexOf(user?.role?.key) != -1,
+                                                applicant = props?.details?.activityDetails?.application?.applicant,
+                                                selectedTypes = props?.details?.activityDetails?.application?.selectedTypes,
+                                                applicationType = props?.details?.activityDetails?.application?.applicationType,
+                                                service = props?.details?.activityDetails?.application?.service,
+                                                soa = props?.details?.activityDetails?.application?.soa,
+                                                totalFee = props?.details?.activityDetails?.application?.totalFee
+                                            if (isShow && tab.id == 1 && tab.active) {
+                                                return <BasicInfo
+                                                    applicant={applicant}
+                                                    key={index}/>
+                                            } else if (isShow && tab.id == 2 && tab.active) {
+                                                return <ApplicationDetails
+                                                    service={service}
+                                                    selectedType={selectedTypes}
+                                                    applicantType={applicationType}
+                                                    key={index}/>
+                                            } else if (isShow && tab.id == 3 && tab.active) {
+                                                return <Requirement  key={index} />
+                                            } else if (isShow && tab.id == 4 && tab.active) {
+                                                return <Payment totalFee={totalFee} soa={soa}  key={index}/>
                                             }
                                         })
                                     }
@@ -185,17 +200,20 @@ function ActivityModal(props: any) {
                                         <View style={styles.rect19}></View>
                                         <View style={styles.group15}>
                                             <View style={styles.button3Row}>
-                                                {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1  && <TouchableOpacity onPress={()=>{
+                                                {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1 &&
+                                                <TouchableOpacity onPress={() => {
                                                     setApproveVisible(true)
-                                                }} style={[styles.button3, { width: user?.role?.key == "cashier"?  220 : 100,}]}>
+                                                }}
+                                                                  style={[styles.button3, {width: user?.role?.key == "cashier" ? 220 : 100,}]}>
                                                     <View style={styles.rect22Filler}></View>
                                                     <View style={styles.rect22}>
                                                         <View style={styles.approvedFiller}></View>
                                                         <Text style={styles.approved}>Approved</Text>
                                                     </View>
                                                 </TouchableOpacity>}
-                                                { ["director", 'evaluator'].indexOf(user?.role?.key) != -1  &&  <TouchableOpacity onPress={()=>{
-                                                setEndorseVisible(true)
+                                                {["director", 'evaluator'].indexOf(user?.role?.key) != -1 &&
+                                                <TouchableOpacity onPress={() => {
+                                                    setEndorseVisible(true)
                                                 }
                                                 } style={styles.button2}>
                                                     <View style={styles.rect23Filler}></View>
@@ -205,9 +223,9 @@ function ActivityModal(props: any) {
                                                     </View>
                                                 </TouchableOpacity>}
                                             </View>
-                                            {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1  &&
+                                            {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1 &&
                                             <><View style={styles.button3RowFiller}></View>
-                                                <TouchableOpacity onPress={()=>{
+                                                <TouchableOpacity onPress={() => {
                                                     setVisible(true)
                                                 }} style={styles.button}>
                                                     <View style={styles.rect24Filler}></View>
@@ -224,10 +242,11 @@ function ActivityModal(props: any) {
                         </View>
                     </View>
                     <View style={styles.group4}>
-                        <View >
+                        <View>
                             <View style={styles.rect5}>
                                 <View style={styles.group11}>
-                                    <Text style={styles.name}>{props?.details?.activityDetails?.application?.applicant?.user?.firstName + " "+ props?.details?.activityDetails?.application?.applicant?.user?.lastName }</Text>
+                                    <Text
+                                        style={styles.name}>{props?.details?.activityDetails?.application?.applicant?.user?.firstName + " " + props?.details?.activityDetails?.application?.applicant?.user?.lastName}</Text>
                                     <Text style={styles.job}>{props?.details?.activityDetails?.applicationType}</Text>
                                 </View>
                                 <View style={styles.group2}>
@@ -238,7 +257,8 @@ function ActivityModal(props: any) {
                                 </View>
                             </View>
                             <View style={styles.group12}>
-                                <Text style={styles.submitted}>Submitted:{"\n"}{props?.details?.createdAt ? formatDate(props?.details?.createdAt) : ""}</Text>
+                                <Text
+                                    style={styles.submitted}>Submitted:{"\n"}{props?.details?.createdAt ? formatDate(props?.details?.createdAt) : ""}</Text>
                             </View>
                         </View>
                     </View>
@@ -373,12 +393,6 @@ const styles = StyleSheet.create({
         height: "60%",
         marginTop: 30
     },
-
-
-
-
-
-
 
 
     groupColumn: {},

@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {StyleSheet, Text, View} from "react-native";
 
-const ApplicationDetails = () =>{
+const ApplicationDetails = (props:any) =>{
 
     return <>
         <View style={styles.container}>
@@ -9,11 +9,17 @@ const ApplicationDetails = () =>{
                 <View style={styles.rect}>
                     <Text style={styles.file}>File</Text>
                 </View>
-                <Text style={styles.loremIpsum}>Issuance of Admission Slip</Text>
-                <Text style={styles.loremIpsum3}>Radio Operator Examination</Text>
-                <Text style={styles.text}>
-                    Radiotelegraphy{"\n"}{`\u2022`}1RTG - Elements 1, 2, 5, 6 &amp; Code (25/20 wpm)
-                </Text>
+                <Text style={styles.applicationType}>{props?.applicantType}</Text>
+                <Text style={styles.service}>{props?.service?.name}</Text>
+                {props.selectedType.map((type:any, idx:number) => {
+                    return <Text key={idx} style={styles.text}>
+                        {type.name} {type.selectedItems.map((item:string, index:number)=>{
+                            return <Text>{`\n\u2022${item}`}</Text>
+                            })}
+                    </Text>
+                })
+                }
+
                 <View style={styles.rect4}></View>
             </View>
         </View>
@@ -37,14 +43,14 @@ const styles = StyleSheet.create({
         marginTop: 6,
         marginLeft: 13
     },
-    loremIpsum: {
+    applicationType: {
         fontWeight: "bold",
         color: "#121212",
         fontSize: 16,
         marginTop: 8,
         marginLeft: 1
     },
-    loremIpsum3: {
+    service: {
         color: "#121212",
         marginLeft: 1
     },

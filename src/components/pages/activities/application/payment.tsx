@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Entypo} from "@expo/vector-icons";
 import PaymentModal from "@pages/activities/application/paymentModal/index";
-const Payment = () => {
+const Payment = (props:any) => {
     const [visibleModal, setVisibleModal] = useState(false)
     const onDismissed = () =>{
         setVisibleModal(false)
@@ -12,61 +12,51 @@ const Payment = () => {
         <View style={styles.container}>
             <View style={styles.group}>
                 <Text style={styles.statementOfAccount}>Statement of Account</Text>
-                <View style={styles.rect2}>
-                    <Text style={styles.file}>File</Text>
-                </View>
-                <View style={styles.loremIpsum2Stack}>
-                    <Text style={styles.loremIpsum2}>Issuance of Admission Slip</Text>
-                    <Text style={styles.text}>Radio Operator Examination</Text>
-                </View>
-                <Text style={styles.loremIpsum3}>
-                    Radiotelegraphy {"\n"}1RTG - Elements 1, 2, 5, 6 &amp; Code (25/20
-                    wpm)
-                </Text>
+
             </View>
             <View style={styles.group4}>
                 <View style={styles.rect3}></View>
-                <View style={styles.group3}>
-                    <Text style={styles.loremIpsum7}>Lorem Ipsum</Text>
-                    <View style={styles.loremIpsum7Filler}></View>
-                    <Text style={styles.loremIpsum8}>Lorem Ipsum</Text>
-                </View>
+
             </View>
             <View style={styles.group2}>
                 <Text style={styles.billingDetails}>Billing details</Text>
                 <View style={styles.rect4Stack}>
                     <View style={styles.rect4}>
-                        <Text style={styles.subtotal2}>Subtotal:</Text>
-                        <Text style={styles.vat}>+VAT:</Text>
+                        { props.soa.map((soa: any, index:number)=>{
+                            return <Text >{soa.item}:{soa.amount} </Text>
+                        })
+
+                        }
                     </View>
-                    <Text style={styles.p0000}>P.00.00</Text>
-                    <Text style={styles.p9}>P.00.00</Text>
+
                 </View>
             </View>
             <View style={styles.rect5}></View>
-            <Text style={styles.payment2}>Payment</Text>
-            <Text style={styles.paymentReceiptPng}>Payment Receipt.png</Text>
-            <Text style={styles.paymentReceivedFor}>Payment received for</Text>
-            <Text style={styles.ntcEdge}>NTC-EDGE</Text>
-            <Text style={styles.theAmoutOf}>the amout of</Text>
-            <Text style={styles.php5000}>PHP 50.00</Text>
-            <Text style={styles.text2}>using your BPI Bank Account</Text>
-            <View style={styles.group6}>
-                <View style={styles.rect6}>
-                    <View style={styles.group5}>
-                        <TouchableOpacity onPress={()=>{
-                        setVisibleModal(true)
-                        }
-                        }>
-                            <View style={styles.iconRow}>
-                                <Entypo name="eye" style={styles.icon}></Entypo>
-                                <Text style={styles.rect7}>View</Text>
-                            </View>
-                        </TouchableOpacity>
+            <View>
+                <Text style={styles.payment2}>Payment</Text>
+                <Text style={styles.paymentReceiptPng}>Payment Receipt.png</Text>
+                <Text style={styles.paymentReceivedFor}>Payment received for</Text>
+                <Text style={styles.ntcEdge}>NTC-EDGE</Text>
+                <Text style={styles.theAmoutOf}>the amout of</Text>
+                <Text style={styles.php5000}>PHP {props.totalFee}</Text>
+                <View style={styles.group6}>
+                    <View style={styles.rect6}>
+                        <View style={styles.group5}>
+                            <TouchableOpacity onPress={()=>{
+                                setVisibleModal(true)
+                            }
+                            }>
+                                <View style={styles.iconRow}>
+                                    <Entypo name="eye" style={styles.icon}></Entypo>
+                                    <Text style={styles.rect7}>View</Text>
+                                </View>
+                            </TouchableOpacity>
 
+                        </View>
                     </View>
                 </View>
             </View>
+
         </View>
         <PaymentModal visible={visibleModal} onDismissed={onDismissed}  />
     </>
@@ -97,25 +87,23 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginLeft: 9
     },
-    loremIpsum2: {
+    applicant: {
         fontWeight: "bold",
         top: 0,
         left: 0,
-        position: "absolute",
         color: "#121212",
         fontSize: 16
     },
     text: {
-        top: 16,
+        width: 350,
+
         left: 0,
-        position: "absolute",
         color: "#121212",
-        fontSize: 16
+        fontSize: 14
     },
-    loremIpsum2Stack: {
-        height: 35
+    applicantStack: {
     },
-    loremIpsum3: {
+    selectedTypes: {
         color: "#121212",
         marginTop: 6
     },
@@ -136,10 +124,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         marginTop: 15
     },
-    loremIpsum7: {
+    billingDetail: {
         color: "#121212"
     },
-    loremIpsum7Filler: {
+    billingDetailFiller: {
         flex: 1,
         flexDirection: "row"
     },
@@ -180,6 +168,7 @@ const styles = StyleSheet.create({
         marginRight: 62
     },
     vat: {
+
         color: "#121212",
         fontSize: 16,
         textAlign: "right",
@@ -220,29 +209,29 @@ const styles = StyleSheet.create({
         color: "#121212",
         fontSize: 16,
         marginTop: 10,
-        marginLeft: 110
+        textAlign: "center"
     },
     paymentReceivedFor: {
         color: "#121212",
         marginTop: 17,
-        marginLeft: 120
+        textAlign: "center"
     },
     ntcEdge: {
         color: "#121212",
         fontSize: 16,
         marginTop: 17,
-        marginLeft: 152
+        textAlign: "center"
     },
     theAmoutOf: {
         color: "#121212",
         marginTop: 16,
-        marginLeft: 148
+        textAlign: "center"
     },
     php5000: {
         color: "#121212",
         fontSize: 16,
         marginTop: 14,
-        marginLeft: 149
+        textAlign: "center"
     },
     text2: {
         color: "#121212",
@@ -253,10 +242,13 @@ const styles = StyleSheet.create({
         width: 90,
         height: 36,
         marginTop: 15,
-        marginLeft: 140
+        alignSelf:"center"
     },
     rect6: {
+
+        alignSelf:"center",
         width: 90,
+        borderRadius: 10,
         height: 36,
         backgroundColor: "rgba(243,245,247,1)"
     },
