@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { View, Image, StyleSheet } from 'react-native'
 import Text from '../text';
-import { getInitial } from 'src/utils/formatting';
+import { getInitial, getColorFromName } from 'src/utils/formatting';
 import { primaryColor } from '@styles/color';
 
 const styles = StyleSheet.create({
@@ -22,16 +22,23 @@ const ProfileImage = ({
   name = '',
   size = 35,
   textSize = 14,
-  backgroundColor = '#42495B',
+  backgroundColor = '',
   style = {},
 }) => {
+  const getBackgroundColor = useCallback(() => {
+    if (!backgroundColor) {
+      return getColorFromName(name);
+    }
+    return backgroundColor;
+  }, []);
+
   if (image) {
     return (
       <Image
         style={[
           styles.image,
           {
-            backgroundColor,
+            backgroundColor: getBackgroundColor(),
             height: size,
             width: size,
             borderRadius: size,
@@ -48,7 +55,7 @@ const ProfileImage = ({
       style={[
         styles.image,
         {
-          backgroundColor,
+          backgroundColor: getBackgroundColor(),
           height: size,
           width: size,
           borderRadius: size,

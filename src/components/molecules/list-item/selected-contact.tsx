@@ -100,6 +100,7 @@ const ChatItem: FC<Props> = ({
       <Text
         size={10}
         numberOfLines={1}
+        color={text.default}
       >
         {name}
       </Text>
