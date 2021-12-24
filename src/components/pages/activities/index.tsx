@@ -13,13 +13,20 @@ import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
 import MoreIcon from "@assets/svg/more";
 import UnseeIcon from "@assets/svg/unsee";
-import EvaluationStatus from "@assets/svg/evaluationstatus";
-import CheckMarkIcon from "@assets/svg/checkmark";
-import DeclineStatusIcon from "@assets/svg/declineStatus";
-import {checkFormatIso, formatDate} from "@pages/activities/formatDate";
+import {
+    checkFormatIso,
+    formatDate,
+    statusBackgroundColor,
+    statusColor,
+    statusDimension,
+    statusIcon
+} from "@pages/activities/script";
 import FileIcon from "@assets/svg/file";
 import {Activities} from "@pages/activities/interface";
 import SearchIcon from "@assets/svg/search";
+import {ActivityItem} from "@pages/activities/activityItem";
+
+
 
 export default function ActivitiesPage() {
 
@@ -66,8 +73,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
             return status != DATE_ADDED
         })
         const list = (selectedChangeStatus.indexOf(DATE_ADDED) != -1 ? sortByDate(mockList) : mockList).filter((item: Activities) => {
-
-            return item.activityDetails.applicant.user.firstName.includes(searchTerm) &&
+            return item?.activityDetails?.application?.applicant?.user?.firstName.includes(searchTerm) &&
                 (selectedClone.length ? selectedClone.indexOf(item.activityDetails.status) != -1 : true)
         });
         setIsPinnedActivity(0)
@@ -99,47 +105,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
         return groupArrays.slice(0, currentPage * 10);
     }, [searchTerm, selectedChangeStatus.length, mockList.length, currentPage])
 
-    const statusColor = (status: string) => {
-        if (status == FOREVALUATION) {
-            return {color: "#f66500"}
-        } else if (status == APPROVED) {
-            return {color: "#34c759"}
-        } else if (status == DECLINED) {
-            return {color: "#cf0327"}
-        }
-    }
 
-    const statusIcon = (status: string) => {
-
-        if (status == FOREVALUATION) {
-
-            return <EvaluationStatus style={[styles.icon3, {color: "#f66500",}]}/>
-        } else if (status == APPROVED) {
-            return <CheckMarkIcon style={[styles.icon3, {left: 20}]}/>
-        } else if (status == DECLINED) {
-            return <DeclineStatusIcon style={[styles.icon3, {left: 20}]}/>
-        }
-    }
-    const statusBackgroundColor = (status: string) => {
-
-        if (status == FOREVALUATION) {
-            return {backgroundColor: "#fef5e8",}
-        } else if (status == APPROVED) {
-            return {backgroundColor: "rgba(229,247,241,1)",}
-        } else if (status == DECLINED) {
-            return {backgroundColor: "#fae6e9",}
-        }
-    }
-
-    const statusDimension = (status: any) => {
-        if (status == FOREVALUATION) {
-            return {width: 103}
-        } else if (status == APPROVED) {
-            return {width: 80}
-        } else if (status == DECLINED) {
-            return {width: 70}
-        }
-    }
 
 
     const userPress = (index: number) => {
@@ -246,122 +212,12 @@ const user = useSelector((state: RootStateOrAny) => state.user);
 
                         {isPinnedActivity > 0 && usersList.map((item, index) => {
                             return item.activity.map((activity: any, i: number) => {
-                                const user = activity.activityDetails.applicant?.user
-                                return activity.isPinned && <Swipeable key={i}
-                                                                       renderRightActions={(progress, dragX) => renderSwiper(index, progress, dragX)}>
-                                    <View key={i} style={styles.group8}>
-                                        <View style={styles.rect8}>
-                                            <View style={styles.activeRow}>
-                                                <View style={styles.active}>
-                                                    <View style={styles.rect12}>
-                                                        <View style={styles.rect13}>
-
-                                                            <Svg viewBox="0 0 10 9.5"
-                                                                 style={styles.ellipse}>
-                                                                <Ellipse
-                                                                    strokeWidth={0}
-                                                                    fill="rgba(26,89,211,1)"
-                                                                    cx={5}
-                                                                    cy={5}
-                                                                    rx={5}
-                                                                    ry={5}
-                                                                />
-                                                            </Svg>
-                                                        </View>
-                                                    </View>
-                                                </View>
-                                                <View style={styles.profile}>
-                                                    <View style={styles.rect11Stack}>
-                                                        <View style={styles.rect11}/>
-                                                        <View style={styles.rect14}/>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                            <View style={styles.activeRowFiller}/>
-                                            <View style={styles.group4StackStack}>
-                                                <View style={styles.group4Stack}>
-                                                    <View style={styles.group4}>
-                                                        <View style={styles.rect16}>
-                                                            <View style={styles.group3}>
-                                                                <TouchableOpacity onPress={() => {
-                                                                    setDetails(activity)
-                                                                    setModalVisible(true)
-                                                                }
-                                                                }>
-                                                                    <Text
-                                                                        style={styles.name}>{(user?.firstName + " " + user?.lastName).length > 20 ? (user?.firstName + " " + user?.lastName).slice(0, 25).concat('...') : (user?.firstName + " " + user?.lastName)}</Text>
-                                                                </TouchableOpacity>
-
-                                                                <View style={styles.group2}>
-                                                                    <View style={styles.rect18Stack}>
-                                                                        <View style={styles.rect18}>
-                                                                            <View style={styles.group21}>
-                                                                                <View style={styles.rect32}>
-                                                                                    <Text
-                                                                                        style={styles.application}>
-                                                                                        {activity.activityDetails.applicationType.length > 25 ? activity.activityDetails.applicationType.slice(0, 25).concat('...') : activity.activityDetails.applicationType }
-                                                                                    </Text>
-                                                                                </View>
-                                                                            </View>
-                                                                        </View>
-                                                                        <View style={styles.group20}>
-                                                                            <View style={styles.rect31}>
-                                                                                <FileIcon width={13} height={13} style={styles.icon2}></FileIcon>
-
-                                                                            </View>
-                                                                        </View>
-                                                                    </View>
-                                                                </View>
-                                                            </View>
-                                                        </View>
-                                                    </View>
-                                                    <View style={styles.rect28}/>
-                                                </View>
-                                                <View style={styles.group5}>
-                                                    <View style={styles.group22Stack}>
-                                                        <View style={styles.group22}>
-                                                            <View style={styles.rect33}>
-                                                                <View style={styles.loremIpsumFiller}/>
-                                                                <Text
-                                                                    style={styles.loremIpsum}>{formatDate(activity.activityDetails.dateTime)}</Text>
-                                                            </View>
-                                                        </View>
-                                                        <View style={styles.rect24}/>
-                                                    </View>
-                                                </View>
-                                                <View style={styles.group7}>
-                                                    <View style={styles.stackFiller}/>
-                                                    <View style={styles.group6Stack}>
-                                                        <View style={styles.group6}>
-                                                            <View
-                                                                style={[styles.rect23, statusBackgroundColor(activity.activityDetails.status)]}>
-                                                                <View style={styles.group19}>
-                                                                    <View style={styles.group18Row}>
-                                                                        <View style={styles.group18}>
-                                                                            <View style={styles.icon3Stack}>
-                                                                                {statusIcon(activity.activityDetails.status)}
-
-                                                                                <View
-                                                                                    style={styles.rect29}/>
-                                                                            </View>
-                                                                        </View>
-                                                                        <View
-                                                                            style={[styles.rect30Stack, statusDimension(activity.activityDetails.status)]}>
-                                                                            <View style={styles.rect30}/>
-                                                                            <Text
-                                                                                style={[styles.approved, statusColor(activity.activityDetails.status)]}>{activity.activityDetails.status}</Text>
-                                                                        </View>
-                                                                    </View>
-                                                                </View>
-                                                            </View>
-                                                        </View>
-                                                        <View style={styles.rect25}/>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </Swipeable>
+                                return activity.isPinned &&  <ActivityItem
+                                    activity={activity}
+                                    onPressUser={() => {
+                                        setDetails(activity)
+                                        setModalVisible(true)
+                                    }} index={i} swiper = {renderSwiper}/>
                             })
                         })}
 
@@ -400,6 +256,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                             let activities = item.activity.filter((item: any) => {
                                 return !item.isPinned
                             })
+
                             return activities.length ? <View key={index} style={styles.group26}>
                                 <TouchableWithoutFeedback onPress={() => userPress(index)}>
                                     <View style={styles.group25}>
@@ -428,121 +285,12 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                                 <Collapsible collapsed={numberCollapsed[index] == 1}>
                                     {activities.map((activity: any, i: number) => {
 
-                                        return !activity.isPinned ? <Swipeable key={i}
-                                                                               renderRightActions={(progress, dragX) => renderSwiper(index, progress, dragX)}>
-                                            <View style={styles.group17}>
-                                                <View style={styles.group8}>
-                                                    <View style={styles.rect8}>
-                                                        <View style={styles.activeRow}>
-                                                            <View style={styles.active}>
-                                                                <View style={styles.rect12}>
-                                                                    <View style={styles.rect13}>
-                                                                        <Svg viewBox="0 0 10 9.5"
-                                                                             style={styles.ellipse}>
-                                                                            <Ellipse
-                                                                                strokeWidth={0}
-                                                                                fill="rgba(26,89,211,1)"
-                                                                                cx={5}
-                                                                                cy={5}
-                                                                                rx={5}
-                                                                                ry={5}
-                                                                            />
-                                                                        </Svg>
-                                                                    </View>
-                                                                </View>
-                                                            </View>
-                                                            <View style={styles.profile}>
-                                                                <View style={styles.rect11Stack}>
-                                                                    <View style={styles.rect11}/>
-                                                                    <View style={styles.rect14}/>
-                                                                </View>
-                                                            </View>
-                                                        </View>
-                                                        <View style={styles.activeRowFiller}/>
-                                                        <View style={styles.group4StackStack}>
-                                                            <View style={styles.group4Stack}>
-                                                                <View style={styles.group4}>
-                                                                    <View style={styles.rect16}>
-                                                                        <View style={styles.group3}>
-                                                                            <TouchableOpacity onPress={() => {
-                                                                                setDetails(activity)
-                                                                                setModalVisible(true)
-                                                                            }
-                                                                            }>
-                                                                                <Text
-                                                                                    style={styles.name}>{(activity.activityDetails.applicant?.user?.firstName + " " + activity.activityDetails.applicant?.user?.lastName).length > 20 ? (activity.activityDetails.applicant?.user?.firstName + " " + activity.activityDetails.applicant?.user?.lastName).slice(0, 25).concat('...') : (activity.activityDetails.applicant?.user?.firstName + " " + activity.activityDetails.applicant?.user?.lastName)}</Text>
-                                                                            </TouchableOpacity>
-
-                                                                            <View style={styles.group2}>
-                                                                                <View style={styles.rect18Stack}>
-                                                                                    <View style={styles.rect18}>
-                                                                                        <View style={styles.group21}>
-                                                                                            <View style={styles.rect32}>
-                                                                                                <Text
-                                                                                                    style={styles.application}>
-                                                                                                    {activity.activityDetails.applicationType.length > 25 ? activity.activityDetails.applicationType.slice(0, 25).concat('...') : activity.activityDetails.applicationType }
-                                                                                                </Text>
-                                                                                            </View>
-                                                                                        </View>
-                                                                                    </View>
-                                                                                    <View style={styles.group20}>
-                                                                                        <View style={styles.rect31}>
-                                                                                            <FileIcon width={13} height={13} style={styles.icon2}></FileIcon>
-                                                                                        </View>
-                                                                                    </View>
-                                                                                </View>
-                                                                            </View>
-                                                                        </View>
-                                                                    </View>
-                                                                </View>
-                                                                <View style={styles.rect28}/>
-                                                            </View>
-                                                            <View style={styles.group5}>
-                                                                <View style={styles.group22Stack}>
-                                                                    <View style={styles.group22}>
-                                                                        <View style={styles.rect33}>
-                                                                            <View style={styles.loremIpsumFiller}/>
-                                                                            <Text
-                                                                                style={styles.loremIpsum}>{formatDate(activity.activityDetails.dateTime)}</Text>
-                                                                        </View>
-                                                                    </View>
-                                                                    <View style={styles.rect24}/>
-                                                                </View>
-                                                            </View>
-                                                            <View style={styles.group7}>
-                                                                <View style={styles.stackFiller}/>
-                                                                <View style={styles.group6Stack}>
-                                                                    <View style={styles.group6}>
-                                                                        <View
-                                                                            style={[styles.rect23, statusBackgroundColor(activity.activityDetails.status)]}>
-                                                                            <View style={styles.group19}>
-                                                                                <View style={styles.group18Row}>
-                                                                                    <View style={styles.group18}>
-                                                                                        <View style={styles.icon3Stack}>
-                                                                                            {statusIcon(activity.activityDetails.status)}
-
-                                                                                            <View
-                                                                                                style={styles.rect29}/>
-                                                                                        </View>
-                                                                                    </View>
-                                                                                    <View
-                                                                                        style={[styles.rect30Stack, statusDimension(activity.activityDetails.status)]}>
-                                                                                        <View style={styles.rect30}/>
-                                                                                        <Text
-                                                                                            style={[styles.approved, statusColor(activity.activityDetails.status)]}>{activity.activityDetails.status}</Text>
-                                                                                    </View>
-                                                                                </View>
-                                                                            </View>
-                                                                        </View>
-                                                                    </View>
-                                                                    <View style={styles.rect25}/>
-                                                                </View>
-                                                            </View>
-                                                        </View>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                        </Swipeable> : false
+                                        return !activity.isPinned ? <ActivityItem
+                                            activity={activity}
+                                            onPressUser={() => {
+                                            setDetails(activity)
+                                            setModalVisible(true)
+                                        }} index={i} swiper = {renderSwiper}/> : false
                                     })}
                                 </Collapsible>
 

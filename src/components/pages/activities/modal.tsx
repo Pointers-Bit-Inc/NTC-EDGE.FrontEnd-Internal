@@ -11,7 +11,7 @@ import Requirement from "@pages/activities/application/requirement";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Payment from "@pages/activities/application/payment";
 import {RootStateOrAny, useSelector} from "react-redux";
-import {formatDate} from "@pages/activities/formatDate";
+import {formatDate} from "@pages/activities/script";
 const {width} = Dimensions.get('window');
 
 function handleInfinityScroll(event: any) {
