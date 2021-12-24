@@ -77,7 +77,7 @@ const Login = ({ navigation }:any) => {
     .then(res => {
       setLoading(false);
       dispatch(setUser(res.data));
-      navigation.navigate('ACTIVITIES');
+      navigation.navigate('ActivitiesScreen');
     })
     .catch(e => {
       setLoading(false);
