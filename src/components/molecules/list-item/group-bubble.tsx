@@ -136,7 +136,7 @@ const ChatBubble:FC<Props> = ({
           }
           {
             (edited && isSender && !(deleted || unSend)) && (
-              <View style={{ alignSelf: 'center', marginRight: -5 }}>
+              <View style={{ alignSelf: 'center', marginRight: 0 }}>
                 <WriteIcon
                   type='pen'
                   color={text.primary}
