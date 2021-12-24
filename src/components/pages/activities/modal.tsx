@@ -89,7 +89,7 @@ function ActivityModal(props: any) {
                 <View style={styles.group13Stack}>
                     <View style={styles.group13}>
                         <View style={styles.rect16}>
-                            <View style={styles.groupColumn}>
+                            <View>
                                 <View style={styles.group}>
                                     <View style={styles.rect3}>
                                         <View style={styles.rect2}>
@@ -240,7 +240,7 @@ function ActivityModal(props: any) {
                                 <View style={styles.group2}>
                                     <View style={styles.icon2Row}>
                                         <Entypo name="circle" style={styles.icon2}></Entypo>
-                                        <Text style={styles.role}>{props?.details?.activityDetails?.applicant?.status}</Text>
+                                        <Text style={styles.role}>{props?.details?.activityDetails?.status}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -270,7 +270,6 @@ const styles = StyleSheet.create({
         left: 0,
         width: width,
         height: 812,
-        position: "absolute"
     },
     rect16: {
         backgroundColor: "rgba(255,255,255,1)",
@@ -296,7 +295,6 @@ const styles = StyleSheet.create({
     group3: {
         width: 100,
         height: 97,
-        flex: 0
     },
     rect4: {
         top: 0,
@@ -377,18 +375,10 @@ const styles = StyleSheet.create({
         marginLeft: -33
     },
     group10: {
-        height: "60%",
-        marginTop: 30
+        height: "80%",
+        marginTop: 10
     },
 
-
-
-
-
-
-
-
-    groupColumn: {},
     groupColumnFiller: {
         flex: 1,
 
@@ -445,7 +435,6 @@ const styles = StyleSheet.create({
         flex: 1
     },
     rect23: {
-        height: 31,
         backgroundColor: "rgba(40,99,214,1)",
         borderRadius: 6
     },
@@ -497,11 +486,10 @@ const styles = StyleSheet.create({
     group4: {
         top: 100,
         width: 264,
-        height: 97,
+        height: 300,
         position: "absolute",
         right: 0,
         flex: 0,
-        backgroundColor: "rgba(230, 230, 230,1)"
     },
     rect5: {
         top: 0,
@@ -522,11 +510,11 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "#121212",
         textAlign: "left",
-        fontSize: 20
+        fontSize: 18
     },
     job: {
         color: "rgba(98,108,130,1)",
-        fontSize: 14,
+        fontSize: 12,
         textAlign: "left"
     },
     group2: {
@@ -560,17 +548,13 @@ const styles = StyleSheet.create({
         left: 195,
         width: 69,
         height: 72,
-        position: "absolute"
     },
     submitted: {
         color: "rgba(105,114,135,1)",
         textAlign: "right",
         fontSize: 10
     },
-    rect5Stack: {
-        width: 264,
-        height: 98
-    },
+
     group13Stack: {
         width: 376,
         height: 812
