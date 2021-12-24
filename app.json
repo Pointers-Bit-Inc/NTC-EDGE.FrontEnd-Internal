@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ntc-edge",
-    "slug": "ntc-edge",
+    "name": "ntc-edge-internal",
+    "slug": "ntc-edge-internal",
     "owner": "ntc-edge",
     "version": "1.0.2",
     "orientation": "portrait",
