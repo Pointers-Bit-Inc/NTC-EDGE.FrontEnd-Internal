@@ -24,21 +24,6 @@ const BasicInfo = (props: any) => {
             })
     }, [props.applicantId])
     return <>
-        {/* {basicInfo.map((basicinfo, index)=>{
-            return <View key={index} style={styles.group9Stack}>
-                <View style={styles.group9}>
-                    <View style={styles.rect15Filler}></View>
-                    <View style={styles.rect15}>
-                        <Text style={styles.details}>{basicinfo.input}</Text>
-                    </View>
-                </View>
-                <View style={styles.rect13}>
-                    <View style={styles.rect14}>
-                        <Text style={styles.field}>{basicinfo.label}</Text>
-                    </View>
-                </View>
-            </View>
-        })}*/}
 
         {info && <View style={styles.container}>
             <View style={styles.group2}>
@@ -181,12 +166,13 @@ const BasicInfo = (props: any) => {
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        alignItems: "center"
     },
     group2: {
         marginBottom: 10,
         width: 350,
-        alignSelf: "center"
+
     },
     rect: {
         width: 350,
