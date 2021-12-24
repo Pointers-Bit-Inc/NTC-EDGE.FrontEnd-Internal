@@ -231,7 +231,7 @@ function ActivityModal(props: any) {
                         </View>
                     </View>
                     <View style={styles.group4}>
-                        <View style={styles.rect5Stack}>
+                        <View >
                             <View style={styles.rect5}>
                                 <View style={styles.group11}>
                                     <Text style={styles.name}>{props?.details?.activityDetails?.applicant?.user?.firstName + " "+ props?.details?.activityDetails?.applicant?.user?.lastName }</Text>
@@ -519,7 +519,6 @@ const styles = StyleSheet.create({
     },
     group2: {
         width: 264,
-        height: 21,
         backgroundColor: "rgba(255,255,255,1)",
         flexDirection: "row",
         marginLeft: -264,

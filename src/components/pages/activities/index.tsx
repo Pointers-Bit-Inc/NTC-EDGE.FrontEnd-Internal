@@ -246,6 +246,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
 
                         {isPinnedActivity > 0 && usersList.map((item, index) => {
                             return item.activity.map((activity: any, i: number) => {
+                                const user = activity.activityDetails.applicant?.user
                                 return activity.isPinned && <Swipeable key={i}
                                                                        renderRightActions={(progress, dragX) => renderSwiper(index, progress, dragX)}>
                                     <View key={i} style={styles.group8}>
@@ -254,6 +255,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                                                 <View style={styles.active}>
                                                     <View style={styles.rect12}>
                                                         <View style={styles.rect13}>
+
                                                             <Svg viewBox="0 0 10 9.5"
                                                                  style={styles.ellipse}>
                                                                 <Ellipse
@@ -287,7 +289,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                                                                 }
                                                                 }>
                                                                     <Text
-                                                                        style={styles.name}>{(activity.activityDetails.applicant?.user?.firstName + " " + activity.activityDetails.applicant?.user?.lastName).length > 20 ? (activity.activityDetails.applicant?.user?.firstName + " " + activity.activityDetails.applicant?.user?.lastName).slice(0, 25).concat('...') : (activity.activityDetails.applicant?.user?.firstName + " " + activity.activityDetails.applicant?.user?.lastName)}</Text>
+                                                                        style={styles.name}>{(user?.firstName + " " + user?.lastName).length > 20 ? (user?.firstName + " " + user?.lastName).slice(0, 25).concat('...') : (user?.firstName + " " + user?.lastName)}</Text>
                                                                 </TouchableOpacity>
 
                                                                 <View style={styles.group2}>
