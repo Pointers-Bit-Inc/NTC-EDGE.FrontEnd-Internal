@@ -22,14 +22,13 @@ const ApplicationDetails = () =>{
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        alignItems: "center"
     },
     group2: {
-        width: 350,
-        marginLeft: 13
+        marginLeft: 10
     },
     rect: {
-        width: 350,
         height: 27,
         backgroundColor: "#E6E6E6"
     },
@@ -55,7 +54,7 @@ const styles = StyleSheet.create({
         marginLeft: 1
     },
     rect4: {
-        width: 350,
+        width: 375,
         height: 10,
         backgroundColor: "#E6E6E6",
         marginTop: 5

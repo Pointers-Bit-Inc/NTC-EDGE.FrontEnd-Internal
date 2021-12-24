@@ -3,7 +3,7 @@ import {StyleSheet, Text, View} from "react-native";
 import axios from "axios";
 import {RootStateOrAny, useSelector} from "react-redux";
 import {Applicant} from "@pages/activities/interface";
-import {formatDate} from "@pages/activities/formatDate";
+import {formatDate} from "@pages/activities/script";
 
 
 
@@ -20,25 +20,9 @@ const BasicInfo = (props: any) => {
         }).then((response) => {
 
                 setInfo(response.data)
-
             })
     }, [props.applicantId])
     return <>
-        {/* {basicInfo.map((basicinfo, index)=>{
-            return <View key={index} style={styles.group9Stack}>
-                <View style={styles.group9}>
-                    <View style={styles.rect15Filler}></View>
-                    <View style={styles.rect15}>
-                        <Text style={styles.details}>{basicinfo.input}</Text>
-                    </View>
-                </View>
-                <View style={styles.rect13}>
-                    <View style={styles.rect14}>
-                        <Text style={styles.field}>{basicinfo.label}</Text>
-                    </View>
-                </View>
-            </View>
-        })}*/}
 
         {info && <View style={styles.container}>
             <View style={styles.group2}>
@@ -49,28 +33,28 @@ const BasicInfo = (props: any) => {
                     <View style={styles.rect3}>
                     <Text style={styles.label}>Last Name</Text>
                     <View style={styles.labelFiller}></View>
-                    <Text style={styles.input}>{info.user.lastName}</Text>
+                    <Text style={styles.input}>{info?.user.lastName}</Text>
                 </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Middle Name</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.user.middleName}</Text>
+                        <Text style={styles.input}>{info?.user.middleName}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>First Name</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.user.firstName}</Text>
+                        <Text style={styles.input}>{info?.user.firstName}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Date of Birth</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{formatDate(info.user.dateOfBirth)}</Text>
+                        <Text style={styles.input}>{formatDate(info?.user?.dateOfBirth)}</Text>
                     </View>
                 </View>
 
@@ -85,35 +69,35 @@ const BasicInfo = (props: any) => {
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Unit/Rm/House/Bldg No.:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.unit}</Text>
+                        <Text style={styles.input}>{info?.unit}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Barangay:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.barangay.name}</Text>
+                        <Text style={styles.input}>{info?.barangay?.name}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Province:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.province.name}</Text>
+                        <Text style={styles.input}>{info?.province?.name}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>City/Municipality:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.city.name}</Text>
+                        <Text style={styles.input}>{info?.city?.name}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Zip Code:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.zipCode}</Text>
+                        <Text style={styles.input}>{info?.zipCode}</Text>
                     </View>
                 </View>
                 <View style={[styles.rect4]}></View>
@@ -155,7 +139,7 @@ const BasicInfo = (props: any) => {
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Email:</Text>
                         <View style={styles.labelFiller}></View>
-                        {/*<Text style={styles.input}>{info.user.email}</Text>*/}
+                        <Text style={styles.input}>{info.user.email}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
@@ -181,12 +165,13 @@ const BasicInfo = (props: any) => {
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        alignItems: "center"
     },
     group2: {
         marginBottom: 10,
         width: 350,
-        alignSelf: "center"
+
     },
     rect: {
         width: 350,

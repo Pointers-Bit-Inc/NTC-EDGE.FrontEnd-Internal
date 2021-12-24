@@ -4,7 +4,8 @@ import {BarCodeScanner, BarCodeScannerResult} from 'expo-barcode-scanner';
 import BarcodeMask from 'react-native-barcode-mask';
 import Button from '@atoms/button';
 import axios from "axios";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import QrScanCodeIcon from "@assets/svg/qrCodeScanIcon";
 
 const finderWidth: number = 280;
 const finderHeight: number = 230;
@@ -56,6 +57,33 @@ export default function QrCodeScan(props: any) {
     }
     return (
         <View style={styles.container}>
+            <BarCodeScanner onBarCodeScanned={handleBarCodeScanned}
+                            type={type}
+                            barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
+                            style={[StyleSheet.absoluteFillObject]}>
+
+                <BarcodeMask edgeColor="#62B1F6" showAnimatedLine/>
+
+            </BarCodeScanner>
+            <View style={styles.group2}>
+                <View style={styles.group}>
+                    <View style={styles.rect}>
+                        <QrScanCodeIcon  style={styles.icon}></QrScanCodeIcon>
+                        <Text style={styles.generateQrCode}>Generate QR Code</Text>
+                    </View>
+                </View>
+                <View style={styles.group1}>
+                    <View style={styles.rect1}>
+                        <MaterialCommunityIcons
+                            name="qrcode"
+                            style={styles.icon1}
+                        ></MaterialCommunityIcons>
+                        <Text style={styles.generateQrCode1}>Generate QR Code</Text>
+                    </View>
+                </View>
+            </View>
+        </View>
+        /*<View style={styles.container}>
             <View style={styles.group1}>
                 <View style={styles.rect}>
                     <View style={styles.iconRow}>
@@ -85,10 +113,68 @@ export default function QrCodeScan(props: any) {
 
                 </BarCodeScanner>
             </View>
-        </View>
+        </View>*/
     );
 }
+
 const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+    group2: {
+        width: 335,
+        height: 100,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginTop: "auto",
+        alignSelf: "center"
+    },
+    group: {
+        width: 160,
+        height: 70
+    },
+    rect: {
+            display: 'flex',
+        alignItems: 'center',
+justifyContent: 'center',
+        width: 160,
+        height: 70,
+        backgroundColor: "rgba(255,255,255,1)",
+        borderRadius: 10
+    },
+    icon: {
+        color: "rgba(128,128,128,1)",
+        fontSize: 28,
+        height: 32,
+        width: 28,
+    },
+    generateQrCode: {
+        color: "#121212",
+    },
+    group1: {
+        width: 160,
+        height: 70
+    },
+    rect1: {
+        width: 160,
+        height: 70,
+        backgroundColor: "rgba(255,255,255,1)",
+        borderRadius: 10
+    },
+    icon1: {
+        color: "rgba(128,128,128,1)",
+        fontSize: 28,
+        height: 32,
+        width: 28,
+        marginTop: 12,
+        marginLeft: 66
+    },
+    generateQrCode1: {
+        color: "#121212",
+        marginLeft: 23
+    }
+});
+/*const styles = StyleSheet.create({
     container: {
         flex: 1
     },
@@ -138,6 +224,6 @@ const styles = StyleSheet.create({
         marginRight: 28,
         marginTop: 62
     }
-});
+});*/
 
 

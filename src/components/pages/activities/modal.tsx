@@ -1,7 +1,6 @@
 import React, { useState} from "react";
 import {Image, Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Entypo, Ionicons} from "@expo/vector-icons";
-import Svg, {Ellipse} from "react-native-svg";
 import {primaryColor, text} from "@styles/color";
 import Disapproval from "@pages/activities/disapproval";
 import Endorsed from "@pages/activities/endorse";
@@ -11,16 +10,10 @@ import Requirement from "@pages/activities/application/requirement";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Payment from "@pages/activities/application/payment";
 import {RootStateOrAny, useSelector} from "react-redux";
-import {formatDate} from "@pages/activities/formatDate";
+import {formatDate, handleInfinityScroll} from "@pages/activities/script";
 const {width} = Dimensions.get('window');
 
-function handleInfinityScroll(event: any) {
-    let mHeight = event.nativeEvent.layoutMeasurement.height;
-    let cSize = event.nativeEvent.contentSize.height;
-    let Y = event.nativeEvent.contentOffset.y;
-    if (Math.ceil(mHeight + Y) >= cSize) return true;
-    return false;
-}
+
 
 function ActivityModal(props: any) {
     const user = useSelector((state: RootStateOrAny) => state.user);
@@ -89,7 +82,7 @@ function ActivityModal(props: any) {
                 <View style={styles.group13Stack}>
                     <View style={styles.group13}>
                         <View style={styles.rect16}>
-                            <View style={styles.groupColumn}>
+                            <View>
                                 <View style={styles.group}>
                                     <View style={styles.rect3}>
                                         <View style={styles.rect2}>
@@ -169,7 +162,7 @@ function ActivityModal(props: any) {
                                         tabs.map((tab, index) =>{
                                             const isShow = tab.isShow.indexOf(user?.role?.key) != -1
                                             if(isShow && tab.id == 1 && tab.active){
-                                                return <BasicInfo applicantId={props?.details?.activityDetails?.applicant?._id} key={index}/>
+                                                return <BasicInfo applicantId={props?.details?.activityDetails?.application?.applicant?._id} key={index}/>
                                             }else if(isShow && tab.id == 2 && tab.active){
                                                 return  <ApplicationDetails key={index}/>
                                             }else if(isShow && tab.id == 3 && tab.active){
@@ -231,16 +224,16 @@ function ActivityModal(props: any) {
                         </View>
                     </View>
                     <View style={styles.group4}>
-                        <View style={styles.rect5Stack}>
+                        <View >
                             <View style={styles.rect5}>
                                 <View style={styles.group11}>
-                                    <Text style={styles.name}>{props?.details?.activityDetails?.applicant?.user?.firstName + " "+ props?.details?.activityDetails?.applicant?.user?.lastName }</Text>
+                                    <Text style={styles.name}>{props?.details?.activityDetails?.application?.applicant?.user?.firstName + " "+ props?.details?.activityDetails?.application?.applicant?.user?.lastName }</Text>
                                     <Text style={styles.job}>{props?.details?.activityDetails?.applicationType}</Text>
                                 </View>
                                 <View style={styles.group2}>
                                     <View style={styles.icon2Row}>
                                         <Entypo name="circle" style={styles.icon2}></Entypo>
-                                        <Text style={styles.role}>{props?.details?.activityDetails?.applicant?.status}</Text>
+                                        <Text style={styles.role}>{props?.details?.activityDetails?.status}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -306,11 +299,11 @@ const styles = StyleSheet.create({
         position: "absolute"
     },
     ellipse: {
-        borderRadius:40,
+        borderRadius: 40,
         top: 17,
         left: 20,
-        width: 80,
-        height: 80,
+        width: 81,
+        height: 81,
         position: "absolute"
     },
     rect4Stack: {
@@ -416,7 +409,7 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     button3: {
-
+        width: 100,
         height: 31
     },
     rect22Filler: {
@@ -460,7 +453,7 @@ const styles = StyleSheet.create({
     button3Row: {
         height: 31,
         flexDirection: "row",
-        alignItems: "center",
+        alignItems: "flex-end",
         marginBottom: 1
     },
     button3RowFiller: {
@@ -526,7 +519,7 @@ const styles = StyleSheet.create({
     },
     job: {
         color: "rgba(98,108,130,1)",
-        fontSize: 14,
+        fontSize: 10,
         textAlign: "left"
     },
     group2: {
