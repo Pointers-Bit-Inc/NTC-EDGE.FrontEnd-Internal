@@ -65,7 +65,7 @@ const errorResponse = {
 };
 
 const Login = ({ navigation }:any) => {
-  const api = useApi();
+  const api = useApi('');
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const onLogin = async (data) => {
