@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { AntDesign } from '@expo/vector-icons'; 
+import { AntDesign, Ionicons } from '@expo/vector-icons'; 
 
 interface Props {
   type?: string;
@@ -16,6 +16,15 @@ const CloseIcon: FC<Props> = ({
 }) => {
 
   switch(type) {
+    case 'md-close':
+      return (
+        <Ionicons
+          name="md-close"
+          size={size}
+          color={color}
+          {...otherProps}
+        />
+      );
     case 'close':
       return (
         <AntDesign
