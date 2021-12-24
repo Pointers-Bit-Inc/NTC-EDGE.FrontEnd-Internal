@@ -10,7 +10,7 @@ import Requirement from "@pages/activities/application/requirement";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Payment from "@pages/activities/application/payment";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {formatDate, handleInfinityScroll, statusIcon} from "@pages/activities/script";
+import {formatDate, handleInfinityScroll, statusColor, statusIcon} from "@pages/activities/script";
 import axios from "axios";
 import {SWAGGER_URL} from "../../../services/config";
 import {APPROVED, DECLINED} from "../../../reducers/activity/initialstate";
@@ -284,7 +284,7 @@ function ActivityModal(props: any) {
                                 <View style={styles.group2}>
                                     <View style={styles.icon2Row}>
                                         {statusIcon(props?.details?.activityDetails?.status, styles.icon2)}
-                                        <Text style={styles.role}>{props?.details?.activityDetails?.status}</Text>
+                                        <Text style={[styles.role,statusColor(props?.details?.activityDetails?.status)]}>{props?.details?.activityDetails?.status}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -584,7 +584,6 @@ const styles = StyleSheet.create({
     },
     role: {
         fontWeight: "bold",
-        color: "rgba(248,170,55,1)",
         fontSize: 10,
         textAlign: "left",
         marginLeft: 4
