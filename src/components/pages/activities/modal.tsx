@@ -15,8 +15,6 @@ import axios from "axios";
 import {SWAGGER_URL} from "../../../services/config";
 import {APPROVED, DECLINED} from "../../../reducers/activity/initialstate";
 import {updateActivityStatus} from "../../../reducers/activity/actions";
-import EvaluationIcon from "@assets/svg/evaluation";
-import EvaluationStatus from "@assets/svg/evaluationstatus";
 
 const {width} = Dimensions.get('window');
 
@@ -65,7 +63,6 @@ function ActivityModal(props: any) {
         setApproveVisible(false)
     }
     const onChangeApplicationStatus = async (status:string) => {
-
 
         const id = props?.details?.activityDetails?.application?._id,
             config = {
