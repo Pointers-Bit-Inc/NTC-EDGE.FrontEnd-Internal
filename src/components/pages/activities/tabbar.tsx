@@ -10,6 +10,7 @@ import ChatIcon from "@assets/svg/chattabbar";
 import MeetIcon from "@assets/svg/meettabbar";
 import ScanQrIcon from "@assets/svg/scanqrtabbar";
 import MoreTabBarIcon from "@assets/svg/moretabbar";
+import DrawerNavigation from "@screens/HomeScreen/DrawerNavigation";
 
 
 const Tab = createBottomTabNavigator();
@@ -112,24 +113,25 @@ export default function TabBar() {
 
     return (
 
-        <Tab.Navigator  tabBar={(props) => {
-            return <View style={styles.rect10}>
-                <View style={styles.group7Filler}></View>
-                <View style={styles.group27}>
-
-                    <ActivityTab  {...props} />
+            <Tab.Navigator  tabBar={(props) => {
+                return <View style={styles.rect10}>
+                    <View style={styles.group7Filler}></View>
+                    <View style={styles.group27}>
+                        <ActivityTab  {...props} />
+                    </View>
                 </View>
-            </View>
-        }
+            }
 
-        }>
-            <Tab.Screen  options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
-            <Tab.Screen name={CHAT} component={ActivitiesScreen}/>
-            <Tab.Screen name={MEET} component={ActivitiesScreen}/>
-            <Tab.Screen options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>
-            <Tab.Screen options={{headerShown: false}} name={MORE} component={ActivitiesScreen}/>
+            }>
+                <Tab.Screen  options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
+                <Tab.Screen name={CHAT} component={ActivitiesScreen}/>
+                <Tab.Screen name={MEET} component={ActivitiesScreen}/>
+                <Tab.Screen options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>
+                <Tab.Screen options={{headerShown: false}} name={MORE} component={ActivitiesScreen}/>
 
-        </Tab.Navigator>
+            </Tab.Navigator>
+
+
 
     );
 }

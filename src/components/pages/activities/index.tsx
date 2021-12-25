@@ -30,6 +30,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
 
 
     useEffect(() => {
+
         axios.get(BASE_URL + '/activities',
             {
                 headers: {
@@ -111,9 +112,11 @@ const user = useSelector((state: RootStateOrAny) => state.user);
     const onDismissed = () => {
         setModalVisible(false)
     }
+
     const [details, setDetails] = useState({})
     return (
         <>
+
           <View  style={[styles.container]}>
 
 

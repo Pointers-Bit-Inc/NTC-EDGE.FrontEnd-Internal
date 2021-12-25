@@ -5,11 +5,9 @@ import { useDispatch } from 'react-redux';
 import { setUser } from 'src/reducers/user/actions'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import HomeScreen from '@screens/HomeScreen';
-import Text from '@atoms/text';
 import { Entypo, Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { primaryColor, button } from 'src/styles/color';
 import styles from './styles';
-import UserProfileScreen from "@screens/HomeScreen/UserProfile";
 import UserProfile from "@pages/user-profile";
 
 type DrawerScreenList = {

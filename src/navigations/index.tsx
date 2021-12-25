@@ -25,6 +25,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const RootNavigator = () => {
   return (
     <NavigationContainer>
+
       <Stack.Navigator
         screenOptions={{
           gestureEnabled: false,
