@@ -4,23 +4,14 @@
   },
   "build": {
     "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    },
-    "test": {
       "distribution": "internal",
       "android": {
         "buildType": "apk",
         "gradleCommand": ":app:assembleRelease"
+      },
+      "ios": {
+        "cocoapods": "1.11.2"
       }
-    },
-    "preview2": {
-      "android": {
-        "gradleCommand": ":app:assembleRelease"
-      }
-    },
-    "preview3": {
-      "developmentClient": true
     },
     "production": {}
   },
