@@ -5,5 +5,6 @@ export default keyMirror({
   ON_CHECKED: null,
   SELECTED_CHANGE_STATUS: null,
   SET_VISIBLE: null,
-  UPDATE_ACTIVITY_STATUS: null
+  UPDATE_ACTIVITY_STATUS: null,
+  ADD_ACTIVITY: null
 });
