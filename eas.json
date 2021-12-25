@@ -13,7 +13,14 @@
         "cocoapods": "1.11.2"
       }
     },
-    "production": {}
+    "production": {
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "cocoapods": "1.11.2"
+      }
+    }
   },
   "submit": {
     "production": {}
