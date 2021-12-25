@@ -25,7 +25,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>ntc.edge.internal</string>
+				<string>edu.ph.ustp.ntc-edge-internal</string>
 			</array>
 		</dict>
 	</array>
