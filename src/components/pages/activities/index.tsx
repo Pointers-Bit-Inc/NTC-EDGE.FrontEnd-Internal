@@ -19,8 +19,7 @@ import {renderSwiper} from "@pages/activities/swiper";
 import {BASE_URL} from "../../../services/config";
 
 
-
-export default function ActivitiesPage() {
+export default function ActivitiesPage(props:any) {
 
 
 
@@ -113,12 +112,9 @@ const user = useSelector((state: RootStateOrAny) => state.user);
         setModalVisible(false)
     }
     const [details, setDetails] = useState({})
-
     return (
         <>
-
-
-            <View style={[styles.container]}>
+          <View  style={[styles.container]}>
 
 
                 <View style={styles.group}>
@@ -145,16 +141,21 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                     </View>
                 </View>
                 <View style={styles.group9}>
+
                     <View style={styles.searcg}>
                         <View style={styles.rect26}>
+
                             <View style={styles.rect7}>
                                 <View style={styles.iconRow}>
-                                    <SearchIcon style={styles.icon}></SearchIcon>
-                                    <TextInput
-                                        placeholder="search"
-                                        style={styles.textInput}
-                                        onChange={(event) => setSearchTerm(event.nativeEvent.text)}
-                                    ></TextInput>
+
+                                        <SearchIcon style={styles.icon}></SearchIcon>
+
+                                        <TextInput
+                                            placeholder="search"
+                                            style={styles.textInput}
+                                            onChange={(event) => setSearchTerm(event.nativeEvent.text)}
+                                        ></TextInput>
+
                                 </View>
                             </View>
 

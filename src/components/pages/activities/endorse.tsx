@@ -7,11 +7,13 @@ import EndorseToIcon from "@assets/svg/endorseTo";
 import {BASE_URL} from "../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
 import {FOREVALUATION} from "../../../reducers/activity/initialstate";
+import AwesomeAlert from "react-native-awesome-alerts";
 function Endorsed(props:any) {
 
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [pickedEndorsed, setPickedEndorsed] = useState<any[]>()
     const [endorsed, setEndorsed] = useState()
+    const [showAlert, setShowAlert] = useState(false)
     useEffect(()=>{
         axios.get(BASE_URL + '/users' ,
             {
@@ -35,32 +37,9 @@ function Endorsed(props:any) {
         })
     }, [])
     const onEndorseConfirm = () =>{
-        const endorse = pickedEndorsed?.find(picked => {
-            return picked.value == endorsed
-        })
 
-        Alert.alert(
-            "Alert",
-            "are you sure you want to endorse to " + endorse?.label ,
-            [
-                {
-                    text: "OK",
-                    onPress:  () => {
-                         props.onChangeApplicationStatus(FOREVALUATION)
-                        props.onDismissed()
-                    } ,
-                    style: "default"
-                },
+        setShowAlert(true)
 
-                {
-                    text: "Cancel",
-                    onPress: () => {
-
-                    },
-                    style: "destructive"
-                },
-            ]
-        );
     }
 
 
@@ -72,6 +51,29 @@ function Endorsed(props:any) {
 
             onRequestClose={() => {
             }}>
+            <AwesomeAlert
+                show={showAlert}
+                showProgress={false}
+                title="Confirm?"
+                message={`are you sure you want to endorse to ` +  pickedEndorsed?.find(picked => {
+                    return picked.value == endorsed
+                })?.label}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={true}
+                showConfirmButton={true}
+                cancelText="Cancel"
+                confirmText="Yes"
+                confirmButtonColor="#DD6B55"
+                onCancelPressed={() => {
+                    setShowAlert(false)
+                }}
+                onConfirmPressed={() => {
+                    props.onChangeApplicationStatus(FOREVALUATION)
+                    props.onDismissed()
+                    setShowAlert(false)
+                }}
+            />
         <View style={styles.container}>
             <View style={styles.rectFiller}></View>
             <View style={styles.rect}>
@@ -101,6 +103,7 @@ function Endorsed(props:any) {
                 <View style={styles.iconColumnFiller}></View>
                 <View style={styles.rect6}>
                     <TouchableOpacity onPress={() =>{
+
                         onEndorseConfirm()
                     }}>
                         <Text style={styles.confirm}>Confirm</Text>

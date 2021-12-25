@@ -15,6 +15,7 @@ import axios from "axios";
 import {BASE_URL} from "../../../services/config";
 import {APPROVED, DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import {updateActivityStatus} from "../../../reducers/activity/actions";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 const {width} = Dimensions.get('window');
 
@@ -53,6 +54,8 @@ function ActivityModal(props: any) {
     const [endorseVisible, setEndorseVisible] = useState(false)
     const [approveVisible, setApproveVisible] = useState(false)
     const [status, setStatus] = useState("")
+    const [message, setMessage] = useState("")
+    const [showAlert, setShowAlert] = useState(false)
     const onDismissed = () => {
         setVisible(false)
     }
@@ -86,6 +89,13 @@ function ActivityModal(props: any) {
     }
     const [backgroundColour, setBackgroundColour] = useState("#fff")
 
+    function onShowConfirmation(status: string) {
+        const name = props?.details?.activityDetails?.application?.applicant?.user
+        setMessage(`are you sure you want to ${status.toLowerCase()}` + name.firstName + " " + name.lastName)
+        setShowAlert(true)
+
+    }
+
     return (
         <Modal
             animationType="slide"
@@ -104,7 +114,26 @@ function ActivityModal(props: any) {
                 height: '100%',
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
             } : {}}/>
-
+            <AwesomeAlert
+                show={showAlert}
+                showProgress={false}
+                title="Confirm?"
+                message={message}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={true}
+                showConfirmButton={true}
+                cancelText="Cancel"
+                confirmText="Yes"
+                confirmButtonColor="#DD6B55"
+                onCancelPressed={() => {
+                    setShowAlert(false)
+                }}
+                onConfirmPressed={() => {
+                    onChangeApplicationStatus(APPROVED).then(r =>  setApproveVisible(true))
+                    setShowAlert(false)
+                }}
+            />
             <View style={styles.container}>
                 <View style={styles.group13Stack}>
                     <View style={styles.group13}>
@@ -114,6 +143,7 @@ function ActivityModal(props: any) {
                                     <View style={styles.rect3}>
                                         <View style={styles.rect2}>
                                             <TouchableOpacity onPress={() => {
+                                                setStatus("")
                                                 props.onDismissed()
                                             }}>
                                                 <Ionicons
@@ -230,7 +260,8 @@ function ActivityModal(props: any) {
                                             <View style={styles.button3Row}>
                                                 {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1 &&
                                                 <TouchableOpacity onPress={() => {
-                                                    onChangeApplicationStatus(APPROVED).then(r =>  setApproveVisible(true))
+                                                    onShowConfirmation(APPROVED)
+
 
                                                 }}
                                                                   style={[styles.button3, {width: user?.role?.key == "cashier" ? 220 : 100,}]}>
@@ -294,8 +325,10 @@ function ActivityModal(props: any) {
                 </View>
             </View>
             <Approval  visible={approveVisible} onDismissed={onApproveDismissed}/>
-            <Disapproval onChangeApplicationStatus={(event:string)=>{
-                onChangeApplicationStatus(DECLINED)
+            <Disapproval user={props?.details?.activityDetails?.application?.applicant?.user} onChangeApplicationStatus={(event:string)=>{
+                onChangeApplicationStatus(DECLINED).then(() =>{
+                    onDismissed()
+                })
             }} visible={visible} onDismissed={onDismissed}/>
             <Endorsed onChangeApplicationStatus={(event:string)=>{
                 onChangeApplicationStatus(event)

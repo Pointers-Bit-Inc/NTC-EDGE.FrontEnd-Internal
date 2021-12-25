@@ -38,7 +38,7 @@ const RootNavigator = () => {
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
         <Stack.Screen name="ActivitiesScreen" component={ActivitiesScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="UserProfileScreen" component={UserProfile} />
+        <Stack.Screen name="UserProfileScreen"   component={UserProfile} />
 
       </Stack.Navigator>
     </NavigationContainer>
