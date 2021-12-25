@@ -64,7 +64,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
             return status != DATE_ADDED
         })
         const list = (selectedChangeStatus.indexOf(DATE_ADDED) != -1 ? sortByDate(mockList) : mockList).filter((item: Activities) => {
-            return item?.activityDetails?.application?.applicant?.user?.firstName.includes(searchTerm) &&
+        return item?.activityDetails?.application?.applicant?.user?.firstName.includes(searchTerm) &&
                 (selectedClone.length ? selectedClone.indexOf(item.activityDetails.status) != -1 : true)
         });
         setIsPinnedActivity(0)
