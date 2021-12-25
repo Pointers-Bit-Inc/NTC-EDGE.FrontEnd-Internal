@@ -1,6 +1,7 @@
 import React from "react";
 import {StyleSheet, View, Text, Modal, TouchableOpacity, TextInput} from "react-native";
 import {Feather, Ionicons} from "@expo/vector-icons";
+import {DECLINED} from "../../../reducers/activity/initialstate";
 
 function Disapproval(props:any) {
     return (
@@ -40,14 +41,16 @@ function Disapproval(props:any) {
                         <TextInput multiline style={styles.rect2}/>
                     </View>
                     <View style={styles.iconColumnFiller}></View>
+                    <TouchableOpacity onPress={() => props.onChangeApplicationStatus(DECLINED)}>
                     <View style={styles.group2}>
-                        <TouchableOpacity onPress={props.onChangeApplicationStatus}>
+
                             <View  style={styles.rect3}>
                                 <Text style={styles.confirm}>Confirm</Text>
                             </View>
-                        </TouchableOpacity>
+
 
                     </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>

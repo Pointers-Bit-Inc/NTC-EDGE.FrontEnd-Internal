@@ -13,7 +13,7 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {formatDate, handleInfinityScroll, statusColor, statusIcon} from "@pages/activities/script";
 import axios from "axios";
 import {SWAGGER_URL} from "../../../services/config";
-import {APPROVED, DECLINED} from "../../../reducers/activity/initialstate";
+import {APPROVED, DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import {updateActivityStatus} from "../../../reducers/activity/actions";
 
 const {width} = Dimensions.get('window');
@@ -52,7 +52,7 @@ function ActivityModal(props: any) {
     const [visible, setVisible] = useState(false)
     const [endorseVisible, setEndorseVisible] = useState(false)
     const [approveVisible, setApproveVisible] = useState(false)
-
+    const [status, setStatus] = useState("")
     const onDismissed = () => {
         setVisible(false)
     }
@@ -73,15 +73,15 @@ function ActivityModal(props: any) {
 
         if (id) {
             await axios.patch(SWAGGER_URL + `/applications/${id}/update-status`, {
-                status: APPROVED
+                status: status
             }, config ).then((response) => {
 
                 return axios.get(SWAGGER_URL + `/applications/${id}`, config)
             }).then((response) => {
                 dispatch(updateActivityStatus({application: response.data, status: status}))
+                setStatus(status)
             })
         }
-
 
     }
     const [backgroundColour, setBackgroundColour] = useState("#fff")
@@ -281,7 +281,7 @@ function ActivityModal(props: any) {
                                 <View style={styles.group2}>
                                     <View style={styles.icon2Row}>
                                         {statusIcon(props?.details?.activityDetails?.status, styles.icon2)}
-                                        <Text style={[styles.role,statusColor(props?.details?.activityDetails?.status)]}>{props?.details?.activityDetails?.status}</Text>
+                                        <Text style={[styles.role,statusColor(props?.details?.activityDetails?.status)]}>{status ? status : props?.details?.activityDetails?.status}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -294,10 +294,14 @@ function ActivityModal(props: any) {
                 </View>
             </View>
             <Approval  visible={approveVisible} onDismissed={onApproveDismissed}/>
-            <Disapproval onChangeApplicationStatus={()=>{
+            <Disapproval onChangeApplicationStatus={(event:string)=>{
                 onChangeApplicationStatus(DECLINED)
             }} visible={visible} onDismissed={onDismissed}/>
-            <Endorsed visible={endorseVisible} onDismissed={onEndorseDismissed}/>
+            <Endorsed onChangeApplicationStatus={(event:string)=>{
+                onChangeApplicationStatus(event)
+
+
+            }} visible={endorseVisible} onDismissed={onEndorseDismissed}/>
         </Modal>
 
 

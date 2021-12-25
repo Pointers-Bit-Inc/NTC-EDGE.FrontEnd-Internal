@@ -6,11 +6,12 @@ import axios from "axios";
 import EndorseToIcon from "@assets/svg/endorseTo";
 import {SWAGGER_URL} from "../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
+import {FOREVALUATION} from "../../../reducers/activity/initialstate";
 function Endorsed(props:any) {
 
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [pickedEndorsed, setPickedEndorsed] = useState<any[]>()
-    const [endorsed, setEndorsed] = useState<any>()
+    const [endorsed, setEndorsed] = useState()
     useEffect(()=>{
         axios.get(SWAGGER_URL + '/users' ,
             {
@@ -37,13 +38,15 @@ function Endorsed(props:any) {
         const endorse = pickedEndorsed?.find(picked => {
             return picked.value == endorsed
         })
+
         Alert.alert(
             "Alert",
             "are you sure you want to endorse to " + endorse?.label ,
             [
                 {
                     text: "OK",
-                    onPress: () => {
+                    onPress:  () => {
+                         props.onChangeApplicationStatus(FOREVALUATION)
                         props.onDismissed()
                     } ,
                     style: "default"
@@ -86,7 +89,8 @@ function Endorsed(props:any) {
                         </View>
                     </View>
                     <View  style={[styles.rect5]}>
-                        <Dropdown onChangeValue={(value: any) => {
+                        <Dropdown value={endorsed} onChangeValue={(value: any) => {
+
                             setEndorsed(value)}
                         }
                                   placeholder={{}}
