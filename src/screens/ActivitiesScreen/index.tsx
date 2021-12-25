@@ -1,9 +1,6 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import ActivitiesPage from "@pages/activities/tabbar";
-import {TouchableOpacity, View, StyleSheet} from "react-native";
-import {NavigationContainer} from "@react-navigation/native";
 import {createDrawerNavigator} from "@react-navigation/drawer";
-import {Entypo, Feather} from "@expo/vector-icons";
 import CustomSidebarMenu from "@pages/activities/customNavigationDrawer";
 import AccountIcon from "@assets/svg/account";
 import BellIcon from "@assets/svg/bell";

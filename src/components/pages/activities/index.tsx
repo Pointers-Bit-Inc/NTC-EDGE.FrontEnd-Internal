@@ -30,17 +30,23 @@ const user = useSelector((state: RootStateOrAny) => state.user);
 
 
     useEffect(() => {
+        const config = {
+            headers: {
+                Authorization: "Bearer ".concat(user.sessionToken)
+            }
+        }
+        axios.get(BASE_URL + '/activities',config
+            ).then((response) => {
+            let res:any = [];
 
-        axios.get(BASE_URL + '/activities',
-            {
-                headers: {
-                    Authorization: "Bearer ".concat(user.sessionToken)
-                }
-            }).then((response) => {
+            [...response.data].map(async (item) => {
+                 await axios.get(BASE_URL + '/applications/' + item.activityDetails.application._id, config).then((i) => {
+                     item.activityDetails.status = i.data.status
 
-            let res = [...response.data]
+                 })
+                 res.push(item)
+             })
             dispatch(setActivity(res))
-
         }).catch((err) =>{
             console.log(err)
         })

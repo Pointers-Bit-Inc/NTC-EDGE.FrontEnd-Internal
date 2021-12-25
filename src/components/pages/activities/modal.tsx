@@ -312,7 +312,7 @@ function ActivityModal(props: any) {
                                 <View style={styles.group2}>
                                     <View style={styles.icon2Row}>
                                         {statusIcon(props?.details?.activityDetails?.status, styles.icon2)}
-                                        <Text style={[styles.role,statusColor(props?.details?.activityDetails?.status)]}>{status ? status : props?.details?.activityDetails?.status}</Text>
+                                        <Text style={[styles.role,statusColor(status ? status : props?.details?.activityDetails?.status)]}>{status ? status : props?.details?.activityDetails?.status}</Text>
                                     </View>
                                 </View>
                             </View>
