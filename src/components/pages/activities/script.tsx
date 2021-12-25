@@ -80,11 +80,11 @@ export const statusBackgroundColor = (status: string) => {
 
 export const statusDimension = (status: any) => {
     if (status == FOREVALUATION) {
-        return {width: 103}
+        return {}
     } else if (status == APPROVED) {
-        return {width: 80}
+        return {}
     } else if (status == DECLINED) {
-        return {width: 70}
+        return {}
     }
 }
 
