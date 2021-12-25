@@ -12,7 +12,7 @@ import Payment from "@pages/activities/application/payment";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {formatDate, handleInfinityScroll, statusColor, statusIcon} from "@pages/activities/script";
 import axios from "axios";
-import {SWAGGER_URL} from "../../../services/config";
+import {BASE_URL} from "../../../services/config";
 import {APPROVED, DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import {updateActivityStatus} from "../../../reducers/activity/actions";
 
@@ -72,11 +72,11 @@ function ActivityModal(props: any) {
             }
 
         if (id) {
-            await axios.patch(SWAGGER_URL + `/applications/${id}/update-status`, {
+            await axios.patch(BASE_URL + `/applications/${id}/update-status`, {
                 status: status
             }, config ).then((response) => {
 
-                return axios.get(SWAGGER_URL + `/applications/${id}`, config)
+                return axios.get(BASE_URL + `/applications/${id}`, config)
             }).then((response) => {
                 dispatch(updateActivityStatus({application: response.data, status: status}))
                 setStatus(status)

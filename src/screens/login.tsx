@@ -22,7 +22,7 @@ import Text from '@atoms/text';
 import Button from '@components/atoms/button';
 import { text, button, outline } from 'src/styles/color';
 import axios from "axios";
-import {SWAGGER_URL} from "../services/config";
+import {BASE_URL} from "../services/config";
 const logo = require('../../assets/logo.png');
 const background = require('../../assets/background.png');
 const styles = StyleSheet.create({
@@ -70,7 +70,7 @@ const Login = ({ navigation }:any) => {
   const [loading, setLoading] = useState(false);
   const onLogin = useCallback(async (data) => {
     setLoading(true);
-    axios.post(SWAGGER_URL + '/user/signin', {email:data.email, password: data.password}).then((response) =>{
+    axios.post(BASE_URL + '/user/signin', {email:data.email, password: data.password}).then((response) =>{
       setLoading(false);
       dispatch(setUser(response.data));
       navigation.navigate('HomeScreen');

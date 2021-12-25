@@ -4,7 +4,7 @@ import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import Dropdown from "@atoms/dropdown";
 import axios from "axios";
 import EndorseToIcon from "@assets/svg/endorseTo";
-import {SWAGGER_URL} from "../../../services/config";
+import {BASE_URL} from "../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
 import {FOREVALUATION} from "../../../reducers/activity/initialstate";
 function Endorsed(props:any) {
@@ -13,7 +13,7 @@ function Endorsed(props:any) {
     const [pickedEndorsed, setPickedEndorsed] = useState<any[]>()
     const [endorsed, setEndorsed] = useState()
     useEffect(()=>{
-        axios.get(SWAGGER_URL + '/users' ,
+        axios.get(BASE_URL + '/users' ,
             {
                 headers: {
                     Authorization: "Bearer ".concat(user.sessionToken)

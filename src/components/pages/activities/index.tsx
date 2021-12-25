@@ -16,7 +16,7 @@ import {Activities} from "@pages/activities/interface";
 import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
-import {SWAGGER_URL} from "../../../services/config";
+import {BASE_URL} from "../../../services/config";
 
 
 
@@ -31,7 +31,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
 
 
     useEffect(() => {
-        axios.get(SWAGGER_URL + '/activities',
+        axios.get(BASE_URL + '/activities',
             {
                 headers: {
                     Authorization: "Bearer ".concat(user.sessionToken)
