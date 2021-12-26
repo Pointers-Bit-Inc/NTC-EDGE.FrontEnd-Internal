@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     group2: {
-        marginLeft: 10
     },
     rect: {
         height: 27,
@@ -60,7 +59,7 @@ const styles = StyleSheet.create({
         marginLeft: 1
     },
     rect4: {
-        width: 375,
+        width: '100%',
         height: 10,
         backgroundColor: "#E6E6E6",
         marginTop: 5

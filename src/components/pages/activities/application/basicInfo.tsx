@@ -1,8 +1,5 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {StyleSheet, Text, View} from "react-native";
-import axios from "axios";
-import {RootStateOrAny, useSelector} from "react-redux";
-import {Applicant} from "@pages/activities/interface";
 import {formatDate} from "@pages/activities/script";
 
 
@@ -153,15 +150,16 @@ const BasicInfo = (props: any) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center"
+        alignItems: "center",
+        paddingHorizontal: 15,
     },
     group2: {
         marginBottom: 10,
-        width: 350,
+        width: '100%',
 
     },
     rect: {
-        width: 350,
+        width: '100%',
         height: 27,
         backgroundColor: "#E6E6E6"
     },
@@ -172,7 +170,7 @@ const styles = StyleSheet.create({
         marginLeft: 13
     },
     group: {
-        width: 350,
+        width: '100%',
         marginTop: 11
     },
     rect3: {
@@ -197,8 +195,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     rect4: {
-        width: 350,
-
+        width: '100%',
         height: 10,
     }
 });

@@ -1,125 +1,162 @@
-import {Swipeable} from "react-native-gesture-handler";
-import {Text, TouchableOpacity, View} from "react-native";
-import {styles} from "@pages/activities/styles";
+import React from "react";
+import { Swipeable } from "react-native-gesture-handler";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import Text from "@components/atoms/text";
+import ProfileImage from "@components/atoms/image/profile";
 import Svg, {Ellipse} from "react-native-svg";
 import FileIcon from "@assets/svg/file";
 import {formatDate, statusBackgroundColor, statusColor, statusDimension, statusIcon} from "@pages/activities/script";
-import React from "react";
+import { text, outline } from 'src/styles/color';
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        backgroundColor: 'white',
+    },
+    horizontal: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    section: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    content: {
+        flex: 1,
+        paddingBottom: 10,
+        borderBottomColor: outline.default,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        paddingLeft: 5,
+        paddingTop: 15
+    },
+    name: {
+        marginBottom: 8,
+    },
+    date: {
+
+    },
+    application: {
+        paddingHorizontal: 10,
+        paddingVertical: 3,
+        borderRadius: 5,
+        marginLeft: 0,
+        flex: 1,
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: '#163776',
+        marginRight: 15
+    },
+    status: {
+        paddingHorizontal: 15,
+        paddingVertical: 2,
+        borderRadius: 5,
+        marginLeft: 0
+    },
+    circle: {
+        width: 10,
+        height: 10,
+        backgroundColor: 'rgba(26,89,211,1)',
+        borderRadius: 10,
+        marginLeft: -10,
+        marginRight: 5,
+    }
+})
+
+const RenderStatus = ({ status }:any) => {
+    return (
+        <View
+            style={[
+                styles.horizontal,
+                statusBackgroundColor(status),
+                styles.status
+            ]}
+        >
+            {statusIcon(status, { marginRight: 3 })}
+            <Text
+                style={statusColor(status)}
+                size={12}
+                numberOfLines={1}
+            >
+                {status}
+            </Text>
+        </View>
+    )
+}
+
+const RenderApplication = ({ applicationType }:any) => {
+    return (
+        <View
+            style={[
+                styles.horizontal,
+                styles.application
+            ]}
+        >
+            <FileIcon
+                width={13}
+                height={13}
+                style={{ color: '#163776' }}
+            />
+            <Text
+                style={{ marginLeft: 3, marginRight: 5 }}
+                color="#163776"
+                size={10}
+                numberOfLines={1}
+            >
+                {applicationType}
+            </Text>
+        </View>
+    )
+}
 
 export function ActivityItem(props:any) {
-
     const userActivity = props.activity.activityDetails.application.applicant.user
-    return <Swipeable key={props.index}
-                      renderRightActions={(progress, dragX) => props.swiper(props.index, progress, dragX)}>
-        <View style={styles.group17}>
-            <View style={styles.group8}>
-                <View style={styles.rect8}>
-                    <View style={styles.activeRow}>
-                        <View style={styles.active}>
-                            <View style={styles.rect12}>
-                                <View style={styles.rect13}>
-                                    <Svg viewBox="0 0 10 9.5"
-                                         style={styles.ellipse}>
-                                        <Ellipse
-                                            strokeWidth={0}
-                                            fill="rgba(26,89,211,1)"
-                                            cx={5}
-                                            cy={5}
-                                            rx={5}
-                                            ry={5}
-                                        />
-                                    </Svg>
-                                </View>
+    
+    return (
+        <Swipeable
+            key={props.index}
+            renderRightActions={
+                (progress, dragX) => props.swiper(props.index, progress, dragX)
+            }
+        >
+            <TouchableOpacity onPress={props.onPressUser}>
+                <View style={styles.container}>
+                    <View style={styles.circle} />
+                    <ProfileImage
+                        size={45}
+                        image={userActivity.image}
+                        name={`${userActivity.firstName} ${userActivity.lastName}`}
+                    />
+                    <View style={styles.content}>
+                        <View style={styles.section}>
+                            <View style={styles.name}>
+                                <Text
+                                    color={'#1F2022'}
+                                    weight="bold"
+                                    size={14}
+                                    numberOfLines={1}
+                                >
+                                    {`${userActivity?.firstName} ${userActivity.lastName}`}
+                                </Text>
+                            </View>
+                            <View style={styles.date}>
+                                <Text
+                                    color={'#1F2022'}
+                                    size={10}
+                                    numberOfLines={1}
+                                >
+                                    {formatDate(props.activity.activityDetails.dateTime)}
+                                </Text>
                             </View>
                         </View>
-                        <View style={styles.profile}>
-                            <View style={styles.rect11Stack}>
-                                <View style={styles.rect11}/>
-                                <View style={styles.rect14}/>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.activeRowFiller}/>
-                    <View style={styles.group4StackStack}>
-                        <View style={styles.group4Stack}>
-                            <View style={styles.group4}>
-                                <View style={styles.rect16}>
-                                    <View style={styles.group3}>
-                                        <TouchableOpacity onPress={props.onPressUser}>
-                                            <Text
-                                                style={styles.name}>{(userActivity?.firstName + " " + userActivity?.lastName).length > 20 ? (userActivity?.firstName + " " + userActivity?.lastName).slice(0, 25).concat('...') : (userActivity?.firstName + " " + userActivity?.lastName)}</Text>
-                                        </TouchableOpacity>
-
-                                        <View style={styles.group2}>
-                                            <View style={styles.rect18Stack}>
-                                                <View style={styles.rect18}>
-                                                    <View style={styles.group21}>
-                                                        <View style={styles.rect32}>
-                                                            <Text
-                                                                style={styles.application}>
-                                                                {props.activity.activityDetails.applicationType.length > 25 ? props.activity.activityDetails.applicationType.slice(0, 25).concat('...') : props.activity.activityDetails.applicationType}
-                                                            </Text>
-                                                        </View>
-                                                    </View>
-                                                </View>
-                                                <View style={styles.group20}>
-                                                    <View style={styles.rect31}>
-                                                        <FileIcon width={13} height={13}
-                                                                  style={styles.icon2}></FileIcon>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                            <View style={styles.rect28}/>
-                        </View>
-                        <View style={styles.group5}>
-                            <View style={styles.group22Stack}>
-                                <View style={styles.group22}>
-                                    <View style={styles.rect33}>
-                                        <View style={styles.loremIpsumFiller}/>
-                                        <Text
-                                            style={styles.loremIpsum}>{formatDate(props.activity.activityDetails.dateTime)}</Text>
-                                    </View>
-                                </View>
-                                <View style={styles.rect24}/>
-                            </View>
-                        </View>
-                        <View style={styles.group7}>
-                            <View style={styles.stackFiller}/>
-                            <View style={styles.group6Stack}>
-                                <View style={styles.group6}>
-                                    <View
-                                        style={[styles.rect23, statusBackgroundColor(props.activity.activityDetails.status)]}>
-                                        <View style={styles.group19}>
-                                            <View style={styles.group18Row}>
-                                                <View style={styles.group18}>
-                                                    <View style={styles.icon3Stack}>
-                                                        {statusIcon(props.activity.activityDetails.status)}
-
-                                                        <View
-                                                            style={styles.rect29}/>
-                                                    </View>
-                                                </View>
-                                                <View
-                                                    style={[styles.rect30Stack, statusDimension(props.activity.activityDetails.status)]}>
-                                                    <View style={styles.rect30}/>
-                                                    <Text
-                                                        style={[styles.approved, {fontWeight: "bold"},  statusColor(props.activity.activityDetails.status)]}>  {props.activity.activityDetails.status}</Text>
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={styles.rect25}/>
-                            </View>
+                        <View style={styles.section}>
+                            <RenderApplication applicationType={props.activity.activityDetails.applicationType} />
+                            <RenderStatus status={props.activity.activityDetails.status} />
                         </View>
                     </View>
                 </View>
-            </View>
-        </View>
-    </Swipeable>
-
+            </TouchableOpacity>
+        </Swipeable>
+    );
 }

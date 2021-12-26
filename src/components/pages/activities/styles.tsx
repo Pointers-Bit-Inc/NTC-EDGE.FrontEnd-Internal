@@ -5,11 +5,14 @@ export const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "rgba(230, 230, 230,1)"
     },
+    horizontal: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     group: {
-        height: 100
     },
     rect: {
-        height: 100,
+        paddingVertical: 15,
         backgroundColor: "rgba(0,65,172,1)",
         flexDirection: "row"
     },
@@ -22,8 +25,7 @@ export const styles = StyleSheet.create({
     activity: {
         color: "rgba(255,255,255,1)",
         fontSize: 20,
-        marginLeft: 10,
-        marginTop: 8,
+        marginLeft: 15,
         fontWeight: "bold"
     },
     rect4Row: {
@@ -185,11 +187,15 @@ export const styles = StyleSheet.create({
         height: 80
     },
     rect13: {
+        flex: 1,
+        justifyContent: "center",
+
         width: 40,
         height: 40,
         marginTop: 27
     },
     ellipse: {
+        position: "absolute",
         width: 10,
         height: 10,
         marginTop: 15,
@@ -200,13 +206,14 @@ export const styles = StyleSheet.create({
         height: 80
     },
     rect11: {
+       alignSelf: "center", justifyContent: "center",
         borderRadius: 25,
         top: 27,
         left: 0,
         width: 40,
         height: 40,
-        position: "absolute",
-        backgroundColor: "rgba(99,97,97,1)"
+
+
     },
     rect14: {
         top: 0,
