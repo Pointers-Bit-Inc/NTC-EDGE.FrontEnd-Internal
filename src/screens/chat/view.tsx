@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 15,
-    paddingTop: 45,
+    paddingTop: 35,
     backgroundColor: primaryColor
   },
   horizontal: {
@@ -264,8 +264,8 @@ const ChatView = ({ navigation, route }:any) => {
         <View style={{ paddingLeft: 15 }}>
           <GroupImage
             participants={otherParticipants}
-            size={50}
-            textSize={18}
+            size={45}
+            textSize={16}
           />
         </View>
         <View style={styles.info}>

@@ -7,10 +7,10 @@ import React, {
   forwardRef,
   ForwardRefRenderFunction,
 } from 'react'
-import { View, StyleSheet, FlatList, Dimensions, Platform } from 'react-native'
+import { View, StyleSheet, FlatList, Dimensions, Platform, TouchableOpacity } from 'react-native'
 import lodash from 'lodash';
 import { useInitializeAgora } from 'src/hooks/useAgora';
-import { MicIcon } from '@components/atoms/icon';
+import { MicIcon, CameraIcon } from '@components/atoms/icon';
 import {
   RtcLocalView,
   RtcRemoteView,
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   mic: {
     position: 'absolute',
     top: 5,
-    left: 10,
+    left: 5,
   },
   footer: {
     width: '100%',
@@ -179,6 +179,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     toggleIsMute,
     toggleIsSpeakerEnable,
     toggleIsVideoEnable,
+    switchCamera,
   } = useInitializeAgora({
     ...agora,
     options: {
@@ -278,12 +279,21 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             isMute ? (
               <MicIcon
                 style={[styles.mic, { top: 120, left: 20 }]}
-                size={20}
+                size={24}
                 type='muted'
                 color={text.error}
               />
             ) : null
           }
+          <View style={{ position:'absolute', top: 115, right: 20 }}>
+            <TouchableOpacity onPress={switchCamera}>
+              <CameraIcon
+                size={28}
+                type='switch'
+                color={'white'}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       );
     }
@@ -374,6 +384,15 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                 />
               ) : null
             }
+            <View style={{ position:'absolute', top: 0, right: 5 }}>
+              <TouchableOpacity onPress={switchCamera}>
+                <CameraIcon
+                  size={22}
+                  type='switch'
+                  color={'white'}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         );
       }

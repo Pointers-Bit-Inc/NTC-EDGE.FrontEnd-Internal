@@ -36,8 +36,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     paddingHorizontal: 20,
-    paddingTop: 45,
-    paddingBottom: 20,
+    paddingTop: 35,
+    paddingBottom: 15,
     backgroundColor: primaryColor
   },
   titleContainer: {
@@ -191,11 +191,13 @@ const Meet = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
-        <ProfileImage
-          size={45}
-          image={user.image}
-          name={`${user.firstName} ${user.lastName}`}
-        />
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
+          <ProfileImage
+            size={45}
+            image={user.image}
+            name={`${user.firstName} ${user.lastName}`}
+          />
+        </TouchableOpacity>
         <View style={styles.titleContainer}>
           <Text
             color={'white'}

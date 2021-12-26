@@ -2,10 +2,17 @@ const { Record } = require('immutable');
 export const DATE_ADDED = "Date Added",
     FOREVALUATION = 'For Evaluation',
     APPROVED = "Approved",
-    DECLINED = "Decline",
+    DECLINED = "Declined",
+    DECLINE = "Decline",
+    VERIFICATION = "Verification",
+    PAID = "Paid",
     FORPAYMENT = "For Payment",
     RELEASED = "Released",
-    OTHERS = "Others"
+    OTHERS = "Others",
+    CASHIER = "cashier",
+    DIRECTOR = "director",
+    EVALUATOR = "evaluator"
+
 const InitialState = Record({
   visible: false,
   statusCode: [

@@ -5,9 +5,10 @@ import Svg, {Ellipse} from "react-native-svg";
 import FileIcon from "@assets/svg/file";
 import {formatDate, statusBackgroundColor, statusColor, statusDimension, statusIcon} from "@pages/activities/script";
 import React from "react";
+import {getInitial} from "../../../utils/formatting";
 
 export function ActivityItem(props:any) {
-
+    const hex = Math.floor(Math.random()*16777215).toString(16)
     const userActivity = props.activity.activityDetails.application.applicant.user
     return <Swipeable key={props.index}
                       renderRightActions={(progress, dragX) => props.swiper(props.index, progress, dragX)}>
@@ -34,8 +35,9 @@ export function ActivityItem(props:any) {
                         </View>
                         <View style={styles.profile}>
                             <View style={styles.rect11Stack}>
-                                <View style={styles.rect11}/>
-                                <View style={styles.rect14}/>
+                                <View style={[styles.rect11, {backgroundColor: "#" + hex  }]}>
+                                    <Text style={{textAlign: "center", color:  "#"+(Number(`0x1${hex}`) ^ 0xFFFFFF).toString(16).substr(1).toUpperCase()  }}>{getInitial(userActivity.firstName)}</Text>
+                                </View>
                             </View>
                         </View>
                     </View>

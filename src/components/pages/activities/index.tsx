@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {Image, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import {StatusBar, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import {Entypo} from '@expo/vector-icons'
 import {styles} from "@pages/activities/styles";
 import Collapsible from "react-native-collapsible";
@@ -17,6 +17,7 @@ import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import {BASE_URL} from "../../../services/config";
+import ProfileImage from "@components/atoms/image/profile";
 
 
 export default function ActivitiesPage(props:any) {
@@ -37,19 +38,13 @@ const user = useSelector((state: RootStateOrAny) => state.user);
         }
         let res: any = [];
         dispatch(setActivity([]))
-
-
-            axios.get(BASE_URL + '/activities',config
-            ).then( (response) => {
-
-
+        axios.get(BASE_URL + '/activities',config).then( (response) => {
                 [...response.data].map(async (item) => {
                     await axios.get(BASE_URL + '/applications/' + item.activityDetails.application._id, config).then((i) => {
+                        item.activityDetails.paymentStatus = i.data.paymentStatus
                         item.activityDetails.status = i.data.status
                         dispatch(addActivity(item))
                     })
-
-
                 })
 
             }).then((r)=>{
@@ -89,10 +84,8 @@ const user = useSelector((state: RootStateOrAny) => state.user);
         setIsPinnedActivity(0)
         const groups = list.reduce((groups: any, activity: any) => {
             const date = checkFormatIso(activity.createdAt, "-");
-
             if (activity.isPinned) {
                 setIsPinnedActivity(isPinnedActivity + 1)
-
             }
             if (!groups[date]) {
                 groups[date] = [];
@@ -131,31 +124,28 @@ const user = useSelector((state: RootStateOrAny) => state.user);
     const [details, setDetails] = useState({})
     return (
         <>
-
+        <StatusBar barStyle={'light-content'} />
           <View  style={[styles.container]}>
 
 
                 <View style={styles.group}>
-                    <View style={styles.rect}>
-                        <View style={styles.rect4Row}>
-                            <View>
+                    <View style={[styles.rect, styles.horizontal, { paddingHorizontal: 20, paddingTop: 35 }]}>
+                        <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+                            <ProfileImage
+                                size={45}
+                                image={user.image}
+                                name={`${user.firstName} ${user.lastName}`}
+                            />
+                        </TouchableOpacity>
+                        <Text style={styles.activity}>Activity</Text>
+                        <View style={{ flex: 1 }}/>
+                        <TouchableOpacity onPress={() => {
+                            dispatch(setVisible(true))
+                        }
 
-                                <Image style={styles.rect4} source={require('./../../../../assets/favicon.png')}/>
-
-                            </View>
-                            <Text style={styles.activity}>Activity</Text>
-                        </View>
-                        <View style={styles.rect4RowFiller}/>
-                        <View style={styles.rect5}>
-                            <TouchableOpacity onPress={() => {
-                                dispatch(setVisible(true))
-                            }
-
-                            }>
-                                <FilterIcon width={18} height={18} fill={"#fff"}/>
-
-                            </TouchableOpacity>
-                        </View>
+                        }>
+                            <FilterIcon width={18} height={18} fill={"#fff"}/>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.group9}>
