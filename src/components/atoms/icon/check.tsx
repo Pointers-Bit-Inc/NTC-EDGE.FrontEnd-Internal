@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { FontAwesome5, Feather } from '@expo/vector-icons'; 
+import { FontAwesome5, Feather, Octicons } from '@expo/vector-icons'; 
 
 interface Props {
   type?: string;
@@ -19,6 +19,15 @@ const CheckIcon: FC<Props> = ({
     case 'check':
       return (
         <Feather
+          name="check"
+          size={size}
+          color={color}
+          {...otherProps}
+        />
+      );
+    case 'check1':
+      return (
+        <Octicons
           name="check"
           size={size}
           color={color}

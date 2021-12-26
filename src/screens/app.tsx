@@ -39,7 +39,7 @@ const App = ({ navigation }:any) => {
       // performed layout.
       await SplashScreen.hideAsync();
       if (user && user.email) {
-        navigation.replace('HomeScreen');
+        navigation.replace('ActivitiesScreen');
       } else {
         navigation.replace('AppIntro');
       }
