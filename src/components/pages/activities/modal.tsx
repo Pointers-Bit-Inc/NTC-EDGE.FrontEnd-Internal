@@ -79,14 +79,13 @@ function ActivityModal(props: any) {
             }
 
         if (id) {
-            const role = user?.role?.key == CASHIER  ?  `/applications/${id}/update-payment-status` : ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 ? `/applications/${id}/update-status` : `/applications/${id}/update-status`)
+            const role = user?.role?.key == CASHIER  ?  `/applications/${id}/update-payment-status` : ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 ? `/applications/${id}/update-status` : ``)
             const statusKey = user?.role?.key == CASHIER  ? {
                 'paymentStatus': status
             } : {
                 'status': status
             }
             await axios.patch(BASE_URL + role, statusKey, config ).then((response) => {
-
                 return axios.get(BASE_URL + `/applications/${id}`, config)
             }).then((response) => {
                 dispatch(updateActivityStatus({application: response.data, status: status, userType: user?.role?.key}))
@@ -324,8 +323,8 @@ function ActivityModal(props: any) {
                                 </View>
                                 <View style={styles.group2}>
                                     <View style={styles.icon2Row}>
-                                        {statusIcon(status ? status : (user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.status : props?.details?.activityDetails?.status ), styles.icon2)}
-                                        <Text style={[styles.role,statusColor(status ? status : (user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.status : props?.details?.activityDetails?.status ))]}>{(user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.status : props?.details?.activityDetails?.status )}</Text>
+                                        {statusIcon(status ? status : (user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.paymentStatus : (status ? status : props?.details?.activityDetails?.status) ), styles.icon2)}
+                                        <Text style={[styles.role,statusColor((user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.paymentStatus : (status ? status :props?.details?.activityDetails?.status) ))]}>{(user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.paymentStatus : (status ? status : props?.details?.activityDetails?.status) )}</Text>
                                     </View>
                                 </View>
                             </View>

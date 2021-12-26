@@ -3,73 +3,46 @@ import FormField from "@organisms/forms/form";
 import InputStyles from "@styles/input-style";
 import Text from '@atoms/text';
 import {primaryColor, text} from "@styles/color";
-import {Image, ScrollView, StyleSheet, View,} from 'react-native';
+import {Image, ScrollView, StyleSheet, TouchableOpacity, View,} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import Button from "@atoms/button";
 import {setUser} from "../../../reducers/user/actions";
+import {Ionicons} from "@expo/vector-icons";
 
-const styles = StyleSheet.create({
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: 'white',
-    },
-    headerPadding: {
-        paddingHorizontal: 18,
-        paddingTop: 32,
-    },
-    container: {
-        flex: 1,
-    },
-    profile: {
-        flexDirection: 'row',
-        marginTop: 20
-    },
-    name: {
-        fontSize: 22,
-        color: primaryColor,
-        fontWeight: '600',
-        alignSelf: 'center',
-        marginLeft: 10
-    },
-    shareButton: {
-        marginTop: 10,
-        height: 45,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: primaryColor,
-    },
-    avatar: {
-        width: 80,
-        height: 80,
-        borderRadius: 35,
-        borderWidth: 4,
-        borderColor: primaryColor,
-    },
-    shareButtonText: {
-        color: "#FFFFFF",
-        fontSize: 20,
-    }
-})
-const UserProfile = ({ navigation }: any) => {
+
+const UserProfile = (props: any) => {
+
     const FIRST_NAME_LABEL = "First Name",
         MIDDLE_NAME_LABEL = "Middle Name",
         LAST_NAME_LABEL = "Last Name",
         FIRST_NAME_INDEX = 5,
         MIDDLE_NAME_INDEX = 6,
         LAST_NAME_INDEX = 7,
-        PROFILE_IMAGE_INDEX = 10;
+        PROFILE_IMAGE_INDEX = 3;
     const dispatch = useDispatch();
     const [profileImage, setProfile] = useState("")
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [userProfile, setUserProfile] = useState()
     const [userProfileForm, setUserProfileForm] = useState([
         {
+            stateName: 'userType',
             id: 1,
             key: 1,
+            required: true,
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "User Type",
+            type: "input",
+            placeholder: "User Type",
+            value: user.role.name || '',
+            inputStyle: InputStyles.text,
+            error: false,
+        },
+        {
+            id: 2,
+            key: 2,
             required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
@@ -85,8 +58,8 @@ const UserProfile = ({ navigation }: any) => {
         },
         {
             stateName: 'email',
-            id: 2,
-            key: 2,
+            id: 3,
+            key: 3,
             required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
@@ -99,102 +72,13 @@ const UserProfile = ({ navigation }: any) => {
             inputStyle: InputStyles.text,
             error: false,
         },
+
+
+
         {
-            stateName: 'password',
-            id: 3,
-            key: 3,
-            required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
-            label: "Password",
-            secureTextEntry: true,
-            type: "password",
-            placeholder: "Password",
-            value: user.password || '',
-            inputStyle: InputStyles.text,
-            error: false,
-        },
-        {
-            stateName: 'userType',
-            id: 4,
-            key: 4,
-            required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
-            label: "User Type",
-            type: "input",
-            placeholder: "User Type",
-            value: user.userType || '',
-            inputStyle: InputStyles.text,
-            error: false,
-        },
-        {
-            stateName: 'permitType',
-            id: 5,
-            key: 5,
-            required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
-            label: "Permit Type",
-            type: "input",
-            placeholder: "Permit Type",
-            value: user.permitType || '',
-            inputStyle: InputStyles.text,
-            error: false,
-        },
-        {
-            stateName: "firstname",
-            id: 6,
-            key: 6,
-            required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
-            label: FIRST_NAME_LABEL,
-            type: "input",
-            placeholder: "First Name",
-            value: user.firstname || '',
-            inputStyle: InputStyles.text,
-            error: false,
-        },
-        {
-            stateName: 'middlename',
-            id: 7,
-            key: 7,
-            required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
-            label: MIDDLE_NAME_LABEL,
-            type: "input",
-            placeholder: "Middle Name",
-            value: user.middlename || '',
-            inputStyle: InputStyles.text,
-            error: false,
-        },
-        {
-            stateName: 'lastname',
-            id: 8,
-            key: 8,
-            required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
-            label: LAST_NAME_LABEL,
-            type: "input",
-            placeholder: "Last Name",
-            value: user.lastname || '',
-            inputStyle: InputStyles.text,
-            error: false,
+            id: 11,
+            stateName: 'profileImage',
+            value: user.profileImage
         },
         {
             stateName: 'phone',
@@ -208,7 +92,7 @@ const UserProfile = ({ navigation }: any) => {
             label: "Phone",
             type: "input",
             placeholder: "Phone",
-            value: user.phone || '',
+            value: user.contactNumber || '',
             inputStyle: InputStyles.text,
             error: false,
         },
@@ -228,13 +112,7 @@ const UserProfile = ({ navigation }: any) => {
             inputStyle: InputStyles.text,
             error: false,
         },
-        {
-            id: 11,
-            stateName: 'profileImage',
-            value: user.profileImage
-        },
     ])
-
 
     const onChangeUserProfile = (id: number, text: any, element?: string) => {
 
@@ -262,7 +140,10 @@ const UserProfile = ({ navigation }: any) => {
 
                         openImagePickerAsync().then((r: any) => {
                             newArr[i].value = r?.uri
-                            setUserProfileForm(newArr)
+                            if(r?.uri){
+                                setUserProfileForm(newArr)
+                            }
+
                         })
                     }
             }
@@ -297,71 +178,130 @@ const UserProfile = ({ navigation }: any) => {
     }
     
     
-    return <>
+    return  <View style={styles.container}>
+        <View style={styles.toolbar}>
+            <View style={styles.rect}>
+                <View style={styles.group}>
+                    <TouchableOpacity onPress={() => props.toggleDrawer()} >
+                        <Ionicons name="md-close" style={styles.icon}></Ionicons>
+                    </TouchableOpacity>
 
-            <View style={{ flex: 1, backgroundColor: "white",   padding: 20}}>
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                >
-                    <View style={styles.profile}>
+                    <Text style={styles.profileName}>Profile</Text>
+                    <Text style={styles.edit}>Edit</Text>
+                </View>
+            </View>
+        </View>
+        <View style={styles.profilecontainer}>
+
+            <View style={styles.rect2Stack}>
+                <View style={styles.rect2}></View>
+                <TouchableOpacity onPress={() => onPressed(11, 'image-picker')}>
+                    <View style={styles.rect3}>
                         {userProfileForm[PROFILE_IMAGE_INDEX].value ? <Image
-                                style={styles.avatar}
+                                style={{width: 100, height: 100, borderRadius: 50}}
                                 source={{uri: userProfileForm[PROFILE_IMAGE_INDEX].value}}
                                 resizeMode={"cover"}/>
-                            : <Image style={styles.avatar}
+                            : <Image style={{width: 100, height: 100, borderRadius: 50}}
                                      source={require('@assets/favicon.png')}/>}
-
-                        <Text style={styles.name}>
-                           {userProfileForm[FIRST_NAME_INDEX].value + " " + userProfileForm[MIDDLE_NAME_INDEX].value + " " + userProfileForm[LAST_NAME_INDEX].value}
-                        </Text>
-
+                        <Text style={[styles.change2]}>Change</Text>
                     </View>
-                    <Button style={styles.shareButton} onPress={() => onPressed(11, 'image-picker')}>
-                        <Text fontSize={16} color={'white'}>Pick an image</Text>
-                    </Button>
+                </TouchableOpacity>
 
+            </View>
+        </View>
+        <View>
+            <ScrollView
+
+                showsVerticalScrollIndicator={false}
+            >
+                <View style={{padding: 10}}>
                     <FormField formElements={userProfileForm} onChange={onChangeUserProfile} onSubmit={onPressed}/>
-                </ScrollView>
-            </View>
-            <View style={bottom.bottomView}>
-                <Button onPress={()=>{
-                    onUserSubmit()
-                }} style={[button.color, button.borderRadius]}>
-                    <Text fontSize={16} color={'white'}>
-                        Submit
-                    </Text>
-                </Button>
-            </View>
+                </View>
 
+            </ScrollView>
+        </View>
 
-    </>
+        <View style={styles.divider}></View>
+        <Text style={styles.changePassword}>Change Password</Text>
+    </View>
 }
-const bottom = StyleSheet.create({
 
-    bottomView: {
-        width: '100%',
-        backgroundColor: '#fff',
-        bottom: 0,
-        shadowColor: "#000000",
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        shadowOffset: {
-            height: 1,
-            width: 1
-        },
-        padding: 20
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: "#fff",
+        flex: 1
     },
+    toolbar: {
+        height: 100
+    },
+    rect: {
+        height: 100,
+        backgroundColor: "rgba(0,65,172,1)"
+    },
+    group: {
+        width: 330,
+        height: 24,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginTop: 54,
+        marginLeft: 23
+    },
+    icon: {
+        color: "rgba(255,255,255,1)",
+        fontSize: 20,
+        height: 23,
+        alignSelf: "center"
+    },
+    profileName: {
+        color: "rgba(249,248,248,1)",
+        fontSize: 20,
+        alignSelf: "center"
+    },
+    edit: {
+        color: "rgba(255,255,255,1)",
+        fontSize: 18,
+        alignSelf: "center"
+    },
+    profilecontainer: {
+        height: 115
+    },
+    rect2: {
+        top: 0,
+        left: 0,
+        height: 65,
+        position: "absolute",
+        backgroundColor: "rgba(219,234,254,1)",
+        right: 0
+    },
+    rect3: {
+        borderRadius: 50,
+        top: 15,
+        left: 138,
+        width: 100,
+        height: 100,
+        position: "absolute",
+        backgroundColor: "#E6E6E6"
+    },
+    change2: {
+        position: "absolute",
+        color: "rgba(255,255,255,1)",
+        marginTop: 58,
+        marginLeft: 26
+    },
+    rect2Stack: {
+
+        height: 115
+    },
+    divider: {
+        height: 10,
+        backgroundColor: "#E6E6E6",
+    },
+    changePassword: {
+        color: "rgba(0,74,215,1)",
+        fontSize: 15,
+        paddingTop: 20,
+        paddingLeft: 31
+    }
 });
-const button = StyleSheet.create({
-    color: {
-        backgroundColor: primaryColor
-    },
-    borderRadius: {
-
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#fff',
-    },
-})
-
 export default UserProfile
