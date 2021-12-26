@@ -17,7 +17,6 @@ function TopModal(props:any) {
 
     return (
         <View style={visible ? {
-
             position: "absolute",
             zIndex: 2,
             top: 0,
@@ -48,6 +47,7 @@ function TopModal(props:any) {
                 <View style={styles.group7}>
                     {statusCode.map((top: any, index: number)=> {
                         return<React.Fragment key={index}><View style={styles.group6}>
+
                             <View style={styles.group5}>
                                 <View style={styles.icon4Row}>
 
@@ -64,11 +64,8 @@ function TopModal(props:any) {
                                 </View>
 
                             </View>
-
                             <View style={styles.rect6}>
-
                                 <View style={styles.icon6Filler}></View>
-
                                 <TouchableOpacity onPress={() =>  dispatch(on_checked(top))}>
                                     <Ionicons
                                         name={top.checked  ? "md-radio-button-on" : "md-radio-button-off"}
@@ -132,6 +129,7 @@ const styles = StyleSheet.create({
     },
     filterRow: {
         height: 29,
+        justifyContent: "space-between",
         flexDirection: "row",
         flex: 1,
         marginRight: 20,
@@ -148,7 +146,6 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     group5: {
-        width: 110,
 
         marginLeft: 18,
         alignSelf: "center"
@@ -161,7 +158,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "#121212",
         marginLeft: 7,
-        marginTop: 5
     },
     icon4Row: {
         height: 34,
@@ -178,7 +174,6 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(255,255,255,1)",
         flexDirection: "row",
         flex: 1,
-        marginLeft: 203
     },
     icon6Filler: {
         flex: 1,

@@ -6,7 +6,7 @@ import axios from "axios";
 import EndorseToIcon from "@assets/svg/endorseTo";
 import {BASE_URL} from "../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
-import {FOREVALUATION} from "../../../reducers/activity/initialstate";
+import {DIRECTOR, EVALUATOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import AwesomeAlert from "react-native-awesome-alerts";
 function Endorsed(props:any) {
 
@@ -22,7 +22,7 @@ function Endorsed(props:any) {
                 }
             }).then((response)=>{
             const filterResponse = [...response.data].filter((item) =>{
-                return (["director", 'evaluator'].indexOf(item?.role?.key) != -1)
+                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1)
             })
 
             const res = filterResponse.map((item) =>{
@@ -83,7 +83,6 @@ function Endorsed(props:any) {
                     }}>
                         <Ionicons name="md-close" style={styles.icon}></Ionicons>
                     </TouchableOpacity>
-
                     <View style={styles.group}>
                         <View style={styles.icon2Row}>
                             <EndorseToIcon style={styles.icon2}/>
@@ -92,7 +91,6 @@ function Endorsed(props:any) {
                     </View>
                     <View  style={[styles.rect5]}>
                         <Dropdown value={endorsed} onChangeValue={(value: any) => {
-
                             setEndorsed(value)}
                         }
                                   placeholder={{}}
@@ -103,7 +101,6 @@ function Endorsed(props:any) {
                 <View style={styles.iconColumnFiller}></View>
                 <View style={styles.rect6}>
                     <TouchableOpacity onPress={() =>{
-
                         onEndorseConfirm()
                     }}>
                         <Text style={styles.confirm}>Confirm</Text>
