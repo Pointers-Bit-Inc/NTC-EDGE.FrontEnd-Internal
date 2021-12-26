@@ -1,9 +1,12 @@
-import React from "react";
+import React, {useState} from "react";
 import {StyleSheet, View, Text, Modal, TouchableOpacity, TextInput} from "react-native";
 import {Feather, Ionicons} from "@expo/vector-icons";
+import {DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 function Disapproval(props:any) {
-    return (
+  const [showAlert, setShowAlert] = useState(false)
+   return (
         <Modal
             animationType="slide"
             transparent={true}
@@ -11,6 +14,27 @@ function Disapproval(props:any) {
 
             onRequestClose={() => {
             }}>
+            <AwesomeAlert
+                show={showAlert}
+                showProgress={false}
+                title="Confirm?"
+                message={`are you sure you want to decline ` + props.user }
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={true}
+                showConfirmButton={true}
+                cancelText="Cancel"
+                confirmText="Yes"
+                confirmButtonColor="#DD6B55"
+                onCancelPressed={() => {
+                    setShowAlert(false)
+                }}
+                onConfirmPressed={() => {
+                    props.onChangeApplicationStatus(DECLINED)
+                    props.onDismissed()
+                    setShowAlert(false)
+                }}
+            />
         <View style={styles.container}>
             <View style={styles.group3Filler}></View>
             <View style={styles.group3}>
@@ -40,11 +64,19 @@ function Disapproval(props:any) {
                         <TextInput multiline style={styles.rect2}/>
                     </View>
                     <View style={styles.iconColumnFiller}></View>
+                    <TouchableOpacity onPress={() => {
+                        setShowAlert(true)
+
+                    }}>
                     <View style={styles.group2}>
-                        <View style={styles.rect3}>
-                            <Text style={styles.confirm}>Confirm</Text>
-                        </View>
+
+                            <View  style={styles.rect3}>
+                                <Text style={styles.confirm}>Confirm</Text>
+                            </View>
+
+
                     </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>

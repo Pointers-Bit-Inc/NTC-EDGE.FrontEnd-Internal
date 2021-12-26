@@ -416,17 +416,10 @@ export const styles = StyleSheet.create({
         height: 26
     },
     rect30: {
-        top: 0,
-        left: 1,
-        width: 80,
-        height: 27,
-        position: "absolute"
     },
     approved: {
         top: 8,
-        position: "absolute",
 
-        right: 35,
         fontSize: 10
     },
     rect30Stack: {
@@ -434,7 +427,7 @@ export const styles = StyleSheet.create({
         height: 27
     },
     group18Row: {
-        height: 30,
+
         flexDirection: "row",
         flex: 1,
         marginRight: 1,

@@ -46,38 +46,45 @@ export const statusColor = (status: string) => {
         return {color: "#34c759"}
     } else if (status == DECLINED) {
         return {color: "#cf0327"}
+    }else{
+        return {color: "#f66500"}
     }
 }
 
-export const statusIcon = (status: string) => {
+export const statusIcon = (status: string, icon:any=styles.icon3) => {
 
     if (status == FOREVALUATION) {
 
-        return <EvaluationStatus style={[styles.icon3, {color: "#f66500",}]}/>
+        return <EvaluationStatus style={[icon, {color: "#f66500",}]}/>
     } else if (status == APPROVED) {
-        return <CheckMarkIcon style={[styles.icon3, {left: 20}]}/>
+        return <CheckMarkIcon style={[icon]}/>
     } else if (status == DECLINED) {
-        return <DeclineStatusIcon style={[styles.icon3, {left: 20}]}/>
+        return <DeclineStatusIcon style={[icon]}/>
+    }else{
+        return <EvaluationStatus style={[icon, {color: "#f66500",}]}/>
     }
 }
 export const statusBackgroundColor = (status: string) => {
 
     if (status == FOREVALUATION) {
         return {backgroundColor: "#fef5e8",}
-    } else if (status == APPROVED) {
+    }
+   else if (status == APPROVED) {
         return {backgroundColor: "rgba(229,247,241,1)",}
     } else if (status == DECLINED) {
         return {backgroundColor: "#fae6e9",}
+    }else{
+        return {backgroundColor: "#fef5e8",}
     }
 }
 
 export const statusDimension = (status: any) => {
     if (status == FOREVALUATION) {
-        return {width: 103}
+        return {}
     } else if (status == APPROVED) {
-        return {width: 80}
+        return {}
     } else if (status == DECLINED) {
-        return {width: 70}
+        return {}
     }
 }
 

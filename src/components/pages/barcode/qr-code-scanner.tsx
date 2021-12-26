@@ -6,6 +6,7 @@ import Button from '@atoms/button';
 import axios from "axios";
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import QrScanCodeIcon from "@assets/svg/qrCodeScanIcon";
+import UploadIcon from "@assets/svg/uploadQrCode";
 
 const finderWidth: number = 280;
 const finderHeight: number = 230;
@@ -74,10 +75,7 @@ export default function QrCodeScan(props: any) {
                 </View>
                 <View style={styles.group1}>
                     <View style={styles.rect1}>
-                        <MaterialCommunityIcons
-                            name="qrcode"
-                            style={styles.icon1}
-                        ></MaterialCommunityIcons>
+                       <UploadIcon style={styles.icon1}/>
                         <Text style={styles.generateQrCode1}>Generate QR Code</Text>
                     </View>
                 </View>
@@ -170,7 +168,7 @@ justifyContent: 'center',
         marginLeft: 66
     },
     generateQrCode1: {
-        color: "#121212",
+        color: "#606A80",
         marginLeft: 23
     }
 });

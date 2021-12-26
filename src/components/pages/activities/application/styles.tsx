@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     prcLicensePdf: {
         color: "rgba(24,39,58,1)",
         marginLeft: 20,
-        marginTop: 10
+        alignSelf: "center"
     },
     prcLicensePdfFiller: {
         flex: 1,

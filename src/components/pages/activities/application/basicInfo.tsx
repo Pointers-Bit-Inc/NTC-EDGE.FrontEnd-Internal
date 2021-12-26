@@ -8,23 +8,10 @@ import {formatDate} from "@pages/activities/script";
 
 
 const BasicInfo = (props: any) => {
-    const user = useSelector((state: RootStateOrAny) => state.user);
-
-    const [info, setInfo] = useState<Applicant>()
-
-    useEffect(() => {
-           axios.get('https://ntc.astrotechenergy.com/applicants/' + props.applicantId,{
-            headers: {
-                Authorization: "Bearer ".concat(user.sessionToken)
-            }
-        }).then((response) => {
-
-                setInfo(response.data)
-            })
-    }, [props.applicantId])
+    const applicant = props.applicant
     return <>
 
-        {info && <View style={styles.container}>
+        {props.applicant && <View style={styles.container}>
             <View style={styles.group2}>
                 <View style={styles.rect}>
                     <Text style={styles.basicInfo}>Basic Information</Text>
@@ -33,28 +20,28 @@ const BasicInfo = (props: any) => {
                     <View style={styles.rect3}>
                     <Text style={styles.label}>Last Name</Text>
                     <View style={styles.labelFiller}></View>
-                    <Text style={styles.input}>{info?.user.lastName}</Text>
+                    <Text style={styles.input}>{applicant?.user.lastName}</Text>
                 </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Middle Name</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info?.user.middleName}</Text>
+                        <Text style={styles.input}>{applicant?.user.middleName}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>First Name</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info?.user.firstName}</Text>
+                        <Text style={styles.input}>{applicant?.user.firstName}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Date of Birth</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{formatDate(info?.user?.dateOfBirth)}</Text>
+                        <Text style={styles.input}>{formatDate(applicant?.user?.dateOfBirth)}</Text>
                     </View>
                 </View>
 
@@ -69,35 +56,35 @@ const BasicInfo = (props: any) => {
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Unit/Rm/House/Bldg No.:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info?.unit}</Text>
+                        <Text style={styles.input}>{applicant?.unit}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Barangay:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info?.barangay?.name}</Text>
+                        <Text style={styles.input}>{applicant?.barangay?.name}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Province:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info?.province?.name}</Text>
+                        <Text style={styles.input}>{applicant?.province?.name}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>City/Municipality:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info?.city?.name}</Text>
+                        <Text style={styles.input}>{applicant?.city?.name}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Zip Code:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info?.zipCode}</Text>
+                        <Text style={styles.input}>{applicant?.zipCode}</Text>
                     </View>
                 </View>
                 <View style={[styles.rect4]}></View>
@@ -111,49 +98,49 @@ const BasicInfo = (props: any) => {
                     <View style={styles.rect3}>
                         <Text style={styles.label}>School Attended:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.schoolAttended}</Text>
+                        <Text style={styles.input}>{applicant.schoolAttended}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Course Taken:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.courseTaken}</Text>
+                        <Text style={styles.input}>{applicant.courseTaken}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Year Graduated:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.yearGraduated}</Text>
+                        <Text style={styles.input}>{applicant.yearGraduated}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Contact Number:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.user.contactNumber}</Text>
+                        <Text style={styles.input}>{applicant.user.contactNumber}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Email:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.user.email}</Text>
+                        <Text style={styles.input}>{applicant.user.email}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>City/Municipality:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.city.name}</Text>
+                        <Text style={styles.input}>{applicant.city.name}</Text>
                     </View>
                 </View>
                 <View style={styles.group}>
                     <View style={styles.rect3}>
                         <Text style={styles.label}>Zip Code:</Text>
                         <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{info.zipCode}</Text>
+                        <Text style={styles.input}>{applicant.zipCode}</Text>
                     </View>
                 </View>
                 <View style={[styles.rect4]}></View>

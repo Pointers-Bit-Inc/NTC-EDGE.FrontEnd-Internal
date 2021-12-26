@@ -4,49 +4,42 @@ import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import Dropdown from "@atoms/dropdown";
 import axios from "axios";
 import EndorseToIcon from "@assets/svg/endorseTo";
+import {BASE_URL} from "../../../services/config";
+import {RootStateOrAny, useSelector} from "react-redux";
+import {FOREVALUATION} from "../../../reducers/activity/initialstate";
+import AwesomeAlert from "react-native-awesome-alerts";
 function Endorsed(props:any) {
-    interface Picked {
-        value: string|number;
-        label: string;
-    }
 
-    const [pickedEndorsed, setPickedEndorsed] = useState<Picked[]>()
+    const user = useSelector((state: RootStateOrAny) => state.user);
+    const [pickedEndorsed, setPickedEndorsed] = useState<any[]>()
     const [endorsed, setEndorsed] = useState()
+    const [showAlert, setShowAlert] = useState(false)
     useEffect(()=>{
-        axios.get('https://private-anon-45a305b5a8-ntcedgeustp.apiary-mock.com/employees').then((response)=>{
-            let res = [...response.data].map((item) =>{
-                return {value: item.id, label: item.user.firstName + " " + item.user.lastName}
+        axios.get(BASE_URL + '/users' ,
+            {
+                headers: {
+                    Authorization: "Bearer ".concat(user.sessionToken)
+                }
+            }).then((response)=>{
+            const filterResponse = [...response.data].filter((item) =>{
+                return (["director", 'evaluator'].indexOf(item?.role?.key) != -1)
             })
+
+            const res = filterResponse.map((item) =>{
+                return {value: item._id, label: item.firstName + " " + item.lastName}
+            })
+
             setPickedEndorsed(res)
             if(res){
-                setEndorsed(res[0].value)
+                setEndorsed(res[0]?.value)
             }
 
         })
     }, [])
-    const onConfirm = () =>{
-        const endorse = pickedEndorsed?.find(picked => {
-            return picked.value == endorsed
-        })
-        Alert.alert(
-            "Alert",
-            "are you sure you want to endorse to " + endorse?.label ,
-            [
-                {
-                    text: "OK",
-                    onPress: () => {
+    const onEndorseConfirm = () =>{
 
-                    } ,
-                    style: "default"
-                },
+        setShowAlert(true)
 
-                {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "destructive"
-                },
-            ]
-        );
     }
 
 
@@ -58,6 +51,29 @@ function Endorsed(props:any) {
 
             onRequestClose={() => {
             }}>
+            <AwesomeAlert
+                show={showAlert}
+                showProgress={false}
+                title="Confirm?"
+                message={`are you sure you want to endorse to ` +  pickedEndorsed?.find(picked => {
+                    return picked.value == endorsed
+                })?.label}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={true}
+                showConfirmButton={true}
+                cancelText="Cancel"
+                confirmText="Yes"
+                confirmButtonColor="#DD6B55"
+                onCancelPressed={() => {
+                    setShowAlert(false)
+                }}
+                onConfirmPressed={() => {
+                    props.onChangeApplicationStatus(FOREVALUATION)
+                    props.onDismissed()
+                    setShowAlert(false)
+                }}
+            />
         <View style={styles.container}>
             <View style={styles.rectFiller}></View>
             <View style={styles.rect}>
@@ -75,9 +91,11 @@ function Endorsed(props:any) {
                         </View>
                     </View>
                     <View  style={[styles.rect5]}>
-                        <Dropdown onChangeValue={(value: any) => {
+                        <Dropdown value={endorsed} onChangeValue={(value: any) => {
+
                             setEndorsed(value)}
                         }
+                                  placeholder={{}}
                                   items={pickedEndorsed}></Dropdown>
                     </View>
 
@@ -85,7 +103,8 @@ function Endorsed(props:any) {
                 <View style={styles.iconColumnFiller}></View>
                 <View style={styles.rect6}>
                     <TouchableOpacity onPress={() =>{
-                        onConfirm()
+
+                        onEndorseConfirm()
                     }}>
                         <Text style={styles.confirm}>Confirm</Text>
                     </TouchableOpacity>

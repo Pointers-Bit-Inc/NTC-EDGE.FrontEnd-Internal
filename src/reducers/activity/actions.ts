@@ -1,4 +1,4 @@
-const { SET_ACTIVITY, ON_CHECKED, SELECTED_CHANGE_STATUS, SET_VISIBLE } = require('./types').default;
+const { SET_ACTIVITY, ON_CHECKED, SELECTED_CHANGE_STATUS, SET_VISIBLE , UPDATE_ACTIVITY_STATUS} = require('./types').default;
 
 export function setActivity(payload) {
   return {
@@ -9,6 +9,13 @@ export function setActivity(payload) {
 export function on_checked(payload) {
   return {
     type: ON_CHECKED,
+    payload,
+  };
+}
+
+export function updateActivityStatus(payload) {
+  return {
+    type: UPDATE_ACTIVITY_STATUS,
     payload,
   };
 }
