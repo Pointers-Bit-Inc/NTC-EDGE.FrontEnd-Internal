@@ -73,7 +73,7 @@ export const statusBackgroundColor = (status: string) => {
     if (status == FOREVALUATION) {
         return {backgroundColor: "#fef5e8",}
     }
-   else if (status == APPROVED || status == PAID || status == VERIFICATION) {
+    else if (status == APPROVED || status == PAID || status == VERIFICATION) {
         return {backgroundColor: "rgba(229,247,241,1)",}
     } else if (status == DECLINED || status == DECLINE) {
         return {backgroundColor: "#fae6e9",}

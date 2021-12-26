@@ -4,6 +4,7 @@ import { persistReducer } from 'redux-persist';
 import user from './user/reducers';
 import theme from './theme/reducers';
 import activity from './activity/reducers';
+import application from './application/reducers';
 
 const persistConfig = {
   key: 'root',
@@ -14,4 +15,5 @@ export default combineReducers({
   user: persistReducer(persistConfig, user),
   theme,
   activity,
+  application
 });

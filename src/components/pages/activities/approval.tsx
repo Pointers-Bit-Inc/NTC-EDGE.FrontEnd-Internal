@@ -1,8 +1,40 @@
-import React, { Component } from "react";
-import {StyleSheet, View, Text, Modal, TouchableOpacity} from "react-native";
+import React, {Component, useEffect, useState} from "react";
+import {StyleSheet, View, Text, Modal, TouchableOpacity, TextInput} from "react-native";
 import ApplicationApproved from "@assets/svg/application-approved";
+import Dropdown from "@atoms/dropdown";
+import axios from "axios";
+import {BASE_URL} from "../../../services/config";
+import {CASHIER, DIRECTOR} from "../../../reducers/activity/initialstate";
+import {RootStateOrAny, useSelector} from "react-redux";
 
 function Approval(props: any){
+    const user = useSelector((state: RootStateOrAny) => state.user);
+    const [pickedCashier, setPickedCashier] = useState<any[]>()
+    const [cashier, setCashier] = useState()
+    const [remarks, setRemarks] = useState("")
+    const [showAlert, setShowAlert] = useState(false)
+    useEffect(()=>{
+        axios.get(BASE_URL + '/users' ,
+            {
+                headers: {
+                    Authorization: "Bearer ".concat(user.sessionToken)
+                }
+            }).then((response)=>{
+            const filterResponse = [...response.data].filter((item) =>{
+                return ([CASHIER].indexOf(item?.role?.key) != -1)
+            })
+
+            const res = filterResponse.map((item) =>{
+                return {value: item._id, label: item.firstName + " " + item.lastName}
+            })
+
+            setPickedCashier(res)
+            if(res){
+                setCashier(res[0]?.value)
+            }
+
+        })
+    }, [])
     return (
         <Modal
             animationType="slide"
@@ -20,9 +52,33 @@ function Approval(props: any){
                             <TouchableOpacity onPress={() =>{
                                 props.onDismissed()
                             }}>
-                                <View style={styles.rect3}>
-                                    <Text style={styles.close}>Close</Text>
+                                <View style={[styles.element, {marginBottom: 5}]}>
+                                    <Dropdown value={cashier}  onChangeValue={(value: any) => {
+                                        setCashier(value)}
+                                    }
+                                              placeholder={{}}
+                                              items={pickedCashier}></Dropdown>
                                 </View>
+                                <View style={[styles.element, {paddingBottom: 10, height: 50}]}>
+                                    <TextInput onChangeText={remark => setRemarks(remark)}
+                                               defaultValue={remarks} placeholder={"Remark"}  multiline  >
+
+                                    </TextInput>
+                                </View>
+
+                                <View style={{paddingTop: 6}}>
+                                    <TouchableOpacity onPress={()=>{
+                                        props.confirm({cashier: cashier, remarks: remarks})
+                                        props.onDismissed()
+                                    }}>
+                                        <View style={styles.rect3}>
+
+                                            <Text style={styles.close}>Close</Text>
+                                        </View>
+                                    </TouchableOpacity>
+
+                                </View>
+
                             </TouchableOpacity>
 
                         </View>
@@ -33,18 +89,24 @@ function Approval(props: any){
     )
 }
 const styles = StyleSheet.create({
+    element:{
+        backgroundColor: "rgba(255,255,255,1)",
+        borderWidth: 1,
+        borderColor: "rgba(202,210,225,1)",
+        borderRadius: 6,
+    },
     container: {
         flex: 1
     },
     group: {
         width: 340,
-        height: 260,
-        marginTop: 276,
-        marginLeft: 18
+        height: '100%',
+        marginTop: "50%",
+        marginLeft: "6%"
     },
     rect: {
         width: 340,
-        height: 260,
+        height: "40%",
         backgroundColor: "rgba(255,255,255,1)",
         borderRadius: 12
     },
@@ -69,6 +131,7 @@ const styles = StyleSheet.create({
         marginLeft: 18
     },
     rect3: {
+
         width: 304,
         height: 40,
         backgroundColor: "rgba(47,91,250,1)",

@@ -22,7 +22,7 @@ function Endorsed(props:any) {
                 }
             }).then((response)=>{
             const filterResponse = [...response.data].filter((item) =>{
-                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1)
+                return ([DIRECTOR].indexOf(item?.role?.key) != -1)
             })
 
             const res = filterResponse.map((item) =>{
@@ -37,7 +37,7 @@ function Endorsed(props:any) {
         })
     }, [])
     const onEndorseConfirm = () =>{
-
+        props.remarks({endorseId: endorsed, remark: ""})
         setShowAlert(true)
 
     }
