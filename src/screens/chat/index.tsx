@@ -65,10 +65,10 @@ const styles = StyleSheet.create({
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: 15,
     paddingHorizontal: 20,
     backgroundColor: primaryColor,
-    paddingTop: 45,
+    paddingTop: 35,
   },
   titleContainer: {
     flex: 1,
@@ -286,11 +286,13 @@ const ChatList = ({ navigation }:any) => {
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
         <View style={styles.headerContent}>
-          <ProfileImage
-            size={45}
-            image={user.image}
-            name={`${user.firstName} ${user.lastName}`}
-          />
+          <TouchableOpacity onPress={() => navigation.openDrawer()}>
+            <ProfileImage
+              size={45}
+              image={user.image}
+              name={`${user.firstName} ${user.lastName}`}
+            />
+          </TouchableOpacity>
           <View style={styles.titleContainer}>
             <Text
               color={'white'}

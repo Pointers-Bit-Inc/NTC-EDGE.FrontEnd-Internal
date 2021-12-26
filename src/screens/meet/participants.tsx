@@ -247,9 +247,9 @@ const Participants = ({ navigation }:any) => {
         }
         renderItem={({ item }) => (
           <ContactItem
-            disabled={true}
             image={item.image}
             name={item.name}
+            onPress={() => onTapCheck(item._id)}
             rightIcon={
               <TouchableOpacity
                 onPress={() => onTapCheck(item._id)}

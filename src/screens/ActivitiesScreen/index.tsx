@@ -11,6 +11,7 @@ import styles from "@screens/HomeScreen/DrawerNavigation/styles";
 import {button} from "@styles/color";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {setUser} from "../../reducers/user/actions";
+import Api from 'src/services/api';
 const Drawer = createDrawerNavigator();
 
 
@@ -21,11 +22,15 @@ const ActivitiesScreen = (props:any) => {
     const onShow = () => setShowAlert(true);
     const [showAlert, setShowAlert] = useState(false);
     const onLogout = useCallback(() => {
+        const api = Api(user.sessionToken);
         onHide();
-        dispatch(setUser({}));
         setTimeout(() => {
-            props.navigation.replace('Login');
-        }, 100);
+            api.post('/user/logout')
+            .then(() => {
+                dispatch(setUser({}));
+                props.navigation.replace('Login');
+            });
+        }, 500);
     }, []);
     return <>
         <Drawer.Navigator

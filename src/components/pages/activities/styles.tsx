@@ -5,11 +5,14 @@ export const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "rgba(230, 230, 230,1)"
     },
+    horizontal: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     group: {
-        height: 100
     },
     rect: {
-        height: 100,
+        paddingVertical: 15,
         backgroundColor: "rgba(0,65,172,1)",
         flexDirection: "row"
     },
@@ -22,8 +25,7 @@ export const styles = StyleSheet.create({
     activity: {
         color: "rgba(255,255,255,1)",
         fontSize: 20,
-        marginLeft: 10,
-        marginTop: 8,
+        marginLeft: 15,
         fontWeight: "bold"
     },
     rect4Row: {
