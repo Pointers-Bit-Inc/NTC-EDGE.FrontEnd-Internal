@@ -18,7 +18,7 @@ function Disapproval(props:any) {
                 show={showAlert}
                 showProgress={false}
                 title="Confirm?"
-                message={`are you sure you want to decline ` + props.user }
+                message={`are you sure you want to decline ` + props?.user?.firstName + " " +  props?.user?.lastName }
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={false}
                 showCancelButton={true}
