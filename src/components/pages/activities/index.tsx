@@ -36,10 +36,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
             }
         }
         let res: any = [];
-        new Promise((resolve, reject) => {
-
-            resolve('foo');
-        })
+        dispatch(setActivity([]))
 
 
             axios.get(BASE_URL + '/activities',config
