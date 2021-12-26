@@ -151,7 +151,7 @@ function ActivityModal(props: any) {
                 }}
             />
             <View style={{ flex: 1 }}>
-                <View style={{ padding: 15, paddingTop: 45, backgroundColor: primaryColor }}>
+                <View style={{ padding: 15, paddingTop: 35, backgroundColor: primaryColor }}>
                     <TouchableOpacity onPress={() => {
                         setStatus("")
                         props.onDismissed()
