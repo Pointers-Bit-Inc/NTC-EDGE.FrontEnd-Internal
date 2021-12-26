@@ -76,17 +76,17 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
       isValid: false,
       error: '',
     },
-    firstname: {
+    firstName: {
       value: '',
       isValid: false,
       error: '',
     },
-    middlename: {
+    middleName: {
       value: '',
       isValid: false,
       error: '',
     },
-    lastname: {
+    lastName: {
       value: '',
       isValid: false,
       error: '',
@@ -109,9 +109,9 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
   const errorResponse = {
     userType: 'Please select a user type',
     permitType: 'Please select a user type',
-    firstname: 'Enter First name',
-    middlename: 'Enter Middle name',
-    lastname: 'Enter Last name',
+    firstName: 'Enter First name',
+    middleName: 'Enter Middle name',
+    lastName: 'Enter Last name',
     phone: 'Please enter a valid phone number',
     address: 'Enter Address',
   };
@@ -149,14 +149,14 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
           }
         });
       }
-      case 'middlename': {
+      case 'middleName:': {
         const test = validateText(value);
         return setFormValue({
           ...formValue,
           [key]: {
             value: value,
             isValid: test,
-            error: !test ? errorResponse['middlename'] : ''
+            error: !test ? errorResponse['middleName:'] : ''
           }
         });
       }
@@ -216,12 +216,12 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
   const onCheckValidation = () => {
     if (!formValue.permitType.isValid) {
       return onChangeText('permitType', formValue.permitType.value);
-    } else if (!formValue.firstname.isValid) {
-      return onChangeText('firstname', formValue.firstname.value);
-    } else if (!formValue.middlename.isValid) {
-      return onChangeText('middlename', formValue.middlename.value);
-    } else if (!formValue.lastname.isValid) {
-      return onChangeText('lastname', formValue.lastname.value);
+    } else if (!formValue.firstName.isValid) {
+      return onChangeText('firstname', formValue.firstName.value);
+    } else if (!formValue.middleName:.isValid) {
+      return onChangeText('middleName:', formValue.middleName:.value);
+    } else if (!formValue.lastName.isValid) {
+      return onChangeText('lastname', formValue.lastName.value);
     } else if (!formValue.phone.isValid) {
       return onChangeText('phone', formValue.phone.value);
     } else if (!formValue.address.isValid) {
@@ -237,9 +237,9 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
           password,
           userType: formValue.userType.value,
           permitType: formValue.permitType.value,
-          firstname: formValue.firstname.value,
-          middlename: formValue.middlename.value,
-          lastname: formValue.lastname.value,
+          firstName: formValue.firstName.value,
+          middleName: formValue.middleName:.value,
+          lastName: formValue.lastName.value,
           phone: formValue.phone.value,
           address: formValue.address.value,
         }
@@ -248,9 +248,9 @@ const RegistrationSignUp = ({ route, navigation }:any) => {
   }
 
   const isValid =
-    formValue.firstname.isValid &&
-    formValue.middlename.isValid &&
-    formValue.lastname.isValid &&
+    formValue.firstName.isValid &&
+    formValue.middleName:.isValid &&
+    formValue.lastName.isValid &&
     formValue.phone.isValid &&
     formValue.address.isValid &&
     formValue.agreed.value;

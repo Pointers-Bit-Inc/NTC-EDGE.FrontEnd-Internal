@@ -7,6 +7,10 @@ import Navigation from 'src/navigations';
 import TopModal from "@pages/activities/topmodal";
 
 
+if(__DEV__) {
+  import("./ReactotronConfig")
+}
+
 export default function App() {
     return (
     <Provider store={store}>

@@ -1,4 +1,4 @@
-const primaryColor = '#274AD7';
+const primaryColor = '#1F40AF';
 const secondaryColor = '#FFFFFF';
 const defaultColor = '#787A80';
 const successColor = '#2C9669';
@@ -6,7 +6,7 @@ const errorColor = '#CE1026';
 const disabledColor = '#D1D1D1';
 
 const outline = {
-  primary: '#274AD7',
+  primary: '#1F40AF',
   secondary: '#FFFFFF',
   default: '#C4C4C4',
   success: '#2C9669',
@@ -14,7 +14,7 @@ const outline = {
 }
 
 const text = {
-  primary: '#274AD7',
+  primary: '#1F40AF',
   secondary: '#FFFFFF',
   default: '#3A404A',
   success: '#2C9669',
@@ -22,11 +22,16 @@ const text = {
 };
 
 const button = {
-  primary: '#274AD7',
+  primary: '#1F40AF',
   secondary: '#FFFFFF',
   default: '#C4C4C4',
   success: '#2C9669',
   error: '#CE1026',
+};
+
+const bubble = {
+  primary: '#1F40AF',
+  secondary: '#E5E5E5',
 };
 
 export {
@@ -38,5 +43,6 @@ export {
   disabledColor,
   outline,
   text,
-  button
+  button,
+  bubble,
 }

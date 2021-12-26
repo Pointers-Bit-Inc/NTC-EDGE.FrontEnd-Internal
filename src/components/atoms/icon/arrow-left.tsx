@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { AntDesign } from '@expo/vector-icons'; 
+import { AntDesign, SimpleLineIcons } from '@expo/vector-icons'; 
 
 interface Props {
   type?: string;
@@ -9,10 +9,22 @@ interface Props {
 }
 
 const CloseIcon: FC<Props> = ({
+  type = '',
   size = 24,
   color = 'black',
   ...otherProps
 }) => {
+
+  if (type === 'arrow-left') {
+    return (
+      <SimpleLineIcons
+        name="arrow-left"
+        size={size}
+        color={color}
+        {...otherProps}
+      />
+    );
+  }
 
   return (
     <AntDesign

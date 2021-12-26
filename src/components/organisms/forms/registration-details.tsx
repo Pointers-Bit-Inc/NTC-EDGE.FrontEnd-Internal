@@ -242,9 +242,9 @@ const RegistrationForm: FC<Props> = ({ form = {}, onChangeValue = () => {} }) =>
         outlineStyle={InputStyles.outlineStyle}
         activeColor={text.primary}
         errorColor={text.error}
-        error={form?.firstname?.error}
+        error={form?.firstName?.error}
         requiredColor={text.error}
-        value={form?.firstname?.value}
+        value={form?.firstName?.value}
         onChangeText={(value: string) => onChangeValue('firstname', value)}
       />
       <InputField
@@ -257,9 +257,9 @@ const RegistrationForm: FC<Props> = ({ form = {}, onChangeValue = () => {} }) =>
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
-        error={form?.middlename?.error}
-        value={form?.middlename?.value}
-        onChangeText={(value: string) => onChangeValue('middlename', value)}
+        error={form?.middleName:?.error}
+        value={form?.middleName:?.value}
+        onChangeText={(value: string) => onChangeValue('middleName:', value)}
       />
       <InputField
         inputStyle={InputStyles.text}
@@ -271,8 +271,8 @@ const RegistrationForm: FC<Props> = ({ form = {}, onChangeValue = () => {} }) =>
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
-        error={form?.lastname?.error}
-        value={form?.lastname?.value}
+        error={form?.lastName?.error}
+        value={form?.lastName?.value}
         onChangeText={(value: string) => onChangeValue('lastname', value)}
       />
       <InputField

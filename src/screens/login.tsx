@@ -21,8 +21,7 @@ import LoginForm from '@organisms/forms/login';
 import Text from '@atoms/text';
 import Button from '@components/atoms/button';
 import { text, button, outline } from 'src/styles/color';
-import axios from "axios";
-import {BASE_URL} from "../services/config";
+import useApi  from 'src/services/api';
 const logo = require('../../assets/logo.png');
 const background = require('../../assets/background.png');
 const styles = StyleSheet.create({
@@ -66,16 +65,33 @@ const errorResponse = {
 };
 
 const Login = ({ navigation }:any) => {
+  const api = useApi('');
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const onLogin = useCallback(async (data) => {
+  const onLogin = async (data) => {
     setLoading(true);
-    axios.post(BASE_URL + '/user/signin', {email:data.email, password: data.password}).then((response) =>{
-      setLoading(false);
-      dispatch(setUser(response.data));
-      navigation.navigate('HomeScreen');
+    api.post('/internal/signin', {
+      email: data.email,
+      password: data.password,
     })
-  }, []);
+    .then(res => {
+      setLoading(false);
+      dispatch(setUser(res.data));
+      navigation.navigate('ActivitiesScreen');
+    })
+    .catch(e => {
+      setLoading(false);
+      if (e) {
+        setFormValue({
+          ...formValue,
+          email: {
+            ...formValue.email,
+            error: 'Authentication failed'
+          }
+        });
+      }
+    });
+  };
   const [formValue, setFormValue] = useState({
     email: {
       value: '',
