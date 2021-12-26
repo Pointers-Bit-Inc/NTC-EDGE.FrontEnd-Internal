@@ -19,10 +19,11 @@ import {
     PAID,
 } from "../../../reducers/activity/initialstate";
 import {updateActivityStatus} from "../../../reducers/activity/actions";
+import ProfileImage from "@components/atoms/image/profile";
+import CustomText from "@components/atoms/text";
 import AwesomeAlert from "react-native-awesome-alerts";
 
 const {width} = Dimensions.get('window');
-
 
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
@@ -149,193 +150,206 @@ function ActivityModal(props: any) {
                     setShowAlert(false)
                 }}
             />
-            <View style={styles.container}>
-                <View style={styles.group13Stack}>
-                    <View style={styles.group13}>
-                        <View style={styles.rect16}>
-                            <View>
-                                <View style={styles.group}>
-                                    <View style={styles.rect3}>
-                                        <View style={styles.rect2}>
-                                            <TouchableOpacity onPress={() => {
-                                                setStatus("")
-                                                props.onDismissed()
-                                            }}>
-                                                <Ionicons
-                                                    name="md-close"
-                                                    style={styles.icon}
-                                                ></Ionicons>
-                                            </TouchableOpacity>
-
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={styles.group3}>
-                                    <View style={styles.rect4Stack}>
-                                        <View style={styles.rect4}></View>
-                                        <Image source={{
-                                            uri: 'https://reactnative.dev/img/tiny_logo.png'
-                                        }} style={styles.ellipse}/>
-
-                                    </View>
-                                </View>
-                                <View style={styles.group8}>
-                                    <View style={styles.rect11}>
-                                        <View style={styles.group5Row}>
-                                            {
-                                                tabs.map((tab, index) => {
-
-                                                    return tab.isShow.indexOf(user?.role?.key) != -1 &&
-                                                        <TouchableOpacity key={index} onPress={() => {
-                                                            let newArr = [...tabs]
-                                                            for (let i = 0; i < newArr.length; i++) {
-                                                                if (newArr[i].active) {
-                                                                    newArr[i].active = !newArr[i].active
-                                                                }
-                                                            }
-                                                            newArr[index].active = true
-                                                            if (newArr[index].id == 3) {
-                                                                setBackgroundColour("#f0f0f0")
-                                                            } else {
-                                                                setBackgroundColour("#fff")
-                                                            }
-
-                                                            setTabs(newArr)
-                                                        }
-                                                        }>
-                                                            {<View style={[styles.group5]}>
-                                                                <Text
-                                                                    style={{color: tab.active ? primaryColor : text.default}}>{tab.name}</Text>
-                                                                <View
-                                                                    style={[styles.rect6, {backgroundColor: tab.active ? primaryColor : "rgba(255,255,255,0)"}]}></View>
-                                                            </View>}
-                                                        </TouchableOpacity>
-                                                })
-                                            }
-
-
-                                        </View>
-                                    </View>
-                                    <View style={styles.rect12}></View>
-                                </View>
-
-                            </View>
-                            <View style={[styles.groupColumnFiller, {backgroundColor: backgroundColour}]}>
-                                <ScrollView onScroll={(event) => {
-
-                                    if (event.nativeEvent.contentOffset.y < 10) {
-                                        setGroupButtonVisible(false)
-                                    }
-                                    if (handleInfinityScroll(event)) {
-                                        setGroupButtonVisible(true)
-                                    }
-                                }
-                                } scrollEventThrottle={16} style={[styles.group10]}>
-
+            <View style={{ flex: 1 }}>
+                <View style={{ padding: 15, paddingTop: 45, backgroundColor: primaryColor }}>
+                    <TouchableOpacity onPress={() => {
+                        setStatus("")
+                        props.onDismissed()
+                    }}>
+                        <Ionicons
+                            name="md-close"
+                            color={'white'}
+                            size={28}
+                        ></Ionicons>
+                    </TouchableOpacity>
+                </View>
+                <View style={{ flexDirection: 'row', padding: 15 }}>
+                    <ProfileImage
+                        size={65}
+                        textSize={22}
+                        image={user.image}
+                        name={`${user.firstName} ${user.lastName}`}
+                    />
+                    <View style={{ paddingHorizontal: 15, flex: 1 }}>
+                        <CustomText
+                            weight="bold"
+                            color={text.default}
+                            size={18}
+                            numberOfLines={1}
+                        >
+                            {`${props?.details?.activityDetails?.application?.applicant?.user?.firstName} ${props?.details?.activityDetails?.application?.applicant?.user?.lastName}`}
+                        </CustomText>
+                        <CustomText
+                            style={{ marginVertical: 3 }}
+                            color={text.default}
+                            size={14}
+                            numberOfLines={1}
+                        >
+                            {props?.details?.activityDetails?.applicationType}
+                        </CustomText>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            {statusIcon(props?.details?.activityDetails?.status, styles.icon2)}
+                            <CustomText
+                                style={[
+                                    styles.role,statusColor(status ? status : props?.details?.activityDetails?.status),
                                     {
-                                        tabs.map((tab, index) => {
-                                            const isShow = tab.isShow.indexOf(user?.role?.key) != -1,
-                                                applicant = props?.details?.activityDetails?.application?.applicant,
-                                                selectedTypes = props?.details?.activityDetails?.application?.selectedTypes,
-                                                applicationType = props?.details?.activityDetails?.application?.applicationType,
-                                                service = props?.details?.activityDetails?.application?.service,
-                                                soa = props?.details?.activityDetails?.application?.soa,
-                                                totalFee = props?.details?.activityDetails?.application?.totalFee,
-                                                requirements = props?.details?.activityDetails?.application?.requirements
-                                            if (isShow && tab.id == 1 && tab.active) {
-                                                return <BasicInfo
-                                                    applicant={applicant}
-                                                    key={index}/>
-                                            } else if (isShow && tab.id == 2 && tab.active) {
-                                                return <ApplicationDetails
-                                                    service={service}
-                                                    selectedType={selectedTypes}
-                                                    applicantType={applicationType}
-                                                    key={index}/>
-                                            } else if (isShow && tab.id == 3 && tab.active) {
-                                                return <Requirement requirements={requirements} key={index}/>
-                                            } else if (isShow && tab.id == 4 && tab.active) {
-                                                return <Payment totalFee={totalFee}
-                                                                soa={soa} key={index}/>
-                                            }
-                                        })
+                                        fontSize: 16,
+                                        fontWeight: 'normal',
                                     }
-
-
-                                </ScrollView>
-                            </View>
-
-                            {groupButtonVisible && <View style={styles.group14}>
-                                <View style={styles.rect18Filler}></View>
-                                <View style={styles.rect18}>
-                                    <View style={styles.endWrapperFiller}></View>
-                                    <View style={styles.rect19Column}>
-                                        <View style={styles.rect19}></View>
-                                        <View style={styles.group15}>
-                                            <View style={styles.button3Row}>
-                                                {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
-                                                <TouchableOpacity onPress={() => {
-                                                        onShowConfirmation(APPROVED)
-                                                }}
-                                                                  style={[styles.button3, {width: user?.role?.key == "cashier" ? 220 : 100,}]}>
-                                                    <View style={styles.rect22Filler}></View>
-                                                    <View style={styles.rect22}>
-                                                        <View style={styles.approvedFiller}></View>
-                                                        <Text style={styles.approved}>Approved</Text>
-                                                    </View>
-                                                </TouchableOpacity>}
-                                                {[DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 &&
-                                                <TouchableOpacity onPress={() => {
-                                                    setEndorseVisible(true)
-                                                }
-                                                } style={styles.button2}>
-                                                    <View style={styles.rect23Filler}></View>
-                                                    <View style={styles.rect23}>
-                                                        <View style={styles.endorseFiller}></View>
-                                                        <Text style={styles.endorse}>Endorse</Text>
-                                                    </View>
-                                                </TouchableOpacity>}
-                                            </View>
-                                            {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
-                                            <><View style={styles.button3RowFiller}></View>
-                                                <TouchableOpacity onPress={() => {
-                                                    setVisible(true)
-                                                }} style={styles.button}>
-                                                    <View style={styles.rect24Filler}></View>
-                                                    <View style={styles.rect24}>
-                                                        <View style={styles.endorse1Filler}></View>
-                                                        <Text style={styles.endorse1}>Decline</Text>
-                                                    </View>
-                                                </TouchableOpacity></>
-                                            }
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>}
+                                ]}
+                                numberOfLines={1}
+                            >
+                                {status ? status : props?.details?.activityDetails?.status}
+                            </CustomText>
                         </View>
                     </View>
-                    <View style={styles.group4}>
-                        <View>
-                            <View style={styles.rect5}>
-                                <View style={styles.group11}>
-                                    <Text
-                                        style={styles.name}>{props?.details?.activityDetails?.application?.applicant?.user?.firstName + " " + props?.details?.activityDetails?.application?.applicant?.user?.lastName}</Text>
-                                    <Text style={styles.job}>{props?.details?.activityDetails?.applicationType}</Text>
-                                </View>
-                                <View style={styles.group2}>
-                                    <View style={styles.icon2Row}>
-                                        {statusIcon(status ? status : (user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.status : props?.details?.activityDetails?.status ), styles.icon2)}
-                                        <Text style={[styles.role,statusColor(status ? status : (user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.status : props?.details?.activityDetails?.status ))]}>{(user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.status : props?.details?.activityDetails?.status )}</Text>
-                                    </View>
-                                </View>
-                            </View>
-                            <View style={styles.group12}>
-                                <Text
-                                    style={styles.submitted}>Submitted:{"\n"}{props?.details?.createdAt ? formatDate(props?.details?.createdAt) : ""}</Text>
-                            </View>
-                        </View>
+                    <View>
+                        <Text
+                            style={styles.submitted}
+                        >
+                            Submitted:{"\n"}{props?.details?.createdAt ? formatDate(props?.details?.createdAt) : ""}
+                        </Text>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                    {
+                        tabs.map((tab, index) => {
+
+                            return tab.isShow.indexOf(user?.role?.key) != -1 &&
+                                <TouchableOpacity key={index} onPress={() => {
+                                    let newArr = [...tabs]
+                                    for (let i = 0; i < newArr.length; i++) {
+                                        if (newArr[i].active) {
+                                            newArr[i].active = !newArr[i].active
+                                        }
+                                    }
+                                    newArr[index].active = true
+                                    if (newArr[index].id == 3) {
+                                        setBackgroundColour("#f0f0f0")
+                                    } else {
+                                        setBackgroundColour("#fff")
+                                    }
+
+                                    setTabs(newArr)
+                                }
+                                }>
+                                    {<View style={[styles.group5]}>
+                                        <Text
+                                            style={{color: tab.active ? primaryColor : text.default}}>{tab.name}</Text>
+                                        <View
+                                            style={[styles.rect6, {backgroundColor: tab.active ? primaryColor : "rgba(255,255,255,0)"}]}></View>
+                                    </View>}
+                                </TouchableOpacity>
+                        })
+                    }
+                </View>
+                <ScrollView
+                    onScroll={(event) => {
+                            if (event.nativeEvent.contentOffset.y < 10) {
+                                setGroupButtonVisible(false)
+                            }
+                            if (handleInfinityScroll(event)) {
+                                setGroupButtonVisible(true)
+                            }
+                        }
+                    }
+                    scrollEventThrottle={16}
+                    style={{ flex: 1, paddingTop: 15 }}
+                >
+                    {
+                        tabs.map((tab, index) => {
+                            const isShow = tab.isShow.indexOf(user?.role?.key) != -1,
+                                applicant = props?.details?.activityDetails?.application?.applicant,
+                                selectedTypes = props?.details?.activityDetails?.application?.selectedTypes,
+                                applicationType = props?.details?.activityDetails?.application?.applicationType,
+                                service = props?.details?.activityDetails?.application?.service,
+                                soa = props?.details?.activityDetails?.application?.soa,
+                                totalFee = props?.details?.activityDetails?.application?.totalFee,
+                                requirements = props?.details?.activityDetails?.application?.requirements
+                            if (isShow && tab.id == 1 && tab.active) {
+                                return <BasicInfo
+                                    applicant={applicant}
+                                    key={index}/>
+                            } else if (isShow && tab.id == 2 && tab.active) {
+                                return <ApplicationDetails
+                                    service={service}
+                                    selectedType={selectedTypes}
+                                    applicantType={applicationType}
+                                    key={index}/>
+                            } else if (isShow && tab.id == 3 && tab.active) {
+                                return <Requirement requirements={requirements} key={index}/>
+                            } else if (isShow && tab.id == 4 && tab.active) {
+                                return <Payment totalFee={totalFee}
+                                                soa={soa} key={index}/>
+                            }
+                        })
+                    }
+                    <View style={{ height: 30 }} />
+                </ScrollView>
+                {
+                    groupButtonVisible &&
+                    <View style={styles.footer}>
+                        {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1 &&
+                        <View style={{ flex: 1, paddingRight: 5 }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    onShowConfirmation(APPROVED)
+                                }}
+                            >
+                                {/* <View style={styles.rect22Filler}></View>
+                                <View style={styles.rect22}>
+                                    <View style={styles.approvedFiller}></View>
+                                    <Text style={styles.approved}>Approved</Text>
+                                </View> */}
+                                <View style={[styles.rect22, { height: undefined, paddingTop: 8 }]}>
+                                    <Text style={styles.approved}>Approved</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>}
+                        {["director", 'evaluator'].indexOf(user?.role?.key) != -1 &&
+                            <View style={{ flex: 1, paddingHorizontal: 5 }}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setEndorseVisible(true)
+                                    }}
+                                >
+                                    {/* <View style={styles.rect23Filler}></View>
+                                    <View style={styles.rect23}>
+                                        <View style={styles.endorseFiller}></View>
+                                        <Text style={styles.endorse}>Endorse</Text>
+                                    </View> */}
+                                    <View style={[styles.rect23, { height: undefined, paddingTop: 8 }]}>
+                                        <Text style={styles.endorse}>Endorse</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>}
+                        {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1 &&
+                            <View style={{ flex: 1, paddingLeft: 5 }}>
+                                <TouchableOpacity onPress={() => {
+                                    setVisible(true)
+                                }}>
+                                    {/* <View style={styles.rect24Filler}></View>
+                                    <View style={styles.rect24}>
+                                        <View style={styles.endorse1Filler}></View>
+                                        <Text style={styles.endorse1}>Decline</Text>
+                                    </View> */}
+                                     <View
+                                        style={[
+                                            styles.rect24,
+                                            {
+                                                height: undefined,
+                                                paddingTop: 8,
+                                                borderWidth: 1,
+                                                borderColor: "rgba(194,0,0,1)",
+                                            }]
+                                        }>
+                                        <Text style={styles.endorse1}>Decline</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                            }
+                    </View>
+                }
             </View>
             <Approval  visible={approveVisible} onDismissed={onApproveDismissed}/>
             <Disapproval user={props?.details?.activityDetails?.application?.applicant?.user} onChangeApplicationStatus={(event:string)=>{
@@ -345,8 +359,6 @@ function ActivityModal(props: any) {
             }} visible={visible} onDismissed={onDismissed}/>
             <Endorsed onChangeApplicationStatus={(event:string)=>{
                 onChangeApplicationStatus(event)
-
-
             }} visible={endorseVisible} onDismissed={onEndorseDismissed}/>
         </Modal>
 
@@ -660,6 +672,16 @@ const styles = StyleSheet.create({
     group13Stack: {
         width: 376,
         height: 812
+    },
+    footer: {
+        padding: 15,
+        paddingTop: 10,
+        paddingBottom: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        borderTopColor: 'rgba(0, 0, 0, 0.1)',
+        borderTopWidth: 1,
     }
 });
 
