@@ -267,6 +267,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                                             setModalVisible(true)
                                         }} index={i} swiper={renderSwiper}/> : false
                                     })}
+                                    <View style={{ height: 30, backgroundColor: 'white', marginTop: -1 }} />
                                 </Collapsible>
 
                             </View> : false
