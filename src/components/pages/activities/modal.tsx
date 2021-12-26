@@ -91,7 +91,7 @@ function ActivityModal(props: any) {
 
     function onShowConfirmation(status: string) {
         const name = props?.details?.activityDetails?.application?.applicant?.user
-        setMessage(`are you sure you want to ${status.toLowerCase()}` + name.firstName + " " + name.lastName)
+        setMessage(`are you sure you want to ${status.toLowerCase()} ` + name.firstName + " " + name.lastName)
         setShowAlert(true)
 
     }
