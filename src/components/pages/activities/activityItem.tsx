@@ -50,7 +50,7 @@ export function ActivityItem(props:any) {
                                         <TouchableOpacity onPress={props.onPressUser}>
                                             <Text
                                                 style={styles.name}>{(userActivity?.firstName + " " + userActivity?.lastName).length > 20 ? (userActivity?.firstName + " " + userActivity?.lastName).slice(0, 25).concat('...') : (userActivity?.firstName + " " + userActivity?.lastName)}</Text>
-                                        </TouchableOpacity>
+
 
                                         <View style={styles.group2}>
                                             <View style={styles.rect18Stack}>
@@ -72,6 +72,7 @@ export function ActivityItem(props:any) {
                                                 </View>
                                             </View>
                                         </View>
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
                             </View>
@@ -94,22 +95,22 @@ export function ActivityItem(props:any) {
                             <View style={styles.group6Stack}>
                                 <View style={styles.group6}>
                                     <View
-                                        style={[styles.rect23, statusBackgroundColor(props.activity.activityDetails.status)]}>
+                                        style={[styles.rect23, statusBackgroundColor(isCashier)]}>
                                         <View style={styles.group19}>
                                             <View style={styles.group18Row}>
                                                 <View style={styles.group18}>
                                                     <View style={styles.icon3Stack}>
-                                                        {statusIcon(props.activity.activityDetails.status)}
+                                                        {statusIcon(isCashier)}
 
                                                         <View
                                                             style={styles.rect29}/>
                                                     </View>
                                                 </View>
                                                 <View
-                                                    style={[styles.rect30Stack, statusDimension(props.activity.activityDetails.status)]}>
+                                                    style={[styles.rect30Stack, statusDimension(isCashier)]}>
                                                     <View style={styles.rect30}/>
                                                     <Text
-                                                        style={[styles.approved, {fontWeight: "bold"},  statusColor(isCashier)]}>  {user?.role?.key == 'cashier' ? props.activity.activityDetails.application.status : props.activity.activityDetails.status}</Text>
+                                                        style={[styles.approved, {fontWeight: "bold"},  statusColor(isCashier)]}>  {isCashier}</Text>
                                                 </View>
                                             </View>
                                         </View>

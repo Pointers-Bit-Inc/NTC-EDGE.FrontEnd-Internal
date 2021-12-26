@@ -1,4 +1,4 @@
-import {APPROVED, DECLINED, FOREVALUATION, PAID, VERIFICATION} from "../../../reducers/activity/initialstate";
+import {APPROVED, DECLINE, DECLINED, FOREVALUATION, PAID, VERIFICATION} from "../../../reducers/activity/initialstate";
 import EvaluationStatus from "@assets/svg/evaluationstatus";
 import {styles} from "@pages/activities/styles";
 import CheckMarkIcon from "@assets/svg/checkmark";
@@ -41,12 +41,16 @@ export const checkFormatIso = (date: string, separator?: string) => {
 
 export const statusColor = (status: string) => {
     if (status == FOREVALUATION) {
+
         return {color: "#f66500"}
     } else if (status == APPROVED || status == PAID || status == VERIFICATION) {
+
         return {color: "#34c759"}
-    } else if (status == DECLINED) {
+    } else if (status == DECLINED || status == DECLINE) {
+
         return {color: "#cf0327"}
     }else{
+
         return {color: "#f66500"}
     }
 }
@@ -58,7 +62,7 @@ export const statusIcon = (status: string, icon:any=styles.icon3) => {
         return <EvaluationStatus style={[icon, {color: "#f66500",}]}/>
     } else if (status == APPROVED || status == PAID || status == VERIFICATION ) {
         return <CheckMarkIcon style={[icon]}/>
-    } else if (status == DECLINED) {
+    } else if (status == DECLINED || status == DECLINE) {
         return <DeclineStatusIcon style={[icon]}/>
     }else{
         return <EvaluationStatus style={[icon, {color: "#f66500",}]}/>
@@ -71,7 +75,7 @@ export const statusBackgroundColor = (status: string) => {
     }
    else if (status == APPROVED || status == PAID || status == VERIFICATION) {
         return {backgroundColor: "rgba(229,247,241,1)",}
-    } else if (status == DECLINED) {
+    } else if (status == DECLINED || status == DECLINE) {
         return {backgroundColor: "#fae6e9",}
     }else{
         return {backgroundColor: "#fef5e8",}
@@ -83,7 +87,7 @@ export const statusDimension = (status: any) => {
         return {}
     } else if (status == APPROVED) {
         return {}
-    } else if (status == DECLINED) {
+    } else if (status == DECLINED || status == DECLINE) {
         return {}
     }
 }

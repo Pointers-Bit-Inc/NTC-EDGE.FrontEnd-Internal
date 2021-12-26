@@ -14,12 +14,9 @@ import {formatDate, handleInfinityScroll, statusColor, statusIcon} from "@pages/
 import axios from "axios";
 import {BASE_URL} from "../../../services/config";
 import {
-    APPROVED,
-    DECLINED,
-    FOREVALUATION,
-    FORPAYMENT,
+    APPROVED, CASHIER,
+    DECLINED, DIRECTOR, EVALUATOR,
     PAID,
-    VERIFICATION
 } from "../../../reducers/activity/initialstate";
 import {updateActivityStatus} from "../../../reducers/activity/actions";
 import AwesomeAlert from "react-native-awesome-alerts";
@@ -36,25 +33,25 @@ function ActivityModal(props: any) {
             id: 1,
             name: 'Basic Info',
             active: true,
-            isShow: ['cashier', 'director', 'evaluator']
+            isShow: [CASHIER, DIRECTOR, EVALUATOR]
         },
         {
             id: 2,
             name: 'Application Details',
             active: false,
-            isShow: ['cashier', 'director', 'evaluator']
+            isShow: [CASHIER, DIRECTOR, EVALUATOR]
         },
         {
             id: 3,
             name: 'Requirements',
             active: false,
-            isShow: ['director', 'evaluator']
+            isShow: [DIRECTOR, EVALUATOR]
         },
         {
             id: 4,
             name: 'SOA & Payment',
             active: false,
-            isShow: ['cashier']
+            isShow: [CASHIER]
         },
     ])
     const [visible, setVisible] = useState(false)
@@ -82,8 +79,8 @@ function ActivityModal(props: any) {
             }
 
         if (id) {
-            const role = user?.role?.key == 'cashier'  ?  `/applications/${id}/update-status` : (["director", 'evaluator'].indexOf(user?.role?.key) != -1 ? `/applications/${id}/update-status` : `/applications/${id}/update-status`)
-            const statusKey = user?.role?.key == 'cashier'  ? {
+            const role = user?.role?.key == CASHIER  ?  `/applications/${id}/update-payment-status` : ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 ? `/applications/${id}/update-status` : `/applications/${id}/update-status`)
+            const statusKey = user?.role?.key == CASHIER  ? {
                 'paymentStatus': status
             } : {
                 'status': status
@@ -142,7 +139,7 @@ function ActivityModal(props: any) {
                 }}
                 onConfirmPressed={() => {
                     let status = ""
-                    if(["director", 'evaluator'].indexOf(user?.role?.key) != -1){
+                    if([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1){
                         status = APPROVED
                     }else if(["cashier"].indexOf(user?.role?.key) != -1) {
                         status = PAID
@@ -276,7 +273,7 @@ function ActivityModal(props: any) {
                                         <View style={styles.rect19}></View>
                                         <View style={styles.group15}>
                                             <View style={styles.button3Row}>
-                                                {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1 &&
+                                                {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                                                 <TouchableOpacity onPress={() => {
                                                         onShowConfirmation(APPROVED)
                                                 }}
@@ -287,7 +284,7 @@ function ActivityModal(props: any) {
                                                         <Text style={styles.approved}>Approved</Text>
                                                     </View>
                                                 </TouchableOpacity>}
-                                                {["director", 'evaluator'].indexOf(user?.role?.key) != -1 &&
+                                                {[DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 &&
                                                 <TouchableOpacity onPress={() => {
                                                     setEndorseVisible(true)
                                                 }
@@ -299,7 +296,7 @@ function ActivityModal(props: any) {
                                                     </View>
                                                 </TouchableOpacity>}
                                             </View>
-                                            {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1 &&
+                                            {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                                             <><View style={styles.button3RowFiller}></View>
                                                 <TouchableOpacity onPress={() => {
                                                     setVisible(true)
@@ -327,8 +324,8 @@ function ActivityModal(props: any) {
                                 </View>
                                 <View style={styles.group2}>
                                     <View style={styles.icon2Row}>
-                                        {statusIcon(props?.details?.activityDetails?.status, styles.icon2)}
-                                        <Text style={[styles.role,statusColor(status ? status : props?.details?.activityDetails?.status)]}>{status ? status : props?.details?.activityDetails?.status}</Text>
+                                        {statusIcon(status ? status : (user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.status : props?.details?.activityDetails?.status ), styles.icon2)}
+                                        <Text style={[styles.role,statusColor(status ? status : (user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.status : props?.details?.activityDetails?.status ))]}>{(user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.status : props?.details?.activityDetails?.status )}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -475,7 +472,6 @@ const styles = StyleSheet.create({
     },
     group10: {
         height: "60%",
-        marginTop: 30
     },
 
 
