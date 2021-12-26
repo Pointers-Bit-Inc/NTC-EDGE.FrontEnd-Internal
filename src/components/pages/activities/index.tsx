@@ -1,11 +1,11 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {Image, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import {Entypo} from '@expo/vector-icons'
 import {styles} from "@pages/activities/styles";
 import Collapsible from "react-native-collapsible";
 import {DATE_ADDED} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {setActivity, setVisible} from "../../../reducers/activity/actions";
+import {addActivity, setActivity, setVisible} from "../../../reducers/activity/actions";
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
@@ -35,21 +35,30 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                 Authorization: "Bearer ".concat(user.sessionToken)
             }
         }
-        axios.get(BASE_URL + '/activities',config
-            ).then((response) => {
-            let res:any = [];
+        let res: any = [];
+        dispatch(setActivity([]))
 
-            [...response.data].map(async (item) => {
-                 await axios.get(BASE_URL + '/applications/' + item.activityDetails.application._id, config).then((i) => {
-                     item.activityDetails.status = i.data.status
 
-                 })
-                 res.push(item)
-             })
-            dispatch(setActivity(res))
-        }).catch((err) =>{
-            console.log(err)
-        })
+            axios.get(BASE_URL + '/activities',config
+            ).then( (response) => {
+
+
+                [...response.data].map(async (item) => {
+                    await axios.get(BASE_URL + '/applications/' + item.activityDetails.application._id, config).then((i) => {
+                        item.activityDetails.status = i.data.status
+                        dispatch(addActivity(item))
+                    })
+
+
+                })
+
+            }).then((r)=>{
+
+            }).catch((err) =>{
+                console.log(err)
+            })
+
+
     }, [])
 
     const [searchTerm, setSearchTerm] = useState('');
