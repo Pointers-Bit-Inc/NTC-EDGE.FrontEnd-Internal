@@ -185,11 +185,15 @@ export const styles = StyleSheet.create({
         height: 80
     },
     rect13: {
+        flex: 1,
+        justifyContent: "center",
+
         width: 40,
         height: 40,
         marginTop: 27
     },
     ellipse: {
+        position: "absolute",
         width: 10,
         height: 10,
         marginTop: 15,
@@ -200,13 +204,14 @@ export const styles = StyleSheet.create({
         height: 80
     },
     rect11: {
+       alignSelf: "center", justifyContent: "center",
         borderRadius: 25,
         top: 27,
         left: 0,
         width: 40,
         height: 40,
-        position: "absolute",
-        backgroundColor: "rgba(99,97,97,1)"
+
+
     },
     rect14: {
         top: 0,

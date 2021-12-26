@@ -5,11 +5,10 @@ import Svg, {Ellipse} from "react-native-svg";
 import FileIcon from "@assets/svg/file";
 import {formatDate, statusBackgroundColor, statusColor, statusDimension, statusIcon} from "@pages/activities/script";
 import React from "react";
-import {RootStateOrAny, useSelector} from "react-redux";
+import {getInitial} from "../../../utils/formatting";
 
 export function ActivityItem(props:any) {
-    const user = useSelector((state: RootStateOrAny) => state.user);
-    const isCashier =  user?.role?.key == 'cashier' ? props.activity.activityDetails.application.status : props.activity.activityDetails.status
+    const hex = Math.floor(Math.random()*16777215).toString(16)
     const userActivity = props.activity.activityDetails.application.applicant.user
     return <Swipeable key={props.index}
                       renderRightActions={(progress, dragX) => props.swiper(props.index, progress, dragX)}>
@@ -36,8 +35,9 @@ export function ActivityItem(props:any) {
                         </View>
                         <View style={styles.profile}>
                             <View style={styles.rect11Stack}>
-                                <View style={styles.rect11}/>
-                                <View style={styles.rect14}/>
+                                <View style={[styles.rect11, {backgroundColor: "#" + hex  }]}>
+                                    <Text style={{textAlign: "center", color:  "#"+(Number(`0x1${hex}`) ^ 0xFFFFFF).toString(16).substr(1).toUpperCase()  }}>{getInitial(userActivity.firstName)}</Text>
+                                </View>
                             </View>
                         </View>
                     </View>
@@ -50,7 +50,7 @@ export function ActivityItem(props:any) {
                                         <TouchableOpacity onPress={props.onPressUser}>
                                             <Text
                                                 style={styles.name}>{(userActivity?.firstName + " " + userActivity?.lastName).length > 20 ? (userActivity?.firstName + " " + userActivity?.lastName).slice(0, 25).concat('...') : (userActivity?.firstName + " " + userActivity?.lastName)}</Text>
-
+                                        </TouchableOpacity>
 
                                         <View style={styles.group2}>
                                             <View style={styles.rect18Stack}>
@@ -72,7 +72,6 @@ export function ActivityItem(props:any) {
                                                 </View>
                                             </View>
                                         </View>
-                                        </TouchableOpacity>
                                     </View>
                                 </View>
                             </View>
@@ -95,22 +94,22 @@ export function ActivityItem(props:any) {
                             <View style={styles.group6Stack}>
                                 <View style={styles.group6}>
                                     <View
-                                        style={[styles.rect23, statusBackgroundColor(isCashier)]}>
+                                        style={[styles.rect23, statusBackgroundColor(props.activity.activityDetails.status)]}>
                                         <View style={styles.group19}>
                                             <View style={styles.group18Row}>
                                                 <View style={styles.group18}>
                                                     <View style={styles.icon3Stack}>
-                                                        {statusIcon(isCashier)}
+                                                        {statusIcon(props.activity.activityDetails.status)}
 
                                                         <View
                                                             style={styles.rect29}/>
                                                     </View>
                                                 </View>
                                                 <View
-                                                    style={[styles.rect30Stack, statusDimension(isCashier)]}>
+                                                    style={[styles.rect30Stack, statusDimension(props.activity.activityDetails.status)]}>
                                                     <View style={styles.rect30}/>
                                                     <Text
-                                                        style={[styles.approved, {fontWeight: "bold"},  statusColor(isCashier)]}>  {isCashier}</Text>
+                                                        style={[styles.approved, {fontWeight: "bold"},  statusColor(props.activity.activityDetails.status)]}>  {props.activity.activityDetails.status}</Text>
                                                 </View>
                                             </View>
                                         </View>
