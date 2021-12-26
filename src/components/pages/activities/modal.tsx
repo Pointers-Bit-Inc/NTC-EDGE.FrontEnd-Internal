@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Dimensions, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {Ionicons} from "@expo/vector-icons";
+import {Entypo, Ionicons} from "@expo/vector-icons";
 import {primaryColor, text} from "@styles/color";
 import Disapproval from "@pages/activities/disapproval";
 import Endorsed from "@pages/activities/endorse";
@@ -678,3 +678,7 @@ const styles = StyleSheet.create({
         height: 812
     }
 });
+
+
+
+

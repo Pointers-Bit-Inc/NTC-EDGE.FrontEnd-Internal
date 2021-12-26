@@ -1,20 +1,43 @@
 {
   "expo": {
-    "name": "ntc-edge",
-    "slug": "ntc-edge",
-    "version": "1.0.0",
-    "sdkVersion": "43.0.0",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
-    "android": {
-      "package": "ntcedge.com"
+    "name": "ntc-edge-internal",
+    "slug": "ntc-edge-internal",
+    "owner": "ntc-edge",
+    "version": "1.0.2",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
     },
     "ios": {
-      "bundleIdentifier": "ntcedge"
+      "googleServicesFile": "./google-services.json",
+      "supportsTablet": true,
+      "bundleIdentifier": "ntc.edge.internal",
+      "buildNumber": "1.0.2",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This will be used for video call and live streaming.",
+        "NSMicrophoneUsageDescription": "This will be used for video call and live streaming."
+      }
     },
-    "description": ""
+    "android": {
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "ntc.edge.internal",
+      "versionCode": 3
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "@react-native-firebase/app"
+    ]
   }
 }
