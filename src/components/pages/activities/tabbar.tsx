@@ -10,7 +10,6 @@ import ChatIcon from "@assets/svg/chattabbar";
 import MeetIcon from "@assets/svg/meettabbar";
 import ScanQrIcon from "@assets/svg/scanqrtabbar";
 import MoreTabBarIcon from "@assets/svg/moretabbar";
-import DrawerNavigation from "@screens/HomeScreen/DrawerNavigation";
 
 
 const Tab = createBottomTabNavigator();
@@ -69,7 +68,7 @@ export default function TabBar() {
                                 onPress={onPress}
                                 onLongPress={onLongPress}>
                                 <View style={{
-                                    marginTop: 10,
+                                    marginTop: 20,
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                 }}>

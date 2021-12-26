@@ -1,4 +1,4 @@
-import {APPROVED, DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
+import {APPROVED, DECLINED, FOREVALUATION, PAID, VERIFICATION} from "../../../reducers/activity/initialstate";
 import EvaluationStatus from "@assets/svg/evaluationstatus";
 import {styles} from "@pages/activities/styles";
 import CheckMarkIcon from "@assets/svg/checkmark";
@@ -42,7 +42,7 @@ export const checkFormatIso = (date: string, separator?: string) => {
 export const statusColor = (status: string) => {
     if (status == FOREVALUATION) {
         return {color: "#f66500"}
-    } else if (status == APPROVED) {
+    } else if (status == APPROVED || status == PAID || status == VERIFICATION) {
         return {color: "#34c759"}
     } else if (status == DECLINED) {
         return {color: "#cf0327"}
@@ -56,7 +56,7 @@ export const statusIcon = (status: string, icon:any=styles.icon3) => {
     if (status == FOREVALUATION) {
 
         return <EvaluationStatus style={[icon, {color: "#f66500",}]}/>
-    } else if (status == APPROVED) {
+    } else if (status == APPROVED || status == PAID || status == VERIFICATION ) {
         return <CheckMarkIcon style={[icon]}/>
     } else if (status == DECLINED) {
         return <DeclineStatusIcon style={[icon]}/>
@@ -69,7 +69,7 @@ export const statusBackgroundColor = (status: string) => {
     if (status == FOREVALUATION) {
         return {backgroundColor: "#fef5e8",}
     }
-   else if (status == APPROVED) {
+   else if (status == APPROVED || status == PAID || status == VERIFICATION) {
         return {backgroundColor: "rgba(229,247,241,1)",}
     } else if (status == DECLINED) {
         return {backgroundColor: "#fae6e9",}

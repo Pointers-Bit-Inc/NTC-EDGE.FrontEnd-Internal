@@ -13,7 +13,14 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {formatDate, handleInfinityScroll, statusColor, statusIcon} from "@pages/activities/script";
 import axios from "axios";
 import {BASE_URL} from "../../../services/config";
-import {APPROVED, DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
+import {
+    APPROVED,
+    DECLINED,
+    FOREVALUATION,
+    FORPAYMENT,
+    PAID,
+    VERIFICATION
+} from "../../../reducers/activity/initialstate";
 import {updateActivityStatus} from "../../../reducers/activity/actions";
 import AwesomeAlert from "react-native-awesome-alerts";
 
@@ -75,13 +82,17 @@ function ActivityModal(props: any) {
             }
 
         if (id) {
-            await axios.patch(BASE_URL + `/applications/${id}/update-status`, {
-                status: status
-            }, config ).then((response) => {
+            const role = user?.role?.key == 'cashier'  ?  `/applications/${id}/update-status` : (["director", 'evaluator'].indexOf(user?.role?.key) != -1 ? `/applications/${id}/update-status` : `/applications/${id}/update-status`)
+            const statusKey = user?.role?.key == 'cashier'  ? {
+                'paymentStatus': status
+            } : {
+                'status': status
+            }
+            await axios.patch(BASE_URL + role, statusKey, config ).then((response) => {
 
                 return axios.get(BASE_URL + `/applications/${id}`, config)
             }).then((response) => {
-                dispatch(updateActivityStatus({application: response.data, status: status}))
+                dispatch(updateActivityStatus({application: response.data, status: status, userType: user?.role?.key}))
                 setStatus(status)
             })
         }
@@ -130,7 +141,14 @@ function ActivityModal(props: any) {
                     setShowAlert(false)
                 }}
                 onConfirmPressed={() => {
-                    onChangeApplicationStatus(APPROVED).then(r =>  setApproveVisible(true))
+                    let status = ""
+                    if(["director", 'evaluator'].indexOf(user?.role?.key) != -1){
+                        status = APPROVED
+                    }else if(["cashier"].indexOf(user?.role?.key) != -1) {
+                        status = PAID
+                    }
+
+                   onChangeApplicationStatus( status  ).then(r =>  setApproveVisible(true))
                     setShowAlert(false)
                 }}
             />
@@ -260,9 +278,7 @@ function ActivityModal(props: any) {
                                             <View style={styles.button3Row}>
                                                 {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1 &&
                                                 <TouchableOpacity onPress={() => {
-                                                    onShowConfirmation(APPROVED)
-
-
+                                                        onShowConfirmation(APPROVED)
                                                 }}
                                                                   style={[styles.button3, {width: user?.role?.key == "cashier" ? 220 : 100,}]}>
                                                     <View style={styles.rect22Filler}></View>

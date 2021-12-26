@@ -41,15 +41,12 @@ const user = useSelector((state: RootStateOrAny) => state.user);
 
             axios.get(BASE_URL + '/activities',config
             ).then( (response) => {
-
-
                 [...response.data].map(async (item) => {
                     await axios.get(BASE_URL + '/applications/' + item.activityDetails.application._id, config).then((i) => {
+                        item.activityDetails.paymentStatus = i.data.paymentStatus
                         item.activityDetails.status = i.data.status
                         dispatch(addActivity(item))
                     })
-
-
                 })
 
             }).then((r)=>{

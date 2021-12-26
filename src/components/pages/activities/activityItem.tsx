@@ -5,9 +5,11 @@ import Svg, {Ellipse} from "react-native-svg";
 import FileIcon from "@assets/svg/file";
 import {formatDate, statusBackgroundColor, statusColor, statusDimension, statusIcon} from "@pages/activities/script";
 import React from "react";
+import {RootStateOrAny, useSelector} from "react-redux";
 
 export function ActivityItem(props:any) {
-
+    const user = useSelector((state: RootStateOrAny) => state.user);
+    const isCashier =  user?.role?.key == 'cashier' ? props.activity.activityDetails.application.status : props.activity.activityDetails.status
     const userActivity = props.activity.activityDetails.application.applicant.user
     return <Swipeable key={props.index}
                       renderRightActions={(progress, dragX) => props.swiper(props.index, progress, dragX)}>
@@ -107,7 +109,7 @@ export function ActivityItem(props:any) {
                                                     style={[styles.rect30Stack, statusDimension(props.activity.activityDetails.status)]}>
                                                     <View style={styles.rect30}/>
                                                     <Text
-                                                        style={[styles.approved, {fontWeight: "bold"},  statusColor(props.activity.activityDetails.status)]}>  {props.activity.activityDetails.status}</Text>
+                                                        style={[styles.approved, {fontWeight: "bold"},  statusColor(isCashier)]}>  {user?.role?.key == 'cashier' ? props.activity.activityDetails.application.status : props.activity.activityDetails.status}</Text>
                                                 </View>
                                             </View>
                                         </View>
