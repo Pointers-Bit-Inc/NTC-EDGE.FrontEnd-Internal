@@ -3,6 +3,8 @@ import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ActivitiesScreen from "@pages/activities";
 import QrCodeScanner from "@pages/barcode/view";
+import MeetScreen from '@screens/meet';
+import ChatScreen from '@screens/chat';
 import {styles} from "@pages/activities/styles";
 import {Entypo} from "@expo/vector-icons";
 import ActivityTabbar from "@assets/svg/activitytabbar";
@@ -124,14 +126,10 @@ export default function TabBar() {
 
             }>
                 <Tab.Screen  options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
-                <Tab.Screen name={CHAT} component={ActivitiesScreen}/>
-                <Tab.Screen name={MEET} component={ActivitiesScreen}/>
+                <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
+                <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>
                 <Tab.Screen options={{headerShown: false}} name={MORE} component={ActivitiesScreen}/>
-
             </Tab.Navigator>
-
-
-
     );
 }
