@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "284544636149",
+    "project_id": "ntc-edge-ea034",
+    "storage_bucket": "ntc-edge-ea034.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:284544636149:android:49449779f7328341c4e1bc",
+        "android_client_info": {
+          "package_name": "ntc.edge.internal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "284544636149-4av28namnabvu0h09nustrcad657a752.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaUADmHytRaXIYwVxjNdPmD6U_iDtjWpU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "284544636149-4av28namnabvu0h09nustrcad657a752.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "284544636149-v126qms1kv03t4pgubecse6hu5b02d25.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ntc.edge.internal"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
