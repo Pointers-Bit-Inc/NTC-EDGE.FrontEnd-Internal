@@ -179,7 +179,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                         {isPinnedActivity > 0 && usersList.map((item, index) => {
                             return item.activity.map((activity: any, i: number) => {
                                 return activity.isPinned &&  <ActivityItem
-
+                                    currentUser={user}
                                     activity={activity}
                                     onPressUser={() => {
                                         setDetails(activity)
@@ -254,6 +254,7 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                                         return !activity.isPinned ? <ActivityItem
                                             key={i}
                                             activity={activity}
+                                            currentUser={user}
                                             onPressUser={() => {
                                             setDetails(activity)
                                             setModalVisible(true)

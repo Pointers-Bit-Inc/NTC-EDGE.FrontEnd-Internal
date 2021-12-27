@@ -70,7 +70,6 @@ export default function TabBar() {
                                 onPress={onPress}
                                 onLongPress={onLongPress}>
                                 <View style={{
-                                    marginTop: 20,
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                 }}>
@@ -115,9 +114,9 @@ export default function TabBar() {
     return (
 
             <Tab.Navigator  tabBar={(props) => {
-                return <View style={[styles.rect10, { height: undefined, paddingTop: 5 }]}>
+                return <View style={[styles.rect10, { height: undefined, paddingTop: 10 }]}>
                     <View style={styles.group7Filler}></View>
-                    <View style={[styles.group27, { marginBottom: 20 }]}>
+                    <View style={[styles.group27, { marginBottom: 10 }]}>
                         <ActivityTab  {...props} />
                     </View>
                 </View>
@@ -128,7 +127,6 @@ export default function TabBar() {
                 <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>
-                <Tab.Screen options={{headerShown: false}} name={MORE} component={ActivitiesScreen}/>
             </Tab.Navigator>
     );
 }

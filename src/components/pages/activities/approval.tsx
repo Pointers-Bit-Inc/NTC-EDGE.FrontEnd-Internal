@@ -15,7 +15,9 @@ function Approval(props: any){
                 <View style={styles.group}>
                     <View style={styles.rect}>
                         <ApplicationApproved style={styles.icon}></ApplicationApproved>
-                        <Text style={styles.applicationApproved}>Application Approved</Text>
+                        <Text style={styles.applicationApproved}>
+                            {props.isCashier ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED'}
+                        </Text>
                         <View style={styles.group2}>
                             <TouchableOpacity onPress={() =>{
                                 props.onDismissed()
@@ -34,19 +36,21 @@ function Approval(props: any){
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     group: {
-        width: 340,
-        height: 260,
-        marginTop: 276,
-        marginLeft: 18
+        width: '100%',
+        paddingHorizontal: 10,
     },
     rect: {
-        width: 340,
-        height: 260,
+        width: '100%',
         backgroundColor: "rgba(255,255,255,1)",
-        borderRadius: 12
+        borderRadius: 12,
+        padding: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     icon: {
         color: "rgba(100,219,68,1)",
@@ -54,30 +58,26 @@ const styles = StyleSheet.create({
         height: 102,
         width: 94,
         marginTop: 28,
-        marginLeft: 123
     },
     applicationApproved: {
         color: "#121212",
         fontSize: 20,
         marginTop: 25,
-        marginLeft: 75
     },
     group2: {
-        width: 304,
-        height: 40,
-        marginTop: 30,
-        marginLeft: 18
+        width: '100%',
+        marginTop: 60,
     },
     rect3: {
-        width: 304,
-        height: 40,
+        width: '100%',
         backgroundColor: "rgba(47,91,250,1)",
-        borderRadius: 9
+        borderRadius: 9,
+        padding: 15,
+        paddingVertical: 10,
+        alignItems: 'center',
     },
     close: {
         color: "rgba(255,255,255,1)",
-        marginTop: 12,
-        marginLeft: 135
     }
 });
 export default Approval

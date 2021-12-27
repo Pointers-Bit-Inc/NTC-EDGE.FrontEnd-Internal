@@ -43,23 +43,21 @@ const styles = StyleSheet.create({
         paddingVertical: 3,
         borderRadius: 5,
         marginLeft: 0,
-        flex: 1,
         borderWidth: StyleSheet.hairlineWidth,
         borderColor: '#163776',
-        marginRight: 15
     },
     status: {
         paddingHorizontal: 15,
         paddingVertical: 2,
         borderRadius: 5,
-        marginLeft: 0
+        marginLeft: 15
     },
     circle: {
-        width: 10,
-        height: 10,
+        width: 8,
+        height: 8,
         backgroundColor: 'rgba(26,89,211,1)',
-        borderRadius: 10,
-        marginLeft: -10,
+        borderRadius: 8,
+        marginLeft: -8,
         marginRight: 5,
     }
 })
@@ -79,10 +77,21 @@ const RenderStatus = ({ status }:any) => {
                 size={12}
                 numberOfLines={1}
             >
-                {status}
+                {StatusText(status)}
             </Text>
         </View>
     )
+}
+
+const StatusText = (status) => {
+    switch(status) {
+        case 'Paid':
+            return 'Verified'
+        case 'Pending':
+            return 'For Verification'
+        default:
+            return status
+    }
 }
 
 const RenderApplication = ({ applicationType }:any) => {
@@ -151,8 +160,16 @@ export function ActivityItem(props:any) {
                             </View>
                         </View>
                         <View style={styles.section}>
-                            <RenderApplication applicationType={props.activity.activityDetails.applicationType} />
-                            <RenderStatus status={props.activity.activityDetails.status} />
+                            <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                <RenderApplication applicationType={props.activity.activityDetails.applicationType} />
+                            </View>
+                            <RenderStatus
+                                status={
+                                    props?.currentUser?.role?.key === 'cashier' ? 
+                                        props?.activity?.activityDetails?.application?.paymentStatus :
+                                        props?.activity?.activityDetails?.status
+                                }
+                            />
                         </View>
                     </View>
                 </View>
