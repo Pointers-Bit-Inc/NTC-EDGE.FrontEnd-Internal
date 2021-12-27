@@ -24,6 +24,7 @@ const {width} = Dimensions.get('window');
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
     const user = useSelector((state: RootStateOrAny) => state.user);
+    const applicant = props?.details?.activityDetails?.application?.applicant?.user
     const [groupButtonVisible, setGroupButtonVisible] = useState(false)
     const [tabs, setTabs] = useState([
         {
@@ -152,8 +153,8 @@ function ActivityModal(props: any) {
                     <ProfileImage
                         size={65}
                         textSize={22}
-                        image={user.image}
-                        name={`${user.firstName} ${user.lastName}`}
+                        image={applicant?.image}
+                        name={`${applicant?.firstName} ${applicant?.lastName}`}
                     />
                     <View style={{ paddingHorizontal: 15, flex: 1 }}>
                         <CustomText
@@ -162,7 +163,7 @@ function ActivityModal(props: any) {
                             size={18}
                             numberOfLines={1}
                         >
-                            {`${props?.details?.activityDetails?.application?.applicant?.user?.firstName} ${props?.details?.activityDetails?.application?.applicant?.user?.lastName}`}
+                            {`${applicant?.firstName} ${applicant?.lastName}`}
                         </CustomText>
                         <CustomText
                             style={{ marginVertical: 3 }}
@@ -662,7 +663,7 @@ const styles = StyleSheet.create({
     footer: {
         padding: 15,
         paddingTop: 10,
-        paddingBottom: 20,
+        paddingBottom: 25,
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',

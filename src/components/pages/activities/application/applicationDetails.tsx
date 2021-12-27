@@ -29,18 +29,16 @@ const ApplicationDetails = (props:any) =>{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center"
+        paddingHorizontal: 15,
     },
     group2: {
     },
     rect: {
-        height: 27,
+        padding: 10,
         backgroundColor: "#E6E6E6"
     },
     file: {
         color: "rgba(86,89,97,1)",
-        marginTop: 6,
-        marginLeft: 13
     },
     applicationType: {
         fontWeight: "bold",
@@ -62,7 +60,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 10,
         backgroundColor: "#E6E6E6",
-        marginTop: 5
+        marginTop: 15
     }
 });
 export default ApplicationDetails

@@ -1,11 +1,17 @@
 import React, {useState} from "react";
-import {StyleSheet, View, Text, Modal, TouchableOpacity, TextInput} from "react-native";
+import {StyleSheet, View, Text, Modal, TouchableOpacity, KeyboardAvoidingView, Platform, Dimensions} from "react-native";
+import { InputField } from "@components/molecules/form-fields";
 import {Feather, Ionicons} from "@expo/vector-icons";
 import {DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import AwesomeAlert from "react-native-awesome-alerts";
+import useKeyboard from 'src/hooks/useKeyboard';
+
+const { height } = Dimensions.get('window');
 
 function Disapproval(props:any) {
   const [showAlert, setShowAlert] = useState(false)
+  const [remarks, setRemarks] = useState('');
+  const isKeyboardVisible = useKeyboard();
    return (
         <Modal
             animationType="slide"
@@ -35,51 +41,62 @@ function Disapproval(props:any) {
                     setShowAlert(false)
                 }}
             />
-        <View style={styles.container}>
-            <View style={styles.group3Filler}></View>
-            <View style={styles.group3}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.container}
+            >
                 <View style={styles.rectFiller}></View>
                 <View style={styles.rect}>
-                    <View style={styles.iconColumn}>
+                    <View style={{ padding: 10 }}>
                         <TouchableOpacity onPress={()=>{
                             props.onDismissed()
                         }}>
                             <Ionicons name="md-close" style={styles.icon}></Ionicons>
                         </TouchableOpacity>
-
-                        <View style={styles.group}>
-                            <View style={styles.icon2Row}>
-                                <Feather
-                                    name="file-text"
-                                    style={styles.icon2}
-                                ></Feather>
-                                <View style={styles.nodRemarksColumn}>
-                                    <Text style={styles.nodRemarks}>NOD/Remarks</Text>
-                                    <Text style={styles.pleaseProvide}>
-                                        Please provide reason of disapproval
-                                    </Text>
-                                </View>
-                            </View>
-                        </View>
-                        <TextInput multiline style={styles.rect2}/>
                     </View>
-                    <View style={styles.iconColumnFiller}></View>
-                    <TouchableOpacity onPress={() => {
-                        setShowAlert(true)
-
-                    }}>
-                    <View style={styles.group2}>
-
-                            <View  style={styles.rect3}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            paddingHorizontal: 20
+                        }}
+                    >
+                        <Feather
+                            name="file-text"
+                            style={styles.icon2}
+                        />
+                        <View style={styles.nodRemarksColumn}>
+                            <Text style={styles.nodRemarks}>NOD/Remarks</Text>
+                            <Text style={styles.pleaseProvide}>
+                                Please provide reason of disapproval
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={{ paddingHorizontal: 20 }}>
+                        <InputField
+                            style={{ fontWeight: 'normal' }}
+                            outlineStyle={{
+                                borderColor: "rgba(202,210,225,1)",
+                                paddingTop: 5,
+                                height: (height < 720 && isKeyboardVisible) ? 100 : height * 0.25
+                            }}
+                            placeholder={'Remarks'}
+                            multiline={true}
+                            value={remarks}
+                            onChangeText={setRemarks}
+                        />
+                    </View>
+                    <View style={{ padding: 20, paddingBottom: 25 }}>
+                        <TouchableOpacity onPress={() =>{
+                            setShowAlert(true)
+                        }}>
+                            <View style={styles.confirmButton}>
                                 <Text style={styles.confirm}>Confirm</Text>
                             </View>
-
-
+                        </TouchableOpacity>
                     </View>
-                    </TouchableOpacity>
                 </View>
-            </View>
-        </View>
+            </KeyboardAvoidingView>
         </Modal>
     );
 }
@@ -87,16 +104,11 @@ function Disapproval(props:any) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-
     },
     group3Filler: {
         flex: 1
     },
     group3: {
-
         width: "100%",
         height: 540
     },
@@ -104,10 +116,11 @@ const styles = StyleSheet.create({
         flex: 1
     },
     rect: {
-        height: 540,
-        borderRadius: 22,
+        borderRadius: 15,
         width: "100%",
-        backgroundColor: "rgba(255,255,255,1)"
+        backgroundColor: "rgba(255,255,255,1)",
+        borderBottomRightRadius: 0,
+        borderBottomLeftRadius: 0,
     },
     icon: {
         color: "rgba(0,0,0,1)",
@@ -175,10 +188,14 @@ const styles = StyleSheet.create({
         borderRadius: 9
     },
     confirm: {
-
         color: "rgba(255,255,255,1)",
-        marginTop: 12,
-        marginLeft: 145
+    },
+    confirmButton: {
+        backgroundColor: "#2f5cfa",
+        borderRadius: 6,
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
     }
 });
 
