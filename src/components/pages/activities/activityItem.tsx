@@ -111,7 +111,7 @@ export function ActivityItem(props:any) {
                                                     style={[styles.rect30Stack, statusDimension(status)]}>
                                                     <View style={styles.rect30}/>
                                                     <Text
-                                                        style={[styles.approved, {fontWeight: "bold"},  statusColor(status)]}>  {status}</Text>
+                                                        style={[styles.approved, {fontWeight: "bold"},  statusColor(status)]}>  {props.activity.status}</Text>
                                                 </View>
                                             </View>
                                         </View>
