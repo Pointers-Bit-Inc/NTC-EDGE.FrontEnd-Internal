@@ -1,16 +1,16 @@
 import React from 'react';
-import { StyleSheet, Image, ImageBackground, View } from 'react-native';
+import { StyleSheet, Image, ImageBackground, View, Dimensions } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import Text from '@components/atoms/text';
 import Button from '@components/atoms/button';
 import { text, button } from 'src/styles/color';
 const background = require('assets/background.png');
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   slide: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   button: {
     justifyContent: 'center',
@@ -18,9 +18,10 @@ const styles = StyleSheet.create({
     height: 40
   },
   image: {
-    width: 150,
-    height: 150,
-    marginBottom: '45%',
+    width: width * 0.75,
+    height: width * 0.75,
+    marginTop: height * 0.18,
+    marginBottom: 15,
   },
   title: {
     textAlign: 'center',
@@ -31,22 +32,23 @@ const styles = StyleSheet.create({
   },
   footer: {
     position: 'absolute',
-    bottom: 60,
+    bottom: 35,
     paddingHorizontal: 20,
     width: '100%',
   },
   getStarted: {
     backgroundColor: button.primary,
     borderRadius: 5,
+    paddingVertical: 12,
   }
 });
 
 const slides = [
   {
     key: 1,
-    title: 'Lorem ipsum',
-    text: 'Lorem ipsum dolor sit amet, consectetur\nadipiscing elit, sed do eiusmod tempor\nincididunt ut labore et dolore magna\naliqua.',
-    image: require('assets/logo.png'),
+    title: 'Welcome to',
+    text: 'NTC-EDGE app',
+    image: require('assets/WELCOME.png'),
   },
   {
     key: 2,
@@ -101,23 +103,25 @@ const AppIntro = ({ navigation }:any) => {
   //   />
   // )
   return (
-    <ImageBackground style={styles.slide} source={background}>
+    <View style={styles.slide}>
       <Image
         style={styles.image}
         source={slides[0].image}
+        resizeMode='contain'
       />
       <Text
         style={styles.title}
         color={text.primary}
-        size={22}
+        size={26}
         weight={'bold'}
       >
         {slides[0].title}
       </Text>
       <Text
-        style={styles.text}
-        color={text.default}
-        size={16}
+        style={styles.title}
+        color={text.primary}
+        size={26}
+        weight={'bold'}
       >
         {slides[0].text}
       </Text>
@@ -134,7 +138,7 @@ const AppIntro = ({ navigation }:any) => {
           </Text>
         </Button>
       </View>
-    </ImageBackground>
+    </View>
   )
 }
 
