@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Dimensions, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {Entypo, Ionicons} from "@expo/vector-icons";
+import {Ionicons} from "@expo/vector-icons";
 import {primaryColor, text} from "@styles/color";
 import Disapproval from "@pages/activities/disapproval";
 import Endorsed from "@pages/activities/endorse";
@@ -13,13 +13,10 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {formatDate, handleInfinityScroll, statusColor, statusIcon} from "@pages/activities/script";
 import axios from "axios";
 import {BASE_URL} from "../../../services/config";
-import {
-    APPROVED, CASHIER,
-    DECLINED, DIRECTOR, EVALUATOR,
-    PAID,
-} from "../../../reducers/activity/initialstate";
-import {updateActivityStatus} from "../../../reducers/activity/actions";
+import {APPROVED, CASHIER, DECLINED, DIRECTOR, EVALUATOR, PAID,} from "../../../reducers/activity/initialstate";
+import {} from "../../../reducers/activity/actions";
 import AwesomeAlert from "react-native-awesome-alerts";
+import {updateApplicationStatus} from "../../../reducers/application/actions";
 
 const {width} = Dimensions.get('window');
 
@@ -60,6 +57,8 @@ function ActivityModal(props: any) {
     const [status, setStatus] = useState("")
     const [message, setMessage] = useState("")
     const [showAlert, setShowAlert] = useState(false)
+    const [assignId, setAssignId] = useState("")
+    const [remarks, setRemarks] = useState("")
     const onDismissed = () => {
         setVisible(false)
     }
@@ -69,9 +68,9 @@ function ActivityModal(props: any) {
     const onApproveDismissed = () => {
         setApproveVisible(false)
     }
-    const onChangeApplicationStatus = async (status:string) => {
+    const onChangeApplicationStatus = async (status: string) => {
 
-        const id = props?.details?.activityDetails?.application?._id,
+        const id = props?.details?._id,
             config = {
                 headers: {
                     Authorization: "Bearer ".concat(user.sessionToken)
@@ -79,18 +78,30 @@ function ActivityModal(props: any) {
             }
 
         if (id) {
-            const role = user?.role?.key == CASHIER  ?  `/applications/${id}/update-payment-status` : ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 ? `/applications/${id}/update-status` : `/applications/${id}/update-status`)
-            const statusKey = user?.role?.key == CASHIER  ? {
-                'paymentStatus': status
-            } : {
-                'status': status
-            }
-            await axios.patch(BASE_URL + role, statusKey, config ).then((response) => {
 
+            const role = user?.role?.key == CASHIER ? `/applications/${id}/update-payment-status` : ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 ? `/applications/${id}/update-status` : '')
+            const statusKey = user?.role?.key == CASHIER ? {
+                'paymentStatus': status
+            } :  (user?.role?.key == EVALUATOR || user?.role?.key == DIRECTOR ?
+                {
+                    "status": status,
+                    "assignedPersonnel": assignId ? assignId : null,
+                    "remarks": remarks
+                } : '')
+
+
+            if(status == DECLINED){
+                setAssignId("")
+            }
+
+
+            await axios.patch(BASE_URL + role, statusKey, config).then((response) => {
                 return axios.get(BASE_URL + `/applications/${id}`, config)
             }).then((response) => {
-                dispatch(updateActivityStatus({application: response.data, status: status, userType: user?.role?.key}))
+
+                dispatch(updateApplicationStatus({application: response.data, status: status, assignedPersonnel: assignId,  userType: user?.role?.key}))
                 setStatus(status)
+
             })
         }
 
@@ -98,7 +109,7 @@ function ActivityModal(props: any) {
     const [backgroundColour, setBackgroundColour] = useState("#fff")
 
     function onShowConfirmation(status: string) {
-        const name = props?.details?.activityDetails?.application?.applicant?.user
+        const name = props?.details?.applicant?.user
         setMessage(`are you sure you want to ${status.toLowerCase()} ` + name.firstName + " " + name.lastName)
         setShowAlert(true)
 
@@ -139,14 +150,17 @@ function ActivityModal(props: any) {
                 }}
                 onConfirmPressed={() => {
                     let status = ""
-                    if([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1){
+                    if ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
                         status = APPROVED
-                    }else if(["cashier"].indexOf(user?.role?.key) != -1) {
+                    } else if (status != DECLINED && [CASHIER].indexOf(user?.role?.key) != -1) {
                         status = PAID
+                    }else{
+                        status = DECLINED
                     }
 
-                   onChangeApplicationStatus( status  ).then(r =>  setApproveVisible(true))
+                    onChangeApplicationStatus(status)
                     setShowAlert(false)
+
                 }}
             />
             <View style={styles.container}>
@@ -235,13 +249,13 @@ function ActivityModal(props: any) {
                                     {
                                         tabs.map((tab, index) => {
                                             const isShow = tab.isShow.indexOf(user?.role?.key) != -1,
-                                                applicant = props?.details?.activityDetails?.application?.applicant,
-                                                selectedTypes = props?.details?.activityDetails?.application?.selectedTypes,
-                                                applicationType = props?.details?.activityDetails?.application?.applicationType,
-                                                service = props?.details?.activityDetails?.application?.service,
-                                                soa = props?.details?.activityDetails?.application?.soa,
-                                                totalFee = props?.details?.activityDetails?.application?.totalFee,
-                                                requirements = props?.details?.activityDetails?.application?.requirements
+                                                applicant = props?.details?.applicant,
+                                                selectedTypes = props?.details?.selectedTypes,
+                                                applicationType = props?.details?.applicationType,
+                                                service = props?.details?.service,
+                                                soa = props?.details?.soa,
+                                                totalFee = props?.details?.totalFee,
+                                                requirements = props?.details?.requirements
                                             if (isShow && tab.id == 1 && tab.active) {
                                                 return <BasicInfo
                                                     applicant={applicant}
@@ -275,9 +289,15 @@ function ActivityModal(props: any) {
                                             <View style={styles.button3Row}>
                                                 {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                                                 <TouchableOpacity onPress={() => {
+                                                    if(user?.role?.key == CASHIER){
                                                         onShowConfirmation(APPROVED)
+                                                    }else{
+                                                        setApproveVisible(true)
+                                                    }
+
+
                                                 }}
-                                                                  style={[styles.button3, {width: user?.role?.key == "cashier" ? 220 : 100,}]}>
+                                                                  style={[styles.button3, {width: user?.role?.key == CASHIER ? 220 : 100,}]}>
                                                     <View style={styles.rect22Filler}></View>
                                                     <View style={styles.rect22}>
                                                         <View style={styles.approvedFiller}></View>
@@ -299,6 +319,7 @@ function ActivityModal(props: any) {
                                             {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                                             <><View style={styles.button3RowFiller}></View>
                                                 <TouchableOpacity onPress={() => {
+                                                    setStatus(DECLINED)
                                                     setVisible(true)
                                                 }} style={styles.button}>
                                                     <View style={styles.rect24Filler}></View>
@@ -319,13 +340,14 @@ function ActivityModal(props: any) {
                             <View style={styles.rect5}>
                                 <View style={styles.group11}>
                                     <Text
-                                        style={styles.name}>{props?.details?.activityDetails?.application?.applicant?.user?.firstName + " " + props?.details?.activityDetails?.application?.applicant?.user?.lastName}</Text>
-                                    <Text style={styles.job}>{props?.details?.activityDetails?.applicationType}</Text>
+                                        style={styles.name}>{props?.details?.applicant?.user?.firstName + " " + props?.details?.applicant?.user?.lastName}</Text>
+                                    <Text style={styles.job}>{props?.details?.applicationType}</Text>
                                 </View>
                                 <View style={styles.group2}>
                                     <View style={styles.icon2Row}>
-                                        {statusIcon(status ? status : (user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.status : props?.details?.activityDetails?.status ), styles.icon2)}
-                                        <Text style={[styles.role,statusColor(status ? status : (user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.status : props?.details?.activityDetails?.status ))]}>{(user?.role?.key == CASHIER ? props?.details?.activityDetails?.application?.status : props?.details?.activityDetails?.status )}</Text>
+                                        {statusIcon(status ? status : (user?.role?.key == CASHIER ? props?.details?.paymentStatus : (status ? status : props?.details?.status)), styles.icon2)}
+                                        <Text
+                                            style={[styles.role, statusColor(status ? status : (user?.role?.key == CASHIER ? props?.details?.paymentStatus : (status ? status : props?.details?.status)))]}>{status ? status : (user?.role?.key == CASHIER ? props?.details?.paymentStatus : (status ? status : props?.details?.status))}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -337,14 +359,38 @@ function ActivityModal(props: any) {
                     </View>
                 </View>
             </View>
-            <Approval  visible={approveVisible} onDismissed={onApproveDismissed}/>
-            <Disapproval user={props?.details?.activityDetails?.application?.applicant?.user} onChangeApplicationStatus={(event:string)=>{
-                onChangeApplicationStatus(DECLINED).then(() =>{
-                    onDismissed()
-                })
-            }} visible={visible} onDismissed={onDismissed}/>
-            <Endorsed onChangeApplicationStatus={(event:string)=>{
-                onChangeApplicationStatus(event)
+            <Approval confirm={ (event:any) =>{
+
+                setAssignId(event.cashier)
+                setRemarks(event.remarks)
+                let status = ""
+                if ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
+                    status = APPROVED
+                } else if ([CASHIER].indexOf(user?.role?.key) != -1) {
+                    status = PAID
+                }
+
+                onChangeApplicationStatus(status)
+                setShowAlert(false)
+                onApproveDismissed()
+            }} visible={approveVisible} onDismissed={onApproveDismissed}/>
+            <Disapproval user={props?.details?.applicant?.user}
+                         remarks={(event:any) => {
+
+                             setRemarks(event)
+
+                         }}
+                         onChangeApplicationStatus={(event:any) => {
+                             onChangeApplicationStatus(event).then(() => {
+                                 onDismissed()
+                             })
+                         }} visible={visible} onDismissed={onDismissed}/>
+            <Endorsed remarks={(event:any) => {
+                setRemarks(event.remarks)
+                setAssignId(event.endorseId)
+
+            }} onChangeApplicationStatus={(event: any) => {
+                onChangeApplicationStatus(event.status)
 
 
             }} visible={endorseVisible} onDismissed={onEndorseDismissed}/>
@@ -662,7 +708,3 @@ const styles = StyleSheet.create({
         height: 812
     }
 });
-
-
-
-

@@ -1,4 +1,4 @@
-import {DIRECTOR, EVALUATOR} from "./initialstate";
+import {CASHIER, DIRECTOR, EVALUATOR} from "./initialstate";
 
 const { SET_ACTIVITY, ON_CHECKED, UPDATE_ACTIVITY_STATUS, SET_VISIBLE, ADD_ACTIVITY } = require('./types').default;
 
@@ -14,28 +14,11 @@ export default function basket(state = initialState, action = {}) {
     }
     case ADD_ACTIVITY: {
       const newArr = [...state.activities]
-      newArr.push(action.payload)
-     state = state.set('activities', newArr)
+      newArr.push({...action.payload})
+      state = state.set('activities', newArr)
       return state
     }
-    case UPDATE_ACTIVITY_STATUS: {
-      const newArr = [...state.activities];
 
-      const index = newArr.findIndex((app:any) => {
-        return app.activityDetails.application._id == action.payload.application._id
-      })
-      if(index != -1){
-        if(['cashier'].indexOf(action.payload.user) != -1){
-          newArr[index].activityDetails.application.paymentStatus = action.payload.status
-        }else if([DIRECTOR, EVALUATOR].indexOf(action.payload.user) != -1){
-          newArr[index].activityDetails.status = action.payload.status
-        }
-
-        state = state.set("activities", newArr)
-      }
-
-      return state
-    }
     case ON_CHECKED:{
       const newArr = state.get("statusCode");
       const index = newArr.findIndex((app:any) => {

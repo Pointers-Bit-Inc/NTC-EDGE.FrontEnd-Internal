@@ -6,10 +6,12 @@ import FileIcon from "@assets/svg/file";
 import {formatDate, statusBackgroundColor, statusColor, statusDimension, statusIcon} from "@pages/activities/script";
 import React from "react";
 import {getInitial} from "../../../utils/formatting";
+import {CASHIER} from "../../../reducers/activity/initialstate";
 
 export function ActivityItem(props:any) {
     const hex = Math.floor(Math.random()*16777215).toString(16)
-    const userActivity = props.activity.activityDetails.application.applicant.user
+    let  status = [CASHIER].indexOf(props.role) != -1 ? props.activity.paymentStatus : props.activity.status
+    const userActivity = props.activity.applicant.user
     return <Swipeable key={props.index}
                       renderRightActions={(progress, dragX) => props.swiper(props.index, progress, dragX)}>
         <View style={styles.group17}>
@@ -59,7 +61,7 @@ export function ActivityItem(props:any) {
                                                         <View style={styles.rect32}>
                                                             <Text
                                                                 style={styles.application}>
-                                                                {props.activity.activityDetails.applicationType.length > 25 ? props.activity.activityDetails.applicationType.slice(0, 25).concat('...') : props.activity.activityDetails.applicationType}
+                                                                {props.activity.applicationType.length > 25 ? props.activity.applicationType.slice(0, 25).concat('...') : props.activity.applicationType}
                                                             </Text>
                                                         </View>
                                                     </View>
@@ -83,7 +85,7 @@ export function ActivityItem(props:any) {
                                     <View style={styles.rect33}>
                                         <View style={styles.loremIpsumFiller}/>
                                         <Text
-                                            style={styles.loremIpsum}>{formatDate(props.activity.activityDetails.dateTime)}</Text>
+                                            style={styles.loremIpsum}>{formatDate(props.activity.updatedAt)}</Text>
                                     </View>
                                 </View>
                                 <View style={styles.rect24}/>
@@ -94,22 +96,22 @@ export function ActivityItem(props:any) {
                             <View style={styles.group6Stack}>
                                 <View style={styles.group6}>
                                     <View
-                                        style={[styles.rect23, statusBackgroundColor(props.activity.activityDetails.status)]}>
+                                        style={[styles.rect23, statusBackgroundColor(status)]}>
                                         <View style={styles.group19}>
                                             <View style={styles.group18Row}>
                                                 <View style={styles.group18}>
                                                     <View style={styles.icon3Stack}>
-                                                        {statusIcon(props.activity.activityDetails.status)}
+                                                        {statusIcon(status)}
 
                                                         <View
                                                             style={styles.rect29}/>
                                                     </View>
                                                 </View>
                                                 <View
-                                                    style={[styles.rect30Stack, statusDimension(props.activity.activityDetails.status)]}>
+                                                    style={[styles.rect30Stack, statusDimension(status)]}>
                                                     <View style={styles.rect30}/>
                                                     <Text
-                                                        style={[styles.approved, {fontWeight: "bold"},  statusColor(props.activity.activityDetails.status)]}>  {props.activity.activityDetails.status}</Text>
+                                                        style={[styles.approved, {fontWeight: "bold"},  statusColor(status)]}>  {status}</Text>
                                                 </View>
                                             </View>
                                         </View>

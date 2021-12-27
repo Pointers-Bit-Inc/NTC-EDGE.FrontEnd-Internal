@@ -6,6 +6,7 @@ import AwesomeAlert from "react-native-awesome-alerts";
 
 function Disapproval(props:any) {
   const [showAlert, setShowAlert] = useState(false)
+    const [text, setText] = useState("")
    return (
         <Modal
             animationType="slide"
@@ -62,10 +63,11 @@ function Disapproval(props:any) {
                                 </View>
                             </View>
                         </View>
-                        <TextInput multiline style={styles.rect2}/>
+                        <TextInput defaultValue={text} onChangeText={text => setText(text)} multiline style={styles.rect2}/>
                     </View>
                     <View style={styles.iconColumnFiller}></View>
                     <TouchableOpacity onPress={() => {
+                        props.remarks(text)
                         setShowAlert(true)
 
                     }}>

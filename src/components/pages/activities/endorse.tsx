@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {StyleSheet, View, Text, TouchableOpacity, Modal, Alert} from "react-native";
+import {StyleSheet, View, Text, TouchableOpacity, Modal, Alert, TextInput} from "react-native";
 import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import Dropdown from "@atoms/dropdown";
 import axios from "axios";
@@ -12,6 +12,7 @@ function Endorsed(props:any) {
 
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [pickedEndorsed, setPickedEndorsed] = useState<any[]>()
+    const [text, setText] = useState("")
     const [endorsed, setEndorsed] = useState()
     const [showAlert, setShowAlert] = useState(false)
     useEffect(()=>{
@@ -22,7 +23,7 @@ function Endorsed(props:any) {
                 }
             }).then((response)=>{
             const filterResponse = [...response.data].filter((item) =>{
-                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1)
+                return ([DIRECTOR].indexOf(item?.role?.key) != -1)
             })
 
             const res = filterResponse.map((item) =>{
@@ -36,9 +37,10 @@ function Endorsed(props:any) {
 
         })
     }, [])
-    const onEndorseConfirm = () =>{
+    const onEndorseConfirm = () => {
+        props.remarks({endorseId: endorsed, remarks: text })
 
-        setShowAlert(true)
+       setShowAlert(true)
 
     }
 
@@ -69,7 +71,7 @@ function Endorsed(props:any) {
                     setShowAlert(false)
                 }}
                 onConfirmPressed={() => {
-                    props.onChangeApplicationStatus(FOREVALUATION)
+                    props.onChangeApplicationStatus({status: FOREVALUATION })
                     props.onDismissed()
                     setShowAlert(false)
                 }}
@@ -89,15 +91,25 @@ function Endorsed(props:any) {
                             <Text style={styles.endorseTo}>Endorse to</Text>
                         </View>
                     </View>
-                    <View  style={[styles.rect5]}>
+                    <View  style={[styles.rect5, {marginBottom: 10}]}>
                         <Dropdown value={endorsed} onChangeValue={(value: any) => {
                             setEndorsed(value)}
                         }
                                   placeholder={{}}
                                   items={pickedEndorsed}></Dropdown>
+
+
+                    </View>
+                    <View>
+                        <TextInput value={text} onChangeText={(label) => setText(label)}   placeholder={'Remarks'} style={[styles.rect5, {backgroundColor: "rgba(255,255,255,1)",
+                            borderWidth: 1,
+                            borderColor: "rgba(202,210,225,1)",
+                            borderRadius: 6,}]} multiline>
+
+                        </TextInput>
+                    </View>
                     </View>
 
-                </View>
                 <View style={styles.iconColumnFiller}></View>
                 <View style={styles.rect6}>
                     <TouchableOpacity onPress={() =>{
