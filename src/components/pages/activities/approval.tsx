@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: "rgba(255,255,255,1)",
         borderRadius: 12,
-        padding: 10,
+        padding: 15,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -64,13 +64,14 @@ const styles = StyleSheet.create({
     },
     group2: {
         width: '100%',
-        marginTop: 30,
+        marginTop: 60,
     },
     rect3: {
         width: '100%',
         backgroundColor: "rgba(47,91,250,1)",
         borderRadius: 9,
         padding: 15,
+        paddingVertical: 10,
         alignItems: 'center',
     },
     close: {

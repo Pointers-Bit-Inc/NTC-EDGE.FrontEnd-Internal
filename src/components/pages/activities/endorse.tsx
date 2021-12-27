@@ -74,7 +74,7 @@ function Endorsed(props:any) {
                     setShowAlert(false)
                 }}
                 onConfirmPressed={() => {
-                    props.onChangeApplicationStatus(FOREVALUATION)
+                    props.onChangeApplicationStatus(FOREVALUATION, remarks)
                     props.onDismissed()
                     setShowAlert(false)
                 }}

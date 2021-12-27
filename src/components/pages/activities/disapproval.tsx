@@ -36,7 +36,7 @@ function Disapproval(props:any) {
                     setShowAlert(false)
                 }}
                 onConfirmPressed={() => {
-                    props.onChangeApplicationStatus(DECLINED)
+                    props.onChangeApplicationStatus(DECLINED, remarks)
                     props.onDismissed()
                     setShowAlert(false)
                 }}
