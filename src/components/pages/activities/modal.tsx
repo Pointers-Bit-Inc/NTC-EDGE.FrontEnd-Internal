@@ -114,7 +114,7 @@ function ActivityModal(props: any) {
                 setCurrentLoading('');
                 if (res.status === 200) {
                     if (res.data) {
-                        dispatch(updateApplicationStatus({application: res.data, status: status, assignedPersonnel: assignId, user: user?.role?.key }))
+                        dispatch(updateApplicationStatus({application: res.data, status: status, assignedPersonnel: assignId, userType: user?.role?.key }))
                         setStatus(status)
                         return callback(null);
                     }
