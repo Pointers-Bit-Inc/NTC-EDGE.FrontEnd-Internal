@@ -10,8 +10,8 @@ const { height } = Dimensions.get('window');
 
 function Disapproval(props:any) {
   const [showAlert, setShowAlert] = useState(false)
-  const [remarks, setRemarks] = useState('');
-  const isKeyboardVisible = useKeyboard();
+    const [text, setText] = useState("")
+    const isKeyboardVisible = useKeyboard();
    return (
         <Modal
             animationType="slide"
@@ -37,7 +37,7 @@ function Disapproval(props:any) {
                     setShowAlert(false)
                 }}
                 onConfirmPressed={() => {
-                    props.onChangeApplicationStatus(DECLINED, remarks)
+                    props.onChangeApplicationStatus(DECLINED)
                     props.onDismissed()
                     setShowAlert(false)
                 }}
@@ -83,12 +83,13 @@ function Disapproval(props:any) {
                             }}
                             placeholder={'Remarks'}
                             multiline={true}
-                            value={remarks}
-                            onChangeText={setRemarks}
+                            value={text}
+                            onChangeText={setText}
                         />
                     </View>
                     <View style={{ padding: 20, paddingBottom: 25 }}>
-                        <TouchableOpacity onPress={() =>{
+                        <TouchableOpacity onPress={() => {
+                            props.remarks(text)
                             setShowAlert(true)
                         }}>
                             <View style={styles.confirmButton}>

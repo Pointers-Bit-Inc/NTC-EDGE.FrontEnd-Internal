@@ -17,9 +17,9 @@ function Endorsed(props:any) {
 
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [pickedEndorsed, setPickedEndorsed] = useState<any[]>()
+    const [text, setText] = useState("")
     const [endorsed, setEndorsed] = useState()
     const [showAlert, setShowAlert] = useState(false)
-    const [remarks, setRemarks] = useState('');
     const isKeyboardVisible = useKeyboard();
 
     useEffect(()=>{
@@ -30,7 +30,7 @@ function Endorsed(props:any) {
                 }
             }).then((response)=>{
             const filterResponse = [...response.data].filter((item) =>{
-                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1)
+                return ([DIRECTOR].indexOf(item?.role?.key) != -1)
             })
 
             const res = filterResponse.map((item) =>{
@@ -44,8 +44,11 @@ function Endorsed(props:any) {
 
         })
     }, [])
-    const onEndorseConfirm = () =>{
-        setShowAlert(true)
+    const onEndorseConfirm = () => {
+        props.remarks({ endorseId: endorsed, remarks: text })
+
+       setShowAlert(true)
+
     }
 
     return (
@@ -74,7 +77,7 @@ function Endorsed(props:any) {
                     setShowAlert(false)
                 }}
                 onConfirmPressed={() => {
-                    props.onChangeApplicationStatus(FOREVALUATION, remarks)
+                    props.onChangeApplicationStatus({status: FOREVALUATION })
                     props.onDismissed()
                     setShowAlert(false)
                 }}
@@ -126,8 +129,8 @@ function Endorsed(props:any) {
                             }}
                             placeholder={'Remarks'}
                             multiline={true}
-                            value={remarks}
-                            onChangeText={setRemarks}
+                            value={text}
+                            onChangeText={setText}
                         />
                     </View>
                     <View

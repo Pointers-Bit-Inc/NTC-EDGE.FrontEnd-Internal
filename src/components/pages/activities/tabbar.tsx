@@ -128,5 +128,8 @@ export default function TabBar() {
                 <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>
             </Tab.Navigator>
+
+
+
     );
 }

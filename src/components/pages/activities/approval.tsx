@@ -1,8 +1,47 @@
-import React, { Component } from "react";
-import {StyleSheet, View, Text, Modal, TouchableOpacity} from "react-native";
+import React, {Component, useEffect, useState} from "react";
+import {StyleSheet, View, Text, Modal, TouchableOpacity, Dimensions, Platform, KeyboardAvoidingView } from "react-native";
 import ApplicationApproved from "@assets/svg/application-approved";
+import { Ionicons } from "@expo/vector-icons";
+import Dropdown from "@atoms/dropdown";
+import axios from "axios";
+import { InputField } from "@components/molecules/form-fields";
+import {BASE_URL} from "../../../services/config";
+import {APPROVED, CASHIER, DIRECTOR, EVALUATOR, PAID} from "../../../reducers/activity/initialstate";
+import {RootStateOrAny, useSelector} from "react-redux";
+import AwesomeAlert from "react-native-awesome-alerts";
+import useKeyboard from 'src/hooks/useKeyboard';
+
+const { height } = Dimensions.get('window');
 
 function Approval(props: any){
+    const isKeyboardVisible = useKeyboard();
+    const user = useSelector((state: RootStateOrAny) => state.user);
+    const [pickedCashier, setPickedCashier] = useState<any[]>()
+    const [cashier, setCashier] = useState()
+    const [remarks, setRemarks] = useState("")
+    const [showAlert, setShowAlert] = useState(false)
+    useEffect(()=>{
+        axios.get(BASE_URL + '/users' ,
+            {
+                headers: {
+                    Authorization: "Bearer ".concat(user.sessionToken)
+                }
+            }).then((response)=>{
+            const filterResponse = [...response.data].filter((item) =>{
+                return ([CASHIER].indexOf(item?.role?.key) != -1)
+            })
+
+            const res = filterResponse.map((item) =>{
+                return {value: item._id, label: item.firstName + " " + item.lastName}
+            })
+
+            setPickedCashier(res)
+            if(res){
+                setCashier(res[0]?.value)
+            }
+
+        })
+    }, [])
     return (
         <Modal
             animationType="slide"
@@ -11,30 +50,86 @@ function Approval(props: any){
 
             onRequestClose={() => {
             }}>
-            <View style={styles.container}>
+            <AwesomeAlert
+                show={showAlert}
+                showProgress={false}
+                title="Confirm?"
+                message={"are you sure you want to approve?"}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={true}
+                showConfirmButton={true}
+                cancelText="Cancel"
+                confirmText="Yes"
+                confirmButtonColor="#DD6B55"
+                onCancelPressed={() => {
+                    setShowAlert(false)
+                }}
+                onConfirmPressed={() => {
+                    props.confirm({cashier: cashier, remarks: remarks})
+                    setShowAlert(false)
+                }}
+            />
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.container}
+            >
                 <View style={styles.group}>
                     <View style={styles.rect}>
+                        <View style={{ alignSelf: 'flex-start' }}>
+                            <TouchableOpacity onPress={()=>{
+                                props.onDismissed()
+                            }}>
+                                <Ionicons name="md-close" style={{ fontSize: 25 }}></Ionicons>
+                            </TouchableOpacity>
+                        </View>
                         <ApplicationApproved style={styles.icon}></ApplicationApproved>
                         <Text style={styles.applicationApproved}>
                             {props.isCashier ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED'}
                         </Text>
                         <View style={styles.group2}>
-                            <TouchableOpacity onPress={() =>{
-                                props.onDismissed()
-                            }}>
-                                <View style={styles.rect3}>
-                                    <Text style={styles.close}>Close</Text>
-                                </View>
-                            </TouchableOpacity>
-
+                            <View style={[styles.element, {marginBottom: 5}]}>
+                                <Dropdown value={cashier}  onChangeValue={(value: any) => {
+                                    setCashier(value)}
+                                }
+                                            placeholder={{}}
+                                            items={pickedCashier}></Dropdown>
+                            </View>
+                            <InputField
+                                style={{ fontWeight: 'normal' }}
+                                outlineStyle={{
+                                    borderColor: "rgba(202,210,225,1)",
+                                    paddingTop: 5,
+                                    height: (height < 720 && isKeyboardVisible) ? 45 : height * 0.15
+                                }}
+                                placeholder={'Remarks'}
+                                multiline={true}
+                                value={remarks}
+                                onChangeText={setRemarks}
+                            />
+                            <View style={{ marginTop: 5 }} >
+                                <TouchableOpacity onPress={()=>{
+                                    setShowAlert(true)
+                                }}>
+                                    <View style={styles.rect3}>
+                                        <Text style={styles.close}>Confirm</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 </View>
-            </View>
+            </KeyboardAvoidingView>
         </Modal>
     )
 }
 const styles = StyleSheet.create({
+    element:{
+        backgroundColor: "rgba(255,255,255,1)",
+        borderWidth: 1,
+        borderColor: "rgba(202,210,225,1)",
+        borderRadius: 6,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -57,16 +152,15 @@ const styles = StyleSheet.create({
         fontSize: 94,
         height: 102,
         width: 94,
-        marginTop: 28,
     },
     applicationApproved: {
         color: "#121212",
-        fontSize: 20,
-        marginTop: 25,
+        fontSize: 18,
+        marginTop: 10,
     },
     group2: {
         width: '100%',
-        marginTop: 60,
+        marginTop: 5,
     },
     rect3: {
         width: '100%',
@@ -78,6 +172,6 @@ const styles = StyleSheet.create({
     },
     close: {
         color: "rgba(255,255,255,1)",
-    }
+    },
 });
 export default Approval

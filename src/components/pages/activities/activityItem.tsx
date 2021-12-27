@@ -6,6 +6,7 @@ import ProfileImage from "@components/atoms/image/profile";
 import Svg, {Ellipse} from "react-native-svg";
 import FileIcon from "@assets/svg/file";
 import {formatDate, statusBackgroundColor, statusColor, statusDimension, statusIcon} from "@pages/activities/script";
+import {CASHIER} from "../../../reducers/activity/initialstate";
 import { text, outline } from 'src/styles/color';
 
 const styles = StyleSheet.create({
@@ -120,7 +121,8 @@ const RenderApplication = ({ applicationType }:any) => {
 }
 
 export function ActivityItem(props:any) {
-    const userActivity = props.activity.activityDetails.application.applicant.user
+    let  status = [CASHIER].indexOf(props.role) != -1 ? props.activity.paymentStatus : props.activity.status
+    const userActivity = props.activity.applicant.user
     
     return (
         <Swipeable
@@ -155,20 +157,16 @@ export function ActivityItem(props:any) {
                                     size={10}
                                     numberOfLines={1}
                                 >
-                                    {formatDate(props.activity.activityDetails.dateTime)}
+                                    {formatDate(props.activity.updatedAt)}
                                 </Text>
                             </View>
                         </View>
                         <View style={styles.section}>
                             <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                                <RenderApplication applicationType={props.activity.activityDetails.applicationType} />
+                                <RenderApplication applicationType={props.activity.applicationType} />
                             </View>
                             <RenderStatus
-                                status={
-                                    props?.currentUser?.role?.key === 'cashier' ? 
-                                        props?.activity?.activityDetails?.application?.paymentStatus :
-                                        props?.activity?.activityDetails?.status
-                                }
+                                status={props.activity.status}
                             />
                         </View>
                     </View>

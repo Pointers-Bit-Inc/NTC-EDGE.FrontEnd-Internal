@@ -18,12 +18,12 @@ import {
     DECLINED, DIRECTOR, EVALUATOR,
     PAID,
 } from "../../../reducers/activity/initialstate";
-import {updateActivityStatus} from "../../../reducers/activity/actions";
 import ProfileImage from "@components/atoms/image/profile";
 import CustomText from "@components/atoms/text";
 import AwesomeAlert from "react-native-awesome-alerts";
 import Api from 'src/services/api';
 import rtt from 'reactotron-react-native';
+import {updateApplicationStatus} from "../../../reducers/application/actions";
 
 const {width} = Dimensions.get('window');
 
@@ -41,7 +41,7 @@ const StatusText = (status) => {
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
     const user = useSelector((state: RootStateOrAny) => state.user);
-    const applicant = props?.details?.activityDetails?.application?.applicant?.user
+    const applicant = props?.details?.applicant?.user
     const [groupButtonVisible, setGroupButtonVisible] = useState(false)
     const [tabs, setTabs] = useState([
         {
@@ -76,6 +76,8 @@ function ActivityModal(props: any) {
     const [message, setMessage] = useState("")
     const [showAlert, setShowAlert] = useState(false)
     const [currentLoading, setCurrentLoading] = useState('');
+    const [assignId, setAssignId] = useState("")
+    const [remarks, setRemarks] = useState("")
     const onDismissed = () => {
         setVisible(false)
     }
@@ -85,17 +87,19 @@ function ActivityModal(props: any) {
     const onApproveDismissed = () => {
         setApproveVisible(false)
     }
-    const onChangeApplicationStatus = async (status:string, remarks?:string, callback = (err:any) => {}) => {
+    const onChangeApplicationStatus = async (status:string, callback = (err:any) => {}) => {
         const api = Api(user.sessionToken);
-        const applicationId = props?.details?.activityDetails?.application?._id;
+        const applicationId = props?.details?._id;
         let url = `/applications/${applicationId}/update-status`;
         let params:any = {
             status,
             remarks: remarks ? remarks : undefined,
-            assignedPersonnel: user._id,
+            assignedPersonnel: assignId ? assignId : undefined,
         };
         setCurrentLoading(status);
-
+        if(status == DECLINED){
+            setAssignId("")
+        }
         if (user?.role?.key == CASHIER) {
             url = `/applications/${applicationId}/update-payment-status`;
             params = {
@@ -110,8 +114,7 @@ function ActivityModal(props: any) {
                 setCurrentLoading('');
                 if (res.status === 200) {
                     if (res.data) {
-                        dispatch(updateActivityStatus({application: res.data, status: status, user: user?.role?.key }))
-                        rtt.log('STATUS', status, props?.details?.activityDetails?.status, res.data);
+                        dispatch(updateApplicationStatus({application: res.data, status: status, assignedPersonnel: assignId, user: user?.role?.key }))
                         setStatus(status)
                         return callback(null);
                     }
@@ -129,14 +132,11 @@ function ActivityModal(props: any) {
     const [backgroundColour, setBackgroundColour] = useState("#fff")
 
     function onShowConfirmation(status: string) {
-        const name = props?.details?.activityDetails?.application?.applicant?.user
+        const name = props?.details?.applicant?.user
         setMessage(`are you sure you want to ${status.toLowerCase()} ` + name.firstName + " " + name.lastName)
         setShowAlert(true)
 
     }
-    console.log('props?.details?.activityDetails?.status', props?.details?.activityDetails?.paymentStatus, user?.role?.key === 'cashier' ? 
-    props?.details?.activityDetails?.application?.paymentStatus :
-    props?.details?.activityDetails?.status);
     return (
         <Modal
             animationType="slide"
@@ -173,16 +173,14 @@ function ActivityModal(props: any) {
                 }}
                 onConfirmPressed={() => {
                     let status = ""
-                    if([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1){
+                    if ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
                         status = APPROVED
-                    }else if(["cashier"].indexOf(user?.role?.key) != -1) {
+                    } else if (status != DECLINED && [CASHIER].indexOf(user?.role?.key) != -1) {
                         status = PAID
+                    }else{
+                        status = DECLINED
                     }
-                    onChangeApplicationStatus(status, '', (err) =>  {
-                        if (!err) {
-                            setApproveVisible(true)
-                        }
-                    })
+                    onChangeApplicationStatus(status)
                     setShowAlert(false)
                 }}
             />
@@ -221,23 +219,36 @@ function ActivityModal(props: any) {
                             size={14}
                             numberOfLines={1}
                         >
-                            {props?.details?.activityDetails?.applicationType}
+                            {props?.details?.applicationType}
                         </CustomText>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             {
                                 statusIcon(
-                                    user?.role?.key === 'cashier' ? 
-                                        props?.details?.activityDetails?.application?.paymentStatus :
-                                        props?.details?.activityDetails?.status,
+                                    status ?
+                                    status :
+                                        (user?.role?.key == CASHIER ?
+                                        props?.details?.paymentStatus :
+                                            (status ?
+                                            status :
+                                                props?.details?.status
+                                            )
+                                        ),
                                     styles.icon2
                                 )
                             }
                             <CustomText
                                 style={[
-                                    styles.role,statusColor(
-                                        user?.role?.key === 'cashier' ? 
-                                            props?.details?.activityDetails?.application?.paymentStatus :
-                                            props?.details?.activityDetails?.status
+                                    styles.role,
+                                    statusColor(
+                                        status ?
+                                        status :
+                                            (user?.role?.key == CASHIER ?
+                                            props?.details?.paymentStatus :
+                                                (status ?
+                                                status :
+                                                props?.details?.status
+                                            )
+                                        )
                                     ),
                                     {
                                         fontSize: 16,
@@ -247,11 +258,15 @@ function ActivityModal(props: any) {
                                 numberOfLines={1}
                             >
                                 {
-                                    StatusText(
-                                        user?.role?.key === 'cashier' ? 
-                                            props?.details?.activityDetails?.application?.paymentStatus :
-                                            props?.details?.activityDetails?.status
-                                    )
+                                    status ?
+                                    status :
+                                        (user?.role?.key == CASHIER ?
+                                        props?.details?.paymentStatus :
+                                            (status ?
+                                            status :
+                                                props?.details?.status
+                                            )
+                                        )
                                 }
                             </CustomText>
                         </View>
@@ -312,13 +327,13 @@ function ActivityModal(props: any) {
                     {
                         tabs.map((tab, index) => {
                             const isShow = tab.isShow.indexOf(user?.role?.key) != -1,
-                                applicant = props?.details?.activityDetails?.application?.applicant,
-                                selectedTypes = props?.details?.activityDetails?.application?.selectedTypes,
-                                applicationType = props?.details?.activityDetails?.application?.applicationType,
-                                service = props?.details?.activityDetails?.application?.service,
-                                soa = props?.details?.activityDetails?.application?.soa,
-                                totalFee = props?.details?.activityDetails?.application?.totalFee,
-                                requirements = props?.details?.activityDetails?.application?.requirements
+                                applicant = props?.details?.applicant,
+                                selectedTypes = props?.details?.selectedTypes,
+                                applicationType = props?.details?.applicationType,
+                                service = props?.details?.service,
+                                soa = props?.details?.soa,
+                                totalFee = props?.details?.totalFee,
+                                requirements = props?.details?.requirements
                             if (isShow && tab.id == 1 && tab.active) {
                                 return <BasicInfo
                                     applicant={applicant}
@@ -342,12 +357,16 @@ function ActivityModal(props: any) {
                 {
                     true &&
                     <View style={styles.footer}>
-                        {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1 &&
+                        {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                         <View style={{ flex: 1, paddingRight: 5 }}>
                             <TouchableOpacity
                                 disabled={currentLoading === 'Approved'}
                                 onPress={() => {
-                                    onShowConfirmation(APPROVED)
+                                    if(user?.role?.key == CASHIER){
+                                        onShowConfirmation(APPROVED)
+                                    }else{
+                                        setApproveVisible(true)
+                                    }
                                 }}
                             >
                                 {/* <View style={styles.rect22Filler}></View>
@@ -366,7 +385,7 @@ function ActivityModal(props: any) {
                                 </View>
                             </TouchableOpacity>
                         </View>}
-                        {["director", 'evaluator'].indexOf(user?.role?.key) != -1 &&
+                        {[DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 &&
                             <View style={{ flex: 1, paddingHorizontal: 5 }}>
                                 <TouchableOpacity
                                     disabled={currentLoading === 'For Evaluation'}
@@ -390,7 +409,7 @@ function ActivityModal(props: any) {
                                     </View>
                                 </TouchableOpacity>
                             </View>}
-                        {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1 &&
+                        {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{ flex: 1, paddingLeft: 5 }}>
                                 <TouchableOpacity
                                     disabled={currentLoading === 'For Evaluation'}
@@ -398,11 +417,6 @@ function ActivityModal(props: any) {
                                         setVisible(true)
                                     }}
                                 >
-                                    {/* <View style={styles.rect24Filler}></View>
-                                    <View style={styles.rect24}>
-                                        <View style={styles.endorse1Filler}></View>
-                                        <Text style={styles.endorse1}>Decline</Text>
-                                    </View> */}
                                      <View
                                         style={[
                                             styles.rect24,
@@ -427,17 +441,49 @@ function ActivityModal(props: any) {
                     </View>
                 }
             </View>
-            <Approval visible={approveVisible} onDismissed={onApproveDismissed} isCashier={user?.role?.key === 'cashier'} />
-            <Disapproval user={props?.details?.activityDetails?.application?.applicant?.user} onChangeApplicationStatus={(event:string, remarks:string)=>{
-                onChangeApplicationStatus(DECLINED, remarks, (err) =>{
-                    if (!err) {
-                        onDismissed()
+            <Approval
+                visible={approveVisible}
+                confirm={ (event:any) =>{
+                    setAssignId(event.cashier)
+                    setRemarks(event.remarks)
+                    let status = ""
+                    if ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
+                        status = APPROVED
+                    } else if ([CASHIER].indexOf(user?.role?.key) != -1) {
+                        status = PAID
                     }
-                })
-            }} visible={visible} onDismissed={onDismissed}/>
-            <Endorsed onChangeApplicationStatus={(event:string, remarks:string)=>{
-                onChangeApplicationStatus(event, remarks, () => {});
-            }} visible={endorseVisible} onDismissed={onEndorseDismissed}/>
+                    onChangeApplicationStatus(status)
+                    setShowAlert(false)
+                    onApproveDismissed()
+                }}
+                isCashier={user?.role?.key === 'cashier'}
+                onDismissed={onApproveDismissed}
+            />
+            <Disapproval
+                user={props?.details?.applicant?.user}
+                remarks={setRemarks}
+                onChangeApplicationStatus={(event:any)=>{
+                    onChangeApplicationStatus(DECLINED, (err) =>{
+                            if (!err) {
+                                onDismissed()
+                            }
+                        })
+                    }
+                }
+                visible={visible}
+                onDismissed={onDismissed}
+            />
+            <Endorsed
+                remarks={(event:any) => {
+                    setRemarks(event.remarks)
+                    setAssignId(event.endorseId)
+                }}
+                onChangeApplicationStatus={(event: any)=>{
+                    onChangeApplicationStatus(event.status);
+                }}
+                visible={endorseVisible}
+                onDismissed={onEndorseDismissed}
+            />
         </Modal>
     );
 }
@@ -756,7 +802,3 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
     }
 });
-
-
-
-
