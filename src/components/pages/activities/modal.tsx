@@ -72,7 +72,6 @@ function ActivityModal(props: any) {
     }
     const onChangeApplicationStatus = async (status:string, remarks?:string, callback = (err:any) => {}) => {
         const api = Api(user.sessionToken);
-        console.log('USER.', user.sessionToken)
         const applicationId = props?.details?.activityDetails?.application?._id;
         setCurrentLoading(status);
         if (applicationId) {
