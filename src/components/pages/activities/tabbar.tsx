@@ -118,7 +118,7 @@ export default function TabBar() {
             <Tab.Navigator  tabBar={(props) => {
                 return <View style={[styles.rect10, { height: undefined, paddingTop: 5 }]}>
                     <View style={styles.group7Filler}></View>
-                    <View style={[styles.group27, { marginBottom: 20 }]}>
+                    <View style={[styles.group27, { marginBottom: 15 }]}>
                         <ActivityTab  {...props} />
                     </View>
                 </View>

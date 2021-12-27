@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     },
     rect: {
         padding: 10,
+        paddingVertical: 5,
         backgroundColor: "#E6E6E6"
     },
     file: {

@@ -53,11 +53,11 @@ const styles = StyleSheet.create({
         marginLeft: 15
     },
     circle: {
-        width: 10,
-        height: 10,
+        width: 8,
+        height: 8,
         backgroundColor: 'rgba(26,89,211,1)',
-        borderRadius: 10,
-        marginLeft: -10,
+        borderRadius: 8,
+        marginLeft: -8,
         marginRight: 5,
     }
 })
