@@ -16,7 +16,7 @@ const PaymentModal = (props:any) => {
         }
         }>
             <View style={styles.container}>
-                <View style={{ padding: 20, paddingTop: 45, alignItems: 'flex-end', backgroundColor: "rgba(0,65,172,1)" }}>
+                <View style={{ padding: 20, paddingTop: 45, paddingBottom: 10, alignItems: 'flex-end', backgroundColor: "rgba(0,65,172,1)" }}>
                     <TouchableOpacity
                         onPress={()=>{
                             props.onDismissed()
