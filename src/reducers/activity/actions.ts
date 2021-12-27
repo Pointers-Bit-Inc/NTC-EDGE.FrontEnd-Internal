@@ -7,6 +7,8 @@ export function setActivity(payload) {
   };
 }
 
+
+
 export function addActivity(payload) {
   return {
     type: ADD_ACTIVITY,
@@ -20,12 +22,7 @@ export function on_checked(payload) {
   };
 }
 
-export function updateActivityStatus(payload) {
-  return {
-    type: UPDATE_ACTIVITY_STATUS,
-    payload,
-  };
-}
+
 export function selectChangeStatus(payload) {
   return {
     type: SELECTED_CHANGE_STATUS,
