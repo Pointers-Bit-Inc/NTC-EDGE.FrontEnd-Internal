@@ -137,7 +137,7 @@ function ActivityModal(props: any) {
                 }}
             />
             <View style={{ flex: 1 }}>
-                <View style={{ padding: 15, paddingTop: 45, backgroundColor: primaryColor }}>
+                <View style={{ padding: 15, paddingTop: 35, backgroundColor: primaryColor }}>
                     <TouchableOpacity onPress={() => {
                         setStatus("")
                         props.onDismissed()
@@ -197,7 +197,7 @@ function ActivityModal(props: any) {
                         </Text>
                     </View>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around', zIndex: 99 }}>
                     {
                         tabs.map((tab, index) => {
 
@@ -223,7 +223,7 @@ function ActivityModal(props: any) {
                                         <Text
                                             style={{color: tab.active ? primaryColor : text.default}}>{tab.name}</Text>
                                         <View
-                                            style={[styles.rect6, {backgroundColor: tab.active ? primaryColor : "rgba(255,255,255,0)"}]}></View>
+                                            style={[styles.rect6, {backgroundColor: tab.active ? primaryColor : 'transparent'}]}></View>
                                     </View>}
                                 </TouchableOpacity>
                         })
@@ -273,7 +273,7 @@ function ActivityModal(props: any) {
                     <View style={{ height: 30 }} />
                 </ScrollView>
                 {
-                    groupButtonVisible &&
+                    true &&
                     <View style={styles.footer}>
                         {["director", 'evaluator', 'cashier'].indexOf(user?.role?.key) != -1 &&
                         <View style={{ flex: 1, paddingRight: 5 }}>
@@ -427,8 +427,7 @@ const styles = StyleSheet.create({
     },
     rect6: {
         height: 3,
-
-        marginTop: 10
+        marginTop: 8
     },
     group6: {
         height: 28,

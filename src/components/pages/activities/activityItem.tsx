@@ -43,16 +43,14 @@ const styles = StyleSheet.create({
         paddingVertical: 3,
         borderRadius: 5,
         marginLeft: 0,
-        flex: 1,
         borderWidth: StyleSheet.hairlineWidth,
         borderColor: '#163776',
-        marginRight: 15
     },
     status: {
         paddingHorizontal: 15,
         paddingVertical: 2,
         borderRadius: 5,
-        marginLeft: 0
+        marginLeft: 15
     },
     circle: {
         width: 10,
@@ -151,7 +149,9 @@ export function ActivityItem(props:any) {
                             </View>
                         </View>
                         <View style={styles.section}>
-                            <RenderApplication applicationType={props.activity.activityDetails.applicationType} />
+                            <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                <RenderApplication applicationType={props.activity.activityDetails.applicationType} />
+                            </View>
                             <RenderStatus status={props.activity.activityDetails.status} />
                         </View>
                     </View>
