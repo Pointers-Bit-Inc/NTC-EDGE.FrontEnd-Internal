@@ -157,9 +157,9 @@ const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStat
                 <View style={styles.group9}>
 
                     <View style={styles.searcg}>
-                        <View style={styles.rect26}>
+                        <View style={[styles.rect26, { height: undefined, paddingHorizontal: 20, paddingVertical: 10 }]}>
 
-                            <View style={styles.rect7}>
+                            <View style={[styles.rect7, { marginTop: 0, width: '100%', marginLeft: 0 }]}>
                                 <View style={styles.iconRow}>
 
                                         <SearchIcon style={styles.icon}></SearchIcon>
@@ -198,7 +198,7 @@ const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStat
                         }
 
                     </View>
-                    <View style={styles.rect27}></View>
+                    <View style={[styles.rect27, { height: 5 }]}></View>
                 </View>
                 <ScrollView style={{flex: 1}} onScroll={(event) => {
 

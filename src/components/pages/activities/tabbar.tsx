@@ -27,7 +27,7 @@ export default function TabBar() {
 
 
         return (
-            <View style={{flexDirection: 'row'}}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', paddingHorizontal: 20, backgroundColor: 'white', paddingBottom: 15, paddingTop: 5, borderWidth: 1, borderColor: '#E5E5E5' }}>
                 {state.routes.map((route: any, index: number) => {
                     const {options} = descriptors[route.key];
 
@@ -61,7 +61,7 @@ export default function TabBar() {
                     };
 
 
-                    return (<View key={route.key} style={{ paddingLeft: 15, paddingRight: 15}}>
+                    return (<View key={route.key} style={{ flex: 1 }}>
                             <TouchableOpacity
                                 accessibilityRole="button"
                                 accessibilityState={isFocused ? {selected: true} : {}}
@@ -113,16 +113,7 @@ export default function TabBar() {
 
     return (
 
-            <Tab.Navigator  tabBar={(props) => {
-                return <View style={[styles.rect10, { height: undefined, paddingTop: 10 }]}>
-                    <View style={styles.group7Filler}></View>
-                    <View style={[styles.group27, { marginBottom: 10 }]}>
-                        <ActivityTab  {...props} />
-                    </View>
-                </View>
-            }
-
-            }>
+            <Tab.Navigator  tabBar={(props) => <ActivityTab  {...props} />}>
                 <Tab.Screen  options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
