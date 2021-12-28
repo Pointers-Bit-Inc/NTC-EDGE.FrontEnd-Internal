@@ -16,7 +16,7 @@ import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
-import { setSelectedChannel, addChannel, updateChannel, removeChannel, setMeetings } from 'src/reducers/channel/actions';
+import { setSelectedChannel, addChannel, updateChannel, removeChannel, setMeetings, removeSelectedMessage } from 'src/reducers/channel/actions';
 import { SearchField } from '@components/molecules/form-fields';
 import { ChatItem } from '@components/molecules/list-item';
 import { VideoIcon, WriteIcon, DeleteIcon } from '@components/atoms/icon';
@@ -153,6 +153,7 @@ const ChatList = ({ navigation }:any) => {
     const sortedChannel = lodash.orderBy(channelList, 'updatedAt', 'desc');
     return sortedChannel;
   });
+  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
   const {
     channelSubscriber,
     initializeFirebaseApp,
@@ -366,6 +367,9 @@ const ChatList = ({ navigation }:any) => {
                   onPress={() => {
                     dispatch(setSelectedChannel(item));
                     dispatch(setMeetings([]));
+                    if (selectedMessage && selectedMessage.channelId !== item._id) {
+                      dispatch(removeSelectedMessage());
+                    }
                     navigation.navigate('ViewChat', item)
                   }}
                 />

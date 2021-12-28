@@ -63,11 +63,14 @@ export default function QrCodeScan(props: any) {
         }
     };
     if (hasPermission === null) {
-
-        return <Text>Requesting for camera permission</Text>;
+        return <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 16, color: 'white' }}>Requesting for camera permission</Text>
+        </View>;
     }
     if (hasPermission === false) {
-        return <Text>No access to camera</Text>;
+        return <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 16, color: 'white' }}>No access to camera</Text>
+        </View>;
     }
     return (
         <View style={styles.container}>
@@ -96,7 +99,7 @@ export default function QrCodeScan(props: any) {
                 <View style={styles.group1}>
                     <View style={styles.rect1}>
                        <UploadIcon style={styles.icon1}/>
-                        <Text style={styles.generateQrCode1}>Generate QR Code</Text>
+                        <Text style={styles.generateQrCode1}>Upload QR Code</Text>
                     </View>
                 </View>
             </View>

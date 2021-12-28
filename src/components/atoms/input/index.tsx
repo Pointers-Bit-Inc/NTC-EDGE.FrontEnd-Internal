@@ -33,6 +33,7 @@ interface Props {
 
 export type TextInputRef =  {
   blur: any,
+  focus: any,
 }
 
 const Input: ForwardRefRenderFunction<TextInputRef, Props> = ({
@@ -45,7 +46,8 @@ const Input: ForwardRefRenderFunction<TextInputRef, Props> = ({
 }, ref) => {
   const inputRef:any = useRef(null);
   useImperativeHandle(ref, () => ({
-    blur: inputRef.current.blur,
+    blur: () => inputRef.current.blur(),
+    focus: () => inputRef.current.focus(),
   }));
   return (
     <TextInput
