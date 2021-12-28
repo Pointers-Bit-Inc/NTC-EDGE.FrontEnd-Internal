@@ -54,7 +54,8 @@ function Approval(props: any){
                 show={showAlert}
                 showProgress={false}
                 title="Confirm?"
-                message={"are you sure you want to approve?"}
+                message={"Are you sure you want to approve this application?"}
+                messageStyle={{ textAlign: 'center' }}
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={false}
                 showCancelButton={true}
@@ -88,13 +89,13 @@ function Approval(props: any){
                             {props.isCashier ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED'}
                         </Text>
                         <View style={styles.group2}>
-                            <View style={[styles.element, {marginBottom: 5}]}>
+                            {/* <View style={[styles.element, {marginBottom: 5}]}>
                                 <Dropdown value={cashier}  onChangeValue={(value: any) => {
                                     setCashier(value)}
                                 }
                                             placeholder={{}}
                                             items={pickedCashier}></Dropdown>
-                            </View>
+                            </View> */}
                             <InputField
                                 style={{ fontWeight: 'normal' }}
                                 outlineStyle={{

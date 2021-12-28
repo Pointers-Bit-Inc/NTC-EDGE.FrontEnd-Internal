@@ -201,7 +201,11 @@ const ChatView = ({ navigation, route }:any) => {
   useEffect(() => {
     if (rendered) {
       setInputText(selectedMessage?.message || '');
-      inputRef.current?.blur();
+      if (selectedMessage._id) {
+        setTimeout(() => inputRef.current?.focus(), 500);
+      } else {
+        inputRef.current?.blur();
+      }
     }
   }, [selectedMessage, rendered]);
 

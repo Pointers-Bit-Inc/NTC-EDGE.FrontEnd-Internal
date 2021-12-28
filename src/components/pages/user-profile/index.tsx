@@ -8,7 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {setUser} from "../../../reducers/user/actions";
 import {Ionicons} from "@expo/vector-icons";
-
+import ProfileImage from "@components/atoms/image/profile";
 
 const UserProfile = (props: any) => {
 
@@ -201,8 +201,12 @@ const UserProfile = (props: any) => {
                                 style={{width: 100, height: 100, borderRadius: 50}}
                                 source={{uri: userProfileForm[PROFILE_IMAGE_INDEX].value}}
                                 resizeMode={"cover"}/>
-                            : <Image style={{width: 100, height: 100, borderRadius: 50}}
-                                     source={require('@assets/favicon.png')}/>}
+                            : <ProfileImage
+                                size={100}
+                                textSize={26}
+                                image={user.image}
+                                name={`${user.firstName} ${user.lastName}`}
+                            />}
                         <Text style={[styles.change2]}>Change</Text>
                     </View>
                 </TouchableOpacity>
@@ -239,13 +243,13 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(0,65,172,1)"
     },
     group: {
-        width: 330,
+        width: '100%',
         height: 24,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
         marginTop: 54,
-        marginLeft: 23
+        paddingHorizontal: 15,
     },
     icon: {
         color: "rgba(255,255,255,1)",
@@ -286,7 +290,7 @@ const styles = StyleSheet.create({
     change2: {
         position: "absolute",
         color: "rgba(255,255,255,1)",
-        marginTop: 58,
+        bottom: 15,
         marginLeft: 26
     },
     rect2Stack: {
