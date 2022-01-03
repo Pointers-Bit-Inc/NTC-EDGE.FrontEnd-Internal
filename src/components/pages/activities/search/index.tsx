@@ -7,10 +7,11 @@ import {
 } from "react-native";
 import HistoryIcon from "@assets/svg/historyIcon";
 import CloseIcon from "@assets/svg/close";
-import {styles} from "@pages/activities/search/styles";
+
 import _ from "lodash";
 import {SearchActivity} from "@pages/activities/search/searchActivity";
 
+import {styles} from '@pages/activities/search/styles'
 
 function Search(props: any) {
 

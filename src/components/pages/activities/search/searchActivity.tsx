@@ -1,9 +1,10 @@
 import React, {useEffect, useRef} from "react";
-import {Animated, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {Animated, Dimensions, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
 import BackSpaceIcon from "@assets/svg/backspace";
 import CloseCircleIcon from "@assets/svg/closeCircle";
 import SearchLoading from "@assets/svg/searchLoading";
 import {styles} from "@pages/activities/search/styles";
+const {height} = Dimensions.get('window');
 
 export function SearchActivity(props: { onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const inputRef = useRef(null);
