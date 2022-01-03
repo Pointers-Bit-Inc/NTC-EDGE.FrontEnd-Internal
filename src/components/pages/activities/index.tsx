@@ -5,19 +5,20 @@ import {styles} from "@pages/activities/styles";
 import Collapsible from "react-native-collapsible";
 import {DATE_ADDED} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {addActivity, setActivity, setVisible} from "../../../reducers/activity/actions";
+import {setNotPinnedApplication, setPinnedApplication} from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
 import {
     checkFormatIso,
 } from "@pages/activities/script";
-import {Activities} from "@pages/activities/interface";
+import {Activities, Application} from "@pages/activities/interface";
 import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import {BASE_URL} from "../../../services/config";
 import ProfileImage from "@components/atoms/image/profile";
+import { setVisible } from "../../../reducers/activity/actions";
 
 
 export default function ActivitiesPage(props:any) {
@@ -26,46 +27,11 @@ export default function ActivitiesPage(props:any) {
 
 
 const user = useSelector((state: RootStateOrAny) => state.user);
-    const {selectedChangeStatus, activities} = useSelector((state: RootStateOrAny) => state.activity)
+    const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
+const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const dispatch = useDispatch()
-
-
-    useEffect(() => {
-        const config = {
-            headers: {
-                Authorization: "Bearer ".concat(user.sessionToken)
-            }
-        }
-        let res: any = [];
-        dispatch(setActivity([]))
-        axios.get(BASE_URL + '/activities',config).then( (response) => {
-                [...response.data].map(async (item) => {
-                    await axios.get(BASE_URL + '/applications/' + item.activityDetails.application._id, config).then((i) => {
-                        item.activityDetails.paymentStatus = i.data.paymentStatus
-                        item.activityDetails.status = i.data.status
-                        dispatch(addActivity(item))
-                    })
-                })
-
-            }).then((r)=>{
-
-            }).catch((err) =>{
-                console.log(err)
-            })
-
-
-    }, [])
-
-    const [searchTerm, setSearchTerm] = useState('');
-    const [currentPage, setCurrentPage] = useState(1)
-    const [perPage, setPerPage] = useState(10)
-    const [offset, setOffset] = useState((currentPage - 1) * perPage)
-    const [totalPages, setTotalPages] = useState(0)
-    const [numberCollapsed, setNumberCollapsed] = useState<number[]>([])
-    const [isPinnedActivity, setIsPinnedActivity] = useState(0)
-
-    const usersList = useMemo(() => {
-        setTotalPages(Math.ceil(activities.length / 10));
+    const ispinnedApplications = (applications: any) =>{
+        setTotalPages(Math.ceil(applications.length / 10));
         const sortByDate = (arr: any) => {
             const sorter = (a: any, b: any) => {
                 return new Date(checkFormatIso(a.createdAt, "-")).getTime() - new Date(checkFormatIso(b.createdAt, "-")).getTime();
@@ -77,9 +43,9 @@ const user = useSelector((state: RootStateOrAny) => state.user);
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
-        const list = (selectedChangeStatus?.indexOf(DATE_ADDED) != -1 ? sortByDate(activities) : activities).filter((item: Activities) => {
-            return item?.activityDetails?.application?.applicant?.user?.firstName.includes(searchTerm) &&
-                (selectedClone?.length ? selectedClone.indexOf(item.activityDetails.status) != -1 : true)
+        const list = (selectedChangeStatus?.indexOf(DATE_ADDED) != -1 ? sortByDate(applications) : applications).filter((item: Application) => {
+            return item?.applicant?.user?.firstName.includes(searchTerm) &&
+                (selectedClone?.length ? selectedClone.indexOf(item.status) != -1 : true)
         });
         setIsPinnedActivity(0)
         const groups = list.reduce((groups: any, activity: any) => {
@@ -106,9 +72,49 @@ const user = useSelector((state: RootStateOrAny) => state.user);
         }
         setNumberCollapsed(a)
         return groupArrays.slice(0, currentPage * 10);
-    }, [searchTerm, selectedChangeStatus?.length, activities?.length, currentPage])
+    }
+
+    useEffect(() => {
+        const config = {
+            headers: {
+                Authorization: "Bearer ".concat(user.sessionToken)
+            }
+        }
+        let res: any = [];
+        dispatch(setNotPinnedApplication([]))
+        dispatch(setPinnedApplication([]))
+
+        axios.get(BASE_URL + '/applications/notpinned',config).then((response) =>{
+
+            dispatch(setNotPinnedApplication(response.data))
+        }).catch((err) =>{
+            console.log(err)
+        })
+        axios.get(BASE_URL + '/applications/pinned',config).then((response) =>{
+            dispatch(setPinnedApplication(response.data))
+        }).catch((err) =>{
+            console.log(err)
+        })
 
 
+
+    }, [])
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1)
+    const [perPage, setPerPage] = useState(10)
+    const [offset, setOffset] = useState((currentPage - 1) * perPage)
+    const [totalPages, setTotalPages] = useState(0)
+    const [numberCollapsed, setNumberCollapsed] = useState<number[]>([])
+    const [isPinnedActivity, setIsPinnedActivity] = useState(0)
+
+    const pnApplications = useMemo(() => {
+        return ispinnedApplications(pinnedApplications)
+    }, [searchTerm, selectedChangeStatus?.length, pinnedApplications?.length, currentPage])
+
+    const notPnApplications = useMemo(() => {
+        return ispinnedApplications(notPinnedApplications)
+    }, [searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length, currentPage])
 
 
     const userPress = (index: number) => {
@@ -169,24 +175,27 @@ const user = useSelector((state: RootStateOrAny) => state.user);
 
                         </View>
 
-                        {isPinnedActivity > 0 &&
+                        {pnApplications.length > 0 &&
                         <View style={styles.pinnedgroup}>
                             <View style={styles.pinnedcontainer}>
                                 <Text style={styles.pinnedActivity}>Pinned activity</Text>
                             </View>
                         </View>}
 
-                        {isPinnedActivity > 0 && usersList.map((item, index) => {
-                            return item.activity.map((activity: any, i: number) => {
-                                return activity.isPinned &&  <ActivityItem
+                        { pnApplications.map((item, index) => {
 
-                                    activity={activity}
-                                    onPressUser={() => {
-                                        setDetails(activity)
-                                        setModalVisible(true)
-                                    }} index={i} swiper = {renderSwiper}/>
+
+                                return item.activity.map((act: any, i: number) => {
+                                    return  act?.assignedPersonnel == user?._id && <ActivityItem
+
+                                        activity={act}
+                                        onPressUser={() => {
+                                            setDetails({...act, ...{isPinned: true}})
+                                            setModalVisible(true)
+                                        }} index={i} swiper = {renderSwiper}/>
+                                })
                             })
-                        })}
+                        }
 
                     </View>
                     <View style={styles.rect27}></View>
@@ -219,12 +228,8 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                             scrollEventThrottle={16}
                 >
                     {
-                        usersList.map((item: any, index: number) => {
-                            let activities = item.activity.filter((item: any) => {
-                                return !item.isPinned
-                            })
-
-                            return activities.length ? <View key={index} style={styles.group26}>
+                        notPnApplications.map((item: any, index: number) => {
+                            return   <View key={index} style={styles.group26}>
                                 <TouchableWithoutFeedback onPress={() => userPress(index)}>
                                     <View style={styles.group25}>
                                         <View style={styles.rect34}>
@@ -250,19 +255,21 @@ const user = useSelector((state: RootStateOrAny) => state.user);
                                     </View>
                                 </TouchableWithoutFeedback>
                                 <Collapsible collapsed={numberCollapsed[index] == 1}>
-                                    {activities.map((activity: any, i: number) => {
-                                        return !activity.isPinned ? <ActivityItem
+                                    {item.activity.map((activity: any, i: number) => {
+                                        return  <ActivityItem
                                             key={i}
+                                            role={user?.role?.key}
                                             activity={activity}
+                                            currentUser={user}
                                             onPressUser={() => {
-                                            setDetails(activity)
+                                            setDetails({...activity, ...{isPinned: false}})
                                             setModalVisible(true)
-                                        }} index={i} swiper={renderSwiper}/> : false
+                                        }} index={i} swiper={renderSwiper}/>
                                     })}
                                     <View style={{ height: 30, backgroundColor: 'white', marginTop: -1 }} />
                                 </Collapsible>
 
-                            </View> : false
+                            </View>
                         })
                     }
                 </ScrollView>

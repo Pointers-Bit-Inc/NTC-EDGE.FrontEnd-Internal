@@ -61,6 +61,7 @@ interface Props {
 
 export type TextInputRef =  {
   blur: any,
+  focus: any,
 }
 
 const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
@@ -93,7 +94,8 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
     onBlur();
   };
   useImperativeHandle(ref, () => ({
-    blur: inputRef.current.blur,
+    blur: () => inputRef.current.blur(),
+    focus: () => inputRef.current.focus(),
   }));
   return (
     <View style={[styles.container, containerStyle]}>

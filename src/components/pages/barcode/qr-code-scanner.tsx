@@ -7,7 +7,8 @@ import axios from "axios";
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import QrScanCodeIcon from "@assets/svg/qrCodeScanIcon";
 import UploadIcon from "@assets/svg/uploadQrCode";
-
+import QrBasicInfo from "@pages/barcode/basicinfo";
+import {RootStateOrAny, useSelector} from "react-redux";
 const finderWidth: number = 280;
 const finderHeight: number = 230;
 const width = Dimensions.get('window').width;
@@ -15,10 +16,14 @@ const height = Dimensions.get('window').height;
 const viewMinX = (width - finderWidth) / 2;
 const viewMinY = (height - finderHeight) / 2;
 export default function QrCodeScan(props: any) {
-
+    const user = useSelector((state: RootStateOrAny) => state.user);
     const [hasPermission, setHasPermission] = useState<boolean | null>(null);
     const [type, setType] = useState<any>(BarCodeScanner.Constants.Type.back);
     const [scanned, setScanned] = useState<boolean>(false);
+    const [visible, setVisible] = useState(false)
+    const onDismiss = () =>{
+        setVisible(false)
+    }
     useEffect(() => {
         (async () => {
             const {status} = await BarCodeScanner.requestPermissionsAsync();
@@ -26,6 +31,7 @@ export default function QrCodeScan(props: any) {
         })();
     }, []);
     const handleBarCodeScanned = (scanningResult: BarCodeScannerResult) => {
+        setVisible(true)
         const {type, data, bounds: {origin} = {}} = scanningResult;
         if (!scanned && (origin ? 1: 0)) {
 
@@ -33,14 +39,21 @@ export default function QrCodeScan(props: any) {
                     const {x, y}: any = origin;
                     if (x >= viewMinX && y >= viewMinY && x <= (viewMinX + finderWidth / 2) && y <= (viewMinY + finderHeight / 2)) {
                         setScanned(true);
-                        alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+                        axios.get(`https://ntc.astrotechenergy.com/qr/` + '61c52b526929f6099c48aa4d', { headers: { Authorization: "Bearer".concat(user.sessionToken) } }).then((response) =>{
+                            setVisible(true)
+
+                            props.onScanned()
+                        }).catch((e) =>{
+                            console.log(e)
+                        })
                     }
                 }
 
         }else{
-            axios.get(`https://private-anon-3f439e7212-ntcedgeustp.apiary-mock.com/services/scan-qr`, { headers: { Authorization: `Bearer ` } }).then((response) =>{
 
-                alert(`Bar code with type ${response?.data?.name} has been scanned!`);
+            axios.get(`https://ntc.astrotechenergy.com/qr/` + '61c52b526929f6099c48aa4d', { headers: { Authorization: `Bearer ` } }).then((response) =>{
+
+
                 props.onScanned()
             }).catch((e) =>{
                 console.log(e)
@@ -50,11 +63,14 @@ export default function QrCodeScan(props: any) {
         }
     };
     if (hasPermission === null) {
-
-        return <Text>Requesting for camera permission</Text>;
+        return <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 16, color: 'white' }}>Requesting for camera permission</Text>
+        </View>;
     }
     if (hasPermission === false) {
-        return <Text>No access to camera</Text>;
+        return <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 16, color: 'white' }}>No access to camera</Text>
+        </View>;
     }
     return (
         <View style={styles.container}>
@@ -66,17 +82,24 @@ export default function QrCodeScan(props: any) {
                 <BarcodeMask edgeColor="#62B1F6" showAnimatedLine/>
 
             </BarCodeScanner>
+
+
+
+            {visible && <QrBasicInfo dismiss={onDismiss} />}
             <View style={styles.group2}>
-                <View style={styles.group}>
-                    <View style={styles.rect}>
-                        <QrScanCodeIcon  style={styles.icon}></QrScanCodeIcon>
-                        <Text style={styles.generateQrCode}>Generate QR Code</Text>
+                <TouchableOpacity onPress={handleBarCodeScanned}>
+                    <View style={styles.group}>
+                        <View style={styles.rect}>
+                            <QrScanCodeIcon  style={styles.icon}></QrScanCodeIcon>
+                            <Text style={styles.generateQrCode}>Generate QR Code</Text>
+                        </View>
                     </View>
-                </View>
+                </TouchableOpacity>
+
                 <View style={styles.group1}>
                     <View style={styles.rect1}>
                        <UploadIcon style={styles.icon1}/>
-                        <Text style={styles.generateQrCode1}>Generate QR Code</Text>
+                        <Text style={styles.generateQrCode1}>Upload QR Code</Text>
                     </View>
                 </View>
             </View>

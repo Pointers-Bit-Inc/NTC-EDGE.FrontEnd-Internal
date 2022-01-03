@@ -11,7 +11,7 @@ const ApplicationDetails = (props:any) =>{
                 </View>
                 <Text style={styles.applicationType}>{props?.applicantType}</Text>
                 <Text style={styles.service}>{props?.service?.name}</Text>
-                {props.selectedType.map((type:any, idx:number) => {
+                {props?.selectedType?.map((type:any, idx:number) => {
                     return <Text key={idx} style={styles.text}>
                         {type.name} {type.selectedItems.map((item:string, index:number)=>{
                             return <Text key={index}>{`\n\u2022${item}`}</Text>
@@ -29,18 +29,17 @@ const ApplicationDetails = (props:any) =>{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center"
+        paddingHorizontal: 15,
     },
     group2: {
     },
     rect: {
-        height: 27,
+        padding: 10,
+        paddingVertical: 5,
         backgroundColor: "#E6E6E6"
     },
     file: {
         color: "rgba(86,89,97,1)",
-        marginTop: 6,
-        marginLeft: 13
     },
     applicationType: {
         fontWeight: "bold",
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 10,
         backgroundColor: "#E6E6E6",
-        marginTop: 5
+        marginTop: 15
     }
 });
 export default ApplicationDetails

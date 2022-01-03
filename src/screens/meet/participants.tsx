@@ -150,6 +150,8 @@ const Participants = ({ navigation }:any) => {
           />
         )}
         keyExtractor={(item) => item._id}
+        ListFooterComponent={() => <View style={{ width: 20 }} />}
+        showsHorizontalScrollIndicator={false}
       />
       <View style={styles.contactTitle}>
         <ArrowDownIcon

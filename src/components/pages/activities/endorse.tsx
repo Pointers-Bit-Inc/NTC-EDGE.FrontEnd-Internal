@@ -1,19 +1,27 @@
 import React, {useEffect, useState} from "react";
-import {StyleSheet, View, Text, TouchableOpacity, Modal, Alert} from "react-native";
+import {StyleSheet, View, Text, TouchableOpacity, Modal, Alert, Platform, KeyboardAvoidingView, Dimensions} from "react-native";
 import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import Dropdown from "@atoms/dropdown";
+import { InputField } from "@components/molecules/form-fields";
 import axios from "axios";
 import EndorseToIcon from "@assets/svg/endorseTo";
 import {BASE_URL} from "../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
 import {DIRECTOR, EVALUATOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import AwesomeAlert from "react-native-awesome-alerts";
+import useKeyboard from 'src/hooks/useKeyboard';
+
+const { height } = Dimensions.get('window');
+
 function Endorsed(props:any) {
 
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [pickedEndorsed, setPickedEndorsed] = useState<any[]>()
+    const [text, setText] = useState("")
     const [endorsed, setEndorsed] = useState()
     const [showAlert, setShowAlert] = useState(false)
+    const isKeyboardVisible = useKeyboard();
+
     useEffect(()=>{
         axios.get(BASE_URL + '/users' ,
             {
@@ -22,7 +30,7 @@ function Endorsed(props:any) {
                 }
             }).then((response)=>{
             const filterResponse = [...response.data].filter((item) =>{
-                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1)
+                return ([DIRECTOR].indexOf(item?.role?.key) != -1)
             })
 
             const res = filterResponse.map((item) =>{
@@ -36,12 +44,12 @@ function Endorsed(props:any) {
 
         })
     }, [])
-    const onEndorseConfirm = () =>{
+    const onEndorseConfirm = () => {
+        props.remarks({ endorseId: endorsed, remarks: text })
 
-        setShowAlert(true)
+       setShowAlert(true)
 
     }
-
 
     return (
         <Modal
@@ -69,46 +77,76 @@ function Endorsed(props:any) {
                     setShowAlert(false)
                 }}
                 onConfirmPressed={() => {
-                    props.onChangeApplicationStatus(FOREVALUATION)
+                    props.onChangeApplicationStatus({status: FOREVALUATION })
                     props.onDismissed()
                     setShowAlert(false)
                 }}
             />
-        <View style={styles.container}>
-            <View style={styles.rectFiller}></View>
-            <View style={styles.rect}>
-                <View style={styles.iconColumn}>
-                    <TouchableOpacity onPress={()=>{
-                        props.onDismissed()
-                    }}>
-                        <Ionicons name="md-close" style={styles.icon}></Ionicons>
-                    </TouchableOpacity>
-                    <View style={styles.group}>
-                        <View style={styles.icon2Row}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.container}
+            >
+                <View style={styles.rectFiller}></View>
+                <View style={styles.rect}>
+                    <View style={styles.iconColumn}>
+                        <TouchableOpacity onPress={()=>{
+                            props.onDismissed()
+                        }}>
+                            <Ionicons name="md-close" style={styles.icon}></Ionicons>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ paddingHorizontal: 20 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
                             <EndorseToIcon style={styles.icon2}/>
                             <Text style={styles.endorseTo}>Endorse to</Text>
                         </View>
+                        <View
+                            style={{
+                                backgroundColor: "rgba(255,255,255,1)",
+                                borderWidth: 1,
+                                borderColor: "rgba(202,210,225,1)",
+                                borderRadius: 6,
+                                padding: 10,
+                                width: '100%',
+                            }}
+                        >
+                            <Dropdown
+                                style={{ width: '100%' }}
+                                value={endorsed}
+                                onChangeValue={(value: any) => {
+                                    setEndorsed(value)}
+                                }
+                                placeholder={{}}
+                                items={pickedEndorsed}
+                            />
+                        </View>
+                        <InputField
+                            style={{ fontWeight: 'normal' }}
+                            outlineStyle={{
+                                borderColor: "rgba(202,210,225,1)",
+                                paddingTop: 5,
+                                height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.25
+                            }}
+                            placeholder={'Remarks'}
+                            multiline={true}
+                            value={text}
+                            onChangeText={setText}
+                        />
                     </View>
-                    <View  style={[styles.rect5]}>
-                        <Dropdown value={endorsed} onChangeValue={(value: any) => {
-                            setEndorsed(value)}
-                        }
-                                  placeholder={{}}
-                                  items={pickedEndorsed}></Dropdown>
+                    <View
+                        style={{ width: '100%', paddingHorizontal: 20, paddingBottom: 25, }}
+                    >
+                        <TouchableOpacity onPress={() =>{
+
+                            onEndorseConfirm()
+                        }}>
+                            <View style={styles.confirmButton}>
+                                <Text style={styles.confirm}>Confirm</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
-
                 </View>
-                <View style={styles.iconColumnFiller}></View>
-                <View style={styles.rect6}>
-                    <TouchableOpacity onPress={() =>{
-                        onEndorseConfirm()
-                    }}>
-                        <Text style={styles.confirm}>Confirm</Text>
-                    </TouchableOpacity>
-
-                </View>
-            </View>
-        </View>
+            </KeyboardAvoidingView>
         </Modal>
     );
 }
@@ -120,14 +158,15 @@ const styles = StyleSheet.create({
         flex: 1
     },
     rect: {
-        height: 540,
         backgroundColor: "rgba(255,255,255,1)",
-        borderRadius: 17
+        borderRadius: 15,
+        borderBottomRightRadius: 0,
+        borderBottomLeftRadius: 0,
     },
     icon: {
         color: "rgba(128,128,128,1)",
         fontSize: 25,
-        marginLeft: 4
+        paddingHorizontal: 10,
     },
     group: {
         width: 138,
@@ -140,7 +179,6 @@ const styles = StyleSheet.create({
         fontSize: 30
     },
     endorseTo: {
-
         color: "#121212",
         fontSize: 20,
         marginLeft: 12,
@@ -162,25 +200,26 @@ const styles = StyleSheet.create({
         marginTop:  9,
     },
     iconColumn: {
-        width: 337,
-        marginTop: 13,
-        marginLeft: 16
+        width: '100%',
+        marginTop: 10,
     },
     iconColumnFiller: {
         flex: 1
     },
     rect6: {
-        height: 43,
-        backgroundColor: "#2f5cfa",
-        borderRadius: 6,
+        paddingHorizontal: 15,
         marginBottom: 90,
-        marginLeft: 23,
-        marginRight: 23
+        width: '100%',
     },
     confirm: {
         color: "rgba(255,255,255,1)",
-        marginTop: 14,
-        marginLeft: 140
+    },
+    confirmButton: {
+        backgroundColor: "#2f5cfa",
+        borderRadius: 6,
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
     }
 });
 

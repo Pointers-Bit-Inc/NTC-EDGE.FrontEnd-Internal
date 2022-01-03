@@ -1,34 +1,89 @@
 import React, {useState} from "react";
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {StyleSheet, TouchableOpacity, View} from "react-native";
 import {Entypo} from "@expo/vector-icons";
 import PaymentModal from "@pages/activities/application/paymentModal/index";
+import Text from "@components/atoms/text";
 const Payment = (props:any) => {
     const [visibleModal, setVisibleModal] = useState(false)
     const onDismissed = () =>{
         setVisibleModal(false)
     }
 
+    const getTotal = (soa) => {
+        let total = 0;
+        soa.map(s => total += s.amount);
+        return total;
+    }
+
     return <>
         <View style={styles.container}>
-            <View style={styles.group}>
-                <Text style={styles.statementOfAccount}>Statement of Account</Text>
-
+            <View style={{ backgroundColor: "#E6E6E6", padding: 5, alignItems: 'center' }}>
+                <Text
+                    weight="600"
+                    color="#37405B"
+                    fontSize={14}
+                >
+                    Statement of Account
+                </Text>
             </View>
-            <View style={styles.group4}>
-                <View style={styles.rect3}></View>
-
-            </View>
-            <View style={styles.group2}>
-                <Text style={styles.billingDetails}>Billing details</Text>
-                <View style={styles.rect4Stack}>
-                    <View style={styles.rect4}>
-                        { props.soa.map((soa: any, index:number)=>{
-                            return <Text key={index}>{soa.item}:{soa.amount} </Text>
-                        })
-
-                        }
-                    </View>
-
+            <View style={{ paddingVertical: 10, marginTop: 20 }}>
+                <View
+                    style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+                >
+                    <Text
+                        weight="600"
+                        color="#37405B"
+                        fontSize={14}
+                    >
+                        Particular
+                    </Text>
+                    <Text
+                        weight="600"
+                        color="#37405B"
+                        fontSize={14}
+                    >
+                        Amount
+                    </Text>
+                </View>
+                {
+                    props.soa.map(soa => (
+                        <View
+                            key={soa._id}
+                            style={styles.soaItem}
+                        >
+                            <Text
+                                color="#37405B"
+                                fontSize={14}
+                            >
+                                {soa.item}
+                            </Text>
+                            <Text
+                                color="#37405B"
+                                fontSize={14}
+                            >
+                                P{soa.amount}
+                            </Text>
+                        </View>
+                    ))
+                }
+                <View
+                    style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15 }}
+                >
+                    <Text
+                        weight="600"
+                        color="#37405B"
+                        fontSize={16}
+                        style={{ marginRight: 15 }}
+                    >
+                        Total
+                    </Text>
+                    <Text
+                        weight="600"
+                        color="#37405B"
+                        fontSize={16}
+                    >
+                        P{props.totalFee}
+                    </Text>
                 </View>
             </View>
             <View style={styles.rect5}></View>
@@ -56,7 +111,6 @@ const Payment = (props:any) => {
                     </View>
                 </View>
             </View>
-
         </View>
         <PaymentModal visible={visibleModal} onDismissed={onDismissed}  />
     </>
@@ -65,17 +119,25 @@ const Payment = (props:any) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignSelf: "center",
+        paddingHorizontal: 15,
+        marginBottom: 15
     },
     group: {
-
         width: 375,
         marginLeft: 20
     },
     statementOfAccount: {
-        fontWeight: "bold",
-        color: "#121212",
-        fontSize: 16
+        fontWeight: "600",
+        color: "#37405B",
+        fontSize: 14
+    },
+    soaItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingTop: 15,
+        paddingBottom: 5,
+        borderBottomWidth: 1,
+        borderBottomColor: '#D1D1D6',
     },
     rect2: {
         width: 328,
@@ -192,7 +254,7 @@ const styles = StyleSheet.create({
         marginRight: -1
     },
     rect5: {
-        width: 375,
+        width: '100%',
         height: 10,
         backgroundColor: "#E6E6E6",
         marginTop: 40
