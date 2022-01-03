@@ -70,9 +70,7 @@ export const styles = StyleSheet.create({
     },
     textInput: {
         color: "rgba(149,157,175,1)",
-        width: 272,
-        height: 40,
-        marginLeft: 7
+        justifyContent: "center"
     },
     iconRow: {
         height: 40,
@@ -103,7 +101,6 @@ export const styles = StyleSheet.create({
         backgroundColor: "rgba(255,255,255,1)"
     },
     group24: {
-        width: 59,
         height: 57
     },
     pinnedgroup: {
@@ -119,11 +116,23 @@ export const styles = StyleSheet.create({
         marginLeft: 20
     },
     date: {
-        fontWeight: "bold",
-        top: 24,
-        left: 31,
+        alignItems: "center",
+        flexDirection:'row',
+
+        marginTop: 24,
+        left: 21,
         position: "absolute",
-        color: "rgba(87,98,121,1)"
+    },
+    dot:{
+        height: 6,
+        width: 6,
+        backgroundColor:  "#606A80",
+        borderRadius: 3
+    },
+    dateText:{
+        fontWeight: "500",
+        fontSize: 16,
+      color: "#606A80"
     },
     rect36: {
         top: 0,
@@ -133,8 +142,6 @@ export const styles = StyleSheet.create({
         position: "absolute"
     },
     dateStack: {
-        width: 100,
-        height: 57
     },
     group24Filler: {
         flex: 1,
@@ -406,6 +413,7 @@ export const styles = StyleSheet.create({
         marginTop: 1
     },
     icon3: {
+
         top: 4,
         left: 25,
         position: "absolute",

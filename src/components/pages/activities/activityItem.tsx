@@ -8,6 +8,7 @@ import FileIcon from "@assets/svg/file";
 import {formatDate, statusBackgroundColor, statusColor, statusDimension, statusIcon} from "@pages/activities/script";
 import {CASHIER} from "../../../reducers/activity/initialstate";
 import { text, outline } from 'src/styles/color';
+import Highlighter from "@pages/activities/search/highlighter";
 
 const styles = StyleSheet.create({
     container: {
@@ -123,12 +124,12 @@ const RenderApplication = ({ applicationType }:any) => {
 export function ActivityItem(props:any) {
     let  status = [CASHIER].indexOf(props.role) != -1 ? props.activity.paymentStatus : props.activity.status
     const userActivity = props.activity.applicant.user
-    
+
     return (
         <Swipeable
             key={props.index}
             renderRightActions={
-                (progress, dragX) => props.swiper(props.index, progress, dragX)
+                (progress, dragX) => props.swiper(props.index, progress, dragX, props.onPressUser)
             }
         >
             <TouchableOpacity onPress={props.onPressUser}>
@@ -148,16 +149,22 @@ export function ActivityItem(props:any) {
                                     size={14}
                                     numberOfLines={1}
                                 >
-                                    {`${userActivity?.firstName} ${userActivity.lastName}`}
+                                    <Highlighter
+                                        highlightStyle={{backgroundColor: '#BFD6FF'}}
+                                        searchWords={[props.searchQuery]}
+                                        textToHighlight= {`${userActivity?.firstName} ${userActivity.lastName}`}
+                                    />
+
                                 </Text>
                             </View>
                             <View style={styles.date}>
+
                                 <Text
                                     color={'#1F2022'}
                                     size={10}
                                     numberOfLines={1}
                                 >
-                                    {formatDate(props.activity.updatedAt)}
+                                   {formatDate(props.activity.updatedAt)}
                                 </Text>
                             </View>
                         </View>

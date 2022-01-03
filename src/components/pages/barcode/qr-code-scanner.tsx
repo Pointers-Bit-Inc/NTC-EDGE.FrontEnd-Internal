@@ -1,13 +1,14 @@
 import React, {useEffect, useState,} from 'react';
-import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {BarCodeScanner, BarCodeScannerResult} from 'expo-barcode-scanner';
 import BarcodeMask from 'react-native-barcode-mask';
-import Button from '@atoms/button';
 import axios from "axios";
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import QrScanCodeIcon from "@assets/svg/qrCodeScanIcon";
 import UploadIcon from "@assets/svg/uploadQrCode";
-import QrBasicInfo from "@pages/barcode/basicinfo";
+import * as ImagePicker from "expo-image-picker";
+import CloseIcon from "@assets/svg/close";
+import CheckMarkIcon from "@assets/svg/checkmark";
+import ErrorIcon from "@assets/svg/erroricon";
 import {RootStateOrAny, useSelector} from "react-redux";
 const finderWidth: number = 280;
 const finderHeight: number = 230;
@@ -17,13 +18,12 @@ const viewMinX = (width - finderWidth) / 2;
 const viewMinY = (height - finderHeight) / 2;
 export default function QrCodeScan(props: any) {
     const user = useSelector((state: RootStateOrAny) => state.user);
+    const [isVerified, setIsVerified] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+    const [isError, setIsError] = useState(false)
     const [hasPermission, setHasPermission] = useState<boolean | null>(null);
     const [type, setType] = useState<any>(BarCodeScanner.Constants.Type.back);
     const [scanned, setScanned] = useState<boolean>(false);
-    const [visible, setVisible] = useState(false)
-    const onDismiss = () =>{
-        setVisible(false)
-    }
     useEffect(() => {
         (async () => {
             const {status} = await BarCodeScanner.requestPermissionsAsync();
@@ -31,220 +31,477 @@ export default function QrCodeScan(props: any) {
         })();
     }, []);
     const handleBarCodeScanned = (scanningResult: BarCodeScannerResult) => {
-        setVisible(true)
-        const {type, data, bounds: {origin} = {}} = scanningResult;
-        if (!scanned && (origin ? 1: 0)) {
+
+        try {
+            setIsLoading(true)
+            const {type, data, bounds: {origin} = {}} = scanningResult;
+
+            if (!scanned && (origin ? 1: 0)) {
 
                 if(origin ? 1: 0){
                     const {x, y}: any = origin;
                     if (x >= viewMinX && y >= viewMinY && x <= (viewMinX + finderWidth / 2) && y <= (viewMinY + finderHeight / 2)) {
-                        setScanned(true);
-                        axios.get(`https://ntc.astrotechenergy.com/qr/` + '61c52b526929f6099c48aa4d', { headers: { Authorization: "Bearer".concat(user.sessionToken) } }).then((response) =>{
-                            setVisible(true)
-
-                            props.onScanned()
-                        }).catch((e) =>{
-                            console.log(e)
-                        })
+                        setIsLoading(false)
+                        setIsVerified(true)
+                        alert(`Bar code with type ${type} and data ${data} has been scanned!`);
                     }
                 }
 
-        }else{
+            }else{
+                axios.get(data, { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
 
-            axios.get(`https://ntc.astrotechenergy.com/qr/` + '61c52b526929f6099c48aa4d', { headers: { Authorization: `Bearer ` } }).then((response) =>{
+                    setIsLoading(false)
+                    setIsVerified(true)
+                }).catch((e) =>{
+                    setIsLoading(false)
+                    setIsError(true)
+                })
 
 
-                props.onScanned()
-            }).catch((e) =>{
-                console.log(e)
+            }
+        }catch (error) {
+            setIsLoading(false)
+        }
+
+    };
+    let openImagePickerAsync = async () => {
+        let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+            alert("Permission to access camera roll is required!");
+            return;
+        }
+        let picker = await ImagePicker.launchImageLibraryAsync()
+        return picker
+    }
+    const decode = async () => {
+        setIsLoading(true)
+        try {
+            openImagePickerAsync().then(async (r: any) => {
+                if(!r.uri) return setIsLoading(false)
+                const results = await BarCodeScanner.scanFromURLAsync(r.uri)
+                axios.get(results[0]?.data, { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
+                    setIsLoading(false)
+                    setIsVerified(true)
+                }).catch((e) =>{
+                    setIsLoading(false)
+                    setIsError(true)
+                })
+
             })
 
 
+        } catch (error) {
+            setIsLoading(false)
+            setIsError(true)
         }
-    };
+    }
     if (hasPermission === null) {
-        return <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: 16, color: 'white' }}>Requesting for camera permission</Text>
-        </View>;
+
+        return <Text>Requesting for camera permission</Text>;
     }
     if (hasPermission === false) {
-        return <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: 16, color: 'white' }}>No access to camera</Text>
-        </View>;
+        return <Text>No access to camera</Text>;
     }
     return (
         <View style={styles.container}>
             <BarCodeScanner onBarCodeScanned={handleBarCodeScanned}
                             type={type}
                             barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
-                            style={[StyleSheet.absoluteFillObject]}>
+                            style={[StyleSheet.absoluteFillObject, styles.container]}>
 
                 <BarcodeMask edgeColor="#62B1F6" showAnimatedLine/>
 
             </BarCodeScanner>
+            <View style={styles.group7}>
+                <View style={styles.header}>
+                    <View style={styles.rect}>
+                        <Text style={styles.qrReader}>QR Reader</Text>
+                    </View>
+                </View>
+                {isLoading && <View style={styles.group34}>
+                    <View style={styles.rect19}>
+                        <ActivityIndicator style={styles.icon2}/>
+                    </View>
+                </View>}
+                {isVerified && <View style={styles.group32}>
+                    <View style={styles.rect13}>
+                        <View style={styles.group31}>
+                            <View style={styles.group30}>
+                                <View style={styles.rect14}>
+                                    <View style={styles.group33}>
+                                        <View style={{width: "33.33%"}}>
+                                            <View style={styles.group12}>
+                                                <View style={styles.rect15}>
+                                                    <CheckMarkIcon></CheckMarkIcon>
+                                                </View>
+                                                <Text style={styles.verified}>Verified</Text>
+                                            </View>
+                                        </View>
 
 
-
-            {visible && <QrBasicInfo dismiss={onDismiss} />}
-            <View style={styles.group2}>
-                <TouchableOpacity onPress={handleBarCodeScanned}>
-                    <View style={styles.group}>
-                        <View style={styles.rect}>
-                            <QrScanCodeIcon  style={styles.icon}></QrScanCodeIcon>
-                            <Text style={styles.generateQrCode}>Generate QR Code</Text>
+                                        <TouchableOpacity onPress={() => setIsVerified(false)} style={styles.rect18}>
+                                            <CloseIcon style={{alignSelf: "flex-end"}}/>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={styles.rect17}></View>
+                            <View style={styles.group29}>
+                                <View style={styles.group17}>
+                                    <Text style={styles.examDetails}>BASIC INFO</Text>
+                                    <View style={styles.group18}>
+                                        <View style={styles.group19}>
+                                            <Text style={styles.name2}>Name:</Text>
+                                            <Text style={styles.address2}>Address:</Text>
+                                        </View>
+                                        <View style={styles.group20}>
+                                            <Text style={styles.name3}>Name:</Text>
+                                            <Text style={styles.address3}>Address:</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                                <View style={styles.group17}>
+                                    <Text style={styles.examDetails}>EXAM DETAILS</Text>
+                                    <View style={styles.group18}>
+                                        <View style={styles.group19}>
+                                            <Text style={styles.name2}>Venue:</Text>
+                                            <Text style={styles.address2}>Date:</Text>
+                                            <Text style={styles.address2}>Time:</Text>
+                                        </View>
+                                        <View style={styles.group20}>
+                                            <Text style={styles.name3}>Name:</Text>
+                                            <Text style={styles.address3}>Address:</Text>
+                                            <Text style={styles.address3}>Address:</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                                <View style={styles.group17}>
+                                    <Text style={styles.examDetails}>PAYMENT DETAILS</Text>
+                                    <View style={styles.group18}>
+                                        <View style={styles.group19}>
+                                            <Text style={styles.name2}>O.R. No.:</Text>
+                                            <Text style={styles.address2}>Amount::</Text>
+                                            <Text style={styles.address2}>Date:</Text>
+                                        </View>
+                                        <View style={styles.group20}>
+                                            <Text style={styles.name3}>Name:</Text>
+                                            <Text style={styles.address3}>Address:</Text>
+                                            <Text style={styles.address3}>Address:</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
                         </View>
                     </View>
-                </TouchableOpacity>
+                </View>}
+                {isError && <View style={styles.group11}>
+                    <View style={styles.group10}>
+                        <View style={styles.rect6}>
+                            <ErrorIcon></ErrorIcon>
+                        </View>
+                        <Text style={styles.invalidQrCode}>Invalid QR Code</Text>
+                        <View style={styles.group9}>
+                            <View style={styles.rect9}>
+                                <Text style={styles.pleaseTryAgain}>Please try again</Text>
+                            </View>
+                        </View>
+                        <View style={styles.group8}>
+                            <View style={styles.rect11}></View>
+                            <TouchableOpacity onPress={() => setIsError(false)} style={styles.rect12}>
+                                <Text style={styles.close}>CLOSE</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>}
+                <View style={styles.group6}>
+                    <View style={styles.group3}>
+                        <View style={styles.rect2}>
 
-                <View style={styles.group1}>
-                    <View style={styles.rect1}>
-                       <UploadIcon style={styles.icon1}/>
-                        <Text style={styles.generateQrCode1}>Upload QR Code</Text>
+                            <TouchableOpacity onPress={handleBarCodeScanned} style={styles.group2} >
+                                <QrScanCodeIcon  style={styles.icon}></QrScanCodeIcon>
+                                <Text style={styles.generateQrCode}>Generate QR Code</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={styles.group3}>
+                        <View style={styles.rect2}>
+                            <TouchableOpacity onPress={decode}  style={styles.group2}>
+                                <UploadIcon style={styles.icon}/>
+                                <Text style={styles.generateQrCode1}>Upload QR Code</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             </View>
         </View>
-        /*<View style={styles.container}>
-            <View style={styles.group1}>
-                <View style={styles.rect}>
-                    <View style={styles.iconRow}>
-                        <TouchableOpacity onPress={()=>{
-                            props.onBack()
-                        }}>
-                            <Ionicons name="md-arrow-back" style={styles.icon}></Ionicons>
-                        </TouchableOpacity>
 
-                        <View style={styles.rect2}></View>
-                        <Text style={styles.testTester}>Test Tester</Text>
-                    </View>
-                    <View style={styles.iconRowFiller}></View>
-                   <TouchableOpacity onPress={handleBarCodeScanned}>
-                        <Text style={styles.scanQr}>SCAN{"\n"}QR</Text>
-                   </TouchableOpacity>
-
-                </View>
-            </View>
-            <View style={{flex: 1}}>
-                <BarCodeScanner onBarCodeScanned={handleBarCodeScanned}
-                                type={type}
-                                barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
-                                style={[StyleSheet.absoluteFillObject, styles.container]}>
-
-                    <BarcodeMask edgeColor="#62B1F6" showAnimatedLine/>
-
-                </BarCodeScanner>
-            </View>
-        </View>*/
     );
 }
-
 const styles = StyleSheet.create({
+    rect19: {
+
+        justifyContent: "center",
+        flex: 1
+    },
+    icon2: {
+        color: "rgba(128,128,128,1)",
+        fontSize: 40,
+        alignSelf: "center"
+    },
+    group34:{
+        position: "absolute",
+        width: "100%",
+        height: "100%"
+    },
     container: {
         flex: 1
     },
-    group2: {
-        width: 335,
-        height: 100,
-        flexDirection: "row",
+    group7: {
+        width: "100%",
+        height: "95%",
+        alignItems: "center",
         justifyContent: "space-between",
-        marginTop: "auto",
         alignSelf: "center"
     },
-    group: {
+    header: {
+        height: 100,
+        width: "100%"
+    },
+    rect: {
+        height: 100,
+        backgroundColor: "rgba(0,65,172,1)"
+    },
+    qrReader: {
+        color: "rgba(255,255,255,1)",
+        fontSize: 18,
+        textAlign: "center",
+        marginTop: 50
+    },
+    group32: {
+        width: 350,
+        zIndex: 1,
+        height: height < 668 ? 480 : 495,
+        position: "absolute",
+        top: "19%",
+        borderRadius: 14
+    },
+    rect13: {
+        backgroundColor: "rgba(255,255,255,1)",
+        borderRadius: 14,
+        flex: 1
+    },
+    group31: {
+        height: 443,
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
+    group30: {
+        height: 50,
+        alignSelf: "stretch"
+    },
+    rect14: {
+        height: 50,
+        backgroundColor: "rgba(0,171,118,0.1)",
+        borderTopLeftRadius: 14,
+        borderTopRightRadius: 14
+    },
+    group33: {
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        alignItems: "center",
+        flex: 1
+    },
+    group12: {
+        width: 78,
+        height: 16,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        alignSelf: "center",
+        margin: 0
+    },
+    rect15: {
+        width: 15,
+        height: 15,
+        justifyContent: "center"
+    },
+    verified: {
+        fontWeight: "bold",
+        color: "rgba(0,171,118,1)",
+        textAlign: "center",
+        letterSpacing: 0
+    },
+    rect18: {
+        width: "33.33%",
+        paddingRight: "5%",
+        margin: 0,
+    },
+    rect17: {
+        width: 150,
+        height: 150,
+        backgroundColor: "#E6E6E6",
+        borderRadius: 5
+    },
+    group29: {
+        width: 350,
+        height: 202,
+        justifyContent: "flex-start",
+    },
+    group17: {
+        width: 150,
+        paddingBottom: 10,
+        justifyContent: "space-between",
+        marginLeft: 20
+    },
+    examDetails: {
+        fontWeight: "bold",
+        color: "#121212",
+        textAlign: "left",
+        lineHeight: 22
+    },
+    group18: {
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    group19: {
+        height: 29,
+        justifyContent: "space-between"
+    },
+    name2: {
+        color: "#606A80"
+    },
+    address2: {
+        color: "#606A80"
+    },
+    group20: {
+        justifyContent: "space-between"
+    },
+    name3: {
+        color: "#121212"
+    },
+    address3: {
+        color: "#121212"
+    },
+    group11: {
+        width: 337,
+        height: 250,
+        alignSelf: "center",
+        justifyContent: "flex-end",
+        borderRadius: 14,
+        backgroundColor: "rgba(255,255,255,1)",
+    },
+    group10: {
+        height: 218,
+        justifyContent: "space-between",
+        alignItems: "center",
+        alignSelf: "stretch"
+    },
+    rect6: {
+        width: 60,
+        height: 60,
+        alignSelf: "center"
+    },
+    invalidQrCode: {
+        color: "#121212",
+        fontSize: 17,
+        textAlign: "center",
+        lineHeight: 28,
+        alignSelf: "center"
+    },
+    group9: {
+        width: 302,
+        height: 22,
+        alignSelf: "center"
+    },
+    rect9: {
+        height: 22,
+        justifyContent: "center",
+    },
+    pleaseTryAgain: {
+        color: "#121212",
+        textAlign: "center",
+    },
+    group8: {
+        height: 66,
+        alignSelf: "stretch"
+    },
+    rect11: {
+        height: 1,
+        backgroundColor: "rgba(217,219,233,1)",
+        alignSelf: "stretch"
+    },
+    rect12: {
+        top: 0,
+        left: 0,
+        position: "absolute",
+        right: 0,
+        bottom: 0,
+        justifyContent: "center"
+    },
+    close: {
+        color: "#121212",
+        height: 16,
+        width: 80,
+        textAlign: "center",
+        alignSelf: "center"
+    },
+    group6: {
+        height: 70,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: 335,
+        alignSelf: "center"
+    },
+    group3: {
         width: 160,
         height: 70
     },
-    rect: {
-            display: 'flex',
-        alignItems: 'center',
-justifyContent: 'center',
-        width: 160,
-        height: 70,
-        backgroundColor: "rgba(255,255,255,1)",
-        borderRadius: 10
+    rect2: {
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        height: 70
+    },
+    group2: {
+        height: 44,
+        justifyContent: "space-around",
+        alignItems: "center",
+        marginTop: 13
     },
     icon: {
         color: "rgba(128,128,128,1)",
-        fontSize: 28,
-        height: 32,
-        width: 28,
+        fontSize: 26,
+        alignSelf: "center"
     },
     generateQrCode: {
         color: "#121212",
+        alignSelf: "center",
+        flex: 1
     },
-    group1: {
+    group4: {
         width: 160,
         height: 70
     },
-    rect1: {
-        width: 160,
-        height: 70,
-        backgroundColor: "rgba(255,255,255,1)",
-        borderRadius: 10
+    rect4: {
+        backgroundColor: "#E6E6E6",
+        borderRadius: 10,
+        justifyContent: "center",
+        flex: 1
+    },
+    group5: {
+        height: 44,
+        justifyContent: "space-between",
+        alignItems: "center"
     },
     icon1: {
         color: "rgba(128,128,128,1)",
-        fontSize: 28,
-        height: 32,
-        width: 28,
-        marginTop: 12,
-        marginLeft: 66
-    },
-    generateQrCode1: {
-        color: "#606A80",
-        marginLeft: 23
-    }
-});
-/*const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    group1: {
-        height: 124,
-        width: "100%",
+        fontSize: 26,
         alignSelf: "center"
     },
-    rect: {
-        height: 124,
-        backgroundColor: "#E6E6E6",
-        flexDirection: "row"
-    },
-    icon: {
-        color: "rgba(128,128,128,1)",
-        fontSize: 40,
-        height: 44,
-        width: 27,
-        marginTop: 3
-    },
-    rect2: {
-        borderRadius: 25,
-        height: 50,
-        backgroundColor: "rgba(181,181,181,1)",
-        width: 50,
-        marginLeft: 7
-    },
-    testTester: {
+    generateQrCode1: {
         color: "#121212",
-        fontSize: 20,
-        marginLeft: 9,
-        marginTop: 13
-    },
-    iconRow: {
-        height: 50,
-        flexDirection: "row",
-        marginLeft: 23,
-        marginTop: 53
-    },
-    iconRowFiller: {
-        flex: 1,
-        flexDirection: "row"
-    },
-    scanQr: {
-        fontWeight: 'bold',
-        color: "#121212",
-        marginRight: 28,
-        marginTop: 62
+        alignSelf: "center"
     }
-});*/
-
+});
 

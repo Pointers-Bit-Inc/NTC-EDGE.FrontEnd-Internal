@@ -79,7 +79,7 @@ function ActivityModal(props: any) {
                 status: status
             }, config ).then((response) => {
 
-                return axios.get(BASE_URL + `/applications/${id}`, config)
+                return axios.get(BASE_URL + `/application/${id}`, config)
             }).then((response) => {
                 dispatch(updateActivityStatus({application: response.data, status: status}))
                 setStatus(status)

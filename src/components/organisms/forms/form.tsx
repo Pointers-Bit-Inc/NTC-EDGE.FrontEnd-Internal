@@ -6,6 +6,7 @@ import Button from "@atoms/button";
 import Text from "@atoms/text";
 import {Ionicons} from "@expo/vector-icons";
 import {outline, text} from "@styles/color";
+import CustomDropdown from "@pages/user-profile/custom-dropdown";
 
 const FormField = ({
                        color,
@@ -52,6 +53,17 @@ const FormField = ({
                                    }
                                    onChangeText={(text: string) => onChange(id, text, 'input')}
                                    onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'input')}/>;
+            case "select":
+                return <><InputField key={id}  {...styleProps} {...otherProps}
+                                   onEndEditing={(e: any) => {
+                                       onChange(id, e.nativeEvent.text, 'input')
+                                   }
+                                   }
+                                   onChangeText={(text: string) => onChange(id, text, 'input')}
+                                   onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'input')}/>
+
+                    </>
+
             case 'password':
                 return <InputField  {...styleProps} {...otherProps}
                                     onEndEditing={(e: any) => {
@@ -128,16 +140,21 @@ const FormField = ({
     }
     return (
         <>
+
             {formElements.map((element: any, key: number) => {
                 return element.type != 'submit' && element.type && (
-                    <View  key={element.id}>
-                        {renderElements(
-                            element.id,
-                            element,
-                            inputColor,
-                            otherProps
-                        )}
-                    </View>
+                    <>
+
+                        <View  key={element.id}>
+                            {renderElements(
+                                element.id,
+                                element,
+                                inputColor,
+                                otherProps
+                            )}
+                        </View>
+                    </>
+
                 );
             })}
         </>
