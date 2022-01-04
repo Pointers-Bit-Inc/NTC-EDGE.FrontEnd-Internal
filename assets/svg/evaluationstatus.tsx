@@ -51,7 +51,6 @@ const EvaluationStatus = (props: any) => (
                 gradientUnits="userSpaceOnUse"
                 gradientTransform="translate(7.50005 7.99999) rotate(90) scale(8.44286)"
             >
-
                 <Stop stopColor="#F7771B"/>
                 <Stop offset={1} stopColor="white" stopOpacity={0}/>
             </RadialGradient>

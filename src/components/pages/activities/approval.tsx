@@ -6,7 +6,7 @@ import Dropdown from "@atoms/dropdown";
 import axios from "axios";
 import { InputField } from "@components/molecules/form-fields";
 import {BASE_URL} from "../../../services/config";
-import {CASHIER,} from "../../../reducers/activity/initialstate";
+import {APPROVED, CASHIER, DIRECTOR, EVALUATOR, PAID} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useSelector} from "react-redux";
 import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';

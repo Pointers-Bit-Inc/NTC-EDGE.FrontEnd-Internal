@@ -1,34 +1,46 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>CLIENT_ID</key>
-	<string>284544636149-v126qms1kv03t4pgubecse6hu5b02d25.apps.googleusercontent.com</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.284544636149-v126qms1kv03t4pgubecse6hu5b02d25</string>
-	<key>API_KEY</key>
-	<string>AIzaSyBHrwG6-t-f9yo8fIEm1WL5JAXYSiDA_Gw</string>
-	<key>GCM_SENDER_ID</key>
-	<string>284544636149</string>
-	<key>PLIST_VERSION</key>
-	<string>1</string>
-	<key>BUNDLE_ID</key>
-	<string>ntc.edge.internal</string>
-	<key>PROJECT_ID</key>
-	<string>ntc-edge-ea034</string>
-	<key>STORAGE_BUCKET</key>
-	<string>ntc-edge-ea034.appspot.com</string>
-	<key>IS_ADS_ENABLED</key>
-	<false></false>
-	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
-	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
-	<key>IS_GCM_ENABLED</key>
-	<true></true>
-	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
-	<key>GOOGLE_APP_ID</key>
-	<string>1:284544636149:ios:0f20b1584d9acdd0c4e1bc</string>
-</dict>
-</plist>
+{
+  "project_info": {
+    "project_number": "284544636149",
+    "project_id": "ntc-edge-ea034",
+    "storage_bucket": "ntc-edge-ea034.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:284544636149:android:49449779f7328341c4e1bc",
+        "android_client_info": {
+          "package_name": "ntc.edge.internal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "284544636149-4av28namnabvu0h09nustrcad657a752.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaUADmHytRaXIYwVxjNdPmD6U_iDtjWpU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "284544636149-4av28namnabvu0h09nustrcad657a752.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "284544636149-v126qms1kv03t4pgubecse6hu5b02d25.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ntc.edge.internal"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

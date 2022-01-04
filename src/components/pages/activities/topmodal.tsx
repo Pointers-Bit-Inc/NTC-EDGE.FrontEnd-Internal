@@ -9,8 +9,6 @@ import EvaluationIcon from "@assets/svg/evaluation";
 import ApprovedIcon from "@assets/svg/approved";
 import DeclineIcon from "@assets/svg/decline";
 import lodash from 'lodash';
-import RadioButtonOnIcon from "@assets/svg/radioButtonOn";
-import RadioButtonOffIcon from "@assets/svg/radioButtonOff";
 
 const window = Dimensions.get("window")
 

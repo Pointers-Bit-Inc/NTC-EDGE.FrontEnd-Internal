@@ -9,7 +9,6 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {setUser} from "../../../reducers/user/actions";
 import {Ionicons} from "@expo/vector-icons";
 import ProfileImage from "@components/atoms/image/profile";
-import CustomDropdown from "@pages/user-profile/custom-dropdown";
 
 const UserProfile = (props: any) => {
 
@@ -37,7 +36,7 @@ const UserProfile = (props: any) => {
             label: "User Type",
             type: "input",
             placeholder: "User Type",
-            value: user?.role?.name || '',
+            value: user.role.name || '',
             inputStyle: InputStyles.text,
             error: false,
         },
@@ -50,9 +49,9 @@ const UserProfile = (props: any) => {
             errorColor: text.error,
             requiredColor: text.error,
             label: "User Name",
-            type: "select",
+            type: "input",
             placeholder: "User Name",
-            value: user?.username || '',
+            value: user.username || '',
             stateName: 'username',
             inputStyle: InputStyles.text,
             error: false,
@@ -69,7 +68,7 @@ const UserProfile = (props: any) => {
             label: "Email",
             type: "input",
             placeholder: "Email",
-            value: user?.email || '',
+            value: user.email || '',
             inputStyle: InputStyles.text,
             error: false,
         },
@@ -79,7 +78,7 @@ const UserProfile = (props: any) => {
         {
             id: 11,
             stateName: 'profileImage',
-            value: user?.profileImage
+            value: user.profileImage
         },
         {
             stateName: 'phone',
@@ -93,7 +92,7 @@ const UserProfile = (props: any) => {
             label: "Phone",
             type: "input",
             placeholder: "Phone",
-            value: user?.contactNumber || '',
+            value: user.contactNumber || '',
             inputStyle: InputStyles.text,
             error: false,
         },
@@ -109,7 +108,7 @@ const UserProfile = (props: any) => {
             label: "Address",
             type: "input",
             placeholder: "Address",
-            value: user?.address || '',
+            value: user.address || '',
             inputStyle: InputStyles.text,
             error: false,
         },
@@ -180,7 +179,6 @@ const UserProfile = (props: any) => {
 
 
     return  <View style={styles.container}>
-
         <View style={styles.toolbar}>
             <View style={styles.rect}>
                 <View style={styles.group}>
@@ -215,26 +213,16 @@ const UserProfile = (props: any) => {
 
             </View>
         </View>
-
         <View>
-           {/* <CustomDropdown items={[
-                {id: 1, name: "evaluator"},
-                {id: 2, name: "director"},
-                {id: 3, name: "cashier"},
-            ]}/>*/}
             <ScrollView
 
                 showsVerticalScrollIndicator={false}
             >
-
                 <View style={{padding: 10}}>
-
                     <FormField formElements={userProfileForm} onChange={onChangeUserProfile} onSubmit={onPressed}/>
-
                 </View>
 
             </ScrollView>
-
         </View>
 
         <View style={styles.divider}></View>
