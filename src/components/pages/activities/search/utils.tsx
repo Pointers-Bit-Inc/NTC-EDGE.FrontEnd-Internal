@@ -143,9 +143,7 @@ function escapeRegExpFn(string: string): string {
 var options = {
     small: []
 };
-
 var separator = /\s|\*|,/;
-
 function enhanceOptions(options) {
     return options.map(option => ({
         working: option.toLowerCase(),
@@ -162,7 +160,7 @@ function processInput(input) {
 function filterAndHighlight(terms, enhancedOptions) {
     let options = enhancedOptions,
         l = terms.length;
- options = options.filter(option => {
+                        options = options.filter(option => {
         let i = 0,
             working = option.working,
             term;
@@ -215,4 +213,3 @@ function multiFilter(array, filters) {
         });
     });
 }
-

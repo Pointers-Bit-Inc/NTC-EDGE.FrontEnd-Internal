@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity} from "react-native";
-import {Ionicons, Feather, EvilIcons, MaterialCommunityIcons} from '@expo/vector-icons'
+import {Ionicons,} from '@expo/vector-icons'
 
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {setVisible, on_checked} from "../../../reducers/activity/actions";
@@ -9,15 +9,13 @@ import EvaluationIcon from "@assets/svg/evaluation";
 import ApprovedIcon from "@assets/svg/approved";
 import DeclineIcon from "@assets/svg/decline";
 import lodash from 'lodash';
-import RadioButtonOnIcon from "@assets/svg/radioButtonOn";
-import RadioButtonOffIcon from "@assets/svg/radioButtonOff";
 
 const window = Dimensions.get("window")
 
 function TopModal(props:any) {
     const {visible, statusCode} = useSelector((state: RootStateOrAny) => state.activity)
     const dispatch = useDispatch()
-
+    const user = useSelector((state: RootStateOrAny) => state.user);
     const renderIcon = (item) => {
         switch(item.iconBrand) {
             case 'feather': {
@@ -68,7 +66,10 @@ function TopModal(props:any) {
                     <Text style={styles.sort1}>Sort By</Text>
                 </View>
                 <View style={styles.group7_1}>
-                    {statusCode.map((top: any, index: number)=> {
+
+                    {statusCode.filter((item:any) =>{
+                       return item?.isShow.indexOf(user?.role?.key) != -1
+                    }).map((top: any, index: number)=> {
                         return (
                             <TouchableOpacity
                                 key={index}

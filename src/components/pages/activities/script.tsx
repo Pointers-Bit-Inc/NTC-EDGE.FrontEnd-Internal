@@ -5,6 +5,7 @@ import CheckMarkIcon from "@assets/svg/checkmark";
 import DeclineStatusIcon from "@assets/svg/declineStatus";
 import React from "react";
 
+
 export  const formatDate = (date: string) => {
 
     date = !date.split("T") ? checkFormatIso(date) :  date

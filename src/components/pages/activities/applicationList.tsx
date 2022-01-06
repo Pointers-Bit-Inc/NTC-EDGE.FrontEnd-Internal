@@ -3,7 +3,7 @@ import {Animated, Text, TouchableWithoutFeedback, View} from "react-native";
 import {styles} from "@pages/activities/styles";
 import ChevronDownIcon from "@assets/svg/chevron-down";
 import Collapsible from "react-native-collapsible";
-function ApplicationList(props: { onPress: () => void, item: any, numbers: number[], index: number, element: (activity: any, i: number) => JSX.Element }) {
+function ApplicationList(props: { onPress: () => void, item: any, numbers: { parentIndex: number, child: number[]}[], index: number, element: (activity: any, i: number) => JSX.Element }) {
     const chevronValue = useRef(new Animated.Value(0)).current
     const [isOpen, setIsOpen] = useState(true)
     const chevronAnimate = () => {
@@ -67,7 +67,7 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: numbe
                 </View>
             </View>
         </TouchableWithoutFeedback>
-        <Collapsible collapsed={props.numbers[props.index] == 1}>
+        <Collapsible collapsed={props.numbers[props.index]?.parentIndex == 1}>
             {props.item.activity.map(props.element)}
             <View style={{height: 30, backgroundColor: "white", marginTop: -1}}/>
         </Collapsible>

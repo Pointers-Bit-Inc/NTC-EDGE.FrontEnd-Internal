@@ -112,14 +112,14 @@ export const styles = StyleSheet.create({
         lineHeight: 28,
         color: "#000",
         textAlign: "left",
-        width: 335,
+        width: "80%",
         margin: 5
     },
     group6: {
-        width: 335,
+        width: "100%",
         height: 30,
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "space-around",
         alignItems: "flex-start",
         margin: 0,
         paddingTop: 0,

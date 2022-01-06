@@ -33,14 +33,14 @@ export const renderSwiper = (index: number, progress: any, dragX: any, onPressUs
         }} onPress={() => {
             onPressUser({icon: "more"})
         }}>
-            <MoreIcon width={18} height={18} fill={"#000"}/>
-            <Text
-                style={{
-                    color: '#000',
-                    fontWeight: '600',
-                }}>
-                More
-            </Text>
-        </TouchableOpacity>
+                <MoreIcon width={18} height={18} fill={"#000"}/>
+                <Text
+                    style={{
+                        color: '#000',
+                        fontWeight: '600',
+                    }}>
+                    More
+                </Text>
+</TouchableOpacity>
     </>
 }

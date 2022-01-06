@@ -20,10 +20,10 @@ function Search(props: any) {
     const [searchHistory, setSearchHistory] = useState<[]>([])
 
 
-    useEffect(async () => {
-
-        await AsyncStorage.getItem('searchHistory').then((value) => setSearchHistory(JSON.parse(value) || []))
-
+    useEffect(() => {
+        (async () => {
+            await AsyncStorage.getItem('searchHistory').then((value) => setSearchHistory(JSON.parse(value) || []))
+        })()
     }, []);
     const removeSearchHistory = async (index: number) => {
 

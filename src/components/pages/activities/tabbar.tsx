@@ -5,15 +5,12 @@ import ActivitiesScreen from "@pages/activities";
 import QrCodeScanner from "@pages/barcode/view";
 import MeetScreen from '@screens/meet';
 import ChatScreen from '@screens/chat';
-import {styles} from "@pages/activities/styles";
 import {Entypo} from "@expo/vector-icons";
 import ActivityTabbar from "@assets/svg/activitytabbar";
 import ChatIcon from "@assets/svg/chattabbar";
 import MeetIcon from "@assets/svg/meettabbar";
 import ScanQrIcon from "@assets/svg/scanqrtabbar";
 import MoreTabBarIcon from "@assets/svg/moretabbar";
-
-
 const Tab = createBottomTabNavigator();
 
 export default function TabBar() {
@@ -59,7 +56,6 @@ export default function TabBar() {
                             target: route.key,
                         });
                     };
-
 
                     return (<View key={route.key} style={{ flex: 1 }}>
                             <TouchableOpacity
@@ -110,14 +106,13 @@ export default function TabBar() {
             </View>
         );
     }
-
     return (
 
             <Tab.Navigator  tabBar={(props) => <ActivityTab  {...props} />}>
                 <Tab.Screen  options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
-                <Tab.Screen options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>
+               <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>
             </Tab.Navigator>
 
 

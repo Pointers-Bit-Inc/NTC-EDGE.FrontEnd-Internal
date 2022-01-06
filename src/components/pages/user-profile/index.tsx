@@ -223,13 +223,15 @@ const UserProfile = (props: any) => {
                 {id: 3, name: "cashier"},
             ]}/>*/}
             <ScrollView
-
                 showsVerticalScrollIndicator={false}
             >
 
                 <View style={{padding: 10}}>
 
-                    <FormField formElements={userProfileForm} onChange={onChangeUserProfile} onSubmit={onPressed}/>
+                    <FormField
+                        formElements={userProfileForm}
+                        onChange={onChangeUserProfile}
+                        onSubmit={onPressed}/>
 
                 </View>
 

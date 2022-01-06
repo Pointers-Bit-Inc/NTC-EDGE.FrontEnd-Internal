@@ -46,7 +46,6 @@ function Endorsed(props:any) {
     }, [])
     const onEndorseConfirm = () => {
         props.remarks({ endorseId: endorsed, remarks: text })
-
        setShowAlert(true)
 
     }
@@ -137,7 +136,6 @@ function Endorsed(props:any) {
                         style={{ width: '100%', paddingHorizontal: 20, paddingBottom: 25, }}
                     >
                         <TouchableOpacity onPress={() =>{
-
                             onEndorseConfirm()
                         }}>
                             <View style={styles.confirmButton}>

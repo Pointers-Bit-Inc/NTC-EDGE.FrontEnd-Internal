@@ -1,15 +1,7 @@
 import React, {useEffect, useMemo, useState} from "react";
-import {
-    Animated,
-    RefreshControl,
-    ScrollView,
-    StatusBar,
-    Text,
-    TouchableOpacity,
-    View
-} from "react-native";
+import {Animated, RefreshControl, ScrollView, StatusBar, Text, TouchableOpacity, View} from "react-native";
 import {styles} from "@pages/activities/styles";
-import {DATE_ADDED} from "../../../reducers/activity/initialstate";
+import {APPROVED, CASHIER, DATE_ADDED, DIRECTOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {setNotPinnedApplication, setPinnedApplication} from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
@@ -29,7 +21,6 @@ import moment from "moment";
 import ApplicationList from "@pages/activities/applicationList";
 
 
-
 export default function ActivitiesPage(props: any) {
 
 
@@ -39,9 +30,13 @@ export default function ActivitiesPage(props: any) {
     const dispatch = useDispatch()
     const ispinnedApplications = (applications: any) => {
         setTotalPages(Math.ceil(applications.length / 10));
+
         const sortByDate = (arr: any) => {
             const sorter = (a: any, b: any) => {
-                return new Date(checkFormatIso(a.createdAt, "-")).getTime() - new Date(checkFormatIso(b.createdAt, "-")).getTime();
+                return selectedChangeStatus?.indexOf(DATE_ADDED) != -1 ?
+                    new Date(checkFormatIso(b.updatedAt, "-")).getTime() - new Date(checkFormatIso(a.updatedAt, "-")).getTime() :
+                    new Date(checkFormatIso(a.updatedAt, "-")).getTime() - new Date(checkFormatIso(b.updatedAt, "-")).getTime()
+
             }
             return arr?.sort(sorter);
         };
@@ -50,13 +45,21 @@ export default function ActivitiesPage(props: any) {
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
-        const list = (selectedChangeStatus?.indexOf(DATE_ADDED) != -1 ? sortByDate(applications) : applications).filter((item: Application) => {
-            return item?.applicant?.user?.firstName.includes(searchTerm) &&
-                (selectedClone?.length ? selectedClone.indexOf(item.status) != -1 : true)
+        const list = sortByDate(applications).filter((item: Application) => {
+            const search = item?.applicant?.user?.firstName.includes(searchTerm) && (selectedClone?.length ?
+                selectedClone.indexOf(item.status) != -1
+                : true)
+            if ([CASHIER].indexOf(user?.role?.key) != -1) {
+                return item?.status == APPROVED && search
+            } else if ([DIRECTOR].indexOf(user?.role?.key) != -1) {
+                return item?.status == FOREVALUATION && search
+            } else {
+                return search
+            }
         });
         setIsPinnedActivity(0)
         const groups = list.reduce((groups: any, activity: any) => {
-            const date = checkFormatIso(activity.createdAt, "-");
+            const date = checkFormatIso(activity.updatedAt, "-");
             if (activity.isPinned) {
                 setIsPinnedActivity(isPinnedActivity + 1)
             }
@@ -71,14 +74,23 @@ export default function ActivitiesPage(props: any) {
             return {
                 date,
                 readableHuman: moment([date]).fromNow(),
-                activity: groups[date]
+                activity: groups[date],
+
             };
         });
-        let a = [];
+        let a = [], b = [];
         for (let i = 0; i < groupArrays.length; i++) {
-            a.push(0);
+            for (let j = 0; j < groupArrays[i].activity.length; j++) {
+                b.push(0)
+            }
+            a.push({parentIndex: 0, child: b});
+
         }
-        setNumberCollapsed(a)
+        if (a) {
+            setNumberCollapsed(a)
+        }
+
+
         return groupArrays.slice(0, currentPage * 10);
     }
     const [countRefresh, setCountRefresh] = useState(0)
@@ -91,6 +103,7 @@ export default function ActivitiesPage(props: any) {
 
 
     useEffect(() => {
+        let isCurrent = true
         const config = {
             headers: {
                 Authorization: "Bearer ".concat(user.sessionToken)
@@ -99,21 +112,24 @@ export default function ActivitiesPage(props: any) {
         let res: any = [];
         dispatch(setNotPinnedApplication([]))
         dispatch(setPinnedApplication([]))
-
         axios.get(BASE_URL + '/applications/notpinned', config).then((response) => {
 
             dispatch(setNotPinnedApplication(response.data))
-            setRefreshing(false);
+            if(isCurrent) setRefreshing(false);
         }).catch((err) => {
-            console.log(err)
+            setRefreshing(false)
+            console.warn(err)
         })
         axios.get(BASE_URL + '/applications/pinned', config).then((response) => {
             dispatch(setPinnedApplication(response.data))
-            setRefreshing(false);
+            if(isCurrent)setRefreshing(false);
         }).catch((err) => {
-            console.log(err)
+            setRefreshing(false)
+            console.warn(err)
         })
-
+        return () => {
+            isCurrent = false
+        }
 
     }, [countRefresh])
 
@@ -122,7 +138,7 @@ export default function ActivitiesPage(props: any) {
     const [perPage, setPerPage] = useState(10)
     const [offset, setOffset] = useState((currentPage - 1) * perPage)
     const [totalPages, setTotalPages] = useState(0)
-    const [numberCollapsed, setNumberCollapsed] = useState<number[]>([])
+    const [numberCollapsed, setNumberCollapsed] = useState<{ parentIndex: number, child: number[] }[]>([])
     const [isPinnedActivity, setIsPinnedActivity] = useState(0)
     const [searchVisible, setSearchVisible] = useState(false)
 
@@ -136,8 +152,13 @@ export default function ActivitiesPage(props: any) {
 
 
     const userPress = (index: number) => {
-        var newArr = [...numberCollapsed]
-        newArr[index] = newArr[index] ? 0 : 1
+        let newArr = [...numberCollapsed]
+        newArr[index].parentIndex = newArr[index].parentIndex ? 0 : 1
+        setNumberCollapsed(newArr)
+    }
+    const userPressActivityModal = (index: number, i: number) => {
+        let newArr = [...numberCollapsed]
+        newArr[index].child[i] = newArr[index].child[i] ? 0 : 1
         setNumberCollapsed(newArr)
     }
     const [modalVisible, setModalVisible] = useState(false)
@@ -169,8 +190,6 @@ export default function ActivitiesPage(props: any) {
             }
         })
     }
-
-
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
@@ -264,14 +283,12 @@ export default function ActivitiesPage(props: any) {
 
                 <ScrollView style={{flex: 1}}
                             refreshControl={
-
                                 <RefreshControl
                                     refreshing={refreshing}
                                     onRefresh={onRefresh}
                                 />
                             }
                             onScroll={(event) => {
-
                                 let paddingToBottom = 10
                                 paddingToBottom +=
                                     event.nativeEvent.layoutMeasurement.height;
@@ -300,6 +317,7 @@ export default function ActivitiesPage(props: any) {
                     {
                         notPnApplications.map((item: any, index: number) => {
                             return <ApplicationList
+
                                 key={index}
                                 onPress={() => {
                                     userPress(index)
@@ -308,26 +326,35 @@ export default function ActivitiesPage(props: any) {
                                 numbers={numberCollapsed}
                                 index={index}
                                 element={(activity: any, i: number) => {
+
                                     return <ActivityItem
                                         searchQuery={searchTerm}
                                         key={i}
+                                        parentIndex={index}
                                         role={user?.role?.key}
                                         activity={activity}
                                         currentUser={user}
                                         onPressUser={(event: any) => {
-                                            setDetails({...activity, ...{isPinned: false}})
-                                            if (event.icon == 'more') {
+                                            //userPressActivityModal(index, i)
+                                            setDetails(activity/*{...activity, ...{parentIndex: index, index: i}}*/)
+                                            if (event?.icon == 'more') {
                                                 setMoreModalVisible(true)
                                             } else {
                                                 setModalVisible(true)
                                             }
+
                                         }} index={i} swiper={renderSwiper}/>
                                 }}/>
                         })
                     }
                 </ScrollView>
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
-                <ActivityModal details={details} visible={modalVisible} onDismissed={onDismissed}/>
+                <ActivityModal details={details} visible={modalVisible} onDismissed={(event: boolean) => {
+                    if (event) {
+                        onRefresh()
+                    }
+                    onDismissed()
+                }}/>
 
             </View>
         </>

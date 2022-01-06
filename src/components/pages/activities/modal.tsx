@@ -11,11 +11,9 @@ import ApplicationDetails from "@pages/activities/application/applicationDetails
 import Payment from "@pages/activities/application/payment";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {formatDate, handleInfinityScroll, statusColor, statusIcon} from "@pages/activities/script";
-import axios from "axios";
-import {BASE_URL} from "../../../services/config";
 import {
     APPROVED, CASHIER,
-    DECLINED, DIRECTOR, EVALUATOR,
+    DECLINED, DIRECTOR, EVALUATOR, FOREVALUATION,
     PAID,
 } from "../../../reducers/activity/initialstate";
 import ProfileImage from "@components/atoms/image/profile";
@@ -42,6 +40,7 @@ function ActivityModal(props: any) {
     const dispatch = useDispatch();
     const user = useSelector((state: RootStateOrAny) => state.user);
     const applicant = props?.details?.applicant?.user
+    const [change, setChange] = useState<boolean>(false)
     const [groupButtonVisible, setGroupButtonVisible] = useState(false)
     const [tabs, setTabs] = useState([
         {
@@ -116,6 +115,7 @@ function ActivityModal(props: any) {
                     if (res.data) {
                         dispatch(updateApplicationStatus({application: res.data, status: status, assignedPersonnel: assignId, userType: user?.role?.key }))
                         setStatus(status)
+                        setChange(true)
                         return callback(null);
                     }
                 }
@@ -137,13 +137,16 @@ function ActivityModal(props: any) {
         setShowAlert(true)
 
     }
+
     return (
         <Modal
             animationType="slide"
             transparent={false}
             visible={props.visible}
             onRequestClose={() => {
-                props.onDismissed()
+
+                props.onDismissed(change)
+                setChange(false)
             }}>
 
             <View style={visible || endorseVisible || approveVisible ? {
@@ -188,7 +191,8 @@ function ActivityModal(props: any) {
                 <View style={{ padding: 15, paddingTop: 35, backgroundColor: primaryColor }}>
                     <TouchableOpacity onPress={() => {
                         setStatus("")
-                        props.onDismissed()
+                        props.onDismissed(change)
+                        setChange(false)
                     }}>
                         <Ionicons
                             name="md-close"
@@ -360,7 +364,7 @@ function ActivityModal(props: any) {
                         {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                         <View style={{ flex: 1, paddingRight: 5 }}>
                             <TouchableOpacity
-                                disabled={currentLoading === 'Approved'}
+                                disabled={currentLoading === APPROVED}
                                 onPress={() => {
                                     if(user?.role?.key == CASHIER){
                                         onShowConfirmation(APPROVED)
@@ -374,9 +378,9 @@ function ActivityModal(props: any) {
                                     <View style={styles.approvedFiller}></View>
                                     <Text style={styles.approved}>Approved</Text>
                                 </View> */}
-                                <View style={[styles.rect22, { height: undefined, paddingVertical: currentLoading === 'Approved' ? 6 : 8 }]}>
+                                <View style={[styles.rect22, { height: undefined, paddingVertical: currentLoading === APPROVED ? 6 : 8 }]}>
                                     {
-                                        currentLoading === 'Approved' ? (
+                                        currentLoading === APPROVED ? (
                                             <ActivityIndicator color={'white'} size={'small'} />
                                         ) : (
                                             <Text style={styles.approved}>Approve</Text>
@@ -388,7 +392,7 @@ function ActivityModal(props: any) {
                         {[DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 &&
                             <View style={{ flex: 1, paddingHorizontal: 5 }}>
                                 <TouchableOpacity
-                                    disabled={currentLoading === 'For Evaluation'}
+                                    disabled={currentLoading === FOREVALUATION}
                                     onPress={() => {
                                         setEndorseVisible(true)
                                     }}
@@ -398,9 +402,9 @@ function ActivityModal(props: any) {
                                         <View style={styles.endorseFiller}></View>
                                         <Text style={styles.endorse}>Endorse</Text>
                                     </View> */}
-                                    <View style={[styles.rect23, { height: undefined, paddingVertical: currentLoading === 'For Evaluation' ? 6.5 : 8 }]}>
+                                    <View style={[styles.rect23, { height: undefined, paddingVertical: currentLoading === FOREVALUATION ? 6.5 : 8 }]}>
                                         {
-                                            currentLoading === 'For Evaluation' ? (
+                                            currentLoading === FOREVALUATION ? (
                                                 <ActivityIndicator color={'white'} size={'small'} />
                                             ) : (
                                                 <Text style={styles.endorse}>Endorse</Text>
@@ -412,7 +416,7 @@ function ActivityModal(props: any) {
                         {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{ flex: 1, paddingLeft: 5 }}>
                                 <TouchableOpacity
-                                    disabled={currentLoading === 'For Evaluation'}
+                                    disabled={currentLoading === FOREVALUATION}
                                     onPress={() => {
                                         setVisible(true)
                                     }}
@@ -422,13 +426,13 @@ function ActivityModal(props: any) {
                                             styles.rect24,
                                             {
                                                 height: undefined,
-                                                paddingVertical: currentLoading === 'Declined' ? 5 : 6.5,
+                                                paddingVertical: currentLoading === DECLINED ? 5 : 6.5,
                                                 borderWidth: 1,
                                                 borderColor: "rgba(194,0,0,1)",
                                             }]
                                         }>
                                             {
-                                                currentLoading === 'Declined' ? (
+                                                currentLoading === DECLINED ? (
                                                     <ActivityIndicator color={"rgba(194,0,0,1)"} size={'small'} />
                                                 ) : (
                                                     <Text style={styles.endorse1}>Decline</Text>
@@ -456,7 +460,7 @@ function ActivityModal(props: any) {
                     setShowAlert(false)
                     onApproveDismissed()
                 }}
-                isCashier={user?.role?.key === 'cashier'}
+                isCashier={user?.role?.key === CASHIER}
                 onDismissed={onApproveDismissed}
             />
             <Disapproval

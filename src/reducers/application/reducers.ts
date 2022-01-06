@@ -40,12 +40,12 @@ export default function basket(state = initialState, action = {}) {
       }else if(pinnedIndex != -1){
 
         if([CASHIER].indexOf(action.payload.userType) != -1){
-          console.log(pinned[index].paymentStatus)
-          pinned[index].paymentStatus = action.payload.status
+
+          pinned[pinnedIndex].paymentStatus = action.payload.status
         }else if([DIRECTOR, EVALUATOR].indexOf(action.payload.userType) != -1){
 
-          pinned[index].status = action.payload.status
-          pinned[index].assignedPersonnel = action.payload.assignedPersonnel
+          pinned[pinnedIndex].status = action.payload.status
+          pinned[pinnedIndex].assignedPersonnel = action.payload.assignedPersonnel
         }
 
         state = state.set("pinnedApplications", pinned)

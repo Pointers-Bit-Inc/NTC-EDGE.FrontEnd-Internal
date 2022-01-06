@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Swipeable } from "react-native-gesture-handler";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import {Animated, StyleSheet, TouchableOpacity, View} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import Svg, {Ellipse} from "react-native-svg";
@@ -64,13 +64,14 @@ const styles = StyleSheet.create({
     }
 })
 
-const RenderStatus = ({ status }:any) => {
+const RenderStatus = ({ trigger, status }:any) => {
+
     return (
         <View
             style={[
                 styles.horizontal,
                 statusBackgroundColor(status),
-                styles.status
+                styles.status,
             ]}
         >
             {statusIcon(status, { marginRight: 3 })}
@@ -122,8 +123,8 @@ const RenderApplication = ({ applicationType }:any) => {
 }
 
 export function ActivityItem(props:any) {
-    let  status = [CASHIER].indexOf(props.role) != -1 ? props.activity.paymentStatus : props.activity.status
-    const userActivity = props.activity.applicant.user
+    const  status = [CASHIER].indexOf(props?.role) != -1 ? props?.activity?.paymentStatus : props?.activity?.status
+    const userActivity = props?.activity?.applicant?.user
 
     return (
         <Swipeable
@@ -132,13 +133,15 @@ export function ActivityItem(props:any) {
                 (progress, dragX) => props.swiper(props.index, progress, dragX, props.onPressUser)
             }
         >
-            <TouchableOpacity onPress={props.onPressUser}>
+            <TouchableOpacity onPress={() =>{
+                props.onPressUser()
+            }}>
                 <View style={styles.container}>
                     <View style={styles.circle} />
                     <ProfileImage
                         size={45}
-                        image={userActivity.image}
-                        name={`${userActivity.firstName} ${userActivity.lastName}`}
+                        image={userActivity?.image}
+                        name={`${userActivity?.firstName} ${userActivity?.lastName}`}
                     />
                     <View style={styles.content}>
                         <View style={styles.section}>
@@ -151,7 +154,7 @@ export function ActivityItem(props:any) {
                                 >
                                     <Highlighter
                                         highlightStyle={{backgroundColor: '#BFD6FF'}}
-                                        searchWords={[props.searchQuery]}
+                                        searchWords={[props?.searchQuery]}
                                         textToHighlight= {`${userActivity?.firstName} ${userActivity.lastName}`}
                                     />
 
@@ -170,10 +173,11 @@ export function ActivityItem(props:any) {
                         </View>
                         <View style={styles.section}>
                             <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                                <RenderApplication applicationType={props.activity.applicationType} />
+                                <RenderApplication applicationType={props?.activity?.applicationType} />
                             </View>
+
                             <RenderStatus
-                                status={props.activity.status}
+                                status={status}
                             />
                         </View>
                     </View>
