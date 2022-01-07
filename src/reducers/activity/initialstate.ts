@@ -41,7 +41,7 @@ const InitialState = Record({
       status: APPROVED,
       iconBrand: 'material-community',
       iconName: 'check-circle-outline',
-      isShow: [CASHIER, DIRECTOR, EVALUATOR]
+      isShow: [DIRECTOR, EVALUATOR]
     },
     {
       id: 4,

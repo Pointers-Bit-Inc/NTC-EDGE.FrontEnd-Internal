@@ -7,7 +7,7 @@ import {setNotPinnedApplication, setPinnedApplication} from "../../../reducers/a
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
-import {checkFormatIso,} from "@pages/activities/script";
+import {checkFormatIso, StatusText,} from "@pages/activities/script";
 import {Application} from "@pages/activities/interface";
 import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
@@ -33,10 +33,11 @@ export default function ActivitiesPage(props: any) {
 
         const sortByDate = (arr: any) => {
             const sorter = (a: any, b: any) => {
+                const DateB = new Date(checkFormatIso(b.date, "-")).getTime();
+                const DateA = new Date(checkFormatIso(a.date, "-")).getTime();
                 return selectedChangeStatus?.indexOf(DATE_ADDED) != -1 ?
-                    new Date(checkFormatIso(b.updatedAt, "-")).getTime() - new Date(checkFormatIso(a.updatedAt, "-")).getTime() :
-                    new Date(checkFormatIso(a.updatedAt, "-")).getTime() - new Date(checkFormatIso(b.updatedAt, "-")).getTime()
-
+                    DateB - DateA :
+                    DateA - DateB
             }
             return arr?.sort(sorter);
         };
@@ -45,10 +46,12 @@ export default function ActivitiesPage(props: any) {
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
-        const list = sortByDate(applications).filter((item: Application) => {
-            const search = item?.applicant?.user?.firstName.includes(searchTerm) && (selectedClone?.length ?
-                selectedClone.indexOf(item.status) != -1
-                : true)
+        const list = applications.filter((item: Application) => {
+            const search = item?.applicant?.user?.firstName.includes(searchTerm) &&
+                (selectedClone?.length ?
+                    selectedClone.indexOf([CASHIER].indexOf(user?.role?.key) != -1 ?
+                       StatusText(item.paymentStatus) : item.status) != -1
+                    : true)
             if ([CASHIER].indexOf(user?.role?.key) != -1) {
                 return item?.status == APPROVED && search
             } else if ([DIRECTOR].indexOf(user?.role?.key) != -1) {
@@ -91,7 +94,7 @@ export default function ActivitiesPage(props: any) {
         }
 
 
-        return groupArrays.slice(0, currentPage * 10);
+        return sortByDate(groupArrays).slice(0, currentPage * 10);
     }
     const [countRefresh, setCountRefresh] = useState(0)
     const [refreshing, setRefreshing] = React.useState(false);
@@ -115,14 +118,14 @@ export default function ActivitiesPage(props: any) {
         axios.get(BASE_URL + '/applications/notpinned', config).then((response) => {
 
             dispatch(setNotPinnedApplication(response.data))
-            if(isCurrent) setRefreshing(false);
+            if (isCurrent) setRefreshing(false);
         }).catch((err) => {
             setRefreshing(false)
             console.warn(err)
         })
         axios.get(BASE_URL + '/applications/pinned', config).then((response) => {
             dispatch(setPinnedApplication(response.data))
-            if(isCurrent)setRefreshing(false);
+            if (isCurrent) setRefreshing(false);
         }).catch((err) => {
             setRefreshing(false)
             console.warn(err)

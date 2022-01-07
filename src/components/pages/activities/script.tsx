@@ -1,14 +1,40 @@
-import {APPROVED, DECLINE, DECLINED, FOREVALUATION, PAID, VERIFICATION} from "../../../reducers/activity/initialstate";
+import {
+    APPROVED,
+    DECLINE,
+    DECLINED,
+    FOREVALUATION,
+    PAID, PENDING,
+    UNVERIFIED,
+    VERIFICATION,
+    VERIFIED
+} from "../../../reducers/activity/initialstate";
 import EvaluationStatus from "@assets/svg/evaluationstatus";
 import {styles} from "@pages/activities/styles";
 import CheckMarkIcon from "@assets/svg/checkmark";
 import DeclineStatusIcon from "@assets/svg/declineStatus";
 import React from "react";
 
+export const StatusText = (status: string) => {
 
-export  const formatDate = (date: string) => {
+    switch (status) {
+        case "Paid" :
+            return VERIFIED
+        case PENDING:
+            return 'For Verification'
+        case DECLINED:
+            return UNVERIFIED
+        default:
+            return status
+    }
 
-    date = !date.split("T") ? checkFormatIso(date) :  date
+
+
+}
+
+
+export const formatDate = (date: string) => {
+
+    date = !date.split("T") ? checkFormatIso(date) : date
     let d = new Date(date),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
@@ -51,22 +77,22 @@ export const statusColor = (status: string) => {
     } else if (status == DECLINED || status == DECLINE) {
 
         return {color: "#cf0327"}
-    }else{
+    } else {
 
         return {color: "#f66500"}
     }
 }
 
-export const statusIcon = (status: string, icon:any=styles.icon3) => {
+export const statusIcon = (status: string, icon: any = styles.icon3) => {
 
     if (status == FOREVALUATION) {
 
         return <EvaluationStatus style={[icon, {color: "#f66500",}]}/>
-    } else if (status == APPROVED || status == PAID || status == VERIFICATION ) {
+    } else if (status == APPROVED || status == PAID || status == VERIFICATION) {
         return <CheckMarkIcon style={[icon]}/>
     } else if (status == DECLINED || status == DECLINE) {
         return <DeclineStatusIcon style={[icon]}/>
-    }else{
+    } else {
         return <EvaluationStatus style={[icon, {color: "#f66500",}]}/>
     }
 }
@@ -74,12 +100,11 @@ export const statusBackgroundColor = (status: string) => {
 
     if (status == FOREVALUATION) {
         return {backgroundColor: "#fef5e8",}
-    }
-    else if (status == APPROVED || status == PAID || status == VERIFICATION) {
+    } else if (status == APPROVED || status == PAID || status == VERIFICATION) {
         return {backgroundColor: "rgba(229,247,241,1)",}
     } else if (status == DECLINED || status == DECLINE) {
         return {backgroundColor: "#fae6e9",}
-    }else{
+    } else {
         return {backgroundColor: "#fef5e8",}
     }
 }

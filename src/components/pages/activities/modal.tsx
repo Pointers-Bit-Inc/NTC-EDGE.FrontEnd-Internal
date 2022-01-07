@@ -446,10 +446,12 @@ function ActivityModal(props: any) {
                 }
             </View>
             <Approval
+                onChangeRemarks={(remark:string)=>{
+                    setRemarks(remark)
+                }}
                 visible={approveVisible}
                 confirm={ (event:any) =>{
                     setAssignId(event.cashier)
-                    setRemarks(event.remarks)
                     let status = ""
                     if ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
                         status = APPROVED

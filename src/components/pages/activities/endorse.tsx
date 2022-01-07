@@ -10,6 +10,7 @@ import {RootStateOrAny, useSelector} from "react-redux";
 import {DIRECTOR, EVALUATOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
+import {errorColor, text} from "@styles/color";
 
 const { height } = Dimensions.get('window');
 
@@ -21,7 +22,8 @@ function Endorsed(props:any) {
     const [endorsed, setEndorsed] = useState()
     const [showAlert, setShowAlert] = useState(false)
     const isKeyboardVisible = useKeyboard();
-
+    const [message, setMessage] = useState("")
+    const [validateRemarks, setValidateRemarks] = useState<{error: boolean}>({error: false})
     useEffect(()=>{
         axios.get(BASE_URL + '/users' ,
             {
@@ -45,8 +47,18 @@ function Endorsed(props:any) {
         })
     }, [])
     const onEndorseConfirm = () => {
-        props.remarks({ endorseId: endorsed, remarks: text })
-       setShowAlert(true)
+        if(!text.length){
+            setMessage("Remarks field is required")
+            setShowAlert(true)
+        }else{
+            setMessage(`are you sure you want to endorse to ` +  pickedEndorsed?.find(picked => {
+                return picked.value == endorsed
+            })?.label)
+            props.remarks({ endorseId: endorsed, remarks: text })
+            setShowAlert(true)
+        }
+
+
 
     }
 
@@ -62,9 +74,7 @@ function Endorsed(props:any) {
                 show={showAlert}
                 showProgress={false}
                 title="Confirm?"
-                message={`are you sure you want to endorse to ` +  pickedEndorsed?.find(picked => {
-                    return picked.value == endorsed
-                })?.label}
+                message={message}
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={false}
                 showCancelButton={true}
@@ -89,6 +99,7 @@ function Endorsed(props:any) {
                 <View style={styles.rect}>
                     <View style={styles.iconColumn}>
                         <TouchableOpacity onPress={()=>{
+                            setValidateRemarks({error: false})
                             props.onDismissed()
                         }}>
                             <Ionicons name="md-close" style={styles.icon}></Ionicons>
@@ -126,17 +137,30 @@ function Endorsed(props:any) {
                                 paddingTop: 5,
                                 height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.25
                             }}
+                            error={validateRemarks.error}
+                            errorColor={errorColor}
                             placeholder={'Remarks'}
                             multiline={true}
                             value={text}
-                            onChangeText={setText}
+                            onChangeText={(text:string) => {
+                                if(text.length){
+                                    setValidateRemarks({error: false})
+                                }
+                                setText(text)
+                            }}
                         />
                     </View>
                     <View
                         style={{ width: '100%', paddingHorizontal: 20, paddingBottom: 25, }}
                     >
                         <TouchableOpacity onPress={() =>{
-                            onEndorseConfirm()
+                            if(!text.length){
+                                setValidateRemarks({error: true})
+
+                            }else{
+                                onEndorseConfirm()
+                            }
+
                         }}>
                             <View style={styles.confirmButton}>
                                 <Text style={styles.confirm}>Confirm</Text>

@@ -5,7 +5,14 @@ import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import Svg, {Ellipse} from "react-native-svg";
 import FileIcon from "@assets/svg/file";
-import {formatDate, statusBackgroundColor, statusColor, statusDimension, statusIcon} from "@pages/activities/script";
+import {
+    formatDate,
+    statusBackgroundColor,
+    statusColor,
+    statusDimension,
+    statusIcon,
+    StatusText
+} from "@pages/activities/script";
 import {CASHIER} from "../../../reducers/activity/initialstate";
 import { text, outline } from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
@@ -86,16 +93,6 @@ const RenderStatus = ({ trigger, status }:any) => {
     )
 }
 
-const StatusText = (status) => {
-    switch(status) {
-        case 'Paid':
-            return 'Verified'
-        case 'Pending':
-            return 'For Verification'
-        default:
-            return status
-    }
-}
 
 const RenderApplication = ({ applicationType }:any) => {
     return (

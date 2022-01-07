@@ -10,6 +10,7 @@ import {CASHIER,} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useSelector} from "react-redux";
 import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
+import {errorColor} from "@styles/color";
 
 const { height } = Dimensions.get('window');
 
@@ -17,9 +18,11 @@ function Approval(props: any){
     const isKeyboardVisible = useKeyboard();
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [pickedCashier, setPickedCashier] = useState<any[]>()
+    const [message, setMessage] = useState<string>("")
     const [cashier, setCashier] = useState()
     const [remarks, setRemarks] = useState("")
     const [showAlert, setShowAlert] = useState(false)
+    const [validateRemarks, setValidateRemarks] = useState<{error: boolean}>({error: false})
     useEffect(()=>{
         axios.get(BASE_URL + '/users' ,
             {
@@ -54,7 +57,7 @@ function Approval(props: any){
                 show={showAlert}
                 showProgress={false}
                 title="Confirm?"
-                message={"Are you sure you want to approve this application?"}
+                message={message}
                 messageStyle={{ textAlign: 'center' }}
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={false}
@@ -67,8 +70,13 @@ function Approval(props: any){
                     setShowAlert(false)
                 }}
                 onConfirmPressed={() => {
-                    props.confirm({cashier: cashier, remarks: remarks})
-                    setShowAlert(false)
+                    if(!remarks.length){
+                        setShowAlert(true)
+                    }else {
+
+                        props.confirm({cashier: cashier, remarks: remarks})
+
+                    }
                 }}
             />
             <KeyboardAvoidingView
@@ -106,11 +114,28 @@ function Approval(props: any){
                                 placeholder={'Remarks'}
                                 multiline={true}
                                 value={remarks}
-                                onChangeText={setRemarks}
+                                error={validateRemarks.error}
+                                errorColor={errorColor}
+                                onChangeText={(text: string) => {
+                                    if (text.length) {
+                                            setValidateRemarks({error: false})
+                                        }
+                                    props.onChangeRemarks(text)
+                                        setRemarks(text)
+                                    }
+                                }
                             />
                             <View style={{ marginTop: 5 }} >
                                 <TouchableOpacity onPress={()=>{
-                                    setShowAlert(true)
+
+                                    if(!remarks.length){
+                                        setMessage("Remarks field is required")
+                                        setValidateRemarks({error: true})
+
+                                    }else {
+                                        setMessage("Are you sure you want to approve this application?")
+                                        setShowAlert(true)
+                                    }
                                 }}>
                                     <View style={styles.rect3}>
                                         <Text style={styles.close}>Confirm</Text>
