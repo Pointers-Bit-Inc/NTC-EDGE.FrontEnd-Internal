@@ -47,12 +47,13 @@ export default function ActivitiesPage(props: any) {
             return status != DATE_ADDED
         })
         const list = applications.filter((item: Application) => {
+            const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
             const search = item?.applicant?.user?.firstName.includes(searchTerm) &&
                 (selectedClone?.length ?
-                    selectedClone.indexOf([CASHIER].indexOf(user?.role?.key) != -1 ?
+                    selectedClone.indexOf(cashier ?
                        StatusText(item.paymentStatus) : item.status) != -1
                     : true)
-            if ([CASHIER].indexOf(user?.role?.key) != -1) {
+            if (cashier) {
                 return item?.status == APPROVED && search
             } else if ([DIRECTOR].indexOf(user?.role?.key) != -1) {
                 return item?.status == FOREVALUATION && search
@@ -96,6 +97,7 @@ export default function ActivitiesPage(props: any) {
 
         return sortByDate(groupArrays).slice(0, currentPage * 10);
     }
+    const [searchTerm, setSearchTerm] = useState('');
     const [countRefresh, setCountRefresh] = useState(0)
     const [refreshing, setRefreshing] = React.useState(false);
     const onRefresh = React.useCallback(() => {
@@ -115,15 +117,18 @@ export default function ActivitiesPage(props: any) {
         let res: any = [];
         dispatch(setNotPinnedApplication([]))
         dispatch(setPinnedApplication([]))
-        axios.get(BASE_URL + '/applications/notpinned', config).then((response) => {
+
+        const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
+        axios.get(BASE_URL + `/applications/notpinned${keyword  }` , config).then((response) => {
 
             dispatch(setNotPinnedApplication(response.data))
             if (isCurrent) setRefreshing(false);
         }).catch((err) => {
+
             setRefreshing(false)
             console.warn(err)
         })
-        axios.get(BASE_URL + '/applications/pinned', config).then((response) => {
+        axios.get(BASE_URL + `/applications/pinned${keyword}`, config).then((response) => {
             dispatch(setPinnedApplication(response.data))
             if (isCurrent) setRefreshing(false);
         }).catch((err) => {
@@ -134,9 +139,9 @@ export default function ActivitiesPage(props: any) {
             isCurrent = false
         }
 
-    }, [countRefresh])
+    }, [countRefresh, searchTerm])
 
-    const [searchTerm, setSearchTerm] = useState('');
+
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState(10)
     const [offset, setOffset] = useState((currentPage - 1) * perPage)
@@ -264,21 +269,22 @@ export default function ActivitiesPage(props: any) {
                                 <Text style={styles.pinnedActivity}>Pinned activity</Text>
                             </View>
                         </View>}
+                            
+                            {pnApplications.map((item, index) => {
 
-                        {pnApplications.map((item, index) => {
 
-
-                            return item.activity.map((act: any, i: number) => {
-                                return act?.assignedPersonnel == user?._id && <ActivityItem
-                                    searchQuery={searchTerm}
-                                    activity={act}
-                                    onPressUser={() => {
-                                        setDetails({...act, ...{isPinned: true}})
-                                        setModalVisible(true)
-                                    }} index={i} swiper={renderSwiper}/>
+                                return item.activity.map((act: any, i: number) => {
+                                    return act?.assignedPersonnel == user?._id && <ActivityItem
+                                        searchQuery={searchTerm}
+                                        activity={act}
+                                        onPressUser={() => {
+                                            setDetails({...act, ...{isPinned: true}})
+                                            setModalVisible(true)
+                                        }} index={i} swiper={renderSwiper}/>
+                                })
                             })
-                        })
-                        }
+                            }
+
 
                     </View>
                     <View style={[styles.rect27, {height: 5}]}></View>

@@ -8,9 +8,7 @@ import {
 import {
     DrawerContentScrollView,
     DrawerItemList,
-    DrawerItem,
 } from '@react-navigation/drawer';
-import {Entypo, Feather} from "@expo/vector-icons";
 import LogoutIcon from "@assets/svg/logout";
 import MoreDrawerIcon from "@assets/svg/moreActivityDrawer";
 

@@ -3,18 +3,16 @@ import { Swipeable } from "react-native-gesture-handler";
 import {Animated, StyleSheet, TouchableOpacity, View} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
-import Svg, {Ellipse} from "react-native-svg";
 import FileIcon from "@assets/svg/file";
 import {
     formatDate,
     statusBackgroundColor,
     statusColor,
-    statusDimension,
     statusIcon,
     StatusText
 } from "@pages/activities/script";
 import {CASHIER} from "../../../reducers/activity/initialstate";
-import { text, outline } from 'src/styles/color';
+import { outline } from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
 
 const styles = StyleSheet.create({
