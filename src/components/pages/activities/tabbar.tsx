@@ -11,6 +11,8 @@ import ChatIcon from "@assets/svg/chattabbar";
 import MeetIcon from "@assets/svg/meettabbar";
 import ScanQrIcon from "@assets/svg/scanqrtabbar";
 import MoreTabBarIcon from "@assets/svg/moretabbar";
+import {CASHIER, DIRECTOR, EVALUATOR} from "../../../reducers/activity/initialstate";
+import {RootStateOrAny, useSelector} from "react-redux";
 const Tab = createBottomTabNavigator();
 
 export default function TabBar() {
@@ -19,7 +21,8 @@ export default function TabBar() {
         MEET = "Meet",
         SCANQR = "ScanQr",
         MORE = "More"
-
+    const user = useSelector((state: RootStateOrAny) => state.user);
+    const disabled = [CASHIER, EVALUATOR, DIRECTOR].indexOf(user?.role?.key) != -1
     function ActivityTab({state, descriptors, navigation}: any) {
 
 
@@ -112,7 +115,7 @@ export default function TabBar() {
                 <Tab.Screen  options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
-               <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>
+                {!disabled && <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>  }
             </Tab.Navigator>
 
 
