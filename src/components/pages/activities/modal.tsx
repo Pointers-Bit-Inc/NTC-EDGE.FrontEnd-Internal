@@ -25,17 +25,6 @@ import {updateApplicationStatus} from "../../../reducers/application/actions";
 
 const {width} = Dimensions.get('window');
 
-const StatusText = (status) => {
-    switch(status) {
-        case 'Paid':
-            return 'Verified'
-        case 'Pending':
-            return 'For Verification'
-        default:
-            return status
-    }
-}
-
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
     const user = useSelector((state: RootStateOrAny) => state.user);
@@ -383,13 +372,15 @@ function ActivityModal(props: any) {
                                         currentLoading === APPROVED ? (
                                             <ActivityIndicator color={'white'} size={'small'} />
                                         ) : (
-                                            <Text style={styles.approved}>Approve</Text>
+                                            <Text style={styles.approved}>
+                                                Approve
+                                            </Text>
                                         )
                                     }
                                 </View>
                             </TouchableOpacity>
                         </View>}
-                        {[DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 &&
+                        {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
                             <View style={{ flex: 1, paddingHorizontal: 5 }}>
                                 <TouchableOpacity
                                     disabled={currentLoading === FOREVALUATION}
@@ -416,7 +407,7 @@ function ActivityModal(props: any) {
                         {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{ flex: 1, paddingLeft: 5 }}>
                                 <TouchableOpacity
-                                    disabled={currentLoading === FOREVALUATION}
+                                    disabled={currentLoading === DECLINED}
                                     onPress={() => {
                                         setVisible(true)
                                     }}
