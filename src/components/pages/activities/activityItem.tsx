@@ -150,7 +150,7 @@ export function ActivityItem(props:any) {
                                     <Highlighter
                                         highlightStyle={{backgroundColor: '#BFD6FF'}}
                                         searchWords={[props?.searchQuery]}
-                                        textToHighlight= {`${userActivity?.firstName} ${userActivity.lastName}`}
+                                        textToHighlight= {`${userActivity?.firstName} ${userActivity?.lastName}`}
                                     />
 
                                 </Text>

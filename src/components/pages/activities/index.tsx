@@ -1,5 +1,15 @@
 import React, {useEffect, useMemo, useState} from "react";
-import {Animated, RefreshControl, ScrollView, StatusBar, Text, TouchableOpacity, View} from "react-native";
+import {
+    Animated,
+    FlatList,
+    RefreshControl,
+    ScrollView,
+    SectionList,
+    StatusBar,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
 import {styles} from "@pages/activities/styles";
 import {APPROVED, CASHIER, DATE_ADDED, DIRECTOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
@@ -19,6 +29,7 @@ import Search from "@pages/activities/search";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import moment from "moment";
 import ApplicationList from "@pages/activities/applicationList";
+import Loader from "@pages/activities/bottomLoad";
 
 
 export default function ActivitiesPage(props: any) {
@@ -197,6 +208,13 @@ export default function ActivitiesPage(props: any) {
             }
         })
     }
+    const bottomLoader = () => {
+        return loadingAnimation ? <Loader /> : null;
+    };
+    const handleLoad = () =>{
+        setCurrentPage(currentPage + 1)
+        setOffset((currentPage - 1) * perPage)
+    }
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
@@ -268,7 +286,7 @@ export default function ActivitiesPage(props: any) {
                                 <Text style={styles.pinnedActivity}>Pinned activity</Text>
                             </View>
                         </View>}
-                            
+
                             {pnApplications.map((item, index) => {
 
 
@@ -288,74 +306,52 @@ export default function ActivitiesPage(props: any) {
                     </View>
                     <View style={[styles.rect27, {height: 5}]}></View>
                 </View>
-
-                <ScrollView style={{flex: 1}}
-                            refreshControl={
-                                <RefreshControl
-                                    refreshing={refreshing}
-                                    onRefresh={onRefresh}
-                                />
-                            }
-                            onScroll={(event) => {
-                                let paddingToBottom = 10
-                                paddingToBottom +=
-                                    event.nativeEvent.layoutMeasurement.height;
-                                var currentOffset =
-                                    event.nativeEvent.contentOffset.y;
-                                let direction = (currentOffset > event.nativeEvent.contentOffset.y ? 'down' : 'up');
-
-                                if (direction === 'up') {
-
-                                    if (
-                                        event.nativeEvent.contentOffset.y >=
-                                        event.nativeEvent.contentSize.height -
-                                        paddingToBottom
-                                    ) {
-
-                                        if (currentPage < totalPages) {
-                                            setCurrentPage(currentPage + 1)
-                                            setOffset((currentPage - 1) * perPage)
-                                        }
-                                    }
-                                }
-
-                            }}
-                            scrollEventThrottle={16}
-                >
-                    {
-                        notPnApplications.map((item: any, index: number) => {
-                            return <ApplicationList
-
-                                key={index}
-                                onPress={() => {
-                                    userPress(index)
-                                }}
-                                item={item}
-                                numbers={numberCollapsed}
-                                index={index}
-                                element={(activity: any, i: number) => {
-
-                                    return <ActivityItem
-                                        searchQuery={searchTerm}
-                                        key={i}
-                                        parentIndex={index}
-                                        role={user?.role?.key}
-                                        activity={activity}
-                                        currentUser={user}
-                                        onPressUser={(event: any) => {
-                                            //userPressActivityModal(index, i)
-                                            setDetails(activity/*{...activity, ...{parentIndex: index, index: i}}*/)
-                                            if (event?.icon == 'more') {
-                                                setMoreModalVisible(true)
-                                            } else {
-                                                setModalVisible(true)
-                                            }
-
-                                        }} index={i} swiper={renderSwiper}/>
-                                }}/>
-                        })
+              <FlatList
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
                     }
-                </ScrollView>
+                    style={{flex: 1}}
+                    data={notPnApplications}
+                    keyExtractor={(item, index) => index.toString()}
+                    ListFooterComponent={bottomLoader}
+                    onEndReached={handleLoad}
+                    onEndReachedThreshold={0}
+                    renderItem={({item, index}) => (
+                        <ApplicationList
+                            key={index}
+                            onPress={() => {
+                                userPress(index)
+                            }}
+                            item={item}
+                            numbers={numberCollapsed}
+                            index={index}
+                            element={(activity: any, i: number) => {
+
+                                return <ActivityItem
+                                    searchQuery={searchTerm}
+                                    key={i}
+                                    parentIndex={index}
+                                    role={user?.role?.key}
+                                    activity={activity}
+                                    currentUser={user}
+                                    onPressUser={(event: any) => {
+                                        //userPressActivityModal(index, i)
+                                        setDetails(activity)
+                                        if (event?.icon == 'more') {
+                                            setMoreModalVisible(true)
+                                        } else {
+                                            setModalVisible(true)
+                                        }
+
+                                    }} index={i} swiper={renderSwiper}/>
+                            }}/>
+                    )}
+                />
+
+              
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
                 <ActivityModal details={details} visible={modalVisible} onDismissed={(event: boolean) => {
                     if (event) {
