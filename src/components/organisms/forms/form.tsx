@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {DropdownField, InputField} from "@molecules/form-fields";
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -33,11 +33,12 @@ const FormField = ({
             case 'image':
                 return otherProps.value ? <Image
                     {...styleProps}
-
+                    key={id}
                     {...otherProps}
                     source={{uri: otherProps.value}}
                     resizeMode={"cover"}
                 /> : <Image
+                    key={id}
                     {...styleProps}
                     {...otherProps}
                     source={require('../../../../assets/favicon.png')}
@@ -70,6 +71,7 @@ const FormField = ({
                                         onChange(id, e.nativeEvent.text, 'password')
                                     }
                                     }
+                                    key={id}
                                     onChangeText={(text: string) => onChange(id, text, 'password')}
                                     onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'password')}/>
             case "date":
@@ -143,8 +145,7 @@ const FormField = ({
 
             {formElements.map((element: any, key: number) => {
                 return element.type != 'submit' && element.type && (
-                    <>
-
+                    <Fragment key={element.id}>
                         <View  key={element.id}>
                             {renderElements(
                                 element.id,
@@ -153,7 +154,7 @@ const FormField = ({
                                 otherProps
                             )}
                         </View>
-                    </>
+                    </Fragment>
 
                 );
             })}

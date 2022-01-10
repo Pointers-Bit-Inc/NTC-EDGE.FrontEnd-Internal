@@ -36,8 +36,8 @@ export default function ActivitiesPage(props: any) {
                 const DateB = new Date(checkFormatIso(b.date, "-")).getTime();
                 const DateA = new Date(checkFormatIso(a.date, "-")).getTime();
                 return selectedChangeStatus?.indexOf(DATE_ADDED) != -1 ?
-                    DateB - DateA :
-                    DateA - DateB
+                    DateA - DateB :
+                    DateB - DateA 
             }
             return arr?.sort(sorter);
         };
@@ -101,13 +101,12 @@ export default function ActivitiesPage(props: any) {
     const [countRefresh, setCountRefresh] = useState(0)
     const [refreshing, setRefreshing] = React.useState(false);
     const onRefresh = React.useCallback(() => {
-        setRefreshing(true);
         setCountRefresh(countRefresh + 1)
-
     }, [countRefresh]);
 
 
     useEffect(() => {
+        setRefreshing(true)
         let isCurrent = true
         const config = {
             headers: {
