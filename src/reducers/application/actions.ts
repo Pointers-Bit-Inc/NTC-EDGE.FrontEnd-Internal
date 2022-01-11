@@ -1,4 +1,4 @@
-const { SET_PINNED_APPLICATION, SET_NOT_PINNED_APPLICATION, UPDATE_APPLICATION_STATUS} = require('./types').default;
+const { SET_PINNED_APPLICATION, SET_NOT_PINNED_APPLICATION, UPDATE_APPLICATION_STATUS, SET_APPLICATIONS} = require('./types').default;
 
 export function setPinnedApplication(payload) {
   return {
@@ -17,6 +17,13 @@ export function updateApplicationStatus(payload) {
 export function setNotPinnedApplication(payload) {
   return {
     type: SET_NOT_PINNED_APPLICATION,
+    payload,
+  };
+}
+
+export function setApplications(payload) {
+  return {
+    type: SET_APPLICATIONS,
     payload,
   };
 }

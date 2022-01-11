@@ -13,7 +13,7 @@ import {
 import {styles} from "@pages/activities/styles";
 import {APPROVED, CASHIER, DATE_ADDED, DIRECTOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {setNotPinnedApplication, setPinnedApplication} from "../../../reducers/application/actions";
+import {setApplications, setNotPinnedApplication, setPinnedApplication} from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
@@ -39,8 +39,9 @@ export default function ActivitiesPage(props: any) {
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
     const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const dispatch = useDispatch()
-    const ispinnedApplications = (applications: any) => {
-        setTotalPages(Math.ceil(applications.length / 10));
+    const ispinnedApplications = (applications:any) => {
+        
+        setTotalPages(Math.ceil(applications?.length / 10));
 
         const sortByDate = (arr: any) => {
             const sorter = (a: any, b: any) => {
@@ -48,16 +49,16 @@ export default function ActivitiesPage(props: any) {
                 const DateA = new Date(checkFormatIso(a.date, "-")).getTime();
                 return selectedChangeStatus?.indexOf(DATE_ADDED) != -1 ?
                     DateA - DateB :
-                    DateB - DateA 
+                    DateB - DateA
             }
             return arr?.sort(sorter);
         };
 
-
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
-        const list = applications.filter((item: Application) => {
+
+        const list = applications?.filter((item:any ) => {
             const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
             const search = item?.applicant?.user?.firstName.includes(searchTerm) &&
                 (selectedClone?.length ?
@@ -72,8 +73,9 @@ export default function ActivitiesPage(props: any) {
                 return search
             }
         });
+
         setIsPinnedActivity(0)
-        const groups = list.reduce((groups: any, activity: any) => {
+        const groups = list?.reduce((groups: any, activity: any) => {
             const date = checkFormatIso(activity.updatedAt, "-");
             if (activity.isPinned) {
                 setIsPinnedActivity(isPinnedActivity + 1)
@@ -117,6 +119,7 @@ export default function ActivitiesPage(props: any) {
 
 
     useEffect(() => {
+
         setRefreshing(true)
         let isCurrent = true
         const config = {
@@ -129,17 +132,24 @@ export default function ActivitiesPage(props: any) {
         dispatch(setPinnedApplication([]))
 
         const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
-        axios.get(BASE_URL + `/applications/notpinned${keyword  }` , config).then((response) => {
+     /*   axios.get(BASE_URL + `/applications/notpinned${keyword}` , config).then((response) => {
 
             dispatch(setNotPinnedApplication(response.data))
             if (isCurrent) setRefreshing(false);
         }).catch((err) => {
-
             setRefreshing(false)
             console.warn(err)
         })
         axios.get(BASE_URL + `/applications/pinned${keyword}`, config).then((response) => {
+
             dispatch(setPinnedApplication(response.data))
+            if (isCurrent) setRefreshing(false);
+        }).catch((err) => {
+            setRefreshing(false)
+            console.warn(err)
+        })*/
+        axios.get(BASE_URL + `/applications${keyword}`, config).then((response) => {
+            dispatch(setApplications(response.data))
             if (isCurrent) setRefreshing(false);
         }).catch((err) => {
             setRefreshing(false)
@@ -150,6 +160,7 @@ export default function ActivitiesPage(props: any) {
         }
 
     }, [countRefresh, searchTerm])
+
 
 
     const [currentPage, setCurrentPage] = useState(1)
@@ -280,16 +291,14 @@ export default function ActivitiesPage(props: any) {
                             </TouchableOpacity>
                         </View>
 
-                        {pnApplications.length > 0 &&
+                        {pnApplications?.length > 0 &&
                         <View style={styles.pinnedgroup}>
                             <View style={styles.pinnedcontainer}>
                                 <Text style={styles.pinnedActivity}>Pinned activity</Text>
                             </View>
                         </View>}
 
-                            {pnApplications.map((item, index) => {
-
-
+                            {pnApplications.map((item:any, index:number) => {
                                 return item.activity.map((act: any, i: number) => {
                                     return act?.assignedPersonnel == user?._id && <ActivityItem
                                         searchQuery={searchTerm}
@@ -306,6 +315,7 @@ export default function ActivitiesPage(props: any) {
                     </View>
                     <View style={[styles.rect27, {height: 5}]}></View>
                 </View>
+
               <FlatList
                     refreshControl={
                         <RefreshControl
@@ -338,7 +348,6 @@ export default function ActivitiesPage(props: any) {
                                     activity={activity}
                                     currentUser={user}
                                     onPressUser={(event: any) => {
-                                        //userPressActivityModal(index, i)
                                         setDetails(activity)
                                         if (event?.icon == 'more') {
                                             setMoreModalVisible(true)
@@ -350,8 +359,6 @@ export default function ActivitiesPage(props: any) {
                             }}/>
                     )}
                 />
-
-              
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
                 <ActivityModal details={details} visible={modalVisible} onDismissed={(event: boolean) => {
                     if (event) {

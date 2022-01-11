@@ -1,6 +1,6 @@
 import {CASHIER, DIRECTOR, EVALUATOR} from "../activity/initialstate";
 
-const { SET_PINNED_APPLICATION, SET_NOT_PINNED_APPLICATION, UPDATE_APPLICATION_STATUS } = require('./types').default;
+const { SET_PINNED_APPLICATION, SET_NOT_PINNED_APPLICATION, UPDATE_APPLICATION_STATUS, SET_APPLICATIONS } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
 const initialState = new InitialState();
@@ -15,6 +15,22 @@ export default function basket(state = initialState, action = {}) {
     case SET_NOT_PINNED_APPLICATION: {
       state = state.set('notPinnedApplications', action.payload);
       return state;
+    }
+    case SET_APPLICATIONS :{
+      const isNotPinned = []
+      const isPinned = []
+      for (let i = 0; i < action.payload.docs.length; i++) {
+
+          if(action.payload.docs[i].isPinned){
+            isPinned.push(action.payload.docs[i])
+          }  else{
+            isNotPinned.push(action.payload.docs[i])
+          }
+      }
+            
+      state = state.set('notPinnedApplications', isNotPinned);
+      state = state.set('pinnedApplications', isPinned);
+      return state
     }
     case UPDATE_APPLICATION_STATUS: {
 

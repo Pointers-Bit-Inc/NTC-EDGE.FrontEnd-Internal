@@ -57,9 +57,6 @@ function Endorsed(props:any) {
             props.remarks({ endorseId: endorsed, remarks: text })
             setShowAlert(true)
         }
-
-
-
     }
 
     return (

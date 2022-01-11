@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {StyleSheet, View, Text, Modal, TouchableOpacity, KeyboardAvoidingView, Platform, Dimensions} from "react-native";
 import { InputField } from "@components/molecules/form-fields";
 import {Feather, Ionicons} from "@expo/vector-icons";
-import {DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
+import {DECLINED} from "../../../reducers/activity/initialstate";
 import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
 
@@ -52,7 +52,7 @@ function Disapproval(props:any) {
                         <TouchableOpacity onPress={()=>{
                             props.onDismissed()
                         }}>
-                            <Ionicons name="md-close" style={styles.icon}></Ionicons>
+                            <Ionicons name="md-close" style={styles.icon}/>
                         </TouchableOpacity>
                     </View>
                     <View

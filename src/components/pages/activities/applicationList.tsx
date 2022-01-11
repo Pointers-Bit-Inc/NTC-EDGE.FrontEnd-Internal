@@ -15,12 +15,9 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: { par
                 duration: 200,
             }
         ).start((o) => {
-
-            if (o.finished) {
+            if (o?.finished) {
                 setIsOpen(open => !open)
-
             }
-
         });
     }
     return <View style={styles.group26}>
@@ -55,9 +52,7 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: { par
                                     }
                                 ]
                             }]}>
-                                <ChevronDownIcon
-
-                                />
+                                <ChevronDownIcon/>
                             </Animated.View>
 
                             <View style={styles.rect35}></View>
