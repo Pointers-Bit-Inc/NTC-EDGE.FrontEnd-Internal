@@ -1,24 +1,18 @@
-import React, {useEffect, useMemo, useState} from "react";
-import {
-    Animated,
-    FlatList,
-    RefreshControl,
-    ScrollView,
-    SectionList,
-    StatusBar,
-    Text,
-    TouchableOpacity,
-    View
-} from "react-native";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {Animated, FlatList, RefreshControl, StatusBar, Text, TouchableOpacity, View} from "react-native";
 import {styles} from "@pages/activities/styles";
 import {APPROVED, CASHIER, DATE_ADDED, DIRECTOR, FOREVALUATION, PENDING} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {setApplications, setNotPinnedApplication, setPinnedApplication} from "../../../reducers/application/actions";
+import {
+    handleInfiniteLoad,
+    setApplications,
+    setNotPinnedApplication,
+    setPinnedApplication
+} from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
 import {checkFormatIso, PaymentStatusText, StatusText,} from "@pages/activities/script";
-import {Application} from "@pages/activities/interface";
 import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
@@ -36,11 +30,16 @@ export default function ActivitiesPage(props: any) {
 
 
     const user = useSelector((state: RootStateOrAny) => state.user);
+    const config = {
+        headers: {
+            Authorization: "Bearer ".concat(user.sessionToken)
+        }
+    }
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
     const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const dispatch = useDispatch()
-    const ispinnedApplications = (applications:any) => {
-        
+    const ispinnedApplications = (applications: any) => {
+
         setTotalPages(Math.ceil(applications?.length / 10));
 
         const sortByDate = (arr: any) => {
@@ -58,12 +57,12 @@ export default function ActivitiesPage(props: any) {
             return status != DATE_ADDED
         })
 
-        const list = applications?.filter((item:any ) => {
+        const list = applications?.filter((item: any) => {
             const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
             const search = item?.applicant?.user?.firstName.includes(searchTerm) &&
                 (selectedClone?.length ?
                     selectedClone.indexOf(cashier ?
-                       PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1
+                        PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1
                     : true)
             if (cashier) {
                 return item?.status == APPROVED && search
@@ -107,7 +106,7 @@ export default function ActivitiesPage(props: any) {
         }
 
 
-        return sortByDate(groupArrays).slice(0, currentPage * 10);
+        return sortByDate(groupArrays).slice(0, currentPage * 25);
     }
     const [searchTerm, setSearchTerm] = useState('');
     const [countRefresh, setCountRefresh] = useState(0)
@@ -121,11 +120,7 @@ export default function ActivitiesPage(props: any) {
 
         setRefreshing(true)
         let isCurrent = true
-        const config = {
-            headers: {
-                Authorization: "Bearer ".concat(user.sessionToken)
-            }
-        }
+
         let res: any = [];
         dispatch(setNotPinnedApplication([]))
         dispatch(setPinnedApplication([]))
@@ -145,9 +140,8 @@ export default function ActivitiesPage(props: any) {
     }, [countRefresh, searchTerm])
 
 
-
     const [currentPage, setCurrentPage] = useState(1)
-    const [perPage, setPerPage] = useState(10)
+    const [perPage, setPerPage] = useState(25)
     const [offset, setOffset] = useState((currentPage - 1) * perPage)
     const [totalPages, setTotalPages] = useState(0)
     const [numberCollapsed, setNumberCollapsed] = useState<{ parentIndex: number, child: number[] }[]>([])
@@ -203,11 +197,31 @@ export default function ActivitiesPage(props: any) {
         })
     }
     const bottomLoader = () => {
-        return loadingAnimation ? <Loader /> : null;
+        return loadingAnimation ? <Loader/> : null;
     };
+    const [oldCurrentPage, setOldCurrentPage] = useState(1)
+
+    useEffect(() => {
+
+            const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
+
+            if(currentPage != oldCurrentPage)  {
+                const page =  "?page=" + currentPage
+                axios.get(BASE_URL + `/applications${keyword + page}`, config).then((response) => {
+                    dispatch(handleInfiniteLoad(response.data))
+                    setRefreshing(false);
+                }).catch((err) => {
+                    setRefreshing(false)
+                    console.warn(err)
+                })
+            }
+
+        }, [currentPage])
+
     const handleLoad = () =>{
         setCurrentPage(currentPage + 1)
         setOffset((currentPage - 1) * perPage)
+        setOldCurrentPage(currentPage)
     }
     return (
         <>
@@ -281,25 +295,25 @@ export default function ActivitiesPage(props: any) {
                             </View>
                         </View>}
 
-                            {pnApplications.map((item:any, index:number) => {
-                                return item.activity.map((act: any, i: number) => {
-                                    return act?.assignedPersonnel == user?._id && <ActivityItem
-                                        searchQuery={searchTerm}
-                                        activity={act}
-                                        onPressUser={() => {
-                                            setDetails({...act, ...{isPinned: true}})
-                                            setModalVisible(true)
-                                        }} index={i} swiper={renderSwiper}/>
-                                })
+                        {pnApplications.map((item: any, index: number) => {
+                            return item.activity.map((act: any, i: number) => {
+                                return act?.assignedPersonnel == user?._id && <ActivityItem
+                                    searchQuery={searchTerm}
+                                    activity={act}
+                                    onPressUser={() => {
+                                        setDetails({...act, ...{isPinned: true}})
+                                        setModalVisible(true)
+                                    }} index={i} swiper={renderSwiper}/>
                             })
-                            }
+                        })
+                        }
 
 
                     </View>
                     <View style={[styles.rect27, {height: 5}]}></View>
                 </View>
 
-              <FlatList
+                <FlatList
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
