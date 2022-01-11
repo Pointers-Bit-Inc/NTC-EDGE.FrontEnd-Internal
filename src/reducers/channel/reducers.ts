@@ -17,6 +17,8 @@ const {
   UPDATE_MEETING_CHANNEL,
   REMOVE_MEETING_CHANNEL,
   SET_MEETINGS_CHANNEL,
+
+  SET_SEARCH_VALUE,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -86,6 +88,9 @@ export default function basket(state = initialState, action:any) {
     case REMOVE_MEETING_CHANNEL: {
       const updatedList = lodash.reject(state.meetingList, l => l._id === action.payload);
       return state.setIn(['meetingList'], updatedList);
+    }
+    case SET_SEARCH_VALUE: {
+      return state.setIn(['searchValue'], action.payload);
     }
     default:
       return state;

@@ -16,7 +16,7 @@ import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
-import { setSelectedChannel, addChannel, updateChannel, removeChannel, setMeetings, removeSelectedMessage } from 'src/reducers/channel/actions';
+import { setSelectedChannel, addChannel, updateChannel, removeChannel, setMeetings, removeSelectedMessage, setSearchValue as setSearchValueFN } from 'src/reducers/channel/actions';
 import { SearchField } from '@components/molecules/form-fields';
 import { ChatItem } from '@components/molecules/list-item';
 import { VideoIcon, WriteIcon, DeleteIcon } from '@components/atoms/icon';
@@ -149,8 +149,16 @@ const ChatList = ({ navigation }:any) => {
   const dispatch = useDispatch();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const channelList = useSelector((state:RootStateOrAny) => {
-    const { channelList } = state.channel;
-    const sortedChannel = lodash.orderBy(channelList, 'updatedAt', 'desc');
+    const { channelList, searchValue } = state.channel;
+    const searchChannel = lodash.filter(channelList, l => {
+      const name = String(l.channelName).toLowerCase();
+      const search = String(searchValue).toLowerCase();
+      let result = name.includes(search);
+      if (!searchValue || result) {
+        return true;
+      }
+    })
+    const sortedChannel = lodash.orderBy(searchChannel, 'updatedAt', 'desc');
     return sortedChannel;
   });
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
@@ -187,9 +195,13 @@ const ChatList = ({ navigation }:any) => {
   }, []);
 
   useEffect(() => {
+    dispatch(setSearchValueFN(searchValue))
+  }, [searchValue]);
+
+  useEffect(() => {
     setLoading(true);
     let unMount = false;
-    const unsubscriber = channelSubscriber(searchValue, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
+    const unsubscriber = channelSubscriber('', (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
       if (!unMount) {
         setLoading(false);
         querySnapshot.docChanges().forEach((change:any) => {
@@ -228,7 +240,7 @@ const ChatList = ({ navigation }:any) => {
       unMount = true;
       unsubscriber();
     }
-  }, [searchValue, sendRequest])
+  }, [sendRequest])
 
   const emptyComponent = () => (
     <View
