@@ -11,13 +11,13 @@ import {
     View
 } from "react-native";
 import {styles} from "@pages/activities/styles";
-import {APPROVED, CASHIER, DATE_ADDED, DIRECTOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
+import {APPROVED, CASHIER, DATE_ADDED, DIRECTOR, FOREVALUATION, PENDING} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {setApplications, setNotPinnedApplication, setPinnedApplication} from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
-import {checkFormatIso, StatusText,} from "@pages/activities/script";
+import {checkFormatIso, PaymentStatusText, StatusText,} from "@pages/activities/script";
 import {Application} from "@pages/activities/interface";
 import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
@@ -63,12 +63,12 @@ export default function ActivitiesPage(props: any) {
             const search = item?.applicant?.user?.firstName.includes(searchTerm) &&
                 (selectedClone?.length ?
                     selectedClone.indexOf(cashier ?
-                       StatusText(item.paymentStatus) : item.status) != -1
+                       PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1
                     : true)
             if (cashier) {
                 return item?.status == APPROVED && search
             } else if ([DIRECTOR].indexOf(user?.role?.key) != -1) {
-                return item?.status == FOREVALUATION && search
+                return (item?.status == FOREVALUATION || item?.status == PENDING) && search
             } else {
                 return search
             }
@@ -92,7 +92,6 @@ export default function ActivitiesPage(props: any) {
                 date,
                 readableHuman: moment([date]).fromNow(),
                 activity: groups[date],
-
             };
         });
         let a = [], b = [];
@@ -132,22 +131,6 @@ export default function ActivitiesPage(props: any) {
         dispatch(setPinnedApplication([]))
 
         const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
-     /*   axios.get(BASE_URL + `/applications/notpinned${keyword}` , config).then((response) => {
-
-            dispatch(setNotPinnedApplication(response.data))
-            if (isCurrent) setRefreshing(false);
-        }).catch((err) => {
-            setRefreshing(false)
-            console.warn(err)
-        })
-        axios.get(BASE_URL + `/applications/pinned${keyword}`, config).then((response) => {
-
-            dispatch(setPinnedApplication(response.data))
-            if (isCurrent) setRefreshing(false);
-        }).catch((err) => {
-            setRefreshing(false)
-            console.warn(err)
-        })*/
         axios.get(BASE_URL + `/applications${keyword}`, config).then((response) => {
             dispatch(setApplications(response.data))
             if (isCurrent) setRefreshing(false);

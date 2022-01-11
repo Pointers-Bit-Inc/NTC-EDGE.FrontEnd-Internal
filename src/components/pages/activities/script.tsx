@@ -14,7 +14,7 @@ import CheckMarkIcon from "@assets/svg/checkmark";
 import DeclineStatusIcon from "@assets/svg/declineStatus";
 import React from "react";
 
-export const StatusText = (status: string) => {
+export const PaymentStatusText = (status: string) => {
 
     switch (status) {
         case "Paid" :
@@ -26,10 +26,17 @@ export const StatusText = (status: string) => {
         default:
             return status
     }
-
-
-
 }
+export const StatusText = (status: string) => {
+
+    switch (status) {
+        case PENDING:
+            return 'For Evaluation'
+        default:
+            return status
+    }
+}
+
 
 
 export const formatDate = (date: string) => {

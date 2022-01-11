@@ -9,7 +9,7 @@ import {
     statusBackgroundColor,
     statusColor,
     statusIcon,
-    StatusText
+    PaymentStatusText, StatusText
 } from "@pages/activities/script";
 import {CASHIER} from "../../../reducers/activity/initialstate";
 import { outline } from 'src/styles/color';
@@ -85,7 +85,7 @@ const RenderStatus = ({ trigger, status }:any) => {
                 size={12}
                 numberOfLines={1}
             >
-                {StatusText(status)}
+                {status}
             </Text>
         </View>
     )
@@ -118,7 +118,7 @@ const RenderApplication = ({ applicationType }:any) => {
 }
 
 export function ActivityItem(props:any) {
-    const  status = [CASHIER].indexOf(props?.role) != -1 ? props?.activity?.paymentStatus : props?.activity?.status
+    const  status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status)
     const userActivity = props?.activity?.applicant?.user
 
     return (
