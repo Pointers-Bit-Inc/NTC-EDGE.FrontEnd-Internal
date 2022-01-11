@@ -28,8 +28,8 @@ import Loader from "@pages/activities/bottomLoad";
 
 export default function ActivitiesPage(props: any) {
 
-
     const user = useSelector((state: RootStateOrAny) => state.user);
+    const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
     const config = {
         headers: {
             Authorization: "Bearer ".concat(user.sessionToken)
@@ -58,7 +58,7 @@ export default function ActivitiesPage(props: any) {
         })
 
         const list = applications?.filter((item: any) => {
-            const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
+
             const search = item?.applicant?.user?.firstName.includes(searchTerm) &&
                 (selectedClone?.length ?
                     selectedClone.indexOf(cashier ?
@@ -126,7 +126,8 @@ export default function ActivitiesPage(props: any) {
         dispatch(setPinnedApplication([]))
 
         const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
-        axios.get(BASE_URL + `/applications${keyword}`, config).then((response) => {
+        const status = selectedChangeStatus.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedChangeStatus.toString() : ''
+        axios.get(BASE_URL + `/applications${keyword+status}`, config).then((response) => {
             dispatch(setApplications(response.data))
             if (isCurrent) setRefreshing(false);
         }).catch((err) => {
@@ -137,7 +138,7 @@ export default function ActivitiesPage(props: any) {
             isCurrent = false
         }
 
-    }, [countRefresh, searchTerm])
+    }, [countRefresh, searchTerm, selectedChangeStatus])
 
 
     const [currentPage, setCurrentPage] = useState(1)
