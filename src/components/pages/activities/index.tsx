@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {Animated, FlatList, RefreshControl, StatusBar, Text, TouchableOpacity, View} from "react-native";
 import {styles} from "@pages/activities/styles";
 import {APPROVED, CASHIER, DATE_ADDED, DIRECTOR, FOREVALUATION, PENDING} from "../../../reducers/activity/initialstate";
@@ -126,8 +126,13 @@ export default function ActivitiesPage(props: any) {
         dispatch(setPinnedApplication([]))
 
         const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
-        const status = selectedChangeStatus.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedChangeStatus.toString() : ''
-        axios.get(BASE_URL + `/applications${keyword+status}`, config).then((response) => {
+        const status = selectedChangeStatus.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedChangeStatus.map((item: any) => {
+            if (item == FOREVALUATION) {
+                return PENDING
+            }
+            return item
+        }).toString() : ''
+        axios.get(BASE_URL + `/applications${keyword + status}`, config).then((response) => {
             dispatch(setApplications(response.data))
             if (isCurrent) setRefreshing(false);
         }).catch((err) => {
@@ -204,22 +209,22 @@ export default function ActivitiesPage(props: any) {
 
     useEffect(() => {
 
-            const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
+        const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
 
-            if(currentPage != oldCurrentPage)  {
-                const page =  "?page=" + currentPage
-                axios.get(BASE_URL + `/applications${keyword + page}`, config).then((response) => {
-                    dispatch(handleInfiniteLoad(response.data))
-                    setRefreshing(false);
-                }).catch((err) => {
-                    setRefreshing(false)
-                    console.warn(err)
-                })
-            }
+        if (currentPage != oldCurrentPage) {
+            const page = "?page=" + currentPage
+            axios.get(BASE_URL + `/applications${keyword + page}`, config).then((response) => {
+                dispatch(handleInfiniteLoad(response.data))
+                setRefreshing(false);
+            }).catch((err) => {
+                setRefreshing(false)
+                console.warn(err)
+            })
+        }
 
-        }, [currentPage])
+    }, [currentPage])
 
-    const handleLoad = () =>{
+    const handleLoad = () => {
         setCurrentPage(currentPage + 1)
         setOffset((currentPage - 1) * perPage)
         setOldCurrentPage(currentPage)
