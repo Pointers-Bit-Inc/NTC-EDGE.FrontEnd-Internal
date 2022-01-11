@@ -16,6 +16,8 @@ const {
   UPDATE_MEETING_CHANNEL,
   REMOVE_MEETING_CHANNEL,
   SET_MEETINGS_CHANNEL,
+
+  SET_SEARCH_VALUE,
 } = require('./types').default;
 
 interface ChannelProps {
@@ -148,5 +150,12 @@ export function removeMeeting(payload) {
     type: REMOVE_MEETING_CHANNEL,
     payload,
   };
+}
+
+export function setSearchValue(payload) {
+  return {
+    type: SET_SEARCH_VALUE,
+    payload,
+  }
 }
 

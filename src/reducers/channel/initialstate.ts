@@ -7,6 +7,7 @@ const InitialState = Record({
   messages: [],
   selectedMessage: {},
   meetingList: [],
+  searchValue: '',
 });
 
 export default InitialState;

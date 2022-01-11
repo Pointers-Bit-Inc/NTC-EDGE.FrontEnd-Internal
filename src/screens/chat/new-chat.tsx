@@ -22,6 +22,7 @@ import { SearchField } from '@components/molecules/form-fields'
 import { primaryColor } from '@styles/color';
 import useFirebase from 'src/hooks/useFirebase';
 import useApi from 'src/services/api';
+import axios from 'axios';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -103,9 +104,12 @@ const NewChat = ({ navigation }:any) => {
   const [participants, setParticipants]:any = useState([]);
   const [contacts, setContacts]:any = useState([]);
   const [searchText, setSearchText] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const onFetchData = useCallback(() => {
     setLoading(true);
-    api.post('/internal/users')
+    api.post('/internal/users', {
+      searchValue,
+    })
     .then(res => {
       setLoading(false);
       setContacts(res.data);
@@ -113,11 +117,26 @@ const NewChat = ({ navigation }:any) => {
     .catch(e => {
       setLoading(false);
     });
-  }, []);
+  }, [searchValue]);
 
   useEffect(() => {
-    onFetchData();
-  }, []);
+    const source = axios.CancelToken.source(); 
+    setLoading(true);
+    api.post('/internal/users', {
+      searchValue,
+    })
+    .then(res => {
+      setLoading(false);
+      setContacts(res.data);
+    })
+    .catch(e => {
+      setLoading(false);
+    });
+    return () => {
+      setLoading(false);
+      source.cancel();
+    };
+  }, [searchValue]);
 
   const onBack = () => navigation.goBack();
   const onNext = () => {
@@ -250,6 +269,7 @@ const NewChat = ({ navigation }:any) => {
           outlineStyle={[InputStyles.outlineStyle, styles.outline]}
           value={searchText}
           onChangeText={setSearchText}
+          onChangeTextDebounce={setSearchValue}
           onSubmitEditing={(event:any) => setSearchText(event.nativeEvent.text)}
         />
       </View>
