@@ -107,7 +107,9 @@ const NewChat = ({ navigation }:any) => {
   const [searchValue, setSearchValue] = useState('');
   const onFetchData = useCallback(() => {
     setLoading(true);
-    api.post('/internal/users')
+    api.post('/internal/users', {
+      searchValue,
+    })
     .then(res => {
       setLoading(false);
       setContacts(res.data);
@@ -115,7 +117,7 @@ const NewChat = ({ navigation }:any) => {
     .catch(e => {
       setLoading(false);
     });
-  }, []);
+  }, [searchValue]);
 
   useEffect(() => {
     const source = axios.CancelToken.source(); 
