@@ -46,7 +46,7 @@ const Payment = (props:any) => {
                     </Text>
                 </View>
                 {
-                    props.soa.map(soa => (
+                    props?.soa?.map(soa => (
                         <View
                             key={soa._id}
                             style={styles.soaItem}

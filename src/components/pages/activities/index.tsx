@@ -47,7 +47,7 @@ export default function ActivitiesPage(props: any) {
     const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const dispatch = useDispatch()
     const ispinnedApplications = (applications: any) => {
-
+       
         setTotalPages(Math.ceil(applications?.length / 10));
 
         const sortByDate = (arr: any) => {
@@ -64,6 +64,8 @@ export default function ActivitiesPage(props: any) {
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
+
+
 
         const list = applications?.filter((item: any) => {
 
@@ -134,8 +136,10 @@ export default function ActivitiesPage(props: any) {
         dispatch(setPinnedApplication([]))
 
         const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
-        console.log(selectedChangeStatus)
-        const status = selectedChangeStatus.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedChangeStatus.map((item: any) => {
+        const selectedClone = selectedChangeStatus?.filter((status: string) => {
+            return status != DATE_ADDED
+        })
+        const status = selectedClone.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedChangeStatus.map((item: any) => {
             if (item == FOREVALUATION) {
                 return PENDING
             }else if(item == VERIFIED){
@@ -169,6 +173,7 @@ export default function ActivitiesPage(props: any) {
     const [searchVisible, setSearchVisible] = useState(false)
 
     const pnApplications = useMemo(() => {
+
         return ispinnedApplications(pinnedApplications)
     }, [searchTerm, selectedChangeStatus?.length, pinnedApplications?.length, currentPage])
 
@@ -216,22 +221,23 @@ export default function ActivitiesPage(props: any) {
             }
         })
     }
-    const bottomLoader = () => {
-        return loadingAnimation ? <Loader/> : null;
-    };
     const [oldCurrentPage, setOldCurrentPage] = useState(1)
+    const [infiniteLoad, setInfiniteLoad] = useState(false)
+    const bottomLoader = () => {
+        return  infiniteLoad ? <Loader/>  : null
+    };
 
     useEffect(() => {
-
+        setInfiniteLoad(true)
         const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
 
         if (currentPage != oldCurrentPage) {
             const page = "?page=" + currentPage
             axios.get(BASE_URL + `/applications${keyword + page}`, config).then((response) => {
                 dispatch(handleInfiniteLoad(response.data))
-                setRefreshing(false);
+                setInfiniteLoad(false);
             }).catch((err) => {
-                setRefreshing(false)
+                setInfiniteLoad(false)
                 console.warn(err)
             })
         }
@@ -380,6 +386,9 @@ export default function ActivitiesPage(props: any) {
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
                 <ActivityModal details={details} visible={modalVisible} onDismissed={(event: boolean) => {
                     if (event) {
+                        onRefresh()
+                    }
+                    if(!(notPnApplications.length || pnApplications.length )){
                         onRefresh()
                     }
                     onDismissed()
