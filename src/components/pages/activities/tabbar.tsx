@@ -60,6 +60,8 @@ export default function TabBar() {
                         });
                     };
 
+                    const focused = "#2863D6";
+                    const unfocused = "#606A80";
                     return (<View key={route.key} style={{ flex: 1 }}>
                             <TouchableOpacity
                                 accessibilityRole="button"
@@ -73,22 +75,22 @@ export default function TabBar() {
                                     alignItems: 'center',
                                 }}>
                                     {label == ACTIVITIES
-                                        ? ( <ActivityTabbar width={30} height={30} fill={isFocused ? "#2863D6" : "#606A80"}/>) :
+                                        ? ( <ActivityTabbar width={30} height={30} fill={isFocused ? focused : unfocused}/>) :
                                         label == CHAT
                                             ?
-                                            (<ChatIcon width={30} height={30} fill={isFocused ? "#2863D6" : "#606A80"}/>)
+                                            (<ChatIcon width={30} height={30} fill={isFocused ? focused : unfocused}/>)
                                             : label == MEET
                                                 ?
-                                                (<MeetIcon width={30} height={30} fill={isFocused ? "#2863D6" : "#606A80"}/>)
+                                                (<MeetIcon width={30} height={30} fill={isFocused ? focused : unfocused}/>)
 
                                                 :
                                                 label == SCANQR
                                                     ?
-                                                    (<ScanQrIcon width={30} height={30} fill={isFocused ? "#2863D6" : "#606A80"}/> )
+                                                    (<ScanQrIcon width={30} height={30} fill={isFocused ? focused : unfocused}/> )
                                                     :
                                                     label == MORE
                                                         ?
-                                                        (<MoreTabBarIcon width={30} height={30} fill={isFocused ? "#2863D6" : "#606A80"}/>)
+                                                        (<MoreTabBarIcon width={30} height={30} fill={isFocused ? focused : unfocused}/>)
 
                                                         :
                                                         <Entypo name="book"></Entypo>}

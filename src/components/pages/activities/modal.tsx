@@ -144,16 +144,6 @@ function ActivityModal(props: any) {
                 props.onDismissed(change)
                 setChange(false)
             }}>
-
-            <View style={visible || endorseVisible || approveVisible ? {
-                position: "absolute",
-                zIndex: 2,
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-            } : {}}/>
             <AwesomeAlert
                 show={showAlert}
                 showProgress={false}

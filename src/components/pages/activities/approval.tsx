@@ -56,109 +56,120 @@ function Approval(props: any){
     }
 
     return (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={props.visible}
+        <View style={props.visible ? {
+            position: "absolute",
+            zIndex: 2,
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+        } : {}}>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={props.visible}
 
-            onRequestClose={() => {
-            }}>
-            <AwesomeAlert
-                show={showAlert}
-                showProgress={false}
-                title="Confirm?"
-                message={message}
-                messageStyle={{ textAlign: 'center' }}
-                closeOnTouchOutside={true}
-                closeOnHardwareBackPress={false}
-                showCancelButton={true}
-                showConfirmButton={true}
-                cancelText="Cancel"
-                confirmText="Yes"
-                confirmButtonColor="#DD6B55"
-                onCancelPressed={() => {
-                    setShowAlert(false)
-                }}
-                onConfirmPressed={() => {
-                    if([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 && !remarks.length){
-                        setShowAlert(true)
-                    }else {
+                onRequestClose={() => {
+                }}>
+                <AwesomeAlert
+                    show={showAlert}
+                    showProgress={false}
+                    title="Confirm?"
+                    message={message}
+                    messageStyle={{ textAlign: 'center' }}
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    showConfirmButton={true}
+                    cancelText="Cancel"
+                    confirmText="Yes"
+                    confirmButtonColor="#DD6B55"
+                    onCancelPressed={() => {
+                        setShowAlert(false)
+                    }}
+                    onConfirmPressed={() => {
+                        if([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 && !remarks.length){
+                            setShowAlert(true)
+                        }else {
 
-                        props.confirm({cashier: cashier, remarks: remarks})
+                            props.confirm({cashier: cashier, remarks: remarks})
 
-                    }
-                }}
-            />
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.container}
-            >
-                <View style={styles.group}>
-                    <View style={styles.rect}>
-                        <View style={{ alignSelf: 'flex-start' }}>
-                            <TouchableOpacity onPress={()=>{
-                                props.onDismissed()
-                            }}>
-                                <Ionicons name="md-close" style={{ fontSize: 25 }}></Ionicons>
-                            </TouchableOpacity>
-                        </View>
-                        <ApplicationApproved style={styles.icon}></ApplicationApproved>
-                        <Text style={styles.applicationApproved}>
-                            {props.isCashier ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED'}
-                        </Text>
-                        <View style={styles.group2}>
-                            {/* <View style={[styles.element, {marginBottom: 5}]}>
+                        }
+                    }}
+                />
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    style={styles.container}
+                >
+                    <View style={styles.group}>
+                        <View style={styles.rect}>
+                            <View style={{ alignSelf: 'flex-start' }}>
+                                <TouchableOpacity onPress={()=>{
+                                    props.onDismissed()
+                                }}>
+                                    <Ionicons name="md-close" style={{ fontSize: 25 }}></Ionicons>
+                                </TouchableOpacity>
+                            </View>
+                            <ApplicationApproved style={styles.icon}></ApplicationApproved>
+                            <Text style={styles.applicationApproved}>
+                                {props.isCashier ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED'}
+                            </Text>
+                            <View style={styles.group2}>
+                                {/* <View style={[styles.element, {marginBottom: 5}]}>
                                 <Dropdown value={cashier}  onChangeValue={(value: any) => {
                                     setCashier(value)}
                                 }
                                             placeholder={{}}
                                             items={pickedCashier}></Dropdown>
                             </View> */}
-                            {[DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 && <InputField
-                                style={{ fontWeight: 'normal' }}
-                                outlineStyle={{
-                                    borderColor: "rgba(202,210,225,1)",
-                                    paddingTop: 5,
-                                    height: (height < 720 && isKeyboardVisible) ? 45 : height * 0.15
-                                }}
-                                placeholder={'Remarks'}
-                                multiline={true}
-                                value={remarks}
-                                error={validateRemarks.error}
-                                errorColor={errorColor}
-                                onChangeText={(text: string) => {
-                                    if (text.length) {
+                                {[DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 && <InputField
+                                    style={{ fontWeight: 'normal' }}
+                                    outlineStyle={{
+                                        borderColor: "rgba(202,210,225,1)",
+                                        paddingTop: 5,
+                                        height: (height < 720 && isKeyboardVisible) ? 45 : height * 0.15
+                                    }}
+                                    placeholder={'Remarks'}
+                                    multiline={true}
+                                    value={remarks}
+                                    error={validateRemarks.error}
+                                    errorColor={errorColor}
+                                    onChangeText={(text: string) => {
+                                        if (text.length) {
                                             setValidateRemarks({error: false})
                                         }
-                                    props.onChangeRemarks(text)
+                                        props.onChangeRemarks(text)
                                         setRemarks(text)
                                     }
-                                }
-                            /> }
-                            <View style={{ marginTop: 5 }} >
-                                <TouchableOpacity onPress={()=>{
-                                    if([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1){
-                                        if(!remarks.length){
-                                            setMessage("Remarks field is required")
-                                            setValidateRemarks({error: true})
-
-                                        }else {
-                                            onConfirmation();
-                                        }
-                                    }else{
-                                        onConfirmation()
                                     }
-                                }}>
-                                    <View style={styles.rect3}>
-                                        <Text style={styles.close}>Confirm</Text>
-                                    </View>
-                                </TouchableOpacity>
+                                /> }
+                                <View style={{ marginTop: 5 }} >
+                                    <TouchableOpacity onPress={()=>{
+                                        if([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1){
+                                            if(!remarks.length){
+                                                setMessage("Remarks field is required")
+                                                setValidateRemarks({error: true})
+
+                                            }else {
+                                                onConfirmation();
+                                            }
+                                        }else{
+                                            onConfirmation()
+                                        }
+                                    }}>
+                                        <View style={styles.rect3}>
+                                            <Text style={styles.close}>Confirm</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
                     </View>
-                </View>
-            </KeyboardAvoidingView>
-        </Modal>
+                </KeyboardAvoidingView>
+            </Modal>
+        </View>
+
     )
 }
 const styles = StyleSheet.create({

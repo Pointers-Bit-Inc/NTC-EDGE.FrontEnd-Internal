@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {Fragment, useEffect, useMemo, useState} from "react";
 import {Alert, Animated, FlatList, RefreshControl, StatusBar, Text, TouchableOpacity, View} from "react-native";
 import {styles} from "@pages/activities/styles";
 import {
@@ -244,7 +244,7 @@ export default function ActivitiesPage(props: any) {
         setOldCurrentPage(currentPage)
     }
     return (
-        <>
+        <Fragment >
             <StatusBar barStyle={'light-content'}/>
             {searchVisible && <Search loadingAnimation={(event: boolean) => {
 
@@ -334,6 +334,7 @@ export default function ActivitiesPage(props: any) {
                 </View>
 
                 <FlatList
+
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
@@ -385,7 +386,7 @@ export default function ActivitiesPage(props: any) {
                 }}/>
 
             </View>
-        </>
+        </Fragment>
 
     );
 }

@@ -60,113 +60,124 @@ function Endorsed(props:any) {
     }
 
     return (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={props.visible}
+        <View style={props.visible ? {
+            position: "absolute",
+            zIndex: 2,
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+        } : {}}>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={props.visible}
 
-            onRequestClose={() => {
-            }}>
-            <AwesomeAlert
-                show={showAlert}
-                showProgress={false}
-                title="Confirm?"
-                message={message}
-                closeOnTouchOutside={true}
-                closeOnHardwareBackPress={false}
-                showCancelButton={true}
-                showConfirmButton={true}
-                cancelText="Cancel"
-                confirmText="Yes"
-                confirmButtonColor="#DD6B55"
-                onCancelPressed={() => {
-                    setShowAlert(false)
-                }}
-                onConfirmPressed={() => {
-                    props.onChangeApplicationStatus({status: FOREVALUATION })
-                    props.onDismissed()
-                    setShowAlert(false)
-                }}
-            />
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.container}
-            >
-                <View style={styles.rectFiller}></View>
-                <View style={styles.rect}>
-                    <View style={styles.iconColumn}>
-                        <TouchableOpacity onPress={()=>{
-                            setValidateRemarks({error: false})
-                            props.onDismissed()
-                        }}>
-                            <Ionicons name="md-close" style={styles.icon}></Ionicons>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ paddingHorizontal: 20 }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
-                            <EndorseToIcon style={styles.icon2}/>
-                            <Text style={styles.endorseTo}>Endorse to</Text>
+                onRequestClose={() => {
+                }}>
+                <AwesomeAlert
+                    show={showAlert}
+                    showProgress={false}
+                    title="Confirm?"
+                    message={message}
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    showConfirmButton={true}
+                    cancelText="Cancel"
+                    confirmText="Yes"
+                    confirmButtonColor="#DD6B55"
+                    onCancelPressed={() => {
+                        setShowAlert(false)
+                    }}
+                    onConfirmPressed={() => {
+                        props.onChangeApplicationStatus({status: FOREVALUATION })
+                        props.onDismissed()
+                        setShowAlert(false)
+                    }}
+                />
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    style={styles.container}
+                >
+                    <View style={styles.rectFiller}></View>
+                    <View style={styles.rect}>
+                        <View style={styles.iconColumn}>
+                            <TouchableOpacity onPress={()=>{
+                                setValidateRemarks({error: false})
+                                props.onDismissed()
+                            }}>
+                                <Ionicons name="md-close" style={styles.icon}></Ionicons>
+                            </TouchableOpacity>
                         </View>
-                        <View
-                            style={{
-                                backgroundColor: "rgba(255,255,255,1)",
-                                borderWidth: 1,
-                                borderColor: "rgba(202,210,225,1)",
-                                borderRadius: 6,
-                                padding: 10,
-                                width: '100%',
-                            }}
-                        >
-                            <Dropdown
-                                style={{ width: '100%' }}
-                                value={endorsed}
-                                onChangeValue={(value: any) => {
-                                    setEndorsed(value)}
-                                }
-                                placeholder={{}}
-                                items={pickedEndorsed}
+                        <View style={{ paddingHorizontal: 20 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
+                                <EndorseToIcon style={styles.icon2}/>
+                                <Text style={styles.endorseTo}>Endorse to</Text>
+                            </View>
+                            <View
+                                style={{
+                                    backgroundColor: "rgba(255,255,255,1)",
+                                    borderWidth: 1,
+                                    borderColor: "rgba(202,210,225,1)",
+                                    borderRadius: 6,
+                                    padding: 10,
+                                    width: '100%',
+                                }}
+                            >
+                                <Dropdown
+                                    style={{ width: '100%' }}
+                                    value={endorsed}
+                                    onChangeValue={(value: any) => {
+                                        setEndorsed(value)}
+                                    }
+                                    placeholder={{}}
+                                    items={pickedEndorsed}
+                                />
+                            </View>
+                            <InputField
+                                style={{ fontWeight: 'normal' }}
+                                outlineStyle={{
+                                    borderColor: "rgba(202,210,225,1)",
+                                    paddingTop: 5,
+                                    height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.25
+                                }}
+                                error={validateRemarks.error}
+                                errorColor={errorColor}
+                                placeholder={'Remarks'}
+                                multiline={true}
+                                value={text}
+                                onChangeText={(text:string) => {
+                                    if(text.length){
+                                        setValidateRemarks({error: false})
+                                    }
+                                    setText(text)
+                                }}
                             />
                         </View>
-                        <InputField
-                            style={{ fontWeight: 'normal' }}
-                            outlineStyle={{
-                                borderColor: "rgba(202,210,225,1)",
-                                paddingTop: 5,
-                                height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.25
-                            }}
-                            error={validateRemarks.error}
-                            errorColor={errorColor}
-                            placeholder={'Remarks'}
-                            multiline={true}
-                            value={text}
-                            onChangeText={(text:string) => {
-                                if(text.length){
-                                    setValidateRemarks({error: false})
+                        <View
+                            style={{ width: '100%', paddingHorizontal: 20, paddingBottom: 25, }}
+                        >
+                            <TouchableOpacity onPress={() =>{
+                                if(!text.length){
+                                    setValidateRemarks({error: true})
+
+                                }else{
+                                    onEndorseConfirm()
                                 }
-                                setText(text)
-                            }}
-                        />
-                    </View>
-                    <View
-                        style={{ width: '100%', paddingHorizontal: 20, paddingBottom: 25, }}
-                    >
-                        <TouchableOpacity onPress={() =>{
-                            if(!text.length){
-                                setValidateRemarks({error: true})
 
-                            }else{
-                                onEndorseConfirm()
-                            }
-
-                        }}>
-                            <View style={styles.confirmButton}>
-                                <Text style={styles.confirm}>Confirm</Text>
-                            </View>
-                        </TouchableOpacity>
+                            }}>
+                                <View style={styles.confirmButton}>
+                                    <Text style={styles.confirm}>Confirm</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
-            </KeyboardAvoidingView>
-        </Modal>
+                </KeyboardAvoidingView>
+            </Modal>
+        </View>
+
     );
 }
 const styles = StyleSheet.create({
