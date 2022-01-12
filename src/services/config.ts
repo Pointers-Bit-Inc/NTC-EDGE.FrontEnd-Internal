@@ -1,4 +1,4 @@
-const BASE_URL = 'https://ntc.astrotechenergy.com0';
+const BASE_URL = 'https://ntc.astrotechenergy.com';
 const firebaseConfig = {
   apiKey: "AIzaSyASZc6WOG4-kKMf7I98p_5aRjbXHzWsmyU",
   authDomain: "ntc-edge-ea034.firebaseapp.com",
