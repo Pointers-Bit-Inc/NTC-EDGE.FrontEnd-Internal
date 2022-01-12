@@ -4,10 +4,13 @@ import {styles} from "@pages/activities/styles";
 import {
     APPROVED,
     CASHIER,
-    DATE_ADDED, DECLINED,
+    DATE_ADDED,
+    DECLINED,
     DIRECTOR,
-    FOREVALUATION, PAID,
-    PENDING, UNVERIFIED,
+    FOREVALUATION,
+    PAID,
+    PENDING,
+    UNVERIFIED,
     VERIFIED
 } from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
@@ -32,6 +35,7 @@ import ItemMoreModal from "@pages/activities/itemMoreModal";
 import moment from "moment";
 import ApplicationList from "@pages/activities/applicationList";
 import Loader from "@pages/activities/bottomLoad";
+import _ from "lodash";
 
 
 export default function ActivitiesPage(props: any) {
@@ -223,6 +227,7 @@ export default function ActivitiesPage(props: any) {
     }
     const [oldCurrentPage, setOldCurrentPage] = useState(1)
     const [infiniteLoad, setInfiniteLoad] = useState(false)
+    const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(false)
     const bottomLoader = () => {
         return  infiniteLoad ? <Loader/>  : null
     };
@@ -234,8 +239,15 @@ export default function ActivitiesPage(props: any) {
         if (currentPage != oldCurrentPage) {
             const page = "?page=" + currentPage
             axios.get(BASE_URL + `/applications${keyword + page}`, config).then((response) => {
-                dispatch(handleInfiniteLoad(response.data))
-                setInfiniteLoad(false);
+                console.log(1)
+                if(response?.data?.docs.length == 0) {
+                    setInfiniteLoad(false);
+
+                }else{
+                    dispatch(handleInfiniteLoad(response.data))
+                    setInfiniteLoad(false);
+                }
+
             }).catch((err) => {
                 setInfiniteLoad(false)
                 console.warn(err)
@@ -351,8 +363,15 @@ export default function ActivitiesPage(props: any) {
                     data={notPnApplications}
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={bottomLoader}
-                    onEndReached={handleLoad}
-                    onEndReachedThreshold={0}
+                    onEndReached={() =>{
+                        if (!onEndReachedCalledDuringMomentum) {
+                            handleLoad()
+                            setOnEndReachedCalledDuringMomentum(true);
+                        }
+
+                    }}
+                    onEndReachedThreshold = {0.1}
+                    onMomentumScrollBegin = {() => {setOnEndReachedCalledDuringMomentum(false)}}
                     renderItem={({item, index}) => (
                         <ApplicationList
                             key={index}
