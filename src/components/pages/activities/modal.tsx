@@ -10,7 +10,14 @@ import Requirement from "@pages/activities/application/requirement";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Payment from "@pages/activities/application/payment";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {formatDate, handleInfinityScroll, statusColor, statusIcon} from "@pages/activities/script";
+import {
+    formatDate,
+    handleInfinityScroll,
+    PaymentStatusText,
+    statusColor,
+    statusIcon,
+    StatusText
+} from "@pages/activities/script";
 import {
     APPROVED, CASHIER,
     DECLINED, DIRECTOR, EVALUATOR, FOREVALUATION,
@@ -220,10 +227,10 @@ function ActivityModal(props: any) {
                                     status ?
                                     status :
                                         (user?.role?.key == CASHIER ?
-                                        props?.details?.paymentStatus :
+                                        PaymentStatusText(props?.details?.paymentStatus) :
                                             (status ?
                                             status :
-                                                props?.details?.status
+                                                StatusText(props?.details?.status)
                                             )
                                         ),
                                     styles.icon2
@@ -236,10 +243,10 @@ function ActivityModal(props: any) {
                                         status ?
                                         status :
                                             (user?.role?.key == CASHIER ?
-                                            props?.details?.paymentStatus :
+                                                    PaymentStatusText(props?.details?.paymentStatus) :
                                                 (status ?
                                                 status :
-                                                props?.details?.status
+                                                StatusText(props?.details?.status)
                                             )
                                         )
                                     ),
@@ -254,10 +261,10 @@ function ActivityModal(props: any) {
                                     status ?
                                     status :
                                         (user?.role?.key == CASHIER ?
-                                        props?.details?.paymentStatus :
+                                        PaymentStatusText(props?.details?.paymentStatus) :
                                             (status ?
                                             status :
-                                                props?.details?.status
+                                                StatusText(props?.details?.status)
                                             )
                                         )
                                 }

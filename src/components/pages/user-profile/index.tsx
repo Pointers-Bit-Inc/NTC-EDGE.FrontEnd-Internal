@@ -2,14 +2,17 @@ import React, {useEffect, useMemo, useState} from "react";
 import FormField from "@organisms/forms/form";
 import InputStyles from "@styles/input-style";
 import Text from '@atoms/text';
-import {primaryColor, text} from "@styles/color";
+import {button, primaryColor, text} from "@styles/color";
 import {Image, ScrollView, StyleSheet, TouchableOpacity, View,} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {setUser} from "../../../reducers/user/actions";
+import {setUser, updateUser} from "../../../reducers/user/actions";
 import {Ionicons} from "@expo/vector-icons";
 import ProfileImage from "@components/atoms/image/profile";
 import CustomDropdown from "@pages/user-profile/custom-dropdown";
+import Button from "@atoms/button";
+import axios from "axios";
+import {BASE_URL} from "../../../services/config";
 
 const UserProfile = (props: any) => {
 
@@ -23,10 +26,13 @@ const UserProfile = (props: any) => {
     const dispatch = useDispatch();
     const [profileImage, setProfile] = useState("")
     const user = useSelector((state: RootStateOrAny) => state.user);
+    useEffect(()=>{
+        console.log(user)
+    }, [])
     const [userProfile, setUserProfile] = useState()
     const [userProfileForm, setUserProfileForm] = useState([
         {
-            stateName: 'userType',
+
             id: 1,
             key: 1,
             required: true,
@@ -44,7 +50,7 @@ const UserProfile = (props: any) => {
         {
             id: 2,
             key: 2,
-            required: true,
+            required: false,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -52,8 +58,7 @@ const UserProfile = (props: any) => {
             label: "User Name",
             type: "select",
             placeholder: "User Name",
-            value: user?.username || '',
-            stateName: 'username',
+            value: user?.name || '',
             inputStyle: InputStyles.text,
             error: false,
         },
@@ -78,11 +83,11 @@ const UserProfile = (props: any) => {
 
         {
             id: 11,
-            stateName: 'profileImage',
-            value: user?.profileImage
+
+            value: user?.image
         },
         {
-            stateName: 'phone',
+            stateName: 'contactNumber',
             id: 9,
             key: 9,
             required: true,
@@ -90,18 +95,17 @@ const UserProfile = (props: any) => {
             activeColor: text.primary,
             errorColor: text.error,
             requiredColor: text.error,
-            label: "Phone",
+            label: "Contact Number",
             type: "input",
-            placeholder: "Phone",
+            placeholder: "Contact Number",
             value: user?.contactNumber || '',
             inputStyle: InputStyles.text,
             error: false,
         },
         {
-            stateName: 'address',
             id: 10,
             key: 10,
-            required: true,
+            required: false,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
             errorColor: text.error,
@@ -167,14 +171,29 @@ const UserProfile = (props: any) => {
         let userInput = {} as any, error = [];
         let newArr = [...userProfileForm];
         for (let i = 0; i < newArr.length; i++) {
-            if (!newArr[i].value) {
+            if (!newArr[i].value && newArr[i].required) {
                 newArr[i].error = true
             }
-            userInput[`${userProfileForm[i]?.stateName}`] = userProfileForm[i].value
+            if(userProfileForm[i]?.stateName) userInput[`${userProfileForm[i]?.stateName}`] = userProfileForm[i].value
+            
         }
         setUserProfileForm(newArr)
         if(!error.length){
-            dispatch(setUser(userInput))
+            const config = {
+                headers: {
+                    Authorization: "Bearer ".concat(user.sessionToken)
+                }
+            }
+
+            console.log(userInput)
+
+            axios.patch(BASE_URL + `/user/profile/${user._id}`, userInput, config).then((response) =>{
+
+                dispatch(updateUser(userInput))
+            }).catch((err) => {
+                console.warn(err)
+            })
+
         }
     }
 
@@ -189,7 +208,10 @@ const UserProfile = (props: any) => {
                     </TouchableOpacity>
 
                     <Text style={styles.profileName}>Profile</Text>
-                    <Text style={styles.edit}>Edit</Text>
+                    <TouchableOpacity onPress={onUserSubmit}>
+                        <Text style={styles.edit}>Edit</Text>
+                    </TouchableOpacity>
+
                 </View>
             </View>
         </View>
@@ -235,16 +257,24 @@ const UserProfile = (props: any) => {
 
                 </View>
 
+
             </ScrollView>
 
         </View>
 
         <View style={styles.divider}></View>
-        <Text style={styles.changePassword}>Change Password</Text>
+        <TouchableOpacity >
+            <Text style={styles.changePassword}>Change Password</Text>
+        </TouchableOpacity>
+
     </View>
 }
 
 const styles = StyleSheet.create({
+    button: {
+        borderRadius: 5,
+        paddingVertical: 12,
+    },
     container: {
         backgroundColor: "#fff",
         flex: 1

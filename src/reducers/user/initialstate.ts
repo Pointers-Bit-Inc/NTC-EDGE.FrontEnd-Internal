@@ -1,6 +1,7 @@
 const { Record } = require('immutable');
 
-const InitialState = Record({username: '',
+const InitialState = Record({
+  username: '',
   email: '',
   password: '',
   userType: '',
@@ -8,9 +9,11 @@ const InitialState = Record({username: '',
   firstName: '',
   middleName: '',
   lastName: '',
-  phone: '',
+  contactNumber: '',
   address: '',
-  profileImage: ''
+  profileImage: '',
+  image: '',
+  name: ''
 });
 
 export default InitialState;

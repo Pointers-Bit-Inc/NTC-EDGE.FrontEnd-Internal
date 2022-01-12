@@ -1,7 +1,15 @@
 import React, {useEffect, useMemo, useState} from "react";
-import {Animated, FlatList, RefreshControl, StatusBar, Text, TouchableOpacity, View} from "react-native";
+import {Alert, Animated, FlatList, RefreshControl, StatusBar, Text, TouchableOpacity, View} from "react-native";
 import {styles} from "@pages/activities/styles";
-import {APPROVED, CASHIER, DATE_ADDED, DIRECTOR, FOREVALUATION, PENDING} from "../../../reducers/activity/initialstate";
+import {
+    APPROVED,
+    CASHIER,
+    DATE_ADDED, DECLINED,
+    DIRECTOR,
+    FOREVALUATION, PAID,
+    PENDING, UNVERIFIED,
+    VERIFIED
+} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {
     handleInfiniteLoad,
@@ -126,13 +134,19 @@ export default function ActivitiesPage(props: any) {
         dispatch(setPinnedApplication([]))
 
         const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
+        console.log(selectedChangeStatus)
         const status = selectedChangeStatus.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedChangeStatus.map((item: any) => {
             if (item == FOREVALUATION) {
                 return PENDING
+            }else if(item == VERIFIED){
+                return PAID
+            } else if(item == UNVERIFIED){
+                return DECLINED
             }
             return item
         }).toString() : ''
         axios.get(BASE_URL + `/applications${keyword + status}`, config).then((response) => {
+            if(response?.data?.message) Alert.alert(response.data.message)
             dispatch(setApplications(response.data))
             if (isCurrent) setRefreshing(false);
         }).catch((err) => {
