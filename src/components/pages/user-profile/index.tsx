@@ -185,8 +185,6 @@ const UserProfile = (props: any) => {
                 }
             }
 
-            console.log(userInput)
-
             axios.patch(BASE_URL + `/user/profile/${user._id}`, userInput, config).then((response) =>{
 
                 dispatch(updateUser(userInput))

@@ -110,7 +110,7 @@ function ActivityModal(props: any) {
                 if (res.status === 200) {
                     if (res.data) {
                         dispatch(updateApplicationStatus({application: res.data, status: status, assignedPersonnel: assignId, userType: user?.role?.key }))
-                        setStatus(status)
+                        setStatus(PaymentStatusText(status))
                         setChange(true)
                         return callback(null);
                     }
@@ -172,10 +172,8 @@ function ActivityModal(props: any) {
                 }}
                 onConfirmPressed={() => {
                     let status = ""
-                    if ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
+                    if ([CASHIER, DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
                         status = APPROVED
-                    } else if (status != DECLINED && [CASHIER].indexOf(user?.role?.key) != -1) {
-                        status = PAID
                     }else{
                         status = DECLINED
                     }
@@ -362,11 +360,7 @@ function ActivityModal(props: any) {
                             <TouchableOpacity
                                 disabled={currentLoading === APPROVED}
                                 onPress={() => {
-                                    if(user?.role?.key == CASHIER){
-                                        onShowConfirmation(APPROVED)
-                                    }else{
-                                        setApproveVisible(true)
-                                    }
+                                    setApproveVisible(true)
                                 }}
                             >
                                 {/* <View style={styles.rect22Filler}></View>

@@ -6,7 +6,7 @@ import Dropdown from "@atoms/dropdown";
 import axios from "axios";
 import { InputField } from "@components/molecules/form-fields";
 import {BASE_URL} from "../../../services/config";
-import {CASHIER,} from "../../../reducers/activity/initialstate";
+import {CASHIER, DIRECTOR, EVALUATOR,} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useSelector} from "react-redux";
 import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
@@ -49,6 +49,12 @@ function Approval(props: any){
             isCurrent = false
         }
     }, [])
+
+    function onConfirmation() {
+        setMessage("Are you sure you want to approve this application?")
+        setShowAlert(true)
+    }
+
     return (
         <Modal
             animationType="slide"
@@ -74,7 +80,7 @@ function Approval(props: any){
                     setShowAlert(false)
                 }}
                 onConfirmPressed={() => {
-                    if(!remarks.length){
+                    if([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 && !remarks.length){
                         setShowAlert(true)
                     }else {
 
@@ -108,7 +114,7 @@ function Approval(props: any){
                                             placeholder={{}}
                                             items={pickedCashier}></Dropdown>
                             </View> */}
-                            <InputField
+                            {[DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 && <InputField
                                 style={{ fontWeight: 'normal' }}
                                 outlineStyle={{
                                     borderColor: "rgba(202,210,225,1)",
@@ -128,17 +134,19 @@ function Approval(props: any){
                                         setRemarks(text)
                                     }
                                 }
-                            />
+                            /> }
                             <View style={{ marginTop: 5 }} >
                                 <TouchableOpacity onPress={()=>{
+                                    if([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1){
+                                        if(!remarks.length){
+                                            setMessage("Remarks field is required")
+                                            setValidateRemarks({error: true})
 
-                                    if(!remarks.length){
-                                        setMessage("Remarks field is required")
-                                        setValidateRemarks({error: true})
-
-                                    }else {
-                                        setMessage("Are you sure you want to approve this application?")
-                                        setShowAlert(true)
+                                        }else {
+                                            onConfirmation();
+                                        }
+                                    }else{
+                                        onConfirmation()
                                     }
                                 }}>
                                     <View style={styles.rect3}>
