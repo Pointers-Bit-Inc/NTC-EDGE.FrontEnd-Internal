@@ -24,6 +24,7 @@ function Approval(props: any){
     const [showAlert, setShowAlert] = useState(false)
     const [validateRemarks, setValidateRemarks] = useState<{error: boolean}>({error: false})
     useEffect(()=>{
+        let isCurrent = true
         axios.get(BASE_URL + '/users' ,
             {
                 headers: {
@@ -38,12 +39,15 @@ function Approval(props: any){
                 return {value: item._id, label: item.firstName + " " + item.lastName}
             })
 
-            setPickedCashier(res)
+            if(isCurrent) setPickedCashier(res)
             if(res){
                 setCashier(res[0]?.value)
             }
 
         })
+        return () =>{
+            isCurrent = false
+        }
     }, [])
     return (
         <Modal
