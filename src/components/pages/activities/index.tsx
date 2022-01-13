@@ -6,8 +6,9 @@ import {
     CASHIER,
     DATE_ADDED,
     DECLINED,
-    DIRECTOR, EVALUATOR,
-    FOREVALUATION,
+    DIRECTOR,
+    EVALUATOR,
+    FOREVALUATION, FORVERIFICATION,
     PAID,
     PENDING,
     UNVERIFIED,
@@ -23,11 +24,7 @@ import {
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
-import {
-    checkFormatIso,
-    PaymentStatusText,
-    StatusText,
-} from "@pages/activities/script";
+import {checkFormatIso, PaymentStatusText, StatusText,} from "@pages/activities/script";
 import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
@@ -54,7 +51,7 @@ export default function ActivitiesPage(props: any) {
     const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const dispatch = useDispatch()
     const ispinnedApplications = (applications: any) => {
-       
+
         setTotalPages(Math.ceil(applications?.length / 10));
 
         const sortByDate = (arr: any) => {
@@ -71,7 +68,6 @@ export default function ActivitiesPage(props: any) {
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
-
 
 
         const list = applications?.filter((item: any) => {
@@ -146,17 +142,23 @@ export default function ActivitiesPage(props: any) {
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
-        const status = selectedClone.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedClone.map((item:any) =>{
-            if(item == VERIFIED){
-                return PAID
-            }else if(item == UNVERIFIED){
-                return DECLINED
+        const status = selectedClone.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedClone.map((item: any) => {
+            if(cashier){
+                if (item == VERIFIED) {
+                    return PAID
+                } else if (item == UNVERIFIED) {
+                    return DECLINED
+                }else if(item == FORVERIFICATION){
+                    return PENDING
+                }
+            } else if(item == FOREVALUATION){
+                return [FOREVALUATION, PENDING].toString()
             }
             return item
         }).toString() : ''
         console.log(status)
         axios.get(BASE_URL + `/applications${keyword + status}`, config).then((response) => {
-            if(response?.data?.message) Alert.alert(response.data.message)
+            if (response?.data?.message) Alert.alert(response.data.message)
             dispatch(setApplications(response.data))
             if (isCurrent) setRefreshing(false);
         }).catch((err) => {
@@ -231,7 +233,7 @@ export default function ActivitiesPage(props: any) {
     const [infiniteLoad, setInfiniteLoad] = useState(false)
     const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(false)
     const bottomLoader = () => {
-        return  infiniteLoad ? <Loader/>  : null
+        return infiniteLoad ? <Loader/> : null
     };
 
     useEffect(() => {
@@ -240,10 +242,10 @@ export default function ActivitiesPage(props: any) {
         if (currentPage != oldCurrentPage) {
             const page = "?page=" + currentPage
             axios.get(BASE_URL + `/applications${keyword + page}`, config).then((response) => {
-                if(response?.data?.docs.length == 0) {
+                if (response?.data?.docs.length == 0) {
                     setInfiniteLoad(false);
 
-                }else{
+                } else {
                     dispatch(handleInfiniteLoad(response.data))
                     setInfiniteLoad(false);
                 }
@@ -261,7 +263,7 @@ export default function ActivitiesPage(props: any) {
         setOldCurrentPage(currentPage)
     }
     return (
-        <Fragment >
+        <Fragment>
             <StatusBar barStyle={'light-content'}/>
             {searchVisible && <Search loadingAnimation={(event: boolean) => {
 
@@ -362,15 +364,17 @@ export default function ActivitiesPage(props: any) {
                     data={notPnApplications}
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={bottomLoader}
-                    onEndReached={() =>{
+                    onEndReached={() => {
                         if (!onEndReachedCalledDuringMomentum) {
                             handleLoad()
                             setOnEndReachedCalledDuringMomentum(true);
                         }
 
                     }}
-                    onEndReachedThreshold = {0.1}
-                    onMomentumScrollBegin = {() => {setOnEndReachedCalledDuringMomentum(false)}}
+                    onEndReachedThreshold={0.1}
+                    onMomentumScrollBegin={() => {
+                        setOnEndReachedCalledDuringMomentum(false)
+                    }}
                     renderItem={({item, index}) => (
                         <ApplicationList
                             key={index}
@@ -406,7 +410,7 @@ export default function ActivitiesPage(props: any) {
                     if (event) {
                         onRefresh()
                     }
-                    if(!(notPnApplications.length || pnApplications.length )){
+                    if (!(notPnApplications.length || pnApplications.length)) {
                         onRefresh()
                     }
                     onDismissed()
