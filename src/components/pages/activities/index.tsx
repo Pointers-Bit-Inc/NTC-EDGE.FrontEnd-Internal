@@ -156,7 +156,6 @@ export default function ActivitiesPage(props: any) {
             }
             return item
         }).toString() : ''
-        console.log(status)
         axios.get(BASE_URL + `/applications${keyword + status}`, config).then((response) => {
             if (response?.data?.message) Alert.alert(response.data.message)
             dispatch(setApplications(response.data))

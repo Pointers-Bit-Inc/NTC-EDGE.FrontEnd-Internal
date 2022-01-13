@@ -112,9 +112,11 @@ function ActivityModal(props: any) {
                         dispatch(updateApplicationStatus({application: res.data, status: status, assignedPersonnel: assignId, userType: user?.role?.key }))
                         setStatus(PaymentStatusText(status))
                         setChange(true)
+
                         return callback(null);
                     }
                 }
+
                 Alert.alert('Alert', 'Something went wrong.');
                 return callback('error');
             })
@@ -167,7 +169,11 @@ function ActivityModal(props: any) {
                     }else{
                         status = DECLINED
                     }
-                    onChangeApplicationStatus(status)
+                    onChangeApplicationStatus(status).then(()=>{
+                        setStatus("")
+                        props.onDismissed(change)
+                        setChange(false)
+                    })
                     setShowAlert(false)
                 }}
             />
