@@ -6,9 +6,8 @@ import {
     CASHIER,
     DATE_ADDED,
     DECLINED,
-    DIRECTOR,
+    DIRECTOR, EVALUATOR,
     FOREVALUATION,
-    FORVERIFICATION,
     PAID,
     PENDING,
     UNVERIFIED,
@@ -24,7 +23,11 @@ import {
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
-import {checkFormatIso, PaymentStatusText, StatusText,} from "@pages/activities/script";
+import {
+    checkFormatIso,
+    PaymentStatusText,
+    StatusText,
+} from "@pages/activities/script";
 import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
@@ -44,7 +47,7 @@ export default function ActivitiesPage(props: any) {
     const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
     const config = {
         headers: {
-            Authorization: "Bearer ".concat(user.sessionToken)
+            Authorization: "Bearer ".concat(user?.sessionToken)
         }
     }
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
@@ -80,7 +83,7 @@ export default function ActivitiesPage(props: any) {
                     : true)
             if (cashier) {
                 return (item?.status == APPROVED || item?.assignedPersonnel == user?._id) && search
-            } else if ([DIRECTOR].indexOf(user?.role?.key) != -1) {
+            } else if ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
                 return (item?.status == FOREVALUATION || item?.status == PENDING || item?.assignedPersonnel == user?._id) && search
             } else {
                 return search
