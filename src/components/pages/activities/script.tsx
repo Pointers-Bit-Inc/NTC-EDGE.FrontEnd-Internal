@@ -2,7 +2,7 @@ import {
     APPROVED,
     DECLINE,
     DECLINED,
-    FOREVALUATION,
+    FOREVALUATION, FORVERIFICATION,
     PAID, PENDING,
     UNVERIFIED,
     VERIFICATION,
@@ -17,10 +17,10 @@ import React from "react";
 export const PaymentStatusText = (status: string) => {
 
     switch (status) {
-        case "Paid" :
+        case PAID :
             return VERIFIED
         case PENDING:
-            return 'For Verification'
+            return FORVERIFICATION
         case DECLINED:
             return UNVERIFIED
         default:
@@ -31,7 +31,7 @@ export const StatusText = (status: string) => {
 
     switch (status) {
         case PENDING:
-            return 'For Evaluation'
+            return FOREVALUATION
         default:
             return status
     }

@@ -8,6 +8,7 @@ import {
     DECLINED,
     DIRECTOR,
     FOREVALUATION,
+    FORVERIFICATION,
     PAID,
     PENDING,
     UNVERIFIED,
@@ -35,7 +36,6 @@ import ItemMoreModal from "@pages/activities/itemMoreModal";
 import moment from "moment";
 import ApplicationList from "@pages/activities/applicationList";
 import Loader from "@pages/activities/bottomLoad";
-import _ from "lodash";
 
 
 export default function ActivitiesPage(props: any) {
@@ -144,12 +144,12 @@ export default function ActivitiesPage(props: any) {
             return status != DATE_ADDED
         })
         const status = selectedClone.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedChangeStatus.map((item: any) => {
-            if (item == FOREVALUATION) {
-                return PENDING
-            }else if(item == VERIFIED){
+            if(item == VERIFIED){
                 return PAID
             } else if(item == UNVERIFIED){
                 return DECLINED
+            }else if(item == FORVERIFICATION){
+                return PENDING
             }
             return item
         }).toString() : ''
@@ -235,11 +235,9 @@ export default function ActivitiesPage(props: any) {
     useEffect(() => {
         setInfiniteLoad(true)
         const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
-
         if (currentPage != oldCurrentPage) {
             const page = "?page=" + currentPage
             axios.get(BASE_URL + `/applications${keyword + page}`, config).then((response) => {
-                console.log(1)
                 if(response?.data?.docs.length == 0) {
                     setInfiniteLoad(false);
 
@@ -253,7 +251,6 @@ export default function ActivitiesPage(props: any) {
                 console.warn(err)
             })
         }
-
     }, [currentPage])
 
     const handleLoad = () => {
