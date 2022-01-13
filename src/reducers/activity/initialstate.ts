@@ -67,7 +67,15 @@ const InitialState = Record({
       iconBrand: 'evil',
       iconName: 'redo',
       isShow: [CASHIER]
-    }
+    },
+    {
+      id: 7,
+      checked: false,
+      status: PENDING,
+      iconBrand: 'feather',
+      iconName: 'calendar',
+      isShow: [CASHIER, DIRECTOR, EVALUATOR]
+    },
   ],
   selectedChangeStatus:[],
   activities:[]

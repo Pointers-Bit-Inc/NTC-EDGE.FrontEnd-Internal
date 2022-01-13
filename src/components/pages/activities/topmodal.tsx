@@ -86,7 +86,10 @@ function TopModal(props:any) {
                                         {renderIcon(top)}
                                         <Text style={[styles.label1, {color: top.checked ? "#003aa9" : "rgba(128,128,128,1)"}]}>{top.status}</Text>
                                     </View>
-                                    <TouchableOpacity onPress={() =>  dispatch(on_checked(top))}>
+                                    <TouchableOpacity onPress={() => {
+                                        
+                                        dispatch(on_checked(top))
+                                    } }>
                                         <Ionicons
                                             name={top.checked  ? "md-radio-button-on" : "md-radio-button-off"}
                                             style={[styles.icon6_1, {color: top.checked ? "#003aa9" : "rgba(128,128,128,1)"}]}

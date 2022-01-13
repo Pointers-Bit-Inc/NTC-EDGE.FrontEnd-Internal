@@ -79,9 +79,9 @@ export default function ActivitiesPage(props: any) {
                         PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1
                     : true)
             if (cashier) {
-                return item?.status == APPROVED && search
+                return (item?.status == APPROVED || item?.assignedPersonnel == user?._id) && search
             } else if ([DIRECTOR].indexOf(user?.role?.key) != -1) {
-                return (item?.status == FOREVALUATION || item?.status == PENDING) && search
+                return (item?.status == FOREVALUATION || item?.status == PENDING || item?.assignedPersonnel == user?._id) && search
             } else {
                 return search
             }
@@ -143,16 +143,15 @@ export default function ActivitiesPage(props: any) {
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
-        const status = selectedClone.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedChangeStatus.map((item: any) => {
+        const status = selectedClone.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedClone.map((item:any) =>{
             if(item == VERIFIED){
                 return PAID
-            } else if(item == UNVERIFIED){
+            }else if(item == UNVERIFIED){
                 return DECLINED
-            }else if(item == FORVERIFICATION){
-                return PENDING
             }
             return item
         }).toString() : ''
+        console.log(status)
         axios.get(BASE_URL + `/applications${keyword + status}`, config).then((response) => {
             if(response?.data?.message) Alert.alert(response.data.message)
             dispatch(setApplications(response.data))

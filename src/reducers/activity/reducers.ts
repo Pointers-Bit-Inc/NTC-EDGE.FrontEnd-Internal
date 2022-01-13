@@ -24,7 +24,7 @@ export default function basket(state = initialState, action = {}) {
       const index = newArr.findIndex((app:any) => {
         return app.id == action.payload.id
       })
-
+      
       newArr[index].checked = !newArr[index].checked
       state = state.set("statusCode", newArr)
       let selectChangeStatus = []
