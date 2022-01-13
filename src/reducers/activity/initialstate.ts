@@ -6,6 +6,7 @@ export const DATE_ADDED = "Date Added",
     DECLINE = "Decline",
     VERIFICATION = "Verification",
     VERIFIED = "Verified",
+
     UNVERIFIED = "Unverified",
     PAID = "Paid",
     PENDING = "Pending",
@@ -15,7 +16,8 @@ export const DATE_ADDED = "Date Added",
     OTHERS = "Others",
     CASHIER = "cashier",
     DIRECTOR = "director",
-    EVALUATOR = "evaluator"
+    EVALUATOR = "evaluator",
+    VERIFIER = "verifier"
 
 const InitialState = Record({
   visible: false,
