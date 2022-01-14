@@ -170,7 +170,7 @@ export default function ActivitiesPage(props: any) {
             return status == DATE_ADDED
         })
 
-        const dateAdded = checkDateAdded.length ? "?sort=asc" : "?sort=desc"
+        const dateAdded = checkDateAdded.length ? "?sort=desc" : "?sort=asc"
 
         const status = selectedClone.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedClone.map((item: any) => {
             if(cashier){

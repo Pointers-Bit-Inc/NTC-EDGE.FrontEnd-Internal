@@ -28,7 +28,7 @@ const InitialState = Record({
       status: DATE_ADDED,
       iconBrand: 'feather',
       iconName: 'calendar',
-      isShow: [DIRECTOR, EVALUATOR]
+      isShow: [CASHIER, DIRECTOR, EVALUATOR]
     },
     {
       id: 2,
