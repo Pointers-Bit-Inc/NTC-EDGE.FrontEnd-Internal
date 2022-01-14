@@ -78,7 +78,7 @@ export const statusColor = (status: string) => {
     if (status == FOREVALUATION) {
 
         return {color: "#f66500"}
-    } else if (status == APPROVED || status == PAID || status == VERIFICATION) {
+    } else if (status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) {
 
         return {color: "#34c759"}
     } else if (status == DECLINED || status == DECLINE) {
@@ -95,7 +95,7 @@ export const statusIcon = (status: string, icon: any = styles.icon3) => {
     if (status == FOREVALUATION) {
 
         return <EvaluationStatus style={[icon, {color: "#f66500",}]}/>
-    } else if (status == APPROVED || status == PAID || status == VERIFICATION) {
+    } else if (status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) {
         return <CheckMarkIcon style={[icon]}/>
     } else if (status == DECLINED || status == DECLINE) {
         return <DeclineStatusIcon style={[icon]}/>
@@ -107,7 +107,7 @@ export const statusBackgroundColor = (status: string) => {
 
     if (status == FOREVALUATION) {
         return {backgroundColor: "#fef5e8",}
-    } else if (status == APPROVED || status == PAID || status == VERIFICATION) {
+    } else if (status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) {
         return {backgroundColor: "rgba(229,247,241,1)",}
     } else if (status == DECLINED || status == DECLINE) {
         return {backgroundColor: "#fae6e9",}
