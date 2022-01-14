@@ -1,5 +1,5 @@
 import React, {Fragment, useEffect, useMemo, useState} from "react";
-import {Alert, Animated, FlatList, RefreshControl, StatusBar, Text, TouchableOpacity, View} from "react-native";
+import {Alert, Animated, FlatList, RefreshControl, StatusBar, Text, TouchableOpacity, View, Dimensions} from "react-native";
 import {styles} from "@pages/activities/styles";
 import {
     APPROVED,
@@ -36,13 +36,26 @@ import ItemMoreModal from "@pages/activities/itemMoreModal";
 import moment from "moment";
 import ApplicationList from "@pages/activities/applicationList";
 import Loader from "@pages/activities/bottomLoad";
-import {NavigationContainer} from "@react-navigation/native";
-
-
+import useFirebase from 'src/hooks/useFirebase';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import { getChannelName } from 'src/utils/formatting';
+import lodash from 'lodash';
+import {
+    addActiveMeeting,
+    removeActiveMeeting,
+    updateActiveMeeting,
+    setMeetingId,
+  } from 'src/reducers/meeting/actions';
+import { MeetingNotif } from '@components/molecules/list-item';
+const { width } = Dimensions.get('window')
 
 export default function ActivitiesPage(props: any) {
-
     const user = useSelector((state: RootStateOrAny) => state.user);
+    const meetingList = useSelector((state:RootStateOrAny) => {
+        const { activeMeetings } = state.meeting;
+        const sortedMeeting = lodash.orderBy(activeMeetings, 'updatedAt', 'desc');
+        return sortedMeeting;
+      });
     const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
     const config = {
         headers: {
@@ -52,6 +65,14 @@ export default function ActivitiesPage(props: any) {
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
     const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const dispatch = useDispatch()
+    const { userActiveMeetingSubscriber, endMeeting } = useFirebase({
+        _id: user._id,
+        name: user.name,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        image: user.image,
+      });
     const ispinnedApplications = (applications: any) => {
 
         setTotalPages(Math.ceil(applications?.length / 10));
@@ -243,7 +264,6 @@ export default function ActivitiesPage(props: any) {
         if (currentPage != oldCurrentPage) {
             const page = "?page=" + currentPage
             axios.get(BASE_URL + `/applications${keyword + page}`, config).then((response) => {
-                console.log(response.data)
                 if (response?.data?.docs.length == 0) {
                     setInfiniteLoad(false);
 
@@ -252,8 +272,6 @@ export default function ActivitiesPage(props: any) {
                     setInfiniteLoad(false);
                 }
 
-                setInfiniteLoad(false);
-
             }).catch((err) => {
                 setInfiniteLoad(false)
                 console.warn(err)
@@ -261,11 +279,67 @@ export default function ActivitiesPage(props: any) {
         }
     }, [currentPage])
 
+    useEffect(() => {
+        let unMount = false;
+        const unsubscriber = userActiveMeetingSubscriber((querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
+          if (!unMount) {
+            querySnapshot.docChanges().forEach((change:any) => {
+              const data = change.doc.data();
+              data._id = change.doc.id;
+              switch(change.type) {
+                case 'added': {
+                  const hasSave = lodash.find(meetingList, (ch:any) => ch._id === data._id);
+                  if (!hasSave) {
+                    dispatch(addActiveMeeting(data));
+                  }
+                  return;
+                }
+                case 'modified': {
+                  dispatch(updateActiveMeeting(data));
+                  return;
+                }
+                case 'removed': {
+                  dispatch(removeActiveMeeting(data._id));
+                  return;
+                }
+                default:
+                  return;
+              }
+            });
+          }
+        })
+        return () => {
+          unMount = true;
+          unsubscriber();
+        }
+      }, []);
+
     const handleLoad = () => {
         setCurrentPage(currentPage + 1)
         setOffset((currentPage - 1) * perPage)
         setOldCurrentPage(currentPage)
     }
+
+    const onJoin = (item) => {
+        dispatch(setMeetingId(item._id));
+        props.navigation.navigate('Dial', {
+          isHost: item.host._id === user._id,
+          isVoiceCall: item.isVoiceCall,
+          options: {
+            isMute: false,
+            isVideoEnable: true,
+          }
+        });
+      }
+    
+      const onClose = (item) => {
+        if (item.host._id === user._id) {
+          endMeeting(item._id);
+        } else {
+          dispatch(removeActiveMeeting(item._id));
+        }
+      }
+
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
@@ -303,6 +377,33 @@ export default function ActivitiesPage(props: any) {
                             <FilterIcon width={18} height={18} fill={"#fff"}/>
                         </TouchableOpacity>
                     </View>
+                </View>
+                <View>
+                {
+                    !!lodash.size(meetingList) && (
+                        <FlatList
+                        data={meetingList}
+                        bounces={false}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        snapToInterval={width}
+                        decelerationRate={0}
+                        keyExtractor={(item:any) => item._id}
+                        renderItem={({ item }) => (
+                            <MeetingNotif
+                            style={{ width }}
+                            name={getChannelName(item)}
+                            time={item.createdAt}
+                            onJoin={() => onJoin(item)}
+                            onClose={() => onClose(item)}
+                            closeText={
+                                item.host._id === user._id ? 'End' : 'Close'
+                            }
+                            />
+                        )}
+                        />
+                    )
+                }
                 </View>
                 <View style={styles.group9}>
 

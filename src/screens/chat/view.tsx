@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   floatingNotif: {
     width,
     position: 'absolute',
-    top: 110,
+    top: 95,
     zIndex: 9,
   }
 });
