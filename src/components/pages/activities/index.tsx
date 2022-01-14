@@ -179,7 +179,7 @@ export default function ActivitiesPage(props: any) {
                 } else if (item == UNVERIFIED) {
                     return DECLINED
                 }else if(item == FORVERIFICATION){
-                    return PENDING
+                    return [PENDING, FORVERIFICATION, FOREVALUATION].toString()
                 }
             } else if(item == FOREVALUATION){
                 return [FOREVALUATION, PENDING].toString()
