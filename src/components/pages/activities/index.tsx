@@ -276,6 +276,8 @@ export default function ActivitiesPage(props: any) {
                 setInfiniteLoad(false)
                 console.warn(err)
             })
+        }else{
+            setInfiniteLoad(false);
         }
     }, [currentPage])
 
