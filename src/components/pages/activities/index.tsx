@@ -142,7 +142,7 @@ export default function ActivitiesPage(props: any) {
         }
 
 
-        return sortByDate(groupArrays).slice(0, currentPage * 25);
+        return groupArrays.slice(0, currentPage * 25);
     }
     const [searchTerm, setSearchTerm] = useState('');
     const [countRefresh, setCountRefresh] = useState(0)
@@ -165,6 +165,13 @@ export default function ActivitiesPage(props: any) {
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
+
+        const checkDateAdded = selectedChangeStatus?.filter((status: string) => {
+            return status == DATE_ADDED
+        })
+
+        const dateAdded = selectedChangeStatus.length ? "?sort=asc" : "?sort=desc"
+
         const status = selectedClone.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedClone.map((item: any) => {
             if(cashier){
                 if (item == VERIFIED) {
@@ -179,7 +186,8 @@ export default function ActivitiesPage(props: any) {
             }
             return item
         }).toString() : ''
-        axios.get(BASE_URL + `/applications${keyword + status}`, config).then((response) => {
+
+        axios.get(BASE_URL + `/applications${dateAdded + keyword + status}`, config).then((response) => {
             if (response?.data?.message) Alert.alert(response.data.message)
             dispatch(setApplications(response.data))
             if (isCurrent) setRefreshing(false);
@@ -280,7 +288,7 @@ export default function ActivitiesPage(props: any) {
             setInfiniteLoad(false)
         }
     }, [currentPage])
-
+    
     useEffect(() => {
         let unMount = false;
         const unsubscriber = userActiveMeetingSubscriber((querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
