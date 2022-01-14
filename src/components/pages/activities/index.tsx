@@ -36,6 +36,8 @@ import ItemMoreModal from "@pages/activities/itemMoreModal";
 import moment from "moment";
 import ApplicationList from "@pages/activities/applicationList";
 import Loader from "@pages/activities/bottomLoad";
+import {NavigationContainer} from "@react-navigation/native";
+
 
 
 export default function ActivitiesPage(props: any) {
@@ -241,6 +243,7 @@ export default function ActivitiesPage(props: any) {
         if (currentPage != oldCurrentPage) {
             const page = "?page=" + currentPage
             axios.get(BASE_URL + `/applications${keyword + page}`, config).then((response) => {
+                console.log(response.data)
                 if (response?.data?.docs.length == 0) {
                     setInfiniteLoad(false);
 
@@ -248,6 +251,8 @@ export default function ActivitiesPage(props: any) {
                     dispatch(handleInfiniteLoad(response.data))
                     setInfiniteLoad(false);
                 }
+
+                setInfiniteLoad(false);
 
             }).catch((err) => {
                 setInfiniteLoad(false)
