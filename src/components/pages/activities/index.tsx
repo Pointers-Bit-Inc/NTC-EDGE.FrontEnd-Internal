@@ -1,5 +1,15 @@
 import React, {Fragment, useEffect, useMemo, useState} from "react";
-import {Alert, Animated, FlatList, RefreshControl, StatusBar, Text, TouchableOpacity, View, Dimensions} from "react-native";
+import {
+    Alert,
+    Animated,
+    Dimensions,
+    FlatList,
+    RefreshControl,
+    StatusBar,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
 import {styles} from "@pages/activities/styles";
 import {
     APPROVED,
@@ -8,7 +18,8 @@ import {
     DECLINED,
     DIRECTOR,
     EVALUATOR,
-    FOREVALUATION, FORVERIFICATION,
+    FOREVALUATION,
+    FORVERIFICATION,
     PAID,
     PENDING,
     UNVERIFIED,
@@ -16,6 +27,7 @@ import {
 } from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {
+    deleteApplications,
     handleInfiniteLoad,
     setApplications,
     setNotPinnedApplication,
@@ -37,25 +49,21 @@ import moment from "moment";
 import ApplicationList from "@pages/activities/applicationList";
 import Loader from "@pages/activities/bottomLoad";
 import useFirebase from 'src/hooks/useFirebase';
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import { getChannelName } from 'src/utils/formatting';
+import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
+import {getChannelName} from 'src/utils/formatting';
 import lodash from 'lodash';
-import {
-    addActiveMeeting,
-    removeActiveMeeting,
-    updateActiveMeeting,
-    setMeetingId,
-  } from 'src/reducers/meeting/actions';
-import { MeetingNotif } from '@components/molecules/list-item';
-const { width } = Dimensions.get('window')
+import {addActiveMeeting, removeActiveMeeting, setMeetingId, updateActiveMeeting,} from 'src/reducers/meeting/actions';
+import {MeetingNotif} from '@components/molecules/list-item';
+
+const {width} = Dimensions.get('window')
 
 export default function ActivitiesPage(props: any) {
     const user = useSelector((state: RootStateOrAny) => state.user);
-    const meetingList = useSelector((state:RootStateOrAny) => {
-        const { activeMeetings } = state.meeting;
+    const meetingList = useSelector((state: RootStateOrAny) => {
+        const {activeMeetings} = state.meeting;
         const sortedMeeting = lodash.orderBy(activeMeetings, 'updatedAt', 'desc');
         return sortedMeeting;
-      });
+    });
     const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
     const config = {
         headers: {
@@ -65,28 +73,17 @@ export default function ActivitiesPage(props: any) {
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
     const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const dispatch = useDispatch()
-    const { userActiveMeetingSubscriber, endMeeting } = useFirebase({
+    const {userActiveMeetingSubscriber, endMeeting} = useFirebase({
         _id: user._id,
         name: user.name,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         image: user.image,
-      });
+    });
     const ispinnedApplications = (applications: any) => {
 
         setTotalPages(Math.ceil(applications?.length / 10));
-
-        const sortByDate = (arr: any) => {
-            const sorter = (a: any, b: any) => {
-                const DateB = new Date(checkFormatIso(b.date, "-")).getTime();
-                const DateA = new Date(checkFormatIso(a.date, "-")).getTime();
-                return selectedChangeStatus?.indexOf(DATE_ADDED) != -1 ?
-                    DateA - DateB :
-                    DateB - DateA
-            }
-            return arr?.sort(sorter);
-        };
 
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
@@ -148,6 +145,7 @@ export default function ActivitiesPage(props: any) {
     const [countRefresh, setCountRefresh] = useState(0)
     const [refreshing, setRefreshing] = React.useState(false);
     const onRefresh = React.useCallback(() => {
+        setRefreshing(true)
         setCountRefresh(countRefresh + 1)
     }, [countRefresh]);
 
@@ -159,24 +157,24 @@ export default function ActivitiesPage(props: any) {
         return status == DATE_ADDED
     })
 
-    const query = () =>{
+    const query = () => {
         const keyword = searchTerm.length ? '&keyword=' + searchTerm : '';
         const dateAdded = checkDateAdded.length ? "?sort=asc" : "?sort=desc"
         const status = selectedClone.length ? (cashier ? "&paymentStatus=" : '&status=') + selectedClone.map((item: any) => {
-            if(cashier){
+            if (cashier) {
                 if (item == VERIFIED) {
                     return PAID
                 } else if (item == UNVERIFIED) {
                     return DECLINED
-                }else if(item == FORVERIFICATION){
+                } else if (item == FORVERIFICATION) {
                     return [PENDING, FORVERIFICATION, FOREVALUATION].toString()
                 }
-            } else if(item == FOREVALUATION){
+            } else if (item == FOREVALUATION) {
                 return [FOREVALUATION, PENDING].toString()
             }
             return item
         }).toString() : ''
-           return dateAdded + keyword + status
+        return dateAdded + keyword + status
     }
 
     useEffect(() => {
@@ -189,15 +187,12 @@ export default function ActivitiesPage(props: any) {
         dispatch(setPinnedApplication([]))
 
 
-
-
-
         axios.get(BASE_URL + `/applications${query()}`, config).then((response) => {
             if (response?.data?.message) Alert.alert(response.data.message)
             dispatch(setApplications(response.data))
             if (isCurrent) setRefreshing(false);
         }).catch((err) => {
-            setRefreshing(false)
+            if (isCurrent) setRefreshing(false)
             console.warn(err)
         })
         return () => {
@@ -288,45 +283,45 @@ export default function ActivitiesPage(props: any) {
                 setInfiniteLoad(false)
                 console.warn(err)
             })
-        }else{
+        } else {
             setInfiniteLoad(false)
         }
     }, [currentPage])
-    
+
     useEffect(() => {
         let unMount = false;
-        const unsubscriber = userActiveMeetingSubscriber((querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
-          if (!unMount) {
-            querySnapshot.docChanges().forEach((change:any) => {
-              const data = change.doc.data();
-              data._id = change.doc.id;
-              switch(change.type) {
-                case 'added': {
-                  const hasSave = lodash.find(meetingList, (ch:any) => ch._id === data._id);
-                  if (!hasSave) {
-                    dispatch(addActiveMeeting(data));
-                  }
-                  return;
-                }
-                case 'modified': {
-                  dispatch(updateActiveMeeting(data));
-                  return;
-                }
-                case 'removed': {
-                  dispatch(removeActiveMeeting(data._id));
-                  return;
-                }
-                default:
-                  return;
-              }
-            });
-          }
+        const unsubscriber = userActiveMeetingSubscriber((querySnapshot: FirebaseFirestoreTypes.QuerySnapshot) => {
+            if (!unMount) {
+                querySnapshot.docChanges().forEach((change: any) => {
+                    const data = change.doc.data();
+                    data._id = change.doc.id;
+                    switch (change.type) {
+                        case 'added': {
+                            const hasSave = lodash.find(meetingList, (ch: any) => ch._id === data._id);
+                            if (!hasSave) {
+                                dispatch(addActiveMeeting(data));
+                            }
+                            return;
+                        }
+                        case 'modified': {
+                            dispatch(updateActiveMeeting(data));
+                            return;
+                        }
+                        case 'removed': {
+                            dispatch(removeActiveMeeting(data._id));
+                            return;
+                        }
+                        default:
+                            return;
+                    }
+                });
+            }
         })
         return () => {
-          unMount = true;
-          unsubscriber();
+            unMount = true;
+            unsubscriber();
         }
-      }, []);
+    }, []);
 
     const handleLoad = () => {
         setCurrentPage(currentPage + 1)
@@ -337,22 +332,22 @@ export default function ActivitiesPage(props: any) {
     const onJoin = (item) => {
         dispatch(setMeetingId(item._id));
         props.navigation.navigate('Dial', {
-          isHost: item.host._id === user._id,
-          isVoiceCall: item.isVoiceCall,
-          options: {
-            isMute: false,
-            isVideoEnable: true,
-          }
+            isHost: item.host._id === user._id,
+            isVoiceCall: item.isVoiceCall,
+            options: {
+                isMute: false,
+                isVideoEnable: true,
+            }
         });
-      }
-    
-      const onClose = (item) => {
+    }
+
+    const onClose = (item) => {
         if (item.host._id === user._id) {
-          endMeeting(item._id);
+            endMeeting(item._id);
         } else {
-          dispatch(removeActiveMeeting(item._id));
+            dispatch(removeActiveMeeting(item._id));
         }
-      }
+    }
 
     return (
         <Fragment>
@@ -393,31 +388,31 @@ export default function ActivitiesPage(props: any) {
                     </View>
                 </View>
                 <View>
-                {
-                    !!lodash.size(meetingList) && (
-                        <FlatList
-                        data={meetingList}
-                        bounces={false}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        snapToInterval={width}
-                        decelerationRate={0}
-                        keyExtractor={(item:any) => item._id}
-                        renderItem={({ item }) => (
-                            <MeetingNotif
-                            style={{ width }}
-                            name={getChannelName(item)}
-                            time={item.createdAt}
-                            onJoin={() => onJoin(item)}
-                            onClose={() => onClose(item)}
-                            closeText={
-                                item.host._id === user._id ? 'End' : 'Close'
-                            }
+                    {
+                        !!lodash.size(meetingList) && (
+                            <FlatList
+                                data={meetingList}
+                                bounces={false}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                snapToInterval={width}
+                                decelerationRate={0}
+                                keyExtractor={(item: any) => item._id}
+                                renderItem={({item}) => (
+                                    <MeetingNotif
+                                        style={{width}}
+                                        name={getChannelName(item)}
+                                        time={item.createdAt}
+                                        onJoin={() => onJoin(item)}
+                                        onClose={() => onClose(item)}
+                                        closeText={
+                                            item.host._id === user._id ? 'End' : 'Close'
+                                        }
+                                    />
+                                )}
                             />
-                        )}
-                        />
-                    )
-                }
+                        )
+                    }
                 </View>
                 <View style={styles.group9}>
 
@@ -525,12 +520,12 @@ export default function ActivitiesPage(props: any) {
                     )}
                 />
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
-                <ActivityModal details={details} visible={modalVisible} onDismissed={(event: boolean) => {
-                   console.log(event)
-                    if (event) {
-                        onRefresh()
+                <ActivityModal details={details} visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
+
+                    if (event && _id) {
+                        dispatch(deleteApplications(_id))
                     }
-                    if (!(notPnApplications.length || pnApplications.length)) {
+                    if ((notPnApplications.length || pnApplications.length)) {
                         onRefresh()
                     }
                     onDismissed()
