@@ -24,7 +24,7 @@ const InitialState = Record({
   statusCode: [
     {
       id: 1,
-      checked: false,
+      checked: true,
       status: DATE_ADDED,
       iconBrand: 'feather',
       iconName: 'calendar',

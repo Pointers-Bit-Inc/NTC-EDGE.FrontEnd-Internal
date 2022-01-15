@@ -161,7 +161,7 @@ export default function ActivitiesPage(props: any) {
         dispatch(setNotPinnedApplication([]))
         dispatch(setPinnedApplication([]))
 
-        const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
+        const keyword = searchTerm.length ? '&keyword=' + searchTerm : '';
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
@@ -170,9 +170,9 @@ export default function ActivitiesPage(props: any) {
             return status == DATE_ADDED
         })
 
-        const dateAdded = checkDateAdded.length ? "?sort=desc" : "?sort=asc"
+        const dateAdded = checkDateAdded.length ? "?sort=asc" : "?sort=desc"
 
-        const status = selectedClone.length ? (cashier ? "?paymentStatus=" : '?status=') + selectedClone.map((item: any) => {
+        const status = selectedClone.length ? (cashier ? "&paymentStatus=" : '&status=') + selectedClone.map((item: any) => {
             if(cashier){
                 if (item == VERIFIED) {
                     return PAID
