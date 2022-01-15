@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, {useState, useCallback, useEffect} from "react";
 import {Dimensions, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Alert} from "react-native";
 import {Entypo, Ionicons} from "@expo/vector-icons";
 import {primaryColor, text} from "@styles/color";
@@ -38,6 +38,9 @@ function ActivityModal(props: any) {
     const applicant = props?.details?.applicant?.user
     const [change, setChange] = useState<boolean>(false)
     const [groupButtonVisible, setGroupButtonVisible] = useState(false)
+    useEffect(()=>{
+        setChange(false)
+    }, [])
     const [tabs, setTabs] = useState([
         {
             id: 1,
@@ -112,12 +115,15 @@ function ActivityModal(props: any) {
                         dispatch(updateApplicationStatus({application: res.data, status: status, assignedPersonnel: assignId, userType: user?.role?.key }))
                         setStatus(PaymentStatusText(status))
                         setChange(true)
-
+                        setStatus("")
+                        props.onDismissed(true)
+                        
                         return callback(null);
                     }
                 }
 
                 Alert.alert('Alert', 'Something went wrong.');
+
                 return callback('error');
             })
             .catch(e => {
@@ -169,12 +175,9 @@ function ActivityModal(props: any) {
                     }else{
                         status = DECLINED
                     }
-                    onChangeApplicationStatus(status).then(()=>{
-                        setStatus("")
-                        props.onDismissed(change)
-                        setChange(false)
-                    })
+
                     setShowAlert(false)
+                    onChangeApplicationStatus(status)
                 }}
             />
             <View style={{ flex: 1 }}>
@@ -449,6 +452,7 @@ function ActivityModal(props: any) {
                     onChangeApplicationStatus(status)
                     setShowAlert(false)
                     onApproveDismissed()
+
                 }}
                 isCashier={user?.role?.key === CASHIER}
                 onDismissed={onApproveDismissed}

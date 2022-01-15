@@ -151,27 +151,17 @@ export default function ActivitiesPage(props: any) {
         setCountRefresh(countRefresh + 1)
     }, [countRefresh]);
 
+    const selectedClone = selectedChangeStatus?.filter((status: string) => {
+        return status != DATE_ADDED
+    })
 
-    useEffect(() => {
+    const checkDateAdded = selectedChangeStatus?.filter((status: string) => {
+        return status == DATE_ADDED
+    })
 
-        setRefreshing(true)
-        let isCurrent = true
-
-        let res: any = [];
-        dispatch(setNotPinnedApplication([]))
-        dispatch(setPinnedApplication([]))
-
+    const query = () =>{
         const keyword = searchTerm.length ? '&keyword=' + searchTerm : '';
-        const selectedClone = selectedChangeStatus?.filter((status: string) => {
-            return status != DATE_ADDED
-        })
-
-        const checkDateAdded = selectedChangeStatus?.filter((status: string) => {
-            return status == DATE_ADDED
-        })
-
         const dateAdded = checkDateAdded.length ? "?sort=asc" : "?sort=desc"
-
         const status = selectedClone.length ? (cashier ? "&paymentStatus=" : '&status=') + selectedClone.map((item: any) => {
             if(cashier){
                 if (item == VERIFIED) {
@@ -186,8 +176,23 @@ export default function ActivitiesPage(props: any) {
             }
             return item
         }).toString() : ''
+           return dateAdded + keyword + status
+    }
 
-        axios.get(BASE_URL + `/applications${dateAdded + keyword + status}`, config).then((response) => {
+    useEffect(() => {
+
+        setRefreshing(true)
+        let isCurrent = true
+
+        let res: any = [];
+        dispatch(setNotPinnedApplication([]))
+        dispatch(setPinnedApplication([]))
+
+
+
+
+
+        axios.get(BASE_URL + `/applications${query()}`, config).then((response) => {
             if (response?.data?.message) Alert.alert(response.data.message)
             dispatch(setApplications(response.data))
             if (isCurrent) setRefreshing(false);
@@ -268,10 +273,9 @@ export default function ActivitiesPage(props: any) {
 
     useEffect(() => {
         setInfiniteLoad(true)
-        const keyword = searchTerm.length ? '?keyword=' + searchTerm : '';
         if (currentPage != oldCurrentPage) {
-            const page = "?page=" + currentPage
-            axios.get(BASE_URL + `/applications${keyword + page}`, config).then((response) => {
+            const page = "&page=" + currentPage
+            axios.get(BASE_URL + `/applications${query() + page}`, config).then((response) => {
                 if (response?.data?.docs.length == 0) {
                     setInfiniteLoad(false);
 
@@ -522,6 +526,7 @@ export default function ActivitiesPage(props: any) {
                 />
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
                 <ActivityModal details={details} visible={modalVisible} onDismissed={(event: boolean) => {
+                   console.log(event)
                     if (event) {
                         onRefresh()
                     }
