@@ -1,10 +1,10 @@
 import React, {useState} from "react";
-import {StyleSheet, Text, View} from "react-native";
+import {ScrollView, StyleSheet, Text, View} from "react-native";
 
 const ApplicationDetails = (props:any) =>{
 
-    return <>
-        <View style={styles.container}>
+    return <ScrollView style={{backgroundColor: "#fff", }}>
+        <View style={[styles.container, {marginTop: 12}]}>
             <View style={styles.group2}>
                 <View style={styles.rect}>
                     <Text style={styles.file}>File</Text>
@@ -23,7 +23,7 @@ const ApplicationDetails = (props:any) =>{
                 <View style={styles.rect4}></View>
             </View>
         </View>
-        </>
+        </ScrollView>
 
 }
 const styles = StyleSheet.create({

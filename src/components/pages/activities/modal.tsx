@@ -42,8 +42,27 @@ import CustomText from "@components/atoms/text";
 import AwesomeAlert from "react-native-awesome-alerts";
 import Api from 'src/services/api';
 import {updateApplicationStatus} from "../../../reducers/application/actions";
+import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
+import {ModalTab} from "@pages/activities/modalTab";
 
 const {width} = Dimensions.get('window');
+function HomeScreen() {
+    return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text>Home!</Text>
+        </View>
+    );
+}
+
+function SettingsScreen() {
+    return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text>Settings!</Text>
+        </View>
+    );
+}
+
+const Tab = createMaterialTopTabNavigator();
 
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
@@ -299,81 +318,7 @@ function ActivityModal(props: any) {
                         </Text>
                     </View>
                 </View>
-                <View style={{flexDirection: 'row', justifyContent: 'space-around', zIndex: 99}}>
-                    {
-                        tabs.map((tab, index) => {
-
-                            return tab.isShow.indexOf(user?.role?.key) != -1 &&
-                                <TouchableOpacity key={index} onPress={() => {
-                                    let newArr = [...tabs]
-                                    for (let i = 0; i < newArr.length; i++) {
-                                        if (newArr[i].active) {
-                                            newArr[i].active = !newArr[i].active
-                                        }
-                                    }
-                                    newArr[index].active = true
-                                    if (newArr[index].id == 3) {
-                                        setBackgroundColour("#f0f0f0")
-                                    } else {
-                                        setBackgroundColour("#fff")
-                                    }
-
-                                    setTabs(newArr)
-                                }
-                                }>
-                                    {<View style={[styles.group5]}>
-                                        <Text
-                                            style={{color: tab.active ? primaryColor : text.default}}>{tab.name}</Text>
-                                        <View
-                                            style={[styles.rect6, {backgroundColor: tab.active ? primaryColor : 'transparent'}]}></View>
-                                    </View>}
-                                </TouchableOpacity>
-                        })
-                    }
-                </View>
-                <ScrollView
-                    onScroll={(event) => {
-                        if (event.nativeEvent.contentOffset.y < 10) {
-                            setGroupButtonVisible(false)
-                        }
-                        if (handleInfinityScroll(event)) {
-                            setGroupButtonVisible(true)
-                        }
-                    }
-                    }
-                    scrollEventThrottle={16}
-                    style={{flex: 1, paddingTop: 15}}
-                >
-                    {
-                        tabs.map((tab, index) => {
-                            const isShow = tab.isShow.indexOf(user?.role?.key) != -1,
-                                applicant = props?.details?.applicant,
-                                selectedTypes = props?.details?.selectedTypes,
-                                applicationType = props?.details?.applicationType,
-                                service = props?.details?.service,
-                                soa = props?.details?.soa,
-                                totalFee = props?.details?.totalFee,
-                                requirements = props?.details?.requirements
-                            if (isShow && tab.id == 1 && tab.active) {
-                                return <BasicInfo
-                                    applicant={applicant}
-                                    key={index}/>
-                            } else if (isShow && tab.id == 2 && tab.active) {
-                                return <ApplicationDetails
-                                    service={service}
-                                    selectedType={selectedTypes}
-                                    applicantType={applicationType}
-                                    key={index}/>
-                            } else if (isShow && tab.id == 3 && tab.active) {
-                                return <Requirement requirements={requirements} key={index}/>
-                            } else if (isShow && tab.id == 4 && tab.active) {
-                                return <Payment totalFee={totalFee}
-                                                soa={soa} key={index}/>
-                            }
-                        })
-                    }
-                    <View style={{height: 30}}/>
-                </ScrollView>
+                <ModalTab details={props.details}/>
                 {
                     true &&
                     <View style={styles.footer}>

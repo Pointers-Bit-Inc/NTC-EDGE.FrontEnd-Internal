@@ -1,14 +1,14 @@
 import React, {useEffect, useMemo, useState} from "react";
-import {StyleSheet, Text, View} from "react-native";
+import {ScrollView, StyleSheet, Text, View} from "react-native";
 import {formatDate} from "@pages/activities/script";
 
 
 
 const BasicInfo = (props: any) => {
     const applicant = props.applicant
-    return <>
+    return <ScrollView style={{backgroundColor: "#fff", }}>
 
-        {props.applicant &&  <View style={styles.container}>
+        {props.applicant &&  <View style={[styles.container, {marginTop: 12}]}>
             <View style={styles.group4}>
                 <View style={styles.group3}>
                     <View style={styles.group}>
@@ -93,11 +93,12 @@ const BasicInfo = (props: any) => {
             </View>
 
         </View>}
-    </>
+    </ScrollView>
 
 }
 const styles = StyleSheet.create({
     container: {
+
         flex: 1
     },
     group4: {
