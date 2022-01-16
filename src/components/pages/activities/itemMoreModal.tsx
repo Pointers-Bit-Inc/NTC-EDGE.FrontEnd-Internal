@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {StyleSheet, View, Text, Modal, TouchableOpacity} from "react-native";
+import {StyleSheet, View, Text, Modal, TouchableOpacity, TouchableWithoutFeedback} from "react-native";
 import {FontAwesome} from "@expo/vector-icons";
 import PinToTopIcon from "@assets/svg/pintotop";
 import BellIcon from "@assets/svg/bell";
@@ -28,80 +28,82 @@ function ItemMoreModal(props:any) {
                 onRequestClose={() => {
 
                 }}>
+                 <TouchableWithoutFeedback onPressOut={props.onDismissed}>
+                     <View style={[styles.container]}>
+                         <View style={styles.rect}>
+                             <View style={styles.group7}>
 
-                <View style={[styles.container]}>
-                    <View style={styles.rect}>
-                        <View style={styles.group7}>
-
-                            <View style={[styles.name]}>
-                                <View></View>
-                                <View>
-                                    <Text style={styles.centerName} >Name</Text>
-                                </View>
-                                <TouchableOpacity onPress={props.onDismissed}>
-                                    <CloseIcon  />
-                                </TouchableOpacity>
-
-
-                            </View>
+                                 <View style={[styles.name]}>
+                                     <View></View>
+                                     <View>
+                                         <Text style={styles.centerName} >Name</Text>
+                                     </View>
+                                     <TouchableOpacity onPress={props.onDismissed}>
+                                         <CloseIcon  />
+                                     </TouchableOpacity>
 
 
-                            <View style={styles.group6}>
-                                <View style={styles.group5}>
-                                    <TouchableOpacity>
-                                        <View style={styles.group3}>
-                                            <View style={styles.rect10}></View>
-                                            <View style={styles.group4}>
-                                                <PinToTopIcon
-                                                    style={styles.icon1}
-                                                />
-                                                <Text style={styles.pinToTop1}>Pin to top</Text>
-                                            </View>
-                                            <View style={styles.rect11}></View>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <View style={styles.group3}>
-                                            <View style={styles.rect10}></View>
-                                            <View style={styles.group4}>
-                                                <BellMuteIcon
-                                                    style={styles.icon1}
-                                                />
-                                                <Text style={styles.pinToTop1}>Mute</Text>
-                                            </View>
-                                            <View style={styles.rect11}></View>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <View style={styles.group3}>
-                                            <View style={styles.rect10}></View>
-                                            <View style={styles.group4}>
-                                                <ArchiveIcon
-                                                    style={styles.icon1}
-                                                />
-                                                <Text style={styles.pinToTop1}>Archive</Text>
-                                            </View>
-                                            <View style={styles.rect11}></View>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <View style={styles.group3}>
-                                            <View style={styles.rect10}></View>
-                                            <View style={styles.group4}>
-                                                <DeleteIcon
-                                                    style={styles.icon1}
-                                                />
-                                                <Text style={[styles.pinToTop1, {color: '#CF0327'}]}>Delete</Text>
-                                            </View>
-                                            <View style={styles.rect11}></View>
-                                        </View>
-                                    </TouchableOpacity>
+                                 </View>
 
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </View>
+
+                                 <View style={styles.group6}>
+                                     <View style={styles.group5}>
+                                         <TouchableOpacity>
+                                             <View style={styles.group3}>
+                                                 <View style={styles.rect10}></View>
+                                                 <View style={styles.group4}>
+                                                     <PinToTopIcon
+                                                         style={styles.icon1}
+                                                     />
+                                                     <Text style={styles.pinToTop1}>Pin to top</Text>
+                                                 </View>
+                                                 <View style={styles.rect11}></View>
+                                             </View>
+                                         </TouchableOpacity>
+                                         <TouchableOpacity>
+                                             <View style={styles.group3}>
+                                                 <View style={styles.rect10}></View>
+                                                 <View style={styles.group4}>
+                                                     <BellMuteIcon
+                                                         style={styles.icon1}
+                                                     />
+                                                     <Text style={styles.pinToTop1}>Mute</Text>
+                                                 </View>
+                                                 <View style={styles.rect11}></View>
+                                             </View>
+                                         </TouchableOpacity>
+                                         <TouchableOpacity>
+                                             <View style={styles.group3}>
+                                                 <View style={styles.rect10}></View>
+                                                 <View style={styles.group4}>
+                                                     <ArchiveIcon
+                                                         style={styles.icon1}
+                                                     />
+                                                     <Text style={styles.pinToTop1}>Archive</Text>
+                                                 </View>
+                                                 <View style={styles.rect11}></View>
+                                             </View>
+                                         </TouchableOpacity>
+                                         <TouchableOpacity>
+                                             <View style={styles.group3}>
+                                                 <View style={styles.rect10}></View>
+                                                 <View style={styles.group4}>
+                                                     <DeleteIcon
+                                                         style={styles.icon1}
+                                                     />
+                                                     <Text style={[styles.pinToTop1, {color: '#CF0327'}]}>Delete</Text>
+                                                 </View>
+                                                 <View style={styles.rect11}></View>
+                                             </View>
+                                         </TouchableOpacity>
+
+                                     </View>
+                                 </View>
+                             </View>
+                         </View>
+                     </View>
+                 </TouchableWithoutFeedback>
+
             </Modal>
         </View>
 
@@ -119,7 +121,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     rect: {
-        height: "40%",
+        height: "45%",
         backgroundColor: "rgba(255,255,255,1)",
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
