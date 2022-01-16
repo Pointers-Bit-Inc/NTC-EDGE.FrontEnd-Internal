@@ -4,31 +4,45 @@ import BasicInfo from "@pages/activities/application/basicInfo";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Requirement from "@pages/activities/application/requirement";
 import Payment from "@pages/activities/application/payment";
-import React, {createRef, useCallback, useEffect, useRef, useState} from "react";
+import React, {createRef, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {CASHIER, DIRECTOR, EVALUATOR} from "../../../reducers/activity/initialstate";
 import {primaryColor, text} from "@styles/color";
 import {Animated, Dimensions, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-
+  let initial = {}
 function MyTabBar({state, descriptors, navigation, position}) {
     const [currentIndex, setCurrentIndex] = useState(0)
     const [tabCurrent, setTabCurrent] = useState([])
     const [translateValue] = useState(new Animated.Value(0));
-     const ref = useRef([])
+    const ref = useRef([])
+    const [_initialAnimation, set_initialAnimation] = useState<{x: number, y:number, width:number, height: number}>()
     const containerRef = useRef(null)
+
+
     const animateSlider = (index: number) => {
-        if(!tabCurrent[index]){
-            return
+
+
+        if(tabCurrent[currentIndex]?.x)   {
+            Animated.spring(translateValue, {
+                toValue: tabCurrent[currentIndex]?.x,
+                velocity: 10,
+                useNativeDriver: true,
+            }).start();
+        } else{
+            ref.current[0].measureLayout(containerRef.current, (x, y, width, height) => {
+                initial = {x, y, width, height}
+                Animated.spring(translateValue, {
+                    toValue: x,
+                    velocity: 10,
+                    useNativeDriver: true,
+                }).start();
+            })
         }
 
-        Animated.spring(translateValue, {
-            toValue:   tabCurrent[currentIndex]?.x,
-            velocity: 10,
-            useNativeDriver: true,
-        }).start();
     };
 
     return (
         <>
+
             <View ref={containerRef}   style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
 
                 {state.routes.map((route, index) => {
@@ -42,13 +56,12 @@ function MyTabBar({state, descriptors, navigation, position}) {
 
                     const isFocused = state.index === index;
                     useEffect(()=>{
-                       
                         animateSlider(currentIndex);
                     }, [currentIndex, state.index])
 
                     useEffect(() =>{
                         if(state.index === index){
-                            ref.current[state.index].measureLayout(containerRef.current, (x, y, width, height) => {
+                            ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
                                 const _tabCurrent = tabCurrent.findIndex(tab => tab.width == width)
                                 setCurrentIndex(_tabCurrent )
                             })
@@ -56,8 +69,8 @@ function MyTabBar({state, descriptors, navigation, position}) {
 
                     }, [position])
                     const onPress =  () => {
-                         ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
-                             const _tabCurrent = tabCurrent.findIndex(tab => tab.width == width)
+                        ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
+                            const _tabCurrent = tabCurrent.findIndex(tab => tab.width == width)
                             setCurrentIndex(_tabCurrent )
                         })
                         const event = navigation.emit({
@@ -114,7 +127,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
                 })}
 
             </View>
-             <Animated.View
+            {tabCurrent[currentIndex]?.x ? <Animated.View
 
                 style={[styles.rect6, {
                     transform: [{
@@ -122,9 +135,22 @@ function MyTabBar({state, descriptors, navigation, position}) {
                     }
                     ],
 
-                     width: tabCurrent[currentIndex]?.width  ,
+                    width: tabCurrent[currentIndex]?.width,
                     backgroundColor:  primaryColor
-                }]}/>
+                }]}/> : initial && <Animated.View
+
+                    style={[styles.rect6, {
+                        transform: [{
+                            translateX:  translateValue
+                        }
+                        ],
+
+                        width: initial.width,
+                        backgroundColor:  primaryColor
+                    }]}/>
+            }
+
+
         </>
 
     );
