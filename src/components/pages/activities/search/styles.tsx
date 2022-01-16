@@ -110,7 +110,7 @@ export const styles = StyleSheet.create({
         lineHeight: 28,
         color: "#000",
         textAlign: "left",
-        width: "80%",
+        width: "90%",
         margin: 5
     },
     group6: {
