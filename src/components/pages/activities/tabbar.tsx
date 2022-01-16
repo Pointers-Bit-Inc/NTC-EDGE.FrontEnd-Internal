@@ -15,14 +15,17 @@ import {CASHIER, DIRECTOR, EVALUATOR, VERIFIED, VERIFIER} from "../../../reducer
 import {RootStateOrAny, useSelector} from "react-redux";
 const Tab = createBottomTabNavigator();
 
+function getRole(user, arr ) {
+    return arr.indexOf(user?.role?.key) != -1;
+}
+
 export default function TabBar() {
     const ACTIVITIES = "Activities",
         CHAT = "Chat",
         MEET = "Meet",
-        SCANQR = "ScanQr",
+        SCANQR = "QR",
         MORE = "More"
     const user = useSelector((state: RootStateOrAny) => state.user);
-    const verifier = [VERIFIER].indexOf(user?.role?.key) != -1
     function ActivityTab({state, descriptors, navigation}: any) {
 
 
@@ -117,7 +120,7 @@ export default function TabBar() {
                 <Tab.Screen  options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
-                {verifier && <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>  }
+                {getRole(user, [CASHIER, EVALUATOR, DIRECTOR]) && <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>  }
             </Tab.Navigator>
 
 

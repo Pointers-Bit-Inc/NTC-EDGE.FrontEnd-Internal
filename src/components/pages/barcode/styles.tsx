@@ -2,7 +2,6 @@ import {Dimensions, StyleSheet} from "react-native";
 const height = Dimensions.get('window').height;
 export const styles = StyleSheet.create({
     rect19: {
-
         justifyContent: "center",
         flex: 1
     },
@@ -191,7 +190,6 @@ export const styles = StyleSheet.create({
     rect11: {
         height: 1,
         backgroundColor: "rgba(217,219,233,1)",
-        alignSelf: "stretch"
     },
     rect12: {
         top: 0,
@@ -211,14 +209,14 @@ export const styles = StyleSheet.create({
     },
     group6: {
         height: 70,
-        width: "85%",
+
         flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        alignSelf: "center"
+
     },
     group3: {
-        width: 160,
+
+        padding: 3,
+        width: 150,
         height: 70
     },
     rect2: {
@@ -229,7 +227,6 @@ export const styles = StyleSheet.create({
     group2: {
         height: 44,
         justifyContent: "space-around",
-        alignItems: "center",
         marginTop: 13
     },
     icon: {
