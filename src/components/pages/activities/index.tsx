@@ -54,6 +54,7 @@ import {getChannelName} from 'src/utils/formatting';
 import lodash from 'lodash';
 import {addActiveMeeting, removeActiveMeeting, setMeetingId, updateActiveMeeting,} from 'src/reducers/meeting/actions';
 import {MeetingNotif} from '@components/molecules/list-item';
+import listEmpty from "@pages/activities/listEmpty";
 
 const {width} = Dimensions.get('window')
 
@@ -176,7 +177,6 @@ export default function ActivitiesPage(props: any) {
         }).toString() : ''
         return dateAdded + keyword + status
     }
-
     const  fnApplications = (isCurrent: boolean, callback: (err: any) => void) =>  {
         axios.get(BASE_URL + `/applications${query()}`, config).then((response) => {
             if (response?.data?.message) Alert.alert(response.data.message)
@@ -189,11 +189,6 @@ export default function ActivitiesPage(props: any) {
             console.warn(err)
         })
     }
-
-
-
-
-
     useEffect(() => {
         setRefreshing(true)
         let isCurrent = true
@@ -273,6 +268,9 @@ export default function ActivitiesPage(props: any) {
     const bottomLoader = () => {
         return infiniteLoad ? <Loader/> : null
     };
+
+
+
 
     useEffect(() => {
         setInfiniteLoad(true)
@@ -356,9 +354,6 @@ export default function ActivitiesPage(props: any) {
             dispatch(removeActiveMeeting(item._id));
         }
     }
-    useEffect(() =>{
-       
-    }, [searchTerm])
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
@@ -486,7 +481,8 @@ export default function ActivitiesPage(props: any) {
                 </View>
 
                 <FlatList
-
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    ListEmptyComponent={() => listEmpty(refreshing)}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
