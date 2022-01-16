@@ -92,7 +92,7 @@ export default function ActivitiesPage(props: any) {
 
         const list = applications?.filter((item: any) => {
 
-            const search = item?.applicant?.user?.firstName.includes(searchTerm) &&
+            const search = 
                 (selectedClone?.length ?
                     selectedClone.indexOf(cashier ?
                         PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1
