@@ -114,7 +114,7 @@ export const styles = StyleSheet.create({
         margin: 5
     },
     group6: {
-        width: "100%",
+        width: "95%",
         height: 30,
         flexDirection: "row",
         justifyContent: "space-around",
