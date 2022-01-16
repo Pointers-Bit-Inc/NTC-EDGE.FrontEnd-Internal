@@ -4,72 +4,132 @@ import BasicInfo from "@pages/activities/application/basicInfo";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Requirement from "@pages/activities/application/requirement";
 import Payment from "@pages/activities/application/payment";
-import React, {useState} from "react";
+import React, {createRef, useCallback, useEffect, useRef, useState} from "react";
 import {CASHIER, DIRECTOR, EVALUATOR} from "../../../reducers/activity/initialstate";
-import {defaultColor, primaryColor, text} from "@styles/color";
-import {TouchableOpacity, View, Animated, Text, StyleSheet} from "react-native";
-function MyTabBar({ state, descriptors, navigation, position }) {
+import {primaryColor, text} from "@styles/color";
+import {Animated, Dimensions, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+
+function MyTabBar({state, descriptors, navigation, position}) {
+    const [currentIndex, setCurrentIndex] = useState(0)
+    const [tabCurrent, setTabCurrent] = useState([])
+    const [translateValue] = useState(new Animated.Value(0));
+     const ref = useRef([])
+    const containerRef = useRef(null)
+    const animateSlider = (index: number) => {
+        if(!tabCurrent[index]){
+            return
+        }
+
+        Animated.spring(translateValue, {
+            toValue:   tabCurrent[currentIndex]?.x,
+            velocity: 10,
+            useNativeDriver: true,
+        }).start();
+    };
+
     return (
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-            {state.routes.map((route, index) => {
-                const { options } = descriptors[route.key];
-                const label =
-                    options.tabBarLabel !== undefined
-                        ? options.tabBarLabel
-                        : options.title !== undefined
-                            ? options.title
-                            : route.name;
+        <>
+            <View ref={containerRef}   style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
 
-                const isFocused = state.index === index;
+                {state.routes.map((route, index) => {
+                    const {options} = descriptors[route.key];
+                    const label =
+                        options.tabBarLabel !== undefined
+                            ? options.tabBarLabel
+                            : options.title !== undefined
+                                ? options.title
+                                : route.name;
 
-                const onPress = () => {
-                    const event = navigation.emit({
-                        type: 'tabPress',
-                        target: route.key,
-                    });
+                    const isFocused = state.index === index;
+                    useEffect(()=>{
+                       
+                        animateSlider(currentIndex);
+                    }, [currentIndex, state.index])
 
-                    if (!isFocused && !event.defaultPrevented) {
-                        navigation.navigate(route.name);
+                    useEffect(() =>{
+                        if(state.index === index){
+                            ref.current[state.index].measureLayout(containerRef.current, (x, y, width, height) => {
+                                const _tabCurrent = tabCurrent.findIndex(tab => tab.width == width)
+                                setCurrentIndex(_tabCurrent )
+                            })
+                        }
+
+                    }, [position])
+                    const onPress =  () => {
+                         ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
+                             const _tabCurrent = tabCurrent.findIndex(tab => tab.width == width)
+                            setCurrentIndex(_tabCurrent )
+                        })
+                        const event = navigation.emit({
+                            type: "tabPress",
+                            target: route.key,
+                            canPreventDefault: true,
+                        });
+
+                        if (!isFocused && !event.defaultPrevented) {
+                            navigation.navigate(route.name);
+                        }
+                    };
+
+                    const onLongPress = () => {
+                        navigation.emit({
+                            type: 'tabLongPress',
+                            target: route.key,
+                        });
+                    };
+                    const onLayout = useCallback(
+                        ({
+                             nativeEvent: {
+                                 layout: { width, x, y }
+                             }
+                         }) => {
+                            let newArr = [...tabCurrent]
+                            newArr.push({width, x, y})
+                            setTabCurrent(newArr)
+
+                        },
+                        [tabCurrent]
+                    );
+
+                    return (
+                        <View ref={e => ref.current[index] = e} onLayout={onLayout} key={index} style={[styles.group5,]}>
+                            <TouchableOpacity
+
+                                accessibilityRole="button"
+                                accessibilityState={isFocused ? {selected: true} : {}}
+                                accessibilityLabel={options.tabBarAccessibilityLabel}
+                                testID={options.tabBarTestID}
+                                onPress={() => onPress()}
+                                onLongPress={() =>onLongPress()}
+                                style={{flex: 1}}
+                            >
+
+                                <Text
+                                    style={{alignSelf: "center", color: isFocused ? primaryColor : text.default}}>{label}</Text>
+
+
+                            </TouchableOpacity>
+                        </View>
+                    );
+                })}
+
+            </View>
+             <Animated.View
+
+                style={[styles.rect6, {
+                    transform: [{
+                        translateX:  translateValue
                     }
-                };
+                    ],
 
-                const onLongPress = () => {
-                    navigation.emit({
-                        type: 'tabLongPress',
-                        target: route.key,
-                    });
-                };
-                const inputRange = state.routes.map((_, i) => i);
+                     width: tabCurrent[currentIndex]?.width  ,
+                    backgroundColor:  primaryColor
+                }]}/>
+        </>
 
-                const opacity = position.interpolate({
-                    inputRange,
-                    outputRange: inputRange.map((i) => (i === index ? 1 : 0)),
-                });
-                return (
-                    <View style={[styles.group5]}>
-                    <TouchableOpacity
-                        key={index}
-                        accessibilityRole="button"
-                        accessibilityState={isFocused ? { selected: true } : {}}
-                        accessibilityLabel={options.tabBarAccessibilityLabel}
-                        testID={options.tabBarTestID}
-                        onPress={onPress}
-                        onLongPress={onLongPress}
-                        style={{ flex: 1 }}
-                    >
-
-                            <Text
-                                style={{color: isFocused ? primaryColor : text.default}}>{label}</Text>
-                            <Animated.View
-                                style={[styles.rect6,  {opacity, backgroundColor: isFocused ? primaryColor : 'transparent'}]}/>
-
-                    </TouchableOpacity>
-                    </View>
-                );
-            })}
-        </View>
     );
 }
+
 export function ModalTab(props) {
     const user = useSelector((state: RootStateOrAny) => state.user);
     const Tab = createMaterialTopTabNavigator();
@@ -106,59 +166,63 @@ export function ModalTab(props) {
         soa = props?.details?.soa,
         totalFee = props?.details?.totalFee,
         requirements = props?.details?.requirements
-    return <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />} >
+    return <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
 
-    {
+        {
 
-        tabs.map((tab, index) => {
-            const isShow = tab.isShow.indexOf(user?.role?.key) != -1
-            if (isShow && tab.id == 1) {
-                return <Tab.Screen
-                    name={tab.name}
-                    options={{tabBarLabel: tab.name}}
-                >
-                    {() => <BasicInfo
-                        applicant={applicant}
-                        key={index}/>}
-                </Tab.Screen>
-            } else if (isShow && tab.id == 2) {
-                return <Tab.Screen
-                    name={tab.name}
-                    options={{tabBarLabel: tab.name}}
-                >
-                    {() => <ApplicationDetails
-                        service={service}
-                        selectedType={selectedTypes}
-                        applicantType={applicationType}
-                        key={index}/>}
-                </Tab.Screen>
-            } else if (isShow && tab.id == 3) {
-                return <Tab.Screen
-                    name={tab.name}
-                    options={{tabBarLabel: tab.name}}
-                >
-                    {() => <Requirement requirements={requirements} key={index}/>}
-                </Tab.Screen>
-            } else if (isShow && tab.id == 4) {
-                return <Tab.Screen
-                    name={tab.name}
-                    options={{tabBarLabel: tab.name}}
-                >
-                    {() => <Payment totalFee={totalFee}
-                                    soa={soa} key={index}/>}
-                </Tab.Screen>
-            }
-        })
-    }
-        </Tab.Navigator>
-    }
+            tabs.map((tab, index) => {
+                const isShow = tab.isShow.indexOf(user?.role?.key) != -1
+                if (isShow && tab.id == 1) {
+                    return <Tab.Screen
+                        key={tab.id}
+                        name={tab.name}
+                        options={{tabBarLabel: tab.name}}
+                    >
+                        {() => <BasicInfo
+                            applicant={applicant}
+                            key={index}/>}
+                    </Tab.Screen>
+                } else if (isShow && tab.id == 2) {
+                    return <Tab.Screen
+                        key={tab.id}
+                        name={tab.name}
+                        options={{tabBarLabel: tab.name}}
+                    >
+                        {() => <ApplicationDetails
+                            service={service}
+                            selectedType={selectedTypes}
+                            applicantType={applicationType}
+                            key={index}/>}
+                    </Tab.Screen>
+                } else if (isShow && tab.id == 3) {
+                    return <Tab.Screen
+                        key={tab.id}
+                        name={tab.name}
+                        options={{tabBarLabel: tab.name}}
+                    >
+                        {() => <Requirement requirements={requirements} key={index}/>}
+                    </Tab.Screen>
+                } else if (isShow && tab.id == 4) {
+                    return <Tab.Screen
+                        key={tab.id}
+                        name={tab.name}
+                        options={{tabBarLabel: tab.name}}
+                    >
+                        {() => <Payment totalFee={totalFee}
+                                        soa={soa} key={index}/>}
+                    </Tab.Screen>
+                }
+            })
+        }
+    </Tab.Navigator>
+}
 
 const styles = StyleSheet.create({
     group5: {
         height: 28
     },
     rect6: {
-        height: 3,
-        marginTop: 8
+        height: 5,
+        marginTop: 5
     },
 })
