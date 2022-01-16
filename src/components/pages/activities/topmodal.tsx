@@ -1,5 +1,5 @@
-import React from "react";
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity} from "react-native";
+import React, {useRef} from "react";
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, TouchableWithoutFeedback} from "react-native";
 import {Ionicons,} from '@expo/vector-icons'
 
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
@@ -43,8 +43,11 @@ function TopModal(props:any) {
         }
     }
 
+    const inputRef = useRef();
     return (
-        <View style={visible ? {
+
+        <View ref={inputRef} style={visible ? {
+
             position: "absolute",
             zIndex: 2,
             top: 0,
@@ -53,7 +56,12 @@ function TopModal(props:any) {
             height: '100%',
             backgroundColor: "rgba(0, 0, 0, 0.5)",
         } : {}}>
-            { <View style={styles.container}>
+            
+            {<TouchableWithoutFeedback onPressOut={() => {
+
+                dispatch(setVisible(false))
+            }}>
+                <View style={styles.container}>
                 <View style={styles.header1}>
                     <Text style={styles.filter1}>FILTER</Text>
                     <TouchableOpacity onPress={() => {
@@ -100,7 +108,7 @@ function TopModal(props:any) {
                         )
                     })}
                 </View>
-            </View>}
+            </View></TouchableWithoutFeedback>}
         </View>
     );
 }
