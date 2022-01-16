@@ -4,7 +4,6 @@ import {
     Alert,
     Dimensions,
     Modal,
-    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -15,14 +14,9 @@ import {primaryColor, text} from "@styles/color";
 import Disapproval from "@pages/activities/disapproval";
 import Endorsed from "@pages/activities/endorse";
 import Approval from "@pages/activities/approval";
-import BasicInfo from "@pages/activities/application/basicInfo";
-import Requirement from "@pages/activities/application/requirement";
-import ApplicationDetails from "@pages/activities/application/applicationDetails";
-import Payment from "@pages/activities/application/payment";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {
     formatDate,
-    handleInfinityScroll,
     PaymentStatusText,
     statusColor,
     statusIcon,
@@ -42,34 +36,15 @@ import CustomText from "@components/atoms/text";
 import AwesomeAlert from "react-native-awesome-alerts";
 import Api from 'src/services/api';
 import {updateApplicationStatus} from "../../../reducers/application/actions";
-import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import {ModalTab} from "@pages/activities/modalTab";
 
 const {width} = Dimensions.get('window');
-function HomeScreen() {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Home!</Text>
-        </View>
-    );
-}
-
-function SettingsScreen() {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Settings!</Text>
-        </View>
-    );
-}
-
-const Tab = createMaterialTopTabNavigator();
 
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
     const user = useSelector((state: RootStateOrAny) => state.user);
     const applicant = props?.details?.applicant?.user
     const [change, setChange] = useState<boolean>(false)
-    const [groupButtonVisible, setGroupButtonVisible] = useState(false)
     useEffect(() => {
         setChange(false)
     }, [])

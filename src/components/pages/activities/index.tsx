@@ -92,7 +92,7 @@ export default function ActivitiesPage(props: any) {
 
         const list = applications?.filter((item: any) => {
 
-            const search = 
+            const search =
                 (selectedClone?.length ?
                     selectedClone.indexOf(cashier ?
                         PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1
@@ -177,27 +177,35 @@ export default function ActivitiesPage(props: any) {
         return dateAdded + keyword + status
     }
 
-    useEffect(() => {
-
-        setRefreshing(true)
-        let isCurrent = true
-
-        let res: any = [];
-        dispatch(setNotPinnedApplication([]))
-        dispatch(setPinnedApplication([]))
-
-
+    const  fnApplications = (isCurrent: boolean, callback: (err: any) => void) =>  {
         axios.get(BASE_URL + `/applications${query()}`, config).then((response) => {
             if (response?.data?.message) Alert.alert(response.data.message)
             dispatch(setApplications(response.data))
             if (isCurrent) setRefreshing(false);
+            callback(true)
         }).catch((err) => {
             if (isCurrent) setRefreshing(false)
+            callback(false)
             console.warn(err)
         })
+    }
+
+
+
+
+
+    useEffect(() => {
+        setRefreshing(true)
+        let isCurrent = true
+
+
+        dispatch(setNotPinnedApplication([]))
+        dispatch(setPinnedApplication([]))
+        fnApplications(isCurrent, () =>{});
         return () => {
             isCurrent = false
         }
+
 
     }, [countRefresh, searchTerm, selectedChangeStatus])
 
@@ -348,7 +356,9 @@ export default function ActivitiesPage(props: any) {
             dispatch(removeActiveMeeting(item._id));
         }
     }
-
+    useEffect(() =>{
+       
+    }, [searchTerm])
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
@@ -357,8 +367,17 @@ export default function ActivitiesPage(props: any) {
                 setLoadingAnimation(event)
 
 
-            }} initialMove={initialMove} animate={loadingAnimate} onSearch={(query: string) => {
-                setSearchTerm(query)
+            }} initialMove={initialMove} animate={loadingAnimate} onSearch={(_search: string, callback = (err: any) => {}) => {
+                setSearchTerm(_search)
+                let isCurrent = true
+                fnApplications(isCurrent, (response) =>{
+                    if(response) {
+                        callback(true)
+                    }  else{
+                        callback(false)
+                    }
+
+                });
             }} onDismissed={() => {
 
                 setSearchVisible(false)

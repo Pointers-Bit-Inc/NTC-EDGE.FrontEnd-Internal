@@ -40,24 +40,22 @@ function Search(props: any) {
     const setText = async (text: string) => {
         if (!text.trim()) return
         try {
+            props.onSearch(text, async (response) => {
+                if(response){
+                    await AsyncStorage.getItem('searchHistory').then(async (value) => {
+                        value = JSON.parse(value) || []
 
-            await AsyncStorage.getItem('searchHistory').then(async (value) => {
-                value = JSON.parse(value) || []
+                        let newArr = [...value, text];
+                        await AsyncStorage.setItem(
+                            'searchHistory',
+                            JSON.stringify(newArr)
+                        );
 
-                let newArr = [...value, text];
-                await AsyncStorage.setItem(
-                    'searchHistory',
-                    JSON.stringify(newArr)
-                );
-
-                setSearchHistory(newArr)
-                props.loadingAnimation(false)
-                props.onSearch(text)
-
-
+                        setSearchHistory(newArr)
+                        props.loadingAnimation(false)
+                    })
+                }
             })
-
-
         } catch (error) {
             // Error saving data
         }

@@ -31,7 +31,6 @@ export const styles = StyleSheet.create({
         borderColor: "rgba(229,229,229,1)"
     },
     group2: {
-        width: 345,
         height: 40,
         flexDirection: "row",
         justifyContent: "space-between",
@@ -52,10 +51,9 @@ export const styles = StyleSheet.create({
         top: 0,
         left: 0,
         height: 40,
-        position: "absolute",
         backgroundColor: "rgba(239,240,246,1)",
         borderRadius: 10,
-        right: 6
+               width: "90%",
     },
     group3: {
         top: 0,
@@ -71,7 +69,7 @@ export const styles = StyleSheet.create({
         color: "#121212",
         fontSize: 14,
         height: 40,
-        width: "100%",
+        width: "80%",
         right: 0,
         textAlign: "left"
     },
@@ -79,14 +77,14 @@ export const styles = StyleSheet.create({
 
         alignSelf: "flex-end",
         top: "40%",
-        right: "5%",
+        right: "15%",
         color: "rgba(128,128,128,1)",
         fontSize: 25,
     },
     textInputStack: {
         borderColor: "black",
         height: 40,
-        marginLeft: 5
+        marginLeft: 10
     },
     rect2Stack: {
         flex: 1

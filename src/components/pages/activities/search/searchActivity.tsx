@@ -19,7 +19,7 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
             <View style={styles.group4}>
                 <View style={styles.rect}>
                     <View style={styles.group2}>
-                        <TouchableOpacity style={{paddingRight: 18}} onPress={props.onPress}>
+                        <TouchableOpacity style={{paddingRight: 10}} onPress={props.onPress}>
                             <BackSpaceIcon
                                 style={styles.icon}
                             ></BackSpaceIcon>
@@ -68,7 +68,7 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
             {props.value.length < 1 && <View style={styles.group8}>
                 <View style={styles.rect3}>
                     <View style={styles.group7}>
-                        <Text style={styles.recentSearches}>Recent Searches</Text>
+                        <Text style={styles.recentSearches}>Recent Searched</Text>
                         <View style={{height: height - 115 - 5 - 30 - 30 - 30 - 20}}>
                             <ScrollView showsVerticalScrollIndicator={false}>
                                 {props.nevers.map(props.callbackfn)}
