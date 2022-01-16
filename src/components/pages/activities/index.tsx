@@ -525,7 +525,7 @@ export default function ActivitiesPage(props: any) {
                     if (event && _id) {
                         dispatch(deleteApplications(_id))
                     }
-                    if ((notPnApplications.length || pnApplications.length)) {
+                    if (!(notPnApplications.length || pnApplications.length)) {
                         onRefresh()
                     }
                     onDismissed()
