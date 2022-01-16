@@ -10,6 +10,7 @@ import {red} from "react-native-redash";
 import CloseIcon from "@assets/svg/close";
 
 function ItemMoreModal(props:any) {
+    const applicant = props?.details?.applicant?.user
     return (
         
         <View    style={props.visible ? {
@@ -36,7 +37,7 @@ function ItemMoreModal(props:any) {
                                  <View style={[styles.name]}>
                                      <View></View>
                                      <View>
-                                         <Text style={styles.centerName} >Name</Text>
+                                         <Text style={styles.centerName} >{`${applicant?.firstName} ${applicant?.lastName}`}</Text>
                                      </View>
                                      <TouchableOpacity onPress={props.onDismissed}>
                                          <CloseIcon  />

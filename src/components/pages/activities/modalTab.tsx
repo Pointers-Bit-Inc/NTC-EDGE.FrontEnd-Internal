@@ -4,17 +4,17 @@ import BasicInfo from "@pages/activities/application/basicInfo";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Requirement from "@pages/activities/application/requirement";
 import Payment from "@pages/activities/application/payment";
-import React, {createRef, useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {CASHIER, DIRECTOR, EVALUATOR} from "../../../reducers/activity/initialstate";
 import {primaryColor, text} from "@styles/color";
-import {Animated, Dimensions, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-  let initial = {}
+import {Animated, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+
+let initial = {}
 function MyTabBar({state, descriptors, navigation, position}) {
     const [currentIndex, setCurrentIndex] = useState(0)
     const [tabCurrent, setTabCurrent] = useState([])
     const [translateValue] = useState(new Animated.Value(0));
     const ref = useRef([])
-    const [_initialAnimation, set_initialAnimation] = useState<{x: number, y:number, width:number, height: number}>()
     const containerRef = useRef(null)
 
 
@@ -63,7 +63,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
                         if(state.index === index){
                             ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
                                 const _tabCurrent = tabCurrent.findIndex(tab => tab.width == width)
-                                setCurrentIndex(_tabCurrent )
+                                setCurrentIndex(_tabCurrent)
                             })
                         }
 
@@ -105,9 +105,10 @@ function MyTabBar({state, descriptors, navigation, position}) {
                     );
 
                     return (
-                        <View ref={e => ref.current[index] = e} onLayout={onLayout} key={index} style={[styles.group5,]}>
+                        <View ref={e => ref.current[index] = e}
+                              onLayout={onLayout} key={index}
+                              style={[styles.group5,]}>
                             <TouchableOpacity
-
                                 accessibilityRole="button"
                                 accessibilityState={isFocused ? {selected: true} : {}}
                                 accessibilityLabel={options.tabBarAccessibilityLabel}
@@ -116,9 +117,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
                                 onLongPress={() =>onLongPress()}
                                 style={{flex: 1}}
                             >
-
-                                <Text
-                                    style={{alignSelf: "center", color: isFocused ? primaryColor : text.default}}>{label}</Text>
+                                <Text style={{alignSelf: "center", color: isFocused ? primaryColor : text.default}}>{label}</Text>
 
 
                             </TouchableOpacity>

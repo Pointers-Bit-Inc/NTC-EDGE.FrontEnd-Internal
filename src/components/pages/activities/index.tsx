@@ -358,11 +358,10 @@ export default function ActivitiesPage(props: any) {
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
             {searchVisible && <Search loadingAnimation={(event: boolean) => {
-
                 setLoadingAnimation(event)
-
-
-            }} initialMove={initialMove} animate={loadingAnimate} onSearch={(_search: string, callback = (err: any) => {}) => {
+            }} initialMove={initialMove}
+                                      animate={loadingAnimate}
+                                      onSearch={(_search: string, callback = (err: any) => {}) => {
                 setSearchTerm(_search)
                 let isCurrent = true
                 fnApplications(isCurrent, (response) =>{
@@ -371,10 +370,8 @@ export default function ActivitiesPage(props: any) {
                     }  else{
                         callback(false)
                     }
-
                 });
             }} onDismissed={() => {
-
                 setSearchVisible(false)
                 setSearchTerm("")
             }}/>}
