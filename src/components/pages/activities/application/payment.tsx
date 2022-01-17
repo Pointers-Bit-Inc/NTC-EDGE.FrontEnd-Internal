@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {StyleSheet, TouchableOpacity, View} from "react-native";
+import {ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Entypo} from "@expo/vector-icons";
 import PaymentModal from "@pages/activities/application/paymentModal/index";
 import Text from "@components/atoms/text";
@@ -15,7 +15,7 @@ const Payment = (props:any) => {
         return total;
     }
 
-    return <>
+    return <ScrollView style={{flex: 1, paddingTop: 10}}>
         <View style={styles.container}>
             <View style={{ backgroundColor: "#E6E6E6", padding: 5, alignItems: 'center' }}>
                 <Text
@@ -113,7 +113,7 @@ const Payment = (props:any) => {
             </View>
         </View>
         <PaymentModal visible={visibleModal} onDismissed={onDismissed}  />
-    </>
+    </ScrollView>
 
 }
 const styles = StyleSheet.create({

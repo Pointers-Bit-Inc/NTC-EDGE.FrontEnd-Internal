@@ -11,7 +11,6 @@ export const styles = StyleSheet.create({
         marginBottom: 5,
     },
     group5: {
-        width: 350,
         height: 36,
         alignSelf: "center"
     },
