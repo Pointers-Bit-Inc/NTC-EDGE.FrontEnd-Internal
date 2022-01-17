@@ -120,7 +120,7 @@ export default function TabBar() {
                 <Tab.Screen  options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
-                {getRole(user, [CASHIER, EVALUATOR, DIRECTOR]) && <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>  }
+                {getRole(user, [VERIFIER, EVALUATOR, DIRECTOR]) && <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>  }
             </Tab.Navigator>
 
 

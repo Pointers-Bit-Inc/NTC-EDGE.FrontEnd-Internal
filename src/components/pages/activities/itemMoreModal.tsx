@@ -1,12 +1,9 @@
 import React, { Component } from "react";
 import {StyleSheet, View, Text, Modal, TouchableOpacity, TouchableWithoutFeedback} from "react-native";
-import {FontAwesome} from "@expo/vector-icons";
 import PinToTopIcon from "@assets/svg/pintotop";
-import BellIcon from "@assets/svg/bell";
 import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
-import {red} from "react-native-redash";
 import CloseIcon from "@assets/svg/close";
 
 function ItemMoreModal(props:any) {
@@ -104,7 +101,6 @@ function ItemMoreModal(props:any) {
                          </View>
                      </View>
                  </TouchableWithoutFeedback>
-
             </Modal>
         </View>
 

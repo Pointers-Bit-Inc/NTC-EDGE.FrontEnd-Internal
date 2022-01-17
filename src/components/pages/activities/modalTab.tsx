@@ -17,10 +17,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
     const ref = useRef([])
     const containerRef = useRef(null)
 
-
     const animateSlider = (index: number) => {
-
-
         if(tabCurrent[currentIndex]?.x)   {
             Animated.spring(translateValue, {
                 toValue: tabCurrent[currentIndex]?.x,
@@ -143,7 +140,6 @@ function MyTabBar({state, descriptors, navigation, position}) {
                             translateX:  translateValue
                         }
                         ],
-
                         width: initial.width,
                         backgroundColor:  primaryColor
                     }]}/>
@@ -191,7 +187,7 @@ export function ModalTab(props) {
         soa = props?.details?.soa,
         totalFee = props?.details?.totalFee,
         requirements = props?.details?.requirements
-    return <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
+    return <Tab.Navigator  tabBar={(props) => <MyTabBar {...props} />}>
 
         {
 

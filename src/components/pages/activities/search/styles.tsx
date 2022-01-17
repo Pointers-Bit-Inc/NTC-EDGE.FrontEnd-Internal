@@ -21,11 +21,11 @@ export const styles = StyleSheet.create({
         alignSelf: "center"
     },
     group4: {
-        height: 90,
+        height: 115,
         alignSelf: "stretch"
     },
     rect: {
-        height: 90,
+        height: 115,
         backgroundColor: "rgba(255,255,255,1)",
         borderWidth: 1,
         borderColor: "rgba(229,229,229,1)"
@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginTop: 30,
+        marginTop: 56,
         marginLeft: 15
     },
     icon: {
@@ -90,6 +90,7 @@ export const styles = StyleSheet.create({
         flex: 1
     },
     group8: {
+        height: "100%",
         flex: 1,
         alignSelf: "stretch",
         justifyContent: "center"
@@ -101,7 +102,7 @@ export const styles = StyleSheet.create({
     group7: {
         flex: 1,
         width: "100%",
-        justifyContent: "flex-start",
+        justifyContent: "center",
         alignItems: "center",
         marginTop: 13,
     },

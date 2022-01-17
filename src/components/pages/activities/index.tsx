@@ -192,16 +192,12 @@ export default function ActivitiesPage(props: any) {
     useEffect(() => {
         setRefreshing(true)
         let isCurrent = true
-
-
         dispatch(setNotPinnedApplication([]))
         dispatch(setPinnedApplication([]))
         fnApplications(isCurrent, () =>{});
         return () => {
             isCurrent = false
         }
-
-
     }, [countRefresh, searchTerm, selectedChangeStatus])
 
 
