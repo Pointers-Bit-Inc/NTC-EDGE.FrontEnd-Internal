@@ -49,10 +49,8 @@ export const styles = StyleSheet.create({
         flex: 1
     },
     rect2: {
-        top: 0,
-        left: "20%",
+        width: "88%",
         height: 40,
-        position: "absolute",
         backgroundColor: "rgba(239,240,246,1)",
         borderRadius: 10,
     },
@@ -77,7 +75,7 @@ export const styles = StyleSheet.create({
 
         alignSelf: "flex-end",
         top: "40%",
-        right: "5%",
+        right: "15%",
         color: "rgba(128,128,128,1)",
         fontSize: 25,
     },
