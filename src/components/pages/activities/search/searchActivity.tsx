@@ -74,8 +74,6 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
                                 {props.nevers.map(props.callbackfn)}
                             </ScrollView>
                         </View>
-
-
                     </View>
                 </View>
             </View>}

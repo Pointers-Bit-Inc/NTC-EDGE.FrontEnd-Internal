@@ -26,8 +26,6 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: { par
         let date = moment(props.item.date);
         if (moment().diff(date, 'days') >= 1 ) {
             return date.fromNow();
-        }else  if (moment().diff(date, 'days') >= 30) {
-            return date.fromNow();
         }
         return date.calendar().split(' ')[0];
     }

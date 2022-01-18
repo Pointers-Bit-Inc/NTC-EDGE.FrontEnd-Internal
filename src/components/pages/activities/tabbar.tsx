@@ -78,22 +78,22 @@ export default function TabBar() {
                                     alignItems: 'center',
                                 }}>
                                     {label == ACTIVITIES
-                                        ? ( <ActivityTabbar width={30} height={30} fill={isFocused ? focused : unfocused}/>) :
+                                        ? ( <ActivityTabbar notification={false} width={30} height={30} fill={isFocused ? focused : unfocused}/>) :
                                         label == CHAT
                                             ?
-                                            (<ChatIcon width={30} height={30} fill={isFocused ? focused : unfocused}/>)
+                                            (<ChatIcon notification={false} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
                                             : label == MEET
                                                 ?
-                                                (<MeetIcon width={30} height={30} fill={isFocused ? focused : unfocused}/>)
+                                                (<MeetIcon notification={false} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
 
                                                 :
                                                 label == SCANQR
                                                     ?
-                                                    (<ScanQrIcon width={30} height={30} fill={isFocused ? focused : unfocused}/> )
+                                                    (<ScanQrIcon notification={false} width={30} height={30} fill={isFocused ? focused : unfocused}/> )
                                                     :
                                                     label == MORE
                                                         ?
-                                                        (<MoreTabBarIcon width={30} height={30} fill={isFocused ? focused : unfocused}/>)
+                                                        (<MoreTabBarIcon notification={false} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
 
                                                         :
                                                         <Entypo name="book"></Entypo>}

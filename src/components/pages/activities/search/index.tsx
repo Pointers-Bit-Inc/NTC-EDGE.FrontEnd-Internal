@@ -73,9 +73,7 @@ function Search(props: any) {
             props.animate()
             setTextInput(text)
         }} onPress1={() => {
-
             setTextInput("")
-
         }} translateX={props.initialMove} nevers={searchHistory} callbackfn={(search, index) => {
             return <View key={index} style={styles.group6}>
                 <TouchableOpacity onPress={() => {
