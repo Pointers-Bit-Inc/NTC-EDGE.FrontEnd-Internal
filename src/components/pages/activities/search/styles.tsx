@@ -50,12 +50,11 @@ export const styles = StyleSheet.create({
     },
     rect2: {
         top: 0,
-        left: 0,
+        left: "20%",
         height: 40,
         position: "absolute",
         backgroundColor: "rgba(239,240,246,1)",
         borderRadius: 10,
-        right: "20%"
     },
     group3: {
         top: 0,

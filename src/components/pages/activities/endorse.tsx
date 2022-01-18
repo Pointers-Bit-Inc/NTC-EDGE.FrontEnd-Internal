@@ -60,15 +60,6 @@ function Endorsed(props:any) {
     }
 
     return (
-        <View style={props.visible ? {
-            position: "absolute",
-            zIndex: 2,
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-        } : {}}>
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -109,7 +100,16 @@ function Endorsed(props:any) {
                 />
                 <KeyboardAvoidingView
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    style={styles.container}
+                    style={[styles.container, props.visible ? {
+
+                        position: "absolute",
+                        zIndex: 2,
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    } : {}]}
                 >
                     <View style={styles.rectFiller}></View>
                     <View style={styles.rect}>
@@ -186,7 +186,6 @@ function Endorsed(props:any) {
                     </View>
                 </KeyboardAvoidingView>
             </Modal>
-        </View>
 
     );
 }
