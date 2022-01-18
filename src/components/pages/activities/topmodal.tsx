@@ -9,6 +9,7 @@ import EvaluationIcon from "@assets/svg/evaluation";
 import ApprovedIcon from "@assets/svg/approved";
 import DeclineIcon from "@assets/svg/decline";
 import lodash from 'lodash';
+import Collapsible from "react-native-collapsible";
 
 const window = Dimensions.get("window")
 
@@ -56,59 +57,59 @@ function TopModal(props:any) {
             height: '100%',
             backgroundColor: "rgba(0, 0, 0, 0.5)",
         } : {}}>
-            
-            {<TouchableWithoutFeedback onPressOut={() => {
-
-                dispatch(setVisible(false))
-            }}>
+                
+                {<TouchableWithoutFeedback onPressOut={() => {
+                    dispatch(setVisible(false))
+                }}>
                 <View style={styles.container}>
-                <View style={styles.header1}>
-                    <Text style={styles.filter1}>FILTER</Text>
-                    <TouchableOpacity onPress={() => {
-                        dispatch(setVisible(false))
-                    } }>
-                        <Ionicons name="md-close" style={styles.icon1}></Ionicons>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.rect2_1}>
-                    <Text style={styles.sort1}>Sort By</Text>
-                </View>
-                <View style={styles.group7_1}>
-
-                    {statusCode.filter((item:any) =>{
-                       return item?.isShow.indexOf(user?.role?.key) != -1
-                    }).map((top: any, index: number)=> {
-                        return (
-                            <TouchableOpacity
-                                key={index}
-                                onPress={() =>  dispatch(on_checked(top))}
-                            >
-                                <View style={[
-                                    styles.itemGroup,
-                                    styles.item,
-                                    lodash.size(statusCode) - 1 === index && {
-                                        borderBottomWidth: 0,
-                                    }
-                                ]}>
-                                    <View style={[styles.itemGroup, { paddingHorizontal: 0 }]}>
-                                        {renderIcon(top)}
-                                        <Text style={[styles.label1, {color: top.checked ? "#003aa9" : "rgba(128,128,128,1)"}]}>{top.status}</Text>
-                                    </View>
-                                    <TouchableOpacity onPress={() => {
-                                        
-                                        dispatch(on_checked(top))
-                                    } }>
-                                        <Ionicons
-                                            name={top.checked  ? "md-radio-button-on" : "md-radio-button-off"}
-                                            style={[styles.icon6_1, {color: top.checked ? "#003aa9" : "rgba(128,128,128,1)"}]}
-                                        ></Ionicons>
-                                    </TouchableOpacity>
-                                </View>
+                        <View style={styles.header1}>
+                            <Text style={styles.filter1}>FILTER</Text>
+                            <TouchableOpacity onPress={() => {
+                                dispatch(setVisible(false))
+                            } }>
+                                <Ionicons name="md-close" style={styles.icon1}></Ionicons>
                             </TouchableOpacity>
-                        )
-                    })}
-                </View>
-            </View></TouchableWithoutFeedback>}
+                        </View>
+                        <View style={styles.rect2_1}>
+                            <Text style={styles.sort1}>Sort By</Text>
+                        </View>
+                        <View style={styles.group7_1}>
+
+                            {statusCode.filter((item:any) =>{
+                                return item?.isShow.indexOf(user?.role?.key) != -1
+                            }).map((top: any, index: number)=> {
+                                return (
+                                    <TouchableOpacity
+                                        key={index}
+                                        onPress={() =>  dispatch(on_checked(top))}
+                                    >
+                                        <View style={[
+                                            styles.itemGroup,
+                                            styles.item,
+                                            lodash.size(statusCode) - 1 === index && {
+                                                borderBottomWidth: 0,
+                                            }
+                                        ]}>
+                                            <View style={[styles.itemGroup, { paddingHorizontal: 0 }]}>
+                                                {renderIcon(top)}
+                                                <Text style={[styles.label1, {color: top.checked ? "#003aa9" : "rgba(128,128,128,1)"}]}>{top.status}</Text>
+                                            </View>
+                                            <TouchableOpacity onPress={() => {
+
+                                                dispatch(on_checked(top))
+                                            } }>
+                                                <Ionicons
+                                                    name={top.checked  ? "md-radio-button-on" : "md-radio-button-off"}
+                                                    style={[styles.icon6_1, {color: top.checked ? "#003aa9" : "rgba(128,128,128,1)"}]}
+                                                ></Ionicons>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            })}
+                        </View>
+                    </View></TouchableWithoutFeedback>}
+
         </View>
     );
 }
