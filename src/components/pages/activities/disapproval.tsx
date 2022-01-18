@@ -46,9 +46,13 @@ function Disapproval(props:any) {
                        setShowAlert(false)
                    }}
                    onConfirmPressed={() => {
-                       props.onChangeApplicationStatus(DECLINED)
-                       props.onDismissed()
                        setShowAlert(false)
+                       props.onChangeApplicationStatus(DECLINED, (bool, callback: (bool) =>{}) =>{
+                           setTimeout(() =>{
+                               props.onDismissed()
+                               callback(true)
+                           } , 150)
+                       })
                    }}
                />
                <KeyboardAvoidingView

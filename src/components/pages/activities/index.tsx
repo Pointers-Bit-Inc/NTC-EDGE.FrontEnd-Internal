@@ -94,12 +94,10 @@ export default function ActivitiesPage(props: any) {
         const list = applications?.filter((item: any) => {
 
             const search =
-                (selectedClone?.length ?
-                    selectedClone.indexOf(cashier ?
-                        PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1
-                    : true)
+                (selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true)
             if (cashier) {
-                return (item?.status == APPROVED || item?.assignedPersonnel == user?._id) && search
+                return (item?.status == APPROVED || item?.assignedPersonnel == user?._id ||
+                    (item?.assignedPersonnel == user?._id && item?.status == PENDING)) && search
             } else if ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
                 return (item?.status == FOREVALUATION || item?.status == PENDING || item?.assignedPersonnel == user?._id) && search
             } else {
@@ -109,15 +107,15 @@ export default function ActivitiesPage(props: any) {
 
         setIsPinnedActivity(0)
         const groups = list?.reduce((groups: any, activity: any) => {
-            const date = checkFormatIso(activity.updatedAt, "-");
+
             if (activity.isPinned) {
                 setIsPinnedActivity(isPinnedActivity + 1)
             }
-            if (!groups[date]) {
-                groups[date] = [];
+            if (!groups[activity.updatedAt]) {
+                groups[activity.updatedAt] = [];
             }
 
-            groups[date].push(activity);
+            groups[activity.updatedAt].push(activity);
             return groups;
         }, {});
         const groupArrays = Object.keys(groups).map((date) => {
@@ -531,7 +529,7 @@ export default function ActivitiesPage(props: any) {
                 <ActivityModal details={details} visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
 
                     if (event && _id) {
-                        dispatch(deleteApplications(_id))
+                        //dispatch(deleteApplications(_id))
                     }
                     if (!(notPnApplications.length || pnApplications.length)) {
                         onRefresh()

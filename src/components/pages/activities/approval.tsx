@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useState} from "react";
+import React, {Component, useCallback, useEffect, useMemo, useState} from "react";
 import {StyleSheet, View, Text, Modal, TouchableOpacity, Dimensions, Platform, KeyboardAvoidingView } from "react-native";
 import ApplicationApproved from "@assets/svg/application-approved";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,7 +14,7 @@ import {errorColor} from "@styles/color";
 
 const { height } = Dimensions.get('window');
 
-function Approval(props: any){
+function    Approval(props: any){
     const isKeyboardVisible = useKeyboard();
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [pickedCashier, setPickedCashier] = useState<any[]>()
@@ -50,13 +50,18 @@ function Approval(props: any){
         }
     }, [])
 
+
+
     function onConfirmation() {
         setMessage("Are you sure you want to approve this application?")
         setShowAlert(true)
     }
-
+    const confirmDismissed = useMemo(() =>{
+        return false
+    }, [showAlert])
     return (
-        <View style={props.visible ? {
+        <View  style={props.visible ? {
+
             position: "absolute",
             zIndex: 2,
             top: 0,
@@ -66,13 +71,16 @@ function Approval(props: any){
             backgroundColor: "rgba(0, 0, 0, 0.5)",
         } : {}}>
             <Modal
+
                 animationType="slide"
                 transparent={true}
                 visible={props.visible}
-
                 onRequestClose={() => {
                 }}>
                 <AwesomeAlert
+                    actionContainerStyle={{
+                        flexDirection: "row-reverse"
+                    }}
                     show={showAlert}
                     showProgress={false}
                     title="Confirm?"
@@ -89,11 +97,20 @@ function Approval(props: any){
                         setShowAlert(false)
                     }}
                     onConfirmPressed={() => {
-                        if([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 && !remarks.length){
-                            setShowAlert(true)
+
+                        if([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 && remarks.length){
+                            setShowAlert(false, )
+                            setTimeout(() => props.onDismissed(), 150)
                         }else {
 
-                            props.confirm({cashier: cashier, remarks: remarks})
+                            props.confirm({cashier: cashier, remarks: remarks}, (response,callback) => {
+                                setShowAlert(false)
+                                setTimeout(() => {
+                                    props.onDismissed()
+                                   callback(true)
+                                }, 150)
+                            })
+
 
                         }
                     }}
@@ -102,6 +119,7 @@ function Approval(props: any){
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
                     style={styles.container}
                 >
+
                     <View style={styles.group}>
                         <View style={styles.rect}>
                             <View style={{ alignSelf: 'flex-start' }}>
@@ -113,7 +131,7 @@ function Approval(props: any){
                             </View>
                             <ApplicationApproved style={styles.icon}></ApplicationApproved>
                             <Text style={styles.applicationApproved}>
-                                {props.isCashier ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED'}
+                               {props.isCashier ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED'}
                             </Text>
                             <View style={styles.group2}>
                                 {/* <View style={[styles.element, {marginBottom: 5}]}>
@@ -169,6 +187,7 @@ function Approval(props: any){
                 </KeyboardAvoidingView>
             </Modal>
         </View>
+
 
     )
 }

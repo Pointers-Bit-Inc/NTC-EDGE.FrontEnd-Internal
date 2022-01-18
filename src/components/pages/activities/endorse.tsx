@@ -92,9 +92,16 @@ function Endorsed(props:any) {
                         setShowAlert(false)
                     }}
                     onConfirmPressed={() => {
-                        props.onChangeApplicationStatus({status: FOREVALUATION })
-                        props.onDismissed()
-                        setShowAlert(false)
+                        props.onChangeApplicationStatus({status: FOREVALUATION }, (bool, callback:(bool) =>{}) =>{
+                            setShowAlert(false)
+                            setTimeout(() => {
+                                props.onDismissed()
+                                callback(true)
+                            }, 150)
+
+                        })
+
+
                     }}
                 />
                 <KeyboardAvoidingView

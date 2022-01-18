@@ -21,6 +21,8 @@ export const PaymentStatusText = (status: string) => {
             return VERIFIED
         case PENDING:
             return FORVERIFICATION
+        case FOREVALUATION:
+            return FORVERIFICATION
         case DECLINED:
             return UNVERIFIED
         default:

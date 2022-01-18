@@ -1,27 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {
-    ActivityIndicator,
-    Alert,
-    Dimensions,
-    Modal,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
-} from "react-native";
+import {ActivityIndicator, Alert, Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import {primaryColor, text} from "@styles/color";
 import Disapproval from "@pages/activities/disapproval";
 import Endorsed from "@pages/activities/endorse";
 import Approval from "@pages/activities/approval";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {
-    formatDate,
-    PaymentStatusText,
-    statusColor,
-    statusIcon,
-    StatusText
-} from "@pages/activities/script";
+import {formatDate, PaymentStatusText, statusColor, statusIcon, StatusText} from "@pages/activities/script";
 import {
     APPROVED,
     CASHIER,
@@ -29,7 +14,7 @@ import {
     DIRECTOR,
     EVALUATOR,
     FOREVALUATION,
-    PAID,
+    PAID, PENDING,
 } from "../../../reducers/activity/initialstate";
 import ProfileImage from "@components/atoms/image/profile";
 import CustomText from "@components/atoms/text";
@@ -92,7 +77,7 @@ function ActivityModal(props: any) {
     const onApproveDismissed = () => {
         setApproveVisible(false)
     }
-    const onChangeApplicationStatus = async (status: string, callback = (err: any) => {
+    const onChangeApplicationStatus = async (status: string, callback = (err: any, appId?: any) => {
     }) => {
         const api = Api(user.sessionToken);
         const applicationId = props?.details?._id;
@@ -114,7 +99,6 @@ function ActivityModal(props: any) {
             };
         }
 
-        
 
         console.log(url, params);
         if (applicationId) {
@@ -133,9 +117,9 @@ function ActivityModal(props: any) {
                             setStatus(PaymentStatusText(status))
                             setChange(true)
                             setStatus("")
-                            props.onDismissed(true, applicationId)
+                            // props.onDismissed(true, applicationId)
 
-                            return callback(null);
+                            return callback(null, applicationId );
                         }
                     }
 
@@ -150,14 +134,10 @@ function ActivityModal(props: any) {
                 })
         }
     }
-    const [backgroundColour, setBackgroundColour] = useState("#fff")
-
-    function onShowConfirmation(status: string) {
-        const name = props?.details?.applicant?.user
-        setMessage(`Are you sure you want to ${status.toLowerCase()} this application?`)
-        setShowAlert(true)
-
-    }
+    const cashier =   [CASHIER].indexOf(user?.role?.key) != -1
+    const  _status = cashier ? props?.details?.paymentStatus : props?.details?.status
+    const approveButton = (cashier ? (_status == PAID ||  _status == APPROVED || _status == undefined)  : (_status == APPROVED) )
+    const declineButton =  (cashier ? _status == DECLINED || _status == PENDING : _status == DECLINED )
 
     return (
         <Modal
@@ -170,6 +150,7 @@ function ActivityModal(props: any) {
                 setChange(false)
             }}>
             <AwesomeAlert
+                
                 show={showAlert}
                 showProgress={false}
                 title="Confirm?"
@@ -295,7 +276,6 @@ function ActivityModal(props: any) {
                 </View>
                 <ModalTab details={props.details}/>
                 {
-                    true &&
                     <View style={styles.footer}>
                         {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 1, paddingRight: 5}}>
@@ -311,6 +291,7 @@ function ActivityModal(props: any) {
                                     <Text style={styles.approved}>Approved</Text>
                                 </View> */}
                                 <View style={[styles.rect22, {
+                                    backgroundColor: approveButton ? "#C4C4C4" : "rgba(0,171,118,1)",
                                     height: undefined,
                                     paddingVertical: currentLoading === APPROVED ? 6 : 8
                                 }]}>
@@ -318,7 +299,8 @@ function ActivityModal(props: any) {
                                         currentLoading === APPROVED ? (
                                             <ActivityIndicator color={'white'} size={'small'}/>
                                         ) : (
-                                            <Text style={styles.approved}>
+                                            <Text
+                                                style={[styles.approved, {color: approveButton ? "#808196" : "rgba(255,255,255,1)",}]}>
                                                 Approve
                                             </Text>
                                         )
@@ -334,11 +316,6 @@ function ActivityModal(props: any) {
                                     setEndorseVisible(true)
                                 }}
                             >
-                                {/* <View style={styles.rect23Filler}></View>
-                                    <View style={styles.rect23}>
-                                        <View style={styles.endorseFiller}></View>
-                                        <Text style={styles.endorse}>Endorse</Text>
-                                    </View> */}
                                 <View style={[styles.rect23, {
                                     height: undefined,
                                     paddingVertical: currentLoading === FOREVALUATION ? 6.5 : 8
@@ -347,7 +324,8 @@ function ActivityModal(props: any) {
                                         currentLoading === FOREVALUATION ? (
                                             <ActivityIndicator color={'white'} size={'small'}/>
                                         ) : (
-                                            <Text style={styles.endorse}>Endorse</Text>
+                                            <Text
+                                                style={[styles.endorse, {color: props.status === FOREVALUATION ? "#808196" : "rgba(255,255,255,1)",}]}>Endorse</Text>
                                         )
                                     }
                                 </View>
@@ -356,7 +334,7 @@ function ActivityModal(props: any) {
                         {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 1, paddingLeft: 5}}>
                             <TouchableOpacity
-                                disabled={currentLoading === DECLINED}
+                                disabled={currentLoading === DECLINED || declineButton }
                                 onPress={() => {
                                     setVisible(true)
                                 }}
@@ -365,17 +343,19 @@ function ActivityModal(props: any) {
                                     style={[
                                         styles.rect24,
                                         {
+                                            backgroundColor: declineButton? "#C4C4C4" : "#fff",
                                             height: undefined,
                                             paddingVertical: currentLoading === DECLINED ? 5 : 6.5,
                                             borderWidth: 1,
-                                            borderColor: "rgba(194,0,0,1)",
+                                            borderColor: declineButton ? "#C4C4C4" : "rgba(194,0,0,1)",
                                         }]
                                     }>
                                     {
                                         currentLoading === DECLINED ? (
                                             <ActivityIndicator color={"rgba(194,0,0,1)"} size={'small'}/>
                                         ) : (
-                                            <Text style={styles.endorse1}>Decline</Text>
+                                            <Text
+                                                style={[styles.endorse1, {color: declineButton ? "#808196" : "rgba(194,0,0,1)",}]}>Decline</Text>
                                         )
                                     }
                                 </View>
@@ -390,7 +370,7 @@ function ActivityModal(props: any) {
                     setRemarks(remark)
                 }}
                 visible={approveVisible}
-                confirm={(event: any) => {
+                confirm={(event: any, callback: (res, callback) =>{}) => {
                     setAssignId(event.cashier)
                     let status = ""
                     if ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
@@ -398,9 +378,15 @@ function ActivityModal(props: any) {
                     } else if ([CASHIER].indexOf(user?.role?.key) != -1) {
                         status = PAID
                     }
-                    onChangeApplicationStatus(status)
-                    setShowAlert(false)
-                    onApproveDismissed()
+                    onChangeApplicationStatus(status, (err, appId) =>{
+                        if(!err) {
+                            callback(true, (bool) =>{
+                                props.onDismissed(true, appId)
+                            })
+                        }
+                    })
+
+
 
                 }}
                 isCashier={user?.role?.key === CASHIER}
@@ -409,10 +395,12 @@ function ActivityModal(props: any) {
             <Disapproval
                 user={props?.details?.applicant?.user}
                 remarks={setRemarks}
-                onChangeApplicationStatus={(event: any) => {
+                onChangeApplicationStatus={(event: any, callback: (bool, response) =>{}) => {
                     onChangeApplicationStatus(DECLINED, (err) => {
                         if (!err) {
-                            onDismissed()
+                           callback(true, (response)=>{
+                               props.onDismissed(true, response)
+                           })
                         }
                     })
                 }
@@ -425,8 +413,14 @@ function ActivityModal(props: any) {
                     setRemarks(event.remarks)
                     setAssignId(event.endorseId)
                 }}
-                onChangeApplicationStatus={(event: any) => {
-                    onChangeApplicationStatus(event.status);
+                onChangeApplicationStatus={(event: any, callback: (bool, response) => {}) => {
+                    onChangeApplicationStatus(event.status, (err) =>{
+                        if (!err) {
+                            callback(true, (response)=>{
+                                props.onDismissed(true, response)
+                            })
+                        }
+                    });
                 }}
                 visible={endorseVisible}
                 onDismissed={onEndorseDismissed}
@@ -591,14 +585,14 @@ const styles = StyleSheet.create({
     },
     rect22: {
         height: 31,
-        backgroundColor: "rgba(0,171,118,1)",
+
         borderRadius: 6
     },
     approvedFiller: {
         flex: 1
     },
     approved: {
-        color: "rgba(255,255,255,1)",
+
         textAlign: "center",
         alignSelf: "center"
     },
@@ -619,7 +613,6 @@ const styles = StyleSheet.create({
         flex: 1
     },
     endorse: {
-        color: "rgba(255,255,255,1)",
         textAlign: "center",
     },
     button3Row: {
@@ -652,7 +645,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     endorse1: {
-        color: "rgba(194,0,0,1)",
+
         textAlign: "center",
     },
     rect19Column: {

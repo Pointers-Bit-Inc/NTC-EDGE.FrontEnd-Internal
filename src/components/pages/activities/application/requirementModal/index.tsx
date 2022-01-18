@@ -36,7 +36,7 @@ const RequirementModal = (props:any) => {
                     <Image
                         style={{width: 350, height: 350}}
                         source={{
-                            uri: props.image,
+                            uri: props?.image ? props?.image : 'https://dummyimage.com/350x350/fff/aaa',
                         }}
                     />
                 </View>
