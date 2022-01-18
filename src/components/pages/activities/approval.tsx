@@ -60,16 +60,7 @@ function    Approval(props: any){
         return false
     }, [showAlert])
     return (
-        <View  style={props.visible ? {
 
-            position: "absolute",
-            zIndex: 2,
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-        } : {}}>
             <Modal
 
                 animationType="slide"
@@ -186,8 +177,6 @@ function    Approval(props: any){
                     </View>
                 </KeyboardAvoidingView>
             </Modal>
-        </View>
-
 
     )
 }

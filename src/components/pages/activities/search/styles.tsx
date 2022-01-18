@@ -1,5 +1,5 @@
-import {StyleSheet} from "react-native";
-
+import {Dimensions, StyleSheet} from "react-native";
+const {width} = Dimensions.get('window');
 export const styles = StyleSheet.create({
     rect4: {
 
@@ -31,6 +31,7 @@ export const styles = StyleSheet.create({
         borderColor: "rgba(229,229,229,1)"
     },
     group2: {
+        width: width,
         height: 40,
         flexDirection: "row",
         justifyContent: "space-between",
@@ -51,9 +52,10 @@ export const styles = StyleSheet.create({
         top: 0,
         left: 0,
         height: 40,
+        position: "absolute",
         backgroundColor: "rgba(239,240,246,1)",
         borderRadius: 10,
-               width: "90%",
+        right: "20%"
     },
     group3: {
         top: 0,
@@ -69,7 +71,6 @@ export const styles = StyleSheet.create({
         color: "#121212",
         fontSize: 14,
         height: 40,
-        width: "80%",
         right: 0,
         textAlign: "left"
     },
@@ -77,20 +78,20 @@ export const styles = StyleSheet.create({
 
         alignSelf: "flex-end",
         top: "40%",
-        right: "15%",
+        right: "5%",
         color: "rgba(128,128,128,1)",
         fontSize: 25,
     },
     textInputStack: {
         borderColor: "black",
         height: 40,
-        marginLeft: 10
+        marginLeft: 5
     },
     rect2Stack: {
-        flex: 1
+        flex: 1  ,
+        justifyContent: "space-between"
     },
     group8: {
-        height: "100%",
         flex: 1,
         alignSelf: "stretch",
         justifyContent: "center"
@@ -102,7 +103,7 @@ export const styles = StyleSheet.create({
     group7: {
         flex: 1,
         width: "100%",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
         marginTop: 13,
     },
@@ -111,11 +112,11 @@ export const styles = StyleSheet.create({
         lineHeight: 28,
         color: "#000",
         textAlign: "left",
-        width: "90%",
+        width: "80%",
         margin: 5
     },
     group6: {
-        width: "95%",
+        width: "100%",
         height: 30,
         flexDirection: "row",
         justifyContent: "space-around",
