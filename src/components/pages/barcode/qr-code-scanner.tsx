@@ -131,15 +131,7 @@ export default function QrCodeScan(props: any) {
                           error={isError}
                           onPress1={() => setIsError(false)}/>
                 <View style={styles.group6}>
-                    <View style={styles.group3}>
-                        <View style={styles.rect2}>
-
-                            <TouchableOpacity onPress={handleBarCodeScanned} style={styles.group2}>
-                                <QrScanCodeIcon style={styles.icon}></QrScanCodeIcon>
-                                <Text style={styles.generateQrCode}>Generate QR Code</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+                   
                     <View style={styles.group3}>
                         <View style={styles.rect2}>
                             <TouchableOpacity onPress={decode} style={styles.group2}>
