@@ -28,8 +28,11 @@ const initialState = new InitialState();
 export default function basket(state = initialState, action:any) {
   switch (action.type) {
     case SET_SELECTED_CHANNEL: {
-      return state.setIn(['selectedChannel'], action.payload)
-      .setIn(['messages'], []);
+      if (!action.isChannelExist) {
+        return state.setIn(['selectedChannel'], action.payload)
+        .setIn(['messages'], []);
+      }
+      return state.setIn(['selectedChannel'], action.payload);
     }
     case SET_CHANNEL_LIST: {
       return state.setIn(['channelList'], action.payload);
