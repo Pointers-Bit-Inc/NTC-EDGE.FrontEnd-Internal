@@ -103,7 +103,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
       initiateMeeting({ channelId, isVoiceCall, meetingName }, (error, data) => {
         setLoading(false);
         if (!error) {
-          dispatch(setSelectedChannel(data));
+          dispatch(setSelectedChannel(data, isChannelExist));
           dispatch(setMeetingId(data.meetingId));
           dispatch(setMeeting({}));
           navigation.replace('JoinVideoCall', {
