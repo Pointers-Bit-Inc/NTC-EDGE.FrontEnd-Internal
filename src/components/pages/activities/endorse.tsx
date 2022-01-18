@@ -77,6 +77,9 @@ function Endorsed(props:any) {
                 onRequestClose={() => {
                 }}>
                 <AwesomeAlert
+                    actionContainerStyle={{
+                        flexDirection: "row-reverse"
+                    }}
                     show={showAlert}
                     showProgress={false}
                     title="Confirm?"

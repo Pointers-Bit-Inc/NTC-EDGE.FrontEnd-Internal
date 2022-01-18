@@ -28,7 +28,7 @@ function    Approval(props: any){
         axios.get(BASE_URL + '/users' ,
             {
                 headers: {
-                    Authorization: "Bearer ".concat(user.sessionToken)
+                    Authorization: "Bearer ".concat(user?.sessionToken)
                 }
             }).then((response)=>{
             const filterResponse = [...response.data].filter((item) =>{
