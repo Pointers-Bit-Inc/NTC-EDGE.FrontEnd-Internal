@@ -3,7 +3,7 @@ import UnseeIcon from "@assets/svg/unsee";
 import MoreIcon from "@assets/svg/more";
 import React from "react";
 
-export const renderSwiper = (index: number, progress: any, dragX: any, onPressUser:any) => {
+export const renderSwiper = (index: number, progress: any, dragX: any, onPressUser: any) => {
 
     return <>
 
@@ -14,7 +14,7 @@ export const renderSwiper = (index: number, progress: any, dragX: any, onPressUs
             alignItems: "center",
             justifyContent: 'center'
         }}>
-            <UnseeIcon width={18} height={18} />
+            <UnseeIcon width={18} height={18}/>
             <Text
                 style={{
                     color: 'white',
@@ -33,14 +33,14 @@ export const renderSwiper = (index: number, progress: any, dragX: any, onPressUs
         }} onPress={() => {
             onPressUser({icon: "more"})
         }}>
-                <MoreIcon width={18} height={18} fill={"#000"}/>
-                <Text
-                    style={{
-                        color: '#000',
-                        fontWeight: '600',
-                    }}>
-                    More
-                </Text>
-</TouchableOpacity>
+            <MoreIcon width={18} height={18} fill={"#000"}/>
+            <Text
+                style={{
+                    color: '#000',
+                    fontWeight: '600',
+                }}>
+                More
+            </Text>
+        </TouchableOpacity>
     </>
 }
