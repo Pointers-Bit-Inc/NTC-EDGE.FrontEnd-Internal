@@ -64,13 +64,15 @@ export default function ActivitiesPage(props: any) {
         const {activeMeetings} = state.meeting;
         const sortedMeeting = lodash.orderBy(activeMeetings, 'updatedAt', 'desc');
         return sortedMeeting;
-    });
-    const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
+    })
     const config = {
         headers: {
             Authorization: "Bearer ".concat(user?.sessionToken)
         }
     }
+
+    const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
+
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
     const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const dispatch = useDispatch()
@@ -526,10 +528,10 @@ export default function ActivitiesPage(props: any) {
                     )}
                 />
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
-                <ActivityModal details={details} visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
+                    <ActivityModal details={details} visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
 
                     if (event && _id) {
-                        //dispatch(deleteApplications(_id))
+                        dispatch(deleteApplications(_id))
                     }
                     if (!(notPnApplications.length || pnApplications.length)) {
                         onRefresh()

@@ -395,11 +395,11 @@ function ActivityModal(props: any) {
             <Disapproval
                 user={props?.details?.applicant?.user}
                 remarks={setRemarks}
-                onChangeApplicationStatus={(event: any, callback: (bool, response) =>{}) => {
-                    onChangeApplicationStatus(DECLINED, (err) => {
+                onChangeApplicationStatus={(event: any, callback: (bool, appId) =>{}) => {
+                    onChangeApplicationStatus(DECLINED, (err, id) => {
                         if (!err) {
                            callback(true, (response)=>{
-                               props.onDismissed(true, response)
+                               props.onDismissed(true, id)
                            })
                         }
                     })
@@ -414,10 +414,10 @@ function ActivityModal(props: any) {
                     setAssignId(event.endorseId)
                 }}
                 onChangeApplicationStatus={(event: any, callback: (bool, response) => {}) => {
-                    onChangeApplicationStatus(event.status, (err) =>{
+                    onChangeApplicationStatus(event.status, (err, id) =>{
                         if (!err) {
                             callback(true, (response)=>{
-                                props.onDismissed(true, response)
+                                props.onDismissed(true, id)
                             })
                         }
                     });

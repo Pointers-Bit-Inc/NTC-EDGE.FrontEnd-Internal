@@ -86,7 +86,6 @@ export const styles = StyleSheet.create({
     },
     rect2Stack: {
         flex: 1  ,
-        justifyContent: "space-between"
     },
     group8: {
         flex: 1,
@@ -100,7 +99,7 @@ export const styles = StyleSheet.create({
     group7: {
         flex: 1,
         width: "100%",
-        justifyContent: "flex-start",
+        justifyContent: "center",
         alignItems: "center",
         marginTop: 13,
     },
@@ -109,26 +108,24 @@ export const styles = StyleSheet.create({
         lineHeight: 28,
         color: "#000",
         textAlign: "left",
-        width: "80%",
+        width: "90%",
         margin: 5
     },
     group6: {
-        width: "100%",
+        width: "96%",
         height: 30,
         flexDirection: "row",
         justifyContent: "space-around",
-        alignItems: "flex-start",
+        alignItems: "center",
         margin: 0,
         paddingTop: 0,
         paddingBottom: 0,
         marginTop: 18
     },
     group5: {
-        width: 250,
+        width: width/1.44,
         height: 25,
         flexDirection: "row",
-        justifyContent: "flex-start",
-        alignItems: "center"
     },
     icon3: {
         marginRight: 10,
@@ -139,8 +136,5 @@ export const styles = StyleSheet.create({
         color: "#121212"
     },
     icon4: {
-        alignSelf: "center",
-        color: "rgba(128,128,128,1)",
-        fontSize: 25
     }
 });

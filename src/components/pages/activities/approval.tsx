@@ -89,21 +89,15 @@ function    Approval(props: any){
                     }}
                     onConfirmPressed={() => {
 
-                        if([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 && remarks.length){
-                            setShowAlert(false, )
-                            setTimeout(() => props.onDismissed(), 150)
-                        }else {
-
+                        
                             props.confirm({cashier: cashier, remarks: remarks}, (response,callback) => {
                                 setShowAlert(false)
                                 setTimeout(() => {
                                     props.onDismissed()
                                    callback(true)
-                                }, 150)
+                                }, 100)
                             })
 
-
-                        }
                     }}
                 />
                 <KeyboardAvoidingView
