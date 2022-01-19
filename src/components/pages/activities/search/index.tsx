@@ -93,7 +93,7 @@ function Search(props: any) {
 
                     removeSearchHistory(index)
                 }}>
-                    <CloseIcon width={12} height={12} style={styles.icon4}></CloseIcon>
+                    <CloseIcon width={12} height={12} ></CloseIcon>
                 </TouchableOpacity>
 
             </View>

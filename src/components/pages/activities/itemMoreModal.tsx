@@ -10,14 +10,7 @@ function ItemMoreModal(props:any) {
     const applicant = props?.details?.applicant?.user
     return (
         
-        <View    style={props.visible ? {
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-        }: {} }>
+        <View   >
             <Modal
 
                 animationType="slide"
@@ -27,7 +20,14 @@ function ItemMoreModal(props:any) {
 
                 }}>
                  <TouchableWithoutFeedback onPressOut={props.onDismissed}>
-                     <View style={[styles.container]}>
+                     <View style={[styles.container, props.visible ? {
+                         position: "absolute",
+                         top: 0,
+                         left: 0,
+                         width: '100%',
+                         height: '100%',
+                         backgroundColor: "rgba(0, 0, 0, 0.5)",
+                     }: {}]}>
                          <View style={styles.rect}>
                              <View style={styles.group7}>
 
