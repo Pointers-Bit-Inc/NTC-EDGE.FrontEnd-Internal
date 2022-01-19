@@ -100,8 +100,6 @@ export default function ActivitiesPage(props: any) {
             if (cashier) {
                 return (item?.status == APPROVED || item?.assignedPersonnel == user?._id ||
                     (item?.assignedPersonnel == user?._id && item?.status == PENDING)) && search
-            } else if ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
-                return (item?.status == FOREVALUATION || item?.status == PENDING || item?.assignedPersonnel == user?._id) && search
             } else {
                 return search
             }
@@ -158,7 +156,6 @@ export default function ActivitiesPage(props: any) {
     const checkDateAdded = selectedChangeStatus?.filter((status: string) => {
         return status == DATE_ADDED
     })
-
     const query = () => {
         const keyword = searchTerm.length ? '&keyword=' + searchTerm : '';
         const dateAdded = checkDateAdded.length ? "?sort=asc" : "?sort=desc"
@@ -176,12 +173,17 @@ export default function ActivitiesPage(props: any) {
             }
             return item
         }).toString() : ''
+
+
         return dateAdded + keyword + status
     }
     const  fnApplications = (isCurrent: boolean, callback: (err: any) => void) =>  {
+
         axios.get(BASE_URL + `/applications${query()}`, config).then((response) => {
-            if (response?.data?.message) Alert.alert(response.data.message)
+
             dispatch(setApplications(response.data))
+            if (response?.data?.message) Alert.alert(response.data.message)
+
             if (isCurrent) setRefreshing(false);
             callback(true)
         }).catch((err) => {
@@ -199,7 +201,7 @@ export default function ActivitiesPage(props: any) {
         return () => {
             isCurrent = false
         }
-    }, [countRefresh, searchTerm, selectedChangeStatus])
+    }, [countRefresh, searchTerm, ])
 
 
     const [currentPage, setCurrentPage] = useState(1)
@@ -211,8 +213,7 @@ export default function ActivitiesPage(props: any) {
     const [searchVisible, setSearchVisible] = useState(false)
 
     const pnApplications = useMemo(() => {
-
-                        setUpdateUnReadReadApplication(false)
+        setUpdateUnReadReadApplication(false)
         return ispinnedApplications(pinnedApplications)
     }, [updateUnReadReadApplication, searchTerm, selectedChangeStatus?.length, pinnedApplications?.length, currentPage])
 
@@ -268,6 +269,7 @@ export default function ActivitiesPage(props: any) {
 
 
     useEffect(() => {
+
         setInfiniteLoad(true)
         if (currentPage != oldCurrentPage) {
             const page = "&page=" + currentPage
@@ -360,7 +362,6 @@ export default function ActivitiesPage(props: any) {
             "action": action
         }
 
-        console.log("im called", action)
         axios.post(BASE_URL + `/applications/${id}/read-unread`,  params, config).then((response) => {
             if (response?.data?.message) Alert.alert(response.data.message)
             return dispatch(readUnreadApplications({id: id, data:response?.data?.doc}))
@@ -496,7 +497,7 @@ export default function ActivitiesPage(props: any) {
 
                 <FlatList
                     contentContainerStyle={{ flexGrow: 1 }}
-                    ListEmptyComponent={() => listEmpty(refreshing)}
+                    ListEmptyComponent={() => listEmpty(refreshing, searchTerm)}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}

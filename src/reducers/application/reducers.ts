@@ -60,7 +60,7 @@ export default function basket(state = initialState, action = {}) {
             return state;
         }
         case SET_APPLICATIONS : {
-
+                        console.log("im back", )
             const isNotPinned = []
             const isPinned = []
             for (let i = 0; i < action.payload?.docs.length; i++) {
@@ -74,6 +74,7 @@ export default function basket(state = initialState, action = {}) {
 
             state = state.set('notPinnedApplications', isNotPinned);
             state = state.set('pinnedApplications', isPinned);
+           
             return state
         }
         case HANDLE_LOAD: {

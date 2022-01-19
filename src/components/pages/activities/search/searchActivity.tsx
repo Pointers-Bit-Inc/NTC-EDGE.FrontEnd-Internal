@@ -68,7 +68,7 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
             {props.value.length < 1 && <View style={styles.group8}>
                 <View style={styles.rect3}>
                     <View style={styles.group7}>
-                        <Text style={styles.recentSearches}>Recent Searched</Text>
+                        <Text style={styles.recentSearches}>Recent Searches</Text>
                         <View style={{justifyContent: "center", height: height - 120 - 30 - 30 - 30 - 20}}>
                             <ScrollView showsVerticalScrollIndicator={false}>
                                 {props.nevers.map(props.callbackfn)}
