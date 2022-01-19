@@ -60,6 +60,7 @@ const {width} = Dimensions.get('window')
 
 export default function ActivitiesPage(props: any) {
     const user = useSelector((state: RootStateOrAny) => state.user);
+    const [updateModal, setUpdateModal] = useState(false)
     const meetingList = useSelector((state: RootStateOrAny) => {
         const {activeMeetings} = state.meeting;
         const sortedMeeting = lodash.orderBy(activeMeetings, 'updatedAt', 'desc');
@@ -174,15 +175,13 @@ export default function ActivitiesPage(props: any) {
             return item
         }).toString() : ''
 
-                                console.log( dateAdded + keyword + status)
+
         return dateAdded + keyword + status
     }
     let count = 0
     const  fnApplications = (isCurrent: boolean, callback: (err: any) => void) =>  {
 
         axios.get(BASE_URL + `/applications${query()}`, config).then((response) => {
-            console.log("inside fnFunction")
-
             if (isCurrent) setRefreshing(false);
             if (response?.data?.message) Alert.alert(response.data.message)
             callback(true)
@@ -190,8 +189,6 @@ export default function ActivitiesPage(props: any) {
                 count = 1
                 if(count)dispatch(setApplications(response.data))
             }
-
-
         }).catch((err) => {
             if (isCurrent) setRefreshing(false)
             callback(false)
@@ -199,7 +196,6 @@ export default function ActivitiesPage(props: any) {
         })
     }
     useEffect(() => {
-        console.log("useEffext")
         setRefreshing(true)
         let isCurrent = true
         dispatch(setNotPinnedApplication([]))
@@ -208,7 +204,7 @@ export default function ActivitiesPage(props: any) {
         return () => {
             isCurrent = false
         }
-    }, [countRefresh, searchTerm, ])
+    }, [countRefresh, searchTerm ])
 
 
     const [currentPage, setCurrentPage] = useState(1)
@@ -222,12 +218,14 @@ export default function ActivitiesPage(props: any) {
     const pnApplications = useMemo(() => {
         setUpdateUnReadReadApplication(false)
         return ispinnedApplications(pinnedApplications)
-    }, [updateUnReadReadApplication, searchTerm, selectedChangeStatus?.length, pinnedApplications?.length])
+    }, [updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length, pinnedApplications?.length, currentPage])
 
     const notPnApplications = useMemo(() => {
         setUpdateUnReadReadApplication(false)
         return ispinnedApplications(notPinnedApplications)
-    }, [updateUnReadReadApplication, searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length])
+    }, [updateUnReadReadApplication, updateModal, updateModal, searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length, currentPage])
+
+
     const userPress = (index: number) => {
         let newArr = [...numberCollapsed]
         newArr[index].parentIndex = newArr[index].parentIndex ? 0 : 1
@@ -361,14 +359,10 @@ export default function ActivitiesPage(props: any) {
 
 
     const unReadReadApplicationFn = (id, dateRead, unReadBtn, callback: (action: any) => void) =>{
-
-
-
         const action = unReadBtn ? (dateRead ? "unread" : "read") :  "read"
         const params = {
             "action": action
         }
-
         axios.post(BASE_URL + `/applications/${id}/read-unread`,  params, config).then((response) => {
             if (response?.data?.message) Alert.alert(response.data.message)
             return dispatch(readUnreadApplications({id: id, data:response?.data?.doc}))
@@ -378,6 +372,10 @@ export default function ActivitiesPage(props: any) {
         }).catch((err) => {
             console.warn(err)
         })
+    }
+
+    const updateModalFn = (bool) =>{
+        setUpdateModal(bool)
     }
     return (
         <Fragment>
@@ -562,8 +560,8 @@ export default function ActivitiesPage(props: any) {
                     )}
                 />
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
-                    <ActivityModal readFn={unReadReadApplicationFn} details={details} visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
-
+                    <ActivityModal updateModal={updateModalFn} readFn={unReadReadApplicationFn} details={details} visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
+                        setUpdateModal(false)
                     if (event && _id) {
                         dispatch(deleteApplications(_id))
                     }

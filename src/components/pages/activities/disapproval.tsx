@@ -43,25 +43,15 @@ function Disapproval(props:any) {
                    onConfirmPressed={() => {
                        setShowAlert(false)
                        props.onChangeApplicationStatus(DECLINED, (bool, callback: (bool) =>{}) =>{
-                           setTimeout(() =>{
+
                                props.onDismissed()
                                callback(true)
-                           } , 150)
                        })
                    }}
                />
                <KeyboardAvoidingView
                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                   style={[styles.container, props.visible ? {
-
-                       position: "absolute",
-                       zIndex: 2,
-                       top: 0,
-                       left: 0,
-                       width: '100%',
-                       height: '100%',
-                       backgroundColor: "rgba(0, 0, 0, 0.5)",
-                   } : {}]}
+                   style={[styles.container,]}
                >
                    <View style={styles.rectFiller}></View>
                    <View style={styles.rect}>

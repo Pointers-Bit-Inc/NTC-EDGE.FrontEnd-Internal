@@ -12,7 +12,7 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor, text} from "@styles/color";
 
-const { height } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 function Endorsed(props:any) {
 
@@ -54,7 +54,7 @@ function Endorsed(props:any) {
             setMessage(`are you sure you want to endorse to ` +  pickedEndorsed?.find(picked => {
                 return picked.value == endorsed
             })?.label)
-            props.remarks({ endorseId: endorsed, remarks: text })
+            props.remarks({ endorseId: endorsed, remarks: text, message })
             setShowAlert(true)
         }
     }
@@ -71,6 +71,12 @@ function Endorsed(props:any) {
                     actionContainerStyle={{
                         flexDirection: "row-reverse"
                     }}
+                    overlayStyle = {showAlert ? {
+                        width: width,
+                        height: height,
+                        position: 'absolute',
+                        backgroundColor: 'rgba(52,52,52,0.5)'
+                    }: {}             }
                     show={showAlert}
                     showProgress={false}
                     title="Confirm?"
@@ -88,10 +94,9 @@ function Endorsed(props:any) {
                     onConfirmPressed={() => {
                         props.onChangeApplicationStatus({status: FOREVALUATION }, (bool, callback:(bool) =>{}) =>{
                             setShowAlert(false)
-                            setTimeout(() => {
+
                                 props.onDismissed()
                                 callback(true)
-                            }, 150)
 
                         })
 
@@ -100,16 +105,7 @@ function Endorsed(props:any) {
                 />
                 <KeyboardAvoidingView
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    style={[styles.container, props.visible ? {
-
-                        position: "absolute",
-                        zIndex: 2,
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    } : {}]}
+                    style={[styles.container]}
                 >
                     <View style={styles.rectFiller}></View>
                     <View style={styles.rect}>

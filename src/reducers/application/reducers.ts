@@ -98,30 +98,37 @@ export default function basket(state = initialState, action = {}) {
             return state
         }
         case UPDATE_APPLICATION_STATUS: {
-
+                              console.log( action.payload.application._id)
             const notPinned = [...state.notPinnedApplications];
             const pinned = [...state.pinnedApplications];
             const index = notPinned.findIndex((app: any) => {
                 return app._id == action.payload.application._id
             })
+
+            console.log(index)
             const pinnedIndex = pinned.findIndex((app: any) => {
                 return app._id == action.payload.application._id
             })
+            console.log(pinnedIndex)
             const cashier = [CASHIER].indexOf(action.payload.userType) != -1;
             const directorAndEvaluator = [DIRECTOR, EVALUATOR].indexOf(action.payload.userType) != -1;
             if (index != -1) {
+                console.log("index")
                 if (cashier) {
-
+                             console.log("cashier")
                     notPinned[index].paymentStatus = action.payload.status
                 } else if (directorAndEvaluator) {
+                    console.log("director and evaluator:", notPinned[index].status)
+
                     notPinned[index].status = action.payload.status
+                    console.log("status:", notPinned[index].status)
                     notPinned[index].assignedPersonnel = action.payload.assignedPersonnel
                 }
 
                 state = state.set("notPinnedApplications", notPinned)
 
             } else if (pinnedIndex != -1) {
-
+                console.log("pinned index")
                 if (cashier) {
 
                     pinned[pinnedIndex].paymentStatus = action.payload.status

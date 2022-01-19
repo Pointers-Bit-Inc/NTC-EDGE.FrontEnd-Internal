@@ -108,6 +108,7 @@ function ActivityModal(props: any) {
                     setCurrentLoading('');
                     if (res.status === 200) {
                         if (res.data) {
+                            console.log(200)
                             dispatch(updateApplicationStatus({
                                 application: res.data,
                                 status: status,
@@ -117,7 +118,6 @@ function ActivityModal(props: any) {
                             setAssignId("")
                             setStatus(PaymentStatusText(status))
                             setChange(true)
-                            setStatus("")
                             // props.onDismissed(true, applicationId)
 
                             return callback(null, applicationId );
@@ -156,8 +156,19 @@ function ActivityModal(props: any) {
                 props.onDismissed(change)
                 setChange(false)
             }}>
+            <View style={approveVisible || visible || endorseVisible ? {
+
+                position: "absolute",
+                zIndex: 2,
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+            } : {}}>
+
+            </View>
             <AwesomeAlert
-                
                 show={showAlert}
                 showProgress={false}
                 title="Confirm?"
@@ -394,7 +405,7 @@ function ActivityModal(props: any) {
                     onChangeApplicationStatus(status, (err, appId) =>{
                         if(!err) {
                             callback(true, (bool) =>{
-                                props.onDismissed(true, appId)
+                                //props.onDismissed(true, appId)
                             })
                         }
                     })
@@ -412,7 +423,7 @@ function ActivityModal(props: any) {
                     onChangeApplicationStatus(DECLINED, (err, id) => {
                         if (!err) {
                            callback(true, (response)=>{
-                               props.onDismissed(true, id)
+                               //props.onDismissed(true, id)
                            })
                         }
                     })
@@ -425,12 +436,13 @@ function ActivityModal(props: any) {
                 remarks={(event: any) => {
                     setRemarks(event.remarks)
                     setAssignId(event.endorseId)
+
                 }}
                 onChangeApplicationStatus={(event: any, callback: (bool, response) => {}) => {
                     onChangeApplicationStatus(event.status, (err, id) =>{
                         if (!err) {
                             callback(true, (response)=>{
-                                props.onDismissed(true, id)
+                                //props.onDismissed(true, id)
                             })
                         }
                     });
