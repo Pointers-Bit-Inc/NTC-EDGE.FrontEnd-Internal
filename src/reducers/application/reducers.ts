@@ -60,6 +60,7 @@ export default function basket(state = initialState, action = {}) {
             return state;
         }
         case SET_APPLICATIONS : {
+
                         console.log("im back", )
             const isNotPinned = []
             const isPinned = []

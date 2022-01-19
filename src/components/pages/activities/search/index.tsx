@@ -21,9 +21,13 @@ function Search(props: any) {
 
 
     useEffect(() => {
+        let isCurrent = true ;
         (async () => {
-            await AsyncStorage.getItem('searchHistory').then((value) => setSearchHistory(JSON.parse(value) || []))
+            if(isCurrent) await AsyncStorage.getItem('searchHistory').then((value) => setSearchHistory(JSON.parse(value) || []))
         })()
+        return () =>{
+            isCurrent = false
+        }
     }, []);
     const removeSearchHistory = async (index: number) => {
 

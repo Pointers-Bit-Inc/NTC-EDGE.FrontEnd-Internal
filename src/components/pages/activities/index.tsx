@@ -174,18 +174,24 @@ export default function ActivitiesPage(props: any) {
             return item
         }).toString() : ''
 
-
+                                console.log( dateAdded + keyword + status)
         return dateAdded + keyword + status
     }
+    let count = 0
     const  fnApplications = (isCurrent: boolean, callback: (err: any) => void) =>  {
 
         axios.get(BASE_URL + `/applications${query()}`, config).then((response) => {
-
-            dispatch(setApplications(response.data))
-            if (response?.data?.message) Alert.alert(response.data.message)
+            console.log("inside fnFunction")
 
             if (isCurrent) setRefreshing(false);
+            if (response?.data?.message) Alert.alert(response.data.message)
             callback(true)
+            if(count == 0){
+                count = 1
+                if(count)dispatch(setApplications(response.data))
+            }
+
+
         }).catch((err) => {
             if (isCurrent) setRefreshing(false)
             callback(false)
@@ -193,6 +199,7 @@ export default function ActivitiesPage(props: any) {
         })
     }
     useEffect(() => {
+        console.log("useEffext")
         setRefreshing(true)
         let isCurrent = true
         dispatch(setNotPinnedApplication([]))
@@ -215,12 +222,12 @@ export default function ActivitiesPage(props: any) {
     const pnApplications = useMemo(() => {
         setUpdateUnReadReadApplication(false)
         return ispinnedApplications(pinnedApplications)
-    }, [updateUnReadReadApplication, searchTerm, selectedChangeStatus?.length, pinnedApplications?.length, currentPage])
+    }, [updateUnReadReadApplication, searchTerm, selectedChangeStatus?.length, pinnedApplications?.length])
 
     const notPnApplications = useMemo(() => {
         setUpdateUnReadReadApplication(false)
         return ispinnedApplications(notPinnedApplications)
-    }, [updateUnReadReadApplication, searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length, currentPage])
+    }, [updateUnReadReadApplication, searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length])
     const userPress = (index: number) => {
         let newArr = [...numberCollapsed]
         newArr[index].parentIndex = newArr[index].parentIndex ? 0 : 1
@@ -380,8 +387,10 @@ export default function ActivitiesPage(props: any) {
             }} initialMove={initialMove}
                                       animate={loadingAnimate}
                                       onSearch={(_search: string, callback = (err: any) => {}) => {
+               
                 setSearchTerm(_search)
                 let isCurrent = true
+
                 fnApplications(isCurrent, (response) =>{
                     if(response) {
                         callback(true)
@@ -390,6 +399,7 @@ export default function ActivitiesPage(props: any) {
                     }
                 });
             }} onDismissed={() => {
+
                 setSearchVisible(false)
                 setSearchTerm("")
             }}/>}
