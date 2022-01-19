@@ -6,7 +6,8 @@ const {
     UPDATE_APPLICATION_STATUS,
     SET_APPLICATIONS,
     DELETE_APPLICATIONS,
-    HANDLE_LOAD
+    HANDLE_LOAD,
+    READ_UNREAD_APPLICATIONS
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -32,6 +33,28 @@ export default function basket(state = initialState, action = {}) {
             }
             if(notPinned.some(o => o._id == action.payload)){
                 state = state.set('notPinnedApplications', notPinned.filter(o => o._id !== action.payload));
+            }
+
+            return state;
+        }
+        case READ_UNREAD_APPLICATIONS: {
+            const notPinned = [...state.notPinnedApplications];
+            const pinned = [...state.pinnedApplications];
+            const notPinnedIndex = notPinned.findIndex((app: any) => {
+                return app._id == action.payload.id
+            })
+            const pinnedIndex = pinned.findIndex((app: any) => {
+                return app._id == action.payload.id
+            })
+
+            if(pinnedIndex != -1){
+                pinned[pinnedIndex] = action.payload.data
+                state = state.set('pinnedApplications', pinned);
+
+            }
+            if(notPinnedIndex != -1){
+                notPinned[notPinnedIndex] = action.payload.data
+                state = state.set('notPinnedApplications', notPinned);
             }
 
             return state;

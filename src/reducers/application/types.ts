@@ -6,5 +6,6 @@ export default keyMirror({
   UPDATE_APPLICATION_STATUS: null,
   SET_APPLICATIONS: null,
   DELETE_APPLICATIONS: null,
-  HANDLE_LOAD: null
+  HANDLE_LOAD: null,
+  READ_UNREAD_APPLICATIONS: null
 });

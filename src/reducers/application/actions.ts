@@ -4,7 +4,8 @@ const {
     UPDATE_APPLICATION_STATUS,
     SET_APPLICATIONS,
     DELETE_APPLICATIONS,
-    HANDLE_LOAD
+    HANDLE_LOAD,
+    READ_UNREAD_APPLICATIONS
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -41,7 +42,12 @@ export function deleteApplications(payload) {
         payload,
     };
 }
-
+export function readUnreadApplications(payload) {
+    return {
+        type: READ_UNREAD_APPLICATIONS,
+        payload,
+    };
+}
 
 export function handleInfiniteLoad(payload) {
     return {

@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     circle: {
         width: 8,
         height: 8,
-        backgroundColor: 'rgba(26,89,211,1)',
+
         borderRadius: 8,
         marginLeft: -8,
         marginRight: 5,
@@ -131,8 +131,8 @@ export function ActivityItem(props:any) {
             <TouchableOpacity onPress={() =>{
                 props.onPressUser()
             }}>
-                <View style={styles.container}>
-                    <View style={styles.circle} />
+                <View  style={styles.container}>
+                    <View  style={[styles.circle, { backgroundColor: (props?.activity?.dateRead != undefined ? 'rgba(26,89,211,1)': ""),}]} />
                     <ProfileImage
                         size={45}
                         image={userActivity?.image}

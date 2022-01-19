@@ -3,26 +3,38 @@ import UnseeIcon from "@assets/svg/unsee";
 import MoreIcon from "@assets/svg/more";
 import React from "react";
 
-export const renderSwiper = (index: number, progress: any, dragX: any, onPressUser: any) => {
-
+export const renderSwiper = (index: number, progress: any, dragX: any, onPressUser: any, activity, unReadReadApplicationFn) => {
+    let action = activity?.dateRead ? "Unread" : "Read"
     return <>
 
         <View style={{
-            paddingRight: 20,
-            paddingLeft: 20,
+
             backgroundColor: '#2863d6',
-            alignItems: "center",
+
             justifyContent: 'center'
         }}>
-            <UnseeIcon width={18} height={18}/>
-            <Text
-                style={{
-                    color: 'white',
-                    fontWeight: '600',
+            <TouchableOpacity style={{
+                paddingRight: 20,
+                paddingLeft: 20, alignItems: "center",
+            }} onPress={() => {
 
-                }}>
-                Unread
-            </Text>
+                unReadReadApplicationFn(activity?._id, activity?.dateRead, true, (response) =>{
+                   action = response
+                })
+            }
+            }>
+                <UnseeIcon width={18} height={18}/>
+                <Text
+                    style={{
+                        color: 'white',
+                        fontWeight: '600',
+
+                    }}>
+
+                    {action}
+                </Text>
+            </TouchableOpacity>
+
         </View>
         <TouchableOpacity style={{
             paddingRight: 40,

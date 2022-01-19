@@ -28,7 +28,7 @@ import {
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {
     deleteApplications,
-    handleInfiniteLoad,
+    handleInfiniteLoad, readUnreadApplications,
     setApplications,
     setNotPinnedApplication,
     setPinnedApplication
@@ -142,6 +142,7 @@ export default function ActivitiesPage(props: any) {
 
         return groupArrays.slice(0, currentPage * 25);
     }
+    const [updateUnReadReadApplication, setUpdateUnReadReadApplication] = useState(false)
     const [searchTerm, setSearchTerm] = useState('');
     const [countRefresh, setCountRefresh] = useState(0)
     const [refreshing, setRefreshing] = React.useState(false);
@@ -211,14 +212,18 @@ export default function ActivitiesPage(props: any) {
 
     const pnApplications = useMemo(() => {
 
+                        setUpdateUnReadReadApplication(false)
         return ispinnedApplications(pinnedApplications)
-    }, [searchTerm, selectedChangeStatus?.length, pinnedApplications?.length, currentPage])
+    }, [updateUnReadReadApplication, searchTerm, selectedChangeStatus?.length, pinnedApplications?.length, currentPage])
 
     const notPnApplications = useMemo(() => {
+      console.log("[NOT PINNED]")
+        for (let i = 0; i < notPinnedApplications.length; i++) {
+                        console.log(notPinnedApplications[i]?.dateRead)
+        }
+        setUpdateUnReadReadApplication(false)
         return ispinnedApplications(notPinnedApplications)
-    }, [searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length, currentPage])
-
-
+    }, [updateUnReadReadApplication, searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length, currentPage])
     const userPress = (index: number) => {
         let newArr = [...numberCollapsed]
         newArr[index].parentIndex = newArr[index].parentIndex ? 0 : 1
@@ -264,8 +269,6 @@ export default function ActivitiesPage(props: any) {
     const bottomLoader = () => {
         return infiniteLoad ? <Loader/> : null
     };
-
-
 
 
     useEffect(() => {
@@ -349,6 +352,23 @@ export default function ActivitiesPage(props: any) {
         } else {
             dispatch(removeActiveMeeting(item._id));
         }
+    }
+
+
+    const unReadReadApplicationFn = (id, dateRead, unReadBtn: false, callback: (action) =>{}) =>{
+        const action = unReadBtn ? (dateRead ? "unread" : "read") :  "read"
+        const params = {
+            "action": action
+        }
+        axios.post(BASE_URL + `/applications/${id}/read-unread`,  params, config).then((response) => {
+            if (response?.data?.message) Alert.alert(response.data.message)
+            return dispatch(readUnreadApplications({id: id, data:response?.data?.doc}))
+        }).then(() =>{
+            setUpdateUnReadReadApplication(true)
+            callback(action)
+        }).catch((err) => {
+            console.warn(err)
+        })
     }
     return (
         <Fragment>
@@ -523,7 +543,7 @@ export default function ActivitiesPage(props: any) {
                                             setModalVisible(true)
                                         }
 
-                                    }} index={i} swiper={renderSwiper}/>
+                                    }} index={i} swiper={ (index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
                             }}/>
                     )}
                 />
