@@ -18,6 +18,7 @@ const viewMinY = (height - finderHeight) / 2;
 
 
 export default function QrCodeScan(props: any) {
+
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [isVerified, setIsVerified] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -29,6 +30,9 @@ export default function QrCodeScan(props: any) {
         (async () => {
             const {status} = await BarCodeScanner.requestPermissionsAsync();
             setHasPermission(status === 'granted');
+           if(!(status === 'granted')){
+               props.onScanned()
+           }
         })();
     }, []);
     const handleResponse = (data:string) => {
@@ -81,7 +85,7 @@ export default function QrCodeScan(props: any) {
         try {
             openImagePickerAsync().then(async (r: any) => {
                 if(!r.uri) return setIsLoading(false)
-                const results = await BarCodeScanner.scanFromURLAsync(r.uri)
+                const results = await BarCodeScanner.scanFromURLAsync(r?.uri)
                 axios.get(results[0]?.data, { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
                     setIsLoading(false)
                     setIsVerified(true)
@@ -98,13 +102,7 @@ export default function QrCodeScan(props: any) {
             setIsError(true)
         }
     }
-    if (hasPermission === null) {
-
-        return <Text>Requesting for camera permission</Text>;
-    }
-    if (hasPermission === false) {
-        return <Text>No access to camera</Text>;
-    }
+   
     return (
         <View style={styles.container}>
             <BarCodeScanner onBarCodeScanned={handleBarCodeScanned}

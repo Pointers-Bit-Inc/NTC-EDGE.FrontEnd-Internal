@@ -548,7 +548,7 @@ export default function ActivitiesPage(props: any) {
                     )}
                 />
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
-                    <ActivityModal details={details} visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
+                    <ActivityModal readFn={unReadReadApplicationFn} details={details} visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
 
                     if (event && _id) {
                         dispatch(deleteApplications(_id))
