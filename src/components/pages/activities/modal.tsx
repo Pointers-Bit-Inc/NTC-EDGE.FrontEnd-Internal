@@ -32,7 +32,7 @@ function ActivityModal(props: any) {
     const [change, setChange] = useState<boolean>(false)
     useEffect(() => {
         setChange(false)
-        props.readFn()
+      
     }, [])
     const [tabs, setTabs] = useState([
         {
@@ -134,6 +134,12 @@ function ActivityModal(props: any) {
                     return callback(e);
                 })
         }
+    }
+    function onShowConfirmation(status: string) {
+        const name = props?.details?.applicant?.user
+        setMessage(`Are you sure you want to ${status.toLowerCase()} this application?`)
+        setShowAlert(true)
+
     }
     const cashier =   [CASHIER].indexOf(user?.role?.key) != -1
     const  _status = cashier ? props?.details?.paymentStatus : props?.details?.status
@@ -283,7 +289,13 @@ function ActivityModal(props: any) {
                             <TouchableOpacity
                                 disabled={currentLoading === APPROVED}
                                 onPress={() => {
-                                    setApproveVisible(true)
+                                    if(cashier )  {
+                                        onShowConfirmation(APPROVED)
+                                    }else{
+                                        setApproveVisible(true)
+                                    }
+
+
                                 }}
                             >
                                 {/* <View style={styles.rect22Filler}></View>

@@ -217,10 +217,6 @@ export default function ActivitiesPage(props: any) {
     }, [updateUnReadReadApplication, searchTerm, selectedChangeStatus?.length, pinnedApplications?.length, currentPage])
 
     const notPnApplications = useMemo(() => {
-      console.log("[NOT PINNED]")
-        for (let i = 0; i < notPinnedApplications.length; i++) {
-                        console.log(notPinnedApplications[i]?.dateRead)
-        }
         setUpdateUnReadReadApplication(false)
         return ispinnedApplications(notPinnedApplications)
     }, [updateUnReadReadApplication, searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length, currentPage])
@@ -355,11 +351,16 @@ export default function ActivitiesPage(props: any) {
     }
 
 
-    const unReadReadApplicationFn = (id, dateRead, unReadBtn: false, callback: (action) =>{}) =>{
+    const unReadReadApplicationFn = (id, dateRead, unReadBtn, callback: (action: any) => void) =>{
+
+
+
         const action = unReadBtn ? (dateRead ? "unread" : "read") :  "read"
         const params = {
             "action": action
         }
+
+        console.log("im called", action)
         axios.post(BASE_URL + `/applications/${id}/read-unread`,  params, config).then((response) => {
             if (response?.data?.message) Alert.alert(response.data.message)
             return dispatch(readUnreadApplications({id: id, data:response?.data?.doc}))
@@ -522,6 +523,7 @@ export default function ActivitiesPage(props: any) {
                             key={index}
                             onPress={() => {
                                 userPress(index)
+
                             }}
                             item={item}
                             numbers={numberCollapsed}
@@ -537,6 +539,7 @@ export default function ActivitiesPage(props: any) {
                                     currentUser={user}
                                     onPressUser={(event: any) => {
                                         setDetails(activity)
+                                        unReadReadApplicationFn(activity?._id, activity?.dateRead, true, (action:any)=>{})
                                         if (event?.icon == 'more') {
                                             setMoreModalVisible(true)
                                         } else {

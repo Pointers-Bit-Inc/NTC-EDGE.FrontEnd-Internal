@@ -11,6 +11,8 @@ const ApplicationDetails = (props:any) =>{
                 </View>
                 <Text style={styles.applicationType}>{props?.applicantType}</Text>
                 <Text style={styles.service}>{props?.service?.name}</Text>
+                <Text style={styles.service}>{props?.service?.radioType?.label}</Text>
+                <Text style={styles.service}>{`\u2022${props?.service?.radioType?.selected}`}</Text>
                 {props?.selectedType?.map((type:any, idx:number) => {
                     return <Text key={idx} style={styles.text}>
                         {type.name} {type.selectedItems.map((item:string, index:number)=>{

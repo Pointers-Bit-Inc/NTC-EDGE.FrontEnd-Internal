@@ -88,14 +88,11 @@ function    Approval(props: any){
                         setShowAlert(false)
                     }}
                     onConfirmPressed={() => {
-
-                        
                             props.confirm({cashier: cashier, remarks: remarks}, (response,callback) => {
                                 setShowAlert(false)
-                                setTimeout(() => {
+
                                     props.onDismissed()
                                    callback(true)
-                                }, 100)
                             })
 
                     }}

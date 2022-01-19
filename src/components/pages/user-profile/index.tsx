@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     rect3: {
         borderRadius: 50,
         top: 15,
-        left: 138,
+        
         width: 100,
         height: 100,
         position: "absolute",

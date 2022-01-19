@@ -24,7 +24,7 @@ const Requirement = (props:any) =>{
                     }>
                         <View style={styles.group5}>
                             <View style={styles.rect1}>
-                                <Text style={styles.prcLicensePdf}>{requirement?.title}</Text>
+                                <Text style={styles.prcLicensePdf}>{requirement?.title?.slice(0, 40)}</Text>
                                 <View style={styles.prcLicensePdfFiller}>
                                 </View>
                                 <View style={styles.rect2}>
@@ -41,7 +41,7 @@ const Requirement = (props:any) =>{
                                         <Image
                                             style={{width: 350, height: 216}}
                                             source={{
-                                                uri: requirement?.path ? requirement?.path : 'https://dummyimage.com/350x216/fff/aaa',
+                                                uri:  'https://dummyimage.com/350x216/fff/aaa',
                                             }}
                                         />
                                     </View>

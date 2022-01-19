@@ -132,7 +132,8 @@ export function ActivityItem(props:any) {
                 props.onPressUser()
             }}>
                 <View  style={styles.container}>
-                    <View  style={[styles.circle, { backgroundColor: (props?.activity?.dateRead != undefined ? 'rgba(26,89,211,1)': ""),}]} />
+
+                    <View  style={[styles.circle, props?.activity?.dateRead  ? "": { backgroundColor: 'rgba(26,89,211,1)'}]} />
                     <ProfileImage
                         size={45}
                         image={userActivity?.image}
@@ -143,7 +144,7 @@ export function ActivityItem(props:any) {
                             <View style={styles.name}>
                                 <Text
                                     color={'#1F2022'}
-                                    weight="bold"
+                                    weight={props?.activity?.dateRead != undefined ? "normal": "bold"}
                                     size={14}
                                     numberOfLines={1}
                                 >
@@ -152,7 +153,7 @@ export function ActivityItem(props:any) {
                                         searchWords={[props?.searchQuery]}
                                         textToHighlight= {`${userActivity?.firstName} ${userActivity?.lastName}`}
                                     />
-
+                                  
                                 </Text>
                             </View>
                             <View style={styles.date}>
