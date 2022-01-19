@@ -46,15 +46,15 @@ const BasicInfo = (props: any) => {
                     </View>
                     <View style={styles.group2}>
                         <Text style={styles.detail}>Barangay</Text>
-                        <Text style={styles.detailInput}>{applicant?.barangay?.name}</Text>
+                        <Text style={styles.detailInput}>{applicant?.barangay}</Text>
                     </View>
                     <View style={styles.group2}>
                         <Text style={styles.detail}>Province:</Text>
-                        <Text style={styles.detailInput}>{applicant?.province?.name}</Text>
+                        <Text style={styles.detailInput}>{applicant?.province}</Text>
                     </View>
                     <View style={styles.group2}>
                         <Text style={styles.detail}>City/Municipality:</Text>
-                        <Text style={styles.detailInput}>{applicant?.city?.name}</Text>
+                        <Text style={styles.detailInput}>{applicant?.city}</Text>
                     </View>
                     <View style={styles.group2}>
                         <Text style={styles.detail}>Zip Code:</Text>

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Image, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import {EvilIcons} from "@expo/vector-icons";
 import Collapsible from "react-native-collapsible";
 import ChevronUpIcon from "@assets/svg/chevron-up";
@@ -14,7 +14,7 @@ const Requirement = (props:any) =>{
         setSelectImage("")
         setVisibleModal(false)
     }
-    return <>
+    return <ScrollView>
         <View style={styles.container}>
             {props.requirements.map((requirement:any, index:number) =>{
                 return <View key={index} style={styles.group6}>
@@ -74,7 +74,7 @@ const Requirement = (props:any) =>{
 
         </View>
         <RequirementModal image={selectImage}  visible={visibleModal} onDismissed={onDismissed}/>
-    </>
+    </ScrollView>
 
 }
 export default Requirement
