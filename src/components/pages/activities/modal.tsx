@@ -32,7 +32,7 @@ function ActivityModal(props: any) {
     const [change, setChange] = useState<boolean>(false)
     useEffect(() => {
         setChange(false)
-        dispatch()
+        props.readFn()
     }, [])
     const [tabs, setTabs] = useState([
         {
