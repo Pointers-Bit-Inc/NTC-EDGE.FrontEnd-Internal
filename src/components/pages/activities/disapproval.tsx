@@ -25,6 +25,7 @@ function Disapproval(props:any) {
                    actionContainerStyle={{
                        flexDirection: "row-reverse"
                    }}
+
                    overlayStyle = {showAlert ? {
                        width: width,
                        height: height,

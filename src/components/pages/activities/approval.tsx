@@ -77,7 +77,7 @@ function    Approval(props: any){
                         height: height,
                         position: 'absolute',
                         backgroundColor: 'rgba(52,52,52,0.5)'
-                    }: {}             }
+                    }: {}}
                     show={showAlert}
                     showProgress={false}
                     title="Confirm?"

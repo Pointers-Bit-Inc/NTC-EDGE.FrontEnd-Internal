@@ -144,6 +144,9 @@ function ActivityModal(props: any) {
 
             </View>
             <AwesomeAlert
+                actionContainerStyle={{
+                    flexDirection: "row-reverse"
+                }}
                 show={showAlert}
                 showProgress={false}
                 title="Confirm?"
