@@ -3,6 +3,7 @@ import BackgroundPayment from "@assets/svg/backgroundpayment";
 import {Modal, View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView} from "react-native";
 const { width, height } = Dimensions.get('window');
 const PaymentModal = (props:any) => {
+    console.log(props )
     return <Modal
         animationType="slide"
         transparent={false}
@@ -45,8 +46,9 @@ const PaymentModal = (props:any) => {
                             <Text style={styles.paymentReceivedFor}>Payment received for</Text>
                             <Text style={styles.ntcEdge}>NTC-EDGE</Text>
                             <Text style={styles.theAmoutOf}>the amout of</Text>
-                            <Text style={styles.php5000}>PHP 50.00</Text>
-                            <Text style={styles.loremIpsum}>using your BPI Bank Account</Text>
+                            <Text style={styles.php5000}>PHP {props?.totalFee}</Text>
+
+                            {props?.paymentMethod && <Text style={styles.loremIpsum}>using your {props?.paymentMethod}</Text>}
                         </View>
                         <View style={styles.group2}>
                             <View style={styles.rect}>
@@ -64,13 +66,13 @@ const PaymentModal = (props:any) => {
                                     <Text style={styles.account2}>Account</Text>
                                     <Text style={styles.amountPaid}>Amount paid</Text>
                                 </View>
-                                <View style={styles.group3Filler}></View>
                                 <View style={styles.group4}>
-                                    <Text style={styles.emailInput}>@gmail.com</Text>
-                                    <Text style={styles.php000}>PHP 0.00</Text>
+                                    
+                                    <Text style={styles.emailInput}>{props?.applicant?.user?.email}</Text>
+                                    <Text style={styles.php000}>PHP {props?.totalFee}</Text>
                                     <Text style={styles.loremIpsum3}>1234567</Text>
-                                    <Text style={styles.jmGrills}>JM Grills</Text>
-                                    <Text style={styles.php50003}>PHP 50.00</Text>
+                                    <Text style={styles.jmGrills}>{props?.applicant?.user?.firstName}</Text>
+                                    <Text style={styles.php50003}>PHP {props?.totalFee}</Text>
                                 </View>
                             </View>
                         </View>
@@ -104,6 +106,7 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     group5: {
+        alignItems: "center"
     },
     paymentReceivedFor: {
         color: "#121212",
@@ -121,7 +124,7 @@ const styles = StyleSheet.create({
     },
     php5000: {
         color: "#121212",
-        marginLeft: 56
+
     },
     loremIpsum: {
         color: "#121212",
@@ -160,6 +163,7 @@ const styles = StyleSheet.create({
         marginTop: 23
     },
     details: {
+        fontWeight: "bold",
         color: "#121212",
         alignSelf: "center"
     },
@@ -188,7 +192,7 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     group4: {
-        width: 125,
+        
         height: 148,
         justifyContent: "space-around"
     },

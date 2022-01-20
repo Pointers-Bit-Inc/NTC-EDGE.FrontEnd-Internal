@@ -17,6 +17,7 @@ const Payment = (props:any) => {
 
     return <ScrollView style={{flex: 1, paddingTop: 10}}>
         <View style={styles.container}>
+            
             <View style={{ backgroundColor: "#E6E6E6", padding: 5, alignItems: 'center' }}>
                 <Text
                     weight="600"
@@ -112,7 +113,7 @@ const Payment = (props:any) => {
                 </View>
             </View>
         </View>
-        <PaymentModal visible={visibleModal} onDismissed={onDismissed}  />
+        <PaymentModal paymentMethod={props.paymentMethod} applicant={props.applicant}  totalFee={props.totalFee} visible={visibleModal} onDismissed={onDismissed}  />
     </ScrollView>
 
 }
