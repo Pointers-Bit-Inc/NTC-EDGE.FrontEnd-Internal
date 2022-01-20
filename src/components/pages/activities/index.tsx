@@ -102,16 +102,18 @@ export default function ActivitiesPage(props: any) {
 
 
         const list = applications?.filter((item: any) => {
-
+            let _approvalHistory = false
+            if (item?.approvalHistory.length) {
+                _approvalHistory = item?.approvalHistory[0].userId == user?._id
+            }
             const search =
                 (selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true)
             if (cashier) {
-                return (item?.status == APPROVED || item?.status == DECLINED ||
-                    (item?.assignedPersonnel == user?._id && item?.status == PENDING)) && search
+                return (item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) && search
             } else if (director) {
-                return (item?.status == FOREVALUATION || item?.status == APPROVED || item?.status == DECLINED) && item?.assignedPersonnel == user?._id && search
+                return (item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (item?.assignedPersonnel == user?._id || _approvalHistory) && search
             } else if (checker) {
-                return (item?.status == APPROVED || item?.status == DECLINED) || search
+                return (item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
             } else if (evaluator) {
                 return item
             }
@@ -595,7 +597,7 @@ export default function ActivitiesPage(props: any) {
                     if (event && _id) {
                         //  dispatch(deleteApplications(_id))
                     }
-                    if (!(notPnApplications.length || pnApplications.length)) {
+                    if (event) {
                         onRefresh()
                     }
                     onDismissed()
