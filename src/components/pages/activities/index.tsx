@@ -13,7 +13,7 @@ import {
 import {styles} from "@pages/activities/styles";
 import {
     APPROVED,
-    CASHIER,
+    CASHIER, CHECKER,
     DATE_ADDED,
     DECLINED,
     DIRECTOR,
@@ -76,6 +76,9 @@ export default function ActivitiesPage(props: any) {
     }
 
     const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
+    const director = [DIRECTOR].indexOf(user?.role?.key) != -1;
+    const evaluator = [EVALUATOR].indexOf(user?.role?.key) != -1;
+    const checker = [CHECKER].indexOf(user?.role?.key) != -1;
 
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
     const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
@@ -102,10 +105,14 @@ export default function ActivitiesPage(props: any) {
             const search =
                 (selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true)
             if (cashier) {
-                return (item?.status == APPROVED || item?.assignedPersonnel == user?._id ||
+                return (item?.status == APPROVED || item?.status == DECLINED ||
                     (item?.assignedPersonnel == user?._id && item?.status == PENDING)) && search
-            } else if(item?.assignedPersonnel == user?._id || search){
-                return search
+            } else if(director ){
+                return (item?.status == FOREVALUATION || item?.status == APPROVED || item?.status == DECLINED ) && search
+            }else if(checker){
+                return (item?.status == APPROVED || item?.status == DECLINED) || search
+            }else if(evaluator){
+                return item
             }
         });
 
