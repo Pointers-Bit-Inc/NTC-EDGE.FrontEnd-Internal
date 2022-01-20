@@ -27,6 +27,7 @@ export default function QrCodeScan(props: any) {
     const [hasPermission, setHasPermission] = useState<boolean | null>(null);
     const [type, setType] = useState<any>(BarCodeScanner.Constants.Type.back);
     const [scanned, setScanned] = useState<boolean>(false);
+    const [verifiedInfo, setVerifiedInfo] = useState()
     useEffect(() => {
         (async () => {
             const {status} = await BarCodeScanner.requestPermissionsAsync();
@@ -38,11 +39,13 @@ export default function QrCodeScan(props: any) {
     }, []);
     const handleResponse = (data:string) => {
 
-        axios.get(BASE_URL + `/qr/${data}` , { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
-
+        axios.get(data , { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
+            alert(data)
+            setVerifiedInfo(response.data)
             setIsLoading(false)
             setIsError(false)
             setIsVerified(true)
+
         }).catch((e) =>{
             setIsLoading(false)
             setIsError(true)
@@ -82,15 +85,18 @@ export default function QrCodeScan(props: any) {
         let picker = await ImagePicker.launchImageLibraryAsync()
         return picker
     }
+
     const decode = async () => {
         setIsLoading(true)
         try {
             openImagePickerAsync().then(async (r: any) => {
                 if(!r.uri) return setIsLoading(false)
                 const results = await BarCodeScanner.scanFromURLAsync(r?.uri)
+                console.log()
                 axios.get(results[0]?.data, { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
                     setIsLoading(false)
                     setIsVerified(true)
+                    setVerifiedInfo(response.data)
                 }).catch((e) =>{
                     setIsLoading(false)
                     setIsError(true)
@@ -127,6 +133,7 @@ export default function QrCodeScan(props: any) {
                     </View>
                 </View>}
                 <Response verified={isVerified}
+                          verifiedInfo={verifiedInfo}
                           onPress={() => setIsVerified(false)}
                           error={isError}
                           onPress1={() => setIsError(false)}/>

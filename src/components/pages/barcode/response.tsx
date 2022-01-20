@@ -4,7 +4,7 @@ import CloseIcon from "@assets/svg/close";
 import ErrorIcon from "@assets/svg/erroricon";
 import React from "react";
 import {styles} from "@pages/barcode/styles";
-export function Response(props: { verified: boolean, onPress: () => void, error: boolean, onPress1: () => void }) {
+export function Response(props: { verifiedInfo: any, verified: boolean, onPress: () => void, error: boolean, onPress1: () => void }) {
     return <>
         {props.verified && <View style={styles.group32}>
             <View style={styles.rect13}>
@@ -38,8 +38,8 @@ export function Response(props: { verified: boolean, onPress: () => void, error:
                                     <Text style={styles.address2}>Address:</Text>
                                 </View>
                                 <View style={styles.group20}>
-                                    <Text style={styles.name3}>Name:</Text>
-                                    <Text style={styles.address3}>Address:</Text>
+                                    <Text style={styles.name3}>{props.verifiedInfo?.applicant?.user?.firstName}</Text>
+                                    <Text style={styles.address3}>{props.verifiedInfo?.applicant?.street}</Text>
                                 </View>
                             </View>
                         </View>
@@ -52,9 +52,9 @@ export function Response(props: { verified: boolean, onPress: () => void, error:
                                     <Text style={styles.address2}>Time:</Text>
                                 </View>
                                 <View style={styles.group20}>
-                                    <Text style={styles.name3}>Name:</Text>
-                                    <Text style={styles.address3}>Address:</Text>
-                                    <Text style={styles.address3}>Address:</Text>
+                                    <Text style={styles.name3}>{props?.verifiedInfo?.examDetails?.venue}</Text>
+                                    <Text style={styles.address3}>{props?.verifiedInfo?.examDetails?.examDate}</Text>
+                                    <Text style={styles.address3}>{props?.verifiedInfo?.examDetails?.examTime}:</Text>
                                 </View>
                             </View>
                         </View>
