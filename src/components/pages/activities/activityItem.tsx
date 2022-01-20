@@ -133,7 +133,7 @@ export function ActivityItem(props:any) {
             }}>
                 <View  style={styles.container}>
 
-                    <View  style={[styles.circle, props?.activity?.dateRead  ? "": { backgroundColor: 'rgba(26,89,211,1)'}]} />
+                    <View  style={[styles.circle, props?.activity?.dateRead  ? {}: { backgroundColor: 'rgba(26,89,211,1)'}]} />
                     <ProfileImage
                         size={45}
                         image={userActivity?.image}
