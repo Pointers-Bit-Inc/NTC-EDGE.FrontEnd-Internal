@@ -17,7 +17,8 @@ export const DATE_ADDED = "Date Added",
     CASHIER = "cashier",
     DIRECTOR = "director",
     EVALUATOR = "evaluator",
-    VERIFIER = "verifier"
+    VERIFIER = "verifier" ,
+    CHECKER = "checker"
 
 const InitialState = Record({
   visible: false,
