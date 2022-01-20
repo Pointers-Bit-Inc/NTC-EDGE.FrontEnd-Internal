@@ -1,6 +1,7 @@
 import React from "react";
 import BackgroundPayment from "@assets/svg/backgroundpayment";
 import {Modal, View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView} from "react-native";
+import moment from "moment";
 const { width, height } = Dimensions.get('window');
 const PaymentModal = (props:any) => {
     console.log(props )
@@ -53,7 +54,7 @@ const PaymentModal = (props:any) => {
                         <View style={styles.group2}>
                             <View style={styles.rect}>
                                 <Text style={styles.refNo12345678910}>Ref. No. 12345678910</Text>
-                                <Text style={styles.text}>22 Decemeber 2021 08:04:12 AM</Text>
+                                {props?.updatedAt && <Text style={styles.text}>{ moment(props?.updatedAt).format('LLL')}</Text>}
                             </View>
                         </View>
                         <View style={styles.group6}>
