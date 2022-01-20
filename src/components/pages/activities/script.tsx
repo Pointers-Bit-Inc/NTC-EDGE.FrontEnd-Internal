@@ -61,13 +61,14 @@ export const checkFormatIso = (date: string, separator?: string) => {
 
           if(!date) return
     let isoStringSplit = date?.split("T")[0].split("-")
+
     let checkIfCorrectMonth = isoStringSplit[2],
         checkIfCorrectDay = isoStringSplit[1]
 
-    if (checkIfCorrectMonth.length == 3) {
+    if (checkIfCorrectMonth?.length == 3) {
         isoStringSplit[2] = checkIfCorrectMonth.substr(checkIfCorrectMonth.length - 2)
     }
-    if (checkIfCorrectDay.length == 3) {
+    if (checkIfCorrectDay?.length == 3) {
         isoStringSplit[1] = checkIfCorrectMonth.substr(checkIfCorrectDay.length - 2)
     }
     let newDate = ""

@@ -49,7 +49,7 @@ const Requirement = (props:any) =>{
                                         <View style={styles.rect6}>
                                             <View style={styles.group}>
                                                 <TouchableOpacity onPress={()=>{
-                                                    setSelectImage(requirement?.path)
+                                                    setSelectImage(requirement?.links?.thumb)
                                                     setVisibleModal(true)
                                                 }
                                                 }>

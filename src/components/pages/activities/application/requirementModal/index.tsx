@@ -4,6 +4,7 @@ import {Modal, View, Text, StyleSheet, Dimensions, TouchableOpacity, Image} from
 const { width } = Dimensions.get('window');
 
 const RequirementModal = (props:any) => {
+
     return <Modal
         animationType="slide"
         transparent={false}

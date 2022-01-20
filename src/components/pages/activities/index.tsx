@@ -36,7 +36,7 @@ import {
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
-import {checkFormatIso, PaymentStatusText, StatusText,} from "@pages/activities/script";
+import {checkFormatIso, formatDate, PaymentStatusText, StatusText,} from "@pages/activities/script";
 import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
@@ -112,11 +112,11 @@ export default function ActivitiesPage(props: any) {
             if (activity.isPinned) {
                 setIsPinnedActivity(isPinnedActivity + 1)
             }
-            if (!groups[activity.updatedAt]) {
-                groups[activity.updatedAt] = [];
+            if (!groups[formatDate(activity.updatedAt)]) {
+                groups[formatDate(activity.updatedAt)] = [];
             }
 
-            groups[activity.updatedAt].push(activity);
+            groups[formatDate(activity.updatedAt)].push(activity);
             return groups;
         }, {});
         const groupArrays = Object.keys(groups).map((date) => {
