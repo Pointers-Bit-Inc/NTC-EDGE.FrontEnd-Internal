@@ -90,6 +90,7 @@ const BasicInfo = (props: any) => {
                     </View>
                 </View>
                 <View style={styles.devider}></View>
+
             </View>
 
         </View>}

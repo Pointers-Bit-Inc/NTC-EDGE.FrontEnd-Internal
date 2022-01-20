@@ -3,12 +3,22 @@ import {StyleSheet, View, Text, TextInput} from "react-native";
 import Button from "@atoms/button";
 import axios from "axios";
 import {BASE_URL} from "../../../services/config";
+import {RootStateOrAny, useSelector} from "react-redux";
 
-function ResetPassword(props) {
+function ResetPassword({navigation}) {
+    const user = useSelector((state: RootStateOrAny) => state.user);
     const [oldPassword, setOldPassword] = React.useState("");
     const [newPassword, setNewPassword] = React.useState("");
+    const config = {
+        headers: {
+            Authorization: "Bearer ".concat(user?.sessionToken)
+        }
+    }
           const newPasswordFn = () =>{
-              axios.patch(BASE_URL + "/user/profile/change-password").then((response) =>{
+              axios.patch(BASE_URL + "/user/profile/change-password", {
+                  oldPassword,
+                  newPassword
+              } ,config).then((response) =>{
                   
               })
           }
@@ -17,7 +27,7 @@ function ResetPassword(props) {
             <View style={styles.group2}>
                 <View style={styles.group}>
                     <View style={styles.rect}>
-                        <Text style={styles.close}>Close</Text>
+                        <Text onPress={() =>navigation.goBack()}  style={styles.close}>Close</Text>
                     </View>
                 </View>
                <View >
@@ -28,8 +38,11 @@ function ResetPassword(props) {
                        value={oldPassword}
                        placeholder="Old Password"
                        style={styles.textInput}
+                       secureTextEntry
+
                    ></TextInput>
                    <TextInput
+                       secureTextEntry
                        onChangeText={setNewPassword}
                        value={newPassword}
                        placeholder="New Password"
