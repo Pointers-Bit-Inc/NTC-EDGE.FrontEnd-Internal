@@ -101,7 +101,7 @@ export default function ActivitiesPage(props: any) {
             if (cashier) {
                 return (item?.status == APPROVED || item?.assignedPersonnel == user?._id ||
                     (item?.assignedPersonnel == user?._id && item?.status == PENDING)) && search
-            } else {
+            } else if(item?.assignedPersonnel == user?._id || search){
                 return search
             }
         });
@@ -158,6 +158,7 @@ export default function ActivitiesPage(props: any) {
         return status == DATE_ADDED
     })
     const query = () => {
+
         const keyword = searchTerm.length ? '&keyword=' + searchTerm : '';
         const dateAdded = checkDateAdded.length ? "?sort=asc" : "?sort=desc"
         const status = selectedClone.length ? (cashier ? "&paymentStatus=" : '&status=') + selectedClone.map((item: any) => {
@@ -195,6 +196,14 @@ export default function ActivitiesPage(props: any) {
             console.warn(err)
         })
     }
+    useEffect(() =>{
+        let isCurrent = true
+        fnApplications(isCurrent, () =>{});
+        return () => {
+            isCurrent = false
+        }
+    }, [selectedChangeStatus.length])
+    
     useEffect(() => {
         setRefreshing(true)
         let isCurrent = true
@@ -563,7 +572,7 @@ export default function ActivitiesPage(props: any) {
                     <ActivityModal updateModal={updateModalFn} readFn={unReadReadApplicationFn} details={details} visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
                         setUpdateModal(false)
                     if (event && _id) {
-                       // dispatch(deleteApplications(_id))
+                      //  dispatch(deleteApplications(_id))
                     }
                     if (!(notPnApplications.length || pnApplications.length)) {
                         onRefresh()
