@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useMemo, useState} from "react";
+import React, {Fragment, useCallback, useEffect, useMemo, useState} from "react";
 import {
     Alert,
     Animated,
@@ -59,6 +59,9 @@ import listEmpty from "@pages/activities/listEmpty";
 const {width} = Dimensions.get('window')
 
 export default function ActivitiesPage(props: any) {
+    const [total, setTotal] = useState(0)
+    const [page, setPage] = useState(0)
+    const [size, setSize] = useState(0)
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [updateModal, setUpdateModal] = useState(false)
     const meetingList = useSelector((state: RootStateOrAny) => {
@@ -185,6 +188,9 @@ export default function ActivitiesPage(props: any) {
         axios.get(BASE_URL + `/applications${query()}`, config).then((response) => {
             if (isCurrent) setRefreshing(false);
             if (response?.data?.message) Alert.alert(response.data.message)
+            if(response?.data?.size) setSize(response?.data?.size)
+            if(response?.data?.total) setTotal(response?.data?.total)
+            if(response?.data?.page) setPage(response?.data?.page)
             callback(true)
             if(count == 0){
                 count = 1
@@ -213,7 +219,7 @@ export default function ActivitiesPage(props: any) {
         return () => {
             isCurrent = false
         }
-    }, [countRefresh, searchTerm ])
+    }, [countRefresh, searchTerm, currentPage])
 
 
     const [currentPage, setCurrentPage] = useState(1)
@@ -283,29 +289,6 @@ export default function ActivitiesPage(props: any) {
 
 
     useEffect(() => {
-
-        setInfiniteLoad(true)
-        if (currentPage != oldCurrentPage) {
-            const page = "&page=" + currentPage
-            axios.get(BASE_URL + `/applications${query() + page}`, config).then((response) => {
-                if (response?.data?.docs.length == 0) {
-                    setInfiniteLoad(false);
-
-                } else {
-                    dispatch(handleInfiniteLoad(response.data))
-                    setInfiniteLoad(false);
-                }
-
-            }).catch((err) => {
-                setInfiniteLoad(false)
-                console.warn(err)
-            })
-        } else {
-            setInfiniteLoad(false)
-        }
-    }, [currentPage])
-
-    useEffect(() => {
         let unMount = false;
         const unsubscriber = userActiveMeetingSubscriber((querySnapshot: FirebaseFirestoreTypes.QuerySnapshot) => {
             if (!unMount) {
@@ -340,11 +323,35 @@ export default function ActivitiesPage(props: any) {
         }
     }, []);
 
-    const handleLoad = () => {
-        setCurrentPage(currentPage + 1)
-        setOffset((currentPage - 1) * perPage)
-        setOldCurrentPage(currentPage)
-    }
+    const handleLoad = useCallback(() => {
+        setInfiniteLoad(true)
+        if ((page * size) < total) {
+            const _page = "&page=" + (page + 1)
+
+            axios.get(BASE_URL + `/applications${query() + _page}`, config).then((response) => {
+                console.log(response?.data?.size)
+                if (response?.data?.message) Alert.alert(response.data.message)
+                if(response?.data?.size) setSize(response?.data?.size)
+                if(response?.data?.total) setTotal(response?.data?.total)
+                if(response?.data?.page) setPage(response?.data?.page)
+                if (response?.data?.docs.length == 0) {
+                    setInfiniteLoad(false);
+
+                } else {
+                    dispatch(handleInfiniteLoad(response.data))
+                    setInfiniteLoad(false);
+                }
+                setInfiniteLoad(false);
+            }).catch((err) => {
+                setInfiniteLoad(false)
+                console.warn(err)
+            })
+        } else {
+
+            setInfiniteLoad(false)
+        }
+
+    }, [size, total, page])
 
     const onJoin = (item) => {
         dispatch(setMeetingId(item._id));
