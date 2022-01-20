@@ -13,6 +13,7 @@ import ScanQrIcon from "@assets/svg/scanqrtabbar";
 import MoreTabBarIcon from "@assets/svg/moretabbar";
 import {CASHIER, DIRECTOR, EVALUATOR, VERIFIED, VERIFIER} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useSelector} from "react-redux";
+import {useEffect, useState} from "react";
 const Tab = createBottomTabNavigator();
 
 function getRole(user, arr ) {
@@ -20,12 +21,23 @@ function getRole(user, arr ) {
 }
 
 export default function TabBar() {
+
     const ACTIVITIES = "Activities",
         CHAT = "Chat",
         MEET = "Meet",
         SCANQR = "QR",
         MORE = "More"
     const user = useSelector((state: RootStateOrAny) => state.user);
+
+    const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
+    const [pnApplication, setPnApplication] = useState(pinnedApplications)
+    const [notPnApplication, setNotPnApplication] = useState(notPinnedApplications)
+    useEffect(()=>{
+
+        setPnApplication(pinnedApplications.reduce((n, e) => e?.dateRead ? n+1 : n, 0) )
+        setNotPnApplication(notPinnedApplications.reduce((n, e) => e?.dateRead ? n+1 : n, 0))
+    }, [pinnedApplications, notPinnedApplications, pnApplication, notPnApplication])
+
     function ActivityTab({state, descriptors, navigation}: any) {
 
 
@@ -78,7 +90,7 @@ export default function TabBar() {
                                     alignItems: 'center',
                                 }}>
                                     {label == ACTIVITIES
-                                        ? ( <ActivityTabbar notification={false} width={30} height={30} fill={isFocused ? focused : unfocused}/>) :
+                                        ? ( <ActivityTabbar notification={pnApplication || notPnApplication } width={30} height={30} fill={isFocused ? focused : unfocused}/>) :
                                         label == CHAT
                                             ?
                                             (<ChatIcon notification={false} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
@@ -116,8 +128,8 @@ export default function TabBar() {
     }
     return (
 
-            <Tab.Navigator  tabBar={(props) => <ActivityTab  {...props} />}>
-                <Tab.Screen  options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
+            <Tab.Navigator  tabBar={(props) => <ActivityTab application={notPnApplication}  {...props} />}>
+                <Tab.Screen   options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
                 {getRole(user, [VERIFIER, EVALUATOR, DIRECTOR]) && <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>  }
