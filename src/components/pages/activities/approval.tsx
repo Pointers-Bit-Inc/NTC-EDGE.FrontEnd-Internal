@@ -12,7 +12,7 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
 
-const { height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 function    Approval(props: any){
     const isKeyboardVisible = useKeyboard();
@@ -72,6 +72,12 @@ function    Approval(props: any){
                     actionContainerStyle={{
                         flexDirection: "row-reverse"
                     }}
+                    overlayStyle = {showAlert ? {
+                        width: width,
+                        height: height,
+                        position: 'absolute',
+                        backgroundColor: 'rgba(52,52,52,0.5)'
+                    }: {}             }
                     show={showAlert}
                     showProgress={false}
                     title="Confirm?"

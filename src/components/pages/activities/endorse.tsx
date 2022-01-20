@@ -51,7 +51,7 @@ function Endorsed(props:any) {
             setMessage("Remarks field is required")
             setShowAlert(true)
         }else{
-            setMessage(`are you sure you want to endorse to ` +  pickedEndorsed?.find(picked => {
+            setMessage(`This application will be endorsed to ` +  pickedEndorsed?.find(picked => {
                 return picked.value == endorsed
             })?.label)
             props.remarks({ endorseId: endorsed, remarks: text, message })
@@ -86,7 +86,7 @@ function Endorsed(props:any) {
                     showCancelButton={true}
                     showConfirmButton={true}
                     cancelText="Cancel"
-                    confirmText="Yes"
+                    confirmText="Proceed"
                     confirmButtonColor="#DD6B55"
                     onCancelPressed={() => {
                         setShowAlert(false)

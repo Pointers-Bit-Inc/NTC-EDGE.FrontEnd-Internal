@@ -6,7 +6,7 @@ import {DECLINED} from "../../../reducers/activity/initialstate";
 import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
 
-const { height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 function Disapproval(props:any) {
   const [showAlert, setShowAlert] = useState(false)
@@ -25,10 +25,16 @@ function Disapproval(props:any) {
                    actionContainerStyle={{
                        flexDirection: "row-reverse"
                    }}
+                   overlayStyle = {showAlert ? {
+                       width: width,
+                       height: height,
+                       position: 'absolute',
+                       backgroundColor: 'rgba(52,52,52,0.5)'
+                   }: {}             }
                    show={showAlert}
                    showProgress={false}
                    title="Confirm?"
-                   message={`are you sure you want to decline ` + props?.user?.firstName + " " +  props?.user?.lastName }
+                   message={`Are you sure you want to reject this application?`}
                    messageStyle={{ textAlign: 'center' }}
                    closeOnTouchOutside={true}
                    closeOnHardwareBackPress={false}
