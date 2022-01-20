@@ -240,7 +240,7 @@ function ActivityModal(props: any) {
                                             } else if (isShow && tab.id == 3 && tab.active) {
                                                 return <Requirement requirements={requirements} key={index}/>
                                             } else if (isShow && tab.id == 4 && tab.active) {
-                                                return <Payment totalFee={totalFee}
+                                                return <Payment applicant={applicant}  totalFee={totalFee}
                                                                 soa={soa} key={index}/>
                                             }
                                         })

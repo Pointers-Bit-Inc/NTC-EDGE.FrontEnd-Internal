@@ -142,7 +142,7 @@ function ActivityModal(props: any) {
 
     }
     const cashier =   [CASHIER].indexOf(user?.role?.key) != -1
-    const declineButton = cashier ? status === UNVERIFIED :  declineButton
+    const declineButton = cashier ? status === UNVERIFIED :  status === DECLINED
     return (
         <Modal
             animationType="slide"
@@ -292,8 +292,7 @@ function ActivityModal(props: any) {
                 <ModalTab details={props.details}/>
                 {
                     <View style={styles.footer}>
-                        {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
-                        <View style={{flex: 1, paddingRight: 5}}>
+                        {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 && <View style={{flex: 1, paddingRight: 5}}>
                             <TouchableOpacity
                                 disabled={currentLoading === APPROVED}
                                 onPress={() => {

@@ -5,7 +5,7 @@ import ApplicationDetails from "@pages/activities/application/applicationDetails
 import Requirement from "@pages/activities/application/requirement";
 import Payment from "@pages/activities/application/payment";
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import {CASHIER, DIRECTOR, EVALUATOR} from "../../../reducers/activity/initialstate";
+import {CASHIER, CHECKER, DIRECTOR, EVALUATOR} from "../../../reducers/activity/initialstate";
 import {primaryColor, text} from "@styles/color";
 import {Animated, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 
@@ -159,19 +159,19 @@ export function ModalTab(props) {
             id: 1,
             name: 'Basic Info',
             active: true,
-            isShow: [CASHIER, DIRECTOR, EVALUATOR]
+            isShow: [CHECKER, CASHIER, DIRECTOR, EVALUATOR]
         },
         {
             id: 2,
             name: 'Application Details',
             active: false,
-            isShow: [CASHIER, DIRECTOR, EVALUATOR]
+            isShow: [CHECKER, CASHIER, DIRECTOR, EVALUATOR]
         },
         {
             id: 3,
             name: 'Requirements',
             active: false,
-            isShow: [DIRECTOR, EVALUATOR]
+            isShow: [CHECKER, DIRECTOR, EVALUATOR]
         },
         {
             id: 4,

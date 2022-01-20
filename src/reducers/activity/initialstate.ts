@@ -29,7 +29,7 @@ const InitialState = Record({
       status: DATE_ADDED,
       iconBrand: 'feather',
       iconName: 'calendar',
-      isShow: [CASHIER, DIRECTOR, EVALUATOR]
+      isShow: [CHECKER, CASHIER, DIRECTOR, EVALUATOR]
     },
     {
       id: 2,
@@ -37,7 +37,7 @@ const InitialState = Record({
       status: FOREVALUATION,
       iconBrand: 'evil',
       iconName: 'redo',
-      isShow: [DIRECTOR, EVALUATOR]
+      isShow: [CHECKER, DIRECTOR, EVALUATOR]
     },
     {
       id: 3,
@@ -45,7 +45,7 @@ const InitialState = Record({
       status: APPROVED,
       iconBrand: 'material-community',
       iconName: 'check-circle-outline',
-      isShow: [DIRECTOR, EVALUATOR]
+      isShow: [CHECKER, DIRECTOR, EVALUATOR]
     },
     {
       id: 4,
@@ -53,7 +53,7 @@ const InitialState = Record({
       status: DECLINED,
       iconBrand: 'ionicons',
       iconName: 'md-close-circle-outline',
-      isShow: [DIRECTOR, EVALUATOR]
+      isShow: [CHECKER, DIRECTOR, EVALUATOR]
     },
     {
       id: 5,
@@ -61,7 +61,7 @@ const InitialState = Record({
       status: VERIFIED,
       iconBrand: 'feather',
       iconName: 'calendar',
-      isShow: [CASHIER]
+      isShow: [CHECKER, CASHIER]
     },
     {
       id: 6,
@@ -69,7 +69,7 @@ const InitialState = Record({
       status: UNVERIFIED,
       iconBrand: 'evil',
       iconName: 'redo',
-      isShow: [CASHIER]
+      isShow: [CHECKER, CASHIER]
     },
   ],
   selectedChangeStatus:[],
