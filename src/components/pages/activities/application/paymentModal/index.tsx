@@ -4,7 +4,7 @@ import {Modal, View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView}
 import moment from "moment";
 const { width, height } = Dimensions.get('window');
 const PaymentModal = (props:any) => {
-    console.log(props )
+
     return <Modal
         animationType="slide"
         transparent={false}

@@ -115,20 +115,17 @@ export default function basket(state = initialState, action = {}) {
             if (index != -1) {
                 console.log("index")
                 if (cashier) {
-                             console.log("cashier")
                     notPinned[index].paymentStatus = action.payload.status
                 } else if (directorAndEvaluator) {
                     console.log("director and evaluator:", notPinned[index].status)
 
                     notPinned[index].status = action.payload.status
-                    console.log("status:", notPinned[index].status)
                     notPinned[index].assignedPersonnel = action.payload.assignedPersonnel
                 }
 
                 state = state.set("notPinnedApplications", notPinned)
 
             } else if (pinnedIndex != -1) {
-                console.log("pinned index")
                 if (cashier) {
 
                     pinned[pinnedIndex].paymentStatus = action.payload.status

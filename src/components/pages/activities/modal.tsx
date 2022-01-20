@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {ActivityIndicator, Alert, Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import {primaryColor, text} from "@styles/color";
@@ -30,36 +30,7 @@ function ActivityModal(props: any) {
     const user = useSelector((state: RootStateOrAny) => state.user);
     const applicant = props?.details?.applicant?.user
     const [change, setChange] = useState<boolean>(false)
-    useEffect(() => {
-        setChange(false)
-      
-    }, [])
-    const [tabs, setTabs] = useState([
-        {
-            id: 1,
-            name: 'Basic Info',
-            active: true,
-            isShow: [CASHIER, DIRECTOR, EVALUATOR]
-        },
-        {
-            id: 2,
-            name: 'Application Details',
-            active: false,
-            isShow: [CASHIER, DIRECTOR, EVALUATOR]
-        },
-        {
-            id: 3,
-            name: 'Requirements',
-            active: false,
-            isShow: [DIRECTOR, EVALUATOR]
-        },
-        {
-            id: 4,
-            name: 'SOA & Payment',
-            active: false,
-            isShow: [CASHIER]
-        },
-    ])
+    const cashier =   [CASHIER].indexOf(user?.role?.key) != -1
     const [visible, setVisible] = useState(false)
     const [endorseVisible, setEndorseVisible] = useState(false)
     const [approveVisible, setApproveVisible] = useState(false)
@@ -99,9 +70,6 @@ function ActivityModal(props: any) {
                 remarks: remarks ? remarks : undefined,
             };
         }
-
-
-        console.log(url, params);
         if (applicationId) {
             await api.patch(url, params)
                 .then(res => {
@@ -116,7 +84,7 @@ function ActivityModal(props: any) {
                                 userType: user?.role?.key
                             }))
                             setAssignId("")
-                            setStatus(PaymentStatusText(status))
+                            setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
                             setChange(true)
                             // props.onDismissed(true, applicationId)
 
@@ -141,8 +109,18 @@ function ActivityModal(props: any) {
         setShowAlert(true)
 
     }
-    const cashier =   [CASHIER].indexOf(user?.role?.key) != -1
-    const declineButton = cashier ? status === UNVERIFIED :  status === DECLINED
+
+    useEffect(() => {
+        setChange(false)
+        setStatus("")
+
+    }, [])
+    const statusMemo = useMemo(() =>{
+            setStatus(status )
+        return  status ? status : (cashier ? props.details.paymentStatus : props.details.status)
+    }, [status, props.details.paymentStatus,  props.details.status])
+
+    const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) :  statusMemo === DECLINED
     return (
         <Modal
             animationType="slide"
@@ -311,7 +289,7 @@ function ActivityModal(props: any) {
                                     <Text style={styles.approved}>Approved</Text>
                                 </View> */}
                                 <View style={[styles.rect22, {
-                                    backgroundColor: status === APPROVED ? "#C4C4C4" : "rgba(0,171,118,1)",
+                                    backgroundColor: statusMemo === APPROVED ? "#C4C4C4" : "rgba(0,171,118,1)",
                                     height: undefined,
                                     paddingVertical: currentLoading === APPROVED ? 6 : 8
                                 }]}>
@@ -320,7 +298,7 @@ function ActivityModal(props: any) {
                                             <ActivityIndicator color={'white'} size={'small'}/>
                                         ) : (
                                             <Text
-                                                style={[styles.approved, {color: status === APPROVED ? "#808196" : "rgba(255,255,255,1)",}]}>
+                                                style={[styles.approved, {color: statusMemo === APPROVED ? "#808196" : "rgba(255,255,255,1)",}]}>
                                                 Approve
                                             </Text>
                                         )
@@ -363,9 +341,9 @@ function ActivityModal(props: any) {
                                     style={[
                                         styles.rect24,
                                         {
-                                            backgroundColor: cashier ? status === UNVERIFIED : declineButton? "#C4C4C4" : "#fff",
+                                            backgroundColor:declineButton ? "#C4C4C4" : "#fff",
                                             height: undefined,
-                                            paddingVertical: currentLoading === DECLINED ? 5 : 6.5,
+                                            paddingVertical: currentLoading === DECLINED || statusMemo == UNVERIFIED ? 5 : 6.5,
                                             borderWidth: 1,
                                             borderColor: declineButton ? "#C4C4C4" : "rgba(194,0,0,1)",
                                         }]
@@ -401,7 +379,7 @@ function ActivityModal(props: any) {
                     onChangeApplicationStatus(status, (err, appId) =>{
                         if(!err) {
                             callback(true, (bool) =>{
-                                props.onDismissed(true, appId)
+                               // props.onDismissed(true, appId)
                             })
                         }
                     })
@@ -418,9 +396,9 @@ function ActivityModal(props: any) {
                 onChangeApplicationStatus={(event: any, callback: (bool, appId) =>{}) => {
                     onChangeApplicationStatus(DECLINED, (err, id) => {
                         if (!err) {
-                           callback(true, (response)=>{
-                               props.onDismissed(true, id)
-                           })
+                            callback(true, (response)=>{
+                               // props.onDismissed(true, id)
+                            })
                         }
                     })
                 }

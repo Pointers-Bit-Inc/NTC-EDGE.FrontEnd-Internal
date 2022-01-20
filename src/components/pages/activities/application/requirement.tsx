@@ -7,7 +7,7 @@ import ChevronDownIcon from "@assets/svg/chevron-down";
 import {styles} from "@pages/activities/application/styles";
 import RequirementModal from "@pages/activities/application/requirementModal";
 const Requirement = (props:any) =>{
-    const [selectCollapsed, setSelectCollapsed] = useState(1)
+    const [selectCollapsed, setSelectCollapsed] = useState(0)
     const [visibleModal, setVisibleModal] = useState(false)
     const [selectImage, setSelectImage] = useState('')
     const onDismissed = () =>{
@@ -41,7 +41,7 @@ const Requirement = (props:any) =>{
                                         <Image
                                             style={{width: 350, height: 216}}
                                             source={{
-                                                uri:  'https://dummyimage.com/350x216/fff/aaa',
+                                                uri: requirement?.links?.thumb,
                                             }}
                                         />
                                     </View>

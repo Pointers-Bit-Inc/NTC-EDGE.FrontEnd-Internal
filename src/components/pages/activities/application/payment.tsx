@@ -113,7 +113,7 @@ const Payment = (props:any) => {
                 </View>
             </View>
         </View>
-        <PaymentModal updatedAt={props?.updatedAt} paymentMethod={props?.paymentMethod} applicant={props?.applicant}  totalFee={props?.totalFee} visible={visibleModal} onDismissed={onDismissed}  />
+        <PaymentModal  updatedAt={props?.updatedAt} paymentMethod={props?.paymentMethod} applicant={props?.applicant}  totalFee={props?.totalFee} visible={visibleModal} onDismissed={onDismissed}  />
     </ScrollView>
 
 }

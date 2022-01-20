@@ -9,6 +9,7 @@ import {Response} from "./response"
 import * as ImagePicker from "expo-image-picker";
 import {styles} from "./styles"
 import {RootStateOrAny, useSelector} from "react-redux";
+import {BASE_URL} from "../../../services/config";
 const finderWidth: number = 280;
 const finderHeight: number = 230;
 const width = Dimensions.get('window').width;
@@ -36,7 +37,8 @@ export default function QrCodeScan(props: any) {
         })();
     }, []);
     const handleResponse = (data:string) => {
-        axios.get(data, { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
+
+        axios.get(BASE_URL + `/qr/${data}` , { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
 
             setIsLoading(false)
             setIsError(false)
