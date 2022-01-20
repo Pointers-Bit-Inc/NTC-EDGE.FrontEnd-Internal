@@ -13,7 +13,8 @@ import CustomDropdown from "@pages/user-profile/custom-dropdown";
 import Button from "@atoms/button";
 import axios from "axios";
 import {BASE_URL} from "../../../services/config";
-
+import { AsyncStorage } from 'react-native';
+import AwesomeAlert from "react-native-awesome-alerts";
 const UserProfileScreen = ({navigation}) => {
 
     const FIRST_NAME_LABEL = "First Name",
@@ -23,13 +24,18 @@ const UserProfileScreen = ({navigation}) => {
         MIDDLE_NAME_INDEX = 6,
         LAST_NAME_INDEX = 7,
         PROFILE_IMAGE_INDEX = 4;
+
     const dispatch = useDispatch();
-    const [profileImage, setProfile] = useState("")
+    const [profileImage, setProfileImage] = useState("")
     const user = useSelector((state: RootStateOrAny) => state.user);
     useEffect(()=>{
-        console.log(user)
+        (async () => {
+            if(user?._id) await AsyncStorage.getItem(user?._id).then((value) => {
+                setProfileImage(value)
+            })
+        })()
     }, [])
-    const [userProfile, setUserProfile] = useState()
+
     const [userProfileForm, setUserProfileForm] = useState([
         {
 
@@ -101,7 +107,7 @@ const UserProfileScreen = ({navigation}) => {
         {
             id: 11,
 
-            value: user?.image
+            value: profileImage || user?.image
         },
         {
             stateName: 'contactNumber',
@@ -160,9 +166,18 @@ const UserProfileScreen = ({navigation}) => {
             for (let i = 0; i < newArr.length; i++) {
                 if (newArr[i].id == id) {
 
-                    openImagePickerAsync().then((r: any) => {
+                    openImagePickerAsync().then(async (r: any) => {
                         newArr[i].value = r?.uri
-                        if(r?.uri){
+                        if (r?.uri) {
+
+                            try {
+                                await AsyncStorage.setItem(
+                                    user?._id,
+                                    r?.uri
+                                );
+                            } catch (error) {
+                                // Error saving data
+                            }
                             setUserProfileForm(newArr)
                         }
 
@@ -203,18 +218,48 @@ const UserProfileScreen = ({navigation}) => {
             }
 
             axios.patch(BASE_URL + `/user/profile/${user._id}`, userInput, config).then((response) =>{
-                            console.log(response.data)
+
+                if(response?.data?.success)  {
+                   setMessage("Your profile has been updated.")
+                   setStatus("Successfull!")
+                    setShowAlert(true)
+                }
                 dispatch(updateUser(userInput))
             }).catch((err) => {
-                console.warn(err)
+                console.warn(err.response)
             })
 
         }
     }
-
+    const [message, setMessage] = useState("")
+    const [status, setStatus] = useState("")
+    const [showAlert, setShowAlert] = useState(false)
 
     return  <View style={styles.container}>
+        <AwesomeAlert
+            actionContainerStyle={{
+                flexDirection: "row-reverse"
+            }}
+            show={showAlert}
+            showProgress={false}
+            title={status}
+            message={message}
+            messageStyle={{ textAlign: 'center' }}
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={false}
+            showCancelButton={true}
+            showConfirmButton={true}
+            cancelText="Cancel"
+            confirmText="Yes"
+            confirmButtonColor="#DD6B55"
+            onCancelPressed={() => {
+                setShowAlert(false)
+            }}
+            onConfirmPressed={() => {
 
+                setShowAlert(false)
+            }}
+        />
         <View style={styles.toolbar}>
             <View style={styles.rect}>
                 <View style={styles.group}>
@@ -246,7 +291,7 @@ const UserProfileScreen = ({navigation}) => {
                             : <ProfileImage
                                 size={100}
                                 textSize={26}
-                                image={user.image}
+                                image={profileImage ? profileImage : user.image}
                                 name={`${user.firstName} ${user.lastName}`}
                             />}
                         <Text style={[styles.change2]}>Change</Text>

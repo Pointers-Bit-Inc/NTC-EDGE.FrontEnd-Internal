@@ -1,7 +1,7 @@
 import React from "react";
 import UserProfileScreen from "@pages/user-profile/user-profile";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import ResetPassword from "@pages/user-profile/reset-password";
+import ResetPassword from "@pages/user-profile/resetPassword";
 
 const Stack = createNativeStackNavigator();
 
