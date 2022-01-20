@@ -92,16 +92,9 @@ export default function ActivitiesPage(props: any) {
         email: user.email,
         image: user.image,
     });
-    const ispinnedApplications = (applications: any) => {
 
-        setTotalPages(Math.ceil(applications?.length / 10));
-
-        const selectedClone = selectedChangeStatus?.filter((status: string) => {
-            return status != DATE_ADDED
-        })
-
-
-        const list = applications?.filter((item: any) => {
+    function getList(list: any, selectedClone) {
+        return list?.filter((item: any) => {
             let _approvalHistory = false
             if (item?.approvalHistory.length) {
                 _approvalHistory = item?.approvalHistory[0].userId == user?._id
@@ -118,6 +111,18 @@ export default function ActivitiesPage(props: any) {
                 return item
             }
         });
+    }
+
+    const ispinnedApplications = (applications: any) => {
+
+        setTotalPages(Math.ceil(applications?.length / 10));
+
+        const selectedClone = selectedChangeStatus?.filter((status: string) => {
+            return status != DATE_ADDED
+        })
+
+
+        const list = getList(applications, selectedClone);
 
         setIsPinnedActivity(0)
         const groups = list?.reduce((groups: any, activity: any) => {
@@ -350,7 +355,7 @@ export default function ActivitiesPage(props: any) {
                     setInfiniteLoad(false);
 
                 } else {
-                    dispatch(handleInfiniteLoad(response.data))
+                    dispatch(handleInfiniteLoad(getList(response.data.docs, [])))
                     setInfiniteLoad(false);
                 }
                 setInfiniteLoad(false);
