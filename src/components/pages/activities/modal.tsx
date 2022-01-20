@@ -14,7 +14,7 @@ import {
     DIRECTOR,
     EVALUATOR,
     FOREVALUATION,
-    PAID, PENDING,
+    PAID, PENDING, UNVERIFIED,
 } from "../../../reducers/activity/initialstate";
 import ProfileImage from "@components/atoms/image/profile";
 import CustomText from "@components/atoms/text";
@@ -142,10 +142,7 @@ function ActivityModal(props: any) {
 
     }
     const cashier =   [CASHIER].indexOf(user?.role?.key) != -1
-    const  _status = cashier ? props?.details?.paymentStatus : props?.details?.status
-    const approveButton = (cashier ? (_status == PAID ||  _status == APPROVED || _status == undefined)  : (_status == APPROVED) )
-    const declineButton =  (cashier ? _status == DECLINED || _status == PENDING : _status == DECLINED )
-
+    const declineButton = cashier ? status === UNVERIFIED :  declineButton
     return (
         <Modal
             animationType="slide"
@@ -315,7 +312,7 @@ function ActivityModal(props: any) {
                                     <Text style={styles.approved}>Approved</Text>
                                 </View> */}
                                 <View style={[styles.rect22, {
-                                    backgroundColor: approveButton ? "#C4C4C4" : "rgba(0,171,118,1)",
+                                    backgroundColor: status === APPROVED ? "#C4C4C4" : "rgba(0,171,118,1)",
                                     height: undefined,
                                     paddingVertical: currentLoading === APPROVED ? 6 : 8
                                 }]}>
@@ -324,7 +321,7 @@ function ActivityModal(props: any) {
                                             <ActivityIndicator color={'white'} size={'small'}/>
                                         ) : (
                                             <Text
-                                                style={[styles.approved, {color: approveButton ? "#808196" : "rgba(255,255,255,1)",}]}>
+                                                style={[styles.approved, {color: status === APPROVED ? "#808196" : "rgba(255,255,255,1)",}]}>
                                                 Approve
                                             </Text>
                                         )
@@ -349,7 +346,7 @@ function ActivityModal(props: any) {
                                             <ActivityIndicator color={'white'} size={'small'}/>
                                         ) : (
                                             <Text
-                                                style={[styles.endorse, {color: props.status === FOREVALUATION ? "#808196" : "rgba(255,255,255,1)",}]}>Endorse</Text>
+                                                style={[styles.endorse, {color: "rgba(255,255,255,1)",}]}>Endorse</Text>
                                         )
                                     }
                                 </View>
@@ -367,7 +364,7 @@ function ActivityModal(props: any) {
                                     style={[
                                         styles.rect24,
                                         {
-                                            backgroundColor: declineButton? "#C4C4C4" : "#fff",
+                                            backgroundColor: cashier ? status === UNVERIFIED : declineButton? "#C4C4C4" : "#fff",
                                             height: undefined,
                                             paddingVertical: currentLoading === DECLINED ? 5 : 6.5,
                                             borderWidth: 1,
@@ -405,7 +402,7 @@ function ActivityModal(props: any) {
                     onChangeApplicationStatus(status, (err, appId) =>{
                         if(!err) {
                             callback(true, (bool) =>{
-                                //props.onDismissed(true, appId)
+                                props.onDismissed(true, appId)
                             })
                         }
                     })
@@ -423,7 +420,7 @@ function ActivityModal(props: any) {
                     onChangeApplicationStatus(DECLINED, (err, id) => {
                         if (!err) {
                            callback(true, (response)=>{
-                               //props.onDismissed(true, id)
+                               props.onDismissed(true, id)
                            })
                         }
                     })
@@ -442,7 +439,7 @@ function ActivityModal(props: any) {
                     onChangeApplicationStatus(event.status, (err, id) =>{
                         if (!err) {
                             callback(true, (response)=>{
-                                //props.onDismissed(true, id)
+                                props.onDismissed(true, id)
                             })
                         }
                     });

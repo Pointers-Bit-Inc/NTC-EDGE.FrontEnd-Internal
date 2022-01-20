@@ -563,7 +563,7 @@ export default function ActivitiesPage(props: any) {
                     <ActivityModal updateModal={updateModalFn} readFn={unReadReadApplicationFn} details={details} visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
                         setUpdateModal(false)
                     if (event && _id) {
-                        dispatch(deleteApplications(_id))
+                       // dispatch(deleteApplications(_id))
                     }
                     if (!(notPnApplications.length || pnApplications.length)) {
                         onRefresh()
