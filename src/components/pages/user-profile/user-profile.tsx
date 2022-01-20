@@ -48,6 +48,7 @@ const UserProfileScreen = ({navigation}) => {
             error: false,
         },
         {
+            stateName: 'firstName',
             id: 2,
             key: 2,
             required: false,
@@ -55,17 +56,33 @@ const UserProfileScreen = ({navigation}) => {
             activeColor: text.primary,
             errorColor: text.error,
             requiredColor: text.error,
-            label: "User Name",
-            type: "select",
-            placeholder: "User Name",
-            value: user?.name || '',
+            label: "First Name",
+            type: "input",
+            placeholder: "First Name",
+            value: user?.firstName || '',
+            inputStyle: InputStyles.text,
+            error: false,
+        },
+        {
+            stateName: 'lastName',
+            id: 3,
+            key: 3,
+            required: false,
+            outlineStyle: InputStyles.outlineStyle,
+            activeColor: text.primary,
+            errorColor: text.error,
+            requiredColor: text.error,
+            label: "Last Name",
+            type: "input",
+            placeholder: "Last Name",
+            value: user?.lastName || '',
             inputStyle: InputStyles.text,
             error: false,
         },
         {
             stateName: 'email',
-            id: 3,
-            key: 3,
+            id: 4,
+            key: 4,
             required: true,
             outlineStyle: InputStyles.outlineStyle,
             activeColor: text.primary,
@@ -186,7 +203,7 @@ const UserProfileScreen = ({navigation}) => {
             }
 
             axios.patch(BASE_URL + `/user/profile/${user._id}`, userInput, config).then((response) =>{
-
+                            console.log(response.data)
                 dispatch(updateUser(userInput))
             }).catch((err) => {
                 console.warn(err)

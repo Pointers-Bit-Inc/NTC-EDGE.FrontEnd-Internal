@@ -163,7 +163,7 @@ export function ActivityItem(props:any) {
                                     size={10}
                                     numberOfLines={1}
                                 >
-                                   {formatDate(props.activity.updatedAt)}
+                                   {formatDate(props.activity.createdAt)}
                                 </Text>
                             </View>
                         </View>

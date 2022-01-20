@@ -81,12 +81,12 @@ export default function basket(state = initialState, action = {}) {
         case HANDLE_LOAD: {
             const isNotPinned = []
             const isPinned = []
-            for (let i = 0; i < action.payload.docs.length; i++) {
+            for (let i = 0; i < action.payload.length; i++) {
 
-                if (action.payload.docs[i].isPinned) {
-                    isPinned.push(action.payload.docs[i])
+                if (action.payload[i].isPinned) {
+                    isPinned.push(action.payload[i])
                 } else {
-                    isNotPinned.push(action.payload.docs[i])
+                    isNotPinned.push(action.payload[i])
                 }
             }
             state = state.set('notPinnedApplications', [
