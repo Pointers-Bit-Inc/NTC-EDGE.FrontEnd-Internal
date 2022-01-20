@@ -67,13 +67,26 @@ const ChatList: FC<Props> = ({
   const renderItem = ({ item, index }:any) => {
     const isSender = item.sender._id === user._id;
     const isSameDate = chatSameDate(messages[index + 1]?.createdAt?.seconds, item.createdAt?.seconds);
-    const seenByOthers = lodash.reject(
+    const latestSeen = messages && messages[index - 1] ? messages[index - 1].seen : [];
+    const latestSeenSize = lodash.size(latestSeen) - 1;
+    let seenByOthers = lodash.reject(
       item.seen,
       (seen:any) =>
         seen._id === item.sender._id ||
         seen._id === user._id
     );
-    const seenByEveryone = lodash.size(item.seen) - 1 === lodash.size(participants);
+    if (latestSeenSize > 0) {
+      if (latestSeenSize < lodash.size(participants)) {
+        seenByOthers = lodash.reject(seenByOthers, p =>
+          lodash.find(latestSeen, l => l._id === p._id)
+        );
+      }
+    }
+    let seenByOthersCount = lodash.size(seenByOthers) + (isSender ? 0 : 1);
+    const seenByEveryone = seenByOthersCount === lodash.size(participants);
+    const showSeen = lastMessage?.messageId === item._id ||
+      latestSeenSize === 0 ||
+      seenByOthersCount > 0 && seenByOthersCount < lodash.size(participants);
     return (
       <View style={[styles.bubbleContainer, { alignItems: isSender ? 'flex-end' : 'flex-start' }]}>
         {
@@ -84,7 +97,8 @@ const ChatList: FC<Props> = ({
               sender={item.sender}
               seenByOthers={seenByOthers}
               seenByEveryone={seenByEveryone}
-              showSeen={lastMessage?.messageId === item._id}
+              showSeen={showSeen}
+              isSeen={lodash.size(item.seen) - 1 > 0}
               showDate={!isSameDate}
               createdAt={item.createdAt}
               maxWidth={width * 0.6}
@@ -101,7 +115,8 @@ const ChatList: FC<Props> = ({
               createdAt={item.createdAt}
               seenByOthers={seenByOthers}
               seenByEveryone={seenByEveryone}
-              showSeen={lastMessage?.messageId === item._id}
+              showSeen={showSeen}
+              isSeen={lodash.size(item.seen) - 1 > 0}
               showDate={!isSameDate}
               maxWidth={width * 0.6}
               onLongPress={() => showOption(item)}

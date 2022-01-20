@@ -74,6 +74,7 @@ const ChatBubble:FC<Props> = ({
   seenByOthers = [],
   seenByEveryone = false,
   showSeen = false,
+  isSeen = false,
   showDate = false,
   onLongPress,
   deleted = false,
@@ -174,7 +175,7 @@ const ChatBubble:FC<Props> = ({
             )
           }
           {
-            (!lodash.size(seenByOthers) && isSender) && (
+            (!isSeen && isSender) && (
               <View
                 style={styles.check}
               >
