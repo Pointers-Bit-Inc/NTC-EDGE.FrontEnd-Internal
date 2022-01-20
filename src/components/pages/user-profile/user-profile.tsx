@@ -22,7 +22,7 @@ const UserProfileScreen = ({navigation}) => {
         FIRST_NAME_INDEX = 5,
         MIDDLE_NAME_INDEX = 6,
         LAST_NAME_INDEX = 7,
-        PROFILE_IMAGE_INDEX = 3;
+        PROFILE_IMAGE_INDEX = 4;
     const dispatch = useDispatch();
     const [profileImage, setProfile] = useState("")
     const user = useSelector((state: RootStateOrAny) => state.user);
@@ -158,7 +158,7 @@ const UserProfileScreen = ({navigation}) => {
 
             newArr = [...userProfileForm]
             for (let i = 0; i < newArr.length; i++) {
-                if (newArr[i].stateName == "profileImage" && newArr[i].id == id) {
+                if (newArr[i].id == id) {
 
                     openImagePickerAsync().then((r: any) => {
                         newArr[i].value = r?.uri
@@ -234,8 +234,11 @@ const UserProfileScreen = ({navigation}) => {
 
             <View style={styles.rect2Stack}>
                 <View style={styles.rect2}></View>
-                <TouchableOpacity onPress={() => onPressed(11, 'image-picker')}>
+                <TouchableOpacity onPress={() => {
+                    onPressed(11, 'image-picker')
+                }}>
                     <View style={styles.rect3}>
+
                         {userProfileForm[PROFILE_IMAGE_INDEX].value ? <Image
                                 style={{width: 100, height: 100, borderRadius: 50}}
                                 source={{uri: userProfileForm[PROFILE_IMAGE_INDEX].value}}

@@ -21,7 +21,15 @@ export default function basket(state = initialState, action = {}) {
       if(state.contactNumber != action.payload?.contactNumber){
         payload.contactNumber = action.payload?.contactNumber
       }
-
+        if(state.firstName != action.payload?.firstName){
+            payload.firstName = action.payload?.firstName
+        }
+        if(state.middleName != action.payload?.middleName){
+            payload.middleName = action.payload?.middleName
+        }
+        if(state.lastName != action.payload?.lastName){
+            payload.lastName = action.payload?.lastName
+        }
       return {
         ...state,
         ...payload
