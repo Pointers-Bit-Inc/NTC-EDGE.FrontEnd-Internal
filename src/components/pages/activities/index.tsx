@@ -13,7 +13,8 @@ import {
 import {styles} from "@pages/activities/styles";
 import {
     APPROVED,
-    CASHIER, CHECKER,
+    CASHIER,
+    CHECKER,
     DATE_ADDED,
     DECLINED,
     DIRECTOR,
@@ -27,8 +28,8 @@ import {
 } from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {
-    deleteApplications,
-    handleInfiniteLoad, readUnreadApplications,
+    handleInfiniteLoad,
+    readUnreadApplications,
     setApplications,
     setNotPinnedApplication,
     setPinnedApplication
@@ -36,7 +37,7 @@ import {
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
-import {checkFormatIso, formatDate, PaymentStatusText, StatusText,} from "@pages/activities/script";
+import {formatDate, PaymentStatusText, StatusText,} from "@pages/activities/script";
 import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
@@ -107,11 +108,11 @@ export default function ActivitiesPage(props: any) {
             if (cashier) {
                 return (item?.status == APPROVED || item?.status == DECLINED ||
                     (item?.assignedPersonnel == user?._id && item?.status == PENDING)) && search
-            } else if(director ){
-                return (item?.status == FOREVALUATION || item?.status == APPROVED || item?.status == DECLINED ) && search
-            }else if(checker){
+            } else if (director) {
+                return (item?.status == FOREVALUATION || item?.status == APPROVED || item?.status == DECLINED) && item?.assignedPersonnel == user?._id && search
+            } else if (checker) {
                 return (item?.status == APPROVED || item?.status == DECLINED) || search
-            }else if(evaluator){
+            } else if (evaluator) {
                 return item
             }
         });
@@ -190,18 +191,18 @@ export default function ActivitiesPage(props: any) {
         return dateAdded + keyword + status
     }
     let count = 0
-    const  fnApplications = (isCurrent: boolean, callback: (err: any) => void) =>  {
+    const fnApplications = (isCurrent: boolean, callback: (err: any) => void) => {
 
         axios.get(BASE_URL + `/applications${query()}`, config).then((response) => {
             if (isCurrent) setRefreshing(false);
             if (response?.data?.message) Alert.alert(response.data.message)
-            if(response?.data?.size) setSize(response?.data?.size)
-            if(response?.data?.total) setTotal(response?.data?.total)
-            if(response?.data?.page) setPage(response?.data?.page)
+            if (response?.data?.size) setSize(response?.data?.size)
+            if (response?.data?.total) setTotal(response?.data?.total)
+            if (response?.data?.page) setPage(response?.data?.page)
             callback(true)
-            if(count == 0){
+            if (count == 0) {
                 count = 1
-                if(count)dispatch(setApplications(response.data))
+                if (count) dispatch(setApplications(response.data))
             }
         }).catch((err) => {
             if (isCurrent) setRefreshing(false)
@@ -209,20 +210,22 @@ export default function ActivitiesPage(props: any) {
             console.warn(err)
         })
     }
-    useEffect(() =>{
+    useEffect(() => {
         let isCurrent = true
-        fnApplications(isCurrent, () =>{});
+        fnApplications(isCurrent, () => {
+        });
         return () => {
             isCurrent = false
         }
     }, [selectedChangeStatus.length])
-    
+
     useEffect(() => {
         setRefreshing(true)
         let isCurrent = true
         dispatch(setNotPinnedApplication([]))
         dispatch(setPinnedApplication([]))
-        fnApplications(isCurrent, () =>{});
+        fnApplications(isCurrent, () => {
+        });
         return () => {
             isCurrent = false
         }
@@ -338,9 +341,9 @@ export default function ActivitiesPage(props: any) {
             axios.get(BASE_URL + `/applications${query() + _page}`, config).then((response) => {
                 console.log(response?.data?.size)
                 if (response?.data?.message) Alert.alert(response.data.message)
-                if(response?.data?.size) setSize(response?.data?.size)
-                if(response?.data?.total) setTotal(response?.data?.total)
-                if(response?.data?.page) setPage(response?.data?.page)
+                if (response?.data?.size) setSize(response?.data?.size)
+                if (response?.data?.total) setTotal(response?.data?.total)
+                if (response?.data?.page) setPage(response?.data?.page)
                 if (response?.data?.docs.length == 0) {
                     setInfiniteLoad(false);
 
@@ -381,15 +384,15 @@ export default function ActivitiesPage(props: any) {
     }
 
 
-    const unReadReadApplicationFn = (id, dateRead, unReadBtn, callback: (action: any) => void) =>{
-        const action = unReadBtn ? (dateRead ? "unread" : "read") :  "read"
+    const unReadReadApplicationFn = (id, dateRead, unReadBtn, callback: (action: any) => void) => {
+        const action = unReadBtn ? (dateRead ? "unread" : "read") : "read"
         const params = {
             "action": action
         }
-        axios.post(BASE_URL + `/applications/${id}/read-unread`,  params, config).then((response) => {
+        axios.post(BASE_URL + `/applications/${id}/read-unread`, params, config).then((response) => {
             if (response?.data?.message) Alert.alert(response.data.message)
-            return dispatch(readUnreadApplications({id: id, data:response?.data?.doc}))
-        }).then(() =>{
+            return dispatch(readUnreadApplications({id: id, data: response?.data?.doc}))
+        }).then(() => {
             setUpdateUnReadReadApplication(true)
             callback(action)
         }).catch((err) => {
@@ -397,7 +400,7 @@ export default function ActivitiesPage(props: any) {
         })
     }
 
-    const updateModalFn = (bool) =>{
+    const updateModalFn = (bool) => {
         setUpdateModal(bool)
     }
     return (
@@ -407,19 +410,20 @@ export default function ActivitiesPage(props: any) {
                 setLoadingAnimation(event)
             }} initialMove={initialMove}
                                       animate={loadingAnimate}
-                                      onSearch={(_search: string, callback = (err: any) => {}) => {
-               
-                setSearchTerm(_search)
-                let isCurrent = true
+                                      onSearch={(_search: string, callback = (err: any) => {
+                                      }) => {
 
-                fnApplications(isCurrent, (response) =>{
-                    if(response) {
-                        callback(true)
-                    }  else{
-                        callback(false)
-                    }
-                });
-            }} onDismissed={() => {
+                                          setSearchTerm(_search)
+                                          let isCurrent = true
+
+                                          fnApplications(isCurrent, (response) => {
+                                              if (response) {
+                                                  callback(true)
+                                              } else {
+                                                  callback(false)
+                                              }
+                                          });
+                                      }} onDismissed={() => {
 
                 setSearchVisible(false)
                 setSearchTerm("")
@@ -527,7 +531,7 @@ export default function ActivitiesPage(props: any) {
                 </View>
 
                 <FlatList
-                    contentContainerStyle={{ flexGrow: 1 }}
+                    contentContainerStyle={{flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm)}
                     refreshControl={
                         <RefreshControl
@@ -571,22 +575,25 @@ export default function ActivitiesPage(props: any) {
                                     currentUser={user}
                                     onPressUser={(event: any) => {
                                         setDetails(activity)
-                                        unReadReadApplicationFn(activity?._id, activity?.dateRead, true, (action:any)=>{})
+                                        unReadReadApplicationFn(activity?._id, activity?.dateRead, true, (action: any) => {
+                                        })
                                         if (event?.icon == 'more') {
                                             setMoreModalVisible(true)
                                         } else {
                                             setModalVisible(true)
                                         }
 
-                                    }} index={i} swiper={ (index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
+                                    }} index={i}
+                                    swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
                             }}/>
                     )}
                 />
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
-                    <ActivityModal updateModal={updateModalFn} readFn={unReadReadApplicationFn} details={details} visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
-                        setUpdateModal(false)
+                <ActivityModal updateModal={updateModalFn} readFn={unReadReadApplicationFn} details={details}
+                               visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
+                    setUpdateModal(false)
                     if (event && _id) {
-                      //  dispatch(deleteApplications(_id))
+                        //  dispatch(deleteApplications(_id))
                     }
                     if (!(notPnApplications.length || pnApplications.length)) {
                         onRefresh()
