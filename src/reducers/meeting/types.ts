@@ -14,4 +14,5 @@ export default keyMirror({
   ADD_ACTIVE_MEETING: null,
   UPDATE_ACTIVE_MEETING: null,
   REMOVE_ACTIVE_MEETING: null,
+  RESET_MEETING: null,
 });

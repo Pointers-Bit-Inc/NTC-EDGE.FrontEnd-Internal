@@ -21,4 +21,6 @@ export default keyMirror({
   SET_MEETINGS_CHANNEL: null,
 
   SET_SEARCH_VALUE: null,
+
+  RESET_CHANNEL: null,
 });

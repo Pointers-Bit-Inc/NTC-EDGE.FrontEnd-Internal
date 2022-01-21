@@ -19,6 +19,7 @@ const {
   SET_MEETINGS_CHANNEL,
 
   SET_SEARCH_VALUE,
+  RESET_CHANNEL,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -94,6 +95,15 @@ export default function basket(state = initialState, action:any) {
     }
     case SET_SEARCH_VALUE: {
       return state.setIn(['searchValue'], action.payload);
+    }
+    case RESET_CHANNEL: {
+      return state.setIn(['selectedChannel'], {})
+        .setIn(['agora'], {})
+        .setIn(['channelList'], [])
+        .setIn(['messages'], [])
+        .setIn(['selectedMessage'], {})
+        .setIn(['meetingList'], [])
+        .setIn(['searchValue'], '');
     }
     default:
       return state;

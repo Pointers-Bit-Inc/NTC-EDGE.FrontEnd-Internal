@@ -18,6 +18,7 @@ const {
   SET_MEETINGS_CHANNEL,
 
   SET_SEARCH_VALUE,
+  RESET_CHANNEL,
 } = require('./types').default;
 
 interface ChannelProps {
@@ -157,6 +158,12 @@ export function setSearchValue(payload) {
   return {
     type: SET_SEARCH_VALUE,
     payload,
+  }
+}
+
+export function resetChannel() {
+  return {
+    type: RESET_CHANNEL,
   }
 }
 
