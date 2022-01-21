@@ -102,13 +102,13 @@ export default function ActivitiesPage(props: any) {
             const search =
                 (selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true)
             if (cashier) {
-                return (item?.status == APPROVED || item?.status == DECLINED  || item?.assignedPersonnel == user?._id || _approvalHistory) && search
+                return (item?.status == APPROVED || item?.status == DECLINED  && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search)
             } else if (director) {
-                return (item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (item?.assignedPersonnel == user?._id || _approvalHistory) && search
+                return (item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search
             } else if (checker) {
                 return (item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
             } else if (evaluator) {
-                return item
+                return item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory
             }
         });
     }
