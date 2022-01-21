@@ -74,7 +74,7 @@ export default function basket(state = initialState, action = {}) {
 
             state = state.set('notPinnedApplications', isNotPinned);
             state = state.set('pinnedApplications', isPinned);
-           
+
             return state
         }
         case HANDLE_LOAD: {
@@ -86,7 +86,7 @@ export default function basket(state = initialState, action = {}) {
 
                 if (action.payload?.data[i].assignedPersonnel === action.payload?.user?._id && !(cashier ? (action.payload?.data[i].paymentStatus == PENDING  || action.payload?.data[i].paymentStatus == APPROVED || action.payload?.data[i].paymentStatus == DECLINED) : (action.payload?.data[i].status == DECLINED || action.payload?.data[i].status == APPROVED)) ) {
                     isPinned.push(action.payload?.data[i])
-                } else {
+                } else {      
                     isNotPinned.push(action.payload?.data[i])
                 }
             }
@@ -110,7 +110,6 @@ export default function basket(state = initialState, action = {}) {
             const pinnedIndex = pinned.findIndex((app: any) => {
                 return app._id == action.payload.application._id
             })
-            console.log(pinnedIndex)
             const cashier = [CASHIER].indexOf(action.payload.userType) != -1;
             const directorAndEvaluator = [DIRECTOR, EVALUATOR].indexOf(action.payload.userType) != -1;
             if (index != -1) {
