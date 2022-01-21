@@ -2,6 +2,7 @@ import React, {useEffect, useMemo, useState} from "react";
 import FormField from "@organisms/forms/form";
 import InputStyles from "@styles/input-style";
 import Text from '@atoms/text';
+import { DrawerActions } from '@react-navigation/native';
 import {button, primaryColor, text} from "@styles/color";
 import {Image, ScrollView, StyleSheet, TouchableOpacity, View,} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -263,7 +264,7 @@ const UserProfileScreen = ({navigation}) => {
         <View style={styles.toolbar}>
             <View style={styles.rect}>
                 <View style={styles.group}>
-                    <TouchableOpacity onPress={() => navigation.toggleDrawer()} >
+                    <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.jumpTo('Home'))} >
                         <Ionicons name="md-close" style={styles.icon}></Ionicons>
                     </TouchableOpacity>
 

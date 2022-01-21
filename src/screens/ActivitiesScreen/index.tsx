@@ -1,4 +1,5 @@
 import React, {useCallback, useState} from 'react';
+import { StackActions } from '@react-navigation/native';
 import ActivitiesPage from "@pages/activities/tabbar";
 import {createDrawerNavigator} from "@react-navigation/drawer";
 import CustomSidebarMenu from "@pages/activities/customNavigationDrawer";
@@ -33,7 +34,7 @@ const ActivitiesScreen = (props:any) => {
                 dispatch(setUser({}));
                 dispatch(resetMeeting());
                 dispatch(resetChannel());
-                props.navigation.replace('Login');
+                props.navigation.dispatch(StackActions.replace('Login'));
             });
         }, 500);
     }, []);
@@ -46,8 +47,7 @@ const ActivitiesScreen = (props:any) => {
                     marginBottom: 20,
                 }
             }}
-
-
+            backBehavior='none'
             drawerContent={(props) => <CustomSidebarMenu onLogout={onShow} {...props} />} initialRouteName="Home">
             <Drawer.Screen   options={{ drawerLabel: `${user?.firstName} ${user?.lastName}`,   headerShown: false , drawerIcon: ({ color, size }) => <AccountIcon/>}}  name="profile" component={UserProfileScreen} />
             <Drawer.Screen   options={{ drawerLabel: "Home",   headerShown: false , drawerIcon: ({ color, size }) => <AccountIcon/>}}  name="Home"  component={ActivitiesPage} />
