@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { StackActions } from '@react-navigation/native';
 import { View, Image } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
@@ -39,7 +40,7 @@ const App = ({ navigation }:any) => {
       // performed layout.
       await SplashScreen.hideAsync();
       if (user && user.email) {
-        navigation.replace('ActivitiesScreen');
+        navigation.dispatch(StackActions.replace('ActivitiesScreen'));
       } else {
         navigation.replace('AppIntro');
       }

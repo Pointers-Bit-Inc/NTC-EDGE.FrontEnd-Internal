@@ -11,6 +11,7 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
+import { StackActions } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { setUser } from 'src/reducers/user/actions'
 import {
@@ -77,7 +78,7 @@ const Login = ({ navigation }:any) => {
     .then(res => {
       setLoading(false);
       dispatch(setUser(res.data));
-      navigation.navigate('ActivitiesScreen');
+      navigation.dispatch(StackActions.replace('ActivitiesScreen'));
     })
     .catch(e => {
       setLoading(false);
