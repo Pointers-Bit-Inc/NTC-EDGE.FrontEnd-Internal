@@ -1,4 +1,5 @@
 import {CASHIER, DIRECTOR, EVALUATOR} from "../activity/initialstate";
+import {RootStateOrAny, useSelector} from "react-redux";
 
 const {
     SET_PINNED_APPLICATION,
@@ -64,12 +65,12 @@ export default function basket(state = initialState, action = {}) {
                         console.log("im back", )
             const isNotPinned = []
             const isPinned = []
-            for (let i = 0; i < action.payload?.docs.length; i++) {
+            for (let i = 0; i < action.payload?.data?.docs.length; i++) {
 
-                if (action.payload.docs[i].isPinned) {
-                    isPinned.push(action.payload.docs[i])
+                if (action.payload?.data.docs[i].assignedPersonnel ==  action.payload?.userId) {
+                    isPinned.push(action.payload?.data?.docs[i])
                 } else {
-                    isNotPinned.push(action.payload.docs[i])
+                    isNotPinned.push(action.payload?.data?.docs[i])
                 }
             }
 
@@ -81,9 +82,9 @@ export default function basket(state = initialState, action = {}) {
         case HANDLE_LOAD: {
             const isNotPinned = []
             const isPinned = []
-            for (let i = 0; i < action.payload.length; i++) {
+            for (let i = 0; i < action.payload?.data.length; i++) {
 
-                if (action.payload[i].isPinned) {
+                if (action.payload?.data[i].assignedPersonnel === action.payload?.userId) {
                     isPinned.push(action.payload[i])
                 } else {
                     isNotPinned.push(action.payload[i])

@@ -47,16 +47,13 @@ function Endorsed(props:any) {
         })
     }, [])
     const onEndorseConfirm = () => {
-        if(!text.length){
-            setMessage("Remarks field is required")
-            setShowAlert(true)
-        }else{
+
             setMessage(`This application will be endorsed to ` +  pickedEndorsed?.find(picked => {
                 return picked.value == endorsed
             })?.label)
             props.remarks({ endorseId: endorsed, remarks: text, message })
             setShowAlert(true)
-        }
+        
     }
 
     return (

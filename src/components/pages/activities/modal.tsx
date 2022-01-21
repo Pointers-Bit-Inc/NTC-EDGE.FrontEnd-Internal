@@ -297,7 +297,7 @@ function ActivityModal(props: any) {
                                     <Text style={styles.approved}>Approved</Text>
                                 </View> */}
                                 <View style={[styles.rect22, {
-                                    backgroundColor: ( declineButton || approveButton || grayedOut ? "#C4C4C4" : "rgba(0,171,118,1)"),
+                                    backgroundColor: ( (declineButton || approveButton || grayedOut) && props?.assignedPersonnel !== user?._id ? "#C4C4C4" : "rgba(0,171,118,1)"),
                                     height: undefined,
                                     paddingVertical: currentLoading === APPROVED ? 6 : 8
                                 }]}>
@@ -306,7 +306,7 @@ function ActivityModal(props: any) {
                                             <ActivityIndicator color={'white'} size={'small'}/>
                                         ) : (
                                             <Text
-                                                style={[styles.approved, {color: declineButton ||approveButton|| grayedOut  ? "#808196" : "rgba(255,255,255,1)",}]}>
+                                                style={[styles.approved, {color: (declineButton ||approveButton|| grayedOut)&& props?.assignedPersonnel !== user?._id  ? "#808196" : "rgba(255,255,255,1)",}]}>
                                                 Approve
                                             </Text>
                                         )
@@ -317,13 +317,13 @@ function ActivityModal(props: any) {
                         {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 1, paddingHorizontal: 5}}>
                             <TouchableOpacity
-                                disabled={currentLoading === FOREVALUATION  || declineButton ||approveButton|| grayedOut}
+                                disabled={(currentLoading === FOREVALUATION  || declineButton ||approveButton|| grayedOut) && props?.assignedPersonnel !== user?._id}
                                 onPress={() => {
                                     setEndorseVisible(true)
                                 }}
                             >
                                 <View style={[styles.rect23, {
-                                    backgroundColor: (declineButton || approveButton || grayedOut ? "#C4C4C4" : "rgba(40,99,214,1)"),
+                                    backgroundColor: ((declineButton || approveButton || grayedOut) && props?.assignedPersonnel !== user?._id ? "#C4C4C4" : "rgba(40,99,214,1)"),
                                     height: undefined,
                                     paddingVertical: currentLoading === FOREVALUATION ? 6.5 : 8
                                 }]}>
@@ -332,7 +332,7 @@ function ActivityModal(props: any) {
                                             <ActivityIndicator color={'white'} size={'small'}/>
                                         ) : (
                                             <Text
-                                                style={[styles.endorse, {color: declineButton ||approveButton|| grayedOut  ? "#808196" : "rgba(255,255,255,1)",}]}>Endorse</Text>
+                                                style={[styles.endorse, {color: (declineButton ||approveButton|| grayedOut) && props?.assignedPersonnel !== user?._id ? "#808196" : "rgba(255,255,255,1)",}]}>Endorse</Text>
                                         )
                                     }
                                 </View>
@@ -341,7 +341,7 @@ function ActivityModal(props: any) {
                         {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 1, paddingLeft: 5}}>
                             <TouchableOpacity
-                                disabled={currentLoading === DECLINED || approveButton || declineButton || grayedOut }
+                                disabled={(currentLoading === DECLINED || approveButton || declineButton || grayedOut) }
                                 onPress={() => {
                                     setVisible(true)
                                 }}
@@ -350,11 +350,11 @@ function ActivityModal(props: any) {
                                     style={[
                                         styles.rect24,
                                         {
-                                            backgroundColor:approveButton || declineButton || grayedOut ? "#C4C4C4" : "#fff",
+                                            backgroundColor:(approveButton || declineButton || grayedOut) && props?.assignedPersonnel !== user?._id ? "#C4C4C4" : "#fff",
                                             height: undefined,
                                             paddingVertical: currentLoading === DECLINED ? 5 : 6.5,
                                             borderWidth: 1,
-                                            borderColor: approveButton || declineButton || grayedOut? "#C4C4C4" : "rgba(194,0,0,1)",
+                                            borderColor: (approveButton || declineButton || grayedOut) && props?.assignedPersonnel !== user?._id? "#C4C4C4" : "rgba(194,0,0,1)",
                                         }]
                                     }>
                                     {
@@ -362,7 +362,7 @@ function ActivityModal(props: any) {
                                             <ActivityIndicator color={"rgba(194,0,0,1)"} size={'small'}/>
                                         ) : (
                                             <Text
-                                                style={[styles.endorse1, {color: approveButton || declineButton || grayedOut ? "#808196" : "rgba(194,0,0,1)",}]}>Decline</Text>
+                                                style={[styles.endorse1, {color: (approveButton || declineButton || grayedOut) && props?.assignedPersonnel !== user?._id ? "#808196" : "rgba(194,0,0,1)",}]}>Decline</Text>
                                         )
                                     }
                                 </View>

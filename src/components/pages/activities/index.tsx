@@ -209,7 +209,7 @@ export default function ActivitiesPage(props: any) {
              if(response?.data?.docs?.length)  callback(true)
             if (count == 0) {
                 count = 1
-                if (count) dispatch(setApplications(response.data))
+                if (count) dispatch(setApplications({data:response.data, userId: user?._id}))
             }
         }).catch((err) => {
             if (isCurrent) setRefreshing(false)
@@ -347,7 +347,7 @@ export default function ActivitiesPage(props: any) {
             _page = "&page=" + (page + 1)
 
             axios.get(BASE_URL + `/applications${query() + _page}`, config).then((response) => {
-                console.log(response?.data?.size)
+
                 if (response?.data?.message) Alert.alert(response.data.message)
                 if (response?.data?.size) setSize(response?.data?.size)
                 if (response?.data?.total) setTotal(response?.data?.total)
@@ -356,7 +356,7 @@ export default function ActivitiesPage(props: any) {
                     setInfiniteLoad(false);
 
                 } else {
-                    dispatch(handleInfiniteLoad(getList(response.data.docs, [])))
+                    dispatch(handleInfiniteLoad({data:getList(response.data.docs, []), user: user?._id}))
                     setInfiniteLoad(false);
                 }
                 setInfiniteLoad(false);
@@ -373,13 +373,7 @@ export default function ActivitiesPage(props: any) {
                 if (response?.data?.size) setSize(response?.data?.size)
                 if (response?.data?.total) setTotal(response?.data?.total)
                 if (response?.data?.page) setPage(response?.data?.page)
-                if (response?.data?.docs.length == 0) {
-                    setInfiniteLoad(false);
 
-                } else {
-                    dispatch(handleInfiniteLoad(getList(response.data.docs, [])))
-                    setInfiniteLoad(false);
-                }
                 setInfiniteLoad(false);
             }).catch((err) => {
                 setInfiniteLoad(false)
