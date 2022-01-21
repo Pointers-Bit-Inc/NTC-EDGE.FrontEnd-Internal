@@ -1,7 +1,7 @@
 import React from "react";
 import BackgroundPayment from "@assets/svg/backgroundpayment";
-import {Modal, View, Text, StyleSheet, Dimensions, TouchableOpacity, Image} from "react-native";
-const { width } = Dimensions.get('window');
+import {Modal, View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, ScrollView} from "react-native";
+const { width, height } = Dimensions.get('window');
 
 const RequirementModal = (props:any) => {
 
@@ -20,27 +20,28 @@ const RequirementModal = (props:any) => {
             height: "100%"
         }
         }>
-            <BackgroundPayment style={{position:"absolute"}}></BackgroundPayment>
             <View style={styles.container}>
-                <View style={styles.group7}>
-                    <View style={styles.rect2}>
+                <View style={styles.rect2}>
+                    <View style={{ alignSelf: 'flex-end', marginRight: 15, marginTop: 35 }}>
                         <TouchableOpacity onPress={()=>{
                             props.onDismissed()
                         }
                         }>
                             <Text style={styles.close}>Close</Text>
                         </TouchableOpacity>
-
                     </View>
                 </View>
-                <View style={styles.group8}>
-                    <Image
-                        style={{width: 350, height: 350}}
-                        source={{
-                            uri: props?.image ? props?.image : 'https://dummyimage.com/350x350/fff/aaa',
-                        }}
-                    />
-                </View>
+                <ScrollView showsVerticalScrollIndicator={false} style={styles.group8}>
+                    <View style={{ flex: 1, height, paddingVertical: 30 }}>
+                        <Image
+                            style={{ flex: 1 }}
+                            resizeMode="contain"
+                            source={{
+                                uri: props?.image ? props?.image : 'https://dummyimage.com/350x350/fff/aaa',
+                            }}
+                        />
+                    </View>
+                </ScrollView>
             </View>
 
         </View>
@@ -49,27 +50,24 @@ const RequirementModal = (props:any) => {
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        height,
+        width,
     },
     group7: {
         height: 100
     },
     rect2: {
         width: width,
-        height: 100,
+        height: 80,
         backgroundColor: "rgba(0,65,172,1)"
     },
     close: {
         color: "rgba(239,231,231,1)",
         fontSize: 18,
-        marginTop: 55,
-        marginLeft: 313
     },
     group8: {
-        width: "100%",
-        height: 473,
-        marginTop: 70,
-        alignSelf: "center"
+        paddingHorizontal: 30,
+        flex: 1
     },
 })
 export default RequirementModal
