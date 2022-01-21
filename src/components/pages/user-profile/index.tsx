@@ -3,12 +3,15 @@ import FormField from "@organisms/forms/form";
 import InputStyles from "@styles/input-style";
 import Text from '@atoms/text';
 import {primaryColor, text} from "@styles/color";
-import {Image, ScrollView, StyleSheet, TouchableOpacity, View,} from 'react-native';
+import {Alert, Image, ScrollView, StyleSheet, TouchableOpacity, View,ActivityIndicator} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {setUser} from "../../../reducers/user/actions";
 import {Ionicons} from "@expo/vector-icons";
 import ProfileImage from "@components/atoms/image/profile";
+import { validateEmail, validatePassword, validatePhone, validateText } from "src/utils/form-validations";
+import {BASE_URL} from "../../../services/config";
+import axios from "axios";
 
 const UserProfile = (props: any) => {
 
@@ -21,7 +24,7 @@ const UserProfile = (props: any) => {
         PROFILE_IMAGE_INDEX = 3;
     const dispatch = useDispatch();
     const [profileImage, setProfile] = useState("")
-    const user = useSelector((state: RootStateOrAny) => state.user);
+    const user = useSelector((state: RootStateOrAny) => state?.user);
     const [userProfile, setUserProfile] = useState()
     const [userProfileForm, setUserProfileForm] = useState([
         {
@@ -29,31 +32,32 @@ const UserProfile = (props: any) => {
             id: 1,
             key: 1,
             required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
+            outlineStyle: InputStyles?.outlineStyle,
+            activeColor: text?.primary,
+            errorColor: text?.error,
+            requiredColor: text?.error,
             label: "User Type",
             type: "input",
             placeholder: "User Type",
-            value: user.role.name || '',
-            inputStyle: InputStyles.text,
+            value: user?.role?.name || '',
+            inputStyle: InputStyles?.text,
             error: false,
+						editable: false,
         },
         {
             id: 2,
             key: 2,
             required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
+            outlineStyle: InputStyles?.outlineStyle,
+            activeColor: text?.primary,
+            errorColor: text?.error,
+            requiredColor: text?.error,
             label: "User Name",
             type: "input",
             placeholder: "User Name",
-            value: user.username || '',
+            value: user?.username || '',
             stateName: 'username',
-            inputStyle: InputStyles.text,
+            inputStyle: InputStyles?.text,
             error: false,
         },
         {
@@ -61,15 +65,15 @@ const UserProfile = (props: any) => {
             id: 3,
             key: 3,
             required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
+            outlineStyle: InputStyles?.outlineStyle,
+            activeColor: text?.primary,
+            errorColor: text?.error,
+            requiredColor: text?.error,
             label: "Email",
             type: "input",
             placeholder: "Email",
-            value: user.email || '',
-            inputStyle: InputStyles.text,
+            value: user?.email || '',
+            inputStyle: InputStyles?.text,
             error: false,
         },
 
@@ -78,22 +82,22 @@ const UserProfile = (props: any) => {
         {
             id: 11,
             stateName: 'profileImage',
-            value: user.profileImage
+            value: user?.profileImage
         },
         {
-            stateName: 'phone',
+            stateName: 'contactNumber',
             id: 9,
             key: 9,
             required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
+            outlineStyle: InputStyles?.outlineStyle,
+            activeColor: text?.primary,
+            errorColor: text?.error,
+            requiredColor: text?.error,
             label: "Phone",
             type: "input",
             placeholder: "Phone",
-            value: user.contactNumber || '',
-            inputStyle: InputStyles.text,
+            value: user?.contactNumber || '',
+            inputStyle: InputStyles?.text,
             error: false,
         },
         {
@@ -101,32 +105,31 @@ const UserProfile = (props: any) => {
             id: 10,
             key: 10,
             required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
+            outlineStyle: InputStyles?.outlineStyle,
+            activeColor: text?.primary,
+            errorColor: text?.error,
+            requiredColor: text?.error,
             label: "Address",
             type: "input",
             placeholder: "Address",
-            value: user.address || '',
-            inputStyle: InputStyles.text,
+            value: user?.address || '',
+            inputStyle: InputStyles?.text,
             error: false,
         },
     ])
 
+    const [editable, setEditing] = useState(false);
+		const [loading, setLoading] = useState(false);
+
     const onChangeUserProfile = (id: number, text: any, element?: string) => {
-
-        const index = userProfileForm.findIndex(app => app.id == id)
-        let newArr = [...userProfileForm];
-        if (element == 'password' && !text.trim.length) {
-            newArr[index]["error"] = false
-            newArr[index]['value'] = text;
-        } else if (element == "input" && !text.trim.length ) {
-            newArr[index]["error"] = false
-            newArr[index]['value'] = text;
-
-        }
-        setUserProfileForm(newArr);
+			const index = userProfileForm?.findIndex(app => app?.id == id);
+			let newArr = [...userProfileForm];
+			newArr[index]['value'] = text;
+			if (element == 'password') newArr[index]["error"] = !validatePassword(text)?.isValid;
+			else if (element === 'email') newArr[index]["error"] = !validateEmail(text);
+			else if (element === 'contactNumber') newArr[index]["error"] = !validatePhone(text);
+			else newArr[index]["error"] = !validateText(text);
+			setUserProfileForm(newArr);
     }
 
     const onPressed = (id?: number, type?: string | number) => {
@@ -135,8 +138,8 @@ const UserProfile = (props: any) => {
         if (type === 'image-picker') {
 
             newArr = [...userProfileForm]
-            for (let i = 0; i < newArr.length; i++) {
-                if (newArr[i].stateName == "profileImage" && newArr[i].id == id) {
+            for (let i = 0; i < newArr?.length; i++) {
+                if (newArr[i]?.stateName == "profileImage" && newArr[i]?.id == id) {
 
                     openImagePickerAsync().then((r: any) => {
                         newArr[i].value = r?.uri
@@ -151,63 +154,103 @@ const UserProfile = (props: any) => {
 
         }
     }
-    let openImagePickerAsync = async () => {
-        let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-        if (permissionResult.granted === false) {
+    let openImagePickerAsync = async () => {
+        let permissionResult = await ImagePicker?.requestMediaLibraryPermissionsAsync();
+
+        if (permissionResult?.granted === false) {
             alert("Permission to access camera roll is required!");
             return;
         }
-        let picker = await ImagePicker.launchImageLibraryAsync()
+        let picker = await ImagePicker?.launchImageLibraryAsync()
         return picker
     }
 
-    const onUserSubmit = () =>{
-        let userInput = {} as any, error = [];
-        let newArr = [...userProfileForm];
-        for (let i = 0; i < newArr.length; i++) {
-            if (!newArr[i].value) {
-                newArr[i].error = true
-            }
-            userInput[`${userProfileForm[i]?.stateName}`] = userProfileForm[i].value
-        }
-        setUserProfileForm(newArr)
-        if(!error.length){
-            dispatch(setUser(userInput))
-        }
-    }
+    const save = () => {
+			var isValid = true, userInput = user;
+			userProfileForm?.forEach(up => {
+				userInput = {
+					...userInput,
+					[up?.stateName]: up?.value
+				};
+				if (
+					up?.stateName !== 'profileImage' &&
+					(!up?.value || up?.error)
+				) {
+					isValid = false;
+					return;
+				}
+			});
+			if (isValid) {
+				setLoading(true);
+				axios
+					.patch(
+						`${BASE_URL}/user/profile/${user._id}`,
+						{
+							email: userInput.email,
+							username: userInput.username,
+							contactNumber: userInput.contactNumber,
+							address: userInput.address,
+						},
+						{headers: { Authorization: `Bearer ${user?.sessionToken}` }},
+					)
+					.then((res: any) => {
+						setLoading(false);
+						if (res?.status === 200) {
+							Alert.alert('Success', 'Your profile has been edited!');
+							dispatch(setUser(userInput));
+						}
+						else Alert.alert('Failure', (res?.statusText || res?.message) || 'Your profile was not edited.');
+					})
+					.catch((err: any) => {
+						setLoading(false);
+						Alert.alert(err?.title, err?.message);
+					})
+			}
+    };
+
+    const onSave = () => {
+			if (editable) save();
+			setEditing(!editable);
+		};
 
 
-    return  <View style={styles.container}>
-        <View style={styles.toolbar}>
-            <View style={styles.rect}>
-                <View style={styles.group}>
-                    <TouchableOpacity onPress={() => props.toggleDrawer()} >
-                        <Ionicons name="md-close" style={styles.icon}></Ionicons>
+    return  <View style={styles?.container}>
+        <View style={styles?.toolbar}>
+            <View style={styles?.rect}>
+                <View style={styles?.group}>
+                    <TouchableOpacity onPress={() => props?.toggleDrawer()} >
+                        <Ionicons name="md-close" style={styles?.icon}></Ionicons>
                     </TouchableOpacity>
 
-                    <Text style={styles.profileName}>Profile</Text>
-                    <Text style={styles.edit}>Edit</Text>
+                    <Text style={styles?.profileName}>Profile</Text>
+                    <TouchableOpacity onPress={() => onSave()}>
+												{
+													loading
+														? <ActivityIndicator size='small' color='#fff' />
+														: <Text style={styles?.edit}>{editable ? 'Save' : 'Edit'}</Text>
+												}
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>
-        <View style={styles.profilecontainer}>
+        <View style={styles?.profilecontainer}>
 
-            <View style={styles.rect2Stack}>
-                <View style={styles.rect2}></View>
+            <View style={styles?.rect2Stack}>
+                <View style={styles?.rect2}></View>
                 <TouchableOpacity onPress={() => onPressed(11, 'image-picker')}>
-                    <View style={styles.rect3}>
-                        {userProfileForm[PROFILE_IMAGE_INDEX].value ? <Image
+                    <View style={styles?.rect3}>
+                        {userProfileForm[PROFILE_IMAGE_INDEX]?.value ? <Image
                                 style={{width: 100, height: 100, borderRadius: 50}}
-                                source={{uri: userProfileForm[PROFILE_IMAGE_INDEX].value}}
+                                source={{uri: userProfileForm[PROFILE_IMAGE_INDEX]?.value}}
                                 resizeMode={"cover"}/>
                             : <ProfileImage
                                 size={100}
                                 textSize={26}
-                                image={user.image}
-                                name={`${user.firstName} ${user.lastName}`}
+                                image={user?.image}
+                                name={`${user?.firstName} ${user?.lastName}`}
                             />}
-                        <Text style={[styles.change2]}>Change</Text>
+                        <Text style={[styles?.change2]}>Change</Text>
                     </View>
                 </TouchableOpacity>
 
@@ -219,18 +262,18 @@ const UserProfile = (props: any) => {
                 showsVerticalScrollIndicator={false}
             >
                 <View style={{padding: 10}}>
-                    <FormField formElements={userProfileForm} onChange={onChangeUserProfile} onSubmit={onPressed}/>
+                    <FormField formElements={userProfileForm} onChange={onChangeUserProfile} onSubmit={onPressed} editable={editable && !loading} />
                 </View>
 
             </ScrollView>
         </View>
 
-        <View style={styles.divider}></View>
-        <Text style={styles.changePassword}>Change Password</Text>
+        <View style={styles?.divider}></View>
+        <Text style={styles?.changePassword}>Change Password</Text>
     </View>
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet?.create({
     container: {
         backgroundColor: "#fff",
         flex: 1

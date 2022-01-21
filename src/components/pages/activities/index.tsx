@@ -43,10 +43,10 @@ const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStat
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
-        const list = (selectedChangeStatus?.indexOf(DATE_ADDED) != -1 ? sortByDate(applications) : applications).filter((item: Application) => {
+        const list = applications?.length > 0 ? (selectedChangeStatus?.indexOf(DATE_ADDED) != -1 ? sortByDate(applications) : applications).filter((item: Application) => {
             return item?.applicant?.user?.firstName.includes(searchTerm) &&
                 (selectedClone?.length ? selectedClone.indexOf(item.status) != -1 : true)
-        });
+        }) : [];
         setIsPinnedActivity(0)
         const groups = list.reduce((groups: any, activity: any) => {
             const date = checkFormatIso(activity.createdAt, "-");
