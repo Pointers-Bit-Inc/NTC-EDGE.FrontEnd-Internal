@@ -534,9 +534,8 @@ export default function ActivitiesPage(props: any) {
                                 <Text style={styles.pinnedActivity}>Pinned activity</Text>
                             </View>
                         </View>}
-
                         {pnApplications.map((item: any, index: number) => {
-                            return item.activity.map((act: any, i: number) => {
+                            return item?.activity && item?.activity.map((act: any, i: number) => {
                                 return act?.assignedPersonnel == user?._id && <ActivityItem
                                     searchQuery={searchTerm}
                                     activity={act}
@@ -547,8 +546,6 @@ export default function ActivitiesPage(props: any) {
                             })
                         })
                         }
-
-
                     </View>
                     <View style={[styles.rect27, {height: 5}]}></View>
                 </View>

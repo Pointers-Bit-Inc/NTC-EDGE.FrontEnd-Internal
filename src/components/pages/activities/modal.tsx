@@ -327,6 +327,7 @@ function ActivityModal(props: any) {
                                     height: undefined,
                                     paddingVertical: currentLoading === FOREVALUATION ? 6.5 : 8
                                 }]}>
+
                                     {
                                         currentLoading === FOREVALUATION ? (
                                             <ActivityIndicator color={'white'} size={'small'}/>
@@ -357,6 +358,7 @@ function ActivityModal(props: any) {
                                             borderColor: (approveButton || declineButton || grayedOut) && props?.assignedPersonnel !== user?._id? "#C4C4C4" : "rgba(194,0,0,1)",
                                         }]
                                     }>
+
                                     {
                                         currentLoading === DECLINED ? (
                                             <ActivityIndicator color={"rgba(194,0,0,1)"} size={'small'}/>
