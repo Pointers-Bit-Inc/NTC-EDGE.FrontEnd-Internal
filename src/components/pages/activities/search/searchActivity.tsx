@@ -1,5 +1,5 @@
-import React, {useEffect, useRef} from "react";
-import {Animated, Dimensions, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
+import React, {useEffect, useRef, useState} from "react";
+import {Animated, AsyncStorage, Dimensions, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
 import BackSpaceIcon from "@assets/svg/backspace";
 import CloseCircleIcon from "@assets/svg/closeCircle";
 import SearchLoading from "@assets/svg/searchLoading";
@@ -8,6 +8,7 @@ const {height} = Dimensions.get('window');
 
 export function SearchActivity(props: { onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const inputRef = useRef(null);
+
     const onFocusHandler = () => {
         inputRef.current && inputRef.current.focus();
     }
@@ -39,12 +40,12 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
                                             placeholder="Search"
                                             style={styles.textInput}
                                         ></TextInput>
-                                        <TouchableOpacity onPress={props.onPress1
+                                        {props.value.length ?  <TouchableOpacity onPress={props.onPress1
                                         }>
                                             <CloseCircleIcon
                                                 style={styles.icon2}
                                             ></CloseCircleIcon>
-                                        </TouchableOpacity>
+                                        </TouchableOpacity> : <></>}
 
                                     </View>
                                 </View>
@@ -68,7 +69,7 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
             {props.value.length < 1 && <View style={styles.group8}>
                 <View style={styles.rect3}>
                     <View style={styles.group7}>
-                        <Text style={styles.recentSearches}>Recent Searches</Text>
+                        <Text style={styles.recentSearches}>{props.nevers.length ? "Recent Searches" : ""}</Text>
                         <View style={{justifyContent: "center", height: height - 120 - 30 - 30 - 30 - 20}}>
                             <ScrollView showsVerticalScrollIndicator={false}>
                                 {props.nevers.map(props.callbackfn)}

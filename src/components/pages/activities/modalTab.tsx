@@ -188,7 +188,8 @@ export function ModalTab(props) {
         totalFee = props?.details?.totalFee,
         paymentMethod= props?.details?.paymentMethod,
         requirements = props?.details?.requirements,
-        updatedAt = props?.details?.updatedAt
+        updatedAt = props?.details?.updatedAt,
+        proofOfPayment = props?.details?.proofOfPayment
     return <Tab.Navigator  tabBar={(props) => <MyTabBar {...props} />}>
 
         {
@@ -231,7 +232,7 @@ export function ModalTab(props) {
                         name={tab.name}
                         options={{tabBarLabel: tab.name}}
                     >
-                        {() => <Payment updatedAt={updatedAt}  paymentMethod={paymentMethod} applicant={applicant}  totalFee={totalFee}
+                        {() => <Payment proofOfPayment={proofOfPayment} updatedAt={updatedAt}  paymentMethod={paymentMethod} applicant={applicant}  totalFee={totalFee}
                                         soa={soa} key={index}/>}
                     </Tab.Screen>
                 }

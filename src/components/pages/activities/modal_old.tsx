@@ -229,7 +229,8 @@ function ActivityModal(props: any) {
                                                 service = props?.details?.activityDetails?.application?.service,
                                                 soa = props?.details?.activityDetails?.application?.soa,
                                                 totalFee = props?.details?.activityDetails?.application?.totalFee,
-                                                requirements = props?.details?.activityDetails?.application?.requirements
+                                                requirements = props?.details?.activityDetails?.application?.requirements,
+                                                proofOfPayment = props?.details?.activityDetails?.application?.proofOfPayment
                                             if (isShow && tab.id == 1 && tab.active) {
                                                 return <BasicInfo
                                                     applicant={applicant}
@@ -243,7 +244,7 @@ function ActivityModal(props: any) {
                                             } else if (isShow && tab.id == 3 && tab.active) {
                                                 return <Requirement requirements={requirements} key={index}/>
                                             } else if (isShow && tab.id == 4 && tab.active) {
-                                                return <Payment applicant={applicant}  totalFee={totalFee}
+                                                return <Payment proofOfPayment={} applicant={applicant}  totalFee={totalFee}
                                                                 soa={soa} key={index}/>
                                             }
                                         })

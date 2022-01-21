@@ -45,6 +45,8 @@ function Search(props: any) {
         if (!text.trim()) return
         try {
             props.onSearch(text, async (response) => {
+
+
                 if(response){
                     await AsyncStorage.getItem('searchHistory').then(async (value) => {
                         value = JSON.parse(value) || []

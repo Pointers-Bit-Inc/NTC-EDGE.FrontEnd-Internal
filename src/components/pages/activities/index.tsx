@@ -102,7 +102,7 @@ export default function ActivitiesPage(props: any) {
             const search =
                 (selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true)
             if (cashier) {
-                return (item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) && search
+                return (item?.status == APPROVED || item?.status == DECLINED  || item?.assignedPersonnel == user?._id || _approvalHistory) && search
             } else if (director) {
                 return (item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (item?.assignedPersonnel == user?._id || _approvalHistory) && search
             } else if (checker) {
@@ -130,11 +130,11 @@ export default function ActivitiesPage(props: any) {
             if (activity.isPinned) {
                 setIsPinnedActivity(isPinnedActivity + 1)
             }
-            if (!groups[formatDate(activity.updatedAt)]) {
-                groups[formatDate(activity.updatedAt)] = [];
+            if (!groups[formatDate(activity.createdAt)]) {
+                groups[formatDate(activity.createdAt)] = [];
             }
 
-            groups[formatDate(activity.updatedAt)].push(activity);
+            groups[formatDate(activity.createdAt)].push(activity);
             return groups;
         }, {});
         const groupArrays = Object.keys(groups).map((date) => {
@@ -206,7 +206,7 @@ export default function ActivitiesPage(props: any) {
             if (response?.data?.size) setSize(response?.data?.size)
             if (response?.data?.total) setTotal(response?.data?.total)
             if (response?.data?.page) setPage(response?.data?.page)
-            callback(true)
+             if(response?.data?.docs?.length)  callback(true)
             if (count == 0) {
                 count = 1
                 if (count) dispatch(setApplications(response.data))
@@ -236,7 +236,7 @@ export default function ActivitiesPage(props: any) {
         return () => {
             isCurrent = false
         }
-    }, [countRefresh, searchTerm, currentPage])
+    }, [countRefresh, searchTerm,])
 
 
     const [currentPage, setCurrentPage] = useState(1)
@@ -341,9 +341,10 @@ export default function ActivitiesPage(props: any) {
     }, []);
 
     const handleLoad = useCallback(() => {
+        let _page: string;
         setInfiniteLoad(true)
         if ((page * size) < total) {
-            const _page = "&page=" + (page + 1)
+            _page = "&page=" + (page + 1)
 
             axios.get(BASE_URL + `/applications${query() + _page}`, config).then((response) => {
                 console.log(response?.data?.size)
@@ -364,7 +365,26 @@ export default function ActivitiesPage(props: any) {
                 console.warn(err)
             })
         } else {
+            _page = "&page=" + (page + 1)
 
+            axios.get(BASE_URL + `/applications${query() + _page}`, config).then((response) => {
+                console.log(response?.data?.size)
+                if (response?.data?.message) Alert.alert(response.data.message)
+                if (response?.data?.size) setSize(response?.data?.size)
+                if (response?.data?.total) setTotal(response?.data?.total)
+                if (response?.data?.page) setPage(response?.data?.page)
+                if (response?.data?.docs.length == 0) {
+                    setInfiniteLoad(false);
+
+                } else {
+                    dispatch(handleInfiniteLoad(getList(response.data.docs, [])))
+                    setInfiniteLoad(false);
+                }
+                setInfiniteLoad(false);
+            }).catch((err) => {
+                setInfiniteLoad(false)
+                console.warn(err)
+            })
             setInfiniteLoad(false)
         }
 
@@ -425,9 +445,9 @@ export default function ActivitiesPage(props: any) {
 
                                           fnApplications(isCurrent, (response) => {
                                               if (response) {
-                                                  callback(true)
+                                                  callback(response)
                                               } else {
-                                                  callback(false)
+                                                  callback(response)
                                               }
                                           });
                                       }} onDismissed={() => {

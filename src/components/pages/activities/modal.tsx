@@ -40,6 +40,7 @@ function ActivityModal(props: any) {
     const [currentLoading, setCurrentLoading] = useState('');
     const [assignId, setAssignId] = useState("")
     const [remarks, setRemarks] = useState("")
+    const [grayedOut, setGrayedOut] = useState(false)
     const onDismissed = () => {
         setVisible(false)
     }
@@ -51,6 +52,7 @@ function ActivityModal(props: any) {
     }
     const onChangeApplicationStatus = async (status: string, callback = (err: any, appId?: any) => {
     }) => {
+        setGrayedOut(true)
         const api = Api(user.sessionToken);
         const applicationId = props?.details?._id;
         let url = `/applications/${applicationId}/update-status`;
@@ -73,6 +75,7 @@ function ActivityModal(props: any) {
         if (applicationId) {
             await api.patch(url, params)
                 .then(res => {
+                    setGrayedOut(false)
                     setCurrentLoading('');
                     if (res.status === 200) {
                         if (res.data) {
@@ -97,6 +100,7 @@ function ActivityModal(props: any) {
                     return callback('error');
                 })
                 .catch(e => {
+                    setGrayedOut(false)
                     setCurrentLoading('');
                     Alert.alert('Alert', e?.message || 'Something went wrong.')
                     return callback(e);
@@ -117,6 +121,7 @@ function ActivityModal(props: any) {
     }, [])
     const statusMemo = useMemo(() =>{
             setStatus(status )
+        console.log(props.details.paymentStatus,  props.details.status)
         return  status ? (cashier ? PaymentStatusText(status) : StatusText(status)) : (cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
     }, [status, props.details.paymentStatus,  props.details.status])
         const approveButton = statusMemo === APPROVED || statusMemo === VERIFIED
@@ -275,7 +280,7 @@ function ActivityModal(props: any) {
                     <View style={styles.footer}>
                         {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 && <View style={{flex: 1, paddingRight: 5}}>
                             <TouchableOpacity
-                                disabled={currentLoading === APPROVED}
+                                disabled={currentLoading === APPROVED || grayedOut }
                                 onPress={() => {
                                     if(cashier )  {
                                         onShowConfirmation(APPROVED)
@@ -292,7 +297,7 @@ function ActivityModal(props: any) {
                                     <Text style={styles.approved}>Approved</Text>
                                 </View> */}
                                 <View style={[styles.rect22, {
-                                    backgroundColor: ( approveButton ? "#C4C4C4" : "rgba(0,171,118,1)"),
+                                    backgroundColor: ( declineButton || approveButton || grayedOut ? "#C4C4C4" : "rgba(0,171,118,1)"),
                                     height: undefined,
                                     paddingVertical: currentLoading === APPROVED ? 6 : 8
                                 }]}>
@@ -301,7 +306,7 @@ function ActivityModal(props: any) {
                                             <ActivityIndicator color={'white'} size={'small'}/>
                                         ) : (
                                             <Text
-                                                style={[styles.approved, {color: approveButton ? "#808196" : "rgba(255,255,255,1)",}]}>
+                                                style={[styles.approved, {color: declineButton ||approveButton|| grayedOut  ? "#808196" : "rgba(255,255,255,1)",}]}>
                                                 Approve
                                             </Text>
                                         )
@@ -335,7 +340,7 @@ function ActivityModal(props: any) {
                         {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 1, paddingLeft: 5}}>
                             <TouchableOpacity
-                                disabled={currentLoading === DECLINED || declineButton }
+                                disabled={currentLoading === DECLINED || approveButton || declineButton || grayedOut }
                                 onPress={() => {
                                     setVisible(true)
                                 }}
@@ -344,11 +349,11 @@ function ActivityModal(props: any) {
                                     style={[
                                         styles.rect24,
                                         {
-                                            backgroundColor:declineButton ? "#C4C4C4" : "#fff",
+                                            backgroundColor:approveButton || declineButton || grayedOut ? "#C4C4C4" : "#fff",
                                             height: undefined,
                                             paddingVertical: currentLoading === DECLINED ? 5 : 6.5,
                                             borderWidth: 1,
-                                            borderColor: declineButton ? "#C4C4C4" : "rgba(194,0,0,1)",
+                                            borderColor: approveButton || declineButton || grayedOut? "#C4C4C4" : "rgba(194,0,0,1)",
                                         }]
                                     }>
                                     {
@@ -356,7 +361,7 @@ function ActivityModal(props: any) {
                                             <ActivityIndicator color={"rgba(194,0,0,1)"} size={'small'}/>
                                         ) : (
                                             <Text
-                                                style={[styles.endorse1, {color: declineButton ? "#808196" : "rgba(194,0,0,1)",}]}>Decline</Text>
+                                                style={[styles.endorse1, {color: approveButton || declineButton || grayedOut ? "#808196" : "rgba(194,0,0,1)",}]}>Decline</Text>
                                         )
                                     }
                                 </View>

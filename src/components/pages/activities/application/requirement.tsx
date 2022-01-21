@@ -41,7 +41,7 @@ const Requirement = (props:any) =>{
                                         <Image
                                             style={{width: 350, height: 216}}
                                             source={{
-                                                uri: requirement?.links?.thumb,
+                                                uri: requirement?.links?.small,
                                             }}
                                         />
                                     </View>

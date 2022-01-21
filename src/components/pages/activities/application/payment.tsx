@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
+import {Image, ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Entypo} from "@expo/vector-icons";
 import PaymentModal from "@pages/activities/application/paymentModal/index";
 import Text from "@components/atoms/text";
@@ -18,7 +18,7 @@ const Payment = (props:any) => {
     return <ScrollView style={{flex: 1, paddingTop: 10}}>
         <View style={styles.container}>
             
-            <View style={{ backgroundColor: "#E6E6E6", padding: 5, alignItems: 'center' }}>
+            <View style={{  padding: 5, alignItems: 'center' }}>
                 <Text
                     weight="600"
                     color="#37405B"
@@ -88,16 +88,26 @@ const Payment = (props:any) => {
                 </View>
             </View>
             <View style={styles.rect5}></View>
+
             <View>
                 <Text style={styles.payment2}>Payment</Text>
                 <Text style={styles.paymentReceiptPng}>Payment Receipt.png</Text>
                 <Text style={styles.paymentReceivedFor}>Payment received for</Text>
                 <Text style={styles.ntcEdge}>NTC-EDGE</Text>
-                <Text style={styles.theAmoutOf}>the amout of</Text>
-                <Text style={styles.php5000}>PHP {props.totalFee}</Text>
+                <Text style={styles.theAmoutOf}>the amout of PHP {props?.totalFee}</Text>
+                {props?.paymentMethod && <Text style={styles.php5000}>Payment method: {props?.paymentMethod}</Text> }
+
+                {props?.proofOfPayment?.small && <Image
+                    style={{width: 350, height: 216}}
+                    source={{
+                        uri: props?.proofOfPayment?.small,
+                    }}
+                /> }
+
                 <View style={styles.group6}>
                     <View style={styles.rect6}>
                         <View style={styles.group5}>
+
                             <TouchableOpacity onPress={()=>{
                                 setVisibleModal(true)
                             }
@@ -113,7 +123,7 @@ const Payment = (props:any) => {
                 </View>
             </View>
         </View>
-        <PaymentModal  updatedAt={props?.updatedAt} paymentMethod={props?.paymentMethod} applicant={props?.applicant}  totalFee={props?.totalFee} visible={visibleModal} onDismissed={onDismissed}  />
+        <PaymentModal   updatedAt={props?.updatedAt} paymentMethod={props?.paymentMethod} applicant={props?.applicant}  totalFee={props?.totalFee} visible={visibleModal} onDismissed={onDismissed}  />
     </ScrollView>
 
 }
@@ -261,6 +271,7 @@ const styles = StyleSheet.create({
         marginTop: 40
     },
     payment2: {
+        fontWeight: "bold",
         color: "#121212",
         marginTop: 15,
         marginLeft: 21

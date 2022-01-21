@@ -13,7 +13,7 @@ export default function Loader(refreshing, searchTerm) {
     })
     return (
         <View style={{flex: 1, justifyContent: 'center',alignItems: 'center'}}>
-            {!refreshing && searchTerm.length ? <Text>No results for [{searchTerm}]</Text> : !refreshing ? <Text>No {selectedClone.toString()} Applications</Text> : <Text></Text>  }
+            {!refreshing && searchTerm.length ? <Text>No results for "{searchTerm}"</Text> : !refreshing ? <Text>No {selectedClone.toString()} Applications</Text> : <Text></Text>  }
             {refreshing && <ActivityIndicator/>}
         </View>
     );
