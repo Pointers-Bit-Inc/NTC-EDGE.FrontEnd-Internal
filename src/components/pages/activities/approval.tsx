@@ -142,9 +142,7 @@ function    Approval(props: any){
                                     error={validateRemarks.error}
                                     errorColor={errorColor}
                                     onChangeText={(text: string) => {
-                                        if (text.length) {
-                                            setValidateRemarks({error: false})
-                                        }
+
                                         props.onChangeRemarks(text)
                                         setRemarks(text)
                                     }
@@ -152,17 +150,7 @@ function    Approval(props: any){
                                 /> }
                                 <View style={{ marginTop: 5 }} >
                                     <TouchableOpacity onPress={()=>{
-                                        if([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1){
-                                            if(!remarks.length){
-                                                setMessage("Remarks field is required")
-                                                setValidateRemarks({error: true})
-
-                                            }else {
-                                                onConfirmation();
-                                            }
-                                        }else{
-                                            onConfirmation()
-                                        }
+                                        onConfirmation()
                                     }}>
                                         <View style={styles.rect3}>
                                             <Text style={styles.close}>Confirm</Text>

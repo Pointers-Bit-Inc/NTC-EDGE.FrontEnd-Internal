@@ -317,12 +317,13 @@ function ActivityModal(props: any) {
                         {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 1, paddingHorizontal: 5}}>
                             <TouchableOpacity
-                                disabled={currentLoading === FOREVALUATION}
+                                disabled={currentLoading === FOREVALUATION  || declineButton ||approveButton|| grayedOut}
                                 onPress={() => {
                                     setEndorseVisible(true)
                                 }}
                             >
                                 <View style={[styles.rect23, {
+                                    backgroundColor: (declineButton || approveButton || grayedOut ? "#C4C4C4" : "rgba(40,99,214,1)"),
                                     height: undefined,
                                     paddingVertical: currentLoading === FOREVALUATION ? 6.5 : 8
                                 }]}>
@@ -331,7 +332,7 @@ function ActivityModal(props: any) {
                                             <ActivityIndicator color={'white'} size={'small'}/>
                                         ) : (
                                             <Text
-                                                style={[styles.endorse, {color: "rgba(255,255,255,1)",}]}>Endorse</Text>
+                                                style={[styles.endorse, {color: declineButton ||approveButton|| grayedOut  ? "#808196" : "rgba(255,255,255,1)",}]}>Endorse</Text>
                                         )
                                     }
                                 </View>
@@ -613,7 +614,7 @@ const styles = StyleSheet.create({
     },
     rect23: {
         height: 31,
-        backgroundColor: "rgba(40,99,214,1)",
+
         borderRadius: 6
     },
     endorseFiller: {

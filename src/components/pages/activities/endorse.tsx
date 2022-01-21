@@ -155,9 +155,7 @@ function Endorsed(props:any) {
                                 multiline={true}
                                 value={text}
                                 onChangeText={(text:string) => {
-                                    if(text.length){
-                                        setValidateRemarks({error: false})
-                                    }
+
                                     setText(text)
                                 }}
                             />
@@ -166,13 +164,8 @@ function Endorsed(props:any) {
                             style={{ width: '100%', paddingHorizontal: 20, paddingBottom: 25, }}
                         >
                             <TouchableOpacity onPress={() =>{
-                                if(!text.length){
-                                    setValidateRemarks({error: true})
 
-                                }else{
                                     onEndorseConfirm()
-                                }
-
                             }}>
                                 <View style={styles.confirmButton}>
                                     <Text style={styles.confirm}>Confirm</Text>

@@ -21,7 +21,7 @@ const PaymentModal = (props:any) => {
                 <View style={
                     {
                         padding: 20, 
-                        paddingTop: 45,
+                        paddingTop: 35,
                         paddingBottom: 10,
                         alignItems: 'flex-end',
                         backgroundColor: "rgba(0,65,172,1)"
