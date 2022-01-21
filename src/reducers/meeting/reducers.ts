@@ -13,6 +13,7 @@ const {
   ADD_ACTIVE_MEETING,
   UPDATE_ACTIVE_MEETING,
   REMOVE_ACTIVE_MEETING,
+  RESET_MEETING,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -75,6 +76,13 @@ export default function basket(state = initialState, action = {}) {
     case REMOVE_ACTIVE_MEETING: {
       const updatedList = lodash.reject(state.activeMeetings, l => l._id === action.payload);
       return state.setIn(['activeMeetings'], updatedList);
+    }
+    case RESET_MEETING: {
+      return state.setIn(['list'], [])
+        .setIn(['activeMeetings'], [])
+        .setIn(['meetingId'], null)
+        .setIn(['meetingParticipants'], [])
+        .setIn(['meeting'], {});
     }
     default:
       return state;

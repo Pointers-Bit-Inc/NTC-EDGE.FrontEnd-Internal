@@ -12,6 +12,7 @@ const {
   ADD_ACTIVE_MEETING,
   UPDATE_ACTIVE_MEETING,
   REMOVE_ACTIVE_MEETING,
+  RESET_MEETING,
 } = require('./types').default;
 
 export function setMeetings(payload) {
@@ -103,4 +104,10 @@ export function removeActiveMeeting(payload) {
     type: REMOVE_ACTIVE_MEETING,
     payload,
   };
+}
+
+export function resetMeeting() {
+  return {
+    type: RESET_MEETING
+  }
 }
