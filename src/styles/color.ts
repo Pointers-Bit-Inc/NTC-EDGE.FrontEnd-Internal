@@ -3,6 +3,7 @@ const secondaryColor = '#FFFFFF';
 const defaultColor = '#787A80';
 const successColor = '#2C9669';
 const errorColor = '#CE1026';
+const warningColor = '#FFAE42';
 const disabledColor = '#D1D1D1';
 
 const outline = {
@@ -40,6 +41,7 @@ export {
   defaultColor,
   successColor,
   errorColor,
+  warningColor,
   disabledColor,
   outline,
   text,
