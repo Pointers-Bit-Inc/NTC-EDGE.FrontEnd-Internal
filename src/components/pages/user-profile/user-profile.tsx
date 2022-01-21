@@ -4,7 +4,7 @@ import InputStyles from "@styles/input-style";
 import Text from '@atoms/text';
 import { DrawerActions } from '@react-navigation/native';
 import {button, primaryColor, text} from "@styles/color";
-import {Image, ScrollView, StyleSheet, TouchableOpacity, View,} from 'react-native';
+import {Image, ScrollView, StyleSheet, TouchableOpacity, View, ActivityIndicator} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {setUser, updateUser} from "../../../reducers/user/actions";
@@ -16,6 +16,7 @@ import axios from "axios";
 import {BASE_URL} from "../../../services/config";
 import { AsyncStorage } from 'react-native';
 import AwesomeAlert from "react-native-awesome-alerts";
+import { validateEmail, validatePassword, validatePhone, validateText } from "src/utils/form-validations";
 const UserProfileScreen = ({navigation}) => {
 
     const FIRST_NAME_LABEL = "First Name",
@@ -39,7 +40,6 @@ const UserProfileScreen = ({navigation}) => {
 
     const [userProfileForm, setUserProfileForm] = useState([
         {
-
             id: 1,
             key: 1,
             required: true,
@@ -53,6 +53,7 @@ const UserProfileScreen = ({navigation}) => {
             value: user?.role?.name || '',
             inputStyle: InputStyles.text,
             error: false,
+            editable: false,
         },
         {
             stateName: 'firstName',
@@ -127,6 +128,7 @@ const UserProfileScreen = ({navigation}) => {
             error: false,
         },
         {
+						stateName: 'address',
             id: 10,
             key: 10,
             required: false,
@@ -143,19 +145,15 @@ const UserProfileScreen = ({navigation}) => {
         },
     ])
 
-    const onChangeUserProfile = (id: number, text: any, element?: string) => {
-
-        const index = userProfileForm.findIndex(app => app.id == id)
-        let newArr = [...userProfileForm];
-        if (element == 'password' && !text.trim.length) {
-            newArr[index]["error"] = false
-            newArr[index]['value'] = text;
-        } else if (element == "input" && !text.trim.length ) {
-            newArr[index]["error"] = false
-            newArr[index]['value'] = text;
-
-        }
-        setUserProfileForm(newArr);
+    const onChangeUserProfile = (id: number, text: any, element?: string, _key?: string) => {
+			const index = userProfileForm?.findIndex(app => app?.id == id);
+			let newArr = [...userProfileForm];
+			newArr[index]['value'] = text;
+			if (_key == 'password') newArr[index]['error'] = !validatePassword(text)?.isValid;
+			else if (_key === 'email') newArr[index]['error'] = !validateEmail(text);
+			else if (_key === 'contactNumber') newArr[index]['error'] = !validatePhone(text);
+			else newArr[index]['error'] = !validateText(text);
+			setUserProfileForm(newArr);
     }
 
     const onPressed = (id?: number, type?: string | number) => {
@@ -236,6 +234,63 @@ const UserProfileScreen = ({navigation}) => {
     const [status, setStatus] = useState("")
     const [showAlert, setShowAlert] = useState(false)
 
+    const [editable, setEditable] = useState(false);
+		const [loading, setLoading] = useState(false);
+    const save = () => {
+			var isValid = true, userInput = user;
+			userProfileForm?.forEach((up: any) => {
+				userInput = {
+					...userInput,
+					[up?.stateName]: up?.value
+				};
+				if (
+					!!up?.stateName &&
+					(!up?.value || up?.error)
+				) {
+					isValid = false;
+					return;
+				}
+			});
+			if (isValid) {
+				setLoading(true);
+				axios
+					.patch(
+						`${BASE_URL}/user/profile/${user._id}`,
+						{
+							email: userInput.email,
+							firstName: userInput.firstName,
+							lastName: userInput.lastName,
+							contactNumber: userInput.contactNumber,
+							address: userInput.address,
+						},
+						{headers: { Authorization: `Bearer ${user?.sessionToken}` }},
+					)
+					.then((res: any) => {
+						setLoading(false);
+						if (res?.status === 200) {
+							setStatus('Success');
+							setMessage('Your profile has been updated!');
+							dispatch(setUser(userInput));
+						}
+						else {
+							setStatus('Failure');
+							setMessage((res?.statusText || res?.message) || 'Your profile was not edited.');
+						}
+						setShowAlert(true);
+					})
+					.catch((err: any) => {
+						setLoading(false);
+						setStatus(err?.title);
+						setMessage(err?.message);
+						setShowAlert(true);
+					})
+			}
+    };
+    const onSave = () => {
+			if (editable) save();
+			setEditable(!editable);
+		};
+
     return  <View style={styles.container}>
         <AwesomeAlert
             actionContainerStyle={{
@@ -248,18 +303,10 @@ const UserProfileScreen = ({navigation}) => {
             messageStyle={{ textAlign: 'center' }}
             closeOnTouchOutside={true}
             closeOnHardwareBackPress={false}
-            showCancelButton={true}
             showConfirmButton={true}
-            cancelText="Cancel"
-            confirmText="Yes"
+            confirmText='OK'
             confirmButtonColor="#DD6B55"
-            onCancelPressed={() => {
-                setShowAlert(false)
-            }}
-            onConfirmPressed={() => {
-
-                setShowAlert(false)
-            }}
+            onConfirmPressed={() => setShowAlert(false)}
         />
         <View style={styles.toolbar}>
             <View style={styles.rect}>
@@ -269,8 +316,12 @@ const UserProfileScreen = ({navigation}) => {
                     </TouchableOpacity>
 
                     <Text style={styles.profileName}>Profile</Text>
-                    <TouchableOpacity onPress={onUserSubmit}>
-                        <Text style={styles.edit}>Edit</Text>
+                    <TouchableOpacity onPress={onSave} disabled={loading}>
+												{
+													loading
+														? <ActivityIndicator size='small' color='#fff' />
+														: <Text style={styles?.edit}>{editable ? 'Save' : 'Edit'}</Text>
+												}
                     </TouchableOpacity>
 
                 </View>
@@ -317,7 +368,8 @@ const UserProfileScreen = ({navigation}) => {
                     <FormField
                         formElements={userProfileForm}
                         onChange={onChangeUserProfile}
-                        onSubmit={onPressed}/>
+                        onSubmit={onPressed}
+                        editable={editable}/>
 
                 </View>
 

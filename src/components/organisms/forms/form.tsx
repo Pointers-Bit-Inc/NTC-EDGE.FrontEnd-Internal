@@ -52,8 +52,8 @@ const FormField = ({
                                        onChange(id, e.nativeEvent.text, 'input')
                                    }
                                    }
-                                   onChangeText={(text: string) => onChange(id, text, 'input')}
-                                   onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'input')}/>;
+                                   onChangeText={(text: string) => onChange(id, text, 'input', element?.stateName)}
+                                   onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'input', element?.stateName)}/>;
             case "select":
                 return <><InputField key={id}  {...styleProps} {...otherProps}
                                    onEndEditing={(e: any) => {
