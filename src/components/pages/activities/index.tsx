@@ -209,7 +209,7 @@ export default function ActivitiesPage(props: any) {
              if(response?.data?.docs?.length)  callback(true)
             if (count == 0) {
                 count = 1
-                if (count) dispatch(setApplications({data:response.data, userId: user?._id}))
+                if (count) dispatch(setApplications({data:response.data, user: user}))
             }
         }).catch((err) => {
             if (isCurrent) setRefreshing(false)
@@ -356,7 +356,7 @@ export default function ActivitiesPage(props: any) {
                     setInfiniteLoad(false);
 
                 } else {
-                    dispatch(handleInfiniteLoad({data:getList(response.data.docs, []), user: user?._id}))
+                    dispatch(handleInfiniteLoad({data:getList(response.data.docs, []), user: user}))
                     setInfiniteLoad(false);
                 }
                 setInfiniteLoad(false);
