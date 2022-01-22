@@ -425,7 +425,7 @@ export default function ActivitiesPage(props: any) {
     const updateModalFn = (bool) => {
         setUpdateModal(bool)
     }
-  
+
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
@@ -596,7 +596,7 @@ export default function ActivitiesPage(props: any) {
                                     currentUser={user}
                                     onPressUser={(event: any) => {
                                         setDetails(activity)
-                                        unReadReadApplicationFn(activity?._id, activity?.dateRead, true, (action: any) => {
+                                        unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
                                         })
                                         if (event?.icon == 'more') {
                                             setMoreModalVisible(true)
