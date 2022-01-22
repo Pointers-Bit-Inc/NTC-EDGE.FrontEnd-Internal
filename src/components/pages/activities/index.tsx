@@ -562,7 +562,7 @@ export default function ActivitiesPage(props: any) {
                         />
                     }
                     style={{flex: 1}}
-                    data={notPnApplications}
+                    data={[...notPnApplications,  ...(searchVisible ?notPnApplications : []) ]}
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={bottomLoader}
                     onEndReached={() => {
