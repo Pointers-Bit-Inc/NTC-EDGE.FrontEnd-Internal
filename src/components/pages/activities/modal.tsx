@@ -14,7 +14,7 @@ import {
     DIRECTOR,
     EVALUATOR,
     FOREVALUATION,
-    PAID,
+    PAID, PENDING,
     UNVERIFIED,
     VERIFIED,
 } from "../../../reducers/activity/initialstate";
@@ -88,7 +88,7 @@ function ActivityModal(props: any) {
                                 assignedPersonnel: assignId,
                                 userType: user?.role?.key
                             }))
-                            setAssignId("")
+
                             setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
                             setChange(true)
                             // props.onDismissed(true, applicationId)
@@ -124,18 +124,21 @@ function ActivityModal(props: any) {
     }, [])
     const statusMemo = useMemo(() => {
         setStatus(status)
+        setAssignId(props.details.assignedPersonnel)
         return status ? (cashier ? PaymentStatusText(status) : StatusText(status)) : (cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
     }, [status, props.details.paymentStatus, props.details.status])
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
-    const allButton =  statusMemo == FOREVALUATION && [EVALUATOR].indexOf(user?.role?.key) == -1 ? props.details.assignedPersonnel != user?._id :  (declineButton || approveButton || grayedOut)
+    const allButton =  (statusMemo == PENDING || statusMemo == FOREVALUATION) &&  assignId  ? props.details.assignedPersonnel != user?._id :  (declineButton || approveButton || grayedOut)
+   console.log(statusMemo, props.details.assignedPersonnel, assignId)
+
     return (
         <Modal
             animationType="slide"
             transparent={false}
             visible={props.visible}
             onRequestClose={() => {
-
+                  setAssignId("")
                 props.onDismissed(change)
                 setChange(false)
             }}>
@@ -185,6 +188,7 @@ function ActivityModal(props: any) {
             <View style={{flex: 1}}>
                 <View style={{padding: 15, paddingTop: 35, backgroundColor: primaryColor}}>
                     <TouchableOpacity onPress={() => {
+                        setAssignId("")
                         setStatus("")
                         props.onDismissed(change)
                         setChange(false)
