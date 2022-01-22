@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {
-    AsyncStorage,
+    AsyncStorage, BackHandler,
     Text,
     TouchableOpacity,
     View
@@ -66,6 +66,17 @@ function Search(props: any) {
             // Error saving data
         }
     }
+    function handleBackButtonClick() {
+        props.onDismissed()
+        return true;
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+        };
+    }, []);
     return (
         <SearchActivity onPress={() => {
             props.onDismissed()
