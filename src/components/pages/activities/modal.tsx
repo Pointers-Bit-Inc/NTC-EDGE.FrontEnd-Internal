@@ -126,19 +126,19 @@ function ActivityModal(props: any) {
         setStatus(status)
         setAssignId(props.details.assignedPersonnel)
         return status ? (cashier ? PaymentStatusText(status) : StatusText(status)) : (cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
-    }, [status, props.details.paymentStatus, props.details.status])
+    }, [assignId, status, props.details.paymentStatus, props.details.status])
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
-    const allButton =  (statusMemo == PENDING || statusMemo == FOREVALUATION) &&  assignId  ? props.details.assignedPersonnel != user?._id :  (declineButton || approveButton || grayedOut)
-   console.log(statusMemo, props.details.assignedPersonnel, assignId)
-
+    const allButton =  (statusMemo == PENDING || statusMemo == FOREVALUATION) && [EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?.id ? true:  (declineButton || approveButton || grayedOut)
+    console.log( statusMemo, props.details.assignedPersonnel, "[assign id:", assignId , ']', user?._id, [EVALUATOR].indexOf(user?.role?.key) != -1, assignId == user?._id, assignId == null)
+          console.log((statusMemo == PENDING || statusMemo == FOREVALUATION) && [EVALUATOR].indexOf(user?.role?.key) != -1 && assignId ==" user?._id" ?('true') : 'false')
     return (
         <Modal
             animationType="slide"
             transparent={false}
             visible={props.visible}
             onRequestClose={() => {
-                  setAssignId("")
+                setAssignId("")
                 props.onDismissed(change)
                 setChange(false)
             }}>
