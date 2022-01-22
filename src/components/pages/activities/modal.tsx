@@ -128,7 +128,7 @@ function ActivityModal(props: any) {
     }, [status, props.details.paymentStatus, props.details.status])
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
-    const allButton =  statusMemo == FOREVALUATION ? props.details.assignedPersonnel != user?._id :  (declineButton || approveButton || grayedOut)
+    const allButton =  statusMemo == FOREVALUATION && [EVALUATOR].indexOf(user?.role?.key) == -1 ? props.details.assignedPersonnel != user?._id :  (declineButton || approveButton || grayedOut)
     return (
         <Modal
             animationType="slide"
