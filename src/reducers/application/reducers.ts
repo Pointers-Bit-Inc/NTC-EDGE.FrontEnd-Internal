@@ -126,16 +126,37 @@ export default function basket(state = initialState, action = {}) {
                 state = state.set("notPinnedApplications", notPinned)
 
             } else if (pinnedIndex != -1) {
+                console.log("pinned index 1")
                 if (cashier) {
 
                     pinned[pinnedIndex].paymentStatus = action.payload.status
+                    console.log("pinned index 2")
+                    state = state.set("pinnedApplications", pinned)
                 } else if (directorAndEvaluator) {
+                    console.log("pinned index 3", action.payload.status )
+                      if(action.payload.status == APPROVED || action.payload.status == DECLINED) {
 
-                    pinned[pinnedIndex].status = action.payload.status
-                    pinned[pinnedIndex].assignedPersonnel = action.payload.assignedPersonnel
+                          let _notPinned = {...pinned[pinnedIndex]}
+                          _notPinned.status = action.payload.status
+                          _notPinned.assignedPersonnel = action.payload.assignedPersonnel
+
+                          state = state.set('pinnedApplications', pinned.filter(o => o._id !== pinned[pinnedIndex]._id));
+                          state = state.set('notPinnedApplications', [
+                              ...notPinned.concat(_notPinned),
+                          ]);
+                            console.log("concat",_notPinned )
+                      } else{
+                          pinned[pinnedIndex].status = action.payload.status
+                          pinned[pinnedIndex].assignedPersonnel = action.payload.assignedPersonnel
+                          state = state.set("pinnedApplications", pinned)
+                      }
+
+
+
+
                 }
+                console.log("pinned index 4")
 
-                state = state.set("pinnedApplications", pinned)
             }
 
             return state

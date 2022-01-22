@@ -257,7 +257,7 @@ export default function ActivitiesPage(props: any) {
     const notPnApplications = useMemo(() => {
         setUpdateUnReadReadApplication(false)
         return ispinnedApplications(notPinnedApplications)
-    }, [updateUnReadReadApplication, updateModal, updateModal, searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length, currentPage])
+    }, [updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length, currentPage])
 
 
     const userPress = (index: number) => {
@@ -299,7 +299,6 @@ export default function ActivitiesPage(props: any) {
             }
         })
     }
-    const [oldCurrentPage, setOldCurrentPage] = useState(1)
     const [infiniteLoad, setInfiniteLoad] = useState(false)
     const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(false)
     const bottomLoader = () => {
@@ -426,7 +425,7 @@ export default function ActivitiesPage(props: any) {
     const updateModalFn = (bool) => {
         setUpdateModal(bool)
     }
-
+  
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
@@ -562,7 +561,7 @@ export default function ActivitiesPage(props: any) {
                         />
                     }
                     style={{flex: 1}}
-                    data={[...notPnApplications,  ...(searchVisible ?notPnApplications : []) ]}
+                    data={[...(searchVisible ?pnApplications : []), ...notPnApplications ]}
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={bottomLoader}
                     onEndReached={() => {
@@ -614,11 +613,11 @@ export default function ActivitiesPage(props: any) {
                 <ActivityModal updateModal={updateModalFn} readFn={unReadReadApplicationFn} details={details}
                                visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
                     setUpdateModal(false)
-                    if (event && _id) {
+                    if (event && _id) {         
                         //  dispatch(deleteApplications(_id))
                     }
                     if (event) {
-                        onRefresh()
+                       // onRefresh()
                     }
                     onDismissed()
                 }}/>
