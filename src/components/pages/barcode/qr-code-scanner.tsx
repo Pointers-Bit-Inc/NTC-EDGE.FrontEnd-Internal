@@ -38,19 +38,26 @@ export default function QrCodeScan(props: any) {
         })();
     }, []);
     const handleResponse = (data:string) => {
+        var match = data.match(/(^https?:\/\/ntc.astrotechenergy.com\/qr\/?.*)/);
+        if(match && match.length){
+            axios.get(data , { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
 
-        axios.get(data , { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
-            alert(data)
-            setVerifiedInfo(response.data)
-            setIsLoading(false)
-            setIsError(false)
-            setIsVerified(true)
+                setVerifiedInfo(response.data)
+                setIsLoading(false)
+                setIsError(false)
+                setIsVerified(true)
 
-        }).catch((e) =>{
+            }).catch((e) =>{
+                setIsLoading(false)
+                setIsError(true)
+                setIsVerified(false)
+            })
+        } else{
             setIsLoading(false)
             setIsError(true)
             setIsVerified(false)
-        })
+        }
+
     }
     const handleBarCodeScanned = (scanningResult: BarCodeScannerResult) => {
 
