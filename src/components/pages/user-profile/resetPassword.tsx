@@ -14,7 +14,7 @@ import {InputField} from '@molecules/form-fields';
 import Button from '@components/atoms/button';
 import {ArrowLeftIcon} from '@components/atoms/icon';
 import PasswordForm from '@components/organisms/forms/reset-password';
-import {button, text} from 'src/styles/color';
+import {button, defaultColor, errorColor, successColor, text} from 'src/styles/color';
 import InputStyles from 'src/styles/input-style';
 import axios from "axios";
 import {BASE_URL} from "../../../services/config";
@@ -156,9 +156,12 @@ const ResetPassword = ({navigation}) => {
     const validatePasswordMatch = (value: string, password: string) => {
         return value === password;
     }
-    const [message, setMessage] = useState("")
-    const [status, setStatus] = useState("")
-    const [showAlert, setShowAlert] = useState(false)
+    const [showAlert, setShowAlert] = useState(false);
+    const [alert, setAlert] = useState({
+        title: '',
+        message: '',
+        color: defaultColor,
+    });
     const onCheckValidation = () => {
         if (!formValue.password.isValid) {
             return onChangeText('password', formValue.password.value);
@@ -173,15 +176,19 @@ const ResetPassword = ({navigation}) => {
 
 
             axios.patch(BASE_URL + '/user/profile/change-password', params, config).then((response) => {
-                response?.data?.message ? setMessage(response?.data?.message) : ""
-                response?.data?.status ? setStatus(response?.data?.status) : ""
+                setAlert({
+                    title: response?.status === 200 ? 'Success' : 'Failure',
+                    message: response?.data?.message || '',
+                    color: response?.status === 200 ? successColor : errorColor,
+                });
                 setShowAlert(true)
             }).catch((err)=>{
-                      if(err?.response?.data?.message){
-                          err?.response?.data?.message ? setMessage(err?.response?.data?.message) : ""
-                          err?.response?.data?.error ? setStatus(err?.response?.data?.error) : ""
-                          setShowAlert(true)
-                      }
+                setAlert({
+                    title: err?.title || 'Failure',
+                    message: err?.message || 'Your password was not updated.',
+                    color: errorColor,
+                });
+                setShowAlert(true)
             })
         }
     }
@@ -191,28 +198,18 @@ const ResetPassword = ({navigation}) => {
     return (
         <SafeAreaView style={styles.container}>
             <AwesomeAlert
-                actionContainerStyle={{
-                    flexDirection: "row-reverse"
-                }}
+                actionContainerStyle={{ flexDirection: "row-reverse" }}
                 show={showAlert}
                 showProgress={false}
-                title={status}
-                message={message}
+                title={alert?.title}
+                message={alert?.message}
                 messageStyle={{ textAlign: 'center' }}
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={false}
-                showCancelButton={true}
                 showConfirmButton={true}
-                cancelText="Cancel"
-                confirmText="Yes"
-                confirmButtonColor="#DD6B55"
-                onCancelPressed={() => {
-                    setShowAlert(false)
-                }}
-                onConfirmPressed={() => {
-
-                    setShowAlert(false)
-                }}
+                confirmText="OK"
+                confirmButtonColor={alert?.color}
+                onConfirmPressed={() => setShowAlert(false)}
             />
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>

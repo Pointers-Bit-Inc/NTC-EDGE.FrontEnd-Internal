@@ -13,7 +13,8 @@ const InitialState = Record({
   address: '',
   profileImage: '',
   image: '',
-  name: ''
+  name: '',
+  profilePicture: {},
 });
 
 export default InitialState;

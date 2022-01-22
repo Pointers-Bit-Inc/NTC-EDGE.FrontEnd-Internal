@@ -39,6 +39,7 @@
     "expo-barcode-scanner": "~11.1.2",
     "expo-checkbox": "~2.0.0",
     "expo-dev-client": "~0.6.3",
+    "expo-document-picker": "^10.1.0",
     "expo-image-picker": "~11.0.3",
     "expo-permissions": "~13.0.3",
     "expo-progress": "^0.0.2",

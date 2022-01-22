@@ -41,7 +41,7 @@ const Requirement = (props:any) =>{
                                         <Image
                                             style={{width: 350, height: 216}}
                                             source={{
-                                                uri: requirement?.links?.small,
+                                                uri: requirement?.links?.large,
                                             }}
                                         />
                                     </View>
@@ -49,7 +49,7 @@ const Requirement = (props:any) =>{
                                         <View style={styles.rect6}>
                                             <View style={styles.group}>
                                                 <TouchableOpacity onPress={()=>{
-                                                    setSelectImage(requirement?.links?.thumb)
+                                                    setSelectImage(requirement?.links?.large)
                                                     setVisibleModal(true)
                                                 }
                                                 }>
