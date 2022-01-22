@@ -528,15 +528,16 @@ export default function ActivitiesPage(props: any) {
                             </TouchableOpacity>
                         </View>
 
-                        {pnApplications?.length > 0 &&
+                        {!searchVisible && pnApplications?.length > 0 &&
                         <View style={styles.pinnedgroup}>
                             <View style={styles.pinnedcontainer}>
                                 <Text style={styles.pinnedActivity}>Pinned activity</Text>
                             </View>
                         </View>}
-                        {pnApplications.map((item: any, index: number) => {
+                        {!searchVisible && pnApplications.map((item: any, index: number) => {
                             return item?.activity && item?.activity.map((act: any, i: number) => {
                                 return act?.assignedPersonnel == user?._id && <ActivityItem
+                                   key={i}
                                     searchQuery={searchTerm}
                                     activity={act}
                                     onPressUser={() => {

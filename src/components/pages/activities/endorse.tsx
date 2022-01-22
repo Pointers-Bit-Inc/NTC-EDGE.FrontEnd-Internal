@@ -25,6 +25,7 @@ function Endorsed(props:any) {
     const [message, setMessage] = useState("")
     const [validateRemarks, setValidateRemarks] = useState<{error: boolean}>({error: false})
     useEffect(()=>{
+        let isCurrent = true
         axios.get(BASE_URL + '/users' ,
             {
                 headers: {
@@ -39,12 +40,15 @@ function Endorsed(props:any) {
                 return {value: item._id, label: item.firstName + " " + item.lastName}
             })
 
-            setPickedEndorsed(res)
+            if(isCurrent)setPickedEndorsed(res)
             if(res){
                 setEndorsed(res[0]?.value)
             }
 
         })
+        return () =>{
+            isCurrent = false
+        }
     }, [])
     const onEndorseConfirm = () => {
 
