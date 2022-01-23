@@ -13,7 +13,7 @@ import {
     DECLINED,
     DIRECTOR,
     EVALUATOR,
-    FOREVALUATION,
+    FOREVALUATION, FORVERIFICATION,
     PAID, PENDING,
     UNVERIFIED,
     VERIFIED,
@@ -129,8 +129,8 @@ function ActivityModal(props: any) {
     }, [assignId, status, props.details.paymentStatus, props.details.status])
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
-    const allButton =  (statusMemo == PENDING || statusMemo == FOREVALUATION) && [EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?.id ? true:  (declineButton || approveButton || grayedOut)
-    console.log( statusMemo, props.details.assignedPersonnel, "[assign id:", assignId , ']', user?._id, [EVALUATOR].indexOf(user?.role?.key) != -1, assignId == user?._id, assignId == null)
+    const allButton =  (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?.id ? true:  (declineButton || approveButton || grayedOut)
+    console.log([CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 , statusMemo == FORVERIFICATION, statusMemo, props.details.assignedPersonnel, "[assign id:", assignId , ']', user?._id, [EVALUATOR].indexOf(user?.role?.key) != -1, assignId == user?._id, assignId == null)
           console.log((statusMemo == PENDING || statusMemo == FOREVALUATION) && [EVALUATOR].indexOf(user?.role?.key) != -1 && assignId ==" user?._id" ?('true') : 'false')
     return (
         <Modal

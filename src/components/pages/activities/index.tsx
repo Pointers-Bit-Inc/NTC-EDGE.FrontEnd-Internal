@@ -425,7 +425,7 @@ export default function ActivitiesPage(props: any) {
     const updateModalFn = (bool) => {
         setUpdateModal(bool)
     }
-
+ 
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
