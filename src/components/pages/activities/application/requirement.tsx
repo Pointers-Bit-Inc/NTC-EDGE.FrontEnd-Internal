@@ -24,7 +24,7 @@ const Requirement = (props:any) =>{
         setSelectImage("")
         setVisibleModal(false)
     }
-    return <ScrollView style={width}>
+    return <ScrollView style={{width}}>
         <View style={[styles.container, {marginTop: 12}]}>
             {props.requirements.map((requirement:any, index:number) =>{
                 return <View key={index} style={styles.group6}>
