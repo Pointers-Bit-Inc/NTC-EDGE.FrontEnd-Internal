@@ -1,4 +1,14 @@
-import {APPROVED, CASHIER, DECLINED, DIRECTOR, EVALUATOR, PENDING} from "../activity/initialstate";
+import {
+    APPROVED,
+    CASHIER,
+    DECLINED,
+    DIRECTOR,
+    EVALUATOR,
+    FORVERIFICATION,
+    PAID,
+    PENDING,
+    UNVERIFIED, VERIFIED
+} from "../activity/initialstate";
 
 const {
     SET_PINNED_APPLICATION,
@@ -126,14 +136,25 @@ export default function basket(state = initialState, action = {}) {
                 state = state.set("notPinnedApplications", notPinned)
 
             } else if (pinnedIndex != -1) {
-                console.log("pinned index 1")
+                let _notPinned = {...pinned[pinnedIndex]}
                 if (cashier) {
-                    pinned[pinnedIndex].paymentStatus = action.payload.status
-                    state = state.set("pinnedApplications", pinned)
+                    if(action.payload.status == VERIFIED ||
+                        action.payload.status == UNVERIFIED ||
+                        action.payload.status == PAID ||
+                        action.payload.status == APPROVED ||
+                        action.payload.status == DECLINED) {
+                        _notPinned.paymentStatus = action.payload.status
+                        state = state.set('pinnedApplications', pinned.filter(o => o._id !== pinned[pinnedIndex]._id));
+                        state = state.set('notPinnedApplications', [
+                            ...notPinned.concat(_notPinned),
+                        ]);
+                    } else {
+                        pinned[pinnedIndex].paymentStatus = action.payload.status
+                        state = state.set("pinnedApplications", pinned)
+                    }
                 } else if (directorAndEvaluator) {
                       if(action.payload.status == APPROVED || action.payload.status == DECLINED) {
 
-                          let _notPinned = {...pinned[pinnedIndex]}
                           _notPinned.status = action.payload.status
                           _notPinned.assignedPersonnel = action.payload.assignedPersonnel
 
