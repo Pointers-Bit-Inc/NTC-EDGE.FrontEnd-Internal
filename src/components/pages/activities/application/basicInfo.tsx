@@ -1,12 +1,12 @@
 import React, {useEffect, useMemo, useState} from "react";
-import {ScrollView, StyleSheet, Text, View} from "react-native";
+import {Dimensions, ScrollView, StyleSheet, Text, View} from "react-native";
 import {formatDate} from "@pages/activities/script";
 
-
+const {width, height} = Dimensions.get("screen")
 
 const BasicInfo = (props: any) => {
     const applicant = props.applicant
-    return <ScrollView style={{backgroundColor: "#fff", }}>
+    return <ScrollView style={{width, backgroundColor: "#fff", }}>
 
         {props.applicant &&  <View style={[styles.container, {marginTop: 12}]}>
             <View style={styles.group4}>

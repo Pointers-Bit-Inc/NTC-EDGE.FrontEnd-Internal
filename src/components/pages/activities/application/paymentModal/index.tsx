@@ -1,9 +1,10 @@
 import React from "react";
 import BackgroundPayment from "@assets/svg/backgroundpayment";
-import {Modal, View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView} from "react-native";
+import {Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import moment from "moment";
-const { width, height } = Dimensions.get('window');
-const PaymentModal = (props:any) => {
+
+const {width, height} = Dimensions.get('window');
+const PaymentModal = (props: any) => {
 
     return <Modal
         animationType="slide"
@@ -20,14 +21,14 @@ const PaymentModal = (props:any) => {
             <View style={styles.container}>
                 <View style={
                     {
-                        padding: 20, 
+                        padding: 20,
                         paddingTop: 35,
                         paddingBottom: 10,
                         alignItems: 'flex-end',
                         backgroundColor: "rgba(0,65,172,1)"
                     }}>
                     <TouchableOpacity
-                        onPress={()=>{
+                        onPress={() => {
                             props.onDismissed()
                         }}
                     >
@@ -36,25 +37,27 @@ const PaymentModal = (props:any) => {
                 </View>
                 <ScrollView>
                     {/* <BackgroundPayment style={{position:"absolute", marginTop: -150}} width={width}></BackgroundPayment> */}
-                    <View style={{ position:"absolute", top: -60 }}>
-                        <BackgroundPayment  width={width}></BackgroundPayment>
+                    <View style={{position: "absolute", top: -60}}>
+                        <BackgroundPayment width={width}></BackgroundPayment>
                     </View>
-                    <View style={{ position:"absolute", top: 60 }}>
-                        <BackgroundPayment  width={width}></BackgroundPayment>
+                    <View style={{position: "absolute", top: 60}}>
+                        <BackgroundPayment width={width}></BackgroundPayment>
                     </View>
-                    <View style={[styles.group8, { alignItems: 'center', marginBottom: 100 }]}>
+                    <View style={[styles.group8, {alignItems: 'center', marginBottom: 100}]}>
                         <View style={styles.group5}>
                             <Text style={styles.paymentReceivedFor}>Payment received for</Text>
                             <Text style={styles.ntcEdge}>NTC-EDGE</Text>
                             <Text style={styles.theAmoutOf}>the amout of</Text>
                             <Text style={styles.php5000}>PHP {props?.totalFee}</Text>
 
-                            {props?.paymentMethod && <Text style={styles.loremIpsum}>using your {props?.paymentMethod}</Text>}
+                            {props?.paymentMethod &&
+                            <Text style={styles.loremIpsum}>using your {props?.paymentMethod}</Text>}
                         </View>
                         <View style={styles.group2}>
                             <View style={styles.rect}>
                                 <Text style={styles.refNo12345678910}>Ref. No. 12345678910</Text>
-                                {props?.updatedAt && <Text style={styles.text}>{ moment(props?.updatedAt).format('LLL')}</Text>}
+                                {props?.updatedAt &&
+                                <Text style={styles.text}>{moment(props?.updatedAt).format('LLL')}</Text>}
                             </View>
                         </View>
                         <View style={styles.group6}>
@@ -68,7 +71,7 @@ const PaymentModal = (props:any) => {
                                     <Text style={styles.amountPaid}>Amount paid</Text>
                                 </View>
                                 <View style={styles.group4}>
-                                    
+
                                     <Text style={styles.emailInput}>{props?.applicant?.user?.email}</Text>
                                     <Text style={styles.php000}>PHP {props?.totalFee}</Text>
                                     <Text style={styles.loremIpsum3}>1234567</Text>
@@ -134,7 +137,7 @@ const styles = StyleSheet.create({
     group2: {
         width: '100%',
         marginTop: 30,
-        alignItems: 'center'        
+        alignItems: 'center'
     },
     rect: {
         width: width * 0.65,
@@ -146,8 +149,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    group: {
-    },
+    group: {},
     refNo12345678910: {
         color: "#121212",
         fontSize: 16,
@@ -193,7 +195,7 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     group4: {
-        
+
         height: 148,
         justifyContent: "space-around"
     },

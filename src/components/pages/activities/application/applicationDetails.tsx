@@ -1,9 +1,9 @@
 import React, {useState} from "react";
-import {ScrollView, StyleSheet, Text, View} from "react-native";
-
+import {Dimensions, ScrollView, StyleSheet, Text, View} from "react-native";
+const {width, height} = Dimensions.get("screen")
 const ApplicationDetails = (props:any) =>{
 
-    return <ScrollView style={{backgroundColor: "#fff", }}>
+    return <ScrollView style={{width, backgroundColor: "#fff", }}>
         <View style={[styles.container, {marginTop: 12}]}>
             <View style={styles.group2}>
                 <View style={styles.rect}>

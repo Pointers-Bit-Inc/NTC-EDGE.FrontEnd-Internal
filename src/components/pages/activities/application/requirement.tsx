@@ -1,11 +1,21 @@
 import React, {useState} from "react";
-import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import {
+    Dimensions,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View
+} from "react-native";
 import {EvilIcons} from "@expo/vector-icons";
 import Collapsible from "react-native-collapsible";
 import ChevronUpIcon from "@assets/svg/chevron-up";
 import ChevronDownIcon from "@assets/svg/chevron-down";
 import {styles} from "@pages/activities/application/styles";
 import RequirementModal from "@pages/activities/application/requirementModal";
+const {width, height} = Dimensions.get("screen")
 const Requirement = (props:any) =>{
     const [selectCollapsed, setSelectCollapsed] = useState(0)
     const [visibleModal, setVisibleModal] = useState(false)
@@ -14,8 +24,8 @@ const Requirement = (props:any) =>{
         setSelectImage("")
         setVisibleModal(false)
     }
-    return <ScrollView>
-        <View style={styles.container}>
+    return <ScrollView style={width}>
+        <View style={[styles.container, {marginTop: 12}]}>
             {props.requirements.map((requirement:any, index:number) =>{
                 return <View key={index} style={styles.group6}>
                     <TouchableWithoutFeedback onPress={()=>{

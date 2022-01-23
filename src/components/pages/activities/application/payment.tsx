@@ -1,8 +1,9 @@
 import React, {useState} from "react";
-import {Image, ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
+import {Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
 import {Entypo} from "@expo/vector-icons";
 import PaymentModal from "@pages/activities/application/paymentModal/index";
 import Text from "@components/atoms/text";
+const {width, height} = Dimensions.get("screen") 
 const Payment = (props:any) => {
     const [visibleModal, setVisibleModal] = useState(false)
     const onDismissed = () =>{
@@ -15,8 +16,8 @@ const Payment = (props:any) => {
         return total;
     }
 
-    return <ScrollView style={{flex: 1, paddingTop: 10}}>
-        <View style={styles.container}>
+    return <ScrollView style={{width, paddingTop: 10}}>
+        <View style={[styles.container, {marginTop: 12}]}>
             
             <View style={{  padding: 5, alignItems: 'center' }}>
                 <Text
