@@ -338,7 +338,7 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - AgoraRtcEngine_iOS (3.5.0.4)
+  - AgoraRtcEngine_iOS (3.5.2)
   - boost-for-react-native (1.63.0)
   - BoringSSL-GRPC (0.0.7):
     - BoringSSL-GRPC/Implementation (= 0.0.7)
@@ -376,7 +376,7 @@ PODS:
     - EXJSONUtils
   - EXPermissions (13.0.3):
     - ExpoModulesCore
-  - Expo (43.0.4):
+  - Expo (43.0.5):
     - ExpoModulesCore
   - expo-dev-client (0.6.3):
     - EXManifests
@@ -413,7 +413,7 @@ PODS:
   - expo-dev-menu/Vendored (0.8.4):
     - expo-dev-menu-interface
     - React-Core
-  - ExpoModulesCore (0.4.9):
+  - ExpoModulesCore (0.4.10):
     - React-Core
   - EXScreenOrientation (4.0.3):
     - ExpoModulesCore
@@ -699,8 +699,8 @@ PODS:
     - React-jsi (= 0.64.3)
     - React-perflogger (= 0.64.3)
   - React-jsinspector (0.64.3)
-  - react-native-agora (3.5.1):
-    - AgoraRtcEngine_iOS (= 3.5.0.4)
+  - react-native-agora (3.5.2):
+    - AgoraRtcEngine_iOS (= 3.5.2)
     - React
   - react-native-camera (4.2.1):
     - React-Core
@@ -778,7 +778,7 @@ PODS:
     - React-cxxreact (= 0.64.3)
     - React-jsi (= 0.64.3)
     - React-perflogger (= 0.64.3)
-  - RNCAsyncStorage (1.15.14):
+  - RNCAsyncStorage (1.15.16):
     - React-Core
   - RNCPicker (2.1.0):
     - React-Core
@@ -1064,7 +1064,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
-  AgoraRtcEngine_iOS: a5c32145692b996e67bd646ddde268c77b04ad71
+  AgoraRtcEngine_iOS: 3d13806d67e401298558c9a6fb09340a4299afa2
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
@@ -1081,12 +1081,12 @@ SPEC CHECKSUMS:
   EXKeepAwake: b571c2ad8323b2fced6e907766e2549f75119471
   EXManifests: 50e42e01335df4e54109dee7be5a91bfd37347db
   EXPermissions: 7696f4c16e89981f84c04d96327f7e1e592373c0
-  Expo: 363a3f3c60d5a1d4f8badb29a869005487f2d9e4
+  Expo: d9588796cd19999da4d440d87bf7eb7ae4dbd608
   expo-dev-client: f7417249bbede98f5fa3f151ae49c46cabfce82b
   expo-dev-launcher: 3a2b9470ed2b4ae0c60615f911c347c50cfc2526
   expo-dev-menu: 07e44bd1432b2bdfe249f76c37a090510c5dcebc
   expo-dev-menu-interface: 508467f2ba2aedda7a44e5080cc1e9a43ab7375e
-  ExpoModulesCore: e41ed0b72daeac74731816ad7997d639f0115a9d
+  ExpoModulesCore: c9438f6add0fb7b04b7c64eb97a833d2752a7834
   EXScreenOrientation: 80c8c07ab3f2beb8e83ba94ab6ee4fb7a6bf01a6
   EXSplashScreen: 57f329dbf25c5c12800feed79068a056453dc772
   EXStructuredHeaders: 873e7f329c2f6279c1b1e0229df59c9861560b53
@@ -1118,7 +1118,7 @@ SPEC CHECKSUMS:
   React-jsi: a8b09c29521c798f1783348b37b511ba7b3dbeb3
   React-jsiexecutor: df6abc9fafbecb8e5b7a5fbc5e6d4bd017d594d5
   React-jsinspector: 34e23860273a23695342f58eed3ffd3ba10c31e0
-  react-native-agora: ec756751c0522b0e50e4743245db2f6d7bdf9fae
+  react-native-agora: 1f40c29ef13de4ccf00ddbfda1316f87c0c2b135
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-pager-view: b90963d848e777def6714ab7fd40d02fa797e930
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
@@ -1134,7 +1134,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: c7f845861e79eae13dc1e8217a3cf47a3945b504
   React-runtimeexecutor: 493d9abb8b23c3f84e19ae221eeba92cadcb70dc
   ReactCommon: 8fea6422328e2fc093e25c9fac67adbcf0f04fb4
-  RNCAsyncStorage: ea6b5c280997b2b32a587793163b1f10e580c4f7
+  RNCAsyncStorage: 6ed7eefcf176fee8cd7039a44ca56f0247a650bb
   RNCPicker: f7a40b21b915b7a187624d52f52b7bc2f73ea413
   RNDateTimePicker: 7658208086d86d09e1627b5c34ba0cf237c60140
   RNFBApp: 6e20f07b316346d96737191f377777f61f51a8d2
