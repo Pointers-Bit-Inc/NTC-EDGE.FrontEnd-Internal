@@ -206,7 +206,7 @@ function ActivityModal(props: any) {
                     <ProfileImage
                         size={65}
                         textSize={22}
-                        image={applicant?.image}
+                        image={applicant?.profilePicture?.small}
                         name={`${applicant?.firstName} ${applicant?.lastName}`}
                     />
                     <View style={{paddingHorizontal: 15, flex: 1}}>

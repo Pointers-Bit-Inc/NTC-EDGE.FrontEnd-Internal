@@ -194,7 +194,7 @@ const Meet = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
           <ProfileImage
             size={45}
-            image={user.image}
+            image={user?.profilePicture?.small}
             name={`${user.firstName} ${user.lastName}`}
           />
         </TouchableOpacity>

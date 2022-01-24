@@ -1,4 +1,4 @@
-const { SET_USER, UPDATE_USER } = require('./types').default;
+const { SET_USER, UPDATE_USER, RESET_USER } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
 
@@ -10,6 +10,24 @@ export default function basket(state = initialState, action = {}) {
       return {
         ...state,
         ...action.payload
+      };
+    }
+    case RESET_USER: {
+      return {
+        username: '',
+        email: '',
+        password: '',
+        userType: '',
+        permitType: '',
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        contactNumber: '',
+        address: '',
+        profileImage: '',
+        image: '',
+        name: '',
+        profilePicture: {},
       };
     }
     case UPDATE_USER:{
