@@ -118,6 +118,7 @@ const RenderApplication = ({ applicationType }:any) => {
 }
 
 export function ActivityItem(props:any) {
+   
     const  status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status)
     const userActivity = props?.activity?.applicant?.user
 

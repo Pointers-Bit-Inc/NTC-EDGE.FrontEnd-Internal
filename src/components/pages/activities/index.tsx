@@ -538,6 +538,7 @@ export default function ActivitiesPage(props: any) {
                             return item?.activity && item?.activity.map((act: any, i: number) => {
                                 return act?.assignedPersonnel == user?._id && <ActivityItem
                                    key={i}
+                                   role={user?.role?.key}
                                     searchQuery={searchTerm}
                                     activity={act}
                                     onPressUser={() => {

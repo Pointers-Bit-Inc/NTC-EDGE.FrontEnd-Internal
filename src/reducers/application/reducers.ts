@@ -75,7 +75,9 @@ export default function basket(state = initialState, action = {}) {
             const isPinned = []
             for (let i = 0; i < action.payload?.data?.docs?.length; i++) {
 
-                if ((action.payload?.data.docs[i].assignedPersonnel ==  action.payload?.user?._id)  && !(cashier ? ( action.payload?.data?.docs[i].paymentStatus == APPROVED || action.payload?.data?.docs[i].paymentStatus == DECLINED) : (action.payload?.data?.docs[i].status == DECLINED || action.payload?.data?.docs[i].status == APPROVED)) ) {
+                if ((action.payload?.data.docs[i].assignedPersonnel ==  action.payload?.user?._id)  &&
+                    !(cashier ?
+                        ( action.payload?.data?.docs[i].paymentStatus == APPROVED || action.payload?.data?.docs[i].paymentStatus == DECLINED) : (action.payload?.data?.docs[i].status == DECLINED || action.payload?.data?.docs[i].status == APPROVED)) ) {
                     isPinned.push(action.payload?.data?.docs[i])
                 } else {
                     isNotPinned.push(action.payload?.data?.docs[i])
@@ -100,7 +102,7 @@ export default function basket(state = initialState, action = {}) {
                         || action.payload?.data[i].paymentStatus == DECLINED)
                         : (action.payload?.data[i].status == DECLINED || action.payload?.data[i].status == APPROVED)) ) {
                     isPinned.push(action.payload?.data[i])
-                } else {      
+                } else {
                     isNotPinned.push(action.payload?.data[i])
                 }
             }
