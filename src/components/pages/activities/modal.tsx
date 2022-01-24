@@ -288,7 +288,7 @@ function ActivityModal(props: any) {
                         {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 1, paddingRight: 5}}>
                             <TouchableOpacity
-                                disabled={currentLoading === APPROVED || grayedOut}
+                                disabled={currentLoading === APPROVED || allButton}
                                 onPress={() => {
                                     if (cashier) {
                                         onShowConfirmation(APPROVED)

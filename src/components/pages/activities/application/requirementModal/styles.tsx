@@ -1,6 +1,6 @@
 import {StyleSheet} from "react-native";
 
-export const styles = StyleSheet.create({
+export const requirementStyle = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: "center",
@@ -11,12 +11,12 @@ export const styles = StyleSheet.create({
         marginBottom: 5,
     },
     group5: {
-        height: 36,
         alignSelf: "center"
     },
     rect1: {
         width: 350,
         height: 36,
+        justifyContent: "space-between",
         backgroundColor: "rgba(255,255,255,1)",
         borderRadius: 6,
         flexDirection: "row"
@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
     },
     rect2: {
         marginRight: 18,
-        marginTop: 10
+        marginTop: 9
     },
     group3: {
         width: 303,
@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
     },
     rect: {
         width: 350,
-        height: 307,
+
         borderBottomRightRadius: 14,
         borderBottomLeftRadius: 14,
         backgroundColor: "#fff"
@@ -63,21 +63,21 @@ export const styles = StyleSheet.create({
     group2: {
         width: 91,
         height: 35,
-        marginTop: 8,
-        marginLeft: 129
+        margin: 8,
+        alignSelf: "center"
     },
     rect6: {
-        width: 91,
+        width: 90,
         height: 35,
+        justifyContent: "center",
         backgroundColor: "rgba(243,245,247,1)",
-        borderRadius: 6
+        borderRadius: 6,
     },
     group: {
         width: 51,
         height: 17,
         flexDirection: "row",
-        marginTop: 9,
-        marginLeft: 20
+        alignSelf: "center"  ,
     },
     icon: {
         color: "rgba(40,99,214,1)",

@@ -13,8 +13,8 @@ import {EvilIcons} from "@expo/vector-icons";
 import Collapsible from "react-native-collapsible";
 import ChevronUpIcon from "@assets/svg/chevron-up";
 import ChevronDownIcon from "@assets/svg/chevron-down";
-import {styles} from "@pages/activities/application/styles";
-import RequirementModal from "@pages/activities/application/requirementModal";
+import {requirementStyle} from "@pages/activities/application/requirementModal/styles";
+import RequirementModal from "@pages/activities/application/requirementModal/index";
 const {width, height} = Dimensions.get("screen")
 const Requirement = (props:any) =>{
     const [selectCollapsed, setSelectCollapsed] = useState(0)
@@ -25,29 +25,29 @@ const Requirement = (props:any) =>{
         setVisibleModal(false)
     }
     return <ScrollView style={{width}}>
-        <View style={[styles.container, {marginTop: 12}]}>
+        <View style={[requirementStyle.container, {marginTop: 12}]}>
             {props.requirements.map((requirement:any, index:number) =>{
-                return <View key={index} style={styles.group6}>
+                return <View key={index} style={requirementStyle.group6}>
                     <TouchableWithoutFeedback onPress={()=>{
                         setSelectCollapsed(selectCollapsed == index ? -1 : index)
                     }
                     }>
-                        <View style={styles.group5}>
-                            <View style={styles.rect1}>
-                                <Text style={styles.prcLicensePdf}>{requirement?.title?.slice(0, 40)}</Text>
-                                <View style={styles.prcLicensePdfFiller}>
+                        <View style={requirementStyle.group5}>
+                            <View style={requirementStyle.rect1}>
+                                <Text style={requirementStyle.prcLicensePdf}>{requirement?.title?.slice(0, 40)}</Text>
+                                <View style={requirementStyle.prcLicensePdfFiller}>
                                 </View>
-                                <View style={styles.rect2}>
+                                <View style={requirementStyle.rect2}>
                                     {selectCollapsed == index ? <ChevronUpIcon/> : <ChevronDownIcon/>}
                                 </View>
                             </View>
                         </View>
                        </TouchableWithoutFeedback>
-                    <View style={styles.group3}>
-                        <View style={styles.group4}>
+                    <View style={requirementStyle.group3}>
+                        <View style={requirementStyle.group4}>
                             <Collapsible collapsed={index != selectCollapsed}>
-                                <View style={styles.rect}>
-                                    <View style={styles.rect5}>
+                                <View style={requirementStyle.rect}>
+                                    <View style={requirementStyle.rect5}>
                                         <Image
                                             style={{width: 350, height: 216}}
                                             source={{
@@ -55,17 +55,17 @@ const Requirement = (props:any) =>{
                                             }}
                                         />
                                     </View>
-                                    <View style={styles.group2}>
-                                        <View style={styles.rect6}>
-                                            <View style={styles.group}>
+                                    <View style={requirementStyle.group2}>
+                                        <View style={requirementStyle.rect6}>
+                                            <View style={requirementStyle.group}>
                                                 <TouchableOpacity onPress={()=>{
                                                     setSelectImage(requirement?.links?.large)
                                                     setVisibleModal(true)
                                                 }
                                                 }>
-                                                    <View style={styles.iconRow}>
-                                                        <EvilIcons name="eye" style={styles.icon}/>
-                                                        <Text style={styles.rect8}>View</Text>
+                                                    <View style={requirementStyle.iconRow}>
+                                                        <EvilIcons name="eye" style={requirementStyle.icon}/>
+                                                        <Text style={requirementStyle.rect8}>View</Text>
                                                     </View>
                                                 </TouchableOpacity>
 
