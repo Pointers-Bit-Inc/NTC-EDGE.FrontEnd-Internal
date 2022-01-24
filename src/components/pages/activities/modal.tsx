@@ -74,6 +74,7 @@ function ActivityModal(props: any) {
                 remarks: remarks ? remarks : undefined,
             };
         }
+        console.log(url, params)
         if (applicationId) {
             await api.patch(url, params)
                 .then(res => {
@@ -122,15 +123,16 @@ function ActivityModal(props: any) {
         setStatus("")
         setAssignId(props.details.assignedPersonnel)
     }, [])
+
+
     const statusMemo = useMemo(() => {
         setStatus(status)
-
+        setAssignId(assignId ? assignId : props.details.assignedPersonnel)
         return status ? (cashier ? PaymentStatusText(status) : StatusText(status)) : (cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
     }, [assignId, status, props.details.paymentStatus, props.details.status])
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
     const allButton =  (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?._id ? true :  (declineButton || approveButton || grayedOut)
-    console.log( assignId != user?.id, props.details.paymentStatus, props.details.status, [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 , statusMemo == FORVERIFICATION, statusMemo, props.details.assignedPersonnel, "[assign id:", assignId , ']', user?._id, [EVALUATOR].indexOf(user?.role?.key) != -1, assignId == user?._id, assignId == null)
 
     return (
         <Modal

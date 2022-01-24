@@ -61,6 +61,7 @@ import listEmpty from "@pages/activities/listEmpty";
 const {width} = Dimensions.get('window')
 
 export default function ActivitiesPage(props: any) {
+    const [isPinnedActivity, setIsPinnedActivity] = useState(0)
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(0)
     const [size, setSize] = useState(0)
@@ -113,7 +114,6 @@ export default function ActivitiesPage(props: any) {
             }
         });
     }
-
     const ispinnedApplications = (applications: any) => {
 
         setTotalPages(Math.ceil(applications?.length / 10));
@@ -125,11 +125,13 @@ export default function ActivitiesPage(props: any) {
 
         const list = getList(applications, selectedClone);
 
-        setIsPinnedActivity(0)
+
         const groups = list?.reduce((groups: any, activity: any) => {
 
-            if (activity.isPinned) {
-                setIsPinnedActivity(isPinnedActivity + 1)
+            if (activity.assignedPersonnel == user?._id) {
+              //  isPinned++
+
+
             }
             if (!groups[formatDate(activity.createdAt)]) {
                 groups[formatDate(activity.createdAt)] = [];
@@ -138,6 +140,9 @@ export default function ActivitiesPage(props: any) {
             groups[formatDate(activity.createdAt)].push(activity);
             return groups;
         }, {});
+
+
+
         const groupArrays = Object.keys(groups).map((date) => {
             return {
                 date,
@@ -156,8 +161,6 @@ export default function ActivitiesPage(props: any) {
         if (a) {
             setNumberCollapsed(a)
         }
-
-
         return groupArrays.slice(0, currentPage * 25);
     }
     const [updateUnReadReadApplication, setUpdateUnReadReadApplication] = useState(false)
@@ -247,19 +250,20 @@ export default function ActivitiesPage(props: any) {
     const [offset, setOffset] = useState((currentPage - 1) * perPage)
     const [totalPages, setTotalPages] = useState(0)
     const [numberCollapsed, setNumberCollapsed] = useState<{ parentIndex: number, child: number[] }[]>([])
-    const [isPinnedActivity, setIsPinnedActivity] = useState(0)
+
     const [searchVisible, setSearchVisible] = useState(false)
 
     const pnApplications = useMemo(() => {
+
         setUpdateUnReadReadApplication(false)
         return ispinnedApplications(pinnedApplications)
     }, [updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length, pinnedApplications?.length, currentPage])
 
     const notPnApplications = useMemo(() => {
+
         setUpdateUnReadReadApplication(false)
         return ispinnedApplications(notPinnedApplications)
     }, [updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length, currentPage])
-
 
     const userPress = (index: number) => {
         let newArr = [...numberCollapsed]
@@ -425,6 +429,7 @@ export default function ActivitiesPage(props: any) {
     const updateModalFn = (bool) => {
         setUpdateModal(bool)
     }
+
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
