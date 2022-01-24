@@ -118,14 +118,18 @@ export default function QrCodeScan(props: any) {
    
     return (
         <View style={styles.container}>
-            <RNCamera onBarCodeRead={handleBarCodeScanned}
-                            type={RNCamera.Constants.Type.back}
-                            barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-                            style={[StyleSheet.absoluteFillObject, styles.container]}>
-
-                <BarcodeMask edgeColor="#62B1F6" showAnimatedLine/>
-
-            </RNCamera>
+            {
+                hasPermission && (
+                    <RNCamera
+                        onBarCodeRead={handleBarCodeScanned}
+                        type={RNCamera.Constants.Type.back}
+                        barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
+                        style={[StyleSheet.absoluteFillObject, styles.container]}
+                    >
+                        <BarcodeMask edgeColor="#62B1F6" showAnimatedLine/>
+                    </RNCamera>
+                )
+            }
             <View style={styles.group7}>
                 <View style={styles.header}>
                     <View style={styles.rect}>
