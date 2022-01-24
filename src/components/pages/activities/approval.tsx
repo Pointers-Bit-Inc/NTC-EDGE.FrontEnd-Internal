@@ -94,7 +94,7 @@ function    Approval(props: any){
                         setShowAlert(false)
                     }}
                     onConfirmPressed={() => {
-                             setMessage("")
+                           
                             props.confirm({cashier: cashier, remarks: remarks}, (response,callback) => {
                                 setShowAlert(false)
 

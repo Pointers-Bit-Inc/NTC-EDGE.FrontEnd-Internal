@@ -26,7 +26,7 @@ const Requirement = (props:any) =>{
     }
     return <ScrollView style={{width}}>
         <View style={[requirementStyle.container, {marginTop: 12}]}>
-            {props.requirements.map((requirement:any, index:number) =>{
+            {props?.requirements.map((requirement:any, index:number) =>{
                 return <View key={index} style={requirementStyle.group6}>
                     <TouchableWithoutFeedback onPress={()=>{
                         setSelectCollapsed(selectCollapsed == index ? -1 : index)
