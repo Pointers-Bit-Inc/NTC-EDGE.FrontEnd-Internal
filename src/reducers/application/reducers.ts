@@ -3,7 +3,7 @@ import {
     CASHIER,
     DECLINED,
     DIRECTOR,
-    EVALUATOR,
+    EVALUATOR, FOREVALUATION,
     FORVERIFICATION,
     PAID,
     PENDING,
@@ -159,7 +159,8 @@ export default function basket(state = initialState, action = {}) {
                         state = state.set("pinnedApplications", pinned)
                     }
                 } else if (directorAndEvaluator) {
-                      if(action.payload.status == APPROVED || action.payload.status == DECLINED) {
+                    console.log("action.payload.status:", action.payload.status )
+                      if(action.payload.status == FOREVALUATION || action.payload.status == APPROVED || action.payload.status == DECLINED ) {
 
                           _notPinned.status = action.payload.status
                           _notPinned.assignedPersonnel = action.payload.assignedPersonnel
