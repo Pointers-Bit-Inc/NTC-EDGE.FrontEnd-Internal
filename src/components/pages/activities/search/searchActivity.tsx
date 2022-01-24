@@ -61,7 +61,7 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
                     </View>
                 </View>
             </View>
-            <View style={styles.rect4}>
+            {props.value.length > 0 && <View style={styles.rect4}>
                 <Animated.View style={[{
                     transform: [
                         {
@@ -71,13 +71,13 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
                 }]}>
                     <SearchLoading/>
                 </Animated.View>
-            </View>
+            </View>}
 
             {props.value.length < 1 && <View style={styles.group8}>
                 <View style={styles.rect3}>
                     <View style={styles.group7}>
                         <Text style={styles.recentSearches}>{props.nevers.length ? "Recent Searches" : ""}</Text>
-                        <View style={{justifyContent: "center", height: measure?.height-170}}>
+                        <View style={{justifyContent: "center", height: measure?.height-200}}>
                             <ScrollView  showsVerticalScrollIndicator={false}>
                                 {props.nevers.map(props.callbackfn)}
                             </ScrollView>
