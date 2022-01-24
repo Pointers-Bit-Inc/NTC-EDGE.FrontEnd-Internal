@@ -131,7 +131,7 @@ function ActivityModal(props: any) {
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
     const allButton =  (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?._id ? true :  (declineButton || approveButton || grayedOut)
     console.log( assignId != user?.id, props.details.paymentStatus, props.details.status, [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 , statusMemo == FORVERIFICATION, statusMemo, props.details.assignedPersonnel, "[assign id:", assignId , ']', user?._id, [EVALUATOR].indexOf(user?.role?.key) != -1, assignId == user?._id, assignId == null)
-          console.log((statusMemo == PENDING || statusMemo == FOREVALUATION) && [EVALUATOR].indexOf(user?.role?.key) != -1 && assignId ==" user?._id" ?('true') : 'false')
+       
     return (
         <Modal
             animationType="slide"
