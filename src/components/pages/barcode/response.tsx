@@ -3,10 +3,12 @@ import CheckMarkIcon from "@assets/svg/checkmark";
 import CloseIcon from "@assets/svg/close";
 import ErrorIcon from "@assets/svg/erroricon";
 import React from "react";
+import ProfileImage from "@components/atoms/image/profile";
+import dayjs from "dayjs";
 import {styles} from "@pages/barcode/styles";
 export function Response(props: { verifiedInfo: any, verified: boolean, onPress: () => void, error: boolean, onPress1: () => void }) {
     return <>
-        {props.verified && <View style={styles.group32}>
+        {props.verified && <View style={[styles.group32, { paddingHorizontal: 15 }]}>
             <View style={styles.rect13}>
                 <View style={styles.group31}>
                     <View style={styles.group30}>
@@ -28,8 +30,14 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                             </View>
                         </View>
                     </View>
-                    <View style={styles.rect17}></View>
-                    <View style={styles.group29}>
+                    <ProfileImage
+                        style={{ borderRadius: 5 }}
+                        size={150}
+                        textSize={50}
+                        image={props.verifiedInfo?.applicant?.user?.profilePicture?.small}
+                        name={`${props.verifiedInfo?.applicant?.user?.firstName} ${props.verifiedInfo?.applicant?.user?.lastName}`}
+                    />
+                    <View style={[styles.group29, { paddingHorizontal: 10 }]}>
                         <View style={styles.group17}>
                             <Text style={styles.examDetails}>BASIC INFO</Text>
                             <View style={styles.group18}>
@@ -67,9 +75,9 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                                     <Text style={styles.address2}>Date:</Text>
                                 </View>
                                 <View style={styles.group20}>
-                                    <Text style={styles.name3}>Name:</Text>
-                                    <Text style={styles.address3}>Address:</Text>
-                                    <Text style={styles.address3}>Address:</Text>
+                                    <Text style={styles.name3}>{props?.verifiedInfo?.ORNumber}</Text>
+                                    <Text style={styles.address3}>PHP {parseFloat(props?.verifiedInfo?.totalFee || 0).toFixed(2)}</Text>
+                                    <Text style={styles.address3}>{props?.verifiedInfo?.approvalHistory?.status === 'Approved' ?  dayjs(props?.verifiedInfo?.approvalHistory?.time).format('MM/DD/YY') : null}</Text>
                                 </View>
                             </View>
                         </View>
