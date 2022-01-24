@@ -83,7 +83,6 @@ function ActivityModal(props: any) {
                     setCurrentLoading('');
                     if (res.status === 200) {
                         if (res.data) {
-                            console.log(200)
                             dispatch(updateApplicationStatus({
                                 application: res.data,
                                 status: status,
@@ -93,8 +92,6 @@ function ActivityModal(props: any) {
 
                             setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
                             setChange(true)
-                            // props.onDismissed(true, applicationId)
-
                             return callback(null, applicationId);
                         }
                     }
@@ -126,14 +123,15 @@ function ActivityModal(props: any) {
     }, [])
     const statusMemo = useMemo(() => {
         setStatus(status)
+        setAssignId(props.details.assignedPersonnel)
         setId(props.details.assignedPersonnel)
         return status ? (cashier ? PaymentStatusText(status) : StatusText(status)) : (cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
-    }, [id, status, props.details.paymentStatus, props.details.status])
+    }, [assignId, id, status, props.details.paymentStatus, props.details.status])
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
-    const allButton =  (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && id != user?._id ? true :  (declineButton || approveButton || grayedOut)
-    console.log( id != user?.id, props.details.paymentStatus, props.details.status, [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 , statusMemo == FORVERIFICATION, statusMemo, props.details.assignedPersonnel, "[assign id:", id , ']', user?._id, [EVALUATOR].indexOf(user?.role?.key) != -1, id == user?._id, id == null)
-       
+    const allButton =  (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?._id ? true :  (declineButton || approveButton || grayedOut)
+             console.log(assignId, id)
+
     return (
         <Modal
             animationType="slide"
