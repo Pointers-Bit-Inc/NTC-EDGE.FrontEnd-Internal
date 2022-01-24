@@ -5,6 +5,7 @@ import {
     Dimensions,
     FlatList,
     RefreshControl,
+    ScrollView,
     StatusBar,
     Text,
     TouchableOpacity,
@@ -527,27 +528,6 @@ export default function ActivitiesPage(props: any) {
                                 }
                             </TouchableOpacity>
                         </View>
-
-                        {!searchVisible && pnApplications?.length > 0 &&
-                        <View style={styles.pinnedgroup}>
-                            <View style={styles.pinnedcontainer}>
-                                <Text style={styles.pinnedActivity}>Pinned activity</Text>
-                            </View>
-                        </View>}
-                        {!searchVisible && pnApplications.map((item: any, index: number) => {
-                            return item?.activity && item?.activity.map((act: any, i: number) => {
-                                return act?.assignedPersonnel == user?._id && <ActivityItem
-                                   key={i}
-                                   role={user?.role?.key}
-                                    searchQuery={searchTerm}
-                                    activity={act}
-                                    onPressUser={() => {
-                                        setDetails({...act, ...{isPinned: true}})
-                                        setModalVisible(true)
-                                    }} index={i} swiper={renderSwiper}/>
-                            })
-                        })
-                        }
                     </View>
                     <View style={[styles.rect27, {height: 5}]}></View>
                 </View>
@@ -555,6 +535,36 @@ export default function ActivitiesPage(props: any) {
                 <FlatList
                     contentContainerStyle={{flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm)}
+                    ListHeaderComponent={() => (
+                        <>
+                            {!searchVisible && pnApplications?.length > 0 &&
+                                <View style={[styles.pinnedgroup, { height: undefined }]}>
+                                    <View style={[styles.pinnedcontainer, { paddingVertical: 15 }]}>
+                                        <Text style={styles.pinnedActivity}>Pinned activity</Text>
+                                    </View>
+                                </View>}
+                                {!searchVisible && (
+                                    <ScrollView style={{ maxHeight: 300 }}>
+                                        {
+                                            pnApplications.map((item: any, index: number) => {
+                                                return item?.activity && item?.activity.map((act: any, i: number) => {
+                                                    return act?.assignedPersonnel == user?._id && <ActivityItem
+                                                    key={i}
+                                                    role={user?.role?.key}
+                                                        searchQuery={searchTerm}
+                                                        activity={act}
+                                                        onPressUser={() => {
+                                                            setDetails({...act, ...{isPinned: true}})
+                                                            setModalVisible(true)
+                                                        }} index={i} swiper={renderSwiper}/>
+                                                })
+                                            })
+                                        }
+                                    </ScrollView>
+                                )
+                            }
+                        </>
+                    )}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
