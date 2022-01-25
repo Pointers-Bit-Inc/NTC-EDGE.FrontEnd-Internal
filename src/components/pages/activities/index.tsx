@@ -631,7 +631,7 @@ export default function ActivitiesPage(props: any) {
                         //  dispatch(deleteApplications(_id))
                     }
                     if (event) {
-                       // onRefresh()
+                       onRefresh()
                     }
                     onDismissed()
                 }}/>

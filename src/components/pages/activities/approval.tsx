@@ -1,21 +1,29 @@
-import React, {Component, useCallback, useEffect, useMemo, useState} from "react";
-import {StyleSheet, View, Text, Modal, TouchableOpacity, Dimensions, Platform, KeyboardAvoidingView } from "react-native";
+import React, {useEffect, useMemo, useState} from "react";
+import {
+    Dimensions,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
 import ApplicationApproved from "@assets/svg/application-approved";
-import { Ionicons } from "@expo/vector-icons";
-import Dropdown from "@atoms/dropdown";
+import {Ionicons} from "@expo/vector-icons";
 import axios from "axios";
-import { InputField } from "@components/molecules/form-fields";
+import {InputField} from "@components/molecules/form-fields";
 import {BASE_URL} from "../../../services/config";
 import {CASHIER, DIRECTOR, EVALUATOR,} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useSelector} from "react-redux";
-import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
+import AwesomeAlert from "react-native-awesome-alerts";
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
-function    Approval(props: any){
+function Approval(props: any) {
     const isKeyboardVisible = useKeyboard();
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [pickedCashier, setPickedCashier] = useState<any[]>()
@@ -23,55 +31,69 @@ function    Approval(props: any){
     const [cashier, setCashier] = useState()
     const [remarks, setRemarks] = useState("")
     const [showAlert, setShowAlert] = useState(false)
-    const [validateRemarks, setValidateRemarks] = useState<{error: boolean}>({error: false})
-    useEffect(()=>{
+    const [validateRemarks, setValidateRemarks] = useState<{ error: boolean }>({error: false})
+    useEffect(() => {
         let isCurrent = true
-        axios.get(BASE_URL + '/users' ,
+        axios.get(BASE_URL + '/users',
             {
                 headers: {
                     Authorization: "Bearer ".concat(user?.sessionToken)
                 }
-            }).then((response)=>{
-            const filterResponse = [...response.data].filter((item) =>{
+            }).then((response) => {
+            const filterResponse = [...response.data].filter((item) => {
                 return ([CASHIER].indexOf(item?.role?.key) != -1)
             })
 
-            const res = filterResponse.map((item) =>{
+            const res = filterResponse.map((item) => {
                 return {value: item._id, label: item.firstName + " " + item.lastName}
             })
 
-            if(isCurrent) setPickedCashier(res)
-            if(res){
-                if(isCurrent) setCashier(res[0]?.value)
+            if (isCurrent) setPickedCashier(res)
+            if (res) {
+                if (isCurrent) setCashier(res[0]?.value)
             }
 
         })
-        return () =>{
+        return () => {
             isCurrent = false
         }
     }, [])
-
 
 
     function onConfirmation() {
         setMessage("Are you sure you want to approve this application?")
         setShowAlert(true)
     }
-    const confirmDismissed = useMemo(() =>{
+
+    const confirmDismissed = useMemo(() => {
         return false
     }, [showAlert])
     return (
 
-            <Modal
+        <Modal
 
-                animationType="slide"
-                transparent={true}
-                visible={props.visible}
-                onRequestClose={() => {
-                }}>
-                {/*<CustomAlert title="Approved?"
-                             message={message}/>*/}
-                <AwesomeAlert
+            animationType="slide"
+            transparent={true}
+            visible={props.visible}
+            onRequestClose={() => {
+            }}>
+            {/*<CustomAlert
+
+                onCancelPressed={() => {
+                    setShowAlert(false)
+                }}
+                onConfirmPressed={() => {
+
+                    props.confirm({cashier: cashier, remarks: remarks}, (response, callback) => {
+                        setShowAlert(false)
+
+                        props.onDismissed()
+                        callback(true)
+                    })
+
+                }} show={showAlert} title="Approved?"
+                message={message}/>*/}
+            <AwesomeAlert
                     actionContainerStyle={{
 
                         justifyContent: "space-around",
@@ -84,15 +106,6 @@ function    Approval(props: any){
                         position: 'absolute',
                         backgroundColor: 'rgba(52,52,52,0.5)'
                     }: {}}
-                    show={showAlert}
-                    showProgress={false}
-                    title="Approved?"
-                    message={message}
-                    messageStyle={{ textAlign: 'center' }}
-                    closeOnTouchOutside={true}
-                    closeOnHardwareBackPress={false}
-                    showCancelButton={true}
-                    showConfirmButton={true}
                     cancelText="Cancel"
                     confirmText="Yes"
                     confirmButtonColor="#fff"
@@ -115,6 +128,16 @@ function    Approval(props: any){
                         fontWeight: '500',
                         color: "#DC2626"
                     }}
+                    show={showAlert}
+                    showProgress={false}
+                    title="Approved?"
+                    message={message}
+                    messageStyle={{ textAlign: 'center' }}
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    showConfirmButton={true}
+
                     onCancelPressed={() => {
                         setShowAlert(false)
                     }}
@@ -129,70 +152,72 @@ function    Approval(props: any){
 
                     }}
                 />
-                <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    style={[styles.container]}
-                >
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={[styles.container]}
+            >
 
-                    <View style={styles.group}>
-                        <View style={styles.rect}>
-                            <View style={{ alignSelf: 'flex-start' }}>
-                                <TouchableOpacity onPress={()=>{
-                                    props.onDismissed()
-                                }}>
-                                    <Ionicons name="md-close" style={{ fontSize: 25 }}></Ionicons>
-                                </TouchableOpacity>
-                            </View>
-                            <ApplicationApproved style={styles.icon}></ApplicationApproved>
-                            <Text style={styles.applicationApproved}>
-                               {props.isCashier ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED'}
-                            </Text>
-                            <View style={styles.group2}>
-                                {/* <View style={[styles.element, {marginBottom: 5}]}>
+                <View style={styles.group}>
+                    <View style={styles.rect}>
+                        <View style={{alignSelf: 'flex-start'}}>
+                            <TouchableOpacity onPress={() => {
+                                props.onDismissed()
+                            }}>
+                                <Ionicons name="md-close" style={{fontSize: 25}}></Ionicons>
+                            </TouchableOpacity>
+                        </View>
+                        <ApplicationApproved style={styles.icon}></ApplicationApproved>
+                        <Text style={styles.applicationApproved}>
+                            {props.isCashier ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED'}
+                        </Text>
+                        <View style={styles.group2}>
+                            {/* <View style={[styles.element, {marginBottom: 5}]}>
                                 <Dropdown value={cashier}  onChangeValue={(value: any) => {
                                     setCashier(value)}
                                 }
                                             placeholder={{}}
                                             items={pickedCashier}></Dropdown>
                             </View> */}
-                                {[DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 && <InputField
-                                    style={{ fontWeight: 'normal' }}
-                                    outlineStyle={{
-                                        borderColor: "rgba(202,210,225,1)",
-                                        paddingTop: 5,
-                                        height: (height < 720 && isKeyboardVisible) ? 45 : height * 0.15
-                                    }}
-                                    placeholder={'Remarks'}
-                                    multiline={true}
-                                    value={remarks}
-                                    error={validateRemarks.error}
-                                    errorColor={errorColor}
-                                    onChangeText={(text: string) => {
+                            {[DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 && <InputField
+                                style={{fontWeight: 'normal'}}
+                                outlineStyle={{
+                                    borderColor: "rgba(202,210,225,1)",
+                                    paddingTop: 5,
+                                    height: (height < 720 && isKeyboardVisible) ? 45 : height * 0.15
+                                }}
+                                placeholder={'Remarks'}
+                                multiline={true}
+                                value={remarks}
+                                error={validateRemarks.error}
+                                errorColor={errorColor}
+                                onChangeText={(text: string) => {
 
-                                        props.onChangeRemarks(text)
-                                        setRemarks(text)
-                                    }
-                                    }
-                                /> }
-                                <View style={{ marginTop: 5 }} >
-                                    <TouchableOpacity onPress={()=>{
-                                        onConfirmation()
-                                    }}>
-                                        <View style={styles.rect3}>
-                                            <Text style={styles.close}>Confirm</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
+                                    props.onChangeRemarks(text)
+                                    setRemarks(text)
+                                }
+                                }
+                            />}
+                            <View style={{marginTop: 5}}>
+                                <TouchableOpacity onPress={() => {
+                                    onConfirmation()
+                                }}>
+                                    <View style={styles.rect3}>
+                                        <Text style={styles.close}>Confirm</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>
-                </KeyboardAvoidingView>
-            </Modal>
+                </View>
+            </KeyboardAvoidingView>
+        </Modal>
 
     )
 }
+
 const styles = StyleSheet.create({
-    element:{
+
+    element: {
         backgroundColor: "rgba(255,255,255,1)",
         borderWidth: 1,
         borderColor: "rgba(202,210,225,1)",

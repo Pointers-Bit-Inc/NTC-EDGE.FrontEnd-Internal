@@ -1,9 +1,18 @@
 import React, {useEffect, useState} from "react";
-import {Animated, BackHandler, Dimensions, Platform, StyleSheet, Text, View} from "react-native";
+import {Animated, BackHandler, Dimensions, Platform, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import Modal from "react-native-modal";
 const {width} = Dimensions.get('window');
 function CustomAlert(props) {
     
     return (
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={props.show}
+            onRequestClose={() => {
+
+            }}
+        >
             <View style={styles.container}>
                 <View style={styles.group}>
                     <View style={styles.container___}>
@@ -17,13 +26,20 @@ function CustomAlert(props) {
                                 <View style={styles.separator}></View>
                             </View>
                             <View style={styles.action}>
-                                <Text style={styles.close}>Close</Text>
-                                <Text style={styles.yes}>Yes</Text>
+                                <TouchableOpacity onPress={props.onCancelPressed}>
+                                    <Text style={styles.close}>Close</Text>
+                                </TouchableOpacity>
+                                 <TouchableOpacity onPress={props.onConfirmPressed}>
+                                     <Text style={styles.yes}>Yes</Text>
+                                 </TouchableOpacity>
+
                             </View>
                         </View>
                     </View>
                 </View>
             </View>
+        </Modal>
+
     );
 }
 
