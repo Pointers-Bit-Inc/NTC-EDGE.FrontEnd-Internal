@@ -89,6 +89,9 @@ function Approval(props: any) {
                       backgroundColor: 'rgba(52,52,52,0.5)'
                   }: {}}>
                       <CustomAlert
+                          onDismissed={()=>{
+                              setShowAlert(false)
+                          }}
                            onLoading={alertLoading}
                           onCancelPressed={() => {
                               setShowAlert(false)

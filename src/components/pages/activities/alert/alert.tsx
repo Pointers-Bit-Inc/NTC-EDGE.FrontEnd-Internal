@@ -21,7 +21,7 @@ function CustomAlert(props) {
             transparent={true}
             visible={props.show}
             onRequestClose={() => {
-
+                props.onDismissed()
             }}
         >
             <View>
