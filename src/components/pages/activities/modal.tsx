@@ -161,7 +161,38 @@ function ActivityModal(props: any) {
             </View>
             <AwesomeAlert
                 actionContainerStyle={{
-                    flexDirection: "row-reverse"
+
+                    justifyContent: "space-around",
+                    flexDirection: "row-reverse",
+                }}
+
+                overlayStyle = {showAlert ? {
+                    width: width,
+                    height: height,
+                    position: 'absolute',
+                    backgroundColor: 'rgba(52,52,52,0.5)'
+                }: {}}
+                cancelText="Cancel"
+                confirmText="Yes"
+                confirmButtonColor="#fff"
+                titleStyle={{
+                    fontWeight: '600',
+                    fontSize: 18,
+                }}
+                contentContainerStyle={{
+                    borderRadius: 14,
+
+                }}
+                confirmButtonTextStyle={{
+                    fontSize: 18,
+                    fontWeight: '500',
+                    color: "#2863D6"
+                }}
+                cancelButtonColor="#fff"
+                cancelButtonTextStyle={{
+                    fontSize: 18,
+                    fontWeight: '500',
+                    color: "#DC2626"
                 }}
                 show={showAlert}
                 showProgress={false}
@@ -172,9 +203,6 @@ function ActivityModal(props: any) {
                 closeOnHardwareBackPress={false}
                 showCancelButton={true}
                 showConfirmButton={true}
-                cancelText="Cancel"
-                confirmText="Yes"
-                confirmButtonColor="#DD6B55"
                 onCancelPressed={() => {
                     setShowAlert(false)
                 }}
