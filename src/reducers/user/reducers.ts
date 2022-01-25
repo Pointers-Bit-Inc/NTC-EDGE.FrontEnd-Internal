@@ -9,7 +9,8 @@ export default function basket(state = initialState, action = {}) {
     case SET_USER: {
       return {
         ...state,
-        ...action.payload
+        ...action.payload,
+        image: action?.payload?.profilePicture?.small,
       };
     }
     case RESET_USER: {
