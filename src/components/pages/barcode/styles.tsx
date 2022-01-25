@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet} from "react-native";
-const height = Dimensions.get('window').height;
+const { height, width } = Dimensions.get('window');
 export const styles = StyleSheet.create({
     rect19: {
         justifyContent: "center",
@@ -40,17 +40,20 @@ export const styles = StyleSheet.create({
         marginTop: 50
     },
     group32: {
-        width: 350,
+        width: width,
+        backgroundColor: 'rgba(0,0,0,0.5)',
         zIndex: 1,
-        height: height < 668 ? 480 : 495,
+        height: height,
         position: "absolute",
-        top: "19%",
-        borderRadius: 14
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     rect13: {
         backgroundColor: "rgba(255,255,255,1)",
         borderRadius: 14,
-        flex: 1
+        width: '100%',
+        maxHeight: height * 0.75,
+        overflow: 'hidden',
     },
     group31: {
         height: 443,
@@ -105,15 +108,14 @@ export const styles = StyleSheet.create({
         borderRadius: 5
     },
     group29: {
-        width: 350,
+        width: '100%',
         height: 202,
         justifyContent: "flex-start",
     },
     group17: {
-        width: 150,
         paddingBottom: 10,
         justifyContent: "space-between",
-        marginLeft: 20
+        marginLeft: 10
     },
     examDetails: {
         fontWeight: "bold",
