@@ -309,7 +309,6 @@ export default function ActivitiesPage(props: any) {
     const bottomLoader = () => {
         return infiniteLoad ? <Loader/> : null
     };
-    
     useEffect(() => {
         let unMount = false;
         const unsubscriber = userActiveMeetingSubscriber((querySnapshot: FirebaseFirestoreTypes.QuerySnapshot) => {

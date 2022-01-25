@@ -33,6 +33,7 @@ function ActivityModal(props: any) {
     const applicant = props?.details?.applicant?.user
     const [change, setChange] = useState<boolean>(false)
     const cashier = [CASHIER].indexOf(user?.role?.key) != -1
+    const director = [DIRECTOR].indexOf(user?.role?.key) != -1
     const [visible, setVisible] = useState(false)
     const [endorseVisible, setEndorseVisible] = useState(false)
     const [approveVisible, setApproveVisible] = useState(false)
@@ -61,10 +62,10 @@ function ActivityModal(props: any) {
         let params: any = {
             status,
             remarks: remarks ? remarks : undefined,
-            assignedPersonnel: assignId ? assignId : undefined,
+            assignedPersonnel: assignId && !director ? assignId : undefined,
         };
         setCurrentLoading(status);
-        if (status == DECLINED) {
+        if (status == DECLINED ) {
             setAssignId("")
         }
         if (user?.role?.key == CASHIER) {
@@ -74,7 +75,7 @@ function ActivityModal(props: any) {
                 remarks: remarks ? remarks : undefined,
             };
         }
-        console.log(url, params)
+        console.log(url, params, assignId)
         if (applicationId) {
             await api.patch(url, params)
                 .then(res => {
@@ -121,7 +122,7 @@ function ActivityModal(props: any) {
     useEffect(() => {
         setChange(false)
         setStatus("")
-        setAssignId(props.details.assignedPersonnel)
+        setAssignId("")
     }, [])
 
 
@@ -133,6 +134,8 @@ function ActivityModal(props: any) {
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
     const allButton =  (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?._id ? true :  (declineButton || approveButton || grayedOut)
+                 console.log("cashier:",cashier, "assign id:", assignId, "id:", user?._id , "status:", status, "payment status:", props.details.paymentStatus, "status: ", props.details.status)
+
 
     return (
         <Modal
