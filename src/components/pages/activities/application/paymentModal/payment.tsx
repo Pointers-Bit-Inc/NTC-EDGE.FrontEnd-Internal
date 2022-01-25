@@ -130,15 +130,15 @@ const Payment = (props:any) => {
                                 <Text style={styles.ntcEdge}>NTC-EDGE</Text>
                                 <Text style={styles.theAmoutOf}>the amout of PHP {props?.totalFee}</Text>
                                 {props?.paymentMethod && <Text style={styles.php5000}>Payment method: {props?.paymentMethod}</Text> }
-                                <View style={requirementStyle.rect5}>
-                                    {props?.proofOfPayment?.small && <Image
+                                {props?.proofOfPayment?.small &&<View style={requirementStyle.rect5}>
+                                     <Image
                                         style={{width: 350, height: 216}}
                                         source={{
                                             uri: props?.proofOfPayment?.small,
                                         }}
-                                    /> }
+                                    />
 
-                                </View>
+                                </View> }
                                 <View style={requirementStyle.group2}>
                                     <View style={requirementStyle.rect6}>
                                         <View style={requirementStyle.group}>

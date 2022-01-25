@@ -11,6 +11,7 @@ import {RootStateOrAny, useSelector} from "react-redux";
 import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
+import CustomAlert from "@pages/activities/alert/alert";
 
 const { width, height } = Dimensions.get('window');
 
@@ -41,7 +42,7 @@ function    Approval(props: any){
 
             if(isCurrent) setPickedCashier(res)
             if(res){
-                setCashier(res[0]?.value)
+                if(isCurrent) setCashier(res[0]?.value)
             }
 
         })
@@ -68,10 +69,15 @@ function    Approval(props: any){
                 visible={props.visible}
                 onRequestClose={() => {
                 }}>
+                {/*<CustomAlert title="Approved?"
+                             message={message}/>*/}
                 <AwesomeAlert
                     actionContainerStyle={{
-                        flexDirection: "row-reverse"
+
+                        justifyContent: "space-around",
+                        flexDirection: "row-reverse",
                     }}
+
                     overlayStyle = {showAlert ? {
                         width: width,
                         height: height,
@@ -80,7 +86,7 @@ function    Approval(props: any){
                     }: {}}
                     show={showAlert}
                     showProgress={false}
-                    title="Confirm?"
+                    title="Approved?"
                     message={message}
                     messageStyle={{ textAlign: 'center' }}
                     closeOnTouchOutside={true}
@@ -89,12 +95,31 @@ function    Approval(props: any){
                     showConfirmButton={true}
                     cancelText="Cancel"
                     confirmText="Yes"
-                    confirmButtonColor="#DD6B55"
+                    confirmButtonColor="#fff"
+                    titleStyle={{
+                        fontWeight: '600',
+                        fontSize: 18,
+                    }}
+                    contentContainerStyle={{
+                        borderRadius: 14,
+
+                    }}
+                    confirmButtonTextStyle={{
+                        fontSize: 18,
+                        fontWeight: '500',
+                        color: "#2863D6"
+                    }}
+                    cancelButtonColor="#fff"
+                    cancelButtonTextStyle={{
+                        fontSize: 18,
+                        fontWeight: '500',
+                        color: "#DC2626"
+                    }}
                     onCancelPressed={() => {
                         setShowAlert(false)
                     }}
                     onConfirmPressed={() => {
-                           
+
                             props.confirm({cashier: cashier, remarks: remarks}, (response,callback) => {
                                 setShowAlert(false)
 

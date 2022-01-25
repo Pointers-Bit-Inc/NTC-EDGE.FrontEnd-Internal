@@ -42,7 +42,7 @@ function Endorsed(props:any) {
 
             if(isCurrent)setPickedEndorsed(res)
             if(res){
-                setEndorsed(res[0]?.value)
+                if(isCurrent)setEndorsed(res[0]?.value)
             }
 
         })
