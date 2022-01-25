@@ -12,6 +12,7 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor, text} from "@styles/color";
    import {alertStyle} from "@pages/activities/alert/styles"
+import CustomAlert from "@pages/activities/alert/alert";
 const { height, width } = Dimensions.get('window');
 
 function Endorsed(props:any) {
@@ -52,14 +53,14 @@ function Endorsed(props:any) {
     }, [])
     const onEndorseConfirm = () => {
 
-            setMessage(`This application will be endorsed to ` +  pickedEndorsed?.find(picked => {
+            setMessage(`` +  pickedEndorsed?.find(picked => {
                 return picked.value == endorsed
             })?.label)
             props.remarks({ endorseId: endorsed, remarks: text, message })
             setShowAlert(true)
         
     }
-
+    const [alertLoading, setAlertLoading] = useState(false)
     return (
             <Modal
                 animationType="slide"
@@ -68,7 +69,41 @@ function Endorsed(props:any) {
 
                 onRequestClose={() => {
                 }}>
-                <AwesomeAlert
+                <View style={showAlert ? {
+                    zIndex: 1,
+                    flex: 1,
+                    width: '100%',
+                    height: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'absolute',
+                    backgroundColor: 'rgba(52,52,52,0.5)'
+                }: {}}>
+                    <CustomAlert
+                        type={FOREVALUATION}
+                        onDismissed={()=>{
+                            setShowAlert(false)
+                        }}
+                        onLoading={alertLoading}
+                        onCancelPressed={() => {
+                            setShowAlert(false)
+                        }}
+                        onConfirmPressed={() => {
+                            setAlertLoading(true)
+                            props.onChangeApplicationStatus({status: FOREVALUATION }, (bool, callback:(bool) =>{}) =>{
+                                setAlertLoading(false)
+                                setShowAlert(false)
+
+                                props.onDismissed()
+                                callback(true)
+
+                            })
+
+
+                        }} show={showAlert} title={"Application has been endorsed to"}
+                        message={message}/>
+                </View>
+                {/*<AwesomeAlert
                     actionContainerStyle={alertStyle.actionContainerStyle}
                     overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
                     confirmButtonColor="#fff"
@@ -101,7 +136,7 @@ function Endorsed(props:any) {
 
 
                     }}
-                />
+                />*/}
                 <KeyboardAvoidingView
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
                     style={[styles.container]}

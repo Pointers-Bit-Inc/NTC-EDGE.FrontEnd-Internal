@@ -13,7 +13,8 @@ import {
 import Modal from "react-native-modal";
 import {alertStyle} from "@pages/activities/alert/styles";
 import CloseModal from "@assets/svg/closeModal";
-import {DECLINED} from "../../../../reducers/activity/initialstate";
+import {DECLINED, FOREVALUATION} from "../../../../reducers/activity/initialstate";
+import EndorseToIcon from "@assets/svg/endorseTo";
 const {width} = Dimensions.get('window');
 function CustomAlert(props) {
     
@@ -36,7 +37,13 @@ function CustomAlert(props) {
                                     props?.type == DECLINED && <View>
                                         <CloseModal></CloseModal>
                                     </View>
-                                } 
+
+                                }
+                                {
+                                    props?.type == FOREVALUATION && <View>
+                                        <EndorseToIcon height_={60} width_={60} color={"#2863D6"}></EndorseToIcon>
+                                    </View>
+                                }
 
                                 <Text style={[styles.title, alertStyle.titleStyle]}>{props?.title}</Text>
                                 <Text style={styles.description_}>
@@ -72,7 +79,7 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     container___: {
-
+         paddingBottom: 3,
         backgroundColor: "rgba(255,255,255,1)",
         borderRadius: 14,
         borderWidth: 0,
@@ -81,7 +88,7 @@ const styles = StyleSheet.create({
     container__: {
                 paddingTop: 15,
                 paddingBottom: 15,
-        justifyContent: "space-between",
+        justifyContent: "space-around",
        
     },
     container_: {
@@ -109,7 +116,7 @@ const styles = StyleSheet.create({
         alignSelf: "stretch"
     },
     action: {
-       
+         marginTop: 10,
         flexDirection: "row",
         justifyContent: "space-around"
     },
