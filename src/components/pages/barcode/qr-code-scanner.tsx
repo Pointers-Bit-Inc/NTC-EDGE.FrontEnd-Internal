@@ -150,9 +150,6 @@ export default function QrCodeScan(props: any) {
                         </View>
                     </View>
                 </View>
-                {
-                    isVerified && <View style={{ position: 'absolute', height, width, backgroundColor: 'rgba(0,0,0,0.3)' }}/>
-                }
             </View>
         </View>
 

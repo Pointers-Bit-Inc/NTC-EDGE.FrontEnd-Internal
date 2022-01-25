@@ -10,7 +10,7 @@ export default function basket(state = initialState, action = {}) {
       return {
         ...state,
         ...action.payload,
-        image: action?.payload?.profilePicture?.small,
+        image: action?.payload?.profilePicture?.small || '',
       };
     }
     case RESET_USER: {

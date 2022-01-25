@@ -295,7 +295,7 @@ const UserProfileScreen = ({navigation}: any) => {
 
     return (
         <View style={styles.container}>
-            <MyStatusBar backgroundColor='rgba(0,65,172,1)' barStyle='light-content' />
+            {/* <MyStatusBar backgroundColor='rgba(0,65,172,1)' barStyle='light-content' /> */}
             <View style={styles.group}>
                 <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.jumpTo('Home'))} >
                     <Ionicons name='md-close' style={styles.icon}></Ionicons>
@@ -374,6 +374,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'rgba(0,65,172,1)',
         padding: 15,
+        paddingTop: 30,
     },
     icon: {
         color: 'rgba(255,255,255,1)',
