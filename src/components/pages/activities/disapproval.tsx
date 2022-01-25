@@ -5,6 +5,7 @@ import {Feather, Ionicons} from "@expo/vector-icons";
 import {DECLINED} from "../../../reducers/activity/initialstate";
 import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
+import {alertStyle} from "@pages/activities/alert/styles";
 
 const { width, height } = Dimensions.get('window');
 
@@ -22,40 +23,16 @@ function Disapproval(props:any) {
                onRequestClose={() => {
                }}>
                <AwesomeAlert
-                   actionContainerStyle={{
-
-                       justifyContent: "space-around",
-                       flexDirection: "row-reverse",
-                   }}
-
-                   overlayStyle = {showAlert ? {
-                       width: width,
-                       height: height,
-                       position: 'absolute',
-                       backgroundColor: 'rgba(52,52,52,0.5)'
-                   }: {}}
+                   actionContainerStyle={alertStyle.actionContainerStyle}
+                   overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
+                   titleStyle={alertStyle.titleStyle}
+                   contentContainerStyle={alertStyle.contentContainerStyle}
+                   confirmButtonTextStyle={alertStyle.confirmButtonTextStyle}
+                   cancelButtonColor="#fff"
+                   cancelButtonTextStyle={alertStyle.cancelButtonTextStyle}
                    cancelText="Cancel"
                    confirmText="Yes"
                    confirmButtonColor="#fff"
-                   titleStyle={{
-                       fontWeight: '600',
-                       fontSize: 18,
-                   }}
-                   contentContainerStyle={{
-                       borderRadius: 14,
-
-                   }}
-                   confirmButtonTextStyle={{
-                       fontSize: 18,
-                       fontWeight: '500',
-                       color: "#2863D6"
-                   }}
-                   cancelButtonColor="#fff"
-                   cancelButtonTextStyle={{
-                       fontSize: 18,
-                       fontWeight: '500',
-                       color: "#DC2626"
-                   }}
                    show={showAlert}
                    showProgress={false}
                    title="Confirm?"

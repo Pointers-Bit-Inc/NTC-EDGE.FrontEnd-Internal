@@ -11,7 +11,7 @@ import {DIRECTOR, EVALUATOR, FOREVALUATION} from "../../../reducers/activity/ini
 import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor, text} from "@styles/color";
-
+   import {alertStyle} from "@pages/activities/alert/styles"
 const { height, width } = Dimensions.get('window');
 
 function Endorsed(props:any) {
@@ -69,15 +69,14 @@ function Endorsed(props:any) {
                 onRequestClose={() => {
                 }}>
                 <AwesomeAlert
-                    actionContainerStyle={{
-                        flexDirection: "row-reverse"
-                    }}
-                    overlayStyle = {showAlert ? {
-                        width: width,
-                        height: height,
-                        position: 'absolute',
-                        backgroundColor: 'rgba(52,52,52,0.5)'
-                    }: {}             }
+                    actionContainerStyle={alertStyle.actionContainerStyle}
+                    overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
+                    confirmButtonColor="#fff"
+                    titleStyle={alertStyle.titleStyle}
+                    contentContainerStyle={alertStyle.contentContainerStyle}
+                    confirmButtonTextStyle={alertStyle.confirmButtonTextStyle}
+                    cancelButtonColor="#fff"
+                    cancelButtonTextStyle={alertStyle.cancelButtonTextStyle}
                     show={showAlert}
                     showProgress={false}
                     title="Confirm?"
@@ -88,7 +87,6 @@ function Endorsed(props:any) {
                     showConfirmButton={true}
                     cancelText="Cancel"
                     confirmText="Proceed"
-                    confirmButtonColor="#DD6B55"
                     onCancelPressed={() => {
                         setShowAlert(false)
                     }}

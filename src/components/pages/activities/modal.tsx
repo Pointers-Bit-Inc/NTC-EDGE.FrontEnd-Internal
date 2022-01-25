@@ -24,8 +24,9 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import Api from 'src/services/api';
 import {updateApplicationStatus} from "../../../reducers/application/actions";
 import {ModalTab} from "@pages/activities/modalTab";
+import {alertStyle} from "@pages/activities/alert/styles";
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
@@ -160,40 +161,16 @@ function ActivityModal(props: any) {
 
             </View>
             <AwesomeAlert
-                actionContainerStyle={{
-
-                    justifyContent: "space-around",
-                    flexDirection: "row-reverse",
-                }}
-
-                overlayStyle = {showAlert ? {
-                    width: width,
-                    height: height,
-                    position: 'absolute',
-                    backgroundColor: 'rgba(52,52,52,0.5)'
-                }: {}}
+                actionContainerStyle={alertStyle.actionContainerStyle}
+                overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
+                confirmButtonColor="#fff"
+                titleStyle={alertStyle.titleStyle}
+                contentContainerStyle={alertStyle.contentContainerStyle}
+                confirmButtonTextStyle={alertStyle.confirmButtonTextStyle}
+                cancelButtonColor="#fff"
+                cancelButtonTextStyle={alertStyle.cancelButtonTextStyle}
                 cancelText="Cancel"
                 confirmText="Yes"
-                confirmButtonColor="#fff"
-                titleStyle={{
-                    fontWeight: '600',
-                    fontSize: 18,
-                }}
-                contentContainerStyle={{
-                    borderRadius: 14,
-
-                }}
-                confirmButtonTextStyle={{
-                    fontSize: 18,
-                    fontWeight: '500',
-                    color: "#2863D6"
-                }}
-                cancelButtonColor="#fff"
-                cancelButtonTextStyle={{
-                    fontSize: 18,
-                    fontWeight: '500',
-                    color: "#DC2626"
-                }}
                 show={showAlert}
                 showProgress={false}
                 title="Confirm?"
