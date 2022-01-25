@@ -7,5 +7,5 @@ export default keyMirror({
   SET_APPLICATIONS: null,
   DELETE_APPLICATIONS: null,
   HANDLE_LOAD: null,
-  READ_UNREAD_APPLICATIONS: null
+  READ_UNREAD_APPLICATIONS: null,
 });

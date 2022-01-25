@@ -607,6 +607,7 @@ export default function ActivitiesPage(props: any) {
                                     activity={activity}
                                     currentUser={user}
                                     onPressUser={(event: any) => {
+
                                         setDetails(activity)
                                         unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
                                         })
@@ -625,6 +626,7 @@ export default function ActivitiesPage(props: any) {
                 <ActivityModal updateModal={updateModalFn} readFn={unReadReadApplicationFn} details={details}
                                visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
                     setUpdateModal(false)
+                    setDetails({})
                     if (event && _id) {         
                         //  dispatch(deleteApplications(_id))
                     }
