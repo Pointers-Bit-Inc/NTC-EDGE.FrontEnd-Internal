@@ -43,6 +43,7 @@ function Disapproval(props: any) {
                 backgroundColor: 'rgba(52,52,52,0.5)'
             } : {}}>
                 <CustomAlert
+                     showClose={false}
                     type={DECLINED}
                     onDismissed={()=>{
                         setShowAlert(false)

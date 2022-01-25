@@ -14,7 +14,7 @@ import {Ionicons} from "@expo/vector-icons";
 import axios from "axios";
 import {InputField} from "@components/molecules/form-fields";
 import {BASE_URL} from "../../../services/config";
-import {CASHIER, DIRECTOR, EVALUATOR,} from "../../../reducers/activity/initialstate";
+import {APPROVED, CASHIER, DIRECTOR, EVALUATOR,} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useSelector} from "react-redux";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
@@ -70,10 +70,13 @@ function Approval(props: any) {
         return false
     }, [showAlert])
           const [alertLoading, setAlertLoading] = useState(false)
+          const [approvalIcon, setApprovalIcon] = useState(false)
+        const [title, setTitle] = useState("Approved?")
+    const [showClose, setShowClose] = useState(false)
     return (
 
         <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={props.visible}
             onRequestClose={() => {
@@ -89,24 +92,39 @@ function Approval(props: any) {
                       backgroundColor: 'rgba(52,52,52,0.5)'
                   }: {}}>
                       <CustomAlert
+                          showClose={showClose}
+                          type={approvalIcon ? APPROVED: ""}
                           onDismissed={()=>{
                               setShowAlert(false)
+                              setApprovalIcon(false)
+                              setShowClose(false)
                           }}
                            onLoading={alertLoading}
                           onCancelPressed={() => {
                               setShowAlert(false)
+                              if(approvalIcon){
+                                  props.onDismissed()
+                                  setApprovalIcon(false)
+                                  setShowClose(false)
+                              }
+
                           }}
                           onConfirmPressed={() => {
                               setAlertLoading(true)
                               props.confirm({cashier: cashier, remarks: remarks}, (response, callback) => {
                                   setAlertLoading(false)
-                                  setShowAlert(false)
 
-                                  props.onDismissed()
+
+                                  props.onDismissed(APPROVED, (bool)=>{
+                                      setApprovalIcon(true)
+                                      setTitle("Application Approved")
+                                      setMessage("Application has been approved.")
+                                      setShowClose(true)
+                                  })
                                   callback(true)
                               })
 
-                          }} show={showAlert} title="Approved?"
+                          }} show={showAlert} title={title}
                           message={message}/>
                   </View>
             {/*<AwesomeAlert
@@ -148,7 +166,7 @@ function Approval(props: any) {
                 style={[styles.container]}
             >
 
-                <View style={styles.group}>
+                {!showAlert && <View style={styles.group}>
                     <View style={styles.rect}>
                         <View style={{alignSelf: 'flex-start'}}>
                             <TouchableOpacity onPress={() => {
@@ -199,7 +217,7 @@ function Approval(props: any) {
                             </View>
                         </View>
                     </View>
-                </View>
+                </View>}
             </KeyboardAvoidingView>
         </Modal>
 

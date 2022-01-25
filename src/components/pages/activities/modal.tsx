@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {ActivityIndicator, Alert, Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import {primaryColor, text} from "@styles/color";
@@ -26,6 +26,7 @@ import {updateApplicationStatus} from "../../../reducers/application/actions";
 import {ModalTab} from "@pages/activities/modalTab";
 import {alertStyle} from "@pages/activities/alert/styles";
 import AccountIcon from "@assets/svg/account";
+import CustomAlert from "@pages/activities/alert/alert";
 
 const {width, height} = Dimensions.get('window');
 
@@ -138,7 +139,6 @@ function ActivityModal(props: any) {
     const allButton =  (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?._id ? true :  (declineButton || approveButton || grayedOut)
                  console.log("user:", props?.details?.applicant?.user?.firstName, "cashier:",cashier, "assign id:", assignId, "id:", user?._id , "status:", status, "payment status:", props.details.paymentStatus, "status: ", props.details.status)
 
-
     return (
         <Modal
             animationType="slide"
@@ -161,6 +161,8 @@ function ActivityModal(props: any) {
             } : {}}>
 
             </View>
+
+                
             <AwesomeAlert
                 actionContainerStyle={alertStyle.actionContainerStyle}
                 overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
@@ -417,7 +419,15 @@ function ActivityModal(props: any) {
 
                 }}
                 isCashier={user?.role?.key === CASHIER}
-                onDismissed={onApproveDismissed}
+                onDismissed={(event?:any, callback?:(bool)=>{}) =>{
+                    if(event != APPROVED){
+                        onApproveDismissed ()
+                    }
+
+                    if (callback) {
+                        callback(true)
+                    }
+                }}
             />
             <Disapproval
                 user={props?.details?.applicant?.user}
