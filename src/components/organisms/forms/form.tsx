@@ -15,11 +15,9 @@ const FormField = ({
                        onSubmit,
                        ...otherProps
                    }: any) => {
-    const inputColor = color ? color : "#486c86";
+    // const inputColor = color ? color : "#486c86";
 
-    const renderElements = (id: number, element: any, color: any, styleProps: any) => {
-
-        element.color = color;
+    const renderElements = (id: number, element: any, /*color: any,*/ styleProps: any) => {
         const {type, pickerData, ...otherProps} = element;
         const buttonElement = () => {
 
@@ -150,7 +148,7 @@ const FormField = ({
                             {renderElements(
                                 element.id,
                                 element,
-                                inputColor,
+                                // inputColor,
                                 otherProps
                             )}
                         </View>

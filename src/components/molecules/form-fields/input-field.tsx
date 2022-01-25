@@ -79,12 +79,14 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
   errorColor,
   activeColor,
   requiredColor,
+  disabledColor,
   onBlur = () => {},
   onFocus = () => {},
   ...otherProps
 }, ref) => {
   const inputRef:any = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
+  const editable = otherProps?.editable === false || otherProps?.editable === true ? otherProps?.editable : true;
   const onFocusFN = () => {
     setIsFocused(true)
     onFocus();
@@ -106,7 +108,8 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
               labelStyle,
               (isFocused || !!otherProps.value || !!error) && {
                 color: activeColor
-              }
+              },
+              !editable && {color: disabledColor}
             ]}
             weight={'600'}
             size={12}
@@ -119,7 +122,8 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                 labelStyle,
                 !!requiredColor && {
                   color: requiredColor
-                }
+                },
+                !editable && {color: disabledColor}
               ]}
             >
               {'*'}
@@ -132,12 +136,13 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
           styles.inputContainer,
           outlineStyle,
           isFocused && { borderColor: activeColor },
-          !!error && { borderColor: errorColor }
+          !!error && { borderColor: errorColor },
+          !editable && {borderColor: disabledColor}
         ]}
       >
         <TextInput
           ref={inputRef}
-          style={inputStyle}
+          style={[inputStyle, !editable && {color: disabledColor}]}
           placeholder={placeholder || label}
           secureTextEntry={secureTextEntry}
           onFocus={onFocusFN}

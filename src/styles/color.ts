@@ -12,6 +12,7 @@ const outline = {
   default: '#C4C4C4',
   success: '#2C9669',
   error: '#CE1026',
+  disabled: '#D1D1D1',
 }
 
 const text = {
@@ -20,6 +21,7 @@ const text = {
   default: '#3A404A',
   success: '#2C9669',
   error: '#CE1026',
+  disabled: '#D1D1D1',
 };
 
 const button = {

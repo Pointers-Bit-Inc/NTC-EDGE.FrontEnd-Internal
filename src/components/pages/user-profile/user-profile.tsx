@@ -20,7 +20,7 @@ import * as DocumentPicker from 'expo-document-picker';
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const { width } = Dimensions.get('window');
 
-const UserProfileScreen = ({navigation}) => {
+const UserProfileScreen = ({navigation}: any) => {
     const dispatch = useDispatch();
 
     const user = useSelector((state: RootStateOrAny) => state.user) || {};
@@ -41,7 +41,19 @@ const UserProfileScreen = ({navigation}) => {
         if (type === 'image-picker') {
             let index = userProfileForm?.findIndex(u => u?.id === id);
             if (index > -1) {
-                let picker = await DocumentPicker.getDocumentAsync();
+                let picker = await DocumentPicker.getDocumentAsync({
+                    type: 'image/*',
+                });
+                let size = picker?.size / 1024;
+                if (size > 2000) {
+                    setAlert({
+                        title: 'File Too Large',
+                        message: 'File size must be lesser than 2 MB.',
+                        color: warningColor
+                    });
+                    setShowAlert(true);
+                    return;
+                }
                 if (picker.type !== 'cancel') {
                     userProfileForm[index].file = picker;
                     userProfileForm[index].value = picker?.uri;
@@ -95,7 +107,10 @@ const UserProfileScreen = ({navigation}) => {
             }));
         }
         if (isValid) {
-            setLoading(true);
+            setLoading({
+                photo: dp,
+                basic: !dp
+            });
             axios
                 .patch(
                     `${BASE_URL}/user/profile/${user._id}`,
@@ -106,7 +121,10 @@ const UserProfileScreen = ({navigation}) => {
                     }},
                 )
                 .then((res: any) => {
-                    setLoading(false);
+                    setLoading({
+                        photo: false,
+                        basic: false
+                    });
                     setEditable(false);
                     if (res?.status === 200) {
                         setAlert({
@@ -126,7 +144,10 @@ const UserProfileScreen = ({navigation}) => {
                     setShowAlert(true);
                 })
                 .catch((err: any) => {
-                    setLoading(false);
+                    setLoading({
+                        photo: false,
+                        basic: false
+                    });
                     setEditable(false);
                     setAlert({
                         title: err?.title || 'Failure',
@@ -149,7 +170,10 @@ const UserProfileScreen = ({navigation}) => {
     });
     const [showAlert, setShowAlert] = useState(false);
     const [editable, setEditable] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState({
+        photo: false,
+        basic: false,
+    });
     const [userProfileForm, setUserProfileForm] = useState([
         {
             stateName: 'userType',
@@ -160,6 +184,7 @@ const UserProfileScreen = ({navigation}) => {
             activeColor: text.primary,
             errorColor: text.error,
             requiredColor: text.error,
+            disabledColor: text.disabled,
             label: 'User Type',
             type: 'input',
             placeholder: 'User Type',
@@ -177,6 +202,7 @@ const UserProfileScreen = ({navigation}) => {
             activeColor: text.primary,
             errorColor: text.error,
             requiredColor: text.error,
+            disabledColor: text.disabled,
             label: 'First Name',
             type: 'input',
             placeholder: 'First Name',
@@ -193,6 +219,7 @@ const UserProfileScreen = ({navigation}) => {
             activeColor: text.primary,
             errorColor: text.error,
             requiredColor: text.error,
+            disabledColor: text.disabled,
             label: 'Last Name',
             type: 'input',
             placeholder: 'Last Name',
@@ -209,6 +236,7 @@ const UserProfileScreen = ({navigation}) => {
             activeColor: text.primary,
             errorColor: text.error,
             requiredColor: text.error,
+            disabledColor: text.disabled,
             label: 'Email',
             type: 'input',
             placeholder: 'Email',
@@ -230,6 +258,7 @@ const UserProfileScreen = ({navigation}) => {
             activeColor: text.primary,
             errorColor: text.error,
             requiredColor: text.error,
+            disabledColor: text.disabled,
             label: 'Contact Number',
             type: 'input',
             placeholder: 'Contact Number',
@@ -246,6 +275,7 @@ const UserProfileScreen = ({navigation}) => {
             activeColor: text.primary,
             errorColor: text.error,
             requiredColor: text.error,
+            disabledColor: text.disabled,
             label: 'Address',
             type: 'input',
             placeholder: 'Address',
@@ -255,7 +285,7 @@ const UserProfileScreen = ({navigation}) => {
         },
     ]);
 
-    const MyStatusBar = ({backgroundColor, ...props}) => (
+    const MyStatusBar = ({backgroundColor, ...props}: any) => (
         <View style={[styles.statusBar, { backgroundColor }]}>
           <SafeAreaView>
             <StatusBar translucent backgroundColor={backgroundColor} {...props} />
@@ -272,9 +302,9 @@ const UserProfileScreen = ({navigation}) => {
                 </TouchableOpacity>
 
                 <Text style={styles.profileName}>Profile</Text>
-                <TouchableOpacity onPress={onSave} disabled={loading}>
+                <TouchableOpacity onPress={onSave} disabled={loading?.photo || loading?.basic}>
                     {
-                        loading
+                        loading?.basic
                             ? <ActivityIndicator size='small' color='#fff' />
                             : <Text style={styles?.edit}>{editable ? 'Save' : 'Edit'}</Text>
                     }
@@ -282,24 +312,16 @@ const UserProfileScreen = ({navigation}) => {
             </View>
 
             <View style={styles.rect2}></View>
-            <TouchableOpacity
-                onPress={() => onPress(11, 'image-picker')}>
-                <View zIndex={1} style={styles.rect3}>
-                    {
-                        !!photo
-                            ?   <Image
-                                    style={{width: 100, height: 100, borderRadius: 50}}
-                                    source={{uri: photo}}
-                                    resizeMode={'cover'}
-                                />
-                            :   <ProfileImage
-                                    size={width / 4}
-                                    textSize={25}
-                                    image={photo}
-                                    name={`${user.firstName} ${user.lastName}`}
-                                />
-                    }
+            <TouchableOpacity onPress={() => onPress(11, 'image-picker')}>
+                <View style={styles.rect3}>
+                    <ProfileImage
+                        size={width / 4}
+                        textSize={25}
+                        image={photo}
+                        name={`${user.firstName} ${user.lastName}`}
+                    /> 
                     <Text style={styles.change2}>Change</Text>
+                    { loading?.photo && <ActivityIndicator style={styles.activityIndicator} size='large' color='#fff' /> }
                 </View>
             </TouchableOpacity>
 
@@ -384,6 +406,9 @@ const styles = StyleSheet.create({
         color: 'rgba(255,255,255,1)',
         marginTop: -(width * .07),
         fontSize: 12,
+    },
+    activityIndicator: {
+        marginTop: -(width / 7),
     },
     divider: {
         backgroundColor: '#E6E6E6',
