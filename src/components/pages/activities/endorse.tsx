@@ -88,6 +88,7 @@ function Endorsed(props:any) {
                         onCancelPressed={() => {
                             setShowAlert(false)
                         }}
+                        confirmButton={"Proceed"}
                         onConfirmPressed={() => {
                             setAlertLoading(true)
                             props.onChangeApplicationStatus({status: FOREVALUATION }, (bool, callback:(bool) =>{}) =>{
