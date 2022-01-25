@@ -1,6 +1,17 @@
 import React, {useEffect, useState} from "react";
-import {Animated, BackHandler, Dimensions, Platform, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+    ActivityIndicator,
+    Animated,
+    BackHandler,
+    Dimensions,
+    Platform,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
 import Modal from "react-native-modal";
+import {alertStyle} from "@pages/activities/alert/styles";
 const {width} = Dimensions.get('window');
 function CustomAlert(props) {
     
@@ -13,12 +24,12 @@ function CustomAlert(props) {
 
             }}
         >
-            <View style={styles.container}>
+            <View>
                 <View style={styles.group}>
                     <View style={styles.container___}>
                         <View style={styles.container__}>
                             <View style={styles.container_}>
-                                <Text style={styles.title}>{props?.title}</Text>
+                                <Text style={[styles.title, alertStyle.titleStyle]}>{props?.title}</Text>
                                 <Text style={styles.description_}>
                                     {props?.message ? props?.message :   "Are you sure you want to approve this application?"}
 
@@ -27,10 +38,11 @@ function CustomAlert(props) {
                             </View>
                             <View style={styles.action}>
                                 <TouchableOpacity onPress={props.onCancelPressed}>
-                                    <Text style={styles.close}>Close</Text>
-                                </TouchableOpacity>
-                                 <TouchableOpacity onPress={props.onConfirmPressed}>
-                                     <Text style={styles.yes}>Yes</Text>
+                                    <Text style={[styles.close, alertStyle.cancelButtonTextStyle]}>Close</Text>
+                                </TouchableOpacity >
+                                 <TouchableOpacity  onPress={props.onConfirmPressed}>
+                                     {props.onLoading ? <ActivityIndicator color={"rgba(40,99,214,1)"}/> : <Text style={[styles.yes, alertStyle.confirmButtonTextStyle]}>Yes</Text>}
+
                                  </TouchableOpacity>
 
                             </View>
@@ -44,23 +56,13 @@ function CustomAlert(props) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-         zIndex: 1,
-        flex: 1,
-        width: '100%',
-        height: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'absolute',
-        backgroundColor: 'rgba(52,52,52,0.5)'
-    },
     group: {
-        width: width/2,
+       
         height: 170,
         alignSelf: "center"
     },
     container___: {
-        width: width/2,
+       
         height: 170,
         backgroundColor: "rgba(255,255,255,1)",
         borderRadius: 14,
@@ -68,13 +70,12 @@ const styles = StyleSheet.create({
         borderColor: "#000000"
     },
     container__: {
-        width: width/2,
         height: 134,
         justifyContent: "space-between",
         marginTop: 18
     },
     container_: {
-        width: width/2,
+       
         height: 112,
         justifyContent: "space-around",
         alignItems: "center",
@@ -87,8 +88,9 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     description_: {
-
-        color: "#121212"
+        padding: 10,
+        color: "#121212",
+        textAlign: "center"
     },
     separator: {
         height: 1,
@@ -96,8 +98,7 @@ const styles = StyleSheet.create({
         alignSelf: "stretch"
     },
     action: {
-        width: width/2,
-        height: 16,
+       
         flexDirection: "row",
         justifyContent: "space-around"
     },

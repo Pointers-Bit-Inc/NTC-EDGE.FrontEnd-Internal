@@ -18,9 +18,9 @@ import {CASHIER, DIRECTOR, EVALUATOR,} from "../../../reducers/activity/initials
 import {RootStateOrAny, useSelector} from "react-redux";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
-import CustomAlert from "@pages/activities/alert/alert";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {alertStyle} from "@pages/activities/alert/styles";
+import CustomAlert from "@pages/activities/alert/alert";
 
 const {width, height} = Dimensions.get('window');
 
@@ -69,17 +69,63 @@ function Approval(props: any) {
     const confirmDismissed = useMemo(() => {
         return false
     }, [showAlert])
+          const [alertLoading, setAlertLoading] = useState(false)
     return (
 
         <Modal
-
             animationType="slide"
             transparent={true}
             visible={props.visible}
             onRequestClose={() => {
             }}>
-            {/*<CustomAlert
+                  <View style={showAlert ? {
+                      zIndex: 1,
+                      flex: 1,
+                      width: '100%',
+                      height: '100%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      position: 'absolute',
+                      backgroundColor: 'rgba(52,52,52,0.5)'
+                  }: {}}>
+                      <CustomAlert
+                           onLoading={alertLoading}
+                          onCancelPressed={() => {
+                              setShowAlert(false)
+                          }}
+                          onConfirmPressed={() => {
+                              setAlertLoading(true)
+                              props.confirm({cashier: cashier, remarks: remarks}, (response, callback) => {
+                                  setAlertLoading(false)
+                                  setShowAlert(false)
 
+                                  props.onDismissed()
+                                  callback(true)
+                              })
+
+                          }} show={showAlert} title="Approved?"
+                          message={message}/>
+                  </View>
+            {/*<AwesomeAlert
+                actionContainerStyle={alertStyle.actionContainerStyle}
+                overlayStyle={showAlert ? alertStyle.overlayStyle : {}}
+                titleStyle={alertStyle.titleStyle}
+                contentContainerStyle={alertStyle.contentContainerStyle}
+                confirmButtonTextStyle={alertStyle.confirmButtonTextStyle}
+                cancelButtonColor="#fff"
+                cancelButtonTextStyle={alertStyle.cancelButtonTextStyle}
+                cancelText="Cancel"
+                confirmText="Yes"
+                confirmButtonColor="#fff"
+                show={showAlert}
+                showProgress={false}
+                title="Approved?"
+                message={message}
+                messageStyle={{textAlign: 'center'}}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={true}
+                showConfirmButton={true}
                 onCancelPressed={() => {
                     setShowAlert(false)
                 }}
@@ -92,43 +138,8 @@ function Approval(props: any) {
                         callback(true)
                     })
 
-                }} show={showAlert} title="Approved?"
-                message={message}/>*/}
-            <AwesomeAlert
-                actionContainerStyle={alertStyle.actionContainerStyle}
-                overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
-                titleStyle={alertStyle.titleStyle}
-                contentContainerStyle={alertStyle.contentContainerStyle}
-                confirmButtonTextStyle={alertStyle.confirmButtonTextStyle}
-                cancelButtonColor="#fff"
-                cancelButtonTextStyle={alertStyle.cancelButtonTextStyle}
-                    cancelText="Cancel"
-                    confirmText="Yes"
-                    confirmButtonColor="#fff"
-                    show={showAlert}
-                    showProgress={false}
-                    title="Approved?"
-                    message={message}
-                    messageStyle={{ textAlign: 'center' }}
-                    closeOnTouchOutside={true}
-                    closeOnHardwareBackPress={false}
-                    showCancelButton={true}
-                    showConfirmButton={true}
-
-                    onCancelPressed={() => {
-                        setShowAlert(false)
-                    }}
-                    onConfirmPressed={() => {
-
-                            props.confirm({cashier: cashier, remarks: remarks}, (response,callback) => {
-                                setShowAlert(false)
-
-                                    props.onDismissed()
-                                   callback(true)
-                            })
-
-                    }}
-                />
+                }}
+            />*/}
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={[styles.container]}
@@ -201,6 +212,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
     },
     container: {
+
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',

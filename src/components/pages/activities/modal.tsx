@@ -25,6 +25,7 @@ import Api from 'src/services/api';
 import {updateApplicationStatus} from "../../../reducers/application/actions";
 import {ModalTab} from "@pages/activities/modalTab";
 import {alertStyle} from "@pages/activities/alert/styles";
+import AccountIcon from "@assets/svg/account";
 
 const {width, height} = Dimensions.get('window');
 
@@ -298,7 +299,7 @@ function ActivityModal(props: any) {
                         {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 1, paddingRight: 5}}>
                             <TouchableOpacity
-                                disabled={currentLoading === APPROVED || allButton}
+                                disabled={currentLoading === APPROVED }
                                 onPress={() => {
                                     if (cashier) {
                                         onShowConfirmation(APPROVED)
