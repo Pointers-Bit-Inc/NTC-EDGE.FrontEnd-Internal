@@ -42,8 +42,8 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                             <Text style={styles.examDetails}>BASIC INFO</Text>
                             <View style={styles.group18}>
                                 <View style={styles.group19}>
-                                    <Text style={styles.name2}>Name:</Text>
-                                    <Text style={styles.address2}>Address:</Text>
+                                    <Text style={styles.name2}>{'Name: '}</Text>
+                                    <Text style={styles.address2}>{'Address: '}</Text>
                                 </View>
                                 <View style={styles.group20}>
                                     <Text style={styles.name3}>{props.verifiedInfo?.applicant?.user?.firstName}</Text>
@@ -55,9 +55,9 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                             <Text style={styles.examDetails}>EXAM DETAILS</Text>
                             <View style={styles.group18}>
                                 <View style={styles.group19}>
-                                    <Text style={styles.name2}>Venue:</Text>
-                                    <Text style={styles.address2}>Date:</Text>
-                                    <Text style={styles.address2}>Time:</Text>
+                                    <Text style={styles.name2}>{'Venue: '}</Text>
+                                    <Text style={styles.address2}>{'Date: '}</Text>
+                                    <Text style={styles.address2}>{'Time: '}</Text>
                                 </View>
                                 <View style={styles.group20}>
                                     <Text style={styles.name3}>{props?.verifiedInfo?.examDetails?.venue}</Text>
@@ -70,9 +70,9 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                             <Text style={styles.examDetails}>PAYMENT DETAILS</Text>
                             <View style={styles.group18}>
                                 <View style={styles.group19}>
-                                    <Text style={styles.name2}>O.R. No.:</Text>
-                                    <Text style={styles.address2}>Amount::</Text>
-                                    <Text style={styles.address2}>Date:</Text>
+                                    <Text style={styles.name2}>{'O.R. No.: '}</Text>
+                                    <Text style={styles.address2}>{'Amount: '}</Text>
+                                    <Text style={styles.address2}>{'Date: '}</Text>
                                 </View>
                                 <View style={styles.group20}>
                                     <Text style={styles.name3}>{props?.verifiedInfo?.ORNumber}</Text>

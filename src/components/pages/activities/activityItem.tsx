@@ -137,7 +137,7 @@ export function ActivityItem(props:any) {
                     <View  style={[styles.circle, props?.activity?.dateRead  ? {}: { backgroundColor: 'rgba(26,89,211,1)'}]} />
                     <ProfileImage
                         size={45}
-                        image={userActivity?.image}
+                        image={userActivity?.profilePicture?.small}
                         name={`${userActivity?.firstName} ${userActivity?.lastName}`}
                     />
                     <View style={styles.content}>
