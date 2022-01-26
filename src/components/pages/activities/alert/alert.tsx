@@ -54,15 +54,16 @@ function CustomAlert(props) {
                                 {
 
                                     props?.showClose == false && <>
-                                        <TouchableOpacity onPress={props.onCancelPressed}>
-                                            <Text style={[styles.close, alertStyle.cancelButtonTextStyle]}>Close</Text>
-                                        </TouchableOpacity>
                                         <TouchableOpacity onPress={props.onConfirmPressed}>
                                             {props.onLoading ? <ActivityIndicator style={{alignSelf: "center"}}
                                                                                   color={"rgba(40,99,214,1)"}/> : <Text
                                                 style={[styles.yes, alertStyle.confirmButtonTextStyle]}>{props?.confirmButton || 'Yes'}</Text>}
 
                                         </TouchableOpacity>
+                                        <TouchableOpacity onPress={props.onCancelPressed}>
+                                            <Text style={[styles.close, alertStyle.cancelButtonTextStyle]}>Close</Text>
+                                        </TouchableOpacity>
+
                                     </>
 
                                 }

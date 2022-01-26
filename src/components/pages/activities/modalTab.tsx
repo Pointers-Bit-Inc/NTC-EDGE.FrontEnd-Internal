@@ -18,6 +18,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
     const containerRef = useRef(null)
 
     const animateSlider = (index: number) => {
+          console.log(tabCurrent[currentIndex])
         if(tabCurrent[currentIndex]?.x)   {
             Animated.spring(translateValue, {
                 toValue: tabCurrent[currentIndex]?.x,
@@ -25,7 +26,8 @@ function MyTabBar({state, descriptors, navigation, position}) {
                 useNativeDriver: true,
             }).start();
         } else{
-            ref?.current[0].measureLayout(containerRef.current, (x, y, width, height) => {
+
+            ref?.current[0 ].measureLayout(containerRef.current, (x, y, width, height) => {
                 initial = {x, y, width, height}
                 Animated.spring(translateValue, {
                     toValue: x,
@@ -36,6 +38,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
         }
 
     };
+
 
     return (
         <>
@@ -59,26 +62,30 @@ function MyTabBar({state, descriptors, navigation, position}) {
                     useEffect(() =>{
                         if(state.index === index){
                             ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
-                                const _tabCurrent = tabCurrent.findIndex(tab => tab.width == width)
-                                setCurrentIndex(_tabCurrent)
+                                setCurrentIndex(() =>{
+                                    return tabCurrent.findIndex(tab => tab.width == width)
+                                })
                             })
                         }
 
                     }, [position])
                     const onPress =  () => {
-                        ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
-                            const _tabCurrent = tabCurrent.findIndex(tab => tab.width == width)
-                            setCurrentIndex(_tabCurrent )
-                        })
                         const event = navigation.emit({
                             type: "tabPress",
                             target: route.key,
                             canPreventDefault: true,
                         });
-
                         if (!isFocused && !event.defaultPrevented) {
                             navigation.navigate(route.name);
                         }
+                        ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
+                            setCurrentIndex(() =>{
+                                return tabCurrent.findIndex(tab => tab.width == width)
+                            })
+                        })
+
+
+
                     };
 
                     const onLongPress = () => {
@@ -90,11 +97,11 @@ function MyTabBar({state, descriptors, navigation, position}) {
                     const onLayout = useCallback(
                         ({
                              nativeEvent: {
-                                 layout: { width, x, y }
+                                 layout: {  width, x, y }
                              }
                          }) => {
                             let newArr = [...tabCurrent]
-                            newArr.push({width, x, y})
+                            newArr.push({index, width, x, y})
                             setTabCurrent(newArr)
 
                         },
@@ -118,6 +125,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
 
 
                             </TouchableOpacity>
+
                         </View>
                     );
                 })}
@@ -140,7 +148,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
                             translateX:  translateValue
                         }
                         ],
-                        width: initial.width,
+                        width: initial?.width ,
                         backgroundColor:  primaryColor
                     }]}/>
             }
@@ -190,7 +198,7 @@ export function ModalTab(props) {
         requirements = props?.details?.requirements,
         updatedAt = props?.details?.updatedAt,
         proofOfPayment = props?.details?.proofOfPayment
-    return <Tab.Navigator  tabBar={(props) => <MyTabBar {...props} />}>
+    return <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
 
         {
 
@@ -200,6 +208,7 @@ export function ModalTab(props) {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
+
                         options={{tabBarLabel: tab.name}}
                     >
                         {() => <BasicInfo
