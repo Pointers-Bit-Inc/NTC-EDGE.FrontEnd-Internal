@@ -18,7 +18,6 @@ function MyTabBar({state, descriptors, navigation, position}) {
     const containerRef = useRef(null)
 
     const animateSlider = (index: number) => {
-          console.log(tabCurrent[currentIndex])
         if(tabCurrent[currentIndex]?.x)   {
             Animated.spring(translateValue, {
                 toValue: tabCurrent[currentIndex]?.x,

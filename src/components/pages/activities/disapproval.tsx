@@ -13,7 +13,6 @@ import {InputField} from "@components/molecules/form-fields";
 import {Feather, Ionicons} from "@expo/vector-icons";
 import {DECLINED} from "../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
-import ApplicationAlert from "@pages/activities/alert/decline";
 import CustomAlert from "@pages/activities/alert/alert";
 
 const {width, height} = Dimensions.get('window');
