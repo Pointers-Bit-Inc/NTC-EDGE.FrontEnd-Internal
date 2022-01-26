@@ -81,6 +81,7 @@ function Endorsed(props:any) {
                 }: {}}>
 
                 </View>
+
                 <CustomAlert
                     showClose={false}
                     type={FOREVALUATION}

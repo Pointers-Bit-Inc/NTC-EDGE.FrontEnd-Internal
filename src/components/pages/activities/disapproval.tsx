@@ -41,27 +41,28 @@ function Disapproval(props: any) {
                 position: 'absolute',
                 backgroundColor: 'rgba(52,52,52,0.5)'
             } : {}}>
-                <CustomAlert
-                     showClose={false}
-                    type={DECLINED}
-                    onDismissed={()=>{
-                        setShowAlert(false)
-                    }}
-                    onLoading={alertLoading}
-                    onCancelPressed={() => {
-                        setShowAlert(false)
-                    }}
-                    onConfirmPressed={() => {
-                        setAlertLoading(true)
-                        setShowAlert(false)
-                        props.onChangeApplicationStatus(DECLINED, (bool, callback: (bool) =>{}) =>{
-                            setAlertLoading(false)
-                            props.onDismissed()
-                            callback(true)
-                        })
-                    }} show={showAlert} title="Application Decline"
-                    message={`Are you sure you want to reject this application?`}/>
+
             </View>
+            <CustomAlert
+                showClose={false}
+                type={DECLINED}
+                onDismissed={()=>{
+                    setShowAlert(false)
+                }}
+                onLoading={alertLoading}
+                onCancelPressed={() => {
+                    setShowAlert(false)
+                }}
+                onConfirmPressed={() => {
+                    setAlertLoading(true)
+                    setShowAlert(false)
+                    props.onChangeApplicationStatus(DECLINED, (bool, callback: (bool) =>{}) =>{
+                        setAlertLoading(false)
+                        props.onDismissed()
+                        callback(true)
+                    })
+                }} show={showAlert} title="Application Decline"
+                message={`Are you sure you want to reject this application?`}/>
             {/*<AwesomeAlert
                    actionContainerStyle={alertStyle.actionContainerStyle}
                    overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
