@@ -314,12 +314,12 @@ const UserProfileScreen = ({navigation}: any) => {
         <View style={styles.container}>
             {/* <MyStatusBar backgroundColor='rgba(0,65,172,1)' barStyle='light-content' /> */}
             <View style={styles.group}>
-                <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.jumpTo('Home'))} >
+                <TouchableOpacity style={styles.touchable} onPress={() => navigation.dispatch(DrawerActions.jumpTo('Home'))} >
                     <Ionicons name='md-close' style={styles.icon}></Ionicons>
                 </TouchableOpacity>
 
                 <Text style={styles.profileName}>Profile</Text>
-                <TouchableOpacity onPress={onSave} disabled={loading?.photo || loading?.basic}>
+                <TouchableOpacity style={[styles.touchable, {alignItems: 'flex-end'}]} onPress={onSave} disabled={loading?.photo || loading?.basic}>
                     {
                         loading?.basic
                             ? <ActivityIndicator size='small' color='#fff' />
@@ -396,17 +396,19 @@ const styles = StyleSheet.create({
     icon: {
         color: 'rgba(255,255,255,1)',
         fontSize: 25,
-        alignSelf: 'center'
+        marginLeft: -5,
     },
     profileName: {
         color: 'rgba(249,248,248,1)',
         fontSize: 20,
         alignSelf: 'center'
     },
+    touchable: {
+        width: '15%',
+    },
     edit: {
         color: 'rgba(255,255,255,1)',
         fontSize: 18,
-        alignSelf: 'center'
     },
     profilecontainer: {
         backgroundColor: 'yellow',
