@@ -34,8 +34,9 @@ export default function TabBar() {
     const [notPnApplication, setNotPnApplication] = useState(notPinnedApplications)
     useEffect(()=>{
 
-        setPnApplication(pinnedApplications.reduce((n, e) => e?.dateRead ? n+1 : n, 0) )
-        setNotPnApplication(notPinnedApplications.reduce((n, e) => e?.dateRead ? n+1 : n, 0))
+        setPnApplication(pinnedApplications.reduce((n, e) => !e?.dateRead ? n+1 : n, 0) )
+        setNotPnApplication(notPinnedApplications.reduce((n, e) => !e?.dateRead ? n+1 : n, 0))
+
     }, [pinnedApplications, notPinnedApplications, pnApplication, notPnApplication])
 
     function ActivityTab({state, descriptors, navigation}: any) {
