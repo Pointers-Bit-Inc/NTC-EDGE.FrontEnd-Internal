@@ -15,6 +15,7 @@ import {CASHIER, CHECKER, DIRECTOR, EVALUATOR, VERIFIED, VERIFIER} from "../../.
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {setTabBarHeight} from "../../../reducers/application/actions";
+import lodash from 'lodash';
 const Tab = createBottomTabNavigator();
 
 function getRole(user, arr ) {
@@ -31,6 +32,18 @@ export default function TabBar() {
     const user = useSelector((state: RootStateOrAny) => state.user);
 
     const {tabBarHeight,  pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
+    const { hasNewChat = false, hasMeet = false } = useSelector((state: RootStateOrAny) => {
+        const { channel = {}, meeting = {} } = state;
+        const { channelList = [] } = channel;
+        const { activeMeetings = [] } = meeting;
+
+        const hasNewChat = lodash.reject(channelList, ch => ch.hasSeen);
+        const hasMeet = lodash.reject(activeMeetings, mt => mt.ended);
+        return {
+            hasNewChat: lodash.size(hasNewChat) > 0,
+            hasMeet: lodash.size(hasMeet) > 0,
+        }
+    })
     const [pnApplication, setPnApplication] = useState(pinnedApplications)
     const [notPnApplication, setNotPnApplication] = useState(notPinnedApplications)
    const dispatch = useDispatch()
@@ -102,10 +115,10 @@ export default function TabBar() {
                                         ? ( <ActivityTabbar notification={pnApplication || notPnApplication } width={30} height={30} fill={isFocused ? focused : unfocused}/>) :
                                         label == CHAT
                                             ?
-                                            (<ChatIcon notification={false} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
+                                            (<ChatIcon notification={hasNewChat} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
                                             : label == MEET
                                                 ?
-                                                (<MeetIcon notification={false} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
+                                                (<MeetIcon notification={hasMeet} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
 
                                                 :
                                                 label == SCANQR
