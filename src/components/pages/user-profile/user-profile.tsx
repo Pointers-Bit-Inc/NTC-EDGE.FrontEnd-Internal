@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FormField from '@organisms/forms/form';
 import InputStyles from '@styles/input-style';
 import Text from '@atoms/text';
 import { DrawerActions } from '@react-navigation/native';
 import { defaultColor, errorColor, successColor, text, warningColor} from '@styles/color';
-import {Image, ScrollView, StyleSheet, TouchableOpacity, View, ActivityIndicator, StatusBar, Dimensions} from 'react-native';
+import {Image, ScrollView, StyleSheet, TouchableOpacity, View, ActivityIndicator, StatusBar, Dimensions, BackHandler} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
 import { setUser } from '../../../reducers/user/actions';
@@ -302,6 +302,18 @@ const UserProfileScreen = ({navigation}: any) => {
         },
     ]);
 
+    const handleBackButtonClick = () => {
+        navigation.dispatch(DrawerActions.jumpTo('Home'))
+        return true;
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+        };
+    }, []);
+
     const MyStatusBar = ({backgroundColor, ...props}: any) => (
         <View style={[styles.statusBar, { backgroundColor }]}>
           <SafeAreaView>
@@ -314,7 +326,7 @@ const UserProfileScreen = ({navigation}: any) => {
         <View style={styles.container}>
             {/* <MyStatusBar backgroundColor='rgba(0,65,172,1)' barStyle='light-content' /> */}
             <View style={styles.group}>
-                <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.jumpTo('Home'))} >
+                <TouchableOpacity onPress={handleBackButtonClick} >
                     <Ionicons name='md-close' style={styles.icon}></Ionicons>
                 </TouchableOpacity>
 
