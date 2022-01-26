@@ -18,7 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as DocumentPicker from 'expo-document-picker';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const UserProfileScreen = ({navigation}: any) => {
     const dispatch = useDispatch();
@@ -41,22 +41,27 @@ const UserProfileScreen = ({navigation}: any) => {
         if (type === 'image-picker') {
             let index = userProfileForm?.findIndex(u => u?.id === id);
             if (index > -1) {
-                let picker = await DocumentPicker.getDocumentAsync({
-                    type: 'image/*',
+                // let picker = await DocumentPicker.getDocumentAsync({
+                //     type: 'image/*',
+                // });
+                let picker = await ImagePicker.launchImageLibraryAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.All,
+                    allowsEditing: false,
+                    aspect: [4, 3],
+                    quality: 0,
                 });
-                let size = picker?.size / 1024;
-                if (size > 2000) {
-                    setAlert({
-                        title: 'File Too Large',
-                        message: 'File size must be lesser than 2 MB.',
-                        color: warningColor
-                    });
-                    setShowAlert(true);
-                    return;
-                }
-                if (picker.type !== 'cancel') {
-                    userProfileForm[index].file = picker;
-                    userProfileForm[index].value = picker?.uri;
+                if (!picker.cancelled) {
+                    let uri = picker?.uri;
+                    let split = uri?.split('/');
+                    let name = split?.[split?.length - 1];
+                    let mimeType = picker?.type || name?.split('.')?.[1];
+                    let _file = {
+                        name,
+                        mimeType,
+                        uri,
+                    };
+                    userProfileForm[index].file = _file;
+                    userProfileForm[index].value = _file?.uri;
                     setUserProfileForm(userProfileForm);
                     save({dp: true});
                 }
@@ -135,6 +140,7 @@ const UserProfileScreen = ({navigation}: any) => {
                         dispatch(setUser({...user, ...res?.data?.doc}));
                     }
                     else {
+                        console.log('or here?');
                         setAlert({
                             title: 'Failure',
                             message: (res?.statusText || res?.message) || 'Your profile was not edited.',
@@ -144,16 +150,27 @@ const UserProfileScreen = ({navigation}: any) => {
                     setShowAlert(true);
                 })
                 .catch((err: any) => {
+                    err = JSON.parse(JSON.stringify(err));
+                    console.log('here?', err);
                     setLoading({
                         photo: false,
                         basic: false
                     });
                     setEditable(false);
-                    setAlert({
-                        title: err?.title || 'Failure',
-                        message: err?.message || 'Your profile was not edited.',
-                        color: errorColor
-                    });
+                    if (err?.status === 413) {
+                        setAlert({
+                            title: 'File Too Large',
+                            message: 'File size must be lesser than 2 MB.',
+                            color: warningColor
+                        });
+                    }
+                    else {
+                        setAlert({
+                            title: err?.title || 'Failure',
+                            message: err?.message || 'Your profile was not edited.',
+                            color: errorColor
+                        });
+                    }
                     setShowAlert(true);
                 });
         }
@@ -374,7 +391,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'rgba(0,65,172,1)',
         padding: 15,
-        paddingTop: 30,
+        paddingTop: height * 0.05,
     },
     icon: {
         color: 'rgba(255,255,255,1)',
@@ -410,6 +427,7 @@ const styles = StyleSheet.create({
     },
     activityIndicator: {
         marginTop: -(width / 7),
+        marginBottom: width * .047,
     },
     divider: {
         backgroundColor: '#E6E6E6',
