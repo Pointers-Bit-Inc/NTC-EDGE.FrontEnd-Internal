@@ -495,8 +495,6 @@ function ActivityModal(props: any) {
                 }}
                 onChangeApplicationStatus={(event: any, callback: (bool, response) => {}) => {
                     onChangeApplicationStatus(event.status, (err, id) => {
-                        props.readFn(id, false, true, (action: any) => {
-                        })
                         if (!err) {
                             callback(true, (response) => {
 
