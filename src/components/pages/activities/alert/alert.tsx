@@ -88,7 +88,6 @@ function CustomAlert(props) {
 
 const styles = StyleSheet.create({
     group: {
-        
         alignSelf: "center"
     },
     container___: {

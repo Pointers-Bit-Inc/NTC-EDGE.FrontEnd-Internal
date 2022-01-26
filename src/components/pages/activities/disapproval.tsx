@@ -14,8 +14,7 @@ import {Feather, Ionicons} from "@expo/vector-icons";
 import {DECLINED} from "../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
 import CustomAlert from "@pages/activities/alert/alert";
-
-const {width, height} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 function Disapproval(props: any) {
     const [showAlert, setShowAlert] = useState(false)
@@ -34,8 +33,8 @@ function Disapproval(props: any) {
             <View style={showAlert ? {
                 zIndex: 1,
                 flex: 1,
-                width: '100%',
-                height: '100%',
+                width: width,
+                height: height,
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'absolute',
