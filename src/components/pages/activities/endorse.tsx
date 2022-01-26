@@ -79,32 +79,33 @@ function Endorsed(props:any) {
                     position: 'absolute',
                     backgroundColor: 'rgba(52,52,52,0.5)'
                 }: {}}>
-                    <CustomAlert
-                        showClose={false}
-                        type={FOREVALUATION}
-                        onDismissed={()=>{
-                            setShowAlert(false)
-                        }}
-                        onLoading={alertLoading}
-                        onCancelPressed={() => {
-                            setShowAlert(false)
-                        }}
-                        confirmButton={"Proceed"}
-                        onConfirmPressed={() => {
-                            setAlertLoading(true)
-                            props.onChangeApplicationStatus({status: FOREVALUATION }, (bool, callback:(bool) =>{}) =>{
-                                setAlertLoading(false)
-                                setShowAlert(false)
 
-                                props.onDismissed()
-                                callback(true)
-
-                            })
-
-
-                        }} show={showAlert} title={"Application has been endorsed to"}
-                        message={message}/>
                 </View>
+                <CustomAlert
+                    showClose={false}
+                    type={FOREVALUATION}
+                    onDismissed={()=>{
+                        setShowAlert(false)
+                    }}
+                    onLoading={alertLoading}
+                    onCancelPressed={() => {
+                        setShowAlert(false)
+                    }}
+                    confirmButton={"Proceed"}
+                    onConfirmPressed={() => {
+                        setAlertLoading(true)
+                        props.onChangeApplicationStatus({status: FOREVALUATION }, (bool, callback:(bool) =>{}) =>{
+                            setAlertLoading(false)
+                            setShowAlert(false)
+
+                            props.onDismissed()
+                            callback(true)
+
+                        })
+
+
+                    }} show={showAlert} title={"Application has been endorsed to"}
+                    message={message}/>
                 {/*<AwesomeAlert
                     actionContainerStyle={alertStyle.actionContainerStyle}
                     overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
