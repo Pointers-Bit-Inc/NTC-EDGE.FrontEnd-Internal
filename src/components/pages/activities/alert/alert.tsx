@@ -80,6 +80,7 @@ function CustomAlert(props) {
                     </View>
                 </View>
             </View>
+
         </Modal>
 
     );
