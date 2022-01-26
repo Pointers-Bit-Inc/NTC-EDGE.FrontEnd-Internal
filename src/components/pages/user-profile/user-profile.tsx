@@ -304,6 +304,7 @@ const UserProfileScreen = ({navigation}: any) => {
 
     const handleBackButtonClick = () => {
         navigation.dispatch(DrawerActions.jumpTo('Home'))
+        return true;
     }
 
     useEffect(() => {
