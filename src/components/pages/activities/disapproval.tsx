@@ -1,37 +1,79 @@
 import React, {useState} from "react";
-import {StyleSheet, View, Text, Modal, TouchableOpacity, KeyboardAvoidingView, Platform, Dimensions} from "react-native";
-import { InputField } from "@components/molecules/form-fields";
+import {
+    Dimensions,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
+import {InputField} from "@components/molecules/form-fields";
 import {Feather, Ionicons} from "@expo/vector-icons";
 import {DECLINED} from "../../../reducers/activity/initialstate";
-import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
+import ApplicationAlert from "@pages/activities/alert/decline";
+import CustomAlert from "@pages/activities/alert/alert";
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
-function Disapproval(props:any) {
-  const [showAlert, setShowAlert] = useState(false)
+function Disapproval(props: any) {
+    const [showAlert, setShowAlert] = useState(false)
     const [text, setText] = useState("")
     const isKeyboardVisible = useKeyboard();
-   return (
+    const [alertLoading, setAlertLoading] = useState(false)
+    return (
 
-           <Modal
-               animationType="slide"
-               transparent={true}
-               visible={props.visible}
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={props.visible}
 
-               onRequestClose={() => {
-               }}>
-               <AwesomeAlert
-                   actionContainerStyle={{
-                       flexDirection: "row-reverse"
-                   }}
-
-                   overlayStyle = {showAlert ? {
-                       width: width,
-                       height: height,
-                       position: 'absolute',
-                       backgroundColor: 'rgba(52,52,52,0.5)'
-                   }: {}             }
+            onRequestClose={() => {
+            }}>
+            <View style={showAlert ? {
+                zIndex: 1,
+                flex: 1,
+                width: '100%',
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'absolute',
+                backgroundColor: 'rgba(52,52,52,0.5)'
+            } : {}}>
+                <CustomAlert
+                     showClose={false}
+                    type={DECLINED}
+                    onDismissed={()=>{
+                        setShowAlert(false)
+                    }}
+                    onLoading={alertLoading}
+                    onCancelPressed={() => {
+                        setShowAlert(false)
+                    }}
+                    onConfirmPressed={() => {
+                        setAlertLoading(true)
+                        setShowAlert(false)
+                        props.onChangeApplicationStatus(DECLINED, (bool, callback: (bool) =>{}) =>{
+                            setAlertLoading(false)
+                            props.onDismissed()
+                            callback(true)
+                        })
+                    }} show={showAlert} title="Application declined"
+                    message={`Are you sure you want to reject this application?`}/>
+            </View>
+            {/*<AwesomeAlert
+                   actionContainerStyle={alertStyle.actionContainerStyle}
+                   overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
+                   titleStyle={alertStyle.titleStyle}
+                   contentContainerStyle={alertStyle.contentContainerStyle}
+                   confirmButtonTextStyle={alertStyle.confirmButtonTextStyle}
+                   cancelButtonColor="#fff"
+                   cancelButtonTextStyle={alertStyle.cancelButtonTextStyle}
+                   cancelText="Cancel"
+                   confirmText="Yes"
+                   confirmButtonColor="#fff"
                    show={showAlert}
                    showProgress={false}
                    title="Confirm?"
@@ -41,9 +83,6 @@ function Disapproval(props:any) {
                    closeOnHardwareBackPress={false}
                    showCancelButton={true}
                    showConfirmButton={true}
-                   cancelText="Cancel"
-                   confirmText="Yes"
-                   confirmButtonColor="#DD6B55"
                    onCancelPressed={() => {
                        setShowAlert(false)
                    }}
@@ -55,65 +94,65 @@ function Disapproval(props:any) {
                                callback(true)
                        })
                    }}
-               />
-               <KeyboardAvoidingView
-                   behavior={Platform.OS === "ios" ? "padding" : "height"}
-                   style={[styles.container,]}
-               >
-                   <View style={styles.rectFiller}></View>
-                   <View style={styles.rect}>
-                       <View style={{ padding: 10 }}>
-                           <TouchableOpacity onPress={()=>{
-                               props.onDismissed()
-                           }}>
-                               <Ionicons name="md-close" style={styles.icon}/>
-                           </TouchableOpacity>
-                       </View>
-                       <View
-                           style={{
-                               flexDirection: 'row',
-                               alignItems: 'center',
-                               paddingHorizontal: 20
-                           }}
-                       >
-                           <Feather
-                               name="file-text"
-                               style={styles.icon2}
-                           />
-                           <View style={styles.nodRemarksColumn}>
-                               <Text style={styles.nodRemarks}>NOD/Remarks</Text>
-                               <Text style={styles.pleaseProvide}>
-                                   Please provide reason of disapproval
-                               </Text>
-                           </View>
-                       </View>
-                       <View style={{ paddingHorizontal: 20 }}>
-                           <InputField
-                               style={{ fontWeight: 'normal' }}
-                               outlineStyle={{
-                                   borderColor: "rgba(202,210,225,1)",
-                                   paddingTop: 5,
-                                   height: (height < 720 && isKeyboardVisible) ? 100 : height * 0.25
-                               }}
-                               placeholder={'Remarks'}
-                               multiline={true}
-                               value={text}
-                               onChangeText={setText}
-                           />
-                       </View>
-                       <View style={{ padding: 20, paddingBottom: 25 }}>
-                           <TouchableOpacity onPress={() => {
-                               props.remarks(text)
-                               setShowAlert(true)
-                           }}>
-                               <View style={styles.confirmButton}>
-                                   <Text style={styles.confirm}>Confirm</Text>
-                               </View>
-                           </TouchableOpacity>
-                       </View>
-                   </View>
-               </KeyboardAvoidingView>
-           </Modal>
+               />*/}
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={[styles.container,]}
+            >
+                <View style={styles.rectFiller}></View>
+                <View style={styles.rect}>
+                    <View style={{padding: 10}}>
+                        <TouchableOpacity onPress={() => {
+                            props.onDismissed()
+                        }}>
+                            <Ionicons name="md-close" style={styles.icon}/>
+                        </TouchableOpacity>
+                    </View>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            paddingHorizontal: 20
+                        }}
+                    >
+                        <Feather
+                            name="file-text"
+                            style={styles.icon2}
+                        />
+                        <View style={styles.nodRemarksColumn}>
+                            <Text style={styles.nodRemarks}>NOD/Remarks</Text>
+                            <Text style={styles.pleaseProvide}>
+                                Please provide reason of disapproval
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={{paddingHorizontal: 20}}>
+                        <InputField
+                            style={{fontWeight: 'normal'}}
+                            outlineStyle={{
+                                borderColor: "rgba(202,210,225,1)",
+                                paddingTop: 5,
+                                height: (height < 720 && isKeyboardVisible) ? 100 : height * 0.25
+                            }}
+                            placeholder={'Remarks'}
+                            multiline={true}
+                            value={text}
+                            onChangeText={setText}
+                        />
+                    </View>
+                    <View style={{padding: 20, paddingBottom: 25}}>
+                        <TouchableOpacity onPress={() => {
+                            props.remarks(text)
+                            setShowAlert(true)
+                        }}>
+                            <View style={styles.confirmButton}>
+                                <Text style={styles.confirm}>Confirm</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </KeyboardAvoidingView>
+        </Modal>
 
     );
 }

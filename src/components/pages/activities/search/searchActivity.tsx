@@ -4,7 +4,7 @@ import BackSpaceIcon from "@assets/svg/backspace";
 import CloseCircleIcon from "@assets/svg/closeCircle";
 import SearchLoading from "@assets/svg/searchLoading";
 import {styles} from "@pages/activities/search/styles";
-const {height} = Dimensions.get('window');
+const {height} = Dimensions.get('screen');
 
 export function SearchActivity(props: { onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const inputRef = useRef(null);
@@ -14,8 +14,15 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
       useEffect(() =>{
           onFocusHandler()
       }, [])
+     const [height_, setHeight_] = useState(0)
+    return <View onLayout={(event)=>{
 
-    return <View  style={styles.container}>
+        if( height_ > 0 && height_ < 200){
+            setHeight_(event.nativeEvent.layout.height)
+        }
+
+    }
+    } style={styles.container}>
         <View   style={styles.group9}>
             <View  style={styles.group4}>
                 <View style={styles.rect}>
@@ -70,7 +77,7 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
                 <View style={styles.rect3}>
                     <View style={styles.group7}>
                         <Text style={styles.recentSearches}>{props.nevers.length ? "Recent Searches" : ""}</Text>
-                        <View style={{justifyContent: "center", height: height-119-40-30-40}}>
+                        <View style={{justifyContent: "center", height: height-230}}>
                             <ScrollView  showsVerticalScrollIndicator={false}>
                                 {props.nevers.map(props.callbackfn)}
                             </ScrollView>

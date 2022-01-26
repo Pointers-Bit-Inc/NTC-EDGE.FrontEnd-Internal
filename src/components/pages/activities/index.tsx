@@ -609,8 +609,7 @@ export default function ActivitiesPage(props: any) {
                                     onPressUser={(event: any) => {
 
                                         setDetails(activity)
-                                        unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
-                                        })
+
                                         if (event?.icon == 'more') {
                                             setMoreModalVisible(true)
                                         } else {
@@ -627,11 +626,11 @@ export default function ActivitiesPage(props: any) {
                                visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
                     setUpdateModal(false)
                     setDetails({})
-                    if (event && _id) {         
+                    if (event && _id) {
                         //  dispatch(deleteApplications(_id))
                     }
                     if (event) {
-                       // onRefresh()
+                       onRefresh()
                     }
                     onDismissed()
                 }}/>

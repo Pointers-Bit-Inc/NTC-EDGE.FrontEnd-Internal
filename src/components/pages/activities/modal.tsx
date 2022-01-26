@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {ActivityIndicator, Alert, Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import {primaryColor, text} from "@styles/color";
@@ -24,8 +24,11 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import Api from 'src/services/api';
 import {updateApplicationStatus} from "../../../reducers/application/actions";
 import {ModalTab} from "@pages/activities/modalTab";
+import {alertStyle} from "@pages/activities/alert/styles";
+import AccountIcon from "@assets/svg/account";
+import CustomAlert from "@pages/activities/alert/alert";
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
@@ -136,7 +139,6 @@ function ActivityModal(props: any) {
     const allButton =  (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?._id ? true :  (declineButton || approveButton || grayedOut)
                  console.log("user:", props?.details?.applicant?.user?.firstName, "cashier:",cashier, "assign id:", assignId, "id:", user?._id , "status:", status, "payment status:", props.details.paymentStatus, "status: ", props.details.status)
 
-
     return (
         <Modal
             animationType="slide"
@@ -159,10 +161,19 @@ function ActivityModal(props: any) {
             } : {}}>
 
             </View>
+
+                
             <AwesomeAlert
-                actionContainerStyle={{
-                    flexDirection: "row-reverse"
-                }}
+                actionContainerStyle={alertStyle.actionContainerStyle}
+                overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
+                confirmButtonColor="#fff"
+                titleStyle={alertStyle.titleStyle}
+                contentContainerStyle={alertStyle.contentContainerStyle}
+                confirmButtonTextStyle={alertStyle.confirmButtonTextStyle}
+                cancelButtonColor="#fff"
+                cancelButtonTextStyle={alertStyle.cancelButtonTextStyle}
+                cancelText="Cancel"
+                confirmText="Yes"
                 show={showAlert}
                 showProgress={false}
                 title="Confirm?"
@@ -172,9 +183,6 @@ function ActivityModal(props: any) {
                 closeOnHardwareBackPress={false}
                 showCancelButton={true}
                 showConfirmButton={true}
-                cancelText="Cancel"
-                confirmText="Yes"
-                confirmButtonColor="#DD6B55"
                 onCancelPressed={() => {
                     setShowAlert(false)
                 }}
@@ -293,7 +301,7 @@ function ActivityModal(props: any) {
                         {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 1, paddingRight: 5}}>
                             <TouchableOpacity
-                                disabled={currentLoading === APPROVED || allButton}
+                                disabled={currentLoading === APPROVED || allButton }
                                 onPress={() => {
                                     if (cashier) {
                                         onShowConfirmation(APPROVED)
@@ -411,7 +419,15 @@ function ActivityModal(props: any) {
 
                 }}
                 isCashier={user?.role?.key === CASHIER}
-                onDismissed={onApproveDismissed}
+                onDismissed={(event?:any, callback?:(bool)=>{}) =>{
+                    if(event != APPROVED){
+                        onApproveDismissed ()
+                    }
+
+                    if (callback) {
+                        callback(true)
+                    }
+                }}
             />
             <Disapproval
                 user={props?.details?.applicant?.user}
@@ -437,9 +453,11 @@ function ActivityModal(props: any) {
                 }}
                 onChangeApplicationStatus={(event: any, callback: (bool, response) => {}) => {
                     onChangeApplicationStatus(event.status, (err, id) => {
+                        props.readFn(id, false, true, (action: any) => {
+                        })
                         if (!err) {
                             callback(true, (response) => {
-                                // props.onDismissed(true, id)
+
                             })
                         }
                     });
