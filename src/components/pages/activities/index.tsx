@@ -541,7 +541,7 @@ export default function ActivitiesPage(props: any) {
                             {!searchVisible && pnApplications?.length > 0 &&
                                 <View style={[styles.pinnedgroup, { height: undefined }]}>
                                     <View style={[styles.pinnedcontainer, { paddingVertical: 15 }]}>
-                                        <Text style={styles.pinnedActivity}>Pinned activity</Text>
+                                        <Text style={[styles.pinnedActivity, { fontWeight: 'bold' }]}>Pinned activity</Text>
                                     </View>
                                 </View>}
                                 {!searchVisible && (
