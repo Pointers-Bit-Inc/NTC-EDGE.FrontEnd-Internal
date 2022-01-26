@@ -59,7 +59,7 @@ function Disapproval(props: any) {
                             props.onDismissed()
                             callback(true)
                         })
-                    }} show={showAlert} title="Application declined"
+                    }} show={showAlert} title="Application Decline"
                     message={`Are you sure you want to reject this application?`}/>
             </View>
             {/*<AwesomeAlert

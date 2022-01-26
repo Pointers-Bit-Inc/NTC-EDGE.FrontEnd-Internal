@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     title: {
-        fontWeight: "500",
+        fontWeight: "bold",
         fontSize: 14,
         color: "#121212",
         textAlign: "center"
