@@ -4,10 +4,12 @@ import BackSpaceIcon from "@assets/svg/backspace";
 import CloseCircleIcon from "@assets/svg/closeCircle";
 import SearchLoading from "@assets/svg/searchLoading";
 import {styles} from "@pages/activities/search/styles";
+import {RootStateOrAny, useSelector} from "react-redux";
 const {height} = Dimensions.get('screen');
 
 export function SearchActivity(props: { onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const inputRef = useRef(null);
+    const {tabBarHeight} = useSelector((state: RootStateOrAny) => state.application)
     const onFocusHandler = () => {
         inputRef.current && inputRef.current.focus();
     }
@@ -77,7 +79,7 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
                 <View style={styles.rect3}>
                     <View style={styles.group7}>
                         <Text style={styles.recentSearches}>{props.nevers.length ? "Recent Searches" : ""}</Text>
-                        <View style={{justifyContent: "center", height: height-230}}>
+                        <View style={{justifyContent: "center", height: height-40-120-tabBarHeight}}>
                             <ScrollView  showsVerticalScrollIndicator={false}>
                                 {props.nevers.map(props.callbackfn)}
                             </ScrollView>

@@ -5,7 +5,8 @@ const {
     SET_APPLICATIONS,
     DELETE_APPLICATIONS,
     HANDLE_LOAD,
-    READ_UNREAD_APPLICATIONS
+    READ_UNREAD_APPLICATIONS,
+    SET_TAB_BAR_HEIGHT
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -28,7 +29,12 @@ export function setNotPinnedApplication(payload) {
         payload,
     };
 }
-
+export function setTabBarHeight(payload) {
+    return {
+        type: SET_TAB_BAR_HEIGHT,
+        payload,
+    };
+}
 export function setApplications(payload) {
     return {
         type: SET_APPLICATIONS,

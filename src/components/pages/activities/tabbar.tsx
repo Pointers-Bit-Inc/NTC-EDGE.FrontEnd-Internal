@@ -12,8 +12,9 @@ import MeetIcon from "@assets/svg/meettabbar";
 import ScanQrIcon from "@assets/svg/scanqrtabbar";
 import MoreTabBarIcon from "@assets/svg/moretabbar";
 import {CASHIER, CHECKER, DIRECTOR, EVALUATOR, VERIFIED, VERIFIER} from "../../../reducers/activity/initialstate";
-import {RootStateOrAny, useSelector} from "react-redux";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
+import {setTabBarHeight} from "../../../reducers/application/actions";
 const Tab = createBottomTabNavigator();
 
 function getRole(user, arr ) {
@@ -29,9 +30,11 @@ export default function TabBar() {
         MORE = "More"
     const user = useSelector((state: RootStateOrAny) => state.user);
 
-    const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
+    const {tabBarHeight,  pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const [pnApplication, setPnApplication] = useState(pinnedApplications)
     const [notPnApplication, setNotPnApplication] = useState(notPinnedApplications)
+   const dispatch = useDispatch()
+
     useEffect(()=>{
 
         setPnApplication(pinnedApplications.reduce((n, e) => !e?.dateRead ? n+1 : n, 0) )
@@ -43,7 +46,12 @@ export default function TabBar() {
 
 
         return (
-            <View style={{flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', paddingHorizontal: 20, backgroundColor: 'white', paddingBottom: 15, paddingTop: 5, borderWidth: 1, borderColor: '#E5E5E5' }}>
+            <View onLayout={(event)=>{
+                if(tabBarHeight == 0){
+                    dispatch(setTabBarHeight(event.nativeEvent.layout.height))
+                }
+
+            }} style={{flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', paddingHorizontal: 20, backgroundColor: 'white', paddingBottom: 15, paddingTop: 5, borderWidth: 1, borderColor: '#E5E5E5' }}>
                 {state.routes.map((route: any, index: number) => {
                     const {options} = descriptors[route.key];
 
@@ -129,7 +137,7 @@ export default function TabBar() {
     }
     return (
 
-            <Tab.Navigator  tabBar={(props) => <ActivityTab application={notPnApplication}  {...props} />}>
+            <Tab.Navigator   tabBar={(props) => <ActivityTab application={notPnApplication}  {...props} />}>
                 <Tab.Screen   options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
