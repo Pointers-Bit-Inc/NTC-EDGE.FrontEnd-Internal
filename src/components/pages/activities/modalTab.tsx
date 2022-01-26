@@ -25,7 +25,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
                 useNativeDriver: true,
             }).start();
         } else{
-            ref.current[0].measureLayout(containerRef.current, (x, y, width, height) => {
+            ref?.current[0].measureLayout(containerRef.current, (x, y, width, height) => {
                 initial = {x, y, width, height}
                 Animated.spring(translateValue, {
                     toValue: x,

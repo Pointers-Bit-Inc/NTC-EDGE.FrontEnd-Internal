@@ -117,15 +117,18 @@ function ActivityModal(props: any) {
 
     function onShowConfirmation(status: string) {
         const name = props?.details?.applicant?.user
-        setMessage(`Are you sure you want to ${status.toLowerCase()} this application?`)
+        setMessage(`Are you sure you want to approve this application?`)
         setShowAlert(true)
 
     }
 
     useEffect(() => {
-        setChange(false)
-        setStatus("")
-        setAssignId("")
+
+        return ()=>{
+            setChange(false)
+            setStatus("")
+            setAssignId("")
+        }
     }, [])
 
 
