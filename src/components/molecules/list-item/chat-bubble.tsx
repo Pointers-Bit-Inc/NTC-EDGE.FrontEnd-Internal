@@ -199,7 +199,7 @@ const ChatBubble:FC<Props> = ({
                 <ProfileImage
                   style={[{ marginHorizontal: 1, }, isSender && styles.flipX]}
                   key={seen._id}
-                  image={seen?.profilePicture?.small}
+                  image={seen?.image}
                   name={`${seen.firstName} ${seen.lastName}`}
                   size={12}
                   textSize={5}

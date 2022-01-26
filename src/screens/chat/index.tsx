@@ -302,7 +302,7 @@ const ChatList = ({ navigation }:any) => {
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <ProfileImage
               size={45}
-              image={user?.profilePicture?.small}
+              image={user?.image}
               name={`${user.firstName} ${user.lastName}`}
             />
           </TouchableOpacity>

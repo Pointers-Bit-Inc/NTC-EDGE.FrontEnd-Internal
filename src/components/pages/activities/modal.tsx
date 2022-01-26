@@ -82,6 +82,7 @@ function ActivityModal(props: any) {
         if (applicationId) {
             await api.patch(url, params)
                 .then(res => {
+                  
                     setGrayedOut(false)
                     setCurrentLoading('');
                     if (res.status === 200) {
@@ -107,6 +108,7 @@ function ActivityModal(props: any) {
                     return callback('error');
                 })
                 .catch(e => {
+                    
                     setGrayedOut(false)
                     setCurrentLoading('');
                     Alert.alert('Alert', e?.message || 'Something went wrong.')
@@ -117,15 +119,18 @@ function ActivityModal(props: any) {
 
     function onShowConfirmation(status: string) {
         const name = props?.details?.applicant?.user
-        setMessage(`Are you sure you want to ${status.toLowerCase()} this application?`)
+        setMessage(`Are you sure you want to approve this application?`)
         setShowAlert(true)
 
     }
 
     useEffect(() => {
-        setChange(false)
-        setStatus("")
-        setAssignId("")
+
+        return ()=>{
+            setChange(false)
+            setStatus("")
+            setAssignId("")
+        }
     }, [])
 
 
@@ -137,8 +142,11 @@ function ActivityModal(props: any) {
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
     const allButton =  (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?._id ? true :  (declineButton || approveButton || grayedOut)
-                 console.log("user:", props?.details?.applicant?.user?.firstName, "cashier:",cashier, "assign id:", assignId, "id:", user?._id , "status:", status, "payment status:", props.details.paymentStatus, "status: ", props.details.status)
-
+                 console.log("application id:",  props?.details?._id,  "user:", props?.details?.applicant?.user?.firstName, "cashier:",cashier, "assign id:", assignId, "id:", user?._id , "status:", status, "payment status:", props.details.paymentStatus, "status: ", props.details.status)
+    const [alertLoading, setAlertLoading] = useState(false)
+    const [approvalIcon, setApprovalIcon] = useState(false)
+    const [title, setTitle] = useState("Approved?")
+    const [showClose, setShowClose] = useState(false)
     return (
         <Modal
             animationType="slide"
@@ -162,8 +170,55 @@ function ActivityModal(props: any) {
 
             </View>
 
-                
-            <AwesomeAlert
+            <View style={showAlert ? {
+                zIndex: 1,
+                flex: 1,
+                width: '100%',
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'absolute',
+                backgroundColor: 'rgba(52,52,52,0.5)'
+            }: {}}>
+                <CustomAlert
+                    showClose={showClose}
+                    type={approvalIcon ? APPROVED: ""}
+                    onDismissed={()=>{
+                        setShowAlert(false)
+                        setApprovalIcon(false)
+                        setShowClose(false)
+                    }}
+                    onLoading={alertLoading}
+                    onCancelPressed={() => {
+                        setShowAlert(false)
+                        if(approvalIcon){
+                            setApprovalIcon(false)
+                            setShowClose(false)
+                        }
+                    }}
+                    onConfirmPressed={() => {
+                        let status = ""
+                        if ([CASHIER, DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
+                            status = APPROVED
+                        } else {
+                            status = DECLINED
+                        }
+
+                       // setShowAlert(false)
+                        setAlertLoading(true)
+                        onChangeApplicationStatus(status, ()=>{
+                            setApprovalIcon(true)
+                            setAlertLoading(false)
+
+                            setTitle("Application Approved")
+                            setMessage("Application has been approved.")
+                            setShowClose(true)
+                        })
+                    }}
+                    show={showAlert} title={title}
+                    message={message}/>
+            </View>
+           {/* <AwesomeAlert
                 actionContainerStyle={alertStyle.actionContainerStyle}
                 overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
                 confirmButtonColor="#fff"
@@ -183,21 +238,8 @@ function ActivityModal(props: any) {
                 closeOnHardwareBackPress={false}
                 showCancelButton={true}
                 showConfirmButton={true}
-                onCancelPressed={() => {
-                    setShowAlert(false)
-                }}
-                onConfirmPressed={() => {
-                    let status = ""
-                    if ([CASHIER, DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
-                        status = APPROVED
-                    } else {
-                        status = DECLINED
-                    }
 
-                    setShowAlert(false)
-                    onChangeApplicationStatus(status)
-                }}
-            />
+            />*/}
             <View style={{flex: 1}}>
                 <View style={{padding: 15, paddingTop: 35, backgroundColor: primaryColor}}>
                     <TouchableOpacity onPress={() => {
@@ -453,8 +495,6 @@ function ActivityModal(props: any) {
                 }}
                 onChangeApplicationStatus={(event: any, callback: (bool, response) => {}) => {
                     onChangeApplicationStatus(event.status, (err, id) => {
-                        props.readFn(id, false, true, (action: any) => {
-                        })
                         if (!err) {
                             callback(true, (response) => {
 

@@ -91,42 +91,44 @@ function Approval(props: any) {
                       position: 'absolute',
                       backgroundColor: 'rgba(52,52,52,0.5)'
                   }: {}}>
-                      <CustomAlert
-                          showClose={showClose}
-                          type={approvalIcon ? APPROVED: ""}
-                          onDismissed={()=>{
-                              setShowAlert(false)
-                              setApprovalIcon(false)
-                              setShowClose(false)
-                          }}
-                           onLoading={alertLoading}
-                          onCancelPressed={() => {
-                              setShowAlert(false)
-                              if(approvalIcon){
-                                  props.onDismissed()
-                                  setApprovalIcon(false)
-                                  setShowClose(false)
-                              }
 
-                          }}
-                          onConfirmPressed={() => {
-                              setAlertLoading(true)
-                              props.confirm({cashier: cashier, remarks: remarks}, (response, callback) => {
-                                  setAlertLoading(false)
-
-
-                                  props.onDismissed(APPROVED, (bool)=>{
-                                      setApprovalIcon(true)
-                                      setTitle("Application Approved")
-                                      setMessage("Application has been approved.")
-                                      setShowClose(true)
-                                  })
-                                  callback(true)
-                              })
-
-                          }} show={showAlert} title={title}
-                          message={message}/>
                   </View>
+
+            <CustomAlert
+                showClose={showClose}
+                type={approvalIcon ? APPROVED: ""}
+                onDismissed={()=>{
+                    setShowAlert(false)
+                    setApprovalIcon(false)
+                    setShowClose(false)
+                }}
+                onLoading={alertLoading}
+                onCancelPressed={() => {
+                    setShowAlert(false)
+                    if(approvalIcon){
+                        props.onDismissed()
+                        setApprovalIcon(false)
+                        setShowClose(false)
+                    }
+
+                }}
+                onConfirmPressed={() => {
+                    setAlertLoading(true)
+                    props.confirm({cashier: cashier, remarks: remarks}, (response, callback) => {
+                        setAlertLoading(false)
+
+
+                        props.onDismissed(APPROVED, (bool)=>{
+                            setApprovalIcon(true)
+                            setTitle("Application Approved")
+                            setMessage("Application has been approved.")
+                            setShowClose(true)
+                        })
+                        callback(true)
+                    })
+
+                }} show={showAlert} title={title}
+                message={message}/>
             {/*<AwesomeAlert
                 actionContainerStyle={alertStyle.actionContainerStyle}
                 overlayStyle={showAlert ? alertStyle.overlayStyle : {}}

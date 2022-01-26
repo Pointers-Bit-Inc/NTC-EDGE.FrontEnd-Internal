@@ -13,7 +13,6 @@ import {InputField} from "@components/molecules/form-fields";
 import {Feather, Ionicons} from "@expo/vector-icons";
 import {DECLINED} from "../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
-import ApplicationAlert from "@pages/activities/alert/decline";
 import CustomAlert from "@pages/activities/alert/alert";
 
 const {width, height} = Dimensions.get('window');
@@ -42,27 +41,28 @@ function Disapproval(props: any) {
                 position: 'absolute',
                 backgroundColor: 'rgba(52,52,52,0.5)'
             } : {}}>
-                <CustomAlert
-                     showClose={false}
-                    type={DECLINED}
-                    onDismissed={()=>{
-                        setShowAlert(false)
-                    }}
-                    onLoading={alertLoading}
-                    onCancelPressed={() => {
-                        setShowAlert(false)
-                    }}
-                    onConfirmPressed={() => {
-                        setAlertLoading(true)
-                        setShowAlert(false)
-                        props.onChangeApplicationStatus(DECLINED, (bool, callback: (bool) =>{}) =>{
-                            setAlertLoading(false)
-                            props.onDismissed()
-                            callback(true)
-                        })
-                    }} show={showAlert} title="Application declined"
-                    message={`Are you sure you want to reject this application?`}/>
+
             </View>
+            <CustomAlert
+                showClose={false}
+                type={DECLINED}
+                onDismissed={()=>{
+                    setShowAlert(false)
+                }}
+                onLoading={alertLoading}
+                onCancelPressed={() => {
+                    setShowAlert(false)
+                }}
+                onConfirmPressed={() => {
+                    setAlertLoading(true)
+                    setShowAlert(false)
+                    props.onChangeApplicationStatus(DECLINED, (bool, callback: (bool) =>{}) =>{
+                        setAlertLoading(false)
+                        props.onDismissed()
+                        callback(true)
+                    })
+                }} show={showAlert} title="Application Decline"
+                message={`Are you sure you want to reject this application?`}/>
             {/*<AwesomeAlert
                    actionContainerStyle={alertStyle.actionContainerStyle}
                    overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
