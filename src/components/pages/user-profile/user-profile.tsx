@@ -40,27 +40,27 @@ const UserProfileScreen = ({navigation}: any) => {
         if (type === 'image-picker') {
             let index = userProfileForm?.findIndex(u => u?.id === id);
             if (index > -1) {
-                // let picker = await DocumentPicker.getDocumentAsync({
-                //     type: 'image/*',
-                // });
-                let picker = await ImagePicker.launchImageLibraryAsync({
-                    mediaTypes: ImagePicker.MediaTypeOptions.All,
-                    allowsEditing: false,
-                    aspect: [4, 3],
-                    quality: 0,
+                let picker = await DocumentPicker.getDocumentAsync({
+                    type: 'image/*',
                 });
-                if (!picker.cancelled) {
-                    let uri = picker?.uri;
-                    let split = uri?.split('/');
-                    let name = split?.[split?.length - 1];
-                    let mimeType = picker?.type || name?.split('.')?.[1];
-                    let _file = {
-                        name,
-                        mimeType,
-                        uri,
-                    };
-                    userProfileForm[index].file = _file;
-                    userProfileForm[index].value = _file?.uri;
+                // let picker = await ImagePicker.launchImageLibraryAsync({
+                //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+                //     allowsEditing: false,
+                //     aspect: [4, 3],
+                //     quality: 0,
+                // });
+                if (/*!picker.cancelled*/ picker?.type !== 'cancel') {
+                    // let uri = picker?.uri;
+                    // let split = uri?.split('/');
+                    // let name = split?.[split?.length - 1];
+                    // let mimeType = picker?.type || name?.split('.')?.[1];
+                    // let _file = {
+                    //     name,
+                    //     mimeType,
+                    //     uri,
+                    // };
+                    userProfileForm[index].file = picker; //_file;
+                    userProfileForm[index].value = picker?.uri; //_file?.uri;
                     setUserProfileForm(userProfileForm);
                     save({dp: true});
                 }
