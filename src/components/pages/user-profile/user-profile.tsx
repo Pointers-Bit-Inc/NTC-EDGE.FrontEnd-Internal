@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import FormField from '@organisms/forms/form';
 import InputStyles from '@styles/input-style';
 import Text from '@atoms/text';
-import { DrawerActions } from '@react-navigation/native';
 import { defaultColor, errorColor, successColor, text, warningColor} from '@styles/color';
 import {Image, ScrollView, StyleSheet, TouchableOpacity, View, ActivityIndicator, StatusBar, Dimensions, BackHandler} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -22,7 +21,7 @@ const { width, height } = Dimensions.get('window');
 
 const UserProfileScreen = ({navigation}: any) => {
     const dispatch = useDispatch();
-
+    const routeIsFocused = navigation.isFocused();
     const user = useSelector((state: RootStateOrAny) => state.user) || {};
     const { profilePicture = {} } = user;
     const photo = profilePicture?.small;
@@ -303,7 +302,7 @@ const UserProfileScreen = ({navigation}: any) => {
     ]);
 
     const handleBackButtonClick = () => {
-        navigation.dispatch(DrawerActions.jumpTo('Home'))
+        navigation.dispatch(navigation.navigate('Home'))
         return true;
     }
 
@@ -312,7 +311,7 @@ const UserProfileScreen = ({navigation}: any) => {
         return () => {
             BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
         };
-    }, []);
+    }, [routeIsFocused]);
 
     const MyStatusBar = ({backgroundColor, ...props}: any) => (
         <View style={[styles.statusBar, { backgroundColor }]}>
