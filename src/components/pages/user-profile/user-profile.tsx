@@ -82,7 +82,7 @@ const UserProfileScreen = ({navigation}: any) => {
         return picker;
     };
     const save = ({ dp = false }) => {
-        var isValid = true, updatedUser = {}, formData = new FormData();
+        var updatedUser = {}, formData = new FormData();
         userProfileForm?.forEach((up: any) => {
             updatedUser = { ...updatedUser, [up?.stateName]: up?.value };
             if (dp && up?.stateName === 'profilePicture' && up?.file?.uri) {
@@ -91,14 +91,6 @@ const UserProfileScreen = ({navigation}: any) => {
                     type: up?.file?.mimeType,
                     uri: up?.file?.uri,
                 });
-            }
-            if (
-                up?.stateName !== 'userType' &&
-                up?.stateName !== 'profilePicture' &&
-                (!up?.value || up?.error)
-            ) {
-                isValid = false;
-                return;
             }
         });
         if (!dp) {
@@ -110,7 +102,7 @@ const UserProfileScreen = ({navigation}: any) => {
                 address: updatedUser?.address,
             }));
         }
-        if (isValid) {
+        if (isValid()) {
             setLoading({
                 photo: dp,
                 basic: !dp
@@ -300,6 +292,21 @@ const UserProfileScreen = ({navigation}: any) => {
             error: false,
         },
     ]);
+    const isValid = () => {
+        var valid = true;
+        userProfileForm?.forEach((up: any) => {
+            if (
+                up?.stateName !== 'userType' &&
+                up?.stateName !== 'profilePicture' &&
+                (!up?.value || up?.error)
+            ) {
+                valid = false;
+                return;
+            }
+        });
+        return valid;
+    }
+    const disabled = loading?.photo || loading?.basic || (editable && !isValid());
 
     const handleBackButtonClick = () => {
         navigation.dispatch(navigation.navigate('Home'))
@@ -330,11 +337,11 @@ const UserProfileScreen = ({navigation}: any) => {
                 </TouchableOpacity>
 
                 <Text style={styles.profileName}>Profile</Text>
-                <TouchableOpacity style={[styles.touchable, {alignItems: 'flex-end'}]} onPress={onSave} disabled={loading?.photo || loading?.basic}>
+                <TouchableOpacity style={[styles.touchable, {alignItems: 'flex-end'}]} onPress={onSave} disabled={disabled}>
                     {
                         loading?.basic
                             ? <ActivityIndicator size='small' color='#fff' />
-                            : <Text style={styles?.edit}>{editable ? 'Save' : 'Edit'}</Text>
+                            : <Text style={[styles?.edit, disabled && {color: 'rgba(255, 255, 255, 0.5)'}]}>{editable ? 'Save' : 'Edit'}</Text>
                     }
                 </TouchableOpacity>
             </View>

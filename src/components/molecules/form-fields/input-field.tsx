@@ -9,6 +9,7 @@ import { View, StyleSheet } from 'react-native';
 import { ExclamationIcon } from '@atoms/icon';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
+import { defaultColor } from '@styles/color';
 
 const styles = StyleSheet.create({
   container: {
@@ -144,6 +145,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
           ref={inputRef}
           style={[inputStyle, !editable && {color: disabledColor}]}
           placeholder={placeholder || label}
+          placeholderTextColor={!editable ? disabledColor : defaultColor}
           secureTextEntry={secureTextEntry}
           onFocus={onFocusFN}
           onBlur={onBlurFN}
