@@ -556,8 +556,8 @@ export default function ActivitiesPage(props: any) {
                                                         searchQuery={searchTerm}
                                                         activity={act}
                                                         onPressUser={() => {
-                                                            unReadReadApplicationFn(act?._id, false, true, (action: any) => {
-                                                            })
+                                                           /* unReadReadApplicationFn(act?._id, false, true, (action: any) => {
+                                                            })*/
                                                             setDetails({...act, ...{isPinned: true}})
 
                                                             if (event?.icon == 'more') {
@@ -618,8 +618,8 @@ export default function ActivitiesPage(props: any) {
                                     onPressUser={(event: any) => {
 
                                         setDetails(activity)
-                                        unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
-                                        })
+                                        /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
+                                        })*/
                                         if (event?.icon == 'more') {
                                             setMoreModalVisible(true)
                                         } else {
