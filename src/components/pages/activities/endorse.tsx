@@ -56,7 +56,8 @@ function Endorsed(props:any) {
             setMessage(`` +  pickedEndorsed?.find(picked => {
                 return picked.value == endorsed
             })?.label)
-            props.remarks({ endorseId: endorsed, remarks: text, message })
+
+
             setShowAlert(true)
         
     }
@@ -101,6 +102,7 @@ function Endorsed(props:any) {
                     confirmButton={"Proceed"}
                     onConfirmPressed={() => {
                         setAlertLoading(true)
+                        props.remarks({ endorseId: endorsed, remarks: text, message })
                         props.onChangeApplicationStatus({status: FOREVALUATION }, (bool, callback:(bool) =>{}) =>{
                             setAlertLoading(false)
                             setShowClose(true)
