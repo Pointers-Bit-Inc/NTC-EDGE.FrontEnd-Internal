@@ -157,7 +157,7 @@ function ActivityModal(props: any) {
                 props.onDismissed(change)
                 setChange(false)
             }}>
-            <View style={approveVisible || visible || endorseVisible ? {
+            <View style={approveVisible || visible || endorseVisible || showAlert ? {
 
                 position: "absolute",
                 zIndex: 2,
@@ -170,16 +170,7 @@ function ActivityModal(props: any) {
 
             </View>
 
-            <View style={showAlert ? {
-                zIndex: 1,
-                flex: 1,
-                width: '100%',
-                height: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'absolute',
-                backgroundColor: 'rgba(52,52,52,0.5)'
-            }: {}}>
+          
                 <CustomAlert
                     showClose={showClose}
                     type={approvalIcon ? APPROVED: ""}
@@ -217,7 +208,7 @@ function ActivityModal(props: any) {
                     }}
                     show={showAlert} title={title}
                     message={message}/>
-            </View>
+
            {/* <AwesomeAlert
                 actionContainerStyle={alertStyle.actionContainerStyle}
                 overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
@@ -495,6 +486,7 @@ function ActivityModal(props: any) {
                 }}
                 onChangeApplicationStatus={(event: any, callback: (bool, response) => {}) => {
                     onChangeApplicationStatus(event.status, (err, id) => {
+
                         if (!err) {
                             callback(true, (response) => {
 

@@ -80,6 +80,7 @@ function CustomAlert(props) {
                     </View>
                 </View>
             </View>
+
         </Modal>
 
     );
@@ -87,7 +88,6 @@ function CustomAlert(props) {
 
 const styles = StyleSheet.create({
     group: {
-        
         alignSelf: "center"
     },
     container___: {
