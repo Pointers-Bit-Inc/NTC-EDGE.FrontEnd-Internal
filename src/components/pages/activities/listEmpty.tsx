@@ -11,6 +11,7 @@ export default function Loader(refreshing, searchTerm) {
     const selectedClone = selectedChangeStatus?.filter((status: string) => {
         return status != DATE_ADDED
     })
+
     return (
         <View style={{flex: 1, justifyContent: 'center',alignItems: 'center'}}>
             {!refreshing && searchTerm.length ? <Text>No results for "{searchTerm}"</Text> : !refreshing ? <Text>No {selectedClone.toString()} Applications</Text> : <Text></Text>  }

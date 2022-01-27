@@ -63,7 +63,7 @@ function Endorsed(props:any) {
     }
     const [alertLoading, setAlertLoading] = useState(false)
     const [showClose, setShowClose] = useState(false)
-    const [title, setTitle] = useState("Endorse Application to")
+    const [title, setTitle] = useState("Application has been endorsed to")
     return (
             <Modal
                 animationType="slide"
@@ -97,7 +97,7 @@ function Endorsed(props:any) {
                     onCancelPressed={() => {
                         setShowAlert(false)
                         setShowClose(false)
-                        setTitle("Endorse Application to")
+                        setTitle("Application has been endorsed to")
                         props.onDismissed()
                     }}
                     confirmButton={"Proceed"}
@@ -108,7 +108,7 @@ function Endorsed(props:any) {
                             setAlertLoading(false)
                             setShowClose(true)
                             callback(true)
-                            setTitle("Application Endorsed to")
+                            setTitle("Endorse Application to")
 
                         })
 

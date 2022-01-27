@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import {InputField} from "@components/molecules/form-fields";
 import {Feather, Ionicons} from "@expo/vector-icons";
-import {DECLINED} from "../../../reducers/activity/initialstate";
+import {DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
 import CustomAlert from "@pages/activities/alert/alert";
 const { height, width } = Dimensions.get('window');
@@ -21,6 +21,9 @@ function Disapproval(props: any) {
     const [text, setText] = useState("")
     const isKeyboardVisible = useKeyboard();
     const [alertLoading, setAlertLoading] = useState(false)
+    const [showClose, setShowClose] = useState(false)
+    const [title, setTitle] = useState("Decline Application")
+    const [message, setMessage] = useState("Are you sure you want to reject this application?")
     return (
 
         <Modal
@@ -43,25 +46,35 @@ function Disapproval(props: any) {
 
             </View>
             <CustomAlert
-                showClose={false}
+                showClose={showClose}
                 type={DECLINED}
                 onDismissed={()=>{
                     setShowAlert(false)
+                    setShowClose(false)
+                    props.onDismissed()
                 }}
                 onLoading={alertLoading}
                 onCancelPressed={() => {
                     setShowAlert(false)
+                    setShowClose(false)
+                    setTitle("Decline Application")
+                    setMessage("Are you sure you want to reject this application?")
+                    props.onDismissed()
                 }}
                 onConfirmPressed={() => {
                     setAlertLoading(true)
-                    setShowAlert(false)
-                    props.onChangeApplicationStatus(DECLINED, (bool, callback: (bool) =>{}) =>{
+
+                    props.onChangeApplicationStatus(DECLINED, (bool, callback:(bool) =>{}) =>{
                         setAlertLoading(false)
-                        props.onDismissed()
+                        setShowClose(true)
                         callback(true)
+                        setTitle("Application Declined")
+                        setMessage("Application has been rejected.")
                     })
-                }} show={showAlert} title="Application Decline"
-                message={`Are you sure you want to reject this application?`}/>
+
+
+                }} show={showAlert} title={title}
+                message={message}/>
             {/*<AwesomeAlert
                    actionContainerStyle={alertStyle.actionContainerStyle}
                    overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}

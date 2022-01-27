@@ -71,7 +71,7 @@ function Approval(props: any) {
     }, [showAlert])
           const [alertLoading, setAlertLoading] = useState(false)
           const [approvalIcon, setApprovalIcon] = useState(false)
-        const [title, setTitle] = useState("Approved?")
+        const [title, setTitle] = useState("Approve Application")
     const [showClose, setShowClose] = useState(false)
     return (
 
@@ -110,7 +110,7 @@ function Approval(props: any) {
                         setApprovalIcon(false)
                         setShowClose(false)
                     }
-
+                    setTitle("Application Approve")
                 }}
                 onConfirmPressed={() => {
                     setAlertLoading(true)
