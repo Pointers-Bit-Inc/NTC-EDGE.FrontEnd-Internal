@@ -104,16 +104,17 @@ export default function ActivitiesPage(props: any) {
             const search =
                 (selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true)
             if (cashier) {
-                return (item?.status == APPROVED || item?.status == DECLINED  && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search)
+                return (item?.status == APPROVED || item?.status == DECLINED && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search)
             } else if (director) {
                 return (item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search
             } else if (checker) {
                 return (item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
             } else if (evaluator) {
-                return item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory
+                return item?.status.length > 0 || item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory
             }
         });
     }
+
     const ispinnedApplications = (applications: any) => {
 
         setTotalPages(Math.ceil(applications?.length / 10));
@@ -129,7 +130,7 @@ export default function ActivitiesPage(props: any) {
         const groups = list?.reduce((groups: any, activity: any) => {
 
             if (activity.assignedPersonnel == user?._id) {
-              //  isPinned++
+                //  isPinned++
 
 
             }
@@ -140,7 +141,6 @@ export default function ActivitiesPage(props: any) {
             groups[formatDate(activity.createdAt)].push(activity);
             return groups;
         }, {});
-
 
 
         const groupArrays = Object.keys(groups).map((date) => {
@@ -210,12 +210,12 @@ export default function ActivitiesPage(props: any) {
             if (response?.data?.size) setSize(response?.data?.size)
             if (response?.data?.total) setTotal(response?.data?.total)
             if (response?.data?.page) setPage(response?.data?.page)
-             if(response?.data?.docs?.length)  callback(true)
+            if (response?.data?.docs?.length) callback(true)
 
 
             if (count == 0) {
                 count = 1
-                if (count) dispatch(setApplications({data:response?.data, user: user}))
+                if (count) dispatch(setApplications({data: response?.data, user: user}))
             }
         }).catch((err) => {
             if (isCurrent) setRefreshing(false)
@@ -360,7 +360,7 @@ export default function ActivitiesPage(props: any) {
                     setInfiniteLoad(false);
 
                 } else {
-                    dispatch(handleInfiniteLoad({data:getList(response.data.docs, selectedChangeStatus), user: user}))
+                    dispatch(handleInfiniteLoad({data: getList(response.data.docs, selectedChangeStatus), user: user}))
                     setInfiniteLoad(false);
                 }
                 setInfiniteLoad(false);
@@ -540,38 +540,38 @@ export default function ActivitiesPage(props: any) {
                     ListHeaderComponent={() => (
                         <>
                             {!searchVisible && pnApplications?.length > 0 &&
-                                <View style={[styles.pinnedgroup, { height: undefined }]}>
-                                    <View style={[styles.pinnedcontainer, { paddingVertical: 15 }]}>
-                                        <Text style={[styles.pinnedActivity, { fontWeight: 'bold' }]}>Pinned activity</Text>
-                                    </View>
-                                </View>}
-                                {!searchVisible && (
-                                     <ScrollView style={{ maxHeight: 300 }}>
-                                        {
-                                            pnApplications.map((item: any, index: number) => {
-                                                return item?.activity && item?.activity.map((act: any, i: number) => {
-                                                    return act?.assignedPersonnel == user?._id && <ActivityItem
+                            <View style={[styles.pinnedgroup, {height: undefined}]}>
+                                <View style={[styles.pinnedcontainer, {paddingVertical: 15}]}>
+                                    <Text style={[styles.pinnedActivity, {fontWeight: 'bold'}]}>Pinned activity</Text>
+                                </View>
+                            </View>}
+                            {!searchVisible && (
+                                <ScrollView style={{maxHeight: 300}}>
+                                    {
+                                        pnApplications.map((item: any, index: number) => {
+                                            return item?.activity && item?.activity.map((act: any, i: number) => {
+                                                return act?.assignedPersonnel == user?._id && <ActivityItem
                                                     key={i}
                                                     role={user?.role?.key}
-                                                        searchQuery={searchTerm}
-                                                        activity={act}
-                                                        onPressUser={(event:any) => {
-                                                            /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
-                                                            })*/
-                                                            setDetails({...act, ...{isPinned: true}})
+                                                    searchQuery={searchTerm}
+                                                    activity={act}
+                                                    onPressUser={(event: any) => {
+                                                        /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
+                                                        })*/
+                                                        setDetails({...act, ...{isPinned: true}})
 
-                                                            if (event?.icon == 'more') {
-                                                                setMoreModalVisible(true)
-                                                            } else {
-                                                                setModalVisible(true)
-                                                            }
+                                                        if (event?.icon == 'more') {
+                                                            setMoreModalVisible(true)
+                                                        } else {
+                                                            setModalVisible(true)
+                                                        }
 
-                                                        }} index={i} swiper={renderSwiper}/>
-                                                })
+                                                    }} index={i} swiper={renderSwiper}/>
                                             })
-                                        }
-                                    </ScrollView>
-                                )
+                                        })
+                                    }
+                                </ScrollView>
+                            )
                             }
                         </>
                     )}
@@ -582,7 +582,7 @@ export default function ActivitiesPage(props: any) {
                         />
                     }
                     style={{flex: 1}}
-                    data={[...(searchVisible ?pnApplications : []), ...notPnApplications ]}
+                    data={[...(searchVisible ? pnApplications : []), ...notPnApplications]}
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={bottomLoader}
                     onEndReached={() => {
@@ -640,7 +640,7 @@ export default function ActivitiesPage(props: any) {
                         //  dispatch(deleteApplications(_id))
                     }
                     if (event) {
-                       onRefresh()
+                        onRefresh()
                     }
                     onDismissed()
                 }}/>

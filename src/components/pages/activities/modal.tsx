@@ -32,6 +32,7 @@ const {width, height} = Dimensions.get('window');
 
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
+
     const user = useSelector((state: RootStateOrAny) => state.user);
     const applicant = props?.details?.applicant?.user
     const [change, setChange] = useState<boolean>(false)
@@ -57,15 +58,15 @@ function ActivityModal(props: any) {
         setApproveVisible(false)
     }
     const onChangeApplicationStatus = async (status: string, callback = (err: any, appId?: any) => {
-    }, id?:number) => {
+    }, application?:any) => {
         setGrayedOut(true)
         const api = Api(user.sessionToken);
         const applicationId = props?.details?._id;
         let url = `/applications/${applicationId}/update-status`;
         let params: any = {
             status,
-            remarks: remarks ? remarks : undefined,
-            assignedPersonnel: assignId && !director ? id || assignId : undefined,
+            remarks: remarks ? (application?.remarks || remarks) : undefined,
+            assignedPersonnel: assignId && !director ? ( application?.assignedPersonnel || assignId) : undefined,
         };
         setCurrentLoading(status);
         if (status == DECLINED ) {
@@ -75,10 +76,10 @@ function ActivityModal(props: any) {
             url = `/applications/${applicationId}/update-payment-status`;
             params = {
                 paymentStatus: status,
-                remarks: remarks ? remarks : undefined,
+                remarks: remarks ? application?.remarks || remarks : undefined,
             };
         }
-        console.log(url, params, assignId)
+        console.log(url, params, application?.assignedPersonnel , assignId)
         if (applicationId) {
             await api.patch(url, params)
                 .then(res => {
@@ -90,7 +91,7 @@ function ActivityModal(props: any) {
                             dispatch(updateApplicationStatus({
                                 application: res.data,
                                 status: status,
-                                assignedPersonnel: assignId,
+                                assignedPersonnel:  application?.assignedPersonnel || assignId,
                                 userType: user?.role?.key
                             }))
 
@@ -144,7 +145,7 @@ function ActivityModal(props: any) {
                  console.log("application id:",  props?.details?._id,  "user:", props?.details?.applicant?.user?.firstName, "cashier:",cashier, "assign id:", assignId, "id:", user?._id , "status:", status, "payment status:", props.details.paymentStatus, "status: ", props.details.status)
     const [alertLoading, setAlertLoading] = useState(false)
     const [approvalIcon, setApprovalIcon] = useState(false)
-    const [title, setTitle] = useState("Approved?")
+    const [title, setTitle] = useState("Approve Application")
     const [showClose, setShowClose] = useState(false)
 
     return (
@@ -434,6 +435,7 @@ function ActivityModal(props: any) {
                 }}
                 visible={approveVisible}
                 confirm={(event: any, callback: (res, callback) => {}) => {
+
                     setAssignId(event.cashier)
                     let status = ""
                     if ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
@@ -479,7 +481,7 @@ function ActivityModal(props: any) {
                 onDismissed={onDismissed}
             />
             <Endorsed
-                remarks={(event: any) => {
+                remarks={(event: any,) => {
 
                     setRemarks(event.remarks)
                     setAssignId(event.endorseId)
@@ -493,7 +495,7 @@ function ActivityModal(props: any) {
 
                             })
                         }
-                    }, event.id);
+                    }, {assignedPersonnel:event.id, remarks: event.remarks});
                 }}
                 visible={endorseVisible}
                 onDismissed={onEndorseDismissed}
