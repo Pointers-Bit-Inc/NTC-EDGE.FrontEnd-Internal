@@ -108,7 +108,7 @@ function Endorsed(props:any) {
                             setAlertLoading(false)
                             setShowClose(true)
                             callback(true)
-                            setTitle("Endorse Application to")
+                            setTitle("Application Endorsed to")
 
                         })
 
