@@ -546,7 +546,7 @@ export default function ActivitiesPage(props: any) {
                                     </View>
                                 </View>}
                                 {!searchVisible && (
-                                    <ScrollView style={{ maxHeight: 300 }}>
+                                     <ScrollView style={{ maxHeight: 300 }}>
                                         {
                                             pnApplications.map((item: any, index: number) => {
                                                 return item?.activity && item?.activity.map((act: any, i: number) => {
@@ -559,7 +559,13 @@ export default function ActivitiesPage(props: any) {
                                                             unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                             })
                                                             setDetails({...act, ...{isPinned: true}})
-                                                            setModalVisible(true)
+
+                                                            if (event?.icon == 'more') {
+                                                                setMoreModalVisible(true)
+                                                            } else {
+                                                                setModalVisible(true)
+                                                            }
+
                                                         }} index={i} swiper={renderSwiper}/>
                                                 })
                                             })

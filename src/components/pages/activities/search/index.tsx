@@ -78,7 +78,7 @@ function Search(props: any) {
         };
     }, []);
     return (
-        <SearchActivity onPress={() => {
+        <SearchActivity  onPress={() => {
             props.onDismissed()
         }} value={textInput} onEndEditing={() => {
             props.loadingAnimation(true)
