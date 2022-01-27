@@ -7,7 +7,7 @@ import axios from "axios";
 import EndorseToIcon from "@assets/svg/endorseTo";
 import {BASE_URL} from "../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
-import {DIRECTOR, EVALUATOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
+import {APPROVED, DIRECTOR, EVALUATOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import AwesomeAlert from "react-native-awesome-alerts";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor, text} from "@styles/color";
@@ -61,6 +61,8 @@ function Endorsed(props:any) {
         
     }
     const [alertLoading, setAlertLoading] = useState(false)
+    const [showClose, setShowClose] = useState(false)
+    const [title, setTitle] = useState("Approved?")
     return (
             <Modal
                 animationType="slide"
@@ -81,25 +83,27 @@ function Endorsed(props:any) {
                 }: {}}>
 
                 </View>
-
+               
                 <CustomAlert
-                    showClose={false}
+                    showClose={showClose}
                     type={FOREVALUATION}
                     onDismissed={()=>{
                         setShowAlert(false)
+                        setShowClose(false)
+                        props.onDismissed()
                     }}
                     onLoading={alertLoading}
                     onCancelPressed={() => {
                         setShowAlert(false)
+                        setShowClose(false)
+                        props.onDismissed()
                     }}
                     confirmButton={"Proceed"}
                     onConfirmPressed={() => {
                         setAlertLoading(true)
                         props.onChangeApplicationStatus({status: FOREVALUATION }, (bool, callback:(bool) =>{}) =>{
                             setAlertLoading(false)
-                            setShowAlert(false)
-
-                            props.onDismissed()
+                            setShowClose(true)
                             callback(true)
 
                         })

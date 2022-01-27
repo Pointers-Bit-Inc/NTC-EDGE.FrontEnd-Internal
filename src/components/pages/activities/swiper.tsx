@@ -15,7 +15,9 @@ export const renderSwiper = (index: number, progress: any, dragX: any, onPressUs
         }}>
             <TouchableOpacity style={{
                 paddingRight: 20,
-                paddingLeft: 20, alignItems: "center",
+                paddingLeft: 20,
+                alignItems: "center",
+                justifyContent: "center"
             }} onPress={() => {
 
                 unReadReadApplicationFn(activity?._id, activity?.dateRead, true, (response) =>{

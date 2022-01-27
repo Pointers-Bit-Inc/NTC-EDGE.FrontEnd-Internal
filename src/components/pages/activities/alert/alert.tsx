@@ -25,7 +25,7 @@ function CustomAlert(props) {
                     <View style={styles.container___}>
                         <View style={styles.container__}>
 
-                            <View style={[styles.container_, {paddingBottom: 5}]}>
+                            <View style={[styles.container_, {padding: "5%"}]}>
                                 {
                                     props?.type == DECLINED && <View>
                                         <CloseModal></CloseModal>

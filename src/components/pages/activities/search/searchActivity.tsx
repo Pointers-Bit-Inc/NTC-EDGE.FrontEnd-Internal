@@ -17,15 +17,16 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
           onFocusHandler()
       }, [])
      const [height_, setHeight_] = useState(0)
-    return <View onLayout={(event)=>{
+    return <View style={styles.container}>
+        <View   onLayout={(event)=>{
+            console.log(event.nativeEvent.layout.height)
+            if( height_ > 0 && height_ < 200){
+                setHeight_(event.nativeEvent.layout.height)
 
-        if( height_ > 0 && height_ < 200){
-            setHeight_(event.nativeEvent.layout.height)
+            }
+
         }
-
-    }
-    } style={styles.container}>
-        <View   style={styles.group9}>
+        }    style={styles.group9}>
             <View  style={styles.group4}>
                 <View style={styles.rect}>
                     <View style={styles.group2}>
@@ -75,18 +76,19 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
                 </Animated.View>
             </View>}
 
-            {props.value.length < 1 && <View style={styles.group8}>
-                <View style={styles.rect3}>
-                    <View style={styles.group7}>
-                        <Text style={styles.recentSearches}>{props.nevers.length ? "Recent Searches" : ""}</Text>
-                        <View style={{justifyContent: "center", height: height-40-120-tabBarHeight}}>
-                            <ScrollView  showsVerticalScrollIndicator={false}>
-                                {props.nevers.map(props.callbackfn)}
-                            </ScrollView>
-                        </View>
+
+        </View>
+        {props.value.length < 1 && <View style={styles.group8}>
+            <View style={styles.rect3}>
+                <View style={styles.group7}>
+                    <Text style={styles.recentSearches}>{props.nevers.length ? "Recent Searches" : ""}</Text>
+                    <View style={{justifyContent: "center",}}>
+                        <ScrollView style={{maxHeight: height-40-120-tabBarHeight}}   showsVerticalScrollIndicator={false}>
+                            {props.nevers.map(props.callbackfn)}
+                        </ScrollView>
                     </View>
                 </View>
-            </View>}
-        </View>
+            </View>
+        </View>}
     </View>;
 }

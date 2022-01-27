@@ -555,6 +555,8 @@ export default function ActivitiesPage(props: any) {
                                                         searchQuery={searchTerm}
                                                         activity={act}
                                                         onPressUser={() => {
+                                                            unReadReadApplicationFn(act?._id, false, true, (action: any) => {
+                                                            })
                                                             setDetails({...act, ...{isPinned: true}})
                                                             setModalVisible(true)
                                                         }} index={i} swiper={renderSwiper}/>
