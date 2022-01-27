@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {StyleSheet, View, Text, TouchableOpacity, Modal, Alert, Platform, KeyboardAvoidingView, Dimensions} from "react-native";
 import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import Dropdown from "@atoms/dropdown";
@@ -61,11 +61,14 @@ function Endorsed(props:any) {
             setShowAlert(true)
         
     }
+
     const [alertLoading, setAlertLoading] = useState(false)
     const [showClose, setShowClose] = useState(false)
     const [title, setTitle] = useState("Endorse Application to")
+
     return (
             <Modal
+
                 animationType="slide"
                 transparent={true}
                 visible={props.visible}
@@ -86,6 +89,7 @@ function Endorsed(props:any) {
                 </View>
                
                 <CustomAlert
+
                     showClose={showClose}
                     type={FOREVALUATION}
                     onDismissed={()=>{
@@ -102,12 +106,14 @@ function Endorsed(props:any) {
                     }}
                     confirmButton={"Proceed"}
                     onConfirmPressed={() => {
+
                         setAlertLoading(true)
                         props.remarks({ endorseId: endorsed, remarks: text, message })
-                        props.onChangeApplicationStatus({status: FOREVALUATION }, (bool, callback:(bool) =>{}) =>{
+                        props.onChangeApplicationStatus({status: FOREVALUATION, id: endorsed }, (bool, callback:(bool) =>{}) =>{
                             setAlertLoading(false)
                             setShowClose(true)
                             callback(true)
+
                             setTitle("Application has been endorsed to")
 
                         })

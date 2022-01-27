@@ -57,7 +57,7 @@ function ActivityModal(props: any) {
         setApproveVisible(false)
     }
     const onChangeApplicationStatus = async (status: string, callback = (err: any, appId?: any) => {
-    }) => {
+    }, id?:number) => {
         setGrayedOut(true)
         const api = Api(user.sessionToken);
         const applicationId = props?.details?._id;
@@ -65,7 +65,7 @@ function ActivityModal(props: any) {
         let params: any = {
             status,
             remarks: remarks ? remarks : undefined,
-            assignedPersonnel: assignId && !director ? assignId : undefined,
+            assignedPersonnel: assignId && !director ? id || assignId : undefined,
         };
         setCurrentLoading(status);
         if (status == DECLINED ) {
@@ -82,7 +82,6 @@ function ActivityModal(props: any) {
         if (applicationId) {
             await api.patch(url, params)
                 .then(res => {
-                  
                     setGrayedOut(false)
                     setCurrentLoading('');
                     if (res.status === 200) {
@@ -372,7 +371,7 @@ function ActivityModal(props: any) {
                         {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 1, paddingHorizontal: 5}}>
                             <TouchableOpacity
-                                disabled={(currentLoading === FOREVALUATION || allButton)}
+                                disabled={(currentLoading === FOREVALUATION || allButton )}
                                 onPress={() => {
                                     setEndorseVisible(true)
                                 }}
@@ -481,11 +480,12 @@ function ActivityModal(props: any) {
             />
             <Endorsed
                 remarks={(event: any) => {
+
                     setRemarks(event.remarks)
                     setAssignId(event.endorseId)
-
                 }}
                 onChangeApplicationStatus={(event: any, callback: (bool, response) => {}) => {
+
                     onChangeApplicationStatus(event.status, (err, id) => {
 
                         if (!err) {
@@ -493,7 +493,7 @@ function ActivityModal(props: any) {
 
                             })
                         }
-                    });
+                    }, event.id);
                 }}
                 visible={endorseVisible}
                 onDismissed={onEndorseDismissed}
