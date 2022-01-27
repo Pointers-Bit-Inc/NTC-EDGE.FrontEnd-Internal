@@ -559,8 +559,12 @@ export default function ActivitiesPage(props: any) {
                                                             /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                             })*/
                                                             setDetails({...act, ...{isPinned: true}})
-                                                            setModalVisible(true)
 
+                                                            if (event?.icon == 'more') {
+                                                                setMoreModalVisible(true)
+                                                            } else {
+                                                                setModalVisible(true)
+                                                            }
 
                                                         }} index={i} swiper={renderSwiper}/>
                                                 })
@@ -614,8 +618,8 @@ export default function ActivitiesPage(props: any) {
                                     onPressUser={(event: any) => {
 
                                         setDetails(activity)
-                                       /* unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
-                                        })*/
+                                        unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
+                                        })
                                         if (event?.icon == 'more') {
                                             setMoreModalVisible(true)
                                         } else {
