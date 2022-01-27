@@ -614,8 +614,8 @@ export default function ActivitiesPage(props: any) {
                                     onPressUser={(event: any) => {
 
                                         setDetails(activity)
-                                        unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
-                                        })
+                                       /* unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
+                                        })*/
                                         if (event?.icon == 'more') {
                                             setMoreModalVisible(true)
                                         } else {
