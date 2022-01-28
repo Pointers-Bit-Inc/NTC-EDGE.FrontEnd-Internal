@@ -87,7 +87,7 @@ export default function QrCodeScan(props: any) {
         if (permissionResult.granted === false) {
             setAlert({
                 title: 'Permission Denied',
-                message: 'Permission to access camera roll is required.',
+                message: 'Permission to access photo library is required.',
                 color: warningColor
             });
             setShowAlert(true);
@@ -169,12 +169,13 @@ export default function QrCodeScan(props: any) {
                 show={showAlert}
                 showProgress={false}
                 title={alert?.title}
+                titleStyle={{ color: text.default }}
                 message={alert?.message}
-                messageStyle={{ textAlign: 'center' }}
+                messageStyle={{ textAlign: 'center', color: text.default }}
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={false}
                 showConfirmButton={true}
-                confirmText='OK'
+                confirmText='Close'
                 confirmButtonColor={alert?.color}
                 onConfirmPressed={() => setShowAlert(false)}
             />
