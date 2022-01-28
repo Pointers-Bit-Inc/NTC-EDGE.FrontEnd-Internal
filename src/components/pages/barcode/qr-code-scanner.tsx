@@ -1,9 +1,11 @@
 import React, {useEffect, useState,} from 'react';
-import {ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View, Alert} from 'react-native';
 import {BarCodeScanner, BarCodeScannerResult} from 'expo-barcode-scanner';
 import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import axios from "axios";
+import { defaultColor, errorColor, successColor, text, warningColor} from '@styles/color';
+import AwesomeAlert from 'react-native-awesome-alerts';
 import QrScanCodeIcon from "@assets/svg/qrCodeScanIcon";
 import UploadIcon from "@assets/svg/uploadQrCode";
 import {Response} from "./response"
@@ -29,6 +31,12 @@ export default function QrCodeScan(props: any) {
     const [type, setType] = useState<any>(BarCodeScanner.Constants.Type.back);
     const [scanned, setScanned] = useState<boolean>(false);
     const [verifiedInfo, setVerifiedInfo] = useState()
+    const [alert, setAlert] = useState({
+        title: '',
+        message: '',
+        color: defaultColor,
+    });
+    const [showAlert, setShowAlert] = useState(false);
     useEffect(() => {
         (async () => {
             const {status} = await BarCodeScanner.requestPermissionsAsync();
@@ -77,7 +85,12 @@ export default function QrCodeScan(props: any) {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
         if (permissionResult.granted === false) {
-            alert("Permission to access camera roll is required!");
+            setAlert({
+                title: 'Permission Denied',
+                message: 'Permission to access camera roll is required.',
+                color: warningColor
+            });
+            setShowAlert(true);
             return;
         }
         let picker = await ImagePicker.launchImageLibraryAsync()
@@ -151,6 +164,20 @@ export default function QrCodeScan(props: any) {
                     </View>
                 </View>
             </View>
+            <AwesomeAlert
+                actionContainerStyle={{ flexDirection: 'row-reverse' }}
+                show={showAlert}
+                showProgress={false}
+                title={alert?.title}
+                message={alert?.message}
+                messageStyle={{ textAlign: 'center' }}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showConfirmButton={true}
+                confirmText='OK'
+                confirmButtonColor={alert?.color}
+                onConfirmPressed={() => setShowAlert(false)}
+            />
         </View>
 
     );
