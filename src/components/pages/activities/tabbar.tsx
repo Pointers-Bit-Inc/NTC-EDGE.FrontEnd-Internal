@@ -112,7 +112,7 @@ export default function TabBar() {
                                     alignItems: 'center',
                                 }}>
                                     {label == ACTIVITIES
-                                        ? ( <ActivityTabbar notification={pnApplication || notPnApplication } width={30} height={30} fill={isFocused ? focused : unfocused}/>) :
+                                        ? ( <ActivityTabbar notification={false } width={30} height={30} fill={isFocused ? focused : unfocused}/>) :
                                         label == CHAT
                                             ?
                                             (<ChatIcon notification={hasNewChat} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
