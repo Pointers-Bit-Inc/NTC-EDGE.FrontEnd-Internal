@@ -4,7 +4,6 @@ import InputStyles from '@styles/input-style';
 import Text from '@atoms/text';
 import { defaultColor, errorColor, successColor, text, warningColor} from '@styles/color';
 import {Image, ScrollView, StyleSheet, TouchableOpacity, View, ActivityIndicator, StatusBar, Dimensions, BackHandler} from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
 import { setUser } from '../../../reducers/user/actions';
 import {Ionicons} from '@expo/vector-icons';
@@ -15,6 +14,7 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 import { validateEmail, validatePassword, validatePhone, validateText } from 'src/utils/form-validations';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const { width, height } = Dimensions.get('window');
@@ -40,27 +40,22 @@ const UserProfileScreen = ({navigation}: any) => {
         if (type === 'image-picker') {
             let index = userProfileForm?.findIndex(u => u?.id === id);
             if (index > -1) {
-                let picker = await DocumentPicker.getDocumentAsync({
-                    type: 'image/*',
-                });
-                // let picker = await ImagePicker.launchImageLibraryAsync({
-                //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-                //     allowsEditing: false,
-                //     aspect: [4, 3],
-                //     quality: 0,
+                // let picker = await DocumentPicker.getDocumentAsync({
+                //     type: 'image/*',
                 // });
-                if (/*!picker.cancelled*/ picker?.type !== 'cancel') {
-                    // let uri = picker?.uri;
-                    // let split = uri?.split('/');
-                    // let name = split?.[split?.length - 1];
-                    // let mimeType = picker?.type || name?.split('.')?.[1];
-                    // let _file = {
-                    //     name,
-                    //     mimeType,
-                    //     uri,
-                    // };
-                    userProfileForm[index].file = picker; //_file;
-                    userProfileForm[index].value = picker?.uri; //_file?.uri;
+                let picker = await ImagePicker.launchImageLibraryAsync();
+                if (!picker.cancelled /*picker?.type !== 'cancel'*/) {
+                    let uri = picker?.uri;
+                    let split = uri?.split('/');
+                    let name = split?.[split?.length - 1];
+                    let mimeType = picker?.type || name?.split('.')?.[1];
+                    let _file = {
+                        name,
+                        mimeType,
+                        uri,
+                    };
+                    userProfileForm[index].file = _file; //picker;
+                    userProfileForm[index].value = _file?.uri; //picker?.uri;
                     setUserProfileForm(userProfileForm);
                     save({dp: true});
                 }
