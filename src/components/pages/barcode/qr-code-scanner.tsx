@@ -1,9 +1,12 @@
 import React, {useEffect, useState,} from 'react';
-import {ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View, Alert} from 'react-native';
+import { openSettings } from 'react-native-permissions'
 import {BarCodeScanner, BarCodeScannerResult} from 'expo-barcode-scanner';
 import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import axios from "axios";
+import { defaultColor, errorColor, button, text, warningColor} from '@styles/color';
+import AwesomeAlert from 'react-native-awesome-alerts';
 import QrScanCodeIcon from "@assets/svg/qrCodeScanIcon";
 import UploadIcon from "@assets/svg/uploadQrCode";
 import {Response} from "./response"
@@ -29,6 +32,12 @@ export default function QrCodeScan(props: any) {
     const [type, setType] = useState<any>(BarCodeScanner.Constants.Type.back);
     const [scanned, setScanned] = useState<boolean>(false);
     const [verifiedInfo, setVerifiedInfo] = useState()
+    const [alert, setAlert] = useState({
+        title: '',
+        message: '',
+        color: defaultColor,
+    });
+    const [showAlert, setShowAlert] = useState(false);
     useEffect(() => {
         (async () => {
             const {status} = await BarCodeScanner.requestPermissionsAsync();
@@ -73,36 +82,42 @@ export default function QrCodeScan(props: any) {
         }
 
     };
-    let openImagePickerAsync = async () => {
+    let openImagePickerAsync = async (callback:any = () => {}) => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
         if (permissionResult.granted === false) {
-            alert("Permission to access camera roll is required!");
-            return;
+            setAlert({
+                title: 'Permission Denied',
+                message: 'Permission to access photo library is required.',
+                color: warningColor
+            });
+            setShowAlert(true);
+            return callback('error');
         }
         let picker = await ImagePicker.launchImageLibraryAsync()
-        return picker
+        return callback(null, picker);
     }
 
     const decode = async () => {
         setIsLoading(true)
         try {
-            openImagePickerAsync().then(async (r: any) => {
-                if(!r.uri) return setIsLoading(false)
-                const results = await BarCodeScanner.scanFromURLAsync(r?.uri)
-                const query = `${BASE_URL}/qr/${results[0]?.data}`
-                axios.get(query, { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
+            openImagePickerAsync(async (err:any, r: any) => {
+                if (!err) {
+                    if(!r.uri) return setIsLoading(false)
+                    const results = await BarCodeScanner.scanFromURLAsync(r?.uri)
+                    const query = `${BASE_URL}/qr/${results[0]?.data}`
+                    axios.get(query, { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
+                        setIsLoading(false)
+                        setIsVerified(true)
+                        setVerifiedInfo(response.data)
+                    }).catch((e) =>{
+                        setIsLoading(false)
+                        setIsError(true)
+                    })
+                } else {
                     setIsLoading(false)
-                    setIsVerified(true)
-                    setVerifiedInfo(response.data)
-                }).catch((e) =>{
-                    setIsLoading(false)
-                    setIsError(true)
-                })
-
+                }
             })
-
-
         } catch (error) {
             setIsLoading(false)
             setIsError(true)
@@ -110,7 +125,7 @@ export default function QrCodeScan(props: any) {
     }
    
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: 'black' }]}>
             {
                 hasPermission && (
                     <RNCamera
@@ -131,7 +146,7 @@ export default function QrCodeScan(props: any) {
                 </View>
                 {isLoading && <View style={styles.group34}>
                     <View style={styles.rect19}>
-                        <ActivityIndicator style={styles.icon2}/>
+                        <ActivityIndicator style={styles.icon2} color={'white'}/>
                     </View>
                 </View>}
                 <Response verified={isVerified}
@@ -151,6 +166,21 @@ export default function QrCodeScan(props: any) {
                     </View>
                 </View>
             </View>
+            <AwesomeAlert
+                actionContainerStyle={{ flexDirection: 'row-reverse' }}
+                show={showAlert}
+                showProgress={false}
+                title={alert?.title}
+                titleStyle={{ color: text.default }}
+                message={alert?.message}
+                messageStyle={{ textAlign: 'center', color: text.default }}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showConfirmButton={true}
+                confirmText='Close'
+                confirmButtonColor={alert?.color}
+                onConfirmPressed={() => setShowAlert(false)}
+            />
         </View>
 
     );
