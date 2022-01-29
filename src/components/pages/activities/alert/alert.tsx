@@ -1,5 +1,5 @@
-import React from "react";
-import {ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {useEffect, useState} from "react";
+import {ActivityIndicator, Animated, Dimensions, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import Modal from "react-native-modal";
 import {alertStyle} from "@pages/activities/alert/styles";
 import CloseModal from "@assets/svg/closeModal";
@@ -10,17 +10,49 @@ import ApplicationApproved from "@assets/svg/application-approved";
 const {width} = Dimensions.get('window');
 
 function CustomAlert(props) {
+    const springValue = new Animated.Value(0.3);
+    const [showSelf, setShowSelf] = useState(false)
+    const _toggleAlert = (fromConstructor?: boolean) => {
+        if (fromConstructor) setShowSelf(true)
+        else setShowSelf(show => !show );
+    };
+    const _springShow = (fromConstructor:boolean) => {
+        _toggleAlert(fromConstructor);
+        Animated.spring(springValue, {
+            toValue: 1,
+            bounciness: 10,
+            useNativeDriver: false,
+        }).start();
+    }
 
+    useEffect(()=>{
+        if(props.show){
+            _springShow(props.show);
+        }
+    }, [props.show,springValue])
+
+    const _springHide = () => {
+            Animated.spring(springValue, {
+                toValue: 0,
+                tension: 10,
+                useNativeDriver: false,
+            }).start();
+
+            setTimeout(() => {
+               _toggleAlert(false);
+                props.onDismissed()
+            }, 70);
+    };
     return (
         <Modal
-            animationType="slide"
+            animationType="none"
             transparent={true}
             visible={props.show}
             onRequestClose={() => {
-                props.onDismissed()
+                _springHide()
             }}
         >
-            <View>
+            <Animated.View style={[ { transform: [{ scale: !props.onLoading ? springValue : 1}] }]}>
                 <View style={styles.group}>
                     <View style={styles.container___}>
                         <View style={styles.container__}>
@@ -54,14 +86,15 @@ function CustomAlert(props) {
                                 {
 
                                     props?.showClose == false && <>
-                                        {props.onLoading ? <ActivityIndicator style={{alignSelf: "center"}}
-                                                                              color={"rgba(40,99,214,1)"}/> :
-                                            <TouchableOpacity onPress={props.onConfirmPressed}>
-                                                <Text
-                                                    style={[styles.yes, alertStyle.confirmButtonTextStyle]}>{props?.confirmButton || 'Yes'}</Text>
 
-                                            </TouchableOpacity>}
-                                        <TouchableOpacity onPress={props.onCancelPressed}>
+                                            <TouchableOpacity onPress={props.onConfirmPressed}>
+                                                {props.onLoading ? <ActivityIndicator style={{alignSelf: "center"}}
+                                                                                      color={"rgba(40,99,214,1)"}/> :
+                                                <Text
+                                                    style={[styles.yes, alertStyle.confirmButtonTextStyle]}>{props?.confirmButton || 'Yes'}</Text>}
+
+                                            </TouchableOpacity>
+                                        <TouchableOpacity onPress={_springHide}>
                                             <Text style={[styles.close, alertStyle.cancelButtonTextStyle]}>Close</Text>
                                         </TouchableOpacity>
 
@@ -70,7 +103,7 @@ function CustomAlert(props) {
                                 }
 
                                 {props?.showClose == true &&
-                                <TouchableOpacity onPress={props.onCancelPressed}>
+                                <TouchableOpacity onPress={_springHide}>
                                     <Text style={[alertStyle.confirmButtonTextStyle]}>Close</Text>
                                 </TouchableOpacity>
                                 }
@@ -79,7 +112,7 @@ function CustomAlert(props) {
                         </View>
                     </View>
                 </View>
-            </View>
+            </Animated.View>
 
         </Modal>
 
@@ -88,6 +121,7 @@ function CustomAlert(props) {
 
 const styles = StyleSheet.create({
     group: {
+
         alignSelf: "center"
     },
     container___: {

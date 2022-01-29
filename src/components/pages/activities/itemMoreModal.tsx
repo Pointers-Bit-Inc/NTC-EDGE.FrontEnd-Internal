@@ -19,88 +19,93 @@ function ItemMoreModal(props:any) {
                 onRequestClose={() => {
 
                 }}>
-                 <TouchableWithoutFeedback onPressOut={props.onDismissed}>
-                     <View style={[styles.container, props.visible ? {
-                         position: "absolute",
-                         top: 0,
-                         left: 0,
-                         width: '100%',
-                         height: '100%',
-                         backgroundColor: "rgba(0, 0, 0, 0.5)",
-                     }: {}]}>
-                         <View style={styles.rect}>
-                             <View style={styles.group7}>
 
-                                 <View style={[styles.name]}>
-                                     <View></View>
-                                     <View>
-                                         <Text style={styles.centerName} >{`${applicant?.firstName} ${applicant?.lastName}`}</Text>
-                                     </View>
-                                     <TouchableOpacity onPress={props.onDismissed}>
-                                         <CloseIcon  />
-                                     </TouchableOpacity>
+                   <View style={styles.container}>
+                       <TouchableWithoutFeedback onPressOut={props.onDismissed}>
+                           <View style={[props.visible ? {
+                               position: "absolute",
+                               top: 0,
+                               left: 0,
+                               width: '100%',
+                               height: '100%',
+                               backgroundColor: "rgba(0, 0, 0, 0.5)",
+                           }: {}]}>
+                           </View>
+                       </TouchableWithoutFeedback>
+                       <View style={styles.rect}>
+                           <View style={styles.group7}>
+
+                               <View style={[styles.name]}>
+                                   <View></View>
+                                   <View>
+                                       <Text style={styles.centerName} >{`${applicant?.firstName} ${applicant?.lastName}`}</Text>
+                                   </View>
+                                   <TouchableOpacity onPress={props.onDismissed}>
+                                       <CloseIcon  />
+                                   </TouchableOpacity>
 
 
-                                 </View>
+                               </View>
 
 
-                                 <View style={styles.group6}>
-                                     <View style={styles.group5}>
-                                         <TouchableOpacity>
-                                             <View style={styles.group3}>
-                                                 <View style={styles.rect10}></View>
-                                                 <View style={styles.group4}>
-                                                     <PinToTopIcon
-                                                         style={styles.icon1}
-                                                     />
-                                                     <Text style={styles.pinToTop1}>Pin to top</Text>
-                                                 </View>
-                                                 <View style={styles.rect11}></View>
-                                             </View>
-                                         </TouchableOpacity>
-                                         <TouchableOpacity>
-                                             <View style={styles.group3}>
-                                                 <View style={styles.rect10}></View>
-                                                 <View style={styles.group4}>
-                                                     <BellMuteIcon
-                                                         style={styles.icon1}
-                                                     />
-                                                     <Text style={styles.pinToTop1}>Mute</Text>
-                                                 </View>
-                                                 <View style={styles.rect11}></View>
-                                             </View>
-                                         </TouchableOpacity>
-                                         <TouchableOpacity>
-                                             <View style={styles.group3}>
-                                                 <View style={styles.rect10}></View>
-                                                 <View style={styles.group4}>
-                                                     <ArchiveIcon
-                                                         style={styles.icon1}
-                                                     />
-                                                     <Text style={styles.pinToTop1}>Archive</Text>
-                                                 </View>
-                                                 <View style={styles.rect11}></View>
-                                             </View>
-                                         </TouchableOpacity>
-                                         <TouchableOpacity>
-                                             <View style={styles.group3}>
-                                                 <View style={styles.rect10}></View>
-                                                 <View style={styles.group4}>
-                                                     <DeleteIcon
-                                                         style={styles.icon1}
-                                                     />
-                                                     <Text style={[styles.pinToTop1, {color: '#CF0327'}]}>Delete</Text>
-                                                 </View>
-                                                 <View style={styles.rect11}></View>
-                                             </View>
-                                         </TouchableOpacity>
+                               <View style={styles.group6}>
+                                   <View style={styles.group5}>
+                                       <TouchableOpacity>
+                                           <View style={styles.group3}>
+                                               <View style={styles.rect10}></View>
+                                               <View style={styles.group4}>
+                                                   <PinToTopIcon
+                                                       style={styles.icon1}
+                                                   />
+                                                   <Text style={styles.pinToTop1}>Pin to top</Text>
+                                               </View>
+                                               <View style={styles.rect11}></View>
+                                           </View>
+                                       </TouchableOpacity>
+                                       <TouchableOpacity>
+                                           <View style={styles.group3}>
+                                               <View style={styles.rect10}></View>
+                                               <View style={styles.group4}>
+                                                   <BellMuteIcon
+                                                       style={styles.icon1}
+                                                   />
+                                                   <Text style={styles.pinToTop1}>Mute</Text>
+                                               </View>
+                                               <View style={styles.rect11}></View>
+                                           </View>
+                                       </TouchableOpacity>
+                                       <TouchableOpacity>
+                                           <View style={styles.group3}>
+                                               <View style={styles.rect10}></View>
+                                               <View style={styles.group4}>
+                                                   <ArchiveIcon
+                                                       style={styles.icon1}
+                                                   />
+                                                   <Text style={styles.pinToTop1}>Archive</Text>
+                                               </View>
+                                               <View style={styles.rect11}></View>
+                                           </View>
+                                       </TouchableOpacity>
+                                       <TouchableOpacity>
+                                           <View style={styles.group3}>
+                                               <View style={styles.rect10}></View>
+                                               <View style={styles.group4}>
+                                                   <DeleteIcon
+                                                       style={styles.icon1}
+                                                   />
+                                                   <Text style={[styles.pinToTop1, {color: '#CF0327'}]}>Delete</Text>
+                                               </View>
+                                               <View style={styles.rect11}></View>
+                                           </View>
+                                       </TouchableOpacity>
 
-                                     </View>
-                                 </View>
-                             </View>
-                         </View>
-                     </View>
-                 </TouchableWithoutFeedback>
+                                   </View>
+                               </View>
+                           </View>
+                       </View>
+                   </View>
+
+
             </Modal>
         </View>
 
@@ -113,7 +118,7 @@ const styles = StyleSheet.create({
 
     },
     container: {
-
+        color: "red",
         flex: 1,
         justifyContent: 'flex-end',
     },

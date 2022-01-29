@@ -1,5 +1,15 @@
 import React, {createRef, useCallback, useEffect, useRef, useState} from "react";
-import {Animated, AsyncStorage, Dimensions, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {
+    Animated,
+    AsyncStorage,
+    Dimensions,
+    KeyboardAvoidingView,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from "react-native";
 import BackSpaceIcon from "@assets/svg/backspace";
 import CloseCircleIcon from "@assets/svg/closeCircle";
 import SearchLoading from "@assets/svg/searchLoading";
@@ -67,18 +77,24 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
                 </Animated.View>
             </View>}
 
-            {props.value.length < 1 && <View style={styles.group8}>
-                <View style={styles.rect3}>
-                    <View style={styles.group7}>
-                        <Text style={styles.recentSearches}>{props.nevers.length ? "Recent Searches" : ""}</Text>
-                        <View style={{justifyContent: "center", height: height-166-tabBarHeight}}>
-                            <ScrollView  showsVerticalScrollIndicator={false}>
-                                {props.nevers.map(props.callbackfn)}
-                            </ScrollView>
+                {props.value.length < 1 && <View style={styles.group8}>
+                    <View style={styles.rect3}>
+                        <View style={styles.group7}>
+                            <Text style={styles.recentSearches}>{props.nevers.length ? "Recent Searches" : ""}</Text>
+                            <KeyboardAvoidingView>
+                            <View style={{justifyContent: "center", height: height-166-tabBarHeight}}>
+
+
+                                <ScrollView  showsVerticalScrollIndicator={false}>
+                                    {props.nevers.map(props.callbackfn)}
+                                </ScrollView>
+
+                            </View>
+                            </KeyboardAvoidingView>
                         </View>
                     </View>
-                </View>
-            </View>}
+                </View>}
+
         </View>
     </View>;
 }

@@ -16,7 +16,6 @@ function MyTabBar({state, descriptors, navigation, position}) {
     const [translateValue] = useState(new Animated.Value(0));
     const ref = useRef([])
     const containerRef = useRef(null)
-
     const animateSlider = (index: number) => {
         if(tabCurrent[currentIndex]?.x)   {
             Animated.spring(translateValue, {
@@ -62,13 +61,13 @@ function MyTabBar({state, descriptors, navigation, position}) {
                         if(state.index === index){
                             ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
                                 setCurrentIndex(() =>{
-                                    return tabCurrent.findIndex(tab => tab.width == width)
+                                    return tabCurrent.findIndex(tab => tab.index ==state.index)
                                 })
                             })
                         }
 
                     }, [position])
-                    const onPress =  () => {
+                    const onPress =  async () => {
                         const event = navigation.emit({
                             type: "tabPress",
                             target: route.key,
@@ -77,12 +76,12 @@ function MyTabBar({state, descriptors, navigation, position}) {
                         if (!isFocused && !event.defaultPrevented) {
                             navigation.navigate(route.name);
                         }
-                        ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
-                            setCurrentIndex(() =>{
-                                return tabCurrent.findIndex(tab => tab.width == width)
+                        const _tab = tabCurrent.findIndex(tab => tab.index == state.index)
+                        await ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
+                            setCurrentIndex(() => {
+                                return _tab
                             })
                         })
-
 
 
                     };
@@ -147,7 +146,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
                             translateX:  translateValue
                         }
                         ],
-                        width: initial?.width ,
+                        width: initial?.width || 63 ,
                         backgroundColor:  primaryColor
                     }]}/>
             }

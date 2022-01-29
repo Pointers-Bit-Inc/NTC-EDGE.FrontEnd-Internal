@@ -35,8 +35,7 @@ const Requirement = (props:any) =>{
                         <View style={requirementStyle.group5}>
                             <View style={requirementStyle.rect1}>
                                 <Text style={requirementStyle.prcLicensePdf}>{requirement?.title?.slice(0, 40)}</Text>
-                                <View style={requirementStyle.prcLicensePdfFiller}>
-                                </View>
+                                
                                 <View style={requirementStyle.rect2}>
                                     {selectCollapsed == index ? <ChevronUpIcon/> : <ChevronDownIcon/>}
                                 </View>

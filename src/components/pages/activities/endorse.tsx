@@ -64,12 +64,24 @@ function Endorsed(props: any) {
         setMessage(`` + pickedEndorsed?.find(picked => {
             return picked.value == endorsed
         })?.label)
-
+        props.remarks({endorseId: endorsed, remarks: text, message})
 
         setShowAlert(true)
 
     }
+    const onCancelPress = () =>{
+        setTitle(  "Endorse Application to" )
+        if(showClose){
+            setShowAlert(false)
+            setShowClose(false)
 
+            props.onDismissed()
+        } else{
+            setShowClose(false)
+            setShowAlert(false)
+            props.onModalDismissed()
+        }
+    }
 
 
 
@@ -103,23 +115,14 @@ function Endorsed(props: any) {
 
                 showClose={showClose}
                 type={FOREVALUATION}
-                onDismissed={() => {
-                    setShowAlert(false)
-                    setShowClose(false)
-                    props.onDismissed()
-                }}
+                onDismissed={onCancelPress}
                 onLoading={alertLoading}
-                onCancelPressed={() => {
-                    setShowAlert(false)
-                    setShowClose(false)
-                    setTitle(  "Endorse Application to" )
-                    props.onDismissed()
-                }}
+                onCancelPressed={onCancelPress}
                 confirmButton={"Proceed"}
                 onConfirmPressed={() => {
 
                     setAlertLoading(true)
-                    props.remarks({endorseId: endorsed, remarks: text, message})
+
                     props.onChangeApplicationStatus({
                         status: FOREVALUATION,
                         id: endorsed,

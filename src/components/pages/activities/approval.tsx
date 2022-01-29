@@ -1,5 +1,6 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {
+    Animated,
     Dimensions,
     KeyboardAvoidingView,
     Modal,
@@ -25,6 +26,43 @@ import CustomAlert from "@pages/activities/alert/alert";
 const {width, height} = Dimensions.get('window');
 
 function Approval(props: any) {
+
+    const springValue = new Animated.Value(0.3);
+    const [showSelf, setShowSelf] = useState(false)
+    const _toggleAlert = (fromConstructor?: boolean) => {
+        if (fromConstructor) setShowSelf(true)
+        else setShowSelf(show => !show );
+    };
+    const _springShow = (fromConstructor:boolean) => {
+        _toggleAlert(fromConstructor);
+        Animated.spring(springValue, {
+            toValue: 1,
+            bounciness: 10,
+            useNativeDriver: false,
+        }).start();
+    }
+
+    useEffect(()=>{
+        if(props.visible){
+            _springShow(props.visible);
+        }
+    }, [props.visible,springValue])
+
+    const _springHide = () => {
+        Animated.spring(springValue, {
+            toValue: 0,
+            tension: 10,
+            useNativeDriver: false,
+        }).start();
+
+        setTimeout(() => {
+            _toggleAlert(false);
+            props.onDismissed()
+        }, 70);
+    };
+
+
+
     const isKeyboardVisible = useKeyboard();
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [pickedCashier, setPickedCashier] = useState<any[]>()
@@ -76,11 +114,10 @@ function Approval(props: any) {
     return (
 
         <Modal
-            animationType="fade"
+            animationType="none"
             transparent={true}
             visible={props.visible}
-            onRequestClose={() => {
-            }}>
+            onRequestClose={_springHide}>
                   <View style={showAlert ? {
                       zIndex: 1,
                       flex: 1,
@@ -168,12 +205,10 @@ function Approval(props: any) {
                 style={[styles.container]}
             >
 
-                {!showAlert && <View style={styles.group}>
+                {!showAlert && <Animated.View style={[styles.group,  { transform: [{ scale:  springValue }] }]}>
                     <View style={styles.rect}>
                         <View style={{alignSelf: 'flex-start'}}>
-                            <TouchableOpacity onPress={() => {
-                                props.onDismissed()
-                            }}>
+                            <TouchableOpacity onPress={_springHide}>
                                 <Ionicons name="md-close" style={{fontSize: 25}}></Ionicons>
                             </TouchableOpacity>
                         </View>
@@ -219,7 +254,7 @@ function Approval(props: any) {
                             </View>
                         </View>
                     </View>
-                </View>}
+                </Animated.View>}
             </KeyboardAvoidingView>
         </Modal>
 

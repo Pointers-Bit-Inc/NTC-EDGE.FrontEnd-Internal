@@ -24,6 +24,15 @@ function Disapproval(props: any) {
     const [showClose, setShowClose] = useState(false)
     const [title, setTitle] = useState("Decline Application")
     const [message, setMessage] = useState("Are you sure you want to reject this application?")
+    const onCancelPressed = () =>{
+        setTitle(  "Decline Application" )
+        setMessage("Are you sure you want to reject this application?")
+        setShowClose(false)
+        setShowAlert(false)
+        if(showClose){
+            props.onDismissed()
+        }
+    }
     return (
 
         <Modal
@@ -48,19 +57,9 @@ function Disapproval(props: any) {
             <CustomAlert
                 showClose={showClose}
                 type={DECLINED}
-                onDismissed={()=>{
-                    setShowAlert(false)
-                    setShowClose(false)
-                    props.onDismissed()
-                }}
+                onDismissed={onCancelPressed}
                 onLoading={alertLoading}
-                onCancelPressed={() => {
-                    setShowAlert(false)
-                    setShowClose(false)
-                    setTitle("Decline Application")
-                    setMessage("Are you sure you want to reject this application?")
-                    props.onDismissed()
-                }}
+                onCancelPressed={onCancelPressed}
                 onConfirmPressed={() => {
                     setAlertLoading(true)
 

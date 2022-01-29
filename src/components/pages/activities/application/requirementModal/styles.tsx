@@ -45,7 +45,7 @@ export const requirementStyle = StyleSheet.create({
         marginLeft: -20
     },
     rect: {
-        width: 350,
+        width: "100%",
 
         borderBottomRightRadius: 14,
         borderBottomLeftRadius: 14,

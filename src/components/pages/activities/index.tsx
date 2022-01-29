@@ -205,18 +205,21 @@ export default function ActivitiesPage(props: any) {
     const fnApplications = (isCurrent: boolean, callback: (err: any) => void) => {
 
         axios.get(BASE_URL + `/applications${query()}`, config).then((response) => {
-            if (isCurrent) setRefreshing(false);
             if (response?.data?.message) Alert.alert(response.data.message)
-            if (response?.data?.size) setSize(response?.data?.size)
-            if (response?.data?.total) setTotal(response?.data?.total)
-            if (response?.data?.page) setPage(response?.data?.page)
-            if (response?.data?.docs?.length) callback(true)
+            if (isCurrent) setRefreshing(false);
+            if(response?.data?.docs?.length) callback(true)
 
 
             if (count == 0) {
                 count = 1
-                if (count) dispatch(setApplications({data: response?.data, user: user}))
+                if (count){
+                    response?.data?.size ? setSize(response?.data?.size) :  setSize(0)
+                    response?.data?.total ? setTotal(response?.data?.total) :  setTotal(0)
+                    response?.data?.page? setPage(response?.data?.page) : setPage(0)
+                    dispatch(setApplications({data: response?.data, user: user}))
+                }
             }
+            if (isCurrent) setRefreshing(false);
         }).catch((err) => {
             if (isCurrent) setRefreshing(false)
             callback(false)
@@ -353,9 +356,9 @@ export default function ActivitiesPage(props: any) {
             axios.get(BASE_URL + `/applications${query() + _page}`, config).then((response) => {
 
                 if (response?.data?.message) Alert.alert(response.data.message)
-                if (response?.data?.size) setSize(response?.data?.size)
-                if (response?.data?.total) setTotal(response?.data?.total)
-                if (response?.data?.page) setPage(response?.data?.page)
+                response?.data?.size ? setSize(response?.data?.size) :  setSize(0)
+                response?.data?.total ? setTotal(response?.data?.total) :  setTotal(0)
+                response?.data?.page? setPage(response?.data?.page) : setPage(0)
                 if (response?.data?.docs.length == 0) {
                     setInfiniteLoad(false);
 
@@ -372,7 +375,7 @@ export default function ActivitiesPage(props: any) {
             _page = "&page=" + (page + 1)
 
             axios.get(BASE_URL + `/applications${query() + _page}`, config).then((response) => {
-                console.log(response?.data?.size)
+
                 if (response?.data?.message) Alert.alert(response.data.message)
                 if (response?.data?.size) setSize(response?.data?.size)
                 if (response?.data?.total) setTotal(response?.data?.total)
@@ -428,7 +431,6 @@ export default function ActivitiesPage(props: any) {
     const updateModalFn = (bool) => {
         setUpdateModal(bool)
     }
-
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
@@ -473,7 +475,7 @@ export default function ActivitiesPage(props: any) {
                         }
 
                         }>
-                            <FilterIcon width={18} height={18} fill={"#fff"}/>
+                            <FilterIcon fill={"#fff"}/>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -536,7 +538,7 @@ export default function ActivitiesPage(props: any) {
 
                 <FlatList
                     contentContainerStyle={{flexGrow: 1}}
-                    ListEmptyComponent={() => listEmpty(refreshing, searchTerm)}
+                    ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
                     ListHeaderComponent={() => (
                         <>
                             {!searchVisible && pnApplications?.length > 0 &&
