@@ -94,7 +94,9 @@ export default function QrCodeScan(props: any) {
             setShowAlert(true);
             return callback('error');
         }
-        let picker = await ImagePicker.launchImageLibraryAsync()
+        let picker = await ImagePicker.launchImageLibraryAsync({
+            presentationStyle: 0
+        })
         return callback(null, picker);
     }
 

@@ -43,7 +43,9 @@ const UserProfileScreen = ({navigation}: any) => {
                 // let picker = await DocumentPicker.getDocumentAsync({
                 //     type: 'image/*',
                 // });
-                let picker = await ImagePicker.launchImageLibraryAsync();
+                let picker = await ImagePicker.launchImageLibraryAsync({
+                    presentationStyle: 0
+                });
                 if (!picker.cancelled /*picker?.type !== 'cancel'*/) {
                     let uri = picker?.uri;
                     let split = uri?.split('/');
@@ -73,7 +75,9 @@ const UserProfileScreen = ({navigation}: any) => {
             setShowAlert(true);
             return;
         }
-        let picker = await ImagePicker.launchImageLibraryAsync();
+        let picker = await ImagePicker.launchImageLibraryAsync({
+            presentationStyle: 0
+        });
         return picker;
     };
     const save = ({ dp = false }) => {
