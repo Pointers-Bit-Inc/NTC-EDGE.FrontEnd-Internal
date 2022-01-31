@@ -9,9 +9,9 @@ const imageSize = 42;
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     alignItems: 'center',
-    width: imageSize + 15,
+    width: imageSize + 10,
   },
   horizontal: {
     flexDirection: 'row',
