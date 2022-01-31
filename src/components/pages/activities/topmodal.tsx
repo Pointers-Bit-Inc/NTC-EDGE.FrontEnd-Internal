@@ -1,5 +1,14 @@
-import React, {useRef} from "react";
-import {Dimensions, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import React, {useRef, useState} from "react";
+import {
+    Animated,
+    Dimensions,
+    Modal,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View
+} from "react-native";
 import {Ionicons,} from '@expo/vector-icons'
 
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
@@ -11,10 +20,13 @@ import DeclineIcon from "@assets/svg/decline";
 import lodash from 'lodash';
 import RadioButtonOnIcon from "@assets/svg/radioButtonOn";
 import RadioButtonOffIcon from "@assets/svg/radioButtonOff";
+import {useAlert} from "@pages/activities/hooks/useAlert";
+import Collapsible from "react-native-collapsible";
 
 const window = Dimensions.get("window")
 
 function TopModal(props: any) {
+
     const {visible, statusCode} = useSelector((state: RootStateOrAny) => state.activity)
     const dispatch = useDispatch()
     const user = useSelector((state: RootStateOrAny) => state.user);
@@ -44,76 +56,86 @@ function TopModal(props: any) {
                 return null
         }
     }
-
     const inputRef = useRef();
     return (
+        <Modal
 
-        <View ref={inputRef} style={visible ? {
+    animationType="fade"
+    transparent={true}
+    visible={visible}
 
-            position: "absolute",
-            zIndex: 2,
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-        } : {}}>
+    onRequestClose={() => {
+        dispatch(setVisible(false))
+    }}>
+            <View ref={inputRef} style={visible ? {
 
-            {<TouchableWithoutFeedback onPressOut={() => {
-                dispatch(setVisible(false))
-            }}>
-                <View style={styles.container}>
-                    <View style={styles.header1}>
-                        <Text style={styles.filter1}>FILTER</Text>
-                        <TouchableOpacity onPress={() => {
-                            dispatch(setVisible(false))
-                        }}>
-                            <Ionicons name="md-close" style={styles.icon1}></Ionicons>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.rect2_1}>
-                        <Text style={styles.sort1}>Sort By</Text>
-                    </View>
-                    <View style={styles.group7_1}>
+                position: "absolute",
+                zIndex: 2,
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+            } : {}}>
 
-                        {statusCode.filter((item: any) => {
-                            return item?.isShow.indexOf(user?.role?.key) != -1
-                        }).map((top: any, index: number) => {
-                            return (
-                                <TouchableOpacity
-                                    key={index}
-                                    onPress={() => dispatch(on_checked(top))}
-                                >
-                                    <View style={[
-                                        styles.itemGroup,
-                                        styles.item,
-                                        lodash.size(statusCode) - 1 === index && {
-                                            borderBottomWidth: 0,
-                                        }
-                                    ]}>
-                                        <View style={[styles.itemGroup, {paddingHorizontal: 0}]}>
-                                            {renderIcon(top)}
-                                            <Text
-                                                style={[styles.label1, {color: top.checked ? "#003aa9" : "rgba(128,128,128,1)"}]}>{top.status}</Text>
-                                        </View>
-                                        <TouchableOpacity onPress={() => {
+                {<TouchableWithoutFeedback onPressOut={()=>dispatch(setVisible(false)) }>
 
-                                            dispatch(on_checked(top))
-                                        }}>
-                                            {
-                                                top.checked ? <RadioButtonOnIcon width={25} height={25}/> :
-                                                    <RadioButtonOffIcon width={25} height={25}/>
-                                            }
+                    <View style={[styles.container]}>
 
-                                        </TouchableOpacity>
-                                    </View>
+                            <View style={styles.header1}>
+                                <Text style={styles.filter1}>FILTER</Text>
+                                <TouchableOpacity onPress={()=> dispatch(setVisible(false)) }>
+                                    <Ionicons name="md-close" style={styles.icon1}></Ionicons>
                                 </TouchableOpacity>
-                            )
-                        })}
-                    </View>
-                </View></TouchableWithoutFeedback>}
+                            </View>
+                            <View style={styles.rect2_1}>
+                                <Text style={styles.sort1}>Sort By</Text>
+                            </View>
+                            <View style={styles.group7_1}>
 
-        </View>
+                                {statusCode.filter((item: any) => {
+                                    return item?.isShow.indexOf(user?.role?.key) != -1
+                                }).map((top: any, index: number) => {
+                                    return (
+                                        <TouchableOpacity
+                                            key={index}
+                                            onPress={() => dispatch(on_checked(top))}
+                                        >
+                                            <View style={[
+                                                styles.itemGroup,
+                                                styles.item,
+                                                lodash.size(statusCode) - 1 === index && {
+                                                    borderBottomWidth: 0,
+                                                }
+                                            ]}>
+                                                <View style={[styles.itemGroup, {paddingHorizontal: 0}]}>
+                                                    {renderIcon(top)}
+                                                    <Text
+                                                        style={[styles.label1, {color: top.checked ? "#003aa9" : "rgba(128,128,128,1)"}]}>{top.status}</Text>
+                                                </View>
+                                                <TouchableOpacity onPress={() => {
+
+                                                    dispatch(on_checked(top))
+                                                }}>
+                                                    {
+                                                        top.checked ? <RadioButtonOnIcon width={25} height={25}/> :
+                                                            <RadioButtonOffIcon width={25} height={25}/>
+                                                    }
+
+                                                </TouchableOpacity>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )
+                                })}
+                            </View>
+                    </View>
+
+
+                </TouchableWithoutFeedback>}
+
+            </View>
+        </Modal>
+
     );
 }
 

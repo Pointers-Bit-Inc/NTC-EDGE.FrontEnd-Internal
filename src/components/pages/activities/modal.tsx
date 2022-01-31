@@ -145,7 +145,8 @@ function ActivityModal(props: any) {
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
     const allButton = (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?._id ? true : (declineButton || approveButton || grayedOut)
-    console.log("application id:", props?.details?._id, "user:", props?.details?.applicant?.user?.firstName, "cashier:", cashier, "assign id:", assignId, "id:", user?._id, "status:", status, "payment status:", props.details.paymentStatus, "status: ", props.details.status)
+    console.log("----------------------------------------------",
+        "\napplication id:", props?.details?._id, "\nuser:", props?.details?.applicant?.user?.firstName, "\ncashier:", cashier, "\nassign id:", assignId, "\nid:", user?._id, "\nstatus:", status, "\npayment status:", props.details.paymentStatus, "\nstatus: ", props.details.status)
     const [alertLoading, setAlertLoading] = useState(false)
     const [approvalIcon, setApprovalIcon] = useState(false)
     const [title, setTitle] = useState("Approve Application")
@@ -338,7 +339,7 @@ function ActivityModal(props: any) {
                         {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 1, paddingRight: 5}}>
                             <TouchableOpacity
-                                disabled={currentLoading === APPROVED || allButton}
+                                disabled={currentLoading === APPROVED}
                                 onPress={() => {
                                     if (cashier) {
                                         onShowConfirmation(APPROVED)

@@ -180,31 +180,29 @@ export default function ActivitiesPage(props: any) {
         return status == DATE_ADDED
     })
     const query = () => {
-
-        const keyword = searchTerm.length ? '&keyword=' + searchTerm : '';
-        const dateAdded = checkDateAdded.length ? "?sort=asc" : "?sort=desc"
-        const status = selectedClone.length ? (cashier ? "&paymentStatus=" : '&status=') + selectedClone.map((item: any) => {
-            if (cashier) {
-                if (item == VERIFIED) {
-                    return PAID
-                } else if (item == UNVERIFIED) {
-                    return DECLINED
-                } else if (item == FORVERIFICATION) {
-                    return [PENDING, FORVERIFICATION, FOREVALUATION].toString()
-                }
-            } else if (item == FOREVALUATION) {
-                return [FOREVALUATION, PENDING].toString()
-            }
-            return item
-        }).toString() : ''
-
-
-        return dateAdded + keyword + status
+        return{
+            ...(searchTerm && {keyword: searchTerm} ) ,
+            ...(checkDateAdded && {sort: checkDateAdded.length ? "asc" : "desc"}),
+            ...(selectedClone.length > 0 && {[cashier ? "paymentStatus" : 'status']: selectedClone.map((item: any) => {
+                    if (cashier) {
+                        if (item == VERIFIED) {
+                            return PAID
+                        } else if (item == UNVERIFIED) {
+                            return DECLINED
+                        } else if (item == FORVERIFICATION) {
+                            return [PENDING, FORVERIFICATION, FOREVALUATION].toString()
+                        }
+                    } else if (item == FOREVALUATION) {
+                        return [FOREVALUATION, PENDING].toString()
+                    }
+                    return item
+                }).toString() } )
+        }
     }
     let count = 0
     const fnApplications = (isCurrent: boolean, callback: (err: any) => void) => {
-
-        axios.get(BASE_URL + `/applications${query()}`, config).then((response) => {
+              setRefreshing(true)
+        axios.get(BASE_URL + `/applications`, {...config, params: query()}).then((response) => {
             if (response?.data?.message) Alert.alert(response.data.message)
             if (isCurrent) setRefreshing(false);
             if(response?.data?.docs?.length) callback(true)
@@ -351,9 +349,9 @@ export default function ActivitiesPage(props: any) {
         let _page: string;
         setInfiniteLoad(true)
         if ((page * size) < total) {
-            _page = "&page=" + (page + 1)
+            _page = "?page=" + (page + 1)
 
-            axios.get(BASE_URL + `/applications${query() + _page}`, config).then((response) => {
+            axios.get(BASE_URL + `/applications${_page}`, {...config, params: query()}).then((response) => {
 
                 if (response?.data?.message) Alert.alert(response.data.message)
                 response?.data?.size ? setSize(response?.data?.size) :  setSize(0)
@@ -372,9 +370,9 @@ export default function ActivitiesPage(props: any) {
                 console.warn(err)
             })
         } else {
-            _page = "&page=" + (page + 1)
+            _page = "?page=" + (page + 1)
 
-            axios.get(BASE_URL + `/applications${query() + _page}`, config).then((response) => {
+            axios.get(BASE_URL + `/applications${ _page}`, {...config, params: query()}).then((response) => {
 
                 if (response?.data?.message) Alert.alert(response.data.message)
                 if (response?.data?.size) setSize(response?.data?.size)
@@ -440,6 +438,7 @@ export default function ActivitiesPage(props: any) {
                                       animate={loadingAnimate}
                                       onSearch={(_search: string, callback = (err: any) => {
                                       }) => {
+                                        
 
                                           setSearchTerm(_search)
                                           let isCurrent = true
@@ -553,10 +552,12 @@ export default function ActivitiesPage(props: any) {
                                         pnApplications.map((item: any, index: number) => {
                                             return item?.activity && item?.activity.map((act: any, i: number) => {
                                                 return act?.assignedPersonnel == user?._id && <ActivityItem
+                                                    config={config}
                                                     key={i}
                                                     role={user?.role?.key}
                                                     searchQuery={searchTerm}
                                                     activity={act}
+                                                    isPinned={true}
                                                     onPressUser={(event: any) => {
                                                         /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                         })*/
@@ -610,7 +611,9 @@ export default function ActivitiesPage(props: any) {
                             index={index}
                             element={(activity: any, i: number) => {
 
-                                return <ActivityItem
+                                return (
+
+                                    <ActivityItem
                                     searchQuery={searchTerm}
                                     key={i}
                                     parentIndex={index}
@@ -630,6 +633,7 @@ export default function ActivitiesPage(props: any) {
 
                                     }} index={i}
                                     swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
+                                )
                             }}/>
                     )}
                 />

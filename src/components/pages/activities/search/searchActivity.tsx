@@ -76,25 +76,18 @@ export function SearchActivity(props: { onPress: () => void, value: string, onEn
                     <SearchLoading/>
                 </Animated.View>
             </View>}
-
-                {props.value.length < 1 && <View style={styles.group8}>
-                    <View style={styles.rect3}>
-                        <View style={styles.group7}>
-                            <Text style={styles.recentSearches}>{props.nevers.length ? "Recent Searches" : ""}</Text>
-                            <KeyboardAvoidingView>
-                            <View style={{justifyContent: "center", height: height-166-tabBarHeight}}>
-
-
-                                <ScrollView  showsVerticalScrollIndicator={false}>
-                                    {props.nevers.map(props.callbackfn)}
-                                </ScrollView>
-
-                            </View>
-                            </KeyboardAvoidingView>
+            {props.value.length < 1 && <View style={styles.group8}>
+                <View style={styles.rect3}>
+                    <View style={styles.group7}>
+                        <Text style={styles.recentSearches}>{props.nevers.length ? "Recent Searches" : ""}</Text>
+                        <View style={{justifyContent: "center", height: height-166-tabBarHeight}}>
+                            <ScrollView  showsVerticalScrollIndicator={false}>
+                                {props.nevers.map(props.callbackfn)}
+                            </ScrollView>
                         </View>
                     </View>
-                </View>}
-
+                </View>
+            </View>}
         </View>
     </View>;
 }

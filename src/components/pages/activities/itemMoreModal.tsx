@@ -118,7 +118,6 @@ const styles = StyleSheet.create({
 
     },
     container: {
-        color: "red",
         flex: 1,
         justifyContent: 'flex-end',
     },

@@ -22,44 +22,13 @@ import {errorColor} from "@styles/color";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {alertStyle} from "@pages/activities/alert/styles";
 import CustomAlert from "@pages/activities/alert/alert";
+import {useAlert} from "@pages/activities/hooks/useAlert";
 
 const {width, height} = Dimensions.get('window');
 
 function Approval(props: any) {
 
-    const springValue = new Animated.Value(0.3);
-    const [showSelf, setShowSelf] = useState(false)
-    const _toggleAlert = (fromConstructor?: boolean) => {
-        if (fromConstructor) setShowSelf(true)
-        else setShowSelf(show => !show );
-    };
-    const _springShow = (fromConstructor:boolean) => {
-        _toggleAlert(fromConstructor);
-        Animated.spring(springValue, {
-            toValue: 1,
-            bounciness: 10,
-            useNativeDriver: false,
-        }).start();
-    }
-
-    useEffect(()=>{
-        if(props.visible){
-            _springShow(props.visible);
-        }
-    }, [props.visible,springValue])
-
-    const _springHide = () => {
-        Animated.spring(springValue, {
-            toValue: 0,
-            tension: 10,
-            useNativeDriver: false,
-        }).start();
-
-        setTimeout(() => {
-            _toggleAlert(false);
-            props.onDismissed()
-        }, 70);
-    };
+    const {springValue, _springHide} = useAlert(props.visible, props.onDismissed);
 
 
 

@@ -17,9 +17,9 @@ function MyTabBar({state, descriptors, navigation, position}) {
     const ref = useRef([])
     const containerRef = useRef(null)
     const animateSlider = (index: number) => {
-        if(tabCurrent[currentIndex]?.x)   {
+        if(tabCurrent[index]?.x)   {
             Animated.spring(translateValue, {
-                toValue: tabCurrent[currentIndex]?.x,
+                toValue: tabCurrent[currentIndex]?.x -5,
                 velocity: 10,
                 useNativeDriver: true,
             }).start();
@@ -119,7 +119,10 @@ function MyTabBar({state, descriptors, navigation, position}) {
                                 onLongPress={() =>onLongPress()}
                                 style={{flex: 1}}
                             >
-                                <Text style={{alignSelf: "center", color: isFocused ? primaryColor : text.default}}>{label}</Text>
+                                <Text style={{
+                                    alignSelf: "center",
+                                    fontWeight:  isFocused ?  '500' : "normal",
+                                    color: isFocused ? primaryColor : text.default}}>{label}</Text>
 
 
                             </TouchableOpacity>
@@ -137,9 +140,9 @@ function MyTabBar({state, descriptors, navigation, position}) {
                     }
                     ],
 
-                    width: tabCurrent[currentIndex]?.width,
+                    width: tabCurrent[currentIndex]?.width + 7,
                     backgroundColor:  primaryColor
-                }]}/> : initial && <Animated.View
+                }]}/> : initial &&  translateValue && <Animated.View
 
                     style={[styles.rect6, {
                         transform: [{

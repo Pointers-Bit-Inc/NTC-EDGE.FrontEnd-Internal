@@ -135,3 +135,32 @@ export interface Activities {
     isPinned: boolean;
     updatedAt: Date;
 }
+
+export interface UserApplication {
+    _id: string
+    updatedAt: string
+    createdAt: string
+    username: string
+    role: Role
+    email: string
+        firstName: string
+    lastName: string
+    password: string
+    contactNumber: string
+    __v: number
+    address: string
+    profilePicture: ProfilePicture
+    avatar: string
+}
+
+
+export interface ProfilePicture {
+    xlarge: string
+    large: string
+    medium: string
+    small: string
+    thumb: string
+    original: string
+}
+
+

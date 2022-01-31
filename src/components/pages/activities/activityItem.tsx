@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { Swipeable } from "react-native-gesture-handler";
-import {Animated, StyleSheet, TouchableOpacity, View} from "react-native";
+import {ActivityIndicator, Animated, StyleSheet, TouchableOpacity, View} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
@@ -14,15 +14,19 @@ import {
 import {CASHIER} from "../../../reducers/activity/initialstate";
 import { outline } from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
+import axios from "axios";
+import {User, UserApplication} from "@pages/activities/interface";
+import EndorseIcon from "@assets/svg/endorse";
+import {BASE_URL} from "../../../services/config";
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 20,
+         padding: 5,
+        paddingHorizontal: 10,
         backgroundColor: 'white',
     },
     horizontal: {
+
         flexDirection: 'row',
         alignItems: 'center',
     },
@@ -32,29 +36,31 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     content: {
+
         flex: 1,
         paddingBottom: 10,
         borderBottomColor: outline.default,
-        borderBottomWidth: StyleSheet.hairlineWidth,
+       // borderBottomWidth: StyleSheet.hairlineWidth,
         paddingLeft: 5,
         paddingTop: 15
     },
     name: {
-        marginBottom: 8,
+        marginBottom: 2,
     },
     date: {
 
     },
     application: {
+
         paddingHorizontal: 10,
         paddingVertical: 3,
         borderRadius: 5,
         marginLeft: 0,
-        borderWidth: StyleSheet.hairlineWidth,
+        //borderWidth: StyleSheet.hairlineWidth,
         borderColor: '#163776',
     },
     status: {
-        paddingHorizontal: 15,
+        //paddingHorizontal: 15,
         paddingVertical: 2,
         borderRadius: 5,
         marginLeft: 15
@@ -66,6 +72,21 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginLeft: -8,
         marginRight: 5,
+    },
+    applicationContainer: {
+        borderRadius: 10,
+        padding: 10,
+        backgroundColor: "#fff",
+        flexDirection: 'row',
+        alignItems: 'center',
+        shadowColor: "rgba(0,0,0,1)",
+        shadowOffset: {
+            height: 0,
+            width: 0
+        },
+        elevation: 10,
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
     }
 })
 
@@ -75,7 +96,7 @@ const RenderStatus = ({ trigger, status }:any) => {
         <View
             style={[
                 styles.horizontal,
-                statusBackgroundColor(status),
+                //statusBackgroundColor(status),
                 styles.status,
             ]}
         >
@@ -96,23 +117,70 @@ const RenderApplication = ({ applicationType }:any) => {
     return (
         <View
             style={[
+                {backgroundColor: "#BFBEFC"},
                 styles.horizontal,
                 styles.application
             ]}
         >
             <FileIcon
-                width={13}
-                height={13}
-                style={{ color: '#163776' }}
+                width={20}
+                height={20}
             />
             <Text
                 style={{ marginLeft: 3, marginRight: 5 }}
-                color="#163776"
+                color="#2A00A2"
                 size={10}
                 numberOfLines={1}
             >
                 {applicationType}
             </Text>
+        </View>
+    )
+}
+
+const RenderPinned = ({ assignedPersonnel, config }:any) => {
+    const [personnel, setPersonnel] = useState<UserApplication>()
+    const [loading, setLoading] = useState<boolean>()
+    const fetchData = () => {
+        setLoading(true)
+        axios
+            .get(BASE_URL + `/user/profile/${assignedPersonnel}`, config)
+            .then((res) => {
+                setLoading(false)
+                setPersonnel(res.data);
+            })
+            .catch((err) => {
+                setLoading(false)
+                console.log(err);
+            });
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+    return (
+        <View
+            style={[
+
+                {backgroundColor: "#F3F7FF", marginTop: 5},
+                styles.horizontal,
+                styles.application
+            ]}
+        >
+            { loading ? <></>  :<EndorseIcon
+                width={20}
+                height={20}
+            /> }
+            { loading ? <ActivityIndicator/>  :
+                <Text
+                    style={{marginLeft: 3, marginRight: 5}}
+                    color="#163776"
+                    size={10}
+                    numberOfLines={1}
+                >
+                    {personnel != undefined ?  `${personnel?.firstName} ${personnel?.lastName}` : ``}
+                </Text>
+            }
         </View>
     )
 }
@@ -123,63 +191,79 @@ export function ActivityItem(props:any) {
     const userActivity = props?.activity?.applicant?.user
 
     return (
-        <Swipeable
-            key={props.index}
-            renderRightActions={
-                (progress, dragX) => props.swiper(props.index, progress, dragX, props.onPressUser)
-            }
-        >
-            <TouchableOpacity onPress={() =>{
-                props.onPressUser()
-            }}>
-                <View  style={styles.container}>
+            <View style={{backgroundColor: "#fff"}}>
+                <Swipeable
 
-                    {/*<View  style={[styles.circle,{ backgroundColor: 'rgba(26,89,211,1)'}]} /> */}
-                    <ProfileImage
-                        size={45}
-                        image={userActivity?.profilePicture?.small}
-                        name={`${userActivity?.firstName} ${userActivity?.lastName}`}
-                    />
-                    <View style={styles.content}>
-                        <View style={styles.section}>
-                            <View style={styles.name}>
-                                <Text
-                                    color={'#1F2022'}
-                                    weight={"normal"}
-                                    size={14}
-                                    numberOfLines={1}
-                                >
-                                    <Highlighter
-                                        highlightStyle={{backgroundColor: '#BFD6FF'}}
-                                        searchWords={[props?.searchQuery]}
-                                        textToHighlight= {`${userActivity?.firstName} ${userActivity?.lastName}`}
-                                    />
-                                  
-                                </Text>
-                            </View>
-                            <View style={styles.date}>
+                    key={props.index}
+                    renderRightActions={
+                        (progress, dragX) => props.swiper(props.index, progress, dragX, props.onPressUser)
+                    }
+                >
 
-                                <Text
-                                    color={'#1F2022'}
-                                    size={10}
-                                    numberOfLines={1}
-                                >
-                                   {formatDate(props.activity.createdAt)}
-                                </Text>
+                    <TouchableOpacity onPress={() =>{
+                        props.onPressUser()
+                    }}>
+
+                        <View  style={styles.container}>
+                            <View style={styles.applicationContainer}>
+                                <ProfileImage
+                                    size={45}
+                                    image={userActivity?.profilePicture?.small}
+                                    name={`${userActivity?.firstName} ${userActivity?.lastName}`}
+                                />
+                                <View style={styles.content}>
+                                    <View style={styles.section}>
+                                        <View style={styles.name}>
+                                            <Text
+                                                color={'#1F2022'}
+                                                weight={"normal"}
+                                                size={14}
+                                                numberOfLines={1}
+                                            >
+                                                <Highlighter
+                                                    highlightStyle={{backgroundColor: '#BFD6FF'}}
+                                                    searchWords={[props?.searchQuery]}
+                                                    textToHighlight= {`${userActivity?.firstName} ${userActivity?.lastName}`}
+                                                />
+
+                                            </Text>
+                                        </View>
+                                        <View style={styles.date}>
+
+                                            <Text
+                                                color={'#1F2022'}
+                                                size={10}
+                                                numberOfLines={1}
+                                            >
+                                                {formatDate(props.activity.createdAt)}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    <View style={styles.section}>
+                                        <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                            <RenderApplication applicationType={props?.activity?.applicationType} />
+                                        </View>
+
+                                        <RenderStatus
+                                            status={status}
+                                        />
+                                    </View>
+                                    {props?.isPinned && props?.activity?.assignedPersonnel && <View style={styles.section}>
+                                        <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                            <RenderPinned  config={props.config} assignedPersonnel={props?.activity?.assignedPersonnel} />
+                                        </View>
+                                    </View>}
+                                </View>
                             </View>
+
+                            {/*<View  style={[styles.circle,{ backgroundColor: 'rgba(26,89,211,1)'}]} /> */}
+
                         </View>
-                        <View style={styles.section}>
-                            <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                                <RenderApplication applicationType={props?.activity?.applicationType} />
-                            </View>
+                    </TouchableOpacity>
 
-                            <RenderStatus
-                                status={status}
-                            />
-                        </View>
-                    </View>
-                </View>
-            </TouchableOpacity>
-        </Swipeable>
+                </Swipeable>
+            </View>
+
+
     );
 }
