@@ -49,10 +49,12 @@ export const styles = StyleSheet.create({
         flex: 1
     },
     rect2: {
+        borderWidth: 2,
+        borderColor: "#041B6E",
+        borderRadius: 12,
         width: "88%",
-        height: 40,
-        backgroundColor: "rgba(239,240,246,1)",
-        borderRadius: 10,
+        padding: 20,
+        
     },
     group3: {
         top: 0,
@@ -62,12 +64,13 @@ export const styles = StyleSheet.create({
         bottom: 0
     },
     textInput: {
+         marginLeft: 10,
         top: 0,
         left: 0,
         position: "absolute",
         color: "#121212",
         fontSize: 14,
-        height: 40,
+        height: 44,
         right: 0,
         textAlign: "left"
     },
