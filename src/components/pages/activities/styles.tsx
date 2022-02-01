@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     },
     rect: {
         paddingVertical: 15,
-        backgroundColor: "rgba(0,65,172,1)",
+        backgroundColor: "#041B6E",
         flexDirection: "row"
     },
     rect4: {
@@ -82,7 +82,7 @@ export const styles = StyleSheet.create({
     rect27: {
         width: "100%",
         height: 10,
-        backgroundColor: "#E6E6E6"
+        //backgroundColor: "#E6E6E6"
     },
     group26: {
         marginTop: 6

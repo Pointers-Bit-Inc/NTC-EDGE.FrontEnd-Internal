@@ -536,7 +536,7 @@ export default function ActivitiesPage(props: any) {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={[styles.rect27, {height: 5}]}></View>
+                   {/* <View style={[styles.rect27, {height: 5}]}></View>*/}
                 </View>
 
                 <FlatList
