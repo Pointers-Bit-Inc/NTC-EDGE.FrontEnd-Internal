@@ -26,6 +26,8 @@ import Api from 'src/services/api';
 import {updateApplicationStatus} from "../../../reducers/application/actions";
 import {ModalTab} from "@pages/activities/modalTab";
 import CustomAlert from "@pages/activities/alert/alert";
+import ForwardIcon from "@assets/svg/forward";
+import CloseIcon from "@assets/svg/close";
 
 const {width, height} = Dimensions.get('window');
 
@@ -237,199 +239,135 @@ function ActivityModal(props: any) {
 
             />*/}
             <View style={{flex: 1}}>
-                <View style={{padding: 15, paddingTop: 35, backgroundColor: primaryColor}}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, paddingTop: 35}}>
                     <TouchableOpacity onPress={() => {
                         setAssignId("")
                         setStatus("")
                         props.onDismissed(change)
                         setChange(false)
                     }}>
-                        <Ionicons
-                            name="md-close"
-                            color={'white'}
-                            size={28}
-                        ></Ionicons>
+                       <CloseIcon  color="#606A80"/>
                     </TouchableOpacity>
+                       <Text style={{fontWeight: "500", fontSize: 14,lineHeight: 16.5, color: "#606A80" }}>{props?.details?.applicationType}</Text>
+                    <View></View>
                 </View>
-                <View style={{flexDirection: 'row', padding: 15}}>
-                    <ProfileImage
-                        size={65}
-                        textSize={22}
-                        image={applicant?.profilePicture?.small}
-                        name={`${applicant?.firstName} ${applicant?.lastName}`}
-                    />
-                    <View style={{paddingHorizontal: 15, flex: 1}}>
-                        <CustomText
-                            weight="bold"
-                            color={text.default}
-                            size={18}
-                            numberOfLines={1}
-                        >
-                            {`${applicant?.firstName} ${applicant?.lastName}`}
-                        </CustomText>
-                        <CustomText
-                            style={{marginVertical: 3}}
-                            color={text.default}
-                            size={14}
-                            numberOfLines={1}
-                        >
-                            {props?.details?.applicationType}
-                        </CustomText>
-                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            {
-                                statusIcon(
-                                    status ?
-                                        status :
-                                        (user?.role?.key == CASHIER ?
-                                                PaymentStatusText(props?.details?.paymentStatus) :
-                                                (status ?
-                                                        status :
-                                                        StatusText(props?.details?.status)
-                                                )
-                                        ),
-                                    styles.icon2
-                                )
-                            }
-                            <CustomText
-                                style={[
-                                    styles.role,
-                                    statusColor(
-                                        status ?
-                                            status :
-                                            (user?.role?.key == CASHIER ?
-                                                    PaymentStatusText(props?.details?.paymentStatus) :
-                                                    (status ?
-                                                            status :
-                                                            StatusText(props?.details?.status)
-                                                    )
-                                            )
-                                    ),
-                                    {
-                                        fontSize: 16,
-                                        fontWeight: 'normal',
-                                    }
-                                ]}
-                                numberOfLines={1}
-                            >
-                                {
-                                    status ?
-                                        status :
-                                        (user?.role?.key == CASHIER ?
-                                                PaymentStatusText(props?.details?.paymentStatus) :
-                                                (status ?
-                                                        status :
-                                                        StatusText(props?.details?.status)
-                                                )
-                                        )
-                                }
-                            </CustomText>
-                        </View>
-                    </View>
-                    <View>
-                        <Text
-                            style={styles.submitted}
-                        >
-                            Submitted:{"\n"}{props?.details?.createdAt ? formatDate(props?.details?.createdAt) : ""}
-                        </Text>
-                    </View>
-                </View>
-                <ModalTab details={props.details}/>
+               
+                <ModalTab details={props.details} status={status}/>
                 {
                     <View style={styles.footer}>
-                        {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
-                        <View style={{flex: 1, paddingRight: 5}}>
-                            <TouchableOpacity
-                                disabled={currentLoading === APPROVED}
-                                onPress={() => {
-                                    if (cashier) {
-                                        onShowConfirmation(APPROVED)
-                                    } else {
-                                        setApproveVisible(true)
-                                    }
+                        <View style={{
+                            flex: 1,
+                            alignItems: "center",
+                            flexDirection: "row",
+                            justifyContent: "space-evenly",
+                        }}>
+                            {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
+                            <View style={{flex:  1, paddingRight: 5}}>
+                                <TouchableOpacity
+                                    disabled={currentLoading === APPROVED}
+                                    onPress={() => {
+                                        if (cashier) {
+                                            onShowConfirmation(APPROVED)
+                                        } else {
+                                            setApproveVisible(true)
+                                        }
 
 
-                                }}
-                            >
-                                {/* <View style={styles.rect22Filler}></View>
+                                    }}
+                                >
+                                    {/* <View style={styles.rect22Filler}></View>
                                 <View style={styles.rect22}>
                                     <View style={styles.approvedFiller}></View>
                                     <Text style={styles.approved}>Approved</Text>
                                 </View> */}
-                                <View style={[styles.rect22, {
-                                    backgroundColor: (allButton ? "#C4C4C4" : "rgba(0,171,118,1)"),
-                                    height: undefined,
-                                    paddingVertical: currentLoading === APPROVED ? 6 : 8
-                                }]}>
-                                    {
-                                        currentLoading === APPROVED ? (
-                                            <ActivityIndicator color={'white'} size={'small'}/>
-                                        ) : (
-                                            <Text
-                                                style={[styles.approved, {color: allButton ? "#808196" : "rgba(255,255,255,1)",}]}>
-                                                Approve
-                                            </Text>
-                                        )
-                                    }
-                                </View>
-                            </TouchableOpacity>
-                        </View>}
-                        {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
-                        <View style={{flex: 1, paddingHorizontal: 5}}>
-                            <TouchableOpacity
-                                disabled={(currentLoading === FOREVALUATION || allButton )}
-                                onPress={() => {
-                                    setEndorseVisible(true)
-                                }}
-                            >
-                                <View style={[styles.rect23, {
-                                    backgroundColor: ((allButton) ? "#C4C4C4" : "rgba(40,99,214,1)"),
-                                    height: undefined,
-                                    paddingVertical: currentLoading === FOREVALUATION ? 6.5 : 8
-                                }]}>
+                                    <View style={[styles.rect22, {
 
-                                    {
-                                        currentLoading === FOREVALUATION ? (
-                                            <ActivityIndicator color={'white'} size={'small'}/>
-                                        ) : (
-                                            <Text
-                                                style={[styles.endorse, {color: (allButton) ? "#808196" : "rgba(255,255,255,1)",}]}>Endorse</Text>
-                                        )
-                                    }
-                                </View>
-                            </TouchableOpacity>
-                        </View>}
-                        {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
-                        <View style={{flex: 1, paddingLeft: 5}}>
-                            <TouchableOpacity
-                                disabled={(currentLoading === DECLINED || allButton)}
-                                onPress={() => {
-                                    setVisible(true)
-                                }}
-                            >
-                                <View
-                                    style={[
-                                        styles.rect24,
+                                        backgroundColor: (allButton ? "#C4C4C4" : "rgba(0,171,118,1)"),
+                                        height: undefined,
+                                        paddingVertical: currentLoading === APPROVED ? 6 : 10.5
+                                    }]}>
                                         {
-                                            backgroundColor: (allButton) ? "#C4C4C4" : "#fff",
-                                            height: undefined,
-                                            paddingVertical: currentLoading === DECLINED ? 5 : 6.5,
-                                            borderWidth: 1,
-                                            borderColor: (allButton) ? "#C4C4C4" : "rgba(194,0,0,1)",
-                                        }]
-                                    }>
+                                            currentLoading === APPROVED ? (
+                                                <ActivityIndicator color={'white'} size={'small'}/>
+                                            ) : (
+                                                <Text
+                                                    style={[styles.approved, {fontWeight: '600', color: allButton ? "#808196" : "rgba(255,255,255,1)",}]}>
+                                                    Approve
+                                                </Text>
+                                            )
+                                        }
+                                    </View>
+                                </TouchableOpacity>
+                            </View>}
+                            {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
+                            <View style={{flex: 1}}>
+                                <TouchableOpacity
+                                    disabled={(currentLoading === DECLINED || allButton)}
+                                    onPress={() => {
+                                        setVisible(true)
+                                    }}
+                                >
+                                    <View
+                                        style={[
+                                            styles.rect24,
+                                            {
+                                                backgroundColor: (allButton) ? "#C4C4C4" : "#fff",
+                                                height: undefined,
+                                                paddingVertical: currentLoading === DECLINED ? 5 : 9,
+                                                borderWidth: 1,
+                                                borderColor: (allButton) ? "#C4C4C4" : "rgba(194,0,0,1)",
+                                            }]
+                                        }>
 
-                                    {
-                                        currentLoading === DECLINED ? (
-                                            <ActivityIndicator color={"rgba(194,0,0,1)"} size={'small'}/>
-                                        ) : (
-                                            <Text
-                                                style={[styles.endorse1, {color: (allButton) ? "#808196" : "rgba(194,0,0,1)",}]}>Decline</Text>
-                                        )
-                                    }
-                                </View>
-                            </TouchableOpacity>
+                                        {
+                                            currentLoading === DECLINED ? (
+                                                <ActivityIndicator color={"rgba(194,0,0,1)"} size={'small'}/>
+                                            ) : (
+                                                <Text
+                                                    style={[styles.endorse1, {fontWeight: '600',color: (allButton) ? "#808196" : "rgba(194,0,0,1)",}]}>Decline</Text>
+                                            )
+                                        }
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                            }
+
                         </View>
-                        }
+                            {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
+                            <View style={{flex: 1,paddingHorizontal: 5,}}>
+                                <TouchableOpacity
+                                    disabled={(currentLoading === FOREVALUATION || allButton )}
+                                    onPress={() => {
+                                        setEndorseVisible(true)
+                                    }}
+                                >
+                                    <View style={[{
+                                        width: '70%',
+                                        alignSelf: "flex-end",
+                                         borderWidth: 1,
+                                        borderRadius: 24,
+                                        borderColor: "#c4c4c4",
+                                        backgroundColor: ((allButton) ? "#C4C4C4" : "#fff"),
+                                        height: undefined,
+                                        paddingVertical: currentLoading === FOREVALUATION ? 6.5 : 10
+                                    }]}>
+                                          <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                                              {
+                                                  currentLoading === FOREVALUATION ? (
+                                                      <ActivityIndicator color={'white'} size={'small'}/>
+                                                  ) : (
+                                                      <Text style={[styles.endorse, {fontWeight: '600',color: (allButton) ? "#808196" : "#031A6E",}]}>Endorse</Text>
+
+                                                  )
+                                              }
+                                              <ForwardIcon isDisable={allButton} style={{marginLeft: 6}}/>
+                                          </View>
+
+                                    </View>
+                                </TouchableOpacity>
+                            </View>}
+
+
                     </View>
                 }
             </View>
@@ -668,7 +606,7 @@ const styles = StyleSheet.create({
     rect22: {
         height: 31,
 
-        borderRadius: 6
+        borderRadius: 24
     },
     approvedFiller: {
         flex: 1
@@ -720,8 +658,7 @@ const styles = StyleSheet.create({
     },
     rect24: {
         height: 31,
-        borderRadius: 6,
-        marginBottom: 2
+        borderRadius: 24
     },
     endorse1Filler: {
         flex: 1
@@ -776,16 +713,8 @@ const styles = StyleSheet.create({
         marginLeft: -264,
         marginTop: 65
     },
-    icon2: {
-        color: "rgba(248,170,55,1)",
-        fontSize: 10
-    },
-    role: {
-        fontWeight: "bold",
-        fontSize: 10,
-        textAlign: "left",
-        marginLeft: 4
-    },
+
+
     icon2Row: {
         height: 11,
         flexDirection: "row",
@@ -800,11 +729,7 @@ const styles = StyleSheet.create({
         height: 72,
         position: "absolute"
     },
-    submitted: {
-        color: "rgba(105,114,135,1)",
-        textAlign: "right",
-        fontSize: 10
-    },
+
     rect5Stack: {
         width: 264,
         height: 98
@@ -817,8 +742,8 @@ const styles = StyleSheet.create({
         padding: 15,
         paddingTop: 10,
         paddingBottom: 25,
+
         flexDirection: 'row',
-        alignItems: 'center',
         width: '100%',
         borderTopColor: 'rgba(0, 0, 0, 0.1)',
         borderTopWidth: 1,

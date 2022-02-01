@@ -18,6 +18,7 @@ import axios from "axios";
 import {User, UserApplication} from "@pages/activities/interface";
 import EndorseIcon from "@assets/svg/endorse";
 import {BASE_URL} from "../../../services/config";
+import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 
 const styles = StyleSheet.create({
     container: {
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
         paddingTop: 15
     },
     name: {
-        marginBottom: 2,
+        marginBottom: 5,
     },
     date: {
 
@@ -138,29 +139,14 @@ const RenderApplication = ({ applicationType }:any) => {
     )
 }
 
-const RenderPinned = ({ assignedPersonnel, config }:any) => {
-    const [personnel, setPersonnel] = useState<UserApplication>()
-    const [loading, setLoading] = useState<boolean>()
-    const fetchData = () => {
-        setLoading(true)
-        axios
-            .get(BASE_URL + `/user/profile/${assignedPersonnel}`, config)
-            .then((res) => {
-                setLoading(false)
-                setPersonnel(res.data);
-            })
-            .catch((err) => {
-                setLoading(false)
-                console.log(err);
-            });
-    };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+
+const RenderPinned = ({ assignedPersonnel, config }:any) => {
+    const {personnel, loading} = useAssignPersonnel(assignedPersonnel, config);
     return (
         <View
             style={[
+
 
                 {backgroundColor: "#F3F7FF", marginTop: 5},
                 styles.horizontal,
@@ -174,7 +160,7 @@ const RenderPinned = ({ assignedPersonnel, config }:any) => {
             { loading ? <ActivityIndicator/>  :
                 <Text
                     style={{marginLeft: 3, marginRight: 5}}
-                    color="#163776"
+                    color="#606A80"
                     size={10}
                     numberOfLines={1}
                 >
@@ -193,7 +179,6 @@ export function ActivityItem(props:any) {
     return (
             <View style={{backgroundColor: "#fff"}}>
                 <Swipeable
-
                     key={props.index}
                     renderRightActions={
                         (progress, dragX) => props.swiper(props.index, progress, dragX, props.onPressUser)

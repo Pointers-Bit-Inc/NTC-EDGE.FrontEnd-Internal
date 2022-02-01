@@ -39,7 +39,15 @@ function MyTabBar({state, descriptors, navigation, position}) {
 
 
     return (
-        <>
+        <View style={
+            {
+                paddingTop: 14,
+                paddingBottom: 1,
+                borderColor: "#f0f0f0",
+                borderTopWidth: 1,
+                borderBottomWidth: 1,
+            }
+        }>
 
             <View ref={containerRef}   style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
 
@@ -155,7 +163,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
             }
 
 
-        </>
+        </View>
 
     );
 }
@@ -198,6 +206,9 @@ export function ModalTab(props) {
         paymentMethod= props?.details?.paymentMethod,
         requirements = props?.details?.requirements,
         updatedAt = props?.details?.updatedAt,
+        approvalHistory = props?.details?.approvalHistory,
+        assignedPersonnel = props?.details?.assignedPersonnel,
+        createdAt = props?.details?.createdAt,
         proofOfPayment = props?.details?.proofOfPayment
     return <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
 
@@ -213,6 +224,13 @@ export function ModalTab(props) {
                         options={{tabBarLabel: tab.name}}
                     >
                         {() => <BasicInfo
+                            assignedPersonnel={assignedPersonnel}
+                            approvalHistory={approvalHistory}
+                            status={props.status}
+                            paymentStatus={props?.details?.paymentStatus}
+                            detailsStatus={props?.details?.status}
+                            user={user}
+                            createdAt={createdAt}
                             applicant={applicant}
                             key={index}/>}
                     </Tab.Screen>
@@ -256,7 +274,7 @@ const styles = StyleSheet.create({
         height: 28
     },
     rect6: {
-        height: 5,
-        marginTop: 5
+        height: 3,
+        marginTop: -5
     },
 })

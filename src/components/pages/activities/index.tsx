@@ -411,12 +411,16 @@ export default function ActivitiesPage(props: any) {
 
 
     const unReadReadApplicationFn = (id, dateRead, unReadBtn, callback: (action: any) => void) => {
+
         const action = unReadBtn ? (dateRead ? "unread" : "read") : "read"
+             console.log(action )
         const params = {
             "action": action
         }
         axios.post(BASE_URL + `/applications/${id}/read-unread`, params, config).then((response) => {
             if (response?.data?.message) Alert.alert(response.data.message)
+
+            console.log(response?.data?.doc)
             return dispatch(readUnreadApplications({id: id, data: response?.data?.doc}))
         }).then(() => {
             setUpdateUnReadReadApplication(true)

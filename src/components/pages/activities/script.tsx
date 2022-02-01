@@ -13,6 +13,7 @@ import {styles} from "@pages/activities/styles";
 import CheckMarkIcon from "@assets/svg/checkmark";
 import DeclineStatusIcon from "@assets/svg/declineStatus";
 import React from "react";
+import CheckIcon from "@assets/svg/check";
 
 export const PaymentStatusText = (status: string) => {
 
@@ -95,13 +96,15 @@ export const statusColor = (status: string) => {
     }
 }
 
-export const statusIcon = (status: string, icon: any = styles.icon3) => {
+export const statusIcon = (status: string, icon: any = styles.icon3, item:any = 0) => {
 
     if (status == FOREVALUATION) {
 
         return <EvaluationStatus style={[icon, {color: "#f66500",}]}/>
-    } else if (status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) {
+    } else if ((status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) && item == 0) {
         return <CheckMarkIcon style={[icon]}/>
+    }else if ((status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) && item == 1) {
+        return <CheckIcon style={[icon]}/>
     } else if (status == DECLINED || status == DECLINE) {
         return <DeclineStatusIcon style={[icon]}/>
     } else {

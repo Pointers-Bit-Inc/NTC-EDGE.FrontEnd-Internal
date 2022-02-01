@@ -59,7 +59,7 @@ export default function TabBar() {
 
 
         return (
-            <View onLayout={(event)=>{
+            <View  onLayout={(event)=>{
                 if(tabBarHeight == 0){
                     dispatch(setTabBarHeight(event.nativeEvent.layout.height))
                 }
