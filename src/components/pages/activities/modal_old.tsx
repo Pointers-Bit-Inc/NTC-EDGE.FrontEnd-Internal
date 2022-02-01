@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
     },
     rect2: {
         height: 100,
-        backgroundColor: "rgba(0,65,172,1)"
+        backgroundColor: "#041B6E"
     },
     icon: {
         color: "rgba(255,255,255,1)",

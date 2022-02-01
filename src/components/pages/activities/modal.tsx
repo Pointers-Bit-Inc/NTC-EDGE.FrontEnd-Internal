@@ -148,7 +148,14 @@ function ActivityModal(props: any) {
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
     const allButton = (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?._id ? true : (declineButton || approveButton || grayedOut)
     console.log("----------------------------------------------",
-        "\napplication id:", props?.details?._id, "\nuser:", props?.details?.applicant?.user?.firstName, "\ncashier:", cashier, "\nassign id:", assignId, "\nid:", user?._id, "\nstatus:", status, "\npayment status:", props.details.paymentStatus, "\nstatus: ", props.details.status)
+        "\napplication id:", props?.details?._id,
+        "\nuser:", props?.details?.applicant?.user?.firstName,
+        "\ncashier:", cashier,
+        "\nassign id:", assignId,
+        "\nid:", user?._id,
+        "\nstatus:", status,
+        "\npayment status:", props.details.paymentStatus,
+        "\nstatus: ", props.details.status)
     const [alertLoading, setAlertLoading] = useState(false)
     const [approvalIcon, setApprovalIcon] = useState(false)
     const [title, setTitle] = useState("Approve Application")
@@ -264,7 +271,7 @@ function ActivityModal(props: any) {
                             {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{flex:  1, paddingRight: 5}}>
                                 <TouchableOpacity
-                                    disabled={currentLoading === APPROVED}
+                                    disabled={currentLoading === APPROVED || allButton}
                                     onPress={() => {
                                         if (cashier) {
                                             onShowConfirmation(APPROVED)
@@ -474,7 +481,7 @@ const styles = StyleSheet.create({
     },
     rect2: {
         height: 100,
-        backgroundColor: "rgba(0,65,172,1)"
+        backgroundColor: "#041B6E"
     },
     icon: {
         color: "rgba(255,255,255,1)",

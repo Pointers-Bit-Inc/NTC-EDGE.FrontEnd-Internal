@@ -31,7 +31,7 @@ export const styles = StyleSheet.create({
     },
     rect: {
         height: 100,
-        backgroundColor: "rgba(0,65,172,1)"
+        backgroundColor: "#041B6E"
     },
     qrReader: {
         color: "rgba(255,255,255,1)",

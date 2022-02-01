@@ -181,11 +181,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         paddingVertical: 20,
         paddingTop: 35,
-        backgroundColor: 'rgba(0,65,172,1)'
+        backgroundColor: '#041B6E'
     },
     rect: {
         height: 100,
-        backgroundColor: "rgba(0,65,172,1)",
+        backgroundColor: "#041B6E",
         flexDirection: "row"
     },
     filter: {

@@ -111,7 +111,7 @@ export const styles = StyleSheet.create({
         backgroundColor: "rgba(255,255,255,1)"
     },
     pinnedActivity: {
-        color: "rgba(0,65,172,1)",
+        color: "#041B6E",
         textAlign: "left",
         marginLeft: 20
     },

@@ -25,7 +25,7 @@ const PaymentModal = (props: any) => {
                         paddingTop: 35,
                         paddingBottom: 10,
                         alignItems: 'flex-end',
-                        backgroundColor: "rgba(0,65,172,1)"
+                        backgroundColor: "#041B6E"
                     }}>
                     <TouchableOpacity
                         onPress={() => {
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     rect2: {
         width: width,
         height: 100,
-        backgroundColor: "rgba(0,65,172,1)"
+        backgroundColor: "#041B6E"
     },
     close: {
         color: "rgba(239,231,231,1)",
