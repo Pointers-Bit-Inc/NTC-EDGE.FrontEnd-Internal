@@ -1,31 +1,19 @@
-import React, {createRef, useCallback, useEffect, useRef, useState} from "react";
-import {
-    Animated,
-    AsyncStorage,
-    Dimensions, FlatList,
-    KeyboardAvoidingView, RefreshControl,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
-} from "react-native";
+import React, {useEffect, useRef, useState} from "react";
+import {Dimensions, FlatList, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
 import BackSpaceIcon from "@assets/svg/backspace";
 import CloseCircleIcon from "@assets/svg/closeCircle";
-import SearchLoading from "@assets/svg/searchLoading";
 import {styles} from "@pages/activities/search/styles";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import listEmpty from "@pages/activities/listEmpty";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import ApplicationList from "@pages/activities/applicationList";
-import Loader from "@pages/activities/bottomLoad";
 import {unreadReadApplication} from "@pages/activities/script";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
+
 const {height} = Dimensions.get('screen');
 
-export function SearchActivity(props: { bottomLoader: any, total:any, refreshing:any, applications:any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
+export function SearchActivity(props: {setText: any, handleLoad:any, bottomLoader: any, total: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const inputRef = useRef(null);
     const [details, setDetails] = useState({})
     const [moreModalVisible, setMoreModalVisible] = useState(false)
@@ -43,9 +31,9 @@ export function SearchActivity(props: { bottomLoader: any, total:any, refreshing
     const onFocusHandler = () => {
         inputRef.current && inputRef.current.focus();
     }
-      useEffect(() =>{
-          onFocusHandler()
-      }, [])
+    useEffect(() => {
+        onFocusHandler()
+    }, [])
     const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(false)
     const unReadReadApplicationFn = (id, dateRead, unReadBtn, callback: (action: any) => void) => {
         unreadReadApplication(unReadBtn, dateRead, id, config, dispatch, setUpdateUnReadReadApplication, callback);
@@ -58,8 +46,8 @@ export function SearchActivity(props: { bottomLoader: any, total:any, refreshing
         setModalVisible(false)
     }
     return <View style={styles.container}>
-        <View   style={styles.group9}>
-            <View  style={styles.group4}>
+        <View style={styles.group9}>
+            <View style={styles.group4}>
                 <View style={styles.rect}>
                     <View style={styles.group2}>
                         <TouchableOpacity style={{paddingRight: 10}} onPress={props.onPress}>
@@ -82,7 +70,7 @@ export function SearchActivity(props: { bottomLoader: any, total:any, refreshing
                                             placeholder="Search"
                                             style={styles.textInput}
                                         ></TextInput>
-                                        {props.value.length ?  <TouchableOpacity onPress={props.onPress1
+                                        {props.value.length ? <TouchableOpacity onPress={props.onPress1
                                         }>
                                             <CloseCircleIcon
                                                 style={styles.icon2}
@@ -98,71 +86,67 @@ export function SearchActivity(props: { bottomLoader: any, total:any, refreshing
             </View>
             <View style={styles.group8}>
                 <Text style={styles.recentSearches}>{props.nevers.length ? "Recent Searches" : ""}</Text>
-                <View style={{flex: 1}} >
-            {props.value.length < 1 ?
-                            <ScrollView  showsVerticalScrollIndicator={false}>
-                                {props.nevers.map(props.callbackfn)}
-                            </ScrollView>
-                         : <FlatList
-                contentContainerStyle={{flexGrow: 1}}
-                style={{flex: 1}}
-                data={props.applications}
-                keyExtractor={(item, index) => index.toString()}
-                ListFooterComponent={props.bottomLoader}
-                onEndReached={() => {
-                    if (!onEndReachedCalledDuringMomentum) {
+                <View style={{flex: 1}}>
+                    {props.value.length < 1 ?
+                        <ScrollView showsVerticalScrollIndicator={false}>
+                            {props.nevers.map(props.callbackfn)}
+                        </ScrollView>
+                        : <FlatList
+                            contentContainerStyle={{flexGrow: 1}}
+                            style={{flex: 1}}
+                            data={props.applications}
+                            keyExtractor={(item, index) => index.toString()}
+                            ListFooterComponent={props.bottomLoader}
+                            onEndReached={() => {
+                                if (!onEndReachedCalledDuringMomentum) {
+                                    props.setText(props.value)
+                                    setOnEndReachedCalledDuringMomentum(true);
+                                }
 
-                        setOnEndReachedCalledDuringMomentum(true);
-                    }
-
-                }}
-                onEndReachedThreshold={0.1}
-                onMomentumScrollBegin={() => {
-                    setOnEndReachedCalledDuringMomentum(false)
-                }}
-                renderItem={({item, index}) => (
-                    <ApplicationList
-                        key={index}
-                        onPress={() => {
+                            }}
+                            onEndReachedThreshold={0.1}
+                            onMomentumScrollBegin={() => {
+                                setOnEndReachedCalledDuringMomentum(false)
+                            }}
+                            renderItem={({item, index}) => (
+                                <ApplicationList
+                                    key={index}
+                                    onPress={() => {
 
 
-                        }}
-                        item={item}
-                        index={index}
-                        element={(activity: any, i: number) => {
+                                    }}
+                                    item={item}
+                                    index={index}
+                                    element={(activity: any, i: number) => {
+                                        return (
+                                            <ActivityItem
+                                                searchQuery={props.value}
+                                                key={i}
+                                                parentIndex={index}
+                                                role={user?.role?.key}
+                                                activity={activity}
+                                                currentUser={user}
+                                                onPressUser={(event: any) => {
+                                                    setDetails(activity)
+                                                    if (event?.icon == 'more') {
+                                                        setMoreModalVisible(true)
+                                                    } else {
+                                                        setModalVisible(true)
+                                                    }
 
-                            return (
-
-                                <ActivityItem
-                                    searchQuery={props.value}
-                                    key={i}
-                                    parentIndex={index}
-                                    role={user?.role?.key}
-                                    activity={activity}
-                                    currentUser={user}
-                                    onPressUser={(event: any) => {
-                                        setDetails(activity)
-                                        if (event?.icon == 'more') {
-                                            setMoreModalVisible(true)
-                                        } else {
-                                            setModalVisible(true)
-                                        }
-
-                                    }} index={i}
-                                    swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
-                            )
-                        }}/>
-                )}
-            />}
+                                                }} index={i}
+                                                swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
+                                        )
+                                    }}/>
+                            )}
+                        />}
                 </View>
             </View>
 
 
-
-
         </View>
         <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
-        <ActivityModal  details={details}
+        <ActivityModal details={details}
                        visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
 
             setDetails({})

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {AsyncStorage, BackHandler, Text, TouchableOpacity, View} from "react-native";
+import {Alert, AsyncStorage, BackHandler, Text, TouchableOpacity, View} from "react-native";
 import HistoryIcon from "@assets/svg/historyIcon";
 import CloseIcon from "@assets/svg/close";
 
@@ -22,6 +22,7 @@ function Search(props: any) {
     const [page, setPage] = useState(0)
     const [size, setSize] = useState(0)
     const [total, setTotal] = useState(0)
+
     const [textInput, setTextInput] = useState("")
     const [searchHistory, setSearchHistory] = useState<[]>([])
     const [applications, setApplications] = useState([])
@@ -86,20 +87,93 @@ function Search(props: any) {
         )
     }
     const handler = useCallback(_.debounce((text: string) => setText(text), 1000), []);
-    const setText = async (text: string) => {
-
+    const handleLoad= async (text: string) => {
+        let _page: number;
         if (!text.trim()) return
         try {
 
+            setInfiniteLoad(true)
+            if ((page * size) < total) {
+                _page = page + 1
+                axios.get(BASE_URL + `/applications`, {
+                    ...config, params: {
+                        keyword: text,
+                        page: _page
+                    }
+                }).then(async (response) => {
+
+                    if (response?.data?.page) {
+                        setPage(response?.data?.page)
+
+                    } else {
+                        setPage(0)
+                    }
+                    response?.data?.total ? setTotal(response?.data?.total) : setTotal(0)
+                    response?.data?.size ? setPage(response?.data?.size) : setPage(0)
+
+                    setApplications(application => [...application , ...groupApplications(response?.data?.docs)])
+                    setInfiniteLoad(false);
+                    await AsyncStorage.getItem('searchHistory').then(async (value) => {
+                        value = JSON.parse(value) || []
+
+                        let newArr = [...value, text];
+                        await AsyncStorage.setItem(
+                            'searchHistory',
+                            JSON.stringify(newArr)
+                        );
+
+                        setSearchHistory(newArr)
+                    })
+                }).catch(()=>{
+                    setInfiniteLoad(false);
+                })
+            }else{
+                _page = page + 1
+
+                axios.get(BASE_URL + `/applications`, {
+                    ...config, params: {
+                        keyword: text,
+                        page: _page
+                    }
+                }).then((response) => {
+
+                    if (response?.data?.message) Alert.alert(response.data.message)
+                    if (response?.data?.size) setSize(response?.data?.size)
+                    if (response?.data?.total) setTotal(response?.data?.total)
+                    if (response?.data?.page) setPage(response?.data?.page)
+
+                    setInfiniteLoad(false);
+                }).catch((err) => {
+                    setInfiniteLoad(false)
+                    console.warn(err)
+                })
+                setInfiniteLoad(false)
+            }
+        } catch (error) {
+            // Error saving data
+        }
+    }
+    const setText = async (text: string) => {
+            console.log(text, 123)
+        if (!text.trim()) return
+        try {
+            setInfiniteLoad(true)
             axios.get(BASE_URL + `/applications`, {
                 ...config, params: {
                     keyword: text
                 }
             }).then(async (response) => {
-                response?.data?.size ? setSize(response?.data?.size) : setSize(0)
+
+                if(response?.data?.page){
+                    setPage(response?.data?.page)
+
+                } else{
+                    setPage(0)
+                }
                 response?.data?.total ? setTotal(response?.data?.total) : setTotal(0)
-                response?.data?.page ? setPage(response?.data?.page) : setPage(0)
+                response?.data?.size ? setPage(response?.data?.size) : setPage(0)
                 setApplications(groupApplications(response?.data?.docs))
+                setInfiniteLoad(false);
                 await AsyncStorage.getItem('searchHistory').then(async (value) => {
                     value = JSON.parse(value) || []
 
@@ -130,6 +204,8 @@ function Search(props: any) {
     }, []);
     return (
         <SearchActivity
+            handleLoad={handleLoad}
+            setText={setText}
             bottomLoader={bottomLoader}
             total={total}
             applications={applications}

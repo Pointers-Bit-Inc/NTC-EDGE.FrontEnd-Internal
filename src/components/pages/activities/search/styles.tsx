@@ -1,4 +1,5 @@
 import {Dimensions, StyleSheet} from "react-native";
+import {outline} from "@styles/color";
 const {width, height} = Dimensions.get('window');
 export const styles = StyleSheet.create({
     rect4: {
@@ -20,8 +21,8 @@ export const styles = StyleSheet.create({
     rect: {
         height: 115,
         backgroundColor: "rgba(255,255,255,1)",
-        borderWidth: 1,
-        borderColor: "rgba(229,229,229,1)"
+        borderBottomColor: outline.default,
+        borderBottomWidth: StyleSheet.hairlineWidth,
     },
     group2: {
         width: width,
