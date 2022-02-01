@@ -14,6 +14,11 @@ import CheckMarkIcon from "@assets/svg/checkmark";
 import DeclineStatusIcon from "@assets/svg/declineStatus";
 import React from "react";
 import CheckIcon from "@assets/svg/check";
+import axios from "axios";
+import {BASE_URL} from "../../../services/config";
+import {Alert} from "react-native";
+import {readUnreadApplications} from "../../../reducers/application/actions";
+import {Dispatch} from "redux";
 
 export const PaymentStatusText = (status: string) => {
 
@@ -140,4 +145,43 @@ export function handleInfinityScroll(event: any) {
     let Y = event.nativeEvent.contentOffset.y;
     if (Math.ceil(mHeight + Y) >= cSize) return true;
     return false;
+}
+
+export function getFilter(list: any, user, selectedClone, cashier: boolean, director: boolean, checker: boolean, evaluator: boolean) {
+    return list?.filter((item: any) => {
+        let _approvalHistory = false
+        if (item?.approvalHistory.length) {
+            _approvalHistory = item?.approvalHistory[0].userId == user?._id
+        }
+        const search =
+            (selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true)
+        if (cashier) {
+            return (item?.status == APPROVED || item?.status == DECLINED && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search)
+        } else if (director) {
+            return (item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search
+        } else if (checker) {
+            return (item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
+        } else if (evaluator) {
+            return item?.status.length > 0 || item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory
+        }
+    });
+}
+
+export function unreadReadApplication(unReadBtn, dateRead, id, config: { headers: { Authorization: string } }, dispatch: Dispatch<any>, setUpdateUnReadReadApplication: (value: (((prevState: boolean) => boolean) | boolean)) => void, callback: (action: any) => void) {
+    const action = unReadBtn ? (dateRead ? "unread" : "read") : "read"
+
+    const params = {
+        "action": action
+    }
+    axios.post(BASE_URL + `/applications/${id}/read-unread`, params, config).then((response) => {
+
+        if (response?.data?.message) Alert.alert(response.data.message)
+
+        return dispatch(readUnreadApplications({id: id, data: response?.data?.doc}))
+    }).then(() => {
+        setUpdateUnReadReadApplication(true)
+        callback(action)
+    }).catch((err) => {
+        console.warn(err)
+    })
 }

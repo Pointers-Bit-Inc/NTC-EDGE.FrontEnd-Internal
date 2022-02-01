@@ -141,9 +141,9 @@ function ActivityModal(props: any) {
 
     const statusMemo = useMemo(() => {
         setStatus(status)
-        setAssignId(assignId ? assignId : props.details.assignedPersonnel)
+        setAssignId(assignId ? assignId : props?.details?.assignedPersonnel)
         return status ? (cashier ? PaymentStatusText(status) : StatusText(status)) : (cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
-    }, [assignId, status, props.details.assignedPersonnel, props.details.paymentStatus, props.details.status])
+    }, [assignId, status, props?.details?.assignedPersonnel, props.details.paymentStatus, props.details.status])
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
     const allButton = (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?._id ? true : (declineButton || approveButton || grayedOut)

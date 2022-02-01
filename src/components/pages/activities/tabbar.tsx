@@ -150,7 +150,7 @@ export default function TabBar() {
     }
     return (
 
-            <Tab.Navigator   tabBar={(props) => <ActivityTab application={notPnApplication}  {...props} />}>
+            <Tab.Navigator   tabBar={(props) => <ActivityTab  {...props} />}>
                 <Tab.Screen   options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>

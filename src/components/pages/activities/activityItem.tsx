@@ -200,8 +200,8 @@ export function ActivityItem(props:any) {
                                     <View style={styles.section}>
                                         <View style={styles.name}>
                                             <Text
-                                                color={'#1F2022'}
-                                                weight={"normal"}
+                                                color={'#565961'}
+                                                weight={"600"}
                                                 size={14}
                                                 numberOfLines={1}
                                             >

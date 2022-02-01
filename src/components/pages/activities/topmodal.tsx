@@ -83,10 +83,20 @@ function TopModal(props: any) {
                     <View style={[styles.container]}>
 
                             <View style={styles.header1}>
-                                <Text style={styles.filter1}>FILTER</Text>
-                                <TouchableOpacity onPress={()=> dispatch(setVisible(false)) }>
-                                    <Ionicons name="md-close" style={styles.icon1}></Ionicons>
-                                </TouchableOpacity>
+                                <View style={{width: 25}}>
+
+                                </View>
+                                <View>
+                                    <Text style={styles.filter1}>FILTER</Text>
+                                </View>
+
+                                <View>
+                                    <TouchableOpacity onPress={()=> dispatch(setVisible(false)) }>
+                                        <Ionicons name="md-close" style={styles.icon1}></Ionicons>
+                                    </TouchableOpacity>
+                                </View>
+
+
                             </View>
                             <View style={styles.rect2_1}>
                                 <Text style={styles.sort1}>Sort By</Text>
@@ -118,8 +128,8 @@ function TopModal(props: any) {
                                                     dispatch(on_checked(top))
                                                 }}>
                                                     {
-                                                        top.checked ? <RadioButtonOnIcon width={25} height={25}/> :
-                                                            <RadioButtonOffIcon width={25} height={25}/>
+                                                        top.checked ? <RadioButtonOnIcon width={32} height={32}/> :
+                                                            <RadioButtonOffIcon width={32} height={32}/>
                                                     }
 
                                                 </TouchableOpacity>
@@ -195,6 +205,7 @@ const styles = StyleSheet.create({
         marginTop: 5
     },
     filter1: {
+      alignSelf: "center",
         fontWeight: "bold",
         color: "rgba(255,255,255,1)",
         fontSize: 16,
@@ -282,7 +293,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingVertical: 15,
         borderBottomColor: 'rgba(128,128,128,1)',
-        borderBottomWidth: StyleSheet.hairlineWidth,
+       // borderBottomWidth: StyleSheet.hairlineWidth,
         paddingHorizontal: 0,
         marginHorizontal: 15,
     },

@@ -4,24 +4,17 @@ export const styles = StyleSheet.create({
     rect4: {
 
         flex: 1,
-        height: 4,
-        backgroundColor: "#E6E6E6",
+        //backgroundColor: "#E6E6E6",
     },
     container: {
-        zIndex: 1,
-        position: "absolute",
         flex: 1,
-        justifyContent: "center"
     },
     group9: {
-        justifyContent: "flex-start",
         alignItems: "center",
 
         flex: 1,
-        alignSelf: "center"
     },
     group4: {
-        height: 115,
         alignSelf: "stretch"
     },
     rect: {
@@ -52,9 +45,9 @@ export const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#041B6E",
         borderRadius: 12,
-        width: "88%",
+        width: "90%",
         padding: 20,
-        
+
     },
     group3: {
         top: 0,
@@ -90,44 +83,34 @@ export const styles = StyleSheet.create({
     rect2Stack: {
         flex: 1  ,
     },
-    group8: {
+        group8: {
+        width: "100%",
+        backgroundColor: "rgba(255,255,255,1)",
         flex: 1,
-        alignSelf: "stretch",
-        justifyContent: "center"
     },
     rect3: {
-        backgroundColor: "rgba(255,255,255,1)",
+
         flex: 1
     },
-    group7: {
-        flex: 1,
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 13,
-    },
+   
     recentSearches: {
         fontWeight: "500",
         lineHeight: 28,
         color: "#000",
-        textAlign: "left",
-        width: "90%",
-        margin: 5
+        paddingBottom: 15,
+         paddingLeft: 20,
+        paddingTop: 36
     },
     group6: {
-        width: "96%",
-        height: 30,
+
         flexDirection: "row",
-        justifyContent: "space-around",
+        justifyContent: "space-between",
         alignItems: "center",
-        margin: 0,
-        paddingTop: 0,
-        paddingBottom: 0,
-        marginTop: 18
+       paddingLeft: 20,
+       paddingRight: 20,
+       paddingTop: 20,
     },
     group5: {
-        width: width/1.44,
-        height: 25,
         flexDirection: "row",
     },
     icon3: {

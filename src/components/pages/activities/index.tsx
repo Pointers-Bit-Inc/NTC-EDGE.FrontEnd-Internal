@@ -38,7 +38,7 @@ import {
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
-import {formatDate, PaymentStatusText, StatusText,} from "@pages/activities/script";
+import {formatDate, getFilter, PaymentStatusText, StatusText, unreadReadApplication,} from "@pages/activities/script";
 import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
@@ -59,6 +59,8 @@ import {MeetingNotif} from '@components/molecules/list-item';
 import listEmpty from "@pages/activities/listEmpty";
 
 const {width} = Dimensions.get('window')
+
+
 
 export default function ActivitiesPage(props: any) {
     const [isPinnedActivity, setIsPinnedActivity] = useState(0)
@@ -96,23 +98,7 @@ export default function ActivitiesPage(props: any) {
     });
 
     function getList(list: any, selectedClone) {
-        return list?.filter((item: any) => {
-            let _approvalHistory = false
-            if (item?.approvalHistory.length) {
-                _approvalHistory = item?.approvalHistory[0].userId == user?._id
-            }
-            const search =
-                (selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true)
-            if (cashier) {
-                return (item?.status == APPROVED || item?.status == DECLINED && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search)
-            } else if (director) {
-                return (item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search
-            } else if (checker) {
-                return (item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
-            } else if (evaluator) {
-                return item?.status.length > 0 || item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory
-            }
-        });
+        return getFilter(list, user, selectedClone, cashier, director, checker, evaluator);
     }
 
     const ispinnedApplications = (applications: any) => {
@@ -180,10 +166,11 @@ export default function ActivitiesPage(props: any) {
         return status == DATE_ADDED
     })
     const query = () => {
-        return{
-            ...(searchTerm && {keyword: searchTerm} ) ,
+        return {
+            ...(searchTerm && {keyword: searchTerm}),
             ...(checkDateAdded && {sort: checkDateAdded.length ? "asc" : "desc"}),
-            ...(selectedClone.length > 0 && {[cashier ? "paymentStatus" : 'status']: selectedClone.map((item: any) => {
+            ...(selectedClone.length > 0 && {
+                [cashier ? "paymentStatus" : 'status']: selectedClone.map((item: any) => {
                     if (cashier) {
                         if (item == VERIFIED) {
                             return PAID
@@ -196,24 +183,26 @@ export default function ActivitiesPage(props: any) {
                         return [FOREVALUATION, PENDING].toString()
                     }
                     return item
-                }).toString() } )
+                }).toString()
+            })
         }
     }
     let count = 0
     const fnApplications = (isCurrent: boolean, callback: (err: any) => void) => {
-              setRefreshing(true)
+
+        setRefreshing(true)
         axios.get(BASE_URL + `/applications`, {...config, params: query()}).then((response) => {
             if (response?.data?.message) Alert.alert(response.data.message)
             if (isCurrent) setRefreshing(false);
-            if(response?.data?.docs?.length) callback(true)
+            if (response?.data?.docs?.length) callback(true)
 
 
             if (count == 0) {
                 count = 1
-                if (count){
-                    response?.data?.size ? setSize(response?.data?.size) :  setSize(0)
-                    response?.data?.total ? setTotal(response?.data?.total) :  setTotal(0)
-                    response?.data?.page? setPage(response?.data?.page) : setPage(0)
+                if (count) {
+                    response?.data?.size ? setSize(response?.data?.size) : setSize(0)
+                    response?.data?.total ? setTotal(response?.data?.total) : setTotal(0)
+                    response?.data?.page ? setPage(response?.data?.page) : setPage(0)
                     dispatch(setApplications({data: response?.data, user: user}))
                 }
             }
@@ -354,9 +343,9 @@ export default function ActivitiesPage(props: any) {
             axios.get(BASE_URL + `/applications${_page}`, {...config, params: query()}).then((response) => {
 
                 if (response?.data?.message) Alert.alert(response.data.message)
-                response?.data?.size ? setSize(response?.data?.size) :  setSize(0)
-                response?.data?.total ? setTotal(response?.data?.total) :  setTotal(0)
-                response?.data?.page? setPage(response?.data?.page) : setPage(0)
+                response?.data?.size ? setSize(response?.data?.size) : setSize(0)
+                response?.data?.total ? setTotal(response?.data?.total) : setTotal(0)
+                response?.data?.page ? setPage(response?.data?.page) : setPage(0)
                 if (response?.data?.docs.length == 0) {
                     setInfiniteLoad(false);
 
@@ -372,7 +361,7 @@ export default function ActivitiesPage(props: any) {
         } else {
             _page = "?page=" + (page + 1)
 
-            axios.get(BASE_URL + `/applications${ _page}`, {...config, params: query()}).then((response) => {
+            axios.get(BASE_URL + `/applications${_page}`, {...config, params: query()}).then((response) => {
 
                 if (response?.data?.message) Alert.alert(response.data.message)
                 if (response?.data?.size) setSize(response?.data?.size)
@@ -411,23 +400,7 @@ export default function ActivitiesPage(props: any) {
 
 
     const unReadReadApplicationFn = (id, dateRead, unReadBtn, callback: (action: any) => void) => {
-
-        const action = unReadBtn ? (dateRead ? "unread" : "read") : "read"
-             console.log(action )
-        const params = {
-            "action": action
-        }
-        axios.post(BASE_URL + `/applications/${id}/read-unread`, params, config).then((response) => {
-            if (response?.data?.message) Alert.alert(response.data.message)
-
-            console.log(response?.data?.doc)
-            return dispatch(readUnreadApplications({id: id, data: response?.data?.doc}))
-        }).then(() => {
-            setUpdateUnReadReadApplication(true)
-            callback(action)
-        }).catch((err) => {
-            console.warn(err)
-        })
+        unreadReadApplication(unReadBtn, dateRead, id, config, dispatch, setUpdateUnReadReadApplication, callback);
     }
 
     const updateModalFn = (bool) => {
@@ -436,25 +409,29 @@ export default function ActivitiesPage(props: any) {
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
-            {searchVisible && <Search loadingAnimation={(event: boolean) => {
-                setLoadingAnimation(event)
-            }} initialMove={initialMove}
-                                      animate={loadingAnimate}
-                                      onSearch={(_search: string, callback = (err: any) => {
-                                      }) => {
-                                        
+            {searchVisible && <Search
+               
+                loadingAnimation={(event: boolean) => {
+                    setLoadingAnimation(event)
+                }}
+                setSearchTerm={setSearchTerm}
+                searchTerm={searchTerm}
+                initialMove={initialMove}
+                animate={loadingAnimate}
+                onSearch={(_search: string, callback = (err: any) => {
+                }) => {
 
-                                          setSearchTerm(_search)
-                                          let isCurrent = true
 
-                                          fnApplications(isCurrent, (response) => {
-                                              if (response) {
-                                                  callback(response)
-                                              } else {
-                                                  callback(response)
-                                              }
-                                          });
-                                      }} onDismissed={() => {
+                    let isCurrent = true
+
+                    fnApplications(isCurrent, (response) => {
+                        if (response) {
+                            callback(response)
+                        } else {
+                            callback(response)
+                        }
+                    });
+                }} onDismissed={() => {
 
                 setSearchVisible(false)
                 setSearchTerm("")
@@ -514,7 +491,8 @@ export default function ActivitiesPage(props: any) {
                     <View style={styles.searcg}>
                         <View style={[styles.rect26, {height: undefined, paddingHorizontal: 20, paddingVertical: 10}]}>
                             <TouchableOpacity onPress={() => {
-                                setSearchVisible(true)
+                                //setSearchVisible(true)
+                                props.navigation.navigate('SearchActivities')
                             }}>
                                 {!searchVisible &&
                                 <View style={[styles.rect7, {marginTop: 0, width: '100%', marginLeft: 0}]}>
@@ -536,7 +514,7 @@ export default function ActivitiesPage(props: any) {
                             </TouchableOpacity>
                         </View>
                     </View>
-                   {/* <View style={[styles.rect27, {height: 5}]}></View>*/}
+                    {/* <View style={[styles.rect27, {height: 5}]}></View>*/}
                 </View>
 
                 <FlatList
@@ -618,25 +596,25 @@ export default function ActivitiesPage(props: any) {
                                 return (
 
                                     <ActivityItem
-                                    searchQuery={searchTerm}
-                                    key={i}
-                                    parentIndex={index}
-                                    role={user?.role?.key}
-                                    activity={activity}
-                                    currentUser={user}
-                                    onPressUser={(event: any) => {
+                                        searchQuery={searchTerm}
+                                        key={i}
+                                        parentIndex={index}
+                                        role={user?.role?.key}
+                                        activity={activity}
+                                        currentUser={user}
+                                        onPressUser={(event: any) => {
 
-                                        setDetails(activity)
-                                        /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
-                                        })*/
-                                        if (event?.icon == 'more') {
-                                            setMoreModalVisible(true)
-                                        } else {
-                                            setModalVisible(true)
-                                        }
+                                            setDetails(activity)
+                                            /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
+                                            })*/
+                                            if (event?.icon == 'more') {
+                                                setMoreModalVisible(true)
+                                            } else {
+                                                setModalVisible(true)
+                                            }
 
-                                    }} index={i}
-                                    swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
+                                        }} index={i}
+                                        swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
                                 )
                             }}/>
                     )}

@@ -12,7 +12,7 @@ const Requirement = (props: any) => {
         setVisibleModal(false)
     }
     return <ScrollView style={{backgroundColor: "#fff", width}}>
-        {props?.requirements.map((requirement: any, index: number) => {
+        {props?.requirements?.map((requirement: any, index: number) => {
             return <View style={styles.container}>
                 <View style={styles.card}>
                     <View style={styles.cardContainer}>

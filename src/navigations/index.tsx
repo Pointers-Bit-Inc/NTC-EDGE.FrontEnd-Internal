@@ -20,6 +20,7 @@ import ViewChat from '@screens/chat/view';
 import NewChat from '@screens/chat/new-chat';
 import InitiateVideoCall from '@screens/meet/create';
 import JoinVideoCall from '@screens/meet/video';
+import Search from "@pages/activities/search";
 
 type RootStackParamList = {
   App: undefined;
@@ -72,6 +73,8 @@ const RootNavigator = () => {
         <Stack.Screen name="NewChat" component={NewChat} />
         <Stack.Screen name="InitiateVideoCall" component={InitiateVideoCall} />
         <Stack.Screen name="JoinVideoCall" component={JoinVideoCall} />
+        <Stack.Screen name="SearchActivities" component={Search} />
+
       </Stack.Navigator>
     </NavigationContainer>
 
