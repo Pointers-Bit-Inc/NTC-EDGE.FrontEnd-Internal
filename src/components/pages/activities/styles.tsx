@@ -55,20 +55,21 @@ export const styles = StyleSheet.create({
     rect7: {
 
         width: "90%",
-        backgroundColor: "#E6E6E6",
-        borderRadius: 10,
+        backgroundColor: "#EFF0F7",
+        borderRadius: 12,
         flexDirection: "row",
-        marginTop: 20,
-        marginLeft: 20
+        paddingTop: 5,
+        paddingLeft: 10,
+        paddingBottom: 5
     },
     icon: {
         color: "rgba(190,199,218,1)",
         fontSize: 26,
-        height: 23,
-        width: 26,
-        marginTop: 9
+        alignSelf: "center"
+
     },
     textInput: {
+        padding: 10,
         color: "rgba(149,157,175,1)",
         justifyContent: "center"
     },

@@ -3,6 +3,7 @@ import {outline} from "@styles/color";
 const {width, height} = Dimensions.get('window');
 export const styles = StyleSheet.create({
    header:{
+      backgroundColor: "#fff",
        justifyContent: "space-between",
        flexDirection: "row",
        paddingBottom: 5,
@@ -95,7 +96,7 @@ export const styles = StyleSheet.create({
         group8: {
         paddingBottom: 10,
         width: "100%",
-        backgroundColor: "rgba(255,255,255,1)",
+
         flex: 1,
     },
     rect3: {

@@ -73,7 +73,7 @@ export function SearchActivity(props: {clearAll: any, total: any,  loading: bool
                                         }>
                                             <CloseCircleIcon
                                                 style={styles.icon2}
-                                            ></CloseCircleIcon>
+                                            />
                                         </TouchableOpacity> : <></>}
 
                                     </View>
@@ -83,9 +83,9 @@ export function SearchActivity(props: {clearAll: any, total: any,  loading: bool
                     </View>
                 </View>
             </View>
-            <View style={styles.group8}>
+            <View style={[styles.group8, { backgroundColor:  props.value.length < 1 || props.total == 0 ? "rgba(255,255,255,1)" : "rgba(255,255,255,0)",}]}>
 
-                {!props?.loading && props.value.length < 1 && <View style={styles.header}>
+                {!props?.loading && props.value.length < 1  && <View style={styles.header}>
                     <Text style={styles.recentSearches}>{props.nevers.length ? "Recent Searches" : ""}</Text>
                     <TouchableOpacity onPress={props.clearAll}>
                         <Text style={{color: '#2863D6', fontWeight: '500',}} >{props.nevers.length ? "Clear all" : ""}</Text>
