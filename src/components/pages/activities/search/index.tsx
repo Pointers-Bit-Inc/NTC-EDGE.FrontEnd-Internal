@@ -44,8 +44,8 @@ function Search(props: any) {
             return status != DATE_ADDED
         })
         const list = getFilter(app, user, selectedClone, cashier, director, checker, evaluator);
-              console.log(list)
 
+                setTotal(list?.length)
         const groups = list?.reduce((groups: any, activity: any) => {
 
             if (!groups[formatDate(activity.createdAt)]) {
@@ -86,6 +86,13 @@ function Search(props: any) {
             JSON.stringify(removeIndexArray)
         )
     }
+    const clearAllSearchHistory = async (index: number) => {
+        setSearchHistory([])
+        await AsyncStorage.setItem(
+            'searchHistory',
+            JSON.stringify([])
+        )
+    }
     const handler = useCallback(_.debounce((text: string) => setText(text), 1000), []);
     const handleLoad= async (text: string) => {
         let _page: number;
@@ -101,18 +108,18 @@ function Search(props: any) {
                         page: _page
                     }
                 }).then(async (response) => {
-
+                    setInfiniteLoad(false);
                     if (response?.data?.page) {
                         setPage(response?.data?.page)
 
                     } else {
                         setPage(0)
                     }
-                    response?.data?.total ? setTotal(response?.data?.total) : setTotal(0)
+                   // response?.data?.total ? setTotal(response?.data?.total) : setTotal(0)
                     response?.data?.size ? setPage(response?.data?.size) : setPage(0)
 
                     setApplications(application => [...application , ...groupApplications(response?.data?.docs)])
-                    setInfiniteLoad(false);
+
                     await AsyncStorage.getItem('searchHistory').then(async (value) => {
                         value = JSON.parse(value) || []
 
@@ -136,10 +143,9 @@ function Search(props: any) {
                         page: _page
                     }
                 }).then((response) => {
-
                     if (response?.data?.message) Alert.alert(response.data.message)
                     if (response?.data?.size) setSize(response?.data?.size)
-                    if (response?.data?.total) setTotal(response?.data?.total)
+                   // if (response?.data?.total) setTotal(response?.data?.total)
                     if (response?.data?.page) setPage(response?.data?.page)
 
                     setInfiniteLoad(false);
@@ -150,11 +156,10 @@ function Search(props: any) {
                 setInfiniteLoad(false)
             }
         } catch (error) {
-            // Error saving data
+            setInfiniteLoad(false)
         }
     }
     const setText = async (text: string) => {
-            console.log(text, 123)
         if (!text.trim()) return
         try {
             setInfiniteLoad(true)
@@ -163,14 +168,14 @@ function Search(props: any) {
                     keyword: text
                 }
             }).then(async (response) => {
-
+                console.log(response?.data?.size, response?.data?.total, response?.data?.page)
                 if(response?.data?.page){
                     setPage(response?.data?.page)
 
                 } else{
                     setPage(0)
                 }
-                response?.data?.total ? setTotal(response?.data?.total) : setTotal(0)
+               // response?.data?.total ? setTotal(response?.data?.total) : setTotal(0)
                 response?.data?.size ? setPage(response?.data?.size) : setPage(0)
                 setApplications(groupApplications(response?.data?.docs))
                 setInfiniteLoad(false);
@@ -204,9 +209,12 @@ function Search(props: any) {
     }, []);
     return (
         <SearchActivity
+            clearAll={clearAllSearchHistory}
+            loading={infiniteLoad}
             handleLoad={handleLoad}
             setText={setText}
             bottomLoader={bottomLoader}
+            size={size}
             total={total}
             applications={applications}
             onPress={handleBackButtonClick}

@@ -409,33 +409,7 @@ export default function ActivitiesPage(props: any) {
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
-            {searchVisible && <Search
-               
-                loadingAnimation={(event: boolean) => {
-                    setLoadingAnimation(event)
-                }}
-                setSearchTerm={setSearchTerm}
-                searchTerm={searchTerm}
-                initialMove={initialMove}
-                animate={loadingAnimate}
-                onSearch={(_search: string, callback = (err: any) => {
-                }) => {
-
-
-                    let isCurrent = true
-
-                    fnApplications(isCurrent, (response) => {
-                        if (response) {
-                            callback(response)
-                        } else {
-                            callback(response)
-                        }
-                    });
-                }} onDismissed={() => {
-
-                setSearchVisible(false)
-                setSearchTerm("")
-            }}/>}
+           
             <View style={[styles.container]}>
 
 
@@ -567,7 +541,7 @@ export default function ActivitiesPage(props: any) {
                         />
                     }
                     style={{flex: 1}}
-                    data={[...(searchVisible ? pnApplications : []), ...notPnApplications]}
+                    data={notPnApplications}
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={bottomLoader}
                     onEndReached={() => {

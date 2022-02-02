@@ -2,6 +2,14 @@ import {Dimensions, StyleSheet} from "react-native";
 import {outline} from "@styles/color";
 const {width, height} = Dimensions.get('window');
 export const styles = StyleSheet.create({
+   header:{
+       justifyContent: "space-between",
+       flexDirection: "row",
+       paddingBottom: 5,
+       paddingHorizontal: 20,
+       paddingTop: 36,
+       alignItems: "center"
+   },
     rect4: {
 
         flex: 1,
@@ -85,6 +93,7 @@ export const styles = StyleSheet.create({
         flex: 1  ,
     },
         group8: {
+        paddingBottom: 10,
         width: "100%",
         backgroundColor: "rgba(255,255,255,1)",
         flex: 1,
@@ -95,12 +104,11 @@ export const styles = StyleSheet.create({
     },
    
     recentSearches: {
-        fontWeight: "500",
+        fontWeight: "600",
+        fontSize: 18,
         lineHeight: 28,
         color: "#000",
-        paddingBottom: 15,
-         paddingLeft: 20,
-        paddingTop: 36
+
     },
     group6: {
 

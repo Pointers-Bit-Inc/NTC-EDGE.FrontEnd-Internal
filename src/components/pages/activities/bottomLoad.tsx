@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import SearchLoading from "@assets/svg/searchLoading";
 
 export const styles = StyleSheet.create({
     bottomLoad: {
@@ -10,7 +11,7 @@ export const styles = StyleSheet.create({
 export default function Loader() {
     return (
         <View style={styles.bottomLoad}>
-            <ActivityIndicator size="large" color="blue"/>
+           <SearchLoading/>
         </View>
     );
 }
