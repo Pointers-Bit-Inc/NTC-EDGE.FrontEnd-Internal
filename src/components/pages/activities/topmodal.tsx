@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
         marginLeft: 7,
     },
     label1: {
-        fontWeight: "bold",
+        fontWeight: "400",
         color: "#121212",
         marginLeft: 7,
     },

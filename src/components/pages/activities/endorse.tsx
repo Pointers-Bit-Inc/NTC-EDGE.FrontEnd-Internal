@@ -16,10 +16,11 @@ import axios from "axios";
 import EndorseToIcon from "@assets/svg/endorseTo";
 import {BASE_URL} from "../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
-import {DIRECTOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
+import {CASHIER, CHECKER, DIRECTOR, EVALUATOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
+import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 
 const {height, width} = Dimensions.get('window');
 
@@ -42,7 +43,7 @@ function Endorsed(props: any) {
                 }
             }).then((response) => {
             const filterResponse = [...response.data].filter((item) => {
-                return ([DIRECTOR].indexOf(item?.role?.key) != -1)
+                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1)
             })
 
             const res = filterResponse.map((item) => {
@@ -88,6 +89,7 @@ function Endorsed(props: any) {
     const [alertLoading, setAlertLoading] = useState(false)
     const [showClose, setShowClose] = useState(false)
     const [title, setTitle] = useState("Endorse Application to")
+    const [selected, setSelected] = useState(undefined);
 
     return (
         <Modal
@@ -140,40 +142,6 @@ function Endorsed(props: any) {
 
                 }} show={showAlert} title={ title}
                 message={message}/>
-            {/*<AwesomeAlert
-                    actionContainerStyle={alertStyle.actionContainerStyle}
-                    overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
-                    confirmButtonColor="#fff"
-                    titleStyle={alertStyle.titleStyle}
-                    contentContainerStyle={alertStyle.contentContainerStyle}
-                    confirmButtonTextStyle={alertStyle.confirmButtonTextStyle}
-                    cancelButtonColor="#fff"
-                    cancelButtonTextStyle={alertStyle.cancelButtonTextStyle}
-                    show={showAlert}
-                    showProgress={false}
-                    title="Confirm?"
-                    message={message}
-                    closeOnTouchOutside={true}
-                    closeOnHardwareBackPress={false}
-                    showCancelButton={true}
-                    showConfirmButton={true}
-                    cancelText="Cancel"
-                    confirmText="Proceed"
-                    onCancelPressed={() => {
-                        setShowAlert(false)
-                    }}
-                    onConfirmPressed={() => {
-                        props.onChangeApplicationStatus({status: FOREVALUATION }, (bool, callback:(bool) =>{}) =>{
-                            setShowAlert(false)
-
-                                props.onDismissed()
-                                callback(true)
-
-                        })
-
-
-                    }}
-                />*/}
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={[styles.container]}
@@ -193,27 +161,12 @@ function Endorsed(props: any) {
                             <EndorseToIcon style={styles.icon2}/>
                             <Text style={styles.endorseTo}>Endorse to</Text>
                         </View>
-                        <View
-                            style={{
-                                backgroundColor: "rgba(255,255,255,1)",
-                                borderWidth: 1,
-                                borderColor: "rgba(202,210,225,1)",
-                                borderRadius: 6,
-                                padding: 10,
-                                width: '100%',
-                            }}
-                        >
-                            <Dropdown
-                                style={{width: '100%'}}
-                                value={endorsed}
-                                onChangeValue={(value: any) => {
-                                    setEndorsed(value)
-                                }
-                                }
-                                placeholder={{}}
-                                items={pickedEndorsed}
-                            />
-                        </View>
+
+
+
+                            <CustomDropdown value={endorsed}  label="Select Item" data={pickedEndorsed} onSelect={({value})=>{
+                                setEndorsed(value)
+                            }} />
                         <InputField
                             style={{fontWeight: 'normal'}}
                             outlineStyle={{
@@ -314,12 +267,14 @@ const styles = StyleSheet.create({
     },
     confirm: {
         color: "rgba(255,255,255,1)",
+        fontWeight: '600',
+        fontSize: 18,
     },
     confirmButton: {
-        paddingVertical: 16,
-        backgroundColor: "##031A6E",
+        backgroundColor: "#031A6E",
         borderRadius: 12,
-        padding: 10,
+
+        paddingVertical: 16,
         alignItems: 'center',
         justifyContent: 'center',
     }

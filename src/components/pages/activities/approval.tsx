@@ -216,8 +216,8 @@ function Approval(props: any) {
                                 <TouchableOpacity onPress={() => {
                                     onConfirmation()
                                 }}>
-                                    <View style={styles.rect3}>
-                                        <Text style={styles.close}>Confirm</Text>
+                                    <View style={styles.confirmButton}>
+                                        <Text style={styles.confirm}>Confirm</Text>
                                     </View>
                                 </TouchableOpacity>
                             </View>
@@ -271,16 +271,18 @@ const styles = StyleSheet.create({
         width: '100%',
         marginTop: 5,
     },
-    rect3: {
-        width: '100%',
-        backgroundColor: "#031A6E",
-        borderRadius: 9,
-        padding: 15,
-        paddingVertical: 10,
-        alignItems: 'center',
-    },
-    close: {
+    confirm: {
         color: "rgba(255,255,255,1)",
+        fontWeight: '600',
+        fontSize: 18,
     },
+    confirmButton: {
+        backgroundColor: "#031A6E",
+        borderRadius: 12,
+
+        paddingVertical: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
 });
 export default Approval
