@@ -171,16 +171,16 @@ function ActivityModal(props: any) {
                 props.onDismissed(change)
                 setChange(false)
             }}>
-            <View style={approveVisible || visible || endorseVisible || showAlert ? {
+                <View style={approveVisible || visible || endorseVisible || showAlert ? {
 
-                position: "absolute",
-                zIndex: 2,
-                top: 0,
-                left: 0,
-                width: width,
-                height: height,
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-            } : {}}>
+                    position: "absolute",
+                    zIndex: 2,
+                    top: 0,
+                    left: 0,
+                    width: width,
+                    height: height,
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                } : {}}>
 
             </View>
 
@@ -271,7 +271,7 @@ function ActivityModal(props: any) {
                             {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{flex:  1, paddingRight: 5}}>
                                 <TouchableOpacity
-                                    disabled={currentLoading === APPROVED || allButton}
+                                    disabled={currentLoading === APPROVED }
                                     onPress={() => {
                                         if (cashier) {
                                             onShowConfirmation(APPROVED)
@@ -309,7 +309,7 @@ function ActivityModal(props: any) {
                             {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{flex: 1}}>
                                 <TouchableOpacity
-                                    disabled={(currentLoading === DECLINED || allButton)}
+                                    disabled={(currentLoading === DECLINED)}
                                     onPress={() => {
                                         setVisible(true)
                                     }}
@@ -340,16 +340,17 @@ function ActivityModal(props: any) {
                             }
 
                         </View>
+                        
                             {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
-                            <View style={{flex: 1,paddingHorizontal: 5,}}>
+                            <View style={{flex: 0.6,paddingHorizontal: 5,}}>
                                 <TouchableOpacity
-                                    disabled={(currentLoading === FOREVALUATION || allButton )}
+                                    disabled={(currentLoading === FOREVALUATION )}
                                     onPress={() => {
                                         setEndorseVisible(true)
                                     }}
                                 >
                                     <View style={[{
-                                        width: '70%',
+                                        width: "85%",
                                         alignSelf: "flex-end",
                                          borderWidth: 1,
                                         borderRadius: 24,
@@ -363,7 +364,7 @@ function ActivityModal(props: any) {
                                                   currentLoading === FOREVALUATION ? (
                                                       <ActivityIndicator color={'white'} size={'small'}/>
                                                   ) : (
-                                                      <Text style={[styles.endorse, {fontWeight: '600',color: (allButton) ? "#808196" : "#031A6E",}]}>Endorse</Text>
+                                                      <Text style={[styles.endorse, {fontWeight: '600',color: (allButton) ? "#808196" : "##031A6E",}]}>Endorse</Text>
 
                                                   )
                                               }

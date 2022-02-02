@@ -316,8 +316,9 @@ const styles = StyleSheet.create({
         color: "rgba(255,255,255,1)",
     },
     confirmButton: {
-        backgroundColor: "#2f5cfa",
-        borderRadius: 6,
+        paddingVertical: 16,
+        backgroundColor: "##031A6E",
+        borderRadius: 12,
         padding: 10,
         alignItems: 'center',
         justifyContent: 'center',

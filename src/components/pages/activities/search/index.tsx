@@ -130,6 +130,8 @@ function Search(props: any) {
                         );
 
                         setSearchHistory(newArr)
+                    }) .catch((e) =>{
+                        Alert.alert('Alert', e?.message || 'Something went wrong.')
                     })
                 }).catch(()=>{
                     setInfiniteLoad(false);
@@ -151,7 +153,7 @@ function Search(props: any) {
                     setInfiniteLoad(false);
                 }).catch((err) => {
                     setInfiniteLoad(false)
-                    console.warn(err)
+                    Alert.alert('Alert', err?.message || 'Something went wrong.')
                 })
                 setInfiniteLoad(false)
             }
@@ -190,9 +192,13 @@ function Search(props: any) {
 
                     setSearchHistory(newArr)
                 })
+            }).catch((err)=>{
+                Alert.alert('Alert', err?.message || 'Something went wrong.')
+                setInfiniteLoad(false);
             })
         } catch (error) {
-            // Error saving data
+            
+            setInfiniteLoad(false);
         }
     }
 

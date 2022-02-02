@@ -208,7 +208,9 @@ export default function ActivitiesPage(props: any) {
             }
             if (isCurrent) setRefreshing(false);
         }).catch((err) => {
-            if (isCurrent) setRefreshing(false)
+            setRefreshing(false)
+            Alert.alert('Alert', err?.message || 'Something went wrong.')
+
             callback(false)
             console.warn(err)
         })
@@ -223,7 +225,6 @@ export default function ActivitiesPage(props: any) {
     }, [selectedChangeStatus.length])
 
     useEffect(() => {
-        setRefreshing(true)
         let isCurrent = true
         dispatch(setNotPinnedApplication([]))
         dispatch(setPinnedApplication([]))
@@ -355,6 +356,7 @@ export default function ActivitiesPage(props: any) {
                 }
                 setInfiniteLoad(false);
             }).catch((err) => {
+                Alert.alert('Alert', err?.message || 'Something went wrong.')
                 setInfiniteLoad(false)
                 console.warn(err)
             })
@@ -370,6 +372,7 @@ export default function ActivitiesPage(props: any) {
 
                 setInfiniteLoad(false);
             }).catch((err) => {
+                Alert.alert('Alert', err?.message || 'Something went wrong.')
                 setInfiniteLoad(false)
                 console.warn(err)
             })

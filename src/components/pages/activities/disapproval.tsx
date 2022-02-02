@@ -6,7 +6,7 @@ import {
     Platform,
     StyleSheet,
     Text,
-    TouchableOpacity,
+    TouchableOpacity, TouchableWithoutFeedback,
     View
 } from "react-native";
 import {InputField} from "@components/molecules/form-fields";
@@ -14,6 +14,7 @@ import {Feather, Ionicons} from "@expo/vector-icons";
 import {DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
 import CustomAlert from "@pages/activities/alert/alert";
+import {FileTextIcon} from "@assets/svg/fileText";
 const { height, width } = Dimensions.get('window');
 
 function Disapproval(props: any) {
@@ -41,7 +42,11 @@ function Disapproval(props: any) {
             visible={props.visible}
 
             onRequestClose={() => {
+                props.onDismissed()
             }}>
+
+
+           
             <View style={showAlert ? {
                 zIndex: 1,
                 flex: 1,
@@ -106,10 +111,12 @@ function Disapproval(props: any) {
                        })
                    }}
                />*/}
+
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={[styles.container,]}
             >
+               
                 <View style={styles.rectFiller}></View>
                 <View style={styles.rect}>
                     <View style={{padding: 10}}>
@@ -122,14 +129,11 @@ function Disapproval(props: any) {
                     <View
                         style={{
                             flexDirection: 'row',
-                            alignItems: 'center',
+                            alignItems: 'flex-start',
                             paddingHorizontal: 20
                         }}
                     >
-                        <Feather
-                            name="file-text"
-                            style={styles.icon2}
-                        />
+                       <FileTextIcon style={styles.fileTextIcon}/>
                         <View style={styles.nodRemarksColumn}>
                             <Text style={styles.nodRemarks}>NOD/Remarks</Text>
                             <Text style={styles.pleaseProvide}>
@@ -172,6 +176,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    fileTextIcon:{
+       paddingLeft: 15,
+    },
     group3Filler: {
         flex: 1
     },
@@ -204,7 +211,7 @@ const styles = StyleSheet.create({
         fontSize: 30
     },
     nodRemarks: {
-        color: "#363f59",
+        color: "#000",
         textAlign: "left",
         fontSize: 18,
         marginLeft: -1
@@ -251,16 +258,19 @@ const styles = StyleSheet.create({
     rect3: {
         width: 340,
         height: 40,
-        backgroundColor: "rgba(47,91,250,1)",
+        backgroundColor: "#031A6E",
         borderRadius: 9
     },
     confirm: {
         color: "rgba(255,255,255,1)",
+        fontWeight: '600',
+        fontSize: 18,
     },
     confirmButton: {
-        backgroundColor: "#2f5cfa",
-        borderRadius: 6,
-        padding: 10,
+        backgroundColor: "##031A6E",
+        borderRadius: 12,
+
+        paddingVertical: 16,
         alignItems: 'center',
         justifyContent: 'center',
     }

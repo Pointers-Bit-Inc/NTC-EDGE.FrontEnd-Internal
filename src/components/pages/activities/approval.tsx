@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     },
     rect3: {
         width: '100%',
-        backgroundColor: "rgba(47,91,250,1)",
+        backgroundColor: "#031A6E",
         borderRadius: 9,
         padding: 15,
         paddingVertical: 10,
