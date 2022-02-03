@@ -7,13 +7,13 @@ const RequirementModal = (props:any) => {
 
     return <Modal
         animationType="slide"
-        transparent={false}
+        transparent={true}
         visible={props.visible}
         onRequestClose={() => {
             props.onDismissed()
         }}>
         <View style={{
-            backgroundColor: '#e6e6e6',
+            backgroundColor: "rgba(0,0,0,0.5)",
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -59,9 +59,10 @@ const styles = StyleSheet.create({
     rect2: {
         width: width,
         height: 80,
-        backgroundColor: "#041B6E"
+      //  backgroundColor: "#041B6E"
     },
     close: {
+        fontWeight: "500",
         color: "rgba(239,231,231,1)",
         fontSize: 18,
     },

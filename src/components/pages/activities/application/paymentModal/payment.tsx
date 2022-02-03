@@ -107,7 +107,9 @@ const Payment = (props:any) => {
 
 
 
-
+            <TouchableOpacity onPress={() => {
+                setVisibleModal(true)
+            }}  >
                 <View style={requirementStyles.container}>
                     <View style={[requirementStyles.card, {padding: undefined}]}>
                         <View style={requirementStyles.cardContainer}>
@@ -139,24 +141,22 @@ const Payment = (props:any) => {
                                 borderColor: "rgba(213,214,214,1)",
                                 borderStyle: "dashed",
                             }}>
-                                <TouchableOpacity onPress={() => {
-                                    setVisibleModal(true)
-                                }
-                                }>
+
+                                
                                     <Image
                                         style={{height: 216}}
                                         source={{
                                             uri: props?.proofOfPayment?.small,
                                         }}
                                     />
-                                </TouchableOpacity>
+
                             </View> }
 
                         </View>
                     </View>
                 </View>
 
-
+                </TouchableOpacity>
         </View>
         <PaymentModal   updatedAt={props?.updatedAt} paymentMethod={props?.paymentMethod} applicant={props?.applicant}  totalFee={props?.totalFee} visible={visibleModal} onDismissed={onDismissed}  />
     </ScrollView>
