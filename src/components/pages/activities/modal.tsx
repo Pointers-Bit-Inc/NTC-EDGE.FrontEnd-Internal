@@ -271,7 +271,7 @@ function ActivityModal(props: any) {
                             {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{flex:  1, paddingRight: 5}}>
                                 <TouchableOpacity
-                                    disabled={currentLoading === APPROVED }
+                                    disabled={currentLoading === APPROVED || allButton }
                                     onPress={() => {
                                         if (cashier) {
                                             onShowConfirmation(APPROVED)
@@ -309,7 +309,7 @@ function ActivityModal(props: any) {
                             {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{flex: 1}}>
                                 <TouchableOpacity
-                                    disabled={(currentLoading === DECLINED)}
+                                    disabled={(currentLoading === DECLINED || allButton)}
                                     onPress={() => {
                                         setVisible(true)
                                     }}
@@ -344,7 +344,7 @@ function ActivityModal(props: any) {
                             {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
                             <View style={{flex: 0.6,paddingHorizontal: 5,}}>
                                 <TouchableOpacity
-                                    disabled={(currentLoading === FOREVALUATION )}
+                                    disabled={(currentLoading === FOREVALUATION|| allButton  )}
                                     onPress={() => {
                                         setEndorseVisible(true)
                                     }}

@@ -164,9 +164,9 @@ function Endorsed(props: any) {
 
 
 
-                            <CustomDropdown value={endorsed}  label="Select Item" data={pickedEndorsed} onSelect={({value})=>{
-                                setEndorsed(value)
-                            }} />
+                        <CustomDropdown value={endorsed}  label="Select Item" data={pickedEndorsed} onSelect={({value})=>{
+                            setEndorsed(value)
+                        }} />
                         <InputField
                             style={{fontWeight: 'normal'}}
                             outlineStyle={{

@@ -22,6 +22,6 @@ export function useAssignPersonnel(assignedPersonnel, config) {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [assignedPersonnel]);
     return {personnel, loading};
 }
