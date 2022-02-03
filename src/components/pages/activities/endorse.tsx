@@ -10,13 +10,12 @@ import {
     View
 } from "react-native";
 import {Ionicons} from "@expo/vector-icons";
-import Dropdown from "@atoms/dropdown";
 import {InputField} from "@components/molecules/form-fields";
 import axios from "axios";
 import EndorseToIcon from "@assets/svg/endorseTo";
 import {BASE_URL} from "../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
-import {CASHIER, CHECKER, DIRECTOR, EVALUATOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
+import {DIRECTOR, EVALUATOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
@@ -70,20 +69,19 @@ function Endorsed(props: any) {
         setShowAlert(true)
 
     }
-    const onCancelPress = () =>{
-        setTitle(  "Endorse Application to" )
-        if(showClose){
+    const onCancelPress = () => {
+        setTitle("Endorse Application to")
+        if (showClose) {
             setShowAlert(false)
             setShowClose(false)
 
             props.onDismissed()
-        } else{
+        } else {
             setShowClose(false)
             setShowAlert(false)
             props.onModalDismissed()
         }
     }
-
 
 
     const [alertLoading, setAlertLoading] = useState(false)
@@ -141,7 +139,7 @@ function Endorsed(props: any) {
                     })
 
 
-                }} show={showAlert} title={ title}
+                }} show={showAlert} title={title}
                 message={message}/>
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -164,10 +162,12 @@ function Endorsed(props: any) {
                         </View>
 
 
-
-                        <CustomDropdown value={endorsed}  label="Select Item" data={pickedEndorsed} onSelect={({value})=>{
-                            setEndorsed(value)
-                        }} />
+                        <CustomDropdown value={endorsed}
+                                        label="Select Item"
+                                        data={pickedEndorsed}
+                                        onSelect={({value}) => {
+                                            setEndorsed(value)
+                                        }}/>
                         <InputField
                             style={{fontWeight: 'normal'}}
                             outlineStyle={{
@@ -189,10 +189,7 @@ function Endorsed(props: any) {
                     <View
                         style={{width: '100%', paddingHorizontal: 20, paddingBottom: 25,}}
                     >
-                        <TouchableOpacity onPress={() => {
-
-                            onEndorseConfirm()
-                        }}>
+                        <TouchableOpacity onPress={onEndorseConfirm}>
                             <View style={styles.confirmButton}>
                                 <Text style={styles.confirm}>Confirm</Text>
                             </View>
