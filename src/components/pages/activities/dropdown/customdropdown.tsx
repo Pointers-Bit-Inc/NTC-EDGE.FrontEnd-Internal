@@ -1,13 +1,6 @@
 import React, {FC, ReactElement, useEffect, useRef, useState} from 'react';
-import {
-    FlatList,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    Modal,
-    View,
-} from 'react-native';
-import {FontAwesome} from "@expo/vector-icons";
+import {FlatList, Modal, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import CaretDownIcon from "@assets/svg/caret-down";
 
 
 interface Props {
@@ -16,16 +9,16 @@ interface Props {
     onSelect: (item: { label: string; value: string }) => void;
 }
 
-const CustomDropdown: FC<Props> = ({ label, data, onSelect, value }) => {
+const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
     const DropdownButton = useRef();
     const [visible, setVisible] = useState(false);
     const [selected, setSelected] = useState(undefined);
     const [dropdownTop, setDropdownTop] = useState(0);
-   
+
     const toggleDropdown = (): void => {
         visible ? setVisible(false) : openDropdown();
     };
-    useEffect(()=>{
+    useEffect(() => {
         const _selected = data.find((item) => item.value == value)
         setSelected(_selected)
         onSelect(_selected)
@@ -41,15 +34,17 @@ const CustomDropdown: FC<Props> = ({ label, data, onSelect, value }) => {
     const onItemPress = (item: any): void => {
         setSelected(item);
         onSelect(item);
-      //  setVisible(false);
+        //  setVisible(false);
     };
 
-    const renderItem = ({ item }: any): ReactElement<any, any> => (
-        <TouchableOpacity style={[styles.item, {backgroundColor: item.value == selected.value ? "#EAEAF4" : "rgba(255,255,255,0)",}]} onPress={() => onItemPress(item)}>
+    const renderItem = ({item}: any): ReactElement<any, any> => (
+        <TouchableOpacity
+            style={[styles.item, {backgroundColor: item.value == selected.value ? "#EAEAF4" : "rgba(255,255,255,0)",}]}
+            onPress={() => onItemPress(item)}>
             <Text style={{
 
-              fontSize:15
-            }} >{item.label}</Text>
+                fontSize: 15
+            }}>{item.label}</Text>
         </TouchableOpacity>
     );
 
@@ -60,13 +55,13 @@ const CustomDropdown: FC<Props> = ({ label, data, onSelect, value }) => {
                     style={styles.overlay}
                     onPress={() => setVisible(false)}
                 >
-                    <View style={[styles.dropdown, { flex: 1, top: dropdownTop }]}>
+                    <View style={[styles.dropdown, {flex: 1, top: dropdownTop}]}>
                         {data.length > 0 ? <FlatList
                             data={data}
                             renderItem={renderItem}
                             keyExtractor={(item, index) => index.toString()}
-                        /> : <View style={{  height: "100%", justifyContent: "center",  alignItems: "center"}}>
-                            <Text >No Data</Text>
+                        /> : <View style={{height: "100%", justifyContent: "center", alignItems: "center"}}>
+                            <Text>No Data</Text>
                         </View>}
                     </View>
                 </TouchableOpacity>
@@ -84,7 +79,12 @@ const CustomDropdown: FC<Props> = ({ label, data, onSelect, value }) => {
             <Text style={[styles.buttonText]}>
                 {(!!selected && selected.label) || label}
             </Text>
-            <FontAwesome style={styles.icon} name="chevron-down" />
+            <CaretDownIcon style={{
+                paddingHorizontal: 20,
+                transform: [{
+                    rotate: visible ? "0deg" : "180deg"
+                }]
+            }}/>
         </TouchableOpacity>
     );
 };
@@ -96,12 +96,11 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         backgroundColor: '#EFF0F6',
         height: 50,
-        zIndex: 1,
-
+        zIndex: 1
     },
     buttonText: {
         flex: 1,
-                    color: "#6E7191",
+        color: "#6E7191",
         fontWeight: "500",
         paddingHorizontal: 20,
         textAlign: 'left',
@@ -110,7 +109,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     dropdown: {
-          marginTop: 5,
+        marginTop: 5,
         bottom: "15%",
         alignSelf: "center",
         position: 'absolute',
@@ -124,7 +123,7 @@ const styles = StyleSheet.create({
             height: 0
         },
         elevation: 6,
-        shadowOpacity: 1,
+        shadowOpacity: 0.2,
         shadowRadius: 2,
         borderRadius: 16,
 
@@ -134,11 +133,9 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     item: {
-
         marginTop: 10,
         marginHorizontal: 10,
         borderRadius: 8,
-
         paddingHorizontal: 10,
         paddingVertical: 10,
     },

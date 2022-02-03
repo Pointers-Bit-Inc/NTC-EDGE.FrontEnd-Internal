@@ -57,6 +57,7 @@ import lodash from 'lodash';
 import {addActiveMeeting, removeActiveMeeting, setMeetingId, updateActiveMeeting,} from 'src/reducers/meeting/actions';
 import {MeetingNotif} from '@components/molecules/list-item';
 import listEmpty from "@pages/activities/listEmpty";
+import HomeMenuIcon from "@assets/svg/homemenu";
 
 const {width} = Dimensions.get('window')
 
@@ -417,13 +418,14 @@ export default function ActivitiesPage(props: any) {
 
 
                 <View style={styles.group}>
-                    <View style={[styles.rect, styles.horizontal, {paddingHorizontal: 20, paddingTop: 35}]}>
+                    <View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 35}]}>
                         <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
-                            <ProfileImage
+                            <HomeMenuIcon/>
+                           {/* <ProfileImage
                                 size={45}
                                 image={user?.profilePicture?.small}
                                 name={`${user.firstName} ${user.lastName}`}
-                            />
+                            />*/}
                         </TouchableOpacity>
                         <Text style={styles.activity}>Activity</Text>
                         <View style={{flex: 1}}/>

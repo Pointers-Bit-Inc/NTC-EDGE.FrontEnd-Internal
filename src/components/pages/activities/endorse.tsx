@@ -99,6 +99,7 @@ function Endorsed(props: any) {
             visible={props.visible}
 
             onRequestClose={() => {
+                onCancelPress()
             }}>
             <View style={showAlert ? {
                 zIndex: 1,

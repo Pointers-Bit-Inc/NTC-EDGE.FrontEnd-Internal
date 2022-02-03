@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#EFF0F6"
     },
     header: {
+        fontWeight: "500",
         color: "#565961",
         padding: 5,
         marginLeft: 5
@@ -247,12 +248,14 @@ const styles = StyleSheet.create({
     },
     detail: {
         color: "#565961",
+           fontWeight: "400",
         paddingRight: 0,
         textAlign: "left",
         flex: 1,
         alignSelf: "flex-start"
     },
     detailInput: {
+       fontWeight: "500",
         color: "#121212",
         flex: 1,
         textAlign: "left"

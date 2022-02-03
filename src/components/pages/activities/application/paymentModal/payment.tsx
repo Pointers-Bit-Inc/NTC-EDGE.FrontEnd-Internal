@@ -12,10 +12,11 @@ import {Entypo, EvilIcons} from "@expo/vector-icons";
 import PaymentModal from "@pages/activities/application/paymentModal/index";
 import Text from "@atoms/text";
 import {styles} from "@pages/activities/application/paymentModal/styles"
-import {requirementStyle} from "@pages/activities/application/requirementModal/styles"
+import {requirementStyle, requirementStyles} from "@pages/activities/application/requirementModal/styles"
 import ChevronUpIcon from "@assets/svg/chevron-up";
 import ChevronDownIcon from "@assets/svg/chevron-down";
 import Collapsible from "react-native-collapsible";
+import FileOutlineIcon from "@assets/svg/fileOutline";
 const {width, height} = Dimensions.get("screen") 
 const Payment = (props:any) => {
     const [visibleModal, setVisibleModal] = useState(false)
@@ -102,67 +103,60 @@ const Payment = (props:any) => {
                     </Text>
                 </View>
             </View>
-            <View style={styles.rect5}></View>
-            <View  style={[requirementStyle.group6, {alignSelf: "center"}  ]}>
-                <TouchableWithoutFeedback onPress={()=>{
-                    setSelectCollapsed((collapsed) => !collapsed )
-                }
-                }>
-                    <View style={requirementStyle.group5}>
-                        <View style={requirementStyle.rect1}>
-                            <Text style={requirementStyle.prcLicensePdf}>  <Text style={styles.payment2}>Payment</Text></Text>
-                           
-                            <View style={requirementStyle.rect2}>
-                                {selectCollapsed ? <ChevronUpIcon/> : <ChevronDownIcon/>}
+
+
+
+
+
+                <View style={requirementStyles.container}>
+                    <View style={[requirementStyles.card, {padding: undefined}]}>
+                        <View style={requirementStyles.cardContainer}>
+                            <View style={requirementStyles.cardLabel}>
+
+                                <View style={requirementStyles.cardTitle}>
+
+                                    <Text style={requirementStyles.title}>Payment</Text>
+                                        <Text style={styles.paymentReceivedFor}>Payment received for</Text>
+                                        <Text style={styles.ntcEdge}>NTC-EDGE</Text>
+                                        <Text style={styles.theAmoutOf}>the amout of PHP {props?.totalFee}</Text>
+                                   
+                                    <Text style={requirementStyles.description}>
+                                        {props?.paymentMethod && <Text style={styles.php5000}>Payment method: {props?.paymentMethod}</Text> }
+                                    </Text>
+                                </View>
+                                {props?.proofOfPayment?.small && <View style={[{paddingTop: 30, paddingBottom: 9}, requirementStyles.cardDocument]}>
+                                    <View style={{paddingRight: 10}}>
+                                        <FileOutlineIcon/>
+                                    </View>
+
+                                </View>}
+
                             </View>
-                        </View>
-
-
-                    </View>
-                </TouchableWithoutFeedback>
-                <View style={requirementStyle.group3}>
-
-                    <View style={requirementStyle.group4}>
-                        <Collapsible collapsed={selectCollapsed}>
-                            <View style={requirementStyle.rect}>
-
-                                <Text style={styles.paymentReceivedFor}>Payment received for</Text>
-                                <Text style={styles.ntcEdge}>NTC-EDGE</Text>
-                                <Text style={styles.theAmoutOf}>the amout of PHP {props?.totalFee}</Text>
-                                {props?.paymentMethod && <Text style={styles.php5000}>Payment method: {props?.paymentMethod}</Text> }
-                                {props?.proofOfPayment?.small &&<View style={requirementStyle.rect5}>
-                                     <Image
-                                        style={{width: 350, height: 216}}
+                            {props?.proofOfPayment?.small && <View style={{
+                                height: 216,
+                                backgroundColor: "rgba(220,226,229,1)",
+                                borderWidth: 1,
+                                borderColor: "rgba(213,214,214,1)",
+                                borderStyle: "dashed",
+                            }}>
+                                <TouchableOpacity onPress={() => {
+                                    setVisibleModal(true)
+                                }
+                                }>
+                                    <Image
+                                        style={{height: 216}}
                                         source={{
                                             uri: props?.proofOfPayment?.small,
                                         }}
                                     />
+                                </TouchableOpacity>
+                            </View> }
 
-                                </View> }
-                                <View style={requirementStyle.group2}>
-                                    <View style={requirementStyle.rect6}>
-                                        <View style={requirementStyle.group}>
-                                            <TouchableOpacity onPress={()=>{
-
-                                                setVisibleModal(true)
-                                            }
-                                            }>
-                                                <View style={requirementStyle.iconRow}>
-                                                    <EvilIcons name="eye" style={requirementStyle.icon}/>
-                                                    <Text style={requirementStyle.rect8}>View</Text>
-                                                </View>
-                                            </TouchableOpacity>
-
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-
-
-                        </Collapsible>
+                        </View>
                     </View>
                 </View>
-            </View>
+
+
         </View>
         <PaymentModal   updatedAt={props?.updatedAt} paymentMethod={props?.paymentMethod} applicant={props?.applicant}  totalFee={props?.totalFee} visible={visibleModal} onDismissed={onDismissed}  />
     </ScrollView>

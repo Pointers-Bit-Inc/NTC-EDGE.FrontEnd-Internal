@@ -255,7 +255,7 @@ function ActivityModal(props: any) {
                     }}>
                        <CloseIcon  color="#606A80"/>
                     </TouchableOpacity>
-                       <Text style={{fontWeight: "500", fontSize: 14,lineHeight: 16.5, color: "#606A80" }}>{props?.details?.applicationType}</Text>
+                       <Text style={{fontWeight: "600", fontSize: 14,lineHeight: 16.5, color: "#606A80" }}>{props?.details?.applicationType}</Text>
                     <View></View>
                 </View>
                
@@ -344,7 +344,7 @@ function ActivityModal(props: any) {
                             {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
                             <View style={{flex: 0.6,paddingHorizontal: 5,}}>
                                 <TouchableOpacity
-                                    disabled={(currentLoading === FOREVALUATION|| allButton  )}
+                                    disabled={(currentLoading === FOREVALUATION || allButton )}
                                     onPress={() => {
                                         setEndorseVisible(true)
                                     }}
