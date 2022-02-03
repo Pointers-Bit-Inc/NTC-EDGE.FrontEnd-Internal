@@ -1,12 +1,11 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {ActivityIndicator, Alert, Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {Ionicons} from "@expo/vector-icons";
-import {primaryColor, text} from "@styles/color";
+import {primaryColor} from "@styles/color";
 import Disapproval from "@pages/activities/disapproval";
 import Endorsed from "@pages/activities/endorse";
 import Approval from "@pages/activities/approval";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {formatDate, PaymentStatusText, statusColor, statusIcon, StatusText} from "@pages/activities/script";
+import {PaymentStatusText, StatusText} from "@pages/activities/script";
 import {
     APPROVED,
     CASHIER,
@@ -20,8 +19,6 @@ import {
     UNVERIFIED,
     VERIFIED,
 } from "../../../reducers/activity/initialstate";
-import ProfileImage from "@components/atoms/image/profile";
-import CustomText from "@components/atoms/text";
 import Api from 'src/services/api';
 import {updateApplicationStatus} from "../../../reducers/application/actions";
 import {ModalTab} from "@pages/activities/modalTab";
@@ -171,16 +168,16 @@ function ActivityModal(props: any) {
                 props.onDismissed(change)
                 setChange(false)
             }}>
-                <View style={approveVisible || visible || endorseVisible || showAlert ? {
+            <View style={approveVisible || visible || endorseVisible || showAlert ? {
 
-                    position: "absolute",
-                    zIndex: 2,
-                    top: 0,
-                    left: 0,
-                    width: width,
-                    height: height,
-                    backgroundColor: "rgba(0, 0, 0, 0.5)",
-                } : {}}>
+                position: "absolute",
+                zIndex: 2,
+                top: 0,
+                left: 0,
+                width: width,
+                height: height,
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+            } : {}}>
 
             </View>
 
@@ -222,43 +219,25 @@ function ActivityModal(props: any) {
                 }}
                 show={showAlert} title={title}
                 message={message}/>
-
-            {/* <AwesomeAlert
-                actionContainerStyle={alertStyle.actionContainerStyle}
-                overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
-                confirmButtonColor="#fff"
-                titleStyle={alertStyle.titleStyle}
-                contentContainerStyle={alertStyle.contentContainerStyle}
-                confirmButtonTextStyle={alertStyle.confirmButtonTextStyle}
-                cancelButtonColor="#fff"
-                cancelButtonTextStyle={alertStyle.cancelButtonTextStyle}
-                cancelText="Cancel"
-                confirmText="Yes"
-                show={showAlert}
-                showProgress={false}
-                title="Confirm?"
-                message={message}
-                messageStyle={{textAlign: 'center'}}
-                closeOnTouchOutside={true}
-                closeOnHardwareBackPress={false}
-                showCancelButton={true}
-                showConfirmButton={true}
-
-            />*/}
             <View style={{flex: 1}}>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, paddingTop: 35}}>
+                <View style={{flexDirection: "row", justifyContent: "space-between", padding: 15, paddingTop: 35}}>
                     <TouchableOpacity onPress={() => {
                         setAssignId("")
                         setStatus("")
                         props.onDismissed(change)
                         setChange(false)
                     }}>
-                       <CloseIcon  color="#606A80"/>
+                        <CloseIcon color="#606A80"/>
                     </TouchableOpacity>
-                       <Text style={{fontWeight: "600", fontSize: 14,lineHeight: 16.5, color: "#606A80" }}>{props?.details?.applicationType}</Text>
+                    <Text style={{
+                        fontWeight: "600",
+                        fontSize: 14,
+                        lineHeight: 16.5,
+                        color: "#606A80"
+                    }}>{props?.details?.applicationType}</Text>
                     <View></View>
                 </View>
-               
+
                 <ModalTab details={props.details} status={status}/>
                 {
                     <View style={styles.footer}>
@@ -269,9 +248,9 @@ function ActivityModal(props: any) {
                             justifyContent: "space-evenly",
                         }}>
                             {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
-                            <View style={{flex:  1, paddingRight: 5}}>
+                            <View style={{flex: 1, paddingRight: 5}}>
                                 <TouchableOpacity
-                                    disabled={currentLoading === APPROVED || allButton }
+                                    disabled={currentLoading === APPROVED || allButton}
                                     onPress={() => {
                                         if (cashier) {
                                             onShowConfirmation(APPROVED)
@@ -298,7 +277,10 @@ function ActivityModal(props: any) {
                                                 <ActivityIndicator color={'white'} size={'small'}/>
                                             ) : (
                                                 <Text
-                                                    style={[styles.approved, {fontWeight: '600', color: allButton ? "#808196" : "rgba(255,255,255,1)",}]}>
+                                                    style={[styles.approved, {
+                                                        fontWeight: '600',
+                                                        color: allButton ? "#808196" : "rgba(255,255,255,1)",
+                                                    }]}>
                                                     Approve
                                                 </Text>
                                             )
@@ -331,7 +313,10 @@ function ActivityModal(props: any) {
                                                 <ActivityIndicator color={"rgba(194,0,0,1)"} size={'small'}/>
                                             ) : (
                                                 <Text
-                                                    style={[styles.endorse1, {fontWeight: '600',color: (allButton) ? "#808196" : "rgba(194,0,0,1)",}]}>Decline</Text>
+                                                    style={[styles.endorse1, {
+                                                        fontWeight: '600',
+                                                        color: (allButton) ? "#808196" : "rgba(194,0,0,1)",
+                                                    }]}>Decline</Text>
                                             )
                                         }
                                     </View>
@@ -340,40 +325,44 @@ function ActivityModal(props: any) {
                             }
 
                         </View>
-                        
-                            {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
-                            <View style={{flex: 0.6,paddingHorizontal: 5,}}>
-                                <TouchableOpacity
-                                    disabled={(currentLoading === FOREVALUATION || allButton )}
-                                    onPress={() => {
-                                        setEndorseVisible(true)
-                                    }}
-                                >
-                                    <View style={[{
-                                        width: "85%",
-                                        alignSelf: "flex-end",
-                                         borderWidth: 1,
-                                        borderRadius: 24,
-                                        borderColor: "#c4c4c4",
-                                        backgroundColor: ((allButton) ? "#C4C4C4" : "#fff"),
-                                        height: undefined,
-                                        paddingVertical: currentLoading === FOREVALUATION ? 6.5 : 10
-                                    }]}>
-                                          <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-                                              {
-                                                  currentLoading === FOREVALUATION ? (
-                                                      <ActivityIndicator color={'white'} size={'small'}/>
-                                                  ) : (
-                                                      <Text style={[styles.endorse, {fontWeight: '600',color: (allButton) ? "#808196" : "##031A6E",}]}>Endorse</Text>
 
-                                                  )
-                                              }
-                                              <ForwardIcon isDisable={allButton} style={{marginLeft: 6}}/>
-                                          </View>
+                        {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
+                        <View style={{flex: 0.6, paddingHorizontal: 5,}}>
+                            <TouchableOpacity
+                                disabled={(currentLoading === FOREVALUATION || allButton)}
+                                onPress={() => {
+                                    setEndorseVisible(true)
+                                }}
+                            >
+                                <View style={[{
+                                    width: "85%",
+                                    alignSelf: "flex-end",
+                                    borderWidth: 1,
+                                    borderRadius: 24,
+                                    borderColor: "#c4c4c4",
+                                    backgroundColor: ((allButton) ? "#C4C4C4" : "#fff"),
+                                    height: undefined,
+                                    paddingVertical: currentLoading === FOREVALUATION ? 6.5 : 10
+                                }]}>
+                                    <View
+                                        style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                                        {
+                                            currentLoading === FOREVALUATION ? (
+                                                <ActivityIndicator color={'white'} size={'small'}/>
+                                            ) : (
+                                                <Text style={[styles.endorse, {
+                                                    fontWeight: '600',
+                                                    color: (allButton) ? "#808196" : "##031A6E",
+                                                }]}>Endorse</Text>
 
+                                            )
+                                        }
+                                        <ForwardIcon isDisable={allButton} style={{marginLeft: 6}}/>
                                     </View>
-                                </TouchableOpacity>
-                            </View>}
+
+                                </View>
+                            </TouchableOpacity>
+                        </View>}
 
 
                     </View>
@@ -406,7 +395,7 @@ function ActivityModal(props: any) {
                 isCashier={user?.role?.key === CASHIER}
                 onDismissed={(event?: any, callback?: (bool) => {}) => {
 
-                        onApproveDismissed()
+                    onApproveDismissed()
 
                     if (callback) {
                         callback(true)

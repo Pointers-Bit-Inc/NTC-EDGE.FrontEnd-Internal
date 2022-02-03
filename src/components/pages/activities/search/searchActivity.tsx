@@ -11,6 +11,7 @@ import {unreadReadApplication} from "@pages/activities/script";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import Loader from "@pages/activities/bottomLoad";
+import useCountUp from "@pages/activities/hooks/useCountUp";
 
 const {height} = Dimensions.get('screen');
 
@@ -43,6 +44,11 @@ export function SearchActivity(props: {clearAll: any, total: any,  loading: bool
     }
     const onDismissed = () => {
         setModalVisible(false)
+    }
+    const AnimatedTotal = (props) =>  {
+        const progress = useCountUp(2000)
+        const countUp = Math.max(0, Math.round(progress * props.total ))
+        return <Text>{countUp}</Text>
     }
     return <View style={styles.container}>
         <View style={styles.group9}>
@@ -104,7 +110,7 @@ export function SearchActivity(props: {clearAll: any, total: any,  loading: bool
                         :<>
                             {!props?.loading && props.value.length > 0 &&
                             <View style={styles.header}>
-                                <Text style={styles.recentSearches} >{props.total} results of “<Text>{props.value}</Text>”</Text>
+                                <Text style={styles.recentSearches} ><AnimatedTotal total={props.total}/> results of “<Text>{props.value}</Text>”</Text>
                             </View>
                            }
                             <FlatList
