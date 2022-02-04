@@ -98,8 +98,14 @@ function Search(props: any) {
             JSON.stringify([])
         )
     }
-    const handler = useCallback(_.debounce((text: string) => setText(text), 1000), []);
+    const handler = useCallback(_.debounce((text: string, callback: () => {}) => {
+        setText(text, (bool)=>{
+            callback(false)
+        })
+
+    }, 1000), []);
     const handleLoad= async (text: string) => {
+
         let _page: number;
         if (!text.trim()) return
         try {
@@ -166,16 +172,20 @@ function Search(props: any) {
             setInfiniteLoad(false)
         }
     }
-    const setText = async (text: string) => {
-        if (!text.trim()) return
+    const setText = async (text: string, callback: (bool) => void) => {
+
+        if (!text.trim()){
+            callback(true)
+            return
+        }
         try {
-            setInfiniteLoad(true)
+
             axios.get(BASE_URL + `/applications`, {
                 ...config, params: {
                     keyword: text
                 }
             }).then(async (response) => {
-                console.log(response?.data?.size, response?.data?.total, response?.data?.page)
+
                 if(response?.data?.page){
                     setPage(response?.data?.page)
 
@@ -185,7 +195,7 @@ function Search(props: any) {
                // response?.data?.total ? setTotal(response?.data?.total) : setTotal(0)
                 response?.data?.size ? setPage(response?.data?.size) : setPage(0)
                 setApplications(groupApplications(response?.data?.docs))
-                setInfiniteLoad(false);
+
                 await AsyncStorage.getItem('searchHistory').then(async (value) => {
                     value = JSON.parse(value) || []
 
@@ -197,12 +207,13 @@ function Search(props: any) {
 
                     setSearchHistory(newArr)
                 })
+
+                callback(true)
             }).catch((err)=>{
                 Alert.alert('Alert', err?.message || 'Something went wrong.')
-                setInfiniteLoad(false);
+                callback(false)
             })
         } catch (error) {
-            
             setInfiniteLoad(false);
         }
     }
@@ -235,12 +246,16 @@ function Search(props: any) {
 
             }}
             onChange={(event) => {
-                handler(event.nativeEvent.text)
+                setInfiniteLoad(true)
+                handler(event.nativeEvent.text, (bool)=>{
+                    setInfiniteLoad(false)
+                })
             }}
             onChangeText={(text) => {
                 setTextInput(text)
             }}
             onPress1={() => {
+
                 setTextInput("")
 
             }}

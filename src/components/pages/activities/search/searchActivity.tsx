@@ -15,7 +15,7 @@ import useCountUp from "@pages/activities/hooks/useCountUp";
 
 const {height} = Dimensions.get('screen');
 
-export function SearchActivity(props: {isRecentSearches: any, clearAll: any, total: any,  loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
+export function SearchActivity(props: { isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const inputRef = useRef(null);
     const [details, setDetails] = useState({})
     const [moreModalVisible, setMoreModalVisible] = useState(false)
@@ -45,9 +45,9 @@ export function SearchActivity(props: {isRecentSearches: any, clearAll: any, tot
     const onDismissed = () => {
         setModalVisible(false)
     }
-    const AnimatedTotal = (props) =>  {
+    const AnimatedTotal = (props) => {
         const progress = useCountUp(2000)
-        const countUp = Math.max(0, Math.round(progress * props.total ))
+        const countUp = Math.max(0, Math.round(progress * props.total))
         return <Text>{countUp}</Text>
     }
     return <View style={styles.container}>
@@ -75,12 +75,13 @@ export function SearchActivity(props: {isRecentSearches: any, clearAll: any, tot
                                             placeholder="Search"
                                             style={styles.textInput}
                                         ></TextInput>
-                                        {props.value.length ? <TouchableOpacity onPress={props.onPress1
-                                        }>
-                                            <CloseCircleIcon
-                                                style={styles.icon2}
-                                            />
-                                        </TouchableOpacity> : <></>}
+                                        {props.value.length ?
+                                            <TouchableOpacity onPress={props.onPress1
+                                            }>
+                                                <CloseCircleIcon
+                                                    style={styles.icon2}
+                                                />
+                                            </TouchableOpacity> : <></>}
 
                                     </View>
                                 </View>
@@ -89,37 +90,50 @@ export function SearchActivity(props: {isRecentSearches: any, clearAll: any, tot
                     </View>
                 </View>
             </View>
-            <View style={[styles.group8, { backgroundColor:  props.value.length < 1 || props.total == 0 ? "rgba(255,255,255,1)" : "rgba(255,255,255,0)",}]}>
+            <View
+                style={[styles.group8, {backgroundColor: props.value.length < 1 || props.total == 0 ? "rgba(255,255,255,1)" : "rgba(255,255,255,0)",}]}>
 
-                {!props?.loading && props.value.length < 1  && <View style={styles.header}>
-                    <Text style={[styles.recentSearches]}>{props.nevers.length ? "Recent Searches" : props.isRecentSearches == true ?  "No Recent Searches" : ""}</Text>
+                {!props?.loading && props.value.length < 1 && <View style={styles.header}>
+                    <Text
+                        style={[styles.recentSearches]}>{props.nevers.length ? "Recent Searches" : props.isRecentSearches == true ? "No Recent Searches" : ""}</Text>
                     <TouchableOpacity onPress={props.clearAll}>
-                        <Text style={{color: '#2863D6', fontWeight: '500',}} >{props.nevers.length ? "Clear all" : ""}</Text>
+                        <Text style={{
+                            color: '#2863D6',
+                            fontWeight: '500',
+                        }}>{props.nevers.length ? "Clear all" : ""}</Text>
                     </TouchableOpacity>
 
-                </View> }
+                </View>}
 
 
+                {props?.loading &&
+                <View style={{backgroundColor: "#fff", paddingVertical: 10}}>
+                    <Loader/>
+                </View>
 
-                {props?.loading && <Loader/>}
+                }
                 <View style={{flex: 1}}>
                     {props.value.length < 1 ?
                         <ScrollView showsVerticalScrollIndicator={false}>
                             {props.nevers.map(props.callbackfn)}
                         </ScrollView>
-                        :<>
+                        : <>
                             {!props?.loading && props.value.length > 0 &&
                             <View style={styles.header}>
-                                <Text style={styles.recentSearches} ><AnimatedTotal total={props.total}/> results of “<Text>{props.value}</Text>”</Text>
+                                <Text style={styles.recentSearches}>
+                                    {<AnimatedTotal total={props.total}/>} results of
+                                    “<Text>{props.value}</Text>”</Text>
                             </View>
-                           }
+                            }
                             <FlatList
                                 style={{flex: 1}}
                                 data={props.applications}
                                 keyExtractor={(item, index) => index.toString()}
                                 onEndReached={() => {
                                     if (!onEndReachedCalledDuringMomentum) {
-                                        props.setText(props.value)
+                                        props.setText(props.value, () => {
+
+                                        })
                                         setOnEndReachedCalledDuringMomentum(true);
                                     }
 
@@ -162,7 +176,7 @@ export function SearchActivity(props: {isRecentSearches: any, clearAll: any, tot
                                 )}
                             />
                         </>
-                        }
+                    }
                 </View>
             </View>
 
