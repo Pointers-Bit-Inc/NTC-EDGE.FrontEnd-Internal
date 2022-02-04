@@ -22,7 +22,7 @@ function Search(props: any) {
     const [page, setPage] = useState(0)
     const [size, setSize] = useState(0)
     const [total, setTotal] = useState(0)
-
+     const [isRecentSearches, setIsRecentSearches] = useState(false)
     const [textInput, setTextInput] = useState("")
     const [searchHistory, setSearchHistory] = useState<[]>([])
     const [applications, setApplications] = useState([])
@@ -31,6 +31,7 @@ function Search(props: any) {
     const evaluator = [EVALUATOR].indexOf(user?.role?.key) != -1;
     const checker = [CHECKER].indexOf(user?.role?.key) != -1;
     const [infiniteLoad, setInfiniteLoad] = useState(false)
+
     const bottomLoader = () => {
         return infiniteLoad ? <Loader/> : null
     }
@@ -44,8 +45,7 @@ function Search(props: any) {
             return status != DATE_ADDED
         })
         const list = getFilter(app, user, selectedClone, cashier, director, checker, evaluator);
-
-                setTotal(list?.length)
+        setTotal(list?.length)
         const groups = list?.reduce((groups: any, activity: any) => {
 
             if (!groups[formatDate(activity.createdAt)]) {
@@ -67,8 +67,13 @@ function Search(props: any) {
     }
     useEffect(() => {
         let isCurrent = true;
+
         (async () => {
-            if (isCurrent) await AsyncStorage.getItem('searchHistory').then((value) => setSearchHistory(JSON.parse(value) || []))
+            setIsRecentSearches(false)
+            if (isCurrent) await AsyncStorage.getItem('searchHistory').then((value) => {
+                setSearchHistory(JSON.parse(value) || [])
+                setIsRecentSearches(true)
+            })
         })()
         return () => {
             isCurrent = false
@@ -215,6 +220,7 @@ function Search(props: any) {
     }, []);
     return (
         <SearchActivity
+            isRecentSearches={isRecentSearches}
             clearAll={clearAllSearchHistory}
             loading={infiniteLoad}
             handleLoad={handleLoad}

@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import {styles} from "@pages/activities/styles";
 import {
-    APPROVED,
     CASHIER,
     CHECKER,
     DATE_ADDED,
@@ -30,7 +29,6 @@ import {
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {
     handleInfiniteLoad,
-    readUnreadApplications,
     setApplications,
     setNotPinnedApplication,
     setPinnedApplication
@@ -38,14 +36,12 @@ import {
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
-import {formatDate, getFilter, PaymentStatusText, StatusText, unreadReadApplication,} from "@pages/activities/script";
+import {formatDate, getFilter, unreadReadApplication,} from "@pages/activities/script";
 import SearchIcon from "@assets/svg/search";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import {BASE_URL} from "../../../services/config";
-import ProfileImage from "@components/atoms/image/profile";
 import {setVisible} from "../../../reducers/activity/actions";
-import Search from "@pages/activities/search";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import moment from "moment";
 import ApplicationList from "@pages/activities/applicationList";
@@ -60,7 +56,6 @@ import listEmpty from "@pages/activities/listEmpty";
 import HomeMenuIcon from "@assets/svg/homemenu";
 
 const {width} = Dimensions.get('window')
-
 
 
 export default function ActivitiesPage(props: any) {
@@ -413,7 +408,7 @@ export default function ActivitiesPage(props: any) {
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
-           
+
             <View style={[styles.container]}>
 
 
@@ -421,7 +416,7 @@ export default function ActivitiesPage(props: any) {
                     <View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 35}]}>
                         <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
                             <HomeMenuIcon/>
-                           {/* <ProfileImage
+                            {/* <ProfileImage
                                 size={45}
                                 image={user?.profilePicture?.small}
                                 name={`${user.firstName} ${user.lastName}`}
@@ -599,18 +594,21 @@ export default function ActivitiesPage(props: any) {
                     )}
                 />
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
-                <ActivityModal updateModal={updateModalFn} readFn={unReadReadApplicationFn} details={details}
-                               visible={modalVisible} onDismissed={(event: boolean, _id: number) => {
-                    setUpdateModal(false)
-                    setDetails({})
-                    if (event && _id) {
-                        //  dispatch(deleteApplications(_id))
-                    }
-                    if (event) {
-                        onRefresh()
-                    }
-                    onDismissed()
-                }}/>
+                <ActivityModal updateModal={updateModalFn}
+                               readFn={unReadReadApplicationFn}
+                               details={details}
+                               visible={modalVisible}
+                               onDismissed={(event: boolean, _id: number) => {
+                                   setUpdateModal(false)
+                                   setDetails({})
+                                   if (event && _id) {
+                                       //  dispatch(deleteApplications(_id))
+                                   }
+                                   if (event) {
+                                       onRefresh()
+                                   }
+                                   onDismissed()
+                               }}/>
 
             </View>
         </Fragment>

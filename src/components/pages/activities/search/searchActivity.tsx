@@ -15,7 +15,7 @@ import useCountUp from "@pages/activities/hooks/useCountUp";
 
 const {height} = Dimensions.get('screen');
 
-export function SearchActivity(props: {clearAll: any, total: any,  loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
+export function SearchActivity(props: {isRecentSearches: any, clearAll: any, total: any,  loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const inputRef = useRef(null);
     const [details, setDetails] = useState({})
     const [moreModalVisible, setMoreModalVisible] = useState(false)
@@ -92,7 +92,7 @@ export function SearchActivity(props: {clearAll: any, total: any,  loading: bool
             <View style={[styles.group8, { backgroundColor:  props.value.length < 1 || props.total == 0 ? "rgba(255,255,255,1)" : "rgba(255,255,255,0)",}]}>
 
                 {!props?.loading && props.value.length < 1  && <View style={styles.header}>
-                    <Text style={[styles.recentSearches]}>{props.nevers.length ? "Recent Searches" : "No Recent Searches"}</Text>
+                    <Text style={[styles.recentSearches]}>{props.nevers.length ? "Recent Searches" : props.isRecentSearches == true ?  "No Recent Searches" : ""}</Text>
                     <TouchableOpacity onPress={props.clearAll}>
                         <Text style={{color: '#2863D6', fontWeight: '500',}} >{props.nevers.length ? "Clear all" : ""}</Text>
                     </TouchableOpacity>

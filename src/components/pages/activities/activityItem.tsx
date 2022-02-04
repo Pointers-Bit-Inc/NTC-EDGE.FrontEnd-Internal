@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     },
     application: {
 
-        paddingHorizontal: 10,
+        paddingHorizontal: 3,
         paddingVertical: 3,
         borderRadius: 5,
         marginLeft: 0,
