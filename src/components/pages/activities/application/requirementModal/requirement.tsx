@@ -14,7 +14,7 @@ const Requirement = (props: any) => {
     }
     return <ScrollView style={{backgroundColor: "#fff", width}}>
         {props?.requirements?.map((requirement: any, index: number) => {
-            return <View style={requirementStyles.container}>
+            return <View key={index} style={requirementStyles.container}>
                 <View style={requirementStyles.card}>
                     <View style={requirementStyles.cardContainer}>
                         <View style={requirementStyles.cardLabel}>

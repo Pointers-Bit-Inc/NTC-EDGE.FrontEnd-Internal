@@ -1,8 +1,8 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Alert, AsyncStorage, BackHandler, Text, TouchableOpacity, View} from "react-native";
+import {Alert, BackHandler, Text, TouchableOpacity, View} from "react-native";
 import HistoryIcon from "@assets/svg/historyIcon";
 import CloseIcon from "@assets/svg/close";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from "lodash";
 import {SearchActivity} from "@pages/activities/search/searchActivity";
 

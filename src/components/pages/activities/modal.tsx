@@ -352,7 +352,7 @@ function ActivityModal(props: any) {
                                             ) : (
                                                 <Text style={[styles.endorse, {
                                                     fontWeight: '600',
-                                                    color: (allButton) ? "#808196" : "##031A6E",
+                                                    color: (allButton) ? "#808196" : "#031A6E",
                                                 }]}>Endorse</Text>
 
                                             )

@@ -29,7 +29,7 @@ export default class ThreeDotsLoader extends React.Component {
         const active = this.state.active
         return (
             <View style={styles.main}>
-                {dots.map(i => <Dot {...this.props} active={i === active}/>)}
+                {dots.map((i, index) => <Dot key={index} {...this.props} active={i === active}/>)}
             </View>
         )
     }
@@ -67,7 +67,7 @@ class Dot extends React.Component {
         Animated.timing(
             this.scale,
             {
-                useNativeDriver: true,
+                useNativeDriver: false,
                 toValue: 1,
                 duration: this.props.animationDuration,
             }
@@ -78,7 +78,7 @@ class Dot extends React.Component {
         Animated.timing(
             this.scale,
             {
-                useNativeDriver: true,
+                useNativeDriver: false,
                 toValue: this.props.animationScale,
                 duration: this.props.animationDuration
             }
