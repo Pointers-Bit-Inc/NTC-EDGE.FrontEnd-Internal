@@ -131,9 +131,7 @@ export function SearchActivity(props: { isRecentSearches: any, clearAll: any, to
                                 keyExtractor={(item, index) => index.toString()}
                                 onEndReached={() => {
                                     if (!onEndReachedCalledDuringMomentum) {
-                                        props.setText(props.value, () => {
-
-                                        })
+                                        props.handleLoad(props.value)
                                         setOnEndReachedCalledDuringMomentum(true);
                                     }
 

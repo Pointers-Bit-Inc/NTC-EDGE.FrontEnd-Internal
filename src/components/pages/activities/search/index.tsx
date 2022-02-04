@@ -5,11 +5,10 @@ import CloseIcon from "@assets/svg/close";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from "lodash";
 import {SearchActivity} from "@pages/activities/search/searchActivity";
-
 import {styles} from '@pages/activities/search/styles'
 import axios from "axios";
 import {BASE_URL} from "../../../../services/config";
-import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
+import {RootStateOrAny, useSelector} from "react-redux";
 import {CASHIER, CHECKER, DATE_ADDED, DIRECTOR, EVALUATOR} from "../../../../reducers/activity/initialstate";
 import {formatDate, getFilter} from "@pages/activities/script";
 import moment from "moment";
@@ -22,7 +21,7 @@ function Search(props: any) {
     const [page, setPage] = useState(0)
     const [size, setSize] = useState(0)
     const [total, setTotal] = useState(0)
-     const [isRecentSearches, setIsRecentSearches] = useState(false)
+    const [isRecentSearches, setIsRecentSearches] = useState(false)
     const [textInput, setTextInput] = useState("")
     const [searchHistory, setSearchHistory] = useState<[]>([])
     const [applications, setApplications] = useState([])
@@ -45,7 +44,7 @@ function Search(props: any) {
             return status != DATE_ADDED
         })
         const list = getFilter(app, user, selectedClone, cashier, director, checker, evaluator);
-        setTotal(list?.length)
+
         const groups = list?.reduce((groups: any, activity: any) => {
 
             if (!groups[formatDate(activity.createdAt)]) {
@@ -99,12 +98,12 @@ function Search(props: any) {
         )
     }
     const handler = useCallback(_.debounce((text: string, callback: () => {}) => {
-        setText(text, (bool)=>{
+        setText(text, (bool) => {
             callback(false)
         })
 
     }, 1000), []);
-    const handleLoad= async (text: string) => {
+    const handleLoad = async (text: string) => {
 
         let _page: number;
         if (!text.trim()) return
@@ -112,6 +111,7 @@ function Search(props: any) {
 
             setInfiniteLoad(true)
             if ((page * size) < total) {
+                console.log("handle load 1")
                 _page = page + 1
                 axios.get(BASE_URL + `/applications`, {
                     ...config, params: {
@@ -120,17 +120,16 @@ function Search(props: any) {
                     }
                 }).then(async (response) => {
                     setInfiniteLoad(false);
-                    if (response?.data?.page) {
+                    if (response?.data?.page && response?.data?.docs.length > 1) {
                         setPage(response?.data?.page)
 
                     } else {
                         setPage(0)
                     }
-                   // response?.data?.total ? setTotal(response?.data?.total) : setTotal(0)
-                    response?.data?.size ? setPage(response?.data?.size) : setPage(0)
+                    response?.data?.total ? setTotal(response?.data?.total) : setTotal(0)
+                    response?.data?.size ? setSize(response?.data?.size) : setSize(0)
 
-                    setApplications(application => [...application , ...groupApplications(response?.data?.docs)])
-
+                    setApplications(application => [...application, ...groupApplications(response?.data?.docs)])
                     await AsyncStorage.getItem('searchHistory').then(async (value) => {
                         value = JSON.parse(value) || []
 
@@ -141,13 +140,13 @@ function Search(props: any) {
                         );
 
                         setSearchHistory(newArr)
-                    }) .catch((e) =>{
+                    }).catch((e) => {
                         Alert.alert('Alert', e?.message || 'Something went wrong.')
                     })
-                }).catch(()=>{
+                }).catch(() => {
                     setInfiniteLoad(false);
                 })
-            }else{
+            } else {
                 _page = page + 1
 
                 axios.get(BASE_URL + `/applications`, {
@@ -156,10 +155,17 @@ function Search(props: any) {
                         page: _page
                     }
                 }).then((response) => {
+                    console.log("handle load2", response?.data?.docs.length)
                     if (response?.data?.message) Alert.alert(response.data.message)
-                    if (response?.data?.size) setSize(response?.data?.size)
-                   // if (response?.data?.total) setTotal(response?.data?.total)
-                    if (response?.data?.page) setPage(response?.data?.page)
+                    if (response?.data?.size) {
+                        setSize(response?.data?.size)
+                    } else {
+                        setSize(0)
+                    }
+                    if (response?.data?.total) setTotal(response?.data?.total)
+                    if (response?.data?.page && response?.data?.docs.length > 1) {
+                        setPage(response?.data?.page)
+                    }
 
                     setInfiniteLoad(false);
                 }).catch((err) => {
@@ -173,27 +179,28 @@ function Search(props: any) {
         }
     }
     const setText = async (text: string, callback: (bool) => void) => {
-
-        if (!text.trim()){
+        setPage(1)
+        if (!text.trim()) {
             callback(true)
             return
         }
         try {
 
+            const _page = page + 1
             axios.get(BASE_URL + `/applications`, {
                 ...config, params: {
                     keyword: text
                 }
             }).then(async (response) => {
 
-                if(response?.data?.page){
+                if (response?.data?.page) {
                     setPage(response?.data?.page)
 
-                } else{
+                } else {
                     setPage(0)
                 }
-               // response?.data?.total ? setTotal(response?.data?.total) : setTotal(0)
-                response?.data?.size ? setPage(response?.data?.size) : setPage(0)
+                response?.data?.total ? setTotal(response?.data?.total) : setTotal(0)
+                response?.data?.size ? setSize(response?.data?.size) : setSize(0)
                 setApplications(groupApplications(response?.data?.docs))
 
                 await AsyncStorage.getItem('searchHistory').then(async (value) => {
@@ -209,7 +216,7 @@ function Search(props: any) {
                 })
 
                 callback(true)
-            }).catch((err)=>{
+            }).catch((err) => {
                 Alert.alert('Alert', err?.message || 'Something went wrong.')
                 callback(false)
             })
@@ -247,7 +254,7 @@ function Search(props: any) {
             }}
             onChange={(event) => {
                 setInfiniteLoad(true)
-                handler(event.nativeEvent.text, (bool)=>{
+                handler(event.nativeEvent.text, (bool) => {
                     setInfiniteLoad(false)
                 })
             }}

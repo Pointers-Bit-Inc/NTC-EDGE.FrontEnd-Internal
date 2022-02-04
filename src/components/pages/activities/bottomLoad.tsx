@@ -1,12 +1,11 @@
 import * as React from 'react';
-import {ActivityIndicator, StyleSheet, View} from 'react-native';
-import SearchLoading from "@assets/svg/searchLoading";
+import {StyleSheet, View} from 'react-native';
 import ThreeDotsLoader from "@pages/activities/loading";
 
 export const styles = StyleSheet.create({
     bottomLoad: {
         alignItems: 'center',
-        marginTop: '5%'
+       marginVertical: 10
     }
 })
 export default function Loader() {

@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Animated,
     Dimensions,
@@ -19,8 +19,6 @@ import {APPROVED, CASHIER, DIRECTOR, EVALUATOR,} from "../../../reducers/activit
 import {RootStateOrAny, useSelector} from "react-redux";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
-import AwesomeAlert from "react-native-awesome-alerts";
-import {alertStyle} from "@pages/activities/alert/styles";
 import CustomAlert from "@pages/activities/alert/alert";
 import {useAlert} from "@pages/activities/hooks/useAlert";
 
@@ -29,7 +27,6 @@ const {width, height} = Dimensions.get('window');
 function Approval(props: any) {
 
     const {springValue, _springHide} = useAlert(props.visible, props.onDismissed);
-
 
 
     const isKeyboardVisible = useKeyboard();
@@ -73,12 +70,9 @@ function Approval(props: any) {
         setShowAlert(true)
     }
 
-    const confirmDismissed = useMemo(() => {
-        return false
-    }, [showAlert])
-          const [alertLoading, setAlertLoading] = useState(false)
-          const [approvalIcon, setApprovalIcon] = useState(false)
-        const [title, setTitle] = useState("Approve Application")
+    const [alertLoading, setAlertLoading] = useState(false)
+    const [approvalIcon, setApprovalIcon] = useState(false)
+    const [title, setTitle] = useState("Approve Application")
     const [showClose, setShowClose] = useState(false)
     return (
 
@@ -87,23 +81,23 @@ function Approval(props: any) {
             transparent={true}
             visible={props.visible}
             onRequestClose={_springHide}>
-                  <View style={showAlert ? {
-                      zIndex: 1,
-                      flex: 1,
-                      width: width,
-                      height: height,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      position: 'absolute',
-                      backgroundColor: 'rgba(52,52,52,0.5)'
-                  }: {}}>
+            <View style={showAlert ? {
+                zIndex: 1,
+                flex: 1,
+                width: width,
+                height: height,
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'absolute',
+                backgroundColor: 'rgba(52,52,52,0.5)'
+            } : {}}>
 
-                  </View>
+            </View>
 
             <CustomAlert
                 showClose={showClose}
-                type={approvalIcon ? APPROVED: ""}
-                onDismissed={()=>{
+                type={approvalIcon ? APPROVED : ""}
+                onDismissed={() => {
                     setShowAlert(false)
                     setApprovalIcon(false)
                     setShowClose(false)
@@ -111,7 +105,7 @@ function Approval(props: any) {
                 onLoading={alertLoading}
                 onCancelPressed={() => {
                     setShowAlert(false)
-                    if(approvalIcon){
+                    if (approvalIcon) {
                         props.onDismissed()
                         setApprovalIcon(false)
                         setShowClose(false)
@@ -124,7 +118,7 @@ function Approval(props: any) {
                         setAlertLoading(false)
 
 
-                        props.onDismissed(APPROVED, (bool)=>{
+                        props.onDismissed(APPROVED, (bool) => {
                             setApprovalIcon(true)
                             setTitle("Application Approved")
                             setMessage("Application has been approved.")
@@ -174,7 +168,7 @@ function Approval(props: any) {
                 style={[styles.container]}
             >
 
-                {!showAlert && <Animated.View style={[styles.group,  { transform: [{ scale:  springValue }] }]}>
+                {!showAlert && <Animated.View style={[styles.group, {transform: [{scale: springValue}]}]}>
                     <View style={styles.rect}>
                         <View style={{alignSelf: 'flex-start'}}>
                             <TouchableOpacity onPress={_springHide}>

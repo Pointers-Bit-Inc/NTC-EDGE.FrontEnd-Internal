@@ -332,6 +332,7 @@ export default function ActivitiesPage(props: any) {
     }, []);
 
     const handleLoad = useCallback(() => {
+
         let _page: string;
         setInfiniteLoad(true)
         if ((page * size) < total) {
@@ -364,7 +365,7 @@ export default function ActivitiesPage(props: any) {
                 if (response?.data?.message) Alert.alert(response.data.message)
                 if (response?.data?.size) setSize(response?.data?.size)
                 if (response?.data?.total) setTotal(response?.data?.total)
-                if (response?.data?.page) setPage(response?.data?.page)
+                if (response?.data?.page && response?.data?.docs.length > 1) setPage(response?.data?.page)
 
                 setInfiniteLoad(false);
             }).catch((err) => {

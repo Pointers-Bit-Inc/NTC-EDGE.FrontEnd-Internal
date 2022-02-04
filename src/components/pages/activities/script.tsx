@@ -88,16 +88,16 @@ export const statusColor = (status: string) => {
 
     if (status == FOREVALUATION) {
 
-        return {color: "#F79E1B"}
+        return {color: "#F79E1B", fontWeight: "500"}
     } else if (status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) {
 
-        return {color: "#00AB76"}
+        return {color: "#00AB76", fontWeight: "500", }
     } else if (status == DECLINED || status == DECLINE) {
 
-        return {color: "#CF0327"}
+        return {color: "#CF0327", fontWeight: "500"}
     } else {
 
-        return {color: "#F79E1B"}
+        return {color: "#F79E1B", fontWeight: "500"}
     }
 }
 
