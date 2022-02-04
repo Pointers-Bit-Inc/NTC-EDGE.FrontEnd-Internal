@@ -15,7 +15,7 @@ import useCountUp from "@pages/activities/hooks/useCountUp";
 
 const {height} = Dimensions.get('screen');
 
-export function SearchActivity(props: { isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
+export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const inputRef = useRef(null);
     const [details, setDetails] = useState({})
     const [moreModalVisible, setMoreModalVisible] = useState(false)
@@ -121,8 +121,8 @@ export function SearchActivity(props: { isRecentSearches: any, clearAll: any, to
                             {!props?.loading && props.value.length > 0 &&
                             <View style={styles.header}>
                                 <Text style={styles.recentSearches}>
-                                    {<AnimatedTotal total={props.total}/>} results of
-                                    “<Text>{props.value}</Text>”</Text>
+                                    <AnimatedTotal total={props.total}/> results of
+                                    "<Text>{props.value}</Text>"</Text>
                             </View>
                             }
                             <FlatList

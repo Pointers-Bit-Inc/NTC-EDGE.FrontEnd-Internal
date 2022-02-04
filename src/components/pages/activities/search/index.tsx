@@ -17,7 +17,7 @@ import Loader from "@pages/activities/bottomLoad";
 function Search(props: any) {
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
     const user = useSelector((state: RootStateOrAny) => state.user);
-
+     const [isHandleLoad, setIsHandleLoad] = useState(true)
     const [page, setPage] = useState(0)
     const [size, setSize] = useState(0)
     const [total, setTotal] = useState(0)
@@ -111,14 +111,16 @@ function Search(props: any) {
 
             setInfiniteLoad(true)
             if ((page * size) < total) {
-                console.log("handle load 1")
                 _page = page + 1
+                setIsHandleLoad(false)
                 axios.get(BASE_URL + `/applications`, {
                     ...config, params: {
                         keyword: text,
                         page: _page
                     }
                 }).then(async (response) => {
+
+                    setIsHandleLoad(false)
                     setInfiniteLoad(false);
                     if (response?.data?.page && response?.data?.docs.length > 1) {
                         setPage(response?.data?.page)
@@ -144,18 +146,18 @@ function Search(props: any) {
                         Alert.alert('Alert', e?.message || 'Something went wrong.')
                     })
                 }).catch(() => {
+                    setIsHandleLoad(false)
                     setInfiniteLoad(false);
                 })
             } else {
                 _page = page + 1
-
+                setIsHandleLoad(true)
                 axios.get(BASE_URL + `/applications`, {
                     ...config, params: {
                         keyword: text,
                         page: _page
                     }
                 }).then((response) => {
-                    console.log("handle load2", response?.data?.docs.length)
                     if (response?.data?.message) Alert.alert(response.data.message)
                     if (response?.data?.size) {
                         setSize(response?.data?.size)
@@ -166,15 +168,17 @@ function Search(props: any) {
                     if (response?.data?.page && response?.data?.docs.length > 1) {
                         setPage(response?.data?.page)
                     }
-
+                    setIsHandleLoad(false)
                     setInfiniteLoad(false);
                 }).catch((err) => {
+                    setIsHandleLoad(false)
                     setInfiniteLoad(false)
                     Alert.alert('Alert', err?.message || 'Something went wrong.')
                 })
-                setInfiniteLoad(false)
+
             }
         } catch (error) {
+            setIsHandleLoad(false)
             setInfiniteLoad(false)
         }
     }
@@ -185,14 +189,14 @@ function Search(props: any) {
             return
         }
         try {
-
+            setIsHandleLoad(false)
             const _page = page + 1
             axios.get(BASE_URL + `/applications`, {
                 ...config, params: {
                     keyword: text
                 }
             }).then(async (response) => {
-
+                setIsHandleLoad(true)
                 if (response?.data?.page) {
                     setPage(response?.data?.page)
 
@@ -217,10 +221,14 @@ function Search(props: any) {
 
                 callback(true)
             }).catch((err) => {
+                setIsHandleLoad(true)
+
                 Alert.alert('Alert', err?.message || 'Something went wrong.')
                 callback(false)
             })
         } catch (error) {
+            setIsHandleLoad(true)
+
             setInfiniteLoad(false);
         }
     }
