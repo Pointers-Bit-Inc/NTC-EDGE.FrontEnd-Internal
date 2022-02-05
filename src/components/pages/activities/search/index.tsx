@@ -247,6 +247,13 @@ function Search(props: any) {
             BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
         };
     }, []);
+
+    const onTextChange = (event) =>{
+        setInfiniteLoad(true)
+        handler(event, (bool) => {
+            setInfiniteLoad(false)
+        })
+    }
     return (
         <SearchActivity
             isHandleLoad={isHandleLoad}
@@ -265,10 +272,7 @@ function Search(props: any) {
 
             }}
             onChange={(event) => {
-                setInfiniteLoad(true)
-                handler(event.nativeEvent.text, (bool) => {
-                    setInfiniteLoad(false)
-                })
+                onTextChange(event.nativeEvent.text)
             }}
             onChangeText={(text) => {
                 setTextInput(text)
@@ -282,7 +286,7 @@ function Search(props: any) {
 
             return <View key={index} style={styles.group6}>
                 <TouchableOpacity onPress={() => {
-                    handler(search)
+                    onTextChange(search)
                     setTextInput(search)
                 }}>
                     <View style={styles.group5}>
