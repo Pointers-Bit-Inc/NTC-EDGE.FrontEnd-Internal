@@ -106,7 +106,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                 {!props?.loading && props.value.length < 1 && <View style={[styles.header, { justifyContent: props.isRecentSearches ? "space-between": "center",}]}>
 
                     <Text
-                        style={[styles.recentSearches]}>{props.nevers.length ? "Recent Searches" : props.isRecentSearches == true ? "No Recent Searches" : <ActivityIndicator/>}</Text>
+                        style={[styles.recentSearches]}>{props.nevers.length &&  props.isRecentSearches == true ? "Recent Searches" : props.isRecentSearches == true ? "No Recent Searches" : <ActivityIndicator/>}</Text>
 
                     <TouchableOpacity onPress={props.clearAll}>
                         <Text style={{
