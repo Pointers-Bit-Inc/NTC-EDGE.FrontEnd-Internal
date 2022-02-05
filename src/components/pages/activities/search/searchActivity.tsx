@@ -1,5 +1,14 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Dimensions, FlatList, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {
+    ActivityIndicator,
+    Dimensions,
+    FlatList,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from "react-native";
 import BackSpaceIcon from "@assets/svg/backspace";
 import CloseCircleIcon from "@assets/svg/closeCircle";
 import {styles} from "@pages/activities/search/styles";
@@ -90,12 +99,15 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                     </View>
                 </View>
             </View>
+
             <View
                 style={[styles.group8, {backgroundColor: props.value.length < 1 || props.total == 0 ? "rgba(255,255,255,1)" : "rgba(255,255,255,0)",}]}>
 
-                {!props?.loading && props.value.length < 1 && <View style={styles.header}>
+                {!props?.loading && props.value.length < 1 && <View style={[styles.header, { justifyContent: props.isRecentSearches ? "space-between": "center",}]}>
+
                     <Text
-                        style={[styles.recentSearches]}>{props.nevers.length ? "Recent Searches" : props.isRecentSearches == true ? "No Recent Searches" : ""}</Text>
+                        style={[styles.recentSearches]}>{props.nevers.length ? "Recent Searches" : props.isRecentSearches == true ? "No Recent Searches" : <ActivityIndicator/>}</Text>
+
                     <TouchableOpacity onPress={props.clearAll}>
                         <Text style={{
                             color: '#2863D6',

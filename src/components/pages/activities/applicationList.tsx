@@ -1,13 +1,16 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Animated, FlatList, Text, TouchableWithoutFeedback, View} from "react-native";
 import {styles} from "@pages/activities/styles";
 import ChevronDownIcon from "@assets/svg/chevron-down";
 import Collapsible from "react-native-collapsible";
 import {checkFormatIso, formatDate} from "@pages/activities/script";
 import moment from "moment";
+import {useAlert} from "@pages/activities/hooks/useAlert";
+import * as Animatable from 'react-native-animatable'
 function ApplicationList(props: { onPress: () => void, item: any, numbers: { parentIndex: number, child: number[]}[], index: number, element: (activity: any, i: number) => JSX.Element }) {
     const chevronValue = useRef(new Animated.Value(0)).current
     const [isOpen, setIsOpen] = useState(true)
+    const {springValue, _springHide} = useAlert(true,()=>{});
     const chevronAnimate = () => {
         Animated.timing(
             chevronValue,
@@ -22,6 +25,11 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: { par
             }
         });
     }
+
+
+
+
+
     const readableToHuman = () =>{
         let date = moment(props.item.date);
         if (moment().diff(date, 'days') >= 1 ) {
@@ -30,7 +38,9 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: { par
         return date.calendar().split(' ')[0];
     }
 
-    return <View style={styles.group26}>
+
+
+    return <Animatable.View   animation={'fadeIn'}   style={[styles.group26,  ]}>
         <TouchableWithoutFeedback onPress={() => {
             props.onPress()
             chevronAnimate()
@@ -38,21 +48,19 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: { par
 
         }>
             <View style={styles.group25}>
+
                 <View style={styles.rect34}>
-                    <View style={styles.group24}>
+                    <View>
                         <View style={styles.date}>
 
                             <Text style={styles.dateText}>{readableToHuman()} </Text>
                             <View style={styles.dot}/>
                             <Text style={styles.dateText}> {checkFormatIso(props.item.date, "-")}</Text>
                         </View>
-                        <View style={styles.rect36}></View>
                     </View>
-                    <View style={styles.group24Filler}></View>
-                    <View style={styles.group23}>
-                        <View style={styles.stackFiller}></View>
-                        <View style={styles.icon4Stack}>
-                            <Animated.View style={[styles.icon4, {
+                    <View>
+                        <View >
+                            <Animated.View style={[ {
                                 transform: [
                                     {
                                         rotate: chevronValue.interpolate({
@@ -64,8 +72,6 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: { par
                             }]}>
                                 <ChevronDownIcon/>
                             </Animated.View>
-
-                            <View style={styles.rect35}></View>
                         </View>
 
                     </View>
@@ -78,7 +84,7 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: { par
             <View style={{height: 30, backgroundColor: "white", marginTop: -1}}/>
         </Collapsible>
 
-    </View>;
+    </Animatable.View>;
 }
 
 

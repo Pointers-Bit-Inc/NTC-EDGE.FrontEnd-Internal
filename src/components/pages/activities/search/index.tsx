@@ -76,6 +76,8 @@ function Search(props: any) {
             })
         })()
         return () => {
+            setInfiniteLoad(false)
+
             isCurrent = false
         }
     }, []);

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { Swipeable } from "react-native-gesture-handler";
-import {ActivityIndicator, Animated, StyleSheet, TouchableOpacity, View} from "react-native";
+import {ActivityIndicator, StyleSheet, TouchableOpacity, View} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
@@ -11,13 +11,12 @@ import {
     statusIcon,
     PaymentStatusText, StatusText
 } from "@pages/activities/script";
+
 import {CASHIER} from "../../../reducers/activity/initialstate";
 import { outline } from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
-import axios from "axios";
-import {User, UserApplication} from "@pages/activities/interface";
+
 import EndorseIcon from "@assets/svg/endorse";
-import {BASE_URL} from "../../../services/config";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 
 const styles = StyleSheet.create({
@@ -177,7 +176,7 @@ export function ActivityItem(props:any) {
     const userActivity = props?.activity?.applicant?.user
 
     return (
-            <View style={{backgroundColor: "#fff"}}>
+            <View style={{backgroundColor: "#fff" }}>
                 <Swipeable
                     key={props.index}
                     renderRightActions={

@@ -33,6 +33,8 @@ export default class ThreeDotsLoader extends React.Component {
             </View>
         )
     }
+
+
 }
 
 class Dot extends React.Component {
@@ -45,7 +47,7 @@ class Dot extends React.Component {
         animationScale: ANIMATION_SCALE,
     }
 
-    constructor(props) {
+    constructor(props)   {
         super(props)
         this.scale = new Animated.Value(1)
     }

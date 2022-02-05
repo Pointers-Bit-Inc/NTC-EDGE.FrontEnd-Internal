@@ -95,15 +95,17 @@ export const styles = StyleSheet.create({
         marginBottom: 32
     },
     group25: {
-    },
-    rect34: {
-        height: 57,
-        flexDirection: "row",
+        paddingHorizontal: 15,
+
         backgroundColor: "rgba(255,255,255,1)"
     },
-    group24: {
-        height: 57
+    rect34: {
+        paddingVertical: 20,
+        justifyContent: "space-between",
+        flexDirection: "row",
+           alignItems: "center"
     },
+
     pinnedgroup: {
         width: "100%",
         height: 16,
@@ -120,9 +122,6 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection:'row',
 
-        marginTop: 24,
-        left: 21,
-        position: "absolute",
     },
     dot:{
         height: 6,
@@ -149,8 +148,6 @@ export const styles = StyleSheet.create({
         flexDirection: "row"
     },
     group23: {
-        width: 32,
-        height: 57,
         flexDirection: "row"
     },
     stackFiller: {
@@ -172,8 +169,6 @@ export const styles = StyleSheet.create({
         right: 0
     },
     icon4Stack: {
-        width: 33,
-        height: 57
     },
     group17: {
         height: 80

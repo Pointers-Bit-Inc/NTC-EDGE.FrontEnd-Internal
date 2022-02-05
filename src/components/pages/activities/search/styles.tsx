@@ -4,7 +4,7 @@ const {width, height} = Dimensions.get('window');
 export const styles = StyleSheet.create({
    header:{
       backgroundColor: "#fff",
-       justifyContent: "space-between",
+
        flexDirection: "row",
        paddingBottom: 5,
        paddingHorizontal: 20,
