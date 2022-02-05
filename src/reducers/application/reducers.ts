@@ -132,6 +132,8 @@ export default function basket(state = initialState, action = {}) {
             })
             const cashier = [CASHIER].indexOf(action.payload.userType) != -1;
             const directorAndEvaluator = [DIRECTOR, EVALUATOR].indexOf(action.payload.userType) != -1;
+
+
             if (index != -1) {
                 if (cashier) {
                     notPinned[index].paymentStatus = action.payload.status
@@ -139,13 +141,13 @@ export default function basket(state = initialState, action = {}) {
                     notPinned[index].status = action.payload.status
                     notPinned[index].assignedPersonnel = action.payload.assignedPersonnel
                 }
-
                 state = state.set("notPinnedApplications", notPinned)
 
             } else if (pinnedIndex != -1) {
                 let _notPinned = {...pinned[pinnedIndex]}
+                console.log("outside", _notPinned )
                 if (cashier) {
-                    
+                    console.log("cashier", _notPinned )
                     if(action.payload.status == VERIFIED ||
                         action.payload.status == UNVERIFIED ||
                         action.payload.status == PAID ||
@@ -161,20 +163,23 @@ export default function basket(state = initialState, action = {}) {
                         state = state.set("pinnedApplications", pinned)
                     }
                 } else if (directorAndEvaluator) {
+                                  console.log("outside directoe and evaluator")
                       if(action.payload.status == FOREVALUATION || action.payload.status == APPROVED || action.payload.status == DECLINED ) {
-
+                          console.log("if directoe and evaluator")
                           _notPinned.status = action.payload.status
                           _notPinned.assignedPersonnel = action.payload.assignedPersonnel
-
+                           console.log( _notPinned.assignedPersonnel, action.payload.assignedPersonnel)
                           state = state.set('pinnedApplications', pinned.filter(o => o._id !== pinned[pinnedIndex]._id));
                           state = state.set('notPinnedApplications', [
                               ...notPinned.concat(_notPinned),
                           ]);
                       } else{
+                          console.log("else directoe and evaluator")
                           pinned[pinnedIndex].status = action.payload.status
                           pinned[pinnedIndex].assignedPersonnel = action.payload.assignedPersonnel
                           state = state.set("pinnedApplications", pinned)
                       }
+
                 }
 
             }

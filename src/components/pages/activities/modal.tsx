@@ -94,7 +94,7 @@ function ActivityModal(props: any) {
                                 assignedPersonnel: assignId,
                                 userType: user?.role?.key
                             }))
-
+                            props.onChangeAssignedId(assignId)
                             setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
                             setChange(true)
                             // props.onDismissed(true, applicationId)
@@ -137,6 +137,7 @@ function ActivityModal(props: any) {
     }, [])
 
     const statusMemo = useMemo(() => {
+        console.log("props?.details?.assignedPersonnel:",props?.details?.assignedPersonnel)
         setStatus(status)
         setAssignId(assignId ? assignId : props?.details?.assignedPersonnel)
         return status ? (cashier ? PaymentStatusText(status) : StatusText(status)) : (cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))

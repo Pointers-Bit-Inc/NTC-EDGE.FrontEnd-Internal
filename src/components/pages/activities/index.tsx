@@ -247,7 +247,7 @@ export default function ActivitiesPage(props: any) {
     }, [updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length, pinnedApplications?.length, currentPage])
 
     const notPnApplications = useMemo(() => {
-
+        console.log("update props?.details?.assignedPersonnel:")
         setUpdateUnReadReadApplication(false)
         return ispinnedApplications(notPinnedApplications)
     }, [updateUnReadReadApplication, updateModal, searchTerm, selectedChangeStatus?.length, notPinnedApplications?.length, currentPage])
@@ -296,6 +296,7 @@ export default function ActivitiesPage(props: any) {
     const bottomLoader = () => {
         return infiniteLoad ? <Loader/> : null
     };
+
     useEffect(() => {
         let unMount = false;
         const unsubscriber = userActiveMeetingSubscriber((querySnapshot: FirebaseFirestoreTypes.QuerySnapshot) => {
@@ -511,6 +512,7 @@ export default function ActivitiesPage(props: any) {
                                                 return act?.assignedPersonnel == user?._id && <ActivityItem
                                                     config={config}
                                                     key={i}
+                                                    currentUser={user}
                                                     role={user?.role?.key}
                                                     searchQuery={searchTerm}
                                                     activity={act}
@@ -598,6 +600,9 @@ export default function ActivitiesPage(props: any) {
                 <ActivityModal updateModal={updateModalFn}
                                readFn={unReadReadApplicationFn}
                                details={details}
+                               onChangeAssignedId={(event) => setDetails((detail) => {
+                                   return {...detail, assignedPersonnel: event }
+                               })}
                                visible={modalVisible}
                                onDismissed={(event: boolean, _id: number) => {
                                    setUpdateModal(false)

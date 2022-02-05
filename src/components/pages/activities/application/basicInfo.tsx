@@ -10,11 +10,14 @@ import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 const {width, height} = Dimensions.get("screen")
 
 const BasicInfo = (props: any) => {
+
     const {personnel, loading} = useAssignPersonnel(props.assignedPersonnel || props?.approvalHistory?.[0]?.userId, {
         headers: {
             Authorization: "Bearer ".concat(props.user?.sessionToken)
         }
     });
+
+
     const applicant = props.applicant
     return <ScrollView style={{width, backgroundColor: "#fff", }}>
          <View style={{padding: 10,flex: 1,alignSelf:"center"}}>
