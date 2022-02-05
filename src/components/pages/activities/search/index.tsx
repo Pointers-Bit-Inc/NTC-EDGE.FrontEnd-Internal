@@ -13,6 +13,7 @@ import {CASHIER, CHECKER, DATE_ADDED, DIRECTOR, EVALUATOR} from "../../../../red
 import {formatDate, getFilter} from "@pages/activities/script";
 import moment from "moment";
 import Loader from "@pages/activities/bottomLoad";
+import {defaultSanitize} from "@pages/activities/search/utils";
 
 function Search(props: any) {
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
@@ -115,7 +116,7 @@ function Search(props: any) {
                 setIsHandleLoad(false)
                 axios.get(BASE_URL + `/applications`, {
                     ...config, params: {
-                        keyword: text,
+                        keyword: defaultSanitize(text),
                         page: _page
                     }
                 }).then(async (response) => {
@@ -154,7 +155,7 @@ function Search(props: any) {
                 setIsHandleLoad(true)
                 axios.get(BASE_URL + `/applications`, {
                     ...config, params: {
-                        keyword: text,
+                        keyword: defaultSanitize(text),
                         page: _page
                     }
                 }).then((response) => {
@@ -193,7 +194,7 @@ function Search(props: any) {
             const _page = page + 1
             axios.get(BASE_URL + `/applications`, {
                 ...config, params: {
-                    keyword: text
+                    keyword: defaultSanitize(text)
                 }
             }).then(async (response) => {
                 setIsHandleLoad(true)
@@ -246,6 +247,7 @@ function Search(props: any) {
     }, []);
     return (
         <SearchActivity
+            isHandleLoad={isHandleLoad}
             isRecentSearches={isRecentSearches}
             clearAll={clearAllSearchHistory}
             loading={infiniteLoad}

@@ -73,7 +73,7 @@ const defaultFindChunks = ({
     textToHighlight = sanitize(textToHighlight)
 
     return searchWords
-        .filter(searchWord => searchWord)
+        .filter(searchWord => defaultSanitize(searchWord))
         .reduce((chunks, searchWord) => {
             searchWord = sanitize(searchWord)
 
@@ -132,8 +132,8 @@ export const fillInChunks = ({
     return allChunks
 }
 
-function defaultSanitize(string: string): string {
-    return string
+export function defaultSanitize(string: string): string {
+    return  string.replace(/\\/g, "\\\\")
 }
 
 function escapeRegExpFn(string: string): string {

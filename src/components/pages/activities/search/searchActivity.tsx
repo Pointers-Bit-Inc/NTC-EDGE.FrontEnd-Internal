@@ -121,7 +121,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                             {!props?.loading && props.value.length > 0 &&
                             <View style={styles.header}>
                                 <Text style={styles.recentSearches}>
-                                    <AnimatedTotal total={props.total}/> results of
+                                    {props.isHandleLoad ? <AnimatedTotal total={props.total}/> : props.total } results of
                                     "<Text>{props.value}</Text>"</Text>
                             </View>
                             }
