@@ -13,7 +13,7 @@ export default function Loader(refreshing, searchTerm, size) {
     })
     return (
         <View style={{flex: 1, justifyContent: 'center',alignItems: 'center'}}>
-             <ActivityIndicator/>
+            {refreshing ? <ActivityIndicator/> : <Text>No Content</Text>}
         </View>
     );
 }
