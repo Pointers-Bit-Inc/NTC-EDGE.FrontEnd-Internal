@@ -56,12 +56,12 @@ const BasicInfo = (props: any) => {
                         </View>
 
                         <View >
-                            <View style={{flexDirection: 'row',   alignItems: "center",padding: 13}}>
+                            <View style={{flexDirection: 'row', flexWrap: "wrap", justifyContent: "center",  alignItems: "center",paddingHorizontal: 5, paddingVertical: 10}}>
                                 {
                                     statusIcon(
                                         props.status ?
                                             props.status :
-                                            (props?.user?.role?.key == CASHIER ?
+                                            (props?.user?.role?.key == CASHIER || personnel?.role?.key == CASHIER ?
                                                     PaymentStatusText(props?.paymentStatus) :
                                                     (props.status ?
                                                             props.status :
@@ -78,7 +78,7 @@ const BasicInfo = (props: any) => {
                                         statusColor(
                                             props.status ?
                                                 props.status :
-                                                (props?.user?.role?.key == CASHIER ?
+                                                (props?.user?.role?.key == CASHIER || personnel?.role?.key == CASHIER?
                                                         PaymentStatusText(props?.paymentStatus) :
                                                         (props.status ?
                                                                 props.status :
@@ -96,7 +96,7 @@ const BasicInfo = (props: any) => {
                                     {
                                         props.status ?
                                             props.status :
-                                            (props?.user?.role?.key == CASHIER ?
+                                            (props?.user?.role?.key == CASHIER || personnel?.role?.key == CASHIER?
                                                     PaymentStatusText(props?.paymentStatus).toUpperCase() :
                                                     (props.status ?
                                                             props.status :
@@ -107,7 +107,7 @@ const BasicInfo = (props: any) => {
                                 </CustomText>
                                 <CustomText style={{color: "#37405B"}}>
                                     {loading ? <ActivityIndicator/> : (personnel != undefined ?  `by ${personnel?.firstName} ${personnel?.lastName}` : ``)}
-
+                                   
                                 </CustomText>
                             </View>
                         </View>

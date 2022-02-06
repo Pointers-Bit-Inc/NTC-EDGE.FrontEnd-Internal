@@ -87,14 +87,14 @@ function ActivityModal(props: any) {
                     setCurrentLoading('');
                     if (res.status === 200) {
                         if (res.data) {
-                            console.log(200)
+                          
                             dispatch(updateApplicationStatus({
                                 application: res.data,
                                 status: status,
                                 assignedPersonnel: assignId,
                                 userType: user?.role?.key
                             }))
-                            props.onChangeAssignedId(assignId)
+                           props.onChangeAssignedId(res.data)
                             setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
                             setChange(true)
                             // props.onDismissed(true, applicationId)
@@ -250,7 +250,7 @@ function ActivityModal(props: any) {
                             {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{flex: 1, paddingRight: 5}}>
                                 <TouchableOpacity
-                                    disabled={currentLoading === APPROVED || allButton}
+                                    disabled={currentLoading === APPROVED }
                                     onPress={() => {
                                         if (cashier) {
                                             onShowConfirmation(APPROVED)
