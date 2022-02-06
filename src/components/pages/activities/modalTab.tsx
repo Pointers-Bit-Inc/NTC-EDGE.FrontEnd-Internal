@@ -227,6 +227,7 @@ export function ModalTab(props) {
                             assignedPersonnel={assignedPersonnel}
                             approvalHistory={approvalHistory}
                             status={props.status}
+                            paymentHistory={props?.details?.paymentHistory}
                             paymentStatus={props?.details?.paymentStatus}
                             detailsStatus={props?.details?.status}
                             user={user}

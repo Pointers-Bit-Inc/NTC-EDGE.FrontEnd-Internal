@@ -26,7 +26,7 @@ const {width, height} = Dimensions.get('window');
 
 function Approval(props: any) {
 
-    const {springValue, _springHide} = useAlert(props.visible, props.onDismissed);
+    const {springValue, _springHide} = useAlert(props.visible, () => props.onDismissed(APPROVED));
 
 
     const isKeyboardVisible = useKeyboard();
@@ -69,7 +69,16 @@ function Approval(props: any) {
         setMessage("Are you sure you want to approve this application?")
         setShowAlert(true)
     }
-
+      const onCancelPress = (event) =>{
+          setAlertLoading(false)
+          setShowAlert(false)
+          if (approvalIcon ) {
+              props.onDismissed(event)
+              setApprovalIcon(false)
+              setShowClose(false)
+          }
+          setTitle("Application Approve")
+      }
     const [alertLoading, setAlertLoading] = useState(false)
     const [approvalIcon, setApprovalIcon] = useState(false)
     const [title, setTitle] = useState("Approve Application")
@@ -97,27 +106,17 @@ function Approval(props: any) {
             <CustomAlert
                 showClose={showClose}
                 type={approvalIcon ? APPROVED : ""}
-                onDismissed={() => {
-                    setShowAlert(false)
-                    setApprovalIcon(false)
-                    setShowClose(false)
-                }}
+                onDismissed={() => onCancelPress(APPROVED, true)}
                 onLoading={alertLoading}
-                onCancelPressed={() => {
-                    setShowAlert(false)
-                    if (approvalIcon) {
-                        props.onDismissed()
-                        setApprovalIcon(false)
-                        setShowClose(false)
-                    }
-                    setTitle("Application Approve")
-                }}
+                onCancelPressed={onCancelPress}
                 onConfirmPressed={() => {
+
                     setAlertLoading(true)
                     props.confirm({cashier: cashier, remarks: remarks}, (response, callback) => {
                         setAlertLoading(false)
                         if(response){
-                            props.onDismissed(APPROVED, (bool) => {
+
+                            props.onDismissed(null, (bool) => {
 
                                 setApprovalIcon(true)
                                 setTitle("Application Approved")
@@ -125,11 +124,22 @@ function Approval(props: any) {
                                 setShowClose(true)
                             })
                             callback(true)
-                        } else{
-                            props.onDismissed()
-                            setShowAlert(false)
-                            setApprovalIcon(false)
-                            setShowClose(false)
+                        } else if(!response){
+
+                            props.onDismissed(APPROVED, ()=>{
+                                setShowAlert(false)
+                                setApprovalIcon(false)
+                                setShowClose(false)
+                            })
+
+                        }else{
+
+                            props.onDismissed(null, ()=>{
+                                setShowAlert(false)
+                                setApprovalIcon(false)
+                                setShowClose(false)
+                            })
+
                         }
 
                     })

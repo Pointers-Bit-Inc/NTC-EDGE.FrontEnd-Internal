@@ -36,6 +36,7 @@ function ActivityModal(props: any) {
     const [change, setChange] = useState<boolean>(false)
     const cashier = [CASHIER].indexOf(user?.role?.key) != -1
     const director = [DIRECTOR].indexOf(user?.role?.key) != -1
+    const evaluator = [EVALUATOR].indexOf(user?.role?.key) != -1
     const [visible, setVisible] = useState(false)
     const [endorseVisible, setEndorseVisible] = useState(false)
     const [approveVisible, setApproveVisible] = useState(false)
@@ -68,6 +69,7 @@ function ActivityModal(props: any) {
             remarks: remarks ? remarks : undefined,
             assignedPersonnel: assignId && !director ? assignId : undefined,
         };
+
         setCurrentLoading(status);
         if (status == DECLINED) {
             setAssignId("")
@@ -87,15 +89,15 @@ function ActivityModal(props: any) {
                     setCurrentLoading('');
                     if (res.status === 200) {
                         if (res.data) {
-                          
+
                             dispatch(updateApplicationStatus({
                                 application: res.data,
                                 status: status,
                                 assignedPersonnel: assignId,
                                 userType: user?.role?.key
                             }))
-                           props.onChangeAssignedId(res.data)
-                            setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
+                            props.onChangeAssignedId(res.data)
+                            //setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
                             setChange(true)
                             // props.onDismissed(true, applicationId)
 
@@ -250,7 +252,7 @@ function ActivityModal(props: any) {
                             {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{flex: 1, paddingRight: 5}}>
                                 <TouchableOpacity
-                                    disabled={currentLoading === APPROVED }
+                                    disabled={currentLoading === APPROVED || allButton }
                                     onPress={() => {
                                         if (cashier) {
                                             onShowConfirmation(APPROVED)
@@ -400,8 +402,11 @@ function ActivityModal(props: any) {
                 }}
                 isCashier={user?.role?.key === CASHIER}
                 onDismissed={(event?: any, callback?: (bool) => {}) => {
+                   if(event == APPROVED) {
+                       onApproveDismissed()
+                   }
 
-                    onApproveDismissed()
+
 
                     if (callback) {
                         callback(true)

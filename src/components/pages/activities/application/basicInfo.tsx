@@ -11,7 +11,7 @@ const {width, height} = Dimensions.get("screen")
 
 const BasicInfo = (props: any) => {
 
-    const {personnel, loading} = useAssignPersonnel( props.assignedPersonnel ||  props?.approvalHistory?.[0]?.userId, {
+    const {personnel, loading} = useAssignPersonnel( props?.paymentHistory?.[0]?.userId || props.assignedPersonnel ||  props?.approvalHistory?.[0]?.userId, {
         headers: {
             Authorization: "Bearer ".concat(props.user?.sessionToken)
         }
