@@ -234,7 +234,7 @@ export function ActivityItem(props:any) {
                                     </View>
                                     {props?.isPinned && props?.activity?.assignedPersonnel && <View style={styles.section}>
                                         <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                                            <RenderPinned  config={props.config} assignedPersonnel={props?.activity?.assignedPersonnel} />
+                                            <RenderPinned  config={props.config} assignedPersonnel={props?.activity?.approvalHistory?.[0]?.userId || props?.activity?.assignedPersonnel} />
                                         </View>
                                     </View>}
                                 </View>
