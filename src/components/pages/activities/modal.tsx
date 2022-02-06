@@ -108,7 +108,6 @@ function ActivityModal(props: any) {
                     return callback('error');
                 })
                 .catch(e => {
-
                     setGrayedOut(false)
                     setCurrentLoading('');
                     Alert.alert('Alert', e?.message || 'Something went wrong.')
@@ -328,7 +327,7 @@ function ActivityModal(props: any) {
                         </View>
 
                         {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
-                        <View style={{flex: 0.6, paddingHorizontal: 5,}}>
+                        <View style={{flex: 0.8, paddingHorizontal: 5,}}>
                             <TouchableOpacity
                                 disabled={(currentLoading === FOREVALUATION || allButton)}
                                 onPress={() => {
@@ -384,11 +383,17 @@ function ActivityModal(props: any) {
                         status = PAID
                     }
                     onChangeApplicationStatus(status, (err, appId) => {
-                        if (!err) {
+                        if(!err) {
                             callback(true, (bool) => {
-                                // props.onDismissed(true, appId)
-                            })
-                        }
+                                     // props.onDismissed(true, appId)
+                                 })
+                             }  else{
+
+                            callback(false, (bool) => {
+                                    
+                                 })
+                             }
+
                     })
 
 
@@ -408,9 +413,14 @@ function ActivityModal(props: any) {
                 remarks={setRemarks}
                 onChangeApplicationStatus={(event: any, callback: (bool, appId) => {}) => {
                     onChangeApplicationStatus(DECLINED, (err, id) => {
-                        if (!err) {
+
+                        if(!err){
                             callback(true, (response) => {
-                                // props.onDismissed(true, id)
+
+                            })
+                        }else{
+                            callback(false, (response) => {
+
                             })
                         }
                     })
@@ -432,12 +442,17 @@ function ActivityModal(props: any) {
                 }}
                 onChangeApplicationStatus={(event: any, callback: (bool, response) => {}) => {
                     onChangeApplicationStatus(event.status, (err, id) => {
+                            console.log(!err, err)
+                             if(!err){
+                                 callback(true, (response) => {
 
-                        if (!err) {
-                            callback(true, (response) => {
+                                 })
+                             }else{
+                                 callback(false, (response) => {
 
-                            })
-                        }
+                                 })
+                             }
+
                     },);
                 }}
                 visible={endorseVisible}

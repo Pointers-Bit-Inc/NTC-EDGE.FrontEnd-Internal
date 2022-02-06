@@ -46,7 +46,8 @@ export const styles = StyleSheet.create({
 
     },
     searcg: {
-
+        left: 0,
+        right: 0,
     },
     rect26: {
         height: 83,

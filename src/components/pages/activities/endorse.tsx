@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {
+    Alert,
     Dimensions,
     KeyboardAvoidingView,
     Modal,
@@ -32,6 +33,10 @@ function Endorsed(props: any) {
     const [showAlert, setShowAlert] = useState(false)
     const isKeyboardVisible = useKeyboard();
     const [message, setMessage] = useState("")
+    const [alertLoading, setAlertLoading] = useState(false)
+    const [showClose, setShowClose] = useState(false)
+    const [title, setTitle] = useState("Endorse Application to")
+    const [selected, setSelected] = useState(undefined);
     const [validateRemarks, setValidateRemarks] = useState<{ error: boolean }>({error: false})
     useEffect(() => {
         let isCurrent = true
@@ -65,8 +70,12 @@ function Endorsed(props: any) {
             return picked.value == endorsed
         })?.label)
         props.remarks({endorseId: endorsed, remarks: text, message})
+         if(pickedEndorsed){
+             setShowAlert(true)
+         } else{
+            Alert.alert('Alert',"Something went wrong." )
+        }
 
-        setShowAlert(true)
 
     }
     const onCancelPress = () => {
@@ -81,13 +90,11 @@ function Endorsed(props: any) {
             setShowAlert(false)
             props.onModalDismissed()
         }
+        setAlertLoading(false)
     }
 
 
-    const [alertLoading, setAlertLoading] = useState(false)
-    const [showClose, setShowClose] = useState(false)
-    const [title, setTitle] = useState("Endorse Application to")
-    const [selected, setSelected] = useState(undefined);
+
 
     return (
         <Modal
@@ -129,12 +136,16 @@ function Endorsed(props: any) {
                         id: endorsed,
                         remarks: text
                     }, (bool, callback: (bool) => {}) => {
+                        if(bool){
+                            setAlertLoading(false)
+                            setShowClose(true)
+                            callback(true)
 
-                        setAlertLoading(false)
-                        setShowClose(true)
-                        callback(true)
-
-                        setTitle("Application has been endorsed to")
+                            setTitle("Application has been endorsed to")
+                        }else{
+                            onCancelPress()
+                        }
+                       
 
                     })
 
@@ -166,7 +177,7 @@ function Endorsed(props: any) {
                                         label="Select Item"
                                         data={pickedEndorsed}
                                         onSelect={({value}) => {
-                                            setEndorsed(value)
+                                            if(value) setEndorsed(value)
                                         }}/>
                         <InputField
                             style={{fontWeight: 'normal'}}

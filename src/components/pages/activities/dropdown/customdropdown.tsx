@@ -5,8 +5,8 @@ import CaretDownIcon from "@assets/svg/caret-down";
 
 interface Props {
     label: string;
-    data: Array<{ label: string; value: string }>;
-    onSelect: (item: { label: string; value: string }) => void;
+    data: any;
+    onSelect: (item: any) => void;
 }
 
 const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
@@ -19,13 +19,17 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
         visible ? setVisible(false) : openDropdown();
     };
     useEffect(() => {
-        const _selected = data.find((item) => item.value == value)
-        setSelected(_selected)
-        onSelect(_selected)
-
+        let isCurrent = true
+        const _selected = data?.find((item) => item.value == value)
+        if(isCurrent) setSelected(_selected)
+        if(_selected) onSelect(_selected)
+          return () =>{
+              isCurrent = false
+          }
     }, [value])
+
     const openDropdown = (): void => {
-        DropdownButton.current.measure((_fx: number, _fy: number, _w: number, h: number, _px: number, py: number) => {
+        DropdownButton?.current?.measure((_fx: number, _fy: number, _w: number, h: number, _px: number, py: number) => {
             setDropdownTop(py + h);
         });
         setVisible(true);
@@ -55,15 +59,15 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
                     style={styles.overlay}
                     onPress={() => setVisible(false)}
                 >
-                    <View style={[styles.dropdown, {flex: 1, top: dropdownTop}]}>
-                        {data.length > 0 ? <FlatList
+                    {dropdownTop>0 && <View style={[styles.dropdown, {flex: 1, top: dropdownTop}]}>
+                        {data?.length > 0 ? <FlatList
                             data={data}
                             renderItem={renderItem}
                             keyExtractor={(item, index) => index.toString()}
                         /> : <View style={{height: "100%", justifyContent: "center", alignItems: "center"}}>
                             <Text>No Data</Text>
                         </View>}
-                    </View>
+                    </View>}
                 </TouchableOpacity>
             </Modal>
         );
@@ -77,7 +81,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
         >
             {renderDropdown()}
             <Text style={[styles.buttonText]}>
-                {(!!selected && selected.label) || label}
+                {(!!selected && selected?.label) || label}
             </Text>
             <CaretDownIcon style={{
                 paddingHorizontal: 20,

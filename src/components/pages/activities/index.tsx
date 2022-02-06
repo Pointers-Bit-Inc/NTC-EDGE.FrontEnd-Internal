@@ -1,4 +1,4 @@
-import React, {Fragment, useCallback, useEffect, useMemo, useState} from "react";
+import React, {Fragment, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
     Alert,
     Animated,
@@ -462,37 +462,32 @@ export default function ActivitiesPage(props: any) {
                         )
                     }
                 </View>
-                <View style={styles.group9}>
+                <View style={styles.searcg}>
+                    <View style={[styles.rect26, {height: undefined, paddingHorizontal: 20, paddingVertical: 10}]}>
+                        <TouchableOpacity onPress={() => {
+                            //setSearchVisible(true)
+                            props.navigation.navigate('SearchActivities')
+                        }}>
+                            {!searchVisible &&
+                            <View style={[styles.rect7, {marginTop: 0, width: '100%', marginLeft: 0}]}>
+                                <View style={styles.iconRow}>
 
-                    <View style={styles.searcg}>
-                        <View style={[styles.rect26, {height: undefined, paddingHorizontal: 20, paddingVertical: 10}]}>
-                            <TouchableOpacity onPress={() => {
-                                //setSearchVisible(true)
-                                props.navigation.navigate('SearchActivities')
-                            }}>
-                                {!searchVisible &&
-                                <View style={[styles.rect7, {marginTop: 0, width: '100%', marginLeft: 0}]}>
-                                    <View style={styles.iconRow}>
+                                    <SearchIcon style={styles.icon}></SearchIcon>
 
-                                        <SearchIcon style={styles.icon}></SearchIcon>
+                                    <View
 
-                                        <View
+                                        style={styles.textInput}
 
-                                            style={styles.textInput}
-
-                                        >
-                                            <Text style={{color: "rgba(128,128,128,1)",}}>Search</Text>
-                                        </View>
-
+                                    >
+                                        <Text style={{color: "rgba(128,128,128,1)",}}>Search</Text>
                                     </View>
-                                </View>
-                                }
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    {/* <View style={[styles.rect27, {height: 5}]}></View>*/}
-                </View>
 
+                                </View>
+                            </View>
+                            }
+                        </TouchableOpacity>
+                    </View>
+                </View>
                 <FlatList
                     contentContainerStyle={{flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
@@ -543,7 +538,7 @@ export default function ActivitiesPage(props: any) {
                             onRefresh={onRefresh}
                         />
                     }
-                    style={{flex: 1}}
+                    style={{flex: 1,  }}
                     data={notPnApplications}
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={bottomLoader}
@@ -558,6 +553,7 @@ export default function ActivitiesPage(props: any) {
                     onMomentumScrollBegin={() => {
                         setOnEndReachedCalledDuringMomentum(false)
                     }}
+                    scrollEventThrottle={1}
                     renderItem={({item, index}) => (
                         <ApplicationList
                             key={index}
@@ -601,7 +597,7 @@ export default function ActivitiesPage(props: any) {
                                readFn={unReadReadApplicationFn}
                                details={details}
                                onChangeAssignedId={(event) => setDetails((detail) => {
-                                   return {...detail, assignedPersonnel: event }
+                                   return {...detail, assignedPersonnel: event}
                                })}
                                visible={modalVisible}
                                onDismissed={(event: boolean, _id: number) => {

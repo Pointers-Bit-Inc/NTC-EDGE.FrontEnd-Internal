@@ -30,6 +30,7 @@ function Disapproval(props: any) {
         setMessage("Are you sure you want to reject this application?")
         setShowClose(false)
         setShowAlert(false)
+        setAlertLoading(false)
         if(showClose){
             props.onDismissed()
         }
@@ -69,11 +70,19 @@ function Disapproval(props: any) {
                     setAlertLoading(true)
 
                     props.onChangeApplicationStatus(DECLINED, (bool, callback:(bool) =>{}) =>{
-                        setAlertLoading(false)
-                        setShowClose(true)
-                        callback(true)
-                        setTitle("Application Declined")
-                        setMessage("Application has been rejected.")
+                        if(bool){
+                            setAlertLoading(false)
+                            setShowClose(true)
+                            callback(true)
+                            setTitle("Application Declined")
+                            setMessage("Application has been rejected.")
+                        }else{
+                            setAlertLoading(false)
+                            setShowClose(false)
+                            setShowAlert(false)
+
+                        }
+
                     })
 
 

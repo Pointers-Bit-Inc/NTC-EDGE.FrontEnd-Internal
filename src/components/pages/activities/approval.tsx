@@ -116,15 +116,22 @@ function Approval(props: any) {
                     setAlertLoading(true)
                     props.confirm({cashier: cashier, remarks: remarks}, (response, callback) => {
                         setAlertLoading(false)
+                        if(response){
+                            props.onDismissed(APPROVED, (bool) => {
 
+                                setApprovalIcon(true)
+                                setTitle("Application Approved")
+                                setMessage("Application has been approved.")
+                                setShowClose(true)
+                            })
+                            callback(true)
+                        } else{
+                            props.onDismissed()
+                            setShowAlert(false)
+                            setApprovalIcon(false)
+                            setShowClose(false)
+                        }
 
-                        props.onDismissed(APPROVED, (bool) => {
-                            setApprovalIcon(true)
-                            setTitle("Application Approved")
-                            setMessage("Application has been approved.")
-                            setShowClose(true)
-                        })
-                        callback(true)
                     })
 
                 }} show={showAlert} title={title}
