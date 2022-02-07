@@ -6,9 +6,9 @@ import {BASE_URL} from "../../../../services/config";
 export function useAssignPersonnel(assignedPersonnel, config) {
     const [personnel, setPersonnel] = useState<UserApplication>()
     const [loading, setLoading] = useState<boolean>()
-    const fetchData = () => {
+    const fetchData = async () => {
         setLoading(true)
-        axios
+        await axios
             .get(BASE_URL + `/user/profile/${assignedPersonnel}`, config)
             .then((res) => {
                 setLoading(false)
