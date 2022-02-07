@@ -224,7 +224,7 @@ export function ModalTab(props) {
                         options={{tabBarLabel: tab.name}}
                     >
                         {() => <BasicInfo
-                            assignedPersonnel={assignedPersonnel}
+                                assignedPersonnel={assignedPersonnel}
                             approvalHistory={approvalHistory}
                             status={props.status}
                             paymentHistory={props?.details?.paymentHistory}

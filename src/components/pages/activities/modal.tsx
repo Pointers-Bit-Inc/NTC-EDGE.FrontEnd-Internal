@@ -67,7 +67,7 @@ function ActivityModal(props: any) {
         let params: any = {
             status,
             remarks: remarks ? remarks : undefined,
-            assignedPersonnel: assignId && !director ? assignId : undefined,
+            assignedPersonnel: user?._id != assignId && !(status == APPROVED || status == DECLINED) && assignId && !director ? assignId : undefined,
         };
 
         setCurrentLoading(status);
@@ -89,14 +89,15 @@ function ActivityModal(props: any) {
                     setCurrentLoading('');
                     if (res.status === 200) {
                         if (res.data) {
-
+                            console.log("res?.data?.assignedPersonnel", res?.data?.assignedPersonnel)
+                            props.onChangeAssignedId(res.data)
                             dispatch(updateApplicationStatus({
                                 application: res.data,
                                 status: status,
-                                assignedPersonnel: assignId,
+                                assignedPersonnel: res?.data?.assignedPersonnel,
                                 userType: user?.role?.key
                             }))
-                            props.onChangeAssignedId(res.data)
+
                             //setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
                             setChange(true)
                             // props.onDismissed(true, applicationId)
@@ -138,7 +139,7 @@ function ActivityModal(props: any) {
     }, [])
 
     const statusMemo = useMemo(() => {
-        console.log("props?.details?.assignedPersonnel:",props?.details?.assignedPersonnel)
+        console.log("props?.details?.assignedPersonnel:", props?.details?.assignedPersonnel)
         setStatus(status)
         setAssignId(assignId ? assignId : props?.details?.assignedPersonnel)
         return status ? (cashier ? PaymentStatusText(status) : StatusText(status)) : (cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
@@ -252,7 +253,7 @@ function ActivityModal(props: any) {
                             {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{flex: 1, paddingRight: 5}}>
                                 <TouchableOpacity
-                                    disabled={currentLoading === APPROVED || allButton }
+                                    disabled={currentLoading === APPROVED || allButton}
                                     onPress={() => {
                                         if (cashier) {
                                             onShowConfirmation(APPROVED)
@@ -385,16 +386,16 @@ function ActivityModal(props: any) {
                         status = PAID
                     }
                     onChangeApplicationStatus(status, (err, appId) => {
-                        if(!err) {
+                        if (!err) {
                             callback(true, (bool) => {
-                                     // props.onDismissed(true, appId)
-                                 })
-                             }  else{
+                                // props.onDismissed(true, appId)
+                            })
+                        } else {
 
                             callback(false, (bool) => {
-                                    
-                                 })
-                             }
+
+                            })
+                        }
 
                     })
 
@@ -402,10 +403,9 @@ function ActivityModal(props: any) {
                 }}
                 isCashier={user?.role?.key === CASHIER}
                 onDismissed={(event?: any, callback?: (bool) => {}) => {
-                   if(event == APPROVED) {
-                       onApproveDismissed()
-                   }
-
+                    if (event == APPROVED) {
+                        onApproveDismissed()
+                    }
 
 
                     if (callback) {
@@ -419,11 +419,11 @@ function ActivityModal(props: any) {
                 onChangeApplicationStatus={(event: any, callback: (bool, appId) => {}) => {
                     onChangeApplicationStatus(DECLINED, (err, id) => {
 
-                        if(!err){
+                        if (!err) {
                             callback(true, (response) => {
 
                             })
-                        }else{
+                        } else {
                             callback(false, (response) => {
 
                             })
@@ -447,16 +447,16 @@ function ActivityModal(props: any) {
                 }}
                 onChangeApplicationStatus={(event: any, callback: (bool, response) => {}) => {
                     onChangeApplicationStatus(event.status, (err, id) => {
-                            console.log(!err, err)
-                             if(!err){
-                                 callback(true, (response) => {
+                        console.log(!err, err)
+                        if (!err) {
+                            callback(true, (response) => {
 
-                                 })
-                             }else{
-                                 callback(false, (response) => {
+                            })
+                        } else {
+                            callback(false, (response) => {
 
-                                 })
-                             }
+                            })
+                        }
 
                     },);
                 }}

@@ -596,7 +596,10 @@ export default function ActivitiesPage(props: any) {
                 <ActivityModal updateModal={updateModalFn}
                                readFn={unReadReadApplicationFn}
                                details={details}
-                               onChangeAssignedId={(event) => setDetails(event)}
+                               onChangeAssignedId={(event) => {
+                                   console.log("onChangeAssignedId:", event.assignedPersonnel)
+                                   setDetails(event)
+                               }}
                                visible={modalVisible}
                                onDismissed={(event: boolean, _id: number) => {
                                    setUpdateModal(false)
