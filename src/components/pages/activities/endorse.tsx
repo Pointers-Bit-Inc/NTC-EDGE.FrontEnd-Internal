@@ -38,9 +38,9 @@ function Endorsed(props: any) {
     const [title, setTitle] = useState("Endorse Application to")
     const [selected, setSelected] = useState(undefined);
     const [validateRemarks, setValidateRemarks] = useState<{ error: boolean }>({error: false})
-    useEffect(() => {
-        let isCurrent = true
-        axios.get(BASE_URL + '/users',
+
+    async function fetchEndorse(isCurrent: boolean) {
+        await axios.get(BASE_URL + '/users',
             {
                 headers: {
                     Authorization: "Bearer ".concat(user.sessionToken)
@@ -48,7 +48,7 @@ function Endorsed(props: any) {
             }).then((response) => {
             const filterResponse = [...response.data].filter((item) => {
 
-                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1)  && user?._id != item?._id
+                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1) && user?._id != item?._id
             })
 
             const res = filterResponse.map((item) => {
@@ -61,6 +61,14 @@ function Endorsed(props: any) {
             }
 
         })
+    }
+
+    useEffect(() => {
+        let isCurrent = true
+        fetchEndorse(isCurrent);
+
+
+
         return () => {
             isCurrent = false
         }

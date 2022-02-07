@@ -516,7 +516,7 @@ export default function ActivitiesPage(props: any) {
                                                         /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                         })*/
                                                         setDetails({...act, ...{isPinned: true}})
-
+                                                            console.log(act?.assignedPersonnel)
                                                         if (event?.icon == 'more') {
                                                             setMoreModalVisible(true)
                                                         } else {
@@ -576,7 +576,6 @@ export default function ActivitiesPage(props: any) {
                                         activity={activity}
                                         currentUser={user}
                                         onPressUser={(event: any) => {
-
                                             setDetails(activity)
                                             /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
                                             })*/

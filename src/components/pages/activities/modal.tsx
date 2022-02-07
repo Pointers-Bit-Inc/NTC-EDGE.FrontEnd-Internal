@@ -67,7 +67,7 @@ function ActivityModal(props: any) {
         let params: any = {
             status,
             remarks: remarks ? remarks : undefined,
-            assignedPersonnel: user?._id != assignId && !(status == APPROVED || status == DECLINED) && assignId && !director ? assignId : undefined,
+            assignedPersonnel: assignId  ? assignId : undefined,
         };
 
         setCurrentLoading(status);
@@ -134,12 +134,8 @@ function ActivityModal(props: any) {
             setAssignId("")
         }
     }, [])
-    useEffect(() => {
-
-    }, [])
 
     const statusMemo = useMemo(() => {
-        console.log("props?.details?.assignedPersonnel:", props?.details?.assignedPersonnel)
         setStatus(status)
         setAssignId(assignId ? assignId : props?.details?.assignedPersonnel)
         return status ? (cashier ? PaymentStatusText(status) : StatusText(status)) : (cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
@@ -151,7 +147,8 @@ function ActivityModal(props: any) {
         "\napplication id:", props?.details?._id,
         "\nuser:", props?.details?.applicant?.user?.firstName,
         "\ncashier:", cashier,
-        "\nassign id:", assignId,
+        "\nassign id:",  props?.details?.assignedPersonnel,
+        "\nassignId:", assignId,
         "\nid:", user?._id,
         "\nstatus:", status,
         "\npayment status:", props.details.paymentStatus,
@@ -253,7 +250,7 @@ function ActivityModal(props: any) {
                             {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{flex: 1, paddingRight: 5}}>
                                 <TouchableOpacity
-                                    disabled={currentLoading === APPROVED || allButton}
+                                    disabled={currentLoading === APPROVED }
                                     onPress={() => {
                                         if (cashier) {
                                             onShowConfirmation(APPROVED)
@@ -273,7 +270,7 @@ function ActivityModal(props: any) {
 
                                         backgroundColor: (allButton ? "#C4C4C4" : "rgba(0,171,118,1)"),
                                         height: undefined,
-                                        paddingVertical: currentLoading === APPROVED ? 6 : 10.5
+                                        paddingVertical: currentLoading === APPROVED ? 9 : 10.5
                                     }]}>
                                         {
                                             currentLoading === APPROVED ? (
@@ -294,7 +291,7 @@ function ActivityModal(props: any) {
                             {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{flex: 1}}>
                                 <TouchableOpacity
-                                    disabled={(currentLoading === DECLINED || allButton)}
+                                    disabled={(currentLoading === DECLINED)}
                                     onPress={() => {
                                         setVisible(true)
                                     }}
@@ -305,7 +302,7 @@ function ActivityModal(props: any) {
                                             {
                                                 backgroundColor: (allButton) ? "#C4C4C4" : "#fff",
                                                 height: undefined,
-                                                paddingVertical: currentLoading === DECLINED ? 5 : 9,
+                                                paddingVertical: currentLoading === DECLINED ? 8.5 : 9,
                                                 borderWidth: 1,
                                                 borderColor: (allButton) ? "#C4C4C4" : "rgba(194,0,0,1)",
                                             }]
@@ -332,7 +329,7 @@ function ActivityModal(props: any) {
                         {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 0.8, paddingHorizontal: 5,}}>
                             <TouchableOpacity
-                                disabled={(currentLoading === FOREVALUATION || allButton)}
+                                disabled={(currentLoading === FOREVALUATION )}
                                 onPress={() => {
                                     setEndorseVisible(true)
                                 }}
@@ -372,13 +369,19 @@ function ActivityModal(props: any) {
                 }
             </View>
             <Approval
-                onChangeRemarks={(remark: string) => {
-                    setRemarks(remark)
+                onModalDismissed={() => {
+                    setRemarks(prevRemarks)
+                    setAssignId( props?.details?.assignedPersonnel)
+                }}
+                onChangeRemarks={(_remark: string, _assign) => {
+                    setPrevRemarks(remarks)
+                    setPrevAssignId(assignId)
+                    setRemarks(_remark)
+                    setAssignId(_assign)
                 }}
                 visible={approveVisible}
                 confirm={(event: any, callback: (res, callback) => {}) => {
 
-                    setAssignId(event.cashier)
                     let status = ""
                     if ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
                         status = APPROVED
@@ -437,7 +440,7 @@ function ActivityModal(props: any) {
             <Endorsed
                 onModalDismissed={() => {
                     setRemarks(prevRemarks)
-                    setAssignId(prevAssignId)
+                    setAssignId( props?.details?.assignedPersonnel)
                 }}
                 remarks={(event: any) => {
                     setPrevRemarks(remarks)

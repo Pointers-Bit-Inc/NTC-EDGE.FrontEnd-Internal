@@ -66,6 +66,7 @@ function Approval(props: any) {
 
 
     function onConfirmation() {
+        props.onChangeRemarks(remarks, cashier )
         setMessage("Are you sure you want to approve this application?")
         setShowAlert(true)
     }
@@ -74,6 +75,10 @@ function Approval(props: any) {
           setShowAlert(false)
           if (approvalIcon ) {
               props.onDismissed(event)
+              setApprovalIcon(false)
+              setShowClose(false)
+          }else{
+             props.onModalDismissed()
               setApprovalIcon(false)
               setShowClose(false)
           }
@@ -134,12 +139,10 @@ function Approval(props: any) {
 
                         }else{
 
-                            props.onDismissed(null, ()=>{
-                                setShowAlert(false)
-                                setApprovalIcon(false)
-                                setShowClose(false)
-                            })
-
+                            props.onModalDismissed()
+                            setShowAlert(false)
+                            setApprovalIcon(false)
+                            setShowClose(false)
                         }
 
                     })
@@ -218,7 +221,7 @@ function Approval(props: any) {
                                 errorColor={errorColor}
                                 onChangeText={(text: string) => {
 
-                                    props.onChangeRemarks(text)
+
                                     setRemarks(text)
                                 }
                                 }
