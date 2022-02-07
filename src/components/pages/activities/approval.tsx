@@ -37,9 +37,9 @@ function Approval(props: any) {
     const [remarks, setRemarks] = useState("")
     const [showAlert, setShowAlert] = useState(false)
     const [validateRemarks, setValidateRemarks] = useState<{ error: boolean }>({error: false})
-    useEffect(() => {
+    useEffect(async () => {
         let isCurrent = true
-        axios.get(BASE_URL + '/users',
+        await axios.get(BASE_URL + '/users',
             {
                 headers: {
                     Authorization: "Bearer ".concat(user?.sessionToken)

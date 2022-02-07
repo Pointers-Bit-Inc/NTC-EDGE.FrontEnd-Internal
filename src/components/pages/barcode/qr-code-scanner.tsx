@@ -47,16 +47,16 @@ export default function QrCodeScan(props: any) {
            }
         })();
     }, []);
-    const handleResponse = (data:string) => {
+    const handleResponse = async (data: string) => {
         const query = `${BASE_URL}/qr/${data}`
-        axios.get(query , { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
+        await axios.get(query, {headers: {Authorization: "Bearer ".concat(user.sessionToken)}}).then((response) => {
 
             setVerifiedInfo(response.data)
             setIsLoading(false)
             setIsError(false)
             setIsVerified(true)
 
-        }).catch((e) =>{
+        }).catch((e) => {
             setIsLoading(false)
             setIsError(true)
             setIsVerified(false)

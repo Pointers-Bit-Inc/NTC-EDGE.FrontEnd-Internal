@@ -116,7 +116,7 @@ function Search(props: any) {
             if ((page * size) < total) {
                 _page = page + 1
                 setIsHandleLoad(false)
-                axios.get(BASE_URL + `/applications`, {
+                await axios.get(BASE_URL + `/applications`, {
                     ...config, params: {
                         keyword: defaultSanitize(text),
                         page: _page
@@ -155,7 +155,7 @@ function Search(props: any) {
             } else {
                 _page = page + 1
                 setIsHandleLoad(true)
-                axios.get(BASE_URL + `/applications`, {
+                await axios.get(BASE_URL + `/applications`, {
                     ...config, params: {
                         keyword: defaultSanitize(text),
                         page: _page
@@ -194,7 +194,7 @@ function Search(props: any) {
         try {
             setIsHandleLoad(false)
             const _page = page + 1
-            axios.get(BASE_URL + `/applications`, {
+            await axios.get(BASE_URL + `/applications`, {
                 ...config, params: {
                     keyword: defaultSanitize(text)
                 }
