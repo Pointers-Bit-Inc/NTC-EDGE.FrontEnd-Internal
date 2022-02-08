@@ -131,9 +131,8 @@ export const styles = StyleSheet.create({
         borderRadius: 3
     },
     dateText:{
-        fontWeight: "500",
-        fontSize: 16,
-      color: "#606A80"
+        fontWeight: "600",
+        fontSize: 14,
     },
     rect36: {
         top: 0,

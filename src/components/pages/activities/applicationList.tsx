@@ -7,6 +7,7 @@ import {checkFormatIso, formatDate} from "@pages/activities/script";
 import moment from "moment";
 import {useAlert} from "@pages/activities/hooks/useAlert";
 import * as Animatable from 'react-native-animatable'
+import DotVertical from "@assets/svg/dotsVertical";
 function ApplicationList(props: { onPress: () => void, item: any, numbers: { parentIndex: number, child: number[]}[], index: number, element: (activity: any, i: number) => JSX.Element }) {
     const chevronValue = useRef(new Animated.Value(0)).current
     const [isOpen, setIsOpen] = useState(true)
@@ -58,7 +59,7 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: { par
                             <Text style={styles.dateText}> {checkFormatIso(props.item.date, "-")}</Text>
                         </View>
                     </View>
-                    <View>
+                    <View style={{flexDirection: "row", alignItems: "center", }}>
                         <View >
                             <Animated.View style={[ {
                                 transform: [
@@ -70,9 +71,13 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: { par
                                     }
                                 ]
                             }]}>
-                                <ChevronDownIcon/>
+                                <ChevronDownIcon color={"#000"}/>
                             </Animated.View>
                         </View>
+                        <View style={{paddingLeft: 26}}>
+                            <DotVertical />
+                        </View>
+
 
                     </View>
                 </View>

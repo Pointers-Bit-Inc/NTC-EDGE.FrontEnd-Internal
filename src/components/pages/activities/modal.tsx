@@ -303,7 +303,7 @@ function ActivityModal(props: any) {
                                                 backgroundColor: (allButton) ? "#C4C4C4" : "#fff",
                                                 height: undefined,
                                                 paddingVertical: currentLoading === DECLINED ? 8.5 : 9,
-                                                borderWidth: 1,
+                                                borderWidth: 2,
                                                 borderColor: (allButton) ? "#C4C4C4" : "rgba(194,0,0,1)",
                                             }]
                                         }>

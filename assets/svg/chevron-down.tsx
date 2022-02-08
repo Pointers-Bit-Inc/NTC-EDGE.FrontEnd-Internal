@@ -12,7 +12,7 @@ const ChevronDownIcon = (props:any) => (
     >
         <Path
             d="M19 9L12 16L5 9"
-            stroke="#3F3F46"
+            stroke={props.color  ? props.color : "#3F3F46"}
             strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"
