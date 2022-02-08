@@ -19,9 +19,12 @@ export function useAssignPersonnel(assignedPersonnel, config) {
                 console.log(err);
             });
     };
-
     useEffect(() => {
-        fetchData();
+        let isCurrent = true
+        if(isCurrent) fetchData();
+        return () =>{
+            isCurrent = false
+        }
     }, [assignedPersonnel]);
     return {personnel, loading};
 }

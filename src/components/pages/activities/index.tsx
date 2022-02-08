@@ -54,8 +54,11 @@ import {addActiveMeeting, removeActiveMeeting, setMeetingId, updateActiveMeeting
 import {MeetingNotif} from '@components/molecules/list-item';
 import listEmpty from "@pages/activities/listEmpty";
 import HomeMenuIcon from "@assets/svg/homemenu";
+import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
 
 const {width} = Dimensions.get('window')
+
+
 
 
 export default function ActivitiesPage(props: any) {
@@ -462,32 +465,10 @@ export default function ActivitiesPage(props: any) {
                         )
                     }
                 </View>
-                <View style={styles.searcg}>
-                    <View style={[styles.rect26, {height: undefined, paddingHorizontal: 20, paddingVertical: 10}]}>
-                        <TouchableOpacity onPress={() => {
-                            //setSearchVisible(true)
-                            props.navigation.navigate('SearchActivities')
-                        }}>
-                            {!searchVisible &&
-                            <View style={[styles.rect7, {marginTop: 0, width: '100%', marginLeft: 0}]}>
-                                <View style={styles.iconRow}>
-
-                                    <SearchIcon style={styles.icon}></SearchIcon>
-
-                                    <View
-
-                                        style={styles.textInput}
-
-                                    >
-                                        <Text style={{color: "rgba(128,128,128,1)",}}>Search</Text>
-                                    </View>
-
-                                </View>
-                            </View>
-                            }
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                <FakeSearchBar onPress={() => {
+                    //setSearchVisible(true)
+                    props.navigation.navigate('SearchActivities')
+                }} searchVisible={searchVisible}/>
                 <FlatList
                     contentContainerStyle={{flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
@@ -496,10 +477,11 @@ export default function ActivitiesPage(props: any) {
                             {!searchVisible && pnApplications?.length > 0 &&
                             <View style={[styles.pinnedgroup, {height: undefined}]}>
                                 <View style={[styles.pinnedcontainer, {paddingVertical: 15}]}>
-                                    <Text style={[styles.pinnedActivity, {fontWeight: 'bold'}]}>Pinned activity</Text>
+                                    <Text style={[styles.pinnedActivity, {fontWeight: '600'}]}>Pinned activity</Text>
                                 </View>
                             </View>}
                             {!searchVisible && (
+
                                 <ScrollView style={{maxHeight: 300}}>
                                     {
                                         pnApplications.map((item: any, index: number) => {
@@ -516,7 +498,7 @@ export default function ActivitiesPage(props: any) {
                                                         /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                         })*/
                                                         setDetails({...act, ...{isPinned: true}})
-                                                            console.log(act?.assignedPersonnel)
+                                                        console.log(act?.assignedPersonnel)
                                                         if (event?.icon == 'more') {
                                                             setMoreModalVisible(true)
                                                         } else {
@@ -538,7 +520,7 @@ export default function ActivitiesPage(props: any) {
                             onRefresh={onRefresh}
                         />
                     }
-                    style={{flex: 1,  }}
+                    style={{flex: 1,}}
                     data={notPnApplications}
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={bottomLoader}
@@ -564,11 +546,14 @@ export default function ActivitiesPage(props: any) {
                             item={item}
                             numbers={numberCollapsed}
                             index={index}
+
                             element={(activity: any, i: number) => {
 
                                 return (
 
                                     <ActivityItem
+                                        /*config={config}
+                                        isPinned={true}*/
                                         searchQuery={searchTerm}
                                         key={i}
                                         parentIndex={index}

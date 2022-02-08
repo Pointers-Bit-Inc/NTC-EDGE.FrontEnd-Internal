@@ -8,7 +8,7 @@ import TopModal from "@pages/activities/topmodal";
 
 
 if(__DEV__) {
-  import("./ReactotronConfig")
+    import("./ReactotronConfig")
 }
 
 export default function App() {
