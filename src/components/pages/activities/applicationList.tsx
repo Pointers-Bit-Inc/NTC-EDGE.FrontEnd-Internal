@@ -51,7 +51,9 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: { par
             <View style={styles.group25}>
 
                 <View style={styles.rect34}>
+                    
                     <View>
+
                         <View style={styles.date}>
 
                             <Text style={styles.dateText}>{readableToHuman()} </Text>

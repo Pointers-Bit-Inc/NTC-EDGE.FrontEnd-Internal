@@ -21,8 +21,8 @@ import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 
 const styles = StyleSheet.create({
     container: {
-         padding: 5,
-        paddingHorizontal: 20,
+        paddingVertical: 5,
+        paddingRight: 20,
         backgroundColor: 'white',
     },
     horizontal: {
@@ -74,19 +74,10 @@ const styles = StyleSheet.create({
         marginRight: 5,
     },
     applicationContainer: {
-        borderRadius: 10,
-        padding: 10,
-        backgroundColor: "#fff",
+
         flexDirection: 'row',
         alignItems: 'center',
-        shadowColor: "rgba(0,0,0,1)",
-        shadowOffset: {
-            height: 0,
-            width: 0
-        },
-        elevation: 10,
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
+
     }
 })
 
@@ -188,56 +179,78 @@ export function ActivityItem(props:any) {
                         props.onPressUser()
                     }}>
 
+
                         <View  style={styles.container}>
+
                             <View style={styles.applicationContainer}>
-                                <ProfileImage
-                                    size={45}
-                                    image={userActivity?.profilePicture?.small}
-                                    name={`${userActivity?.firstName} ${userActivity?.lastName}`}
-                                />
-                                <View style={styles.content}>
-                                    <View style={styles.section}>
-                                        <View style={styles.name}>
-                                            <Text
-                                                color={'#565961'}
-                                                weight={"600"}
-                                                size={14}
-                                                numberOfLines={1}
-                                            >
-                                                <Highlighter
-                                                    highlightStyle={{backgroundColor: '#BFD6FF'}}
-                                                    searchWords={[props?.searchQuery]}
-                                                    textToHighlight= {`${userActivity?.firstName} ${userActivity?.lastName}`}
-                                                />
-
-                                            </Text>
-                                        </View>
-                                        <View style={styles.date}>
-
-                                            <Text
-                                                color={'#1F2022'}
-                                                size={10}
-                                                numberOfLines={1}
-                                            >
-                                                {formatDate(props.activity.createdAt)}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <View style={styles.section}>
-                                        <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                                            <RenderApplication applicationType={props?.activity?.applicationType} />
-                                        </View>
-
-                                        <RenderStatus
-                                            status={status}
-                                        />
-                                    </View>
-                                    {props?.isPinned && props?.activity?.assignedPersonnel && <View style={styles.section}>
-                                        <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                                            <RenderPinned  config={props.config} assignedPersonnel={props?.activity?.approvalHistory?.[0]?.userId || props?.activity?.assignedPersonnel} />
-                                        </View>
-                                    </View>}
+                                <View style={{padding: 5}} >
+                                    <View style={{
+                                        height: 8,
+                                        width: 8,
+                                        backgroundColor: "#fff" ,//props?.activity?.dateRead  ? "#fff" : "#2863D6" ,
+                                        borderRadius: 4
+                                    }}/>
                                 </View>
+                                <View style={{borderRadius: 10,
+                                    backgroundColor: "#fff",
+                                    shadowColor: "rgba(0,0,0,1)",
+                                    shadowOffset: {
+                                        height: 0,
+                                        width: 0
+                                    },
+                                    elevation: 10,
+                                    shadowOpacity: 0.1,
+                                    shadowRadius: 2,
+                                    padding: 10,flex: 1, flexDirection: "row", alignItems: "center"}}>
+                                    <ProfileImage
+                                        size={45}
+                                        image={userActivity?.profilePicture?.small}
+                                        name={`${userActivity?.firstName} ${userActivity?.lastName}`}
+                                    />
+                                    <View style={styles.content}>
+                                        <View style={styles.section}>
+                                            <View style={styles.name}>
+                                                <Text
+                                                    
+                                                    weight={"600"}
+                                                    size={14}
+                                                    numberOfLines={1}
+                                                >
+                                                    <Highlighter
+                                                        highlightStyle={{backgroundColor: '#BFD6FF'}}
+                                                        searchWords={[props?.searchQuery]}
+                                                        textToHighlight= {`${userActivity?.firstName} ${userActivity?.lastName}`}
+                                                    />
+
+                                                </Text>
+                                            </View>
+                                            <View style={styles.date}>
+
+                                                <Text
+                                                    size={10}
+                                                    numberOfLines={1}
+                                                >
+                                                    {formatDate(props.activity.createdAt)}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <View style={styles.section}>
+                                            <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                                <RenderApplication applicationType={props?.activity?.applicationType} />
+                                            </View>
+
+                                            <RenderStatus
+                                                status={status}
+                                            />
+                                        </View>
+                                        {props?.isPinned && props?.activity?.assignedPersonnel && <View style={styles.section}>
+                                            <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                                <RenderPinned  config={props.config} assignedPersonnel={props?.activity?.approvalHistory?.[0]?.userId || props?.activity?.assignedPersonnel} />
+                                            </View>
+                                        </View>}
+                                    </View>
+                                </View>
+
                             </View>
 
                             {/*<View  style={[styles.circle,{ backgroundColor: 'rgba(26,89,211,1)'}]} /> */}
