@@ -22,7 +22,7 @@ import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 const styles = StyleSheet.create({
     container: {
          padding: 5,
-        paddingHorizontal: 10,
+        paddingHorizontal: 20,
         backgroundColor: 'white',
     },
     horizontal: {

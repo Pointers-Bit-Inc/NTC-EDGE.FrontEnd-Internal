@@ -72,18 +72,20 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
                         <View style={styles.group}>
                             <View style={styles.rect2Stack}>
-                                <View style={styles.rect2}></View>
-                                <View style={styles.group3}>
+                                <View style={[styles.group3, styles.rect2]}>
                                     <View style={styles.textInputStack}>
-                                        <TextInput
-                                            ref={inputRef}
-                                            value={props.value}
-                                            onEndEditing={props.onEndEditing}
-                                            onChange={props.onChange}
-                                            onChangeText={props.onChangeText}
-                                            placeholder="Search"
-                                            style={styles.textInput}
-                                        ></TextInput>
+                                       <View style={{position: "absolute", width: "100%"}}>
+                                           <TextInput
+                                               ref={inputRef}
+                                               value={props.value}
+                                               onEndEditing={props.onEndEditing}
+                                               onChange={props.onChange}
+                                               onChangeText={props.onChangeText}
+                                               placeholder="Search"
+                                               style={styles.textInput}
+                                           ></TextInput>
+                                       </View>
+
                                         {props.value.length ?
                                             <TouchableOpacity onPress={props.onPress1
                                             }>
@@ -142,7 +144,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                 data={props.applications}
                                 keyExtractor={(item, index) => index.toString()}
                                 onEndReached={() => {
-                                    if (!onEndReachedCalledDuringMomentum) {
+                                    if (    !onEndReachedCalledDuringMomentum) {
                                         props.handleLoad(props.value)
                                         setOnEndReachedCalledDuringMomentum(true);
                                     }

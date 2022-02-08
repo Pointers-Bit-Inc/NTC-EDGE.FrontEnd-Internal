@@ -28,19 +28,18 @@ export const styles = StyleSheet.create({
         alignSelf: "stretch"
     },
     rect: {
-        height: 115,
-        backgroundColor: "rgba(255,255,255,1)",
+
+        backgroundColor: "#fff",
         borderBottomColor: outline.default,
         borderBottomWidth: StyleSheet.hairlineWidth,
     },
     group2: {
-        width: width,
-        height: 40,
+      paddingTop: 45,
+        paddingBottom: 11,
+       paddingHorizontal: 20,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginTop: 56,
-        marginLeft: 15
     },
     icon: {
         color: "rgba(128,128,128,1)",
@@ -48,15 +47,13 @@ export const styles = StyleSheet.create({
 
     },
     group: {
-        height: 40,
+        height: 45,
         flex: 1
     },
     rect2: {
         borderWidth: 2,
         borderColor: "#041B6E",
         borderRadius: 12,
-        width: "90%",
-        padding: 20,
 
     },
     group3: {
@@ -67,28 +64,27 @@ export const styles = StyleSheet.create({
         bottom: 0
     },
     textInput: {
-         marginLeft: 10,
         top: 0,
         left: 0,
-        position: "absolute",
+
+        paddingHorizontal: 15,
+        paddingVertical: 12,
         color: "#121212",
         fontSize: 14,
-        height: 44,
         right: 0,
         textAlign: "left"
     },
     icon2: {
-
+        
         alignSelf: "flex-end",
-        top: "40%",
-        right: "15%",
+       top: "35%",
+        right: "5%",
         color: "rgba(128,128,128,1)",
         fontSize: 25,
     },
     textInputStack: {
-        borderColor: "black",
-        height: 40,
-        marginLeft: 5
+
+
     },
     rect2Stack: {
         flex: 1  ,

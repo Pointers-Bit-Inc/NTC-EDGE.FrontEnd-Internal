@@ -96,7 +96,7 @@ export const styles = StyleSheet.create({
         marginBottom: 32
     },
     group25: {
-        paddingHorizontal: 15,
+        paddingHorizontal: 20,
 
         backgroundColor: "rgba(255,255,255,1)"
     },
