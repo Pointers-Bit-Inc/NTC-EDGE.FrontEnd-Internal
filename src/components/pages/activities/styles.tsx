@@ -127,7 +127,7 @@ export const styles = StyleSheet.create({
     dot:{
         height: 6,
         width: 6,
-        backgroundColor:  "#606A80",
+        backgroundColor:  "#000",
         borderRadius: 3
     },
     dateText:{
