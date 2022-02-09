@@ -109,7 +109,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
                             let newArr = [...tabCurrent]
                             newArr[index] = {index, width, x, y}
                             setTabCurrent(newArr)
-
+                             console.log(tabCurrent)
                         },
                         [tabCurrent]
                     );

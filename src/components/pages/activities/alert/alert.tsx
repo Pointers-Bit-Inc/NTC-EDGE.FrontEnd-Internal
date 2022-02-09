@@ -51,35 +51,36 @@ function CustomAlert(props) {
                                 </Text>
 
                             </View>
-                            <View style={styles.separator}></View>
-                            <View style={[styles.action, {paddingTop: 6}]}>
-                                {
 
-                                    props?.showClose == false && <>
-                                        {props.onLoading ? <ActivityIndicator style={{alignSelf: "center"}}
-                                                                              color={"rgba(40,99,214,1)"}/> :
-                                            <TouchableOpacity onPress={props.onConfirmPressed}>
 
-                                                <Text
-                                                    style={[styles.yes, alertStyle.confirmButtonTextStyle]}>{props?.confirmButton || 'Yes'}</Text>
+                        </View>
+                        <View style={[styles.action, {alignItems: "flex-end", paddingVertical: 15}]}>
+                            {
 
-                                            </TouchableOpacity>
-                                        }
-                                        <TouchableOpacity onPress={_springHide}>
-                                            <Text style={[styles.close, alertStyle.cancelButtonTextStyle]}>Close</Text>
+                                props?.showClose == false && <>
+                                    {props.onLoading ? <ActivityIndicator style={{alignSelf: "center"}}
+                                                                          color={"rgba(40,99,214,1)"}/> :
+                                        <TouchableOpacity onPress={props.onConfirmPressed}>
+
+                                            <Text
+                                                style={[alertStyle.confirmButtonTextStyle]}>{props?.confirmButton || 'Yes'}</Text>
+
                                         </TouchableOpacity>
+                                    }
+                                    <TouchableOpacity onPress={_springHide}>
+                                        <Text style={[alertStyle.cancelButtonTextStyle]}>Close</Text>
+                                    </TouchableOpacity>
 
-                                    </>
+                                </>
 
-                                }
+                            }
 
-                                {props?.showClose == true &&
-                                <TouchableOpacity onPress={_springHide}>
-                                    <Text style={[alertStyle.confirmButtonTextStyle]}>Close</Text>
-                                </TouchableOpacity>
-                                }
+                            {props?.showClose == true &&
+                            <TouchableOpacity onPress={_springHide}>
+                                <Text style={[alertStyle.confirmButtonTextStyle]}>Close</Text>
+                            </TouchableOpacity>
+                            }
 
-                            </View>
                         </View>
                     </View>
                 </View>
@@ -96,24 +97,22 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     container___: {
-
-        paddingBottom: 3,
+                flexDirection: "column",
+        justifyContent: "space-around",
         backgroundColor: "rgba(255,255,255,1)",
         borderRadius: 14,
         borderWidth: 0,
         borderColor: "#000000"
     },
     container__: {
-        paddingTop: 15,
-        paddingBottom: 15,
-        justifyContent: "space-around",
 
+         
+        //paddingVertical: 15
+     
     },
     container_: {
-        width: "90%",
-        justifyContent: "space-around",
+        width: "100%",
         alignItems: "center",
-        alignSelf: "center"
     },
     title: {
         fontWeight: "bold",
@@ -127,23 +126,14 @@ const styles = StyleSheet.create({
         color: "#121212",
         textAlign: "center"
     },
-    separator: {
-
-        height: 1,
-        backgroundColor: "rgba(217,219,233,1)",
-        alignSelf: "stretch"
-    },
+    
     action: {
-        marginTop: 10,
+        borderTopWidth: 1,
+        borderTopColor: "rgba(217,219,233,1)",
+
         flexDirection: "row",
         justifyContent: "space-around"
     },
-    close: {
-        color: "rgba(220,38,38,1)"
-    },
-    yes: {
-        color: "rgba(40,99,214,1)"
-    }
 });
 
 export default CustomAlert;

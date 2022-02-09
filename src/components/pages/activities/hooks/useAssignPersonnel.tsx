@@ -7,25 +7,31 @@ export function useAssignPersonnel(assignedPersonnel, config) {
     const [personnel, setPersonnel] = useState<UserApplication>()
     const [prevPersonnel, setPrevPersonnel] = useState<UserApplication>()
     const [loading, setLoading] = useState<boolean>()
-    const fetchData = async () => {
+    const fetchData = async (isCurrent) => {
         setLoading(true)
 
         await axios
             .get(BASE_URL + `/user/profile/${assignedPersonnel}`, config)
             .then((res) => {
-                setLoading(false)
-                setPersonnel(res.data);
-                setPrevPersonnel(res.data);
+                if(isCurrent){
+                    setLoading(false)
+                    setPersonnel(res.data);
+                    setPrevPersonnel(res.data);
+                }
+
             })
             .catch((err) => {
-                setPersonnel(prevPersonnel);
-                setLoading(false)
+                if(isCurrent){
+                    setPersonnel(prevPersonnel);
+                    setLoading(false)
+                }
+
                 console.log(err);
             });
     };
     useEffect(() => {
         let isCurrent = true
-        if(isCurrent) fetchData();
+       fetchData(isCurrent);
         return () =>{
             isCurrent = false
         }

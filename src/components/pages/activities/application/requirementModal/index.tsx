@@ -78,14 +78,13 @@ const RequirementModal = (props:any) => {
 }
 const styles = StyleSheet.create({
     container: {
-        height,
-        width,
+       flex: 1
     },
     group7: {
         height: 100
     },
     rect2: {
-        width: width,
+        width: "100%",
         height: 80,
       //  backgroundColor: "#041B6E"
     },

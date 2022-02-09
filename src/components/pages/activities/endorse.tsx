@@ -111,15 +111,15 @@ function Endorsed(props: any) {
             animationType="slide"
             transparent={true}
             visible={props.visible}
-
+                style={{height: "50%"}}
             onRequestClose={() => {
                 onCancelPress()
             }}>
             <View style={showAlert ? {
                 zIndex: 1,
                 flex: 1,
-                width: width,
-                height: height,
+                width: "100%",
+                height: "100%",
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'absolute',
