@@ -31,7 +31,7 @@ const Payment = (props:any) => {
         return total;
     }
 
-    return <ScrollView style={{backgroundColor: "#fff", width, paddingTop: 10}}>
+    return <ScrollView style={{backgroundColor: "#fff", width: "100%", paddingTop: 10}}>
         <View style={[styles.container, {marginTop: 12}]}>
             
             <View style={{  padding: 5, alignItems: 'center' }}>

@@ -98,6 +98,7 @@ function ActivityModal(props: any) {
 
     return (
         <Modal
+
             animationType="slide"
             transparent={false}
             visible={props.visible}

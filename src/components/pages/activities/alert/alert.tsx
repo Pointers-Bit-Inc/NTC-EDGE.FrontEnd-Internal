@@ -14,6 +14,7 @@ function CustomAlert(props) {
     const {springValue, _springHide} = useAlert(props.show, props.onDismissed);
     return (
         <Modal
+            supportedOrientations={['portrait', 'landscape']}
             animationType="none"
             transparent={true}
             visible={props.show}

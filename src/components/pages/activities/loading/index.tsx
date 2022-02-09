@@ -6,7 +6,7 @@ const MARGIN = 7.5
 const BG = '#407BFF'
 const ACTIVE_BG = '#D0E1FF'
 const dots = [1, 2, 3, 4]
-const INTERVAL = 50
+const INTERVAL = 100
 const ANIMATION_DURATION = 300
 const ANIMATION_SCALE = 1
 export default class ThreeDotsLoader extends React.Component {

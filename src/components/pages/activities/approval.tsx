@@ -91,6 +91,7 @@ function Approval(props: any) {
     return (
 
         <Modal
+            supportedOrientations={['portrait', 'landscape']}
             animationType="none"
             transparent={true}
             visible={props.visible}

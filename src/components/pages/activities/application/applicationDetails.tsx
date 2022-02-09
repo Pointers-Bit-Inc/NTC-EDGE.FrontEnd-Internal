@@ -3,7 +3,7 @@ import {Dimensions, ScrollView, StyleSheet, Text, View} from "react-native";
 const {width, height} = Dimensions.get("screen")
 const ApplicationDetails = (props:any) =>{
 
-    return <ScrollView style={{paddingTop: 20, width, backgroundColor: "#fff", }}>
+    return <ScrollView style={{paddingTop: 20, width: "100%", backgroundColor: "#fff", }}>
         <View style={{
             marginBottom: 20,
             borderRadius: 5,

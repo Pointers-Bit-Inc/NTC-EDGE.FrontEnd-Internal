@@ -160,6 +160,7 @@ function ActivityModal(props: any) {
 
     return (
         <Modal
+            supportedOrientations={['portrait', 'landscape']}
             animationType="slide"
             transparent={false}
             visible={props.visible}
@@ -174,8 +175,8 @@ function ActivityModal(props: any) {
                 zIndex: 2,
                 top: 0,
                 left: 0,
-                width: width,
-                height: height,
+                width: "100%",
+                height: "100%",
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
             } : {}}>
 
@@ -238,7 +239,7 @@ function ActivityModal(props: any) {
                     <View></View>
                 </View>
 
-                <ModalTab details={props.details} status={status}/>
+                <ModalTab  details={props.details} status={status}/>
                 {
                     <View style={styles.footer}>
                         <View style={{

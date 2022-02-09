@@ -8,11 +8,10 @@ import CloseIcon from "@assets/svg/close";
 
 function ItemMoreModal(props:any) {
     const applicant = props?.details?.applicant?.user
-    return (
-        
-        <View   >
-            <Modal
 
+    return (
+            <Modal
+                supportedOrientations={['portrait', 'landscape']}
                 animationType="slide"
                 transparent={true}
                 visible={props.visible}
@@ -36,13 +35,12 @@ function ItemMoreModal(props:any) {
                            <View style={styles.group7}>
 
                                <View style={[styles.name]}>
-                                   <View></View>
-                                   <View>
+                                  
+                                   <View style={{flexDirection: "column" , justifyContent: "center", alignItems: "center"}}>
                                        <Text style={styles.centerName} >{`${applicant?.firstName} ${applicant?.lastName}`}</Text>
+                                       <Text style={{fontSize: 14, color: "#626a7e", fontWeight: '400'}}>{props?.details?.applicationType}</Text>
                                    </View>
-                                   <TouchableOpacity onPress={props.onDismissed}>
-                                       <CloseIcon  />
-                                   </TouchableOpacity>
+
 
 
                                </View>
@@ -52,50 +50,44 @@ function ItemMoreModal(props:any) {
                                    <View style={styles.group5}>
                                        <TouchableOpacity>
                                            <View style={styles.group3}>
-                                               <View style={styles.rect10}></View>
                                                <View style={styles.group4}>
                                                    <PinToTopIcon
                                                        style={styles.icon1}
                                                    />
                                                    <Text style={styles.pinToTop1}>Pin to top</Text>
                                                </View>
-                                               <View style={styles.rect11}></View>
                                            </View>
                                        </TouchableOpacity>
                                        <TouchableOpacity>
                                            <View style={styles.group3}>
-                                               <View style={styles.rect10}></View>
                                                <View style={styles.group4}>
                                                    <BellMuteIcon
                                                        style={styles.icon1}
                                                    />
                                                    <Text style={styles.pinToTop1}>Mute</Text>
                                                </View>
-                                               <View style={styles.rect11}></View>
                                            </View>
                                        </TouchableOpacity>
                                        <TouchableOpacity>
                                            <View style={styles.group3}>
-                                               <View style={styles.rect10}></View>
+
                                                <View style={styles.group4}>
                                                    <ArchiveIcon
                                                        style={styles.icon1}
                                                    />
                                                    <Text style={styles.pinToTop1}>Archive</Text>
                                                </View>
-                                               <View style={styles.rect11}></View>
                                            </View>
                                        </TouchableOpacity>
                                        <TouchableOpacity>
                                            <View style={styles.group3}>
-                                               <View style={styles.rect10}></View>
-                                               <View style={styles.group4}>
+
+                                               <View style={[styles.group4, {borderBottomColor: undefined, borderBottomWidth: 0}]}>
                                                    <DeleteIcon
                                                        style={styles.icon1}
                                                    />
                                                    <Text style={[styles.pinToTop1, {color: '#CF0327'}]}>Delete</Text>
                                                </View>
-                                               <View style={styles.rect11}></View>
                                            </View>
                                        </TouchableOpacity>
 
@@ -107,15 +99,15 @@ function ItemMoreModal(props:any) {
 
 
             </Modal>
-        </View>
 
     );
 }
 
 const styles = StyleSheet.create({
     centerName:{
-        fontSize: 18
-
+        color: "#1F2022",
+        fontSize: 20,
+           fontWeight: "600"
     },
     container: {
         flex: 1,
@@ -128,18 +120,13 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10,
     },
     group7: {
-        justifyContent: "flex-start",
-        alignItems: "flex-end",
-
-        marginTop: 20,
-        marginLeft: 20,
-        marginRight: 20
+        padding: 20
     },
     name: {
-        width: "100%",
+       paddingBottom: 10,
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: "center",
 
     },
     group6: {
@@ -184,7 +171,6 @@ const styles = StyleSheet.create({
         alignSelf: "stretch"
     },
     group3: {
-        height: 62,
         justifyContent: "space-between",
         marginRight: 0,
         marginLeft: 0,
@@ -195,9 +181,9 @@ const styles = StyleSheet.create({
         alignSelf: "stretch"
     },
     group4: {
-        width: 116,
-        height: 25,
-
+        borderBottomWidth: 1,
+        borderBottomColor: "rgba(234,234,234,1)",
+          paddingVertical: 15,
         flexDirection: "row",
         justifyContent: "flex-start"
     },
@@ -205,7 +191,7 @@ const styles = StyleSheet.create({
         color: "rgba(128,128,128,1)",
         fontSize: 25,
         marginRight: 21,
-        width: 14,
+       
         alignSelf: "center"
     },
     pinToTop1: {
@@ -213,11 +199,6 @@ const styles = StyleSheet.create({
         color: "#121212",
         fontSize: 18
     },
-    rect11: {
-        height: 1,
-        backgroundColor: "rgba(234,234,234,1)",
-        alignSelf: "stretch"
-    }
 });
 
 export default ItemMoreModal;

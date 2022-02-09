@@ -107,7 +107,7 @@ function Endorsed(props: any) {
 
     return (
         <Modal
-
+            supportedOrientations={['portrait', 'landscape']}
             animationType="slide"
             transparent={true}
             visible={props.visible}

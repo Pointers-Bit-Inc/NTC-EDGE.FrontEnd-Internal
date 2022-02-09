@@ -54,7 +54,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
 
     const renderDropdown = (): ReactElement<any, any> => {
         return (
-            <Modal visible={visible} transparent animationType="none">
+            <Modal supportedOrientations={['portrait', 'landscape']}  visible={visible} transparent animationType="none">
                 <TouchableOpacity
                     style={styles.overlay}
                     onPress={() => setVisible(false)}

@@ -69,7 +69,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
                         if(state.index === index){
                             ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
                                 setCurrentIndex(() =>{
-                                    return tabCurrent.findIndex(tab => tab.index ==state.index)
+                                    return tabCurrent.findIndex(tab => tab?.index ==state.index)
                                 })
                             })
                         }
@@ -107,7 +107,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
                              }
                          }) => {
                             let newArr = [...tabCurrent]
-                            newArr.push({index, width, x, y})
+                            newArr[index] = {index, width, x, y}
                             setTabCurrent(newArr)
 
                         },

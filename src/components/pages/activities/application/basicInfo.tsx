@@ -19,7 +19,7 @@ const BasicInfo = (props: any) => {
 
 
     const applicant = props.applicant
-    return <ScrollView style={{width, backgroundColor: "#fff", }}>
+    return <ScrollView style={{width: "100%", backgroundColor: "#fff", }}>
          <View style={{padding: 10,flex: 1,alignSelf:"center"}}>
              <ProfileImage
                  style={{borderRadius: 4}}

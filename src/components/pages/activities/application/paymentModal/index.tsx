@@ -7,6 +7,7 @@ const {width, height} = Dimensions.get('window');
 const PaymentModal = (props: any) => {
 
     return <Modal
+        supportedOrientations={['portrait', 'landscape']}
         animationType="slide"
         transparent={false}
         visible={props.visible}

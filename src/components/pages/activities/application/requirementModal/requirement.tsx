@@ -12,7 +12,7 @@ const Requirement = (props: any) => {
         setSelectImage("")
         setVisibleModal(false)
     }
-    return <ScrollView style={{backgroundColor: "#fff", width}}>
+    return <ScrollView style={{backgroundColor: "#fff", width: "100%"}}>
         {props?.requirements?.map((requirement: any, index: number) => {
             return <View key={index} style={requirementStyles.container}>
                 <View style={requirementStyles.card}>
@@ -44,6 +44,7 @@ const Requirement = (props: any) => {
                             }
                             }>
                                 <Image
+
                                     style={{width: undefined, height: 216}}
                                     source={{
                                         uri: requirement?.links?.large,
