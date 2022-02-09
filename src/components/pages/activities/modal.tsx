@@ -251,7 +251,7 @@ function ActivityModal(props: any) {
                             {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
                             <View style={{flex: 1, paddingRight: 5}}>
                                 <TouchableOpacity
-                                    disabled={currentLoading === APPROVED || allButton }
+                                    disabled={currentLoading === APPROVED || allButton}
                                     onPress={() => {
                                         if (cashier) {
                                             onShowConfirmation(APPROVED)
@@ -330,7 +330,7 @@ function ActivityModal(props: any) {
                         {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 0.8, paddingHorizontal: 5,}}>
                             <TouchableOpacity
-                                disabled={(currentLoading === FOREVALUATION || allButton )}
+                                disabled={(currentLoading === FOREVALUATION  )}
                                 onPress={() => {
                                     setEndorseVisible(true)
                                 }}
@@ -439,6 +439,7 @@ function ActivityModal(props: any) {
                 onDismissed={onDismissed}
             />
             <Endorsed
+                assignedPersonnel={ props?.details?.assignedPersonnel}
                 onModalDismissed={() => {
                     setRemarks(prevRemarks)
                     setAssignId( props?.details?.assignedPersonnel)
@@ -479,8 +480,8 @@ const styles = StyleSheet.create({
     group13: {
         top: 0,
         left: 0,
-        width: width,
-        height: 812,
+        width: "100%",
+        height: "100%",
         position: "absolute"
     },
     rect16: {
@@ -580,7 +581,7 @@ const styles = StyleSheet.create({
         marginLeft: "5%"
     },
     rect12: {
-        width: width,
+        width: "100%",
         height: 1,
         backgroundColor: "#E6E6E6",
         marginTop: 1,

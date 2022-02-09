@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
         marginTop: 50
     },
     group32: {
-        width: width,
+        width: "100%",
         backgroundColor: 'rgba(0,0,0,0.5)',
         zIndex: 1,
         height: height,

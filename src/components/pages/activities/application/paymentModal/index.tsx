@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
         height: 100
     },
     rect2: {
-        width: width,
+        width: "100%",
         height: 100,
         backgroundColor: "#041B6E"
     },
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     rect: {
-        width: width * 0.65,
+        width: "100%" ,
         padding: 15,
         paddingVertical: 25,
         borderWidth: 1,

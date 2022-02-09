@@ -14,19 +14,22 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
     const [visible, setVisible] = useState(false);
     const [selected, setSelected] = useState(undefined);
     const [dropdownTop, setDropdownTop] = useState(0);
-
+    const [selectedIndex, setSelectedIndex] = useState(null)
     const toggleDropdown = (): void => {
         visible ? setVisible(false) : openDropdown();
     };
     useEffect(() => {
         let isCurrent = true
-        const _selected = data?.find((item) => item.value == value)
+        const _selectedIndex = data?.findIndex((item) => item.value == value)
+        if(isCurrent) setSelectedIndex(_selectedIndex)
+        const _selected = data[_selectedIndex]
         if(isCurrent) setSelected(_selected)
         if(_selected) onSelect(_selected)
+        console.log(selectedIndex, value)
           return () =>{
               isCurrent = false
           }
-    }, [value])
+    }, [value, selectedIndex])
 
     const openDropdown = (): void => {
         DropdownButton?.current?.measure((_fx: number, _fy: number, _w: number, h: number, _px: number, py: number) => {
@@ -62,6 +65,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
                     {dropdownTop>0 && <View style={[styles.dropdown, {flex: 1, top: dropdownTop}]}>
                         {data?.length > 0 ? <FlatList
                             data={data}
+                            initialScrollIndex={selectedIndex}
                             renderItem={renderItem}
                             keyExtractor={(item, index) => index.toString()}
                         /> : <View style={{height: "100%", justifyContent: "center", alignItems: "center"}}>
@@ -119,7 +123,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: '90%',
         backgroundColor: "rgba(255,255,255,1)",
-        borderWidth: 0,
+        borderWidth: 1,
         borderColor: "rgba(193,202,220,1)",
         shadowColor: "rgba(0,0,0,1)",
         shadowOffset: {

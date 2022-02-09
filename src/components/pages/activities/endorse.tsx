@@ -57,7 +57,7 @@ function Endorsed(props: any) {
 
             if (isCurrent) setPickedEndorsed(res)
             if (res) {
-                if (isCurrent) setEndorsed(res[0]?.value)
+                if (isCurrent) setEndorsed(props?.assignedPersonnel || res[0]?.value)
             }
 
         })

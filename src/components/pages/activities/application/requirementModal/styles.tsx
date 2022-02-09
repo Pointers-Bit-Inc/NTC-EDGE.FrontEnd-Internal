@@ -17,9 +17,9 @@ export const requirementStyles = StyleSheet.create({
             width: 0,
             height: 0
         },
-        elevation: 30,
+        elevation: 10,
         shadowOpacity: 0.1,
-        shadowRadius: 10,
+        shadowRadius: 5,
         borderRadius: 5
     },
     cardLabel: {

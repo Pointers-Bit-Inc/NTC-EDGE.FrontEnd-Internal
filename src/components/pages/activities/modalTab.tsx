@@ -16,8 +16,10 @@ function MyTabBar({state, descriptors, navigation, position}) {
     const [translateValue] = useState(new Animated.Value(0));
     const ref = useRef([])
     const containerRef = useRef(null)
-    const animateSlider = (index: number) => {
-        if(tabCurrent[index]?.x)   {
+
+
+    useEffect(()=>{
+        if(tabCurrent[currentIndex]?.x)   {
             Animated.spring(translateValue, {
                 toValue: tabCurrent[currentIndex]?.x -5,
                 velocity: 10,
@@ -34,9 +36,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
                 }).start();
             })
         }
-
-    };
-
+    }, [tabCurrent, currentIndex, translateValue])
 
     return (
         <View style={
@@ -61,16 +61,11 @@ function MyTabBar({state, descriptors, navigation, position}) {
                                 : route.name;
 
                     const isFocused = state.index === index;
-                    useEffect(()=>{
-                        animateSlider(currentIndex);
-                    }, [currentIndex, state.index])
 
                     useEffect(() =>{
                         if(state.index === index){
-                            ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
-                                setCurrentIndex(() =>{
-                                    return tabCurrent.findIndex(tab => tab?.index ==state.index)
-                                })
+                            setCurrentIndex(() => {
+                                return tabCurrent.findIndex(tab => tab?.index == state.index)
                             })
                         }
 
@@ -85,12 +80,10 @@ function MyTabBar({state, descriptors, navigation, position}) {
                             navigation.navigate(route.name);
                         }
                         const _tab = tabCurrent.findIndex(tab => tab.index == state.index)
-                        await ref.current[index].measureLayout(containerRef.current, (x, y, width, height) => {
+
                             setCurrentIndex(() => {
                                 return _tab
                             })
-                        })
-
 
                     };
 
@@ -109,7 +102,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
                             let newArr = [...tabCurrent]
                             newArr[index] = {index, width, x, y}
                             setTabCurrent(newArr)
-                             console.log(tabCurrent)
+
                         },
                         [tabCurrent]
                     );

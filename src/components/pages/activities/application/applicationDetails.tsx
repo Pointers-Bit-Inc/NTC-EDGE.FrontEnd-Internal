@@ -37,7 +37,7 @@ const ApplicationDetails = (props:any) =>{
                     })
                     }
 
-                    <View style={styles.rect4}></View>
+
                 </View>
             </View>
         </View>
@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
     },
     group2: {
+        paddingVertical: 10
     },
     rect: {
         padding: 10,

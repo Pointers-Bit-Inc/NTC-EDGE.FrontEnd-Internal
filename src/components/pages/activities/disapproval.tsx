@@ -52,8 +52,8 @@ function Disapproval(props: any) {
             <View style={showAlert ? {
                 zIndex: 1,
                 flex: 1,
-                width: width,
-                height: height,
+                width: "100%",
+                height: "100%",
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'absolute',
