@@ -330,7 +330,7 @@ function ActivityModal(props: any) {
                         {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
                         <View style={{flex: 0.8, paddingHorizontal: 5,}}>
                             <TouchableOpacity
-                                disabled={(currentLoading === FOREVALUATION  )}
+                                disabled={(currentLoading === FOREVALUATION || allButton  )}
                                 onPress={() => {
                                     setEndorseVisible(true)
                                 }}
