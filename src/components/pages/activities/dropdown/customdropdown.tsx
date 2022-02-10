@@ -72,7 +72,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
                     style={styles.overlay}
                     onPress={() => setVisible(false)}
                 >
-                    {dropdownTop>0 && <View style={[styles.dropdown, {width: orientation == "LANDSCAPE" ? "95%" :'90%',flex: 1, top: dropdownTop}]}>
+                    {dropdownTop>0 && <View style={[styles.dropdown, {flex: 1, top: dropdownTop}]}>
                         {data?.length > 0 ? <FlatList
                             data={data}
                             initialScrollIndex={selectedIndex || 0 || null}
@@ -157,6 +157,7 @@ const styles = StyleSheet.create({
 
     },
     overlay: {
+        paddingVertical: 20,
         width: '100%',
         height: '100%',
     },
