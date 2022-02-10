@@ -1,6 +1,7 @@
 import React, {FC, ReactElement, useEffect, useRef, useState} from 'react';
 import {FlatList, Modal, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import CaretDownIcon from "@assets/svg/caret-down";
+import {useOrientation} from "@pages/activities/hooks/useOrientation";
 
 
 interface Props {
@@ -28,7 +29,6 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
             if(_selected) onSelect(_selected)
         }
 
-        console.log(selectedIndex, value)
           return () =>{
               isCurrent = false
           }
@@ -40,11 +40,14 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
         });
         setVisible(true);
     };
-
+    const orientation = useOrientation()
+    useEffect(()=>{
+        setVisible(false);
+    }, [orientation])
     const onItemPress = (item: any): void => {
         setSelected(item);
         onSelect(item);
-        //  setVisible(false);
+
     };
 
     const renderItem = ({item}: any): ReactElement<any, any> => (
@@ -61,12 +64,15 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
     const renderDropdown = (): ReactElement<any, any> => {
         const flatListRef = useRef()
         return (
-            <Modal supportedOrientations={['portrait', 'landscape']}  visible={visible} transparent animationType="none">
+            <Modal supportedOrientations={['portrait', 'landscape']}
+                   visible={visible}
+                   transparent
+                   animationType="none">
                 <TouchableOpacity
                     style={styles.overlay}
                     onPress={() => setVisible(false)}
                 >
-                    {dropdownTop>0 && <View style={[styles.dropdown, {flex: 1, top: dropdownTop}]}>
+                    {dropdownTop>0 && <View style={[styles.dropdown, {width: orientation == "LANDSCAPE" ? "95%" :'90%',flex: 1, top: dropdownTop}]}>
                         {data?.length > 0 ? <FlatList
                             data={data}
                             initialScrollIndex={selectedIndex || 0 || null}
@@ -135,7 +141,7 @@ const styles = StyleSheet.create({
         bottom: "15%",
         alignSelf: "center",
         position: 'absolute',
-        width: '90%',
+
         backgroundColor: "rgba(255,255,255,1)",
         borderWidth: 1,
         borderColor: "rgba(193,202,220,1)",
