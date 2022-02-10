@@ -189,7 +189,8 @@ export function ActivityItem(props:any) {
                                         borderRadius: 4
                                     }}/>
                                 </View>
-                                <View style={{borderRadius: 10,
+                                <View style={{
+                                    borderRadius: 10,
                                     backgroundColor: "#fff",
                                     shadowColor: "rgba(0,0,0,1)",
                                     shadowOffset: {
@@ -199,7 +200,9 @@ export function ActivityItem(props:any) {
                                     elevation: 10,
                                     shadowOpacity: 0.1,
                                     shadowRadius: 2,
-                                    padding: 10,flex: 1, flexDirection: "row", alignItems: "center"}}>
+                                    padding: 10,
+                                    flex: 1,
+                                    flexDirection: "row", alignItems: "center"}}>
                                     <ProfileImage
                                         size={45}
                                         image={userActivity?.profilePicture?.small}
@@ -209,7 +212,7 @@ export function ActivityItem(props:any) {
                                         <View style={styles.section}>
                                             <View style={styles.name}>
                                                 <Text
-                                                    
+                                                    //style={{color: props?.activity?.dateRead ? "#565961" : "#000"}}
                                                     weight={"600"}
                                                     size={14}
                                                     numberOfLines={1}
