@@ -161,7 +161,7 @@ export const getFilter = (list: any, user, selectedClone, cashier: boolean, dire
     } else if (checker) {
         return (item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
     } else if (accountant) {
-        return item?.soa?.length > 0 && (item?.status == APPROVED || item?.status == DECLINED || search);
+        return (item?.assignedPersonnel == user?._id || item?.status == APPROVED || item?.status == DECLINED || search);
     } else if (evaluator) {
         return item?.status.length > 0 || item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory
     }
