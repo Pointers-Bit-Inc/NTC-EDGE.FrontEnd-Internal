@@ -21,6 +21,7 @@ import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
+import {useOrientation} from "@pages/activities/hooks/useOrientation";
 
 const {height, width} = Dimensions.get('window');
 
@@ -100,7 +101,7 @@ function Endorsed(props: any) {
     }
 
 
-
+    const orientation = useOrientation();
 
     return (
         <Modal
@@ -162,7 +163,7 @@ function Endorsed(props: any) {
                 style={[styles.container]}
             >
 
-                <View style={styles.rect}>
+                <View style={[styles.rect, {height: orientation == "LANDSCAPE" ? "100%" : "80%",}]}>
                     <View style={styles.iconColumn}>
                         <TouchableOpacity onPress={() => {
                             setValidateRemarks({error: false})
@@ -185,11 +186,13 @@ function Endorsed(props: any) {
                                             if(value) setEndorsed(value)
                                         }}/>
                         <InputField
-                            style={{fontWeight: 'normal'}}
+                            style={[{fontWeight: 'normal',}]}
+
                             outlineStyle={{
+                                borderRadius: 4,
                                 borderColor: "rgba(202,210,225,1)",
                                 paddingTop: 5,
-                                height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.25
+                                height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.15
                             }}
                             error={validateRemarks.error}
                             errorColor={errorColor}
@@ -202,15 +205,16 @@ function Endorsed(props: any) {
                             }}
                         />
                     </View>
-                    <View
-                        style={{width: '100%', paddingHorizontal: 20, paddingBottom: 25,}}
-                    >
-                        <TouchableOpacity onPress={onEndorseConfirm}>
-                            <View style={styles.confirmButton}>
-                                <Text style={styles.confirm}>Confirm</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
+
+                </View>
+                <View
+                    style={{ position: "absolute", width: '100%', paddingHorizontal: 20, paddingBottom: 25,}}
+                >
+                    <TouchableOpacity onPress={onEndorseConfirm}>
+                        <View style={styles.confirmButton}>
+                            <Text style={styles.confirm}>Confirm</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>
         </Modal>

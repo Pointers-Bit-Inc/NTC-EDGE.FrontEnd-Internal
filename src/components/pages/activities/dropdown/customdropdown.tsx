@@ -69,7 +69,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
                     {dropdownTop>0 && <View style={[styles.dropdown, {flex: 1, top: dropdownTop}]}>
                         {data?.length > 0 ? <FlatList
                             data={data}
-                            initialScrollIndex={selectedIndex || null}
+                            initialScrollIndex={selectedIndex || 0 || null}
                             ref={flatListRef}
                             onScrollToIndexFailed={({
                                                         index,

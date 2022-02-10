@@ -88,6 +88,7 @@ function Approval(props: any) {
     const [approvalIcon, setApprovalIcon] = useState(false)
     const [title, setTitle] = useState("Approve Application")
     const [showClose, setShowClose] = useState(false)
+    const [isTyping, setIsTyping] = useState(false)
     return (
 
         <Modal
@@ -189,7 +190,7 @@ function Approval(props: any) {
                 style={[styles.container]}
             >
 
-                {!showAlert && <Animated.View style={[styles.group, {transform: [{scale: springValue}]}]}>
+                {!showAlert && <Animated.View style={[styles.group, {transform: [{scale: isTyping ? 1 :springValue}]}]}>
                     <View style={styles.rect}>
                         <View style={{alignSelf: 'flex-start'}}>
                             <TouchableOpacity onPress={_springHide}>
@@ -220,8 +221,11 @@ function Approval(props: any) {
                                 value={remarks}
                                 error={validateRemarks.error}
                                 errorColor={errorColor}
+                                onEndEditing={()=>{
+                                    setIsTyping(false)
+                                }}
                                 onChangeText={(text: string) => {
-
+                                    setIsTyping(true)
 
                                     setRemarks(text)
                                 }
