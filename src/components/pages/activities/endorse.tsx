@@ -38,7 +38,7 @@ function Endorsed(props: any) {
     const [title, setTitle] = useState("Endorse Application to")
     const [selected, setSelected] = useState(undefined);
     const [validateRemarks, setValidateRemarks] = useState<{ error: boolean }>({error: false})
-      const orientation = useOrientation()
+
     async function fetchEndorse(isCurrent: boolean) {
         await axios.get(BASE_URL + '/users',
             {
