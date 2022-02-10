@@ -56,6 +56,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
     );
 
     const renderDropdown = (): ReactElement<any, any> => {
+        const flatListRef = useRef()
         return (
             <Modal supportedOrientations={['portrait', 'landscape']}  visible={visible} transparent animationType="none">
                 <TouchableOpacity
@@ -65,7 +66,17 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
                     {dropdownTop>0 && <View style={[styles.dropdown, {flex: 1, top: dropdownTop}]}>
                         {data?.length > 0 ? <FlatList
                             data={data}
-                            initialScrollIndex={selectedIndex}
+                            initialScrollIndex={selectedIndex || null}
+                            ref={flatListRef}
+                            onScrollToIndexFailed={({
+                                                        index,
+                                                        averageItemLength,
+                                                    }) => {
+                                flatListRef.current?.scrollToOffset({
+                                    offset: index * averageItemLength,
+                                    animated: true,
+                                });
+                            }}
                             renderItem={renderItem}
                             keyExtractor={(item, index) => index.toString()}
                         /> : <View style={{height: "100%", justifyContent: "center", alignItems: "center"}}>
