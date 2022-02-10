@@ -21,7 +21,6 @@ import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
-import {useOrientation} from "@pages/activities/hooks/useOrientation";
 
 const {height, width} = Dimensions.get('window');
 
