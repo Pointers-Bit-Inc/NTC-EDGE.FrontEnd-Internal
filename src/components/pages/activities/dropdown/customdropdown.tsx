@@ -46,7 +46,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
 
     const renderItem = ({item}: any): ReactElement<any, any> => (
         <TouchableOpacity
-            style={[styles.item, {backgroundColor: item.value == selected.value ? "#EAEAF4" : "rgba(255,255,255,0)",}]}
+            style={[styles.item, {backgroundColor: item.value == selected?.value ? "#EAEAF4" : "rgba(255,255,255,0)",}]}
             onPress={() => onItemPress(item)}>
             <Text style={{
 

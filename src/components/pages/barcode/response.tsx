@@ -1,4 +1,4 @@
-import {ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {ScrollView, Text, Animated, TouchableOpacity, View} from "react-native";
 import CheckMarkIcon from "@assets/svg/checkmark";
 import CloseIcon from "@assets/svg/close";
 import ErrorIcon from "@assets/svg/erroricon";
@@ -6,6 +6,7 @@ import React from "react";
 import ProfileImage from "@components/atoms/image/profile";
 import dayjs from "dayjs";
 import {styles} from "@pages/barcode/styles";
+import {useAlert} from "@pages/activities/hooks/useAlert";
 export function Response(props: { verifiedInfo: any, verified: boolean, onPress: () => void, error: boolean, onPress1: () => void }) {
     const getFullName = (user) => {
         return `${user?.firstName} ${user?.middleName} ${user?.lastName}`;
@@ -19,6 +20,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
         if (province) result += `, ${province}`;
         return result;
     }
+    const {errorValue, _errorHide} = useAlert(props.error, props.onPress1);
     console.log('props.verifiedInfo?.applicant', props.verifiedInfo);
     return <>
         {props.verified && <View style={[styles.group32, { paddingHorizontal: 20 }]}>
@@ -128,7 +130,9 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                 </ScrollView>
             </View>
         </View>}
-        {props.error && <View style={styles.group11}>
+        { props.error && <Animated.View  style={[styles.group11, {transform:[
+                {scale: errorValue}
+            ]}]}>
             <View style={styles.group10}>
                 <View style={styles.rect6}>
                     <ErrorIcon></ErrorIcon>
@@ -140,12 +144,11 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                     </View>
                 </View>
                 <View style={styles.group8}>
-                    <View style={styles.rect11}></View>
-                    <TouchableOpacity onPress={props.onPress1} style={styles.rect12}>
+                    <TouchableOpacity onPress={_errorHide} style={styles.rect12}>
                         <Text style={styles.close}>CLOSE</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-        </View>}
+        </Animated.View>   }
     </>;
 }

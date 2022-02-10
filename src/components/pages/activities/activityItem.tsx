@@ -136,8 +136,6 @@ const RenderPinned = ({ assignedPersonnel, config }:any) => {
     return (
         <View
             style={[
-
-
                 {backgroundColor: "#F3F7FF", marginTop: 5},
                 styles.horizontal,
                 styles.application

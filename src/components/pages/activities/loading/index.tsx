@@ -9,12 +9,16 @@ const dots = [1, 2, 3, 4]
 const INTERVAL = 100
 const ANIMATION_DURATION = 300
 const ANIMATION_SCALE = 1
+
+
+
+
 export default class ThreeDotsLoader extends React.Component {
     state = {
         active: 1
     }
 
-    componentDidMount(){
+    componentDidMount(){  
         this.interval = setInterval(() => {
             const active = this.state.active
             this.setState({ active: active > 3 ? 1 : active + 1})

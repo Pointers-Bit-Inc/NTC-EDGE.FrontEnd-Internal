@@ -165,7 +165,9 @@ export const styles = StyleSheet.create({
         height: 60,
         alignSelf: "center"
     },
+
     invalidQrCode: {
+        fontWeight: "700",
         color: "#121212",
         fontSize: 17,
         textAlign: "center",
@@ -190,10 +192,11 @@ export const styles = StyleSheet.create({
         alignSelf: "stretch"
     },
     rect11: {
-        height: 1,
-        backgroundColor: "rgba(217,219,233,1)",
+
     },
     rect12: {
+        borderTopWidth: 1,
+        borderTopColor: "rgba(217,219,233,1)",
         top: 0,
         left: 0,
         position: "absolute",

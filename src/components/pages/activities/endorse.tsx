@@ -48,7 +48,7 @@ function Endorsed(props: any) {
             }).then((response) => {
             const filterResponse = [...response.data].filter((item) => {
 
-                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1) && user?._id != item?._id
+                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1) //&& user?._id != item?._id
             })
 
             const res = filterResponse.map((item) => {
@@ -111,7 +111,7 @@ function Endorsed(props: any) {
             animationType="slide"
             transparent={true}
             visible={props.visible}
-                style={{height: "50%"}}
+
             onRequestClose={() => {
                 onCancelPress()
             }}>
@@ -224,7 +224,8 @@ function Endorsed(props: any) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        height: "90%"
     },
     rectFiller: {
         flex: 1

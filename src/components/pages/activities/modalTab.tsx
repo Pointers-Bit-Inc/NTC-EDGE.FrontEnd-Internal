@@ -61,7 +61,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
                                 : route.name;
 
                     const isFocused = state.index === index;
-
+                    
                     useEffect(() =>{
                         if(state.index === index){
                             setCurrentIndex(() => {
@@ -109,6 +109,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
 
                     return (
                         <View ref={e => ref.current[index] = e}
+                             
                               onLayout={onLayout} key={index}
                               style={[styles.group5,]}>
                             <TouchableOpacity
