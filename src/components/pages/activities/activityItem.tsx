@@ -147,7 +147,7 @@ const RenderPinned = ({ assignedPersonnel, config }:any) => {
             /> }
             { loading ? <ActivityIndicator/>  :
                 <Text
-                    style={{marginLeft: 3, marginRight: 5}}
+                    style={{"marginLeft": 3, "marginRight": 5}}
                     color="#606A80"
                     size={10}
                     numberOfLines={1}

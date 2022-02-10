@@ -11,21 +11,22 @@ import {
     View
 } from "react-native";
 import {Ionicons} from "@expo/vector-icons";
-import {InputField} from "@components/molecules/form-fields";
+import {InputField} from "@molecules/form-fields";
 import axios from "axios";
 import EndorseToIcon from "@assets/svg/endorseTo";
-import {BASE_URL} from "../../../services/config";
+import {BASE_URL} from "../../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
-import {DIRECTOR, EVALUATOR, FOREVALUATION} from "../../../reducers/activity/initialstate";
+import {DIRECTOR, EVALUATOR, FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import {useOrientation} from "@pages/activities/hooks/useOrientation";
+import {getRole} from "@pages/activities/script";
 
 const {height, width} = Dimensions.get('window');
 
-function Endorsed(props: any) {
+const Endorsed = (props: any) => {
 
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [pickedEndorsed, setPickedEndorsed] = useState<any[]>()
@@ -40,7 +41,7 @@ function Endorsed(props: any) {
     const [selected, setSelected] = useState(undefined);
     const [validateRemarks, setValidateRemarks] = useState<{ error: boolean }>({error: false})
 
-    async function fetchEndorse(isCurrent: boolean) {
+    const fetchEndorse = async (isCurrent: boolean) => {
         await axios.get(BASE_URL + '/users',
             {
                 headers: {
@@ -49,20 +50,24 @@ function Endorsed(props: any) {
             }).then((response) => {
             const filterResponse = [...response.data].filter((item) => {
 
-                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1) //&& user?._id != item?._id
+                return  getRole(item,[DIRECTOR, EVALUATOR]) //&& user?._id != item?._id
             })
 
-            const res = filterResponse.map((item) => {
+            const res = filterResponse?.map((item) => {
                 return {value: item._id, label: item.firstName + " " + item.lastName}
             })
 
-            if (isCurrent) setPickedEndorsed(res)
+            if (isCurrent) {
+                setPickedEndorsed(res)
+            }
             if (res) {
-                if (isCurrent) setEndorsed(props?.assignedPersonnel || res[0]?.value)
+                if (isCurrent) {
+                    setEndorsed(props?.assignedPersonnel || res[0]?.value)
+                }
             }
 
         })
-    }
+    };
 
     useEffect(() => {
         let isCurrent = true
@@ -74,7 +79,7 @@ function Endorsed(props: any) {
     const onEndorseConfirm = () => {
 
         setMessage(`` + pickedEndorsed?.find(picked => {
-            return picked.value == endorsed
+            return picked.value === endorsed
         })?.label)
         props.remarks({endorseId: endorsed, remarks: text, message})
          if(pickedEndorsed){
@@ -151,7 +156,7 @@ function Endorsed(props: any) {
                         }else{
                             onCancelPress()
                         }
-                       
+
 
                     })
 
@@ -220,7 +225,7 @@ function Endorsed(props: any) {
         </Modal>
 
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {

@@ -11,6 +11,7 @@ import DeclineIcon from "@assets/svg/decline";
 import lodash from 'lodash';
 import RadioButtonOnIcon from "@assets/svg/radioButtonOn";
 import RadioButtonOffIcon from "@assets/svg/radioButtonOff";
+import {getRole} from "@pages/activities/script";
 
 const window = Dimensions.get("window")
 
@@ -93,7 +94,7 @@ function TopModal(props: any) {
                         <View style={styles.group7_1}>
 
                             {statusCode.filter((item: any) => {
-                                return item?.isShow.indexOf(user?.role?.key) != -1
+                                return getRole(user, item?.isShow)
                             }).map((top: any, index: number) => {
                                 return (
                                     <TouchableOpacity

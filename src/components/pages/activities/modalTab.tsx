@@ -5,30 +5,31 @@ import ApplicationDetails from "@pages/activities/application/applicationDetails
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import {CASHIER, CHECKER, DIRECTOR, EVALUATOR} from "../../../reducers/activity/initialstate";
+import {ACCOUNTANT, CASHIER, CHECKER, DIRECTOR, EVALUATOR} from "../../../reducers/activity/initialstate";
 import {primaryColor, text} from "@styles/color";
 import {Animated, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 
-let initial = {}
-function MyTabBar({state, descriptors, navigation, position}) {
-    const [currentIndex, setCurrentIndex] = useState(0)
-    const [tabCurrent, setTabCurrent] = useState([])
+let initial = {};
+
+const MyTabBar = ({state, descriptors, navigation, position}) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [tabCurrent, setTabCurrent] = useState([]);
     const [translateValue] = useState(new Animated.Value(0));
-    const ref = useRef([])
-    const containerRef = useRef(null)
+    const ref = useRef([]);
+    const containerRef = useRef(null);
 
 
-    useEffect(()=>{
-        if(tabCurrent[currentIndex]?.x)   {
+    useEffect(() => {
+        if (tabCurrent[currentIndex]?.x) {
             Animated.spring(translateValue, {
-                toValue: tabCurrent[currentIndex]?.x -5,
+                toValue: tabCurrent[currentIndex]?.x - 5,
                 velocity: 10,
                 useNativeDriver: true,
             }).start();
-        } else{
+        } else {
 
-            ref?.current[0 ].measureLayout(containerRef.current, (x, y, width, height) => {
-                initial = {x, y, width, height}
+            ref?.current[0].measureLayout(containerRef.current, (x, y, width, height) => {
+                initial = {x, y, width, height};
                 Animated.spring(translateValue, {
                     toValue: x,
                     velocity: 10,
@@ -36,7 +37,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
                 }).start();
             })
         }
-    }, [tabCurrent, currentIndex, translateValue])
+    }, [tabCurrent, currentIndex, translateValue]);
 
     return (
         <View style={
@@ -49,7 +50,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
             }
         }>
 
-            <View ref={containerRef}   style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
+            <View ref={containerRef} style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
 
                 {state.routes.map((route, index) => {
                     const {options} = descriptors[route.key];
@@ -61,16 +62,16 @@ function MyTabBar({state, descriptors, navigation, position}) {
                                 : route.name;
 
                     const isFocused = state.index === index;
-                    
-                    useEffect(() =>{
-                        if(state.index === index){
+
+                    useEffect(() => {
+                        if (state.index === index) {
                             setCurrentIndex(() => {
-                                return tabCurrent.findIndex(tab => tab?.index == state.index)
+                                return tabCurrent.findIndex(tab => tab?.index === state.index)
                             })
                         }
 
-                    }, [position])
-                    const onPress =  async () => {
+                    }, [position]);
+                    const onPress = async () => {
                         const event = navigation.emit({
                             type: "tabPress",
                             target: route.key,
@@ -79,11 +80,11 @@ function MyTabBar({state, descriptors, navigation, position}) {
                         if (!isFocused && !event.defaultPrevented) {
                             navigation.navigate(route.name);
                         }
-                        const _tab = tabCurrent.findIndex(tab => tab.index == state.index)
+                        const _tab = tabCurrent.findIndex(tab => tab.index === state.index);
 
-                            setCurrentIndex(() => {
-                                return _tab
-                            })
+                        setCurrentIndex(() => {
+                            return _tab
+                        })
 
                     };
 
@@ -96,11 +97,11 @@ function MyTabBar({state, descriptors, navigation, position}) {
                     const onLayout = useCallback(
                         ({
                              nativeEvent: {
-                                 layout: {  width, x, y }
+                                 layout: {width, x, y}
                              }
                          }) => {
-                            let newArr = [...tabCurrent]
-                            newArr[index] = {index, width, x, y}
+                            let newArr = [...tabCurrent];
+                            newArr[index] = {index, width, x, y};
                             setTabCurrent(newArr)
 
                         },
@@ -109,7 +110,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
 
                     return (
                         <View ref={e => ref.current[index] = e}
-                             
+
                               onLayout={onLayout} key={index}
                               style={[styles.group5,]}>
                             <TouchableOpacity
@@ -118,13 +119,14 @@ function MyTabBar({state, descriptors, navigation, position}) {
                                 accessibilityLabel={options.tabBarAccessibilityLabel}
                                 testID={options.tabBarTestID}
                                 onPress={() => onPress()}
-                                onLongPress={() =>onLongPress()}
+                                onLongPress={() => onLongPress()}
                                 style={{flex: 1}}
                             >
                                 <Text style={{
                                     alignSelf: "center",
-                                    fontWeight:  isFocused ?  '500' : "normal",
-                                    color: isFocused ? primaryColor : text.default}}>{label}</Text>
+                                    fontWeight: isFocused ? '500' : "normal",
+                                    color: isFocused ? primaryColor : text.default
+                                }}>{label}</Text>
 
 
                             </TouchableOpacity>
@@ -138,31 +140,31 @@ function MyTabBar({state, descriptors, navigation, position}) {
 
                 style={[styles.rect6, {
                     transform: [{
-                        translateX:  translateValue
+                        translateX: translateValue
                     }
                     ],
 
                     width: tabCurrent[currentIndex]?.width + 7,
-                    backgroundColor:  primaryColor
-                }]}/> : initial &&  translateValue && <Animated.View
+                    backgroundColor: primaryColor
+                }]}/> : initial && translateValue && <Animated.View
 
-                    style={[styles.rect6, {
-                        transform: [{
-                            translateX:  translateValue
-                        }
-                        ],
-                        width: initial?.width || 63 ,
-                        backgroundColor:  primaryColor
-                    }]}/>
+                style={[styles.rect6, {
+                    transform: [{
+                        translateX: translateValue
+                    }
+                    ],
+                    width: initial?.width || 63,
+                    backgroundColor: primaryColor
+                }]}/>
             }
 
 
         </View>
 
     );
-}
+};
 
-export function ModalTab(props) {
+export const ModalTab = props => {
     const user = useSelector((state: RootStateOrAny) => state.user);
     const Tab = createMaterialTopTabNavigator();
     const [tabs, setTabs] = useState([
@@ -170,19 +172,19 @@ export function ModalTab(props) {
             id: 1,
             name: 'Basic Info',
             active: true,
-            isShow: [CHECKER, CASHIER, DIRECTOR, EVALUATOR]
+            isShow: [CHECKER, ACCOUNTANT, CASHIER, DIRECTOR, EVALUATOR]
         },
         {
             id: 2,
             name: 'Application Details',
             active: false,
-            isShow: [CHECKER, CASHIER, DIRECTOR, EVALUATOR]
+            isShow: [CHECKER, ACCOUNTANT, CASHIER, DIRECTOR, EVALUATOR]
         },
         {
             id: 3,
             name: 'Requirements',
             active: false,
-            isShow: [CHECKER, DIRECTOR, EVALUATOR]
+            isShow: [CHECKER, ACCOUNTANT, DIRECTOR, EVALUATOR]
         },
         {
             id: 4,
@@ -190,27 +192,27 @@ export function ModalTab(props) {
             active: false,
             isShow: [CASHIER]
         },
-    ])
+    ]);
     const applicant = props?.details?.applicant,
         selectedTypes = props?.details?.selectedTypes,
         applicationType = props?.details?.applicationType,
         service = props?.details?.service,
         soa = props?.details?.soa,
         totalFee = props?.details?.totalFee,
-        paymentMethod= props?.details?.paymentMethod,
+        paymentMethod = props?.details?.paymentMethod,
         requirements = props?.details?.requirements,
         updatedAt = props?.details?.updatedAt,
         approvalHistory = props?.details?.approvalHistory,
         assignedPersonnel = props?.details?.assignedPersonnel,
         createdAt = props?.details?.createdAt,
-        proofOfPayment = props?.details?.proofOfPayment
-    return <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
+        proofOfPayment = props?.details?.proofOfPayment;
+    return <Tab.Navigator  tabBar={(props) => <MyTabBar {...props} />}>
 
         {
 
             tabs.map((tab, index) => {
-                const isShow = tab.isShow.indexOf(user?.role?.key) != -1
-                if (isShow && tab.id == 1) {
+                const isShow = tab.isShow.indexOf(user?.role?.key) !== -1;
+                if (isShow && tab.id === 1) {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
@@ -218,7 +220,7 @@ export function ModalTab(props) {
                         options={{tabBarLabel: tab.name}}
                     >
                         {() => <BasicInfo
-                                assignedPersonnel={assignedPersonnel}
+                            assignedPersonnel={assignedPersonnel}
                             approvalHistory={approvalHistory}
                             status={props.status}
                             paymentHistory={props?.details?.paymentHistory}
@@ -229,7 +231,7 @@ export function ModalTab(props) {
                             applicant={applicant}
                             key={index}/>}
                     </Tab.Screen>
-                } else if (isShow && tab.id == 2) {
+                } else if (isShow && tab.id === 2) {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
@@ -241,7 +243,7 @@ export function ModalTab(props) {
                             applicantType={applicationType}
                             key={index}/>}
                     </Tab.Screen>
-                } else if (isShow && tab.id == 3) {
+                } else if (isShow && tab.id === 3) {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
@@ -249,20 +251,25 @@ export function ModalTab(props) {
                     >
                         {() => <Requirement requirements={requirements} key={index}/>}
                     </Tab.Screen>
-                } else if (isShow && tab.id == 4) {
+                } else if (isShow && tab.id === 4) {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
                         options={{tabBarLabel: tab.name}}
                     >
-                        {() => <Payment proofOfPayment={proofOfPayment} updatedAt={updatedAt}  paymentMethod={paymentMethod} applicant={applicant}  totalFee={totalFee}
-                                        soa={soa} key={index}/>}
+                        {() => <Payment proofOfPayment={proofOfPayment}
+                                        updatedAt={updatedAt}
+                                        paymentMethod={paymentMethod}
+                                        applicant={applicant}
+                                        totalFee={totalFee}
+                                        soa={soa}
+                                        key={index}/>}
                     </Tab.Screen>
                 }
             })
         }
     </Tab.Navigator>
-}
+};
 
 const styles = StyleSheet.create({
     group5: {
@@ -272,4 +279,4 @@ const styles = StyleSheet.create({
         height: 3,
         marginTop: -5
     },
-})
+});

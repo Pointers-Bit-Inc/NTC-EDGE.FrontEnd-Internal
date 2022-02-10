@@ -1,32 +1,36 @@
 import React, {useEffect, useState} from "react";
 import {
-    Animated,
-    Dimensions,
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
+    Alert ,
+    Animated ,
+    Dimensions ,
+    KeyboardAvoidingView ,
+    Modal ,
+    Platform ,
+    StyleSheet ,
+    Text ,
+    TouchableOpacity ,
     View
 } from "react-native";
 import ApplicationApproved from "@assets/svg/application-approved";
 import {Ionicons} from "@expo/vector-icons";
 import axios from "axios";
-import {InputField} from "@components/molecules/form-fields";
-import {BASE_URL} from "../../../services/config";
-import {APPROVED, CASHIER, DIRECTOR, EVALUATOR,} from "../../../reducers/activity/initialstate";
+import {InputField} from "@molecules/form-fields";
+import {BASE_URL} from "../../../../services/config";
+import {ACCOUNTANT, APPROVED, CASHIER, DIRECTOR, EVALUATOR,} from "../../../../reducers/activity/initialstate";
 import {RootStateOrAny, useSelector} from "react-redux";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import {useAlert} from "@pages/activities/hooks/useAlert";
+import {getRole} from "@pages/activities/script";
 
 const {width, height} = Dimensions.get('window');
 
-function Approval(props: any) {
+const Approval = (props: any) => {
 
-    const {springValue, _springHide} = useAlert(props.visible, () => props.onDismissed(APPROVED));
+    const {springValue, _springHide} = useAlert(props.visible, () => {
+        return props.onDismissed(APPROVED);
+    });
 
 
     const isKeyboardVisible = useKeyboard();
@@ -37,53 +41,87 @@ function Approval(props: any) {
     const [remarks, setRemarks] = useState("")
     const [showAlert, setShowAlert] = useState(false)
     const [validateRemarks, setValidateRemarks] = useState<{ error: boolean }>({error: false})
-    useEffect(async () => {
+     const [loading, setLoading] = useState(false)
+
+    useEffect( () => {
+        setLoading(true)
+        const userRole = getRole(user, [EVALUATOR, DIRECTOR])
+        const userAccountantRole = getRole(user, [ACCOUNTANT])
         let isCurrent = true
-        await axios.get(BASE_URL + '/users',
+         axios.get(BASE_URL + '/users',
             {
                 headers: {
                     Authorization: "Bearer ".concat(user?.sessionToken)
                 }
             }).then((response) => {
-            const filterResponse = [...response.data].filter((item) => {
-                return ([CASHIER].indexOf(item?.role?.key) != -1)
+
+             setLoading(false)
+            const filterResponse = [...response.data].filter(item => {
+                //evaluator and director -> accountant -> cashier -> null
+                if (userRole) {
+
+                    return getRole(item , [ACCOUNTANT])
+                } else {
+                    if (userAccountantRole) {
+                        return getRole(item , [CASHIER])
+                    } else {
+                        return false
+                    }
+                }
             })
 
             const res = filterResponse.map((item) => {
                 return {value: item._id, label: item.firstName + " " + item.lastName}
             })
 
-            if (isCurrent) setPickedCashier(res)
-            if (res) {
-                if (isCurrent) setCashier(res[0]?.value)
+            if (isCurrent) {
+                setPickedCashier(res)
+            }
+            if (res.length) {
+                if (isCurrent) {
+                    setCashier(res[0]?.value)
+                }
+            }else{
+                setLoading(true)
+
             }
 
-        })
+        }) .catch((err) => {
+            setLoading(false)
+             Alert.alert('Alert', err?.message || 'Something went wrong.')
+             console.warn(err)
+         })
         return () => {
+            setLoading(false)
             isCurrent = false
         }
     }, [])
 
 
     function onConfirmation() {
-        props.onChangeRemarks(remarks, cashier )
-        setMessage("Are you sure you want to approve this application?")
-        setShowAlert(true)
+        if(loading){
+            Alert.alert('Alert', "No accountant has been found")
+        }else{
+            props.onChangeRemarks(remarks, cashier)
+            setMessage("Are you sure you want to approve this application?")
+            setShowAlert(true)
+        }
     }
-      const onCancelPress = (event) =>{
-          setAlertLoading(false)
-          setShowAlert(false)
-          if (approvalIcon ) {
-              props.onDismissed(event)
-              setApprovalIcon(false)
-              setShowClose(false)
-          }else{
-             props.onModalDismissed()
-              setApprovalIcon(false)
-              setShowClose(false)
-          }
-          setTitle("Application Approve")
-      }
+
+    const onCancelPress = (event, bool?:any) => {
+        setAlertLoading(false)
+        setShowAlert(false)
+        if (approvalIcon) {
+            props.onDismissed(event)
+            setApprovalIcon(false)
+            setShowClose(false)
+        } else {
+            props.onModalDismissed()
+            setApprovalIcon(false)
+            setShowClose(false)
+        }
+        setTitle("Application Approve")
+    }
     const [alertLoading, setAlertLoading] = useState(false)
     const [approvalIcon, setApprovalIcon] = useState(false)
     const [title, setTitle] = useState("Approve Application")
@@ -121,26 +159,21 @@ function Approval(props: any) {
                     setAlertLoading(true)
                     props.confirm({cashier: cashier, remarks: remarks}, (response, callback) => {
                         setAlertLoading(false)
-                        if(response){
-
+                        if (response) {
                             props.onDismissed(null, (bool) => {
-
                                 setApprovalIcon(true)
                                 setTitle("Application Approved")
                                 setMessage("Application has been approved.")
                                 setShowClose(true)
                             })
                             callback(true)
-                        } else if(!response){
-
-                            props.onDismissed(APPROVED, ()=>{
+                        } else if (!response) {
+                            props.onDismissed(APPROVED, () => {
                                 setShowAlert(false)
                                 setApprovalIcon(false)
                                 setShowClose(false)
                             })
-
-                        }else{
-
+                        } else {
                             props.onModalDismissed()
                             setShowAlert(false)
                             setApprovalIcon(false)
@@ -151,65 +184,36 @@ function Approval(props: any) {
 
                 }} show={showAlert} title={title}
                 message={message}/>
-            {/*<AwesomeAlert
-                actionContainerStyle={alertStyle.actionContainerStyle}
-                overlayStyle={showAlert ? alertStyle.overlayStyle : {}}
-                titleStyle={alertStyle.titleStyle}
-                contentContainerStyle={alertStyle.contentContainerStyle}
-                confirmButtonTextStyle={alertStyle.confirmButtonTextStyle}
-                cancelButtonColor="#fff"
-                cancelButtonTextStyle={alertStyle.cancelButtonTextStyle}
-                cancelText="Cancel"
-                confirmText="Yes"
-                confirmButtonColor="#fff"
-                show={showAlert}
-                showProgress={false}
-                title="Approved?"
-                message={message}
-                messageStyle={{textAlign: 'center'}}
-                closeOnTouchOutside={true}
-                closeOnHardwareBackPress={false}
-                showCancelButton={true}
-                showConfirmButton={true}
-                onCancelPressed={() => {
-                    setShowAlert(false)
-                }}
-                onConfirmPressed={() => {
-
-                    props.confirm({cashier: cashier, remarks: remarks}, (response, callback) => {
-                        setShowAlert(false)
-
-                        props.onDismissed()
-                        callback(true)
-                    })
-
-                }}
-            />*/}
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={[styles.container]}
             >
 
-                {!showAlert && <Animated.View style={[styles.group, {transform: [{scale: isTyping ? 1 :springValue}]}]}>
+                {!showAlert &&
+                <Animated.View style={[styles.group, {transform: [{scale: isTyping ? 1 : springValue}]}]}>
                     <View style={styles.rect}>
                         <View style={{alignSelf: 'flex-start'}}>
                             <TouchableOpacity onPress={_springHide}>
-                                <Ionicons name="md-close" style={{fontSize: 25}}></Ionicons>
+                                <Ionicons name="md-close" style={{fontSize: 25}}/>
                             </TouchableOpacity>
                         </View>
-                        <ApplicationApproved style={styles.icon}></ApplicationApproved>
+                        <ApplicationApproved style={styles.icon}/>
                         <Text style={styles.applicationApproved}>
-                            {props.isCashier ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED'}
+                            {getRole(user,[CASHIER])? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED'}
                         </Text>
                         <View style={styles.group2}>
-                            {/* <View style={[styles.element, {marginBottom: 5}]}>
+                            {
+                                /* <View style={[styles.element, {marginBottom: 5}]}>
                                 <Dropdown value={cashier}  onChangeValue={(value: any) => {
                                     setCashier(value)}
                                 }
                                             placeholder={{}}
                                             items={pickedCashier}></Dropdown>
-                            </View> */}
-                            {[DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1 && <InputField
+                            </View> */
+                            }
+
+                            {getRole(user, [DIRECTOR, EVALUATOR]) &&
+                            <InputField
                                 style={{fontWeight: 'normal'}}
                                 outlineStyle={{
                                     borderColor: "rgba(202,210,225,1)",
@@ -221,7 +225,7 @@ function Approval(props: any) {
                                 value={remarks}
                                 error={validateRemarks.error}
                                 errorColor={errorColor}
-                                onEndEditing={()=>{
+                                onEndEditing={() => {
                                     setIsTyping(false)
                                 }}
                                 onChangeText={(text: string) => {
@@ -232,9 +236,7 @@ function Approval(props: any) {
                                 }
                             />}
                             <View style={{marginTop: 5}}>
-                                <TouchableOpacity onPress={() => {
-                                    onConfirmation()
-                                }}>
+                                <TouchableOpacity onPress={onConfirmation}>
                                     <View style={styles.confirmButton}>
                                         <Text style={styles.confirm}>Confirm</Text>
                                     </View>
@@ -247,7 +249,7 @@ function Approval(props: any) {
         </Modal>
 
     )
-}
+};
 
 const styles = StyleSheet.create({
 

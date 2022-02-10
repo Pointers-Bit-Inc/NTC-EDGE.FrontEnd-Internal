@@ -14,6 +14,7 @@ import {formatDate, getFilter} from "@pages/activities/script";
 import moment from "moment";
 import Loader from "@pages/activities/bottomLoad";
 import {defaultSanitize} from "@pages/activities/search/utils";
+import {useUserRole} from "@pages/activities/hooks/useUserRole";
 
 function Search(props: any) {
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
@@ -26,10 +27,9 @@ function Search(props: any) {
     const [textInput, setTextInput] = useState("")
     const [searchHistory, setSearchHistory] = useState<[]>([])
     const [applications, setApplications] = useState([])
-    const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
-    const director = [DIRECTOR].indexOf(user?.role?.key) != -1;
-    const evaluator = [EVALUATOR].indexOf(user?.role?.key) != -1;
-    const checker = [CHECKER].indexOf(user?.role?.key) != -1;
+    const { cashier , director , evaluator , checker , accountant } = useUserRole();
+
+
     const [infiniteLoad, setInfiniteLoad] = useState(false)
 
     const bottomLoader = () => {
@@ -44,7 +44,7 @@ function Search(props: any) {
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
-        const list = getFilter(app, user, selectedClone, cashier, director, checker, evaluator);
+        const list = getFilter(app, user, selectedClone, cashier, director, checker, evaluator, accountant);
 
         const groups = list?.reduce((groups: any, activity: any) => {
 
@@ -236,10 +236,10 @@ function Search(props: any) {
         }
     }
 
-    function handleBackButtonClick() {
+    const handleBackButtonClick = () => {
         props.navigation.goBack()
         return true;
-    }
+    };
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
@@ -271,18 +271,12 @@ function Search(props: any) {
             onEndEditing={() => {
 
             }}
-            onChange={(event) => {
-                onTextChange(event.nativeEvent.text)
-            }}
-            onChangeText={(text) => {
-                setTextInput(text)
-            }}
-            onPress1={() => {
-
-                setTextInput("")
-
-            }}
-            translateX={props.initialMove} nevers={searchHistory} callbackfn={(search, index) => {
+            onChange={(event) => onTextChange(event.nativeEvent.text)}
+            onChangeText={(text) => setTextInput(text)}
+            onPress1={() => setTextInput("")}
+            translateX={props.initialMove}
+            nevers={searchHistory}
+            callbackfn={(search, index) => {
 
             return <View key={index} style={styles.group6}>
                 <TouchableOpacity onPress={() => {
@@ -290,14 +284,14 @@ function Search(props: any) {
                     setTextInput(search)
                 }}>
                     <View style={styles.group5}>
-                        <HistoryIcon style={styles.icon3}></HistoryIcon>
+                        <HistoryIcon style={ styles.icon3 }/>
                         <Text style={styles.loremIpsum}>{search}</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {
                     removeSearchHistory(index)
                 }}>
-                    <CloseIcon width={12} height={12}></CloseIcon>
+                    <CloseIcon width={ 12 } height={ 12 }/>
                 </TouchableOpacity>
 
             </View>

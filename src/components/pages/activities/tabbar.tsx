@@ -16,11 +16,10 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {setTabBarHeight} from "../../../reducers/application/actions";
 import lodash from 'lodash';
+import {getRole} from "@pages/activities/script";
 const Tab = createBottomTabNavigator();
 
-function getRole(user, arr ) {
-    return arr.indexOf(user?.role?.key) != -1;
-}
+
 
 export default function TabBar() {
 

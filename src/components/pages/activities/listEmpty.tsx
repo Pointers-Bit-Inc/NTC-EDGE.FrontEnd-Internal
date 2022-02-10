@@ -12,8 +12,8 @@ export default function Loader(refreshing, searchTerm, size) {
         return status != DATE_ADDED
     })
     return (
-        <View style={{flex: 1, justifyContent: 'center',alignItems: 'center'}}>
-            {refreshing ? <ActivityIndicator/> : <Text>No Content</Text>}
+        <View style={{flex: 1,  justifyContent: 'center',alignItems: 'center'}}>
+            {refreshing ? <ActivityIndicator/> :  selectedClone.length  ? <Text>No Content "{selectedClone.toString()}"</Text> : <Text>No Content</Text>}
         </View>
     );
 }

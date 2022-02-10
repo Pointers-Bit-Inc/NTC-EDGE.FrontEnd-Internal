@@ -13,17 +13,18 @@ import {
 } from "react-native";
 import {styles} from "@pages/activities/styles";
 import {
-    CASHIER,
-    CHECKER,
-    DATE_ADDED,
-    DECLINED,
-    DIRECTOR,
-    EVALUATOR,
-    FOREVALUATION,
-    FORVERIFICATION,
-    PAID,
-    PENDING,
-    UNVERIFIED,
+    ACCOUNTANT ,
+    CASHIER ,
+    CHECKER ,
+    DATE_ADDED ,
+    DECLINED ,
+    DIRECTOR ,
+    EVALUATOR ,
+    FOREVALUATION ,
+    FORVERIFICATION ,
+    PAID ,
+    PENDING ,
+    UNVERIFIED ,
     VERIFIED
 } from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
@@ -55,6 +56,8 @@ import {MeetingNotif} from '@components/molecules/list-item';
 import listEmpty from "@pages/activities/listEmpty";
 import HomeMenuIcon from "@assets/svg/homemenu";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
+import account from "@assets/svg/account";
+import {useUserRole} from "@pages/activities/hooks/useUserRole";
 
 const {width} = Dimensions.get('window')
 
@@ -66,7 +69,7 @@ export default function ActivitiesPage(props: any) {
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(0)
     const [size, setSize] = useState(0)
-    const user = useSelector((state: RootStateOrAny) => state.user);
+    const { user , cashier , director , evaluator , checker , accountant } = useUserRole();
     const [updateModal, setUpdateModal] = useState(false)
     const meetingList = useSelector((state: RootStateOrAny) => {
         const {activeMeetings} = state.meeting;
@@ -79,10 +82,7 @@ export default function ActivitiesPage(props: any) {
         }
     }
 
-    const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
-    const director = [DIRECTOR].indexOf(user?.role?.key) != -1;
-    const evaluator = [EVALUATOR].indexOf(user?.role?.key) != -1;
-    const checker = [CHECKER].indexOf(user?.role?.key) != -1;
+
 
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
     const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
@@ -97,7 +97,7 @@ export default function ActivitiesPage(props: any) {
     });
 
     function getList(list: any, selectedClone) {
-        return getFilter(list, user, selectedClone, cashier, director, checker, evaluator);
+        return getFilter(list, user, selectedClone, cashier, director, checker, evaluator, accountant);
     }
 
     const ispinnedApplications = (applications: any) => {

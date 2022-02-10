@@ -1,11 +1,11 @@
 import React, {useEffect, useMemo, useState} from "react";
-import {ActivityIndicator, Alert, Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Alert, Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {primaryColor} from "@styles/color";
-import Disapproval from "@pages/activities/disapproval";
-import Endorsed from "@pages/activities/endorse";
-import Approval from "@pages/activities/approval";
+import Disapproval from "@pages/activities/modal/disapproval";
+import Endorsed from "@pages/activities/modal/endorse";
+import Approval from "@pages/activities/modal/approval";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {PaymentStatusText, StatusText} from "@pages/activities/script";
+import {getRole, PaymentStatusText, StatusText} from "@pages/activities/script";
 import {
     APPROVED,
     CASHIER,
@@ -23,20 +23,18 @@ import Api from 'src/services/api';
 import {updateApplicationStatus} from "../../../reducers/application/actions";
 import {ModalTab} from "@pages/activities/modalTab";
 import CustomAlert from "@pages/activities/alert/alert";
-import ForwardIcon from "@assets/svg/forward";
 import CloseIcon from "@assets/svg/close";
+import {ApprovedButton} from "@pages/activities/button/approvedButton";
+import {DeclineButton} from "@pages/activities/button/declineButton";
+import {EndorsedButton} from "@pages/activities/button/endorsedButton";
 
-const {width, height} = Dimensions.get('window');
 
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
 
     const user = useSelector((state: RootStateOrAny) => state.user);
-    const applicant = props?.details?.applicant?.user
     const [change, setChange] = useState<boolean>(false)
     const cashier = [CASHIER].indexOf(user?.role?.key) != -1
-    const director = [DIRECTOR].indexOf(user?.role?.key) != -1
-    const evaluator = [EVALUATOR].indexOf(user?.role?.key) != -1
     const [visible, setVisible] = useState(false)
     const [endorseVisible, setEndorseVisible] = useState(false)
     const [approveVisible, setApproveVisible] = useState(false)
@@ -67,7 +65,7 @@ function ActivityModal(props: any) {
         let params: any = {
             status,
             remarks: remarks ? remarks : undefined,
-            assignedPersonnel: assignId  ? assignId : undefined,
+            assignedPersonnel: assignId ? assignId : undefined,
         };
 
         setCurrentLoading(status);
@@ -89,7 +87,7 @@ function ActivityModal(props: any) {
                     setCurrentLoading('');
                     if (res.status === 200) {
                         if (res.data) {
-                            console.log("res?.data?.assignedPersonnel", res?.data?.assignedPersonnel)
+                            console.log("res?.data?.assignedPersonnel", res?.data?.assignedPersonnel, assignId)
                             props.onChangeAssignedId(res.data)
                             dispatch(updateApplicationStatus({
                                 application: res.data,
@@ -129,6 +127,7 @@ function ActivityModal(props: any) {
     useEffect(() => {
 
         return () => {
+
             setChange(false)
             setStatus("")
             setAssignId("")
@@ -143,16 +142,7 @@ function ActivityModal(props: any) {
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
     const allButton = (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?._id ? true : (declineButton || approveButton || grayedOut)
-    console.log("----------------------------------------------",
-        "\napplication id:", props?.details?._id,
-        "\nuser:", props?.details?.applicant?.user?.firstName,
-        "\ncashier:", cashier,
-        "\nassign id:",  props?.details?.assignedPersonnel,
-        "\nassignId:", assignId,
-        "\nid:", user?._id,
-        "\nstatus:", status,
-        "\npayment status:", props.details.paymentStatus,
-        "\nstatus: ", props.details.status)
+
     const [alertLoading, setAlertLoading] = useState(false)
     const [approvalIcon, setApprovalIcon] = useState(false)
     const [title, setTitle] = useState("Approve Application")
@@ -239,154 +229,68 @@ function ActivityModal(props: any) {
                     <View></View>
                 </View>
 
-                <ModalTab  details={props.details} status={status}/>
+                <ModalTab details={props.details} status={status}/>
                 {
                     <View style={styles.footer}>
-                        <View style={{
-                            flex: 1,
-                            alignItems: "center",
-                            flexDirection: "row",
-                            justifyContent: "space-evenly",
-                        }}>
-                            {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
-                            <View style={{flex: 1, paddingRight: 5}}>
-                                <TouchableOpacity
-                                    disabled={currentLoading === APPROVED || allButton}
-                                    onPress={() => {
-                                        if (cashier) {
-                                            onShowConfirmation(APPROVED)
-                                        } else {
-                                            setApproveVisible(true)
-                                        }
+                        <View style={styles.groupButton}>
+                            {getRole(user, [DIRECTOR, EVALUATOR, CASHIER]) &&
+                            <ApprovedButton
+                                currentLoading={currentLoading}
+                                allButton={false}
+                                onPress={() => {
+                                    if (cashier) {
+                                        onShowConfirmation(APPROVED)
+                                    } else {
+                                        setApproveVisible(true)
+                                    }
 
 
-                                    }}
-                                >
-                                    {/* <View style={styles.rect22Filler}></View>
-                                <View style={styles.rect22}>
-                                    <View style={styles.approvedFiller}></View>
-                                    <Text style={styles.approved}>Approved</Text>
-                                </View> */}
-                                    <View style={[styles.rect22, {
-
-                                        backgroundColor: (allButton ? "#C4C4C4" : "rgba(0,171,118,1)"),
-                                        height: undefined,
-                                        paddingVertical: currentLoading === APPROVED ? 9 : 10.5
-                                    }]}>
-                                        {
-                                            currentLoading === APPROVED ? (
-                                                <ActivityIndicator color={'white'} size={'small'}/>
-                                            ) : (
-                                                <Text
-                                                    style={[styles.approved, {
-                                                        fontWeight: '600',
-                                                        color: allButton ? "#808196" : "rgba(255,255,255,1)",
-                                                    }]}>
-                                                    Approve
-                                                </Text>
-                                            )
-                                        }
-                                    </View>
-                                </TouchableOpacity>
-                            </View>}
-                            {[DIRECTOR, EVALUATOR, CASHIER].indexOf(user?.role?.key) != -1 &&
-                            <View style={{flex: 1}}>
-                                <TouchableOpacity
-                                    disabled={(currentLoading === DECLINED || allButton)}
-                                    onPress={() => {
-                                        setVisible(true)
-                                    }}
-                                >
-                                    <View
-                                        style={[
-                                            styles.rect24,
-                                            {
-                                                backgroundColor: (allButton) ? "#C4C4C4" : "#fff",
-                                                height: undefined,
-                                                paddingVertical: currentLoading === DECLINED ? 8.5 : 9,
-                                                borderWidth: 2,
-                                                borderColor: (allButton) ? "#C4C4C4" : "rgba(194,0,0,1)",
-                                            }]
-                                        }>
-
-                                        {
-                                            currentLoading === DECLINED ? (
-                                                <ActivityIndicator color={"rgba(194,0,0,1)"} size={'small'}/>
-                                            ) : (
-                                                <Text
-                                                    style={[styles.endorse1, {
-                                                        fontWeight: '600',
-                                                        color: (allButton) ? "#808196" : "rgba(194,0,0,1)",
-                                                    }]}>Decline</Text>
-                                            )
-                                        }
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
+                                }}/>}
+                            {getRole(user, [DIRECTOR, EVALUATOR, CASHIER]) &&
+                            <DeclineButton
+                                currentLoading={currentLoading}
+                                allButton={allButton}
+                                onPress={() => {
+                                    setVisible(true)
+                                }}/>
                             }
 
                         </View>
 
-                        {[EVALUATOR].indexOf(user?.role?.key) != -1 &&
-                        <View style={{flex: 0.8, paddingHorizontal: 5,}}>
-                            <TouchableOpacity
-                                disabled={(currentLoading === FOREVALUATION   )}
-                                onPress={() => {
-                                    setEndorseVisible(true)
-                                }}
-                            >
-                                <View style={[{
-                                    width: "85%",
-                                    alignSelf: "flex-end",
-                                    borderWidth: 1,
-                                    borderRadius: 24,
-                                    borderColor: "#c4c4c4",
-                                    backgroundColor: ((allButton) ? "#C4C4C4" : "#fff"),
-                                    height: undefined,
-                                    paddingVertical: currentLoading === FOREVALUATION ? 6.5 : 10
-                                }]}>
-                                    <View
-                                        style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-                                        {
-                                            currentLoading === FOREVALUATION ? (
-                                                <ActivityIndicator color={'white'} size={'small'}/>
-                                            ) : (
-                                                <Text style={[styles.endorse, {
-                                                    fontWeight: '600',
-                                                    color: (allButton) ? "#808196" : "#031A6E",
-                                                }]}>Endorse</Text>
-
-                                            )
-                                        }
-                                        <ForwardIcon isDisable={allButton} style={{marginLeft: 6}}/>
-                                    </View>
-
-                                </View>
-                            </TouchableOpacity>
-                        </View>}
+                        {getRole(user, [EVALUATOR]) &&
+                        <EndorsedButton
+                            currentLoading={currentLoading}
+                            allButton={false}
+                            onPress={() => {
+                                setEndorseVisible(true)
+                            }}/>}
 
 
                     </View>
                 }
             </View>
-            <Approval
+           <Approval
                 onModalDismissed={() => {
                     setRemarks(prevRemarks)
-                    setAssignId( props?.details?.assignedPersonnel)
+                    setAssignId(props?.details?.assignedPersonnel)
                 }}
                 onChangeRemarks={(_remark: string, _assign) => {
+
                     setPrevRemarks(remarks)
                     setPrevAssignId(assignId)
                     setRemarks(_remark)
-                    setAssignId(_assign)
+                    if(_assign == undefined){
+                        setAssignId(_assign )
+                    }
+
                 }}
                 visible={approveVisible}
                 confirm={(event: any, callback: (res, callback) => {}) => {
 
                     let status = ""
-                    if ([DIRECTOR, EVALUATOR].indexOf(user?.role?.key) != -1) {
+                    if (getRole(user, [DIRECTOR, EVALUATOR])) {
                         status = APPROVED
-                    } else if ([CASHIER].indexOf(user?.role?.key) != -1) {
+                    } else if (getRole(user, [CASHIER])) {
                         status = PAID
                     }
                     onChangeApplicationStatus(status, (err, appId) => {
@@ -405,13 +309,10 @@ function ActivityModal(props: any) {
 
 
                 }}
-                isCashier={user?.role?.key === CASHIER}
                 onDismissed={(event?: any, callback?: (bool) => {}) => {
                     if (event == APPROVED) {
                         onApproveDismissed()
                     }
-
-
                     if (callback) {
                         callback(true)
                     }
@@ -439,10 +340,10 @@ function ActivityModal(props: any) {
                 onDismissed={onDismissed}
             />
             <Endorsed
-                assignedPersonnel={ props?.details?.assignedPersonnel}
+                assignedPersonnel={props?.details?.assignedPersonnel}
                 onModalDismissed={() => {
                     setRemarks(prevRemarks)
-                    setAssignId( props?.details?.assignedPersonnel)
+                    setAssignId(props?.details?.assignedPersonnel)
                 }}
                 remarks={(event: any) => {
                     setPrevRemarks(remarks)
@@ -463,7 +364,7 @@ function ActivityModal(props: any) {
                             })
                         }
 
-                    },);
+                    });
                 }}
                 visible={endorseVisible}
                 onDismissed={onEndorseDismissed}
@@ -476,6 +377,12 @@ export default ActivityModal
 const styles = StyleSheet.create({
     container: {
         flex: 1
+    },
+    groupButton: {
+        flex: 1,
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-evenly"
     },
     group13: {
         top: 0,
@@ -634,11 +541,7 @@ const styles = StyleSheet.create({
     approvedFiller: {
         flex: 1
     },
-    approved: {
 
-        textAlign: "center",
-        alignSelf: "center"
-    },
     button2: {
         width: 100,
         height: 31,
@@ -655,9 +558,7 @@ const styles = StyleSheet.create({
     endorseFiller: {
         flex: 1
     },
-    endorse: {
-        textAlign: "center",
-    },
+
     button3Row: {
         height: 31,
         flexDirection: "row",
@@ -679,10 +580,7 @@ const styles = StyleSheet.create({
     rect24Filler: {
         flex: 1
     },
-    rect24: {
-        height: 31,
-        borderRadius: 24
-    },
+
     endorse1Filler: {
         flex: 1
     },

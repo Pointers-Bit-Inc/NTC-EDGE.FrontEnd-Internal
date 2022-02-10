@@ -139,35 +139,35 @@ export const statusDimension = (status: any) => {
     }
 }
 
-export function handleInfinityScroll(event: any) {
+export const handleInfinityScroll = (event: any) => {
     let mHeight = event.nativeEvent.layoutMeasurement.height;
     let cSize = event.nativeEvent.contentSize.height;
     let Y = event.nativeEvent.contentOffset.y;
     if (Math.ceil(mHeight + Y) >= cSize) return true;
     return false;
-}
+};
 
-export function getFilter(list: any, user, selectedClone, cashier: boolean, director: boolean, checker: boolean, evaluator: boolean) {
-    return list?.filter((item: any) => {
-        let _approvalHistory = false
-        if (item?.approvalHistory.length) {
-            _approvalHistory = item?.approvalHistory[0].userId == user?._id
-        }
-        const search =
-            (selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true)
-        if (cashier) {
-            return (item?.status == APPROVED || item?.status == DECLINED && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search)
-        } else if (director) {
-            return (item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search
-        } else if (checker) {
-            return (item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
-        } else if (evaluator) {
-            return item?.status.length > 0 || item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory
-        }
-    });
-}
+export const getFilter = (list: any, user, selectedClone, cashier: boolean, director: boolean, checker: boolean, evaluator: boolean, accountant: boolean) => list?.filter((item: any) => {
+    let _approvalHistory = false
+    if (item?.approvalHistory.length) {
+        _approvalHistory = item?.approvalHistory[0].userId == user?._id
+    }
+    const search =
+        (selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true)
+    if (cashier) {
+        return (item?.status == APPROVED || item?.status == DECLINED && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search)
+    } else if (director) {
+        return (item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search
+    } else if (checker) {
+        return (item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
+    } else if (accountant) {
+        return item?.soa?.length > 0 && (item?.status == APPROVED || item?.status == DECLINED || search);
+    } else if (evaluator) {
+        return item?.status.length > 0 || item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory
+    }
+});
 
-export function unreadReadApplication(unReadBtn, dateRead, id, config: { headers: { Authorization: string } }, dispatch: Dispatch<any>, setUpdateUnReadReadApplication: (value: (((prevState: boolean) => boolean) | boolean)) => void, callback: (action: any) => void) {
+export const unreadReadApplication = (unReadBtn, dateRead, id, config: { headers: { Authorization: string } }, dispatch: Dispatch<any>, setUpdateUnReadReadApplication: (value: (((prevState: boolean) => boolean) | boolean)) => void, callback: (action: any) => void) => {
     const action = unReadBtn ? (dateRead ? "unread" : "read") : "read"
 
     const params = {
@@ -184,4 +184,5 @@ export function unreadReadApplication(unReadBtn, dateRead, id, config: { headers
     }).catch((err) => {
         console.warn(err)
     })
-}
+};
+export const getRole = (user, arr ) => arr.indexOf(user?.role?.key) != -1;

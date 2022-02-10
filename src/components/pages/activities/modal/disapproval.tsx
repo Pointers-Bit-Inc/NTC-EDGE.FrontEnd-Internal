@@ -9,9 +9,9 @@ import {
     TouchableOpacity, TouchableWithoutFeedback,
     View
 } from "react-native";
-import {InputField} from "@components/molecules/form-fields";
+import {InputField} from "@molecules/form-fields";
 import {Feather, Ionicons} from "@expo/vector-icons";
-import {DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
+import {DECLINED, FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
 import CustomAlert from "@pages/activities/alert/alert";
 import {FileTextIcon} from "@assets/svg/fileText";
