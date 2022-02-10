@@ -21,6 +21,7 @@ import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
+import {useOrientation} from "@pages/activities/hooks/useOrientation";
 
 const {height, width} = Dimensions.get('window');
 
@@ -38,7 +39,7 @@ function Endorsed(props: any) {
     const [title, setTitle] = useState("Endorse Application to")
     const [selected, setSelected] = useState(undefined);
     const [validateRemarks, setValidateRemarks] = useState<{ error: boolean }>({error: false})
-
+      const orientation = useOrientation()
     async function fetchEndorse(isCurrent: boolean) {
         await axios.get(BASE_URL + '/users',
             {
@@ -66,9 +67,6 @@ function Endorsed(props: any) {
     useEffect(() => {
         let isCurrent = true
         fetchEndorse(isCurrent);
-
-
-
         return () => {
             isCurrent = false
         }
@@ -115,6 +113,7 @@ function Endorsed(props: any) {
             onRequestClose={() => {
                 onCancelPress()
             }}>
+
             <View style={showAlert ? {
                 zIndex: 1,
                 flex: 1,
@@ -124,9 +123,7 @@ function Endorsed(props: any) {
                 justifyContent: 'center',
                 position: 'absolute',
                 backgroundColor: 'rgba(52,52,52,0.5)'
-            } : {}}>
-
-            </View>
+            } : {}}/>
 
             <CustomAlert
 
@@ -165,7 +162,7 @@ function Endorsed(props: any) {
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={[styles.container]}
             >
-                <View style={styles.rectFiller}></View>
+
                 <View style={styles.rect}>
                     <View style={styles.iconColumn}>
                         <TouchableOpacity onPress={() => {
@@ -176,7 +173,7 @@ function Endorsed(props: any) {
                         </TouchableOpacity>
                     </View>
                     <View style={{paddingHorizontal: 20}}>
-                        <View style={{flexDirection: 'row', alignItems: 'center', paddingVertical: 10}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5, paddingVertical: 10}}>
                             <EndorseToIcon style={styles.icon2}/>
                             <Text style={styles.endorseTo}>Endorse to</Text>
                         </View>
@@ -224,13 +221,14 @@ function Endorsed(props: any) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        height: "90%"
+        flex:1,
+        justifyContent: "flex-end"
     },
     rectFiller: {
         flex: 1
     },
     rect: {
+
         backgroundColor: "rgba(255,255,255,1)",
         borderRadius: 15,
         borderBottomRightRadius: 0,
@@ -239,7 +237,6 @@ const styles = StyleSheet.create({
     icon: {
         color: "rgba(128,128,128,1)",
         fontSize: 25,
-        paddingHorizontal: 10,
     },
     group: {
         width: 138,
@@ -274,7 +271,8 @@ const styles = StyleSheet.create({
     },
     iconColumn: {
         width: '100%',
-        marginTop: 10,
+        paddingTop: 20 ,
+        paddingHorizontal: 20
     },
     iconColumnFiller: {
         flex: 1

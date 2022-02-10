@@ -22,9 +22,12 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
         let isCurrent = true
         const _selectedIndex = data?.findIndex((item) => item.value == value)
         if(isCurrent) setSelectedIndex(_selectedIndex)
-        const _selected = data[_selectedIndex]
-        if(isCurrent) setSelected(_selected)
-        if(_selected) onSelect(_selected)
+        if(_selectedIndex ){
+            const _selected = data[_selectedIndex]
+            if(isCurrent) setSelected(_selected)
+            if(_selected) onSelect(_selected)
+        }
+
         console.log(selectedIndex, value)
           return () =>{
               isCurrent = false
