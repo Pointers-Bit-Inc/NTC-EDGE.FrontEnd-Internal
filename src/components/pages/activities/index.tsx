@@ -97,7 +97,7 @@ export default function ActivitiesPage(props: any) {
     });
 
     function getList(list: any, selectedClone) {
-        return getFilter(list, user, selectedClone, cashier, director, checker, evaluator, accountant);
+        return getFilter({list : list, user : user, selectedClone : selectedClone, cashier : cashier, director : director, checker : checker, evaluator : evaluator, accountant : accountant});
     }
 
     const ispinnedApplications = (applications: any) => {
@@ -404,7 +404,7 @@ export default function ActivitiesPage(props: any) {
 
 
     const unReadReadApplicationFn = (id, dateRead, unReadBtn, callback: (action: any) => void) => {
-        unreadReadApplication(unReadBtn, dateRead, id, config, dispatch, setUpdateUnReadReadApplication, callback);
+        unreadReadApplication({unReadBtn : unReadBtn, dateRead : dateRead, id : id, config : config, dispatch : dispatch, setUpdateUnReadReadApplication : setUpdateUnReadReadApplication, callback : callback});
     }
 
     const updateModalFn = (bool) => {

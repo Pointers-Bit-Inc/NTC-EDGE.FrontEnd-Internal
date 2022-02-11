@@ -27,7 +27,6 @@ const MyTabBar = ({state, descriptors, navigation, position}) => {
                 useNativeDriver: true,
             }).start();
         } else {
-
             ref?.current[0].measureLayout(containerRef.current, (x, y, width, height) => {
                 initial = {x, y, width, height};
                 Animated.spring(translateValue, {
@@ -54,6 +53,7 @@ const MyTabBar = ({state, descriptors, navigation, position}) => {
 
                 {state.routes.map((route, index) => {
                     const {options} = descriptors[route.key];
+                  
                     const label =
                         options.tabBarLabel !== undefined
                             ? options.tabBarLabel
@@ -103,14 +103,12 @@ const MyTabBar = ({state, descriptors, navigation, position}) => {
                             let newArr = [...tabCurrent];
                             newArr[index] = {index, width, x, y};
                             setTabCurrent(newArr)
-
                         },
                         [tabCurrent]
                     );
 
                     return (
                         <View ref={e => ref.current[index] = e}
-
                               onLayout={onLayout} key={index}
                               style={[styles.group5,]}>
                             <TouchableOpacity
@@ -126,9 +124,9 @@ const MyTabBar = ({state, descriptors, navigation, position}) => {
                                     alignSelf: "center",
                                     fontWeight: isFocused ? '500' : "normal",
                                     color: isFocused ? primaryColor : text.default
-                                }}>{label}</Text>
-
-
+                                }}>
+                                    {label}
+                                </Text>
                             </TouchableOpacity>
 
                         </View>

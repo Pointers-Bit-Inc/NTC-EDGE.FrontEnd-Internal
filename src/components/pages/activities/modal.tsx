@@ -269,7 +269,7 @@ function ActivityModal(props: any) {
                     </View>
                 }
             </View>
-           <Approval
+            <Approval
                 onModalDismissed={() => {
                     setRemarks(prevRemarks)
                     setAssignId(props?.details?.assignedPersonnel)

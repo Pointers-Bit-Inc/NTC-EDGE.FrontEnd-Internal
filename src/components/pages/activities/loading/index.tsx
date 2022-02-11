@@ -104,6 +104,8 @@ class Dot extends React.Component {
 
 
 
+
+
 const styles = StyleSheet.create({
     main: {
         flexDirection: 'row',

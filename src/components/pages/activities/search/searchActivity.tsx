@@ -46,7 +46,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
     }, [])
     const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(false)
     const unReadReadApplicationFn = (id, dateRead, unReadBtn, callback: (action: any) => void) => {
-        unreadReadApplication(unReadBtn, dateRead, id, config, dispatch, setUpdateUnReadReadApplication, callback);
+        unreadReadApplication({unReadBtn : unReadBtn, dateRead : dateRead, id : id, config : config, dispatch : dispatch, setUpdateUnReadReadApplication : setUpdateUnReadReadApplication, callback : callback});
     }
     const onMoreModalDismissed = () => {
         setMoreModalVisible(false)

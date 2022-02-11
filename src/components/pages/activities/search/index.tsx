@@ -44,7 +44,7 @@ function Search(props: any) {
         const selectedClone = selectedChangeStatus?.filter((status: string) => {
             return status != DATE_ADDED
         })
-        const list = getFilter(app, user, selectedClone, cashier, director, checker, evaluator, accountant);
+        const list = getFilter({list : app, user : user, selectedClone : selectedClone, cashier : cashier, director : director, checker : checker, evaluator : evaluator, accountant : accountant});
 
         const groups = list?.reduce((groups: any, activity: any) => {
 
