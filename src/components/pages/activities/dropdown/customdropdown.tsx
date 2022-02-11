@@ -51,7 +51,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
     };
 
     const renderItem = ({item}: any): ReactElement<any, any> => (
-        <View style={{paddingHorizontal: 10}}>
+        <View>
             <TouchableOpacity
                 style={[styles.item, {backgroundColor: item.value == selected?.value ? "#EAEAF4" : "rgba(255,255,255,0)",}]}
                 onPress={() => onItemPress(item)}>
@@ -77,6 +77,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
                 >
                     {dropdownTop>0 && <View style={[styles.dropdown, {width: '100%',flex: 1, top: dropdownTop}]}>
                         {data?.length > 0 ? <FlatList
+                            style={styles.items}
                             data={data}
                             initialScrollIndex={selectedIndex || 0 || null}
                             ref={flatListRef}
@@ -121,6 +122,11 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
 };
 
 const styles = StyleSheet.create({
+    items: {
+        marginVertical: 10,
+        marginHorizontal: 10,
+        borderRadius: 5
+    },
     button: {
         flexDirection: 'row',
         alignItems: 'center',

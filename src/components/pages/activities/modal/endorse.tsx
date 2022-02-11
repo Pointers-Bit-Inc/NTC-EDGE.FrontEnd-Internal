@@ -21,10 +21,12 @@ import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
+import {useOrientation} from "@pages/activities/hooks/useOrientation";
+import {getRole} from "@pages/activities/script";
 
 const {height, width} = Dimensions.get('window');
 
-function Endorsed(props: any) {
+const Endorsed = (props: any) => {
 
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [pickedEndorsed, setPickedEndorsed] = useState<any[]>()
@@ -39,7 +41,7 @@ function Endorsed(props: any) {
     const [selected, setSelected] = useState(undefined);
     const [validateRemarks, setValidateRemarks] = useState<{ error: boolean }>({error: false})
 
-    async function fetchEndorse(isCurrent: boolean) {
+    const fetchEndorse = async (isCurrent: boolean) => {
         await axios.get(BASE_URL + '/users',
             {
                 headers: {
@@ -48,27 +50,28 @@ function Endorsed(props: any) {
             }).then((response) => {
             const filterResponse = [...response.data].filter((item) => {
 
-                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1)// && user?._id != item?._id
+                return  getRole(item,[DIRECTOR, EVALUATOR]) //&& user?._id != item?._id
             })
 
-            const res = filterResponse.map((item) => {
+            const res = filterResponse?.map((item) => {
                 return {value: item._id, label: item.firstName + " " + item.lastName}
             })
 
-            if (isCurrent) setPickedEndorsed(res)
+            if (isCurrent) {
+                setPickedEndorsed(res)
+            }
             if (res) {
-                if (isCurrent) setEndorsed(props?.assignedPersonnel || res[0]?.value)
+                if (isCurrent) {
+                    setEndorsed(props?.assignedPersonnel || res[0]?.value)
+                }
             }
 
         })
-    }
+    };
 
     useEffect(() => {
         let isCurrent = true
         fetchEndorse(isCurrent);
-
-
-
         return () => {
             isCurrent = false
         }
@@ -76,7 +79,7 @@ function Endorsed(props: any) {
     const onEndorseConfirm = () => {
 
         setMessage(`` + pickedEndorsed?.find(picked => {
-            return picked.value == endorsed
+            return picked.value === endorsed
         })?.label)
         props.remarks({endorseId: endorsed, remarks: text, message})
         if(pickedEndorsed){
@@ -103,7 +106,7 @@ function Endorsed(props: any) {
     }
 
 
-
+    const orientation = useOrientation();
 
     return (
         <Modal
@@ -111,10 +114,11 @@ function Endorsed(props: any) {
             animationType="slide"
             transparent={true}
             visible={props.visible}
-            style={{height: "50%"}}
+
             onRequestClose={() => {
                 onCancelPress()
             }}>
+
             <View style={showAlert ? {
                 zIndex: 1,
                 flex: 1,
@@ -124,9 +128,7 @@ function Endorsed(props: any) {
                 justifyContent: 'center',
                 position: 'absolute',
                 backgroundColor: 'rgba(52,52,52,0.5)'
-            } : {}}>
-
-            </View>
+            } : {}}/>
 
             <CustomAlert
 
@@ -165,8 +167,8 @@ function Endorsed(props: any) {
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={[styles.container]}
             >
-                <View style={styles.rectFiller}></View>
-                <View style={styles.rect}>
+
+                <View style={[styles.rect, {height: orientation == "LANDSCAPE" ? "100%" : "80%",}]}>
                     <View style={styles.iconColumn}>
                         <TouchableOpacity onPress={() => {
                             setValidateRemarks({error: false})
@@ -176,7 +178,7 @@ function Endorsed(props: any) {
                         </TouchableOpacity>
                     </View>
                     <View style={{paddingHorizontal: 20}}>
-                        <View style={{flexDirection: 'row', alignItems: 'center', paddingVertical: 10}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5, paddingVertical: 10}}>
                             <EndorseToIcon style={styles.icon2}/>
                             <Text style={styles.endorseTo}>Endorse to</Text>
                         </View>
@@ -189,11 +191,13 @@ function Endorsed(props: any) {
                                             if(value) setEndorsed(value)
                                         }}/>
                         <InputField
-                            style={{fontWeight: 'normal'}}
+                            style={[{fontWeight: 'normal',}]}
+
                             outlineStyle={{
+                                borderRadius: 4,
                                 borderColor: "rgba(202,210,225,1)",
                                 paddingTop: 5,
-                                height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.25
+                                height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.15
                             }}
                             error={validateRemarks.error}
                             errorColor={errorColor}
@@ -206,30 +210,33 @@ function Endorsed(props: any) {
                             }}
                         />
                     </View>
-                    <View
-                        style={{width: '100%', paddingHorizontal: 20, paddingBottom: 25,}}
-                    >
-                        <TouchableOpacity onPress={onEndorseConfirm}>
-                            <View style={styles.confirmButton}>
-                                <Text style={styles.confirm}>Confirm</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
+
+                </View>
+                <View
+                    style={{ position: "absolute", width: '100%', paddingHorizontal: 20, paddingBottom: 25,}}
+                >
+                    <TouchableOpacity onPress={onEndorseConfirm}>
+                        <View style={styles.confirmButton}>
+                            <Text style={styles.confirm}>Confirm</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>
         </Modal>
 
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex:1,
+        justifyContent: "flex-end"
     },
     rectFiller: {
         flex: 1
     },
     rect: {
+
         backgroundColor: "rgba(255,255,255,1)",
         borderRadius: 15,
         borderBottomRightRadius: 0,
@@ -238,7 +245,6 @@ const styles = StyleSheet.create({
     icon: {
         color: "rgba(128,128,128,1)",
         fontSize: 25,
-        paddingHorizontal: 10,
     },
     group: {
         width: 138,
@@ -273,7 +279,8 @@ const styles = StyleSheet.create({
     },
     iconColumn: {
         width: '100%',
-        marginTop: 10,
+        paddingTop: 20 ,
+        paddingHorizontal: 20
     },
     iconColumnFiller: {
         flex: 1
