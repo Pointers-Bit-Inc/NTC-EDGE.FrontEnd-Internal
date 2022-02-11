@@ -48,7 +48,7 @@ function Endorsed(props: any) {
             }).then((response) => {
             const filterResponse = [...response.data].filter((item) => {
 
-                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1) && user?._id != item?._id
+                return ([DIRECTOR, EVALUATOR].indexOf(item?.role?.key) != -1)// && user?._id != item?._id
             })
 
             const res = filterResponse.map((item) => {

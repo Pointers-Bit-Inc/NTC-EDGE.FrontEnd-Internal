@@ -51,14 +51,17 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
     };
 
     const renderItem = ({item}: any): ReactElement<any, any> => (
-        <TouchableOpacity
-            style={[styles.item, {backgroundColor: item.value == selected?.value ? "#EAEAF4" : "rgba(255,255,255,0)",}]}
-            onPress={() => onItemPress(item)}>
-            <Text style={{
+        <View style={{paddingHorizontal: 10}}>
+            <TouchableOpacity
+                style={[styles.item, {backgroundColor: item.value == selected?.value ? "#EAEAF4" : "rgba(255,255,255,0)",}]}
+                onPress={() => onItemPress(item)}>
+                <Text style={{
 
-                fontSize: 15
-            }}>{item.label}</Text>
-        </TouchableOpacity>
+                    fontSize: 15
+                }}>{item.label}</Text>
+            </TouchableOpacity>
+        </View>
+
     );
 
     const renderDropdown = (): ReactElement<any, any> => {
@@ -162,8 +165,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     item: {
-        marginTop: 10,
-        marginHorizontal: 10,
+
         borderRadius: 8,
         paddingHorizontal: 10,
         paddingVertical: 10,
