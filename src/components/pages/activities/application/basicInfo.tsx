@@ -6,6 +6,7 @@ import CustomText from "@atoms/text";
 import {CASHIER} from "../../../../reducers/activity/initialstate";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 import {Role} from "@pages/activities/interface";
+import moment from "moment";
 
 const { width , height } = Dimensions.get("screen");
 
@@ -114,11 +115,10 @@ const BasicInfo = (props: any) => {
                                 <Text style={ styles.header }>Basic Information</Text>
                             </View>
                         </View>
-                        <Row label={"Last Name:"} applicant={ applicant?.user?.lastName  }/>
-                        <Row label={"Middle Name:"} applicant={ applicant?.user?.middleName  }/>
-                        <Row label={"First Name:"} applicant={ applicant?.user?.firstName  }/>
-                        <Row label={"Date of Birth:"} applicant={ applicant?.user?.dateOfBirth  }/>
-
+                        <Row label={"Full Name:"} applicant={ applicant?.user?.firstName + " " + applicant?.user?.middleName?.charAt() +"." + " "+ applicant?.user?.lastName  }/>
+                        <Row label={"Date of Birth:"} applicant={ moment(applicant?.user?.dateOfBirth).format('LL')  }/>
+                        <Row label={"Gender:"} applicant={ applicant?.user?.gender  }/>
+                        <Row label={"Nationality:"} applicant={ applicant?.user?.nationality  }/>
                     </View>
                     <View style={ styles.divider }/>
                     <View style={ styles.group3 }>
@@ -218,7 +218,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10
     } ,
     detail : {
-        color : "#565961" ,
         fontWeight : "400" ,
         paddingRight : 0 ,
         textAlign : "left" ,
