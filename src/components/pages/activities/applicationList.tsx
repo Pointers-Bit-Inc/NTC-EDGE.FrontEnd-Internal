@@ -8,7 +8,7 @@ import moment from "moment";
 import {useAlert} from "@pages/activities/hooks/useAlert";
 import * as Animatable from 'react-native-animatable'
 import DotVertical from "@assets/svg/dotsVertical";
-function ApplicationList(props: { onPress: () => void, item: any, numbers: { parentIndex: number, child: number[]}[], index: number, element: (activity: any, i: number) => JSX.Element }) {
+const ApplicationList = (props: { onPress: () => void, item: any, numbers: { parentIndex: number, child: number[]}[], index: number, element: (activity: any, i: number) => JSX.Element }) => {
     const chevronValue = useRef(new Animated.Value(0)).current
     const [isOpen, setIsOpen] = useState(true)
     const {springValue, _springHide} = useAlert(true,()=>{});
@@ -51,7 +51,7 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: { par
             <View style={styles.group25}>
 
                 <View style={styles.rect34}>
-                    
+
                     <View>
 
                         <View style={styles.date}>
@@ -92,7 +92,7 @@ function ApplicationList(props: { onPress: () => void, item: any, numbers: { par
         </Collapsible>
 
     </Animatable.View>;
-}
+};
 
 
 export default ApplicationList;

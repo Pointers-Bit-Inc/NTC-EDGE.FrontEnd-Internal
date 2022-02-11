@@ -125,7 +125,7 @@ function ActivityModal(props: any) {
     }
 
     useEffect(() => {
-
+         console.log(props?.details)
         return () => {
 
             setChange(false)

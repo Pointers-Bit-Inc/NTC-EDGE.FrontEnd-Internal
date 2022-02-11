@@ -49,7 +49,6 @@ const Endorsed = (props: any) => {
                 }
             }).then((response) => {
             const filterResponse = [...response.data].filter((item) => {
-
                 return  getRole(item,[DIRECTOR, EVALUATOR]) //&& user?._id != item?._id
             })
 

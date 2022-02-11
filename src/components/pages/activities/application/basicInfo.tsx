@@ -5,19 +5,26 @@ import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
 import {CASHIER} from "../../../../reducers/activity/initialstate";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
+import {Role} from "@pages/activities/interface";
 
 const { width , height } = Dimensions.get("screen");
 
-function getStatus(props: any , personnel , wordCase?: string) {
+function getStatus(props: any , personnel: { _id: string | undefined; updatedAt: string | undefined; createdAt: string | undefined; username: string | undefined; role: Role | undefined; email: string | undefined; firstName: string | undefined; lastName: string | undefined; password: string | undefined; contactNumber: string | undefined; __v: number | undefined; address: string | undefined; profilePicture: ProfilePicture | undefined; avatar: string | undefined }, wordCase?: string) {
     return props.status ?
            props.status :
            (
                props?.user?.role?.key == CASHIER || personnel?.role?.key == CASHIER ?
-               (wordCase == "toUpperCase" ? PaymentStatusText(props?.paymentStatus).toUpperCase() : PaymentStatusText(props?.paymentStatus))  :
+               (wordCase === "toUpperCase" ?  PaymentStatusText(props?.paymentStatus).toUpperCase() :  PaymentStatusText(props?.paymentStatus)) :
+               (wordCase === "toUpperCase" ?
                (
                    props.status ?
                    props.status :
-                   StatusText(props.detailsStatus)
+                   StatusText(props.detailsStatus).toUpperCase()
+               ) : (
+                    props.status ?
+                    props.status :
+                    StatusText(props.detailsStatus)
+                )
                )
            );
 }
@@ -65,37 +72,39 @@ const BasicInfo = (props: any) => {
 
                         <View>
                             <View style={ styles.status }>
-                                {
-                                    statusIcon(
-                                        getStatus(props , personnel)
-                                        ,
-                                        styles.icon2 ,
-                                        1
-                                    )
-                                }
-                                <CustomText
-                                    style={ [
-                                        styles.role ,
-                                        statusColor(
-                                            getStatus(props , personnel)
-                                        ) ,
-                                        {
-                                            fontSize : 16 ,
-                                            fontWeight : '500' ,
-                                        }
-                                    ] }
-                                    numberOfLines={ 1 }
-                                >
-                                    {
-                                        getStatus(props , personnel , "toUpperCase")
-                                    }
-                                </CustomText>
-                                <CustomText style={ { color : "#37405B" } }>
-                                    { loading ?
-                                      <ActivityIndicator/> : (
-                                          personnel != undefined ? `by ${ personnel?.firstName } ${ personnel?.lastName }` : ``) }
 
-                                </CustomText>
+                                    {
+                                        statusIcon(
+                                            getStatus(props , personnel)
+                                            ,
+                                            styles.icon2 ,
+                                            1
+                                        )
+                                    }
+                                    <CustomText
+                                        style={ [
+                                            styles.role ,
+                                            statusColor(
+                                                getStatus(props , personnel)
+                                            ) ,
+                                            {
+                                                fontSize : 16 ,
+                                                fontWeight : '500' ,
+                                            }
+                                        ] }
+                                        numberOfLines={ 1 }
+                                    >
+                                        {
+                                            getStatus(props , personnel , "toUpperCase")
+                                        }
+                                    </CustomText>
+                                    <CustomText style={ { color : "#37405B" } }>
+                                        { loading ?
+                                          <ActivityIndicator/> : (
+                                              personnel != undefined ? `by ${ personnel?.firstName } ${ personnel?.lastName }` : ``) }
+
+                                    </CustomText>
+
                             </View>
                         </View>
                     </View>
@@ -111,7 +120,7 @@ const BasicInfo = (props: any) => {
                         <Row label={"Date of Birth:"} applicant={ applicant?.user?.dateOfBirth  }/>
 
                     </View>
-                    <View style={ styles.divider }></View>
+                    <View style={ styles.divider }/>
                     <View style={ styles.group3 }>
                         <View style={ styles.group }>
                             <View style={ styles.rect }>
@@ -125,7 +134,7 @@ const BasicInfo = (props: any) => {
                         <Row label={"Zip Code:"} applicant={ applicant?.zipCode }/>
 
                     </View>
-                    <View style={ styles.divider }></View>
+                    <View style={ styles.divider }/>
                     <View style={ styles.group3 }>
                         <View style={ styles.group }>
                             <View style={ styles.rect }>
@@ -139,7 +148,7 @@ const BasicInfo = (props: any) => {
                         <Row label={"Email:"} applicant={applicant?.user?.email }/>
 
                     </View>
-                    <View style={ styles.divider }></View>
+                    <View style={ styles.divider }/>
 
                 </View>
 
@@ -172,10 +181,9 @@ const styles = StyleSheet.create({
     role : {
 
         fontWeight : "bold" ,
-        fontSize : 10 ,
+        fontSize : 14 ,
         textAlign : "left" ,
-        paddingRight : "7%" ,
-        paddingLeft : "2%"
+        paddingRight: 20
     } ,
     submitted : {
         color : "rgba(105,114,135,1)" ,
@@ -206,7 +214,8 @@ const styles = StyleSheet.create({
         flexDirection : "row" ,
         justifyContent : "flex-start" ,
         alignItems : "center" ,
-        marginTop : 8
+        marginTop : 8,
+        paddingHorizontal: 10
     } ,
     detail : {
         color : "#565961" ,
@@ -224,17 +233,16 @@ const styles = StyleSheet.create({
     } ,
     divider : {
         padding : 2 ,
-        //backgroundColor: "#F0F0F0",
-        marginTop : 14 ,
-        marginBottom : 20
+        paddingBottom : 20
     } ,
     status : {
         flexDirection : 'row' ,
         flexWrap : "wrap" ,
-        justifyContent : "center" ,
+        justifyContent : "flex-start" ,
         alignItems : "center" ,
-        paddingHorizontal : 5 ,
-        paddingVertical : 10
+        paddingTop : 15,
+        paddingBottom : 20,
+        paddingHorizontal: 10
     }
 });
 export default BasicInfo
