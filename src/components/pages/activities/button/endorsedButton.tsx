@@ -4,7 +4,7 @@ import ForwardIcon from "@assets/svg/forward";
 import React from "react";
 
 export function EndorsedButton(props: { currentLoading: string, allButton: boolean, onPress: () => void }) {
-    return <View style={{flex: 0.8, paddingHorizontal: 5,}}>
+    return <View style={{flex: 0.8,}}>
         <TouchableOpacity
             disabled={(props.currentLoading === FOREVALUATION || props.allButton)}
             onPress={props.onPress}
@@ -17,7 +17,7 @@ export function EndorsedButton(props: { currentLoading: string, allButton: boole
                 borderColor: "#c4c4c4",
                 backgroundColor: ((props.allButton) ? "#C4C4C4" : "#fff"),
                 height: undefined,
-                paddingVertical: props.currentLoading === FOREVALUATION ? 6.5 : 10
+                paddingVertical: props.currentLoading === FOREVALUATION ? 8.5 : 10
             }]}>
                 <View
                     style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>

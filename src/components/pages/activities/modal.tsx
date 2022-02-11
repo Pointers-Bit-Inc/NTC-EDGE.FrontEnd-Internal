@@ -231,7 +231,7 @@ function ActivityModal(props: any) {
 
                 <ModalTab details={props.details} status={status}/>
                 {
-                    <View style={styles.footer}>
+                   <View style={styles.footer}>
                         <View style={styles.groupButton}>
                             {getRole(user, [DIRECTOR, EVALUATOR, CASHIER]) &&
                             <ApprovedButton
@@ -267,6 +267,7 @@ function ActivityModal(props: any) {
 
 
                     </View>
+
                 }
             </View>
             <Approval
@@ -660,12 +661,9 @@ const styles = StyleSheet.create({
         height: 812
     },
     footer: {
-        padding: 15,
-        paddingTop: 10,
-        paddingBottom: 25,
-
+        paddingHorizontal: 20,
+        paddingVertical: 30,
         flexDirection: 'row',
-        width: '100%',
         borderTopColor: 'rgba(0, 0, 0, 0.1)',
         borderTopWidth: 1,
     }
