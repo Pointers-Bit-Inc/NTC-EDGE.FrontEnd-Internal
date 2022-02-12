@@ -412,7 +412,7 @@ export default function ActivitiesPage(props: any) {
         setUpdateModal(bool)
     }
 
-    const CONTAINER_HEIGHT = 50
+    const CONTAINER_HEIGHT = 120
     const scrollY = useRef(new Animated.Value(0)).current;
     const offsetAnim = useRef(new Animated.Value(0)).current;
     const clampedScroll = Animated.diffClamp(
@@ -456,7 +456,7 @@ export default function ActivitiesPage(props: any) {
 
         Animated.timing(offsetAnim, {
             toValue,
-            duration: 2000,
+            duration: 500,
             useNativeDriver: true,
         }).start();
     }
@@ -471,7 +471,7 @@ export default function ActivitiesPage(props: any) {
     })
     const opacity = clampedScroll.interpolate({
         inputRange: [0, CONTAINER_HEIGHT - 20, CONTAINER_HEIGHT],
-        outputRange: [1, 0.05, 0],
+        outputRange: [1, 0.6, 0],
         extrapolate: 'clamp',
     })
     return (
