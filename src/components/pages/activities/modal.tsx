@@ -208,7 +208,6 @@ function ActivityModal(props: any) {
                     } else {
                         status = DECLINED
                     }
-
                     // setShowAlert(false)
                     setAlertLoading(true)
                     onChangeApplicationStatus(status, () => {

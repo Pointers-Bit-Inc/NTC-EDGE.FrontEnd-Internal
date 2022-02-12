@@ -79,14 +79,14 @@ export default function basket(state = initialState, action = {}) {
             const isNotPinned = []
             const isPinned = []
             for (let i = 0; i < action.payload?.data?.docs?.length; i++) {
-
+                       
                 if ((
                         action.payload?.data.docs[i].assignedPersonnel == action.payload?.user?._id) &&
                     !(
                         cashier ?
                         (
                             action.payload?.data?.docs[i].paymentStatus == PAID || action.payload?.data?.docs[i].paymentStatus == APPROVED || action.payload?.data?.docs[i].paymentStatus == DECLINED) : (
-                           action.payload?.data?.docs[i].status == DECLINED || action.payload?.data?.docs[i].status == APPROVED))) {
+                             action.payload?.data?.docs[i].status == DECLINED || action.payload?.data?.docs[i].status == APPROVED))) {
                            console.log(action.payload?.data?.docs[i].status , "is pinned")
                     isPinned.push(action.payload?.data?.docs[i])
                 } else {
