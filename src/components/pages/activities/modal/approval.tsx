@@ -45,8 +45,10 @@ const Approval = (props: any) => {
 
     useEffect(() => {
         setLoading(true);
-        const userRole = getRole(user , [EVALUATOR , DIRECTOR]);
+        const userEvaluator = getRole(user , [EVALUATOR ]);
+        const userDirector = getRole(user , [DIRECTOR ]);
         const userAccountantRole = getRole(user , [ACCOUNTANT]);
+        const userCashier = getRole(user , [CASHIER]);
         let isCurrent = true;
         axios.get(BASE_URL + '/users' ,
             {
@@ -57,11 +59,16 @@ const Approval = (props: any) => {
 
             setLoading(false);
             const filterResponse = [...response.data].filter((item: any) => {
-                //evaluator and director -> accountant -> [applicant] -> cashier -> null
-                if (userRole) {
-                    return getRole(item , [ACCOUNTANT])
+                //evaluator and director -> accountant -> cashier -> null
+                if (userEvaluator) { //if evaluator
+                    return getRole(item , [DIRECTOR])   //get accountant
+                }if (userDirector) { //if evaluator
+                    return getRole(item , [ACCOUNTANT])   //get accountant
+                }  else if (userAccountantRole) {   // if accountant
+                    return getRole(item , [CASHIER]) //get cashier
+                } else if(userCashier){ //if cashier
+                    return false
                 }
-                return false
             });
             const res = filterResponse.map((item: any) => {
                 return { value : item._id , label : item.firstName + " " + item.lastName }

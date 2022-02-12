@@ -1,7 +1,7 @@
 import {
     APPROVED ,
     DECLINE ,
-    DECLINED ,
+    DECLINED , FORAPPROVAL ,
     FOREVALUATION ,
     FORVERIFICATION ,
     PAID ,
@@ -178,7 +178,7 @@ export const getFilter = ({
     if (cashier) {
         return (item?.status == APPROVED || item?.status == DECLINED && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search)
     } else if (director) {
-        return (item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search
+        return (item?.status == FORAPPROVAL  || item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search
     } else if (checker || accountant) {
         return (item?.assignedPersonnel == user?._id || item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
     } else if (evaluator) {

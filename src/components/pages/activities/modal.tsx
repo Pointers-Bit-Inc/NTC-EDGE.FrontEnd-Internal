@@ -12,7 +12,7 @@ import {
     CASHIER ,
     DECLINED ,
     DIRECTOR ,
-    EVALUATOR ,
+    EVALUATOR , FORAPPROVAL ,
     FOREVALUATION ,
     FORVERIFICATION ,
     PAID ,
@@ -40,6 +40,7 @@ function ActivityModal(props: any) {
     const [endorseVisible, setEndorseVisible] = useState(false)
     const [approveVisible, setApproveVisible] = useState(false)
     const [status, setStatus] = useState("")
+    const [prevStatus, setPrevStatus] = useState("")
     const [message, setMessage] = useState("")
     const [showAlert, setShowAlert] = useState(false)
     const [currentLoading, setCurrentLoading] = useState('');
@@ -73,6 +74,14 @@ function ActivityModal(props: any) {
         if (status == DECLINED) {
             setAssignId("")
         }
+        if (user?.role?.key == ACCOUNTANT) {
+            params = {
+                status,
+                assignedPersonnel: assignId ? assignId : undefined,
+                addDocumentaryStamp: true,
+                remarks: remarks ? remarks : undefined,
+            };
+        }
         if (user?.role?.key == CASHIER) {
             url = `/applications/${applicationId}/update-payment-status`;
             params = {
@@ -80,6 +89,7 @@ function ActivityModal(props: any) {
                 remarks: remarks ? remarks : undefined,
             };
         }
+        
         console.log(url, params, assignId)
         if (applicationId) {
             await api.patch(url, params)
@@ -136,14 +146,15 @@ function ActivityModal(props: any) {
     }, [])
 
     const statusMemo = useMemo(() => {
+        console.log(allButton )
         setStatus(status)
         setAssignId(assignId ? assignId : props?.details?.assignedPersonnel)
         return status ? (cashier ? PaymentStatusText(status) : StatusText(status)) : (cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
     }, [assignId, status, props?.details?.assignedPersonnel, props.details.paymentStatus, props.details.status])
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
-    const allButton = (statusMemo == FORVERIFICATION || statusMemo == PENDING || statusMemo == FOREVALUATION) && [CASHIER, EVALUATOR].indexOf(user?.role?.key) != -1 && assignId != user?._id ? true : (declineButton || approveButton || grayedOut)
-
+    const allButton = assignId != user?._id ? true : (declineButton || approveButton || grayedOut)
+         console.log((declineButton || approveButton || grayedOut), assignId != user?._id, user?._id, assignId, status, props?.details?.assignedPersonnel, props.details.paymentStatus, props.details.status)
     const [alertLoading, setAlertLoading] = useState(false)
     const [approvalIcon, setApprovalIcon] = useState(false)
     const [title, setTitle] = useState("Approve Application")
@@ -273,17 +284,17 @@ function ActivityModal(props: any) {
             </View>
             <Approval
                 onModalDismissed={() => {
+                    setStatus(prevStatus)
                     setRemarks(prevRemarks)
                     setAssignId(props?.details?.assignedPersonnel)
                 }}
-                onChangeRemarks={(_remark: string, _assign) => {
-
+                onChangeRemarks={(_remark: string, _assign, ) => {
+                    setPrevStatus(status)
                     setPrevRemarks(remarks)
                     setPrevAssignId(assignId)
+
                     setRemarks(_remark)
-                    if(_assign == undefined){
-                        setAssignId(_assign )
-                    }
+                    setAssignId(_assign )
 
                 }}
                 visible={approveVisible}
@@ -291,8 +302,10 @@ function ActivityModal(props: any) {
 
                     let status = ""
                     if (getRole(user, [DIRECTOR, EVALUATOR])) {
+                        status = FORAPPROVAL
+                    } else if (getRole(user, [ACCOUNTANT])) {
                         status = APPROVED
-                    } else if (getRole(user, [CASHIER])) {
+                    }else if (getRole(user, [CASHIER])) {
                         status = PAID
                     }
                     onChangeApplicationStatus(status, (err, appId) => {

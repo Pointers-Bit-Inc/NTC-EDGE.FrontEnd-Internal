@@ -15,7 +15,9 @@ function getStatus(props: any , personnel: { _id: string | undefined; updatedAt:
            props.status :
            (
                props?.user?.role?.key == CASHIER || personnel?.role?.key == CASHIER ?
-               (wordCase === "toUpperCase" ?  PaymentStatusText(props?.paymentStatus).toUpperCase() :  PaymentStatusText(props?.paymentStatus)) :
+               (wordCase === "toUpperCase" ?
+                PaymentStatusText(props?.paymentStatus).toUpperCase() :
+                PaymentStatusText(props?.paymentStatus)) :
                (wordCase === "toUpperCase" ?
                (
                    props.status ?
@@ -71,8 +73,8 @@ const BasicInfo = (props: any) => {
                             </View>
                         </View>
 
-                        <View>
-                            <View style={ styles.status }>
+                        <View style={ styles.status }>
+                            <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}} >
 
                                     {
                                         statusIcon(
@@ -99,14 +101,13 @@ const BasicInfo = (props: any) => {
                                             getStatus(props , personnel , "toUpperCase")
                                         }
                                     </CustomText>
-                                    <CustomText style={ { color : "#37405B" } }>
-                                        { loading ?
-                                          <ActivityIndicator/> : (
-                                              personnel != undefined ? `by ${ personnel?.firstName } ${ personnel?.lastName }` : ``) }
-
-                                    </CustomText>
-
                             </View>
+                            <CustomText style={ { flex: 1, color : "#37405B" } }>
+                                { loading ?
+                                  <ActivityIndicator/> : (
+                                      personnel != undefined ? `by ${ personnel?.firstName } ${ personnel?.lastName }` : ``) }
+
+                            </CustomText>
                         </View>
                     </View>
                     <View style={ styles.group3 }>
@@ -183,7 +184,7 @@ const styles = StyleSheet.create({
         fontWeight : "bold" ,
         fontSize : 14 ,
         textAlign : "left" ,
-        paddingRight: 20
+        paddingHorizontal: 10
     } ,
     submitted : {
         color : "rgba(105,114,135,1)" ,
@@ -237,11 +238,10 @@ const styles = StyleSheet.create({
     status : {
         flexDirection : 'row' ,
         flexWrap : "wrap" ,
-        justifyContent : "flex-start" ,
+        justifyContent : "space-between" ,
         alignItems : "center" ,
-        paddingTop : 15,
-        paddingBottom : 20,
-        paddingHorizontal: 10
+        paddingVertical : 15,
+        paddingLeft: 10
     }
 });
 export default BasicInfo
