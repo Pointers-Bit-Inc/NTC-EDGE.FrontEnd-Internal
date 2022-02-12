@@ -5,7 +5,29 @@ import moment from "moment";
 
 const {width, height} = Dimensions.get('window');
 const PaymentModal = (props: any) => {
-
+    function Cell({ data }) {
+        return (
+            <View style={styles.cellStyle}>
+                <Text>{data}</Text>
+            </View>
+        );
+    }
+    function Row({ column }) {
+        return (
+            <View style={styles.rowStyle}>
+                {column.map((data) => (
+                    <Cell data={data} />
+                ))}
+            </View>
+        );
+    }
+    const data = [
+        ["Email", props?.applicant?.user?.email],
+        ["Fee", "PHP " +  props?.totalFee],
+        ["Account number", "1234567"],
+        ["Account", props?.applicant?.user?.firstName + " " + props?.applicant?.user?.lastName],
+        ["Amount paid", "PHP" + props?.totalFee],
+    ];
     return <Modal
         supportedOrientations={['portrait', 'landscape']}
         animationType="slide"
@@ -63,22 +85,12 @@ const PaymentModal = (props: any) => {
                         </View>
                         <View style={styles.group6}>
                             <Text style={styles.details}>Details</Text>
-                            <View style={styles.group3Row}>
-                                <View style={styles.group3}>
-                                    <Text style={styles.email}>Email</Text>
-                                    <Text style={styles.fee}>Fee</Text>
-                                    <Text style={styles.accountNumber}>Account number</Text>
-                                    <Text style={styles.account2}>Account</Text>
-                                    <Text style={styles.amountPaid}>Amount paid</Text>
-                                </View>
-                                <View style={styles.group4}>
-                                    <Text style={styles.emailInput}>{props?.applicant?.user?.email}</Text>
-                                    <Text style={styles.php000}>PHP {props?.totalFee}</Text>
-                                    <Text style={styles.loremIpsum3}>1234567</Text>
-                                    <Text style={styles.jmGrills}>{props?.applicant?.user?.firstName}</Text>
-                                    <Text style={styles.php50003}>PHP {props?.totalFee}</Text>
-                                </View>
+                            <View style={styles.gridContainer}>
+                                {data.map((column) => (
+                                    <Row column={column} />
+                                ))}
                             </View>
+
                         </View>
                     </View>
                 </ScrollView>
@@ -88,6 +100,23 @@ const PaymentModal = (props: any) => {
 }
 
 const styles = StyleSheet.create({
+    gridContainer: {
+        justifyContent: "center",
+
+
+        alignItems: "center"
+    },
+    rowStyle: {
+        width: width,
+        paddingHorizontal: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-around",
+    },
+    cellStyle: {
+        flex: 1,
+        margin: 10,
+    },
     container: {
         flex: 1
     },
@@ -162,7 +191,6 @@ const styles = StyleSheet.create({
     },
     group6: {
 
-        height: 187,
         marginTop: 23
     },
     details: {
