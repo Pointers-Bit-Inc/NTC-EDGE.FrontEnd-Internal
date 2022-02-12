@@ -19,7 +19,7 @@ import {BASE_URL} from "../../../../services/config";
 import {ACCOUNTANT , APPROVED , CASHIER , DIRECTOR , EVALUATOR ,} from "../../../../reducers/activity/initialstate";
 import {RootStateOrAny , useSelector} from "react-redux";
 import useKeyboard from 'src/hooks/useKeyboard';
-import {errorColor} from "@styles/color";
+import {errorColor , primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import {useAlert} from "@pages/activities/hooks/useAlert";
 import {getRole} from "@pages/activities/script";
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
         fontSize : 18 ,
     } ,
     confirmButton : {
-        backgroundColor : "#031A6E" ,
+        backgroundColor : primaryColor ,
         borderRadius : 12 ,
 
         paddingVertical : 16 ,

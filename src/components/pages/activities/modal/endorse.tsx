@@ -18,7 +18,7 @@ import {BASE_URL} from "../../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
 import {DIRECTOR, EVALUATOR, FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
-import {errorColor} from "@styles/color";
+import {errorColor , primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import {useOrientation} from "@pages/activities/hooks/useOrientation";
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     confirmButton: {
-        backgroundColor: "#031A6E",
+        backgroundColor: primaryColor,
         borderRadius: 12,
 
         paddingVertical: 16,

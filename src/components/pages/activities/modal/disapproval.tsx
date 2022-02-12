@@ -15,6 +15,7 @@ import {DECLINED, FOREVALUATION} from "../../../../reducers/activity/initialstat
 import useKeyboard from 'src/hooks/useKeyboard';
 import CustomAlert from "@pages/activities/alert/alert";
 import {FileTextIcon} from "@assets/svg/fileText";
+import {primaryColor} from "@styles/color";
 const { height, width } = Dimensions.get('window');
 
 function Disapproval(props: any) {
@@ -268,7 +269,7 @@ const styles = StyleSheet.create({
     rect3: {
         width: 340,
         height: 40,
-        backgroundColor: "#031A6E",
+        backgroundColor:primaryColor,
         borderRadius: 9
     },
     confirm: {
@@ -277,7 +278,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     confirmButton: {
-        backgroundColor: "#031A6E",
+        backgroundColor: primaryColor,
         borderRadius: 12,
 
         paddingVertical: 16,
