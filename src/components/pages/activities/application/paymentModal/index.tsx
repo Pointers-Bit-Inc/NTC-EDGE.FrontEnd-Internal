@@ -72,7 +72,6 @@ const PaymentModal = (props: any) => {
                                     <Text style={styles.amountPaid}>Amount paid</Text>
                                 </View>
                                 <View style={styles.group4}>
-
                                     <Text style={styles.emailInput}>{props?.applicant?.user?.email}</Text>
                                     <Text style={styles.php000}>PHP {props?.totalFee}</Text>
                                     <Text style={styles.loremIpsum3}>1234567</Text>
@@ -142,7 +141,6 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     rect: {
-        width: "100%" ,
         padding: 15,
         paddingVertical: 25,
         borderWidth: 1,
@@ -173,7 +171,7 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     group3: {
-        height: 148,
+        paddingVertical: 20,
         alignItems: "flex-start",
         justifyContent: "space-around"
     },
@@ -198,7 +196,7 @@ const styles = StyleSheet.create({
     },
     group4: {
 
-        height: 148,
+        paddingVertical: 20,
         justifyContent: "space-around"
     },
     emailInput: {

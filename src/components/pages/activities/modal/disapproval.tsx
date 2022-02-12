@@ -152,8 +152,9 @@ function Disapproval(props: any) {
                             </Text>
                         </View>
                     </View>
-                    <View style={{paddingHorizontal: 20}}>
+                    <View style={{paddingVertical: 10, paddingHorizontal: 20}}>
                         <InputField
+                            containerStyle={{height: undefined}}
                             style={{fontWeight: 'normal'}}
                             outlineStyle={{
                                 borderColor: "rgba(202,210,225,1)",

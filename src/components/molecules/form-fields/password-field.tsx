@@ -89,7 +89,7 @@ const PasswordField: FC<Props> = ({
                     backgroundColor: input.background?.error,
                     borderColor: input.text?.errorColor,
                 },
-                isFocused && {
+                !error && isFocused && {
                     backgroundColor: input.background?.default,
                     borderColor: primaryColor,
                 }

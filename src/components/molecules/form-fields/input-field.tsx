@@ -106,13 +106,15 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
         <View style={inputStyles.mainContainer}>
             
             <View style={[
+
                 inputStyles.container,
                 inputStyles.rowContainer,
+                containerStyle,
                 !!error && {
                     backgroundColor: input.background?.error,
                     borderColor: input.text?.errorColor,
                 },
-                isFocused && {
+                !error && isFocused && {
                     backgroundColor: input.background?.default,
                     borderColor: primaryColor,
                 }
@@ -145,6 +147,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                     )}
                     <View
                         style={[
+
                             outlineStyle,
                             isFocused && { borderColor: activeColor },
                             !!error && { borderColor: errorColor },

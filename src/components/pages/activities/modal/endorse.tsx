@@ -189,25 +189,27 @@ const Endorsed = (props: any) => {
                                         onSelect={({value}) => {
                                             if(value) setEndorsed(value)
                                         }}/>
-                        <InputField
-                            style={[{fontWeight: 'normal',}]}
+                        <View style={{paddingVertical: 10}}>
+                            <InputField
+                                style={[{fontWeight: 'normal'}]}
+                                containerStyle={{height: undefined}}
+                                outlineStyle={{
+                                    borderRadius: 4,
+                                    paddingTop: 5,
+                                    height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.15
+                                }}
+                                error={validateRemarks.error}
+                                errorColor={errorColor}
+                                placeholder={'Remarks'}
+                                multiline={true}
+                                value={text}
+                                onChangeText={(text: string) => {
 
-                            outlineStyle={{
-                                borderRadius: 4,
-                                borderColor: "rgba(202,210,225,1)",
-                                paddingTop: 5,
-                                height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.15
-                            }}
-                            error={validateRemarks.error}
-                            errorColor={errorColor}
-                            placeholder={'Remarks'}
-                            multiline={true}
-                            value={text}
-                            onChangeText={(text: string) => {
+                                    setText(text)
+                                }}
+                            />
+                        </View>
 
-                                setText(text)
-                            }}
-                        />
                     </View>
 
                 </View>

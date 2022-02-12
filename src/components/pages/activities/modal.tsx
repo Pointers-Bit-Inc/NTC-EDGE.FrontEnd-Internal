@@ -238,7 +238,7 @@ function ActivityModal(props: any) {
 
                             <ApprovedButton
                                 currentLoading={currentLoading}
-                                allButton={allButton}
+                                allButton={false}
                                 onPress={() => {
                                     if (cashier) {
                                         onShowConfirmation(APPROVED)
@@ -251,7 +251,7 @@ function ActivityModal(props: any) {
 
                             <DeclineButton
                                 currentLoading={currentLoading}
-                                allButton={allButton}
+                                allButton={false}
                                 onPress={() => {
                                     setVisible(true)
                                 }}/>
@@ -261,7 +261,7 @@ function ActivityModal(props: any) {
                         {getRole(user, [EVALUATOR]) &&
                         <EndorsedButton
                             currentLoading={currentLoading}
-                            allButton={allButton}
+                            allButton={false}
                             onPress={() => {
                                 setEndorseVisible(true)
                             }}/>}
