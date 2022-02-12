@@ -12,7 +12,7 @@ const CloseIcon = (props: SvgProps) => (
     >
         <Path
             d="M1 1L15 15M1 15L15 1L1 15Z"
-            stroke={props.color ? "#606A80": "black"}
+            stroke={props.color ? (props.color || "#606A80"): "black"}
             strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"

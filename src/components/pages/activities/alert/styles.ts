@@ -1,4 +1,5 @@
 import {Dimensions, StyleSheet} from "react-native";
+import {Poppins_500Medium} from "@expo-google-fonts/poppins";
 const { height, width } = Dimensions.get('window');
 export const alertStyle = StyleSheet.create({
     actionContainerStyle: {
@@ -20,12 +21,12 @@ export const alertStyle = StyleSheet.create({
     },
     confirmButtonTextStyle:{
         fontSize: 18,
-        fontWeight: '500',
+        fontFamily: 'Poppins_500Medium' ,
         color: "#2863D6"
     },
     cancelButtonTextStyle:{
         fontSize: 18,
-        fontWeight: '500',
+        fontFamily: 'Poppins_500Medium' ,
         color: "#DC2626"
     }
 });

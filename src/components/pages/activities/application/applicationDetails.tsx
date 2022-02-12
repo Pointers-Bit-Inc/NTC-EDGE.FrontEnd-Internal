@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     } ,
     file : {
         fontSize : 12 ,
-        fontWeight : "500" ,
+         fontFamily: 'Poppins_500Medium'  ,
         color : "#565961" ,
     } ,
     applicationType : {

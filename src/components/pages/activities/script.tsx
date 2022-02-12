@@ -89,16 +89,16 @@ export const statusColor = (status: string) => {
 
     if (status == FOREVALUATION) {
 
-        return { color : "#F79E1B" , fontWeight : "500" }
+        return { color : "#F79E1B" ,  fontFamily: 'Poppins_500Medium'  }
     } else if (status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) {
 
-        return { color : "#00AB76" , fontWeight : "500" , }
+        return { color : "#00AB76" ,  fontFamily: 'Poppins_500Medium'  , }
     } else if (status == DECLINED || status == DECLINE || status == UNVERIFIED) {
 
-        return { color : "#CF0327" , fontWeight : "500" }
+        return { color : "#CF0327" ,  fontFamily: 'Poppins_500Medium'  }
     } else {
 
-        return { color : "#F79E1B" , fontWeight : "500" }
+        return { color : "#F79E1B" ,  fontFamily: 'Poppins_500Medium'  }
     }
 };
 

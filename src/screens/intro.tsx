@@ -23,7 +23,11 @@ const styles = StyleSheet.create({
     marginTop: height * 0.18,
     marginBottom: 15,
   },
+  textButton: {
+    fontFamily: 'Poppins_500Medium' ,
+  },
   title: {
+
     textAlign: 'center',
     marginBottom: 10,
   },

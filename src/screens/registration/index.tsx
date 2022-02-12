@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 15,
-    fontWeight: '500',
+     fontFamily: 'Poppins_500Medium' ,,
     color: '#37405B',
     marginTop: 90,
   },

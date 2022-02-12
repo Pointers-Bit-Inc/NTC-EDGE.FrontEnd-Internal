@@ -6,7 +6,6 @@ export const DATE_ADDED = "Date Added",
     DECLINE = "Decline",
     VERIFICATION = "Verification",
     VERIFIED = "Verified",
-
     UNVERIFIED = "Unverified",
     PAID = "Paid",
     PENDING = "Pending",
@@ -19,7 +18,7 @@ export const DATE_ADDED = "Date Added",
     EVALUATOR = "evaluator",
     VERIFIER = "verifier" ,
     CHECKER = "checker",
-    ACCOUNTANT = "accountant"
+    ACCOUNTANT = "accountant";
 
 const InitialState = Record({
   visible: false,
@@ -30,7 +29,7 @@ const InitialState = Record({
       status: DATE_ADDED,
       iconBrand: 'feather',
       iconName: 'calendar',
-      isShow: [CHECKER, CASHIER, DIRECTOR, EVALUATOR]
+      isShow: [CHECKER, CASHIER, DIRECTOR, EVALUATOR, ACCOUNTANT]
     },
     {
       id: 2,
@@ -46,7 +45,7 @@ const InitialState = Record({
       status: APPROVED,
       iconBrand: 'material-community',
       iconName: 'check-circle-outline',
-      isShow: [CHECKER, DIRECTOR, EVALUATOR]
+      isShow: [CHECKER, DIRECTOR, EVALUATOR, ACCOUNTANT]
     },
     {
       id: 4,
@@ -54,7 +53,7 @@ const InitialState = Record({
       status: DECLINED,
       iconBrand: 'ionicons',
       iconName: 'md-close-circle-outline',
-      isShow: [CHECKER, DIRECTOR, EVALUATOR]
+      isShow: [CHECKER, DIRECTOR, EVALUATOR, ACCOUNTANT]
     },
     {
       id: 5,

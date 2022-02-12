@@ -113,7 +113,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                     <TouchableOpacity onPress={props.clearAll}>
                         <Text style={{
                             color: '#2863D6',
-                            fontWeight: '500',
+                            fontFamily: 'Poppins_500Medium' ,
                         }}>{props.nevers.length ? "Clear all" : ""}</Text>
                     </TouchableOpacity>
 

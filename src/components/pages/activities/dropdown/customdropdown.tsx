@@ -2,6 +2,7 @@ import React, {FC, ReactElement, useEffect, useRef, useState} from 'react';
 import {FlatList, Modal, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import CaretDownIcon from "@assets/svg/caret-down";
 import {useOrientation} from "@pages/activities/hooks/useOrientation";
+import {Poppins_500Medium} from "@expo-google-fonts/poppins";
 
 
 interface Props {
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
     buttonText: {
         flex: 1,
         color: "#6E7191",
-        fontWeight: "500",
+        fontFamily: 'Poppins_500Medium' ,
         paddingHorizontal: 20,
         textAlign: 'left',
     },

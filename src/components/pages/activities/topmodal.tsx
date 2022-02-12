@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
         marginLeft: 7,
     },
     label1: {
-        fontWeight: "400",
+        fontFamily: "Poppins_400Regular",
         color: "#121212",
         marginLeft: 7,
     },

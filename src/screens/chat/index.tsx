@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 16,
-    fontWeight: '500',
+    fontFamily: 'Poppins_500Medium' ,
     flex: 1,
   },
   outline: {

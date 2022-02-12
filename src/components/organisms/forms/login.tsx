@@ -8,6 +8,7 @@ import {
 import InputStyles from 'src/styles/input-style';
 import { text } from 'src/styles/color';
 import Text from '@atoms/text';
+import inputStyles from "src/styles/input-style";
 
 const styles = StyleSheet.create({
   container: {
@@ -73,6 +74,7 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
   return (
     <View style={styles.container}>
       <InputField
+
         inputStyle={InputStyles.text}
         label={'Email'}
         placeholder="Email address"
@@ -88,23 +90,14 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         onChangeText={(value: string) => onChangeValue('email', value)}
         onSubmitEditing={(event:any) => onChangeValue('email', event.nativeEvent.text)}
       />
-      <View style={[styles.horizontal, { justifyContent: 'flex-end' }]}>
-        <TouchableOpacity onPress={() => onChangeValue('forgotPassword')}>
-          <Text
-            style={[InputStyles.text, styles.label, { color: text.primary }]}
-            size={12}
-          >
-            Forgot your password?
-          </Text>
-        </TouchableOpacity>
-      </View>
+
       <PasswordField
         inputStyle={[InputStyles.text, { flex: 1 }]}
         label={'Password'}
         placeholder="Password"
         textContentType="oneTimeCode"
         required={true}
-        hasValidation={false}
+        hasValidation={true}
         outlineStyle={InputStyles.outlineStyle}
         activeColor={text.primary}
         errorColor={text.error}
@@ -116,6 +109,16 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         onChangeText={(value: string) => onChangeValue('password', value)}
         onSubmitEditing={(event:any) => onChangeValue('password', event.nativeEvent.text)}
       />
+      <View style={[styles.horizontal, { justifyContent: 'flex-start' }]}>
+        <TouchableOpacity onPress={() => onChangeValue('forgotPassword')}>
+          <Text
+              style={[InputStyles.text, { fontFamily: 'Poppins_500Medium' , color: text.primary }]}
+              size={12}
+          >
+            Forgot your password?
+          </Text>
+        </TouchableOpacity>
+      </View>
       <View style={[styles.horizontal, { marginTop: 15 }]}>
         <TouchableOpacity onPress={() => onChangeValue('keepLoggedIn', !form?.keepLoggedIn?.value)}>
           {keepMeLoggedInChecker(form?.keepLoggedIn?.value)}

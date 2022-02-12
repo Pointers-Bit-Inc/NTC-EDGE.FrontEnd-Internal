@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
         //  backgroundColor: "#041B6E"
     } ,
     close : {
-        fontWeight : "500" ,
+         fontFamily: 'Poppins_500Medium'  ,
         color : "rgba(239,231,231,1)" ,
         fontSize : 18 ,
     } ,

@@ -81,7 +81,6 @@ const styles = StyleSheet.create({
         fontSize: 34
     },
     verified: {
-        fontFamily: "roboto-regular",
         color: "rgba(0,171,118,1)",
         fontSize: 25
     },
@@ -109,7 +108,6 @@ const styles = StyleSheet.create({
         marginLeft: 11
     },
     basicInfo: {
-        fontFamily: "roboto-700",
         color: "#121212"
     },
     group3: {
@@ -120,12 +118,10 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     nameAddress: {
-        fontFamily: "roboto-regular",
         color: "rgba(96,106,128,1)",
         fontSize: 16
     },
     nameAddress1: {
-        fontFamily: "roboto-regular",
         color: "rgba(96,106,128,1)",
         fontSize: 16
     }

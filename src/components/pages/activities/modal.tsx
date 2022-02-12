@@ -7,17 +7,18 @@ import Approval from "@pages/activities/modal/approval";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {getRole, PaymentStatusText, StatusText} from "@pages/activities/script";
 import {
-    APPROVED,
-    CASHIER,
-    DECLINED,
-    DIRECTOR,
-    EVALUATOR,
-    FOREVALUATION,
-    FORVERIFICATION,
-    PAID,
-    PENDING,
-    UNVERIFIED,
-    VERIFIED,
+    ACCOUNTANT ,
+    APPROVED ,
+    CASHIER ,
+    DECLINED ,
+    DIRECTOR ,
+    EVALUATOR ,
+    FOREVALUATION ,
+    FORVERIFICATION ,
+    PAID ,
+    PENDING ,
+    UNVERIFIED ,
+    VERIFIED ,
 } from "../../../reducers/activity/initialstate";
 import Api from 'src/services/api';
 import {updateApplicationStatus} from "../../../reducers/application/actions";
@@ -232,8 +233,9 @@ function ActivityModal(props: any) {
                 <ModalTab details={props.details} status={status}/>
                 {
                    <View style={styles.footer}>
-                        <View style={styles.groupButton}>
-                            {getRole(user, [DIRECTOR, EVALUATOR, CASHIER]) &&
+                       {getRole(user, [DIRECTOR, EVALUATOR, CASHIER, ACCOUNTANT]) &&
+                       <View style={styles.groupButton}>
+
                             <ApprovedButton
                                 currentLoading={currentLoading}
                                 allButton={allButton}
@@ -245,17 +247,16 @@ function ActivityModal(props: any) {
                                     }
 
 
-                                }}/>}
-                            {getRole(user, [DIRECTOR, EVALUATOR, CASHIER]) &&
+                                }}/>
+
                             <DeclineButton
                                 currentLoading={currentLoading}
                                 allButton={allButton}
                                 onPress={() => {
                                     setVisible(true)
                                 }}/>
-                            }
 
-                        </View>
+                        </View>}
 
                         {getRole(user, [EVALUATOR]) &&
                         <EndorsedButton
