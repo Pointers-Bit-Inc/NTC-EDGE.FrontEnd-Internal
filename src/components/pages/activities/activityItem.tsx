@@ -18,6 +18,7 @@ import Highlighter from "@pages/activities/search/highlighter";
 
 import EndorseIcon from "@assets/svg/endorse";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
+import {Regular , Regular300} from "@styles/font";
 
 const styles = StyleSheet.create({
     container: {
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
         borderColor: '#163776',
     },
     status: {
-        //paddingHorizontal: 15,
+        paddingLeft: 5,
         paddingVertical: 2,
         borderRadius: 5,
         marginLeft: 15
@@ -97,7 +98,7 @@ const RenderStatus = ({ trigger, status }:any) => {
                 size={12}
                 numberOfLines={1}
             >
-                {status}
+                {status?.toUpperCase()}
             </Text>
         </View>
     )
@@ -228,6 +229,8 @@ export function ActivityItem(props:any) {
                                             <View style={styles.date}>
 
                                                 <Text
+                                                    style={{fontFamily: Regular300,
+                                                        fontSize: 10}}
                                                     size={10}
                                                     numberOfLines={1}
                                                 >

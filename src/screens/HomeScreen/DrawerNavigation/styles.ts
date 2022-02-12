@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { text } from 'src/styles/color';
+import {Bold} from "@styles/font";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -28,12 +29,12 @@ const styles = StyleSheet.create({
   confirmText: {
     color: 'white',
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: Bold,
   },
   cancelText: {
     color: text.default,
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: Bold,
   }
 });
 

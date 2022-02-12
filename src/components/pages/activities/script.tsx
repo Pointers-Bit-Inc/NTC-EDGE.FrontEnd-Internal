@@ -56,13 +56,13 @@ export const formatDate = (date: string) => {
     let d = new Date(date) ,
         month = '' + (d.getMonth() + 1) ,
         day = '' + d.getDate() ,
-        year = d.getFullYear();
+        year = d.getFullYear()?.toString()?.slice(-2);
     if (month.length < 2)
         month = '0' + month;
     if (day.length < 2)
         day = '0' + day;
 
-    return [year , month , day].join('/');
+    return [month , day,  year].join('/');
 };
 export const checkFormatIso = (date: string , separator?: string) => {
 

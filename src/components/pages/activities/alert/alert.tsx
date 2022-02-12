@@ -7,6 +7,7 @@ import {APPROVED, DECLINED, FOREVALUATION} from "../../../../reducers/activity/i
 import EndorseToIcon from "@assets/svg/endorseTo";
 import ApplicationApproved from "@assets/svg/application-approved";
 import {useAlert} from "@pages/activities/hooks/useAlert";
+import {Bold} from "@styles/font";
 
 const {width} = Dimensions.get('window');
 
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     title: {
-        fontWeight: "bold",
+        fontFamily: Bold,
         fontSize: 14,
         color: "#121212",
         textAlign: "center"

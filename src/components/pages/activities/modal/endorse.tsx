@@ -23,6 +23,7 @@ import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import {useOrientation} from "@pages/activities/hooks/useOrientation";
 import {getRole} from "@pages/activities/script";
+import {Regular} from "@styles/font";
 
 const {height, width} = Dimensions.get('window');
 
@@ -191,7 +192,7 @@ const Endorsed = (props: any) => {
                                         }}/>
                         <View style={{paddingVertical: 10}}>
                             <InputField
-                                style={[{fontWeight: 'normal'}]}
+                                style={[{fontFamily: Regular,}]}
                                 containerStyle={{height: undefined}}
                                 outlineStyle={{
                                     borderRadius: 4,

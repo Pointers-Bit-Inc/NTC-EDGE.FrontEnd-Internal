@@ -17,6 +17,7 @@ import {useEffect, useState} from "react";
 import {setTabBarHeight} from "../../../reducers/application/actions";
 import lodash from 'lodash';
 import {getRole} from "@pages/activities/script";
+import {Bold , Regular} from "@styles/font";
 const Tab = createBottomTabNavigator();
 
 
@@ -133,7 +134,7 @@ export default function TabBar() {
 
                                     <Text style={[{
                                         fontSize: 14,
-                                        fontWeight: isFocused ? 'bold' : 'normal',
+                                        fontFamily: isFocused ? Bold : Regular,
                                         color: isFocused ? '#2863d6' : '#606a80'
                                     }]}>{label}</Text>
                                 </View>

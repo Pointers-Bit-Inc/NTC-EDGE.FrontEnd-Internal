@@ -16,6 +16,7 @@ import useKeyboard from 'src/hooks/useKeyboard';
 import CustomAlert from "@pages/activities/alert/alert";
 import {FileTextIcon} from "@assets/svg/fileText";
 import {primaryColor} from "@styles/color";
+import {Bold , Regular} from "@styles/font";
 const { height, width } = Dimensions.get('window');
 
 function Disapproval(props: any) {
@@ -155,7 +156,7 @@ function Disapproval(props: any) {
                     <View style={{paddingVertical: 10, paddingHorizontal: 20}}>
                         <InputField
                             containerStyle={{height: undefined}}
-                            style={{fontWeight: 'normal'}}
+                            style={{fontFamily: Regular,}}
                             outlineStyle={{
                                 borderColor: "rgba(202,210,225,1)",
                                 paddingTop: 5,
@@ -275,7 +276,7 @@ const styles = StyleSheet.create({
     },
     confirm: {
         color: "rgba(255,255,255,1)",
-        fontWeight: '600',
+        fontFamily: Bold,
         fontSize: 18,
     },
     confirmButton: {

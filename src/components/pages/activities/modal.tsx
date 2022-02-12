@@ -28,6 +28,7 @@ import CloseIcon from "@assets/svg/close";
 import {ApprovedButton} from "@pages/activities/button/approvedButton";
 import {DeclineButton} from "@pages/activities/button/declineButton";
 import {EndorsedButton} from "@pages/activities/button/endorsedButton";
+import {Bold} from "@styles/font";
 
 
 function ActivityModal(props: any) {
@@ -232,7 +233,7 @@ function ActivityModal(props: any) {
                         <CloseIcon color="#606A80"/>
                     </TouchableOpacity>
                     <Text style={{
-                        fontWeight: "600",
+                        fontFamily: Bold,
                         fontSize: 14,
                         lineHeight: 16.5,
                         color: "#606A80"
@@ -630,7 +631,7 @@ const styles = StyleSheet.create({
         marginTop: 26
     },
     name: {
-        fontWeight: "bold",
+        fontFamily: Bold,
         color: "#121212",
         textAlign: "left",
         fontSize: 20

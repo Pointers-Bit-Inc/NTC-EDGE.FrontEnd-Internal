@@ -1,10 +1,10 @@
-import {Text, TouchableOpacity, View} from "react-native";
+import {Text, TouchableOpacity, View, Animated} from "react-native";
 import {styles} from "@pages/activities/styles";
 import SearchIcon from "@assets/svg/search";
 import React from "react";
 
- export const FakeSearchBar = (props: { onPress: () => void, searchVisible: boolean }) => {
-    return <View style={styles.searcg}>
+ export const FakeSearchBar = (props: { animated,  onPress: () => void, searchVisible: boolean }) => {
+    return <Animated.View style={[styles.searcg, props.animated]}>
         <View style={[styles.rect26, {height: undefined, paddingHorizontal: 20, paddingVertical: 10}]}>
             <TouchableOpacity onPress={props.onPress}>
                 {!props.searchVisible &&
@@ -26,5 +26,5 @@ import React from "react";
                 }
             </TouchableOpacity>
         </View>
-    </View>;
+    </Animated.View>;
 }

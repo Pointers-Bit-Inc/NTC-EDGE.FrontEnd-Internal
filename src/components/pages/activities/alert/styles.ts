@@ -1,5 +1,6 @@
 import {Dimensions, StyleSheet} from "react-native";
 import {Poppins_500Medium} from "@expo-google-fonts/poppins";
+import {Bold} from "@styles/font";
 const { height, width } = Dimensions.get('window');
 export const alertStyle = StyleSheet.create({
     actionContainerStyle: {
@@ -13,7 +14,7 @@ export const alertStyle = StyleSheet.create({
         backgroundColor: 'rgba(52,52,52,0.5)'
     },
     titleStyle:{
-        fontWeight: '600',
+        fontFamily: Bold,
         fontSize: 18,
     } ,
     contentContainerStyle:{

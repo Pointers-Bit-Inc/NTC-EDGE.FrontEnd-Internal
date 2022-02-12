@@ -3,6 +3,7 @@ import UnseeIcon from "@assets/svg/unsee";
 import MoreIcon from "@assets/svg/more";
 import React from "react";
 import SeeIcon from "@assets/svg/see";
+import {Bold , Regular} from "@styles/font";
 
 export const renderSwiper = (index: number, progress: any, dragX: any, onPressUser: any, activity, unReadReadApplicationFn) => {
     let action = activity?.dateRead ? "Unread" : "Read"
@@ -30,7 +31,7 @@ export const renderSwiper = (index: number, progress: any, dragX: any, onPressUs
                 <Text
                     style={{
                         color: 'white',
-                        fontWeight: '600',
+                        fontFamily: Regular,
 
                     }}>
 
@@ -70,7 +71,7 @@ export const renderSwiper = (index: number, progress: any, dragX: any, onPressUs
                     style={{
                         textAlign: "center",
                         color: '#606A80',
-                        fontWeight: '600',
+                        fontFamily: Bold,
                     }}>
                     More
                 </Text>
