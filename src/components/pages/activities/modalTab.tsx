@@ -182,13 +182,13 @@ export const ModalTab = props => {
             id: 3,
             name: 'Requirements',
             active: false,
-            isShow: [CHECKER, ACCOUNTANT, DIRECTOR, EVALUATOR]
+            isShow: [CHECKER, DIRECTOR, EVALUATOR]
         },
         {
             id: 4,
             name: 'SOA & Payment',
             active: false,
-            isShow: [CASHIER]
+            isShow: [CASHIER, ACCOUNTANT]
         },
     ]);
     const applicant = props?.details?.applicant,
