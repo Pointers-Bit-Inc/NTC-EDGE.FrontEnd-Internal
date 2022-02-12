@@ -251,6 +251,7 @@ function ActivityModal(props: any) {
                                 currentLoading={currentLoading}
                                 allButton={allButton}
                                 onPress={() => {
+
                                     if (cashier) {
                                         onShowConfirmation(APPROVED)
                                     } else {

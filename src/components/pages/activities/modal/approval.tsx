@@ -202,7 +202,7 @@ const Approval = (props: any) => {
                         </Text>
                         <View style={ styles.group2 }>
 
-                            { getRole(user , [DIRECTOR , EVALUATOR]) &&
+                            { getRole(user , [DIRECTOR , EVALUATOR, ACCOUNTANT]) &&
                             <InputField
                                 containerStyle={{height: undefined}}
                                 style={ { fontWeight : 'normal' } }
