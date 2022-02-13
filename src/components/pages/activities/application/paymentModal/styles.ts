@@ -1,4 +1,5 @@
 import {StyleSheet} from "react-native";
+import {Bold} from "@styles/font";
 
 export const styles = StyleSheet.create({
     container: {
@@ -11,7 +12,7 @@ export const styles = StyleSheet.create({
         marginLeft: 20
     },
     statementOfAccount: {
-        fontWeight: "600",
+        fontFamily: Bold,
         color: "#37405B",
         fontSize: 14
     },

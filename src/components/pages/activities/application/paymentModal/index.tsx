@@ -69,7 +69,7 @@ const PaymentModal = (props: any) => {
                     </View>
                     <View style={[styles.group8, {alignItems: 'center', marginBottom: 100}]}>
                         <View style={styles.group5}>
-                            <Text style={styles.paymentReceivedFor}>Payment received for</Text>
+                            <Text style={styles.title}>Payment received for</Text>
                             <Text style={styles.ntcEdge}>NTC-EDGE</Text>
                             <Text style={styles.theAmoutOf}>the amout of</Text>
                             <Text style={styles.php5000}>PHP {props?.totalFee}</Text>
@@ -141,7 +141,8 @@ const styles = StyleSheet.create({
     group5: {
         alignItems: "center"
     },
-    paymentReceivedFor: {
+    title: {
+        fontFamily: Bold,
         color: "#121212",
         textAlign: 'center'
     },
@@ -202,60 +203,6 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         justifyContent: "space-around"
     },
-    email: {
-        color: "#121212"
-    },
-    fee: {
-        color: "#121212"
-    },
-    accountNumber: {
-        color: "#121212"
-    },
-    account2: {
-        color: "#121212"
-    },
-    amountPaid: {
-        color: "#121212"
-    },
-    group3Filler: {
-        flex: 1,
-        flexDirection: "row"
-    },
-    group4: {
-
-        paddingVertical: 20,
-        justifyContent: "space-around"
-    },
-    emailInput: {
-        color: "#121212",
-        alignSelf: "stretch",
-        textAlign: 'right'
-    },
-    php000: {
-        color: "#121212",
-        alignSelf: "stretch",
-        textAlign: 'right'
-    },
-    loremIpsum3: {
-        color: "#121212",
-        alignSelf: "stretch",
-        textAlign: 'right'
-    },
-    jmGrills: {
-        color: "#121212",
-        alignSelf: "stretch",
-        textAlign: 'right'
-    },
-    php50003: {
-        color: "#121212",
-        alignSelf: "stretch",
-        textAlign: 'right'
-    },
-    group3Row: {
-        height: 148,
-        flexDirection: "row",
-        marginTop: 22,
-        marginRight: 1
-    }
+    
 });
 export default PaymentModal

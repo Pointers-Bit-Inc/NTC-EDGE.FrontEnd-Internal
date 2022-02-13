@@ -88,10 +88,9 @@ const Payment = (props:any) => {
                     style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15 }}
                 >
                     <Text
-                        style={{fontFamily: Bold} }
                         color="#37405B"
                         fontSize={16}
-                        style={{ marginRight: 15 }}
+                        style={{ marginRight: 15, fontFamily: Bold }}
                     >
                         Total
                     </Text>
