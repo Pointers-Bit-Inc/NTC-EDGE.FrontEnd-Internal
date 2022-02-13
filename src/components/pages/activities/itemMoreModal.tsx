@@ -4,6 +4,7 @@ import PinToTopIcon from "@assets/svg/pintotop";
 import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
+import {Regular} from "@styles/font";
 
 const ItemMoreModal = (props: any) => {
     const applicant = props?.details?.applicant?.user
@@ -39,8 +40,8 @@ const ItemMoreModal = (props: any) => {
                                 <Text style={{
                                     fontSize: 14,
                                     color: "#626a7e",
-                                    fontWeight: '400'
-                                }}>{props?.details?.applicationType}</Text>
+                                    fontFamily: Regular,
+                                }}>• {props?.details?.applicationType}</Text>
                             </View>
                         </View>
                         <View style={styles.group6}>

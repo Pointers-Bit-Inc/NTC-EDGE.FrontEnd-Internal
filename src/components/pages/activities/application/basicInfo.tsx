@@ -7,7 +7,7 @@ import {CASHIER} from "../../../../reducers/activity/initialstate";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 import {Role} from "@pages/activities/interface";
 import moment from "moment";
-import {Regular500} from "@styles/font";
+import {Bold , Regular , Regular500} from "@styles/font";
 
 const { width , height } = Dimensions.get("screen");
 
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     } ,
     role : {
 
-        fontWeight : "bold" ,
+        fontFamily: Bold,
         fontSize : 14 ,
         textAlign : "left" ,
         paddingHorizontal: 10
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10
     } ,
     detail : {
-        fontWeight : "400" ,
+        fontFamily: Regular,
         paddingRight : 0 ,
         textAlign : "left" ,
         flex : 1 ,

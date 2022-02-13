@@ -1,4 +1,5 @@
 import {StyleSheet} from "react-native";
+import {Bold} from "@styles/font";
 
 export const styles = StyleSheet.create({
     container: {
@@ -132,7 +133,7 @@ export const styles = StyleSheet.create({
         borderRadius: 3
     },
     dateText:{
-        fontWeight: "600",
+        fontFamily: Bold,
         fontSize: 14,
     },
     rect36: {

@@ -23,6 +23,7 @@ import { Bold } from '@styles/font';
 import useApi  from 'src/services/api';
 import { setUser } from 'src/reducers/user/actions';
 import { StackActions } from '@react-navigation/native';
+import {APPROVED} from "../reducers/activity/initialstate";
 const logo = require('@assets/ntc-edge-horizontal.png');
 const background = require('@assets/background.png');
 

@@ -78,8 +78,8 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
                         <View style={styles.group}>
                             <View style={styles.rect2Stack}>
-                                <View style={[styles.group3, styles.rect2]}>
-                                    <View style={styles.textInputStack}>
+                                <View style={[styles.group3, ]}>
+                                    <View>
                                        <View style={{position: "absolute", width: "100%"}}>
                                            <TextInput
                                                ref={inputRef}
@@ -88,7 +88,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                                onChange={props.onChange}
                                                onChangeText={props.onChangeText}
                                                placeholder="Search"
-                                               style={styles.textInput}
+                                               style={[styles.textInput, styles.rect2]}
                                            ></TextInput>
                                        </View>
 

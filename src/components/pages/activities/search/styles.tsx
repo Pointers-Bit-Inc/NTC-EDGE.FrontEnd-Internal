@@ -1,5 +1,6 @@
 import {Dimensions, StyleSheet} from "react-native";
 import {outline} from "@styles/color";
+import {Bold , Regular500} from "@styles/font";
 const {width, height} = Dimensions.get('window');
 export const styles = StyleSheet.create({
    header:{
@@ -57,16 +58,9 @@ export const styles = StyleSheet.create({
 
     },
     group3: {
-        top: 0,
-        left: 0,
-        position: "absolute",
-        right: 0,
-        bottom: 0
+        
     },
     textInput: {
-        top: 0,
-        left: 0,
-
         paddingHorizontal: 15,
         paddingVertical: 12,
         color: "#121212",
@@ -77,7 +71,7 @@ export const styles = StyleSheet.create({
     icon2: {
         
         alignSelf: "flex-end",
-       top: "35%",
+       top: "45%",
         right: "5%",
         color: "rgba(128,128,128,1)",
         fontSize: 25,
@@ -101,7 +95,7 @@ export const styles = StyleSheet.create({
     },
    
     recentSearches: {
-        fontWeight: "600",
+        fontFamily: Bold,
         fontSize: 18,
         lineHeight: 28,
         color: "#000",

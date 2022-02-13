@@ -1,13 +1,13 @@
 import React from "react";
 import {Dimensions , ScrollView , StyleSheet , Text , View} from "react-native";
-import {Regular500} from "@styles/font";
+import {Bold , Regular500} from "@styles/font";
 
 const { width , height } = Dimensions.get("screen");
 const ApplicationDetails = (props: any) => {
 
     return <ScrollView style={ { paddingTop : 20 , width : "100%" , backgroundColor : "#fff" , } }>
         <View style={ {
-            marginBottom : 20 ,
+            paddingBottom : 20 ,
             borderRadius : 5 ,
             alignSelf : "center" ,
             width : "90%" ,
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
         color : "#565961" ,
     } ,
     applicationType : {
-        fontWeight : "bold" ,
+        fontFamily: Bold,
         color : "#121212" ,
         fontSize : 16 ,
         marginTop : 8 ,

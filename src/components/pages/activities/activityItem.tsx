@@ -18,7 +18,7 @@ import Highlighter from "@pages/activities/search/highlighter";
 
 import EndorseIcon from "@assets/svg/endorse";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
-import {Regular , Regular500} from "@styles/font";
+import {Bold , Regular , Regular500} from "@styles/font";
 
 const styles = StyleSheet.create({
     container: {
@@ -221,8 +221,8 @@ export function ActivityItem(props:any) {
                                             <View style={styles.name}>
                                                 <Text
                                                     //style={{color: props?.activity?.dateRead ? "#565961" : "#000"}}
-                                                    weight={"600"}
-                                                    size={14}
+                                                    style={{fontFamily: Bold,
+                                                        fontSize: 14}}
                                                     numberOfLines={1}
                                                 >
                                                     <Highlighter
@@ -236,9 +236,8 @@ export function ActivityItem(props:any) {
                                             <View style={styles.date}>
 
                                                 <Text
-                                                    style={{fontFamily: Regular500,
+                                                    style={{fontFamily: Regular,
                                                         fontSize: 10}}
-                                                    size={10}
                                                     numberOfLines={1}
                                                 >
                                                     {formatDate(props.activity.createdAt)}

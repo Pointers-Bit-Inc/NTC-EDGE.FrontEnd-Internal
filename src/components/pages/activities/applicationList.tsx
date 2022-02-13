@@ -94,7 +94,7 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
 
         <Collapsible collapsed={!isOpen}>
             {props.item.activity.map(props.element)}
-            <View style={{height: 30, backgroundColor: "white", marginTop: -1}}/>
+            <View style={{height: 30, backgroundColor: "white"}}/>
         </Collapsible>
 
     </Animatable.View>;

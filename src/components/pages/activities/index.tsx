@@ -1,14 +1,14 @@
 import React, {Fragment, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
-    Alert,
-    Animated,
-    Dimensions,
-    FlatList,
-    RefreshControl,
-    ScrollView,
-    StatusBar,
-    Text,
-    TouchableOpacity,
+    Alert ,
+    Animated ,
+    Dimensions ,
+    FlatList ,
+    RefreshControl , SafeAreaView ,
+    ScrollView ,
+    StatusBar ,
+    Text ,
+    TouchableOpacity ,
     View
 } from "react-native";
 import {styles} from "@pages/activities/styles";
@@ -419,7 +419,6 @@ export default function ActivitiesPage(props: any) {
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
-
             <View style={[styles.container]}>
 
 
@@ -571,7 +570,7 @@ export default function ActivitiesPage(props: any) {
                                         activity={activity}
                                         currentUser={user}
                                         onPressUser={(event: any) => {
-                                             setIsOpen(undefined)
+                                            setIsOpen(undefined)
                                             setDetails({...activity, isOpen:`${index}${i}`})
                                             /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
                                             })*/
@@ -615,5 +614,3 @@ export default function ActivitiesPage(props: any) {
 
     );
 }
-
-

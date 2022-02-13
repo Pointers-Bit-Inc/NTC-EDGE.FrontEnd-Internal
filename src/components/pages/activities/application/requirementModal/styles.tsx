@@ -1,4 +1,5 @@
 import {StyleSheet} from "react-native";
+import {Bold} from "@styles/font";
 
 export const requirementStyles = StyleSheet.create({
     container : {
@@ -32,7 +33,7 @@ export const requirementStyles = StyleSheet.create({
         justifyContent : "space-between" ,
     } ,
     title : {
-        fontWeight : "600" ,
+        fontFamily: Bold,
         color : "#1F2022"
     } ,
     description : {
