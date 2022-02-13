@@ -20,7 +20,7 @@ interface Props {
 }
 
 const Text: FC<Props> = ({
-  color,
+  color = 'black',
   size,
   weight,
   children,
