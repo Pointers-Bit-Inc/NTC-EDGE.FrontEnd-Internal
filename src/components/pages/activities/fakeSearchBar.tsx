@@ -5,7 +5,7 @@ import React from "react";
 
  export const FakeSearchBar = (props: { animated,  onPress: () => void, searchVisible: boolean }) => {
     return <Animated.View style={[styles.searcg, props.animated]}>
-        <View style={[styles.rect26, {height: undefined, paddingHorizontal: 20, paddingVertical: 10}]}>
+        <View style={[styles.rect26, {height: undefined, paddingHorizontal: 30, paddingVertical: 10}]}>
             <TouchableOpacity onPress={props.onPress}>
                 {!props.searchVisible &&
                 <View style={[styles.rect7, {marginTop: 0, width: "100%", marginLeft: 0}]}>

@@ -56,25 +56,28 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
 
                         <View style={styles.date}>
 
-                            <Text style={styles.dateText}>{readableToHuman()} </Text>
-                            <View style={styles.dot}/>
-                            <Text style={styles.dateText}> {checkFormatIso(props.item.date, "-")}</Text>
+                            <Text style={styles.dateText}>{`${readableToHuman()} • ${checkFormatIso(props.item.date, "-")}`} </Text>
+                            
                         </View>
                     </View>
                     <View style={{flexDirection: "row",  justifyContent: "space-between", alignItems: "center", }}>
                         <View style={{flex: 0.1, alignItems: "center"}} >
-                            <Animated.View style={[ {
-                                transform: [
-                                    {
-                                        rotate: chevronValue.interpolate({
-                                            inputRange: [0, 1],
-                                            outputRange: ["0deg", "-90deg"]
-                                        })
-                                    }
-                                ]
-                            }]}>
-                                <ChevronDownIcon color={"#000"}/>
-                            </Animated.View>
+
+                            <TouchableWithoutFeedback onPress={() => setIsOpen(open => !open)}>
+                                <View style={[ {
+                                    transform: [
+                                        {
+                                            rotate: isOpen ? "0deg" : "-90deg"
+                                        }
+                                    ]
+                                }]}>
+
+                                    <ChevronDownIcon color={"#000"}/>
+
+
+                                </View>
+                            </TouchableWithoutFeedback>
+
                         </View>
                         <View style={{alignItems: "center"}}>
                             <TouchableOpacity>

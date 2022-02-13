@@ -52,7 +52,6 @@ export const styles = StyleSheet.create({
         right: 0,
     },
     rect26: {
-        height: 83,
         backgroundColor: "rgba(255,255,255,1)"
     },
     rect7: {
