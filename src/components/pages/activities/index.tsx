@@ -271,9 +271,7 @@ export default function ActivitiesPage(props: any) {
     const onDismissed = () => {
         setModalVisible(false)
     }
-    const onMoreModalDismissed = () => {
-        setMoreModalVisible(false)
-    }
+
     const [details, setDetails] = useState({})
     const initialMove = new Animated.Value(-400);
     const endMove = 400
@@ -412,6 +410,12 @@ export default function ActivitiesPage(props: any) {
         setUpdateModal(bool)
     }
 
+    const [isOpen, setIsOpen] = useState()
+    const onMoreModalDismissed = (isOpen) => {
+        console.log(isOpen, "ok")
+        setIsOpen(isOpen)
+        setMoreModalVisible(false)
+    }
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
@@ -501,7 +505,6 @@ export default function ActivitiesPage(props: any) {
                                                         /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                         })*/
                                                         setDetails({...act, ...{isPinned: true}})
-                                                        console.log(act?.assignedPersonnel)
                                                         if (event?.icon == 'more') {
                                                             setMoreModalVisible(true)
                                                         } else {
@@ -555,6 +558,7 @@ export default function ActivitiesPage(props: any) {
                                 return (
 
                                     <ActivityItem
+                                        isOpen={isOpen === `${index}${i}`}
                                         /*config={config}
                                         isPinned={true}*/
                                         searchQuery={searchTerm}
@@ -564,7 +568,8 @@ export default function ActivitiesPage(props: any) {
                                         activity={activity}
                                         currentUser={user}
                                         onPressUser={(event: any) => {
-                                            setDetails(activity)
+                                             setIsOpen(undefined)
+                                            setDetails({...activity, isOpen:`${index}${i}`})
                                             /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
                                             })*/
                                             if (event?.icon == 'more') {
@@ -579,7 +584,9 @@ export default function ActivitiesPage(props: any) {
                             }}/>
                     )}
                 />
-                <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
+                <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={() =>{
+                    onMoreModalDismissed(details?.isOpen)
+                }}/>
                 <ActivityModal updateModal={updateModalFn}
                                readFn={unReadReadApplicationFn}
                                details={details}

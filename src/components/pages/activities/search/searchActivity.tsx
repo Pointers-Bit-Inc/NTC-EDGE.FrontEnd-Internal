@@ -51,6 +51,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
     }
     const onMoreModalDismissed = () => {
         setMoreModalVisible(false)
+        
     }
     const onDismissed = () => {
         setModalVisible(false)

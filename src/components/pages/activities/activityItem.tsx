@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React , {useEffect , useRef , useState} from "react";
 import { Swipeable } from "react-native-gesture-handler";
 import {ActivityIndicator, StyleSheet, TouchableOpacity, View} from "react-native";
 import Text from "@components/atoms/text";
@@ -18,7 +18,7 @@ import Highlighter from "@pages/activities/search/highlighter";
 
 import EndorseIcon from "@assets/svg/endorse";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
-import {Regular , Regular300} from "@styles/font";
+import {Regular , Regular500} from "@styles/font";
 
 const styles = StyleSheet.create({
     container: {
@@ -164,10 +164,17 @@ export function ActivityItem(props:any) {
    
     const  status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status)
     const userActivity = props?.activity?.applicant?.user
+    const swiperRef = useRef()
+
+    useEffect(() =>{
+        if(props?.isOpen) swiperRef?.current?.close()
+    }, [props?.isOpen])
+      
 
     return (
             <View style={{backgroundColor: "#fff" }}>
                 <Swipeable
+                    ref={swiperRef}
                     key={props.index}
                     renderRightActions={
                         (progress, dragX) => props.swiper(props.index, progress, dragX, props.onPressUser)
@@ -229,7 +236,7 @@ export function ActivityItem(props:any) {
                                             <View style={styles.date}>
 
                                                 <Text
-                                                    style={{fontFamily: Regular300,
+                                                    style={{fontFamily: Regular500,
                                                         fontSize: 10}}
                                                     size={10}
                                                     numberOfLines={1}
