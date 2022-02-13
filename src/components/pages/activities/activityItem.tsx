@@ -205,7 +205,7 @@ export function ActivityItem(props:any) {
                                         height: 0,
                                         width: 0
                                     },
-                                    elevation: 10,
+                                    elevation: 1,
                                     shadowOpacity: 0.1,
                                     shadowRadius: 2,
                                     padding: 10,
