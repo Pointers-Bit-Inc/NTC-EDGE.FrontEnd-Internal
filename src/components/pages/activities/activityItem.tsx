@@ -94,7 +94,7 @@ const RenderStatus = ({ trigger, status }:any) => {
         >
             {statusIcon(status, { marginRight: 3 })}
             <Text
-                style={statusColor(status)}
+                style={[statusColor(status)]}
                 size={12}
                 numberOfLines={1}
             >
