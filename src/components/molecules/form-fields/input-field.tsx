@@ -108,8 +108,9 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
             <View style={[
 
                 inputStyles.container,
+
                 inputStyles.rowContainer,
-                containerStyle,
+
                 !!error && {
                     backgroundColor: input.background?.error,
                     borderColor: input.text?.errorColor,
@@ -117,7 +118,8 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                 !error && isFocused && {
                     backgroundColor: input.background?.default,
                     borderColor: primaryColor,
-                }
+                },
+                containerStyle,
             ]}>
                 <View style={{ flex: 0.95 }}>
                     {!!otherProps.value && !!label && (

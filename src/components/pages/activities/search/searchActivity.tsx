@@ -21,6 +21,7 @@ import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import Loader from "@pages/activities/bottomLoad";
 import useCountUp from "@pages/activities/hooks/useCountUp";
+import {Regular500} from "@styles/font";
 
 const {height} = Dimensions.get('screen');
 
@@ -113,7 +114,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                     <TouchableOpacity onPress={props.clearAll}>
                         <Text style={{
                             color: '#2863D6',
-                            fontFamily: 'Poppins_500Medium' ,
+                             fontFamily: Regular500  ,
                         }}>{props.nevers.length ? "Clear all" : ""}</Text>
                     </TouchableOpacity>
 

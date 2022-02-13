@@ -8,6 +8,8 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import {ACCOUNTANT, CASHIER, CHECKER, DIRECTOR, EVALUATOR} from "../../../reducers/activity/initialstate";
 import {primaryColor, text} from "@styles/color";
 import {Animated, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Poppins_400Regular , Poppins_500Medium} from "@expo-google-fonts/poppins";
+import {Bold , Regular , Regular500} from "@styles/font";
 
 let initial = {};
 
@@ -122,7 +124,7 @@ const MyTabBar = ({state, descriptors, navigation, position}) => {
                             >
                                 <Text style={{
                                     alignSelf: "center",
-                                    fontWeight: isFocused ? '500' : "normal",
+                                    fontFamily: isFocused ? Regular500 : Regular,
                                     color: isFocused ? primaryColor : text.default
                                 }}>
                                     {label}
@@ -214,7 +216,6 @@ export const ModalTab = props => {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
-
                         options={{tabBarLabel: tab.name}}
                     >
                         {() => <BasicInfo

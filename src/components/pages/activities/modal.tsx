@@ -223,7 +223,7 @@ function ActivityModal(props: any) {
                 show={showAlert} title={title}
                 message={message}/>
             <View style={{flex: 1}}>
-                <View style={{flexDirection: "row", justifyContent: "space-between", padding: 15, paddingTop: 35}}>
+                <View style={{flexDirection: "row", justifyContent: "space-between", padding: 15, paddingTop: 40}}>
                     <TouchableOpacity onPress={() => {
                         setAssignId("")
                         setStatus("")

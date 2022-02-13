@@ -12,7 +12,7 @@ import {Entypo, EvilIcons} from "@expo/vector-icons";
 import PaymentModal from "@pages/activities/application/paymentModal/index";
 import Text from "@atoms/text";
 import {styles} from "@pages/activities/application/paymentModal/styles"
-import {requirementStyle, requirementStyles} from "@pages/activities/application/requirementModal/styles"
+import {requirementStyles} from "@pages/activities/application/requirementModal/styles"
 import ChevronUpIcon from "@assets/svg/chevron-up";
 import ChevronDownIcon from "@assets/svg/chevron-down";
 import Collapsible from "react-native-collapsible";

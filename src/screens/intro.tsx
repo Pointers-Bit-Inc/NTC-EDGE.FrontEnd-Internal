@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   textButton: {
-    fontFamily: 'Poppins_500Medium' ,
+    fontWeight: "500"  ,
   },
   title: {
 

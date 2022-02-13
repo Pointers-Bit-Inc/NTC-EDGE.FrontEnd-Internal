@@ -15,7 +15,7 @@ import {DECLINED, FOREVALUATION} from "../../../../reducers/activity/initialstat
 import useKeyboard from 'src/hooks/useKeyboard';
 import CustomAlert from "@pages/activities/alert/alert";
 import {FileTextIcon} from "@assets/svg/fileText";
-import {primaryColor} from "@styles/color";
+import {input , primaryColor} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
 const { height, width } = Dimensions.get('window');
 
@@ -155,11 +155,16 @@ function Disapproval(props: any) {
                     </View>
                     <View style={{paddingVertical: 10, paddingHorizontal: 20}}>
                         <InputField
-                            containerStyle={{height: undefined}}
+                            containerStyle={{
+                                height: undefined ,
+                                borderColor: "#D1D1D6",
+                                borderWidth: 1 ,
+                                backgroundColor: undefined,
+                            }}
                             style={{fontFamily: Regular,}}
                             outlineStyle={{
-                                borderColor: "rgba(202,210,225,1)",
-                                paddingTop: 5,
+                              //  borderColor: "rgba(202,210,225,1)",
+                               // paddingTop: 5,
                                 height: (height < 720 && isKeyboardVisible) ? 100 : height * 0.25
                             }}
                             placeholder={'Remarks'}

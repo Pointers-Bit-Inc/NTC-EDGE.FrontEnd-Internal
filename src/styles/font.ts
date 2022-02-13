@@ -1,8 +1,8 @@
 const Regular = 'Poppins_400Regular';
 const Bold = 'Poppins_600SemiBold';
-const Regular300 = 'Poppins_300Light';
+const Regular500 = 'Poppins_500Medium';
 export {
-    Regular300,
+    Regular500,
     Regular,
     Bold,
 };

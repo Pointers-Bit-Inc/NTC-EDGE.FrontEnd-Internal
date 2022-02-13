@@ -36,6 +36,7 @@ import InputStyles from 'src/styles/input-style';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 
+
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 16,
-    fontFamily: 'Poppins_500Medium' ,
+     fontWeight: "500"  ,
     flex: 1,
   },
   outline: {

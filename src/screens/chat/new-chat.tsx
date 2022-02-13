@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    fontFamily: 'Poppins_500Medium' ,
+     fontWeight: "500"  ,
     flex: 1,
   },
   outline: {

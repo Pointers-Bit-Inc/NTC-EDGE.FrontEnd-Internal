@@ -21,6 +21,7 @@ import {BASE_URL} from "../../../services/config";
 import {Alert} from "react-native";
 import {readUnreadApplications} from "../../../reducers/application/actions";
 import {Dispatch} from "redux";
+import {Regular500} from "@styles/font";
 
 export const PaymentStatusText = (status: string) => {
 
@@ -89,16 +90,16 @@ export const statusColor = (status: string) => {
 
     if (status == FOREVALUATION) {
 
-        return { color : "#F79E1B" ,  fontFamily: 'Poppins_500Medium'  }
+        return { color : "#F79E1B" ,   fontFamily: Regular500   }
     } else if (status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) {
 
-        return { color : "#00AB76" ,  fontFamily: 'Poppins_500Medium'  , }
+        return { color : "#00AB76" ,   fontFamily: Regular500   , }
     } else if (status == DECLINED || status == DECLINE || status == UNVERIFIED) {
 
-        return { color : "#CF0327" ,  fontFamily: 'Poppins_500Medium'  }
+        return { color : "#CF0327" ,   fontFamily: Regular500   }
     } else {
 
-        return { color : "#F79E1B" ,  fontFamily: 'Poppins_500Medium'  }
+        return { color : "#F79E1B" ,   fontFamily: Regular500   }
     }
 };
 

@@ -12,6 +12,7 @@ import lodash from 'lodash';
 import RadioButtonOnIcon from "@assets/svg/radioButtonOn";
 import RadioButtonOffIcon from "@assets/svg/radioButtonOff";
 import {getRole} from "@pages/activities/script";
+import {Regular} from "@styles/font";
 
 const window = Dimensions.get("window")
 
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
         marginLeft: 7,
     },
     label1: {
-        fontFamily: "Poppins_400Regular",
+        fontFamily: Regular,
         color: "#121212",
         marginLeft: 7,
     },

@@ -7,6 +7,7 @@ import {CASHIER} from "../../../../reducers/activity/initialstate";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 import {Role} from "@pages/activities/interface";
 import moment from "moment";
+import {Regular500} from "@styles/font";
 
 const { width , height } = Dimensions.get("screen");
 
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
         backgroundColor : "#EFF0F6"
     } ,
     header : {
-         fontFamily: 'Poppins_500Medium'  ,
+          fontFamily: Regular500   ,
         color : "#565961" ,
         padding : 5 ,
         marginLeft : 5
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
         alignSelf : "flex-start"
     } ,
     detailInput : {
-         fontFamily: 'Poppins_500Medium'  ,
+          fontFamily: Regular500   ,
         color : "#121212" ,
         flex : 1 ,
         textAlign : "left"

@@ -1,5 +1,6 @@
 import React from "react";
 import {Dimensions , ScrollView , StyleSheet , Text , View} from "react-native";
+import {Regular500} from "@styles/font";
 
 const { width , height } = Dimensions.get("screen");
 const ApplicationDetails = (props: any) => {
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
     } ,
     file : {
         fontSize : 12 ,
-         fontFamily: 'Poppins_500Medium'  ,
+          fontFamily: Regular500   ,
         color : "#565961" ,
     } ,
     applicationType : {

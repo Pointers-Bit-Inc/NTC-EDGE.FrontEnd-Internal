@@ -11,6 +11,7 @@ import {
     View
 } from "react-native";
 import Loader from "@pages/activities/bottomLoad";
+import {Regular500} from "@styles/font";
 
 const { width , height } = Dimensions.get('window');
 
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
         //  backgroundColor: "#041B6E"
     } ,
     close : {
-         fontFamily: 'Poppins_500Medium'  ,
+          fontFamily: Regular500   ,
         color : "rgba(239,231,231,1)" ,
         fontSize : 18 ,
     } ,

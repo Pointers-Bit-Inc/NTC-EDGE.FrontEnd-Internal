@@ -193,7 +193,12 @@ const Endorsed = (props: any) => {
                         <View style={{paddingVertical: 10}}>
                             <InputField
                                 style={[{fontFamily: Regular,}]}
-                                containerStyle={{height: undefined}}
+                                containerStyle={{
+                                    height: undefined ,
+                                    borderColor: "#D1D1D6",
+                                    borderWidth: 1 ,
+                                    backgroundColor: undefined,
+                                }}
                                 outlineStyle={{
                                     borderRadius: 4,
                                     paddingTop: 5,

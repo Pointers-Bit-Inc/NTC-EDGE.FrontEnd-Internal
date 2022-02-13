@@ -204,7 +204,12 @@ const Approval = (props: any) => {
 
                             { getRole(user , [DIRECTOR , EVALUATOR, ACCOUNTANT]) &&
                             <InputField
-                                containerStyle={{height: undefined}}
+                                containerStyle={{
+                                    height: undefined ,
+                                    borderColor: "#D1D1D6",
+                                    borderWidth: 1 ,
+                                    backgroundColor: undefined,
+                                }}
                                 style={ { fontWeight : 'normal' } }
                                 outlineStyle={ {
                                     borderColor : "rgba(202,210,225,1)" ,

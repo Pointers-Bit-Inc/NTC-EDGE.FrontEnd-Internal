@@ -15,6 +15,7 @@ import useKeyboard from 'src/hooks/useKeyboard';
 import Text from '@atoms/text';
 import Button from '@components/atoms/button';
 import { button } from 'src/styles/color';
+import {Regular500} from "@styles/font";
 
 const styles = StyleSheet.create({
   container: {
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 10,
-     fontFamily: 'Poppins_500Medium' ,,
+      fontFamily: Regular500  ,
     color: '#37405B',
     marginTop: 25,
   },

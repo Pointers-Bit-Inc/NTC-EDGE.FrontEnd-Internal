@@ -86,8 +86,8 @@ const PaymentModal = (props: any) => {
                         <View style={styles.group6}>
                             <Text style={styles.details}>Details</Text>
                             <View style={styles.gridContainer}>
-                                {data.map((column) => (
-                                    <Row column={column} />
+                                {data.map((column, index) => (
+                                    <Row key={index} column={column} />
                                 ))}
                             </View>
 
