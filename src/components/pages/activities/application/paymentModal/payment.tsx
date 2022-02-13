@@ -17,6 +17,7 @@ import ChevronUpIcon from "@assets/svg/chevron-up";
 import ChevronDownIcon from "@assets/svg/chevron-down";
 import Collapsible from "react-native-collapsible";
 import FileOutlineIcon from "@assets/svg/fileOutline";
+import {Bold} from "@styles/font";
 const {width, height} = Dimensions.get("screen") 
 const Payment = (props:any) => {
     const [visibleModal, setVisibleModal] = useState(false)
@@ -36,7 +37,7 @@ const Payment = (props:any) => {
             
             <View style={{  padding: 5, alignItems: 'center' }}>
                 <Text
-                    weight="600"
+                  style={{fontFamily: Bold} }
                     color="#37405B"
                     fontSize={14}
                 >
@@ -48,14 +49,14 @@ const Payment = (props:any) => {
                     style={{ flexDirection: 'row', justifyContent: 'space-between' }}
                 >
                     <Text
-                        weight="600"
+                        style={{fontFamily: Bold} }
                         color="#37405B"
                         fontSize={14}
                     >
                         Particular
                     </Text>
                     <Text
-                        weight="600"
+                        style={{fontFamily: Bold} }
                         color="#37405B"
                         fontSize={14}
                     >
@@ -87,7 +88,7 @@ const Payment = (props:any) => {
                     style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 15 }}
                 >
                     <Text
-                        weight="600"
+                        style={{fontFamily: Bold} }
                         color="#37405B"
                         fontSize={16}
                         style={{ marginRight: 15 }}
@@ -95,7 +96,7 @@ const Payment = (props:any) => {
                         Total
                     </Text>
                     <Text
-                        weight="600"
+                        style={{fontFamily: Bold} }
                         color="#37405B"
                         fontSize={16}
                     >

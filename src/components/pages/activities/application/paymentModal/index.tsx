@@ -2,6 +2,7 @@ import React from "react";
 import BackgroundPayment from "@assets/svg/backgroundpayment";
 import {Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import moment from "moment";
+import {Bold} from "@styles/font";
 
 const {width, height} = Dimensions.get('window');
 const PaymentModal = (props: any) => {
@@ -101,16 +102,14 @@ const PaymentModal = (props: any) => {
 
 const styles = StyleSheet.create({
     gridContainer: {
-        justifyContent: "center",
-
-
+        justifyContent: "flex-start",
         alignItems: "center"
     },
     rowStyle: {
-        width: width,
+        width: "90%",
         paddingHorizontal: 20,
         flexDirection: "row",
-        alignItems: "center",
+       
         justifyContent: "space-around",
     },
     cellStyle: {
@@ -194,7 +193,7 @@ const styles = StyleSheet.create({
         marginTop: 23
     },
     details: {
-        fontWeight: "bold",
+        fontFamily: Bold,
         color: "#121212",
         alignSelf: "center"
     },
