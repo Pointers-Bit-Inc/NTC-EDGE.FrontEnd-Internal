@@ -495,7 +495,7 @@ export default function ActivitiesPage(props: any) {
                                             return item?.activity && item?.activity.map((act: any, i: number) => {
                                                 return act?.assignedPersonnel == user?._id && <ActivityItem
 
-                                                    isOpen={isOpen === `${index}${i}`}
+                                                    isOpen={isOpen === `pin${index}${i}`}
                                                     config={config}
                                                     key={i}
                                                     currentUser={user}
@@ -507,7 +507,7 @@ export default function ActivitiesPage(props: any) {
                                                         /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                         })*/
                                                         setIsOpen(undefined)
-                                                        setDetails({...act, ...{isOpen:`${index}${i}`}})
+                                                        setDetails({...act, ...{isOpen:`pin${index}${i}`}})
                                                         if (event?.icon == 'more') {
                                                             setMoreModalVisible(true)
                                                         } else {
