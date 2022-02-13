@@ -45,13 +45,17 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
     useEffect(() => {
         onFocusHandler()
     }, [])
+
     const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(false)
     const unReadReadApplicationFn = (id, dateRead, unReadBtn, callback: (action: any) => void) => {
         unreadReadApplication({unReadBtn : unReadBtn, dateRead : dateRead, id : id, config : config, dispatch : dispatch, setUpdateUnReadReadApplication : setUpdateUnReadReadApplication, callback : callback});
     }
-    const onMoreModalDismissed = () => {
+    const [isOpen, setIsOpen] = useState()
+
+    const onMoreModalDismissed = (isOpen) => {
+
+        setIsOpen(isOpen)
         setMoreModalVisible(false)
-        
     }
     const onDismissed = () => {
         setModalVisible(false)
@@ -158,6 +162,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                 }}
                                 renderItem={({item, index}) => (
                                     <ApplicationList
+
                                         key={index}
                                         onPress={() => {
 
@@ -169,6 +174,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
                                             return (
                                                 <ActivityItem
+                                                    isOpen={isOpen === `${index}${i}`}
                                                     searchQuery={props.value}
                                                     key={i}
                                                     parentIndex={index}
@@ -176,7 +182,8 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                                     activity={activity}
                                                     currentUser={user}
                                                     onPressUser={(event: any) => {
-                                                        setDetails(activity)
+                                                        setIsOpen(undefined)
+                                                        setDetails({...activity, isOpen:`${index}${i}`})
                                                         if (event?.icon == 'more') {
                                                             setMoreModalVisible(true)
                                                         } else {
@@ -196,7 +203,10 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
 
         </View>
-        <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={onMoreModalDismissed}/>
+        <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={()=>{
+            onMoreModalDismissed(details?.isOpen)
+        }
+        }/>
         <ActivityModal details={details}
                        visible={modalVisible}
                        onDismissed={(event: boolean, _id: number) => {

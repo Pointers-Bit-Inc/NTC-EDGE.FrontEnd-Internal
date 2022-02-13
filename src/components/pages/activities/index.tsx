@@ -412,7 +412,7 @@ export default function ActivitiesPage(props: any) {
 
     const [isOpen, setIsOpen] = useState()
     const onMoreModalDismissed = (isOpen) => {
-        console.log(isOpen, "ok")
+
         setIsOpen(isOpen)
         setMoreModalVisible(false)
     }
@@ -494,6 +494,8 @@ export default function ActivitiesPage(props: any) {
                                         pnApplications.map((item: any, index: number) => {
                                             return item?.activity && item?.activity.map((act: any, i: number) => {
                                                 return act?.assignedPersonnel == user?._id && <ActivityItem
+
+                                                    isOpen={isOpen === `${index}${i}`}
                                                     config={config}
                                                     key={i}
                                                     currentUser={user}
@@ -504,7 +506,8 @@ export default function ActivitiesPage(props: any) {
                                                     onPressUser={(event: any) => {
                                                         /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                         })*/
-                                                        setDetails({...act, ...{isPinned: true}})
+                                                        setIsOpen(undefined)
+                                                        setDetails({...act, ...{isOpen:`${index}${i}`}})
                                                         if (event?.icon == 'more') {
                                                             setMoreModalVisible(true)
                                                         } else {
