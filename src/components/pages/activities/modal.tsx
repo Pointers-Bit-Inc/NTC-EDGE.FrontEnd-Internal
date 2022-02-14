@@ -155,7 +155,7 @@ function ActivityModal(props: any) {
     }, [assignId, status, props?.details?.assignedPersonnel, props.details.paymentStatus, props.details.status])
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
-    const allButton = (cashier) ? (assignId != user?._id   ? false : (!props?.details?.paymentMethod ? true : (declineButton || approveButton || grayedOut))) : (assignId != user?._id ? true : (declineButton || approveButton || grayedOut))
+    const allButton = (cashier) ? (!!props?.details?.paymentMethod ? (assignId != user?._id  ?  true : (declineButton || approveButton || grayedOut)) : true) : (assignId != user?._id ? true : (declineButton || approveButton || grayedOut))
          
     const [alertLoading, setAlertLoading] = useState(false)
     const [approvalIcon, setApprovalIcon] = useState(false)
