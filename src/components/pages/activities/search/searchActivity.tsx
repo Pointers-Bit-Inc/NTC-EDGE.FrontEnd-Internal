@@ -70,7 +70,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
             <View style={styles.group4}>
                 <View style={styles.rect}>
                     <View style={styles.group2}>
-                        <TouchableOpacity style={{paddingTop: 10, paddingRight: 10}} onPress={props.onPress}>
+                        <TouchableOpacity style={{paddingRight: 10}} onPress={props.onPress}>
                             <BackSpaceIcon
                                 style={styles.icon}
                             ></BackSpaceIcon>
@@ -78,7 +78,8 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
                         <View style={styles.group}>
                             <View style={styles.rect2Stack}>
-                                <View style={[styles.group3, ]}>
+                                <View style={[styles.group3, styles.rect2]}>
+                                    <View style={styles.textInputStack}>
                                        <View style={{position: "absolute", width: "100%"}}>
                                            <TextInput
                                                ref={inputRef}
@@ -87,18 +88,19 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                                onChange={props.onChange}
                                                onChangeText={props.onChangeText}
                                                placeholder="Search"
-                                               style={[styles.textInput, styles.rect2]}
+                                               style={styles.textInput}
                                            ></TextInput>
+                                       </View>
 
+                                        {props.value.length ?
+                                            <TouchableOpacity onPress={props.onPress1
+                                            }>
+                                                <CloseCircleIcon
+                                                    style={styles.icon2}
+                                                />
+                                            </TouchableOpacity> : <></>}
 
                                     </View>
-                                    {props.value.length ?
-                                     <TouchableOpacity onPress={props.onPress1
-                                     }>
-                                         <CloseCircleIcon
-                                             style={styles.icon2}
-                                         />
-                                     </TouchableOpacity> : <></>}
                                 </View>
                             </View>
                         </View>
