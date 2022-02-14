@@ -118,7 +118,7 @@ const PasswordField: FC<Props> = ({
                         </View>
                     )}
                     <TextInput
-                        style={inputStyles.inputText}
+                        style={[inputStyle,inputStyles.inputText]}
                         placeholder={placeholder || label}
                         placeholderTextColor={!!error ? input.text?.errorColor : input.text?.defaultColor}
                         secureTextEntry={secureTextEntry}
