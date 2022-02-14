@@ -60,11 +60,9 @@ const Approval = (props: any) => {
             setLoading(false);
             const filterResponse = [...response.data].filter((item: any) => {
                 //evaluator and director -> accountant -> cashier -> null
-                if (userEvaluator) { //if evaluator
-                    return getRole(item , [DIRECTOR])   //get accountant
-                }if (userDirector) { //if evaluator
+                if (userEvaluator || userDirector) { //if evaluator  and director
                     return getRole(item , [ACCOUNTANT])   //get accountant
-                }  else if (userAccountantRole) {   // if accountant
+                } else if (userAccountantRole) {   // if accountant
                     return getRole(item , [CASHIER]) //get cashier
                 } else if(userCashier){ //if cashier
                     return false
