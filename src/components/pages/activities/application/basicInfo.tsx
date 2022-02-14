@@ -53,13 +53,13 @@ const BasicInfo = (props: any) => {
     const applicant = props.applicant;
     return <ScrollView style={ { width : "100%" , backgroundColor : "#fff" , } }>
         <View style={ { padding : 10 , flex : 1 , alignSelf : "center" } }>
-            <ProfileImage
+            {applicant?.user?.profilePicture && <ProfileImage
                 style={ { borderRadius : 4 } }
                 size={ 150 }
                 textSize={ 22 }
                 image={ applicant?.user.profilePicture?.small }
                 name={ `${ applicant?.user.firstName } ${ applicant?.user.lastName }` }
-            />
+            />}
 
         </View>
 

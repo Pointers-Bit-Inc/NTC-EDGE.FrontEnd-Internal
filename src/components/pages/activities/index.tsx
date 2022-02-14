@@ -217,6 +217,8 @@ export default function ActivitiesPage(props: any) {
     }
     useEffect(() => {
         let isCurrent = true
+        dispatch(setNotPinnedApplication([]))
+        dispatch(setPinnedApplication([]))
         fnApplications(isCurrent, () => {
         });
         return () => {
@@ -233,7 +235,7 @@ export default function ActivitiesPage(props: any) {
         return () => {
             isCurrent = false
         }
-    }, [countRefresh, searchTerm,])
+    }, [countRefresh, searchTerm, ])
 
 
     const [currentPage, setCurrentPage] = useState(1)

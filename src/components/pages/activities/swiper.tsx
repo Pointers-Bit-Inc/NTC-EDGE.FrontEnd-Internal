@@ -27,7 +27,7 @@ export const renderSwiper = (index: number, progress: any, dragX: any, onPressUs
             }
             }>
 
-                {action == "Read" ? <SeeIcon width={18} height={18}/> : <UnseeIcon width={18} height={18}/>}
+                {action == "Read" ? <UnseeIcon width={18} height={18}/> :  <SeeIcon width={18} height={18}/>}
                 <Text
                     style={{
                         color: 'white',
