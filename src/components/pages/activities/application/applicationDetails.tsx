@@ -6,22 +6,8 @@ const { width , height } = Dimensions.get("screen");
 const ApplicationDetails = (props: any) => {
 
     return <ScrollView style={ { paddingTop : 20 , width : "100%" , backgroundColor : "#fff" , } }>
-        <View style={ {
-            paddingBottom : 20 ,
-            borderRadius : 5 ,
-            alignSelf : "center" ,
-            width : "90%" ,
-            backgroundColor : "#fff" ,
-            shadowColor : "rgba(0,0,0,1)" ,
-            shadowOffset : {
-                height : 0 ,
-                width : 0
-            } ,
-            elevation : 2 ,
-            shadowOpacity : 0.1 ,
-            shadowRadius : 2 ,
-        } }>
-            <View style={ [styles.container , { marginTop : 12 }] }>
+
+            <View style={ [styles.container , { marginVertical : 12 }] }>
                 <View style={ styles.group2 }>
                     <View style={ styles.rect }>
                         <Text style={ styles.file }>APPLICATION FORM</Text>
@@ -42,7 +28,6 @@ const ApplicationDetails = (props: any) => {
 
                 </View>
             </View>
-        </View>
 
     </ScrollView>
 
@@ -53,7 +38,21 @@ const styles = StyleSheet.create({
         paddingHorizontal : 15 ,
     } ,
     group2 : {
-        paddingVertical : 10
+        paddingBottom : 20 ,
+
+        borderRadius : 5 ,
+        alignSelf : "center" ,
+
+        backgroundColor : "#fff" ,
+        shadowColor : "rgba(0,0,0,1)" ,
+        shadowOffset : {
+            height : 0 ,
+            width : 0
+        } ,
+        elevation : 2 ,
+        shadowOpacity : 0.1 ,
+        shadowRadius : 2 ,
+        padding : 10
     } ,
     rect : {
         padding : 10 ,
