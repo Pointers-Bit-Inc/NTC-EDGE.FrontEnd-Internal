@@ -16,6 +16,7 @@ import {BASE_URL} from "../../../services/config";
 import {APPROVED, DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import {updateActivityStatus} from "../../../reducers/activity/actions";
 import AwesomeAlert from "react-native-awesome-alerts";
+import {Bold} from "@styles/font";
 
 const {width} = Dimensions.get('window');
 
@@ -599,7 +600,7 @@ const styles = StyleSheet.create({
         marginTop: 26
     },
     name: {
-        fontWeight: "bold",
+        fontFamily: Bold,
         color: "#121212",
         textAlign: "left",
         fontSize: 20
@@ -622,7 +623,7 @@ const styles = StyleSheet.create({
         fontSize: 10
     },
     role: {
-        fontWeight: "bold",
+        fontFamily: Bold,
         fontSize: 10,
         textAlign: "left",
         marginLeft: 4

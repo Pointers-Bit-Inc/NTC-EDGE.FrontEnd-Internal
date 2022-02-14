@@ -2,6 +2,7 @@ import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from "react
 import {FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import ForwardIcon from "@assets/svg/forward";
 import React from "react";
+import {Bold} from "@styles/font";
 
 export function EndorsedButton(props: { currentLoading: string, allButton: boolean, onPress: () => void }) {
     return <View style={{flex: 0.8,}}>
@@ -26,7 +27,7 @@ export function EndorsedButton(props: { currentLoading: string, allButton: boole
                             <ActivityIndicator color={"white"} size={"small"}/>
                         ) : (
                             <Text style={[styles.endorse, {
-                                fontWeight: "600",
+                                fontFamily: Bold,
                                 color: (props.allButton) ? "#808196" : "#031A6E",
                             }]}>Endorse</Text>
 

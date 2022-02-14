@@ -23,7 +23,7 @@ import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import {useOrientation} from "@pages/activities/hooks/useOrientation";
 import {getRole} from "@pages/activities/script";
-import {Regular} from "@styles/font";
+import {Bold , Regular} from "@styles/font";
 
 const {height, width} = Dimensions.get('window');
 
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     },
     confirm: {
         color: "rgba(255,255,255,1)",
-        fontWeight: '600',
+        fontFamily: Bold,
         fontSize: 18,
     },
     confirmButton: {

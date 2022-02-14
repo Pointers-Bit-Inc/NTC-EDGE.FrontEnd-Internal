@@ -4,7 +4,7 @@ import PinToTopIcon from "@assets/svg/pintotop";
 import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
-import {Regular} from "@styles/font";
+import {Bold , Regular} from "@styles/font";
 
 const ItemMoreModal = (props: any) => {
     const applicant = props?.details?.applicant?.user
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     centerName: {
         color: "#1F2022",
         fontSize: 20,
-        fontWeight: "600"
+        fontFamily: Bold,
     },
     container: {
         flex: 1,

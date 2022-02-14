@@ -93,7 +93,7 @@ const BasicInfo = (props: any) => {
                                             ) ,
                                             {
                                                 fontSize : 16 ,
-                                                fontWeight : '500' ,
+                                                fontFamily: Regular500 ,
                                             }
                                         ] }
                                         numberOfLines={ 1 }

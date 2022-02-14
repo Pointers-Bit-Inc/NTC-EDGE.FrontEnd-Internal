@@ -159,29 +159,31 @@ const RenderPinned = ({ assignedPersonnel, config }:any) => {
         </View>
     )
 }
+let row: Array<any> = [];
+let prevOpenedRow;
 
+const closeRow = (index)=>{
+    if (prevOpenedRow && prevOpenedRow !== row[index]) {
+        prevOpenedRow.close();
+    }
+    prevOpenedRow = row[index];
+}
 export function ActivityItem(props:any) {
    
     const  status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status)
     const userActivity = props?.activity?.applicant?.user
-    const swiperRef = useRef()
-
-    useEffect(() =>{
-        if(props?.isOpen) swiperRef?.current?.close()
-    }, [props?.isOpen])
-    useEffect(() =>{
-        if(!props?.isPrevOpen && props.index) swiperRef?.current?.close()
-    }, [props?.isPrevOpen])
-
+    useEffect(()=>{
+        if(props.isOpen == props.index)  row[props.index].close()
+    }, [props.isOpen == props.index])
     return (
             <View style={{backgroundColor: "#fff" }}>
                 <Swipeable
-                    ref={swiperRef}
+                    ref={ref => row[props.index] = ref}
                     key={props.index}
 
                     
                     onSwipeableRightOpen={()=>{
-                       props.onSwipeableRightOpen()
+                        closeRow(props.index)
                     }}
                     renderRightActions={
                         (progress, dragX) => props.swiper(props.index, progress, dragX, props.onPressUser)

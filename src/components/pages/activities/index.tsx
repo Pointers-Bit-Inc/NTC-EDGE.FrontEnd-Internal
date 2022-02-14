@@ -496,8 +496,7 @@ export default function ActivitiesPage(props: any) {
                                         pnApplications.map((item: any, index: number) => {
                                             return item?.activity && item?.activity.map((act: any, i: number) => {
                                                 return act?.assignedPersonnel == user?._id && <ActivityItem
-                                                    isPrevOpen={isPrevOpen === `${index}${i}`}
-                                                    isOpen={isOpen === `pin${index}${i}`}
+                                                    isOpen={isOpen}
                                                     config={config}
                                                     key={i}
                                                     currentUser={user}
@@ -505,25 +504,19 @@ export default function ActivitiesPage(props: any) {
                                                     searchQuery={searchTerm}
                                                     activity={act}
                                                     isPinned={true}
-                                                    onSwipeableRightOpen={()=>{
-
-
-                                                        setIsPrevOpen(`pin${index}${i}`)
-
-
-                                                    }}
                                                     onPressUser={(event: any) => {
                                                         /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                         })*/
+
                                                         setIsOpen(undefined)
-                                                        setDetails({...act, ...{isOpen:`pin${index}${i}`}})
+                                                        setDetails({...act, isOpen:i})
                                                         if (event?.icon == 'more') {
                                                             setMoreModalVisible(true)
                                                         } else {
                                                             setModalVisible(true)
                                                         }
 
-                                                    }} index={`pin${index}${i}`} swiper={renderSwiper}/>
+                                                    }} index={i} swiper={renderSwiper}/>
                                             })
                                         })
                                     }
@@ -570,8 +563,7 @@ export default function ActivitiesPage(props: any) {
                                 return (
 
                                     <ActivityItem
-                                        isOpen={isOpen === `${index}${i}`}
-                                        isPrevOpen={isPrevOpen === `${index}${i}`}
+                                        isOpen={isOpen}
                                         /*config={config}
                                         isPinned={true}*/
                                         searchQuery={searchTerm}
@@ -580,14 +572,6 @@ export default function ActivitiesPage(props: any) {
                                         role={user?.role?.key}
                                         activity={activity}
                                         currentUser={user}
-                                        onSwipeableRightOpen={()=>{
-
-
-                                                         console.log(isOpen , isPrevOpen)
-                                            setIsPrevOpen(`${index}${i}`)
-
-
-                                        }}
                                         onPressUser={(event: any) => {
 
                                             setIsOpen(undefined)

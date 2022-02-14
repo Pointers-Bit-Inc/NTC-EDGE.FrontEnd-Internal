@@ -65,7 +65,6 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
         const countUp = Math.max(0, Math.round(progress * props.total))
         return <Text>{countUp}</Text>
     }
-    const [isPrevOpen, setIsPrevOpen] = useState()
     return <View style={styles.container}>
         <View style={styles.group9}>
             <View style={styles.group4}>
@@ -175,21 +174,14 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
                                             return (
                                                 <ActivityItem
-                                                    isPrevOpen={isPrevOpen === `${index}${i}`}
-                                                    isOpen={isOpen === `${index}${i}`}
+                                                    isOpen={isOpen}
                                                     searchQuery={props.value}
                                                     key={i}
                                                     parentIndex={index}
                                                     role={user?.role?.key}
                                                     activity={activity}
                                                     currentUser={user}
-                                                    onSwipeableRightOpen={()=>{
-
-
-                                                        setIsPrevOpen(`${index}${i}`)
-
-
-                                                    }}
+                                                    
                                                     onPressUser={(event: any) => {
                                                         setIsOpen(undefined)
                                                         setDetails({...activity, isOpen:`${index}${i}`})
@@ -199,7 +191,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                                             setModalVisible(true)
                                                         }
 
-                                                    }} index={i}
+                                                    }} index={`${index}${i}`}
                                                     swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
                                             )
                                         }}/>

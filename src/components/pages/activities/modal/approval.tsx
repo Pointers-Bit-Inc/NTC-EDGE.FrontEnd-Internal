@@ -23,6 +23,7 @@ import {errorColor , primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import {useAlert} from "@pages/activities/hooks/useAlert";
 import {getRole} from "@pages/activities/script";
+import {Bold} from "@styles/font";
 
 const { width , height } = Dimensions.get('window');
 
@@ -288,7 +289,7 @@ const styles = StyleSheet.create({
     } ,
     confirm : {
         color : "rgba(255,255,255,1)" ,
-        fontWeight : '600' ,
+        fontFamily: Bold,
         fontSize : 18 ,
     } ,
     confirmButton : {

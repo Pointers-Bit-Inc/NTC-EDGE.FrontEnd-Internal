@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
         marginLeft: 9
     },
     applicant: {
-        fontWeight: "bold",
+        fontFamily: Bold,
         top: 0,
         left: 0,
         color: "#121212",
@@ -146,7 +146,7 @@ export const styles = StyleSheet.create({
         marginBottom: 20,
     },
     payment2: {
-        fontWeight: "bold",
+        fontFamily: Bold,
         color: "#121212",
         marginTop: 15,
         marginLeft: 21

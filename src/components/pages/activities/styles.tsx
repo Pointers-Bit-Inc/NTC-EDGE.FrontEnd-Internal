@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
         color: "rgba(255,255,255,1)",
         fontSize: 20,
         marginLeft: 15,
-        fontWeight: "bold"
+        fontFamily: Bold,
     },
     rect4Row: {
         height: 40,
@@ -256,7 +256,7 @@ export const styles = StyleSheet.create({
         marginTop: 26
     },
     name: {
-        fontWeight:  "bold",
+        fontFamily: Bold,
         color: "#121212",
         fontSize: 12
     },

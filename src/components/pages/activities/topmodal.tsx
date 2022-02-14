@@ -12,7 +12,7 @@ import lodash from 'lodash';
 import RadioButtonOnIcon from "@assets/svg/radioButtonOn";
 import RadioButtonOffIcon from "@assets/svg/radioButtonOff";
 import {getRole} from "@pages/activities/script";
-import {Regular} from "@styles/font";
+import {Bold , Regular} from "@styles/font";
 
 const window = Dimensions.get("window")
 
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     },
     sort: {
         fontSize: 18,
-        fontWeight: "bold",
+        fontFamily: Bold,
         color: "#121212",
         textAlign: "left",
         marginTop: 20,
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     },
     sort1: {
         fontSize: 18,
-        fontWeight: "bold",
+        fontFamily: Bold,
         color: "#121212",
     },
     header: {
@@ -190,14 +190,14 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     filter: {
-        fontWeight: "bold",
+        fontFamily: Bold,
         color: "rgba(255,255,255,1)",
         fontSize: 16,
         marginTop: 5
     },
     filter1: {
         alignSelf: "center",
-        fontWeight: "bold",
+        fontFamily: Bold,
         color: "rgba(255,255,255,1)",
         fontSize: 16,
     },
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
         fontSize: 32
     },
     label: {
-        fontWeight: "bold",
+        fontFamily: Bold,
         color: "#121212",
         marginLeft: 7,
     },
