@@ -509,14 +509,14 @@ export default function ActivitiesPage(props: any) {
                                                         })*/
 
                                                         setIsOpen(undefined)
-                                                        setDetails({...act, isOpen:i})
+                                                        setDetails({...act, isOpen:`${i}${index}`})
                                                         if (event?.icon == 'more') {
                                                             setMoreModalVisible(true)
                                                         } else {
                                                             setModalVisible(true)
                                                         }
 
-                                                    }} index={i} swiper={renderSwiper}/>
+                                                    }} index={`${i}${index}`} swiper={renderSwiper}/>
                                             })
                                         })
                                     }
@@ -591,6 +591,7 @@ export default function ActivitiesPage(props: any) {
                     )}
                 />
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={() =>{
+                                                   console.log(details?.isOpen, isOpen)
                     onMoreModalDismissed(details?.isOpen)
                 }}/>
                 <ActivityModal updateModal={updateModalFn}

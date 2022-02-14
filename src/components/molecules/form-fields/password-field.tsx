@@ -92,7 +92,8 @@ const PasswordField: FC<Props> = ({
                 !error && isFocused && {
                     backgroundColor: input.background?.default,
                     borderColor: primaryColor,
-                }
+                },
+                containerStyle
             ]}>
                 <View style={{ flex: 0.95 }}>
                     {!!otherProps.value && !!label && (
