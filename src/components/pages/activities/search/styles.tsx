@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
        flexDirection: "row",
        paddingBottom: 5,
        paddingHorizontal: 20,
-       paddingTop: 36,
+       paddingTop: 20,
        alignItems: "center"
    },
     rect4: {
@@ -35,8 +35,8 @@ export const styles = StyleSheet.create({
         borderBottomWidth: StyleSheet.hairlineWidth,
     },
     group2: {
-      paddingTop: 45,
-        paddingBottom: 11,
+      paddingTop: 40,
+        paddingBottom: 20,
        paddingHorizontal: 20,
         flexDirection: "row",
         justifyContent: "space-between",
@@ -48,13 +48,13 @@ export const styles = StyleSheet.create({
 
     },
     group: {
-        height: 45,
+        height: 50,
         flex: 1
     },
     rect2: {
-        borderWidth: 2,
-        borderColor: "#041B6E",
-        borderRadius: 12,
+
+        
+
 
     },
     group3: {
@@ -65,9 +65,9 @@ export const styles = StyleSheet.create({
         bottom: 0
     },
     textInput: {
-        top: 0,
-        left: 0,
-
+        borderWidth: 2,
+        borderRadius: 12,
+        borderColor: "#041B6E",
         paddingHorizontal: 15,
         paddingVertical: 12,
         color: "#121212",
