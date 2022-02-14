@@ -13,7 +13,7 @@ const disabledColor = '#D1D1D1';
 const infoColor = '#2F5BFA';
 const lightInfoColor = '#DBEAFE';
 const outline = {
-  primary: '#1F40AF',
+  primary: '#031A6E',
   secondary: '#FFFFFF',
   default: '#C4C4C4',
   success: '#2C9669',
@@ -28,18 +28,21 @@ const text = {
   success: '#2C9669',
   error: '#CE1026',
   disabled: '#D1D1D1',
+  info: '#2F5BFA',
 };
 
 const button = {
-  primary: '#1F40AF',
+  primary: '#031A6E',
   secondary: '#FFFFFF',
   default: '#C4C4C4',
   success: '#2C9669',
   error: '#CE1026',
+  info: '#2F5BFA',
+  disabled: '#D1D1D1',
 };
 
 const bubble = {
-  primary: '#1F40AF',
+  primary: '#031A6E',
   secondary: '#E5E5E5',
 };
 

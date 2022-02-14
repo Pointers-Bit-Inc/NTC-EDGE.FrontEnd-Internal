@@ -300,7 +300,7 @@ const ChatList = ({ navigation }:any) => {
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
         <View style={styles.headerContent}>
-          <TouchableOpacity onPress={() => navigation.openDrawer()}>
+          <TouchableOpacity onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
             <ProfileImage
               size={45}
               image={user?.image}
