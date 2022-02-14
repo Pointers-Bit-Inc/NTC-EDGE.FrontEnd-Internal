@@ -78,6 +78,7 @@ function ActivityModal(props: any) {
         if (user?.role?.key == ACCOUNTANT) {
             params = {
                 status,
+               // paymentStatus: PENDING,
                 assignedPersonnel: assignId ? assignId : undefined,
                 addDocumentaryStamp: true,
                 remarks: remarks ? remarks : undefined,
@@ -147,15 +148,15 @@ function ActivityModal(props: any) {
     }, [])
 
     const statusMemo = useMemo(() => {
-        console.log(allButton )
+       
         setStatus(status)
         setAssignId(assignId ? assignId : props?.details?.assignedPersonnel)
         return status ? (cashier ? PaymentStatusText(status) : StatusText(status)) : (cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
     }, [assignId, status, props?.details?.assignedPersonnel, props.details.paymentStatus, props.details.status])
     const approveButton = cashier ? statusMemo === APPROVED || statusMemo === VERIFIED : (statusMemo === APPROVED || statusMemo === VERIFIED)
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED
-    const allButton = assignId != user?._id ? true : (declineButton || approveButton || grayedOut)
-         console.log((declineButton || approveButton || grayedOut), assignId != user?._id, user?._id, assignId, status, props?.details?.assignedPersonnel, props.details.paymentStatus, props.details.status)
+    const allButton = (cashier) ? (!props?.details?.paymentMethod && assignId != user?._id   ? true : (declineButton || approveButton || grayedOut)) : (assignId != user?._id ? true : (declineButton || approveButton || grayedOut))
+         
     const [alertLoading, setAlertLoading] = useState(false)
     const [approvalIcon, setApprovalIcon] = useState(false)
     const [title, setTitle] = useState("Approve Application")
