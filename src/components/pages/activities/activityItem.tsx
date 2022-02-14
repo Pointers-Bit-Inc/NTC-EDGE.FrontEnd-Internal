@@ -169,13 +169,20 @@ export function ActivityItem(props:any) {
     useEffect(() =>{
         if(props?.isOpen) swiperRef?.current?.close()
     }, [props?.isOpen])
-      
+    useEffect(() =>{
+        if(!props?.isPrevOpen && props.index) swiperRef?.current?.close()
+    }, [props?.isPrevOpen])
 
     return (
             <View style={{backgroundColor: "#fff" }}>
                 <Swipeable
                     ref={swiperRef}
                     key={props.index}
+
+                    
+                    onSwipeableRightOpen={()=>{
+                       props.onSwipeableRightOpen()
+                    }}
                     renderRightActions={
                         (progress, dragX) => props.swiper(props.index, progress, dragX, props.onPressUser)
                     }

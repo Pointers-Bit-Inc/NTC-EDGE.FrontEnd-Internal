@@ -413,6 +413,7 @@ export default function ActivitiesPage(props: any) {
     }
 
     const [isOpen, setIsOpen] = useState()
+    const [isPrevOpen, setIsPrevOpen] = useState()
     const onMoreModalDismissed = (isOpen) => {
 
         setIsOpen(isOpen)
@@ -515,7 +516,7 @@ export default function ActivitiesPage(props: any) {
                                                             setModalVisible(true)
                                                         }
 
-                                                    }} index={i} swiper={renderSwiper}/>
+                                                    }} index={`pin${index}${i}`} swiper={renderSwiper}/>
                                             })
                                         })
                                     }
@@ -563,6 +564,7 @@ export default function ActivitiesPage(props: any) {
 
                                     <ActivityItem
                                         isOpen={isOpen === `${index}${i}`}
+                                        isPrevOpen={isPrevOpen === `${index}${i}`}
                                         /*config={config}
                                         isPinned={true}*/
                                         searchQuery={searchTerm}
@@ -571,7 +573,16 @@ export default function ActivitiesPage(props: any) {
                                         role={user?.role?.key}
                                         activity={activity}
                                         currentUser={user}
+                                        onSwipeableRightOpen={()=>{
+
+
+                                                         console.log(isOpen , isPrevOpen)
+                                            setIsPrevOpen(`${index}${i}`)
+
+
+                                        }}
                                         onPressUser={(event: any) => {
+
                                             setIsOpen(undefined)
                                             setDetails({...activity, isOpen:`${index}${i}`})
                                             /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
@@ -582,7 +593,7 @@ export default function ActivitiesPage(props: any) {
                                                 setModalVisible(true)
                                             }
 
-                                        }} index={i}
+                                        }} index={`${index}${i}`}
                                         swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
                                 )
                             }}/>
