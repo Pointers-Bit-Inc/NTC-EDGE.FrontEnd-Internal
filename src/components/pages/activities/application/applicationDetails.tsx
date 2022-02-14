@@ -34,12 +34,13 @@ const ApplicationDetails = (props: any) => {
 };
 const styles = StyleSheet.create({
     container : {
+
         flex : 1 ,
         paddingHorizontal : 15 ,
     } ,
     group2 : {
         paddingBottom : 20 ,
-
+        width: "100%",
         borderRadius : 5 ,
         alignSelf : "center" ,
 
