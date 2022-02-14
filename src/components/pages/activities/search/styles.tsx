@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
         alignSelf: "stretch"
     },
     rect: {
-
+        paddingBottom: 10,
         backgroundColor: "#fff",
         borderBottomColor: outline.default,
         borderBottomWidth: StyleSheet.hairlineWidth,

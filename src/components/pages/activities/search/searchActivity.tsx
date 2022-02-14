@@ -70,7 +70,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
             <View style={styles.group4}>
                 <View style={styles.rect}>
                     <View style={styles.group2}>
-                        <TouchableOpacity style={{paddingRight: 10}} onPress={props.onPress}>
+                        <TouchableOpacity style={{paddingTop: 10, paddingRight: 10}} onPress={props.onPress}>
                             <BackSpaceIcon
                                 style={styles.icon}
                             ></BackSpaceIcon>
