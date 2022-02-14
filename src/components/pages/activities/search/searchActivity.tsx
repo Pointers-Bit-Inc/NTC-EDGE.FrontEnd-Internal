@@ -89,15 +89,16 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                                placeholder="Search"
                                                style={[styles.textInput, styles.rect2]}
                                            ></TextInput>
-                                        {props.value.length ?
-                                            <TouchableOpacity onPress={props.onPress1
-                                            }>
-                                                <CloseCircleIcon
-                                                    style={styles.icon2}
-                                                />
-                                            </TouchableOpacity> : <></>}
+
 
                                     </View>
+                                    {props.value.length ?
+                                     <TouchableOpacity onPress={props.onPress1
+                                     }>
+                                         <CloseCircleIcon
+                                             style={styles.icon2}
+                                         />
+                                     </TouchableOpacity> : <></>}
                                 </View>
                             </View>
                         </View>
