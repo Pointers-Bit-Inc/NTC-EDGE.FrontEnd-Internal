@@ -8,6 +8,7 @@ import moment from "moment";
 import {useAlert} from "@pages/activities/hooks/useAlert";
 import * as Animatable from 'react-native-animatable'
 import DotVertical from "@assets/svg/dotsVertical";
+import ChevronUpIcon from "@assets/svg/chevron-up";
 const ApplicationList = (props: { onPress: () => void, item: any, numbers: { parentIndex: number, child: number[]}[], index: number, element: (activity: any, i: number) => JSX.Element }) => {
     const chevronValue = useRef(new Animated.Value(0)).current
     const [isOpen, setIsOpen] = useState(true)
@@ -64,15 +65,9 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
                         <View style={{flex: 0.1, alignItems: "center"}} >
 
                             <TouchableWithoutFeedback onPress={() => setIsOpen(open => !open)}>
-                                <View style={[ {
-                                    transform: [
-                                        {
-                                            rotate: isOpen ? "0deg" : "-90deg"
-                                        }
-                                    ]
-                                }]}>
+                                <View >
 
-                                    <ChevronDownIcon color={"#000"}/>
+                                    {isOpen ? <ChevronDownIcon color={"#000"}/> : <ChevronUpIcon color={"#000"}/>}
 
 
                                 </View>
