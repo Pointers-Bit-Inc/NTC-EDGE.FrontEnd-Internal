@@ -496,7 +496,7 @@ export default function ActivitiesPage(props: any) {
                                         pnApplications.map((item: any, index: number) => {
                                             return item?.activity && item?.activity.map((act: any, i: number) => {
                                                 return act?.assignedPersonnel == user?._id && <ActivityItem
-
+                                                    isPrevOpen={isPrevOpen === `${index}${i}`}
                                                     isOpen={isOpen === `pin${index}${i}`}
                                                     config={config}
                                                     key={i}
@@ -505,6 +505,13 @@ export default function ActivitiesPage(props: any) {
                                                     searchQuery={searchTerm}
                                                     activity={act}
                                                     isPinned={true}
+                                                    onSwipeableRightOpen={()=>{
+
+
+                                                        setIsPrevOpen(`pin${index}${i}`)
+
+
+                                                    }}
                                                     onPressUser={(event: any) => {
                                                         /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                         })*/

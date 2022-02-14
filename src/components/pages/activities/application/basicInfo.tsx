@@ -53,13 +53,13 @@ const BasicInfo = (props: any) => {
     const applicant = props.applicant;
     return <ScrollView style={ { width : "100%" , backgroundColor : "#fff" , } }>
         <View style={ { padding : 10 , flex : 1 , alignSelf : "center" } }>
-            {applicant?.user?.profilePicture && <ProfileImage
+           <ProfileImage
                 style={ { borderRadius : 4 } }
                 size={ 150 }
                 textSize={ 22 }
-                image={ applicant?.user.profilePicture?.small }
-                name={ `${ applicant?.user.firstName } ${ applicant?.user.lastName }` }
-            />}
+                image={ applicant?.user?.profilePicture?.small }
+                name={ `${ applicant?.user?.firstName } ${ applicant?.user?.lastName }` }
+            /> 
 
         </View>
 
@@ -74,7 +74,7 @@ const BasicInfo = (props: any) => {
                             </View>
                         </View>
 
-                        <View style={ styles.status }>
+                        <View style={ [styles.status, { justifyContent :  personnel == undefined ? "space-between" : "center" ,}] }>
                             <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}} >
 
                                     {
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     status : {
         flexDirection : 'row' ,
         flexWrap : "wrap" ,
-        justifyContent : "space-between" ,
+
         alignItems : "center" ,
         paddingVertical : 15,
         paddingLeft: 10

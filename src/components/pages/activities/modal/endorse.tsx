@@ -16,7 +16,7 @@ import axios from "axios";
 import EndorseToIcon from "@assets/svg/endorseTo";
 import {BASE_URL} from "../../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
-import {DIRECTOR, EVALUATOR, FOREVALUATION} from "../../../../reducers/activity/initialstate";
+import {ACCOUNTANT , DIRECTOR , EVALUATOR , FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor , primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
@@ -50,7 +50,7 @@ const Endorsed = (props: any) => {
                 }
             }).then((response) => {
             const filterResponse = [...response.data].filter((item) => {
-                return  getRole(item,[DIRECTOR, EVALUATOR]) //&& user?._id != item?._id
+                return  getRole(item,[DIRECTOR, EVALUATOR, ACCOUNTANT]) //&& user?._id != item?._id
             })
 
             const res = filterResponse?.map((item) => {
