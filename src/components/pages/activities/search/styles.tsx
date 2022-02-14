@@ -76,7 +76,6 @@ export const styles = StyleSheet.create({
         textAlign: "left"
     },
     icon2: {
-        
         alignSelf: "flex-end",
        top: "60%",
         right: "5%",
