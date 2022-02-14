@@ -79,7 +79,6 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                         <View style={styles.group}>
                             <View style={styles.rect2Stack}>
                                 <View style={[styles.group3, ]}>
-                                    <View>
                                        <View style={{position: "absolute", width: "100%"}}>
                                            <TextInput
                                                ref={inputRef}
@@ -90,8 +89,6 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                                placeholder="Search"
                                                style={[styles.textInput, styles.rect2]}
                                            ></TextInput>
-                                       </View>
-
                                         {props.value.length ?
                                             <TouchableOpacity onPress={props.onPress1
                                             }>

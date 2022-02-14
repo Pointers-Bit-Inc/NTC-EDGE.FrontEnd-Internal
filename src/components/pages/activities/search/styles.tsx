@@ -52,13 +52,14 @@ export const styles = StyleSheet.create({
         flex: 1
     },
     rect2: {
+
         borderWidth: 2,
         borderColor: "#041B6E",
         borderRadius: 12,
 
     },
     group3: {
-        
+            
     },
     textInput: {
         paddingHorizontal: 15,
@@ -71,7 +72,7 @@ export const styles = StyleSheet.create({
     icon2: {
         
         alignSelf: "flex-end",
-       top: "45%",
+       top: "60%",
         right: "5%",
         color: "rgba(128,128,128,1)",
         fontSize: 25,

@@ -18,7 +18,7 @@ export const requirementStyles = StyleSheet.create({
             width : 0 ,
             height : 0
         } ,
-        elevation : 10 ,
+        elevation : 1.5 ,
         shadowOpacity : 0.1 ,
         shadowRadius : 5 ,
         borderRadius : 5
