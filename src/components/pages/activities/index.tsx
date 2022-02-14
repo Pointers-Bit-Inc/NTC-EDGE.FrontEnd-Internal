@@ -168,7 +168,7 @@ export default function ActivitiesPage(props: any) {
     const query = () => {
         return {
             ...(searchTerm && {keyword: searchTerm}),
-            ...(checkDateAdded && {sort: checkDateAdded.length ? "asc" : "desc"}),
+            ...({sort: checkDateAdded.length ? "asc" : "desc"}),
             ...(selectedClone.length > 0 && {
                 [cashier ? "paymentStatus" : 'status']: selectedClone.map((item: any) => {
                     if (cashier) {

@@ -41,7 +41,7 @@ const ItemMoreModal = (props: any) => {
                                     fontSize: 14,
                                     color: "#626a7e",
                                     fontFamily: Regular,
-                                }}>• {props?.details?.applicationType}</Text>
+                                }}>{props?.details?.applicationType}</Text>
                             </View>
                         </View>
                         <View style={styles.group6}>
