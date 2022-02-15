@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FormField from '@organisms/forms/form';
 import InputStyles from '@styles/input-style';
 import Text from '@atoms/text';
-import { defaultColor, errorColor, successColor, text, warningColor} from '@styles/color';
+import { button, defaultColor, errorColor, successColor, text, warningColor} from '@styles/color';
 import {Image, ScrollView, StyleSheet, TouchableOpacity, View, ActivityIndicator, StatusBar, Dimensions, BackHandler} from 'react-native';
 import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
 import { setUser } from '../../../reducers/user/actions';
@@ -15,6 +15,11 @@ import { validateEmail, validatePassword, validatePhone, validateText } from 'sr
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
+import Left from '@components/atoms/icon/left';
+import NavBar from '@components/molecules/navbar';
+import { UploadIcon } from '@components/atoms/icon';
+import { RFValue } from 'react-native-responsive-fontsize';
+import Button from '@components/atoms/button';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const { width, height } = Dimensions.get('window');
@@ -120,7 +125,7 @@ const UserProfileScreen = ({navigation}: any) => {
                         photo: false,
                         basic: false
                     });
-                    setEditable(false);
+                    // setEditable(false);
                     if (res?.status === 200) {
                         setAlert({
                             title: 'Success',
@@ -146,7 +151,7 @@ const UserProfileScreen = ({navigation}: any) => {
                         photo: false,
                         basic: false
                     });
-                    setEditable(false);
+                    // setEditable(false);
                     if (err?.status === 413) {
                         setAlert({
                             title: 'File Too Large',
@@ -164,10 +169,6 @@ const UserProfileScreen = ({navigation}: any) => {
                     setShowAlert(true);
                 });
         }
-    };
-    const onSave = () => {
-        if (editable) save({dp: false});
-        else setEditable(true);
     };
 
     const [alert, setAlert] = useState({
@@ -305,10 +306,11 @@ const UserProfileScreen = ({navigation}: any) => {
         });
         return valid;
     }
-    const disabled = loading?.photo || loading?.basic || (editable && !isValid());
+    const disabled = /*loading?.photo ||*/ loading?.basic || (/*editable &&*/ !isValid());
 
     const handleBackButtonClick = () => {
-        navigation.dispatch(navigation.navigate('Home'))
+        // navigation.dispatch(navigation.navigate('Home'))
+        navigation.goBack();
         return true;
     }
 
@@ -329,47 +331,55 @@ const UserProfileScreen = ({navigation}: any) => {
 
     return (
         <View style={styles.container}>
-            {/* <MyStatusBar backgroundColor='#041B6E' barStyle='light-content' /> */}
-            <View style={styles.group}>
-                <TouchableOpacity style={styles.touchable} onPress={handleBackButtonClick} >
-                    <Ionicons name='md-close' style={styles.icon}></Ionicons>
-                </TouchableOpacity>
-
-                <Text style={styles.profileName}>Profile</Text>
-                <TouchableOpacity style={[styles.touchable, {alignItems: 'flex-end'}]} onPress={onSave} disabled={disabled}>
-                    {
-                        loading?.basic
-                            ? <ActivityIndicator size='small' color='#fff' />
-                            : <Text style={[styles?.edit, disabled && {color: 'rgba(255, 255, 255, 0.5)'}]}>{editable ? 'Save' : 'Edit'}</Text>
-                    }
-                </TouchableOpacity>
-            </View>
-
-            <View style={styles.rect2}></View>
-            <TouchableOpacity onPress={() => onPress(11, 'image-picker')}>
-                <View style={styles.rect3}>
-                    <ProfileImage
-                        size={width / 4}
-                        textSize={25}
-                        image={photo}
-                        name={`${user.firstName} ${user.lastName}`}
-                    /> 
-                    <Text style={styles.change2}>Change</Text>
-                    { loading?.photo && <ActivityIndicator style={styles.activityIndicator} size='large' color='#fff' /> }
-                </View>
-            </TouchableOpacity>
+            <NavBar
+                title='Profile'
+                leftIcon={<Left color='#fff' />}
+                onLeft={() => navigation.pop()}
+            />
 
             <ScrollView style={styles.scrollview} showsVerticalScrollIndicator={false}>
+                <View style={[styles.row, {marginBottom: 20}]}>
+                    <View>
+                        <ProfileImage
+                            size={width / 4}
+                            textSize={25}
+                            image={photo}
+                            name={`${user.firstName} ${user.lastName}`}
+                        />
+                        { loading?.photo && <ActivityIndicator style={styles.activityIndicator} size='large' color='#fff' /> }
+                    </View>
+                    <TouchableOpacity onPress={() => onPress(11, 'image-picker')}>
+                        <View style={styles.row}>
+                            <UploadIcon color={text.info} />
+                            <Text style={styles.change2}>Upload image</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
                 <FormField
                     formElements={userProfileForm}
                     onChange={onUpdateForm}
                     onSubmit={onPress}
-                    editable={editable}
+                    // editable={editable}
                 />
                 <TouchableOpacity onPress={ () =>  navigation.navigate('ResetPassword')} >
                     <Text style={styles.changePassword}>Change Password</Text>
                 </TouchableOpacity>
+                <View style={{ height: width / 3 }} />
             </ScrollView>
+
+            <Button
+                style={[styles.bottomButton, disabled && {backgroundColor: button.disabled}]}
+                disabled={disabled}
+                onPress={() => save({dp: false})}
+            >
+                {
+                    loading?.basic
+                        ?   <ActivityIndicator size='small' color='#fff' />
+                        :   <Text style={styles.bottomButtonText}>
+                                Save
+                            </Text>
+                }
+            </Button>
 
             <AwesomeAlert
                 actionContainerStyle={{ flexDirection: 'row-reverse' }}
@@ -399,8 +409,12 @@ const styles = StyleSheet.create({
         height: STATUSBAR_HEIGHT,
     },
     scrollview: {
-        paddingTop: 30,
-        paddingHorizontal: 15,
+        padding: 20,
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 15,
     },
     group: {
         flexDirection: 'row',
@@ -440,13 +454,14 @@ const styles = StyleSheet.create({
         marginTop: -((width / 4) / 2)
     },
     change2: {
-        color: 'rgba(255,255,255,1)',
-        marginTop: -(width * .07),
-        fontSize: 12,
+        color: text.info,
+        fontSize: RFValue(16),
+        marginLeft: 5,
     },
     activityIndicator: {
-        marginTop: -(width / 7),
-        marginBottom: width * .047,
+        position: 'absolute',
+        alignSelf: 'center',
+        marginTop: '27%'
     },
     divider: {
         backgroundColor: '#E6E6E6',
@@ -461,5 +476,16 @@ const styles = StyleSheet.create({
     button: {
         borderRadius: 5,
     },
+    bottomButton: {
+        backgroundColor: button.primary,
+        alignSelf: 'center',
+        width: '50%',
+        borderRadius: 30,
+        marginVertical: 20,
+    },
+    bottomButtonText: {
+        color: '#fff',
+        fontSize: RFValue(16),
+    }
 });
 export default UserProfileScreen;

@@ -25,7 +25,8 @@
         "@organisms": "./src/components/organisms",
         "@templates": "./src/components/templates",
         "@pages": "./src/components/pages",
-        "@screens": "./src/screens"
+        "@screens": "./src/screens",
+        "@utils": "./src/utils"
       }
     }]
   ]

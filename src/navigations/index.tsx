@@ -9,6 +9,7 @@ import Login from '@screens/login';
 import DrawerNavigation from '@screens/HomeScreen/DrawerNavigation';
 import ActivitiesScreen from "@screens/ActivitiesScreen";
 import UserProfile from "@pages/user-profile";
+import Settings from '@pages/settings';
 
 import Meeting from '@screens/meet';
 import Participants from '@screens/meet/participants';
@@ -31,6 +32,7 @@ type RootStackParamList = {
   QrCodeScreen: undefined;
   ActivitiesScreen: undefined;
   UserProfileScreen: undefined;
+  Settings: undefined;
   DrawerNavigation: undefined;
   Dial: undefined;
   Meeting: undefined;
@@ -63,6 +65,7 @@ const RootNavigator = () => {
         <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
         <Stack.Screen name="ActivitiesScreen" component={ActivitiesScreen} options={{ headerShown: false }} />
         <Stack.Screen name="UserProfileScreen" component={UserProfile} />
+        <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="Dial" component={Dial} />
         <Stack.Screen name="Meeting" component={Meeting} />
         <Stack.Screen name="Participants" component={Participants} />

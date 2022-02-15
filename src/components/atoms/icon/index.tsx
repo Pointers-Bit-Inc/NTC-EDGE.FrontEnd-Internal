@@ -23,6 +23,9 @@ import ChatIcon from './chat';
 import PeopleIcon from './people';
 import CalendarIcon from './calendar';
 import ToggleIcon from './toggle';
+import LeftIcon from './left';
+import RightIcon from './right';
+import UploadIcon from './upload';
 
 export {
   ExclamationIcon,
@@ -50,4 +53,7 @@ export {
   PeopleIcon,
   CalendarIcon,
   ToggleIcon,
+  LeftIcon,
+  RightIcon,
+  UploadIcon,
 };
