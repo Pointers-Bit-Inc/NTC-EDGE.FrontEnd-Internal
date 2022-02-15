@@ -13,7 +13,7 @@ import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
 import {
     APPROVED ,
-    CASHIER , DIRECTOR ,
+    CASHIER , DECLINED , DIRECTOR ,
     EVALUATOR ,
     FORAPPROVAL ,
     FOREVALUATION ,
@@ -38,7 +38,7 @@ const BasicInfo = (props: any) => {
     const {
         personnel ,
         loading
-    } = useAssignPersonnel( !!props.paymentMethod && props.assignedPersonnel ? props.assignedPersonnel : (props.paymentStatus == APPROVED ?
+    } = useAssignPersonnel( !!props.paymentMethod && props.assignedPersonnel ? props.assignedPersonnel : (props.paymentStatus == APPROVED || props.paymentStatus == DECLINED ?
                             (props?.paymentHistory?.[0]?.userId ) :
                             (props?.approvalHistory?.[0]?.userId ?
                              props?.approvalHistory?.[0]?.userId :
