@@ -226,7 +226,7 @@ export const excludeStatus = (props: any , personnel: UserApplication) => getSta
     getStatus(props , personnel) == FOREVALUATION;
 
 export function getStatusText(props: any , personnel: UserApplication | undefined) {
-    return getRole(props.user , [EVALUATOR , DIRECTOR]) && getStatus(props , personnel) == FORAPPROVAL && !!props?.approvalHistory?.[0]?.userId ? StatusText(APPROVED) : getStatus(props , personnel);
+    return getRole(props.user , [EVALUATOR , DIRECTOR]) && getStatus(props , personnel) == FORAPPROVAL && !!props?.approvalHistory?.[0]?.userId && !props?.approvalHistory?.[0]?.status===FOREVALUATION ? StatusText(APPROVED) : getStatus(props , personnel);
 }
 export function getStatus(props: any , personnel: { _id: string | undefined; updatedAt: string | undefined; createdAt: string | undefined; username: string | undefined; role: Role | undefined; email: string | undefined; firstName: string | undefined; lastName: string | undefined; password: string | undefined; contactNumber: string | undefined; __v: number | undefined; address: string | undefined; profilePicture: ProfilePicture | undefined; avatar: string | undefined } , wordCase?: string) {
 
