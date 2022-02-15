@@ -13,12 +13,13 @@ import {
 } from "@pages/activities/script";
 
 import {
+    ACCOUNTANT ,
     APPROVED ,
     CASHIER ,
     DIRECTOR ,
     EVALUATOR ,
     FORAPPROVAL ,
-    FOREVALUATION
+    FOREVALUATION , FORVERIFICATION
 } from "../../../reducers/activity/initialstate";
 import { outline } from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
@@ -177,7 +178,7 @@ const closeRow = (index)=>{
 export function ActivityItem(props:any) {
     const  status =  [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) :  StatusText(props?.activity?.status)
     const userActivity = props?.activity?.applicant?.user
-    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) &&  status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && !props?.activity?.approvalHistory?.[0]?.status===FOREVALUATION? APPROVED : status
+    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) &&  status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status!==FOREVALUATION? APPROVED : getRole(props.currentUser, [ACCOUNTANT]) && !!props?.activity?.paymentMethod && props?.activity?.paymentHistory?.[0]?.action == FORVERIFICATION ? FORVERIFICATION  :  status
 
     useEffect(()=>{
         if(props.isOpen == props.index)  row[props.index].close()

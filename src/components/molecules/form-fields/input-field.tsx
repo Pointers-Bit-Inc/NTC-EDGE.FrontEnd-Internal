@@ -68,6 +68,7 @@ export type TextInputRef =  {
 }
 
 const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
+                                                                        clearable=true,
                                                                        label = '',
                                                                        placeholder = '',
                                                                        secureTextEntry = false,
@@ -169,7 +170,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                     </View>
                 </View>
                 {
-                    (!!editable && !!otherProps.value) &&
+                    (clearable && isFocused && !!editable && !!otherProps.value) &&
                     <TouchableOpacity onPress={() => otherProps?.onChangeText ? otherProps?.onChangeText('') : {}}>
                         <CloseIcon size={20} color={error ? input.text.errorColor : input.text.mainColor}/>
                     </TouchableOpacity>

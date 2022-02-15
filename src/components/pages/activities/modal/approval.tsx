@@ -209,7 +209,7 @@ const Approval = (props: any) => {
                                     borderWidth: 1 ,
                                     backgroundColor: undefined,
                                 }}
-                               
+                                clearable={false}
                                 outlineStyle={ {
                                     borderColor : "rgba(202,210,225,1)" ,
                                     paddingTop : 5 ,

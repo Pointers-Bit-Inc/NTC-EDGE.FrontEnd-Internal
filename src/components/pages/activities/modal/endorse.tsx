@@ -192,7 +192,7 @@ const Endorsed = (props: any) => {
                                         }}/>
                         <View style={{paddingVertical: 10}}>
                             <InputField
-                                
+                                clearable={false}
                                 containerStyle={{
                                     height: undefined ,
                                     borderColor: "#D1D1D6",
