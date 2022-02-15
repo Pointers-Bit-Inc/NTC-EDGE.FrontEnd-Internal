@@ -427,7 +427,7 @@ export default function ActivitiesPage(props: any) {
 
                 <View style={styles.group}>
                     <View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 35}, ]}>
-                        <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+                        <TouchableOpacity onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
                             <HomeMenuIcon/>
                             {/* <ProfileImage
                                 size={45}
