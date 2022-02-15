@@ -1,14 +1,19 @@
-import { StyleSheet } from "react-native";
-import {text , outline, input} from './color';
-import {RFValue} from "react-native-responsive-fontsize";
-import {Bold , Regular} from "@styles/font";
-const styles = StyleSheet.create({
+import { StyleSheet, Platform, Dimensions } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { input, outline } from './color';
+import { Bold, Regular } from './font';
+
+const { text, background } = input;
+
+const { width } = Dimensions.get('window');
+
+export default StyleSheet.create({
   mainContainer: {
     marginBottom: RFValue(20),
   },
   container: {
-    backgroundColor: input.background?.default,
-    borderColor: input.background?.default,
+    backgroundColor: background?.default,
+    borderColor: background?.default,
     borderWidth: RFValue(2),
     borderRadius: RFValue(10),
     paddingHorizontal: RFValue(15),
@@ -30,7 +35,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: RFValue(15),
   },
   dropdownListContainer: {
-    marginTop: 10,
+    marginTop: Platform.OS === 'android' ? -(width * .04) : 10,
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
@@ -39,53 +44,42 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderWidth: 1,
     borderColor: outline.default,
+    paddingVertical: 10,
   },
   labelContainer: {
     flexDirection: 'row',
     padding: 0,
   },
   headerLabelText: {
-    color: text?.default,
+    color: text?.defaultColor,
     fontSize: RFValue(16),
     fontFamily: Bold,
   },
   labelText: {
-
-    color: text?.default,
+    color: text?.defaultColor,
     fontSize: RFValue(12),
   },
   requiredText: {
-    color: text?.error,
+    color: text?.errorColor,
   },
   validationText: {
     fontSize: RFValue(12),
     marginTop: 5,
   },
   placeholderText: {
-    color: text?.default,
+    color: text?.defaultColor,
     fontFamily: Regular,
     fontSize: RFValue(14),
   },
   inputText: {
     paddingHorizontal: 0,
-    paddingVertical: 0,
-
-    fontFamily: Regular
+    paddingVertical: -100,
+    marginVertical: -(3),
+    color: text?.mainColor,
+    fontFamily: Regular,
   },
   iconStyle: {
     height: RFValue(20),
     width: RFValue(20),
-  },
-  outlineStyle: {
-    borderRadius: 4,
-    //paddingHorizontal: 8,
-    paddingVertical: 1,
-    borderColor: outline.default,
-  },
-  text: {
-    color: text.default,
-    fontWeight: '400',
-  },
-})
-
-export default styles;
+  }
+});
