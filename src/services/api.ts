@@ -5,7 +5,7 @@ const api = (token:string) => {
   const instance = Axios.create({
     baseURL: BASE_URL,
     headers: {
-      'Content-type': 'application/json',
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     }
   });

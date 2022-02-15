@@ -16,11 +16,11 @@ import { setSelectedChannel } from 'src/reducers/channel/actions';
 import { outline, button, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
-import { ContactItem, SelectedContact } from '@components/molecules/list-item';
+import { ContactItem, ListFooter, SelectedContact } from '@components/molecules/list-item';
 import { CloseIcon, ArrowDownIcon, CheckIcon } from '@components/atoms/icon'
 import { SearchField } from '@components/molecules/form-fields'
 import { primaryColor } from '@styles/color';
-import useApi from 'src/services/api';
+import useSignalr from 'src/hooks/useSignalr';
 import axios from 'axios';
 const { width } = Dimensions.get('window');
 
@@ -86,46 +86,72 @@ const styles = StyleSheet.create({
 });
 
 const Participants = ({ navigation }:any) => {
-  const user = useSelector(state => state.user);
-  const api = useApi(user.sessionToken);
+  const {
+    getParticipantList,
+  } = useSignalr();
   const [loading, setLoading] = useState(false);
   const [nextLoading, setNextLoading] = useState(false);
   const [participants, setParticipants]:any = useState([]);
+  const [sendRequest, setSendRequest] = useState(0);
   const [contacts, setContacts]:any = useState([]);
   const [searchText, setSearchText] = useState('');
   const [searchValue, setSearchValue] = useState('');
-  const onFetchData = useCallback(() => {
-    setLoading(true);
-    api.post('/internal/users', {
-      searchValue,
-    })
-    .then(res => {
-      setLoading(false);
-      setContacts(res.data);
-    })
-    .catch(e => {
-      setLoading(false);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [fetching, setFetching] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  const onRequestData = () => setSendRequest(request => request + 1);
+
+  const fetchMoreParticipants = (isPressed = false) => {
+    if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
+    setFetching(true);
+    setHasError(false);
+    const url = searchValue ?
+      `/room/search-participants?pageIndex=${pageIndex}&search=${searchValue}` :
+      `/room/list-participants?pageIndex=${pageIndex}`;
+
+    getParticipantList(url, (err:any, res:any) => {
+      if (res) {
+        setContacts([...contacts, ...res.list]);
+        setPageIndex(current => current + 1);
+        setHasMore(res.hasMore);
+      }
+      if (err) {
+        console.log('ERR', err);
+        setHasError(true);
+      }
+      setFetching(false);
     });
-  }, [searchValue]);
+  }
 
   useEffect(() => {
-    const source = axios.CancelToken.source(); 
     setLoading(true);
-    api.post('/internal/users', {
-      searchValue,
-    })
-    .then(res => {
-      setLoading(false);
-      setContacts(res.data);
-    })
-    .catch(e => {
+    setPageIndex(1);
+    setHasMore(false);
+    setHasError(false);
+    const source = axios.CancelToken.source();
+    const url = searchValue ?
+      `/room/search-participants?pageIndex=1&search=${searchValue}` :
+      `/room/list-participants?pageIndex=1`;
+
+    getParticipantList(url, (err:any, res:any) => {
+      if (res) {
+        setContacts(res.list);
+        setPageIndex(current => current + 1);
+        setHasMore(res.hasMore);
+      }
+      if (err) {
+        console.log('ERR', err);
+      }
       setLoading(false);
     });
+  
     return () => {
       setLoading(false);
       source.cancel();
     };
-  }, [searchValue]);
+  }, [sendRequest, searchValue]);
 
   const onBack = () => navigation.goBack();
   const onNext = () => navigation.replace('CreateMeeting', { participants });
@@ -204,6 +230,19 @@ const Participants = ({ navigation }:any) => {
     </View>
   )
 
+  const ListFooterComponent = () => {
+    return (
+      <ListFooter
+        hasError={hasError}
+        fetching={fetching}
+        loadingText="Loading more users..."
+        errorText="Unable to load users"
+        refreshText="Refresh"
+        onRefresh={() => fetchMoreParticipants(true)}
+      />
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'dark-content'} />
@@ -263,7 +302,7 @@ const Participants = ({ navigation }:any) => {
             progressBackgroundColor={primaryColor} // android
             colors={['white']} // android
             refreshing={loading}
-            onRefresh={onFetchData}
+            onRefresh={onRequestData}
           />
         }
         renderItem={({ item }) => (
@@ -271,6 +310,7 @@ const Participants = ({ navigation }:any) => {
             image={item?.image}
             name={item.name}
             onPress={() => onTapCheck(item._id)}
+            disabled={true}
             rightIcon={
               <TouchableOpacity
                 onPress={() => onTapCheck(item._id)}
@@ -299,6 +339,9 @@ const Participants = ({ navigation }:any) => {
         }
         ListHeaderComponent={headerComponent}
         ListEmptyComponent={emptyComponent}
+        ListFooterComponent={ListFooterComponent}
+        onEndReached={() => fetchMoreParticipants()}
+        onEndReachedThreshold={0.5}
       />
     </SafeAreaView>
   )

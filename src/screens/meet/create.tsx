@@ -19,6 +19,7 @@ import InputStyles from 'src/styles/input-style';
 import { ArrowLeftIcon, ToggleIcon, CheckIcon } from '@components/atoms/icon'
 import { InputField } from '@components/molecules/form-fields'
 import useFirebase from 'src/hooks/useFirebase';
+import useSignalr from 'src/hooks/useSignalr';
 import Button from '@components/atoms/button';
 const { width } = Dimensions.get('window');
 
@@ -84,14 +85,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
     isMute = false,
     channelId,
   } = route.params;
-  const { createMeeting, initiateMeeting } = useFirebase({
-    _id: user._id,
-    name: user.name,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    image: user.image,
-  });
+  const { createMeeting } = useSignalr();
   const [loading, setLoading] = useState(false);
   const [meetingName, setMeetingName] = useState('');
   const [videoOn, setVideoOn] = useState(isVideoEnable);
@@ -100,11 +94,12 @@ const CreateMeeting = ({ navigation, route }:any) => {
   const onStartMeeting = () => {
     setLoading(true);
     if (isChannelExist) {
-      initiateMeeting({ channelId, isVoiceCall, meetingName }, (error, data) => {
+      createMeeting({ roomId: channelId, isVoiceCall, name: meetingName }, (error, data) => {
         setLoading(false);
+        console.log('IS CHANNEL EXIST DATA', data);
         if (!error) {
-          dispatch(setSelectedChannel(data, isChannelExist));
-          dispatch(setMeetingId(data.meetingId));
+          dispatch(setSelectedChannel(data.room, isChannelExist));
+          dispatch(setMeetingId(data._id));
           dispatch(setMeeting({}));
           navigation.replace('JoinVideoCall', {
             isHost: true,
@@ -117,11 +112,11 @@ const CreateMeeting = ({ navigation, route }:any) => {
         }
       });
     } else {
-      createMeeting({ participants, channelName: meetingName }, (error, data) => {
+      createMeeting({ participants, name: meetingName }, (error, data) => {
         setLoading(false);
         if (!error) {
-          dispatch(setSelectedChannel(data));
-          dispatch(setMeetingId(data.meetingId));
+          dispatch(setSelectedChannel(data.room));
+          dispatch(setMeetingId(data._id));
           dispatch(setMeeting({}));
           navigation.replace('VideoCall', {
             isHost: true,

@@ -17,6 +17,7 @@
     "@expo/match-media": "^0.1.0",
     "@expo/vector-icons": "^12.0.0",
     "@expo/webpack-config": "^0.16.7",
+    "@microsoft/signalr": "^6.0.2",
     "@react-native-async-storage/async-storage": "~1.15.0",
     "@react-native-community/datetimepicker": "^3.5.2",
     "@react-native-firebase/app": "^13.1.0",

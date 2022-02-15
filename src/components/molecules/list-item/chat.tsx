@@ -113,7 +113,7 @@ const ChatItem: FC<Props> = ({
                 size={14}
                 numberOfLines={1}
               >
-                {message.message}
+                {message?.message}
               </Text>
               <Text
                 color={text.default}

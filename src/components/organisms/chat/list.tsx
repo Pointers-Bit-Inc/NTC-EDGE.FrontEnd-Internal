@@ -84,7 +84,7 @@ const ChatList: FC<Props> = ({
     }
     let seenByOthersCount = lodash.size(seenByOthers) + (isSender ? 0 : 1);
     const seenByEveryone = seenByOthersCount === lodash.size(participants);
-    const showSeen = lastMessage?.messageId === item._id ||
+    const showSeen = lastMessage?._id === item._id ||
       latestSeenSize === 0 ||
       seenByOthersCount > 0 && seenByOthersCount < lodash.size(participants);
     return (

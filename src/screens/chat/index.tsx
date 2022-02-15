@@ -16,9 +16,9 @@ import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
-import { setSelectedChannel, addChannel, updateChannel, removeChannel, setMeetings, removeSelectedMessage, setSearchValue as setSearchValueFN } from 'src/reducers/channel/actions';
+import { setSelectedChannel, setChannelList, addToChannelList, addChannel, updateChannel, removeChannel, setMeetings, removeSelectedMessage, setSearchValue as setSearchValueFN } from 'src/reducers/channel/actions';
 import { SearchField } from '@components/molecules/form-fields';
-import { ChatItem } from '@components/molecules/list-item';
+import { ChatItem, ListFooter } from '@components/molecules/list-item';
 import { VideoIcon, WriteIcon, DeleteIcon } from '@components/atoms/icon';
 import { primaryColor, outline, text, button } from '@styles/color';
 import {
@@ -29,13 +29,12 @@ import {
   checkSeen,
 } from 'src/utils/formatting';
 import useFirebase from 'src/hooks/useFirebase';
+import useSignalr from 'src/hooks/useSignalr';
 import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
 import ProfileImage from '@components/atoms/image/profile';
 import InputStyles from 'src/styles/input-style';
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
-
+import rtt from 'reactotron-react-native';
 
 const { width } = Dimensions.get('window');
 
@@ -145,103 +144,91 @@ const styles = StyleSheet.create({
 
 const ChatList = ({ navigation }:any) => {
   useRequestCameraAndAudioPermission();
-  const modalRef = useRef<BottomModalRef>(null);
-  const selectedChatRef = useRef(null);
   const dispatch = useDispatch();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const channelList = useSelector((state:RootStateOrAny) => {
-    const { channelList, searchValue } = state.channel;
-    const searchChannel = lodash.filter(channelList, l => {
-      const name = String(l.channelName).toLowerCase();
-      const search = String(searchValue).toLowerCase();
-      let result = name.includes(search);
-      if (!searchValue || result) {
-        return true;
-      }
-    })
-    const sortedChannel = lodash.orderBy(searchChannel, 'updatedAt', 'desc');
-    return sortedChannel;
+    const { channelList } = state.channel
+    return lodash.orderBy(channelList, 'updatedAt', 'desc');
   });
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
   const {
-    channelSubscriber,
-    initializeFirebaseApp,
-    deleteFirebaseApp,
-    deleteChannel,
+    getChatList,
     leaveChannel,
-  } = useFirebase({
-    _id: user._id,
-    name: user.name,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    image: user.image,
-  });
+  } = useSignalr();
   const [searchText, setSearchText] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [selectedItem, setSelectedItem]:any = useState({});
   const [loading, setLoading] = useState(false);
   const [sendRequest, setSendRequest] = useState(0);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [fetching, setFetching] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const onRequestData = () => setSendRequest(request => request + 1);
 
-  useEffect(() => {
-    if(Platform.OS === 'web') {
-      initializeFirebaseApp();
-      return () => {
-        deleteFirebaseApp();
-      };
-    }
-  }, []);
+  const fetchMoreChat = (isPressed = false) => {
+    if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
+    setFetching(true);
+    setHasError(false);
+    const url = searchValue ?
+      `/room/search?pageIndex=${pageIndex}&search=${searchValue}` :
+      `/room/list?pageIndex=${pageIndex}`;
+    getChatList(url, (err:any, res:any) => {
+      if (res) {
+        dispatch(addToChannelList(res.list));
+        setPageIndex(current => current + 1);
+        setHasMore(res.hasMore);
+      }
+      if (err) {
+        console.log('ERR', err);
+        setHasError(true);
+      }
+      setFetching(false);
+    });
+  }
 
-  useEffect(() => {
-    dispatch(setSearchValueFN(searchValue))
-  }, [searchValue]);
+  const ListFooterComponent = () => {
+    return (
+      <ListFooter
+        hasError={hasError}
+        fetching={fetching}
+        loadingText="Loading more chat..."
+        errorText="Unable to load chats"
+        refreshText="Refresh"
+        onRefresh={() => fetchMoreChat(true)}
+      />
+    );
+  }
 
   useEffect(() => {
     setLoading(true);
+    setPageIndex(1);
+    setHasMore(false);
+    setHasError(false);
     let unMount = false;
-    const unsubscriber = channelSubscriber('', (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
+    const url = searchValue ?
+      `/room/search?pageIndex=1&search=${searchValue}` :
+      `/room/list?pageIndex=1`;
+    getChatList(url, (err:any, res:any) => {
       if (!unMount) {
+        if (res) {
+          dispatch(setChannelList(res.list));
+          setPageIndex(current => current + 1);
+          setHasMore(res.hasMore);
+        }
+        if (err) {
+          console.log('ERR', err);
+        }
         setLoading(false);
-        querySnapshot.docChanges().forEach((change:any) => {
-          const data = change.doc.data();
-          data._id = change.doc.id;
-          data.channelId = change.doc.id;
-          switch(change.type) {
-            case 'added': {
-              const hasSave = lodash.find(channelList, (ch:any) => ch._id === data._id);
-              data.otherParticipants = getOtherParticipants(data.participants, user);
-              data.hasSeen = checkSeen(data.seen, user);
-              if (!hasSave) {
-                dispatch(addChannel(data));
-              }
-              return;
-            }
-            case 'modified': {
-              data.otherParticipants = getOtherParticipants(data.participants, user);
-              data.hasSeen = checkSeen(data.seen, user);
-              dispatch(updateChannel(data));
-              return;
-            }
-            case 'removed': {
-              data.otherParticipants = getOtherParticipants(data.participants, user);
-              data.hasSeen = checkSeen(data.seen, user);
-              dispatch(removeChannel(data._id));
-              return;
-            }
-            default:
-              return;
-          }
-        });
       }
     });
+  
     return () => {
       unMount = true;
-      unsubscriber();
     }
-  }, [sendRequest])
+  }, [sendRequest, searchValue])
 
   const emptyComponent = () => (
     <View
@@ -373,10 +360,10 @@ const ChatList = ({ navigation }:any) => {
                   name={getChannelName(item)}
                   user={user}
                   participants={item.otherParticipants}
-                  message={item.lastMessage}
+                  message={item?.lastMessage}
                   isGroup={item.isGroup}
-                  seen={item.hasSeen}
-                  time={getTimeString(item?.updatedAt?.seconds)}
+                  seen={item?.lastMessage?.hasSeen}
+                  time={getTimeString(item?.updatedAt)}
                   onPress={() => {
                     dispatch(setSelectedChannel(item));
                     dispatch(setMeetings([]));
@@ -390,38 +377,12 @@ const ChatList = ({ navigation }:any) => {
             )}
             keyExtractor={(item:any) => item._id}
             ListEmptyComponent={emptyComponent}
+            ListFooterComponent={ListFooterComponent}
+            onEndReached={() => fetchMoreChat()}
+            onEndReachedThreshold={0.5}
           />
         )
       }
-      <BottomModal
-        ref={modalRef}
-        header={
-          <View style={styles.bar} />
-        }
-      >
-        <View>
-          <TouchableOpacity
-            onPress={() => {
-              deleteChannel(selectedChatRef.current);
-              modalRef.current?.close();
-            }}
-          >
-            <View style={styles.delete}>
-              <DeleteIcon
-                color={text.default}
-                size={18}
-              />
-              <Text
-                style={{ marginLeft: 5 }}
-                color={text.default}
-                size={16}
-              >
-                Delete
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </BottomModal>
       <AwesomeAlert
         show={showAlert}
         showProgress={false}
@@ -445,7 +406,14 @@ const ChatList = ({ navigation }:any) => {
         onConfirmPressed={() => {
           setShowAlert(false);
           setTimeout(() => 
-            leaveChannel(selectedItem._id, selectedItem.participants),
+            leaveChannel(selectedItem._id, (err, res) => {
+              if (res) {
+                dispatch(removeChannel(res));
+              }
+              if (err) {
+                console.log('ERR', err);
+              }
+            }),
             500
           );
         }} 

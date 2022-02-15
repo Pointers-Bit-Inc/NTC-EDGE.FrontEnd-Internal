@@ -5,10 +5,13 @@ import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
 import useFirebase from 'src/hooks/useFirebase';
+import useSignalr from 'src/hooks/useSignalr';
 import { checkSeen } from 'src/utils/formatting';
+import { ListFooter } from '@components/molecules/list-item';
 import { DeleteIcon, WriteIcon } from '@components/atoms/icon';
 import {
   setMessages,
+  addToMessages,
   addMessages,
   updateMessages,
   removeMessages,
@@ -78,87 +81,63 @@ const List = () => {
     const sortedMessages = lodash.orderBy(messages, 'createdAt', 'desc');
     return sortedMessages;
   });
-  const { channelId, isGroup, lastMessage, otherParticipants } = useSelector(
+  const { _id, isGroup, lastMessage, otherParticipants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
-  const {
-    seenChannel,
-    seenMessage,
-    messagesSubscriber,
-    unSendEveryone,
-    unSendForYou,
-    channelMeetingSubscriber
-  } = useFirebase({
-    _id: user._id,
-    name: user.name,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    image: user.image,
-  });
+  const channelId = _id;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [showDeleteOption, setShowDeleteOption] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [message, setMessage]:any = useState({});
+  const [pageIndex, setPageIndex] = useState(1);
+  const [fetching, setFetching] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  const {
+    getMessages,
+    unSendMessage,
+    deleteMessage,
+  } = useSignalr();
+
+  const fetchMoreMessages = (isPressed = false) => {
+    if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
+    setFetching(true);
+    setHasError(false);
+    getMessages(channelId, pageIndex, (err, res) => {
+      setLoading(false);
+      if (res) {
+        dispatch(addToMessages(res.list));
+        setPageIndex(current => current + 1);
+        setHasMore(res.hasMore);
+      }
+      if (err) {
+        console.log('ERR', err);
+        setHasError(true);
+      }
+      setFetching(false);
+    })
+  }
 
   useEffect(() => {
     setLoading(true);
-    const unsubscriber = messagesSubscriber(channelId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
+    setPageIndex(1);
+    setHasMore(false);
+    setHasError(false);
+    getMessages(channelId, 1, (err, res) => {
       setLoading(false);
-      if (
-        lastMessage &&
-        lastMessage.message &&
-        (!lastMessage.message.messageId)
-      ) {
-        const seen = checkSeen(lastMessage.seen, user);
-        if (!seen) {
-          seenChannel(channelId);
-        }
+      if (res) {
+        console.log(res.list)
+        dispatch(setMessages(res.list));
+        setPageIndex(current => current + 1);
+        setHasMore(res.hasMore);
       }
-      querySnapshot.docChanges().forEach((change:any) => {
-        const data = change.doc.data();
-        data._id = change.doc.id;
-        if (
-          lastMessage &&
-          lastMessage.message &&
-          (lastMessage.message.messageId === data._id)
-        ) {
-          const seen = checkSeen(lastMessage.seen, user);
-          if (!seen) {
-            seenChannel(channelId);
-          }
-        }
-        switch(change.type) {
-          case 'added': {
-            const hasSave = lodash.find(messages, (msg:any) => msg._id === data._id);
-            const seen = checkSeen(data.seen, user);
-            if (!seen) {
-              seenMessage(data._id);
-            }
-            if (!hasSave) {
-              dispatch(addMessages(data));
-            }
-            return;
-          }
-          case 'modified': {
-            const seen = checkSeen(data.seen, user);
-            if (!seen) {
-              seenMessage(data._id);
-            }
-            dispatch(updateMessages(data));
-            return;
-          }
-          case 'removed': {
-            dispatch(removeMessages(data._id));
-            return;
-          }
-          default:
-            return;
-        }
-      })
-    });
-    return () => unsubscriber();
+      if (err) {
+        console.log('ERR', err);
+        setHasError(true);
+      }
+    })
   }, [])
 
   const showOption = (item) => {
@@ -255,15 +234,30 @@ const List = () => {
     )
   }
 
+  const ListFooterComponent = () => {
+    return (
+      <ListFooter
+        hasError={hasError}
+        fetching={fetching}
+        loadingText="Loading more chat..."
+        errorText="Unable to load chats"
+        refreshText="Refresh"
+        onRefresh={() => fetchMoreMessages(true)}
+      />
+    );
+  }
+
   const unSendMessageEveryone = useCallback(
-    () => unSendEveryone(message._id, channelId),
+    () => {
+      deleteMessage(message._id)
+    },
     [message, channelId]
   );
 
   const unSendMessageForYou = useCallback(
     () => {
       setShowAlert(false)
-      setTimeout(() => unSendForYou(message._id), 500);
+      setTimeout(() => unSendMessage(message._id), 500);
     },
     [message]
   );
@@ -279,6 +273,9 @@ const List = () => {
         loading={loading}
         error={error}
         showOption={showOption}
+        ListFooterComponent={ListFooterComponent}
+        onEndReached={() => fetchMoreMessages()}
+        onEndReachedThreshold={0.5}
       />
       <BottomModal
         ref={modalRef}

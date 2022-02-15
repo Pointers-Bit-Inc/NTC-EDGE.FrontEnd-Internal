@@ -114,7 +114,7 @@ const ChatBubble:FC<Props> = ({
               color={text.default}
               size={12}
             >
-              {getChatTimeString(createdAt?.seconds)}
+              {getChatTimeString(createdAt)}
             </Text>
           </View>
         )

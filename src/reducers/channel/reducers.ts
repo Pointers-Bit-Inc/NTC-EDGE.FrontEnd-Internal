@@ -2,11 +2,13 @@ import lodash from 'lodash';
 const {
   SET_SELECTED_CHANNEL,
   SET_CHANNEL_LIST,
+  ADD_TO_CHANNEL_LIST,
   ADD_CHANNEL,
   UPDATE_CHANNEL,
   REMOVE_CHANNEL,
 
   SET_MESSAGES,
+  ADD_TO_MESSAGES,
   ADD_MESSAGES,
   UPDATE_MESSAGES,
   REMOVE_MESSAGES,
@@ -38,6 +40,9 @@ export default function basket(state = initialState, action:any) {
     case SET_CHANNEL_LIST: {
       return state.setIn(['channelList'], action.payload);
     }
+    case ADD_TO_CHANNEL_LIST: {
+      return state.setIn(['channelList'], [...state.channelList, ...action.payload]);
+    }
     case ADD_CHANNEL: {
       const channelList = lodash.clone(state.channelList);
       channelList.push(action.payload);
@@ -55,6 +60,9 @@ export default function basket(state = initialState, action:any) {
     }
     case SET_MESSAGES: {
       return state.setIn(['messages'], action.payload);
+    }
+    case ADD_TO_MESSAGES: {
+      return state.setIn(['messages'], [...state.messages, ...action.payload]);
     }
     case ADD_MESSAGES: {
       const messageList = lodash.clone(state.messages);

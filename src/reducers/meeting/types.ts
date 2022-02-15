@@ -2,6 +2,7 @@ import keyMirror from 'key-mirror';
 
 export default keyMirror({
   SET_MEETINGS: null,
+  ADD_TO_MEETINGS: null,
   ADD_MEETING: null,
   UPDATE_MEETING: null,
   REMOVE_MEETING: null,

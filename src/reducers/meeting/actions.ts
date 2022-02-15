@@ -1,5 +1,6 @@
 const {
   SET_MEETINGS,
+  ADD_TO_MEETINGS,
   ADD_MEETING,
   UPDATE_MEETING,
   REMOVE_MEETING,
@@ -18,6 +19,13 @@ const {
 export function setMeetings(payload) {
   return {
     type: SET_MEETINGS,
+    payload,
+  };
+}
+
+export function addToMeetings(payload) {
+  return {
+    type: ADD_TO_MEETINGS,
     payload,
   };
 }

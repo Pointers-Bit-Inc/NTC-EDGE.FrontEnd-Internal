@@ -101,7 +101,7 @@ const ChatBubble:FC<Props> = ({
               color={text.default}
               size={12}
             >
-              {getChatTimeString(createdAt?.seconds)}
+              {getChatTimeString(createdAt)}
             </Text>
           </View>
         )
@@ -113,7 +113,7 @@ const ChatBubble:FC<Props> = ({
       >
         <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
           {
-            (edited && isSender) && (
+            (edited && isSender && !(deleted || unSend)) && (
               <View style={{ alignSelf: 'center', marginRight: 5 }}>
                 <WriteIcon
                   type='pen'

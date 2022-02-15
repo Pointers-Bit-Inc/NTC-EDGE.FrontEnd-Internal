@@ -18,6 +18,7 @@ import { setMeetingId } from 'src/reducers/meeting/actions';
 import { MeetingNotif } from '@components/molecules/list-item';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import useFirebase from 'src/hooks/useFirebase';
+import useSignalR from 'src/hooks/useSignalr';
 import ChatList from '@screens/chat/chat-list';
 import FileList from '@components/organisms/chat/files';
 import {
@@ -116,21 +117,17 @@ const renderScene = SceneMap({
 
 const ChatView = ({ navigation, route }:any) => {
   const dispatch = useDispatch();
+  const {
+    sendMessage,
+    editMessage,
+  } = useSignalR();
   const inputRef:any = useRef(null);
   const layout = useWindowDimensions();
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { channelId, otherParticipants, participants } = useSelector(
+  const { _id, otherParticipants, participants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
   );
   const { selectedMessage, meetingList } = useSelector((state:RootStateOrAny) => state.channel);
-  const { sendMessage, editMessage, channelMeetingSubscriber, endMeeting } = useFirebase({
-    _id: user._id,
-    name: user.name,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    image: user.image,
-  });
   const [inputText, setInputText] = useState('');
   const [index, setIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
@@ -139,14 +136,37 @@ const ChatView = ({ navigation, route }:any) => {
     { key: 'chat', title: 'Chat' },
     { key: 'files', title: 'Files' },
   ]);
+  const channelId = _id;
+
+  const _sendMessage = (channelId:string, inputText:string) => {
+    sendMessage({
+      roomId: channelId,
+      message: inputText,
+    }, (err:any, result:any) => {
+      if (err) {
+        console.log('ERR', err);
+      }
+    })
+  }
+
+  const _editMessage = (messageId:string, message:string) => {
+    editMessage({
+      messageId,
+      message,
+    }, (err:any, result:any) => {
+      if (err) {
+        console.log('ERR', err);
+      }
+    })
+  }
 
   const onSendMessage = useCallback(() => {
     if (selectedMessage._id) {
-      editMessage(selectedMessage._id, inputText);
+      _editMessage(selectedMessage._id, inputText);
       inputRef.current?.blur();
       dispatch(removeSelectedMessage())
     } else {
-      sendMessage(channelId, inputText);
+      _sendMessage(channelId, inputText);
       inputRef.current?.blur();
       setInputText('');
     }
@@ -186,7 +206,7 @@ const ChatView = ({ navigation, route }:any) => {
 
   const onClose = (item) => {
     if (item.host._id === user._id) {
-      endMeeting(item._id);
+      // endMeeting(item._id);
     } else {
       dispatch(removeMeeting(item._id));
     }
@@ -208,39 +228,6 @@ const ChatView = ({ navigation, route }:any) => {
       }
     }
   }, [selectedMessage, rendered]);
-
-  useEffect(() => {
-    if (channelId && rendered) {
-      const unsubscriber = channelMeetingSubscriber(channelId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
-        querySnapshot.docChanges().forEach((change:any) => {
-          const data = change.doc.data();
-          data._id = change.doc.id;
-          switch(change.type) {
-            case 'added': {
-              const hasSave = lodash.find(meetingList, (ch:any) => ch._id === data._id);
-              if (!hasSave) {
-                dispatch(addMeeting(data));
-              }
-              return;
-            }
-            case 'modified': {
-              dispatch(updateMeeting(data));
-              return;
-            }
-            case 'removed': {
-              dispatch(removeMeeting(data._id));
-              return;
-            }
-            default:
-              return;
-          }
-        });
-      })
-      return () => {
-        unsubscriber();
-      }
-    }
-  }, [channelId, rendered]);
 
   const onInitiateCall = (isVideoEnable = false) =>
     navigation.navigate(
@@ -365,7 +352,7 @@ const ChatView = ({ navigation, route }:any) => {
             !!selectedMessage._id ? (
               <TouchableOpacity
                 onPress={() => {
-                  editMessage(selectedMessage._id, inputText);
+                  _editMessage(selectedMessage._id, inputText);
                   dispatch(removeSelectedMessage())
                 }}
               >

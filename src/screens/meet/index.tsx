@@ -13,9 +13,9 @@ import lodash from 'lodash';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
-import { addMeeting, removeMeeting, updateMeeting, setMeetingId, setMeeting } from 'src/reducers/meeting/actions';
+import { addMeeting, removeMeeting, updateMeeting, setMeetingId, setMeeting, setMeetings, addToMeetings } from 'src/reducers/meeting/actions';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
-import useFirebase from 'src/hooks/useFirebase';
+import useSignalr from 'src/hooks/useSignalr';
 import ProfileImage from '@components/atoms/image/profile'
 import Meeting from '@components/molecules/list-item/meeting';
 import Text from '@components/atoms/text'
@@ -23,6 +23,7 @@ import { getChannelName, getDayMonthString, getOtherParticipants } from 'src/uti
 import { PeopleIcon, CalendarIcon, VideoIcon } from '@atoms/icon';
 import { text, outline, primaryColor } from 'src/styles/color';
 import Button from '@components/atoms/button';
+import { ListFooter } from '@components/molecules/list-item';
 
 const { width } = Dimensions.get('window');
 
@@ -94,19 +95,18 @@ const Meet = ({ navigation }) => {
     const sortedMeeting = lodash.orderBy(list, 'updatedAt', 'desc');
     return sortedMeeting;
   });
-  const { userMeetingSubscriber } = useFirebase({
-    _id: user._id,
-    name: user.name,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    image: user.image,
-  });
+  const {
+    getMeetingList,
+  } = useSignalr();
   const [loading, setLoading] = useState(false);
   const [sendRequest, setSendRequest] = useState(0);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [fetching, setFetching] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const onJoin = (item) => {
-    dispatch(setSelectedChannel(item.channel));
+    dispatch(setSelectedChannel(item.room));
     dispatch(setMeetingId(item._id));
     dispatch(setMeeting({}));
     navigation.navigate('Dial', {
@@ -121,42 +121,51 @@ const Meet = ({ navigation }) => {
 
   const onRequestData = () => setSendRequest(request => request + 1);
 
+  const fetchMoreMeeting = (isPressed = false) => {
+    if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
+    setFetching(true);
+    setHasError(false);
+    const url = `/room/list?pageIndex=${pageIndex}`;
+    getMeetingList(url, (err:any, res:any) => {
+      if (res) {
+        dispatch(addToMeetings(res.list));
+        setPageIndex(current => current + 1);
+        setHasMore(res.hasMore);
+      }
+      if (err) {
+        console.log('ERR', err);
+        setHasError(true);
+      }
+      setFetching(false);
+    });
+  }
+
   useEffect(() => {
     setLoading(true);
+    setPageIndex(1);
+    setHasMore(false);
+    setHasError(false);
     let unMount = false;
-    const unsubscriber = userMeetingSubscriber((querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
+    const url = `/meeting/list?pageIndex=1`;
+    getMeetingList(url, (err:any, res:any) => {
       if (!unMount) {
+        if (res) {
+          console.log('RESULT', res.list);
+          dispatch(setMeetings(res.list));
+          setPageIndex(current => current + 1);
+          setHasMore(res.hasMore);
+        }
+        if (err) {
+          console.log('ERR', err);
+        }
         setLoading(false);
-        querySnapshot.docChanges().forEach((change:any) => {
-          const data = change.doc.data();
-          data._id = change.doc.id;
-          switch(change.type) {
-            case 'added': {
-              const hasSave = lodash.find(meetingList, (ch:any) => ch._id === data._id);
-              if (!hasSave) {
-                dispatch(addMeeting(data));
-              }
-              return;
-            }
-            case 'modified': {
-              dispatch(updateMeeting(data));
-              return;
-            }
-            case 'removed': {
-              dispatch(removeMeeting(data._id));
-              return;
-            }
-            default:
-              return;
-          }
-        });
       }
-    })
+    });
+  
     return () => {
       unMount = true;
-      unsubscriber();
     }
-  }, [sendRequest]);
+  }, [sendRequest])
 
   const emptyComponent = () => (
     <View
@@ -174,13 +183,25 @@ const Meet = ({ navigation }) => {
     </View>
   )
 
+  const ListFooterComponent = () => {
+    return (
+      <ListFooter
+        hasError={hasError}
+        fetching={fetching}
+        loadingText="Loading more chat..."
+        errorText="Unable to load chats"
+        refreshText="Refresh"
+        onRefresh={() => fetchMoreMeeting(true)}
+      />
+    );
+  }
+
   const renderItem = ({ item }) => {
-    item.channel.otherParticipants = getOtherParticipants(item.participants, user);
     return (
       <Meeting
         name={getChannelName(item)}
         time={item.createdAt}
-        participants={lodash.take(item?.channel?.otherParticipants, 5)}
+        participants={lodash.take(item?.room?.otherParticipants, 5)}
         ended={item.ended}
         onJoin={() => onJoin(item)}
       />
@@ -255,6 +276,9 @@ const Meet = ({ navigation }) => {
             renderItem={renderItem}
             keyExtractor={(item:any) => item._id}
             ListEmptyComponent={emptyComponent}
+            ListFooterComponent={ListFooterComponent}
+            onEndReached={() => fetchMoreMeeting()}
+            onEndReachedThreshold={0.5}
           />
         )
       }

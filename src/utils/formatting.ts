@@ -6,14 +6,14 @@ const getInitial = (value:any) => {
 }
 
 const getChannelName = (channel:any) => {
-  if (!channel.isGroup && !channel.hasChannelName) {
+  if (!channel.isGroup && !channel.hasRoomName) {
     const result = channel.otherParticipants;
     if (result && result[0]) {
       const data = result[0];
       return `${data.firstName}`;
     }
   }
-  return channel.channelName;
+  return channel.name;
 }
 
 const getChannelImage = (channel:any) => {
@@ -30,7 +30,7 @@ const getChannelImage = (channel:any) => {
 const getTimeString = (time:any) => {
   if (time) {
     const dateNow = dayjs();
-    const dateUpdate = dayjs(new Date(time * 1000));
+    const dateUpdate = dayjs(new Date(time));
     const diff = dateNow.diff(dateUpdate, 'days');
 
     if (diff === 0) {
@@ -48,7 +48,7 @@ const getTimeString = (time:any) => {
 const getChatTimeString = (time:any) => {
   if (time) {
     const dateNow = dayjs();
-    const dateUpdate = dayjs(new Date(time * 1000));
+    const dateUpdate = dayjs(new Date(time));
     const diff = dateNow.diff(dateUpdate, 'days');
     const yearNow = dateNow.format('YYYY');
     const yearUpdate = dateUpdate.format('YYYY');
