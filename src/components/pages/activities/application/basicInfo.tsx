@@ -12,15 +12,9 @@ import {
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
 import {
-    APPROVED ,
-    CASHIER , DECLINED , DIRECTOR ,
-    EVALUATOR ,
-    FORAPPROVAL ,
-    FOREVALUATION ,
-    FORVERIFICATION
+    APPROVED , DECLINED
 } from "../../../../reducers/activity/initialstate";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
-import {Role , UserApplication} from "@pages/activities/interface";
 import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
 
@@ -38,7 +32,8 @@ const BasicInfo = (props: any) => {
     const {
         personnel ,
         loading
-    } = useAssignPersonnel( !!props.paymentMethod && props.assignedPersonnel ? props.assignedPersonnel : (props.paymentStatus == APPROVED || props.paymentStatus == DECLINED ?
+    } = useAssignPersonnel( !!props.paymentMethod && props.assignedPersonnel ?
+                            props.assignedPersonnel : (props.paymentStatus == APPROVED || props.paymentStatus == DECLINED ?
                             (props?.paymentHistory?.[0]?.userId ) :
                             (props?.approvalHistory?.[0]?.userId ?
                              props?.approvalHistory?.[0]?.userId :
