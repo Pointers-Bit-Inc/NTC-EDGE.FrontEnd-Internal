@@ -5,14 +5,14 @@ import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
 import {
-    formatDate,
-    statusBackgroundColor,
-    statusColor,
-    statusIcon,
-    PaymentStatusText, StatusText
+    formatDate ,
+    statusBackgroundColor ,
+    statusColor ,
+    statusIcon ,
+    PaymentStatusText , StatusText , getRole
 } from "@pages/activities/script";
 
-import {CASHIER} from "../../../reducers/activity/initialstate";
+import {APPROVED , CASHIER , DIRECTOR , EVALUATOR , FORAPPROVAL} from "../../../reducers/activity/initialstate";
 import { outline } from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
 
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     }
 })
 
-const RenderStatus = ({ trigger, status }:any) => {
+const RenderStatus = ({trigger, status }:any) => {
 
     return (
         <View
@@ -168,9 +168,10 @@ const closeRow = (index)=>{
     prevOpenedRow = row[index];
 }
 export function ActivityItem(props:any) {
-   
-    const  status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status)
+    const  status =  [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) :  StatusText(props?.activity?.status)
     const userActivity = props?.activity?.applicant?.user
+    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) &&  status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId ? APPROVED : status
+
     useEffect(()=>{
         if(props.isOpen == props.index)  row[props.index].close()
     }, [props.isOpen == props.index])
@@ -260,7 +261,7 @@ export function ActivityItem(props:any) {
                                             </View>
 
                                             <RenderStatus
-                                                status={status}
+                                                status={getStatus}
                                             />
                                         </View>
                                         {props?.isPinned && props?.activity?.assignedPersonnel && <View style={styles.section}>

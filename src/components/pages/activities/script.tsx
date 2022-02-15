@@ -1,7 +1,7 @@
 import {
-    APPROVED ,
+    APPROVED , CASHIER ,
     DECLINE ,
-    DECLINED , FORAPPROVAL ,
+    DECLINED , DIRECTOR , EVALUATOR , FORAPPROVAL ,
     FOREVALUATION ,
     FORVERIFICATION ,
     PAID ,
@@ -22,6 +22,7 @@ import {Alert} from "react-native";
 import {readUnreadApplications} from "../../../reducers/application/actions";
 import {Dispatch} from "redux";
 import {Regular500} from "@styles/font";
+import {Role , UserApplication} from "@pages/activities/interface";
 
 export const PaymentStatusText = (status: string) => {
 
@@ -218,3 +219,31 @@ export const unreadReadApplication = ({unReadBtn, dateRead, id, config, dispatch
     })
 };
 export const getRole = (user , arr) => arr.indexOf(user?.role?.key) != -1;
+
+
+export const excludeStatus = (props: any , personnel: UserApplication) => getStatus(props , personnel) == FORVERIFICATION ||
+    getStatus(props , personnel) == FORAPPROVAL ||
+    getStatus(props , personnel) == FOREVALUATION;
+
+export function getStatusText(props: any , personnel: UserApplication | undefined) {
+    return getRole(props.user , [EVALUATOR , DIRECTOR]) && getStatus(props , personnel) == FORAPPROVAL && !!props?.approvalHistory?.[0]?.userId ? StatusText(APPROVED) : getStatus(props , personnel);
+}
+export function getStatus(props: any , personnel: { _id: string | undefined; updatedAt: string | undefined; createdAt: string | undefined; username: string | undefined; role: Role | undefined; email: string | undefined; firstName: string | undefined; lastName: string | undefined; password: string | undefined; contactNumber: string | undefined; __v: number | undefined; address: string | undefined; profilePicture: ProfilePicture | undefined; avatar: string | undefined } , wordCase?: string) {
+
+    return personnel &&
+        (
+            props?.user?.role?.key == CASHIER?
+            (
+                wordCase === "toUpperCase" ?
+                PaymentStatusText(props?.paymentStatus).toUpperCase() :
+                PaymentStatusText(props?.paymentStatus)) :
+            (
+                wordCase === "toUpperCase" ?
+                (
+                    StatusText(props.detailsStatus).toUpperCase()
+                ) : (
+                    StatusText(props.detailsStatus)
+                )
+            )
+        );
+}

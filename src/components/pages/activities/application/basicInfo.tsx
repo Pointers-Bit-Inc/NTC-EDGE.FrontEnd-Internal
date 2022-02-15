@@ -1,9 +1,18 @@
 import React from "react";
 import {ActivityIndicator , Dimensions , ScrollView , StyleSheet , Text , View} from "react-native";
-import {getRole , PaymentStatusText , statusColor , statusIcon , StatusText} from "@pages/activities/script";
+import {
+    excludeStatus ,
+    getRole ,
+    getStatusText ,
+    PaymentStatusText ,
+    statusColor ,
+    statusIcon ,
+    StatusText
+} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
 import {
+    APPROVED ,
     CASHIER , DIRECTOR ,
     EVALUATOR ,
     FORAPPROVAL ,
@@ -17,48 +26,27 @@ import {Bold , Regular , Regular500} from "@styles/font";
 
 const { width , height } = Dimensions.get("screen");
 
-function getStatus(props: any , personnel: { _id: string | undefined; updatedAt: string | undefined; createdAt: string | undefined; username: string | undefined; role: Role | undefined; email: string | undefined; firstName: string | undefined; lastName: string | undefined; password: string | undefined; contactNumber: string | undefined; __v: number | undefined; address: string | undefined; profilePicture: ProfilePicture | undefined; avatar: string | undefined } , wordCase?: string) {
 
-    return personnel &&
-        (
-            props?.user?.role?.key == CASHIER || personnel?.role?.key == CASHIER?
-            (
-                wordCase === "toUpperCase" ?
-                PaymentStatusText(props?.paymentStatus).toUpperCase() :
-                PaymentStatusText(props?.paymentStatus)) :
-            (
-                wordCase === "toUpperCase" ?
-                (
-                    StatusText(props.detailsStatus).toUpperCase()
-                ) : (
-                    StatusText(props.detailsStatus)
-                )
-            )
-        );
-}
 
 const Row = (props: { label: string, applicant: any }) => <View style={ styles.group2 }>
     <Text style={ styles.detail }>{ props.label }</Text>
     <Text style={ styles.detailInput }>{ props.applicant }</Text>
 </View>;
 
-function excludeStatus(props: any , personnel: UserApplication) {
-    return getStatus(props , personnel) == FORVERIFICATION ||
-        getStatus(props , personnel) == FORAPPROVAL ||
-        getStatus(props , personnel) == FOREVALUATION;
-}
 
 const BasicInfo = (props: any) => {
-
     const {
         personnel ,
         loading
-    } = useAssignPersonnel(props.assignedPersonnel || props?.paymentHistory?.[0]?.userId || props?.approvalHistory?.[0]?.userId , {
+    } = useAssignPersonnel( !!props.paymentMethod && props.assignedPersonnel ? props.assignedPersonnel : (props.paymentStatus == APPROVED ?
+                            (props?.paymentHistory?.[0]?.userId ) :
+                            (props?.approvalHistory?.[0]?.userId ?
+                             props?.approvalHistory?.[0]?.userId :
+                             props?.assignedPersonnel)) , {
         headers : {
             Authorization : "Bearer ".concat(props.user?.sessionToken)
         }
     });
-
     const applicant = props.applicant;
     return <ScrollView style={ { width : "100%" , backgroundColor : "#fff" , } }>
         <View style={ { padding : 10 , flex : 1 , alignSelf : "center" } }>
@@ -84,22 +72,24 @@ const BasicInfo = (props: any) => {
                         </View>
 
                         <View style={ styles.status }>
+
                             <View
                                 style={ { flexDirection : "row" , justifyContent : "center" , alignItems : "center" } }>
-
-                                {
+                                {loading && <ActivityIndicator/> }
+                                {!loading ?
                                     statusIcon(
-                                        getStatus(props , personnel)
+                                        getStatusText(props , personnel)
                                         ,
                                         styles.icon2 ,
                                         1
-                                    )
+                                    ) : <></>
                                 }
-                                <CustomText
+                                {!loading ?
+                                 <CustomText
                                     style={ [
                                         styles.role ,
                                         statusColor(
-                                            getStatus(props , personnel)
+                                            getStatusText(props , personnel)
                                         ) ,
                                         {
                                             fontSize : 16 ,
@@ -109,18 +99,17 @@ const BasicInfo = (props: any) => {
                                     numberOfLines={ 1 }
                                 >
                                     {
-                                        getStatus(props , personnel , "toUpperCase")
+                                        getStatusText(props , personnel)?.toUpperCase()
                                     }
-                                </CustomText>
+                                </CustomText> : <></>}
                             </View>
 
 
                             { personnel != undefined &&
-                            !excludeStatus(props , personnel) &&
+                            (getStatusText(props , personnel) == APPROVED ? getStatusText(props , personnel) : !excludeStatus(props , personnel)  )  &&
                             <CustomText style={ { flex : 1 , color : "#37405B" } }>
-                                { loading ?
-                                  <ActivityIndicator/> : (
-                                      personnel !== undefined ? `by ${ personnel?.firstName } ${ personnel?.lastName }` : ``) }
+                                {(
+                                      personnel !== undefined ? `by ${ personnel?.firstName } ${ personnel?.lastName }` : ``)}
 
                             </CustomText> }
 
