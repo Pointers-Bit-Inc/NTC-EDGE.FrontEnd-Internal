@@ -130,7 +130,7 @@ const BasicInfo = (props: any) => {
                                 <Text style={ styles.header }>Address</Text>
                             </View>
                         </View>
-                        <Row label={ "Unit/Rm/House/Bldg No.:" } applicant={ applicant?.unit }/>
+                        <Row label={ "Unit/Rm/Bldg./Street:" } applicant={ applicant?.unit }/>
                         <Row label={ "Barangay:" } applicant={ applicant?.barangay }/>
                         <Row label={ "Province:" } applicant={ applicant?.province }/>
                         <Row label={ "City/Municipality:" } applicant={ applicant?.city }/>
