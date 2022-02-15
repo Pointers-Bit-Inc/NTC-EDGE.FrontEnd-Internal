@@ -19,7 +19,7 @@ import {
     DATE_ADDED ,
     DECLINED ,
     DIRECTOR ,
-    EVALUATOR ,
+    EVALUATOR , FORAPPROVAL ,
     FOREVALUATION ,
     FORVERIFICATION ,
     PAID ,
@@ -173,14 +173,14 @@ export default function ActivitiesPage(props: any) {
                 [cashier ? "paymentStatus" : 'status']: selectedClone.map((item: any) => {
                     if (cashier) {
                         if (item == VERIFIED) {
-                            return PAID
+                            return [PAID, VERIFIED]
                         } else if (item == UNVERIFIED) {
-                            return DECLINED
+                            return [DECLINED, UNVERIFIED]
                         } else if (item == FORVERIFICATION) {
-                            return [PENDING, FORVERIFICATION, FOREVALUATION].toString()
+                            return [PENDING, FORVERIFICATION, FOREVALUATION, FORAPPROVAL].toString()
                         }
                     } else if (item == FOREVALUATION) {
-                        return [FOREVALUATION, PENDING].toString()
+                        return [FOREVALUATION, PENDING, FORAPPROVAL, FORVERIFICATION].toString()
                     }
                     return item
                 }).toString()

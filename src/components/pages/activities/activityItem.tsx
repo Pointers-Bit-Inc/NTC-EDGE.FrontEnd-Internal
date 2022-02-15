@@ -23,8 +23,7 @@ import {Bold , Regular , Regular500} from "@styles/font";
 const styles = StyleSheet.create({
     container: {
         paddingVertical: 5,
-        paddingRight: 20,
-        backgroundColor: 'white',
+             paddingRight: 20,
     },
     horizontal: {
 
@@ -176,35 +175,35 @@ export function ActivityItem(props:any) {
         if(props.isOpen == props.index)  row[props.index].close()
     }, [props.isOpen == props.index])
     return (
-            <View style={{backgroundColor: "#fff" }}>
-                <Swipeable
-                    ref={ref => row[props.index] = ref}
-                    key={props.index}
+            <View style={{backgroundColor: "#fff"}}>
 
-                    
-                    onSwipeableRightOpen={()=>{
-                        closeRow(props.index)
-                    }}
-                    renderRightActions={
-                        (progress, dragX) => props.swiper(props.index, progress, dragX, props.onPressUser)
-                    }
-                >
 
                     <TouchableOpacity onPress={() =>{
                         props.onPressUser()
                     }}>
+                        <Swipeable
+                            ref={ref => row[props.index] = ref}
+                            key={props.index}
 
+
+                            onSwipeableRightOpen={()=>{
+                                closeRow(props.index)
+                            }}
+                            renderRightActions={
+                                (progress, dragX) => props.swiper(props.index, progress, dragX, props.onPressUser)
+                            }
+                        >
 
                         <View  style={styles.container}>
 
                             <View style={styles.applicationContainer}>
                                 <View style={{padding: 5}} >
                                     <View style={{
-                                        height: 8,
-                                        width: 8,
-                                        backgroundColor: "#fff" ,//props?.activity?.dateRead  ? "#fff" : "#2863D6" ,
-                                        borderRadius: 4
-                                    }}/>
+                                    height: 8,
+                                    width: 8,
+                                    backgroundColor: "#fff" ,//props?.activity?.dateRead  ? "#fff" : "#2863D6" ,
+                                    borderRadius: 4
+                                }}/>
                                 </View>
                                 <View style={{
                                     borderRadius: 10,
@@ -219,7 +218,9 @@ export function ActivityItem(props:any) {
                                     shadowRadius: 2,
                                     padding: 10,
                                     flex: 1,
-                                    flexDirection: "row", alignItems: "center"}}>
+                                    flexDirection: "row",
+                                    alignItems: "center"
+                                }}>
                                     <ProfileImage
                                         size={45}
                                         image={userActivity?.profilePicture?.small}
@@ -264,20 +265,18 @@ export function ActivityItem(props:any) {
                                         </View>
                                         {props?.isPinned && props?.activity?.assignedPersonnel && <View style={styles.section}>
                                             <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                                                <RenderPinned  config={props.config} assignedPersonnel={props?.activity?.approvalHistory?.[0]?.userId || props?.activity?.assignedPersonnel} />
+                                                <RenderPinned  config={props.config} assignedPersonnel={props?.activity?.assignedPersonnel} />
                                             </View>
                                         </View>}
                                     </View>
                                 </View>
-
                             </View>
 
                             {/*<View  style={[styles.circle,{ backgroundColor: 'rgba(26,89,211,1)'}]} /> */}
 
                         </View>
+                        </Swipeable>
                     </TouchableOpacity>
-
-                </Swipeable>
             </View>
 
 

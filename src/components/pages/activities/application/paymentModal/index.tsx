@@ -75,7 +75,7 @@ const PaymentModal = (props: any) => {
                             <Text style={styles.php5000}>PHP {props?.totalFee}</Text>
 
                             {props?.paymentMethod &&
-                            <Text style={styles.loremIpsum}>using your {props?.paymentMethod}</Text>}
+                            <Text style={styles.loremIpsum}>using your {props?.paymentMethod == "bank-transfer" && "Bank Transfer" }</Text>}
                         </View>
                         <View style={styles.group2}>
                             <View style={styles.rect}>
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     },
     php5000: {
         color: "#121212",
-
+          fontFamily: Bold
     },
     loremIpsum: {
         color: "#121212",

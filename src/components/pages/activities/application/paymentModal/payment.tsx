@@ -13,17 +13,22 @@ import PaymentModal from "@pages/activities/application/paymentModal/index";
 import Text from "@atoms/text";
 import {styles} from "@pages/activities/application/paymentModal/styles"
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles"
-import ChevronUpIcon from "@assets/svg/chevron-up";
-import ChevronDownIcon from "@assets/svg/chevron-down";
-import Collapsible from "react-native-collapsible";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {Bold} from "@styles/font";
+import RequirementModal from "@pages/activities/application/requirementModal";
 const {width, height} = Dimensions.get("screen") 
 const Payment = (props:any) => {
     const [visibleModal, setVisibleModal] = useState(false)
-    const [selectCollapsed, setSelectCollapsed] = useState(false)
+    const [visibleRequireModal, setVisibleRequireModal] = useState(false)
+    const [selectImage , setSelectImage] = useState('');
     const onDismissed = () =>{
+
         setVisibleModal(false)
+    }
+
+    const onDismissedModal = ()=>{
+        setSelectImage("");
+        setVisibleRequireModal(false)
     }
 
     const getTotal = (soa) => {
@@ -107,12 +112,13 @@ const Payment = (props:any) => {
 
 
 
-            <TouchableOpacity onPress={() => {
-                setVisibleModal(true)
-            }}  >
+
                 <View style={requirementStyles.container}>
                     <View style={[requirementStyles.card, {padding: undefined}]}>
                         <View style={requirementStyles.cardContainer}>
+                            <TouchableOpacity onPress={() => {
+                                setVisibleModal(true)
+                            }}  >
                             <View style={requirementStyles.cardLabel}>
 
                                 <View style={requirementStyles.cardTitle}>
@@ -123,7 +129,7 @@ const Payment = (props:any) => {
                                         <Text style={styles.theAmoutOf}>the amout of PHP {props?.totalFee}</Text>
                                    
                                     <Text style={requirementStyles.description}>
-                                        {props?.paymentMethod && <Text style={styles.php5000}>Payment method: {props?.paymentMethod}</Text> }
+                                        {props?.paymentMethod && <Text style={styles.php5000}>Payment method: {props?.paymentMethod == "bank-transfer" && "Bank Transfer"}</Text> }
                                     </Text>
                                 </View>
                                 {props?.proofOfPayment?.small && <View style={[{paddingTop: 30, paddingBottom: 9}, requirementStyles.cardDocument]}>
@@ -134,6 +140,7 @@ const Payment = (props:any) => {
                                 </View>}
 
                             </View>
+                            </TouchableOpacity>
                             {props?.proofOfPayment?.small && <View style={{
                                 height: 216,
                                 backgroundColor: "rgba(220,226,229,1)",
@@ -141,7 +148,11 @@ const Payment = (props:any) => {
                                 borderColor: "rgba(213,214,214,1)",
                                 borderStyle: "dashed",
                             }}>
-
+                                <TouchableOpacity onPress={ () => {
+                                    setSelectImage(props?.proofOfPayment?.large);
+                                    setVisibleRequireModal(true)
+                                }
+                                }>
                                 
                                     <Image
                                         style={{height: 216}}
@@ -149,15 +160,19 @@ const Payment = (props:any) => {
                                             uri: props?.proofOfPayment?.small,
                                         }}
                                     />
-
+                                </TouchableOpacity>
                             </View> }
 
                         </View>
                     </View>
                 </View>
 
-                </TouchableOpacity>
+
         </View>
+        <RequirementModal
+            image={ selectImage }
+            visible={ visibleRequireModal }
+            onDismissed={ onDismissedModal }/>
         <PaymentModal   updatedAt={props?.updatedAt} paymentMethod={props?.paymentMethod} applicant={props?.applicant}  totalFee={props?.totalFee} visible={visibleModal} onDismissed={onDismissed}  />
     </ScrollView>
 

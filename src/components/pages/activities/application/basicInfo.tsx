@@ -1,42 +1,52 @@
 import React from "react";
 import {ActivityIndicator , Dimensions , ScrollView , StyleSheet , Text , View} from "react-native";
-import {formatDate , PaymentStatusText , statusColor , statusIcon , StatusText} from "@pages/activities/script";
+import {getRole , PaymentStatusText , statusColor , statusIcon , StatusText} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
-import {CASHIER} from "../../../../reducers/activity/initialstate";
+import {
+    CASHIER , DIRECTOR ,
+    EVALUATOR ,
+    FORAPPROVAL ,
+    FOREVALUATION ,
+    FORVERIFICATION
+} from "../../../../reducers/activity/initialstate";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
-import {Role} from "@pages/activities/interface";
+import {Role , UserApplication} from "@pages/activities/interface";
 import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
 
 const { width , height } = Dimensions.get("screen");
 
-function getStatus(props: any , personnel: { _id: string | undefined; updatedAt: string | undefined; createdAt: string | undefined; username: string | undefined; role: Role | undefined; email: string | undefined; firstName: string | undefined; lastName: string | undefined; password: string | undefined; contactNumber: string | undefined; __v: number | undefined; address: string | undefined; profilePicture: ProfilePicture | undefined; avatar: string | undefined }, wordCase?: string) {
-    return props.status ?
-           props.status :
-           (
-               props?.user?.role?.key == CASHIER || personnel?.role?.key == CASHIER ?
-               (wordCase === "toUpperCase" ?
+function getStatus(props: any , personnel: { _id: string | undefined; updatedAt: string | undefined; createdAt: string | undefined; username: string | undefined; role: Role | undefined; email: string | undefined; firstName: string | undefined; lastName: string | undefined; password: string | undefined; contactNumber: string | undefined; __v: number | undefined; address: string | undefined; profilePicture: ProfilePicture | undefined; avatar: string | undefined } , wordCase?: string) {
+
+    return personnel &&
+        (
+            props?.user?.role?.key == CASHIER || personnel?.role?.key == CASHIER?
+            (
+                wordCase === "toUpperCase" ?
                 PaymentStatusText(props?.paymentStatus).toUpperCase() :
                 PaymentStatusText(props?.paymentStatus)) :
-               (wordCase === "toUpperCase" ?
-               (
-                   props.status ?
-                   props.status :
-                   StatusText(props.detailsStatus).toUpperCase()
-               ) : (
-                    props.status ?
-                    props.status :
+            (
+                wordCase === "toUpperCase" ?
+                (
+                    StatusText(props.detailsStatus).toUpperCase()
+                ) : (
                     StatusText(props.detailsStatus)
                 )
-               )
-           );
+            )
+        );
 }
 
-const Row = (props: { label: string,  applicant: any }) => <View style={ styles.group2 }>
+const Row = (props: { label: string, applicant: any }) => <View style={ styles.group2 }>
     <Text style={ styles.detail }>{ props.label }</Text>
     <Text style={ styles.detailInput }>{ props.applicant }</Text>
 </View>;
+
+function excludeStatus(props: any , personnel: UserApplication) {
+    return getStatus(props , personnel) == FORVERIFICATION ||
+        getStatus(props , personnel) == FORAPPROVAL ||
+        getStatus(props , personnel) == FOREVALUATION;
+}
 
 const BasicInfo = (props: any) => {
 
@@ -49,22 +59,21 @@ const BasicInfo = (props: any) => {
         }
     });
 
-
     const applicant = props.applicant;
     return <ScrollView style={ { width : "100%" , backgroundColor : "#fff" , } }>
         <View style={ { padding : 10 , flex : 1 , alignSelf : "center" } }>
-           <ProfileImage
+            <ProfileImage
                 style={ { borderRadius : 4 } }
                 size={ 150 }
                 textSize={ 22 }
                 image={ applicant?.user?.profilePicture?.small }
                 name={ `${ applicant?.user?.firstName } ${ applicant?.user?.lastName }` }
-            /> 
+            />
 
         </View>
 
         { props.applicant &&
-        <View style={ styles.elevation}>
+        <View style={ styles.elevation }>
             <View style={ [styles.container , { marginTop : 20 }] }>
                 <View style={ styles.group4 }>
                     <View style={ styles.group3 }>
@@ -74,41 +83,47 @@ const BasicInfo = (props: any) => {
                             </View>
                         </View>
 
-                        <View style={ [styles.status, { justifyContent :  personnel == undefined ? "space-between" : "center" ,}] }>
-                            <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}} >
+                        <View style={ styles.status }>
+                            <View
+                                style={ { flexDirection : "row" , justifyContent : "center" , alignItems : "center" } }>
 
-                                    {
-                                        statusIcon(
+                                {
+                                    statusIcon(
+                                        getStatus(props , personnel)
+                                        ,
+                                        styles.icon2 ,
+                                        1
+                                    )
+                                }
+                                <CustomText
+                                    style={ [
+                                        styles.role ,
+                                        statusColor(
                                             getStatus(props , personnel)
-                                            ,
-                                            styles.icon2 ,
-                                            1
-                                        )
-                                    }
-                                    <CustomText
-                                        style={ [
-                                            styles.role ,
-                                            statusColor(
-                                                getStatus(props , personnel)
-                                            ) ,
-                                            {
-                                                fontSize : 16 ,
-                                                fontFamily: Regular500 ,
-                                            }
-                                        ] }
-                                        numberOfLines={ 1 }
-                                    >
+                                        ) ,
                                         {
-                                            getStatus(props , personnel , "toUpperCase")
+                                            fontSize : 16 ,
+                                            fontFamily : Bold ,
                                         }
-                                    </CustomText>
+                                    ] }
+                                    numberOfLines={ 1 }
+                                >
+                                    {
+                                        getStatus(props , personnel , "toUpperCase")
+                                    }
+                                </CustomText>
                             </View>
-                            <CustomText style={ { flex: 1, color : "#37405B" } }>
+
+
+                            { personnel != undefined &&
+                            !excludeStatus(props , personnel) &&
+                            <CustomText style={ { flex : 1 , color : "#37405B" } }>
                                 { loading ?
                                   <ActivityIndicator/> : (
-                                      personnel != undefined ? `by ${ personnel?.firstName } ${ personnel?.lastName }` : ``) }
+                                      personnel !== undefined ? `by ${ personnel?.firstName } ${ personnel?.lastName }` : ``) }
 
-                            </CustomText>
+                            </CustomText> }
+
                         </View>
                     </View>
                     <View style={ styles.group3 }>
@@ -117,10 +132,12 @@ const BasicInfo = (props: any) => {
                                 <Text style={ styles.header }>Basic Information</Text>
                             </View>
                         </View>
-                        <Row label={"Full Name:"} applicant={ applicant?.user?.firstName + " " + applicant?.user?.middleName?.charAt() +"." + " "+ applicant?.user?.lastName  }/>
-                        <Row label={"Date of Birth:"} applicant={ moment(applicant?.user?.dateOfBirth).format('LL')  }/>
-                        <Row label={"Gender:"} applicant={ applicant?.user?.gender  }/>
-                        <Row label={"Nationality:"} applicant={ applicant?.user?.nationality  }/>
+                        <Row label={ "Full Name:" }
+                             applicant={ applicant?.user?.firstName + " " + applicant?.user?.middleName?.charAt() + "." + " " + applicant?.user?.lastName }/>
+                        <Row label={ "Date of Birth:" }
+                             applicant={ moment(applicant?.user?.dateOfBirth).format('LL') }/>
+                        <Row label={ "Gender:" } applicant={ applicant?.user?.gender }/>
+                        <Row label={ "Nationality:" } applicant={ applicant?.user?.nationality }/>
                     </View>
                     <View style={ styles.divider }/>
                     <View style={ styles.group3 }>
@@ -129,11 +146,11 @@ const BasicInfo = (props: any) => {
                                 <Text style={ styles.header }>Address</Text>
                             </View>
                         </View>
-                        <Row label={"Unit/Rm/House/Bldg No.:"} applicant={ applicant?.unit }/>
-                        <Row label={"Barangay:"} applicant={ applicant?.barangay }/>
-                        <Row label={"Province:"} applicant={ applicant?.province }/>
-                        <Row label={"City/Municipality:"} applicant={ applicant?.city }/>
-                        <Row label={"Zip Code:"} applicant={ applicant?.zipCode }/>
+                        <Row label={ "Unit/Rm/House/Bldg No.:" } applicant={ applicant?.unit }/>
+                        <Row label={ "Barangay:" } applicant={ applicant?.barangay }/>
+                        <Row label={ "Province:" } applicant={ applicant?.province }/>
+                        <Row label={ "City/Municipality:" } applicant={ applicant?.city }/>
+                        <Row label={ "Zip Code:" } applicant={ applicant?.zipCode }/>
 
                     </View>
                     <View style={ styles.divider }/>
@@ -143,11 +160,11 @@ const BasicInfo = (props: any) => {
                                 <Text style={ styles.header }>Additional Details</Text>
                             </View>
                         </View>
-                        <Row label={"School Attended:"} applicant={ applicant?.schoolAttended }/>
-                        <Row label={"Course Taken:"} applicant={ applicant?.courseTaken }/>
-                        <Row label={"Year Graduated:"} applicant={ applicant?.yearGraduated }/>
-                        <Row label={"Contact Number:"} applicant={  applicant?.user?.contactNumber }/>
-                        <Row label={"Email:"} applicant={applicant?.user?.email }/>
+                        <Row label={ "School Attended:" } applicant={ applicant?.schoolAttended }/>
+                        <Row label={ "Course Taken:" } applicant={ applicant?.courseTaken }/>
+                        <Row label={ "Year Graduated:" } applicant={ applicant?.yearGraduated }/>
+                        <Row label={ "Contact Number:" } applicant={ applicant?.user?.contactNumber }/>
+                        <Row label={ "Email:" } applicant={ applicant?.user?.email }/>
 
                     </View>
                     <View style={ styles.divider }/>
@@ -161,7 +178,7 @@ const BasicInfo = (props: any) => {
 
 };
 const styles = StyleSheet.create({
-    elevation: {
+    elevation : {
         marginBottom : 20 ,
         borderRadius : 5 ,
         alignSelf : "center" ,
@@ -182,10 +199,10 @@ const styles = StyleSheet.create({
     } ,
     role : {
 
-        fontFamily: Bold,
+        fontFamily : Bold ,
         fontSize : 14 ,
         textAlign : "left" ,
-        paddingHorizontal: 10
+        paddingHorizontal : 10
     } ,
     submitted : {
         color : "rgba(105,114,135,1)" ,
@@ -207,7 +224,7 @@ const styles = StyleSheet.create({
         backgroundColor : "#EFF0F6"
     } ,
     header : {
-          fontFamily: Regular500   ,
+        fontFamily : Regular500 ,
         color : "#565961" ,
         padding : 5 ,
         marginLeft : 5
@@ -216,18 +233,18 @@ const styles = StyleSheet.create({
         flexDirection : "row" ,
         justifyContent : "flex-start" ,
         alignItems : "center" ,
-        marginTop : 8,
-        paddingHorizontal: 10
+        marginTop : 8 ,
+        paddingHorizontal : 10
     } ,
     detail : {
-        fontFamily: Regular,
+        fontFamily : Regular ,
         paddingRight : 0 ,
         textAlign : "left" ,
         flex : 1 ,
         alignSelf : "flex-start"
     } ,
     detailInput : {
-          fontFamily: Regular500   ,
+        fontFamily : Regular500 ,
         color : "#121212" ,
         flex : 1 ,
         textAlign : "left"
@@ -237,12 +254,13 @@ const styles = StyleSheet.create({
         paddingBottom : 20
     } ,
     status : {
+
         flexDirection : 'row' ,
         flexWrap : "wrap" ,
-
+        justifyContent : "center" ,
         alignItems : "center" ,
-        paddingVertical : 15,
-        paddingLeft: 10
+        paddingVertical : 15 ,
+        paddingLeft : 10
     }
 });
 export default BasicInfo

@@ -44,7 +44,9 @@ export const StatusText = (status: string) => {
 
     switch (status) {
         case PENDING:
-            return FOREVALUATION;
+            return FORAPPROVAL;
+        case FOREVALUATION:
+            return FORAPPROVAL;
         default:
             return status
     }
