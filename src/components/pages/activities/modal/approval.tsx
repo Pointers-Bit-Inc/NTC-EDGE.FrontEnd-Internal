@@ -208,8 +208,8 @@ const Approval = (props: any) => {
 
                             { getRole(user , [DIRECTOR , EVALUATOR, ACCOUNTANT]) &&
                             <InputField
-                                onBlur={(e)=>setOnFocus(e)}
-                                onFocus={(e)=>setOnFocus(e)}
+                                onBlur={()=>setOnFocus(false)}
+                                onFocus={()=>setOnFocus(true)}
                                 containerStyle={{
                                     height: undefined ,
                                     borderColor: "#D1D1D6",
