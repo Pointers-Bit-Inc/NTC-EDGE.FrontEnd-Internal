@@ -1,8 +1,8 @@
-import React , {useEffect , useState} from "react";
+import React , {useEffect , useRef , useState} from "react";
 import {
     Alert ,
     Animated ,
-    Dimensions ,
+    Dimensions , Keyboard ,
     KeyboardAvoidingView ,
     Modal ,
     Platform ,
@@ -98,7 +98,7 @@ const Approval = (props: any) => {
 
 
     const onConfirmation = () => {
-        setOnFocus(false)
+
         if (loading && getRole(user , [EVALUATOR , DIRECTOR])) {
             Alert.alert('Alert' , "No accountant has been found")
         } else {
@@ -107,6 +107,7 @@ const Approval = (props: any) => {
             setMessage("Are you sure you want to approve this application?");
             setShowAlert(true)
         }
+
     };
 
     const onCancelPress = (event , bool?: any) => {
@@ -129,7 +130,7 @@ const Approval = (props: any) => {
     const [showClose , setShowClose] = useState(false);
     const [isTyping , setIsTyping] = useState(true);
      const [onFocus, setOnFocus] = useState(false)
-    
+    const textInput = useRef(null);
     return (
 
         <Modal
@@ -152,6 +153,7 @@ const Approval = (props: any) => {
             </View>
 
             <CustomAlert
+
                 showClose={ showClose }
                 type={ approvalIcon ? APPROVED : "" }
                 onDismissed={ () => onCancelPress(APPROVED , true) }
@@ -192,8 +194,8 @@ const Approval = (props: any) => {
                 style={ [styles.container] }
             >
 
-                { !showAlert &&
-                <Animated.View style={ [styles.group , { transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
+                {
+                <Animated.View style={ [styles.group , !showAlert ||  {display: "none"},  { transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
                     <View style={ styles.rect }>
                         <View style={ { alignSelf : 'flex-start' } }>
                             <TouchableOpacity onPress={ _springHide }>
@@ -208,6 +210,7 @@ const Approval = (props: any) => {
 
                             { getRole(user , [DIRECTOR , EVALUATOR, ACCOUNTANT]) &&
                             <InputField
+                               
                                 onBlur={()=>setOnFocus(false)}
                                 onFocus={()=>setOnFocus(true)}
                                 containerStyle={{

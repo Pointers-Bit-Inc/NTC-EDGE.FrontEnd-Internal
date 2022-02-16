@@ -10,6 +10,7 @@ export  function useAlert(show:boolean,dismissed?:any) {
         else setShowSelf(show => !show);
     };
     const _springShow = (fromConstructor: boolean) => {
+
         _toggleAlert(fromConstructor);
         Animated.spring(springValue, {
             toValue: 1,
@@ -19,10 +20,11 @@ export  function useAlert(show:boolean,dismissed?:any) {
     }
 
     useEffect(() => {
+
         if (show) {
             _springShow(show);
         }
-    }, [show, springValue])
+    }, [showSelf, springValue])
 
     const _springHide = () => {
         Animated.spring(springValue, {

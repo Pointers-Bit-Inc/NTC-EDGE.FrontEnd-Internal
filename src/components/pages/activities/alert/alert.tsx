@@ -12,7 +12,9 @@ import {Bold} from "@styles/font";
 const {width} = Dimensions.get('window');
 
 function CustomAlert(props) {
+
     const {springValue, _springHide} = useAlert(props.show, props.onDismissed);
+    
     return (
         <Modal
             supportedOrientations={['portrait', 'landscape']}
@@ -23,7 +25,7 @@ function CustomAlert(props) {
                 _springHide()
             }}
         >
-            <Animated.View style={[ { transform: [{ scale: !props.onLoading  ? springValue : 1}] }]}>
+            <Animated.View style={[ { transform: [{ scale: !props.onLoading ? springValue :  1}] }]}>
                 <View style={styles.group}>
                     <View style={styles.container___}>
                         <View style={styles.container__}>

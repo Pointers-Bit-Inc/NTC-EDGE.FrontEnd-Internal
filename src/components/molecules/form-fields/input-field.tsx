@@ -93,13 +93,11 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
     const editable = otherProps?.editable === false || otherProps?.editable === true ? otherProps?.editable : true;
     const onFocusFN = () => {
         setIsFocused(true)
-        onBlur(false);
-        onFocus(true);
+        onFocus();
     };
     const onBlurFN = () => {
         setIsFocused(false)
-        onFocus(false);
-        onBlur(true);
+        onBlur();
     };
     useImperativeHandle(ref, () => ({
         blur: () => inputRef.current.blur(),
