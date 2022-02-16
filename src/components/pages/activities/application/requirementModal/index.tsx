@@ -58,22 +58,22 @@ const RequirementModal = (props: any) => {
                 height : "100%" ,
                 justifyContent : "center" ,
                 alignSelf : "center" ,
-                position : "absolute"
+              
             } }>
                 <Loader/>
             </View> }
 
-            <ScrollView showsVerticalScrollIndicator={ false } style={ styles.group8 }>
-                <View style={ { flex : 1 , height , paddingVertical : 30 } }>
+            <ScrollView showsVerticalScrollIndicator={ false } style={styles.group8}>
+                <View style={ { flex : 1 , height ,  paddingVertical : 30 } }>
 
                     <Image
                         onLoadStart={ () => setOnLoad(true) }
                         onLoadEnd={ () => setOnLoad(false) }
                         style={ { flex : 1 } }
                         resizeMode="contain"
-                        source={ {
+                        source={{
                             uri : props?.image ? props?.image : 'https://dummyimage.com/350x350/fff/aaa' ,
-                        } }
+                        }}
                     />
 
                 </View>

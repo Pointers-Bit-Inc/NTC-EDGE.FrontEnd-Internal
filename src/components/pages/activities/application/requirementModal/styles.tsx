@@ -37,7 +37,8 @@ export const requirementStyles = StyleSheet.create({
         color : "#1F2022"
     } ,
     description : {
-        color : "#1F2022"
+        color : "#1F2022",
+        justifyContent: "center"
     } ,
     cardDocument : {
         flexDirection : "row" ,

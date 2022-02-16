@@ -23,7 +23,8 @@ import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import {useOrientation} from "@pages/activities/hooks/useOrientation";
 import {getRole} from "@pages/activities/script";
-import {Bold , Regular} from "@styles/font";
+import {Bold , Regular , Regular500} from "@styles/font";
+import CloseIcon from "@assets/svg/close";
 
 const {height, width} = Dimensions.get('window');
 
@@ -174,7 +175,7 @@ const Endorsed = (props: any) => {
                             setValidateRemarks({error: false})
                             props.onDismissed()
                         }}>
-                            <Ionicons name="md-close" style={styles.icon}></Ionicons>
+                           <CloseIcon/>
                         </TouchableOpacity>
                     </View>
                     <View style={{paddingHorizontal: 20}}>
@@ -192,7 +193,7 @@ const Endorsed = (props: any) => {
                                         }}/>
                         <View style={{paddingVertical: 10}}>
                             <InputField
-                                style={[{fontFamily: Regular,}]}
+                                clearable={false}
                                 containerStyle={{
                                     height: undefined ,
                                     borderColor: "#D1D1D6",
@@ -260,14 +261,15 @@ const styles = StyleSheet.create({
         marginTop: 17
     },
     icon2: {
-        color: "rgba(128,128,128,1)",
+        color: "#000",
         fontSize: 30
     },
     endorseTo: {
+        fontFamily: Regular500,
         color: "#121212",
-        fontSize: 20,
-        marginLeft: 12,
-        marginTop: 3
+        fontSize: 18,
+        paddingLeft: 10,
+        paddingTop: 3
     },
     icon2Row: {
         height: 30,
@@ -286,8 +288,9 @@ const styles = StyleSheet.create({
     },
     iconColumn: {
         width: '100%',
-        paddingTop: 20 ,
-        paddingHorizontal: 20
+        paddingTop: 22 ,
+        paddingHorizontal: 30,
+        paddingBottom: 15
     },
     iconColumnFiller: {
         flex: 1

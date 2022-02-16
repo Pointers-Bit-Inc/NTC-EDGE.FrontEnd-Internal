@@ -17,7 +17,7 @@ const DateTimeField = ({
 }: any) => {
   return (
     <View style={[styles.container, style]}>
-      <Text style={{ marginBottom: 5 }} weight={'bold'} fontSize={16}>
+      <Text style={{ marginBottom: 5 }} fontSize={16}>
         {title}
       </Text>
       <DateTimePicker value={value} placeholder={placeholder} />

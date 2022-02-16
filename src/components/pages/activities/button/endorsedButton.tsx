@@ -13,10 +13,10 @@ export function EndorsedButton(props: { currentLoading: string, allButton: boole
             <View style={[{
                 width: "85%",
                 alignSelf: "flex-end",
-                borderWidth: 1,
+                borderWidth: (props.allButton) ? 2 : 1,
                 borderRadius: 24,
                 borderColor: "#c4c4c4",
-                backgroundColor: ((props.allButton) ? "#C4C4C4" : "#fff"),
+                backgroundColor: "#fff",
                 height: undefined,
                 paddingVertical: props.currentLoading === FOREVALUATION ? 8.5 : 10
             }]}>
@@ -28,7 +28,7 @@ export function EndorsedButton(props: { currentLoading: string, allButton: boole
                         ) : (
                             <Text style={[styles.endorse, {
                                 fontFamily: Bold,
-                                color: (props.allButton) ? "#808196" : "#031A6E",
+                                color: (props.allButton) ? "#C4C4C4" : "#031A6E",
                             }]}>Endorse</Text>
 
                         )

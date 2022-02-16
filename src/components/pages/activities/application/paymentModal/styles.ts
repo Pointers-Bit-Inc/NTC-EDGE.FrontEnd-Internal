@@ -176,7 +176,6 @@ export const styles = StyleSheet.create({
     php5000: {
         color: "#121212",
         fontSize: 16,
-        marginTop: 14,
         textAlign: "center"
     },
     text2: {

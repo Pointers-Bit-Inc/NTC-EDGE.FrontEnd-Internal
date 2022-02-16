@@ -68,25 +68,26 @@ export type TextInputRef =  {
 }
 
 const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
-                                                                       label = '',
-                                                                       placeholder = '',
-                                                                       secureTextEntry = false,
-                                                                       required = false,
-                                                                       hasValidation = false,
-                                                                       containerStyle,
-                                                                       inputStyle,
-                                                                       labelStyle,
-                                                                       outlineStyle,
-                                                                       description,
-                                                                       error,
-                                                                       errorColor,
-                                                                       activeColor,
-                                                                       requiredColor,
-                                                                       disabledColor,
-                                                                       onBlur = () => {},
-                                                                       onFocus = () => {},
-                                                                       ...otherProps
-                                                                   }, ref) => {
+      clearable=true,
+      label = '',
+      placeholder = '',
+      secureTextEntry = false,
+      required = false,
+      hasValidation = false,
+      containerStyle,
+      inputStyle,
+      labelStyle,
+      outlineStyle,
+      description,
+      error,
+      errorColor,
+      activeColor,
+      requiredColor,
+      disabledColor,
+      onBlur = () => {},
+      onFocus = () => {},
+      ...otherProps
+  }, ref) => {
     const inputRef:any = useRef(null);
     const [isFocused, setIsFocused] = useState(false);
     const editable = otherProps?.editable === false || otherProps?.editable === true ? otherProps?.editable : true;
@@ -137,7 +138,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                                 {label}
                             </Text>
                             {required && (
-                                <Text style={[inputStyle.requiredText,
+                                <Text style={[inputStyles.requiredText,
                                     !!requiredColor && {
                                         color:  isFocused ? requiredColor : "#808196"
                                     },
@@ -169,7 +170,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                     </View>
                 </View>
                 {
-                    (!!editable && !!otherProps.value) &&
+                    (clearable && isFocused && !!editable && !!otherProps.value) &&
                     <TouchableOpacity onPress={() => otherProps?.onChangeText ? otherProps?.onChangeText('') : {}}>
                         <CloseIcon size={20} color={error ? input.text.errorColor : input.text.mainColor}/>
                     </TouchableOpacity>

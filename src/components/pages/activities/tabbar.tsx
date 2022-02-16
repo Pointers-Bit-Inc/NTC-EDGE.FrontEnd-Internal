@@ -64,7 +64,14 @@ export default function TabBar() {
                     dispatch(setTabBarHeight(event.nativeEvent.layout.height))
                 }
 
-            }} style={{flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', paddingHorizontal: 20, backgroundColor: 'white', paddingBottom: 15, paddingTop: 5, borderWidth: 1, borderColor: '#E5E5E5' }}>
+            }} style={{flexDirection: 'row', justifyContent: 'space-around',
+                alignItems: 'center',
+                paddingHorizontal: 20,
+                backgroundColor: 'white',
+                paddingBottom: 10,
+                paddingTop: 5,
+                borderWidth: 1,
+                borderColor: '#E5E5E5' }}>
                 {state.routes.map((route: any, index: number) => {
                     const {options} = descriptors[route.key];
 

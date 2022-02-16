@@ -219,9 +219,10 @@ export const ModalTab = props => {
                         options={{tabBarLabel: tab.name}}
                     >
                         {() => <BasicInfo
+                            paymentMethod={paymentMethod}
                             assignedPersonnel={assignedPersonnel}
                             approvalHistory={approvalHistory}
-                            status={props.status}
+                            status={props.details.status}
                             paymentHistory={props?.details?.paymentHistory}
                             paymentStatus={props?.details?.paymentStatus}
                             detailsStatus={props?.details?.status}

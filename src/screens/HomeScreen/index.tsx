@@ -34,7 +34,7 @@ const HomeScreen: FC<Props> = ({navigation}) => {
                     </View>
                 </View>
                 <View>
-                    <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
                         <MaterialCommunityIcons name="menu" size={24} color="black" />
                     </TouchableOpacity>
                 </View>

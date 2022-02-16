@@ -15,11 +15,11 @@ const ApplicationDetails = (props: any) => {
                     <Text style={ styles.applicationType }>{ props?.applicantType }</Text>
                     <Text style={ styles.service }>{ props?.service?.name }</Text>
                     <Text style={ styles.service }>{ props?.service?.radioType?.label }</Text>
-                    <Text style={ styles.service }>{ `\u2022${ props?.service?.radioType?.selected }` }</Text>
+                    <Text style={ [styles.service, {fontFamily: Bold}] }>{ `\u2022${ props?.service?.radioType?.selected }` }</Text>
                     { props?.selectedType?.map((type: any , idx: number) => {
                         return <Text key={ idx } style={ styles.text }>
                             { type.name } { type.selectedItems.map((item: string , index: number) => {
-                            return <Text key={ index }>{ `\n\u2022${ item }` }</Text>
+                            return <Text  key={ index } style={{fontFamily: Bold}}>{ `\n\u2022${ item }` }</Text>
                         }) }
                         </Text>
                     })
@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
         marginLeft : 1
     } ,
     text : {
+
         color : "#121212" ,
         marginTop : 2 ,
         marginLeft : 1

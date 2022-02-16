@@ -49,7 +49,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
     const onItemPress = (item: any): void => {
         setSelected(item);
         onSelect(item);
-
+        setVisible(false);
     };
 
     const renderItem = ({item}: any): ReactElement<any, any> => (

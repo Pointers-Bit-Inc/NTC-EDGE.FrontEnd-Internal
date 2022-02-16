@@ -5,14 +5,22 @@ import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
 import {
-    formatDate,
-    statusBackgroundColor,
-    statusColor,
-    statusIcon,
-    PaymentStatusText, StatusText
+    formatDate ,
+    statusBackgroundColor ,
+    statusColor ,
+    statusIcon ,
+    PaymentStatusText , StatusText , getRole
 } from "@pages/activities/script";
 
-import {CASHIER} from "../../../reducers/activity/initialstate";
+import {
+    ACCOUNTANT ,
+    APPROVED ,
+    CASHIER ,
+    DIRECTOR ,
+    EVALUATOR ,
+    FORAPPROVAL ,
+    FOREVALUATION , FORVERIFICATION
+} from "../../../reducers/activity/initialstate";
 import { outline } from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
 
@@ -23,8 +31,7 @@ import {Bold , Regular , Regular500} from "@styles/font";
 const styles = StyleSheet.create({
     container: {
         paddingVertical: 5,
-        paddingRight: 20,
-        backgroundColor: 'white',
+             paddingRight: 20,
     },
     horizontal: {
 
@@ -82,7 +89,7 @@ const styles = StyleSheet.create({
     }
 })
 
-const RenderStatus = ({ trigger, status }:any) => {
+const RenderStatus = ({trigger, status }:any) => {
 
     return (
         <View
@@ -169,42 +176,43 @@ const closeRow = (index)=>{
     prevOpenedRow = row[index];
 }
 export function ActivityItem(props:any) {
-   
-    const  status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status)
+    const  status =  [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) :  StatusText(props?.activity?.status)
     const userActivity = props?.activity?.applicant?.user
+    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) &&  status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status!==FOREVALUATION? APPROVED : getRole(props.currentUser, [ACCOUNTANT]) && !!props?.activity?.paymentMethod && props?.activity?.paymentHistory?.[0]?.action == FORVERIFICATION ? FORVERIFICATION  :  status
+
     useEffect(()=>{
         if(props.isOpen == props.index)  row[props.index].close()
     }, [props.isOpen == props.index])
     return (
-            <View style={{backgroundColor: "#fff" }}>
-                <Swipeable
-                    ref={ref => row[props.index] = ref}
-                    key={props.index}
+            <View style={{backgroundColor: "#fff"}}>
 
-                    
-                    onSwipeableRightOpen={()=>{
-                        closeRow(props.index)
-                    }}
-                    renderRightActions={
-                        (progress, dragX) => props.swiper(props.index, progress, dragX, props.onPressUser)
-                    }
-                >
 
                     <TouchableOpacity onPress={() =>{
                         props.onPressUser()
                     }}>
+                        <Swipeable
+                            ref={ref => row[props.index] = ref}
+                            key={props.index}
 
+
+                            onSwipeableRightOpen={()=>{
+                                closeRow(props.index)
+                            }}
+                            renderRightActions={
+                                (progress, dragX) => props.swiper(props.index, progress, dragX, props.onPressUser)
+                            }
+                        >
 
                         <View  style={styles.container}>
 
                             <View style={styles.applicationContainer}>
                                 <View style={{padding: 5}} >
                                     <View style={{
-                                        height: 8,
-                                        width: 8,
-                                        backgroundColor: "#fff" ,//props?.activity?.dateRead  ? "#fff" : "#2863D6" ,
-                                        borderRadius: 4
-                                    }}/>
+                                    height: 8,
+                                    width: 8,
+                                    backgroundColor: "#fff" ,//props?.activity?.dateRead  ? "#fff" : "#2863D6" ,
+                                    borderRadius: 4
+                                }}/>
                                 </View>
                                 <View style={{
                                     borderRadius: 10,
@@ -219,7 +227,9 @@ export function ActivityItem(props:any) {
                                     shadowRadius: 2,
                                     padding: 10,
                                     flex: 1,
-                                    flexDirection: "row", alignItems: "center"}}>
+                                    flexDirection: "row",
+                                    alignItems: "center"
+                                }}>
                                     <ProfileImage
                                         size={45}
                                         image={userActivity?.profilePicture?.small}
@@ -259,25 +269,23 @@ export function ActivityItem(props:any) {
                                             </View>
 
                                             <RenderStatus
-                                                status={status}
+                                                status={getStatus}
                                             />
                                         </View>
                                         {props?.isPinned && props?.activity?.assignedPersonnel && <View style={styles.section}>
                                             <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                                                <RenderPinned  config={props.config} assignedPersonnel={props?.activity?.approvalHistory?.[0]?.userId || props?.activity?.assignedPersonnel} />
+                                                <RenderPinned  config={props.config} assignedPersonnel={props?.activity?.assignedPersonnel} />
                                             </View>
                                         </View>}
                                     </View>
                                 </View>
-
                             </View>
 
                             {/*<View  style={[styles.circle,{ backgroundColor: 'rgba(26,89,211,1)'}]} /> */}
 
                         </View>
+                        </Swipeable>
                     </TouchableOpacity>
-
-                </Swipeable>
             </View>
 
 

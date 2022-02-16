@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import FormField from '@organisms/forms/form';
-import InputStyles from '@styles/input-style';
-import Text from '@atoms/text';
-import { defaultColor, errorColor, successColor, text, warningColor} from '@styles/color';
-import {Image, ScrollView, StyleSheet, TouchableOpacity, View, ActivityIndicator, StatusBar, Dimensions, BackHandler} from 'react-native';
-import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
-import { setUser } from '../../../reducers/user/actions';
-import {Ionicons} from '@expo/vector-icons';
-import ProfileImage from '@components/atoms/image/profile';
+import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import {BASE_URL} from '../../../services/config';
-import AwesomeAlert from 'react-native-awesome-alerts';
-import { validateEmail, validatePassword, validatePhone, validateText } from 'src/utils/form-validations';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import * as DocumentPicker from 'expo-document-picker';
+import { ScrollView, StyleSheet, TouchableOpacity, View, ActivityIndicator, StatusBar, Dimensions, BackHandler } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
 import * as ImagePicker from 'expo-image-picker';
+
+import Text from '@atoms/text';
+import Left from '@atoms/icon/left';
+import NavBar from '@molecules/navbar';
+import { UploadIcon } from '@atoms/icon';
+import Button from '@atoms/button';
+import Alert from '@atoms/alert';
+import ProfileImage from '@atoms/image/profile';
+import FormField from '@organisms/forms/form';
+
+import { button, defaultColor, errorColor, successColor, text, warningColor} from '@styles/color';
+
+import { BASE_URL } from '../../../services/config';
+import { validateEmail, validatePassword, validatePhone, validateText } from 'src/utils/form-validations';
+import { setUser } from '../../../reducers/user/actions';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const { width, height } = Dimensions.get('window');
@@ -40,13 +44,10 @@ const UserProfileScreen = ({navigation}: any) => {
         if (type === 'image-picker') {
             let index = userProfileForm?.findIndex(u => u?.id === id);
             if (index > -1) {
-                // let picker = await DocumentPicker.getDocumentAsync({
-                //     type: 'image/*',
-                // });
                 let picker = await ImagePicker.launchImageLibraryAsync({
                     presentationStyle: 0
                 });
-                if (!picker.cancelled /*picker?.type !== 'cancel'*/) {
+                if (!picker.cancelled) {
                     let uri = picker?.uri;
                     let split = uri?.split('/');
                     let name = split?.[split?.length - 1];
@@ -56,29 +57,13 @@ const UserProfileScreen = ({navigation}: any) => {
                         mimeType,
                         uri,
                     };
-                    userProfileForm[index].file = _file; //picker;
-                    userProfileForm[index].value = _file?.uri; //picker?.uri;
+                    userProfileForm[index].file = _file;
+                    userProfileForm[index].value = _file?.uri;
                     setUserProfileForm(userProfileForm);
                     save({dp: true});
                 }
             }
         }
-    };
-    const openImagePickerAsync = async () => {
-        let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (permissionResult.granted === false) {
-            setAlert({
-                title: 'Permission Denied',
-                message: 'Permission to access camera roll is required.',
-                color: warningColor
-            });
-            setShowAlert(true);
-            return;
-        }
-        let picker = await ImagePicker.launchImageLibraryAsync({
-            presentationStyle: 0
-        });
-        return picker;
     };
     const save = ({ dp = false }) => {
         var updatedUser = {}, formData = new FormData();
@@ -120,7 +105,7 @@ const UserProfileScreen = ({navigation}: any) => {
                         photo: false,
                         basic: false
                     });
-                    setEditable(false);
+                    // setEditable(false);
                     if (res?.status === 200) {
                         setAlert({
                             title: 'Success',
@@ -146,7 +131,7 @@ const UserProfileScreen = ({navigation}: any) => {
                         photo: false,
                         basic: false
                     });
-                    setEditable(false);
+                    // setEditable(false);
                     if (err?.status === 413) {
                         setAlert({
                             title: 'File Too Large',
@@ -165,10 +150,6 @@ const UserProfileScreen = ({navigation}: any) => {
                 });
         }
     };
-    const onSave = () => {
-        if (editable) save({dp: false});
-        else setEditable(true);
-    };
 
     const [alert, setAlert] = useState({
         title: '',
@@ -176,27 +157,22 @@ const UserProfileScreen = ({navigation}: any) => {
         color: defaultColor,
     });
     const [showAlert, setShowAlert] = useState(false);
-    const [editable, setEditable] = useState(false);
+    const [discardAlert, setDiscardAlert] = useState(false);
 	const [loading, setLoading] = useState({
         photo: false,
         basic: false,
     });
-    const [userProfileForm, setUserProfileForm] = useState([
+
+    const originalForm = [
         {
             stateName: 'userType',
             id: 1,
             key: 1,
             required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
-            disabledColor: text.disabled,
             label: 'User Type',
             type: 'input',
             placeholder: 'User Type',
             value: user?.role?.name || '',
-            inputStyle: InputStyles.text,
             error: false,
             editable: false,
         },
@@ -205,16 +181,10 @@ const UserProfileScreen = ({navigation}: any) => {
             id: 2,
             key: 2,
             required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
-            disabledColor: text.disabled,
             label: 'First Name',
             type: 'input',
             placeholder: 'First Name',
             value: user?.firstName || '',
-            inputStyle: InputStyles.text,
             error: false,
         },
         {
@@ -222,16 +192,10 @@ const UserProfileScreen = ({navigation}: any) => {
             id: 3,
             key: 3,
             required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
-            disabledColor: text.disabled,
             label: 'Last Name',
             type: 'input',
             placeholder: 'Last Name',
             value: user?.lastName || '',
-            inputStyle: InputStyles.text,
             error: false,
         },
         {
@@ -239,16 +203,10 @@ const UserProfileScreen = ({navigation}: any) => {
             id: 4,
             key: 4,
             required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
-            disabledColor: text.disabled,
             label: 'Email',
             type: 'input',
             placeholder: 'Email',
             value: user?.email || '',
-            inputStyle: InputStyles.text,
             error: false,
         },
         {
@@ -261,16 +219,10 @@ const UserProfileScreen = ({navigation}: any) => {
             id: 9,
             key: 9,
             required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
-            disabledColor: text.disabled,
             label: 'Contact Number',
             type: 'input',
             placeholder: 'Contact Number',
             value: user?.contactNumber || '',
-            inputStyle: InputStyles.text,
             error: false,
         },
         {
@@ -278,19 +230,15 @@ const UserProfileScreen = ({navigation}: any) => {
             id: 10,
             key: 10,
             required: true,
-            outlineStyle: InputStyles.outlineStyle,
-            activeColor: text.primary,
-            errorColor: text.error,
-            requiredColor: text.error,
-            disabledColor: text.disabled,
             label: 'Address',
             type: 'input',
             placeholder: 'Address',
             value: user?.address || '',
-            inputStyle: InputStyles.text,
             error: false,
         },
-    ]);
+    ];
+    const [userProfileForm, setUserProfileForm] = useState(originalForm);
+    
     const isValid = () => {
         var valid = true;
         userProfileForm?.forEach((up: any) => {
@@ -304,13 +252,37 @@ const UserProfileScreen = ({navigation}: any) => {
             }
         });
         return valid;
-    }
-    const disabled = loading?.photo || loading?.basic || (editable && !isValid());
+    };
+    const hasChanges = () => {
+        var hasChanges = false;
+        originalForm.forEach(of => {
+            if (
+                of.stateName === 'firstName' ||
+                of.stateName === 'lastName' ||
+                of.stateName === 'email' ||
+                of.stateName === 'contactNumber' ||
+                of.stateName === 'address'
+            ) {
+                let index = userProfileForm.findIndex(uf => uf.stateName === of.stateName);
+                if (index > -1) {
+                    if (userProfileForm?.[index]?.value !== of?.value) {
+                        hasChanges = true;
+                        return;
+                    }
+                }
+            }
+        });
+        return hasChanges;
+    };
+    const disabled = loading?.basic || !isValid() || !hasChanges();
 
     const handleBackButtonClick = () => {
-        navigation.dispatch(navigation.navigate('Home'))
-        return true;
-    }
+        if (hasChanges()) setDiscardAlert(true);
+        else {
+            navigation.goBack();
+            return true;
+        }
+    };
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
@@ -319,71 +291,77 @@ const UserProfileScreen = ({navigation}: any) => {
         };
     }, [routeIsFocused]);
 
-    const MyStatusBar = ({backgroundColor, ...props}: any) => (
-        <View style={[styles.statusBar, { backgroundColor }]}>
-          <SafeAreaView>
-            <StatusBar translucent backgroundColor={backgroundColor} {...props} />
-          </SafeAreaView>
-        </View>
-    );
-
     return (
         <View style={styles.container}>
-            {/* <MyStatusBar backgroundColor='#041B6E' barStyle='light-content' /> */}
-            <View style={styles.group}>
-                <TouchableOpacity style={styles.touchable} onPress={handleBackButtonClick} >
-                    <Ionicons name='md-close' style={styles.icon}></Ionicons>
-                </TouchableOpacity>
-
-                <Text style={styles.profileName}>Profile</Text>
-                <TouchableOpacity style={[styles.touchable, {alignItems: 'flex-end'}]} onPress={onSave} disabled={disabled}>
-                    {
-                        loading?.basic
-                            ? <ActivityIndicator size='small' color='#fff' />
-                            : <Text style={[styles?.edit, disabled && {color: 'rgba(255, 255, 255, 0.5)'}]}>{editable ? 'Save' : 'Edit'}</Text>
-                    }
-                </TouchableOpacity>
-            </View>
-
-            <View style={styles.rect2}></View>
-            <TouchableOpacity onPress={() => onPress(11, 'image-picker')}>
-                <View style={styles.rect3}>
-                    <ProfileImage
-                        size={width / 4}
-                        textSize={25}
-                        image={photo}
-                        name={`${user.firstName} ${user.lastName}`}
-                    /> 
-                    <Text style={styles.change2}>Change</Text>
-                    { loading?.photo && <ActivityIndicator style={styles.activityIndicator} size='large' color='#fff' /> }
-                </View>
-            </TouchableOpacity>
+            <NavBar
+                title='Profile'
+                leftIcon={<Left color='#fff' />}
+                onLeft={() => {
+                    if (hasChanges()) setDiscardAlert(true);
+                    else navigation.pop();
+                }}
+            />
 
             <ScrollView style={styles.scrollview} showsVerticalScrollIndicator={false}>
+                <View style={[styles.row, {marginBottom: 20}]}>
+                    <View>
+                        <ProfileImage
+                            size={width / 4}
+                            textSize={25}
+                            image={photo}
+                            name={`${user.firstName} ${user.lastName}`}
+                        />
+                        { loading?.photo && <ActivityIndicator style={styles.activityIndicator} size='large' color='#fff' /> }
+                    </View>
+                    <TouchableOpacity onPress={() => onPress(11, 'image-picker')}>
+                        <View style={styles.row}>
+                            <UploadIcon color={text.info} />
+                            <Text style={styles.change2}>Upload image</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
                 <FormField
                     formElements={userProfileForm}
                     onChange={onUpdateForm}
                     onSubmit={onPress}
-                    editable={editable}
+                    // editable={editable}
                 />
                 <TouchableOpacity onPress={ () =>  navigation.navigate('ResetPassword')} >
                     <Text style={styles.changePassword}>Change Password</Text>
                 </TouchableOpacity>
+                <View style={{ height: width / 3 }} />
             </ScrollView>
 
-            <AwesomeAlert
-                actionContainerStyle={{ flexDirection: 'row-reverse' }}
-                show={showAlert}
-                showProgress={false}
+            <Button
+                style={[styles.bottomButton, disabled && {backgroundColor: button.disabled}]}
+                disabled={disabled}
+                onPress={() => save({dp: false})}
+            >
+                {
+                    loading?.basic
+                        ?   <ActivityIndicator size='small' color='#fff' />
+                        :   <Text style={styles.bottomButtonText}>
+                                Save
+                            </Text>
+                }
+            </Button>
+
+            <Alert
+                visible={discardAlert}
+                title='Discard Changes'
+                message='Any unsaved changes will not be saved. Continue?'
+                confirmText='OK'
+                cancelText='Cancel'
+                onConfirm={() => navigation.pop()}
+                onCancel={() => setDiscardAlert(false)}
+            />
+
+            <Alert
+                visible={showAlert}
                 title={alert?.title}
                 message={alert?.message}
-                messageStyle={{ textAlign: 'center' }}
-                closeOnTouchOutside={true}
-                closeOnHardwareBackPress={false}
-                showConfirmButton={true}
                 confirmText='OK'
-                confirmButtonColor={alert?.color}
-                onConfirmPressed={() => setShowAlert(false)}
+                onConfirm={() => setShowAlert(false)}
             />
 
         </View>
@@ -399,8 +377,12 @@ const styles = StyleSheet.create({
         height: STATUSBAR_HEIGHT,
     },
     scrollview: {
-        paddingTop: 30,
-        paddingHorizontal: 15,
+        padding: 20,
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 15,
     },
     group: {
         flexDirection: 'row',
@@ -440,13 +422,14 @@ const styles = StyleSheet.create({
         marginTop: -((width / 4) / 2)
     },
     change2: {
-        color: 'rgba(255,255,255,1)',
-        marginTop: -(width * .07),
-        fontSize: 12,
+        color: text.info,
+        fontSize: RFValue(16),
+        marginLeft: 5,
     },
     activityIndicator: {
-        marginTop: -(width / 7),
-        marginBottom: width * .047,
+        position: 'absolute',
+        alignSelf: 'center',
+        marginTop: '27%'
     },
     divider: {
         backgroundColor: '#E6E6E6',
@@ -461,5 +444,17 @@ const styles = StyleSheet.create({
     button: {
         borderRadius: 5,
     },
+    bottomButton: {
+        backgroundColor: button.primary,
+        alignSelf: 'center',
+        width: '50%',
+        borderRadius: 30,
+        marginVertical: 20,
+    },
+    bottomButtonText: {
+        color: '#fff',
+        fontSize: RFValue(16),
+    }
 });
+
 export default UserProfileScreen;

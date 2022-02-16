@@ -4,7 +4,7 @@ import React from "react";
 import {Bold} from "@styles/font";
 
 export const ApprovedButton = (props: { currentLoading: string, allButton: boolean, onPress: () => void }) => {
-    console.log(props.allButton, "ApprovedButton", )
+
     return <View
         style={ { flex : 1 , paddingRight : 5 } }>
         <TouchableOpacity
@@ -25,7 +25,7 @@ export const ApprovedButton = (props: { currentLoading: string, allButton: boole
                         <Text
                             style={ [styles.approved , {
                                 fontFamily: Bold,
-                                color : props.allButton ? "#808196" : "rgba(255,255,255,1)" ,
+                                color : props.allButton ? "#FCFCFC" : "rgba(255,255,255,1)" ,
                             }] }>
                             Approve
                         </Text>

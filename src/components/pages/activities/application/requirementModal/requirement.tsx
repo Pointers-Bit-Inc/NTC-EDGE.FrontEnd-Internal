@@ -47,7 +47,7 @@ const Requirement = (props: any) => {
 
                                     style={ { width : undefined , height : 216 } }
                                     source={ {
-                                        uri : requirement?.links?.large ,
+                                        uri : requirement?.links?.medium ,
                                     } }
                                 />
                             </TouchableOpacity>

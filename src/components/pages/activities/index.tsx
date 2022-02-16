@@ -19,7 +19,7 @@ import {
     DATE_ADDED ,
     DECLINED ,
     DIRECTOR ,
-    EVALUATOR ,
+    EVALUATOR , FORAPPROVAL ,
     FOREVALUATION ,
     FORVERIFICATION ,
     PAID ,
@@ -173,14 +173,14 @@ export default function ActivitiesPage(props: any) {
                 [cashier ? "paymentStatus" : 'status']: selectedClone.map((item: any) => {
                     if (cashier) {
                         if (item == VERIFIED) {
-                            return PAID
+                            return [PAID, VERIFIED]
                         } else if (item == UNVERIFIED) {
-                            return DECLINED
+                            return [DECLINED, UNVERIFIED]
                         } else if (item == FORVERIFICATION) {
-                            return [PENDING, FORVERIFICATION, FOREVALUATION].toString()
+                            return [PENDING, FORVERIFICATION, FOREVALUATION, FORAPPROVAL].toString()
                         }
                     } else if (item == FOREVALUATION) {
-                        return [FOREVALUATION, PENDING].toString()
+                        return [FOREVALUATION, PENDING, FORAPPROVAL, FORVERIFICATION].toString()
                     }
                     return item
                 }).toString()
@@ -427,7 +427,7 @@ export default function ActivitiesPage(props: any) {
 
                 <View style={styles.group}>
                     <View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 35}, ]}>
-                        <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+                        <TouchableOpacity onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
                             <HomeMenuIcon/>
                             {/* <ProfileImage
                                 size={45}
@@ -482,16 +482,16 @@ export default function ActivitiesPage(props: any) {
                     contentContainerStyle={{ flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
                     ListHeaderComponent={() => (
-                        <>
+                        <View style={{paddingBottom: 10, backgroundColor: "#fff"}}>
                             {!searchVisible && pnApplications?.length > 0 &&
                             <View style={[styles.pinnedgroup, {height: undefined}]}>
-                                <View style={[styles.pinnedcontainer, {paddingVertical: 15}]}>
+                                <View style={[styles.pinnedcontainer, {paddingVertical: 10}]}>
                                     <Text style={[styles.pinnedActivity, {fontFamily: Bold,}]}>Pinned activity</Text>
                                 </View>
                             </View>}
                             {!searchVisible && (
 
-                                <ScrollView style={{maxHeight: 300}}>
+                                <ScrollView  style={{maxHeight: 300}}>
                                     {
                                         pnApplications.map((item: any, index: number) => {
                                             return item?.activity && item?.activity.map((act: any, i: number) => {
@@ -509,21 +509,22 @@ export default function ActivitiesPage(props: any) {
                                                         })*/
 
                                                         setIsOpen(undefined)
-                                                        setDetails({...act, isOpen:i})
+                                                        setDetails({...act, isOpen:`${i}${index}`})
                                                         if (event?.icon == 'more') {
                                                             setMoreModalVisible(true)
                                                         } else {
                                                             setModalVisible(true)
                                                         }
 
-                                                    }} index={i} swiper={renderSwiper}/>
+                                                    }} index={`${i}${index}`} swiper={renderSwiper}/>
                                             })
                                         })
                                     }
                                 </ScrollView>
+
                             )
                             }
-                        </>
+                        </View>
                     )}
                     refreshControl={
                         <RefreshControl
@@ -591,6 +592,7 @@ export default function ActivitiesPage(props: any) {
                     )}
                 />
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={() =>{
+                                                   console.log(details?.isOpen, isOpen)
                     onMoreModalDismissed(details?.isOpen)
                 }}/>
                 <ActivityModal updateModal={updateModalFn}

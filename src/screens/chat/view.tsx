@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   plus: {
-    backgroundColor: button.primary,
+    backgroundColor: button.default,
     borderRadius: 26,
     width: 26,
     height: 26,
@@ -326,7 +326,7 @@ const ChatView = ({ navigation, route }:any) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.keyboardAvoiding}>
-          <TouchableOpacity>
+          <TouchableOpacity  disabled={true}>
             <View style={styles.plus}>
               <PlusIcon
                 color="white"
@@ -378,19 +378,19 @@ const ChatView = ({ navigation, route }:any) => {
                 </TouchableOpacity>
               ) : (
                 <>
-                  <TouchableOpacity>
+                  <TouchableOpacity disabled={true}>
                     <View style={{ paddingLeft: 15 }}>
                       <CameraIcon
                         size={22}
-                        color={text.default}
+                        color={button.default}
                       />
                     </View>
                   </TouchableOpacity>
-                  <TouchableOpacity>
+                  <TouchableOpacity disabled={true}>
                     <View style={{ paddingLeft: 15 }}>
                       <MicIcon
                         size={20}
-                        color={text.default}
+                        color={button.default}
                       />
                     </View>
                   </TouchableOpacity>

@@ -13,7 +13,7 @@ export function DeclineButton(props: { currentLoading: string, allButton: boolea
                 style={[
                     styles.rect24,
                     {
-                        backgroundColor: (props.allButton) ? "#C4C4C4" : "#fff",
+                        backgroundColor:"#fff",
                         height: undefined,
                         paddingVertical: props.currentLoading === DECLINED ? 8.5 : 9,
                         borderWidth: 2,
@@ -28,7 +28,7 @@ export function DeclineButton(props: { currentLoading: string, allButton: boolea
                         <Text
                             style={[styles.endorse, {
                                 fontFamily: Bold,
-                                color: (props.allButton) ? "#808196" : "rgba(194,0,0,1)",
+                                color: (props.allButton) ? "#C4C4C4" : "rgba(194,0,0,1)",
                             }]}>Decline</Text>
                     )
                 }
