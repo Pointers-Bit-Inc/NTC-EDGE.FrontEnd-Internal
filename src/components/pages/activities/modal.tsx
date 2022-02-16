@@ -245,7 +245,7 @@ function ActivityModal(props: any) {
 
                             <ApprovedButton
                                 currentLoading={currentLoading}
-                                allButton={false}
+                                allButton={allButton}
                                 onPress={() => {
 
                                     if (cashier) {
