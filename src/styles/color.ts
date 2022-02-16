@@ -61,6 +61,11 @@ const button = {
   info: '#2F5BFA',
 };
 
+const bubble = {
+  primary: '#1F40AF',
+  secondary: '#E5E5E5',
+};
+
 export {
   primaryColor,
   lightPrimaryColor,
@@ -76,4 +81,5 @@ export {
   text,
   button,
   input,
+  bubble,
 }
