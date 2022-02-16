@@ -233,12 +233,7 @@ function ActivityModal(props: any) {
                     }}>
                         <CloseIcon color="#606A80"/>
                     </TouchableOpacity>
-                    <Text style={{
-                        fontFamily: Bold,
-                        fontSize: 14,
-                        lineHeight: 16.5,
-                        color: "#606A80"
-                    }}>{props?.details?.applicationType}</Text>
+                    <Text style={styles.applicationType}>{props?.details?.applicationType}</Text>
                     <View></View>
                 </View>
 
@@ -392,6 +387,12 @@ function ActivityModal(props: any) {
 
 export default ActivityModal
 const styles = StyleSheet.create({
+    applicationType: {
+        fontFamily: Bold,
+        fontSize: 14,
+        lineHeight: 16.5,
+        color: "#606A80"
+    },
     container: {
         flex: 1
     },
