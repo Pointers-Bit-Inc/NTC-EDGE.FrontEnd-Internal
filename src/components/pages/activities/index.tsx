@@ -482,16 +482,16 @@ export default function ActivitiesPage(props: any) {
                     contentContainerStyle={{ flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
                     ListHeaderComponent={() => (
-                        <>
+                        <View style={{paddingBottom: 10, backgroundColor: "#fff"}}>
                             {!searchVisible && pnApplications?.length > 0 &&
                             <View style={[styles.pinnedgroup, {height: undefined}]}>
-                                <View style={[styles.pinnedcontainer, {paddingVertical: 15}]}>
+                                <View style={[styles.pinnedcontainer, {paddingVertical: 10}]}>
                                     <Text style={[styles.pinnedActivity, {fontFamily: Bold,}]}>Pinned activity</Text>
                                 </View>
                             </View>}
                             {!searchVisible && (
 
-                                <ScrollView style={{maxHeight: 300}}>
+                                <ScrollView  style={{maxHeight: 300}}>
                                     {
                                         pnApplications.map((item: any, index: number) => {
                                             return item?.activity && item?.activity.map((act: any, i: number) => {
@@ -521,9 +521,10 @@ export default function ActivitiesPage(props: any) {
                                         })
                                     }
                                 </ScrollView>
+
                             )
                             }
-                        </>
+                        </View>
                     )}
                     refreshControl={
                         <RefreshControl
