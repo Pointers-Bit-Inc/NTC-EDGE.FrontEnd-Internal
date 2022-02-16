@@ -127,7 +127,7 @@ const Approval = (props: any) => {
     const [approvalIcon , setApprovalIcon] = useState(false);
     const [title , setTitle] = useState("Approve Application");
     const [showClose , setShowClose] = useState(false);
-    const [isTyping , setIsTyping] = useState(false);
+    const [isTyping , setIsTyping] = useState(true);
      const [onFocus, setOnFocus] = useState(false)
     
     return (
