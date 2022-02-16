@@ -17,7 +17,6 @@ const useKeyboard = () => {
         setKeyboardVisible(false); // or some other action
       },
     );
-
     return () => {
       keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();

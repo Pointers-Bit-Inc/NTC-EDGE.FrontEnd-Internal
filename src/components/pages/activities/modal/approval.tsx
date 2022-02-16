@@ -30,6 +30,7 @@ const { width , height } = Dimensions.get('window');
 const Approval = (props: any) => {
 
     const { springValue , _springHide } = useAlert(props.visible , () => {
+        setOnFocus(false)
         return props.onDismissed(APPROVED);
     });
 
@@ -97,9 +98,11 @@ const Approval = (props: any) => {
 
 
     const onConfirmation = () => {
+        setOnFocus(false)
         if (loading && getRole(user , [EVALUATOR , DIRECTOR])) {
             Alert.alert('Alert' , "No accountant has been found")
         } else {
+
             props.onChangeRemarks(remarks , cashier);
             setMessage("Are you sure you want to approve this application?");
             setShowAlert(true)
@@ -125,6 +128,8 @@ const Approval = (props: any) => {
     const [title , setTitle] = useState("Approve Application");
     const [showClose , setShowClose] = useState(false);
     const [isTyping , setIsTyping] = useState(false);
+     const [onFocus, setOnFocus] = useState(false)
+    
     return (
 
         <Modal
@@ -188,7 +193,7 @@ const Approval = (props: any) => {
             >
 
                 { !showAlert &&
-                <Animated.View style={ [styles.group , { transform : [{ scale : isTyping ? 1 : springValue }] }] }>
+                <Animated.View style={ [styles.group , { transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
                     <View style={ styles.rect }>
                         <View style={ { alignSelf : 'flex-start' } }>
                             <TouchableOpacity onPress={ _springHide }>
@@ -203,6 +208,8 @@ const Approval = (props: any) => {
 
                             { getRole(user , [DIRECTOR , EVALUATOR, ACCOUNTANT]) &&
                             <InputField
+                                onBlur={(e)=>setOnFocus(e)}
+                                onFocus={(e)=>setOnFocus(e)}
                                 containerStyle={{
                                     height: undefined ,
                                     borderColor: "#D1D1D6",
