@@ -1,10 +1,10 @@
-import React, {Fragment, useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React , {Fragment , useCallback , useEffect , useMemo , useState} from "react";
 import {
     Alert ,
     Animated ,
     Dimensions ,
     FlatList ,
-    RefreshControl , SafeAreaView ,
+    RefreshControl ,
     ScrollView ,
     StatusBar ,
     Text ,
@@ -13,13 +13,9 @@ import {
 } from "react-native";
 import {styles} from "@pages/activities/styles";
 import {
-    ACCOUNTANT ,
-    CASHIER ,
-    CHECKER ,
     DATE_ADDED ,
     DECLINED ,
-    DIRECTOR ,
-    EVALUATOR , FORAPPROVAL ,
+    FORAPPROVAL ,
     FOREVALUATION ,
     FORVERIFICATION ,
     PAID ,
@@ -27,18 +23,17 @@ import {
     UNVERIFIED ,
     VERIFIED
 } from "../../../reducers/activity/initialstate";
-import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
+import {RootStateOrAny , useDispatch , useSelector} from "react-redux";
 import {
-    handleInfiniteLoad,
-    setApplications,
-    setNotPinnedApplication,
+    handleInfiniteLoad ,
+    setApplications ,
+    setNotPinnedApplication ,
     setPinnedApplication
 } from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
-import {formatDate, getFilter, unreadReadApplication,} from "@pages/activities/script";
-import SearchIcon from "@assets/svg/search";
+import {formatDate , getFilter , unreadReadApplication ,} from "@pages/activities/script";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import {BASE_URL} from "../../../services/config";
@@ -51,12 +46,16 @@ import useFirebase from 'src/hooks/useFirebase';
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {getChannelName} from 'src/utils/formatting';
 import lodash from 'lodash';
-import {addActiveMeeting, removeActiveMeeting, setMeetingId, updateActiveMeeting,} from 'src/reducers/meeting/actions';
+import {
+    addActiveMeeting ,
+    removeActiveMeeting ,
+    setMeetingId ,
+    updateActiveMeeting ,
+} from 'src/reducers/meeting/actions';
 import {MeetingNotif} from '@components/molecules/list-item';
 import listEmpty from "@pages/activities/listEmpty";
 import HomeMenuIcon from "@assets/svg/homemenu";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
-import account from "@assets/svg/account";
 import {useUserRole} from "@pages/activities/hooks/useUserRole";
 import {Bold} from "@styles/font";
 
@@ -482,49 +481,54 @@ export default function ActivitiesPage(props: any) {
                     contentContainerStyle={{ flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
                     ListHeaderComponent={() => (
-                        <View style={{paddingBottom: 10, backgroundColor: "#fff"}}>
-                            {!searchVisible && pnApplications?.length > 0 &&
-                            <View style={[styles.pinnedgroup, {height: undefined}]}>
-                                <View style={[styles.pinnedcontainer, {paddingVertical: 10}]}>
-                                    <Text style={[styles.pinnedActivity, {fontFamily: Bold,}]}>Pinned activity</Text>
-                                </View>
-                            </View>}
-                            {!searchVisible && (
+                        <>
+                            { !searchVisible && pnApplications?.length > 0 &&
+                            <View style={ { paddingBottom : 10 , backgroundColor : "#fff" } }>
+                                { !searchVisible && pnApplications?.length > 0 &&
+                                <View style={ [styles.pinnedgroup , { height : undefined }] }>
+                                    <View style={ [styles.pinnedcontainer , { paddingVertical : 10 }] }>
+                                        <Text style={ [styles.pinnedActivity , { fontFamily : Bold , }] }>Pinned
+                                            activity</Text>
+                                    </View>
+                                </View> }
+                                { !searchVisible && (
 
-                                <ScrollView  style={{maxHeight: 300}}>
-                                    {
-                                        pnApplications.map((item: any, index: number) => {
-                                            return item?.activity && item?.activity.map((act: any, i: number) => {
-                                                return act?.assignedPersonnel == user?._id && <ActivityItem
-                                                    isOpen={isOpen}
-                                                    config={config}
-                                                    key={i}
-                                                    currentUser={user}
-                                                    role={user?.role?.key}
-                                                    searchQuery={searchTerm}
-                                                    activity={act}
-                                                    isPinned={true}
-                                                    onPressUser={(event: any) => {
-                                                        /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
-                                                        })*/
+                                    <ScrollView style={ { maxHeight : 300 } }>
+                                        {
+                                            pnApplications.map((item: any , index: number) => {
+                                                return item?.activity && item?.activity.map((act: any , i: number) => {
+                                                    return act?.assignedPersonnel == user?._id && <ActivityItem
+                                                        isOpen={ isOpen }
+                                                        config={ config }
+                                                        key={ i }
+                                                        currentUser={ user }
+                                                        role={ user?.role?.key }
+                                                        searchQuery={ searchTerm }
+                                                        activity={ act }
+                                                        isPinned={ true }
+                                                        onPressUser={ (event: any) => {
+                                                            /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
+                                                            })*/
 
-                                                        setIsOpen(undefined)
-                                                        setDetails({...act, isOpen:`${i}${index}`})
-                                                        if (event?.icon == 'more') {
-                                                            setMoreModalVisible(true)
-                                                        } else {
-                                                            setModalVisible(true)
-                                                        }
+                                                            setIsOpen(undefined);
+                                                            setDetails({ ...act , isOpen : `${ i }${ index }` });
+                                                            if (event?.icon == 'more') {
+                                                                setMoreModalVisible(true)
+                                                            } else {
+                                                                setModalVisible(true)
+                                                            }
 
-                                                    }} index={`${i}${index}`} swiper={renderSwiper}/>
+                                                        } } index={ `${ i }${ index }` } swiper={ renderSwiper }/>
+                                                })
                                             })
-                                        })
-                                    }
-                                </ScrollView>
+                                        }
+                                    </ScrollView>
 
-                            )
-                            }
-                        </View>
+                                )
+                                }
+                            </View> }
+                        </>
+
                     )}
                     refreshControl={
                         <RefreshControl
