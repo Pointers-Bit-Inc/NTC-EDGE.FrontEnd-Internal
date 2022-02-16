@@ -1,129 +1,80 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { ExclamationIcon } from '@atoms/icon';
+import React, { FC } from 'react';
+import { View } from 'react-native';
 import Text from '@atoms/text';
 import Dropdown from '@atoms/dropdown';
+import styles from '@styles/input-style';
+import { input } from '@styles/color';
 
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 10,
-  },
-  label: {
-    position: 'absolute',
-    top: 2,
-    left: 15,
-    paddingHorizontal: 5,
-    backgroundColor: 'white',
-    zIndex: 99,
-    flexDirection: 'row'
-  },
-  inputContainer: {
-    borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 10,
-    overflow: 'hidden',
-    width: '100%'
-  },
-  description: {
-    paddingTop: 2,
-  },
-  info: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  }
-});
+interface Props {
+  value?: string;
+  label?: string;
+  items?: any;
+  placeholder?: any;
+  onChangeValue?: any;
+  secureTextEntry?: boolean;
+  required?: boolean;
+  hasValidation?: boolean;
+  description?: string;
+  error?: string;
+  [x: string]: any;
+}
 
-const DropDowneField = ({
-  title = '',
-  value = '',
+const DropDownField: FC<Props> = ({
+  value = {},
   label = '',
-  labelStyle,
-  placeholder = {},
   items = [],
+  placeholder = 'Choose an item...',
   onChangeValue = () => {},
-  outlineStyle,
+  secureTextEntry = false,
   required = false,
-  requiredColor = '',
-  activeColor = '',
-  errorColor = '',
   hasValidation = false,
-  error = '',
-  description = '',
-  style,
+  description,
+  error,
   ...otherProps
-}: any) => {
-  const [isFocused, setIsFocused] = useState(false);
-  const onFocus = () => setIsFocused(true);
-  const onBlur = () => setIsFocused(false);
+}) => {
+  const { text, background } = input;
 
   return (
-    <View style={[styles.container, style]}>
-      {
-        (isFocused || !!value || !!error) && !!label && (
-          <View style={styles.label}>
-            <Text
-              style={[
-                labelStyle,
-                !!activeColor && {
-                  color: activeColor
-                }
-              ]}
-              weight={'600'}
-              size={12}
-            >
-              {label}
-            </Text>
-            {required && (
-              <Text
-                style={[
-                  labelStyle,
-                  !!requiredColor && {
-                    color: requiredColor
-                  }
-                ]}
-              >
-                {'*'}
-              </Text>
-            )}
-          </View>
-        )
-      }
-      <View style={[styles.inputContainer, outlineStyle, !!error && { borderColor: errorColor }]}>
+    <View style={styles.mainContainer}>
+      <View style={[
+        styles.container,
+        styles.dropdownOuterContainer,
+        !!error && {
+          backgroundColor: background?.error,
+          borderColor: text?.errorColor,
+        }
+      ]}>
         <Dropdown
+          style={styles.dropdownInnerContainer}
+          containerStyle={[
+            styles.dropdownListContainer,
+            items?.length < 3 && {flex: 0.15},
+          ]}
+          placeholderStyle={[
+            styles.placeholderText,
+            !!error && { color: text?.errorColor }
+          ]}
+          activeColor={input.background.default}
+          iconColor={error ? text.errorColor : text.defaultColor}
+          iconStyle={styles.iconStyle}
+          selectedTextStyle={styles.inputText}
           value={value}
           placeholder={placeholder}
           items={items}
           onChangeValue={onChangeValue}
-          onOpen={onFocus}
-          onDonePress={onBlur}
-          onClose={onBlur}
         />
       </View>
       {
-        hasValidation && (
-          <View style={styles.description}>
-            <View style={styles.info}>
-              {
-                !!error && (
-                  <ExclamationIcon
-                    size={12}
-                    color={errorColor}
-                  />
-                )
-              }
-              <Text
-                style={[
-                  labelStyle,
-                  !!error && {
-                    marginLeft: 10,
-                    color: errorColor
-                  }
-                ]}
-                size={12}
-              >
-                {error || description}
-              </Text>
-            </View>
+        hasValidation && (!!error || !!description) && (
+          <View>
+            <Text
+              style={[
+                styles?.validationText,
+                !!error && { color: text?.errorColor }
+              ]}
+            >
+              {error || description}
+            </Text>
           </View>
         )
       }
@@ -131,4 +82,4 @@ const DropDowneField = ({
   );
 };
 
-export default DropDowneField;
+export default DropDownField;

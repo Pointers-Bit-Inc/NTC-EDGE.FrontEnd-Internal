@@ -1,4 +1,3 @@
-
 const primaryColor = '#031A6E';
 const lightPrimaryColor = '#d3daf7';
 const secondaryColor = '#FFFFFF';
@@ -12,38 +11,26 @@ const warningColor = '#FFAE42';
 const disabledColor = '#D1D1D1';
 const infoColor = '#2F5BFA';
 const lightInfoColor = '#DBEAFE';
+
 const outline = {
   primary: '#031A6E',
   secondary: '#FFFFFF',
-  default: '#C4C4C4',
+  default: '#DADFE4',
   success: '#2C9669',
-  error: '#CE1026',
+  error: '#CA024F',
+  warning: '#FFAE42',
   disabled: '#D1D1D1',
 }
 
 const text = {
+  info: '#2F5BFA',
   primary: '#031A6E',
   secondary: '#FFFFFF',
-  default: '#3A404A',
-  success: '#2C9669',
-  error: '#CE1026',
-  disabled: '#D1D1D1',
-  info: '#2F5BFA',
-};
-
-const button = {
-  primary: '#031A6E',
-  secondary: '#FFFFFF',
-  default: '#C4C4C4',
-  success: '#2C9669',
-  error: '#CE1026',
-  info: '#2F5BFA',
-  disabled: '#D1D1D1',
-};
-
-const bubble = {
-  primary: '#031A6E',
-  secondary: '#E5E5E5',
+  default: '#565962',
+  success: '#34C759',
+  error: '#CA024F',
+  warning: '#FFAE42',
+  disabled: '#808197',
 };
 
 const input = {
@@ -62,19 +49,37 @@ const input = {
     success: lightSuccessColor,
   },
 };
+
+const button = {
+  primary: '#031A6E',
+  secondary: '#FFFFFF',
+  default: '#C4C4C4',
+  success: '#2C9669',
+  error: '#CA024F',
+  disabled: '#D1D1D1',
+  warning: '#FFAE42',
+  info: '#2F5BFA',
+};
+
+const bubble = {
+  primary: '#1F40AF',
+  secondary: '#E5E5E5',
+};
+
 export {
-  input,
-  infoColor,
-  lightPrimaryColor,
   primaryColor,
+  lightPrimaryColor,
   secondaryColor,
   defaultColor,
   successColor,
   errorColor,
   warningColor,
   disabledColor,
+  infoColor,
+  lightInfoColor,
   outline,
   text,
   button,
+  input,
   bubble,
 }

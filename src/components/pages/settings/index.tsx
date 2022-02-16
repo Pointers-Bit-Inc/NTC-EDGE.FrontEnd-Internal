@@ -86,8 +86,8 @@ export default ({
       <Alert
         visible={visible}
         title='Log out'
-        message='Do you wish to log out from this app?'
-        confirmText='Yes'
+        message='Are you sure you want to log out?'
+        confirmText='OK'
         cancelText='Cancel'
         onConfirm={onLogout}
         onCancel={() => setVisible(false)}
