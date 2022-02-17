@@ -30,6 +30,7 @@ export const requirementStyles = StyleSheet.create({
         paddingLeft : 12
     } ,
     cardTitle : {
+        paddingVertical: 10,
         flexDirection : 'row' ,
         justifyContent : "center" ,
 

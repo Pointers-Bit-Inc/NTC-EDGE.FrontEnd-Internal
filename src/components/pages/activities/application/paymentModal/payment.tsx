@@ -16,6 +16,7 @@ import {requirementStyles} from "@pages/activities/application/requirementModal/
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {Bold , Regular , Regular500} from "@styles/font";
 import RequirementModal from "@pages/activities/application/requirementModal";
+import _ from "lodash";
 const {width, height} = Dimensions.get("screen")
 const Payment = (props:any) => {
     const [visibleModal, setVisibleModal] = useState(false)
@@ -36,7 +37,9 @@ const Payment = (props:any) => {
         soa.map(s => total += s.amount);
         return total;
     }
-
+    function capitalize(str) {
+        return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)).join(' ');
+    }
     return <ScrollView style={{backgroundColor: "#fff", width: "100%", paddingTop: 10}}>
         <View style={[styles.container, {marginTop: 12}]}>
 
@@ -120,23 +123,26 @@ const Payment = (props:any) => {
                                 setVisibleModal(true)
                             }}  >
                             <View style={requirementStyles.cardLabel}>
-
+                                <Text style={requirementStyles.title}>Payment</Text>
                                 <View style={requirementStyles.cardTitle}>
+
                                     <View style={{alignItems: "center"}}>
-                                        <Text style={requirementStyles.title}>Payment</Text>
+
                                         <Text style={{fontFamily: Regular}}>Payment received for</Text>
                                         <Text style={{fontFamily: Regular}}>NTC-EDGE</Text>
                                         <Text style={{fontFamily: Regular}}>the amout of PHP {props?.totalFee}</Text>
+                                        {props?.paymentMethod && <View style={{paddingVertical: 10 }}>
+                                             <Text>
+                                                <Text style={{fontFamily: Bold}}>
+                                                     Payment method: {capitalize(props?.paymentMethod.replace("-", " "))}
+                                                 </Text>
+                                             </Text>
+                                         </View>}
 
-                                        <Text>
-                                            {props?.paymentMethod && <Text style={{fontFamily: Regular500}}>
-                                                Payment method: {props?.paymentMethod == "bank-transfer" && "Bank Transfer"}
-                                            </Text> }
-                                        </Text>
                                     </View>
 
                                 </View>
-                                {props?.proofOfPayment?.small && <View style={[{paddingTop: 30, paddingBottom: 9}, requirementStyles.cardDocument]}>
+                                {props?.proofOfPayment?.small && <View style={[{paddingTop: 5, paddingBottom: 9}, requirementStyles.cardDocument]}>
                                     <View style={{paddingRight: 10}}>
                                         <FileOutlineIcon/>
                                     </View>
