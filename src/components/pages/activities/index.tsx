@@ -215,6 +215,7 @@ export default function ActivitiesPage(props: any) {
         })
     }
     useEffect(() => {
+
         let isCurrent = true
         dispatch(setNotPinnedApplication([]))
         dispatch(setPinnedApplication([]))

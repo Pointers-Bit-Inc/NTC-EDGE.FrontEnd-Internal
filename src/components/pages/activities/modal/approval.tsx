@@ -289,13 +289,13 @@ const styles = StyleSheet.create({
         width : 94 ,
     } ,
     applicationApproved : {
+        fontFamily: Bold,
         color : "#121212" ,
         fontSize : 18 ,
-        marginTop : 10 ,
     } ,
     group2 : {
         width : '100%' ,
-        marginTop : 5 ,
+        marginTop : 10 ,
     } ,
     confirm : {
         color : "rgba(255,255,255,1)" ,

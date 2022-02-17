@@ -87,7 +87,7 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         requiredColor={text.error}
         error={form?.email?.error}
         value={form?.email?.value}
-        keyboardType={'email-address'}
+        //keyboardType={'email-address'}
         onChangeText={(value: string) => onChangeValue('email', value)}
         onSubmitEditing={(event:any) => onChangeValue('email', event.nativeEvent.text)}
       />

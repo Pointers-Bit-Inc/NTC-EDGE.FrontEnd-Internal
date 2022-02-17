@@ -91,38 +91,6 @@ function Disapproval(props: any) {
 
                 }} show={showAlert} title={title}
                 message={message}/>
-            {/*<AwesomeAlert
-                   actionContainerStyle={alertStyle.actionContainerStyle}
-                   overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
-                   titleStyle={alertStyle.titleStyle}
-                   contentContainerStyle={alertStyle.contentContainerStyle}
-                   confirmButtonTextStyle={alertStyle.confirmButtonTextStyle}
-                   cancelButtonColor="#fff"
-                   cancelButtonTextStyle={alertStyle.cancelButtonTextStyle}
-                   cancelText="Cancel"
-                   confirmText="Yes"
-                   confirmButtonColor="#fff"
-                   show={showAlert}
-                   showProgress={false}
-                   title="Confirm?"
-                   message={`Are you sure you want to reject this application?`}
-                   messageStyle={{ textAlign: 'center' }}
-                   closeOnTouchOutside={true}
-                   closeOnHardwareBackPress={false}
-                   showCancelButton={true}
-                   showConfirmButton={true}
-                   onCancelPressed={() => {
-                       setShowAlert(false)
-                   }}
-                   onConfirmPressed={() => {
-                       setShowAlert(false)
-                       props.onChangeApplicationStatus(DECLINED, (bool, callback: (bool) =>{}) =>{
-
-                               props.onDismissed()
-                               callback(true)
-                       })
-                   }}
-               />*/}
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -130,7 +98,7 @@ function Disapproval(props: any) {
             >
                
                 <View style={styles.rectFiller}></View>
-                <View style={styles.rect}>
+                <View style={[styles.rect, !showAlert ||  {display: "none"}]}>
                     <View style={{padding: 10}}>
                         <TouchableOpacity onPress={() => {
                             props.onDismissed()
@@ -164,7 +132,7 @@ function Disapproval(props: any) {
                             clearable={false}
                             outlineStyle={{
                               //  borderColor: "rgba(202,210,225,1)",
-                               // paddingTop: 5,
+                               paddingTop: 5,
                                 height: (height < 720 && isKeyboardVisible) ? 100 : height * 0.25
                             }}
                             placeholder={'Remarks'}
