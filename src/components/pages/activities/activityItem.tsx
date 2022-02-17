@@ -16,7 +16,7 @@ import {
 import {
     ACCOUNTANT ,
     APPROVED ,
-    CASHIER ,
+    CASHIER , DECLINED ,
     DIRECTOR ,
     EVALUATOR ,
     FORAPPROVAL ,
@@ -180,10 +180,13 @@ const closeRow = (index)=>{
 export function ActivityItem(props:any) {
     const  status =  [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) :  StatusText(props?.activity?.status)
     const userActivity = props?.activity?.applicant?.user
-    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) &&  status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status!==FOREVALUATION? APPROVED : getRole(props.currentUser, [ACCOUNTANT]) && !!props?.activity?.paymentMethod && props?.activity?.paymentHistory?.[0]?.action == FORVERIFICATION ? FORVERIFICATION  :  status
+    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) &&  status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status!==FOREVALUATION? APPROVED : getRole(props.currentUser, [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!props?.activity?.paymentHistory?.[0]?.status?  StatusText(props?.activity?.paymentHistory?.[0]?.status)  : getRole(props.currentUser, [ACCOUNTANT]) && props?.activity?.approvalHistory[0].status == FOREVALUATION &&  props?.activity?.approvalHistory[1].status == FORAPPROVAL ? DECLINED :  status
 
     useEffect(()=>{
-        if(props.isOpen == props.index)  row[props.index].close()
+        if(props.isOpen == props.index && row )  row[props?.index].close()
+        return () =>{
+            row = []
+        }
     }, [props.isOpen == props.index])
     return (
             <View style={{backgroundColor: "#fff"}}>

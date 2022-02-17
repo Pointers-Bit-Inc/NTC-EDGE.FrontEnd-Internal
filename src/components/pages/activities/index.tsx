@@ -483,9 +483,9 @@ export default function ActivitiesPage(props: any) {
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
                     ListHeaderComponent={() => (
                         <>
-                            { !searchVisible && pnApplications?.length > 0 &&
+                            { !searchVisible && !!pnApplications?.length &&
                             <View style={ { paddingBottom : 10 , backgroundColor : "#fff" } }>
-                                { pnApplications?.length > 0 &&
+                                { !!pnApplications?.length  &&
                                 <View style={ [styles.pinnedgroup , { height : undefined }] }>
                                     <View style={ [styles.pinnedcontainer , { paddingVertical : 10 }] }>
                                         <Text style={ [styles.pinnedActivity , { fontFamily : Bold , }] }>Pinned
@@ -519,7 +519,8 @@ export default function ActivitiesPage(props: any) {
                                                                 setModalVisible(true)
                                                             }
 
-                                                        } } index={ `${ i }${ index }` } swiper={ renderSwiper }/>
+                                                        } } index={ `${ i }${ index }` }
+                                                        swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, act, unReadReadApplicationFn)}/>
                                                 })
                                             })
                                         }
