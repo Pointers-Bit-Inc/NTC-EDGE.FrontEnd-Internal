@@ -76,11 +76,14 @@ function ActivityModal(props: any) {
         }
 
         if (user?.role?.key == ACCOUNTANT) {
-            const assignUserId = status == DECLINED && props?.details.approvalHistory[0].status == FORAPPROVAL && props?.details.approvalHistory[0].userId == user._id ;
-            assignUserId ? setAssignId(props?.details.approvalHistory[0].userId) : (assignId ? assignId : undefined);
+            const assignUserId = status == DECLINED && props?.details.approvalHistory[0].status == FORAPPROVAL && props?.details.approvalHistory[0].userId != user._id;
+            assignUserId ? setAssignId(props?.details.approvalHistory[0].userId) : (
+                assignId ? assignId : undefined);
             params = {
-                status : (assignUserId) ? FOREVALUATION : status ,
-                assignedPersonnel : assignUserId ? props?.details.approvalHistory[0].userId : (assignId ? assignId : undefined) ,
+                status : (
+                             assignUserId) ? FOREVALUATION : status ,
+                assignedPersonnel : assignUserId ? props?.details.approvalHistory[0].userId : (
+                    assignId ? assignId : undefined) ,
                 addDocumentaryStamp : true ,
                 remarks : remarks ? remarks : undefined ,
             };
