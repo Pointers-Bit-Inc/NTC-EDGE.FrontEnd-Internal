@@ -175,6 +175,7 @@ const UserProfileScreen = ({navigation}: any) => {
             value: user?.role?.name || '',
             error: false,
             editable: false,
+            disabledColor: text.disabled,
         },
         {
             stateName: 'firstName',

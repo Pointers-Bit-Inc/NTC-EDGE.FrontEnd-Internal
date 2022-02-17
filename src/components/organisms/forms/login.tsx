@@ -75,9 +75,8 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
   return (
     <View style={styles.container}>
       <InputField
-
         inputStyle={InputStyles.text}
-        label={'Email'}
+        label={'Email address'}
         placeholder="Email address"
         required={true}
         hasValidation={true}
@@ -93,7 +92,7 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
       />
 
       <PasswordField
-        inputStyle={[InputStyles.text, { flex: 1 }]}
+        inputStyle={InputStyles.text}
         label={'Password'}
         placeholder="Password"
         textContentType="oneTimeCode"
