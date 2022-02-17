@@ -22,6 +22,7 @@ import ActivityModal from "@pages/activities/modal";
 import Loader from "@pages/activities/bottomLoad";
 import useCountUp from "@pages/activities/hooks/useCountUp";
 import {Regular500} from "@styles/font";
+import InputField from "@molecules/form-fields/input-field";
 
 const {height} = Dimensions.get('screen');
 
@@ -77,33 +78,15 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                         </TouchableOpacity>
 
                         <View style={styles.group}>
-                            <View style={styles.rect2Stack}>
-                                <View style={[styles.group3, styles.rect2]}>
-                                    <View style={styles.textInputStack}>
-                                       <View style={{position: "absolute", width: "100%"}}>
-                                           <TextInput
-                                               ref={inputRef}
-                                               value={props.value}
-                                               onEndEditing={props.onEndEditing}
-                                               onChange={props.onChange}
-                                               onChangeText={props.onChangeText}
-                                               placeholder="Search"
-                                               style={styles.textInput}
-                                           ></TextInput>
-                                       </View>
+                            <InputField  ref={inputRef}
+                                         value={props.value}
+                                         onEndEditing={props.onEndEditing}
+                                         onChange={props.onChange}
+                                         onChangeText={props.onChangeText}
+                                         placeholder="Search"/>
 
-                                        {props.value.length ?
-                                            <TouchableOpacity onPress={props.onPress1
-                                            }>
-                                                <CloseCircleIcon
-                                                    style={styles.icon2}
-                                                />
-                                            </TouchableOpacity> : <></>}
-
-                                    </View>
-                                </View>
-                            </View>
                         </View>
+
                     </View>
                 </View>
             </View>
@@ -181,7 +164,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                                     role={user?.role?.key}
                                                     activity={activity}
                                                     currentUser={user}
-                                                    
+
                                                     onPressUser={(event: any) => {
                                                         setIsOpen(undefined)
                                                         setDetails({...activity, isOpen:`${index}${i}`})

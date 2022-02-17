@@ -58,13 +58,9 @@ export const styles = StyleSheet.create({
 
     },
     group3: {
-        top: 0,
-        left: 0,
-        position: "absolute",
-        right: 0,
-        bottom: 0
     },
     textInput: {
+       flex: 1,
         borderWidth: 2,
         borderRadius: 12,
         borderColor: "#041B6E",
@@ -72,19 +68,16 @@ export const styles = StyleSheet.create({
         paddingVertical: 12,
         color: "#121212",
         fontSize: 14,
-        right: 0,
         textAlign: "left"
     },
     icon2: {
         alignSelf: "flex-end",
-       top: "45%",
-        right: "5%",
+         position: "absolute",
         color: "rgba(128,128,128,1)",
         fontSize: 25,
     },
     textInputStack: {
-
-
+         flexDirection: "row"
     },
     rect2Stack: {
         flex: 1  ,

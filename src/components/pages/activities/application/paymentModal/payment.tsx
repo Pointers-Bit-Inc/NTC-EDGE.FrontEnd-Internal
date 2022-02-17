@@ -14,9 +14,9 @@ import Text from "@atoms/text";
 import {styles} from "@pages/activities/application/paymentModal/styles"
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles"
 import FileOutlineIcon from "@assets/svg/fileOutline";
-import {Bold} from "@styles/font";
+import {Bold , Regular , Regular500} from "@styles/font";
 import RequirementModal from "@pages/activities/application/requirementModal";
-const {width, height} = Dimensions.get("screen") 
+const {width, height} = Dimensions.get("screen")
 const Payment = (props:any) => {
     const [visibleModal, setVisibleModal] = useState(false)
     const [visibleRequireModal, setVisibleRequireModal] = useState(false)
@@ -39,7 +39,7 @@ const Payment = (props:any) => {
 
     return <ScrollView style={{backgroundColor: "#fff", width: "100%", paddingTop: 10}}>
         <View style={[styles.container, {marginTop: 12}]}>
-            
+
             <View style={{  padding: 5, alignItems: 'center' }}>
                 <Text
                   style={{fontFamily: Bold} }
@@ -122,15 +122,19 @@ const Payment = (props:any) => {
                             <View style={requirementStyles.cardLabel}>
 
                                 <View style={requirementStyles.cardTitle}>
+                                    <View style={{alignItems: "center"}}>
+                                        <Text style={requirementStyles.title}>Payment</Text>
+                                        <Text style={{fontFamily: Regular}}>Payment received for</Text>
+                                        <Text style={{fontFamily: Regular}}>NTC-EDGE</Text>
+                                        <Text style={{fontFamily: Regular}}>the amout of PHP {props?.totalFee}</Text>
 
-                                    <Text style={requirementStyles.title}>Payment</Text>
-                                        <Text style={styles.paymentReceivedFor}>Payment received for</Text>
-                                        <Text style={styles.ntcEdge}>NTC-EDGE</Text>
-                                        <Text style={styles.theAmoutOf}>the amout of PHP {props?.totalFee}</Text>
-                                   
-                                    <Text style={requirementStyles.description}>
-                                        {props?.paymentMethod && <Text style={styles.php5000}>Payment method: {props?.paymentMethod == "bank-transfer" && "Bank Transfer"}</Text> }
-                                    </Text>
+                                        <Text>
+                                            {props?.paymentMethod && <Text style={{fontFamily: Regular500}}>
+                                                Payment method: {props?.paymentMethod == "bank-transfer" && "Bank Transfer"}
+                                            </Text> }
+                                        </Text>
+                                    </View>
+
                                 </View>
                                 {props?.proofOfPayment?.small && <View style={[{paddingTop: 30, paddingBottom: 9}, requirementStyles.cardDocument]}>
                                     <View style={{paddingRight: 10}}>
@@ -153,7 +157,7 @@ const Payment = (props:any) => {
                                     setVisibleRequireModal(true)
                                 }
                                 }>
-                                
+
                                     <Image
                                         style={{height: 216}}
                                         source={{

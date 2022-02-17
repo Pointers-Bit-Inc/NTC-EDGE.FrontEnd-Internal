@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     },
     loremIpsum: {
         color: "#121212",
-        marginTop: 25
+
     },
     group2: {
         width: '100%',
