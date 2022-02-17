@@ -222,9 +222,9 @@ export const unreadReadApplication = ({unReadBtn, dateRead, id, config, dispatch
 export const getRole = (user , arr) => arr.indexOf(user?.role?.key) != -1;
 
 
-export const excludeStatus = (props: any , personnel: UserApplication) => getStatus(props , personnel) == FORVERIFICATION ||
-    getStatus(props , personnel) == FORAPPROVAL ||
-    getStatus(props , personnel) == FOREVALUATION;
+export const excludeStatus = (props: any , personnel: UserApplication) => getStatusText(props , personnel) == FORVERIFICATION ||
+    getStatusText(props , personnel) == FORAPPROVAL ||
+    getStatusText(props , personnel) == FOREVALUATION;
 
 export function getStatusText(props: any , personnel: UserApplication | undefined) {
     return getRole(props.user , [EVALUATOR , DIRECTOR]) && getStatus(props , personnel) == FORAPPROVAL && !!props?.approvalHistory?.[0]?.userId && props?.approvalHistory?.[0]?.status!==FOREVALUATION  ? StatusText(APPROVED) : getRole(props.user, [ACCOUNTANT]) && !!props.paymentMethod && !!props.paymentHistory?.[0]?.status ? StatusText(props.paymentHistory?.[0]?.status) :  getStatus(props , personnel);
