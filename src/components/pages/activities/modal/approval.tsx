@@ -29,7 +29,7 @@ const { width , height } = Dimensions.get('window');
 
 const Approval = (props: any) => {
 
-    const { springValue , _springHide } = useAlert(props.visible , () => {
+    const { springValue , _springHide ,_springCollapse } = useAlert(props.visible , () => {
         setOnFocus(false)
         return props.onDismissed(APPROVED);
     });
@@ -223,7 +223,7 @@ const Approval = (props: any) => {
                                 outlineStyle={ {
                                     borderColor : "rgba(202,210,225,1)" ,
                                     paddingTop : 5 ,
-                                    height : (height < 720 && isKeyboardVisible) ? 45 : height * 0.15
+                                    height : (height < 720 && isKeyboardVisible) ? 70 : height * 0.15
                                 } }
                                 placeholder={ 'Remarks' }
                                 multiline={ true }

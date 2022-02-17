@@ -6,7 +6,6 @@ import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
 import {
     formatDate ,
-    statusBackgroundColor ,
     statusColor ,
     statusIcon ,
     PaymentStatusText , StatusText , getRole
