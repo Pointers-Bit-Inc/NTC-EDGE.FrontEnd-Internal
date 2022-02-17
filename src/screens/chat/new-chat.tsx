@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
 import lodash from 'lodash';
-import { setSelectedChannel, addToChannelList } from 'src/reducers/channel/actions';
+import { setSelectedChannel, addToChannelList, addChannel } from 'src/reducers/channel/actions';
 import { outline, button, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
@@ -164,7 +164,8 @@ const NewChat = ({ navigation }:any) => {
       setNextLoading(false);
       if (res) {
         dispatch(setSelectedChannel(res));
-        dispatch(addToChannelList([res]));
+        console.log('RESULT', res);
+        dispatch(addChannel(res));
         navigation.replace('ViewChat', res);
       }
       if (err) {

@@ -91,9 +91,11 @@ const Meet = ({ navigation }) => {
   useRequestCameraAndAudioPermission();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const meetingList = useSelector((state:RootStateOrAny) => {
-    const { list } = state.meeting;
-    const sortedMeeting = lodash.orderBy(list, 'updatedAt', 'desc');
-    return sortedMeeting;
+    const { normalizedMeetingList } = state.meeting
+    const meetingList = lodash.keys(normalizedMeetingList).map(m => {
+      return normalizedMeetingList[m];
+    });
+    return lodash.orderBy(meetingList, 'updatedAt', 'desc');
   });
   const {
     getMeetingList,

@@ -106,6 +106,7 @@ const ChatList: FC<Props> = ({
               deleted={item.deleted}
               unSend={item.unSend}
               edited={item.edited}
+              system={item.system}
             />
           ) : (
             <ChatBubble
@@ -123,6 +124,7 @@ const ChatList: FC<Props> = ({
               deleted={item.deleted}
               unSend={item.unSend}
               edited={item.edited}
+              system={item.system}
             />
           )
         }

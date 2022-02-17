@@ -24,10 +24,10 @@ const initialState = new InitialState();
 export default function basket(state = initialState, action = {}) {
   switch (action.type) {
     case SET_MEETINGS: {
-      return state.setIn(['list'], action.payload);
+      return state.setIn(['normalizedMeetingList'], action.payload);
     }
     case ADD_TO_MEETINGS: {
-      return state.setIn(['list'], [...state.list, ...action.payload]);
+      return state.setIn(['normalizedMeetingList'], {...state.list, ...action.payload});
     }
     case ADD_MEETING: {
       const list = lodash.clone(state.list);

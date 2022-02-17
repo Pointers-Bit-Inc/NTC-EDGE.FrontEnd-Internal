@@ -55,6 +55,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "native": "^0.3.3",
+    "normalizr": "^3.6.1",
     "permissions": "^0.1.0",
     "prettier": "^2.4.1",
     "react": "^17.0.2",

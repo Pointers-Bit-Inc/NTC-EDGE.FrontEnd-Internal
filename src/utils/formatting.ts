@@ -6,12 +6,15 @@ const getInitial = (value:any) => {
 }
 
 const getChannelName = (channel:any) => {
-  if (!channel.isGroup && !channel.hasRoomName) {
+  if (!channel.isGroup) {
     const result = channel.otherParticipants;
     if (result && result[0]) {
       const data = result[0];
       return `${data.firstName}`;
     }
+  }
+  if (!channel.hasRoomName) {
+    return channel?.otherParticipants?.map(p => p.firstName)?.toString();
   }
   return channel.name;
 }

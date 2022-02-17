@@ -77,9 +77,11 @@ const List = () => {
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const messages = useSelector((state:RootStateOrAny) => {
-    const { messages } = state.channel;
-    const sortedMessages = lodash.orderBy(messages, 'createdAt', 'desc');
-    return sortedMessages;
+    const { normalizedMessages } = state.channel;
+    const messagesList = lodash.keys(normalizedMessages).map(m => {
+      return normalizedMessages[m];
+    });
+    return lodash.orderBy(messagesList, 'createdAt', 'desc');
   });
   const { _id, isGroup, lastMessage, otherParticipants } = useSelector(
     (state:RootStateOrAny) => state.channel.selectedChannel
@@ -128,7 +130,6 @@ const List = () => {
     getMessages(channelId, 1, (err, res) => {
       setLoading(false);
       if (res) {
-        console.log(res.list)
         dispatch(setMessages(res.list));
         setPageIndex(current => current + 1);
         setHasMore(res.hasMore);

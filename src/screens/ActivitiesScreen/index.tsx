@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import { StackActions } from '@react-navigation/native';
 import ActivitiesPage from "@pages/activities/tabbar";
 import {createDrawerNavigator} from "@react-navigation/drawer";
@@ -13,11 +13,11 @@ import {button} from "@styles/color";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {resetUser} from "../../reducers/user/actions";
 import { resetMeeting } from 'src/reducers/meeting/actions';
-import { resetChannel } from 'src/reducers/channel/actions';
+import { resetChannel, addMessages, updateMessages, addChannel, removeChannel } from 'src/reducers/channel/actions';
 import Api from 'src/services/api';
 import UserProfileScreen from "@screens/HomeScreen/UserProfile";
+import useSignalr from 'src/hooks/useSignalr';
 const Drawer = createDrawerNavigator();
-
 
 const ActivitiesScreen = (props:any) => {
     const dispatch = useDispatch();
@@ -25,6 +25,11 @@ const ActivitiesScreen = (props:any) => {
     const onHide = () => setShowAlert(false)
     const onShow = () => setShowAlert(true);
     const [showAlert, setShowAlert] = useState(false);
+    const {
+        initSignalR,
+        destroySignalR,
+        onConnection,
+      } = useSignalr();
     const onLogout = useCallback(() => {
         const api = Api(user.sessionToken);
         onHide();
@@ -38,6 +43,33 @@ const ActivitiesScreen = (props:any) => {
             });
         }, 500);
     }, []);
+
+    useEffect(() => {
+        initSignalR();
+    
+        onConnection('OnChatUpdate', (users, type, data) => {
+          switch(type) {
+            case 'create': dispatch(addMessages(data));
+            case 'update': dispatch(updateMessages(data));
+          }
+        });
+
+        onConnection('OnRoomUpdate', (users, type, data) => {
+            switch(type) {
+              case 'create':
+                console.log('CREATE ROOM', data);
+                dispatch(addChannel(data));
+                return;
+              case 'delete': dispatch(removeChannel(data));
+            }
+            if (type === 'create') {
+              
+            }
+          });
+    
+        return () => destroySignalR();
+      }, []);
+
     return <>
         <Drawer.Navigator
             screenOptions={{

@@ -147,7 +147,10 @@ const ChatList = ({ navigation }:any) => {
   const dispatch = useDispatch();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const channelList = useSelector((state:RootStateOrAny) => {
-    const { channelList } = state.channel
+    const { normalizedChannelList } = state.channel
+    const channelList = lodash.keys(normalizedChannelList).map(ch => {
+      return normalizedChannelList[ch];
+    });
     return lodash.orderBy(channelList, 'updatedAt', 'desc');
   });
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
@@ -167,7 +170,6 @@ const ChatList = ({ navigation }:any) => {
   const [hasError, setHasError] = useState(false);
 
   const onRequestData = () => setSendRequest(request => request + 1);
-
   const fetchMoreChat = (isPressed = false) => {
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);

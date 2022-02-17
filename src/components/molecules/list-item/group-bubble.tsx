@@ -74,6 +74,7 @@ interface Props {
   deleted?: boolean;
   unSend?: boolean;
   edited?: boolean;
+  system?: boolean;
   [x: string]: any;
 }
 
@@ -93,6 +94,7 @@ const ChatBubble:FC<Props> = ({
   deleted = false,
   unSend = false,
   edited = false,
+  system = false,
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -108,7 +110,7 @@ const ChatBubble:FC<Props> = ({
   return (
     <>
       {
-        (showDetails || showDate) && (
+        (showDetails || showDate || system) && (
           <View style={styles.seenTimeContainer}>
             <Text
               color={text.default}
@@ -121,7 +123,7 @@ const ChatBubble:FC<Props> = ({
       }
       <TouchableOpacity
         onPress={() => setShowDetails(!showDetails)}
-        onLongPress={(isSender && !(deleted || unSend)) ? onLongPress : null}
+        onLongPress={(isSender && !(deleted || unSend || system)) ? onLongPress : null}
         {...otherProps}
       >
         <View style={[styles.container, { maxWidth }, style]}>
@@ -162,7 +164,7 @@ const ChatBubble:FC<Props> = ({
               {
                 backgroundColor: isSender ? bubble.primary : bubble.secondary
               },
-              (deleted || (unSend && isSender)) && {
+              (deleted || (unSend && isSender) || system) && {
                 backgroundColor: '#E5E5E5'
               },
             ]}>
@@ -188,7 +190,7 @@ const ChatBubble:FC<Props> = ({
                 ) : (
                   <Text
                     size={14}
-                    color={isSender ? 'white' : text.default}
+                    color={(isSender && !system) ? 'white' : text.default}
                   >
                     {message}
                   </Text>

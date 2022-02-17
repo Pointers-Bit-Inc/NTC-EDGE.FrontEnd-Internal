@@ -3,10 +3,13 @@ import { HubConnectionBuilder, HubConnection, LogLevel, HttpTransportType } from
 import { useSelector, RootStateOrAny } from "react-redux";
 import { BASE_URL } from 'src/services/config';
 import useApi from 'src/services/api';
+import { normalize, schema } from 'normalizr';
+import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
 
 const useSignalr = () => {
   const user = useSelector((state:RootStateOrAny) => state.user);
   const [isConnected, setIsConnected] = useState(false);
+  const [isReconnecting, setIsReconnecting] = useState(false);
   const signalr = useRef<HubConnection|null>(null);
   const api = useApi(user.token);
 
@@ -19,17 +22,25 @@ const useSignalr = () => {
         .withAutomaticReconnect()
         .configureLogging(LogLevel.Debug)
         .build();
-    await signalr.current.start();
-    if (signalr.current.state === 'Connected') {
+    signalr.current.onclose(() => setIsConnected(false));
+    signalr.current.onreconnected(() => {
       setIsConnected(true);
-    }
+      setIsReconnecting(false);
+    });
+    signalr.current.onreconnecting(() => {
+      setIsReconnecting(true);
+    });
+    signalr.current.start().then(() => setIsConnected(true));
   }, []);
-
   const destroySignalR = useCallback(() => {
     if (isConnected) {
       signalr.current?.stop();
     }
   }, [isConnected]);
+
+  const onConnection = useCallback((connection, callback = () => {}) =>
+    signalr.current?.on(connection, callback),
+  []);
 
   const createChannel = useCallback((participants, callback = () => {}) => {
     api.post('/room', {
@@ -56,7 +67,9 @@ const useSignalr = () => {
   const getChatList = useCallback((url, callback = () => {}) => {
     api.get(url)
     .then(res => {
-      return callback(null, res.data);
+      const { hasMore = false, list = [] } = res.data;
+      const normalized = normalize(list, new schema.Array(roomSchema));
+      return callback(null, { hasMore, list: normalized?.entities?.rooms });
     })
     .catch(err => {
       return callback(err);
@@ -116,7 +129,9 @@ const useSignalr = () => {
   const getMessages = useCallback((channelId, pageIndex, callback = () => {}) => {
     api.get(`/message/list?roomId=${channelId}&pageIndex=${pageIndex}`)
     .then(res => {
-      return callback(null, res.data);
+      const { hasMore = false, list = [] } = res.data;
+      const normalized = normalize(list, new schema.Array(messageSchema));
+      return callback(null, { hasMore, list: normalized?.entities?.messages });
     })
     .catch(err => {
       return callback(err);
@@ -124,10 +139,8 @@ const useSignalr = () => {
   }, []);
 
   const createMeeting = useCallback((payload, callback = () => {}) => {
-    console.log('PAYLOAD MEETING', payload);
     api.post('/meeting', payload)
     .then(res => {
-      console.log('RESULT MEETING', res.data);
       return callback(null, res.data);
     })
     .catch(err => {
@@ -138,7 +151,9 @@ const useSignalr = () => {
   const getMeetingList = useCallback((url, callback = () => {}) => {
     api.get(url)
     .then(res => {
-      return callback(null, res.data);
+      const { hasMore = false, list = [] } = res.data;
+      const normalized = normalize(list, new schema.Array(meetingSchema));
+      return callback(null, { hasMore, list: normalized?.entities?.meetings });
     })
     .catch(err => {
       return callback(err);
@@ -147,8 +162,10 @@ const useSignalr = () => {
   
   return {
     isConnected,
+    isReconnecting,
     initSignalR,
     destroySignalR,
+    onConnection,
     createChannel,
     leaveChannel,
     getChatList,
