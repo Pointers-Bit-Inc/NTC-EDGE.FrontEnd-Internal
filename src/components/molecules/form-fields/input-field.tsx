@@ -6,7 +6,7 @@ import React, {
     ForwardRefRenderFunction,
 } from 'react';
 import {View , StyleSheet , TouchableOpacity} from 'react-native';
-import { ExclamationIcon } from '@atoms/icon';
+import { RFValue } from 'react-native-responsive-fontsize';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
 import {defaultColor , primaryColor} from '@styles/color';
@@ -117,7 +117,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                     borderColor: input.text?.errorColor,
                 },
                 !error && isFocused && {
-                    backgroundColor: input.background?.default,
+                    backgroundColor: '#fff', //input.background?.default,
                     borderColor: primaryColor,
                 },
                 containerStyle,
@@ -128,11 +128,11 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                             <Text
                                 style={[
                                     inputStyles.labelText,
-                                    (isFocused || !!otherProps.value || !!error) && {
-                                        color: isFocused ? activeColor : "#808196"
-                                    },
+                                    // (isFocused || !!otherProps.value || !!error) && {
+                                    //     color: isFocused ? activeColor : "#808196"
+                                    // },
 
-                                    !editable && {color: disabledColor}
+                                    // !editable && {color: disabledColor}
                                 ]}
                             >
                                 {label}
@@ -172,7 +172,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                 {
                     (clearable && isFocused && !!editable && !!otherProps.value) &&
                     <TouchableOpacity onPress={() => otherProps?.onChangeText ? otherProps?.onChangeText('') : {}}>
-                        <CloseIcon size={20} color={error ? input.text.errorColor : input.text.mainColor}/>
+                        <CloseIcon height={RFValue(10)} width={RFValue(10)} color={error ? input.text.errorColor : input.text.mainColor}/>
                     </TouchableOpacity>
                 }
             </View>
