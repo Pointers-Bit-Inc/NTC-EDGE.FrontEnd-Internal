@@ -30,14 +30,10 @@ export default function basket(state = initialState, action = {}) {
       return state.setIn(['normalizedMeetingList'], {...state.list, ...action.payload});
     }
     case ADD_MEETING: {
-      const list = lodash.clone(state.list);
-      list.push(action.payload);
-      return state.setIn(['list'], list);
+      return state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
     }
     case UPDATE_MEETING: {
-      const updatedList = lodash.reject(state.list, l => l._id === action.payload._id);
-      updatedList.push(action.payload);
-      return state.setIn(['list'], updatedList);
+      return state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
     }
     case REMOVE_MEETING: {
       const updatedList = lodash.reject(state.list, l => l._id === action.payload);

@@ -84,7 +84,11 @@ const List = () => {
     return lodash.orderBy(messagesList, 'createdAt', 'desc');
   });
   const { _id, isGroup, lastMessage, otherParticipants } = useSelector(
-    (state:RootStateOrAny) => state.channel.selectedChannel
+    (state:RootStateOrAny) => {
+      const { selectedChannel } = state.channel;
+      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
+      return selectedChannel;
+    }
   );
   const channelId = _id;
   const [loading, setLoading] = useState(false);
@@ -101,6 +105,7 @@ const List = () => {
     getMessages,
     unSendMessage,
     deleteMessage,
+    seenMessage,
   } = useSignalr();
 
   const fetchMoreMessages = (isPressed = false) => {
@@ -140,6 +145,16 @@ const List = () => {
       }
     })
   }, [])
+
+  // useEffect(() => {
+  //   const lastMessage = lodash.first(messages);
+  //   if (lastMessage?._id) {
+  //     const hasSeen = lodash.find(lastMessage.seen, s => s._id === user._id)
+  //     if (lastMessage?.sender?._id !== user._id && !hasSeen) {
+  //       seenMessage(lastMessage._id);
+  //     }
+  //   }
+  // }, [messages]);
 
   const showOption = (item) => {
     setMessage(item);

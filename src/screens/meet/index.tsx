@@ -93,7 +93,11 @@ const Meet = ({ navigation }) => {
   const meetingList = useSelector((state:RootStateOrAny) => {
     const { normalizedMeetingList } = state.meeting
     const meetingList = lodash.keys(normalizedMeetingList).map(m => {
-      return normalizedMeetingList[m];
+      const meeting = normalizedMeetingList[m];
+      const { room } = meeting;
+      meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
+      room.otherParticipants =  meeting.otherParticipants;
+      return meeting;
     });
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
   });
@@ -109,8 +113,7 @@ const Meet = ({ navigation }) => {
 
   const onJoin = (item) => {
     dispatch(setSelectedChannel(item.room));
-    dispatch(setMeetingId(item._id));
-    dispatch(setMeeting({}));
+    dispatch(setMeeting(item));
     navigation.navigate('Dial', {
       isHost: item.host._id === user._id,
       isVoiceCall: item.isVoiceCall,
@@ -152,7 +155,6 @@ const Meet = ({ navigation }) => {
     getMeetingList(url, (err:any, res:any) => {
       if (!unMount) {
         if (res) {
-          console.log('RESULT', res.list);
           dispatch(setMeetings(res.list));
           setPageIndex(current => current + 1);
           setHasMore(res.hasMore);

@@ -163,8 +163,8 @@ const NewChat = ({ navigation }:any) => {
     createChannel(participants, (err:any, res:any) => {
       setNextLoading(false);
       if (res) {
+        res.otherParticipants = lodash.reject(res.participants, p => p._id === user._id);
         dispatch(setSelectedChannel(res));
-        console.log('RESULT', res);
         dispatch(addChannel(res));
         navigation.replace('ViewChat', res);
       }

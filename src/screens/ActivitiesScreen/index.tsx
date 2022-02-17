@@ -12,11 +12,12 @@ import styles from "@screens/HomeScreen/DrawerNavigation/styles";
 import {button} from "@styles/color";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {resetUser} from "../../reducers/user/actions";
-import { resetMeeting } from 'src/reducers/meeting/actions';
+import { resetMeeting, addMeeting, updateMeeting } from 'src/reducers/meeting/actions';
 import { resetChannel, addMessages, updateMessages, addChannel, removeChannel } from 'src/reducers/channel/actions';
 import Api from 'src/services/api';
 import UserProfileScreen from "@screens/HomeScreen/UserProfile";
 import useSignalr from 'src/hooks/useSignalr';
+import lodash from 'lodash';
 const Drawer = createDrawerNavigator();
 
 const ActivitiesScreen = (props:any) => {
@@ -49,23 +50,32 @@ const ActivitiesScreen = (props:any) => {
     
         onConnection('OnChatUpdate', (users, type, data) => {
           switch(type) {
-            case 'create': dispatch(addMessages(data));
-            case 'update': dispatch(updateMessages(data));
+            case 'create': dispatch(addMessages(data)); break;
+            case 'update': dispatch(updateMessages(data)); break;
           }
         });
 
         onConnection('OnRoomUpdate', (users, type, data) => {
             switch(type) {
-              case 'create':
-                console.log('CREATE ROOM', data);
-                dispatch(addChannel(data));
-                return;
-              case 'delete': dispatch(removeChannel(data));
-            }
-            if (type === 'create') {
-              
+              case 'create': dispatch(addChannel(data)); break;
+              case 'delete': dispatch(removeChannel(data._id)); break;
             }
           });
+
+        onConnection('OnMeetingUpdate', (users, type, data) => {
+          switch(type) {
+            case 'create': {
+              const { room } = data;
+              dispatch(addChannel(room));
+              dispatch(addMeeting(data));
+              break;
+            };
+            case 'update': {
+              dispatch(updateMeeting(data));
+              break;
+            }
+          }
+        });
     
         return () => destroySignalR();
       }, []);

@@ -66,9 +66,9 @@ const ChatList: FC<Props> = ({
 
   const renderItem = ({ item, index }:any) => {
     const isSender = item.sender._id === user._id;
-    const isSameDate = chatSameDate(messages[index + 1]?.createdAt?.seconds, item.createdAt?.seconds);
+    const isSameDate = chatSameDate(messages[index + 1]?.createdAt, item.createdAt);
     const latestSeen = messages && messages[index - 1] ? messages[index - 1].seen : [];
-    const latestSeenSize = lodash.size(latestSeen) - 1;
+    const latestSeenSize = lodash.size(latestSeen);
     let seenByOthers = lodash.reject(
       item.seen,
       (seen:any) =>

@@ -149,7 +149,9 @@ const ChatList = ({ navigation }:any) => {
   const channelList = useSelector((state:RootStateOrAny) => {
     const { normalizedChannelList } = state.channel
     const channelList = lodash.keys(normalizedChannelList).map(ch => {
-      return normalizedChannelList[ch];
+      const channel = normalizedChannelList[ch];
+      channel.otherParticipants = lodash.reject(channel.participants, p => p._id === user._id);
+      return channel;
     });
     return lodash.orderBy(channelList, 'updatedAt', 'desc');
   });

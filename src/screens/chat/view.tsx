@@ -125,7 +125,11 @@ const ChatView = ({ navigation, route }:any) => {
   const layout = useWindowDimensions();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { _id, otherParticipants, participants } = useSelector(
-    (state:RootStateOrAny) => state.channel.selectedChannel
+    (state:RootStateOrAny) => {
+      const { selectedChannel } = state.channel;
+      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
+      return selectedChannel;
+    }
   );
   const { selectedMessage, meetingList } = useSelector((state:RootStateOrAny) => state.channel);
   const [inputText, setInputText] = useState('');

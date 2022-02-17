@@ -18,8 +18,7 @@ import {
 import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
 import { getChannelName, getTimerString } from 'src/utils/formatting'
-import useFirebase from 'src/hooks/useFirebase';
-import useApi from 'src/services/api';
+import useSignalr from 'src/hooks/useSignalr';
 
 const styles = StyleSheet.create({
   container: {
@@ -53,68 +52,23 @@ const styles = StyleSheet.create({
 
 const Dial = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const api = useApi('');
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { meetingId, meeting, meetingParticipants } = useSelector((state:RootStateOrAny) => state.meeting);
+  const { meeting, meetingParticipants } = useSelector((state:RootStateOrAny) => state.meeting);
   const { options, isHost = false, isVoiceCall } = route.params;
-  const { channelId, isGroup, channelName, otherParticipants } = useSelector(
-    (state:RootStateOrAny) => state.channel.selectedChannel
+  const { _id, isGroup, channelName, otherParticipants } = useSelector(
+    (state:RootStateOrAny) => {
+      const { selectedChannel } = state.channel;
+      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
+      return selectedChannel;
+    }
   );
-  const {
-    joinMeeting,
-    meetingSubscriber,
-    endMeeting
-  } = useFirebase({
-    _id: user._id,
-    name: user.name,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    image: user.image,
-  });
+  const channelId = _id;
+  
+  const { endMeeting } = useSignalr();
+
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
   const [timer, setTimer] = useState(0);
-
-  useEffect(() => {
-    let unmounted = false;
-    console.log('CHANNELID', channelId);
-    api.post('/meeting/token', {
-      channelName: meetingId,
-      isHost,
-    }).then((res) => {
-      if (!unmounted) {
-        setLoading(false);
-        dispatch(setMeetingParticipants([]));
-        joinMeeting(meetingId, res.data.uid, isHost);
-        setAgora(res.data);
-      }
-    })
-    .catch(() => {
-      if (!unmounted) {
-        setLoading(false);
-        Alert.alert('Something went wrong.');
-      }
-    });
-    return () => {
-      unmounted = true;
-    }
-  }, []);
-
-  useEffect(() => {
-    if (meetingId) {
-      const unsubscriber = meetingSubscriber(meetingId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
-        querySnapshot.docChanges().forEach((change:any) => {
-          const data = change.doc.data();
-          data._id = change.doc.id;
-          dispatch(setMeeting(data));
-        });
-      })
-      return () => {
-        unsubscriber();
-      }
-    }
-  }, [meetingId])
 
   useEffect(() => {
     let interval:any = null;
@@ -176,7 +130,11 @@ const Dial = ({ navigation, route }) => {
 
   const onEndCall = () => {
     if (isHost) {
-      endMeeting(meetingId)
+      endMeeting(meeting._id, (err, res) => {
+        if (res) {
+          navigation.goBack();
+        }
+      })
     } else {
       navigation.goBack();
     }

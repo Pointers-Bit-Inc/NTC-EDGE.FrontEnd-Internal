@@ -21,6 +21,7 @@ import { InputField } from '@components/molecules/form-fields'
 import useFirebase from 'src/hooks/useFirebase';
 import useSignalr from 'src/hooks/useSignalr';
 import Button from '@components/atoms/button';
+import lodash from 'lodash';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -98,6 +99,9 @@ const CreateMeeting = ({ navigation, route }:any) => {
         setLoading(false);
         console.log('IS CHANNEL EXIST DATA', data);
         if (!error) {
+          const { room } = data;
+          data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
+          room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room, isChannelExist));
           dispatch(setMeetingId(data._id));
           dispatch(setMeeting({}));
@@ -115,9 +119,11 @@ const CreateMeeting = ({ navigation, route }:any) => {
       createMeeting({ participants, name: meetingName }, (error, data) => {
         setLoading(false);
         if (!error) {
+          const { room } = data;
+          data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
+          room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room));
-          dispatch(setMeetingId(data._id));
-          dispatch(setMeeting({}));
+          dispatch(setMeeting(data));
           navigation.replace('VideoCall', {
             isHost: true,
             options: {

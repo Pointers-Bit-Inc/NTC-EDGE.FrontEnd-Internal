@@ -126,6 +126,16 @@ const useSignalr = () => {
     });
   }, []);
 
+  const seenMessage = useCallback((id, callback = () => {}) => {
+    api.patch(`/message/seen?id=${id}`)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
   const getMessages = useCallback((channelId, pageIndex, callback = () => {}) => {
     api.get(`/message/list?roomId=${channelId}&pageIndex=${pageIndex}`)
     .then(res => {
@@ -140,6 +150,16 @@ const useSignalr = () => {
 
   const createMeeting = useCallback((payload, callback = () => {}) => {
     api.post('/meeting', payload)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
+  const endMeeting = useCallback((id, callback = () => {}) => {
+    api.patch(`/meeting/end?id=${id}`)
     .then(res => {
       return callback(null, res.data);
     })
@@ -174,8 +194,10 @@ const useSignalr = () => {
     editMessage,
     unSendMessage,
     deleteMessage,
+    seenMessage,
     getMessages,
     createMeeting,
+    endMeeting,
     getMeetingList,
   }
 }

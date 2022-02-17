@@ -33,7 +33,7 @@ export default function basket(state = initialState, action:any) {
     case SET_SELECTED_CHANNEL: {
       if (!action.isChannelExist) {
         return state.setIn(['selectedChannel'], action.payload)
-        .setIn(['messages'], []);
+        .setIn(['normalizedMessages'], {});
       }
       return state.setIn(['selectedChannel'], action.payload);
     }
@@ -60,17 +60,27 @@ export default function basket(state = initialState, action:any) {
     }
     case ADD_MESSAGES: {
       const updatedChannel = state.normalizedChannelList[action.payload.roomId];
-      updatedChannel.lastMessage = action.payload;
+      if (updatedChannel) updatedChannel.lastMessage = action.payload;
       if (state.selectedChannel._id === action.payload.roomId) {
         return state.setIn(['normalizedMessages', action.payload._id], action.payload)
         .setIn(['normalizedChannelList', updatedChannel._id], updatedChannel)
         .setIn(['selectedChannel'], updatedChannel);
       } else {
-        return state.setIn(['normalizedChannelList', updatedChannel._id], updatedChannel);
+        return state.setIn(['normalizedMessages', action.payload._id], action.payload)
+        .setIn(['normalizedChannelList', updatedChannel._id], updatedChannel);
       }
     }
     case UPDATE_MESSAGES: {
-      return state.setIn(['normalizedMessages', action.payload._id], action.payload);
+      const updatedChannel = state.normalizedChannelList[action.payload.roomId];
+      if (updatedChannel) updatedChannel.lastMessage = action.payload;
+      if (state.selectedChannel._id === action.payload.roomId) {
+        return state.setIn(['normalizedMessages', action.payload._id], action.payload)
+        .setIn(['normalizedChannelList', updatedChannel._id], updatedChannel)
+        .setIn(['selectedChannel'], updatedChannel);
+      } else {
+        return state.setIn(['normalizedMessages', action.payload._id], action.payload)
+        .setIn(['normalizedChannelList', updatedChannel._id], updatedChannel);
+      }
     }
     case REMOVE_MESSAGES: {
       const updatedList = lodash.reject(state.messages, m => m._id === action.payload);
