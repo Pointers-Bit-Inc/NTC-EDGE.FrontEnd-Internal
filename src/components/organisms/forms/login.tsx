@@ -75,7 +75,7 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
   return (
     <View style={styles.container}>
       <InputField
-        inputStyle={InputStyles.text}
+
         label={'Email address'}
         placeholder="Email address"
         required={true}

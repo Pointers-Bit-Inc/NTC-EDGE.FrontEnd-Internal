@@ -17,6 +17,7 @@ import FileOutlineIcon from "@assets/svg/fileOutline";
 import {Bold , Regular , Regular500} from "@styles/font";
 import RequirementModal from "@pages/activities/application/requirementModal";
 import _ from "lodash";
+import {capitalize} from "@pages/activities/script";
 const {width, height} = Dimensions.get("screen")
 const Payment = (props:any) => {
     const [visibleModal, setVisibleModal] = useState(false)
@@ -37,9 +38,7 @@ const Payment = (props:any) => {
         soa.map(s => total += s.amount);
         return total;
     }
-    function capitalize(str) {
-        return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)).join(' ');
-    }
+
     return <ScrollView style={{backgroundColor: "#fff", width: "100%", paddingTop: 10}}>
         <View style={[styles.container, {marginTop: 12}]}>
 
@@ -130,7 +129,8 @@ const Payment = (props:any) => {
 
                                         <Text style={{fontFamily: Regular}}>Payment received for</Text>
                                         <Text style={{fontFamily: Regular}}>NTC-EDGE</Text>
-                                        <Text style={{fontFamily: Regular}}>the amout of PHP {props?.totalFee}</Text>
+                                        <Text style={{fontFamily: Regular}}>the amout of</Text>
+                                        <Text style={{fontFamily: Bold}}>PHP {new Intl.NumberFormat().format(props?.totalFee)}</Text>
                                         {props?.paymentMethod && <View style={{paddingVertical: 10 }}>
                                              <Text>
                                                 <Text style={{fontFamily: Bold}}>

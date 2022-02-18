@@ -25,6 +25,10 @@ import {Dispatch} from "redux";
 import {Regular500} from "@styles/font";
 import {Role , UserApplication} from "@pages/activities/interface";
 
+export const capitalize = (str) => {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)).join(' ');
+};
+
 export const PaymentStatusText = (status: string) => {
 
     switch (status) {
