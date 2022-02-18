@@ -61,7 +61,7 @@ function ActivityModal(props: any) {
     const onChangeApplicationStatus = async (status: string , callback = (err: any , appId?: any) => {
     }) => {
         setGrayedOut(true);
-        const api = Api(user.sessionToken);
+        const api = Api(user.token);
         const applicationId = props?.details?._id;
         let url = `/applications/${ applicationId }/update-status`;
         let params: any = {

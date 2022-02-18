@@ -55,7 +55,7 @@ const Approval = (props: any) => {
         axios.get(BASE_URL + '/users' ,
             {
                 headers : {
-                    Authorization : "Bearer ".concat(user?.sessionToken)
+                    Authorization : "Bearer ".concat(user?.token)
                 }
             }).then((response) => {
 

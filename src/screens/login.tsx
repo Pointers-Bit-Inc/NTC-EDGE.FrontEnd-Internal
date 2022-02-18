@@ -79,7 +79,7 @@ const Login = ({ navigation }:any) => {
   const [loading, setLoading] = useState(false);
   const onLogin = async (data) => {
     setLoading(true);
-    api.post('/internal/signin', {
+    api.post('/user/signin', {
       email: data.email,
       password: data.password,
     })

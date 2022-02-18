@@ -33,7 +33,7 @@ const ActivitiesScreen = (props:any) => {
         onConnection,
       } = useSignalr();
     const onLogout = useCallback(() => {
-        const api = Api(user.sessionToken);
+        const api = Api(user.token);
         onHide();
         setTimeout(() => {
             api.post('/user/logout')
