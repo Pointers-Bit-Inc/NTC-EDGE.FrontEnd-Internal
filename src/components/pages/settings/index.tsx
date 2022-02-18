@@ -50,7 +50,7 @@ export default ({
     icon: <LogoutIcon size={21} color={text.error} />,
     onPress: () => setVisible(true),
   };
-  const onLogout = () => {
+  const onLogout = useCallback(() => {
     setVisible(false);
     dispatch(resetUser());
     dispatch(resetMeeting());
@@ -58,7 +58,7 @@ export default ({
     setTimeout(() => {
       navigation.replace('Login');
     }, 500);
-  };
+  }, []);
 
   const renderRow = ({item}: any) => {
     return (

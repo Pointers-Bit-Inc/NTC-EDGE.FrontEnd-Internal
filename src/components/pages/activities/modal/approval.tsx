@@ -1,8 +1,8 @@
-import React , {useEffect , useState} from "react";
+import React , {useEffect , useRef , useState} from "react";
 import {
     Alert ,
     Animated ,
-    Dimensions ,
+    Dimensions , Keyboard ,
     KeyboardAvoidingView ,
     Modal ,
     Platform ,
@@ -29,7 +29,7 @@ const { width , height } = Dimensions.get('window');
 
 const Approval = (props: any) => {
 
-    const { springValue , _springHide } = useAlert(props.visible , () => {
+    const { springValue , _springHide ,_springCollapse } = useAlert(props.visible , () => {
         setOnFocus(false)
         return props.onDismissed(APPROVED);
     });
@@ -98,7 +98,7 @@ const Approval = (props: any) => {
 
 
     const onConfirmation = () => {
-        setOnFocus(false)
+
         if (loading && getRole(user , [EVALUATOR , DIRECTOR])) {
             Alert.alert('Alert' , "No accountant has been found")
         } else {
@@ -107,6 +107,7 @@ const Approval = (props: any) => {
             setMessage("Are you sure you want to approve this application?");
             setShowAlert(true)
         }
+
     };
 
     const onCancelPress = (event , bool?: any) => {
@@ -129,7 +130,7 @@ const Approval = (props: any) => {
     const [showClose , setShowClose] = useState(false);
     const [isTyping , setIsTyping] = useState(true);
      const [onFocus, setOnFocus] = useState(false)
-    
+    const textInput = useRef(null);
     return (
 
         <Modal
@@ -152,6 +153,7 @@ const Approval = (props: any) => {
             </View>
 
             <CustomAlert
+
                 showClose={ showClose }
                 type={ approvalIcon ? APPROVED : "" }
                 onDismissed={ () => onCancelPress(APPROVED , true) }
@@ -192,8 +194,8 @@ const Approval = (props: any) => {
                 style={ [styles.container] }
             >
 
-                { !showAlert &&
-                <Animated.View style={ [styles.group , { transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
+                {
+                <Animated.View style={ [styles.group , !showAlert ||  {display: "none"},  { transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
                     <View style={ styles.rect }>
                         <View style={ { alignSelf : 'flex-start' } }>
                             <TouchableOpacity onPress={ _springHide }>
@@ -208,8 +210,9 @@ const Approval = (props: any) => {
 
                             { getRole(user , [DIRECTOR , EVALUATOR, ACCOUNTANT]) &&
                             <InputField
-                                onBlur={(e)=>setOnFocus(e)}
-                                onFocus={(e)=>setOnFocus(e)}
+                                inputStyle={{fontWeight: "400", fontSize: 14}}
+                                onBlur={()=>setOnFocus(false)}
+                                onFocus={()=>setOnFocus(true)}
                                 containerStyle={{
                                     height: undefined ,
                                     borderColor: "#D1D1D6",
@@ -220,7 +223,7 @@ const Approval = (props: any) => {
                                 outlineStyle={ {
                                     borderColor : "rgba(202,210,225,1)" ,
                                     paddingTop : 5 ,
-                                    height : (height < 720 && isKeyboardVisible) ? 45 : height * 0.15
+                                    height : (height < 720 && isKeyboardVisible) ? 70 : height * 0.15
                                 } }
                                 placeholder={ 'Remarks' }
                                 multiline={ true }
@@ -286,13 +289,13 @@ const styles = StyleSheet.create({
         width : 94 ,
     } ,
     applicationApproved : {
+        fontFamily: Bold,
         color : "#121212" ,
         fontSize : 18 ,
-        marginTop : 10 ,
     } ,
     group2 : {
         width : '100%' ,
-        marginTop : 5 ,
+        marginTop : 10 ,
     } ,
     confirm : {
         color : "rgba(255,255,255,1)" ,

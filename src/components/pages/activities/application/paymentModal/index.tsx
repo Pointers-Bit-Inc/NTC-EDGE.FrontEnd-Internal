@@ -2,7 +2,8 @@ import React from "react";
 import BackgroundPayment from "@assets/svg/backgroundpayment";
 import {Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import moment from "moment";
-import {Bold} from "@styles/font";
+import {Bold , Regular , Regular500} from "@styles/font";
+import {capitalize} from "@pages/activities/script";
 
 const {width, height} = Dimensions.get('window');
 const PaymentModal = (props: any) => {
@@ -70,12 +71,12 @@ const PaymentModal = (props: any) => {
                     <View style={[styles.group8, {alignItems: 'center', marginBottom: 100}]}>
                         <View style={styles.group5}>
                             <Text style={styles.title}>Payment received for</Text>
-                            <Text style={styles.ntcEdge}>NTC-EDGE</Text>
-                            <Text style={styles.theAmoutOf}>the amout of</Text>
-                            <Text style={styles.php5000}>PHP {props?.totalFee}</Text>
+                            <Text style={[styles.description]}>NTC-EDGE</Text>
+                            <Text style={styles.description}>the amout of</Text>
+                            <Text style={[styles.description, {fontFamily: Bold}]}>PHP {props?.totalFee}</Text>
 
                             {props?.paymentMethod &&
-                            <Text style={styles.loremIpsum}>using your {props?.paymentMethod == "bank-transfer" && "Bank Transfer" }</Text>}
+                            <Text style={styles.description}>using your {capitalize(props?.paymentMethod.replace("-", " ")) }</Text>}
                         </View>
                         <View style={styles.group2}>
                             <View style={styles.rect}>
@@ -146,7 +147,11 @@ const styles = StyleSheet.create({
         color: "#121212",
         textAlign: 'center'
     },
+    description: {
+        fontFamily: Regular,
+    },
     ntcEdge: {
+
         color: "#121212",
         marginTop: 4,
         textAlign: 'center'
@@ -162,7 +167,7 @@ const styles = StyleSheet.create({
     },
     loremIpsum: {
         color: "#121212",
-        marginTop: 25
+
     },
     group2: {
         width: '100%',

@@ -4,6 +4,7 @@ import MoreIcon from "@assets/svg/more";
 import React from "react";
 import SeeIcon from "@assets/svg/see";
 import {Bold , Regular} from "@styles/font";
+import {disabledColor} from "@styles/color";
 
 export const renderSwiper = (index: number, progress: any, dragX: any, onPressUser: any, activity, unReadReadApplicationFn) => {
     let action = activity?.dateRead ? "Unread" : "Read"
@@ -11,7 +12,7 @@ export const renderSwiper = (index: number, progress: any, dragX: any, onPressUs
         <View style={{
             marginTop: 5,
             marginBottom: 5,
-            backgroundColor: '#2863d6',
+            backgroundColor: disabledColor,  // '#2863d6',
             justifyContent: 'center'
         }}>
             <TouchableOpacity style={{

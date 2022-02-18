@@ -12,7 +12,7 @@ import {
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
 import {
-    APPROVED , DECLINED
+    APPROVED , DECLINED , FORAPPROVAL
 } from "../../../../reducers/activity/initialstate";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 import moment from "moment";

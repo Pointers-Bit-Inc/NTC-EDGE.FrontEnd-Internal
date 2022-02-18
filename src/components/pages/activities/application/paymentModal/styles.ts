@@ -38,20 +38,20 @@ export const styles = StyleSheet.create({
         fontFamily: Bold,
         top: 0,
         left: 0,
-        color: "#121212",
+
         fontSize: 16
     },
     text: {
         width: 350,
 
         left: 0,
-        color: "#121212",
+
         fontSize: 14
     },
     applicantStack: {
     },
     selectedTypes: {
-        color: "#121212",
+
         marginTop: 6
     },
     group4: {
@@ -72,14 +72,14 @@ export const styles = StyleSheet.create({
         marginTop: 15
     },
     billingDetail: {
-        color: "#121212"
+
     },
     billingDetailFiller: {
         flex: 1,
         flexDirection: "row"
     },
     loremIpsum8: {
-        color: "#121212"
+
     },
     group2: {
         width: 328,
@@ -105,7 +105,7 @@ export const styles = StyleSheet.create({
         alignItems: "flex-end"
     },
     subtotal2: {
-        color: "#121212",
+
         fontSize: 16,
         textAlign: "right",
         marginTop: 13,
@@ -113,7 +113,7 @@ export const styles = StyleSheet.create({
     },
     vat: {
 
-        color: "#121212",
+
         fontSize: 16,
         textAlign: "right",
         marginTop: 1,
@@ -122,13 +122,13 @@ export const styles = StyleSheet.create({
     p0000: {
         top: 14,
         position: "absolute",
-        color: "#121212",
+
         right: 0
     },
     p9: {
         top: 35,
         position: "absolute",
-        color: "#121212",
+
         right: 0
     },
     rect4Stack: {
@@ -147,39 +147,39 @@ export const styles = StyleSheet.create({
     },
     payment2: {
         fontFamily: Bold,
-        color: "#121212",
+
         marginTop: 15,
         marginLeft: 21
     },
     paymentReceiptPng: {
-        color: "#121212",
+
         fontSize: 16,
         marginTop: 10,
         textAlign: "center"
     },
     paymentReceivedFor: {
-        color: "#121212",
+
         marginTop: 17,
         textAlign: "center"
     },
     ntcEdge: {
-        color: "#121212",
+
         fontSize: 16,
         marginTop: 17,
         textAlign: "center"
     },
     theAmoutOf: {
-        color: "#121212",
+
         marginTop: 16,
         textAlign: "center"
     },
     php5000: {
-        color: "#121212",
+
         fontSize: 16,
         textAlign: "center"
     },
     text2: {
-        color: "#121212",
+
         marginTop: 21,
         marginLeft: 100
     },

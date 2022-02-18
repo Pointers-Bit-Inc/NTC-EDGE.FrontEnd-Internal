@@ -6,7 +6,7 @@ import React, {
     ForwardRefRenderFunction,
 } from 'react';
 import {View , StyleSheet , TouchableOpacity} from 'react-native';
-import { ExclamationIcon } from '@atoms/icon';
+import { RFValue } from 'react-native-responsive-fontsize';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
 import {defaultColor , primaryColor} from '@styles/color';
@@ -93,13 +93,11 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
     const editable = otherProps?.editable === false || otherProps?.editable === true ? otherProps?.editable : true;
     const onFocusFN = () => {
         setIsFocused(true)
-        onBlur(false);
-        onFocus(true);
+        onFocus();
     };
     const onBlurFN = () => {
         setIsFocused(false)
-        onFocus(false);
-        onBlur(true);
+        onBlur();
     };
     useImperativeHandle(ref, () => ({
         blur: () => inputRef.current.blur(),
@@ -119,7 +117,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                     borderColor: input.text?.errorColor,
                 },
                 !error && isFocused && {
-                    backgroundColor: input.background?.default,
+                    backgroundColor: '#fff', //input.background?.default,
                     borderColor: primaryColor,
                 },
                 containerStyle,
@@ -130,11 +128,11 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                             <Text
                                 style={[
                                     inputStyles.labelText,
-                                    (isFocused || !!otherProps.value || !!error) && {
-                                        color: isFocused ? activeColor : "#808196"
-                                    },
+                                    // (isFocused || !!otherProps.value || !!error) && {
+                                    //     color: isFocused ? activeColor : "#808196"
+                                    // },
 
-                                    !editable && {color: disabledColor}
+                                    // !editable && {color: disabledColor}
                                 ]}
                             >
                                 {label}
@@ -161,7 +159,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                     >
                         <TextInput
                         ref={inputRef}
-                        style={[inputStyle,inputStyles.inputText, !editable && {color: disabledColor}]}
+                        style={[inputStyle, isFocused ? inputStyles.inputText : { ...inputStyles.inputText, color: defaultColor}, !editable && {color: disabledColor}]}
                         placeholder={placeholder || label}
                         placeholderTextColor={!editable ? disabledColor : (!!error ? input.text?.errorColor : defaultColor)}
                         secureTextEntry={secureTextEntry}
@@ -174,7 +172,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                 {
                     (clearable && isFocused && !!editable && !!otherProps.value) &&
                     <TouchableOpacity onPress={() => otherProps?.onChangeText ? otherProps?.onChangeText('') : {}}>
-                        <CloseIcon size={20} color={error ? input.text.errorColor : input.text.mainColor}/>
+                        <CloseIcon height={RFValue(10)} width={RFValue(10)} color={error ? input.text.errorColor : input.text.mainColor}/>
                     </TouchableOpacity>
                 }
             </View>
@@ -202,7 +200,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
 
 
 
-
+                        
     );
 };
 

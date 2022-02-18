@@ -112,7 +112,7 @@ function TopModal(props: any) {
                                             <View style={[styles.itemGroup, {paddingHorizontal: 0}]}>
                                                 {renderIcon(top)}
                                                 <Text
-                                                    style={[styles.label1, {color: top.checked ? "#003aa9" : "rgba(128,128,128,1)"}]}>{top.status}</Text>
+                                                    style={[styles.label1, {color: top.checked ? "#003aa9" : "#1F2022"}]}>{top.status}</Text>
                                             </View>
                                             <TouchableOpacity onPress={() => {
 
@@ -167,9 +167,9 @@ const styles = StyleSheet.create({
         marginLeft: 18
     },
     sort1: {
-        fontSize: 18,
-        fontFamily: Bold,
-        color: "#121212",
+        fontSize: 16,
+        fontFamily: Regular,
+        color: "#000",
     },
     header: {
         height: 100,

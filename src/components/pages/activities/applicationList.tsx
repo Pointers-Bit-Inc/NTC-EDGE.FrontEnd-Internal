@@ -67,7 +67,7 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
                             <TouchableWithoutFeedback onPress={() => setIsOpen(open => !open)}>
                                 <View >
 
-                                    {isOpen ? <ChevronDownIcon color={"#000"}/> : <ChevronUpIcon color={"#000"}/>}
+                                    {isOpen ? <ChevronUpIcon color={"#000"}/> : <ChevronDownIcon color={"#000"}/>}
 
 
                                 </View>

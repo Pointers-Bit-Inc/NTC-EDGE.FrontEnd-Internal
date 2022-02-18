@@ -210,6 +210,7 @@ export default function ActivitiesPage(props: any) {
         })
     }
     useEffect(() => {
+
         let isCurrent = true
         dispatch(setNotPinnedApplication([]))
         dispatch(setPinnedApplication([]))
@@ -457,9 +458,9 @@ export default function ActivitiesPage(props: any) {
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
                     ListHeaderComponent={() => (
                         <>
-                            { !searchVisible && pnApplications?.length > 0 &&
+                            { !searchVisible && !!pnApplications?.length &&
                             <View style={ { paddingBottom : 10 , backgroundColor : "#fff" } }>
-                                { !searchVisible && pnApplications?.length > 0 &&
+                                { !!pnApplications?.length  &&
                                 <View style={ [styles.pinnedgroup , { height : undefined }] }>
                                     <View style={ [styles.pinnedcontainer , { paddingVertical : 10 }] }>
                                         <Text style={ [styles.pinnedActivity , { fontFamily : Bold , }] }>Pinned
@@ -486,14 +487,15 @@ export default function ActivitiesPage(props: any) {
                                                             })*/
 
                                                             setIsOpen(undefined);
-                                                            setDetails({ ...act , isOpen : `${ i }${ index }` });
+                                                            setDetails({ ...act , isOpen : `pin${ i }${ index }` });
                                                             if (event?.icon == 'more') {
                                                                 setMoreModalVisible(true)
                                                             } else {
                                                                 setModalVisible(true)
                                                             }
 
-                                                        } } index={ `${ i }${ index }` } swiper={ renderSwiper }/>
+                                                        } } index={ `pin${ i }${ index }` }
+                                                        swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, act, unReadReadApplicationFn)}/>
                                                 })
                                             })
                                         }
@@ -571,7 +573,6 @@ export default function ActivitiesPage(props: any) {
                     )}
                 />
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={() =>{
-                                                   console.log(details?.isOpen, isOpen)
                     onMoreModalDismissed(details?.isOpen)
                 }}/>
                 <ActivityModal updateModal={updateModalFn}
