@@ -12,7 +12,7 @@ import NavBar from '@molecules/navbar';
 import { text } from '@styles/color';
 import styles from './styles';
 import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import { setUser } from 'src/reducers/user/actions'
+import { setUser, resetUser } from 'src/reducers/user/actions'
 import { resetMeeting } from 'src/reducers/meeting/actions';
 import { resetChannel } from 'src/reducers/channel/actions';
 
@@ -52,7 +52,7 @@ export default ({
   };
   const onLogout = () => {
     setVisible(false);
-    dispatch(setUser({}));
+    dispatch(resetUser());
     dispatch(resetMeeting());
     dispatch(resetChannel());
     setTimeout(() => {

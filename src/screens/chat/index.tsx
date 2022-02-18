@@ -152,9 +152,10 @@ const ChatList = ({ navigation }:any) => {
     const channelList = lodash.keys(normalizedChannelList).map(ch => {
       const channel = normalizedChannelList[ch];
       channel.otherParticipants = lodash.reject(channel.participants, p => p._id === user._id);
+      channel.lastMessage.hasSeen = !!lodash.find(channel.lastMessage.seen, s => s._id === user._id);
       return channel;
     });
-    return lodash.orderBy(channelList, 'updatedAt', 'desc');
+    return lodash.orderBy(channelList, 'lastMessage.createdAt', 'desc');
   });
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
   const {
@@ -369,7 +370,7 @@ const ChatList = ({ navigation }:any) => {
                   message={item?.lastMessage}
                   isGroup={item.isGroup}
                   seen={item?.lastMessage?.hasSeen}
-                  time={getTimeString(item?.updatedAt)}
+                  time={getTimeString(item?.lastMessage?.createdAt)}
                   onPress={() => {
                     dispatch(setSelectedChannel(item));
                     dispatch(setMeetings([]));

@@ -59,28 +59,63 @@ export default function basket(state = initialState, action:any) {
       return state.setIn(['normalizedMessages'], {...state.normalizedMessages, ...action.payload});
     }
     case ADD_MESSAGES: {
-      const updatedChannel = state.normalizedChannelList[action.payload.roomId];
-      if (updatedChannel) updatedChannel.lastMessage = action.payload;
+      let newState = state;
+
       if (state.selectedChannel._id === action.payload.roomId) {
-        return state.setIn(['normalizedMessages', action.payload._id], action.payload)
-        .setIn(['normalizedChannelList', updatedChannel._id], updatedChannel)
-        .setIn(['selectedChannel'], updatedChannel);
-      } else {
-        return state.setIn(['normalizedMessages', action.payload._id], action.payload)
-        .setIn(['normalizedChannelList', updatedChannel._id], updatedChannel);
+        newState = newState.setIn(['normalizedMessages', action.payload._id], action.payload)
+        .setIn(['selectedChannel', 'lastMessage'], action.payload)
+        .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
       }
+
+      newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+      .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+
+      return newState;
+      // if (state.selectedChannel._id === action.payload.roomId) {
+      //   return state.setIn(['normalizedMessages', action.payload._id], action.payload)
+      //   .setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+      //   .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+      //   .setIn(['selectedChannel', 'lastMessage'], action.payload)
+      //   .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
+      // } else {
+      //   return state.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+      //   .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+      // }
     }
     case UPDATE_MESSAGES: {
-      const updatedChannel = state.normalizedChannelList[action.payload.roomId];
-      if (updatedChannel) updatedChannel.lastMessage = action.payload;
+      let newState = state;
+
       if (state.selectedChannel._id === action.payload.roomId) {
-        return state.setIn(['normalizedMessages', action.payload._id], action.payload)
-        .setIn(['normalizedChannelList', updatedChannel._id], updatedChannel)
-        .setIn(['selectedChannel'], updatedChannel);
-      } else {
-        return state.setIn(['normalizedMessages', action.payload._id], action.payload)
-        .setIn(['normalizedChannelList', updatedChannel._id], updatedChannel);
+        newState = newState.setIn(['normalizedMessages', action.payload._id], action.payload)
+        .setIn(['selectedChannel', 'lastMessage'], action.payload)
+        .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
       }
+
+      if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
+          newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+          .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt);
+      }
+
+      return newState;
+      // if (state.selectedChannel._id === action.payload.roomId) {
+      //   if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
+      //     return state.setIn(['normalizedMessages', action.payload._id], action.payload)
+      //     .setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+      //     .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+      //     .setIn(['selectedChannel', 'lastMessage'], action.payload)
+      //     .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
+      //   } else {
+      //     return state.setIn(['normalizedMessages', action.payload._id], action.payload)
+      //     .setIn(['selectedChannel', 'lastMessage'], action.payload)
+      //     .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
+      //   }
+      // } else {
+      //   if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
+      //     return state.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+      //     .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+      //   }
+      //   return state;
+      // }
     }
     case REMOVE_MESSAGES: {
       const updatedList = lodash.reject(state.messages, m => m._id === action.payload);

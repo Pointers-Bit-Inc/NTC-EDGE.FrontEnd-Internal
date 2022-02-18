@@ -55,12 +55,10 @@ const ActivitiesScreen = (props:any) => {
         onConnection('OnChatUpdate', (users, type, data) => {
           switch(type) {
             case 'create': {
-              data.hasSeen = lodash.find(data.seen, s => s._id === user._id);
               dispatch(addMessages(data));
               break;
             }
             case 'update': {
-              data.hasSeen = lodash.find(data.seen, s => s._id === user._id);
               dispatch(updateMessages(data));
               break;
             }
@@ -69,7 +67,11 @@ const ActivitiesScreen = (props:any) => {
 
         onConnection('OnRoomUpdate', (users, type, data) => {
             switch(type) {
-              case 'create': dispatch(addChannel(data)); break;
+              case 'create': {
+                dispatch(addChannel(data));
+                dispatch(addMessages(data.lastMessage));
+                break;
+              }
               case 'delete': dispatch(removeChannel(data._id)); break;
             }
           });
@@ -78,7 +80,9 @@ const ActivitiesScreen = (props:any) => {
           switch(type) {
             case 'create': {
               const { room } = data;
+              const { lastMessage } = room;
               dispatch(addChannel(room));
+              dispatch(addMessages(lastMessage));
               dispatch(addMeeting(data));
               break;
             };

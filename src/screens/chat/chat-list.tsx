@@ -146,15 +146,14 @@ const List = () => {
     })
   }, [])
 
-  // useEffect(() => {
-  //   if (messages && messages[0]) {
-  //     const hasSeen = lodash.find(messages[0].seen, s => s._id === user._id);
-  //     if (!hasSeen) {
-  //       console.log('HERE CALLED');
-  //       seenMessage(messages[0]._id);
-  //     }
-  //   }
-  // }, [messages]);
+  useEffect(() => {
+    if (lastMessage) {
+      const hasSeen = lodash.find(lastMessage?.seen, s => s._id === user._id);
+      if (!hasSeen) {
+        seenMessage(lastMessage._id);
+      }
+    }
+  }, [lastMessage]);
 
   const showOption = (item) => {
     setMessage(item);
