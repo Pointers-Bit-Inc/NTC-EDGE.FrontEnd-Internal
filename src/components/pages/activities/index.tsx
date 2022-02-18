@@ -512,14 +512,14 @@ export default function ActivitiesPage(props: any) {
                                                             })*/
 
                                                             setIsOpen(undefined);
-                                                            setDetails({ ...act , isOpen : `${ i }${ index }` });
+                                                            setDetails({ ...act , isOpen : `pin${ i }${ index }` });
                                                             if (event?.icon == 'more') {
                                                                 setMoreModalVisible(true)
                                                             } else {
                                                                 setModalVisible(true)
                                                             }
 
-                                                        } } index={ `${ i }${ index }` }
+                                                        } } index={ `pin${ i }${ index }` }
                                                         swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, act, unReadReadApplicationFn)}/>
                                                 })
                                             })
@@ -598,7 +598,6 @@ export default function ActivitiesPage(props: any) {
                     )}
                 />
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={() =>{
-                                                   console.log(details?.isOpen, isOpen)
                     onMoreModalDismissed(details?.isOpen)
                 }}/>
                 <ActivityModal updateModal={updateModalFn}

@@ -170,7 +170,6 @@ const RenderPinned = ({ assignedPersonnel, config }:any) => {
 }
 let row: Array<any> = [];
 let prevOpenedRow;
-
 const closeRow = (index)=>{
     if (prevOpenedRow && prevOpenedRow !== row[index]) {
         prevOpenedRow.close();
@@ -178,14 +177,16 @@ const closeRow = (index)=>{
     prevOpenedRow = row[index];
 }
 export function ActivityItem(props:any) {
+
     const  status =  [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) :  StatusText(props?.activity?.status)
     const userActivity = props?.activity?.applicant?.user
     const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) &&  status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status!==FOREVALUATION? APPROVED : getRole(props.currentUser, [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!props?.activity?.paymentHistory?.[0]?.status?  StatusText(props?.activity?.paymentHistory?.[0]?.status)  : getRole(props.currentUser, [ACCOUNTANT]) && props?.activity?.approvalHistory[0].status == FOREVALUATION &&  props?.activity?.approvalHistory[1].status == FORAPPROVAL ? DECLINED :  status
 
     useEffect(()=>{
-        if(props?.isOpen == props?.index && !!row.length)  row[props?.index].close()
+        let unsubscribe = true
+        unsubscribe && props?.isOpen == props?.index && !!row.length &&  row[props?.index]?.close()
         return () =>{
-            row = []
+            unsubscribe = false
         } 
     }, [props.isOpen == props.index])
     return (
