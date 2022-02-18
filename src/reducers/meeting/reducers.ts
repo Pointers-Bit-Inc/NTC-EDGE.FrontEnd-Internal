@@ -95,8 +95,7 @@ export default function basket(state = initialState, action = {}) {
       return state.setIn(['activeMeetings'], updatedList);
     }
     case REMOVE_ACTIVE_MEETING: {
-      const updatedList = lodash.reject(state.activeMeetings, l => l._id === action.payload);
-      return state.setIn(['activeMeetings'], updatedList);
+      return state.removeIn(['normalizeActiveMeetings', action.payload]);
     }
     case RESET_MEETING: {
       return state.setIn(['normalizedMeetingList'], {})

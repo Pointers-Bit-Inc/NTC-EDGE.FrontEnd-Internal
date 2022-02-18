@@ -19,7 +19,6 @@ const useSignalr = () => {
           accessTokenFactory: () => user.token
         })
         .withAutomaticReconnect()
-        .configureLogging(LogLevel.Debug)
         .build();
     signalr.current.serverTimeoutInMilliseconds = 1000 * 60 * 3;
     signalr.current.keepAliveIntervalInMilliseconds = 1000 * 60 * 1;

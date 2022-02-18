@@ -40,10 +40,9 @@ import { getChannelName } from 'src/utils/formatting';
 import InputStyles from 'src/styles/input-style';
 import {
   removeSelectedMessage,
-  addMeeting,
-  removeMeeting,
-  updateMeeting,
+  setSelectedChannel,
 } from 'src/reducers/channel/actions';
+import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -120,6 +119,7 @@ const ChatView = ({ navigation, route }:any) => {
   const {
     sendMessage,
     editMessage,
+    endMeeting,
   } = useSignalR();
   const inputRef:any = useRef(null);
   const layout = useWindowDimensions();
@@ -131,7 +131,12 @@ const ChatView = ({ navigation, route }:any) => {
       return selectedChannel;
     }
   );
-  const { selectedMessage, meetingList } = useSelector((state:RootStateOrAny) => state.channel);
+  const meetingList = useSelector((state: RootStateOrAny) => {
+    const { normalizeActiveMeetings } = state.meeting
+    const meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
+    return lodash.orderBy(meetingList, 'updatedAt', 'desc');
+})
+  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
   const [inputText, setInputText] = useState('');
   const [index, setIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
@@ -197,7 +202,8 @@ const ChatView = ({ navigation, route }:any) => {
   );
 
   const onJoin = (item) => {
-    dispatch(setMeetingId(item._id));
+    dispatch(setSelectedChannel(item.room));
+    dispatch(setMeeting(item));
     navigation.navigate('Dial', {
       isHost: item.host._id === user._id,
       isVoiceCall: item.isVoiceCall,
@@ -210,9 +216,9 @@ const ChatView = ({ navigation, route }:any) => {
 
   const onClose = (item) => {
     if (item.host._id === user._id) {
-      // endMeeting(item._id);
+      endMeeting(item._id);
     } else {
-      dispatch(removeMeeting(item._id));
+      dispatch(removeActiveMeeting(item._id));
     }
   }
 

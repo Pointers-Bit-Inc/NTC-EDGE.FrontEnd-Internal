@@ -96,7 +96,7 @@ const ChatItem: FC<Props> = ({
           <View style={[styles.horizontal, styles.channelInfo]}>
             <View style={{ flex: 1, paddingRight: 5 }}>
               <Text
-                color={text.default}
+                color={'black'}
                 weight={!seen ? 'bold' : 'normal'}
                 size={18}
                 numberOfLines={1}
@@ -109,7 +109,7 @@ const ChatItem: FC<Props> = ({
             <View style={[styles.horizontal, { flex: 1, paddingRight: 60 }]}>
               <Text
                 weight={!seen ? 'bold' : 'normal'}
-                color={text.default}
+                color={!seen ? 'black' : text.default}
                 size={14}
                 numberOfLines={1}
               >

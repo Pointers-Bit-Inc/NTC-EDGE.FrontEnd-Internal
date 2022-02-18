@@ -53,19 +53,22 @@ const ActivitiesScreen = (props:any) => {
     useEffect(() => {
         initSignalR();
         onConnection('OnChatUpdate', (users, type, data) => {
-          switch(type) {
-            case 'create': {
-              dispatch(addMessages(data));
-              break;
-            }
-            case 'update': {
-              dispatch(updateMessages(data));
-              break;
+          if (data) {
+            switch(type) {
+              case 'create': {
+                dispatch(addMessages(data));
+                break;
+              }
+              case 'update': {
+                dispatch(updateMessages(data));
+                break;
+              }
             }
           }
         });
 
         onConnection('OnRoomUpdate', (users, type, data) => {
+          if (data) {
             switch(type) {
               case 'create': {
                 dispatch(addChannel(data));
@@ -74,21 +77,24 @@ const ActivitiesScreen = (props:any) => {
               }
               case 'delete': dispatch(removeChannel(data._id)); break;
             }
-          });
+          }
+        });
 
         onConnection('OnMeetingUpdate', (users, type, data) => {
-          switch(type) {
-            case 'create': {
-              const { room } = data;
-              const { lastMessage } = room;
-              dispatch(addChannel(room));
-              dispatch(addMessages(lastMessage));
-              dispatch(addMeeting(data));
-              break;
-            };
-            case 'update': {
-              dispatch(updateMeeting(data));
-              break;
+          if (data) {
+            switch(type) {
+              case 'create': {
+                const { room } = data;
+                const { lastMessage } = room;
+                dispatch(addChannel(room));
+                dispatch(addMessages(lastMessage));
+                dispatch(addMeeting(data));
+                break;
+              };
+              case 'update': {
+                dispatch(updateMeeting(data));
+                break;
+              }
             }
           }
         });

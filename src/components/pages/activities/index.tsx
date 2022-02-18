@@ -74,9 +74,9 @@ export default function ActivitiesPage(props: any) {
     const { user , cashier , director , evaluator , checker , accountant } = useUserRole();
     const [updateModal, setUpdateModal] = useState(false)
     const meetingList = useSelector((state: RootStateOrAny) => {
-        const {activeMeetings} = state.meeting;
-        const sortedMeeting = lodash.orderBy(activeMeetings, 'updatedAt', 'desc');
-        return sortedMeeting;
+        const { normalizeActiveMeetings } = state.meeting
+        const meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
+        return lodash.orderBy(meetingList, 'updatedAt', 'desc');
     })
     const config = {
         headers: {
@@ -301,7 +301,7 @@ export default function ActivitiesPage(props: any) {
         getActiveMeetingList((err, result) => {
             if (!unMount) {
                 if (result) {
-                    setActiveMeetings(result);
+                    dispatch(setActiveMeetings(result));
                 }
             }
         });
@@ -372,7 +372,7 @@ export default function ActivitiesPage(props: any) {
 
     const onClose = (item) => {
         if (item.host._id === user._id) {
-            // endMeeting(item._id);
+            endMeeting(item._id);
         } else {
             dispatch(removeActiveMeeting(item._id));
         }
@@ -394,6 +394,7 @@ export default function ActivitiesPage(props: any) {
         setIsOpen(isOpen)
         setMoreModalVisible(false)
     }
+
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
@@ -435,7 +436,7 @@ export default function ActivitiesPage(props: any) {
                                 renderItem={({item}) => (
                                     <MeetingNotif
                                         style={{width}}
-                                        name={getChannelName(item)}
+                                        name={getChannelName({...item, otherParticipants: item?.participants})}
                                         time={item.createdAt}
                                         onJoin={() => onJoin(item)}
                                         onClose={() => onClose(item)}
