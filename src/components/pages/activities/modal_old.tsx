@@ -17,6 +17,7 @@ import {APPROVED, DECLINED, FOREVALUATION} from "../../../reducers/activity/init
 import {updateActivityStatus} from "../../../reducers/activity/actions";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {Bold} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const {width} = Dimensions.get('window');
 
@@ -376,7 +377,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         color: "rgba(255,255,255,1)",
-        fontSize: 24,
+        fontSize: RFValue(24),
         marginTop: 55,
         marginLeft: 14
     },
@@ -603,11 +604,11 @@ const styles = StyleSheet.create({
         fontFamily: Bold,
         color: "#121212",
         textAlign: "left",
-        fontSize: 20
+        fontSize: RFValue(20)
     },
     job: {
         color: "rgba(98,108,130,1)",
-        fontSize: 10,
+        fontSize:  RFValue(10),
         textAlign: "left"
     },
     group2: {
@@ -620,11 +621,11 @@ const styles = StyleSheet.create({
     },
     icon2: {
         color: "rgba(248,170,55,1)",
-        fontSize: 10
+        fontSize: RFValue(10)
     },
     role: {
         fontFamily: Bold,
-        fontSize: 10,
+        fontSize: RFValue(10),
         textAlign: "left",
         marginLeft: 4
     },

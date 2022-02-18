@@ -4,6 +4,7 @@ import {Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View}
 import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {capitalize} from "@pages/activities/script";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const {width, height} = Dimensions.get('window');
 const PaymentModal = (props: any) => {
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     },
     close: {
         color: "rgba(239,231,231,1)",
-        fontSize: 18,
+        fontSize: RFValue(18),
     },
     group8: {
         width: "100%",
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
     group: {},
     refNo12345678910: {
         color: "#121212",
-        fontSize: 16,
+        fontSize: RFValue(16),
         textAlign: 'center',
     },
     text: {

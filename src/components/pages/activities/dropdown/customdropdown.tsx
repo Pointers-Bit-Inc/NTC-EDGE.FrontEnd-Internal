@@ -3,6 +3,7 @@ import {FlatList , Modal , StyleSheet , Text , TouchableOpacity , View ,} from '
 import CaretDownIcon from "@assets/svg/caret-down";
 import {useOrientation} from "@pages/activities/hooks/useOrientation";
 import {Regular500} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 
 interface Props {
@@ -57,7 +58,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
                 onPress={() => onItemPress(item)}>
                 <Text style={{
 
-                    fontSize: 15
+                    fontSize: RFValue(16)
                 }}>{item.label}</Text>
             </TouchableOpacity>
     );

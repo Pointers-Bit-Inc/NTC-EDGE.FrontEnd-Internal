@@ -29,6 +29,7 @@ import Highlighter from "@pages/activities/search/highlighter";
 import EndorseIcon from "@assets/svg/endorse";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 import {Bold , Regular} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const styles = StyleSheet.create({
     container: {
@@ -187,7 +188,7 @@ export function ActivityItem(props:any) {
         unsubscribe && props?.isOpen == props?.index && !!row.length &&  row[props?.index]?.close()
         return () =>{
             unsubscribe = false
-        } 
+        }
     }, [props.isOpen == props.index])
     return (
             <View style={{backgroundColor: "#fff"}}>
@@ -265,7 +266,7 @@ export function ActivityItem(props:any) {
                                                         {
                                                             color : "#606A80" ,
                                                             fontFamily : Regular ,
-                                                            fontSize : 10
+                                                            fontSize : RFValue(10)
                                                         }
                                                     }
                                                     numberOfLines={1}

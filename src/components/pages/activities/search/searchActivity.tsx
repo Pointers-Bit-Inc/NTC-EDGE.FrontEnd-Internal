@@ -23,6 +23,7 @@ import Loader from "@pages/activities/bottomLoad";
 import useCountUp from "@pages/activities/hooks/useCountUp";
 import {Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const {height} = Dimensions.get('screen');
 
@@ -79,7 +80,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
                         <View style={styles.group}>
                             <InputField  ref={inputRef}
-                                         inputStyle={{fontWeight: "400", fontSize: 14}}
+                                         inputStyle={{fontWeight: "400", fontSize: RFValue(14)}}
                                          value={props.value}
                                          onEndEditing={props.onEndEditing}
                                          onChange={props.onChange}

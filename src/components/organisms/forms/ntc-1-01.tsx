@@ -10,6 +10,7 @@ import InputStyles from "../../../styles/input-style";
 import FormField from "@organisms/forms/form";
 import {outline, primaryColor} from "@styles/color";
 import Header from "@organisms/forms/tab-header";
+import {RFValue} from "react-native-responsive-fontsize";
 
 interface RadioOperatorServices {
     id: number,
@@ -44,7 +45,7 @@ const NTC101 = ({
             borderColor: 'transparent',
             backgroundColor: '#dbdee2',
             overflow: 'hidden',
-            fontSize: 16,
+            fontSize: RFValue(16),
             paddingVertical: 10,
             paddingHorizontal: 5,
             borderWidth: 1,
@@ -52,7 +53,7 @@ const NTC101 = ({
         },
         inputAndroid: {
             borderColor: 'transparent',
-            fontSize: 16,
+            fontSize: RFValue(16),
             paddingHorizontal: 10,
             paddingVertical: 8,
             borderWidth: 0.5,

@@ -8,6 +8,7 @@ const { width , height } = Dimensions.get("screen");
 const Requirement = (props: any) => {
     const [visibleModal , setVisibleModal] = useState(false);
     const [selectImage , setSelectImage] = useState('');
+    const [selectName , setSelectName] = useState('');
     const onDismissed = () => {
         setSelectImage("");
         setVisibleModal(false)
@@ -40,6 +41,7 @@ const Requirement = (props: any) => {
                         } }>
                             <TouchableOpacity onPress={ () => {
                                 setSelectImage(requirement?.links?.large);
+                                setSelectName( requirement?.file?.name)
                                 setVisibleModal(true)
                             }
                             }>
@@ -59,6 +61,7 @@ const Requirement = (props: any) => {
         })
         }
         <RequirementModal
+            fileName={selectName}
             image={ selectImage }
             visible={ visibleModal }
             onDismissed={ onDismissed }/>

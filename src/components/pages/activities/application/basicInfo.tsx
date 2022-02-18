@@ -17,6 +17,7 @@ import {
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const { width , height } = Dimensions.get("screen");
 
@@ -87,7 +88,7 @@ const BasicInfo = (props: any) => {
                                             getStatusText(props , personnel)
                                         ) ,
                                         {
-                                            fontSize : 16 ,
+                                            fontSize : RFValue(16) ,
                                             fontFamily : Bold ,
                                         }
                                     ] }
@@ -179,19 +180,19 @@ const styles = StyleSheet.create({
     } ,
     icon2 : {
         color : "rgba(248,170,55,1)" ,
-        fontSize : 10
+        fontSize : RFValue(10)
     } ,
     role : {
 
         fontFamily : Bold ,
-        fontSize : 14 ,
+        fontSize : RFValue(14) ,
         textAlign : "left" ,
         paddingHorizontal : 10
     } ,
     submitted : {
         color : "rgba(105,114,135,1)" ,
         textAlign : "right" ,
-        fontSize : 10
+        fontSize : RFValue(10)
     } ,
     container : {
 
