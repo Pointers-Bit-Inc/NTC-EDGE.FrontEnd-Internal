@@ -5,6 +5,7 @@ import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 import {Bold , Regular} from "@styles/font";
+import {disabledColor} from "@styles/color";
 
 const ItemMoreModal = (props: any) => {
     const applicant = props?.details?.applicant?.user
@@ -50,6 +51,7 @@ const ItemMoreModal = (props: any) => {
                                     <View style={styles.group3}>
                                         <View style={styles.Row}>
                                             <PinToTopIcon
+                                                color={disabledColor}
                                                 style={styles.Icon}
                                             />
                                             <Text style={styles.Item}>Pin to top</Text>
@@ -60,6 +62,7 @@ const ItemMoreModal = (props: any) => {
                                     <View style={styles.group3}>
                                         <View style={styles.Row}>
                                             <BellMuteIcon
+                                                color={disabledColor}
                                                 style={styles.Icon}
                                             />
                                             <Text style={styles.Item}>Mute</Text>
@@ -71,6 +74,7 @@ const ItemMoreModal = (props: any) => {
 
                                         <View style={styles.Row}>
                                             <ArchiveIcon
+                                                color={disabledColor}
                                                 style={styles.Icon}
                                             />
                                             <Text style={styles.Item}>Archive</Text>
@@ -83,9 +87,10 @@ const ItemMoreModal = (props: any) => {
                                         <View
                                             style={[styles.Row, {borderBottomColor: undefined, borderBottomWidth: 0}]}>
                                             <DeleteIcon
+                                               color={disabledColor}
                                                 style={styles.Icon}
                                             />
-                                            <Text style={[styles.Item, {color: '#CF0327'}]}>Delete</Text>
+                                            <Text style={[styles.Item, {color: disabledColor}]}>Delete</Text>
                                         </View>
                                     </View>
                                 </TouchableOpacity>
@@ -181,6 +186,7 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start"
     },
     Icon: {
+
         color: "rgba(128,128,128,1)",
         fontSize: 25,
         marginRight: 21,
@@ -189,7 +195,7 @@ const styles = StyleSheet.create({
     },
     Item: {
 
-        color: "#121212",
+        color: disabledColor,
         fontSize: 18
     },
 });
