@@ -25,18 +25,14 @@ export const requirementStyles = StyleSheet.create({
     } ,
     cardLabel : {
         width : "100%" ,
-        justifyContent : "center" ,
+        justifyContent : "space-between" ,
         paddingVertical : 12 ,
         paddingLeft : 12
     } ,
     cardTitle : {
-        paddingVertical: 10,
-        flexDirection : 'row' ,
-        justifyContent : "center" ,
-
+        justifyContent : "space-between" ,
     } ,
     title : {
-        fontSize: 16,
         fontFamily: Bold,
         color : "#1F2022"
     } ,
