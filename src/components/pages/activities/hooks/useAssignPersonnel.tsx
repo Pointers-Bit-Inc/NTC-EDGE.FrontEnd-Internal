@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {UserApplication} from "@pages/activities/interface";
 import axios from "axios";
 import {BASE_URL} from "../../../../services/config";
+import {Alert} from "react-native";
 
 export function useAssignPersonnel(assignedPersonnel, config) {
     const [personnel, setPersonnel] = useState<UserApplication>()
@@ -26,7 +27,7 @@ export function useAssignPersonnel(assignedPersonnel, config) {
                     setLoading(false)
                 }
 
-                console.log(err);
+                Alert.alert('Alert' , err?.message || 'Something went wrong.');
             });
     };
     useEffect(() => {

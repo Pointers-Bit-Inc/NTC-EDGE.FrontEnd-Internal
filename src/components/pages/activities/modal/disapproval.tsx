@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
         fontSize: 30
     },
     nodRemarks: {
-        color: "#000",
+        fontFamily: Bold,
         textAlign: "left",
         fontSize: 18,
         marginLeft: -1

@@ -130,11 +130,11 @@ const Payment = (props:any) => {
                                         <Text style={requirementStyles.paymentDescription}>Payment received for</Text>
                                         <Text style={requirementStyles.paymentDescription}>NTC-EDGE</Text>
                                         <Text style={requirementStyles.paymentDescription}>the amout of</Text>
-                                        <Text style={[requirementStyles.paymentDescription, {fontFamily : Bold}]}>PHP {new Intl.NumberFormat().format(props?.totalFee)}</Text>
+                                        <Text style={[requirementStyles.paymentDescription, {fontFamily : Bold}]}>PHP {props?.totalFee}</Text>
                                         {props?.paymentMethod && <View style={{paddingVertical: 10 }}>
                                              <Text>
                                                 <Text style={[requirementStyles.paymentDescription, {fontFamily: Bold}]}>
-                                                     Payment method: {capitalize(props?.paymentMethod.replace("-", " "))}
+                                                     Payment method: {capitalize(props?.paymentMethod?.replace("-", " "))}
                                                  </Text>
                                              </Text>
                                          </View>}

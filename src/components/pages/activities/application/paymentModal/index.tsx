@@ -73,7 +73,7 @@ const PaymentModal = (props: any) => {
                             <Text style={styles.title}>Payment received for</Text>
                             <Text style={[styles.description]}>NTC-EDGE</Text>
                             <Text style={styles.description}>the amout of</Text>
-                            <Text style={[styles.description, {fontFamily: Bold}]}>PHP {new Intl.NumberFormat().format(props?.totalFee)}</Text>
+                            <Text style={[styles.description, {fontFamily: Bold}]}>PHP {props?.totalFee}</Text>
 
                             {props?.paymentMethod &&
                             <Text style={styles.description}>using your {capitalize(props?.paymentMethod.replace("-", " ")) }</Text>}
