@@ -219,17 +219,18 @@ export const ModalTab = props => {
                         options={{tabBarLabel: tab.name}}
                     >
                         {() => <BasicInfo
-                            paymentMethod={paymentMethod}
-                            assignedPersonnel={assignedPersonnel}
-                            approvalHistory={approvalHistory}
-                            status={props.details.status}
-                            paymentHistory={props?.details?.paymentHistory}
-                            paymentStatus={props?.details?.paymentStatus}
-                            detailsStatus={props?.details?.status}
-                            user={user}
-                            createdAt={createdAt}
-                            applicant={applicant}
-                            key={index}/>}
+                                paymentMethod={paymentMethod}
+                                assignedPersonnel={assignedPersonnel}
+                                approvalHistory={approvalHistory}
+                                status={props.details.status}
+                                paymentHistory={props?.details?.paymentHistory}
+                                paymentStatus={props?.details?.paymentStatus}
+                                detailsStatus={props?.details?.status}
+                                user={user}
+                                createdAt={createdAt}
+                                applicant={applicant}
+                                key={index}/>
+                        }
                     </Tab.Screen>
                 } else if (isShow && tab.id === 2) {
                     return <Tab.Screen
@@ -238,10 +239,10 @@ export const ModalTab = props => {
                         options={{tabBarLabel: tab.name}}
                     >
                         {() => <ApplicationDetails
-                            service={service}
-                            selectedType={selectedTypes}
-                            applicantType={applicationType}
-                            key={index}/>}
+                                service={service}
+                                selectedType={selectedTypes}
+                                applicantType={applicationType}
+                                key={index}/>}
                     </Tab.Screen>
                 } else if (isShow && tab.id === 3) {
                     return <Tab.Screen
