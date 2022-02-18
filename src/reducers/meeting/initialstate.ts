@@ -4,6 +4,7 @@ const InitialState = Record({
   list: [],
   normalizedMeetingList: {},
   activeMeetings: [],
+  normalizeActiveMeetings: {},
   meetingId: null,
   meetingParticipants: [],
   meeting: {},

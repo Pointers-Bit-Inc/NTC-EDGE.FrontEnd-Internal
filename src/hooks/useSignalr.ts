@@ -183,6 +183,17 @@ const useSignalr = () => {
       return callback(err);
     });
   }, []);
+
+  const getActiveMeetingList = useCallback((callback = () => {}) => {
+    api.get('/meeting/get-active-meetings')
+    .then(res => {
+      const normalized = normalize(res.data, new schema.Array(meetingSchema));
+      return callback(null, normalized?.entities?.meetings);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, [])
   
   return {
     connectionStatus,
@@ -203,6 +214,7 @@ const useSignalr = () => {
     endMeeting,
     joinMeeting,
     getMeetingList,
+    getActiveMeetingList,
   }
 }
 

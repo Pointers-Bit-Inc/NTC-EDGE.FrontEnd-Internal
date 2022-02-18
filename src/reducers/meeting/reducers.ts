@@ -11,6 +11,7 @@ const {
   ADD_MEETING_PARTICIPANTS,
   UPDATE_MEETING_PARTICIPANTS,
   REMOVE_MEETING_PARTICIPANTS,
+  SET_ACTIVE_MEETING,
   ADD_ACTIVE_MEETING,
   UPDATE_ACTIVE_MEETING,
   REMOVE_ACTIVE_MEETING,
@@ -34,15 +35,26 @@ export default function basket(state = initialState, action = {}) {
       return state.setIn(['normalizedMeetingList'], {...state.list, ...action.payload});
     }
     case ADD_MEETING: {
-      return state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
+      let newState = state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
+
+      if (!action.payload.ended) {
+        newState = newState.setIn(['normalizeActiveMeetings', action.payload._id], action.payload);
+      }
+
+      return newState;
     }
     case UPDATE_MEETING: {
+      let newState = state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
+
       if (state.meeting?._id === action.payload._id) {
-        return state.setIn(['normalizedMeetingList', action.payload._id], action.payload)
-        .setIn(['meeting'], action.payload);
-      } else {
-        return state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
+        newState = newState.setIn(['meeting'], action.payload);
       }
+
+      if (action.payload.ended) {
+        newState = newState.removeIn(['normalizeActiveMeetings', action.payload._id]);
+      }
+
+      return newState;
     }
     case REMOVE_MEETING: {
       const updatedList = lodash.reject(state.list, l => l._id === action.payload);
@@ -71,10 +83,11 @@ export default function basket(state = initialState, action = {}) {
       const updatedList = lodash.reject(state.meetingParticipants, l => l._id === action.payload);
       return state.setIn(['meetingParticipants'], updatedList);
     }
+    case SET_ACTIVE_MEETING: {
+      return state.setIn(['normalizeActiveMeetings'], action.payload);
+    }
     case ADD_ACTIVE_MEETING: {
-      const list = lodash.clone(state.activeMeetings);
-      list.push(action.payload);
-      return state.setIn(['activeMeetings'], list);
+      return state.setIn(['normalizeActiveMeetings', action.payload._id], action.payload);
     }
     case UPDATE_ACTIVE_MEETING: {
       const updatedList = lodash.reject(state.activeMeetings, l => l._id === action.payload._id);

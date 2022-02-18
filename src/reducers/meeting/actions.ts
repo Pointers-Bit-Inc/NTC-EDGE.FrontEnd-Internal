@@ -10,6 +10,7 @@ const {
   ADD_MEETING_PARTICIPANTS,
   UPDATE_MEETING_PARTICIPANTS,
   REMOVE_MEETING_PARTICIPANTS,
+  SET_ACTIVE_MEETING,
   ADD_ACTIVE_MEETING,
   UPDATE_ACTIVE_MEETING,
   REMOVE_ACTIVE_MEETING,
@@ -97,6 +98,13 @@ export function updateMeetingParticipants(payload) {
 export function removeMeetingParticipants(payload) {
   return {
     type: REMOVE_MEETING_PARTICIPANTS,
+    payload,
+  };
+}
+
+export function setActiveMeetings(payload) {
+  return {
+    type: SET_ACTIVE_MEETING,
     payload,
   };
 }

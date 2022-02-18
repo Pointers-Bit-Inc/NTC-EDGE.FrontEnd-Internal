@@ -42,16 +42,18 @@ import ItemMoreModal from "@pages/activities/itemMoreModal";
 import moment from "moment";
 import ApplicationList from "@pages/activities/applicationList";
 import Loader from "@pages/activities/bottomLoad";
-import useFirebase from 'src/hooks/useFirebase';
+import useSignalr from "src/hooks/useSignalr";
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {getChannelName} from 'src/utils/formatting';
 import lodash from 'lodash';
 import {
     addActiveMeeting ,
     removeActiveMeeting ,
-    setMeetingId ,
+    setMeeting ,
+    setActiveMeetings,
     updateActiveMeeting ,
 } from 'src/reducers/meeting/actions';
+import { setSelectedChannel } from 'src/reducers/channel/actions';
 import {MeetingNotif} from '@components/molecules/list-item';
 import listEmpty from "@pages/activities/listEmpty";
 import HomeMenuIcon from "@assets/svg/homemenu";
@@ -87,14 +89,7 @@ export default function ActivitiesPage(props: any) {
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
     const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const dispatch = useDispatch()
-    const {userActiveMeetingSubscriber, endMeeting} = useFirebase({
-        _id: user._id,
-        name: user.name,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        image: user.image,
-    });
+    const { getActiveMeetingList, endMeeting } = useSignalr();
 
     function getList(list: any, selectedClone) {
         return getFilter({list : list, user : user, selectedClone : selectedClone, cashier : cashier, director : director, checker : checker, evaluator : evaluator, accountant : accountant});
@@ -302,36 +297,15 @@ export default function ActivitiesPage(props: any) {
 
     useEffect(() => {
         let unMount = false;
-        const unsubscriber = userActiveMeetingSubscriber((querySnapshot: FirebaseFirestoreTypes.QuerySnapshot) => {
+        getActiveMeetingList((err, result) => {
             if (!unMount) {
-                querySnapshot.docChanges().forEach((change: any) => {
-                    const data = change.doc.data();
-                    data._id = change.doc.id;
-                    switch (change.type) {
-                        case 'added': {
-                            const hasSave = lodash.find(meetingList, (ch: any) => ch._id === data._id);
-                            if (!hasSave) {
-                                dispatch(addActiveMeeting(data));
-                            }
-                            return;
-                        }
-                        case 'modified': {
-                            dispatch(updateActiveMeeting(data));
-                            return;
-                        }
-                        case 'removed': {
-                            dispatch(removeActiveMeeting(data._id));
-                            return;
-                        }
-                        default:
-                            return;
-                    }
-                });
+                if (result) {
+                    setActiveMeetings(result);
+                }
             }
-        })
+        });
         return () => {
             unMount = true;
-            unsubscriber();
         }
     }, []);
 
@@ -383,7 +357,8 @@ export default function ActivitiesPage(props: any) {
     }, [size, total, page])
 
     const onJoin = (item) => {
-        dispatch(setMeetingId(item._id));
+        dispatch(setSelectedChannel(item.room));
+        dispatch(setMeeting(item));
         props.navigation.navigate('Dial', {
             isHost: item.host._id === user._id,
             isVoiceCall: item.isVoiceCall,
@@ -396,7 +371,7 @@ export default function ActivitiesPage(props: any) {
 
     const onClose = (item) => {
         if (item.host._id === user._id) {
-            endMeeting(item._id);
+            // endMeeting(item._id);
         } else {
             dispatch(removeActiveMeeting(item._id));
         }
