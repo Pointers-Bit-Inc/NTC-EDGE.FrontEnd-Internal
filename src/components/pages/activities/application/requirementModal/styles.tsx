@@ -1,5 +1,5 @@
 import {StyleSheet} from "react-native";
-import {Bold} from "@styles/font";
+import {Bold , Regular} from "@styles/font";
 
 export const requirementStyles = StyleSheet.create({
     container : {
@@ -34,8 +34,13 @@ export const requirementStyles = StyleSheet.create({
     } ,
     title : {
         fontFamily: Bold,
-        color : "#1F2022"
+        color : "#37405B"
     } ,
+
+    paymentDescription:{
+        fontFamily: Regular,
+        color: "#37405B"
+    },
     description : {
         color : "#1F2022",
         justifyContent: "center"
