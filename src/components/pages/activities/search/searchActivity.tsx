@@ -79,6 +79,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
                         <View style={styles.group}>
                             <InputField  ref={inputRef}
+                                         inputStyle={{fontWeight: "400", fontSize: 14}}
                                          value={props.value}
                                          onEndEditing={props.onEndEditing}
                                          onChange={props.onChange}
