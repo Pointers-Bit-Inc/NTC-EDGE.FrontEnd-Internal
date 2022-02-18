@@ -634,7 +634,7 @@ export default function ActivitiesPage(props: any) {
                                 return (
 
                                     <ActivityItem
-                                        isOpen={isOpen === `${index}${i}`}
+                                        isOpen={isOpen}
                                         /*config={config}
                                         isPinned={true}*/
                                         searchQuery={searchTerm}
@@ -654,7 +654,7 @@ export default function ActivitiesPage(props: any) {
                                                 setModalVisible(true)
                                             }
 
-                                        }} index={i}
+                                        }} index={`${index}${i}`}
                                         swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
                                 )
                             }}/>
