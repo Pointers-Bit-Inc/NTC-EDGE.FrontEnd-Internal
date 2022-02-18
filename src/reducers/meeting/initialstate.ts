@@ -7,6 +7,7 @@ const InitialState = Record({
   meetingId: null,
   meetingParticipants: [],
   meeting: {},
+  connectionStatus: "",
 });
 
 export default InitialState;

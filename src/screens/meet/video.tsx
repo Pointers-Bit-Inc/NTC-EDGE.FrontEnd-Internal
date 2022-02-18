@@ -53,18 +53,13 @@ const styles = StyleSheet.create({
 const Dial = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { meeting } = useSelector((state:RootStateOrAny) => state.meeting);
+  const meeting = useSelector((state:RootStateOrAny) => {
+    const { meeting } = state.meeting;
+    meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
+      return meeting;
+  });
   const { options, isHost = false, isVoiceCall } = route.params;
-  const { _id, isGroup, channelName, otherParticipants } = useSelector(
-    (state:RootStateOrAny) => {
-      const { selectedChannel } = state.channel;
-      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
-      return selectedChannel;
-    }
-  );
-  
   const { endMeeting, joinMeeting } = useSignalr();
-
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
   const [timer, setTimer] = useState(0);
@@ -121,7 +116,7 @@ const Dial = ({ navigation, route }) => {
           size={16}
           numberOfLines={1}
         >
-          {getChannelName({ otherParticipants, isGroup, channelName: meeting.channelName })}
+          {getChannelName({ otherParticipants: meeting?.otherParticipants, isGroup: meeting?.isGroup, hasRoomName: meeting.hasRoomName, name: meeting.name })}
         </Text>
         <Text
           color='white'
@@ -168,7 +163,7 @@ const Dial = ({ navigation, route }) => {
         header={header()}
         options={options}
         user={user}
-        participants={otherParticipants}
+        participants={meeting.otherParticipants}
         meetingParticipants={meeting.participants}
         agora={agora}
         isVoiceCall={isVoiceCall}

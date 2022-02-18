@@ -8,8 +8,7 @@ import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
 
 const useSignalr = () => {
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const [isConnected, setIsConnected] = useState(false);
-  const [isReconnecting, setIsReconnecting] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState('');
   const signalr = useRef<HubConnection|null>(null);
   const api = useApi(user.token);
 
@@ -22,21 +21,16 @@ const useSignalr = () => {
         .withAutomaticReconnect()
         .configureLogging(LogLevel.Debug)
         .build();
-    signalr.current.onclose(() => setIsConnected(false));
-    signalr.current.onreconnected(() => {
-      setIsConnected(true);
-      setIsReconnecting(false);
-    });
-    signalr.current.onreconnecting(() => {
-      setIsReconnecting(true);
-    });
-    signalr.current.start().then(() => setIsConnected(true));
+    signalr.current.serverTimeoutInMilliseconds = 1000 * 60 * 3;
+    signalr.current.keepAliveIntervalInMilliseconds = 1000 * 60 * 1;
+    signalr.current.onclose(() => setConnectionStatus('disconnected'));
+    signalr.current.onreconnected(() => setConnectionStatus('connected'));
+    signalr.current.onreconnecting(() => setConnectionStatus('reconnecting'));
+    signalr.current.start().then(() => setConnectionStatus('connected'));
   }, []);
   const destroySignalR = useCallback(() => {
-    if (isConnected) {
-      signalr.current?.stop();
-    }
-  }, [isConnected]);
+    signalr.current?.stop();
+  }, []);
 
   const onConnection = useCallback((connection, callback = () => {}) =>
     signalr.current?.on(connection, callback),
@@ -191,8 +185,7 @@ const useSignalr = () => {
   }, []);
   
   return {
-    isConnected,
-    isReconnecting,
+    connectionStatus,
     initSignalR,
     destroySignalR,
     onConnection,

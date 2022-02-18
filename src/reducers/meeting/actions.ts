@@ -14,7 +14,15 @@ const {
   UPDATE_ACTIVE_MEETING,
   REMOVE_ACTIVE_MEETING,
   RESET_MEETING,
+  CONNECTION_STATUS,
 } = require('./types').default;
+
+export function setConnectionStatus(payload) {
+  return {
+    type: CONNECTION_STATUS,
+    payload,
+  };
+}
 
 export function setMeetings(payload) {
   return {

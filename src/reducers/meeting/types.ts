@@ -16,4 +16,5 @@ export default keyMirror({
   UPDATE_ACTIVE_MEETING: null,
   REMOVE_ACTIVE_MEETING: null,
   RESET_MEETING: null,
+  CONNECTION_STATUS: null,
 });

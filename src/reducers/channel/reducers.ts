@@ -115,8 +115,8 @@ export default function basket(state = initialState, action:any) {
     case RESET_CHANNEL: {
       return state.setIn(['selectedChannel'], {})
         .setIn(['agora'], {})
-        .setIn(['channelList'], [])
-        .setIn(['messages'], [])
+        .setIn(['normalizedChannelList'], [])
+        .setIn(['normalizedMessages'], [])
         .setIn(['selectedMessage'], {})
         .setIn(['meetingList'], [])
         .setIn(['searchValue'], '');

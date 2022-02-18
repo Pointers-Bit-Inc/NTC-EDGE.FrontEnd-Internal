@@ -12,7 +12,7 @@ import styles from "@screens/HomeScreen/DrawerNavigation/styles";
 import {button} from "@styles/color";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {resetUser} from "../../reducers/user/actions";
-import { resetMeeting, addMeeting, updateMeeting } from 'src/reducers/meeting/actions';
+import { resetMeeting, addMeeting, updateMeeting, setConnectionStatus } from 'src/reducers/meeting/actions';
 import { resetChannel, addMessages, updateMessages, addChannel, removeChannel } from 'src/reducers/channel/actions';
 import Api from 'src/services/api';
 import UserProfileScreen from "@screens/HomeScreen/UserProfile";
@@ -27,6 +27,7 @@ const ActivitiesScreen = (props:any) => {
     const onShow = () => setShowAlert(true);
     const [showAlert, setShowAlert] = useState(false);
     const {
+        connectionStatus,
         initSignalR,
         destroySignalR,
         onConnection,
@@ -46,8 +47,11 @@ const ActivitiesScreen = (props:any) => {
     }, []);
 
     useEffect(() => {
+      dispatch(setConnectionStatus(connectionStatus));
+    }, [connectionStatus])
+
+    useEffect(() => {
         initSignalR();
-    
         onConnection('OnChatUpdate', (users, type, data) => {
           switch(type) {
             case 'create': {

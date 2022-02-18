@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
 const ChatList = ({ navigation }:any) => {
   useRequestCameraAndAudioPermission();
   const dispatch = useDispatch();
+  const swipeableRef:any = useRef({});
   const user = useSelector((state:RootStateOrAny) => state.user);
   const channelList = useSelector((state:RootStateOrAny) => {
     const { normalizedChannelList } = state.channel
@@ -355,6 +356,7 @@ const ChatList = ({ navigation }:any) => {
             }
             renderItem={({ item }:any) => (
               <Swipeable
+                ref={ref => swipeableRef.current[item._id] = ref}
                 renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, item)}
               >
                 <ChatItem
@@ -388,6 +390,7 @@ const ChatList = ({ navigation }:any) => {
         )
       }
       <AwesomeAlert
+        overlayStyle={{ flex: 1 }}
         show={showAlert}
         showProgress={false}
         contentContainerStyle={{ borderRadius: 15 }}
@@ -406,7 +409,10 @@ const ChatList = ({ navigation }:any) => {
         actionContainerStyle={{ justifyContent: 'space-around' }}
         cancelText="Cancel"
         confirmText="Delete"
-        onCancelPressed={() => setShowAlert(false)}
+        onCancelPressed={() => {
+          swipeableRef.current[selectedItem?._id]?.close();
+          setShowAlert(false);
+        }}
         onConfirmPressed={() => {
           setShowAlert(false);
           setTimeout(() => 

@@ -15,6 +15,7 @@ const {
   UPDATE_ACTIVE_MEETING,
   REMOVE_ACTIVE_MEETING,
   RESET_MEETING,
+  CONNECTION_STATUS,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -23,6 +24,9 @@ const initialState = new InitialState();
 
 export default function basket(state = initialState, action = {}) {
   switch (action.type) {
+    case CONNECTION_STATUS: {
+      return state.setIn(['connectionStatus'], action.payload);
+    }
     case SET_MEETINGS: {
       return state.setIn(['normalizedMeetingList'], action.payload);
     }
@@ -82,10 +86,8 @@ export default function basket(state = initialState, action = {}) {
       return state.setIn(['activeMeetings'], updatedList);
     }
     case RESET_MEETING: {
-      return state.setIn(['list'], [])
+      return state.setIn(['normalizedMeetingList'], {})
         .setIn(['activeMeetings'], [])
-        .setIn(['meetingId'], null)
-        .setIn(['meetingParticipants'], [])
         .setIn(['meeting'], {});
     }
     default:
