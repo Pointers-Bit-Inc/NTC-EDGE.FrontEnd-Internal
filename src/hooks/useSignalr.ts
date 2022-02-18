@@ -158,6 +158,16 @@ const useSignalr = () => {
     });
   }, []);
 
+  const joinMeeting = useCallback((meetingId, callback = () => {}) => {
+    api.get(`/meeting/join?meetingId=${meetingId}`)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
   const endMeeting = useCallback((id, callback = () => {}) => {
     api.patch(`/meeting/end?id=${id}`)
     .then(res => {
@@ -198,6 +208,7 @@ const useSignalr = () => {
     getMessages,
     createMeeting,
     endMeeting,
+    joinMeeting,
     getMeetingList,
   }
 }

@@ -115,7 +115,7 @@ const List = () => {
     getMessages(channelId, pageIndex, (err, res) => {
       setLoading(false);
       if (res) {
-        dispatch(addToMessages(res.list));
+        if (res.list) dispatch(addToMessages(res.list));
         setPageIndex(current => current + 1);
         setHasMore(res.hasMore);
       }
@@ -147,11 +147,11 @@ const List = () => {
   }, [])
 
   // useEffect(() => {
-  //   const lastMessage = lodash.first(messages);
-  //   if (lastMessage?._id) {
-  //     const hasSeen = lodash.find(lastMessage.seen, s => s._id === user._id)
-  //     if (lastMessage?.sender?._id !== user._id && !hasSeen) {
-  //       seenMessage(lastMessage._id);
+  //   if (messages && messages[0]) {
+  //     const hasSeen = lodash.find(messages[0].seen, s => s._id === user._id);
+  //     if (!hasSeen) {
+  //       console.log('HERE CALLED');
+  //       seenMessage(messages[0]._id);
   //     }
   //   }
   // }, [messages]);

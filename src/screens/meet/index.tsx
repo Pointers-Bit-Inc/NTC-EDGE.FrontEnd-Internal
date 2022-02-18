@@ -133,7 +133,7 @@ const Meet = ({ navigation }) => {
     const url = `/room/list?pageIndex=${pageIndex}`;
     getMeetingList(url, (err:any, res:any) => {
       if (res) {
-        dispatch(addToMeetings(res.list));
+        if (res.list) dispatch(addToMeetings(res.list));
         setPageIndex(current => current + 1);
         setHasMore(res.hasMore);
       }

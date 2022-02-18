@@ -33,7 +33,12 @@ export default function basket(state = initialState, action = {}) {
       return state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
     }
     case UPDATE_MEETING: {
-      return state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
+      if (state.meeting?._id === action.payload._id) {
+        return state.setIn(['normalizedMeetingList', action.payload._id], action.payload)
+        .setIn(['meeting'], action.payload);
+      } else {
+        return state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
+      }
     }
     case REMOVE_MEETING: {
       const updatedList = lodash.reject(state.list, l => l._id === action.payload);
@@ -41,7 +46,6 @@ export default function basket(state = initialState, action = {}) {
     }
     case SET_MEETING: {
       return state.setIn(['meeting'], action.payload)
-      .setIn(['meetingParticipants'], action.payload.meetingParticipants);
     }
     case SET_MEETING_ID: {
       return state.setIn(['meetingId'], action.payload);

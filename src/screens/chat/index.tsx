@@ -181,7 +181,7 @@ const ChatList = ({ navigation }:any) => {
       `/room/list?pageIndex=${pageIndex}`;
     getChatList(url, (err:any, res:any) => {
       if (res) {
-        dispatch(addToChannelList(res.list));
+        if (res.list) dispatch(addToChannelList(res.list));
         setPageIndex(current => current + 1);
         setHasMore(res.hasMore);
       }

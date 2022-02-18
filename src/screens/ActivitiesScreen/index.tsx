@@ -50,8 +50,16 @@ const ActivitiesScreen = (props:any) => {
     
         onConnection('OnChatUpdate', (users, type, data) => {
           switch(type) {
-            case 'create': dispatch(addMessages(data)); break;
-            case 'update': dispatch(updateMessages(data)); break;
+            case 'create': {
+              data.hasSeen = lodash.find(data.seen, s => s._id === user._id);
+              dispatch(addMessages(data));
+              break;
+            }
+            case 'update': {
+              data.hasSeen = lodash.find(data.seen, s => s._id === user._id);
+              dispatch(updateMessages(data));
+              break;
+            }
           }
         });
 

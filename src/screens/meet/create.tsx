@@ -95,16 +95,14 @@ const CreateMeeting = ({ navigation, route }:any) => {
   const onStartMeeting = () => {
     setLoading(true);
     if (isChannelExist) {
-      createMeeting({ roomId: channelId, isVoiceCall, name: meetingName }, (error, data) => {
+      createMeeting({ roomId: channelId, isVoiceCall, participants, name: meetingName }, (error, data) => {
         setLoading(false);
-        console.log('IS CHANNEL EXIST DATA', data);
         if (!error) {
           const { room } = data;
           data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
           room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room, isChannelExist));
-          dispatch(setMeetingId(data._id));
-          dispatch(setMeeting({}));
+          dispatch(setMeeting(data));
           navigation.replace('JoinVideoCall', {
             isHost: true,
             isVoiceCall,

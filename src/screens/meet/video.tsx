@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
 const Dial = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { meeting, meetingParticipants } = useSelector((state:RootStateOrAny) => state.meeting);
+  const { meeting } = useSelector((state:RootStateOrAny) => state.meeting);
   const { options, isHost = false, isVoiceCall } = route.params;
   const { _id, isGroup, channelName, otherParticipants } = useSelector(
     (state:RootStateOrAny) => {
@@ -62,13 +62,33 @@ const Dial = ({ navigation, route }) => {
       return selectedChannel;
     }
   );
-  const channelId = _id;
   
-  const { endMeeting } = useSignalr();
+  const { endMeeting, joinMeeting } = useSignalr();
 
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
   const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    let unmounted = false;
+    
+    joinMeeting(meeting._id, (err, result) => {
+      console.log('ERR RESULT', err, result);
+      if (!unmounted) {
+        if (result) {
+          setLoading(false);
+          setAgora(result);
+        } else {
+          setLoading(false);
+          Alert.alert('Something went wrong.');
+        }
+      }
+    });
+  
+    return () => {
+      unmounted = true;
+    }
+  }, []);
 
   useEffect(() => {
     let interval:any = null;
@@ -149,7 +169,7 @@ const Dial = ({ navigation, route }) => {
         options={options}
         user={user}
         participants={otherParticipants}
-        meetingParticipants={meetingParticipants}
+        meetingParticipants={meeting.participants}
         agora={agora}
         isVoiceCall={isVoiceCall}
         callEnded={meeting?.ended}
