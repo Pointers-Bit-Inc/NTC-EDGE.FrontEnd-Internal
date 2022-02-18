@@ -488,7 +488,7 @@ export default function ActivitiesPage(props: any) {
 
                 <View style={styles.group}>
                     <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, , !lodash.size(meetingList) &&{ ...{ opacity }, position: "absolute", transform: [{ translateY: headerTranslate }] }]}>
-                        <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+                        <TouchableOpacity onPress={() => props.navigation.navigate('Settings')}>
                             <HomeMenuIcon/>
                             {/* <ProfileImage
                                 size={45}
