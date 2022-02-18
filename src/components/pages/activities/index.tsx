@@ -1,4 +1,4 @@
-import React , {Fragment , useCallback , useEffect , useMemo , useState} from "react";
+import React , {Fragment , useRef, useCallback , useEffect , useMemo , useState} from "react";
 import {
     Alert ,
     Animated ,
@@ -167,7 +167,7 @@ export default function ActivitiesPage(props: any) {
     const query = () => {
         return {
             ...(searchTerm && {keyword: searchTerm}),
-            ...({sort: checkDateAdded.length ? "asc" : "desc"}),
+            ...(checkDateAdded && {sort: checkDateAdded.length ? "asc" : "desc"}),
             ...(selectedClone.length > 0 && {
                 [cashier ? "paymentStatus" : 'status']: selectedClone.map((item: any) => {
                     if (cashier) {
@@ -413,21 +413,82 @@ export default function ActivitiesPage(props: any) {
     }
 
     const [isOpen, setIsOpen] = useState()
-    const [isPrevOpen, setIsPrevOpen] = useState()
     const onMoreModalDismissed = (isOpen) => {
-
         setIsOpen(isOpen)
         setMoreModalVisible(false)
     }
+    const CONTAINER_HEIGHT = 70
+    const scrollY = useRef(new Animated.Value(0)).current;
+    const offsetAnim = useRef(new Animated.Value(0)).current;
+    const clampedScroll = Animated.diffClamp(
+        Animated.add(
+            scrollY.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 1],
+                extrapolateLeft: 'clamp',
+            }),
+            offsetAnim,
+        ),
+        0,
+        CONTAINER_HEIGHT
+    )
+    var _clampedScrollValue = 0;
+    var _offsetValue = 0;
+    var _scrollValue = 0;
+    useEffect(() => {
+        scrollY.addListener(({ value }) => {
+            const diff = value - _scrollValue;
+            _scrollValue = value;
+            _clampedScrollValue = Math.min(
+                Math.max(_clampedScrollValue + diff, 0),
+                CONTAINER_HEIGHT,
+            )
+        });
+        offsetAnim.addListener(({ value }) => {
+            _offsetValue = value;
+        })
+    }, []);
+
+    var scrollEndTimer = null;
+    const onMomentumScrollBegin = () => {
+        clearTimeout(scrollEndTimer)
+    }
+    const onMomentumScrollEnd = () => {
+
+        const toValue = _scrollValue > CONTAINER_HEIGHT &&
+                        _clampedScrollValue > (CONTAINER_HEIGHT) / 2
+                        ? _offsetValue + CONTAINER_HEIGHT : _offsetValue - CONTAINER_HEIGHT;
+
+        Animated.timing(offsetAnim, {
+            toValue,
+            duration: 500,
+            useNativeDriver: true,
+        }).start();
+    }
+    const onScrollEndDrag = () => {
+        scrollEndTimer = setTimeout(onMomentumScrollEnd, 250);
+    }
+
+    const headerTranslate = clampedScroll.interpolate({
+        inputRange: [0, CONTAINER_HEIGHT],
+        outputRange: [0, -CONTAINER_HEIGHT],
+        extrapolate: 'clamp',
+    })
+    const opacity = clampedScroll.interpolate({
+        inputRange: [0, CONTAINER_HEIGHT - 20, CONTAINER_HEIGHT],
+        outputRange: [1, 0.5, 0],
+        extrapolate: 'clamp',
+    })
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
+
             <View style={[styles.container]}>
 
 
                 <View style={styles.group}>
-                    <View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 35}, ]}>
-                        <TouchableOpacity onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
+                    <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, , !lodash.size(meetingList) &&{ ...{ opacity }, position: "absolute", transform: [{ translateY: headerTranslate }] }]}>
+                        <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
                             <HomeMenuIcon/>
                             {/* <ProfileImage
                                 size={45}
@@ -444,7 +505,7 @@ export default function ActivitiesPage(props: any) {
                         }>
                             <FilterIcon fill={"#fff"}/>
                         </TouchableOpacity>
-                    </View>
+                    </Animated.View>
                 </View>
                 <View>
                     {
@@ -474,12 +535,16 @@ export default function ActivitiesPage(props: any) {
                     }
 
                 </View>
-                <FakeSearchBar onPress={() => {
+                <FakeSearchBar animated={!lodash.size(meetingList) && { ...{ opacity }, top: 73 * (1 + lodash.size(meetingList)), elevation: 10, zIndex: 10,  position: "absolute", transform: [{ translateY: headerTranslate }] }} onPress={() => {
                     //setSearchVisible(true)
                     props.navigation.navigate('SearchActivities')
                 }} searchVisible={searchVisible}/>
-                <FlatList
-                    contentContainerStyle={{ flexGrow: 1}}
+                <Animated.FlatList
+                    onScroll={Animated.event(
+                        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                        { useNativeDriver: true }
+                    )}
+                    contentContainerStyle={{ paddingTop: !lodash.size(meetingList) && 140 * (lodash.size(meetingList ) || 1), flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
                     ListHeaderComponent={() => (
                         <>
@@ -530,7 +595,6 @@ export default function ActivitiesPage(props: any) {
                                 }
                             </View> }
                         </>
-
                     )}
                     refreshControl={
                         <RefreshControl
@@ -570,7 +634,7 @@ export default function ActivitiesPage(props: any) {
                                 return (
 
                                     <ActivityItem
-                                        isOpen={isOpen}
+                                        isOpen={isOpen === `${index}${i}`}
                                         /*config={config}
                                         isPinned={true}*/
                                         searchQuery={searchTerm}
@@ -580,7 +644,6 @@ export default function ActivitiesPage(props: any) {
                                         activity={activity}
                                         currentUser={user}
                                         onPressUser={(event: any) => {
-
                                             setIsOpen(undefined)
                                             setDetails({...activity, isOpen:`${index}${i}`})
                                             /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
@@ -591,7 +654,7 @@ export default function ActivitiesPage(props: any) {
                                                 setModalVisible(true)
                                             }
 
-                                        }} index={`${index}${i}`}
+                                        }} index={i}
                                         swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
                                 )
                             }}/>
@@ -625,3 +688,5 @@ export default function ActivitiesPage(props: any) {
 
     );
 }
+
+

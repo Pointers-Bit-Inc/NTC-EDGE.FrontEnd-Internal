@@ -194,7 +194,8 @@ export function ActivityItem(props:any) {
             <View style={{backgroundColor: "#fff"}}>
 
 
-                    <TouchableOpacity onPress={() =>{
+                    <TouchableOpacity  onPress={() =>{
+
                         props.onPressUser()
                     }}>
                         <Swipeable
