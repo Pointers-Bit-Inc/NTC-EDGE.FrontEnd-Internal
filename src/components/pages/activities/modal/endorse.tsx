@@ -204,9 +204,10 @@ const Endorsed = (props: any) => {
                                     }}
                                     outlineStyle={{
                                         borderRadius: 4,
-                                        paddingTop: 5,
+                                        paddingTop: 10,
                                         height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.15
                                     }}
+                                    inputStyle={{fontWeight: "400", fontSize: 14}}
                                     error={validateRemarks.error}
                                     errorColor={errorColor}
                                     placeholder={'Remarks'}

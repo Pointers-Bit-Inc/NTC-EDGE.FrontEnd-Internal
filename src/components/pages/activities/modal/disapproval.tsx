@@ -132,10 +132,11 @@ function Disapproval(props: any) {
                             clearable={false}
                             outlineStyle={{
                               //  borderColor: "rgba(202,210,225,1)",
-                               paddingTop: 5,
+                               paddingTop: 10,
                                 height: (height < 720 && isKeyboardVisible) ? 100 : height * 0.25
                             }}
                             placeholder={'Remarks'}
+                            inputStyle={{fontWeight: "400", fontSize: 14}}
                             multiline={true}
                             value={text}
                             onChangeText={setText}
