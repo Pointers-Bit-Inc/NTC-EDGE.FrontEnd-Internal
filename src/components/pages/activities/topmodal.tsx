@@ -13,6 +13,7 @@ import RadioButtonOnIcon from "@assets/svg/radioButtonOn";
 import RadioButtonOffIcon from "@assets/svg/radioButtonOff";
 import {getRole} from "@pages/activities/script";
 import {Bold , Regular} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const window = Dimensions.get("window")
 
@@ -119,8 +120,8 @@ function TopModal(props: any) {
                                                 dispatch(on_checked(top))
                                             }}>
                                                 {
-                                                    top.checked ? <RadioButtonOnIcon width={32} height={32}/> :
-                                                        <RadioButtonOffIcon width={32} height={32}/>
+                                                    top.checked ? <RadioButtonOnIcon width={RFValue(32)} height={RFValue(32)}/> :
+                                                        <RadioButtonOffIcon width={RFValue(32)} height={RFValue(32)}/>
                                                 }
 
                                             </TouchableOpacity>
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
         paddingTop: 15,
     },
     sort: {
-        fontSize: 18,
+        fontSize: RFValue(15),
         fontFamily: Bold,
         color: "#121212",
         textAlign: "left",
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
         marginLeft: 18
     },
     sort1: {
-        fontSize: 16,
+        fontSize: RFValue(16),
         fontFamily: Regular,
         color: "#000",
     },
@@ -192,23 +193,23 @@ const styles = StyleSheet.create({
     filter: {
         fontFamily: Bold,
         color: "rgba(255,255,255,1)",
-        fontSize: 16,
+        fontSize: RFValue(16),
         marginTop: 5
     },
     filter1: {
         alignSelf: "center",
         fontFamily: Bold,
         color: "rgba(255,255,255,1)",
-        fontSize: 16,
+        fontSize: RFValue(16),
     },
     icon: {
         color: "rgba(255,255,255,1)",
-        fontSize: 25,
+        fontSize: RFValue(25),
         marginLeft: 272
     },
     icon1: {
         color: "rgba(255,255,255,1)",
-        fontSize: 25,
+        fontSize: RFValue(25),
     },
     filterRow: {
         height: 29,
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
     },
     icon4: {
 
-        fontSize: 32
+        fontSize: RFValue(32)
     },
     label: {
         fontFamily: Bold,
@@ -272,13 +273,13 @@ const styles = StyleSheet.create({
     },
     icon6: {
         color: "rgba(128,128,128,1)",
-        fontSize: 25,
+        fontSize: RFValue(25),
         marginRight: 21,
         marginTop: 15
     },
     icon6_1: {
         color: "rgba(128,128,128,1)",
-        fontSize: 25,
+        fontSize: RFValue(25),
     },
     item: {
         justifyContent: 'space-between',

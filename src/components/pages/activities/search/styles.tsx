@@ -1,6 +1,7 @@
 import {Dimensions, StyleSheet} from "react-native";
 import {outline} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 const {width, height} = Dimensions.get('window');
 export const styles = StyleSheet.create({
    header:{
@@ -44,7 +45,7 @@ export const styles = StyleSheet.create({
     },
     icon: {
         color: "rgba(128,128,128,1)",
-        fontSize: 24,
+        fontSize: RFValue(14),
 
     },
     group: {
@@ -67,14 +68,14 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 15,
         paddingVertical: 12,
         color: "#121212",
-        fontSize: 14,
+        fontSize: RFValue(14),
         textAlign: "left"
     },
     icon2: {
         alignSelf: "flex-end",
          position: "absolute",
         color: "rgba(128,128,128,1)",
-        fontSize: 25,
+        fontSize: RFValue(25),
     },
     textInputStack: {
          flexDirection: "row"
@@ -95,7 +96,7 @@ export const styles = StyleSheet.create({
    
     recentSearches: {
         fontFamily: Bold,
-        fontSize: 18,
+        fontSize: RFValue(18),
         lineHeight: 28,
         color: "#000",
 
@@ -116,10 +117,10 @@ export const styles = StyleSheet.create({
     icon3: {
         marginRight: 10,
         color: "rgba(128,128,128,1)",
-        fontSize: 25
+        fontSize: RFValue(25)
     },
     loremIpsum: {
-       fontSize: 18,
+       fontSize: RFValue(18),
         fontFamily: Regular,
         color: "#121212"
     },

@@ -18,6 +18,7 @@ import {Bold , Regular , Regular500} from "@styles/font";
 import RequirementModal from "@pages/activities/application/requirementModal";
 import _ from "lodash";
 import {capitalize} from "@pages/activities/script";
+import {RFValue} from "react-native-responsive-fontsize";
 const {width, height} = Dimensions.get("screen")
 const Payment = (props:any) => {
     const [visibleModal, setVisibleModal] = useState(false)
@@ -46,7 +47,7 @@ const Payment = (props:any) => {
                 <Text
                   style={{fontFamily: Bold} }
                     color="#37405B"
-                    fontSize={14}
+                    fontSize={RFValue(14)}
                 >
                     Statement of Account
                 </Text>
@@ -58,14 +59,14 @@ const Payment = (props:any) => {
                     <Text
                         style={{fontFamily: Bold} }
                         color="#37405B"
-                        fontSize={14}
+                        fontSize={RFValue(14)}
                     >
                         Particular
                     </Text>
                     <Text
                         style={{fontFamily: Bold} }
                         color="#37405B"
-                        fontSize={14}
+                        fontSize={RFValue(14)}
                     >
                         Amount
                     </Text>
@@ -78,13 +79,13 @@ const Payment = (props:any) => {
                         >
                             <Text
                                 color="#37405B"
-                                fontSize={14}
+                                fontSize={RFValue(14)}
                             >
                                 {soa.item}
                             </Text>
                             <Text
                                 color="#37405B"
-                                fontSize={14}
+                                fontSize={RFValue(14)}
                             >
                                 P{soa.amount}
                             </Text>
@@ -96,7 +97,7 @@ const Payment = (props:any) => {
                 >
                     <Text
                         color="#37405B"
-                        fontSize={16}
+                        fontSize={RFValue(16)}
                         style={{ marginRight: 15, fontFamily: Bold }}
                     >
                         Total
@@ -104,7 +105,7 @@ const Payment = (props:any) => {
                     <Text
                         style={{fontFamily: Bold} }
                         color="#37405B"
-                        fontSize={16}
+                        fontSize={RFValue(16)}
                     >
                         P{props.totalFee}
                     </Text>

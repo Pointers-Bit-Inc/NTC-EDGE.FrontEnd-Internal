@@ -25,6 +25,7 @@ import {useOrientation} from "@pages/activities/hooks/useOrientation";
 import {getRole} from "@pages/activities/script";
 import {Bold , Regular , Regular500} from "@styles/font";
 import CloseIcon from "@assets/svg/close";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const {height, width} = Dimensions.get('window');
 
@@ -207,7 +208,7 @@ const Endorsed = (props: any) => {
                                         paddingTop: 10,
                                         height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.15
                                     }}
-                                    inputStyle={{fontWeight: "400", fontSize: 14}}
+                                    inputStyle={{fontWeight: "400", fontSize: RFValue(14)}}
                                     error={validateRemarks.error}
                                     errorColor={errorColor}
                                     placeholder={'Remarks'}
@@ -258,7 +259,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         color: "rgba(128,128,128,1)",
-        fontSize: 25,
+        fontSize: RFValue(25),
     },
     group: {
         width: 138,
@@ -268,12 +269,12 @@ const styles = StyleSheet.create({
     },
     icon2: {
         color: "#000",
-        fontSize: 30
+        fontSize: RFValue(30)
     },
     endorseTo: {
         fontFamily: Regular500,
         color: "#121212",
-        fontSize: 18,
+        fontSize: RFValue(18),
         paddingLeft: 10,
         paddingTop: 3
     },
