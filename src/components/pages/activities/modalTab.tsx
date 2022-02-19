@@ -209,7 +209,8 @@ export const ModalTab = props => {
         proofOfPayment = props?.details?.proofOfPayment;
     return <Tab.Navigator screenOptions={({ route }) => ({
         tabBarIndicatorStyle:{
-          backgroundColor: primaryColor
+            height: RFValue(3),
+            backgroundColor: primaryColor
         },
         tabBarLabelStyle: {
           fontFamily: Bold,
