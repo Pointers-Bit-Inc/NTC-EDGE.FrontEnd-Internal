@@ -210,10 +210,16 @@ export const ModalTab = props => {
     return <Tab.Navigator screenOptions={({ route }) => ({
         tabBarIndicatorStyle:{
             height: RFValue(3),
-            backgroundColor: primaryColor
+            backgroundColor: primaryColor,
+
+        },
+        tabBarItemStyle:{
+            width: "auto",
+
         },
         tabBarLabelStyle: {
-          fontFamily: Bold,
+            height: 10,
+            fontFamily: Bold,
             fontSize: RFValue(12),
             lineHeight: RFValue(14)
         },
