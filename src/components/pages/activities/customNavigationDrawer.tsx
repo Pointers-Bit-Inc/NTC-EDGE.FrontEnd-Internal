@@ -11,6 +11,7 @@ import {
 } from '@react-navigation/drawer';
 import LogoutIcon from "@assets/svg/logout";
 import MoreDrawerIcon from "@assets/svg/moreActivityDrawer";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const CustomSidebarMenu = (props:any) => {
     const toggleDrawer = () => {
@@ -49,7 +50,7 @@ const CustomSidebarMenu = (props:any) => {
 const styles = StyleSheet.create({
     icon2: {
         color: "rgba(207,3,39,1)",
-        fontSize: 18
+        fontSize: RFValue(18)
     },
     logOut: {
         color: "rgba(207,3,39,1)"
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         color: "rgba(0,0,0,1)",
-        fontSize: 22,
+        fontSize: RFValue(22),
         height: 25,
         marginTop: 54,
         marginLeft: 28

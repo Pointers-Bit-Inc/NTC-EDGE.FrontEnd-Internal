@@ -12,6 +12,8 @@ import {
 import Loader from "@pages/activities/bottomLoad";
 import {Regular500} from "@styles/font";
 import ImageView from "@pages/activities/application/ImageView";
+import FadeBackground from "@assets/svg/fade-background";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const { width , height } = Dimensions.get('window');
 
@@ -43,7 +45,7 @@ const RequirementModal = (props: any) => {
                 </View>
             </TouchableWithoutFeedback>
             <View style={ styles.rect2 }>
-                <View style={ { alignSelf : 'flex-end' , marginRight : 15 , marginTop : 35 } }>
+                <View style={ { alignSelf : 'flex-end' ,  paddingHorizontal : 15 , paddingVertical : 15 } }>
                     <TouchableOpacity onPress={ () => {
                         props.onDismissed()
                     }
@@ -65,15 +67,18 @@ const RequirementModal = (props: any) => {
 
             <View style={ { height : '100%' , width : '100%' } }>
 
-
+                {props?.fileName && <FadeBackground style={{position: "absolute", zIndex: 1}} width={width}></FadeBackground>}
+                <Text style={styles.fileName}>{ props?.fileName }</Text>
                 <ScrollView contentContainerStyle={ { flex : 1 , justifyContent : 'center' , alignItems : 'center' } }>
+
                     <View style={ { flexDirection : 'row' , flexWrap : 'wrap' , } }>
+
                         <ImageView
                             style={ [styles.imageStyle] }
                             source={ {
                                 uri : props?.image ? props?.image : 'https://dummyimage.com/350x350/fff/aaa' ,
                             } }
-                            resizeMode="center"
+                            resizeMode="contain"
                             onLoadStart={ () => setOnLoad(true) }
                             onLoadEnd={ () => setOnLoad(false) }
                             onZoomBegin={ () => console.log("On Zoom begin") }
@@ -90,6 +95,15 @@ const RequirementModal = (props: any) => {
     </Modal>
 };
 const styles = StyleSheet.create({
+    fileName:{
+        flexWrap: "wrap",
+        fontSize: RFValue(16),
+        color: "#fff",
+        paddingHorizontal: 30,
+        position: "absolute",
+        paddingVertical: 10,
+        zIndex: 2
+    },
     imageStyle : {
         height : height ,
         width : width ,
@@ -99,16 +113,15 @@ const styles = StyleSheet.create({
     } ,
     group7 : {} ,
     rect2 : {
-        zIndex : 1 ,
-        position : "absolute" ,
+        zIndex : 3 ,
+       
         width : "100%" ,
-        height : 80 ,
         //  backgroundColor: "#041B6E"
     } ,
     close : {
         fontFamily : Regular500 ,
         color : "rgba(239,231,231,1)" ,
-        fontSize : 18 ,
+        fontSize : RFValue(18) ,
     } ,
 });
 export default RequirementModal

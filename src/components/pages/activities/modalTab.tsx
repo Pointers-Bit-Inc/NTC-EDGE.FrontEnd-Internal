@@ -206,7 +206,7 @@ export const ModalTab = props => {
         assignedPersonnel = props?.details?.assignedPersonnel,
         createdAt = props?.details?.createdAt,
         proofOfPayment = props?.details?.proofOfPayment;
-    return <Tab.Navigator  tabBar={(props) => <MyTabBar {...props} />}>
+    return <Tab.Navigator  >
 
         {
 

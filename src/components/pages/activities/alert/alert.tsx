@@ -8,6 +8,7 @@ import EndorseToIcon from "@assets/svg/endorseTo";
 import ApplicationApproved from "@assets/svg/application-approved";
 import {useAlert} from "@pages/activities/hooks/useAlert";
 import {Bold} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const {width} = Dimensions.get('window');
 
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: Bold,
-        fontSize: 14,
+        fontSize: RFValue(14),
         color: "#121212",
         textAlign: "center"
     },

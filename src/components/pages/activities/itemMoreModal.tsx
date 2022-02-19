@@ -6,6 +6,7 @@ import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 import {Bold , Regular} from "@styles/font";
 import {disabledColor} from "@styles/color";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const ItemMoreModal = (props: any) => {
     const applicant = props?.details?.applicant?.user
@@ -39,7 +40,7 @@ const ItemMoreModal = (props: any) => {
                                 <Text
                                     style={styles.centerName}>{`${applicant?.firstName} ${applicant?.lastName}`}</Text>
                                 <Text style={{
-                                    fontSize: 14,
+                                    fontSize: RFValue(14),
                                     color: "#626a7e",
                                     fontFamily: Regular,
                                 }}>{props?.details?.applicationType}</Text>
@@ -110,7 +111,7 @@ const ItemMoreModal = (props: any) => {
 const styles = StyleSheet.create({
     centerName: {
         color: "#1F2022",
-        fontSize: 20,
+        fontSize: RFValue(20),
         fontFamily: Bold,
     },
     container: {
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
     pinToTop: {
 
         color: "#121212",
-        fontSize: 18
+        fontSize: RFValue(18)
     },
     rect7: {
         height: 1,
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
     Icon: {
 
         color: "rgba(128,128,128,1)",
-        fontSize: 25,
+        fontSize: RFValue(25),
         marginRight: 21,
 
         alignSelf: "center"

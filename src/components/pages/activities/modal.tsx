@@ -1,5 +1,5 @@
 import React , {useEffect , useMemo , useState} from "react";
-import {Alert , Modal , StyleSheet , Text , TouchableOpacity , View} from "react-native";
+import {Alert , Modal , StatusBar , StyleSheet , Text , TouchableOpacity , View} from "react-native";
 import {primaryColor} from "@styles/color";
 import Disapproval from "@pages/activities/modal/disapproval";
 import Endorsed from "@pages/activities/modal/endorse";
@@ -186,6 +186,7 @@ function ActivityModal(props: any) {
                 props.onDismissed(change);
                 setChange(false)
             } }>
+           
             <View style={ approveVisible || visible || endorseVisible || showAlert ? {
 
                 position : "absolute" ,
