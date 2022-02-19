@@ -10,6 +10,7 @@ import {primaryColor, text} from "@styles/color";
 import {Animated, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Poppins_400Regular , Poppins_500Medium} from "@expo-google-fonts/poppins";
 import {Bold , Regular , Regular500} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 let initial = {};
 
@@ -206,7 +207,19 @@ export const ModalTab = props => {
         assignedPersonnel = props?.details?.assignedPersonnel,
         createdAt = props?.details?.createdAt,
         proofOfPayment = props?.details?.proofOfPayment;
-    return <Tab.Navigator  >
+    return <Tab.Navigator screenOptions={({ route }) => ({
+        tabBarIndicatorStyle:{
+          backgroundColor: primaryColor
+        },
+        tabBarLabelStyle: {
+          fontFamily: Bold,
+            fontSize: RFValue(12),
+            lineHeight: RFValue(14)
+        },
+
+        tabBarActiveTintColor: primaryColor,
+        tabBarInactiveTintColor: 'gray',
+    })} >
 
         {
 

@@ -11,7 +11,7 @@ const PaymentModal = (props: any) => {
     function Cell({ data }) {
         return (
             <View style={styles.cellStyle}>
-                <Text>{data}</Text>
+                <Text style={{fontFamily: Regular}}>{data}</Text>
             </View>
         );
     }
@@ -48,8 +48,6 @@ const PaymentModal = (props: any) => {
                 <View style={
                     {
                         padding: 20,
-                        paddingTop: 35,
-                        paddingBottom: 10,
                         alignItems: 'flex-end',
                         backgroundColor: "#041B6E"
                     }}>
@@ -104,6 +102,7 @@ const PaymentModal = (props: any) => {
 
 const styles = StyleSheet.create({
     gridContainer: {
+        alignSelf: "center",
         justifyContent: "flex-start",
         alignItems: "center"
     },
