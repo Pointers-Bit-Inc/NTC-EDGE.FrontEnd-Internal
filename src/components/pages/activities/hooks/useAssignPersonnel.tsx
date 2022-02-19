@@ -17,13 +17,11 @@ export function useAssignPersonnel(assignedPersonnel, config) {
                 if(isCurrent){
                     setLoading(false)
                     setPersonnel(res.data);
-                    setPrevPersonnel(res.data);
                 }
 
             })
             .catch((err) => {
                 if(isCurrent){
-                    setPersonnel(prevPersonnel);
                     setLoading(false)
                 }
 

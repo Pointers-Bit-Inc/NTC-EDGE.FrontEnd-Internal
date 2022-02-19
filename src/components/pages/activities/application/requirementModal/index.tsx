@@ -45,7 +45,7 @@ const RequirementModal = (props: any) => {
                 </View>
             </TouchableWithoutFeedback>
             <View style={ styles.rect2 }>
-                <View style={ { alignSelf : 'flex-end' , paddingHorizontal : 15 , paddingVertical : 30 } }>
+                <View style={ { alignSelf : 'flex-end' ,  paddingHorizontal : 15 , paddingVertical : 15 } }>
                     <TouchableOpacity onPress={ () => {
                         props.onDismissed()
                     }
@@ -113,10 +113,9 @@ const styles = StyleSheet.create({
     } ,
     group7 : {} ,
     rect2 : {
-        zIndex : 1 ,
+        zIndex : 3 ,
        
         width : "100%" ,
-        height : 80 ,
         //  backgroundColor: "#041B6E"
     } ,
     close : {
