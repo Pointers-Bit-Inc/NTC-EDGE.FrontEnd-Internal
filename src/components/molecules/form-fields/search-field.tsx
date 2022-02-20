@@ -4,10 +4,11 @@ import lodash from 'lodash';
 import { ExclamationIcon, SearchIcon } from '@atoms/icon';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   label: {
     position: 'absolute',
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    marginLeft: 5,
+    marginLeft: 15,
   }
 });
 
@@ -132,7 +133,7 @@ const InputField: FC<Props> = ({
       >
         <SearchIcon
           style={[styles.icon, iconStyle]}
-          size={22}
+          size={RFValue(26)}
         />
         <TextInput
           style={inputStyle}

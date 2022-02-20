@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native'
 import lodash from 'lodash';
 import ProfileImage from '@components/atoms/image/profile';
 import { primaryColor } from '@styles/color';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
   image: {
@@ -33,12 +34,14 @@ interface Props {
   size?: number;
   textSize?: number;
   backgroundColor?: string;
+  inline?: boolean;
 }
 
 const GroupImage: FC<Props> = ({
   participants = [],
   size = 35,
   textSize = 14,
+  inline = false
 }) => {
   const imageSize = size / 1.4;
   if (lodash.size(participants) === 1) {
@@ -51,8 +54,34 @@ const GroupImage: FC<Props> = ({
       />
     );
   }
+
+  if (inline) {
+    return (
+      <View style={{ width: RFValue((imageSize * 2) - 5), height: RFValue(imageSize) }}>
+        <View style={styles.topPosition}>
+          <ProfileImage
+            style={styles.border}
+            image={participants[0]?.image}
+            name={`${participants[0].firstName} ${participants[0].lastName}`}
+            size={imageSize}
+            textSize={textSize/2}
+          />
+        </View>
+        <View style={styles.bottomPosition}>
+          <ProfileImage
+            style={styles.border}
+            image={participants[1]?.image}
+            name={`${participants[1].firstName} ${participants[1].lastName}`}
+            size={imageSize}
+            textSize={textSize/2}
+          />
+        </View>
+      </View>
+    )
+  }
+
   return (
-    <View style={{ width: size, height: size }}>
+    <View style={{ width: RFValue(size), height: RFValue(size) }}>
       <View style={styles.topPosition}>
         <ProfileImage
           style={styles.border}

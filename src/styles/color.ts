@@ -62,9 +62,15 @@ const button = {
 };
 
 const bubble = {
-  primary: '#1F40AF',
+  primary: '#2563EB',
   secondary: '#E5E5E5',
 };
+
+const header = {
+  primary: primaryColor,
+  secondary: '#F6F6F6',
+  default: '#1F2022',
+}
 
 export {
   primaryColor,
@@ -82,4 +88,5 @@ export {
   button,
   input,
   bubble,
+  header
 }

@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: 12,
     height: 12,
-    borderColor: outline.primary,
+    borderColor: text.info,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -134,6 +134,7 @@ const ChatBubble:FC<Props> = ({
                 name={`${sender.firstName} ${sender.lastName}`}
                 size={25}
                 textSize={10}
+                style={{ marginLeft: -5 }}
               />
             ) : null
           }
@@ -142,7 +143,7 @@ const ChatBubble:FC<Props> = ({
               <View style={{ alignSelf: 'center', marginRight: 0 }}>
                 <WriteIcon
                   type='pen'
-                  color={text.primary}
+                  color={text.info}
                   size={14}
                 />
               </View>
@@ -190,7 +191,7 @@ const ChatBubble:FC<Props> = ({
                 ) : (
                   <Text
                     size={14}
-                    color={(isSender && !system) ? 'white' : text.default}
+                    color={(isSender && !system) ? 'white' : 'black'}
                   >
                     {message}
                   </Text>
@@ -217,7 +218,7 @@ const ChatBubble:FC<Props> = ({
                 <CheckIcon
                   type='check1'
                   size={8}
-                  color={text.primary}
+                  color={text.info}
                 />
               </View>
             )

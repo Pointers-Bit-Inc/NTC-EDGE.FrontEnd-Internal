@@ -41,9 +41,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   cancelButton: {
-    borderRadius: 5,
+    borderRadius: 10,
     paddingVertical: 10,
-    backgroundColor: button.primary,
+    backgroundColor: button.info,
     marginHorizontal: 20,
     marginVertical: 10,
   },
@@ -216,7 +216,7 @@ const List = () => {
           <View style={[styles.button, { justifyContent: 'center' }]}>
             <Text
               style={{ marginLeft: 15 }}
-              color={text.primary}
+              color={text.info}
               size={18}
             >
               Unsend for myself

@@ -31,11 +31,14 @@ import {
   CameraIcon,
   MicIcon,
   SendIcon,
+  NewCallIcon,
+  NewVideoIcon,
+  NewMessageIcon,
 } from '@components/atoms/icon';
 import Text from '@components/atoms/text';
 import GroupImage from '@components/molecules/image/group';
 import { InputField } from '@components/molecules/form-fields';
-import { outline, text, button, primaryColor } from '@styles/color';
+import { outline, text, button, primaryColor, header } from '@styles/color';
 import { getChannelName } from 'src/utils/formatting';
 import InputStyles from 'src/styles/input-style';
 import {
@@ -43,6 +46,7 @@ import {
   setSelectedChannel,
 } from 'src/reducers/channel/actions';
 import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
+import { RFValue } from 'react-native-responsive-fontsize';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -52,8 +56,9 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 15,
-    paddingTop: 35,
-    backgroundColor: primaryColor
+    paddingTop: 40,
+    paddingBottom: 5,
+    backgroundColor: header.secondary,
   },
   horizontal: {
     flexDirection: 'row',
@@ -72,21 +77,24 @@ const styles = StyleSheet.create({
   keyboardAvoiding: {
     paddingHorizontal: 15,
     paddingVertical: 10,
+    paddingBottom: 0,
     flexDirection: 'row',
     alignItems: 'center',
+    borderTopColor: '#E5E5E5',
+    borderTopWidth: 1,
   },
   outline: {
     borderRadius: 10,
   },
   input: {
-    fontSize: 16,
+    fontSize: RFValue(16),
   },
   plus: {
     backgroundColor: button.default,
-    borderRadius: 26,
-    width: 26,
-    height: 26,
-    marginRight: 15,
+    borderRadius: RFValue(24),
+    width: RFValue(24),
+    height: RFValue(24),
+    marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -253,27 +261,27 @@ const ChatView = ({ navigation, route }:any) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={'light-content'} />
+      <StatusBar barStyle={'dark-content'} />
       <View style={[styles.header, styles.horizontal]}>
         <TouchableOpacity onPress={onBack}>
           <ArrowLeftIcon
             type='arrow-left'
-            color={'white'}
-            size={18}
+            color={'#111827'}
+            size={RFValue(14)}
           />
         </TouchableOpacity>
-        <View style={{ paddingLeft: 15 }}>
+        <View style={{ paddingLeft: 5 }}>
           <GroupImage
             participants={otherParticipants}
-            size={45}
+            size={40}
             textSize={16}
+            inline={true}
           />
         </View>
         <View style={styles.info}>
           <Text
-            color={'white'}
-            weight={'500'}
-            size={18}
+            color={'black'}
+            size={16}
             numberOfLines={1}
           >
             {getChannelName(route.params)}
@@ -281,17 +289,19 @@ const ChatView = ({ navigation, route }:any) => {
         </View>
         <TouchableOpacity onPress={() => onInitiateCall(false)}>
           <View style={{ paddingRight: 5 }}>
-            <PhoneIcon
-              size={20}
-              color={'white'}
+            <NewCallIcon
+              color={button.info}
+              height={RFValue(22)}
+              width={RFValue(22)}
             />
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onInitiateCall(true)}>
-          <View style={{ paddingHorizontal: 8 }}>
-            <VideoIcon
-              size={20}
-              color={'white'}
+          <View style={{ paddingLeft: 5, paddingTop: 5 }}>
+            <NewVideoIcon
+              color={button.info}
+              height={RFValue(26)}
+              width={RFValue(26)}
             />
           </View>
         </TouchableOpacity>
@@ -324,90 +334,108 @@ const ChatView = ({ navigation, route }:any) => {
         }
       </View>
       <View style={{ flex: 1 }}>
-        <TabView
+        {/* <TabView
           navigationState={{ index, routes }}
           renderScene={renderScene}
           onIndexChange={setIndex}
           initialLayout={{ width: layout.width }}
           renderTabBar={renderTabBar}
-        />
+        /> */}
+        <ChatList />
       </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.keyboardAvoiding}>
-          <TouchableOpacity  disabled={true}>
-            <View style={styles.plus}>
-              <PlusIcon
-                color="white"
-                size={16}
-              />
-            </View>
-          </TouchableOpacity>
+          <View style={{ marginTop: RFValue(-17) }}>
+            <TouchableOpacity  disabled={true}>
+              <View style={styles.plus}>
+                <PlusIcon
+                  color="white"
+                  size={RFValue(12)}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
           <View style={{ flex: 1 }}>
             <InputField
               ref={inputRef}
               placeholder={'Type a message'}
+              containerStyle={{ height: null, paddingVertical: 10 }}
               inputStyle={[InputStyles.text, styles.input]}
               outlineStyle={[InputStyles.outlineStyle, styles.outline]}
               value={inputText}
               onChangeText={setInputText}
-              onSubmitEditing={onSendMessage}
+              onSubmitEditing={() => inputText && onSendMessage()}
               returnKeyType={'send'}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
             />
           </View>
-          {
-            !!selectedMessage._id ? (
-              <TouchableOpacity
-                onPress={() => {
-                  _editMessage(selectedMessage._id, inputText);
-                  dispatch(removeSelectedMessage())
-                }}
-              >
-                <View style={styles.circle}>
-                  <CheckIcon
-                    type='check1'
-                    color="white"
-                    size={16}
-                  />
-                </View>
-              </TouchableOpacity>
-            ) : (
-              isFocused ? (
+          <View style={{ marginTop: RFValue(-16), flexDirection: 'row' }}>
+            <TouchableOpacity
+              onPress={onSendMessage}
+            >
+              <View style={{ marginLeft: 10 }}>
+                <NewMessageIcon
+                  color={inputText ? button.info : button.default}
+                  height={RFValue(30)}
+                  width={RFValue(30)}
+                />
+              </View>
+            </TouchableOpacity>
+            {/* {
+              !!selectedMessage._id ? (
                 <TouchableOpacity
-                  onPress={onSendMessage}
+                  onPress={() => {
+                    _editMessage(selectedMessage._id, inputText);
+                    dispatch(removeSelectedMessage())
+                  }}
                 >
-                  <View style={{ marginLeft: 15 }}>
-                    <SendIcon
-                      color={text.primary}
-                      size={28}
+                  <View style={styles.circle}>
+                    <CheckIcon
+                      type='check1'
+                      color="white"
+                      size={RFValue(16)}
                     />
                   </View>
                 </TouchableOpacity>
               ) : (
-                <>
-                  <TouchableOpacity disabled={true}>
-                    <View style={{ paddingLeft: 15 }}>
-                      <CameraIcon
-                        size={22}
-                        color={button.default}
+                isFocused ? (
+                  <TouchableOpacity
+                    onPress={onSendMessage}
+                  >
+                    <View style={{ marginLeft: 10 }}>
+                      <NewMessageIcon
+                        color={inputText ? button.info : button.default}
+                        height={RFValue(30)}
+                        width={RFValue(30)}
                       />
                     </View>
                   </TouchableOpacity>
-                  <TouchableOpacity disabled={true}>
-                    <View style={{ paddingLeft: 15 }}>
-                      <MicIcon
-                        size={20}
-                        color={button.default}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </>
+                ) : (
+                  <>
+                    <TouchableOpacity disabled={true}>
+                      <View style={{ paddingLeft: 10 }}>
+                        <CameraIcon
+                          size={RFValue(22)}
+                          color={button.default}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity disabled={true}>
+                      <View style={{ paddingLeft: 15 }}>
+                        <MicIcon
+                          size={RFValue(20)}
+                          color={button.default}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  </>
+                )
               )
-            )
-          }
+            } */}
+          </View>
         </View>
       </KeyboardAvoidingView>
     </View>

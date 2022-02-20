@@ -34,9 +34,15 @@ import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
 import ProfileImage from '@components/atoms/image/profile';
 import InputStyles from 'src/styles/input-style';
+import HomeMenuIcon from "@assets/svg/homemenu";
+import { NewChatIcon } from '@atoms/icon';
+import {Bold, Regular, Regular500} from "@styles/font";
+import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import rtt from 'reactotron-react-native';
+import NewChat from '@pages/chat/new';
+import { RFValue } from 'react-native-responsive-fontsize';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -48,8 +54,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   input: {
-    fontSize: 16,
-     fontWeight: "500"  ,
+    fontSize: RFValue(16),
+    fontFamily: Regular,
     flex: 1,
   },
   outline: {
@@ -60,7 +66,7 @@ const styles = StyleSheet.create({
   icon: {
     paddingHorizontal: 5,
     color: text.default,
-    fontSize: 18,
+    fontSize: RFValue(18),
   },
   headerContent: {
     flexDirection: 'row',
@@ -109,25 +115,22 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   bar: {
-    marginTop: 10,
-    height: 4,
+    height: 15,
     width: 35,
-    backgroundColor: outline.default,
-    alignSelf: 'center',
     borderRadius: 4,
   },
   cancelText: {
-    fontSize: 16,
-    color: text.primary,
+    fontSize: RFValue(18),
+    color: text.error,
   },
   confirmText: {
-    fontSize: 16,
-    color: text.error,
+    fontSize: RFValue(18),
+    color: text.primary,
   },
   title: {
     textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: RFValue(16),
+    fontFamily: Regular,
     color: '#1F2022'
   },
   message: {
@@ -144,6 +147,7 @@ const styles = StyleSheet.create({
 
 const ChatList = ({ navigation }:any) => {
   useRequestCameraAndAudioPermission();
+  const modalRef = useRef<BottomModalRef>(null);
   const dispatch = useDispatch();
   const swipeableRef:any = useRef({});
   const user = useSelector((state:RootStateOrAny) => state.user);
@@ -294,27 +298,25 @@ const ChatList = ({ navigation }:any) => {
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <TouchableOpacity onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
-            <ProfileImage
+            <HomeMenuIcon/>
+            {/* <ProfileImage
               size={45}
               image={user?.image}
               name={`${user.firstName} ${user.lastName}`}
-            />
+            /> */}
           </TouchableOpacity>
           <View style={styles.titleContainer}>
             <Text
               color={'white'}
-              weight={'600'}
-              size={22}
+              size={20}
+              style={{ fontFamily: Bold }}
             >
               Chat
             </Text>
           </View>
           <View style={{ width: 25 }} />
-          <TouchableOpacity onPress={() => navigation.navigate('NewChat')}>
-            <WriteIcon
-              size={22}
-              color={'white'}
-            />
+          <TouchableOpacity onPress={() => modalRef.current?.open()}>
+            <NewChatIcon />
           </TouchableOpacity>
         </View>
         <SearchField
@@ -390,13 +392,35 @@ const ChatList = ({ navigation }:any) => {
           />
         )
       }
+      <BottomModal
+        ref={modalRef}
+        onModalHide={() => modalRef.current?.close()}
+        avoidKeyboard={false}
+        header={
+          <View style={styles.bar} />
+        }
+        containerStyle={{ maxHeight: null }}
+      >
+        <View style={{ paddingBottom: 20, height: height * .9 }}>
+          <NewChat
+            onClose={() => modalRef.current?.close()}
+            onSubmit={(res:any) => {
+              res.otherParticipants = lodash.reject(res.participants, p => p._id === user._id);
+              dispatch(setSelectedChannel(res));
+              dispatch(addChannel(res));
+              modalRef.current?.close();
+              setTimeout(() => navigation.push('ViewChat', res), 300);
+            }}
+          />
+        </View>
+      </BottomModal>
       <AwesomeAlert
         overlayStyle={{ flex: 1 }}
         show={showAlert}
         showProgress={false}
-        contentContainerStyle={{ borderRadius: 15 }}
+        contentContainerStyle={{ borderRadius: 15, maxWidth: width * 0.7 }}
         titleStyle={styles.title}
-        message={'Are you sure you want to delete this conversation?'}
+        message={'Are you sure you want to permanently delete this conversation?'}
         messageStyle={styles.title}
         contentStyle={styles.content}
         closeOnTouchOutside={false}
@@ -409,7 +433,7 @@ const ChatList = ({ navigation }:any) => {
         confirmButtonTextStyle={styles.confirmText}
         actionContainerStyle={{ justifyContent: 'space-around' }}
         cancelText="Cancel"
-        confirmText="Delete"
+        confirmText="Yes"
         onCancelPressed={() => {
           swipeableRef.current[selectedItem?._id]?.close();
           setShowAlert(false);

@@ -20,10 +20,13 @@ import ProfileImage from '@components/atoms/image/profile'
 import Meeting from '@components/molecules/list-item/meeting';
 import Text from '@components/atoms/text'
 import { getChannelName, getDayMonthString, getOtherParticipants } from 'src/utils/formatting';
-import { PeopleIcon, CalendarIcon, VideoIcon } from '@atoms/icon';
+import { PeopleIcon, CalendarIcon, VideoIcon, NewVideoIcon } from '@atoms/icon';
 import { text, outline, primaryColor } from 'src/styles/color';
 import Button from '@components/atoms/button';
 import { ListFooter } from '@components/molecules/list-item';
+import HomeMenuIcon from "@assets/svg/homemenu";
+import { RFValue } from 'react-native-responsive-fontsize';
+import {Bold} from "@styles/font";
 
 const { width } = Dimensions.get('window');
 
@@ -217,17 +220,18 @@ const Meet = ({ navigation }) => {
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
-          <ProfileImage
+          <HomeMenuIcon/>
+          {/* <ProfileImage
             size={45}
             image={user?.image}
             name={`${user.firstName} ${user.lastName}`}
-          />
+          /> */}
         </TouchableOpacity>
         <View style={styles.titleContainer}>
           <Text
             color={'white'}
-            weight={'600'}
-            size={22}
+            size={20}
+            style={{ fontFamily: Bold }}
           >
             Meet
           </Text>
@@ -236,19 +240,10 @@ const Meet = ({ navigation }) => {
           onPress={() => navigation.navigate('Participants')}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <VideoIcon
-              style={styles.icon}
-              color={'white'}
-              type='add'
-              size={24}
+            <NewVideoIcon
+              width={RFValue(28)}
+              height={RFValue(28)}
             />
-            <Text
-              color={'white'}
-              weight='bold'
-              size={16}
-            >
-              Create
-            </Text>
           </View>
         </TouchableOpacity>
       </View>

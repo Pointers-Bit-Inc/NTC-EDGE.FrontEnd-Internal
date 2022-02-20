@@ -149,6 +149,7 @@ const ChatList: FC<Props> = ({
       keyExtractor={(item:any) => item._id}
       ListEmptyComponent={emptyComponent}
       ListFooterComponent={() => <View style={{ height: 15 }} />}
+      ListHeaderComponent={() => <View style={{ height: 15 }} />}
       {...otherProps}
     />
   )
