@@ -113,9 +113,12 @@ const UserProfileScreen = ({navigation}: any) => {
                             color: successColor
                         });
                         dispatch(setUser({...user, ...res?.data?.doc}));
+                        setOriginalForm({
+                            ...originalForm,
+                            ...userProfileForm,
+                        });
                     }
                     else {
-                        console.log('or here?');
                         setAlert({
                             title: 'Failure',
                             message: (res?.statusText || res?.message) || 'Your profile was not edited.',
@@ -126,7 +129,6 @@ const UserProfileScreen = ({navigation}: any) => {
                 })
                 .catch((err: any) => {
                     err = JSON.parse(JSON.stringify(err));
-                    console.log('here?', err);
                     setLoading({
                         photo: false,
                         basic: false
@@ -163,7 +165,7 @@ const UserProfileScreen = ({navigation}: any) => {
         basic: false,
     });
 
-    const originalForm = [
+    const [originalForm, setOriginalForm] = useState([
         {
             stateName: 'userType',
             id: 1,
@@ -237,7 +239,7 @@ const UserProfileScreen = ({navigation}: any) => {
             value: user?.address || '',
             error: false,
         },
-    ];
+    ]);
     const [userProfileForm, setUserProfileForm] = useState(originalForm);
     
     const isValid = () => {
