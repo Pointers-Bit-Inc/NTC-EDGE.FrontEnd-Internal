@@ -8,6 +8,7 @@ import {
   StatusBar,
   FlatList,
   RefreshControl,
+  Platform,
 } from 'react-native'
 import lodash from 'lodash';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
@@ -33,6 +34,10 @@ import CreateMeeting from '@components/pages/chat/meeting';
 
 const { width, height } = Dimensions.get('window');
 
+const size = width * 0.45;
+const sectionHeight = size * 0.25;
+const position = sectionHeight - RFValue(8);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -41,10 +46,10 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    paddingHorizontal: 20,
-    paddingTop: 35,
-    paddingBottom: 15,
+    padding: RFValue(10),
+    paddingHorizontal: RFValue(20),
+    paddingTop: RFValue(35),
+    paddingBottom: RFValue(15),
     backgroundColor: primaryColor
   },
   titleContainer: {
@@ -95,6 +100,50 @@ const styles = StyleSheet.create({
     width: 35,
     borderRadius: 4,
   },
+  shadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  leftPosition: {
+    width: size,
+    height: sectionHeight - 2,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    left: -position,
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingHorizontal: RFValue(20)
+  },
+  rightPosition: {
+    width: size,
+    height: sectionHeight - 2,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    right: -position,
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingHorizontal: RFValue(20)
+  },
+  circle: {
+    height: RFValue(18),
+    width: RFValue(18),
+    backgroundColor: '#2863D6',
+    borderRadius: RFValue(18),
+  },
+  emptyMeeting: {
+    backgroundColor: '#DAE7FF',
+    width: size,
+    height: size,
+    borderRadius: RFValue(10),
+    paddingVertical: 10,
+    justifyContent: 'space-around'
+  }
 })
 
 const Meet = ({ navigation }) => {
@@ -185,19 +234,47 @@ const Meet = ({ navigation }) => {
     }
   }, [sendRequest])
 
+  const mockChat = () => (
+    <>
+      <View style={styles.circle} />
+      <View style={{ paddingLeft: 10 }}>
+        <View style={{ borderRadius: RFValue(7), height: RFValue(7), width: sectionHeight, backgroundColor: '#B4DAFF' }} />
+        <View style={{ borderRadius: RFValue(5), height: RFValue(5), width: sectionHeight, backgroundColor: 'white' }} />
+        <View style={{ borderRadius: RFValue(7), height: RFValue(7), width: sectionHeight * 1.5, backgroundColor: '#DEE9FC' }} />
+      </View>
+    </>
+  )
+
+  const EmptyMeeting = () => (
+    <View style={styles.emptyMeeting}>
+      <View style={[styles.leftPosition, styles.shadow]}>
+        {mockChat()}
+      </View>
+      <View style={[styles.rightPosition, styles.shadow]}>
+        {mockChat()}
+      </View>
+      <View style={[styles.leftPosition, styles.shadow]}>
+        {mockChat()}
+      </View>
+    </View>
+  )
+
   const emptyComponent = () => (
     <View
       style={{
         justifyContent: 'center',
         alignItems: 'center',
         padding: 30,
+        height: height - (width / 2)
       }}>
-      <Text
-        color={text.default}
-        size={14}
-      >
-        No meetings yet
-      </Text>
+        {EmptyMeeting()}
+        <Text
+          color={'#34343F'}
+          size={18}
+          style={{ textAlign: 'center', marginTop: 30 }}
+        >
+          {'Get Started with Group\nmeetings'}
+        </Text>
     </View>
   )
 
@@ -259,7 +336,7 @@ const Meet = ({ navigation }) => {
             <PlusIcon
               color='white'
               size={RFValue(8)}
-              style={{ position: 'absolute', left: RFValue(8) }}
+              style={{ position: 'absolute', left: RFValue(Platform.OS === 'ios' ? 8 : 9) }}
             />
           </View>
         </TouchableOpacity>
@@ -310,7 +387,7 @@ const Meet = ({ navigation }) => {
         backdropOpacity={0}
         onBackdropPress={() => {}}
       >
-        <View style={{ paddingBottom: 20, height: height * .94 }}>
+        <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
           {
             isNext ? (
               <CreateMeeting

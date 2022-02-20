@@ -72,10 +72,10 @@ const styles = StyleSheet.create({
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingVertical: RFValue(15),
+    paddingHorizontal: RFValue(20),
     backgroundColor: primaryColor,
-    paddingTop: 35,
+    paddingTop: RFValue(35),
   },
   titleContainer: {
     flex: 1,
@@ -279,7 +279,6 @@ const ChatList = ({ navigation }:any) => {
           }}>
             <NewDeleteIcon
               color={'white'}
-              size={18}
             />
             <Text
               color='white'
@@ -316,7 +315,10 @@ const ChatList = ({ navigation }:any) => {
           </View>
           <View style={{ width: 25 }} />
           <TouchableOpacity onPress={() => modalRef.current?.open()}>
-            <NewChatIcon />
+            <NewChatIcon
+              width={RFValue(24)}
+              height={RFValue(24)}
+            />
           </TouchableOpacity>
         </View>
         <SearchField
@@ -404,7 +406,7 @@ const ChatList = ({ navigation }:any) => {
         backdropOpacity={0}
         onBackdropPress={() => {}}
       >
-        <View style={{ paddingBottom: 20, height: height * .94 }}>
+        <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
           <NewChat
             onClose={() => modalRef.current?.close()}
             onSubmit={(res:any) => {
