@@ -57,6 +57,7 @@ const BottomModal: ForwardRefRenderFunction<BottomModalRef, Props> = (
       avoidKeyboard={avoidKeyboard}
       onBackdropPress={() => setShowModal(false)}
       onSwipeComplete={() => setShowModal(false)}
+      statusBarTranslucent={true}
       style={styles.view}
       {...otherProps}
     >

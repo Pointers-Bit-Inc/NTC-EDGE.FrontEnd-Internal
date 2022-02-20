@@ -8,6 +8,7 @@ import {
   StatusBar,
   FlatList,
   RefreshControl,
+  Platform,
 } from 'react-native'
 import lodash from 'lodash';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
   },
   leftPosition: {
     width: size,
-    height: sectionHeight,
+    height: sectionHeight - 2,
     backgroundColor: 'white',
     borderRadius: 5,
     left: -position,
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
   },
   rightPosition: {
     width: size,
-    height: sectionHeight,
+    height: sectionHeight - 2,
     backgroundColor: 'white',
     borderRadius: 5,
     right: -position,
@@ -130,10 +131,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: RFValue(20)
   },
   circle: {
-    height: RFValue(20),
-    width: RFValue(20),
+    height: RFValue(18),
+    width: RFValue(18),
     backgroundColor: '#2863D6',
-    borderRadius: RFValue(20),
+    borderRadius: RFValue(18),
   },
   emptyMeeting: {
     backgroundColor: '#DAE7FF',
@@ -264,7 +265,7 @@ const Meet = ({ navigation }) => {
         justifyContent: 'center',
         alignItems: 'center',
         padding: 30,
-        height: height - (width / 2.5)
+        height: height - (width / 2)
       }}>
         {EmptyMeeting()}
         <Text
@@ -335,7 +336,7 @@ const Meet = ({ navigation }) => {
             <PlusIcon
               color='white'
               size={RFValue(8)}
-              style={{ position: 'absolute', left: RFValue(8) }}
+              style={{ position: 'absolute', left: RFValue(Platform.OS === 'ios' ? 8 : 9) }}
             />
           </View>
         </TouchableOpacity>
@@ -386,7 +387,7 @@ const Meet = ({ navigation }) => {
         backdropOpacity={0}
         onBackdropPress={() => {}}
       >
-        <View style={{ paddingBottom: 20, height: height * .94 }}>
+        <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
           {
             isNext ? (
               <CreateMeeting

@@ -406,7 +406,7 @@ const ChatList = ({ navigation }:any) => {
         backdropOpacity={0}
         onBackdropPress={() => {}}
       >
-        <View style={{ paddingBottom: 20, height: height * .94 }}>
+        <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
           <NewChat
             onClose={() => modalRef.current?.close()}
             onSubmit={(res:any) => {
