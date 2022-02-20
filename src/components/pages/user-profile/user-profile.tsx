@@ -113,10 +113,6 @@ const UserProfileScreen = ({navigation}: any) => {
                             color: successColor
                         });
                         dispatch(setUser({...user, ...res?.data?.doc}));
-                        setOriginalForm({
-                            ...originalForm,
-                            ...userProfileForm,
-                        });
                     }
                     else {
                         setAlert({
@@ -165,7 +161,7 @@ const UserProfileScreen = ({navigation}: any) => {
         basic: false,
     });
 
-    const [originalForm, setOriginalForm] = useState([
+    const originalForm = [
         {
             stateName: 'userType',
             id: 1,
@@ -239,7 +235,7 @@ const UserProfileScreen = ({navigation}: any) => {
             value: user?.address || '',
             error: false,
         },
-    ]);
+    ];
     const [userProfileForm, setUserProfileForm] = useState(originalForm);
     
     const isValid = () => {
