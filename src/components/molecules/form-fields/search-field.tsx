@@ -1,13 +1,14 @@
 import React, { useState, useCallback, FC } from 'react';
 import { View, StyleSheet } from 'react-native';
 import lodash from 'lodash';
-import { ExclamationIcon, SearchIcon } from '@atoms/icon';
+import { ExclamationIcon, NewSearchIcon } from '@atoms/icon';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 10
+    paddingVertical: RFValue(10),
   },
   label: {
     position: 'absolute',
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    marginLeft: 5,
+    marginLeft: 15,
   }
 });
 
@@ -130,9 +131,11 @@ const InputField: FC<Props> = ({
           !!error && { borderColor: errorColor }
         ]}
       >
-        <SearchIcon
+        <NewSearchIcon
           style={[styles.icon, iconStyle]}
-          size={22}
+          height={RFValue(16)}
+          width={RFValue(16)}
+          color={'#6E7191'}
         />
         <TextInput
           style={inputStyle}

@@ -28,6 +28,7 @@ interface Props {
   header?: ReactNode;
   footer?: ReactNode;
   contentStyle?: any;
+  containerStyle?: any,
   avoidKeyboard?: boolean;
   [x:string]: any;
 }
@@ -39,7 +40,7 @@ export type BottomModalRef =  {
 }
 
 const BottomModal: ForwardRefRenderFunction<BottomModalRef, Props> = (
-  { children, header, footer, contentStyle = {}, avoidKeyboard = true, ...otherProps },
+  { children, header, footer, contentStyle = {}, containerStyle = {}, avoidKeyboard = true, ...otherProps },
   ref,
 ) => {
   const modalRef = useRef(null);
@@ -51,7 +52,6 @@ const BottomModal: ForwardRefRenderFunction<BottomModalRef, Props> = (
   }));
   return (
     <Modal
-
       ref={modalRef}
       isVisible={showModal}
       avoidKeyboard={avoidKeyboard}
@@ -60,7 +60,7 @@ const BottomModal: ForwardRefRenderFunction<BottomModalRef, Props> = (
       style={styles.view}
       {...otherProps}
     >
-      <View style={styles.container}>
+      <View style={[styles.container, containerStyle]}>
         {header}
         <View style={contentStyle}>{children}</View>
         {footer}

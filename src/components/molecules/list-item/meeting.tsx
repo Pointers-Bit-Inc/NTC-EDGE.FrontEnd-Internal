@@ -5,7 +5,9 @@ import Button from '@components/atoms/button'
 import ProfileImage from '@components/atoms/image/profile'
 import { VideoIcon } from '@components/atoms/icon'
 import { text, outline, button, primaryColor } from 'src/styles/color';
-import { getDayMonthString } from 'src/utils/formatting';
+import { getDateTimeString, getDayMonthString, getTimeString } from 'src/utils/formatting';
+import { Regular, Regular500 } from '@styles/font'
+import { RFValue } from 'react-native-responsive-fontsize'
 
 const styles = StyleSheet.create({
   container: {
@@ -14,17 +16,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   circle: {
-    height: 45,
-    width: 45,
-    borderRadius: 45,
-    backgroundColor: primaryColor,
+    height: RFValue(45),
+    width: RFValue(45),
+    borderRadius: RFValue(45),
+    backgroundColor: button.info,
     justifyContent: 'center',
     alignItems: 'center',
   },
   joinButton: {
     padding: 5,
     paddingHorizontal: 20,
-    backgroundColor: button.primary,
+    backgroundColor: button.info,
     borderRadius: 20,
   },
   closeButton: {
@@ -43,6 +45,7 @@ interface Props {
   participants?: [],
   onJoin?: () => void,
   ended?: boolean,
+  data: any,
   style?: any,
 }
 
@@ -52,6 +55,7 @@ const Meeting: FC<Props> = ({
   participants = [],
   onJoin = () => {},
   ended = false,
+  data = {},
   style,
 }) => {
   return (
@@ -60,12 +64,12 @@ const Meeting: FC<Props> = ({
         <VideoIcon
           type='video'
           color='white'
-          size={18}
+          size={RFValue(18)}
         />
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
         <View style={{ flex: 1, paddingHorizontal: 15 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: -5 }}>
             <Text
               style={{ flex: 1 }}
               color={text.default}
@@ -73,12 +77,6 @@ const Meeting: FC<Props> = ({
               numberOfLines={1}
             >
               {name}
-            </Text>
-            <Text
-              color={text.default}
-              size={14}
-            >
-              {getDayMonthString(time?.seconds)}
             </Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
@@ -98,24 +96,34 @@ const Meeting: FC<Props> = ({
                     key={seen._id}
                     image={seen?.image}
                     name={`${seen.firstName} ${seen.lastName}`}
-                    size={18}
-                    textSize={5}
+                    size={20}
+                    textSize={8}
                   />
                 ))
               }
             </View>
           </View>
         </View>
+        <View style={{ paddingRight: 15, alignSelf: 'flex-start', marginTop: RFValue(3) }}>
+          <Text
+            color={text.default}
+            size={12}
+            style={{ fontFamily: Regular }}
+          >
+            {getDateTimeString(data.createdAt, 'MM/DD')}
+          </Text>
+        </View>
         {
           ended ? (
             <Button
               disabled={true}
-              style={[styles.joinButton, { backgroundColor: '#E5E5E5' }]}
+              style={[styles.joinButton, { backgroundColor: '#E5E5E5', paddingHorizontal: 15 }]}
               onPress={onJoin}
             >
               <Text
                 color={text.default}
                 size={12}
+                style={{ fontFamily: Regular500 }}
               >
                 Call ended
               </Text>
@@ -128,6 +136,7 @@ const Meeting: FC<Props> = ({
               <Text
                 color='white'
                 size={12}
+                style={{ fontFamily: Regular500 }}
               >
                 Join now
               </Text>

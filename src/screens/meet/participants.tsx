@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
 import lodash from 'lodash';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
-import { outline, button, text } from '@styles/color';
+import { outline, button, text, header } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
 import { ContactItem, ListFooter, SelectedContact } from '@components/molecules/list-item';
@@ -22,6 +22,8 @@ import { SearchField } from '@components/molecules/form-fields'
 import { primaryColor } from '@styles/color';
 import useSignalr from 'src/hooks/useSignalr';
 import axios from 'axios';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { Bold, Regular, Regular500 } from '@styles/font';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -43,38 +45,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    fontWeight: "500"  ,
+    fontSize: RFValue(16),
+    fontFamily: Regular,
+    color: 'black',
     flex: 1,
   },
   outline: {
     borderWidth: 0,
-    backgroundColor: '#F1F1F1',
+    backgroundColor: '#EFF0F7',
+    borderRadius: 10,
   },
   icon: {
-    fontSize: 16
+    fontSize: RFValue(16),
+    color: '#6E7191'
   },
   separator: {
-    height: StyleSheet.hairlineWidth,
-    width: width - 60,
-    alignSelf: 'flex-end',
-    backgroundColor: outline.default,
+    // height: StyleSheet.hairlineWidth,
+    // width: width - 60,
+    // alignSelf: 'flex-end',
+    // backgroundColor: outline.default,
   },
   notSelected: {
-    height: 20,
-    width: 20,
-    borderRadius: 20,
+    height: RFValue(20),
+    width: RFValue(20),
+    borderRadius: RFValue(20),
     borderWidth: 1,
     borderColor: button.default,
     alignItems: 'center',
     justifyContent: 'center',
   },
   selected: {
-    height: 20,
-    width: 20,
-    borderRadius: 20,
+    height: RFValue(20),
+    width: RFValue(20),
+    borderRadius: RFValue(20),
     borderWidth: 1,
-    borderColor: button.primary,
-    backgroundColor: button.primary,
+    borderColor: button.info,
+    backgroundColor: button.info,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -82,6 +88,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  outlineBorder: {
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+    borderBottomColor: '#E5E5E5',
+    borderBottomWidth: 1,
   }
 });
 
@@ -183,7 +195,7 @@ const Participants = ({ navigation }:any) => {
   const headerComponent = () => (
     <View>
       <FlatList
-        style={{ paddingHorizontal: 10, paddingBottom: 10 }}
+        style={[styles.outlineBorder, !lodash.size(participants) && { borderBottomWidth: 0 }]}
         horizontal
         showsHorizontalScrollIndicator={false}
         data={participants}
@@ -197,16 +209,16 @@ const Participants = ({ navigation }:any) => {
         keyExtractor={(item) => item._id}
         ListFooterComponent={() => <View style={{ width: 20 }} />}
       />
-      <View style={styles.contactTitle}>
+      <View style={[styles.contactTitle, !!lodash.size(participants) && { paddingTop: 15 }]}>
         <ArrowDownIcon
           style={{ marginTop: 2, marginRight: 3 }}
           color={text.default}
           size={24}
         />
         <Text
-          size={16}
-          weight={'bold'}
+          size={14}
           color={text.default}
+          style={{ fontFamily: Regular500 }}
         >
           My contacts
         </Text>
@@ -248,45 +260,54 @@ const Participants = ({ navigation }:any) => {
       <StatusBar barStyle={'dark-content'} />
       <View style={styles.header}>
         <View style={[styles.horizontal, { paddingVertical: 5 }]}>
-          <TouchableOpacity onPress={onBack}>
-            <CloseIcon
-              type='close'
-              size={24}
-            />
-          </TouchableOpacity>
+          <View style={{ position: 'absolute', left: 0, zIndex: 999 }}>
+            <TouchableOpacity onPress={onBack}>
+              <CloseIcon
+                type='close'
+                size={RFValue(18)}
+              />
+            </TouchableOpacity>
+          </View>
           <View style={styles.titleContainer}>
             <Text
-              color={text.default}
-              weight={'600'}
+              color={header.default}
               size={16}
+              style={{ fontFamily: Bold }}
             >
-              Participants
+              New Meeting
             </Text>
           </View>
-          <TouchableOpacity
-            disabled={!lodash.size(participants) || nextLoading}
-            onPress={onNext}
-          >
-            {
-              nextLoading ? (
-                <ActivityIndicator color={text.default} size={'small'} />
-              ) : (
-                <Text
-                  weight={'600'}
-                  color={!!lodash.size(participants) ? text.primary : text.default}
-                  size={14}
+          {
+            !!lodash.size(participants) && (
+              <View style={{ position: 'absolute', right: 0, zIndex: 999 }}>
+                <TouchableOpacity
+                  disabled={!lodash.size(participants) || nextLoading}
+                  onPress={onNext}
                 >
-                  Next
-                </Text>
-              )
-            }
-          </TouchableOpacity>
+                  {
+                    nextLoading ? (
+                      <ActivityIndicator color={text.default} size={'small'} />
+                    ) : (
+                      <Text
+                        color={text.info}
+                        size={14}
+                        style={{ fontFamily: Regular500 }}
+                      >
+                        Next
+                      </Text>
+                    )
+                  }
+                </TouchableOpacity>
+              </View>
+            )
+          }
         </View>
         <SearchField
           inputStyle={[InputStyles.text, styles.input]}
           iconStyle={styles.icon}
-          placeholder="Search name, email or phone"
+          placeholder="Search"
           outlineStyle={[InputStyles.outlineStyle, styles.outline]}
+          placeholderTextColor="#6E7191"
           value={searchText}
           onChangeText={setSearchText}
           onChangeTextDebounce={setSearchValue}
@@ -320,7 +341,7 @@ const Participants = ({ navigation }:any) => {
                     <View style={styles.selected}>
                       <CheckIcon
                         type={'check1'}
-                        size={16}
+                        size={RFValue(16)}
                         color="white"
                       />
                     </View>

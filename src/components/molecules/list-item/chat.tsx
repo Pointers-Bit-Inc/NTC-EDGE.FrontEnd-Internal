@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 10,
-    backgroundColor: primaryColor
+    backgroundColor: '#2863D6'
   }
 })
 
@@ -93,7 +93,7 @@ const ChatItem: FC<Props> = ({
           )
         }
         <View style={styles.content}>
-          <View style={[styles.horizontal, styles.channelInfo]}>
+          <View style={[styles.horizontal]}>
             <View style={{ flex: 1, paddingRight: 5 }}>
               <Text
                 color={'black'}
@@ -110,7 +110,7 @@ const ChatItem: FC<Props> = ({
               <Text
                 weight={!seen ? 'bold' : 'normal'}
                 color={!seen ? 'black' : text.default}
-                size={14}
+                size={12}
                 numberOfLines={1}
               >
                 {message?.message}

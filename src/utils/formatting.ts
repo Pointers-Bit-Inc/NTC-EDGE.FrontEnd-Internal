@@ -70,10 +70,10 @@ const getChatTimeString = (time:any) => {
   return '';
 }
 
-const getDateTimeString = (time:any) => {
+const getDateTimeString = (time:any, format:string) => {
   if (time) {
     const dateTime = dayjs(new Date(time));
-    return dateTime.format('MMM. DD, hh:mm A');
+    return dateTime.format(format || 'MMM. DD, hh:mm A');
   }
   return '';
 }

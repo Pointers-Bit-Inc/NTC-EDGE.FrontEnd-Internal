@@ -3,12 +3,13 @@ import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import Text from '@components/atoms/text'
 import { text, primaryColor } from 'src/styles/color';
 import ProfileImage from '@components/atoms/image/profile';
+import { Regular500 } from '@styles/font';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
   horizontal: {
     flexDirection: 'row',
@@ -59,14 +60,15 @@ const ChatItem: FC<Props> = ({
         <ProfileImage
           image={image}
           name={name}
-          textSize={12}
+          size={42}
+          textSize={14}
         />
         <View style={styles.content}>
           <Text
-            color={text.default}
-            weight={'bold'}
+            color={'black'}
             size={16}
             numberOfLines={1}
+            style={{ fontFamily: Regular500, marginBottom: -3 }}
           >
             {name}
           </Text>

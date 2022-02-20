@@ -6,6 +6,8 @@ import { CheckIcon, DeleteIcon, WriteIcon } from '@components/atoms/icon';
 import { getChatTimeString } from 'src/utils/formatting'
 import { primaryColor, bubble, text, outline } from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
+import NewDeleteIcon from '@components/atoms/icon/new-delete';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
   container: {
@@ -50,7 +52,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: 12,
     height: 12,
-    borderColor: outline.primary,
+    borderColor: text.info,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -134,6 +136,7 @@ const ChatBubble:FC<Props> = ({
                 name={`${sender.firstName} ${sender.lastName}`}
                 size={25}
                 textSize={10}
+                style={{ marginLeft: -5 }}
               />
             ) : null
           }
@@ -142,7 +145,7 @@ const ChatBubble:FC<Props> = ({
               <View style={{ alignSelf: 'center', marginRight: 0 }}>
                 <WriteIcon
                   type='pen'
-                  color={text.primary}
+                  color={text.info}
                   size={14}
                 />
               </View>
@@ -171,8 +174,9 @@ const ChatBubble:FC<Props> = ({
               {
                 (deleted || (unSend && isSender)) ? (
                   <>
-                    <DeleteIcon
-                      size={18}
+                    <NewDeleteIcon
+                      height={RFValue(18)}
+                      width={RFValue(18)}
                       color={'#979797'}
                     />
                     <Text
@@ -190,7 +194,7 @@ const ChatBubble:FC<Props> = ({
                 ) : (
                   <Text
                     size={14}
-                    color={(isSender && !system) ? 'white' : text.default}
+                    color={(isSender && !system) ? 'white' : 'black'}
                   >
                     {message}
                   </Text>
@@ -210,14 +214,14 @@ const ChatBubble:FC<Props> = ({
             )
           }
           {
-            (!isSeen && isSender) && (
+            (!isSeen && isSender && !deleted) && (
               <View
                 style={styles.check}
               >
                 <CheckIcon
                   type='check1'
                   size={8}
-                  color={text.primary}
+                  color={text.info}
                 />
               </View>
             )

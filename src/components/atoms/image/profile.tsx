@@ -3,6 +3,8 @@ import { View, Image, StyleSheet } from 'react-native'
 import Text from '../text';
 import { getInitial, getColorFromName } from 'src/utils/formatting';
 import { primaryColor } from '@styles/color';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { Bold } from '@styles/font';
 
 const styles = StyleSheet.create({
   image: {
@@ -12,7 +14,7 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1.5,
+    borderWidth: RFValue(1.5),
     borderColor: 'white',
   },
 });
@@ -39,8 +41,8 @@ const ProfileImage = ({
           styles.image,
           {
             backgroundColor: getBackgroundColor(),
-            height: size,
-            width: size,
+            height: RFValue(size),
+            width: RFValue(size),
             borderRadius: size,
           },
           style
@@ -56,16 +58,16 @@ const ProfileImage = ({
         styles.image,
         {
           backgroundColor: getBackgroundColor(),
-          height: size,
-          width: size,
+          height: RFValue(size),
+          width: RFValue(size),
           borderRadius: size,
         },
         style
       ]}>
       <Text
         size={textSize}
-        weight={'bold'}
         color={'white'}
+        style={{ fontFamily: Bold, marginRight: -1, marginTop: 1 }}
       >
         {getInitial(name)}
       </Text>

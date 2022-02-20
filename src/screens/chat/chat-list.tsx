@@ -8,7 +8,7 @@ import useFirebase from 'src/hooks/useFirebase';
 import useSignalr from 'src/hooks/useSignalr';
 import { checkSeen } from 'src/utils/formatting';
 import { ListFooter } from '@components/molecules/list-item';
-import { DeleteIcon, WriteIcon } from '@components/atoms/icon';
+import { DeleteIcon, NewEditIcon, WriteIcon } from '@components/atoms/icon';
 import {
   setMessages,
   addToMessages,
@@ -22,6 +22,8 @@ import Text from '@atoms/text';
 import Button from '@components/atoms/button';
 import ChatList from '@components/organisms/chat/list';
 import { primaryColor, outline, text, button } from '@styles/color';
+import NewDeleteIcon from '@components/atoms/icon/new-delete';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
   button: {
@@ -41,9 +43,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   cancelButton: {
-    borderRadius: 5,
+    borderRadius: 10,
     paddingVertical: 10,
-    backgroundColor: button.primary,
+    backgroundColor: button.info,
     marginHorizontal: 20,
     marginVertical: 10,
   },
@@ -170,9 +172,10 @@ const List = () => {
           }}
         >
           <View style={styles.button}>
-            <WriteIcon
+            <NewEditIcon
+              height={RFValue(22)}
+              width={RFValue(22)}
               color={text.default}
-              size={22}
             />
             <Text
               style={{ marginLeft: 15 }}
@@ -187,9 +190,10 @@ const List = () => {
           onPress={() => setShowDeleteOption(true)}
         >
           <View style={[styles.button, { borderBottomWidth: 0 }]}>
-            <DeleteIcon
+            <NewDeleteIcon
+              height={RFValue(22)}
+              width={RFValue(22)}
               color={text.error}
-              size={22}
             />
             <Text
               style={{ marginLeft: 15 }}
@@ -216,7 +220,7 @@ const List = () => {
           <View style={[styles.button, { justifyContent: 'center' }]}>
             <Text
               style={{ marginLeft: 15 }}
-              color={text.primary}
+              color={text.info}
               size={18}
             >
               Unsend for myself

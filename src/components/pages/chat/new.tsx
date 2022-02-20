@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react'
 import {
   RefreshControl,
   ActivityIndicator,
+  InteractionManager,
   Dimensions,
   StyleSheet,
   View,
@@ -17,9 +18,10 @@ import { outline, button, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
 import { ContactItem, ListFooter, SelectedContact } from '@components/molecules/list-item';
-import { ArrowLeftIcon, ArrowDownIcon, CheckIcon } from '@components/atoms/icon'
+import { ArrowLeftIcon, ArrowDownIcon, CheckIcon, CloseIcon } from '@components/atoms/icon'
 import { SearchField } from '@components/molecules/form-fields'
-import { primaryColor } from '@styles/color';
+import { primaryColor, header } from '@styles/color';
+import { Bold, Regular, Regular500 } from '@styles/font';
 import useSignalr from 'src/hooks/useSignalr';
 import axios from 'axios';
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -31,8 +33,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    padding: 15,
-    paddingBottom: 0,
+    paddingHorizontal: 15,
   },
   horizontal: {
     flexDirection: 'row',
@@ -44,22 +45,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-     fontWeight: "500"  ,
+    fontSize: RFValue(16),
+    fontFamily: Regular,
+    color: 'black',
     flex: 1,
   },
   outline: {
     borderWidth: 0,
-    backgroundColor: '#F1F1F1',
+    backgroundColor: '#EFF0F7',
     borderRadius: 10,
   },
   icon: {
-    fontSize: 16
+    fontSize: RFValue(16),
+    color: '#6E7191'
   },
   separator: {
-    height: StyleSheet.hairlineWidth,
-    width: width - 60,
-    alignSelf: 'flex-end',
-    backgroundColor: outline.default,
+    // height: StyleSheet.hairlineWidth,
+    // width: width - 60,
+    // alignSelf: 'flex-end',
+    // backgroundColor: outline.default,
   },
   notSelected: {
     height: RFValue(20),
@@ -84,10 +88,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  outlineBorder: {
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+    borderBottomColor: '#E5E5E5',
+    borderBottomWidth: 1,
   }
 })
 
-const NewChat = ({ navigation }:any) => {
+const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
   const {
@@ -140,34 +150,31 @@ const NewChat = ({ navigation }:any) => {
       `/room/search-participants?pageIndex=1&search=${searchValue}` :
       `/room/list-participants?pageIndex=1`;
 
-    getParticipantList(url, (err:any, res:any) => {
-      if (res) {
-        setContacts(res.list);
-        setPageIndex(current => current + 1);
-        setHasMore(res.hasMore);
-      }
-      if (err) {
-        console.log('ERR', err);
-      }
-      setLoading(false);
+    InteractionManager.runAfterInteractions(() => {
+      getParticipantList(url, (err:any, res:any) => {
+        if (res) {
+          setContacts(res.list);
+          setPageIndex(current => current + 1);
+          setHasMore(res.hasMore);
+        }
+        if (err) {
+          console.log('ERR', err);
+        }
+        setLoading(false);
+      });
     });
   
     return () => {
-      setLoading(false);
       source.cancel();
     };
   }, [sendRequest, searchValue]);
 
-  const onBack = () => navigation.goBack();
   const onNext = () => {
     setNextLoading(true);
     createChannel(participants, (err:any, res:any) => {
       setNextLoading(false);
       if (res) {
-        res.otherParticipants = lodash.reject(res.participants, p => p._id === user._id);
-        dispatch(setSelectedChannel(res));
-        dispatch(addChannel(res));
-        navigation.replace('ViewChat', res);
+        onSubmit(res);
       }
       if (err) {
         console.log('ERROR', err);
@@ -202,7 +209,7 @@ const NewChat = ({ navigation }:any) => {
   const headerComponent = () => (
     <View>
       <FlatList
-        style={{ paddingHorizontal: 10, paddingBottom: 10 }}
+        style={[styles.outlineBorder, !lodash.size(participants) && { borderBottomWidth: 0 }]}
         horizontal
         data={participants}
         renderItem={({ item }) => (
@@ -214,18 +221,19 @@ const NewChat = ({ navigation }:any) => {
         )}
         keyExtractor={(item) => item._id}
         ListFooterComponent={() => <View style={{ width: 20 }} />}
+        ItemSeparatorComponent={() => <View style={{ width: RFValue(5) }} />}
         showsHorizontalScrollIndicator={false}
       />
-      <View style={styles.contactTitle}>
+      <View style={[styles.contactTitle, !!lodash.size(participants) && { paddingTop: 15 }]}>
         <ArrowDownIcon
           style={{ marginTop: 2, marginRight: 3 }}
           color={text.default}
           size={24}
         />
         <Text
-          size={16}
-          weight={'bold'}
-          color={text.default}
+          size={14}
+          color={'#606A80'}
+          style={{ fontFamily: Regular500 }}
         >
           My contacts
         </Text>
@@ -264,47 +272,57 @@ const NewChat = ({ navigation }:any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'dark-content'} />
+      <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
         <View style={[styles.horizontal, { paddingVertical: 5 }]}>
-          <TouchableOpacity onPress={onBack}>
-            <ArrowLeftIcon
-              size={22}
-            />
-          </TouchableOpacity>
+          <View style={{ position: 'absolute', left: 0, zIndex: 999 }}>
+            <TouchableOpacity onPress={onClose}>
+              <CloseIcon
+                type='close'
+                size={RFValue(18)}
+              />
+            </TouchableOpacity>
+          </View>
           <View style={styles.titleContainer}>
             <Text
-              color={text.default}
-              weight={'600'}
+              color={header.default}
               size={16}
+              style={{ fontFamily: Bold }}
             >
               New message
             </Text>
           </View>
-          <TouchableOpacity
-            disabled={!lodash.size(participants) || nextLoading}
-            onPress={onNext}
-          >
-            {
-              nextLoading ? (
-                <ActivityIndicator color={text.default} size={'small'} />
-              ) : (
-                <Text
-                  weight={'600'}
-                  color={!!lodash.size(participants) ? text.primary : text.default}
-                  size={14}
+          {
+            !!lodash.size(participants) && (
+              <View style={{ position: 'absolute', right: 0, zIndex: 999 }}>
+                <TouchableOpacity
+                  disabled={!lodash.size(participants) || nextLoading}
+                  onPress={onNext}
                 >
-                  Next
-                </Text>
-              )
-            }
-          </TouchableOpacity>
+                  {
+                    nextLoading ? (
+                      <ActivityIndicator color={text.default} size={'small'} />
+                    ) : (
+                      <Text
+                        color={text.default}
+                        size={14}
+                        style={{ fontFamily: Regular500 }}
+                      >
+                        Create
+                      </Text>
+                    )
+                  }
+                </TouchableOpacity>
+              </View>
+            )
+          }
         </View>
         <SearchField
           inputStyle={[InputStyles.text, styles.input]}
           iconStyle={styles.icon}
           placeholder="Search"
           outlineStyle={[InputStyles.outlineStyle, styles.outline]}
+          placeholderTextColor="#6E7191"
           value={searchText}
           onChangeText={setSearchText}
           onChangeTextDebounce={setSearchValue}
@@ -313,6 +331,7 @@ const NewChat = ({ navigation }:any) => {
       </View>
       <FlatList
         data={contacts}
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             tintColor={primaryColor} // ios

@@ -26,6 +26,12 @@ import ToggleIcon from './toggle';
 import LeftIcon from './left';
 import RightIcon from './right';
 import UploadIcon from './upload';
+import NewChatIcon from './new-chat';
+import NewVideoIcon from './new-video';
+import NewCallIcon from './new-call';
+import NewMessageIcon from './new-message';
+import NewSearchIcon from './new-search';
+import NewEditIcon from './new-edit';
 
 export {
   ExclamationIcon,
@@ -56,4 +62,10 @@ export {
   LeftIcon,
   RightIcon,
   UploadIcon,
+  NewChatIcon,
+  NewVideoIcon,
+  NewCallIcon,
+  NewMessageIcon,
+  NewSearchIcon,
+  NewEditIcon,
 };

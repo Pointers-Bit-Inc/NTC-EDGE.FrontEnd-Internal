@@ -13,16 +13,17 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import { setMeetingId, setMeeting } from 'src/reducers/meeting/actions';
-import { outline, button, text } from '@styles/color';
+import { outline, button, text, header } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
-import { ArrowLeftIcon, ToggleIcon, CheckIcon } from '@components/atoms/icon'
+import { ArrowLeftIcon, ToggleIcon, CheckIcon, CloseIcon } from '@components/atoms/icon'
 import { InputField } from '@components/molecules/form-fields'
 import useFirebase from 'src/hooks/useFirebase';
 import useSignalr from 'src/hooks/useSignalr';
 import Button from '@components/atoms/button';
 import lodash from 'lodash';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { Bold, Regular500 } from '@styles/font';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    padding: 20,
+    paddingHorizontal: 15,
     paddingBottom: 0,
   },
   horizontal: {
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    fontSize: RFValue(18),
+    fontSize: RFValue(16),
     backgroundColor: '#EEEEEE',
   },
   outline: {
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   icon: {
-    fontSize: 16
+    fontSize: RFValue(16)
   },
   button: {
     borderRadius: 10,
@@ -64,36 +65,38 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 15,
-    borderBottomColor: '#687287',
+    paddingVertical: RFValue(15),
+    borderBottomColor: '#A0A3BD',
     borderBottomWidth: StyleSheet.hairlineWidth
   },
   toggleDefault: {
     transform: [{ scaleX: -1 }],
-    color: '#687287',
+    color: '#A0A3BD',
   },
   toggleActive: {
-    color: button.primary,
+    color: '#2863D6',
   }
 })
 
-const CreateMeeting = ({ navigation, route }:any) => {
+const CreateMeeting = ({
+  barStyle = 'light-content',
+  onClose = () => {},
+  onSubmit = () => {},
+  participants = [],
+  isChannelExist = false,
+  isVideoEnable = true,
+  isVoiceCall = false,
+  isMute = false,
+  channelId,
+}:any) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
-  const {
-    participants = [],
-    isChannelExist = false,
-    isVideoEnable = true,
-    isVoiceCall = false,
-    isMute = false,
-    channelId,
-  } = route.params;
   const { createMeeting } = useSignalr();
   const [loading, setLoading] = useState(false);
   const [meetingName, setMeetingName] = useState('');
   const [videoOn, setVideoOn] = useState(isVideoEnable);
   const [micOn, setMicOn] = useState(!isMute);
-  const onBack = () => navigation.goBack();
+  const onBack = onClose;
   const onStartMeeting = () => {
     setLoading(true);
     if (isChannelExist) {
@@ -105,7 +108,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
           room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room, isChannelExist));
           dispatch(setMeeting(data));
-          navigation.replace('JoinVideoCall', {
+          onSubmit('JoinVideoCall', {
             isHost: true,
             isVoiceCall,
             options: {
@@ -124,7 +127,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
           room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room));
           dispatch(setMeeting(data));
-          navigation.replace('VideoCall', {
+          onSubmit('VideoCall', {
             isHost: true,
             options: {
               isMute: !micOn,
@@ -138,26 +141,34 @@ const CreateMeeting = ({ navigation, route }:any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'dark-content'} />
+      <StatusBar barStyle={barStyle} />
       <View style={styles.header}>
-        <View style={[styles.horizontal, { paddingVertical: 5 }]}>
-          <TouchableOpacity onPress={onBack}>
-            <ArrowLeftIcon
-              size={24}
-            />
-          </TouchableOpacity>
+        <View style={[styles.horizontal, { paddingVertical: 5, marginBottom: RFValue(10) }]}>
+          <View style={{ position: 'absolute', left: 0, zIndex: 999 }}>
+            <TouchableOpacity onPress={onBack}>
+              <CloseIcon
+                type='close'
+                size={RFValue(18)}
+              />
+            </TouchableOpacity>
+          </View>
           <View style={styles.titleContainer}>
             <Text
-              color={text.default}
-              weight={'600'}
+              color={header.default}
               size={16}
+              style={{ fontFamily: Bold }}
             >
-              Create Meeting
+              New meeting
             </Text>
           </View>
         </View>
         <InputField
-          containerStyle={{ backgroundColor: '#EEEEEE', borderWidth: 0 }}
+          containerStyle={{
+            backgroundColor: '#EEEEEE',
+            borderWidth: 0,
+            height: null,
+            paddingVertical: RFValue(15),
+          }}
           inputStyle={[InputStyles.text, styles.input]}
           iconStyle={styles.icon}
           placeholder="Meeting name"
@@ -167,10 +178,10 @@ const CreateMeeting = ({ navigation, route }:any) => {
           onChangeText={setMeetingName}
           onSubmitEditing={(event:any) => setMeetingName(event.nativeEvent.text)}
         />
-        <View style={{ paddingTop: 20, paddingBottom: 60 }}>
+        <View style={{ paddingBottom: 60 }}>
           <View style={styles.section}>
             <Text
-              color='#687287'
+              color='#606A80'
               size={18}
             >
               Video {videoOn ? 'On' : 'Off'}
@@ -184,13 +195,13 @@ const CreateMeeting = ({ navigation, route }:any) => {
                     styles.toggleActive :
                     styles.toggleDefault
                 }
-                size={28}
+                size={RFValue(35)}
               />
             </TouchableOpacity>
           </View>
           <View style={styles.section}>
             <Text
-              color='#687287'
+              color='#606A80'
               size={18}
             >
               Mic {micOn ? 'On' : 'Off'}
@@ -204,7 +215,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
                     styles.toggleActive :
                     styles.toggleDefault
                 }
-                size={28}
+                size={RFValue(35)}
               />
             </TouchableOpacity>
           </View>
@@ -220,8 +231,8 @@ const CreateMeeting = ({ navigation, route }:any) => {
             ) : (
               <Text
                 size={18}
-                weight='bold'
                 color='white'
+                style={{ fontFamily: Regular500 }}
               >
                 Start Meeting
               </Text>

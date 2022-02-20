@@ -499,11 +499,10 @@ export default function ActivitiesPage(props: any) {
                                         style={{width}}
                                         name={getChannelName({...item, otherParticipants: item?.participants})}
                                         time={item.createdAt}
+                                        host={item.host}
                                         onJoin={() => onJoin(item)}
                                         onClose={() => onClose(item)}
-                                        closeText={
-                                            item.host._id === user._id ? 'End' : 'Close'
-                                        }
+                                        closeText={'Cancel'}
                                     />
                                 )}
                             />
