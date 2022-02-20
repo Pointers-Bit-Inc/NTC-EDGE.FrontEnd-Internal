@@ -73,11 +73,10 @@ export default StyleSheet.create({
   },
   inputText: {
     paddingHorizontal: 0,
-    paddingVertical: -100,
-    marginVertical: -(3),
+    paddingVertical: 0,
+    marginVertical: -RFValue(5),
     color: text?.mainColor,
     fontFamily: Regular,
-
   },
   iconStyle: {
     height: RFValue(20),
