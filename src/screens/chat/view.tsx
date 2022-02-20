@@ -20,6 +20,7 @@ import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import useFirebase from 'src/hooks/useFirebase';
 import useSignalR from 'src/hooks/useSignalr';
 import ChatList from '@screens/chat/chat-list';
+import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import FileList from '@components/organisms/chat/files';
 import {
   ArrowLeftIcon,
@@ -47,7 +48,8 @@ import {
 } from 'src/reducers/channel/actions';
 import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
-const { width } = Dimensions.get('window');
+import CreateMeeting from '@components/pages/chat/meeting';
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
     fontSize: RFValue(16),
   },
   plus: {
-    backgroundColor: button.default,
+    backgroundColor: '#D1D1D6',
     borderRadius: RFValue(24),
     width: RFValue(24),
     height: RFValue(24),
@@ -107,7 +109,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  floatingNotif: {}
+  floatingNotif: {},
+  bar: {
+    height: 15,
+    width: 35,
+    borderRadius: 4,
+  },
 });
 
 const ChatRoute = () => (<ChatList />);
@@ -124,6 +131,7 @@ const ChatView = ({ navigation, route }:any) => {
     editMessage,
     endMeeting,
   } = useSignalR();
+  const modalRef = useRef<BottomModalRef>(null);
   const inputRef:any = useRef(null);
   const layout = useWindowDimensions();
   const user = useSelector((state:RootStateOrAny) => state.user);
@@ -145,6 +153,7 @@ const ChatView = ({ navigation, route }:any) => {
   const [index, setIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
   const [rendered, setRendered] = useState(false);
+  const [isVideoEnable, setIsVideoEnable] = useState(false);
   const [routes] = useState([
     { key: 'chat', title: 'Chat' },
     { key: 'files', title: 'Files' },
@@ -243,17 +252,21 @@ const ChatView = ({ navigation, route }:any) => {
     }
   }, [selectedMessage, rendered]);
 
-  const onInitiateCall = (isVideoEnable = false) =>
-    navigation.navigate(
-      'InitiateVideoCall',
-      {
-        participants,
-        isVideoEnable,
-        isVoiceCall: !isVideoEnable,
-        isChannelExist: true,
-        channelId,
-      }
-    );
+  const onInitiateCall = (isVideoEnable = false) => {
+    setIsVideoEnable(isVideoEnable);
+    modalRef.current?.open();
+    // navigation.navigate(
+    //   'InitiateVideoCall',
+    //   {
+    //     participants,
+    //     isVideoEnable,
+    //     isVoiceCall: !isVideoEnable,
+    //     isChannelExist: true,
+    //     channelId,
+    //   }
+    // );
+  }
+    
 
   return (
     <View style={styles.container}>
@@ -269,8 +282,8 @@ const ChatView = ({ navigation, route }:any) => {
         <View style={{ paddingLeft: 5 }}>
           <GroupImage
             participants={otherParticipants}
-            size={40}
-            textSize={16}
+            size={route?.params?.isGroup ? 55 : 40}
+            textSize={route?.params?.isGroup ? 24 : 16}
             inline={true}
           />
         </View>
@@ -356,7 +369,7 @@ const ChatView = ({ navigation, route }:any) => {
             <InputField
               ref={inputRef}
               placeholder={'Type a message'}
-              containerStyle={{ height: null, paddingVertical: 10, borderWidth: 1, borderColor: '#C1CADC', backgroundColor: 'white' }}
+              containerStyle={{ height: null, paddingVertical: 10, borderWidth: 1, borderColor: isFocused ? '#C1CADC' : 'white', backgroundColor: 'white' }}
               placeholderTextColor={'#C4C4C4'}
               inputStyle={[InputStyles.text, styles.input, { backgroundColor: 'white' }]}
               outlineStyle={[InputStyles.outlineStyle, styles.outline, { backgroundColor: 'white' }]}
@@ -374,7 +387,7 @@ const ChatView = ({ navigation, route }:any) => {
             >
               <View style={{ marginLeft: 10 }}>
                 <NewMessageIcon
-                  color={inputText ? button.info : button.default}
+                  color={inputText ? button.info : '#D1D1D6'}
                   height={RFValue(30)}
                   width={RFValue(30)}
                 />
@@ -434,6 +447,33 @@ const ChatView = ({ navigation, route }:any) => {
           </View>
         </View>
       </KeyboardAvoidingView>
+      <BottomModal
+        ref={modalRef}
+        onModalHide={() => modalRef.current?.close()}
+        avoidKeyboard={false}
+        header={
+          <View style={styles.bar} />
+        }
+        containerStyle={{ maxHeight: null }}
+        backdropOpacity={0}
+        onBackdropPress={() => {}}
+      >
+        <View style={{ paddingBottom: 20, height: height * .94 }}>
+          <CreateMeeting
+            barStyle={'dark-content'}
+            participants={participants}
+            isVideoEnable={isVideoEnable}
+            isVoiceCall={!isVideoEnable}
+            isChannelExist={true}
+            channelId={channelId}
+            onClose={() => modalRef.current?.close()}
+            onSubmit={(type, params) => {
+              modalRef.current?.close();
+              setTimeout(() => navigation.navigate(type, params), 300);
+            }}
+          />
+        </View>
+      </BottomModal>
     </View>
   )
 }

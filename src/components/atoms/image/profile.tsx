@@ -67,7 +67,7 @@ const ProfileImage = ({
       <Text
         size={textSize}
         color={'white'}
-        style={{ fontFamily: Bold }}
+        style={{ fontFamily: Bold, marginRight: -1, marginTop: 1 }}
       >
         {getInitial(name)}
       </Text>

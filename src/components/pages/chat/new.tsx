@@ -60,24 +60,24 @@ const styles = StyleSheet.create({
     color: '#6E7191'
   },
   separator: {
-    height: StyleSheet.hairlineWidth,
-    width: width - 60,
-    alignSelf: 'flex-end',
-    backgroundColor: outline.default,
+    // height: StyleSheet.hairlineWidth,
+    // width: width - 60,
+    // alignSelf: 'flex-end',
+    // backgroundColor: outline.default,
   },
   notSelected: {
-    height: 20,
-    width: 20,
-    borderRadius: 20,
+    height: RFValue(20),
+    width: RFValue(20),
+    borderRadius: RFValue(20),
     borderWidth: 1,
     borderColor: button.default,
     alignItems: 'center',
     justifyContent: 'center',
   },
   selected: {
-    height: 20,
-    width: 20,
-    borderRadius: 20,
+    height: RFValue(20),
+    width: RFValue(20),
+    borderRadius: RFValue(20),
     borderWidth: 1,
     borderColor: button.info,
     backgroundColor: button.info,
@@ -88,6 +88,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  outlineBorder: {
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+    borderBottomColor: '#E5E5E5',
+    borderBottomWidth: 1,
   }
 })
 
@@ -203,7 +209,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   const headerComponent = () => (
     <View>
       <FlatList
-        style={{ paddingHorizontal: 10, paddingBottom: 10 }}
+        style={[styles.outlineBorder, !lodash.size(participants) && { borderBottomWidth: 0 }]}
         horizontal
         data={participants}
         renderItem={({ item }) => (
@@ -218,16 +224,16 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
         ItemSeparatorComponent={() => <View style={{ width: RFValue(5) }} />}
         showsHorizontalScrollIndicator={false}
       />
-      <View style={styles.contactTitle}>
+      <View style={[styles.contactTitle, !!lodash.size(participants) && { paddingTop: 15 }]}>
         <ArrowDownIcon
           style={{ marginTop: 2, marginRight: 3 }}
           color={text.default}
           size={24}
         />
         <Text
-          size={16}
-          weight={'bold'}
-          color={text.default}
+          size={14}
+          color={'#606A80'}
+          style={{ fontFamily: Regular500 }}
         >
           My contacts
         </Text>
@@ -269,12 +275,14 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
         <View style={[styles.horizontal, { paddingVertical: 5 }]}>
-          <TouchableOpacity onPress={onClose}>
-            <CloseIcon
-              type='close'
-              size={RFValue(18)}
-            />
-          </TouchableOpacity>
+          <View style={{ position: 'absolute', left: 0, zIndex: 999 }}>
+            <TouchableOpacity onPress={onClose}>
+              <CloseIcon
+                type='close'
+                size={RFValue(18)}
+              />
+            </TouchableOpacity>
+          </View>
           <View style={styles.titleContainer}>
             <Text
               color={header.default}
@@ -286,7 +294,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
           </View>
           {
             !!lodash.size(participants) && (
-              <View style={{ position: 'absolute', right: 0 }}>
+              <View style={{ position: 'absolute', right: 0, zIndex: 999 }}>
                 <TouchableOpacity
                   disabled={!lodash.size(participants) || nextLoading}
                   onPress={onNext}
@@ -348,7 +356,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
                     <View style={styles.selected}>
                       <CheckIcon
                         type={'check1'}
-                        size={16}
+                        size={RFValue(16)}
                         color="white"
                       />
                     </View>

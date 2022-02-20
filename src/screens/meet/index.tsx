@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import {
   View,
   StyleSheet,
@@ -20,15 +20,18 @@ import ProfileImage from '@components/atoms/image/profile'
 import Meeting from '@components/molecules/list-item/meeting';
 import Text from '@components/atoms/text'
 import { getChannelName, getDayMonthString, getOtherParticipants } from 'src/utils/formatting';
-import { PeopleIcon, CalendarIcon, VideoIcon, NewVideoIcon } from '@atoms/icon';
+import { PeopleIcon, CalendarIcon, VideoIcon, NewVideoIcon, PlusIcon } from '@atoms/icon';
 import { text, outline, primaryColor } from 'src/styles/color';
+import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import Button from '@components/atoms/button';
 import { ListFooter } from '@components/molecules/list-item';
+import MeetingParticipants from '@components/pages/chat/meeting-participants';
 import HomeMenuIcon from "@assets/svg/homemenu";
 import { RFValue } from 'react-native-responsive-fontsize';
 import {Bold} from "@styles/font";
+import CreateMeeting from '@components/pages/chat/meeting';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -87,11 +90,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     width: '100%',
   },
+  bar: {
+    height: 15,
+    width: 35,
+    borderRadius: 4,
+  },
 })
 
 const Meet = ({ navigation }) => {
   const dispatch = useDispatch();
   useRequestCameraAndAudioPermission();
+  const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const meetingList = useSelector((state:RootStateOrAny) => {
     const { normalizedMeetingList } = state.meeting
@@ -113,6 +122,8 @@ const Meet = ({ navigation }) => {
   const [fetching, setFetching] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [isNext, setIsNext] = useState(false);
+  const [participants, setParticipants] = useState([]);
 
   const onJoin = (item) => {
     dispatch(setSelectedChannel(item.room));
@@ -210,6 +221,7 @@ const Meet = ({ navigation }) => {
         time={item.createdAt}
         participants={lodash.take(item?.room?.otherParticipants, 5)}
         ended={item.ended}
+        data={item}
         onJoin={() => onJoin(item)}
       />
     )
@@ -237,12 +249,17 @@ const Meet = ({ navigation }) => {
           </Text>
         </View>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Participants')}
+          onPress={() => modalRef.current?.open()}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <NewVideoIcon
-              width={RFValue(28)}
-              height={RFValue(28)}
+              width={RFValue(30)}
+              height={RFValue(30)}
+            />
+            <PlusIcon
+              color='white'
+              size={RFValue(8)}
+              style={{ position: 'absolute', left: RFValue(8) }}
             />
           </View>
         </TouchableOpacity>
@@ -276,11 +293,52 @@ const Meet = ({ navigation }) => {
             keyExtractor={(item:any) => item._id}
             ListEmptyComponent={emptyComponent}
             ListFooterComponent={ListFooterComponent}
+            ItemSeparatorComponent={() => <View style={{ width: width - RFValue(60), height: 1, backgroundColor: '#E5E5E5', alignSelf: 'flex-end' }} />}
             onEndReached={() => fetchMoreMeeting()}
             onEndReachedThreshold={0.5}
           />
         )
       }
+      <BottomModal
+        ref={modalRef}
+        onModalHide={() => modalRef.current?.close()}
+        avoidKeyboard={false}
+        header={
+          <View style={styles.bar} />
+        }
+        containerStyle={{ maxHeight: null }}
+        backdropOpacity={0}
+        onBackdropPress={() => {}}
+      >
+        <View style={{ paddingBottom: 20, height: height * .94 }}>
+          {
+            isNext ? (
+              <CreateMeeting
+                participants={participants}
+                onClose={() => setIsNext(false)}
+                onSubmit={(type, params) => {
+                  modalRef.current?.close();
+                  setParticipants([]);
+                  setIsNext(false);
+                  setTimeout(() => navigation.navigate(type, params), 300);
+                }}
+              />
+            ) : (
+              <MeetingParticipants
+                meetingPartticipants={participants}
+                onClose={() => {
+                  setParticipants([]);
+                  modalRef.current?.close();
+                }}
+                onSubmit={(res:any) => {
+                  setParticipants(res);
+                  setIsNext(true);
+                }}
+              />
+            )
+          }
+        </View>
+      </BottomModal>
     </View>
   )
 }

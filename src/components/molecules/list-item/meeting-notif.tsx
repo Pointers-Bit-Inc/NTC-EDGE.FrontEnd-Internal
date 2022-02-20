@@ -4,7 +4,7 @@ import Text from '@components/atoms/text'
 import Button from '@components/atoms/button'
 import { text, outline, button } from 'src/styles/color';
 import { getDateTimeString } from 'src/utils/formatting';
-import { Bold } from '@styles/font';
+import { Bold, Regular500 } from '@styles/font';
 import CloseIcon from '@assets/svg/close';
 import { RFValue } from 'react-native-responsive-fontsize';
 
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderLeftColor: '#7897FF',
-    borderLeftWidth: 2,
+    borderLeftWidth: RFValue(3),
   },
   joinButton: {
     padding: 5,
@@ -95,6 +95,7 @@ const MeetingNotif: FC<Props> = ({
         <Text
           color='white'
           size={12}
+          style={{ fontFamily: Regular500 }}
         >
           Join
         </Text>
@@ -106,6 +107,7 @@ const MeetingNotif: FC<Props> = ({
         <Text
           color={'#CF0327'}
           size={12}
+          style={{ fontFamily: Regular500 }}
         >
           {closeText}
         </Text>

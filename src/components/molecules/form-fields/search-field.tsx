@@ -8,7 +8,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 10,
+    paddingVertical: RFValue(10),
   },
   label: {
     position: 'absolute',
@@ -133,8 +133,8 @@ const InputField: FC<Props> = ({
       >
         <NewSearchIcon
           style={[styles.icon, iconStyle]}
-          height={RFValue(20)}
-          width={RFValue(20)}
+          height={RFValue(16)}
+          width={RFValue(16)}
           color={'#6E7191'}
         />
         <TextInput

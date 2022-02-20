@@ -57,7 +57,7 @@ const GroupImage: FC<Props> = ({
 
   if (inline) {
     return (
-      <View style={{ width: RFValue((imageSize * 2) - 5), height: RFValue(imageSize) }}>
+      <View style={{ width: RFValue((imageSize * 2) - 10), height: RFValue(imageSize) }}>
         <View style={styles.topPosition}>
           <ProfileImage
             style={styles.border}

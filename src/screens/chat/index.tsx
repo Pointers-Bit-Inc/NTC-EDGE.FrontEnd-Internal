@@ -401,8 +401,10 @@ const ChatList = ({ navigation }:any) => {
           <View style={styles.bar} />
         }
         containerStyle={{ maxHeight: null }}
+        backdropOpacity={0}
+        onBackdropPress={() => {}}
       >
-        <View style={{ paddingBottom: 20, height: height * .9 }}>
+        <View style={{ paddingBottom: 20, height: height * .94 }}>
           <NewChat
             onClose={() => modalRef.current?.close()}
             onSubmit={(res:any) => {
@@ -410,7 +412,7 @@ const ChatList = ({ navigation }:any) => {
               dispatch(setSelectedChannel(res));
               dispatch(addChannel(res));
               modalRef.current?.close();
-              setTimeout(() => navigation.push('ViewChat', res), 300);
+              setTimeout(() => navigation.navigate('ViewChat', res), 300);
             }}
           />
         </View>
