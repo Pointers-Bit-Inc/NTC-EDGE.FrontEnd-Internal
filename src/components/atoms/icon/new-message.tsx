@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import Svg, { SvgProps, Path } from "react-native-svg";
 import { RFValue } from 'react-native-responsive-fontsize';
 
-const NewChatIcon: FC = (props: SvgProps) => (
+const NewMessageIcon: FC = (props: SvgProps) => (
   <Svg
     width={RFValue(23)}
     height={RFValue(23)}
@@ -19,4 +19,4 @@ const NewChatIcon: FC = (props: SvgProps) => (
   </Svg>
 );
 
-export default NewChatIcon;
+export default NewMessageIcon;

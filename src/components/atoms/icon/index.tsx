@@ -30,6 +30,8 @@ import NewChatIcon from './new-chat';
 import NewVideoIcon from './new-video';
 import NewCallIcon from './new-call';
 import NewMessageIcon from './new-message';
+import NewSearchIcon from './new-search';
+import NewEditIcon from './new-edit';
 
 export {
   ExclamationIcon,
@@ -64,4 +66,6 @@ export {
   NewVideoIcon,
   NewCallIcon,
   NewMessageIcon,
+  NewSearchIcon,
+  NewEditIcon,
 };

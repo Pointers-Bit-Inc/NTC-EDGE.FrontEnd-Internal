@@ -46,15 +46,17 @@ const styles = StyleSheet.create({
   input: {
     fontSize: RFValue(16),
     fontFamily: Regular,
+    color: 'black',
     flex: 1,
   },
   outline: {
     borderWidth: 0,
-    backgroundColor: '#F1F1F1',
+    backgroundColor: '#EFF0F7',
     borderRadius: 10,
   },
   icon: {
-    fontSize: RFValue(16)
+    fontSize: RFValue(16),
+    color: '#6E7191'
   },
   separator: {
     height: StyleSheet.hairlineWidth,
@@ -76,8 +78,8 @@ const styles = StyleSheet.create({
     width: 20,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: button.primary,
-    backgroundColor: button.primary,
+    borderColor: button.info,
+    backgroundColor: button.info,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -210,6 +212,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
         )}
         keyExtractor={(item) => item._id}
         ListFooterComponent={() => <View style={{ width: 20 }} />}
+        ItemSeparatorComponent={() => <View style={{ width: RFValue(5) }} />}
         showsHorizontalScrollIndicator={false}
       />
       <View style={styles.contactTitle}>
@@ -308,6 +311,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
           iconStyle={styles.icon}
           placeholder="Search"
           outlineStyle={[InputStyles.outlineStyle, styles.outline]}
+          placeholderTextColor="#6E7191"
           value={searchText}
           onChangeText={setSearchText}
           onChangeTextDebounce={setSearchValue}
@@ -316,6 +320,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
       </View>
       <FlatList
         data={contacts}
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             tintColor={primaryColor} // ios

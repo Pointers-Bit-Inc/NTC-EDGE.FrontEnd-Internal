@@ -4,6 +4,7 @@ import Text from '../text';
 import { getInitial, getColorFromName } from 'src/utils/formatting';
 import { primaryColor } from '@styles/color';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { Bold } from '@styles/font';
 
 const styles = StyleSheet.create({
   image: {
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1.5,
+    borderWidth: RFValue(1.5),
     borderColor: 'white',
   },
 });
@@ -65,8 +66,8 @@ const ProfileImage = ({
       ]}>
       <Text
         size={textSize}
-        weight={'bold'}
         color={'white'}
+        style={{ fontFamily: Bold }}
       >
         {getInitial(name)}
       </Text>

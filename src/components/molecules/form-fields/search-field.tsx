@@ -1,7 +1,7 @@
 import React, { useState, useCallback, FC } from 'react';
 import { View, StyleSheet } from 'react-native';
 import lodash from 'lodash';
-import { ExclamationIcon, SearchIcon } from '@atoms/icon';
+import { ExclamationIcon, NewSearchIcon } from '@atoms/icon';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -131,9 +131,11 @@ const InputField: FC<Props> = ({
           !!error && { borderColor: errorColor }
         ]}
       >
-        <SearchIcon
+        <NewSearchIcon
           style={[styles.icon, iconStyle]}
-          size={RFValue(26)}
+          height={RFValue(20)}
+          width={RFValue(20)}
+          color={'#6E7191'}
         />
         <TextInput
           style={inputStyle}

@@ -93,7 +93,7 @@ const ChatItem: FC<Props> = ({
           )
         }
         <View style={styles.content}>
-          <View style={[styles.horizontal, styles.channelInfo]}>
+          <View style={[styles.horizontal, { marginBottom: -3 }]}>
             <View style={{ flex: 1, paddingRight: 5 }}>
               <Text
                 color={'black'}

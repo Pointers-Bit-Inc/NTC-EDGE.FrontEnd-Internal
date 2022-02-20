@@ -41,6 +41,7 @@ import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-moda
 import rtt from 'reactotron-react-native';
 import NewChat from '@pages/chat/new';
 import { RFValue } from 'react-native-responsive-fontsize';
+import NewDeleteIcon from '@components/atoms/icon/new-delete';
 
 const { width, height } = Dimensions.get('window');
 
@@ -50,17 +51,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    paddingBottom: 5,
     backgroundColor: 'white',
   },
   input: {
     fontSize: RFValue(16),
     fontFamily: Regular,
+    color: 'black',
     flex: 1,
   },
   outline: {
     borderWidth: 0,
-    backgroundColor: '#F1F1F1',
+    backgroundColor: '#EFF0F7',
     borderRadius: 10,
   },
   icon: {
@@ -121,11 +122,11 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     fontSize: RFValue(18),
-    color: text.error,
+    color: '#DC2626',
   },
   confirmText: {
     fontSize: RFValue(18),
-    color: text.primary,
+    color: text.info,
   },
   title: {
     textAlign: 'center',
@@ -270,14 +271,13 @@ const ChatList = ({ navigation }:any) => {
           style={{
             paddingHorizontal: 15,
             marginLeft: 10,
-            backgroundColor: button.error,
+            backgroundColor: '#CF0327',
             flex: 1,
             transform: [{ translateX: trans }],
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            <DeleteIcon
-              style={{ marginBottom: 5 }}
+            <NewDeleteIcon
               color={'white'}
               size={18}
             />
@@ -320,10 +320,11 @@ const ChatList = ({ navigation }:any) => {
           </TouchableOpacity>
         </View>
         <SearchField
-          containerStyle={{ paddingHorizontal: 20, paddingVertical: 20 }}
+          containerStyle={{ paddingHorizontal: 20, paddingVertical: 20, paddingBottom: 10 }}
           inputStyle={[InputStyles.text, styles.input]}
           iconStyle={styles.icon}
           placeholder="Search"
+          placeholderTextColor="#6E7191"
           outlineStyle={[InputStyles.outlineStyle, styles.outline]}
           value={searchText}
           onChangeText={setSearchText}

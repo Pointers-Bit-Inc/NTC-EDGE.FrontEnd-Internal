@@ -6,6 +6,8 @@ import { CheckIcon, DeleteIcon, WriteIcon } from '@components/atoms/icon';
 import { getChatTimeString } from 'src/utils/formatting'
 import { primaryColor, bubble, text, outline } from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
+import NewDeleteIcon from '@components/atoms/icon/new-delete';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
   container: {
@@ -172,8 +174,9 @@ const ChatBubble:FC<Props> = ({
               {
                 (deleted || (unSend && isSender)) ? (
                   <>
-                    <DeleteIcon
-                      size={18}
+                    <NewDeleteIcon
+                      height={RFValue(18)}
+                      width={RFValue(18)}
                       color={'#979797'}
                     />
                     <Text
@@ -211,7 +214,7 @@ const ChatBubble:FC<Props> = ({
             )
           }
           {
-            (!isSeen && isSender) && (
+            (!isSeen && isSender && !deleted) && (
               <View
                 style={styles.check}
               >

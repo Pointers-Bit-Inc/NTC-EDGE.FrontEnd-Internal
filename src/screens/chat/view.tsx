@@ -291,8 +291,8 @@ const ChatView = ({ navigation, route }:any) => {
           <View style={{ paddingRight: 5 }}>
             <NewCallIcon
               color={button.info}
-              height={RFValue(22)}
-              width={RFValue(22)}
+              height={RFValue(24)}
+              width={RFValue(24)}
             />
           </View>
         </TouchableOpacity>
@@ -300,8 +300,8 @@ const ChatView = ({ navigation, route }:any) => {
           <View style={{ paddingLeft: 5, paddingTop: 5 }}>
             <NewVideoIcon
               color={button.info}
-              height={RFValue(26)}
-              width={RFValue(26)}
+              height={RFValue(28)}
+              width={RFValue(28)}
             />
           </View>
         </TouchableOpacity>
@@ -347,7 +347,7 @@ const ChatView = ({ navigation, route }:any) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.keyboardAvoiding}>
-          <View style={{ marginTop: RFValue(-17) }}>
+          <View style={{ marginTop: RFValue(-18) }}>
             <TouchableOpacity  disabled={true}>
               <View style={styles.plus}>
                 <PlusIcon
@@ -361,9 +361,10 @@ const ChatView = ({ navigation, route }:any) => {
             <InputField
               ref={inputRef}
               placeholder={'Type a message'}
-              containerStyle={{ height: null, paddingVertical: 10 }}
-              inputStyle={[InputStyles.text, styles.input]}
-              outlineStyle={[InputStyles.outlineStyle, styles.outline]}
+              containerStyle={{ height: null, paddingVertical: 10, borderWidth: 1, borderColor: '#C1CADC', backgroundColor: 'white' }}
+              placeholderTextColor={'#C4C4C4'}
+              inputStyle={[InputStyles.text, styles.input, { backgroundColor: 'white' }]}
+              outlineStyle={[InputStyles.outlineStyle, styles.outline, { backgroundColor: 'white' }]}
               value={inputText}
               onChangeText={setInputText}
               onSubmitEditing={() => inputText && onSendMessage()}
@@ -372,7 +373,7 @@ const ChatView = ({ navigation, route }:any) => {
               onBlur={() => setIsFocused(false)}
             />
           </View>
-          <View style={{ marginTop: RFValue(-16), flexDirection: 'row' }}>
+          <View style={{ marginTop: RFValue(-18), flexDirection: 'row' }}>
             <TouchableOpacity
               onPress={onSendMessage}
             >
