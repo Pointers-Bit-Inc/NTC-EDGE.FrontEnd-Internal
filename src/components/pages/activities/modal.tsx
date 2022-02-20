@@ -28,6 +28,7 @@ import {ApprovedButton} from "@pages/activities/button/approvedButton";
 import {DeclineButton} from "@pages/activities/button/declineButton";
 import {EndorsedButton} from "@pages/activities/button/endorsedButton";
 import {Bold} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 
 function ActivityModal(props: any) {
@@ -240,6 +241,8 @@ function ActivityModal(props: any) {
             <View style={ { flex : 1 } }>
                 <View style={ {
                     flexDirection : "row" ,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#F0F0F0",
                     justifyContent : "space-between" ,
                     padding : 15 ,
                     paddingTop : 40
@@ -407,8 +410,9 @@ function ActivityModal(props: any) {
 export default ActivityModal
 const styles = StyleSheet.create({
     applicationType : {
+
         fontFamily : Bold ,
-        fontSize : 14 ,
+        fontSize : RFValue(14) ,
         lineHeight : 16.5 ,
         color : "#606A80"
     } ,
