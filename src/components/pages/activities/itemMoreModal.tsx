@@ -5,6 +5,8 @@ import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 import {Bold , Regular} from "@styles/font";
+import {disabledColor} from "@styles/color";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const ItemMoreModal = (props: any) => {
     const applicant = props?.details?.applicant?.user
@@ -38,7 +40,7 @@ const ItemMoreModal = (props: any) => {
                                 <Text
                                     style={styles.centerName}>{`${applicant?.firstName} ${applicant?.lastName}`}</Text>
                                 <Text style={{
-                                    fontSize: 14,
+                                    fontSize: RFValue(14),
                                     color: "#626a7e",
                                     fontFamily: Regular,
                                 }}>{props?.details?.applicationType}</Text>
@@ -50,6 +52,7 @@ const ItemMoreModal = (props: any) => {
                                     <View style={styles.group3}>
                                         <View style={styles.Row}>
                                             <PinToTopIcon
+                                                color={disabledColor}
                                                 style={styles.Icon}
                                             />
                                             <Text style={styles.Item}>Pin to top</Text>
@@ -60,6 +63,7 @@ const ItemMoreModal = (props: any) => {
                                     <View style={styles.group3}>
                                         <View style={styles.Row}>
                                             <BellMuteIcon
+                                                color={disabledColor}
                                                 style={styles.Icon}
                                             />
                                             <Text style={styles.Item}>Mute</Text>
@@ -71,6 +75,7 @@ const ItemMoreModal = (props: any) => {
 
                                         <View style={styles.Row}>
                                             <ArchiveIcon
+                                                color={disabledColor}
                                                 style={styles.Icon}
                                             />
                                             <Text style={styles.Item}>Archive</Text>
@@ -83,9 +88,10 @@ const ItemMoreModal = (props: any) => {
                                         <View
                                             style={[styles.Row, {borderBottomColor: undefined, borderBottomWidth: 0}]}>
                                             <DeleteIcon
+                                               color={disabledColor}
                                                 style={styles.Icon}
                                             />
-                                            <Text style={[styles.Item, {color: '#CF0327'}]}>Delete</Text>
+                                            <Text style={[styles.Item, {color: disabledColor}]}>Delete</Text>
                                         </View>
                                     </View>
                                 </TouchableOpacity>
@@ -105,7 +111,7 @@ const ItemMoreModal = (props: any) => {
 const styles = StyleSheet.create({
     centerName: {
         color: "#1F2022",
-        fontSize: 20,
+        fontSize: RFValue(20),
         fontFamily: Bold,
     },
     container: {
@@ -156,7 +162,7 @@ const styles = StyleSheet.create({
     pinToTop: {
 
         color: "#121212",
-        fontSize: 18
+        fontSize: RFValue(18)
     },
     rect7: {
         height: 1,
@@ -181,15 +187,16 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start"
     },
     Icon: {
+
         color: "rgba(128,128,128,1)",
-        fontSize: 25,
+        fontSize: RFValue(25),
         marginRight: 21,
 
         alignSelf: "center"
     },
     Item: {
 
-        color: "#121212",
+        color: disabledColor,
         fontSize: 18
     },
 });

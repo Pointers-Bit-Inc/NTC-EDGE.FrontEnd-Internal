@@ -1,7 +1,6 @@
 import React , {useState} from "react";
 import {
     Dimensions ,
-    Image ,
     Modal ,
     ScrollView ,
     StyleSheet ,
@@ -12,6 +11,9 @@ import {
 } from "react-native";
 import Loader from "@pages/activities/bottomLoad";
 import {Regular500} from "@styles/font";
+import ImageView from "@pages/activities/application/ImageView";
+import FadeBackground from "@assets/svg/fade-background";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const { width , height } = Dimensions.get('window');
 
@@ -43,7 +45,7 @@ const RequirementModal = (props: any) => {
                 </View>
             </TouchableWithoutFeedback>
             <View style={ styles.rect2 }>
-                <View style={ { alignSelf : 'flex-end' , marginRight : 15 , marginTop : 35 } }>
+                <View style={ { alignSelf : 'flex-end' ,  paddingHorizontal : 15 , paddingVertical : 15 } }>
                     <TouchableOpacity onPress={ () => {
                         props.onDismissed()
                     }
@@ -58,51 +60,68 @@ const RequirementModal = (props: any) => {
                 height : "100%" ,
                 justifyContent : "center" ,
                 alignSelf : "center" ,
-              
+
             } }>
                 <Loader/>
             </View> }
 
-            <ScrollView showsVerticalScrollIndicator={ false } style={styles.group8}>
-                <View style={ { flex : 1 , height ,  paddingVertical : 30 } }>
+            <View style={ { height : '100%' , width : '100%' } }>
 
-                    <Image
-                        onLoadStart={ () => setOnLoad(true) }
-                        onLoadEnd={ () => setOnLoad(false) }
-                        style={ { flex : 1 } }
-                        resizeMode="contain"
-                        source={{
-                            uri : props?.image ? props?.image : 'https://dummyimage.com/350x350/fff/aaa' ,
-                        }}
-                    />
+                {props?.fileName && <FadeBackground style={{position: "absolute", zIndex: 1}} width={width}></FadeBackground>}
+                <Text style={styles.fileName}>{ props?.fileName }</Text>
+                <ScrollView contentContainerStyle={ { flex : 1 , justifyContent : 'center' , alignItems : 'center' } }>
 
-                </View>
-            </ScrollView>
+                    <View style={ { flexDirection : 'row' , flexWrap : 'wrap' , } }>
+
+                        <ImageView
+                            style={ [styles.imageStyle] }
+                            source={ {
+                                uri : props?.image ? props?.image : 'https://dummyimage.com/350x350/fff/aaa' ,
+                            } }
+                            resizeMode="contain"
+                            onLoadStart={ () => setOnLoad(true) }
+                            onLoadEnd={ () => setOnLoad(false) }
+                            onZoomBegin={ () => console.log("On Zoom begin") }
+                            onZoomEnd={ () => console.log("On Zoom End") }
+                        />
+                    </View>
+                </ScrollView>
+            </View>
+
+
         </View>
 
 
     </Modal>
 };
 const styles = StyleSheet.create({
+    fileName:{
+        flexWrap: "wrap",
+        fontSize: RFValue(16),
+        color: "#fff",
+        paddingHorizontal: 30,
+        position: "absolute",
+        paddingVertical: 10,
+        zIndex: 2
+    },
+    imageStyle : {
+        height : height ,
+        width : width ,
+    } ,
     container : {
         flex : 1
     } ,
-    group7 : {
-        height : 100
-    } ,
+    group7 : {} ,
     rect2 : {
+        zIndex : 3 ,
+       
         width : "100%" ,
-        height : 80 ,
         //  backgroundColor: "#041B6E"
     } ,
     close : {
-          fontFamily: Regular500   ,
+        fontFamily : Regular500 ,
         color : "rgba(239,231,231,1)" ,
-        fontSize : 18 ,
-    } ,
-    group8 : {
-        paddingHorizontal : 30 ,
-        flex : 1
+        fontSize : RFValue(18) ,
     } ,
 });
 export default RequirementModal

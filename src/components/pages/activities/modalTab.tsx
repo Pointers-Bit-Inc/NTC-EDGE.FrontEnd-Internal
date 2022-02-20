@@ -10,6 +10,7 @@ import {primaryColor, text} from "@styles/color";
 import {Animated, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Poppins_400Regular , Poppins_500Medium} from "@expo-google-fonts/poppins";
 import {Bold , Regular , Regular500} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 let initial = {};
 
@@ -206,7 +207,20 @@ export const ModalTab = props => {
         assignedPersonnel = props?.details?.assignedPersonnel,
         createdAt = props?.details?.createdAt,
         proofOfPayment = props?.details?.proofOfPayment;
-    return <Tab.Navigator  tabBar={(props) => <MyTabBar {...props} />}>
+    return <Tab.Navigator screenOptions={({ route }) => ({
+        tabBarIndicatorStyle:{
+            height: RFValue(3),
+            backgroundColor: primaryColor
+        },
+        tabBarLabelStyle: {
+          fontFamily: Bold,
+            fontSize: RFValue(12),
+            lineHeight: RFValue(14)
+        },
+
+        tabBarActiveTintColor: primaryColor,
+        tabBarInactiveTintColor: 'gray',
+    })} >
 
         {
 
@@ -219,17 +233,18 @@ export const ModalTab = props => {
                         options={{tabBarLabel: tab.name}}
                     >
                         {() => <BasicInfo
-                            paymentMethod={paymentMethod}
-                            assignedPersonnel={assignedPersonnel}
-                            approvalHistory={approvalHistory}
-                            status={props.details.status}
-                            paymentHistory={props?.details?.paymentHistory}
-                            paymentStatus={props?.details?.paymentStatus}
-                            detailsStatus={props?.details?.status}
-                            user={user}
-                            createdAt={createdAt}
-                            applicant={applicant}
-                            key={index}/>}
+                                paymentMethod={paymentMethod}
+                                assignedPersonnel={assignedPersonnel}
+                                approvalHistory={approvalHistory}
+                                status={props.details.status}
+                                paymentHistory={props?.details?.paymentHistory}
+                                paymentStatus={props?.details?.paymentStatus}
+                                detailsStatus={props?.details?.status}
+                                user={user}
+                                createdAt={createdAt}
+                                applicant={applicant}
+                                key={index}/>
+                        }
                     </Tab.Screen>
                 } else if (isShow && tab.id === 2) {
                     return <Tab.Screen
@@ -238,10 +253,10 @@ export const ModalTab = props => {
                         options={{tabBarLabel: tab.name}}
                     >
                         {() => <ApplicationDetails
-                            service={service}
-                            selectedType={selectedTypes}
-                            applicantType={applicationType}
-                            key={index}/>}
+                                service={service}
+                                selectedType={selectedTypes}
+                                applicantType={applicationType}
+                                key={index}/>}
                     </Tab.Screen>
                 } else if (isShow && tab.id === 3) {
                     return <Tab.Screen

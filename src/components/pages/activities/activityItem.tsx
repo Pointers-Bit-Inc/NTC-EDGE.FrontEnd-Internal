@@ -1,31 +1,35 @@
-import React , {useEffect , useRef , useState} from "react";
-import { Swipeable } from "react-native-gesture-handler";
-import {ActivityIndicator, StyleSheet, TouchableOpacity, View} from "react-native";
+import React , {useEffect} from "react";
+import {Swipeable} from "react-native-gesture-handler";
+import {ActivityIndicator , StyleSheet , TouchableOpacity , View} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
 import {
     formatDate ,
+    getRole ,
+    PaymentStatusText ,
     statusColor ,
     statusIcon ,
-    PaymentStatusText , StatusText , getRole
+    StatusText
 } from "@pages/activities/script";
 
 import {
     ACCOUNTANT ,
     APPROVED ,
-    CASHIER ,
+    CASHIER , DECLINED ,
     DIRECTOR ,
     EVALUATOR ,
     FORAPPROVAL ,
-    FOREVALUATION , FORVERIFICATION
+    FOREVALUATION ,
+    FORVERIFICATION
 } from "../../../reducers/activity/initialstate";
-import { outline } from 'src/styles/color';
+import {outline} from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
 
 import EndorseIcon from "@assets/svg/endorse";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
-import {Bold , Regular , Regular500} from "@styles/font";
+import {Bold , Regular} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const styles = StyleSheet.create({
     container: {
@@ -55,7 +59,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     date: {
-
+         color: "#606A80"
     },
     application: {
 
@@ -167,7 +171,6 @@ const RenderPinned = ({ assignedPersonnel, config }:any) => {
 }
 let row: Array<any> = [];
 let prevOpenedRow;
-
 const closeRow = (index)=>{
     if (prevOpenedRow && prevOpenedRow !== row[index]) {
         prevOpenedRow.close();
@@ -175,18 +178,24 @@ const closeRow = (index)=>{
     prevOpenedRow = row[index];
 }
 export function ActivityItem(props:any) {
+
     const  status =  [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) :  StatusText(props?.activity?.status)
     const userActivity = props?.activity?.applicant?.user
-    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) &&  status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status!==FOREVALUATION? APPROVED : getRole(props.currentUser, [ACCOUNTANT]) && !!props?.activity?.paymentMethod && props?.activity?.paymentHistory?.[0]?.action == FORVERIFICATION ? FORVERIFICATION  :  status
+    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) &&  status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status!==FOREVALUATION? APPROVED : getRole(props.currentUser, [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!props?.activity?.paymentHistory?.[0]?.status?  StatusText(props?.activity?.paymentHistory?.[0]?.status)  : getRole(props.currentUser, [ACCOUNTANT]) && props?.activity?.approvalHistory[0].status == FOREVALUATION &&  props?.activity?.approvalHistory[1].status == FORAPPROVAL ? DECLINED :  status
 
     useEffect(()=>{
-        if(props.isOpen == props.index)  row[props.index].close()
+        let unsubscribe = true
+        unsubscribe && props?.isOpen == props?.index && !!row.length &&  row[props?.index]?.close()
+        return () =>{
+            unsubscribe = false
+        }
     }, [props.isOpen == props.index])
     return (
             <View style={{backgroundColor: "#fff"}}>
 
 
-                    <TouchableOpacity onPress={() =>{
+                    <TouchableOpacity  onPress={() =>{
+
                         props.onPressUser()
                     }}>
                         <Swipeable
@@ -254,8 +263,13 @@ export function ActivityItem(props:any) {
                                             <View style={styles.date}>
 
                                                 <Text
-                                                    style={{fontFamily: Regular,
-                                                        fontSize: 10}}
+                                                    style={
+                                                        {
+                                                            color : "#606A80" ,
+                                                            fontFamily : Regular ,
+                                                            fontSize : RFValue(10)
+                                                        }
+                                                    }
                                                     numberOfLines={1}
                                                 >
                                                     {formatDate(props.activity.createdAt)}

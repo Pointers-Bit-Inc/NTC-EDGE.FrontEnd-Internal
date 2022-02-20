@@ -14,9 +14,12 @@ import Text from "@atoms/text";
 import {styles} from "@pages/activities/application/paymentModal/styles"
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles"
 import FileOutlineIcon from "@assets/svg/fileOutline";
-import {Bold} from "@styles/font";
+import {Bold , Regular , Regular500} from "@styles/font";
 import RequirementModal from "@pages/activities/application/requirementModal";
-const {width, height} = Dimensions.get("screen") 
+import _ from "lodash";
+import {capitalize} from "@pages/activities/script";
+import {RFValue} from "react-native-responsive-fontsize";
+const {width, height} = Dimensions.get("screen")
 const Payment = (props:any) => {
     const [visibleModal, setVisibleModal] = useState(false)
     const [visibleRequireModal, setVisibleRequireModal] = useState(false)
@@ -39,12 +42,12 @@ const Payment = (props:any) => {
 
     return <ScrollView style={{backgroundColor: "#fff", width: "100%", paddingTop: 10}}>
         <View style={[styles.container, {marginTop: 12}]}>
-            
+
             <View style={{  padding: 5, alignItems: 'center' }}>
                 <Text
                   style={{fontFamily: Bold} }
                     color="#37405B"
-                    fontSize={14}
+                    fontSize={RFValue(14)}
                 >
                     Statement of Account
                 </Text>
@@ -56,14 +59,14 @@ const Payment = (props:any) => {
                     <Text
                         style={{fontFamily: Bold} }
                         color="#37405B"
-                        fontSize={14}
+                        fontSize={RFValue(14)}
                     >
                         Particular
                     </Text>
                     <Text
                         style={{fontFamily: Bold} }
                         color="#37405B"
-                        fontSize={14}
+                        fontSize={RFValue(14)}
                     >
                         Amount
                     </Text>
@@ -76,13 +79,13 @@ const Payment = (props:any) => {
                         >
                             <Text
                                 color="#37405B"
-                                fontSize={14}
+                                fontSize={RFValue(14)}
                             >
                                 {soa.item}
                             </Text>
                             <Text
                                 color="#37405B"
-                                fontSize={14}
+                                fontSize={RFValue(14)}
                             >
                                 P{soa.amount}
                             </Text>
@@ -94,7 +97,7 @@ const Payment = (props:any) => {
                 >
                     <Text
                         color="#37405B"
-                        fontSize={16}
+                        fontSize={RFValue(16)}
                         style={{ marginRight: 15, fontFamily: Bold }}
                     >
                         Total
@@ -102,7 +105,7 @@ const Payment = (props:any) => {
                     <Text
                         style={{fontFamily: Bold} }
                         color="#37405B"
-                        fontSize={16}
+                        fontSize={RFValue(16)}
                     >
                         P{props.totalFee}
                     </Text>
@@ -120,19 +123,27 @@ const Payment = (props:any) => {
                                 setVisibleModal(true)
                             }}  >
                             <View style={requirementStyles.cardLabel}>
-
+                                <Text style={requirementStyles.title}>Payment</Text>
                                 <View style={requirementStyles.cardTitle}>
 
-                                    <Text style={requirementStyles.title}>Payment</Text>
-                                        <Text style={styles.paymentReceivedFor}>Payment received for</Text>
-                                        <Text style={styles.ntcEdge}>NTC-EDGE</Text>
-                                        <Text style={styles.theAmoutOf}>the amout of PHP {props?.totalFee}</Text>
-                                   
-                                    <Text style={requirementStyles.description}>
-                                        {props?.paymentMethod && <Text style={styles.php5000}>Payment method: {props?.paymentMethod == "bank-transfer" && "Bank Transfer"}</Text> }
-                                    </Text>
+                                    <View style={{alignItems: "center"}}>
+
+                                        <Text style={requirementStyles.paymentDescription}>Payment received for</Text>
+                                        <Text style={requirementStyles.paymentDescription}>NTC-EDGE</Text>
+                                        <Text style={requirementStyles.paymentDescription}>the amout of</Text>
+                                        <Text style={[requirementStyles.paymentDescription, {fontFamily : Bold}]}>PHP {props?.totalFee}</Text>
+                                        {props?.paymentMethod && <View style={{paddingVertical: 10 }}>
+                                             <Text>
+                                                <Text style={[requirementStyles.paymentDescription, {fontFamily: Bold}]}>
+                                                     Payment method: {capitalize(props?.paymentMethod?.replace("-", " "))}
+                                                 </Text>
+                                             </Text>
+                                         </View>}
+
+                                    </View>
+
                                 </View>
-                                {props?.proofOfPayment?.small && <View style={[{paddingTop: 30, paddingBottom: 9}, requirementStyles.cardDocument]}>
+                                {props?.proofOfPayment?.small && <View style={[{paddingTop: 5, paddingBottom: 9}, requirementStyles.cardDocument]}>
                                     <View style={{paddingRight: 10}}>
                                         <FileOutlineIcon/>
                                     </View>
@@ -153,7 +164,7 @@ const Payment = (props:any) => {
                                     setVisibleRequireModal(true)
                                 }
                                 }>
-                                
+
                                     <Image
                                         style={{height: 216}}
                                         source={{

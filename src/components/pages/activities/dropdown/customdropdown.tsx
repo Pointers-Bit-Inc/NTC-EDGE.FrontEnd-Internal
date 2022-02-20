@@ -1,9 +1,9 @@
-import React, {FC, ReactElement, useEffect, useRef, useState} from 'react';
-import {FlatList, Modal, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import React , {FC , ReactElement , useEffect , useRef , useState} from 'react';
+import {FlatList , Modal , StyleSheet , Text , TouchableOpacity , View ,} from 'react-native';
 import CaretDownIcon from "@assets/svg/caret-down";
 import {useOrientation} from "@pages/activities/hooks/useOrientation";
-import {Poppins_500Medium} from "@expo-google-fonts/poppins";
 import {Regular500} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 
 interface Props {
@@ -58,7 +58,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
                 onPress={() => onItemPress(item)}>
                 <Text style={{
 
-                    fontSize: 15
+                    fontSize: RFValue(16)
                 }}>{item.label}</Text>
             </TouchableOpacity>
     );
@@ -80,15 +80,15 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
                             data={data}
                             initialScrollIndex={selectedIndex || 0 || null}
                             ref={flatListRef}
-                            onScrollToIndexFailed={({
-                                                        index,
-                                                        averageItemLength,
-                                                    }) => {
+                            /*onScrollToIndexFailed={ ({
+                                                         index ,
+                                                         averageItemLength ,
+                                                     }) => {
                                 flatListRef.current?.scrollToOffset({
-                                    offset: index * averageItemLength,
-                                    animated: true,
+                                    offset : index * averageItemLength ,
+                                    animated : true ,
                                 });
-                            }}
+                            } }*/
                             renderItem={renderItem}
                             keyExtractor={(item, index) => index.toString()}
                         /> : <View style={{height: "100%", justifyContent: "center", alignItems: "center"}}>

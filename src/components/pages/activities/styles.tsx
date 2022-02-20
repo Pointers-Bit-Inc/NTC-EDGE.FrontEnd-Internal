@@ -1,5 +1,6 @@
 import {StyleSheet} from "react-native";
 import {Bold} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 export const styles = StyleSheet.create({
     container: {
@@ -27,7 +28,7 @@ export const styles = StyleSheet.create({
     },
     activity: {
         color: "rgba(255,255,255,1)",
-        fontSize: 20,
+        fontSize: RFValue(20),
         marginLeft: 15,
         fontFamily: Bold,
     },
@@ -67,7 +68,7 @@ export const styles = StyleSheet.create({
     },
     icon: {
         color: "rgba(190,199,218,1)",
-        fontSize: 26,
+        fontSize: RFValue(26),
         alignSelf: "center"
 
     },
@@ -134,7 +135,7 @@ export const styles = StyleSheet.create({
     },
     dateText:{
         fontFamily: Bold,
-        fontSize: 14,
+        fontSize: RFValue(14),
     },
     rect36: {
         top: 0,
@@ -160,7 +161,7 @@ export const styles = StyleSheet.create({
         top: 22,
         position: "absolute",
         color: "rgba(128,128,128,1)",
-        fontSize: 12,
+        fontSize: RFValue(12),
         right: 20
     },
     rect35: {
@@ -258,7 +259,7 @@ export const styles = StyleSheet.create({
     name: {
         fontFamily: Bold,
         color: "#121212",
-        fontSize: 12
+        fontSize: RFValue(12)
     },
     group2: {
         width: 135,
@@ -288,7 +289,7 @@ export const styles = StyleSheet.create({
     },
     application: {
         color: "rgba(28,61,121,1)",
-        fontSize: 9,
+        fontSize: RFValue(9),
         marginTop: 3
     },
     group20: {
@@ -304,7 +305,7 @@ export const styles = StyleSheet.create({
     },
     icon2: {
         color: "rgba(28,61,121,1)",
-        fontSize: 13,
+        fontSize: RFValue(13),
         height: 15,
         width: 10,
         marginTop: 3,
@@ -355,7 +356,7 @@ export const styles = StyleSheet.create({
     loremIpsum: {
         color: "rgba(133,141,158,1)",
         textAlign: "right",
-        fontSize: 10,
+        fontSize: RFValue(10),
         marginTop: 25
     },
     rect24: {
@@ -416,7 +417,7 @@ export const styles = StyleSheet.create({
         left: 25,
         position: "absolute",
 
-        fontSize: 16
+        fontSize: RFValue(16)
     },
     rect29: {
         top: 0,
@@ -433,7 +434,7 @@ export const styles = StyleSheet.create({
     approved: {
         top: 8,
 
-        fontSize: 10
+        fontSize: RFValue(10)
     },
     rect30Stack: {
         width: 81,

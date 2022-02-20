@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
     },
     changePassword: {
         color: 'rgba(0,74,215,1)',
-        fontSize: 16,
+        fontSize: RFValue(16),
         fontWeight: 'bold',
         marginTop: 20,
         marginHorizontal: 10,

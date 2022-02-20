@@ -17,6 +17,7 @@ import CustomAlert from "@pages/activities/alert/alert";
 import {FileTextIcon} from "@assets/svg/fileText";
 import {input , primaryColor} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 const { height, width } = Dimensions.get('window');
 
 function Disapproval(props: any) {
@@ -91,38 +92,6 @@ function Disapproval(props: any) {
 
                 }} show={showAlert} title={title}
                 message={message}/>
-            {/*<AwesomeAlert
-                   actionContainerStyle={alertStyle.actionContainerStyle}
-                   overlayStyle = {showAlert ? alertStyle.overlayStyle: {}}
-                   titleStyle={alertStyle.titleStyle}
-                   contentContainerStyle={alertStyle.contentContainerStyle}
-                   confirmButtonTextStyle={alertStyle.confirmButtonTextStyle}
-                   cancelButtonColor="#fff"
-                   cancelButtonTextStyle={alertStyle.cancelButtonTextStyle}
-                   cancelText="Cancel"
-                   confirmText="Yes"
-                   confirmButtonColor="#fff"
-                   show={showAlert}
-                   showProgress={false}
-                   title="Confirm?"
-                   message={`Are you sure you want to reject this application?`}
-                   messageStyle={{ textAlign: 'center' }}
-                   closeOnTouchOutside={true}
-                   closeOnHardwareBackPress={false}
-                   showCancelButton={true}
-                   showConfirmButton={true}
-                   onCancelPressed={() => {
-                       setShowAlert(false)
-                   }}
-                   onConfirmPressed={() => {
-                       setShowAlert(false)
-                       props.onChangeApplicationStatus(DECLINED, (bool, callback: (bool) =>{}) =>{
-
-                               props.onDismissed()
-                               callback(true)
-                       })
-                   }}
-               />*/}
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -130,7 +99,7 @@ function Disapproval(props: any) {
             >
                
                 <View style={styles.rectFiller}></View>
-                <View style={styles.rect}>
+                <View style={[styles.rect, !showAlert ||  {display: "none"}]}>
                     <View style={{padding: 10}}>
                         <TouchableOpacity onPress={() => {
                             props.onDismissed()
@@ -164,10 +133,11 @@ function Disapproval(props: any) {
                             clearable={false}
                             outlineStyle={{
                               //  borderColor: "rgba(202,210,225,1)",
-                               // paddingTop: 5,
+                               paddingTop: 10,
                                 height: (height < 720 && isKeyboardVisible) ? 100 : height * 0.25
                             }}
                             placeholder={'Remarks'}
+                            inputStyle={{fontWeight: "400", fontSize: RFValue(14)}}
                             multiline={true}
                             value={text}
                             onChangeText={setText}
@@ -216,7 +186,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         color: "rgba(0,0,0,1)",
-        fontSize: 30,
+        fontSize: RFValue(30),
         marginLeft: 4
     },
     group: {
@@ -226,18 +196,18 @@ const styles = StyleSheet.create({
     },
     icon2: {
         color: "rgba(53,62,89,1)",
-        fontSize: 30
+        fontSize: RFValue(30)
     },
     nodRemarks: {
-        color: "#000",
+        fontFamily: Bold,
         textAlign: "left",
-        fontSize: 18,
+        fontSize: RFValue(18),
         marginLeft: -1
     },
     pleaseProvide: {
 
         color: "#121212",
-        fontSize: 12,
+        fontSize: RFValue(12),
         marginLeft: -1
     },
     nodRemarksColumn: {
@@ -282,7 +252,7 @@ const styles = StyleSheet.create({
     confirm: {
         color: "rgba(255,255,255,1)",
         fontFamily: Bold,
-        fontSize: 18,
+        fontSize: RFValue(18),
     },
     confirmButton: {
         backgroundColor: primaryColor,

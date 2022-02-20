@@ -18,6 +18,7 @@ import {setTabBarHeight} from "../../../reducers/application/actions";
 import lodash from 'lodash';
 import {getRole} from "@pages/activities/script";
 import {Bold , Regular} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 const Tab = createBottomTabNavigator();
 
 
@@ -140,7 +141,7 @@ export default function TabBar() {
                                                         <Entypo name="book"></Entypo>}
 
                                     <Text style={[{
-                                        fontSize: 14,
+                                        fontSize: RFValue(14),
                                         fontFamily: isFocused ? Bold : Regular,
                                         color: isFocused ? '#2863d6' : '#606a80'
                                     }]}>{label}</Text>

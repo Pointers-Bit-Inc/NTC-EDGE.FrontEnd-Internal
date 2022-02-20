@@ -20,11 +20,14 @@ export default function basket(state = initialState, action = {}) {
     }
 
     case ON_CHECKED:{
+
       const newArr = state.get("statusCode");
       const index = newArr.findIndex((app:any) => {
         return app.id == action.payload.id
       })
-      
+
+      console.log("statusCode", newArr)
+
       newArr[index].checked = !newArr[index].checked
       state = state.set("statusCode", newArr)
       let selectChangeStatus = []
