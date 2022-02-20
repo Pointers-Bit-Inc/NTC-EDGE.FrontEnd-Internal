@@ -1,4 +1,4 @@
-import React , {Fragment , useCallback , useEffect , useMemo , useState} from "react";
+import React , {Fragment , useRef, useCallback , useEffect , useMemo , useState} from "react";
 import {
     Alert ,
     Animated ,
@@ -28,7 +28,7 @@ import {
     handleInfiniteLoad ,
     setApplications ,
     setNotPinnedApplication ,
-    setPinnedApplication
+    setPinnedApplication , setTabBarHeight
 } from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
@@ -86,7 +86,7 @@ export default function ActivitiesPage(props: any) {
 
 
 
-    const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
+    const {selectedChangeStatus, visible} = useSelector((state: RootStateOrAny) => state.activity)
     const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const dispatch = useDispatch()
     const { getActiveMeetingList, endMeeting } = useSignalr();
@@ -394,7 +394,68 @@ export default function ActivitiesPage(props: any) {
         setIsOpen(isOpen)
         setMoreModalVisible(false)
     }
+    const CONTAINER_HEIGHT = 148
+    const scrollY = useRef(new Animated.Value(0)).current;
+    const offsetAnim = useRef(new Animated.Value(0)).current;
+    const clampedScroll = Animated.diffClamp(
+        Animated.add(
+            scrollY.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 1],
+                extrapolateLeft: 'clamp',
+            }),
+            offsetAnim,
+        ),
+        0,
+        CONTAINER_HEIGHT
+    )
+    var _clampedScrollValue = 0;
+    var _offsetValue = 0;
+    var _scrollValue = 0;
+    useEffect(() => {
+        scrollY.addListener(({ value }) => {
+            const diff = value - _scrollValue;
+            _scrollValue = value;
+            _clampedScrollValue = Math.min(
+                Math.max(_clampedScrollValue + diff, 0),
+                CONTAINER_HEIGHT,
+            )
+        });
+        offsetAnim.addListener(({ value }) => {
+            _offsetValue = value;
+        })
+    }, []);
 
+    var scrollEndTimer = null;
+    const onMomentumScrollBegin = () => {
+        clearTimeout(scrollEndTimer)
+    }
+    const onMomentumScrollEnd = () => {
+
+        const toValue = _scrollValue > CONTAINER_HEIGHT &&
+                        _clampedScrollValue > (CONTAINER_HEIGHT) / 2
+                        ? _offsetValue + CONTAINER_HEIGHT : _offsetValue - CONTAINER_HEIGHT;
+
+        Animated.timing(offsetAnim, {
+            toValue,
+            duration: 100,
+            useNativeDriver: true,
+        }).start();
+    }
+    const onScrollEndDrag = () => {
+        scrollEndTimer = setTimeout(onMomentumScrollEnd, 250);
+    }
+
+    const headerTranslate = clampedScroll.interpolate({
+        inputRange: [0, CONTAINER_HEIGHT],
+        outputRange: [0, -CONTAINER_HEIGHT],
+        extrapolate: 'clamp',
+    })
+    const opacity = clampedScroll.interpolate({
+        inputRange: [0, CONTAINER_HEIGHT - 20, CONTAINER_HEIGHT],
+        outputRange: [1, 0.5, 0],
+        extrapolate: 'clamp',
+    })
     return (
         <Fragment>
             <StatusBar barStyle={'light-content'}/>
@@ -402,7 +463,7 @@ export default function ActivitiesPage(props: any) {
 
 
                 <View style={styles.group}>
-                    <View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 35}, ]}>
+                    <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity }, position: "absolute", transform: [{ translateY: headerTranslate }] }]}>
                         <TouchableOpacity onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
                             <HomeMenuIcon/>
                             {/* <ProfileImage
@@ -420,7 +481,7 @@ export default function ActivitiesPage(props: any) {
                         }>
                             <FilterIcon fill={"#fff"}/>
                         </TouchableOpacity>
-                    </View>
+                    </Animated.View>
                 </View>
                 <View>
                     {
@@ -450,12 +511,16 @@ export default function ActivitiesPage(props: any) {
                     }
 
                 </View>
-                <FakeSearchBar onPress={() => {
+                <FakeSearchBar animated={!visible && !refreshing && !lodash.size(meetingList) && { ...{ opacity }, top: 80 * (1 + lodash.size(meetingList)), elevation: 10, zIndex: 10,  position: "absolute", transform: [{ translateY: headerTranslate }] }}  onPress={() => {
                     //setSearchVisible(true)
                     props.navigation.navigate('SearchActivities')
                 }} searchVisible={searchVisible}/>
-                <FlatList
-                    contentContainerStyle={{ flexGrow: 1}}
+                <Animated.FlatList
+                    onScroll={Animated.event(
+                        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                        { useNativeDriver: true }
+                    )}
+                    contentContainerStyle={{ paddingTop: !refreshing && !lodash.size(meetingList) && CONTAINER_HEIGHT * (lodash.size(meetingList ) || 1), flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
                     ListHeaderComponent={() => (
                         <>

@@ -115,7 +115,6 @@ const UserProfileScreen = ({navigation}: any) => {
                         dispatch(setUser({...user, ...res?.data?.doc}));
                     }
                     else {
-                        console.log('or here?');
                         setAlert({
                             title: 'Failure',
                             message: (res?.statusText || res?.message) || 'Your profile was not edited.',
@@ -126,7 +125,6 @@ const UserProfileScreen = ({navigation}: any) => {
                 })
                 .catch((err: any) => {
                     err = JSON.parse(JSON.stringify(err));
-                    console.log('here?', err);
                     setLoading({
                         photo: false,
                         basic: false
