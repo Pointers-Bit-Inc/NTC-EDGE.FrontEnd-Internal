@@ -107,12 +107,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  floatingNotif: {
-    width,
-    position: 'absolute',
-    top: 95,
-    zIndex: 9,
-  }
+  floatingNotif: {}
 });
 
 const ChatRoute = () => (<ChatList />);
@@ -141,7 +136,8 @@ const ChatView = ({ navigation, route }:any) => {
   );
   const meetingList = useSelector((state: RootStateOrAny) => {
     const { normalizeActiveMeetings } = state.meeting
-    const meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
+    let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
+    meetingList = lodash.filter(meetingList, m => m.roomId === _id);
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
 })
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
@@ -320,13 +316,12 @@ const ChatView = ({ navigation, route }:any) => {
               renderItem={({ item }) => (
                 <MeetingNotif
                   style={{ width }}
-                  name={getChannelName(item)}
+                  name={getChannelName({...item, otherParticipants: item?.participants})}
+                  host={item.host}
                   time={item.createdAt}
                   onJoin={() => onJoin(item)}
                   onClose={() => onClose(item)}
-                  closeText={
-                    item.host._id === user._id ? 'End' : 'Close'
-                  }
+                  closeText={'Cancel'}
                 />
               )}
             />
@@ -357,7 +352,7 @@ const ChatView = ({ navigation, route }:any) => {
               </View>
             </TouchableOpacity>
           </View>
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, paddingHorizontal: 5 }}>
             <InputField
               ref={inputRef}
               placeholder={'Type a message'}

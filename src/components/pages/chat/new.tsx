@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react'
 import {
   RefreshControl,
   ActivityIndicator,
+  InteractionManager,
   Dimensions,
   StyleSheet,
   View,
@@ -143,16 +144,18 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
       `/room/search-participants?pageIndex=1&search=${searchValue}` :
       `/room/list-participants?pageIndex=1`;
 
-    getParticipantList(url, (err:any, res:any) => {
-      if (res) {
-        setContacts(res.list);
-        setPageIndex(current => current + 1);
-        setHasMore(res.hasMore);
-      }
-      if (err) {
-        console.log('ERR', err);
-      }
-      setLoading(false);
+    InteractionManager.runAfterInteractions(() => {
+      getParticipantList(url, (err:any, res:any) => {
+        if (res) {
+          setContacts(res.list);
+          setPageIndex(current => current + 1);
+          setHasMore(res.hasMore);
+        }
+        if (err) {
+          console.log('ERR', err);
+        }
+        setLoading(false);
+      });
     });
   
     return () => {

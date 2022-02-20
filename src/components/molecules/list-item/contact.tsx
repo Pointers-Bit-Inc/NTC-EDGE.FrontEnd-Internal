@@ -61,7 +61,7 @@ const ChatItem: FC<Props> = ({
           image={image}
           name={name}
           size={42}
-          textSize={12}
+          textSize={14}
         />
         <View style={styles.content}>
           <Text
