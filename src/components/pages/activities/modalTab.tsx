@@ -246,7 +246,7 @@ export const ModalTab = props => {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
-                        options={{tabBarLabelStyle: { width: "auto", fontSize: 12}}}
+                        options={{tabBarLabelStyle: { width: "auto", fontFamily: Regular,  fontSize: 12}}}
                     >
                         {() => <ApplicationDetails
                                 service={service}
@@ -259,7 +259,7 @@ export const ModalTab = props => {
                       
                         key={tab.id}
                         name={tab.name}
-                        options={{tabBarLabelStyle: { width: "100%", fontSize: 12}}}
+                        options={{tabBarLabelStyle: { width: "100%",  fontFamily: Regular,fontSize: 12}}}
                     >
                         {() => <Requirement requirements={requirements} key={index}/>}
                     </Tab.Screen>
@@ -267,7 +267,7 @@ export const ModalTab = props => {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
-                        options={{tabBarLabelStyle: { width: "100%", fontSize: 12}}}
+                        options={{tabBarLabelStyle: { width: "100%",  fontFamily: Regular, fontSize: 12}}}
                     >
                         {() => <Payment proofOfPayment={proofOfPayment}
                                         updatedAt={updatedAt}
