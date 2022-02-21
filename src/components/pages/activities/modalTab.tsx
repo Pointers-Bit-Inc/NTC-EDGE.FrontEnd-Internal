@@ -167,7 +167,7 @@ const MyTabBar = ({state, descriptors, navigation, position}) => {
 
 function TabLabel(props: { focused: any, tab: { name: string; active: boolean; id: number; isShow: (string)[] } | { name: string; active: boolean; id: number; isShow: (string)[] } | { name: string; active: boolean; id: number; isShow: (string)[] } | { name: string; active: boolean; id: number; isShow: (string)[] } }) {
     return <Text style={ {
-
+       
         textAlign: "center",
         fontSize: RFValue(12),
         color : props.focused ? primaryColor : "#606A80" ,
@@ -219,6 +219,9 @@ export const ModalTab = props => {
         proofOfPayment = props?.details?.proofOfPayment;
     return <Tab.Navigator  screenOptions={({ route }) => ({
 
+        tabBarLabelStyle: {
+            textTransform: "none"
+        },
         tabBarIndicatorStyle:{
             height: RFValue(3),
             backgroundColor: primaryColor,
@@ -234,7 +237,7 @@ export const ModalTab = props => {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
-                        options={{ tabBarLabel: (props) => <TabLabel focused={ props.focused } tab={ tab }/>}}
+                        options={{tabBarLabel: (props) => <TabLabel focused={ props.focused } tab={ tab }/>}}
                     >
                         {() => <BasicInfo
                                 paymentMethod={paymentMethod}

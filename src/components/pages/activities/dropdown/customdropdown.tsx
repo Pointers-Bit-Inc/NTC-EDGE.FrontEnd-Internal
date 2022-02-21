@@ -80,15 +80,15 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
                             data={data}
                             initialScrollIndex={selectedIndex || 0 || null}
                             ref={flatListRef}
-                            /*onScrollToIndexFailed={ ({
+                            onScrollToIndexFailed={ ({
                                                          index ,
                                                          averageItemLength ,
                                                      }) => {
                                 flatListRef.current?.scrollToOffset({
                                     offset : index * averageItemLength ,
-                                    animated : true ,
+                                    animated : false ,
                                 });
-                            } }*/
+                            } }
                             renderItem={renderItem}
                             keyExtractor={(item, index) => index.toString()}
                         /> : <View style={{height: "100%", justifyContent: "center", alignItems: "center"}}>
