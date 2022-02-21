@@ -9,7 +9,7 @@ import {View , StyleSheet , TouchableOpacity} from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
-import {defaultColor , primaryColor} from '@styles/color';
+import {defaultColor , primaryColor, text} from '@styles/color';
  import inputStyles from "@styles/input-style"
  import {input} from "@styles/color"
 import CloseIcon from "@assets/svg/close";
@@ -128,24 +128,23 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                             <Text
                                 style={[
                                     inputStyles.labelText,
-                                    // (isFocused || !!otherProps.value || !!error) && {
-                                    //     color: isFocused ? activeColor : "#808196"
-                                    // },
-
-                                    // !editable && {color: disabledColor}
+                                    (isFocused || !!otherProps.value || !!error) && {
+                                        color: !!error ? text.error : isFocused ? activeColor : "#808196"
+                                    },
+                                    !editable && {color: disabledColor}
                                 ]}
                             >
                                 {label}
+                                {required && (
+                                    <Text style={[inputStyles.requiredText,
+                                        !!requiredColor && {
+                                            color:  isFocused ? requiredColor : "#808196"
+                                        },
+                                        !editable && {color: disabledColor}]}>
+                                        {'*'}
+                                    </Text>
+                                )}
                             </Text>
-                            {required && (
-                                <Text style={[inputStyles.requiredText,
-                                    !!requiredColor && {
-                                        color:  isFocused ? requiredColor : "#808196"
-                                    },
-                                    !editable && {color: disabledColor}]}>
-                                    {'*'}
-                                </Text>
-                            )}
                         </View>
                     )}
                     <View
