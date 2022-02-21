@@ -545,6 +545,7 @@ export default function ActivitiesPage(props: any) {
                         [{ nativeEvent: { contentOffset: { y: scrollY } } }],
                         { useNativeDriver: true }
                     )}
+
                     contentContainerStyle={{ paddingTop: (!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && CONTAINER_HEIGHT * (lodash.size(meetingList ) || 1)) || 0, flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
                     ListHeaderComponent={() => (
@@ -615,10 +616,13 @@ export default function ActivitiesPage(props: any) {
                         }
 
                     }}
+                    onScrollEndDrag={onScrollEndDrag}
                     onEndReachedThreshold={0.1}
                     onMomentumScrollBegin={() => {
+                        onMomentumScrollBegin()
                         setOnEndReachedCalledDuringMomentum(false)
                     }}
+                     onMomentumScrollEnd={onMomentumScrollEnd}
                     scrollEventThrottle={1}
                     renderItem={({item, index}) => (
                         <ApplicationList
