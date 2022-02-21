@@ -434,25 +434,30 @@ export default function ActivitiesPage(props: any) {
         0,
         CONTAINER_HEIGHT
     )
+
     var _clampedScrollValue = 0;
     var _offsetValue = 0;
     var _scrollValue = 0;
     useEffect(() => {
         scrollY.addListener(({ value }) => {
+           console.log(value)
             const diff = value - _scrollValue;
             _scrollValue = value;
             _clampedScrollValue = Math.min(
                 Math.max(_clampedScrollValue + diff, 0),
                 CONTAINER_HEIGHT,
             )
+
         });
         offsetAnim.addListener(({ value }) => {
             _offsetValue = value;
+
         })
     }, []);
 
     var scrollEndTimer = null;
     const onMomentumScrollBegin = () => {
+        
         clearTimeout(scrollEndTimer)
     }
     const onMomentumScrollEnd = () => {
@@ -487,8 +492,8 @@ export default function ActivitiesPage(props: any) {
             <View  style={[styles.container]}>
 
 
-                <View  style={styles.group}>
-                    <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity }, position: "absolute", transform: [{ translateY: headerTranslate }] }]}>
+                <View  style={[styles.group, {width: "100%", position: "absolute",}]}>
+                    <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity },  transform: [{ translateY: headerTranslate }] }]}>
                         <TouchableOpacity onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
                             <HomeMenuIcon/>
                             {/* <ProfileImage
@@ -499,7 +504,7 @@ export default function ActivitiesPage(props: any) {
                         </TouchableOpacity>
                         <Text style={styles.activity}>Activity</Text>
                         <View style={{flex: 1}}/>
-                        <TouchableOpacity onPress={() => {
+                        <TouchableOpacity  onPress={() => {
                             dispatch(setVisible(true))
                         }
 
@@ -542,7 +547,9 @@ export default function ActivitiesPage(props: any) {
                 }} searchVisible={searchVisible}/>
                 <Animated.FlatList
                     onScroll={Animated.event(
-                        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                        [{ nativeEvent: {
+                            contentOffset: {
+                                y: scrollY } } }],
                         { useNativeDriver: true }
                     )}
 
