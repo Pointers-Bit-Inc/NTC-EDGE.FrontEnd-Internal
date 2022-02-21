@@ -276,7 +276,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               size={16}
               color={'white'}
             >
-              {findParticipant?.firstName}
+              {findParticipant?.title || ''} {findParticipant?.firstName}
             </Text>
           )
         }
@@ -329,7 +329,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               size={16}
               color={'white'}
             >
-              {findParticipant?.firstName}
+              {findParticipant?.title || ''} {findParticipant?.firstName}
             </Text>
           )
         }
@@ -378,7 +378,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                 size={12}
                 color={'white'}
               >
-                {findParticipant.firstName}
+                {findParticipant?.title || ''} {findParticipant.firstName}
               </Text>
               {
                 isMute ? (
@@ -432,7 +432,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               size={12}
               color={'white'}
             >
-              {findParticipant.firstName}
+              {findParticipant?.title || ''} {findParticipant.firstName}
             </Text>
             {
               peerAudioState[item] === 0 ? (

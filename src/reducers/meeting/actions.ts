@@ -16,11 +16,19 @@ const {
   REMOVE_ACTIVE_MEETING,
   RESET_MEETING,
   CONNECTION_STATUS,
+  SET_NOTIFICATION,
 } = require('./types').default;
 
 export function setConnectionStatus(payload) {
   return {
     type: CONNECTION_STATUS,
+    payload,
+  };
+}
+
+export function setNotification(payload) {
+  return {
+    type: SET_NOTIFICATION,
     payload,
   };
 }

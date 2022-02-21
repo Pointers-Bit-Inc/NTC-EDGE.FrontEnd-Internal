@@ -17,6 +17,7 @@ const {
   REMOVE_ACTIVE_MEETING,
   RESET_MEETING,
   CONNECTION_STATUS,
+  SET_NOTIFICATION,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -27,6 +28,9 @@ export default function basket(state = initialState, action = {}) {
   switch (action.type) {
     case CONNECTION_STATUS: {
       return state.setIn(['connectionStatus'], action.payload);
+    }
+    case SET_NOTIFICATION: {
+      return state.setIn(['meeting', 'notification'], action.payload);
     }
     case SET_MEETINGS: {
       return state.setIn(['normalizedMeetingList'], action.payload);
@@ -49,6 +53,7 @@ export default function basket(state = initialState, action = {}) {
         if (!meeting) {
           return state;
         }
+        const leavingParticipant = lodash.find(meeting.participants, p => !lodash.find(action.payload.participants, pt => pt._id === p._id));
         const participants = action.payload.participants;
         const participantsId = action.payload.participantsId;
 
@@ -58,6 +63,11 @@ export default function basket(state = initialState, action = {}) {
         if (state.meeting?._id === action.payload._id) {
           newState = newState.setIn(['meeting', 'participants'], participants)
           .setIn(['meeting', 'participantsId'], participantsId);
+
+          if (leavingParticipant) {
+            const message = `${leavingParticipant.title || ''} ${leavingParticipant.firstName} is currently busy`;
+            newState = newState.setIn(['meeting', 'notification'], message);
+          }
         }
   
         if (action.payload.ended) {

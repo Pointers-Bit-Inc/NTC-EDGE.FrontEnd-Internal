@@ -5,7 +5,8 @@ import {
   StyleSheet,
   StatusBar,
   TouchableOpacity,
-  Platform
+  Platform,
+  Animated
 } from 'react-native'
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
@@ -14,11 +15,13 @@ import { ArrowLeftIcon, ChatIcon, PeopleIcon } from '@components/atoms/icon'
 import {
   setMeeting,
   setMeetingParticipants,
+  setNotification,
 } from 'src/reducers/meeting/actions';
 import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
 import { getChannelName, getTimerString } from 'src/utils/formatting'
 import useSignalr from 'src/hooks/useSignalr';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
   container: {
@@ -47,6 +50,15 @@ const styles = StyleSheet.create({
   },
   icon: {
     paddingHorizontal: 5
+  },
+  notif: {
+    position: 'absolute',
+    bottom: 90,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingVertical: 3,
+    paddingHorizontal: 15,
   }
 })
 
@@ -63,6 +75,7 @@ const Dial = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
   const [timer, setTimer] = useState(0);
+  const [fadeAnim] = useState(new Animated.Value(1))
 
   useEffect(() => {
     let unmounted = false;
@@ -102,6 +115,19 @@ const Dial = ({ navigation, route }) => {
     }
     return () => clearTimeout(timeRef);
   }, [meeting.ended]);
+
+  useEffect(() => {
+    if (meeting.notification) {
+      Animated.timing(
+        fadeAnim,
+        {
+          toValue: 0,
+          duration: 5000,
+          useNativeDriver: true,
+        }
+      ).start(() => setNotification(''));
+    }
+  }, [meeting.notification]);
 
   const header = () => (
     <View style={styles.header}>
@@ -143,8 +169,8 @@ const Dial = ({ navigation, route }) => {
     </View>
   )
 
-  const onEndCall = () => {
-    if (isHost) {
+  const onEndCall = (endCall) => {
+    if (isHost || endCall) {
       endMeeting(meeting._id, (err, res) => {
         if (res) {
           navigation.goBack();
@@ -170,6 +196,18 @@ const Dial = ({ navigation, route }) => {
         callEnded={meeting?.ended}
         onEndCall={onEndCall}
       />
+      {
+        !!meeting?.notification && (
+          <Animated.View style={[styles.notif, { opacity: fadeAnim }]}>
+            <Text
+              color='white'
+              size={12}
+            >
+              {meeting?.notification}
+            </Text>
+          </Animated.View>
+        )
+      }
     </View>
   )
 }
