@@ -4,11 +4,10 @@ import BasicInfo from "@pages/activities/application/basicInfo";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React , {Fragment , useCallback , useEffect , useRef , useState} from "react";
 import {ACCOUNTANT, CASHIER, CHECKER, DIRECTOR, EVALUATOR} from "../../../reducers/activity/initialstate";
 import {disabledColor , primaryColor , text} from "@styles/color";
 import {Animated, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {Poppins_400Regular , Poppins_500Medium} from "@expo-google-fonts/poppins";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 
@@ -165,15 +164,7 @@ const MyTabBar = ({state, descriptors, navigation, position}) => {
     );
 };
 
-function TabLabel(props: { focused: any, name: string, tab: { name: string; active: boolean; id: number; isShow: (string)[] } | { name: string; active: boolean; id: number; isShow: (string)[] } | { name: string; active: boolean; id: number; isShow: (string)[] } | { name: string; active: boolean; id: number; isShow: (string)[] } }) {
-    return <Text style={ {
-         width: "100%",
-        textAlign: "center",
-        fontSize: 12,
-        color : props.focused ? primaryColor : "#606A80" ,
-        fontFamily : props.focused ? Bold : Regular
-    } }>BasicInfo</Text>;
-}
+
 
 export const ModalTab = props => {
     const user = useSelector((state: RootStateOrAny) => state.user);
@@ -235,7 +226,7 @@ export const ModalTab = props => {
 
                         key={tab.id}
                         name={tab.name}
-                        options={{tabBarLabelStyle: { width: "100%", fontSize: 12}}}
+                        options={{tabBarLabelStyle: { width: "100%",  fontSize: 12}}}
                     >
                         {() => <BasicInfo
                                 paymentMethod={paymentMethod}
@@ -255,7 +246,7 @@ export const ModalTab = props => {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
-                        options={{tabBarLabelStyle: { width: "auto", fontSize: 12}}}
+                        options={{tabBarLabelStyle: { width: "auto", fontFamily: Regular,  fontSize: 12}}}
                     >
                         {() => <ApplicationDetails
                                 service={service}
@@ -265,9 +256,10 @@ export const ModalTab = props => {
                     </Tab.Screen>
                 } else if (isShow && tab.id === 3) {
                     return <Tab.Screen
+                      
                         key={tab.id}
                         name={tab.name}
-                        options={{tabBarLabelStyle: { width: "100%", fontSize: 12}}}
+                        options={{tabBarLabelStyle: { width: "100%",  fontFamily: Regular,fontSize: 12}}}
                     >
                         {() => <Requirement requirements={requirements} key={index}/>}
                     </Tab.Screen>
@@ -275,7 +267,7 @@ export const ModalTab = props => {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
-                        options={{tabBarLabelStyle: { width: "100%", fontSize: 12}}}
+                        options={{tabBarLabelStyle: { width: "100%",  fontFamily: Regular, fontSize: 12}}}
                     >
                         {() => <Payment proofOfPayment={proofOfPayment}
                                         updatedAt={updatedAt}

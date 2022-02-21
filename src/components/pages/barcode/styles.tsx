@@ -1,4 +1,5 @@
 import {Dimensions, StyleSheet} from "react-native";
+import {Bold} from "@styles/font";
 const { height, width } = Dimensions.get('window');
 export const styles = StyleSheet.create({
     rect19: {
@@ -26,18 +27,15 @@ export const styles = StyleSheet.create({
         alignSelf: "center"
     },
     header: {
-        height: 100,
-        width: "100%"
-    },
-    rect: {
-        height: 100,
+        width: "100%"   ,
         backgroundColor: "#041B6E"
     },
     qrReader: {
+        fontFamily: Bold,
         color: "rgba(255,255,255,1)",
         fontSize: 18,
         textAlign: "center",
-        marginTop: 50
+        paddingVertical: 25
     },
     group32: {
         width: "100%",

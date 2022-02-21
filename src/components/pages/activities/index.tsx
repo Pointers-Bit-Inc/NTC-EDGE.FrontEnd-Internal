@@ -583,7 +583,6 @@ export default function ActivitiesPage(props: any) {
                         </>
 
                     )}
-                    
                     refreshControl={
 
                         <RefreshControl

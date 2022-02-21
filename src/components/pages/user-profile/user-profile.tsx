@@ -19,6 +19,7 @@ import { button, defaultColor, errorColor, successColor, text, warningColor} fro
 import { BASE_URL } from '../../../services/config';
 import { validateEmail, validatePassword, validatePhone, validateText } from 'src/utils/form-validations';
 import { setUser } from '../../../reducers/user/actions';
+import { Bold } from '@styles/font';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const { width, height } = Dimensions.get('window');
@@ -436,9 +437,9 @@ const styles = StyleSheet.create({
     changePassword: {
         color: 'rgba(0,74,215,1)',
         fontSize: RFValue(16),
-        fontWeight: 'bold',
         marginTop: 20,
         marginHorizontal: 10,
+        fontFamily: Bold,
     },
     button: {
         borderRadius: 5,
