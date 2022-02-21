@@ -488,7 +488,7 @@ export default function ActivitiesPage(props: any) {
 
 
                 <View style={styles.group}>
-                    <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity }, position: "absolute", transform: [{ translateY: headerTranslate }] }]}>
+                    <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity }, position: "absolute", transform: [{ translateY: headerTranslate }] }]}>
                         <TouchableOpacity onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
                             <HomeMenuIcon/>
                             {/* <ProfileImage
@@ -536,7 +536,7 @@ export default function ActivitiesPage(props: any) {
                     }
 
                 </View>
-                <FakeSearchBar animated={!visible && !refreshing && !lodash.size(meetingList) && { ...{ opacity }, top: 80 * (1 + lodash.size(meetingList)), elevation: 10, zIndex: 10,  position: "absolute", transform: [{ translateY: headerTranslate }] }}  onPress={() => {
+                <FakeSearchBar animated={!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { ...{ opacity }, top: 80 * (1 + lodash.size(meetingList)), elevation: 10, zIndex: 10,  position: "absolute", transform: [{ translateY: headerTranslate }] }}  onPress={() => {
                     //setSearchVisible(true)
                     props.navigation.navigate('SearchActivities')
                 }} searchVisible={searchVisible}/>
@@ -545,7 +545,7 @@ export default function ActivitiesPage(props: any) {
                         [{ nativeEvent: { contentOffset: { y: scrollY } } }],
                         { useNativeDriver: true }
                     )}
-                    contentContainerStyle={{ paddingTop: (!refreshing && !lodash.size(meetingList) && CONTAINER_HEIGHT * (lodash.size(meetingList ) || 1)) || 0, flexGrow: 1}}
+                    contentContainerStyle={{ paddingTop: (!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && CONTAINER_HEIGHT * (lodash.size(meetingList ) || 1)) || 0, flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
                     ListHeaderComponent={() => (
                         <>
