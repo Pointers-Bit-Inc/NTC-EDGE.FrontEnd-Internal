@@ -477,17 +477,17 @@ export default function ActivitiesPage(props: any) {
         extrapolate: 'clamp',
     })
     const opacity = clampedScroll.interpolate({
-        inputRange: [0, CONTAINER_HEIGHT - 20, CONTAINER_HEIGHT],
+        inputRange: [0, CONTAINER_HEIGHT , CONTAINER_HEIGHT],
         outputRange: [1, 0.5, 0],
         extrapolate: 'clamp',
     })
     return (
         <Fragment>
-            <StatusBar barStyle={'light-content'}/>
-            <View style={[styles.container]}>
+            <StatusBar  barStyle={'light-content'}/>
+            <View  style={[styles.container]}>
 
 
-                <View style={styles.group}>
+                <View  style={styles.group}>
                     <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity }, position: "absolute", transform: [{ translateY: headerTranslate }] }]}>
                         <TouchableOpacity onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
                             <HomeMenuIcon/>
@@ -599,8 +599,11 @@ export default function ActivitiesPage(props: any) {
                         </>
 
                     )}
+                    
                     refreshControl={
+
                         <RefreshControl
+                           style={{zIndex: 100}}
                             refreshing={refreshing}
                             onRefresh={onRefresh}
                         />

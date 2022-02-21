@@ -217,7 +217,7 @@ export const ModalTab = props => {
         assignedPersonnel = props?.details?.assignedPersonnel,
         createdAt = props?.details?.createdAt,
         proofOfPayment = props?.details?.proofOfPayment;
-    return <Tab.Navigator  screenOptions={({ route }) => ({
+    return <Tab.Navigator screenOptions={({ route }) => ({
          tabBarActiveTintColor: primaryColor,
         tabBarIndicatorStyle:{
             height: RFValue(3),
