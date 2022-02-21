@@ -165,14 +165,14 @@ const MyTabBar = ({state, descriptors, navigation, position}) => {
     );
 };
 
-function TabLabel(props: { focused: any, tab: { name: string; active: boolean; id: number; isShow: (string)[] } | { name: string; active: boolean; id: number; isShow: (string)[] } | { name: string; active: boolean; id: number; isShow: (string)[] } | { name: string; active: boolean; id: number; isShow: (string)[] } }) {
+function TabLabel(props: { focused: any, name: string, tab: { name: string; active: boolean; id: number; isShow: (string)[] } | { name: string; active: boolean; id: number; isShow: (string)[] } | { name: string; active: boolean; id: number; isShow: (string)[] } | { name: string; active: boolean; id: number; isShow: (string)[] } }) {
     return <Text style={ {
-
+         width: "100%",
         textAlign: "center",
-        fontSize: RFValue(12),
+        fontSize: 12,
         color : props.focused ? primaryColor : "#606A80" ,
         fontFamily : props.focused ? Bold : Regular
-    } }>{ props.tab.name }</Text>;
+    } }>BasicInfo</Text>;
 }
 
 export const ModalTab = props => {
@@ -217,8 +217,8 @@ export const ModalTab = props => {
         assignedPersonnel = props?.details?.assignedPersonnel,
         createdAt = props?.details?.createdAt,
         proofOfPayment = props?.details?.proofOfPayment;
-    return <Tab.Navigator  screenOptions={({ route }) => ({
-
+    return <Tab.Navigator screenOptions={({ route }) => ({
+         tabBarActiveTintColor: primaryColor,
         tabBarIndicatorStyle:{
             height: RFValue(3),
             backgroundColor: primaryColor,
@@ -232,9 +232,10 @@ export const ModalTab = props => {
                 const isShow = tab.isShow.indexOf(user?.role?.key) !== -1;
                 if (isShow && tab.id === 1) {
                     return <Tab.Screen
+
                         key={tab.id}
                         name={tab.name}
-                        options={{ tabBarLabel: (props) => <TabLabel focused={ props.focused } tab={ tab }/>}}
+                        options={{tabBarLabelStyle: { width: "100%", fontSize: 12}}}
                     >
                         {() => <BasicInfo
                                 paymentMethod={paymentMethod}
@@ -254,7 +255,7 @@ export const ModalTab = props => {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
-                        options={{tabBarLabel: (props) => <TabLabel focused={ props.focused } tab={ tab }/>}}
+                        options={{tabBarLabelStyle: { width: "auto", fontSize: 12}}}
                     >
                         {() => <ApplicationDetails
                                 service={service}
@@ -266,7 +267,7 @@ export const ModalTab = props => {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
-                        options={{tabBarLabel: (props) => <TabLabel focused={ props.focused } tab={ tab }/>}}
+                        options={{tabBarLabelStyle: { width: "100%", fontSize: 12}}}
                     >
                         {() => <Requirement requirements={requirements} key={index}/>}
                     </Tab.Screen>
@@ -274,7 +275,7 @@ export const ModalTab = props => {
                     return <Tab.Screen
                         key={tab.id}
                         name={tab.name}
-                        options={{tabBarLabel: (props) => <TabLabel focused={ props.focused } tab={ tab }/>}}
+                        options={{tabBarLabelStyle: { width: "100%", fontSize: 12}}}
                     >
                         {() => <Payment proofOfPayment={proofOfPayment}
                                         updatedAt={updatedAt}

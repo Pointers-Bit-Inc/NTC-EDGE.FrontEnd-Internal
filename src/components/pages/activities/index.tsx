@@ -452,18 +452,18 @@ export default function ActivitiesPage(props: any) {
         extrapolate: 'clamp',
     })
     const opacity = clampedScroll.interpolate({
-        inputRange: [0, CONTAINER_HEIGHT - 20, CONTAINER_HEIGHT],
+        inputRange: [0, CONTAINER_HEIGHT , CONTAINER_HEIGHT],
         outputRange: [1, 0.5, 0],
         extrapolate: 'clamp',
     })
     return (
         <Fragment>
-            <StatusBar barStyle={'light-content'}/>
-            <View style={[styles.container]}>
+            <StatusBar  barStyle={'light-content'}/>
+            <View  style={[styles.container]}>
 
 
-                <View style={styles.group}>
-                    <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity }, position: "absolute", transform: [{ translateY: headerTranslate }] }]}>
+                <View  style={styles.group}>
+                    <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity }, position: "absolute", transform: [{ translateY: headerTranslate }] }]}>
                         <TouchableOpacity onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
                             <HomeMenuIcon/>
                             {/* <ProfileImage
@@ -510,7 +510,7 @@ export default function ActivitiesPage(props: any) {
                     }
 
                 </View>
-                <FakeSearchBar animated={!visible && !refreshing && !lodash.size(meetingList) && { ...{ opacity }, top: 80 * (1 + lodash.size(meetingList)), elevation: 10, zIndex: 10,  position: "absolute", transform: [{ translateY: headerTranslate }] }}  onPress={() => {
+                <FakeSearchBar animated={!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { ...{ opacity }, top: 80 * (1 + lodash.size(meetingList)), elevation: 10, zIndex: 10,  position: "absolute", transform: [{ translateY: headerTranslate }] }}  onPress={() => {
                     //setSearchVisible(true)
                     props.navigation.navigate('SearchActivities')
                 }} searchVisible={searchVisible}/>
@@ -519,7 +519,8 @@ export default function ActivitiesPage(props: any) {
                         [{ nativeEvent: { contentOffset: { y: scrollY } } }],
                         { useNativeDriver: true }
                     )}
-                    contentContainerStyle={{ paddingTop: (!refreshing && !lodash.size(meetingList) && CONTAINER_HEIGHT * (lodash.size(meetingList ) || 1)) || 0, flexGrow: 1}}
+
+                    contentContainerStyle={{ paddingTop: (!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && CONTAINER_HEIGHT * (lodash.size(meetingList ) || 1)) || 0, flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
                     ListHeaderComponent={() => (
                         <>
@@ -572,8 +573,11 @@ export default function ActivitiesPage(props: any) {
                         </>
 
                     )}
+                    
                     refreshControl={
+
                         <RefreshControl
+                           style={{zIndex: 100}}
                             refreshing={refreshing}
                             onRefresh={onRefresh}
                         />
@@ -589,10 +593,13 @@ export default function ActivitiesPage(props: any) {
                         }
 
                     }}
+                    onScrollEndDrag={onScrollEndDrag}
                     onEndReachedThreshold={0.1}
                     onMomentumScrollBegin={() => {
+                        onMomentumScrollBegin()
                         setOnEndReachedCalledDuringMomentum(false)
                     }}
+                     onMomentumScrollEnd={onMomentumScrollEnd}
                     scrollEventThrottle={1}
                     renderItem={({item, index}) => (
                         <ApplicationList
