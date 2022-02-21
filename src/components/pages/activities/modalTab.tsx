@@ -218,10 +218,8 @@ export const ModalTab = props => {
         createdAt = props?.details?.createdAt,
         proofOfPayment = props?.details?.proofOfPayment;
     return <Tab.Navigator  screenOptions={({ route }) => ({
-
-        tabBarLabelStyle: {
-            textTransform: "none"
-        },
+        tabBarPressColor: "transparent",
+       
         tabBarIndicatorStyle:{
             height: RFValue(3),
             backgroundColor: primaryColor,
