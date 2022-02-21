@@ -130,6 +130,7 @@ const ChatView = ({ navigation, route }:any) => {
     sendMessage,
     editMessage,
     endMeeting,
+    leaveMeeting,
   } = useSignalR();
   const modalRef = useRef<BottomModalRef>(null);
   const inputRef:any = useRef(null);
@@ -230,13 +231,16 @@ const ChatView = ({ navigation, route }:any) => {
     });
   }
 
-  const onClose = (item) => {
-    if (item.host._id === user._id) {
-      endMeeting(item._id);
-    } else {
+  const onClose = (item, leave = false) => {
+    if (leave) {
       dispatch(removeActiveMeeting(item._id));
+      return leaveMeeting(item._id);
+    } else if (item.host._id === user._id) {
+      return endMeeting(item._id);
+    } else {
+      return dispatch(removeActiveMeeting(item._id));
     }
-  }
+}
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {

@@ -214,8 +214,8 @@ export default function ActivitiesPage(props: any) {
         let isCurrent = true
         dispatch(setNotPinnedApplication([]))
         dispatch(setPinnedApplication([]))
-        fnApplications(isCurrent, () => {
-        });
+        // fnApplications(isCurrent, () => {
+        // });
         return () => {
             isCurrent = false
         }
@@ -225,8 +225,8 @@ export default function ActivitiesPage(props: any) {
         let isCurrent = true
         dispatch(setNotPinnedApplication([]))
         dispatch(setPinnedApplication([]))
-        fnApplications(isCurrent, () => {
-        });
+        // fnApplications(isCurrent, () => {
+        // });
         return () => {
             isCurrent = false
         }
