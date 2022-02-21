@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { CheckIcon, CloseIcon } from '@atoms/icon';
 import {
-  InputField,
+  InputField, PasswordField,
 } from '@molecules/form-fields';
 import InputStyles from 'src/styles/input-style';
 import { text } from 'src/styles/color';
@@ -99,22 +99,18 @@ const PasswordForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
   }
   return (
     <View style={styles.container}>
-      <InputField
-        inputStyle={InputStyles.text}
+      <PasswordField
         label={'New password'}
         placeholder="New password"
         textContentType="oneTimeCode"
         required={true}
         hasValidation={false}
-        outlineStyle={InputStyles.outlineStyle}
-        activeColor={text.primary}
-        errorColor={text.error}
-        requiredColor={text.error}
         secureTextEntry={!form?.showPassword?.value}
         error={form?.password?.error}
         value={form?.password?.value}
         onChangeText={(value: string) => onChangeValue('password', value)}
         onSubmitEditing={(event:any) => onChangeValue('password', event.nativeEvent.text)}
+        showPassword={() => onChangeValue('showPassword', !form?.showPassword?.value)}
       />
       <View style={{ marginBottom: 20, marginTop: 5 }}>
         <Text
@@ -187,24 +183,20 @@ const PasswordForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
           />
         </View>
       </View>
-      <InputField
-        inputStyle={InputStyles.text}
-        label={'Confirm'}
+      <PasswordField
+        label={'Confirm new password'}
         placeholder="Confirm new password"
         textContentType="oneTimeCode"
         required={true}
         hasValidation={true}
-        outlineStyle={InputStyles.outlineStyle}
-        activeColor={text.primary}
-        errorColor={text.error}
-        requiredColor={text.error}
         secureTextEntry={!form?.showPassword?.value}
         error={form?.confirmPassword?.error}
         value={form?.confirmPassword?.value}
         onChangeText={(value: string) => onChangeValue('confirmPassword', value)}
         onSubmitEditing={(event:any) => onChangeValue('confirmPassword', event.nativeEvent.text)}
+        showPassword={() => onChangeValue('showPassword', !form?.showPassword?.value)}
       />
-      <View style={[styles.horizontal, { marginTop: 20 }]}>
+      {/* <View style={[styles.horizontal, { marginTop: 20 }]}>
         <TouchableOpacity onPress={() => onChangeValue('showPassword', !form?.showPassword?.value)}>
           {renderPasswordChecker(form?.showPassword?.value)}
         </TouchableOpacity>
@@ -214,7 +206,7 @@ const PasswordForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         >
           Show password
         </Text>
-      </View>
+      </View> */}
     </View>
   );
 };

@@ -72,7 +72,7 @@ const errorResponse = {
   username: 'Please enter a valid username',
   email: 'Please enter a valid email address',
   password: 'Password must be atleast 6 characters',
-  confirm: 'password does not match',
+  confirm: 'Passwords do not match',
 };
 
 const Registration = ({ navigation }:any) => {

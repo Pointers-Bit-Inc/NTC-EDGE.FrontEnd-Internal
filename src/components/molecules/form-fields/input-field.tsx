@@ -128,8 +128,8 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                             <Text
                                 style={[
                                     inputStyles.labelText,
-                                    (isFocused || !!otherProps.value || !!error) && {
-                                        color: !!error ? text.error : isFocused ? activeColor : "#808196"
+                                    (/*isFocused ||*/ !!otherProps.value || !!error) && {
+                                        color: !!error ? text.error : /*isFocused ? activeColor :*/ "#808196"
                                     },
                                     !editable && {color: disabledColor}
                                 ]}
