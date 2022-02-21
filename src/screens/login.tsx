@@ -1,15 +1,15 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import {
-  ImageBackground,
-  ScrollView,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  Image,
-  ActivityIndicator,
-  Dimensions
+  ImageBackground ,
+  ScrollView ,
+  View ,
+  TouchableOpacity ,
+  StyleSheet ,
+  KeyboardAvoidingView ,
+  Platform ,
+  Image ,
+  ActivityIndicator ,
+  Dimensions , StatusBar
 } from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,15 +23,16 @@ import { Bold } from '@styles/font';
 import useApi  from 'src/services/api';
 import { setUser } from 'src/reducers/user/actions';
 import { StackActions } from '@react-navigation/native';
-import {APPROVED} from "../reducers/activity/initialstate";
+import Ellipsis from "@atoms/ellipsis";
+import {setTabBarHeight} from "../reducers/application/actions";
 const logo = require('@assets/ntc-edge-horizontal.png');
 const background = require('@assets/background.png');
 
-const { width, height } = Dimensions.get('window');
-
+const { width, height } = Dimensions.get('screen');
+const navigationBarHeight = height - Dimensions.get('window').height;
 const styles = StyleSheet.create({
   bgImage: {
-    height,
+    height ,
     width,
   },
   formTitleText: {
@@ -44,12 +45,12 @@ const styles = StyleSheet.create({
   image: {
     height: width * .15,
     width: width * .60,
-    alignSelf: 'center',
     marginTop: height * .10,
     marginVertical: height * .08,
+    alignSelf: 'center',
   },
   formContainer: {
-    height: height * .75,
+    flex: 1,
     borderRadius: 15,
     borderWidth: 0.5,
     borderBottomWidth: 0,
@@ -57,14 +58,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 30,
   },
+  bottomContainer: {
+    paddingVertical: 100,
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    alignSelf: 'center',
+  },
   loginButton: {
     borderRadius: 10,
-    marginBottom: 20,
+    height: width * .15,
+    justifyContent: 'center',
+  },
+  boldText: {
+    fontFamily: Bold,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginVertical: 20,
   }
 });
 
@@ -194,24 +207,37 @@ const Login = ({ navigation }:any) => {
           resizeMode='stretch'
           source={background}
           style={styles.bgImage}
+          imageStyle={{flex: 1}}
       >
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <StatusBar barStyle='dark-content' />
+
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            showsVerticalScrollIndicator={false}
+        >
+
           <Image
               resizeMode='contain'
               source={logo}
               style={styles.image}
           />
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <View style={styles.formContainer}>
-              <Text style={styles.formTitleText}>Login</Text>
-              <LoginForm onChangeValue={onChangeValue} form={formValue} />
+
+          <View style={styles.formContainer}>
+
+            <Text style={styles.formTitleText}>Login</Text>
+
+            <LoginForm onChangeValue={onChangeValue} form={formValue} />
+
+            <View style={styles.bottomContainer}>
               <Button
                   style={[
                     styles.loginButton,
                     {
                       backgroundColor: isValid
-                                       ? button.primary
-                                       : button.default
+                                       ? button.info
+                                       : isValid
+                                         ? button.primary
+                                         : button.default
                     }
                   ]}
                   disabled={loading}
@@ -219,16 +245,27 @@ const Login = ({ navigation }:any) => {
               >
                 {
                   loading ? (
-                      <ActivityIndicator color={'white'} size={'small'} />
+                      <View style={{paddingVertical: 10  }}>
+                        <Ellipsis   color='#fff' size={10} />
+                      </View>
+
                   ) : (
-                      <Text color={isValid ? '#fff' : text.disabled} size={18}>Login</Text>
+                      <View>
+                        <Text style={styles.boldText} color={isValid ? '#fff' : text.disabled} size={18}>Login</Text>
+                      </View>
+
                   )
                 }
               </Button>
-
+              {
+                Platform.OS === 'android' && <View style={{height: navigationBarHeight}} />
+              }
             </View>
-          </KeyboardAvoidingView>
+
+          </View>
+
         </ScrollView>
+
       </ImageBackground>
   );
 };
