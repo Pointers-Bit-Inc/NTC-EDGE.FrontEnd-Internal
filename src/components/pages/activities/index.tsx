@@ -492,8 +492,8 @@ export default function ActivitiesPage(props: any) {
             <View  style={[styles.container]}>
 
 
-                <View  style={styles.group}>
-                    <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity }, position: "absolute", transform: [{ translateY: headerTranslate }] }]}>
+                <View  style={[styles.group, { position: "absolute", }]}>
+                    <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity },   transform: [{ translateY: headerTranslate }] }]}>
                         <TouchableOpacity onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
                             <HomeMenuIcon/>
                             {/* <ProfileImage
@@ -504,7 +504,7 @@ export default function ActivitiesPage(props: any) {
                         </TouchableOpacity>
                         <Text style={styles.activity}>Activity</Text>
                         <View style={{flex: 1}}/>
-                        <TouchableOpacity  onPress={() => {
+                        <TouchableOpacity onPress={() => {
                             dispatch(setVisible(true))
                         }
 
@@ -610,12 +610,12 @@ export default function ActivitiesPage(props: any) {
                     refreshControl={
 
                         <RefreshControl
-                           style={{zIndex: 100}}
                             refreshing={refreshing}
                             onRefresh={onRefresh}
                         />
                     }
                     style={{flex: 1,}}
+
                     data={notPnApplications}
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={bottomLoader}

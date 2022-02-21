@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
     group: {
-
+        width: "100%",
         zIndex: 10,
         elevation: 10
     },
