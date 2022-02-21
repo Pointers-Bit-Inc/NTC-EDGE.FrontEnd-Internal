@@ -46,13 +46,14 @@ export const requirementStyles = StyleSheet.create({
         justifyContent: "center"
     } ,
     cardDocument : {
+
         flexDirection : "row" ,
         justifyContent : "flex-start" ,
         alignItems : "center" ,
         margin : 0
     } ,
     text : {
-
+        fontFamily: Regular,
         width : "80%" ,
         color : "#606A80"
     } ,

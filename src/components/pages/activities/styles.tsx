@@ -12,6 +12,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
     group: {
+        width: "100%",
         zIndex: 10,
         elevation: 10
     },
@@ -134,6 +135,7 @@ export const styles = StyleSheet.create({
         borderRadius: 3
     },
     dateText:{
+        color: "#606A80",
         fontFamily: Bold,
         fontSize: RFValue(14),
     },

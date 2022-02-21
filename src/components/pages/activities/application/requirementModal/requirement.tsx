@@ -3,6 +3,7 @@ import {Dimensions , Image , ScrollView , Text , TouchableOpacity , View} from "
 import RequirementModal from "@pages/activities/application/requirementModal/index";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const { width , height } = Dimensions.get("screen");
 const Requirement = (props: any) => {
@@ -33,7 +34,7 @@ const Requirement = (props: any) => {
 
                         </View>
                         <View style={ {
-                            height : 216 ,
+                            height : RFValue(300) ,
                             backgroundColor : "rgba(220,226,229,1)" ,
                             borderWidth : 1 ,
                             borderColor : "rgba(213,214,214,1)" ,
@@ -47,7 +48,7 @@ const Requirement = (props: any) => {
                             }>
                                 <Image
 
-                                    style={ { width : undefined , height : 216 } }
+                                    style={ { width : undefined , height : RFValue(300) } }
                                     source={ {
                                         uri : requirement?.links?.medium ,
                                     } }
