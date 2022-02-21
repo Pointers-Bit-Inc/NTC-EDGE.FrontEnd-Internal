@@ -65,6 +65,9 @@ const ChatList: FC<Props> = ({
   )
 
   const renderItem = ({ item, index }:any) => {
+    if (!item.isGroup && !item.message && item.system) {
+      return;
+    }
     const isSender = item.sender._id === user._id;
     const isSameDate = chatSameDate(messages[index + 1]?.createdAt, item.createdAt);
     const latestSeen = messages && messages[index - 1] ? messages[index - 1].seen : [];

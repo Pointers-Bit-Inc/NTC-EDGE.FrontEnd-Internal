@@ -6,6 +6,9 @@ const getInitial = (value:any) => {
 }
 
 const getChannelName = (channel:any) => {
+  if (channel.hasRoomName) {
+    return channel.name;
+  }
   if (!channel.isGroup) {
     const result = channel.otherParticipants;
     if (result && result[0]) {

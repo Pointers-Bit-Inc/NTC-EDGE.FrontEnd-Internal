@@ -92,6 +92,10 @@ const ActivitiesScreen = (props:any) => {
                 break;
               };
               case 'update': {
+                const { room } = data;
+                const { lastMessage } = room;
+                dispatch(addChannel(room));
+                dispatch(addMessages(lastMessage));
                 dispatch(updateMeeting(data));
                 break;
               }

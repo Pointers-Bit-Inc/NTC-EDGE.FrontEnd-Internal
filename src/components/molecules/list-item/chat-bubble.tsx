@@ -196,7 +196,7 @@ const ChatBubble:FC<Props> = ({
         </View>
       </TouchableOpacity>
       {
-        ((showDetails || showSeen) && seenByEveryone) && (
+        ((showDetails || showSeen) && seenByEveryone) && !edited && (
           <View
             style={[{ flexDirection: 'row', paddingTop: 5 }, isSender && styles.flipX]}
           >

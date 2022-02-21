@@ -98,7 +98,6 @@ const ChatItem: FC<Props> = ({
             <View style={{ flex: 1, paddingRight: 5 }}>
               <Text
                 color={'black'}
-                weight={!seen ? 'bold' : 'normal'}
                 size={18}
                 numberOfLines={1}
                 style={{ fontFamily: !seen ? Regular500 : Regular }}
@@ -110,18 +109,19 @@ const ChatItem: FC<Props> = ({
           <View style={styles.horizontal}>
             <View style={[styles.horizontal, { flex: 1, paddingRight: 60 }]}>
               <Text
-                weight={!seen ? 'bold' : 'normal'}
                 color={!seen ? 'black' : text.default}
                 size={12}
                 numberOfLines={1}
+                style={{ fontFamily: Regular }}
               >
                 {message?.message}
               </Text>
               <Text
                 color={text.default}
                 size={12}
+                style={{ fontFamily: Regular }}
               >
-                {` · ${time}`}
+                {message?.message ? ` · ${time}` : `${time}`}
               </Text>
             </View>
           </View>

@@ -183,6 +183,9 @@ const ChatView = ({ navigation, route }:any) => {
   }
 
   const onSendMessage = useCallback(() => {
+    if (!inputText) {
+      return;
+    }
     if (selectedMessage._id) {
       _editMessage(selectedMessage._id, inputText);
       inputRef.current?.blur();
@@ -381,6 +384,7 @@ const ChatView = ({ navigation, route }:any) => {
               returnKeyType={'send'}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
+              
             />
           </View>
           <View style={{ marginTop: RFValue(-18), flexDirection: 'row' }}>
