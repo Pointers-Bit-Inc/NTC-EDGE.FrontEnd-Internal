@@ -68,6 +68,7 @@ interface Props {
   name?: string;
   contact?: string;
   onPress?: any;
+  data?: any;
   [x: string]: any;
 }
 
@@ -76,6 +77,7 @@ const ChatItem: FC<Props> = ({
   name = '',
   contact = '',
   onPress = () => {},
+  data = {},
   ...otherProps
 }) => {
 
@@ -103,7 +105,7 @@ const ChatItem: FC<Props> = ({
         numberOfLines={1}
         color={text.default}
       >
-        {name}
+        {`${data.title ? `${data.title}` : ''} ${name}${data.suffix ? `, ${data.suffix}` : ''}`}
       </Text>
     </View>
   )

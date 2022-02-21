@@ -43,6 +43,7 @@ interface Props {
   contact?: string;
   onPress?: any;
   rightIcon?: any;
+  data?: any,
   [x: string]: any;
 }
 
@@ -52,6 +53,7 @@ const ChatItem: FC<Props> = ({
   contact = '',
   onPress = () => {},
   rightIcon,
+  data = {},
   ...otherProps
 }) => {
   return (
@@ -70,15 +72,18 @@ const ChatItem: FC<Props> = ({
             numberOfLines={1}
             style={{ fontFamily: Regular500, marginBottom: -3 }}
           >
-            {name}
+            {`${data.title ? `${data.title}` : ''} ${name}${data.suffix ? `, ${data.suffix}` : ''}`}
           </Text>
-          <Text
-            color={text.default}
-            size={12}
-            numberOfLines={1}
-          >
-            {contact}
-          </Text>
+          {
+            (!!data.designation || !!data.position) &&
+              <Text
+                color={text.default}
+                size={12}
+                numberOfLines={1}
+              >
+                {`${data.designation || ''} ${data.position ? `- ${data.position}` : ''}`}
+              </Text>
+          }
         </View>
         {rightIcon}
       </View>

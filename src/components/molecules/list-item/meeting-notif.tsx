@@ -7,6 +7,7 @@ import { getDateTimeString } from 'src/utils/formatting';
 import { Bold, Regular500 } from '@styles/font';
 import CloseIcon from '@assets/svg/close';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { PhoneIcon } from '@components/atoms/icon';
 
 const styles = StyleSheet.create({
   container: {
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: RFValue(3),
   },
   joinButton: {
-    padding: 5,
+    padding: RFValue(5),
     paddingHorizontal: 15,
     borderColor: '#610BEF',
     borderWidth: 1,
@@ -27,9 +28,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   closeButton: {
-    padding: 5,
-    paddingHorizontal: 15,
+    paddingVertical: RFValue(2),
+    paddingHorizontal: 20,
     borderColor: '#CF0327',
+    backgroundColor: '#CF0327',
     borderWidth: 1,
     borderRadius: 30,
     marginHorizontal: 5,
@@ -104,13 +106,18 @@ const MeetingNotif: FC<Props> = ({
         style={styles.closeButton}
         onPress={onClose}
       >
-        <Text
+        <PhoneIcon
+          size={RFValue(22)}
+          type='hangup'
+          color='white'
+        />
+        {/* <Text
           color={'#CF0327'}
           size={12}
           style={{ fontFamily: Regular500 }}
         >
           {closeText}
-        </Text>
+        </Text> */}
       </Button>
     </View>
   )

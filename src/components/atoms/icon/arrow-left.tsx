@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { AntDesign, SimpleLineIcons, Octicons } from '@expo/vector-icons'; 
+import { AntDesign, SimpleLineIcons, Feather } from '@expo/vector-icons'; 
 
 interface Props {
   type?: string;
@@ -29,7 +29,7 @@ const CloseIcon: FC<Props> = ({
 
   if (type === 'chevron-left') {
     return (
-      <Octicons
+      <Feather
         name="chevron-left"
         size={size}
         color={color}

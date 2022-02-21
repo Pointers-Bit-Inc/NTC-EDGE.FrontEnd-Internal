@@ -216,6 +216,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
           <SelectedContact
             image={item?.image}
             name={item.name}
+            data={item}
             onPress={() => onRemoveParticipants(item._id)}
           />
         )}
@@ -344,9 +345,9 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
         renderItem={({ item }) => (
           <ContactItem
             image={item?.image}
+            data={item}
             name={item.name}
             onPress={() => onTapCheck(item._id)}
-            disabled={true}
             rightIcon={
               <TouchableOpacity
                 onPress={() => onTapCheck(item._id)}

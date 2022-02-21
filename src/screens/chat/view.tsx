@@ -275,9 +275,9 @@ const ChatView = ({ navigation, route }:any) => {
         <TouchableOpacity onPress={onBack}>
           <View style={{ paddingRight: 5 }}>
             <ArrowLeftIcon
-              type='arrow-left'
+              type='chevron-left'
               color={'#111827'}
-              size={RFValue(14)}
+              size={RFValue(26)}
             />
           </View>
         </TouchableOpacity>

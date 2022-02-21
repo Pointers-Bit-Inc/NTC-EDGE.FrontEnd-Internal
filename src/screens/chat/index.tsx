@@ -72,10 +72,10 @@ const styles = StyleSheet.create({
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: RFValue(15),
-    paddingHorizontal: RFValue(20),
+    paddingVertical: 15,
+    paddingHorizontal: 30,
     backgroundColor: primaryColor,
-    paddingTop: RFValue(35),
+    paddingTop: 40,
   },
   titleContainer: {
     flex: 1,

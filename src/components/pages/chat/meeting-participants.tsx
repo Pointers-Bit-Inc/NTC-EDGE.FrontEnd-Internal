@@ -210,6 +210,7 @@ const MeetingParticipants = ({
           <SelectedContact
             image={item?.image}
             name={item.name}
+            data={item}
             onPress={() => onRemoveParticipants(item._id)}
           />
         )}
@@ -336,9 +337,9 @@ const MeetingParticipants = ({
         renderItem={({ item }) => (
           <ContactItem
             image={item?.image}
+            data={item}
             name={item.name}
             onPress={() => onTapCheck(item._id)}
-            disabled={true}
             rightIcon={
               <TouchableOpacity
                 onPress={() => onTapCheck(item._id)}
