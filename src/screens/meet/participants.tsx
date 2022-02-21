@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   outline: {
     borderWidth: 0,
-    backgroundColor: '#EFF0F7',
+    backgroundColor: '#EFF0F6',
     borderRadius: 10,
   },
   icon: {

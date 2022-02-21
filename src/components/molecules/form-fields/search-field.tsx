@@ -1,5 +1,5 @@
 import React, { useState, useCallback, FC } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import lodash from 'lodash';
 import { ExclamationIcon, NewSearchIcon } from '@atoms/icon';
 import Text from '@atoms/text';
@@ -27,6 +27,10 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  input: {
+    paddingVertical: RFValue(10),
+    marginBottom: Platform.OS === 'ios' ? 0 : -5,
   },
   description: {
     paddingTop: 2,
@@ -133,12 +137,12 @@ const InputField: FC<Props> = ({
       >
         <NewSearchIcon
           style={[styles.icon, iconStyle]}
-          height={RFValue(16)}
-          width={RFValue(16)}
+          height={RFValue(20)}
+          width={RFValue(20)}
           color={'#6E7191'}
         />
         <TextInput
-          style={inputStyle}
+          style={[styles.input, inputStyle]}
           placeholder={placeholder || label}
           secureTextEntry={secureTextEntry}
           onFocus={onFocus}

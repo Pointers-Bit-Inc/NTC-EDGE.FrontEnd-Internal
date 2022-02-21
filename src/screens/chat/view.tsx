@@ -273,11 +273,13 @@ const ChatView = ({ navigation, route }:any) => {
       <StatusBar barStyle={'dark-content'} />
       <View style={[styles.header, styles.horizontal]}>
         <TouchableOpacity onPress={onBack}>
-          <ArrowLeftIcon
-            type='arrow-left'
-            color={'#111827'}
-            size={RFValue(14)}
-          />
+          <View style={{ paddingRight: 5 }}>
+            <ArrowLeftIcon
+              type='arrow-left'
+              color={'#111827'}
+              size={RFValue(14)}
+            />
+          </View>
         </TouchableOpacity>
         <View style={{ paddingLeft: 5 }}>
           <GroupImage

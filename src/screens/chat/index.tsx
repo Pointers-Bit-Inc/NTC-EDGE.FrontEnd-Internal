@@ -54,14 +54,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   input: {
-    fontSize: RFValue(16),
+    fontSize: RFValue(14),
     fontFamily: Regular,
     color: 'black',
     flex: 1,
   },
   outline: {
     borderWidth: 0,
-    backgroundColor: '#EFF0F7',
+    backgroundColor: '#EFF0F6',
     borderRadius: 10,
   },
   icon: {
@@ -308,7 +308,7 @@ const ChatList = ({ navigation }:any) => {
             <Text
               color={'white'}
               size={20}
-              style={{ fontFamily: Bold }}
+              style={{ fontFamily: Bold, marginBottom: Platform.OS === 'ios' ? 0 : -5 }}
             >
               Chat
             </Text>

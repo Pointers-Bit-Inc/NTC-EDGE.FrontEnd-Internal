@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
 import { CheckIcon, DeleteIcon, WriteIcon } from '@components/atoms/icon';
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 5,
     paddingLeft: 0.5,
+    paddingBottom: Platform.OS === 'ios' ? 0 : 1
   }
 })
 
