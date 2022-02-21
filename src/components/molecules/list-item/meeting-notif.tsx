@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
   },
   joinButton: {
     padding: RFValue(5),
+    height: RFValue(30),
     paddingHorizontal: 15,
     borderColor: '#610BEF',
     borderWidth: 1,
@@ -28,7 +29,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   closeButton: {
-    paddingVertical: RFValue(2),
+    paddingVertical: RFValue(4),
+    height: RFValue(30),
     paddingHorizontal: 20,
     borderColor: '#CF0327',
     backgroundColor: '#CF0327',
@@ -43,7 +45,7 @@ interface Props {
   host: any;
   time?: any;
   onJoin?: () => void;
-  onClose?: () => void;
+  onClose?: any;
   closeText?: string;
   style?: any;
 }
@@ -104,10 +106,10 @@ const MeetingNotif: FC<Props> = ({
       </Button>
       <Button
         style={styles.closeButton}
-        onPress={onClose}
+        onPress={() => onClose(true)}
       >
         <PhoneIcon
-          size={RFValue(22)}
+          size={RFValue(20)}
           type='hangup'
           color='white'
         />

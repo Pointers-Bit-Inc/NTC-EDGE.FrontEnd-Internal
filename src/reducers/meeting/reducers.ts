@@ -44,17 +44,40 @@ export default function basket(state = initialState, action = {}) {
       return newState;
     }
     case UPDATE_MEETING: {
-      let newState = state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
+      if (!action?.payload?.room?.lastMessage) {
+        const meeting = state.normalizedMeetingList[action.payload._id];
+        if (!meeting) {
+          return state;
+        }
+        const participants = action.payload.participants;
+        const participantsId = action.payload.participantsId;
 
-      if (state.meeting?._id === action.payload._id) {
-        newState = newState.setIn(['meeting'], action.payload);
+        let newState = state.setIn(['normalizedMeetingList', action.payload._id, 'participants'], participants)
+        .setIn(['normalizedMeetingList', action.payload._id, 'participantsId'], participantsId);
+
+        if (state.meeting?._id === action.payload._id) {
+          newState = newState.setIn(['meeting', 'participants'], participants)
+          .setIn(['meeting', 'participantsId'], participantsId);
+        }
+  
+        if (action.payload.ended) {
+          newState = newState.removeIn(['normalizeActiveMeetings', action.payload._id]);
+        }
+  
+        return newState;
+      } else {
+        let newState = state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
+
+        if (state.meeting?._id === action.payload._id) {
+          newState = newState.setIn(['meeting'], action.payload);
+        }
+  
+        if (action.payload.ended) {
+          newState = newState.removeIn(['normalizeActiveMeetings', action.payload._id]);
+        }
+  
+        return newState;
       }
-
-      if (action.payload.ended) {
-        newState = newState.removeIn(['normalizeActiveMeetings', action.payload._id]);
-      }
-
-      return newState;
     }
     case REMOVE_MEETING: {
       const updatedList = lodash.reject(state.list, l => l._id === action.payload);

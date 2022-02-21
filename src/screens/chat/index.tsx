@@ -18,7 +18,7 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
 import { setSelectedChannel, setChannelList, addToChannelList, addChannel, updateChannel, removeChannel, setMeetings, removeSelectedMessage, setSearchValue as setSearchValueFN } from 'src/reducers/channel/actions';
 import { SearchField } from '@components/molecules/form-fields';
-import { ChatItem, ListFooter } from '@components/molecules/list-item';
+import { ChatItem, ListFooter, MeetingNotif } from '@components/molecules/list-item';
 import { VideoIcon, WriteIcon, DeleteIcon } from '@components/atoms/icon';
 import { primaryColor, outline, text, button } from '@styles/color';
 import {
@@ -42,6 +42,10 @@ import rtt from 'reactotron-react-native';
 import NewChat from '@pages/chat/new';
 import { RFValue } from 'react-native-responsive-fontsize';
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
+import {
+  removeActiveMeeting ,
+  setMeeting ,
+} from 'src/reducers/meeting/actions';
 
 const { width, height } = Dimensions.get('window');
 
@@ -162,10 +166,17 @@ const ChatList = ({ navigation }:any) => {
     });
     return lodash.orderBy(channelList, 'lastMessage.createdAt', 'desc');
   });
+  const meetingList = useSelector((state: RootStateOrAny) => {
+    const { normalizeActiveMeetings } = state.meeting
+    const meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
+    return lodash.orderBy(meetingList, 'updatedAt', 'desc');
+})
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
   const {
     getChatList,
     leaveChannel,
+    endMeeting,
+    leaveMeeting,
   } = useSignalr();
   const [searchText, setSearchText] = useState('');
   const [searchValue, setSearchValue] = useState('');
@@ -240,6 +251,30 @@ const ChatList = ({ navigation }:any) => {
       unMount = true;
     }
   }, [sendRequest, searchValue])
+
+  const onJoin = (item) => {
+      dispatch(setSelectedChannel(item.room));
+      dispatch(setMeeting(item));
+      navigation.navigate('Dial', {
+          isHost: item.host._id === user._id,
+          isVoiceCall: item.isVoiceCall,
+          options: {
+              isMute: false,
+              isVideoEnable: true,
+          }
+      });
+  }
+
+const onClose = (item, leave = false) => {
+    if (leave) {
+      dispatch(removeActiveMeeting(item._id));
+      return leaveMeeting(item._id);
+    } else if (item.host._id === user._id) {
+      return endMeeting(item._id);
+    } else {
+      return dispatch(removeActiveMeeting(item._id));
+    }
+}
 
   const emptyComponent = () => (
     <View
@@ -320,6 +355,32 @@ const ChatList = ({ navigation }:any) => {
               height={RFValue(26)}
             />
           </TouchableOpacity>
+        </View>
+        <View>
+          {
+            !!lodash.size(meetingList) && (
+              <FlatList
+                data={meetingList}
+                bounces={false}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                snapToInterval={width}
+                decelerationRate={0}
+                keyExtractor={(item: any) => item._id}
+                renderItem={({item}) => (
+                  <MeetingNotif
+                    style={{width}}
+                    name={getChannelName({...item, otherParticipants: item?.participants})}
+                    time={item.createdAt}
+                    host={item.host}
+                    onJoin={() => onJoin(item)}
+                    onClose={(leave) => onClose(item, leave)}
+                    closeText={'Cancel'}
+                  />
+                )}
+              />
+            )
+          }
         </View>
         <SearchField
           containerStyle={{ paddingHorizontal: 20, paddingVertical: 20, paddingBottom: 10 }}

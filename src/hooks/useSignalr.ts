@@ -171,6 +171,16 @@ const useSignalr = () => {
     });
   }, []);
 
+  const leaveMeeting = useCallback((id, callback = () => {}) => {
+    api.patch(`/meeting/leave?id=${id}`)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
   const getMeetingList = useCallback((url, callback = () => {}) => {
     api.get(url)
     .then(res => {
@@ -211,6 +221,7 @@ const useSignalr = () => {
     getMessages,
     createMeeting,
     endMeeting,
+    leaveMeeting,
     joinMeeting,
     getMeetingList,
     getActiveMeetingList,

@@ -89,7 +89,7 @@ export default function ActivitiesPage(props: any) {
     const {selectedChangeStatus, visible} = useSelector((state: RootStateOrAny) => state.activity)
     const {pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const dispatch = useDispatch()
-    const { getActiveMeetingList, endMeeting } = useSignalr();
+    const { getActiveMeetingList, endMeeting, leaveMeeting } = useSignalr();
 
     function getList(list: any, selectedClone) {
         return getFilter({list : list, user : user, selectedClone : selectedClone, cashier : cashier, director : director, checker : checker, evaluator : evaluator, accountant : accountant});
@@ -370,11 +370,14 @@ export default function ActivitiesPage(props: any) {
         });
     }
 
-    const onClose = (item) => {
-        if (item.host._id === user._id) {
-            endMeeting(item._id);
+    const onClose = (item, leave = false) => {
+        if (leave) {
+          dispatch(removeActiveMeeting(item._id));
+          return leaveMeeting(item._id);
+        } else if (item.host._id === user._id) {
+          return endMeeting(item._id);
         } else {
-            dispatch(removeActiveMeeting(item._id));
+          return dispatch(removeActiveMeeting(item._id));
         }
     }
 
@@ -506,7 +509,7 @@ export default function ActivitiesPage(props: any) {
                                         time={item.createdAt}
                                         host={item.host}
                                         onJoin={() => onJoin(item)}
-                                        onClose={() => onClose(item)}
+                                        onClose={(leave) => onClose(item, leave)}
                                         closeText={'Cancel'}
                                     />
                                 )}
