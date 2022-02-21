@@ -320,7 +320,7 @@ const Meet = ({ navigation }) => {
           <Text
             color={'white'}
             size={20}
-            style={{ fontFamily: Bold }}
+            style={{ fontFamily: Bold, marginBottom: Platform.OS === 'ios' ? 0 : -5 }}
           >
             Meet
           </Text>

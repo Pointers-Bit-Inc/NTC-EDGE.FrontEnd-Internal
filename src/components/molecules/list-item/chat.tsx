@@ -6,6 +6,7 @@ import GroupImage from '@components/molecules/image/group';
 import ProfileImage from '@components/atoms/image/profile';
 import { text, primaryColor } from 'src/styles/color';
 import { GroupIcon } from '@components/atoms/icon';
+import { Bold, Regular, Regular500 } from '@styles/font';
 
 const styles = StyleSheet.create({
   container: {
@@ -100,6 +101,7 @@ const ChatItem: FC<Props> = ({
                 weight={!seen ? 'bold' : 'normal'}
                 size={18}
                 numberOfLines={1}
+                style={{ fontFamily: !seen ? Regular500 : Regular }}
               >
                 {name}
               </Text>

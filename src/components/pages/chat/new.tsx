@@ -45,14 +45,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    fontSize: RFValue(16),
+    fontSize: RFValue(14),
     fontFamily: Regular,
     color: 'black',
     flex: 1,
   },
   outline: {
     borderWidth: 0,
-    backgroundColor: '#EFF0F7',
+    backgroundColor: '#EFF0F6',
     borderRadius: 10,
   },
   icon: {
