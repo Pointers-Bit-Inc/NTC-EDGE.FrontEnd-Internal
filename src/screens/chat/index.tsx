@@ -316,8 +316,8 @@ const ChatList = ({ navigation }:any) => {
           <View style={{ width: 25 }} />
           <TouchableOpacity onPress={() => modalRef.current?.open()}>
             <NewChatIcon
-              width={RFValue(24)}
-              height={RFValue(24)}
+              width={RFValue(26)}
+              height={RFValue(26)}
             />
           </TouchableOpacity>
         </View>

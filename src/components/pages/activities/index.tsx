@@ -80,7 +80,7 @@ export default function ActivitiesPage(props: any) {
     })
     const config = {
         headers: {
-            Authorization: "Bearer ".concat(user?.token)
+            Authorization: "Bearer ".concat(user?.sessionToken)
         }
     }
 

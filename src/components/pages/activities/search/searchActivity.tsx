@@ -36,7 +36,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
     const dispatch = useDispatch()
     const config = {
         headers: {
-            Authorization: "Bearer ".concat(user?.token)
+            Authorization: "Bearer ".concat(user?.sessionToken)
         }
     }
     const [activityItemLength, setActivityItemLength] = useState(0)

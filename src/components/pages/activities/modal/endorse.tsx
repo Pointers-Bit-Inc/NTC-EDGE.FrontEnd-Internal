@@ -48,7 +48,7 @@ const Endorsed = (props: any) => {
         await axios.get(BASE_URL + '/users',
             {
                 headers: {
-                    Authorization: "Bearer ".concat(user.token)
+                    Authorization: "Bearer ".concat(user.sessionToken)
                 }
             }).then((response) => {
             const filterResponse = [...response.data].filter((item) => {

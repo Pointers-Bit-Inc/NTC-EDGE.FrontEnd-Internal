@@ -96,7 +96,7 @@ const UserProfileScreen = ({navigation}: any) => {
                     `${BASE_URL}/user/profile/${user._id}`,
                     formData,
                     {headers: {
-                        'Authorization': `Bearer ${user?.token}`,
+                        'Authorization': `Bearer ${user?.sessionToken}`,
                         'Content-type': 'multipart/form-data',
                     }},
                 )

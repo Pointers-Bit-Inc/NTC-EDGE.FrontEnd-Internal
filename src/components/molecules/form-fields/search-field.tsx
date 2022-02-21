@@ -137,8 +137,8 @@ const InputField: FC<Props> = ({
       >
         <NewSearchIcon
           style={[styles.icon, iconStyle]}
-          height={RFValue(20)}
-          width={RFValue(20)}
+          height={RFValue(18)}
+          width={RFValue(18)}
           color={'#6E7191'}
         />
         <TextInput

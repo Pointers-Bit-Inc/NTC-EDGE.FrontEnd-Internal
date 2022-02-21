@@ -10,13 +10,13 @@ const useSignalr = () => {
   const user = useSelector((state:RootStateOrAny) => state.user);
   const [connectionStatus, setConnectionStatus] = useState('');
   const signalr = useRef<HubConnection|null>(null);
-  const api = useApi(user.token);
+  const api = useApi(user.sessionToken);
 
   const initSignalR = useCallback(async () => {
     signalr.current = new HubConnectionBuilder()
         .withUrl(`${BASE_URL}/chathub`, {
           transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling,
-          accessTokenFactory: () => user.token
+          accessTokenFactory: () => user.sessionToken
         })
         .withAutomaticReconnect()
         .build();

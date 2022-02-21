@@ -48,13 +48,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: RFValue(10),
     paddingHorizontal: RFValue(20),
-    paddingTop: RFValue(35),
-    paddingBottom: RFValue(15),
+    paddingTop: RFValue(31),
+    paddingBottom: RFValue(14),
     backgroundColor: primaryColor
   },
   titleContainer: {
     flex: 1,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
   },
   scrollview: {
     flex: 1,
@@ -330,13 +330,13 @@ const Meet = ({ navigation }) => {
         >
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <NewVideoIcon
-              width={RFValue(30)}
-              height={RFValue(30)}
+              width={RFValue(34)}
+              height={RFValue(34)}
             />
             <PlusIcon
               color='white'
               size={RFValue(8)}
-              style={{ position: 'absolute', left: RFValue(Platform.OS === 'ios' ? 8 : 9) }}
+              style={{ position: 'absolute', left: RFValue(Platform.OS === 'ios' ? 10 : 10) }}
             />
           </View>
         </TouchableOpacity>

@@ -40,7 +40,7 @@ const BasicInfo = (props: any) => {
                              props?.approvalHistory?.[0]?.userId :
                              props?.assignedPersonnel)) , {
         headers : {
-            Authorization : "Bearer ".concat(props.user?.token)
+            Authorization : "Bearer ".concat(props.user?.sessionToken)
         }
     });
     const applicant = props.applicant;

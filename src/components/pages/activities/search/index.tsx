@@ -37,7 +37,7 @@ function Search(props: any) {
     }
     const config = {
         headers: {
-            Authorization: "Bearer ".concat(user?.token)
+            Authorization: "Bearer ".concat(user?.sessionToken)
         }
     }
     const groupApplications = (app: any) => {

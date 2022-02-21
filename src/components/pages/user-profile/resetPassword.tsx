@@ -64,7 +64,7 @@ const ResetPassword = ({navigation}) => {
     const user = useSelector((state: RootStateOrAny) => state.user);
     const config = {
         headers: {
-            Authorization: "Bearer ".concat(user?.token)
+            Authorization: "Bearer ".concat(user?.sessionToken)
         }
     }
     const [formValue, setFormValue] = useState({
