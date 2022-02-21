@@ -26,6 +26,7 @@ import Left from '@components/atoms/icon/left';
 import Loading from '@components/atoms/loading';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold } from '@styles/font';
+import Alert from '@components/atoms/alert';
 
 const {height} = Dimensions.get('window');
 const styles = StyleSheet.create({
@@ -51,6 +52,7 @@ const styles = StyleSheet.create({
         backgroundColor: button.primary,
         borderRadius: 10,
         width: '100%',
+        padding: 0,
         height: RFValue(50),
         justifyContent: 'center',
     },
@@ -211,7 +213,14 @@ const ResetPassword = ({navigation}: any) => {
 
     return (
         <View style={styles.container}>
-            <AwesomeAlert
+            <Alert
+                visible={showAlert}
+                title={alert?.title}
+                message={alert?.message}
+                confirmText='OK'
+                onConfirm={() => setShowAlert(false)}
+            />
+            {/* <AwesomeAlert
                 actionContainerStyle={{ flexDirection: "row-reverse" }}
                 show={showAlert}
                 showProgress={false}
@@ -224,7 +233,7 @@ const ResetPassword = ({navigation}: any) => {
                 confirmText="OK"
                 confirmButtonColor={alert?.color}
                 onConfirmPressed={() => setShowAlert(false)}
-            />
+            /> */}
             <NavBar
                 title='Reset Password'
                 leftIcon={<Left color='#fff' />}

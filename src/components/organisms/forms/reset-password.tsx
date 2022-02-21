@@ -5,7 +5,7 @@ import {
   InputField, PasswordField,
 } from '@molecules/form-fields';
 import InputStyles from 'src/styles/input-style';
-import { text } from 'src/styles/color';
+import { input, text } from 'src/styles/color';
 import Text from '@atoms/text';
 
 const styles = StyleSheet.create({
@@ -20,12 +20,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 5,
   },
-  strengthBar: {
-    height: 4,
-    borderRadius: 4,
-    marginTop: 10,
-    flex: 1,
-  },
   horizontal: {
     paddingVertical: 2,
     flexDirection: 'row',
@@ -36,7 +30,12 @@ const styles = StyleSheet.create({
     width: 18,
     backgroundColor: '#DBDFE5',
     borderRadius: 3,
-  }
+  },
+  strengthBar: {
+    height: 7,
+    borderRadius: 4,
+    flex: 1,
+  },
 });
 
 interface Props {
@@ -63,7 +62,26 @@ const PasswordForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
   }
   const validateColor = (valid:boolean) => {
     return valid ? text.success : text.error;
-  }
+  };
+  const passwordMeterColor = (strength:string) => {
+    if (strength === 'Average') return '#F8BF24';
+    else if (strength === 'Strong') return '#2C9669';
+    return '#DC2626';
+  };
+  const renderMeter = (backgroundColor: string, width: string) => {
+    return (
+      <View
+        style={[
+          styles.strengthBar,
+          {
+            backgroundColor,
+            width,
+            position: 'absolute',
+          }
+        ]}
+      />
+    )
+  };
   const renderPasswordChecker = (checked:boolean) => {
     if (checked) {
       return (
@@ -88,14 +106,6 @@ const PasswordForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
     return (
       <View style={styles.unchecked} />
     );
-  }
-  const passwordMeterColor = (strength:string) => {
-    if (strength === 'Average') {
-      return '#F8BF24';
-    } else if (strength === 'Strong') {
-      return '#2C9669';
-    }
-    return '#DC2626';
   }
   return (
     <View style={styles.container}>
@@ -172,16 +182,31 @@ const PasswordForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
             {` ${form?.password?.strength || 'Weak'}`}
           </Text>
         </View>
-        <View style={styles.horizontal}>
-          <View
-            style={[
-              styles.strengthBar,
+        <View
+              style={[
+                styles.strengthBar,
+                {
+                  backgroundColor: input?.background?.default,
+                  marginTop: 10,
+                }
+              ]}
+            >
               {
-                backgroundColor: passwordMeterColor(form?.password?.strength)
-              }]
-            }
-          />
-        </View>
+                form?.password?.strength === 'Strong' && 
+                renderMeter('#2C9669', '100%')
+              }
+              {
+                (form?.password?.strength === 'Strong' ||
+                form?.password?.strength === 'Average') &&
+                renderMeter('#F8BF24', '65%')
+              }
+              {
+                (form?.password?.strength === 'Strong' ||
+                form?.password?.strength === 'Average' ||
+                form?.password?.strength === 'Weak') &&
+                renderMeter('#DC2626', '30%')
+              }
+            </View>
       </View>
       <PasswordField
         label={'Confirm new password'}
