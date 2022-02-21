@@ -409,25 +409,30 @@ export default function ActivitiesPage(props: any) {
         0,
         CONTAINER_HEIGHT
     )
+
     var _clampedScrollValue = 0;
     var _offsetValue = 0;
     var _scrollValue = 0;
     useEffect(() => {
         scrollY.addListener(({ value }) => {
+        
             const diff = value - _scrollValue;
             _scrollValue = value;
             _clampedScrollValue = Math.min(
                 Math.max(_clampedScrollValue + diff, 0),
                 CONTAINER_HEIGHT,
             )
+
         });
         offsetAnim.addListener(({ value }) => {
             _offsetValue = value;
+
         })
     }, []);
 
     var scrollEndTimer = null;
     const onMomentumScrollBegin = () => {
+        
         clearTimeout(scrollEndTimer)
     }
     const onMomentumScrollEnd = () => {
@@ -462,8 +467,8 @@ export default function ActivitiesPage(props: any) {
             <View  style={[styles.container]}>
 
 
-                <View  style={styles.group}>
-                    <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity }, position: "absolute", transform: [{ translateY: headerTranslate }] }]}>
+                <View  style={[styles.group, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ position: "absolute", }]}>
+                    <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity },   transform: [{ translateY: headerTranslate }] }]}>
                         <TouchableOpacity onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
                             <HomeMenuIcon/>
                             {/* <ProfileImage
@@ -516,7 +521,9 @@ export default function ActivitiesPage(props: any) {
                 }} searchVisible={searchVisible}/>
                 <Animated.FlatList
                     onScroll={Animated.event(
-                        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                        [{ nativeEvent: {
+                            contentOffset: {
+                                y: scrollY } } }],
                         { useNativeDriver: true }
                     )}
 
@@ -577,12 +584,12 @@ export default function ActivitiesPage(props: any) {
                     refreshControl={
 
                         <RefreshControl
-                           style={{zIndex: 100}}
                             refreshing={refreshing}
                             onRefresh={onRefresh}
                         />
                     }
                     style={{flex: 1,}}
+
                     data={notPnApplications}
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={bottomLoader}
