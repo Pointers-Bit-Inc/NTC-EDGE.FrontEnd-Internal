@@ -182,7 +182,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 15,
         paddingVertical: 20,
-        paddingTop: 35,
         backgroundColor: '#041B6E'
     },
     rect: {
