@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     },
     item: {
         justifyContent: 'space-between',
-        paddingVertical: 15,
+        paddingVertical: 10,
         borderBottomColor: 'rgba(128,128,128,1)',
         // borderBottomWidth: StyleSheet.hairlineWidth,
         paddingHorizontal: 0,

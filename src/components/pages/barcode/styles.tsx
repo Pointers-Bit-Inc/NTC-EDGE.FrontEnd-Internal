@@ -36,6 +36,7 @@ export const styles = StyleSheet.create({
 
     },
     qrReader: {
+        alignItems: "center",
         fontFamily: Bold,
         color: "rgba(255,255,255,1)",
         fontSize: 18,

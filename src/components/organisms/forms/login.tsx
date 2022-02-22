@@ -75,12 +75,11 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
   return (
     <View style={styles.container}>
       <InputField
-        inputStyle={InputStyles.text}
         label={'Email address'}
         placeholder="Email address"
         required={true}
         hasValidation={true}
-        outlineStyle={InputStyles.outlineStyle}
+        
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
