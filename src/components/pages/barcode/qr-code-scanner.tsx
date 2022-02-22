@@ -142,7 +142,7 @@ export default function QrCodeScan(props: any) {
             }
             <View style={styles.group7}>
                 <View style={styles.header}>
-                    <View style={{flex: 1, alignItems:"center"}}>
+                    <View>
                         <Text style={styles.qrReader}>QR Reader</Text>
                     </View>
 
