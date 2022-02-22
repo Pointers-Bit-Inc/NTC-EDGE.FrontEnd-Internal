@@ -109,6 +109,7 @@ export default function TabBar() {
                     const unfocused = "#606A80";
                     return (<View key={route.key} style={{ flex: 1 }}>
                             <TouchableOpacity
+                                disabled={route.name === 'Meet' || route.name === 'Chat'}
                                 accessibilityRole="button"
                                 accessibilityState={isFocused ? {selected: true} : {}}
                                 accessibilityLabel={options.tabBarAccessibilityLabel}
