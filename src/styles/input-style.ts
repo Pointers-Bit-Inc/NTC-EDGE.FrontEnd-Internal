@@ -47,12 +47,14 @@ export default StyleSheet.create({
     paddingVertical: 10,
   },
   labelContainer: {
+
     flexDirection: 'row',
   },
   headerLabelText: {
     color: text?.defaultColor,
     fontSize: RFValue(16),
     fontFamily: Bold,
+
   },
   labelText: {
     color: text?.defaultColor,
@@ -88,6 +90,7 @@ export default StyleSheet.create({
     borderColor: outline.default,
   },
   text: {
+    
     color: text.defaultColor,
     fontWeight: '400',
   },

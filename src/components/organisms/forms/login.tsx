@@ -80,7 +80,7 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         placeholder="Email address"
         required={true}
         hasValidation={true}
-        outlineStyle={InputStyles.outlineStyle}
+
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
@@ -119,7 +119,7 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={[styles.horizontal, { marginTop: 15 }]}>
+    {/*  <View style={[styles.horizontal, { marginTop: 15 }]}>
         <TouchableOpacity onPress={() => onChangeValue('keepLoggedIn', !form?.keepLoggedIn?.value)}>
           {keepMeLoggedInChecker(form?.keepLoggedIn?.value)}
         </TouchableOpacity>
@@ -129,7 +129,7 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         >
           Keep me logged in
         </Text>
-      </View>
+      </View>*/}
     </View>
   );
 };

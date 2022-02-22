@@ -66,7 +66,8 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
     const renderDropdown = (): ReactElement<any, any> => {
         const flatListRef = useRef()
         return (
-            <Modal supportedOrientations={['portrait', 'landscape']}
+            <Modal
+                    supportedOrientations={['portrait', 'landscape']}
                    visible={visible}
                    transparent
                    animationType="none">
