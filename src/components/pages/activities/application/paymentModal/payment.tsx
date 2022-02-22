@@ -119,7 +119,7 @@ const Payment = (props:any) => {
 
 
 
-            { user?.role?.key === ACCOUNTANT && <View style={requirementStyles.container}>
+            { user?.role?.key !== ACCOUNTANT && <View style={requirementStyles.container}>
                     <View style={[requirementStyles.card, {padding: undefined}]}>
                         <View style={requirementStyles.cardContainer}>
                             <TouchableOpacity onPress={() => {
