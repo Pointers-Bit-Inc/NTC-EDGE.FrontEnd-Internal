@@ -76,6 +76,7 @@ export default StyleSheet.create({
     color: text?.mainColor,
     fontFamily: Regular,
     fontWeight: 'normal',
+    marginTop: -3
   },
   iconStyle: {
     height: RFValue(20),
