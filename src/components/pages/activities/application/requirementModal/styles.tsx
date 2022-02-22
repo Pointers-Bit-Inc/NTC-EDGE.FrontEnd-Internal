@@ -49,7 +49,7 @@ export const requirementStyles = StyleSheet.create({
 
         flexDirection : "row" ,
         justifyContent : "flex-start" ,
-
+        alignItems : "center" ,
         margin : 0
     } ,
     text : {
