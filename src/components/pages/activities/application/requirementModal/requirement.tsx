@@ -26,15 +26,16 @@ const Requirement = (props: any) => {
                             </View>
                             <View style={ [{ paddingTop : 30 , paddingBottom : 9 } , requirementStyles.cardDocument] }>
 
-                                <View style={ { paddingRight : 10 } }>
-                                    <FileOutlineIcon/>
-                                </View>
+
                                 <TouchableOpacity onPress={ () => {
                                     setSelectImage(requirement?.links?.large);
                                     setSelectName( requirement?.file?.name)
                                     setVisibleModal(true)
                                 }
-                                }>
+                                } style={{ alignItems : "center" ,flex: 1, flexDirection: "row"}}>
+                                    <View style={ { paddingRight : 10 } }>
+                                        <FileOutlineIcon/>
+                                    </View>
                                 <Text style={ requirementStyles.text }>{ requirement?.file?.name }</Text>
                                 </TouchableOpacity>
                             </View>
