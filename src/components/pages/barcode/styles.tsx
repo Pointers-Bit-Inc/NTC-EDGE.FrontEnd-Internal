@@ -27,15 +27,20 @@ export const styles = StyleSheet.create({
         alignSelf: "center"
     },
     header: {
-        width: "100%"   ,
-        backgroundColor: "#041B6E"
+        backgroundColor: "#041B6E",
+        height: 90,
+        width: "100%"
+    },
+    rect: {
+        height: 100,
+
     },
     qrReader: {
         fontFamily: Bold,
         color: "rgba(255,255,255,1)",
         fontSize: 18,
         textAlign: "center",
-        paddingVertical: 25
+        marginTop: 40
     },
     group32: {
         width: "100%",
