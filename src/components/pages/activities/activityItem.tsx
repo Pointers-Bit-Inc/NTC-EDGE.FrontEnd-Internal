@@ -194,10 +194,7 @@ export function ActivityItem(props:any) {
             <View style={{backgroundColor: "#fff"}}>
 
 
-                    <TouchableOpacity  onPress={() =>{
 
-                        props.onPressUser()
-                    }}>
                         <Swipeable
                             ref={ref => row[props.index] = ref}
                             key={props.index}
@@ -233,64 +230,76 @@ export function ActivityItem(props:any) {
                                     elevation: 2,
                                     shadowOpacity: 0.2,
                                     shadowRadius: 2,
-                                    padding: 10,
                                     flex: 1,
-                                    flexDirection: "row",
-                                    alignItems: "center"
+
                                 }}>
-                                    <ProfileImage
-                                        size={45}
-                                        image={userActivity?.profilePicture?.small}
-                                        name={`${userActivity?.firstName} ${userActivity?.lastName}`}
-                                    />
-                                    <View style={styles.content}>
-                                        <View style={styles.section}>
-                                            <View style={styles.name}>
-                                                <Text
-                                                    //style={{color: props?.activity?.dateRead ? "#565961" : "#000"}}
-                                                    style={{fontFamily: Bold,
-                                                        fontSize: 14}}
-                                                    numberOfLines={1}
-                                                >
-                                                    <Highlighter
-                                                        highlightStyle={{backgroundColor: '#BFD6FF'}}
-                                                        searchWords={[props?.searchQuery]}
-                                                        textToHighlight= {`${userActivity?.firstName} ${userActivity?.lastName}`}
-                                                    />
+                                    <TouchableOpacity  onPress={() =>{
+                                        props.onPressUser()
+                                    }}>
+                                    <View style={
+                                        {
+                                            borderRadius: 10,
+                                            flex: 1,
+                                            padding: 10,
+                                            flexDirection: "row",
+                                            alignItems: "center"
+                                        }
+                                    }>
+                                        <ProfileImage
+                                            size={45}
+                                            image={userActivity?.profilePicture?.small}
+                                            name={`${userActivity?.firstName} ${userActivity?.lastName}`}
+                                        />
+                                        <View style={styles.content}>
+                                            <View style={styles.section}>
+                                                <View style={styles.name}>
+                                                    <Text
+                                                        //style={{color: props?.activity?.dateRead ? "#565961" : "#000"}}
+                                                        style={{fontFamily: Bold,
+                                                            fontSize: 14}}
+                                                        numberOfLines={1}
+                                                    >
+                                                        <Highlighter
+                                                            highlightStyle={{backgroundColor: '#BFD6FF'}}
+                                                            searchWords={[props?.searchQuery]}
+                                                            textToHighlight= {`${userActivity?.firstName} ${userActivity?.lastName}`}
+                                                        />
 
-                                                </Text>
-                                            </View>
-                                            <View style={styles.date}>
+                                                    </Text>
+                                                </View>
+                                                <View style={styles.date}>
 
-                                                <Text
-                                                    style={
-                                                        {
-                                                            color : "#606A80" ,
-                                                            fontFamily : Regular ,
-                                                            fontSize : RFValue(10)
+                                                    <Text
+                                                        style={
+                                                            {
+                                                                color : "#606A80" ,
+                                                                fontFamily : Regular ,
+                                                                fontSize : RFValue(10)
+                                                            }
                                                         }
-                                                    }
-                                                    numberOfLines={1}
-                                                >
-                                                    {formatDate(props.activity.createdAt)}
-                                                </Text>
+                                                        numberOfLines={1}
+                                                    >
+                                                        {formatDate(props.activity.createdAt)}
+                                                    </Text>
+                                                </View>
                                             </View>
-                                        </View>
-                                        <View style={styles.section}>
-                                            <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                                                <RenderApplication applicationType={props?.activity?.applicationType} />
-                                            </View>
+                                            <View style={styles.section}>
+                                                <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                                    <RenderApplication applicationType={props?.activity?.applicationType} />
+                                                </View>
 
-                                            <RenderStatus
-                                                status={getStatus}
-                                            />
-                                        </View>
-                                        {props?.isPinned && props?.activity?.assignedPersonnel && <View style={styles.section}>
-                                            <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                                                <RenderPinned  config={props.config} assignedPersonnel={props?.activity?.assignedPersonnel} />
+                                                <RenderStatus
+                                                    status={getStatus}
+                                                />
                                             </View>
-                                        </View>}
+                                            {props?.isPinned && props?.activity?.assignedPersonnel && <View style={styles.section}>
+                                                <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                                    <RenderPinned  config={props.config} assignedPersonnel={props?.activity?.assignedPersonnel} />
+                                                </View>
+                                            </View>}
+                                        </View>
                                     </View>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
 
@@ -298,7 +307,6 @@ export function ActivityItem(props:any) {
 
                         </View>
                         </Swipeable>
-                    </TouchableOpacity>
             </View>
 
 
