@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     borderRadius: 10,
-    height: width * .15,
     justifyContent: 'center',
   },
   boldText: {
@@ -245,13 +244,13 @@ const Login = ({ navigation }:any) => {
               >
                 {
                   loading ? (
-                      <View style={{paddingVertical: 10  }}>
-                        <Ellipsis   color='#fff' size={10} />
+                      <View style={{paddingVertical: 6  }}>
+                        <Ellipsis   color='#fff' size={RFValue(8)} />
                       </View>
 
                   ) : (
                       <View>
-                        <Text style={styles.boldText} color={isValid ? '#fff' : text.disabled} size={18}>Login</Text>
+                        <Text style={styles.boldText} color={isValid ? '#fff' : text.disabled} size={RFValue(18)}>Login</Text>
                       </View>
 
                   )
