@@ -79,26 +79,28 @@ const UserProfileScreen = ({navigation}: any) => {
             }
         });
         if (!dp) {
-            formData.append('data', JSON.stringify({
+            formData = {
                 firstName: updatedUser?.firstName,
                 lastName: updatedUser?.lastName,
                 email: updatedUser?.email,
                 contactNumber: updatedUser?.contactNumber,
                 address: updatedUser?.address,
-            }));
+                profilePicture: user?.profilePictureObj
+            }
         }
         if (isValid()) {
             setLoading({
                 photo: dp,
                 basic: !dp
             });
+
             axios
                 .patch(
                     `${dp ? BASE_URL_NODE : BASE_URL}/user/profile/${user._id}`,
                     formData,
                     {headers: {
                         'Authorization': `Bearer ${user?.sessionToken}`,
-                        'Content-type': 'multipart/form-data',
+                        'Content-Type': dp ? 'multipart/form-data' : 'application/json',
                     }},
                 )
                 .then((res: any) => {
@@ -113,7 +115,12 @@ const UserProfileScreen = ({navigation}: any) => {
                             message: 'Your profile has been updated!',
                             color: successColor
                         });
-                        dispatch(setUser({...user, ...res?.data?.doc}));
+                        if (dp) {
+                            dispatch(setUser({...user, ...res?.data?.doc, profilePictureObj: res?.data?.doc?.profilePicture}));
+                            save({dp: false});
+                        } else {
+                            dispatch(setUser({...user, ...res?.data?.doc}));
+                        }
                     }
                     else {
                         setAlert({
