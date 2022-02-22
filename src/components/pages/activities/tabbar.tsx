@@ -107,6 +107,7 @@ export default function TabBar() {
 
                     const focused = "#2863D6";
                     const unfocused = "#606A80";
+                    const disabled = "#DADFE4"
                     return (<View key={route.key} style={{ flex: 1 }}>
                             <TouchableOpacity
                                 disabled={route.name === 'Meet' || route.name === 'Chat'}
@@ -124,10 +125,10 @@ export default function TabBar() {
                                         ? ( <ActivityTabbar notification={false } width={30} height={30} fill={isFocused ? focused : unfocused}/>) :
                                         label == CHAT
                                             ?
-                                            (<ChatIcon notification={hasNewChat} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
+                                            (<ChatIcon notification={hasNewChat} width={30} height={30} fill={(route.name === 'Meet' || route.name === 'Chat') ? disabled : isFocused ? focused : unfocused}/>)
                                             : label == MEET
                                                 ?
-                                                (<MeetIcon notification={hasMeet} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
+                                                (<MeetIcon notification={hasMeet} width={30} height={30} fill={(route.name === 'Meet' || route.name === 'Chat') ? disabled : isFocused ? focused : unfocused}/>)
 
                                                 :
                                                 label == SCANQR
@@ -144,7 +145,7 @@ export default function TabBar() {
                                     <Text style={[{
                                         fontSize: RFValue(14),
                                         fontFamily: isFocused ? Bold : Regular,
-                                        color: isFocused ? '#2863d6' : '#606a80'
+                                        color: (route.name === 'Meet' || route.name === 'Chat') ? disabled : isFocused ? '#2863d6' : '#606a80'
                                     }]}>{label}</Text>
                                 </View>
 
