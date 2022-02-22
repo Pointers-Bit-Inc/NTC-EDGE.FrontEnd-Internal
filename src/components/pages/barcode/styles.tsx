@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
     },
     header: {
         backgroundColor: "#041B6E",
-        height: 90,
+        height: 80,
         width: "100%"
     },
     rect: {
