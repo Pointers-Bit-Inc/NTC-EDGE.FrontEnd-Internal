@@ -242,7 +242,6 @@ function ActivityModal(props: any) {
             <View style={ { flex : 1 } }>
                 <View style={ {
                     flexDirection : "row" ,
-                    borderBottomWidth: 1,
                     borderBottomColor: "#F0F0F0",
                     justifyContent : "space-between" ,
                     padding : 15 ,
@@ -358,6 +357,7 @@ function ActivityModal(props: any) {
                 remarks={ setRemarks }
                 onChangeApplicationStatus={ (event: any , callback: (bool , appId) => {}) => {
                     onChangeApplicationStatus(DECLINED , (err , id) => {
+
                         if (!err) {
                             callback(true , (response) => {
 

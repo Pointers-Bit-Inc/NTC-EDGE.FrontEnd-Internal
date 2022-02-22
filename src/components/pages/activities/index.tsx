@@ -65,6 +65,7 @@ const {width} = Dimensions.get('window')
 
 
 export default function ActivitiesPage(props: any) {
+
     const [isPinnedActivity, setIsPinnedActivity] = useState(0)
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(0)

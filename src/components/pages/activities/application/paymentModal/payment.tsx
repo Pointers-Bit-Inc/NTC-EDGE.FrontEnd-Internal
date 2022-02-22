@@ -19,11 +19,14 @@ import RequirementModal from "@pages/activities/application/requirementModal";
 import _ from "lodash";
 import {capitalize} from "@pages/activities/script";
 import {RFValue} from "react-native-responsive-fontsize";
+import {RootStateOrAny , useSelector} from "react-redux";
+import {ACCOUNTANT} from "../../../../../reducers/activity/initialstate";
 const {width, height} = Dimensions.get("screen")
 const Payment = (props:any) => {
     const [visibleModal, setVisibleModal] = useState(false)
     const [visibleRequireModal, setVisibleRequireModal] = useState(false)
     const [selectImage , setSelectImage] = useState('');
+    const user = useSelector((state: RootStateOrAny) => state.user);
     const onDismissed = () =>{
 
         setVisibleModal(false)
@@ -116,7 +119,7 @@ const Payment = (props:any) => {
 
 
 
-                <View style={requirementStyles.container}>
+            { user?.role?.key === ACCOUNTANT && <View style={requirementStyles.container}>
                     <View style={[requirementStyles.card, {padding: undefined}]}>
                         <View style={requirementStyles.cardContainer}>
                             <TouchableOpacity onPress={() => {
@@ -176,7 +179,7 @@ const Payment = (props:any) => {
 
                         </View>
                     </View>
-                </View>
+                </View>}
 
 
         </View>
