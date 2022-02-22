@@ -358,7 +358,6 @@ function ActivityModal(props: any) {
                 remarks={ setRemarks }
                 onChangeApplicationStatus={ (event: any , callback: (bool , appId) => {}) => {
                     onChangeApplicationStatus(DECLINED , (err , id) => {
-
                         if (!err) {
                             callback(true , (response) => {
 

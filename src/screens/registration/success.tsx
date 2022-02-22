@@ -76,7 +76,7 @@ const RegistrationSuccess = ({ navigation, route }:any) => {
           color={text.default}
           size={16}
         >
-          {`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Pharetra sit amet aliquam id diam maecenas ultricies mi eget.`}
+          {/*Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Pharetra sit amet aliquam id diam maecenas ultricies mi eget.*/}
         </Text>
       </View>
       <View style={styles.footer}>
