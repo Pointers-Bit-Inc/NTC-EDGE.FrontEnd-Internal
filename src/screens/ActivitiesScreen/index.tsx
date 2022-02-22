@@ -9,7 +9,7 @@ import DonutIcon from "@assets/svg/donut";
 import WarningIcon from "@assets/svg/warning";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import styles from "@screens/HomeScreen/DrawerNavigation/styles";
-import {button} from "@styles/color";
+import {button, outline} from "@styles/color";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {resetUser} from "../../reducers/user/actions";
 import { resetMeeting, addMeeting, updateMeeting, setConnectionStatus } from 'src/reducers/meeting/actions';
@@ -18,7 +18,39 @@ import Api from 'src/services/api';
 import UserProfileScreen from "@screens/HomeScreen/UserProfile";
 import useSignalr from 'src/hooks/useSignalr';
 import lodash from 'lodash';
+import RNExitApp from 'react-native-exit-app';
+import { Alert, BackHandler, Linking, Dimensions, StyleSheet } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { text } from '@styles/color';
+import { Bold, Regular } from '@styles/font';
 const Drawer = createDrawerNavigator();
+
+const { width } = Dimensions.get('window');
+
+const customStyles = StyleSheet.create({
+  confirmText: {
+    fontSize: RFValue(14),
+    fontFamily: Regular,
+    color: text.primary,
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: RFValue(16),
+    fontFamily: Bold,
+    color: '#1F2022'
+  },
+  message: {
+    textAlign: 'center',
+    fontSize: RFValue(14),
+    fontFamily: Regular,
+    marginHorizontal: 15,
+    marginBottom: 15,
+  },
+  content: {
+    borderBottomColor: outline.default,
+    borderBottomWidth: 1,
+  }
+})
 
 const ActivitiesScreen = (props:any) => {
     const dispatch = useDispatch();
@@ -26,11 +58,14 @@ const ActivitiesScreen = (props:any) => {
     const onHide = () => setShowAlert(false)
     const onShow = () => setShowAlert(true);
     const [showAlert, setShowAlert] = useState(false);
+    const [alertData, setAlertData] = useState({});
+    const [versionChecked, setVersionChecked] = useState(false);
     const {
         connectionStatus,
         initSignalR,
         destroySignalR,
         onConnection,
+        checkVersion,
       } = useSignalr();
     const onLogout = useCallback(() => {
         const api = Api(user.sessionToken);
@@ -46,8 +81,32 @@ const ActivitiesScreen = (props:any) => {
         }, 500);
     }, []);
 
+    const onPressAlert = () => {
+      if (alertData.link) {
+        return Linking.openURL(alertData.link);
+      } else {
+        return RNExitApp.exitApp();
+      }
+    }
+
     useEffect(() => {
       dispatch(setConnectionStatus(connectionStatus));
+      let unmount = false
+
+      if (!versionChecked && connectionStatus === 'connected') {
+        checkVersion((err, res) => {
+          if (!unmount) {
+            setVersionChecked(true);
+            if (res) {
+              setAlertData(res);
+              setShowAlert(true);
+            }
+          }
+        })
+      }
+      return () => {
+        unmount = true;
+      }
     }, [connectionStatus])
 
     useEffect(() => {
@@ -126,24 +185,21 @@ const ActivitiesScreen = (props:any) => {
         <AwesomeAlert
             show={showAlert}
             showProgress={false}
-            titleStyle={styles.alertMessage}
-            title={'Are you sure you would like to log out?'}
-            contentStyle={styles.contentStyle}
+            contentContainerStyle={{ borderRadius: 15, maxWidth: width * 0.7 }}
+            titleStyle={customStyles.title}
+            title={alertData?.title || 'Alert'}
+            message={alertData?.message}
+            messageStyle={customStyles.message}
+            contentStyle={customStyles.content}
             closeOnTouchOutside={false}
             closeOnHardwareBackPress={false}
-            showCancelButton={true}
+            showCancelButton={false}
             showConfirmButton={true}
-            cancelText="Yes"
-            confirmText="No"
+            confirmText={alertData.button || 'OK'}
             confirmButtonColor={'white'}
-            cancelButtonColor={button.primary}
-            confirmButtonStyle={styles.cancelButton}
-            confirmButtonTextStyle={styles.cancelText}
-            cancelButtonStyle={styles.confirmButton}
-            cancelButtonTextStyle={styles.confirmText}
-            actionContainerStyle={styles.actionContainerStyle}
-            onCancelPressed={onLogout}
-            onConfirmPressed={onHide}
+            confirmButtonTextStyle={customStyles.confirmText}
+            actionContainerStyle={{ justifyContent: 'space-around' }}
+            onConfirmPressed={onPressAlert}
         />
     </>
 
