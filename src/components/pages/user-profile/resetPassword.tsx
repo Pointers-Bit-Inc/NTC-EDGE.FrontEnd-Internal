@@ -6,11 +6,12 @@ import {
     SafeAreaView,
     StyleSheet,
     TouchableOpacity,
-    View
+    View,
+    ScrollView
 } from 'react-native';
 import Text from '@components/atoms/text';
 import {validatePassword,} from 'src/utils/form-validations';
-import {InputField} from '@molecules/form-fields';
+import {InputField, PasswordField} from '@molecules/form-fields';
 import Button from '@components/atoms/button';
 import {ArrowLeftIcon} from '@components/atoms/icon';
 import PasswordForm from '@components/organisms/forms/reset-password';
@@ -20,6 +21,12 @@ import axios from "axios";
 import {BASE_URL} from "../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
 import AwesomeAlert from "react-native-awesome-alerts";
+import NavBar from '@components/molecules/navbar';
+import Left from '@components/atoms/icon/left';
+import Loading from '@components/atoms/loading';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { Bold } from '@styles/font';
+import Alert from '@components/atoms/alert';
 
 const {height} = Dimensions.get('window');
 const styles = StyleSheet.create({
@@ -37,30 +44,36 @@ const styles = StyleSheet.create({
     },
     content: {
         padding: 20,
-        flex: 1,
     },
     description: {
         paddingVertical: 25,
     },
     button: {
         backgroundColor: button.primary,
-        borderRadius: 5,
-        marginHorizontal: 20,
+        borderRadius: 10,
         width: '100%',
+        padding: 0,
+        height: RFValue(50),
+        justifyContent: 'center',
     },
     keyboardAvoiding: {
         position: 'absolute',
-        bottom: 30,
+        bottom: 0,
         width: '100%',
+        padding: 20,
+        backgroundColor: '#fff',
     },
+    boldText: {
+        fontFamily: Bold,
+    }
 })
 
 const errorResponse = {
     password: 'Password must be atleast 6 characters',
-    confirm: 'password does not match',
+    confirm: 'Passwords do not match',
 };
 
-const ResetPassword = ({navigation}) => {
+const ResetPassword = ({navigation}: any) => {
     const user = useSelector((state: RootStateOrAny) => state.user);
     const config = {
         headers: {
@@ -89,6 +102,7 @@ const ResetPassword = ({navigation}) => {
             value: false,
         }
     });
+    const [loading, setLoading] = useState(false);
 
     const onChangeText = (key: string, value: any) => {
         switch (key) {
@@ -168,12 +182,12 @@ const ResetPassword = ({navigation}) => {
         } else if (!formValue.confirmPassword.isValid) {
             return onChangeText('confirmPassword', formValue.confirmPassword.value);
         } else {
+            setLoading(true);
 
             const params = {
                 oldPassword: formValue.oldPassword.value,
                 newPassword: formValue.password.value
             }
-
 
             axios.patch(BASE_URL + '/user/profile/change-password', params, config).then((response) => {
                 setAlert({
@@ -181,23 +195,32 @@ const ResetPassword = ({navigation}) => {
                     message: response?.data?.message || '',
                     color: response?.status === 200 ? successColor : errorColor,
                 });
-                setShowAlert(true)
+                setShowAlert(true);
+                setLoading(false);
             }).catch((err)=>{
                 setAlert({
                     title: err?.title || 'Failure',
                     message: err?.message || 'Your password was not updated.',
                     color: errorColor,
                 });
-                setShowAlert(true)
+                setShowAlert(true);
+                setLoading(false);
             })
         }
-    }
+    };
 
     const isValid = formValue.password.isValid && formValue.confirmPassword.isValid;
 
     return (
-        <SafeAreaView style={styles.container}>
-            <AwesomeAlert
+        <View style={styles.container}>
+            <Alert
+                visible={showAlert}
+                title={alert?.title}
+                message={alert?.message}
+                confirmText='OK'
+                onConfirm={() => setShowAlert(false)}
+            />
+            {/* <AwesomeAlert
                 actionContainerStyle={{ flexDirection: "row-reverse" }}
                 show={showAlert}
                 showProgress={false}
@@ -210,8 +233,13 @@ const ResetPassword = ({navigation}) => {
                 confirmText="OK"
                 confirmButtonColor={alert?.color}
                 onConfirmPressed={() => setShowAlert(false)}
+            /> */}
+            <NavBar
+                title='Reset Password'
+                leftIcon={<Left color='#fff' />}
+                onLeft={() => navigation.goBack()}
             />
-            <View style={styles.header}>
+            {/* <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <ArrowLeftIcon
                         size={26}
@@ -228,53 +256,45 @@ const ResetPassword = ({navigation}) => {
                         Close
                     </Text>
                 </TouchableOpacity>
-            </View>
-            <View style={styles.content}>
-                <Text
-                    style={{marginBottom: 15}}
-                    size={22}
-                    color={text.default}
-                    weight={'600'}
-                >
-                    Reset password
-                </Text>
-                <InputField
-                    inputStyle={InputStyles.text}
-                    label={'Old Password'}
-                    placeholder="Old Password"
+            </View> */}
+            <ScrollView style={styles.content}>
+                <PasswordField
+                    label={'Old password'}
+                    placeholder="Old password"
                     textContentType="oneTimeCode"
                     required={true}
                     hasValidation={true}
-                    outlineStyle={InputStyles.outlineStyle}
-                    activeColor={text.primary}
-                    errorColor={text.error}
-                    requiredColor={text.error}
                     secureTextEntry={!formValue?.showPassword?.value}
                     value={formValue?.oldPassword?.value}
                     onChangeText={(value: string) => onChangeText('oldPassword', value)}
                     onSubmitEditing={(event: any) => onChangeText('oldPassword', event.nativeEvent.text)}
+                    showPassword={() => onChangeText('showPassword', !formValue?.showPassword?.value)}
                 />
                 <PasswordForm onChangeValue={onChangeText} form={formValue}/>
-                <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-                    keyboardVerticalOffset={height * 0.12}
-                    style={styles.keyboardAvoiding}
+            </ScrollView>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+                // keyboardVerticalOffset={height * 0.12}
+                style={styles.keyboardAvoiding}
+            >
+                <Button
+                    style={[styles.button, {backgroundColor: isValid ? button.primary : button.default}]}
+                    onPress={onCheckValidation}
                 >
-                    <Button
-                        style={[styles.button, {backgroundColor: isValid ? button.primary : button.default}]}
-                        onPress={onCheckValidation}
-                    >
-                        <Text
-                            color="white"
-                            size={16}
-                            weight={'500'}
-                        >
-                            Submit
-                        </Text>
-                    </Button>
-                </KeyboardAvoidingView>
-            </View>
-        </SafeAreaView>
+                    {
+                        loading
+                            ?   <Loading color='#fff' />
+                            :   <Text
+                                    color="white"
+                                    size={16}
+                                    style={styles.boldText}
+                                >
+                                    Submit
+                                </Text>
+                    }
+                </Button>
+            </KeyboardAvoidingView>
+        </View>
     )
 }
 

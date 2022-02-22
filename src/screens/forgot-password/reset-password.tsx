@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 
 const errorResponse = {
   password: 'Password must be atleast 6 characters',
-  confirm: 'password does not match',
+  confirm: 'Passwords do not match',
 };
 
 const OneTimePin = ({ navigation }) => {

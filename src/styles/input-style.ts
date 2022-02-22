@@ -48,7 +48,6 @@ export default StyleSheet.create({
   },
   labelContainer: {
     flexDirection: 'row',
-    padding: 0,
   },
   headerLabelText: {
     color: text?.defaultColor,
@@ -74,9 +73,9 @@ export default StyleSheet.create({
   inputText: {
     paddingHorizontal: 0,
     paddingVertical: 0,
-    marginVertical: -RFValue(5),
     color: text?.mainColor,
     fontFamily: Regular,
+    fontWeight: 'normal',
   },
   iconStyle: {
     height: RFValue(20),

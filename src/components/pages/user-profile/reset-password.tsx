@@ -36,7 +36,7 @@ function ResetPassword({navigation}) {
                    <TextInput
                        onChangeText={setOldPassword}
                        value={oldPassword}
-                       placeholder="Old Password"
+                       placeholder="Old password"
                        style={styles.textInput}
                        secureTextEntry
 
@@ -45,7 +45,7 @@ function ResetPassword({navigation}) {
                        secureTextEntry
                        onChangeText={setNewPassword}
                        value={newPassword}
-                       placeholder="New Password"
+                       placeholder="New password"
                        style={styles.textInput}
                    ></TextInput>
 
