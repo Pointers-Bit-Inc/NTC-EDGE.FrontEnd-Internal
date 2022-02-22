@@ -302,40 +302,40 @@ export default function ActivitiesPage(props: any) {
         return infiniteLoad ? <Loader/> : null
     };
 
-    useEffect(() => {
-        let unMount = false;
-        const unsubscriber = userActiveMeetingSubscriber((querySnapshot: FirebaseFirestoreTypes.QuerySnapshot) => {
-            if (!unMount) {
-                querySnapshot.docChanges().forEach((change: any) => {
-                    const data = change.doc.data();
-                    data._id = change.doc.id;
-                    switch (change.type) {
-                        case 'added': {
-                            const hasSave = lodash.find(meetingList, (ch: any) => ch._id === data._id);
-                            if (!hasSave) {
-                                dispatch(addActiveMeeting(data));
-                            }
-                            return;
-                        }
-                        case 'modified': {
-                            dispatch(updateActiveMeeting(data));
-                            return;
-                        }
-                        case 'removed': {
-                            dispatch(removeActiveMeeting(data._id));
-                            return;
-                        }
-                        default:
-                            return;
-                    }
-                });
-            }
-        })
-        return () => {
-            unMount = true;
-            unsubscriber();
-        }
-    }, []);
+    // useEffect(() => {
+    //     let unMount = false;
+    //     const unsubscriber = userActiveMeetingSubscriber((querySnapshot: FirebaseFirestoreTypes.QuerySnapshot) => {
+    //         if (!unMount) {
+    //             querySnapshot.docChanges().forEach((change: any) => {
+    //                 const data = change.doc.data();
+    //                 data._id = change.doc.id;
+    //                 switch (change.type) {
+    //                     case 'added': {
+    //                         const hasSave = lodash.find(meetingList, (ch: any) => ch._id === data._id);
+    //                         if (!hasSave) {
+    //                             dispatch(addActiveMeeting(data));
+    //                         }
+    //                         return;
+    //                     }
+    //                     case 'modified': {
+    //                         dispatch(updateActiveMeeting(data));
+    //                         return;
+    //                     }
+    //                     case 'removed': {
+    //                         dispatch(removeActiveMeeting(data._id));
+    //                         return;
+    //                     }
+    //                     default:
+    //                         return;
+    //                 }
+    //             });
+    //         }
+    //     })
+    //     return () => {
+    //         unMount = true;
+    //         unsubscriber();
+    //     }
+    // }, []);
 
     const handleLoad = useCallback(() => {
 
@@ -355,7 +355,7 @@ export default function ActivitiesPage(props: any) {
 
                 } else {
                     dispatch(handleInfiniteLoad({data: getList(response.data.docs, selectedChangeStatus), user: user}))
-                    setInfiniteLoad(false);
+                    setInfiniteLoad(false); 
                 }
                 setInfiniteLoad(false);
             }).catch((err) => {
