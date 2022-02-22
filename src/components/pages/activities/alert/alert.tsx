@@ -18,6 +18,7 @@ function CustomAlert(props) {
     
     return (
         <Modal
+            useNativeDriver={true}
             supportedOrientations={['portrait', 'landscape']}
             animationType="none"
             transparent={true}
