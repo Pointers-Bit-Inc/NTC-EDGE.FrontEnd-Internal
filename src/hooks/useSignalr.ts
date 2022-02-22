@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
+import { Platform } from "react-native";
+import DeviceInfo from 'react-native-device-info';
 import { HubConnectionBuilder, HubConnection, LogLevel, HttpTransportType } from "@microsoft/signalr";
 import { useSelector, RootStateOrAny } from "react-redux";
 import { BASE_URL } from 'src/services/config';
@@ -203,6 +205,18 @@ const useSignalr = () => {
       return callback(err);
     });
   }, [])
+
+  const checkVersion = useCallback((callback = () => {}) => {
+    const version = DeviceInfo.getVersion();
+    const os = Platform.OS;
+    api.get(`/room/check-version?os=${os}&version=${version}`)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, [])
   
   return {
     connectionStatus,
@@ -225,6 +239,7 @@ const useSignalr = () => {
     joinMeeting,
     getMeetingList,
     getActiveMeetingList,
+    checkVersion,
   }
 }
 
