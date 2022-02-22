@@ -234,7 +234,7 @@ const Login = ({ navigation }:any) => {
                     styles.loginButton,
                     {
                       backgroundColor: isValid
-                                       ? button.info
+                                       ? button.primary
                                        : isValid
                                          ? button.primary
                                          : button.default

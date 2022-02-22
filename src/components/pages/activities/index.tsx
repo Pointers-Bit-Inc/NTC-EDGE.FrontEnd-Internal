@@ -466,7 +466,7 @@ export default function ActivitiesPage(props: any) {
     })
     return (
         <Fragment>
-            <StatusBar  barStyle={'light-content'}/>
+            <StatusBar   barStyle={'light-content'}/>
             <View  style={[styles.container]}>
 
 

@@ -25,29 +25,30 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  dropdownOuterContainer: {
-    paddingHorizontal: 0,
-    paddingVertical: 5,
-    height: undefined,
-    justifyContent: undefined,
-  },
-  dropdownInnerContainer: {
+  dropdownContainer: {
     paddingHorizontal: RFValue(15),
   },
   dropdownListContainer: {
-    marginTop: Platform.OS === 'android' ? -(width * .04) : 10,
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
-    elevation: 5,
+    elevation: 3,
     borderWidth: 1,
     borderColor: outline.default,
-    paddingVertical: 10,
+    alignSelf: 'center',
+    padding: 10,
+    width: width - 30,
+    maxHeight: width * .60,
+  },
+  dropdownElementContainer: {
+    padding: 10,
+    borderRadius: 10,
   },
   labelContainer: {
     flexDirection: 'row',
+    padding: 0,
   },
   headerLabelText: {
     color: text?.defaultColor,
@@ -72,24 +73,15 @@ export default StyleSheet.create({
   },
   inputText: {
     paddingHorizontal: 0,
-    paddingVertical: 0,
+    paddingVertical: -100,
+    marginVertical: -(3),
     color: text?.mainColor,
     fontFamily: Regular,
     fontWeight: 'normal',
+    marginTop: -3
   },
   iconStyle: {
     height: RFValue(20),
     width: RFValue(20),
-  },
-  outlineStyle: {
-    borderRadius: 4,
-    //paddingHorizontal: 8,
-    paddingVertical: 1,
-    borderColor: outline.default,
-  },
-  text: {
-    color: text.defaultColor,
-    fontWeight: '400',
-  },
-
+  }
 });

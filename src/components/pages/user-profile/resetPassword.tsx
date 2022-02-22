@@ -235,7 +235,7 @@ const ResetPassword = ({navigation}: any) => {
                 onConfirmPressed={() => setShowAlert(false)}
             /> */}
             <NavBar
-                title='Reset Password'
+                title='Change Password'
                 leftIcon={<Left color='#fff' />}
                 onLeft={() => navigation.goBack()}
             />
@@ -283,7 +283,7 @@ const ResetPassword = ({navigation}: any) => {
                 >
                     {
                         loading
-                            ?   <Loading color='#fff' />
+                            ?   <Loading color='#fff' size={10} />
                             :   <Text
                                     color="white"
                                     size={16}
