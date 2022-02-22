@@ -56,9 +56,7 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
                     <View>
 
                         <View style={styles.date}>
-
                             <Text style={styles.dateText}>{`${readableToHuman()} • ${checkFormatIso(props.item.date, "-")}`} </Text>
-                            
                         </View>
                     </View>
                     <View style={{flexDirection: "row",  justifyContent: "space-between", alignItems: "center", }}>

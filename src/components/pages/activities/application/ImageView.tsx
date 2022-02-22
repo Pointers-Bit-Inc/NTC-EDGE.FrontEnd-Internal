@@ -14,7 +14,7 @@ const FRAME_UPDATE_TIME = 17;
 const getAbsolutePosition = (node, callback) => {
     const handle = findNodeHandle(node);
     node.measureLayout(handle, (x, y, w, h) => {
-       console.log({ x, y, w, h })
+     
         callback({ x, y, w, h });
     });
 };
