@@ -16,7 +16,7 @@ import FormField from '@organisms/forms/form';
 
 import { button, defaultColor, errorColor, successColor, text, warningColor} from '@styles/color';
 
-import { BASE_URL } from '../../../services/config';
+import { BASE_URL, BASE_URL_NODE } from '../../../services/config';
 import { validateEmail, validatePassword, validatePhone, validateText } from 'src/utils/form-validations';
 import { setUser } from '../../../reducers/user/actions';
 import { Bold } from '@styles/font';
@@ -94,7 +94,7 @@ const UserProfileScreen = ({navigation}: any) => {
             });
             axios
                 .patch(
-                    `${BASE_URL}/user/profile/${user._id}`,
+                    `${dp ? BASE_URL_NODE : BASE_URL}/user/profile/${user._id}`,
                     formData,
                     {headers: {
                         'Authorization': `Bearer ${user?.sessionToken}`,
