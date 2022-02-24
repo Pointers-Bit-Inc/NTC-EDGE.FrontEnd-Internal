@@ -20,6 +20,7 @@ export const styles = StyleSheet.create({
         flex: 1
     },
     group7: {
+        position: "absolute",
         width: "100%",
         height: "95%",
         alignItems: "center",
