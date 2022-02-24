@@ -13,19 +13,22 @@ import {Bold , Regular} from "@styles/font";
 
 
 const Tab = ({ tab , page , isTabActive , onPressHandler , onTabLayout , styles }) => {
-    console.log(isTabActive)
     const { label , icon } = tab;
     const style = {
-        marginLeft: 20,
-        paddingBottom: 10,
+        marginLeft : 20 ,
+        paddingBottom : 10 ,
     };
     const containerStyle = {
-        transform: [{ scale: styles.scale }],
+        transform : [{ scale : styles.scale }] ,
     };
     return (
         <TouchableOpacity style={ style } onPress={ onPressHandler } onLayout={ onTabLayout } key={ page }>
             <Animated.View style={ containerStyle }>
-                <Animated.Text style={{color: isTabActive ? primaryColor : "#606A80", fontFamily: isTabActive ? Bold : Regular, fontSize: 12 }}  >{ label }</Animated.Text>
+                <Animated.Text style={ {
+                    color : isTabActive ? primaryColor : "#606A80" ,
+                    fontFamily : isTabActive ? Bold : Regular ,
+                    fontSize : 12
+                } }>{ label }</Animated.Text>
             </Animated.View>
         </TouchableOpacity>
     );
@@ -41,7 +44,7 @@ export const ModalTab = props => {
                 outputRange : [1 , 1.03 , 1] ,
                 extrapolate : 'clamp' ,
             }) ,
-            
+
         })));
     const [tabs , setTabs] = useState([
         {
@@ -83,7 +86,7 @@ export const ModalTab = props => {
         createdAt = props?.details?.createdAt ,
         proofOfPayment = props?.details?.proofOfPayment;
     return <ScrollableTabView
-        onScroll={(x) => _scrollX.setValue(x)}
+        onScroll={ (x) => _scrollX.setValue(x) }
         renderTabBar={ () => <TabBar
             renderTab={ (tab , page , isTabActive , onPressHandler , onTabLayout) => (
                 <Tab
@@ -105,7 +108,7 @@ export const ModalTab = props => {
                 const isShow = tab.isShow.indexOf(user?.role?.key) !== -1;
                 if (isShow && tab.id === 1) {
                     return <BasicInfo
-                        tabLabel={ { label : "Basic Info" } } label={ "Basic Info" }
+                        tabLabel={ { label : tab.name } } label={ tab.name }
                         paymentMethod={ paymentMethod }
                         assignedPersonnel={ assignedPersonnel }
                         approvalHistory={ approvalHistory }
@@ -119,16 +122,16 @@ export const ModalTab = props => {
                         key={ index }/>
                 } else if (isShow && tab.id === 2) {
                     return <ApplicationDetails
-                        tabLabel={ { label : "Application Details" } } label={ "Application Details" }
+                        tabLabel={ { label : tab.name } } label={ tab.name }
                         service={ service }
                         selectedType={ selectedTypes }
                         applicantType={ applicationType }
                         key={ index }/>
                 } else if (isShow && tab.id === 3) {
-                    return <Requirement tabLabel={ { label : "Requirements" } } label={ "Requirements" }
+                    return <Requirement  tabLabel={ { label : tab.name } } label={ tab.name }
                                         requirements={ requirements } key={ index }/>
                 } else if (isShow && tab.id === 4) {
-                    return <Payment tabLabel={ { label : "SOA & Payment" } } label={ "SOA & Payment" }
+                    return <Payment  tabLabel={ { label : tab.name } } label={ tab.name }
                                     proofOfPayment={ proofOfPayment }
                                     updatedAt={ updatedAt }
                                     paymentMethod={ paymentMethod }

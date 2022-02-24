@@ -678,13 +678,13 @@ export default function ActivitiesPage(props: any) {
                     )}
                 />
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={() =>{
+
                     onMoreModalDismissed(details?.isOpen)
                 }}/>
                 <ActivityModal updateModal={updateModalFn}
                                readFn={unReadReadApplicationFn}
                                details={details}
                                onChangeAssignedId={(event) => {
-                                   console.log("onChangeAssignedId:", event.assignedPersonnel)
                                    setDetails(event)
                                }}
                                visible={modalVisible}

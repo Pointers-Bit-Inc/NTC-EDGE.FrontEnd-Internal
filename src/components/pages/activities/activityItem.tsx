@@ -185,6 +185,7 @@ export function ActivityItem(props: any) {
 
     useEffect(() => {
         let unsubscribe = true;
+        unsubscribe && props?.isOpen == props?.index  && row[props?.index]?.close();
         unsubscribe && props?.isOpen == props?.index && !!row.length && row[props?.index]?.close();
         return () => {
             unsubscribe = false
