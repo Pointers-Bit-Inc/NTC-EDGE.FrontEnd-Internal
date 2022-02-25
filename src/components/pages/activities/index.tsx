@@ -440,6 +440,7 @@ export default function ActivitiesPage(props: any) {
     var _offsetValue = 0;
     var _scrollValue = 0;
     useEffect(() => {
+
         scrollY.addListener(({ value }) => {
         
             const diff = value - _scrollValue;
@@ -469,7 +470,7 @@ export default function ActivitiesPage(props: any) {
 
         Animated.timing(offsetAnim, {
             toValue,
-            duration: 100,
+            duration: 20,
             useNativeDriver: true,
         }).start();
     }

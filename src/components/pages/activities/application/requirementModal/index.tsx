@@ -70,9 +70,9 @@ const RequirementModal = (props: any) => {
                 {props?.fileName && <FadeBackground style={{position: "absolute", zIndex: 1}} width={width}></FadeBackground>}
 
                 <Text style={styles.fileName}>{ props?.fileName }</Text>
-                <ScrollView contentContainerStyle={ { flex : 1 , justifyContent : 'center' , alignItems : 'center' } }>
+                <ScrollView contentContainerStyle={ { flex : 1  } }>
 
-                    <View style={ { flexDirection : 'row' , flexWrap : 'wrap' , } }>
+                    <View style={ { justifyContent : 'center', flexDirection : 'row'  } }>
 
                         <ImageView
                             style={ [styles.imageStyle] }
