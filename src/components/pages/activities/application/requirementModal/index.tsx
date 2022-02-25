@@ -9,11 +9,12 @@ import {
     TouchableWithoutFeedback ,
     View
 } from "react-native";
+
 import Loader from "@pages/activities/bottomLoad";
 import {Regular500} from "@styles/font";
-import ImageView from "@pages/activities/application/ImageView";
 import FadeBackground from "@assets/svg/fade-background";
 import {RFValue} from "react-native-responsive-fontsize";
+import ImageView from "@pages/activities/application/ImageView";
 
 const { width , height } = Dimensions.get('window');
 
@@ -72,7 +73,7 @@ const RequirementModal = (props: any) => {
                 <Text style={styles.fileName}>{ props?.fileName }</Text>
                 <ScrollView contentContainerStyle={ { flex : 1  } }>
 
-                    <View style={ { justifyContent : 'center', flexDirection : 'row'  } }>
+                    <View style={ {  justifyContent : 'center', flexDirection : 'row'  } }>
 
                         <ImageView
                             style={ [styles.imageStyle] }
@@ -115,9 +116,9 @@ const styles = StyleSheet.create({
     group7 : {} ,
     rect2 : {
         zIndex : 3 ,
-       
+
         width : "100%" ,
-        //  backgroundColor: "#041B6E"
+      
     } ,
     close : {
         fontFamily : Regular500 ,
