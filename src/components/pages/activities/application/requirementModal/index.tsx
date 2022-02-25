@@ -15,7 +15,7 @@ import {Regular500} from "@styles/font";
 import FadeBackground from "@assets/svg/fade-background";
 import {RFValue} from "react-native-responsive-fontsize";
 import ImageView from "@pages/activities/application/ImageView";
-
+import AnimatedImage from 'react-native-animated-image-viewer';
 const { width , height } = Dimensions.get('window');
 
 const RequirementModal = (props: any) => {
@@ -68,10 +68,9 @@ const RequirementModal = (props: any) => {
 
             <View style={ { height : '100%' , width : '100%' } }>
 
-                {props?.fileName && <FadeBackground style={{position: "absolute", zIndex: 1}} width={width}></FadeBackground>}
+                {props?.fileName && <FadeBackground  style={{position: "absolute", zIndex: 1}} width={width}></FadeBackground>}
 
                 <Text style={styles.fileName}>{ props?.fileName }</Text>
-                <ScrollView contentContainerStyle={ { flex : 1  } }>
 
                     <View style={ {  justifyContent : 'center', flexDirection : 'row'  } }>
 
@@ -87,7 +86,6 @@ const RequirementModal = (props: any) => {
                             onZoomEnd={ () => console.log("On Zoom End") }
                         />
                     </View>
-                </ScrollView>
             </View>
 
 

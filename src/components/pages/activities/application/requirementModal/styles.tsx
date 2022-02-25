@@ -1,6 +1,42 @@
-import {StyleSheet} from "react-native";
-import {Bold , Regular} from "@styles/font";
+import {Dimensions , StyleSheet} from "react-native";
+import {Bold , Regular , Regular500} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
+
+
+const { width , height } = Dimensions.get("screen");
+export const styles = StyleSheet.create({
+    fileName : {
+        fontFamily: Regular,
+        
+        flexWrap : "wrap" ,
+        fontSize : RFValue(16) ,
+        color : "#fff" ,
+        paddingHorizontal : 30 ,
+        position : "absolute" ,
+        paddingVertical : 10 ,
+        zIndex : 2
+    } ,
+    imageStyle : {
+        height : height ,
+        width : width ,
+    } ,
+    container : {
+        flex : 1
+    } ,
+    group7 : {} ,
+    rect2 : {
+        zIndex : 3 ,
+
+        width : "100%" ,
+        backgroundColor : "rgba(0,0,0,0.5)"
+    } ,
+    close : {
+        fontFamily : Regular500 ,
+        color : "rgba(239,231,231,1)" ,
+        fontSize : RFValue(18) ,
+    } ,
+});
 export const requirementStyles = StyleSheet.create({
     container : {
         flex : 1
