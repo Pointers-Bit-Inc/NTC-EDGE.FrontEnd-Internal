@@ -195,6 +195,7 @@ const Dial = ({ navigation, route }) => {
         isVoiceCall={isVoiceCall}
         callEnded={meeting?.ended}
         onEndCall={onEndCall}
+        isGroup={meeting?.isGroup}
       />
       {
         !!meeting?.notification && (

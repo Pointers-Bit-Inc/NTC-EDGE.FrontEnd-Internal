@@ -136,6 +136,7 @@ interface Props {
   callEnded?: false;
   isVoiceCall?: false;
   onEndCall?: any;
+  isGroup?: false;
 }
 
 export type VideoLayoutRef =  {
@@ -159,6 +160,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   callEnded = false,
   isVoiceCall = false,
   onEndCall = () => {},
+  isGroup = false,
 }, ref) => {
   const [selectedPeer, setSelectedPeer]:any = useState(null);
   const [peerList, setPeerList]:any = useState([]);
@@ -176,6 +178,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     isMute,
     isSpeakerEnable,
     isVideoEnable,
+    activeSpeaker,
     toggleIsMute,
     toggleIsSpeakerEnable,
     toggleIsVideoEnable,
@@ -242,6 +245,16 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     const filterPeer = lodash.reject(peerIds, p => p === selectedPeer);
     setPeerList(filterPeer);
   }, [selectedPeer])
+
+  useEffect(() => {
+    if (isGroup) {
+      if (activeSpeaker) {
+        setSelectedPeer(activeSpeaker);
+      } else {
+        setSelectedPeer(myId);
+      }
+    }
+  }, [activeSpeaker]);
 
   const separator = () => (
     <View style={{ width: 15 }} />
