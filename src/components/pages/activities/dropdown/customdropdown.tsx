@@ -37,6 +37,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
     }, [value, selectedIndex])
 
     const openDropdown = (): void => {
+
         DropdownButton?.current?.measure((_fx: number, _fy: number, _w: number, h: number, _px: number, py: number) => {
             setDropdownTop(py + h);
         });

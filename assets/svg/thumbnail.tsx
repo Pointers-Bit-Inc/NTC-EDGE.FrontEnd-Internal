@@ -10,7 +10,7 @@ import Svg, {
     Image,
 } from "react-native-svg";
 
-const ThumbnailIcon = (props: SvgProps) => (
+const Thumbnail = (props: SvgProps) => (
     <Svg
         width={350}
         height={159}
@@ -48,4 +48,4 @@ const ThumbnailIcon = (props: SvgProps) => (
     </Svg>
 );
 
-export default ThumbnailIcon;
+export default Thumbnail;

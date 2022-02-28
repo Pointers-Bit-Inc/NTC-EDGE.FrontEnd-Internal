@@ -107,6 +107,7 @@ export const ModalTab = props => {
             tabs.map((tab , index) => {
                 const isShow = tab.isShow.indexOf(user?.role?.key) !== -1;
                 if (isShow && tab.id === 1) {
+                     
                     return <BasicInfo
                         tabLabel={ { label : tab.name } } label={ tab.name }
                         paymentMethod={ paymentMethod }
@@ -121,6 +122,7 @@ export const ModalTab = props => {
                         applicant={ applicant }
                         key={ index }/>
                 } else if (isShow && tab.id === 2) {
+
                     return <ApplicationDetails
                         tabLabel={ { label : tab.name } } label={ tab.name }
                         service={ service }

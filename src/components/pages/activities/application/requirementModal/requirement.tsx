@@ -9,7 +9,7 @@ import FadeBackground from "@assets/svg/fade-background";
 const { width  } = Dimensions.get("screen");
 
 class RequirementView extends React.Component<{ requirement: any }> {
-    source = { uri : this.props?.requirement?.links?.medium || "" };
+    source = { uri : this.props?.requirement?.links?.medium || "https://dummyimage.com/350x350/fff/aaa" };
     imageModal = null;
     image = null;
     state = {
