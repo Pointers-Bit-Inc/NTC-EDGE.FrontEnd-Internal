@@ -15,6 +15,7 @@ import moment from "moment";
 import Loader from "@pages/activities/bottomLoad";
 import {defaultSanitize} from "@pages/activities/search/utils";
 import {useUserRole} from "@pages/activities/hooks/useUserRole";
+import {RFValue} from "react-native-responsive-fontsize";
 
 function Search(props: any) {
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
@@ -284,14 +285,14 @@ function Search(props: any) {
                     setTextInput(search)
                 }}>
                     <View style={styles.group5}>
-                        <HistoryIcon style={ styles.icon3 }/>
+                        <HistoryIcon height={RFValue(20)} width={RFValue(20)} style={ styles.icon3 }/>
                         <Text style={styles.loremIpsum}>{search}</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {
                     removeSearchHistory(index)
                 }}>
-                    <CloseIcon width={ 12 } height={ 12 }/>
+                    <CloseIcon height={RFValue(16)} width={RFValue(16)}/>
                 </TouchableOpacity>
 
             </View>

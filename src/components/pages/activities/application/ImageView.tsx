@@ -57,7 +57,6 @@ const updateOverlayFrame = (prePinch , currPinch , overlayLayout) => {
         currPinch[0].pageY - prePinch[0].pageY);
     return { x , y , w , h };
 };
-
 const ImageView = ({
                        style ,
                        source ,

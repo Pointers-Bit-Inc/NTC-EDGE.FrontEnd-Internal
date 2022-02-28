@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
         elevation: 10
     },
     rect: {
-        paddingVertical: 15,
+        paddingVertical:15,
         backgroundColor: "#041B6E",
         flexDirection: "row"
     },

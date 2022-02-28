@@ -4,8 +4,11 @@ const {
     TouchableOpacity,
     View,
 } = ReactNative;
-import Button from './Button.ios'
 
-
+const Button = (props) => {
+    return <TouchableOpacity {...props}>
+        {props.children}
+    </TouchableOpacity>;
+};
 
 module.exports = Button;

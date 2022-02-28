@@ -1,11 +1,13 @@
 import {Text, TouchableOpacity, View, Animated} from "react-native";
 import {styles} from "@pages/activities/styles";
 import SearchIcon from "@assets/svg/search";
-import React from "react";
+import React , {useEffect , useState} from "react";
 import {setTabBarHeight} from "../../../reducers/application/actions";
+import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
 
  export const FakeSearchBar = (props: { animated,  onPress: () => void, searchVisible: boolean }) => {
-    return <Animated.View  style={[styles.searcg, props.animated]}>
+
+     return <Animated.View style={[styles.searcg, props.animated]}>
         <View style={[styles.rect26, {height: undefined, paddingHorizontal: 30, paddingVertical: 10}]}>
             <TouchableOpacity onPress={props.onPress}>
                 {!props.searchVisible &&

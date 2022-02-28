@@ -58,6 +58,7 @@ import HomeMenuIcon from "@assets/svg/homemenu";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
 import {useUserRole} from "@pages/activities/hooks/useUserRole";
 import {Bold} from "@styles/font";
+import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
 
 const {width} = Dimensions.get('window')
 
@@ -420,7 +421,12 @@ export default function ActivitiesPage(props: any) {
         setIsOpen(isOpen)
         setMoreModalVisible(false)
     }
-    const CONTAINER_HEIGHT = 148
+    const [sizeComponent, onLayoutComponent] = useComponentLayout()
+    const [containerHeight, setContainerHeight] = useState(148)
+    useEffect(() => {
+        if(sizeComponent?.height)setContainerHeight(sizeComponent?.height + 70 )
+    }, [sizeComponent, ])
+
     const scrollY = useRef(new Animated.Value(0)).current;
     const offsetAnim = useRef(new Animated.Value(0)).current;
     const clampedScroll = Animated.diffClamp(
@@ -433,7 +439,7 @@ export default function ActivitiesPage(props: any) {
             offsetAnim,
         ),
         0,
-        CONTAINER_HEIGHT
+        containerHeight
     )
 
     var _clampedScrollValue = 0;
@@ -447,7 +453,7 @@ export default function ActivitiesPage(props: any) {
             _scrollValue = value;
             _clampedScrollValue = Math.min(
                 Math.max(_clampedScrollValue + diff, 0),
-                CONTAINER_HEIGHT,
+                containerHeight,
             )
 
         });
@@ -464,9 +470,9 @@ export default function ActivitiesPage(props: any) {
     }
     const onMomentumScrollEnd = () => {
 
-        const toValue = _scrollValue > CONTAINER_HEIGHT &&
-                        _clampedScrollValue > (CONTAINER_HEIGHT) / 2
-                        ? _offsetValue + CONTAINER_HEIGHT : _offsetValue - CONTAINER_HEIGHT;
+        const toValue = _scrollValue > containerHeight &&
+                        _clampedScrollValue > (containerHeight) / 2
+                        ? _offsetValue + containerHeight : _offsetValue - containerHeight;
 
         Animated.timing(offsetAnim, {
             toValue,
@@ -479,22 +485,24 @@ export default function ActivitiesPage(props: any) {
     }
 
     const headerTranslate = clampedScroll.interpolate({
-        inputRange: [0, CONTAINER_HEIGHT],
-        outputRange: [0, -CONTAINER_HEIGHT],
+        inputRange: [0, containerHeight],
+        outputRange: [0, -containerHeight],
         extrapolate: 'clamp',
     })
     const opacity = clampedScroll.interpolate({
-        inputRange: [0, CONTAINER_HEIGHT , CONTAINER_HEIGHT],
+        inputRange: [0, containerHeight , containerHeight],
         outputRange: [1, 0.5, 0],
         extrapolate: 'clamp',
     })
+
+
     return (
         <Fragment>
             <StatusBar   barStyle={'light-content'}/>
-            <View  style={[styles.container]}>
+            <View     style={[styles.container]}>
 
 
-                <View style={[styles.group, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ position: "absolute", }]}>
+                <View onLayout={onLayoutComponent} style={[styles.group, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ position: "absolute", }]}>
                     <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity },   transform: [{ translateY: headerTranslate }] }]}>
                         <TouchableOpacity onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
                             <HomeMenuIcon/>
@@ -515,7 +523,7 @@ export default function ActivitiesPage(props: any) {
                         </TouchableOpacity>
                     </Animated.View>
                 </View>
-                <View>
+                <View >
                     {
                         !!lodash.size(meetingList) && (
                             <FlatList
@@ -543,7 +551,7 @@ export default function ActivitiesPage(props: any) {
                     }
 
                 </View>
-                <FakeSearchBar animated={!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { ...{ opacity }, top: 80 * (1 + lodash.size(meetingList)), elevation: 10, zIndex: 10,  position: "absolute", transform: [{ translateY: headerTranslate }] }}  onPress={() => {
+                <FakeSearchBar animated={!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { ...{ opacity }, top: sizeComponent?.height || 80 * (1 + lodash.size(meetingList)), elevation: 10, zIndex: 10,  position: "absolute", transform: [{ translateY: headerTranslate }] }}  onPress={() => {
                     //setSearchVisible(true)
                     props.navigation.navigate('SearchActivities')
                 }} searchVisible={searchVisible}/>
@@ -555,7 +563,7 @@ export default function ActivitiesPage(props: any) {
                         { useNativeDriver: true }
                     )}
 
-                    contentContainerStyle={{ paddingTop: (!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && CONTAINER_HEIGHT * (lodash.size(meetingList ) || 1)) || 0, flexGrow: 1}}
+                    contentContainerStyle={{ paddingTop: (!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && containerHeight * (lodash.size(meetingList ) || 1)) || 0, flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
                     ListHeaderComponent={() => (
                         <>

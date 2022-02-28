@@ -1,3 +1,5 @@
+import {TouchableOpacity} from "react-native";
+
 const React = require('react');
 const { ViewPropTypes } = ReactNative = require('react-native');
 const PropTypes = require('prop-types');
@@ -8,8 +10,6 @@ const {
   View,
   Animated,
 } = ReactNative;
-
-import Button from "./Button"
 
 const DefaultTabBar = createReactClass({
   propTypes: {
@@ -41,7 +41,7 @@ const DefaultTabBar = createReactClass({
     const textColor = isTabActive ? activeTextColor : inactiveTextColor;
     const fontWeight = isTabActive ? 'bold' : 'normal';
 
-    return <Button
+    return <TouchableOpacity
       style={{flex: 1, }}
       key={name}
       accessible={true}
@@ -54,7 +54,7 @@ const DefaultTabBar = createReactClass({
           {name}
         </Text>
       </View>
-    </Button>;
+    </TouchableOpacity>;
   },
 
   render() {
