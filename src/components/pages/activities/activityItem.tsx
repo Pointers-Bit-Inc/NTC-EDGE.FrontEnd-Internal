@@ -105,7 +105,7 @@ const RenderStatus = ({ trigger , status }: any) => {
             { statusIcon(status , { marginRight : 3 }) }
             <Text
                 style={ [statusColor(status)] }
-                size={ 12 }
+                size={ RFValue(12) }
                 numberOfLines={ 1 }
             >
                 { status?.toUpperCase() }
@@ -125,13 +125,13 @@ const RenderApplication = ({ applicationType }: any) => {
             ] }
         >
             <FileIcon
-                width={ 20 }
-                height={ 20 }
+                width={ RFValue(20) }
+                height={ RFValue(20) }
             />
             <Text
                 style={ { marginLeft : 3 , marginRight : 5 } }
                 color="#2A00A2"
-                size={ 10 }
+                size={ RFValue(10) }
                 numberOfLines={ 1 }
             >
                 { applicationType }
@@ -152,14 +152,14 @@ const RenderPinned = ({ assignedPersonnel , config }: any) => {
             ] }
         >
             { loading ? <></> : <EndorseIcon
-                width={ 20 }
-                height={ 20 }
+                width={ RFValue(20) }
+                height={ RFValue(20) }
             /> }
             { loading ? <ActivityIndicator/> :
               <Text
                   style={ { "marginLeft" : 3 , "marginRight" : 5 } }
                   color="#606A80"
-                  size={ 10 }
+                  size={ RFValue(10) }
                   numberOfLines={ 1 }
               >
                   { personnel != undefined ? `${ personnel?.firstName } ${ personnel?.lastName }` : `` }
@@ -225,9 +225,9 @@ export function ActivityItem(props: any) {
                                 height : 0 ,
                                 width : 0
                             } ,
-                            elevation : 2 ,
+                            elevation : RFValue(2) ,
                             shadowOpacity : 0.2 ,
-                            shadowRadius : 2 ,
+                            shadowRadius : RFValue(2) ,
                             flex : 1 ,
 
                         } }>
@@ -236,15 +236,15 @@ export function ActivityItem(props: any) {
                             } }>
                                 <View style={
                                     {
-                                        borderRadius : 10 ,
+                                        borderRadius : RFValue(10) ,
                                         flex : 1 ,
-                                        padding : 10 ,
+                                        padding : RFValue(10) ,
                                         flexDirection : "row" ,
                                         alignItems : "center"
                                     }
                                 }>
                                     <ProfileImage
-                                        size={ 45 }
+                                        size={ RFValue(45) }
                                         image={ userActivity?.profilePicture?.small }
                                         name={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
                                     />
@@ -255,7 +255,7 @@ export function ActivityItem(props: any) {
                                                     //style={{color: props?.activity?.dateRead ? "#565961" : "#000"}}
                                                     style={ {
                                                         fontFamily : Bold ,
-                                                        fontSize : 14
+                                                        fontSize : RFValue(14)
                                                     } }
                                                     numberOfLines={ 1 }
                                                 >

@@ -24,6 +24,7 @@ import {readUnreadApplications} from "../../../reducers/application/actions";
 import {Dispatch} from "redux";
 import {Regular500} from "@styles/font";
 import {Role , UserApplication} from "@pages/activities/interface";
+import {RFValue} from "react-native-responsive-fontsize";
 
 export const capitalize = (str) => {
     return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)).join(' ');
@@ -115,15 +116,15 @@ export const statusIcon = (status: string , icon: any = styles.icon3 , item: any
 
     if (status == FOREVALUATION) {
 
-        return <EvaluationStatus style={ [icon , { flex: 1, color : "#f66500" , }] }/>
+        return <EvaluationStatus width={RFValue(20)} height={RFValue(20)} style={ [icon , { flex: 1, color : "#f66500" , }] }/>
     } else if ((status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) && item == 0) {
-        return <CheckMarkIcon style={ [icon, {flex: 1} ]}/>
+        return <CheckMarkIcon  width={RFValue(20)} height={RFValue(20)} style={ [icon, {flex: 1} ]}/>
     } else if ((status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) && item == 1) {
-        return <CheckIcon style={ [icon, {flex: 1} ] }/>
+        return <CheckIcon width={RFValue(20)} height={RFValue(20)} style={ [icon, {flex: 1} ] }/>
     } else if (status == DECLINED || status == DECLINE || status == UNVERIFIED) {
-        return <DeclineStatusIcon style={ [icon, {flex: 1} ] }/>
+        return <DeclineStatusIcon  width={RFValue(20)} height={RFValue(20)} style={ [icon, {flex: 1} ] }/>
     } else {
-        return <EvaluationStatus style={ [icon , { flex: 1 , color : "#f66500" , }] }/>
+        return <EvaluationStatus width={RFValue(20)} height={RFValue(20)} style={ [icon , { flex: 1 , color : "#f66500" , }] }/>
     }
 };
 export const statusBackgroundColor = (status: string) => {

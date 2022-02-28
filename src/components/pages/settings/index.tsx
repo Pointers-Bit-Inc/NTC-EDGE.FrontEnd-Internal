@@ -12,9 +12,10 @@ import NavBar from '@molecules/navbar';
 import { text } from '@styles/color';
 import styles from './styles';
 import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import { setUser } from 'src/reducers/user/actions'
+import {resetUser , setUser} from 'src/reducers/user/actions'
 import { resetMeeting } from 'src/reducers/meeting/actions';
 import { resetChannel } from 'src/reducers/channel/actions';
+import {RFValue} from "react-native-responsive-fontsize";
 
 export default ({
   navigation
@@ -28,31 +29,31 @@ export default ({
     {
       label: 'Notifications',
       value: 'notifications',
-      icon: <BellIcon size={21} />,
+      icon: <BellIcon width={RFValue(21)} height={RFValue(21)} />,
       onPress: () => {},
     },
     {
       label: 'Help Center',
       value: 'help-center',
-      icon: <DonutIcon size={21} />,
+      icon: <DonutIcon width={RFValue(21)} height={RFValue(21)} />,
       onPress: () => {},
     },
     {
       label: 'About',
       value: 'about',
-      icon: <ExclamationIcon size={21} type='circle' />,
+      icon: <ExclamationIcon  size={RFValue(21)} type='circle' />,
       onPress: () => {},
     },
   ];
   const logout = {
     label: 'Log out',
     value: 'logout',
-    icon: <LogoutIcon size={21} color={text.error} />,
+    icon: <LogoutIcon width={RFValue(21)} height={RFValue(21)} color={text.error} />,
     onPress: () => setVisible(true),
   };
   const onLogout = useCallback(() => {
-    setVisible(false);
-    dispatch(setUser({}));
+    setVisible(false)
+    dispatch(resetUser());
     dispatch(resetMeeting());
     dispatch(resetChannel());
     setTimeout(() => {
@@ -83,15 +84,7 @@ export default ({
   return (
     <>
 
-      <Alert
-        visible={visible}
-        title='Log out'
-        message='Are you sure you want to log out?'
-        confirmText='OK'
-        cancelText='Cancel'
-        onConfirm={onLogout}
-        onCancel={() => setVisible(false)}
-      />
+
 
       <NavBar
         title='Preview'
@@ -129,8 +122,18 @@ export default ({
 
         <View style={styles.sectionContainer}>
           {renderRow({item: logout})}
-        </View>
 
+        </View>
+        <Alert
+
+            visible={visible}
+            title='Log out'
+            message='Are you sure you want to log out?'
+            confirmText='OK'
+            cancelText='Cancel'
+            onConfirm={onLogout}
+            onCancel={() => setVisible(false)}
+        />
       </ScrollView>
 
     </>

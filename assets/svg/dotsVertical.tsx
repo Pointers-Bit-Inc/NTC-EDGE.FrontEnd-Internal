@@ -3,8 +3,8 @@ import Svg, { SvgProps, Path } from "react-native-svg";
 
 const DotVertical = (props: SvgProps) => (
     <Svg
-        width={4}
-        height={18}
+        width={props.width || 4}
+        height={props.height || 18}
         viewBox="0 0 4 18"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

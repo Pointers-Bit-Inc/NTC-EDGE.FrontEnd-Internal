@@ -57,8 +57,9 @@ import listEmpty from "@pages/activities/listEmpty";
 import HomeMenuIcon from "@assets/svg/homemenu";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
 import {useUserRole} from "@pages/activities/hooks/useUserRole";
-import {Bold} from "@styles/font";
+import {Bold , Regular , Regular500} from "@styles/font";
 import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const {width} = Dimensions.get('window')
 
@@ -422,10 +423,11 @@ export default function ActivitiesPage(props: any) {
         setMoreModalVisible(false)
     }
     const [sizeComponent, onLayoutComponent] = useComponentLayout()
+    const [searchSizeComponent, onSearchLayoutComponent] = useComponentLayout()
     const [containerHeight, setContainerHeight] = useState(148)
     useEffect(() => {
-        if(sizeComponent?.height)setContainerHeight(sizeComponent?.height + 70 )
-    }, [sizeComponent, ])
+        if(sizeComponent?.height && searchSizeComponent?.height)setContainerHeight(sizeComponent?.height + searchSizeComponent?.height )
+    }, [sizeComponent, searchSizeComponent ])
 
     const scrollY = useRef(new Animated.Value(0)).current;
     const offsetAnim = useRef(new Animated.Value(0)).current;
@@ -502,10 +504,10 @@ export default function ActivitiesPage(props: any) {
             <View     style={[styles.container]}>
 
 
-                <View onLayout={onLayoutComponent} style={[styles.group, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ position: "absolute", }]}>
+                <View onLayout={onLayoutComponent}  style={[styles.group, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ position: "absolute", }]}>
                     <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity },   transform: [{ translateY: headerTranslate }] }]}>
                         <TouchableOpacity onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
-                            <HomeMenuIcon/>
+                            <HomeMenuIcon height={RFValue(24)} width={RFValue(24)}/>
                             {/* <ProfileImage
                                 size={45}
                                 image={user?.profilePicture?.small}
@@ -519,7 +521,7 @@ export default function ActivitiesPage(props: any) {
                         }
 
                         }>
-                            <FilterIcon fill={"#fff"}/>
+                            <FilterIcon width={RFValue(24)} height={RFValue(24)}  fill={"#fff"}/>
                         </TouchableOpacity>
                     </Animated.View>
                 </View>
@@ -551,7 +553,7 @@ export default function ActivitiesPage(props: any) {
                     }
 
                 </View>
-                <FakeSearchBar animated={!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { ...{ opacity }, top: sizeComponent?.height || 80 * (1 + lodash.size(meetingList)), elevation: 10, zIndex: 10,  position: "absolute", transform: [{ translateY: headerTranslate }] }}  onPress={() => {
+                <FakeSearchBar onSearchLayoutComponent={onSearchLayoutComponent}  animated={!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { ...{ opacity }, top: sizeComponent?.height || 80 * (1 + lodash.size(meetingList)), elevation: 10, zIndex: 10,  position: "absolute", transform: [{ translateY: headerTranslate }] }}  onPress={() => {
                     //setSearchVisible(true)
                     props.navigation.navigate('SearchActivities')
                 }} searchVisible={searchVisible}/>
@@ -572,8 +574,8 @@ export default function ActivitiesPage(props: any) {
                                 { !!pnApplications?.length  &&
                                 <View style={ [styles.pinnedgroup , { height : undefined }] }>
                                     <View style={ [styles.pinnedcontainer , { paddingVertical : 10 }] }>
-                                        <Text style={ [styles.pinnedActivity , { fontFamily : Bold , }] }>Pinned
-                                            activity</Text>
+                                        <Text style={ [styles.pinnedActivity , { fontFamily : Regular500 , }] }>Pinned
+                                            Activity</Text>
                                     </View>
                                 </View> }
                                 { !searchVisible && (
