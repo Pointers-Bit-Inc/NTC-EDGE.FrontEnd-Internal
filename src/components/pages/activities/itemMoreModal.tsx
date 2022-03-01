@@ -1,5 +1,13 @@
 import React from "react";
-import {Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import {
+    Modal ,
+    ScrollView ,
+    StyleSheet ,
+    Text ,
+    TouchableOpacity ,
+    TouchableWithoutFeedback ,
+    View
+} from "react-native";
 import PinToTopIcon from "@assets/svg/pintotop";
 import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
@@ -34,71 +42,87 @@ const ItemMoreModal = (props: any) => {
                     </View>
                 </TouchableWithoutFeedback>
                 <View style={styles.rect}>
-                    <View style={styles.group7}>
-                        <View style={[styles.name]}>
-                            <View style={{flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
-                                <Text
-                                    style={styles.centerName}>{`${applicant?.firstName} ${applicant?.lastName}`}</Text>
-                                <Text style={{
-                                    fontSize: RFValue(14),
-                                    color: "#626a7e",
-                                    fontFamily: Regular,
-                                }}>{props?.details?.applicationType}</Text>
+                              <ScrollView>
+
+
+                        <View style={styles.group7}>
+                            <View style={[styles.name]}>
+                                <View style={{flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+                                    <Text
+                                        style={styles.centerName}>{`${applicant?.firstName} ${applicant?.lastName}`}</Text>
+                                    <Text style={{
+                                        fontSize: RFValue(14),
+                                        color: "#626a7e",
+                                        fontFamily: Regular,
+                                    }}>{props?.details?.applicationType}</Text>
+                                </View>
                             </View>
+
+                                <View style={styles.group6}>
+
+                                    <View style={styles.group5}>
+
+                                        <TouchableOpacity>
+                                            <View style={styles.group3}>
+                                                <View style={styles.Row}>
+                                                    <PinToTopIcon
+                                                        width={RFValue(24)}
+                                                        height={RFValue(24)}
+                                                        color={disabledColor}
+                                                        style={styles.Icon}
+                                                    />
+                                                    <Text style={styles.Item}>Pin to top</Text>
+                                                </View>
+                                            </View>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity>
+                                            <View style={styles.group3}>
+                                                <View style={styles.Row}>
+                                                    <BellMuteIcon
+                                                        width={RFValue(24)}
+                                                        height={RFValue(24)}
+                                                        color={disabledColor}
+                                                        style={styles.Icon}
+                                                    />
+                                                    <Text style={styles.Item}>Mute</Text>
+                                                </View>
+                                            </View>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity>
+                                            <View style={styles.group3}>
+
+                                                <View style={styles.Row}>
+                                                    <ArchiveIcon
+                                                        width={RFValue(24)}
+                                                        height={RFValue(24)}
+                                                        color={disabledColor}
+                                                        style={styles.Icon}
+                                                    />
+                                                    <Text style={styles.Item}>Archive</Text>
+                                                </View>
+                                            </View>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity>
+                                            <View style={styles.group3}>
+
+                                                <View
+                                                    style={[styles.Row, {borderBottomColor: undefined, borderBottomWidth: 0}]}>
+                                                    <DeleteIcon
+                                                        width={RFValue(24)}
+                                                        height={RFValue(24)}
+                                                        color={disabledColor}
+                                                        style={styles.Icon}
+                                                    />
+                                                    <Text style={[styles.Item, {color: disabledColor}]}>Delete</Text>
+                                                </View>
+                                            </View>
+                                        </TouchableOpacity>
+
+                                    </View>
+                                </View>
+
                         </View>
-                        <View style={styles.group6}>
-                            <View style={styles.group5}>
-                                <TouchableOpacity>
-                                    <View style={styles.group3}>
-                                        <View style={styles.Row}>
-                                            <PinToTopIcon
-                                                color={disabledColor}
-                                                style={styles.Icon}
-                                            />
-                                            <Text style={styles.Item}>Pin to top</Text>
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-                                <TouchableOpacity>
-                                    <View style={styles.group3}>
-                                        <View style={styles.Row}>
-                                            <BellMuteIcon
-                                                color={disabledColor}
-                                                style={styles.Icon}
-                                            />
-                                            <Text style={styles.Item}>Mute</Text>
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-                                <TouchableOpacity>
-                                    <View style={styles.group3}>
-
-                                        <View style={styles.Row}>
-                                            <ArchiveIcon
-                                                color={disabledColor}
-                                                style={styles.Icon}
-                                            />
-                                            <Text style={styles.Item}>Archive</Text>
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-                                <TouchableOpacity>
-                                    <View style={styles.group3}>
-
-                                        <View
-                                            style={[styles.Row, {borderBottomColor: undefined, borderBottomWidth: 0}]}>
-                                            <DeleteIcon
-                                               color={disabledColor}
-                                                style={styles.Icon}
-                                            />
-                                            <Text style={[styles.Item, {color: disabledColor}]}>Delete</Text>
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-
-                            </View>
-                        </View>
-                    </View>
+                              </ScrollView>
                 </View>
             </View>
 
@@ -125,7 +149,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10,
     },
     group7: {
-        padding: 20
+        padding: RFValue(20)
     },
     name: {
         paddingBottom: 10,
@@ -135,7 +159,7 @@ const styles = StyleSheet.create({
 
     },
     group6: {
-        height: 15,
+        height: RFValue(15),
         alignSelf: "stretch"
     },
     group5: {
@@ -180,9 +204,10 @@ const styles = StyleSheet.create({
         alignSelf: "stretch"
     },
     Row: {
+        alignItems: "center",
         borderBottomWidth: 1,
         borderBottomColor: "rgba(234,234,234,1)",
-        paddingVertical: 15,
+        paddingVertical: RFValue(15),
         flexDirection: "row",
         justifyContent: "flex-start"
     },
@@ -190,14 +215,14 @@ const styles = StyleSheet.create({
 
         color: "rgba(128,128,128,1)",
         fontSize: RFValue(25),
-        marginRight: 21,
+        marginRight: RFValue(21),
 
         alignSelf: "center"
     },
     Item: {
 
         color: disabledColor,
-        fontSize: 18
+        fontSize: RFValue(18)
     },
 });
 

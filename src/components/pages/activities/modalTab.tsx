@@ -10,7 +10,7 @@ import TabBar from "@pages/activities/tabs/tabbar";
 import ScrollableTabView from "@pages/activities/tabs";
 import {primaryColor} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
-
+ 
 
 const Tab = ({ tab , page , isTabActive , onPressHandler , onTabLayout , styles }) => {
     const { label , icon } = tab;

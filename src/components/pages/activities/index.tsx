@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import {styles} from "@pages/activities/styles";
 import {
+    APPROVED ,
     DATE_ADDED ,
     DECLINED ,
     FORAPPROVAL ,
@@ -175,7 +176,7 @@ export default function ActivitiesPage(props: any) {
                 [cashier ? "paymentStatus" : 'status']: selectedClone.map((item: any) => {
                     if (cashier) {
                         if (item == VERIFIED) {
-                            return [PAID, VERIFIED]
+                            return [PAID, VERIFIED, APPROVED]
                         } else if (item == UNVERIFIED) {
                             return [DECLINED, UNVERIFIED]
                         } else if (item == FORVERIFICATION) {

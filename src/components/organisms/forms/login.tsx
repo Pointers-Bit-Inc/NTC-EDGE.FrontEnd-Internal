@@ -10,6 +10,7 @@ import { text } from 'src/styles/color';
 import Text from '@atoms/text';
 import inputStyles from "src/styles/input-style";
 import {Regular500} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const styles = StyleSheet.create({
   container: {
@@ -111,7 +112,7 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
       <View style={[styles.horizontal, { justifyContent: 'flex-start' }]}>
         <TouchableOpacity onPress={() => onChangeValue('forgotPassword')}>
           <Text
-              style={[InputStyles.text, {  fontFamily: Regular500  , color: text.primary }]}
+              style={[InputStyles.text, { fontSize: RFValue(12),   fontFamily: Regular500  , color: text.primary }]}
               size={12}
           >
             Forgot your password?

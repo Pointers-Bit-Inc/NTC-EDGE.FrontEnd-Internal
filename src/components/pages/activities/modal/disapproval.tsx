@@ -99,7 +99,7 @@ function Disapproval(props: any) {
             >
                
                 <View style={styles.rectFiller}></View>
-                <View style={[styles.rect, !showAlert ||  {display: "none"}]}>
+                <View style={[styles.rect,   {display: !showAlert ? "block" :"none"}]}>
                     <View style={{padding: 10}}>
                         <TouchableOpacity onPress={() => {
                             props.onDismissed()

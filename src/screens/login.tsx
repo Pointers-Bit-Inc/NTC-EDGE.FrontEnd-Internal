@@ -59,15 +59,12 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   bottomContainer: {
-    paddingVertical: 30,
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    alignSelf: 'center',
+    
   },
   loginButton: {
     borderRadius: 10,
-    height: width * .15,
+
+    paddingVertical: RFValue(15),
     justifyContent: 'center',
   },
   boldText: {
