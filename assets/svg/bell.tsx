@@ -3,8 +3,8 @@ import Svg, { SvgProps, Path } from "react-native-svg";
 
 const BellIcon = (props: SvgProps) => (
     <Svg
-        width={16}
-        height={20}
+        width={props.width || 16}
+        height={props.height || 20}
         viewBox="0 0 16 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

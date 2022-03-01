@@ -59,7 +59,9 @@ import listEmpty from "@pages/activities/listEmpty";
 import HomeMenuIcon from "@assets/svg/homemenu";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
 import {useUserRole} from "@pages/activities/hooks/useUserRole";
-import {Bold} from "@styles/font";
+import {Bold , Regular , Regular500} from "@styles/font";
+import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const {width} = Dimensions.get('window')
 
@@ -67,6 +69,7 @@ const {width} = Dimensions.get('window')
 
 
 export default function ActivitiesPage(props: any) {
+
     const [isPinnedActivity, setIsPinnedActivity] = useState(0)
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(0)
@@ -214,8 +217,8 @@ export default function ActivitiesPage(props: any) {
         let isCurrent = true
         dispatch(setNotPinnedApplication([]))
         dispatch(setPinnedApplication([]))
-        // fnApplications(isCurrent, () => {
-        // });
+        fnApplications(isCurrent, () => {
+        });
         return () => {
             isCurrent = false
         }
@@ -225,8 +228,8 @@ export default function ActivitiesPage(props: any) {
         let isCurrent = true
         dispatch(setNotPinnedApplication([]))
         dispatch(setPinnedApplication([]))
-        // fnApplications(isCurrent, () => {
-        // });
+        fnApplications(isCurrent, () => {
+        });
         return () => {
             isCurrent = false
         }
@@ -328,7 +331,7 @@ export default function ActivitiesPage(props: any) {
 
                 } else {
                     dispatch(handleInfiniteLoad({data: getList(response.data.docs, selectedChangeStatus), user: user}))
-                    setInfiniteLoad(false);
+                    setInfiniteLoad(false); 
                 }
                 setInfiniteLoad(false);
             }).catch((err) => {
@@ -397,7 +400,13 @@ export default function ActivitiesPage(props: any) {
         setIsOpen(isOpen)
         setMoreModalVisible(false)
     }
-    const CONTAINER_HEIGHT = 148
+    const [sizeComponent, onLayoutComponent] = useComponentLayout()
+    const [searchSizeComponent, onSearchLayoutComponent] = useComponentLayout()
+    const [containerHeight, setContainerHeight] = useState(148)
+    useEffect(() => {
+        if(sizeComponent?.height && searchSizeComponent?.height)setContainerHeight(sizeComponent?.height + searchSizeComponent?.height )
+    }, [sizeComponent, searchSizeComponent ])
+
     const scrollY = useRef(new Animated.Value(0)).current;
     const offsetAnim = useRef(new Animated.Value(0)).current;
     const clampedScroll = Animated.diffClamp(
@@ -410,20 +419,21 @@ export default function ActivitiesPage(props: any) {
             offsetAnim,
         ),
         0,
-        CONTAINER_HEIGHT
+        containerHeight
     )
 
     var _clampedScrollValue = 0;
     var _offsetValue = 0;
     var _scrollValue = 0;
     useEffect(() => {
+
         scrollY.addListener(({ value }) => {
         
             const diff = value - _scrollValue;
             _scrollValue = value;
             _clampedScrollValue = Math.min(
                 Math.max(_clampedScrollValue + diff, 0),
-                CONTAINER_HEIGHT,
+                containerHeight,
             )
 
         });
@@ -440,13 +450,13 @@ export default function ActivitiesPage(props: any) {
     }
     const onMomentumScrollEnd = () => {
 
-        const toValue = _scrollValue > CONTAINER_HEIGHT &&
-                        _clampedScrollValue > (CONTAINER_HEIGHT) / 2
-                        ? _offsetValue + CONTAINER_HEIGHT : _offsetValue - CONTAINER_HEIGHT;
+        const toValue = _scrollValue > containerHeight &&
+                        _clampedScrollValue > (containerHeight) / 2
+                        ? _offsetValue + containerHeight : _offsetValue - containerHeight;
 
         Animated.timing(offsetAnim, {
             toValue,
-            duration: 100,
+            duration: 20,
             useNativeDriver: true,
         }).start();
     }
@@ -455,25 +465,27 @@ export default function ActivitiesPage(props: any) {
     }
 
     const headerTranslate = clampedScroll.interpolate({
-        inputRange: [0, CONTAINER_HEIGHT],
-        outputRange: [0, -CONTAINER_HEIGHT],
+        inputRange: [0, containerHeight],
+        outputRange: [0, -containerHeight],
         extrapolate: 'clamp',
     })
     const opacity = clampedScroll.interpolate({
-        inputRange: [0, CONTAINER_HEIGHT , CONTAINER_HEIGHT],
+        inputRange: [0, containerHeight , containerHeight],
         outputRange: [1, 0.5, 0],
         extrapolate: 'clamp',
     })
+
+
     return (
         <Fragment>
             <StatusBar   barStyle={'light-content'}/>
-            <View  style={[styles.container]}>
+            <View     style={[styles.container]}>
 
 
-                <View  style={[styles.group, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ position: "absolute", }]}>
+                <View onLayout={onLayoutComponent}  style={[styles.group, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ position: "absolute", }]}>
                     <Animated.View style={[styles.rect, styles.horizontal, {paddingHorizontal: 30, paddingTop: 40}, !modalVisible && !moreModalVisible && !visible && !refreshing &&  !lodash.size(meetingList) &&{ ...{ opacity },   transform: [{ translateY: headerTranslate }] }]}>
                         <TouchableOpacity style={{ zIndex: 999 }} onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
-                            <HomeMenuIcon/>
+                            <HomeMenuIcon height={RFValue(24)} width={RFValue(24)}/>
                             {/* <ProfileImage
                                 size={45}
                                 image={user?.profilePicture?.small}
@@ -487,11 +499,11 @@ export default function ActivitiesPage(props: any) {
                         }
 
                         }>
-                            <FilterIcon fill={"#fff"}/>
+                            <FilterIcon width={RFValue(24)} height={RFValue(24)}  fill={"#fff"}/>
                         </TouchableOpacity>
                     </Animated.View>
                 </View>
-                <View>
+                <View >
                     {
                         !!lodash.size(meetingList) && (
                             <FlatList
@@ -518,7 +530,7 @@ export default function ActivitiesPage(props: any) {
                     }
 
                 </View>
-                <FakeSearchBar animated={!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { ...{ opacity }, top: 80 * (1 + lodash.size(meetingList)), elevation: 10, zIndex: 10,  position: "absolute", transform: [{ translateY: headerTranslate }] }}  onPress={() => {
+                <FakeSearchBar onSearchLayoutComponent={onSearchLayoutComponent}  animated={!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { ...{ opacity }, top: sizeComponent?.height || 80 * (1 + lodash.size(meetingList)), elevation: 10, zIndex: 10,  position: "absolute", transform: [{ translateY: headerTranslate }] }}  onPress={() => {
                     //setSearchVisible(true)
                     props.navigation.navigate('SearchActivities')
                 }} searchVisible={searchVisible}/>
@@ -530,7 +542,7 @@ export default function ActivitiesPage(props: any) {
                         { useNativeDriver: true }
                     )}
 
-                    contentContainerStyle={{ paddingTop: (!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && CONTAINER_HEIGHT * (lodash.size(meetingList ) || 1)) || 0, flexGrow: 1}}
+                    contentContainerStyle={{ paddingTop: (!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && containerHeight * (lodash.size(meetingList ) || 1)) || 0, flexGrow: 1}}
                     ListEmptyComponent={() => listEmpty(refreshing, searchTerm, total)}
                     ListHeaderComponent={() => (
                         <>
@@ -539,8 +551,8 @@ export default function ActivitiesPage(props: any) {
                                 { !!pnApplications?.length  &&
                                 <View style={ [styles.pinnedgroup , { height : undefined }] }>
                                     <View style={ [styles.pinnedcontainer , { paddingVertical : 10 }] }>
-                                        <Text style={ [styles.pinnedActivity , { fontFamily : Bold , }] }>Pinned
-                                            activity</Text>
+                                        <Text style={ [styles.pinnedActivity , { fontFamily : Regular500 , }] }>Pinned
+                                            Activity</Text>
                                     </View>
                                 </View> }
                                 { !searchVisible && (
@@ -654,13 +666,13 @@ export default function ActivitiesPage(props: any) {
                     )}
                 />
                 <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={() =>{
+
                     onMoreModalDismissed(details?.isOpen)
                 }}/>
                 <ActivityModal updateModal={updateModalFn}
                                readFn={unReadReadApplicationFn}
                                details={details}
                                onChangeAssignedId={(event) => {
-                                   console.log("onChangeAssignedId:", event.assignedPersonnel)
                                    setDetails(event)
                                }}
                                visible={modalVisible}

@@ -3,8 +3,8 @@ import Svg, {Defs, Ellipse, G, Mask, Path, RadialGradient, Rect, Stop,} from "re
 
 const EvaluationStatus = (props: any) => (
     <Svg
-        width={17}
-        height={20}
+        width={props.width || 17}
+        height={props.height || 20}
         viewBox="0 0 17 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

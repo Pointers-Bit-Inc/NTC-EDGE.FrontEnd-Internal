@@ -1,5 +1,5 @@
 import React , {useEffect , useMemo , useState} from "react";
-import {Alert , Modal , StatusBar , StyleSheet , Text , TouchableOpacity , View} from "react-native";
+import {Alert , Modal , Platform , StatusBar , StyleSheet , Text , TouchableOpacity , View} from "react-native";
 import {primaryColor} from "@styles/color";
 import Disapproval from "@pages/activities/modal/disapproval";
 import Endorsed from "@pages/activities/modal/endorse";
@@ -21,7 +21,7 @@ import {
 } from "../../../reducers/activity/initialstate";
 import Api from 'src/services/api';
 import {updateApplicationStatus} from "../../../reducers/application/actions";
-import {ModalTab} from "@pages/activities/modalTab";
+
 import CustomAlert from "@pages/activities/alert/alert";
 import CloseIcon from "@assets/svg/close";
 import {ApprovedButton} from "@pages/activities/button/approvedButton";
@@ -30,6 +30,10 @@ import {EndorsedButton} from "@pages/activities/button/endorsedButton";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 
+const { ModalTab } = Platform.select({
+    native: () => require('@pages/activities/modalTab'),
+    default: () => require("@pages/activities/modalTab.web")
+})();
 
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
@@ -242,7 +246,6 @@ function ActivityModal(props: any) {
             <View style={ { flex : 1 } }>
                 <View style={ {
                     flexDirection : "row" ,
-                    borderBottomWidth: 1,
                     borderBottomColor: "#F0F0F0",
                     justifyContent : "space-between" ,
                     padding : 15 ,
@@ -358,6 +361,7 @@ function ActivityModal(props: any) {
                 remarks={ setRemarks }
                 onChangeApplicationStatus={ (event: any , callback: (bool , appId) => {}) => {
                     onChangeApplicationStatus(DECLINED , (err , id) => {
+
                         if (!err) {
                             callback(true , (response) => {
 

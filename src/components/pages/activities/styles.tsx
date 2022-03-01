@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
         elevation: 10
     },
     rect: {
-        paddingVertical: 15,
+        paddingVertical:15,
         backgroundColor: "#041B6E",
         flexDirection: "row"
     },
@@ -63,9 +63,9 @@ export const styles = StyleSheet.create({
         backgroundColor: "#EFF0F7",
         borderRadius: 12,
         flexDirection: "row",
-        paddingTop: 5,
-        paddingLeft: 10,
-        paddingBottom: 5
+        paddingTop: RFValue(5),
+        paddingLeft: RFValue(10),
+        paddingBottom: RFValue(5)
     },
     icon: {
         color: "rgba(190,199,218,1)",
@@ -79,7 +79,7 @@ export const styles = StyleSheet.create({
         justifyContent: "center"
     },
     iconRow: {
-        height: 40,
+        height: RFValue(40),
         flexDirection: "row",
         flex: 1,
         marginRight: 17,
@@ -119,7 +119,8 @@ export const styles = StyleSheet.create({
         backgroundColor: "rgba(255,255,255,1)"
     },
     pinnedActivity: {
-        color: "#041B6E",
+        fontSize: RFValue(16),
+        color: "#2863D6",
         textAlign: "left",
         marginLeft: 20
     },

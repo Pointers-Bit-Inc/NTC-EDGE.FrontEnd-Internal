@@ -1,294 +1,159 @@
-import {RootStateOrAny, useSelector} from "react-redux";
-import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
+import {RootStateOrAny , useSelector} from "react-redux";
 import BasicInfo from "@pages/activities/application/basicInfo";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
-import React , {Fragment , useCallback , useEffect , useRef , useState} from "react";
-import {ACCOUNTANT, CASHIER, CHECKER, DIRECTOR, EVALUATOR} from "../../../reducers/activity/initialstate";
-import {disabledColor , primaryColor , text} from "@styles/color";
-import {Animated, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {Bold , Regular , Regular500} from "@styles/font";
-import {RFValue} from "react-native-responsive-fontsize";
-
-let initial = {};
-
-const MyTabBar = ({state, descriptors, navigation, position}) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [tabCurrent, setTabCurrent] = useState([]);
-    const [translateValue] = useState(new Animated.Value(0));
-    const ref = useRef([]);
-    const containerRef = useRef(null);
+import React , {useState} from "react";
+import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../reducers/activity/initialstate";
+import {Animated , StyleSheet , TouchableOpacity} from "react-native";
+import TabBar from "@pages/activities/tabs/tabbar";
+import ScrollableTabView from "@pages/activities/tabs";
+import {primaryColor} from "@styles/color";
+import {Bold , Regular} from "@styles/font";
 
 
-    useEffect(() => {
-        if (tabCurrent[currentIndex]?.x) {
-            Animated.spring(translateValue, {
-                toValue: tabCurrent[currentIndex]?.x - 5,
-                velocity: 10,
-                useNativeDriver: true,
-            }).start();
-        } else {
-            ref?.current[0].measureLayout(containerRef.current, (x, y, width, height) => {
-                initial = {x, y, width, height};
-                Animated.spring(translateValue, {
-                    toValue: x,
-                    velocity: 10,
-                    useNativeDriver: true,
-                }).start();
-            })
-        }
-    }, [tabCurrent, currentIndex, translateValue]);
-
+const Tab = ({ tab , page , isTabActive , onPressHandler , onTabLayout , styles }) => {
+    const { label , icon } = tab;
+    const style = {
+        marginLeft : 20 ,
+        paddingBottom : 10 ,
+    };
+    const containerStyle = {
+        transform : [{ scale : styles.scale }] ,
+    };
     return (
-        <View style={
-            {
-                paddingTop: 14,
-                paddingBottom: 1,
-                borderColor: "#f0f0f0",
-                borderTopWidth: 1,
-                borderBottomWidth: 1,
-            }
-        }>
-
-            <View ref={containerRef} style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-
-                {state.routes.map((route, index) => {
-                    const {options} = descriptors[route.key];
-                  
-                    const label =
-                        options.tabBarLabel !== undefined
-                            ? options.tabBarLabel
-                            : options.title !== undefined
-                                ? options.title
-                                : route.name;
-
-                    const isFocused = state.index === index;
-
-                    useEffect(() => {
-                        if (state.index === index) {
-                            setCurrentIndex(() => {
-                                return tabCurrent.findIndex(tab => tab?.index === state.index)
-                            })
-                        }
-
-                    }, [position]);
-                    const onPress = async () => {
-                        const event = navigation.emit({
-                            type: "tabPress",
-                            target: route.key,
-                            canPreventDefault: true,
-                        });
-                        if (!isFocused && !event.defaultPrevented) {
-                            navigation.navigate(route.name);
-                        }
-                        const _tab = tabCurrent.findIndex(tab => tab.index === state.index);
-
-                        setCurrentIndex(() => {
-                            return _tab
-                        })
-
-                    };
-
-                    const onLongPress = () => {
-                        navigation.emit({
-                            type: 'tabLongPress',
-                            target: route.key,
-                        });
-                    };
-                    const onLayout = useCallback(
-                        ({
-                             nativeEvent: {
-                                 layout: {width, x, y}
-                             }
-                         }) => {
-                            let newArr = [...tabCurrent];
-                            newArr[index] = {index, width, x, y};
-                            setTabCurrent(newArr)
-                        },
-                        [tabCurrent]
-                    );
-
-                    return (
-                        <View ref={e => ref.current[index] = e}
-                              onLayout={onLayout} key={index}
-                              style={[styles.group5,]}>
-                            <TouchableOpacity
-                                accessibilityRole="button"
-                                accessibilityState={isFocused ? {selected: true} : {}}
-                                accessibilityLabel={options.tabBarAccessibilityLabel}
-                                testID={options.tabBarTestID}
-                                onPress={() => onPress()}
-                                onLongPress={() => onLongPress()}
-                                style={{flex: 1}}
-                            >
-                                <Text style={{
-                                    alignSelf: "center",
-                                    fontFamily: isFocused ? Regular500 : Regular,
-                                    color: isFocused ? primaryColor : text.default
-                                }}>
-                                    {label}
-                                </Text>
-                            </TouchableOpacity>
-
-                        </View>
-                    );
-                })}
-
-            </View>
-            {tabCurrent[currentIndex]?.x ? <Animated.View
-
-                style={[styles.rect6, {
-                    transform: [{
-                        translateX: translateValue
-                    }
-                    ],
-
-                    width: tabCurrent[currentIndex]?.width + 7,
-                    backgroundColor: primaryColor
-                }]}/> : initial && translateValue && <Animated.View
-
-                style={[styles.rect6, {
-                    transform: [{
-                        translateX: translateValue
-                    }
-                    ],
-                    width: initial?.width || 63,
-                    backgroundColor: primaryColor
-                }]}/>
-            }
-
-
-        </View>
-
+        <TouchableOpacity style={ style } onPress={ onPressHandler } onLayout={ onTabLayout } key={ page }>
+            <Animated.View style={ containerStyle }>
+                <Animated.Text style={ {
+                    color : isTabActive ? primaryColor : "#606A80" ,
+                    fontFamily : isTabActive ? Bold : Regular ,
+                    fontSize : 12
+                } }>{ label }</Animated.Text>
+            </Animated.View>
+        </TouchableOpacity>
     );
 };
-
-
-
 export const ModalTab = props => {
     const user = useSelector((state: RootStateOrAny) => state.user);
-    const Tab = createMaterialTopTabNavigator();
-    const [tabs, setTabs] = useState([
+    const [_scrollX , set_scrollX] = useState(new Animated.Value(0));
+    // 6 is a quantity of tabs
+    const [interpolators , setInterpolators] = useState(Array.from({ length : 6 } , (_ , i) => i).map(idx => (
         {
-            id: 1,
-            name: 'Basic Info',
-            active: true,
-            isShow: [CHECKER, ACCOUNTANT, CASHIER, DIRECTOR, EVALUATOR]
-        },
+            scale : _scrollX.interpolate({
+                inputRange : [idx - 1 , idx , idx + 1] ,
+                outputRange : [1 , 1.03 , 1] ,
+                extrapolate : 'clamp' ,
+            }) ,
+
+        })));
+    const [tabs , setTabs] = useState([
         {
-            id: 2,
-            name: 'Application Details',
-            active: false,
-            isShow: [CHECKER, ACCOUNTANT, CASHIER, DIRECTOR, EVALUATOR]
-        },
+            id : 1 ,
+            name : 'Basic Info' ,
+            active : true ,
+            isShow : [CHECKER , ACCOUNTANT , CASHIER , DIRECTOR , EVALUATOR]
+        } ,
         {
-            id: 3,
-            name: 'Requirements',
-            active: false,
-            isShow: [CHECKER, DIRECTOR, EVALUATOR]
-        },
+            id : 2 ,
+            name : 'Application Details' ,
+            active : false ,
+            isShow : [CHECKER , ACCOUNTANT , CASHIER , DIRECTOR , EVALUATOR]
+        } ,
         {
-            id: 4,
-            name: 'SOA & Payment',
-            active: false,
-            isShow: [CASHIER, ACCOUNTANT]
-        },
+            id : 3 ,
+            name : 'Requirements' ,
+            active : false ,
+            isShow : [CHECKER , DIRECTOR , EVALUATOR]
+        } ,
+        {
+            id : 4 ,
+            name : 'SOA & Payment' ,
+            active : false ,
+            isShow : [CASHIER , ACCOUNTANT]
+        } ,
     ]);
-    const applicant = props?.details?.applicant,
-        selectedTypes = props?.details?.selectedTypes,
-        applicationType = props?.details?.applicationType,
-        service = props?.details?.service,
-        soa = props?.details?.soa,
-        totalFee = props?.details?.totalFee,
-        paymentMethod = props?.details?.paymentMethod,
-        requirements = props?.details?.requirements,
-        updatedAt = props?.details?.updatedAt,
-        approvalHistory = props?.details?.approvalHistory,
-        assignedPersonnel = props?.details?.assignedPersonnel,
-        createdAt = props?.details?.createdAt,
+    const applicant = props?.details?.applicant ,
+        selectedTypes = props?.details?.selectedTypes ,
+        applicationType = props?.details?.applicationType ,
+        service = props?.details?.service ,
+        soa = props?.details?.soa ,
+        totalFee = props?.details?.totalFee ,
+        paymentMethod = props?.details?.paymentMethod ,
+        requirements = props?.details?.requirements ,
+        updatedAt = props?.details?.updatedAt ,
+        approvalHistory = props?.details?.approvalHistory ,
+        assignedPersonnel = props?.details?.assignedPersonnel ,
+        createdAt = props?.details?.createdAt ,
         proofOfPayment = props?.details?.proofOfPayment;
-    return <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}  screenOptions={({ route }) => ({
-         tabBarActiveTintColor: primaryColor,
-        tabBarIndicatorStyle:{
-            height: RFValue(3),
-            backgroundColor: primaryColor,
+    return <ScrollableTabView
+        onScroll={ (x) => _scrollX.setValue(x) }
+        renderTabBar={ () => <TabBar
+            renderTab={ (tab , page , isTabActive , onPressHandler , onTabLayout) => (
+                <Tab
+                    key={ page }
+                    tab={ tab }
+                    page={ page }
+                    isTabActive={ isTabActive }
+                    onPressHandler={ onPressHandler }
+                    onTabLayout={ onTabLayout }
+                    styles={ interpolators[page] }
+                />
+            ) }
+            tabBarStyle={ { paddingTop : 10 , borderTopColor : '#d2d2d2' , borderTopWidth : 1 } }/> }
 
-        },
-    })} >
-
+    >
         {
 
-            tabs.map((tab, index) => {
+            tabs.map((tab , index) => {
                 const isShow = tab.isShow.indexOf(user?.role?.key) !== -1;
                 if (isShow && tab.id === 1) {
-                    return <Tab.Screen
-
-                        key={tab.id}
-                        name={tab.name}
-                        options={{tabBarLabelStyle: { width: "100%",  fontSize: 12}}}
-                    >
-                        {() => <BasicInfo
-                                paymentMethod={paymentMethod}
-                                assignedPersonnel={assignedPersonnel}
-                                approvalHistory={approvalHistory}
-                                status={props.details.status}
-                                paymentHistory={props?.details?.paymentHistory}
-                                paymentStatus={props?.details?.paymentStatus}
-                                detailsStatus={props?.details?.status}
-                                user={user}
-                                createdAt={createdAt}
-                                applicant={applicant}
-                                key={index}/>
-                        }
-                    </Tab.Screen>
+                     
+                    return <BasicInfo
+                        tabLabel={ { label : tab.name } } label={ tab.name }
+                        paymentMethod={ paymentMethod }
+                        assignedPersonnel={ assignedPersonnel }
+                        approvalHistory={ approvalHistory }
+                        status={ props.details.status }
+                        paymentHistory={ props?.details?.paymentHistory }
+                        paymentStatus={ props?.details?.paymentStatus }
+                        detailsStatus={ props?.details?.status }
+                        user={ user }
+                        createdAt={ createdAt }
+                        applicant={ applicant }
+                        key={ index }/>
                 } else if (isShow && tab.id === 2) {
-                    return <Tab.Screen
-                        key={tab.id}
-                        name={tab.name}
-                        options={{tabBarLabelStyle: { width: "auto", fontFamily: Regular,  fontSize: 12}}}
-                    >
-                        {() => <ApplicationDetails
-                                service={service}
-                                selectedType={selectedTypes}
-                                applicantType={applicationType}
-                                key={index}/>}
-                    </Tab.Screen>
+
+                    return <ApplicationDetails
+                        tabLabel={ { label : tab.name } } label={ tab.name }
+                        service={ service }
+                        selectedType={ selectedTypes }
+                        applicantType={ applicationType }
+                        key={ index }/>
                 } else if (isShow && tab.id === 3) {
-                    return <Tab.Screen
-                      
-                        key={tab.id}
-                        name={tab.name}
-                        options={{tabBarLabelStyle: { width: "100%",  fontFamily: Regular,fontSize: 12}}}
-                    >
-                        {() => <Requirement requirements={requirements} key={index}/>}
-                    </Tab.Screen>
+                    return <Requirement  tabLabel={ { label : tab.name } } label={ tab.name }
+                                        requirements={ requirements } key={ index }/>
                 } else if (isShow && tab.id === 4) {
-                    return <Tab.Screen
-                        key={tab.id}
-                        name={tab.name}
-                        options={{tabBarLabelStyle: { width: "100%",  fontFamily: Regular, fontSize: 12}}}
-                    >
-                        {() => <Payment proofOfPayment={proofOfPayment}
-                                        updatedAt={updatedAt}
-                                        paymentMethod={paymentMethod}
-                                        applicant={applicant}
-                                        totalFee={totalFee}
-                                        soa={soa}
-                                        key={index}/>}
-                    </Tab.Screen>
+                    return <Payment  tabLabel={ { label : tab.name } } label={ tab.name }
+                                    proofOfPayment={ proofOfPayment }
+                                    updatedAt={ updatedAt }
+                                    paymentMethod={ paymentMethod }
+                                    applicant={ applicant }
+                                    totalFee={ totalFee }
+                                    soa={ soa }
+                                    key={ index }/>
                 }
             })
         }
-    </Tab.Navigator>
+
+    </ScrollableTabView>
 };
 
 const styles = StyleSheet.create({
-    group5: {
-        height: 28
-    },
-    rect6: {
-        height: 3,
-        marginTop: -5
-    },
+    group5 : {
+        height : 28
+    } ,
+    rect6 : {
+        height : 3 ,
+        marginTop : -5
+    } ,
 });

@@ -20,6 +20,7 @@ export const styles = StyleSheet.create({
         flex: 1
     },
     group7: {
+        position: "absolute",
         width: "100%",
         height: "95%",
         alignItems: "center",
@@ -28,7 +29,7 @@ export const styles = StyleSheet.create({
     },
     header: {
         backgroundColor: "#041B6E",
-        height: 90,
+        height: 80,
         width: "100%"
     },
     rect: {

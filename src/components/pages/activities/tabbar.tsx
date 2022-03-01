@@ -107,6 +107,7 @@ export default function TabBar() {
 
                     const focused = "#2863D6";
                     const unfocused = "#606A80";
+                    const disabled = "#DADFE4"
                     return (<View key={route.key} style={{ flex: 1 }}>
                             <TouchableOpacity
                                 accessibilityRole="button"
@@ -120,22 +121,22 @@ export default function TabBar() {
                                     alignItems: 'center',
                                 }}>
                                     {label == ACTIVITIES
-                                        ? ( <ActivityTabbar notification={false } width={30} height={30} fill={isFocused ? focused : unfocused}/>) :
+                                        ? ( <ActivityTabbar notification={false } width={RFValue(30)} height={RFValue(30)} fill={isFocused ? focused : unfocused}/>) :
                                         label == CHAT
                                             ?
-                                            (<ChatIcon notification={hasNewChat} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
+                                            (<ChatIcon notification={hasNewChat} width={RFValue(30)} height={RFValue(30)} fill={isFocused ? focused : unfocused}/>)
                                             : label == MEET
                                                 ?
-                                                (<MeetIcon notification={hasMeet} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
+                                                (<MeetIcon notification={hasMeet} width={RFValue(30)} height={RFValue(30)} fill={isFocused ? focused : unfocused}/>)
 
                                                 :
                                                 label == SCANQR
                                                     ?
-                                                    (<ScanQrIcon notification={false} width={30} height={30} fill={isFocused ? focused : unfocused}/> )
+                                                    (<ScanQrIcon notification={false} width={RFValue(30)} height={RFValue(30)} fill={isFocused ? focused : unfocused}/> )
                                                     :
                                                     label == MORE
                                                         ?
-                                                        (<MoreTabBarIcon notification={false} width={30} height={30} fill={isFocused ? focused : unfocused}/>)
+                                                        (<MoreTabBarIcon notification={false} width={RFValue(30)} height={RFValue(30)} fill={isFocused ? focused : unfocused}/>)
 
                                                         :
                                                         <Entypo name="book"></Entypo>}

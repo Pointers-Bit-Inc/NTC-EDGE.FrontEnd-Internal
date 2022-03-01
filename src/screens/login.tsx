@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   bottomContainer: {
-    paddingVertical: 100,
+    paddingVertical: 30,
     position: 'absolute',
     bottom: 0,
     width: '100%',
@@ -232,8 +232,8 @@ const Login = ({ navigation }:any) => {
                   style={[
                     styles.loginButton,
                     {
-                      backgroundColor: isValid
-                                       ? button.primary
+                      backgroundColor:  loading
+                                       ? button.info
                                        : isValid
                                          ? button.primary
                                          : button.default

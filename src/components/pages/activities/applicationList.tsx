@@ -9,6 +9,7 @@ import {useAlert} from "@pages/activities/hooks/useAlert";
 import * as Animatable from 'react-native-animatable'
 import DotVertical from "@assets/svg/dotsVertical";
 import ChevronUpIcon from "@assets/svg/chevron-up";
+import {RFValue} from "react-native-responsive-fontsize";
 const ApplicationList = (props: { onPress: () => void, item: any, numbers: { parentIndex: number, child: number[]}[], index: number, element: (activity: any, i: number) => JSX.Element }) => {
     const chevronValue = useRef(new Animated.Value(0)).current
     const [isOpen, setIsOpen] = useState(true)
@@ -56,9 +57,7 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
                     <View>
 
                         <View style={styles.date}>
-
                             <Text style={styles.dateText}>{`${readableToHuman()} • ${checkFormatIso(props.item.date, "-")}`} </Text>
-                            
                         </View>
                     </View>
                     <View style={{flexDirection: "row",  justifyContent: "space-between", alignItems: "center", }}>
@@ -67,7 +66,7 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
                             <TouchableWithoutFeedback onPress={() => setIsOpen(open => !open)}>
                                 <View >
 
-                                    {isOpen ? <ChevronUpIcon color={"#000"}/> : <ChevronDownIcon color={"#000"}/>}
+                                    {isOpen ? <ChevronUpIcon width={RFValue(24)} height={RFValue(24)} color={"#000"}/> : <ChevronDownIcon  width={RFValue(24)} height={RFValue(24)} color={"#000"}/>}
 
 
                                 </View>
@@ -76,7 +75,7 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
                         </View>
                         <View style={{alignItems: "center"}}>
                             <TouchableOpacity>
-                                <DotVertical />
+                                <DotVertical  width={RFValue(4)} height={RFValue(18)}  />
                             </TouchableOpacity>
 
                         </View>

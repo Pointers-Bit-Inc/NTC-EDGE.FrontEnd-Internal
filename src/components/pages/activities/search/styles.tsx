@@ -9,8 +9,8 @@ export const styles = StyleSheet.create({
 
        flexDirection: "row",
        paddingBottom: 5,
-       paddingHorizontal: 20,
-       paddingTop: 20,
+       paddingHorizontal: RFValue(20),
+       paddingTop: RFValue(20),
        alignItems: "center"
    },
     rect4: {
@@ -36,9 +36,9 @@ export const styles = StyleSheet.create({
         borderBottomWidth: StyleSheet.hairlineWidth,
     },
     group2: {
-      paddingTop: 40,
-        paddingBottom: 20,
-       paddingHorizontal: 20,
+      paddingTop: RFValue(40),
+        paddingBottom:RFValue(20),
+       paddingHorizontal: RFValue(20),
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
 
     },
     group: {
-        height: 50,
+        height: RFValue(50),
         flex: 1
     },
     rect2: {
@@ -97,7 +97,7 @@ export const styles = StyleSheet.create({
     recentSearches: {
         fontFamily: Bold,
         fontSize: RFValue(18),
-        lineHeight: 28,
+        lineHeight: RFValue(28),
         color: "#000",
 
     },
@@ -106,16 +106,16 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-       paddingLeft: 20,
-       paddingRight: 20,
-       paddingTop: 20,
+       paddingLeft: RFValue(20),
+       paddingRight: RFValue(20),
+       paddingTop: RFValue(20),
     },
     group5: {
        alignItems: "center",
         flexDirection: "row",
     },
     icon3: {
-        marginRight: 10,
+        marginRight: RFValue(10),
         color: "rgba(128,128,128,1)",
         fontSize: RFValue(25)
     },

@@ -74,6 +74,8 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                     <View style={styles.group2}>
                         <TouchableOpacity style={{  paddingRight: 10}} onPress={props.onPress}>
                             <BackSpaceIcon
+                                width={RFValue(20)}
+                                height={RFValue(16)}
                                 style={styles.icon}
                             ></BackSpaceIcon>
                         </TouchableOpacity>
@@ -103,6 +105,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
                     <TouchableOpacity onPress={props.clearAll}>
                         <Text style={{
+                            fontSize: RFValue(14),
                             color: '#2863D6',
                              fontFamily: Regular500  ,
                         }}>{props.nevers.length ? "Clear all" : ""}</Text>

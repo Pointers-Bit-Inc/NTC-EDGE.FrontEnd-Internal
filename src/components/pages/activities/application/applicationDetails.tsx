@@ -2,6 +2,7 @@ import React from "react";
 import {Dimensions , ScrollView , StyleSheet , Text , View} from "react-native";
 import {Bold , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import Loader from "@pages/activities/bottomLoad";
 
 const { width , height } = Dimensions.get("screen");
 const ApplicationDetails = (props: any) => {
@@ -30,7 +31,7 @@ const ApplicationDetails = (props: any) => {
                 </View>
             </View>
 
-    </ScrollView>
+    </ScrollView> 
 
 };
 const styles = StyleSheet.create({

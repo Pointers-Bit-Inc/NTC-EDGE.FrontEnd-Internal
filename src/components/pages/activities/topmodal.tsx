@@ -26,22 +26,22 @@ function TopModal(props: any) {
         switch (item.iconBrand) {
             case 'feather': {
                 return (
-                    <CalendarIcon width={20} height={20} fill={item.checked ? "#003aa9" : "black"}/>
+                    <CalendarIcon width={RFValue(20)} height={RFValue(20)} fill={item.checked ? "#003aa9" : "black"}/>
                 );
             }
             case 'evil': {
                 return (
-                    <EvaluationIcon width={20} height={20} fill={item.checked ? "#003aa9" : "black"}/>
+                    <EvaluationIcon width={RFValue(20)} height={RFValue(20)} fill={item.checked ? "#003aa9" : "black"}/>
                 )
             }
             case 'material-community': {
                 return (
-                    <ApprovedIcon width={20} height={20} fill={item.checked ? "#003aa9" : "black"}/>
+                    <ApprovedIcon width={RFValue(20)} height={RFValue(20)} fill={item.checked ? "#003aa9" : "black"}/>
                 )
             }
             case 'ionicons': {
                 return (
-                    <DeclineIcon width={22} height={22} fill={item.checked ? "#003aa9" : "black"}/>
+                    <DeclineIcon width={RFValue(22)} height={RFValue(22)} fill={item.checked ? "#003aa9" : "black"}/>
                 )
             }
             default:
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 15,
-        paddingVertical: 20,
+        paddingVertical: 28,
         backgroundColor: '#041B6E'
     },
     rect: {
@@ -246,6 +246,7 @@ const styles = StyleSheet.create({
         marginLeft: 7,
     },
     label1: {
+        fontSize: RFValue(14),
         fontFamily: Regular,
         color: "#121212",
         marginLeft: 7,

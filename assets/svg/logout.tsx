@@ -3,8 +3,8 @@ import Svg, { SvgProps, Path } from "react-native-svg";
 
 const LogoutIcon = (props: SvgProps) => (
     <Svg
-        width={20}
-        height={18}
+        width={props.width || 20}
+        height={props.height || 18}
         viewBox="0 0 20 18"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
