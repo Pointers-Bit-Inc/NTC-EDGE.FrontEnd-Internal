@@ -1,4 +1,4 @@
-const BASE_URL = 'https://prod-edge-application-processing-appsvc.azurewebsites.net';
+const BASE_URL = 'https://test-edge-application-processing-appsvc.azurewebsites.net';
 const BASE_URL_NODE = 'https://ntc.astrotechenergy.com';
 const firebaseConfig = {
   apiKey: "AIzaSyASZc6WOG4-kKMf7I98p_5aRjbXHzWsmyU",
