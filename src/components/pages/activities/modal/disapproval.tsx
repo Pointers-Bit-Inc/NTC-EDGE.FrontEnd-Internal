@@ -114,7 +114,7 @@ function Disapproval(props: any) {
                             paddingHorizontal: 20
                         }}
                     >
-                       <FileTextIcon style={styles.fileTextIcon}/>
+                       <FileTextIcon width={RFValue(24)} height={RFValue(24)} style={styles.fileTextIcon}/>
                         <View style={styles.nodRemarksColumn}>
                             <Text style={styles.nodRemarks}>NOD/Remarks</Text>
                             <Text style={styles.pleaseProvide}>
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     fileTextIcon:{
-       paddingLeft: 15,
+       paddingLeft: RFValue(15),
     },
     group3Filler: {
         flex: 1

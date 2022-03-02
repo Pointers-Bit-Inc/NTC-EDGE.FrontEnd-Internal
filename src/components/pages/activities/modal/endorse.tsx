@@ -180,12 +180,12 @@ const Endorsed = (props: any) => {
                                 setValidateRemarks({error: false})
                                 props.onDismissed()
                             }}>
-                                <CloseIcon/>
+                                <CloseIcon height={RFValue(16)} width={RFValue(16)}/>
                             </TouchableOpacity>
                         </View>
                         <View style={{paddingHorizontal: 20}}>
                             <View style={{flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5, paddingVertical: 10}}>
-                                <EndorseToIcon style={styles.icon2}/>
+                                <EndorseToIcon width={RFValue(43)} height={RFValue(20)} style={styles.icon2}/>
                                 <Text style={styles.endorseTo}>Endorse to</Text>
                             </View>
 
