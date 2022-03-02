@@ -70,8 +70,8 @@ class RequirementView extends React.Component<{ requirement: any }> {
                                     flex : 1 ,
                                     flexDirection : "row"
                                 } }>
-                                    <View style={ { paddingRight : 10 } }>
-                                        <FileOutlineIcon/>
+                                    <View style={ { paddingRight : RFValue(10) } }>
+                                        <FileOutlineIcon height={RFValue(20)} width={RFValue(16)}/>
                                     </View>
                                     <Text style={ requirementStyles.text }>{ this.props?.requirement?.file?.name }</Text>
                                 </TouchableOpacity>

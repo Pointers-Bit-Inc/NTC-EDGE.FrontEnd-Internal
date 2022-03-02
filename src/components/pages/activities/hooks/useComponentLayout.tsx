@@ -5,7 +5,6 @@ export function useComponentLayout() {
 
     const onLayout = useCallback(event => {
         const { width, height } = event.nativeEvent.layout;
-        console.log(height)
         setSize({ width, height });
     }, []);
 

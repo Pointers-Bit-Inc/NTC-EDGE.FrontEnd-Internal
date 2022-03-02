@@ -96,7 +96,7 @@ class ProofPaymentView extends React.Component<{onPress: () => void, totalFee: a
                         { this.props.proofOfPayment?.small && <View
                             style={ [{ paddingTop : 5 , paddingBottom : 9 } , requirementStyles.cardDocument] }>
                             <View style={ { paddingRight : 10 } }>
-                                <FileOutlineIcon/>
+                                <FileOutlineIcon height={RFValue(20)} width={RFValue(16)}/>
                             </View>
 
                         </View> }
@@ -179,9 +179,9 @@ const Payment = (props:any) => {
 
             <View style={ { padding : 5 , alignItems : 'center' } }>
                 <Text
-                    style={ { fontFamily : Bold } }
+                    style={ { fontSize: RFValue(14), fontFamily : Bold } }
                     color="#37405B"
-                    fontSize={ RFValue(14) }
+                    
                 >
                     Statement of Account
                 </Text>
@@ -191,16 +191,14 @@ const Payment = (props:any) => {
                     style={ { flexDirection : 'row' , justifyContent : 'space-between' } }
                 >
                     <Text
-                        style={ { fontFamily : Bold } }
+                        style={ {fontSize: RFValue(14), fontFamily : Bold } }
                         color="#37405B"
-                        fontSize={ RFValue(14) }
                     >
                         Particular
                     </Text>
                     <Text
-                        style={ { fontFamily : Bold } }
+                        style={ { fontSize: RFValue(14),fontFamily : Bold } }
                         color="#37405B"
-                        fontSize={ RFValue(14) }
                     >
                         Amount
                     </Text>
@@ -213,13 +211,13 @@ const Payment = (props:any) => {
                         >
                             <Text
                                 color="#37405B"
-                                fontSize={ RFValue(14) }
+                                style={ { fontSize: RFValue(14) } }
                             >
                                 { soa.item }
                             </Text>
                             <Text
                                 color="#37405B"
-                                fontSize={ RFValue(14) }
+                                style={ { fontSize: RFValue(14) } }
                             >
                                 P{ soa.amount }
                             </Text>
@@ -236,15 +234,13 @@ const Payment = (props:any) => {
                 >
                     <Text
                         color="#37405B"
-                        fontSize={ RFValue(16) }
-                        style={ { marginRight : 15 , fontFamily : Bold } }
+                        style={ { fontSize:RFValue(16),  marginRight : 15 , fontFamily : Bold } }
                     >
                         Total
                     </Text>
                     <Text
-                        style={ { fontFamily : Bold } }
+                        style={ {fontSize:  RFValue(16),  fontFamily : Bold } }
                         color="#37405B"
-                        fontSize={ RFValue(16) }
                     >
                         P{ props.totalFee }
                     </Text>

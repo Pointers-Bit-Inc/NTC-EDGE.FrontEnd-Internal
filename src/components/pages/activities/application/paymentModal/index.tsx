@@ -1,17 +1,20 @@
-import React from "react";
+import React , {useEffect , useState} from "react";
 import BackgroundPayment from "@assets/svg/backgroundpayment";
 import {Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {capitalize} from "@pages/activities/script";
 import {RFValue} from "react-native-responsive-fontsize";
+import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
+import BorderPaymentTop from "@assets/svg/borderPayment";
+import BorderPaymentBottom from "@assets/svg/borderPaymentBottom";
 
 const {width, height} = Dimensions.get('window');
 const PaymentModal = (props: any) => {
     function Cell({ data }) {
         return (
             <View style={styles.cellStyle}>
-                <Text style={{fontFamily: Regular}}>{data}</Text>
+                <Text style={{fontSize: RFValue(12), fontFamily: Regular}}>{data}</Text>
             </View>
         );
     }
@@ -31,6 +34,11 @@ const PaymentModal = (props: any) => {
         ["Account", props?.applicant?.user?.firstName + " " + props?.applicant?.user?.lastName],
         ["Amount paid", "PHP" + props?.totalFee],
     ];
+    const [sizeComponent, onLayoutComponent] = useComponentLayout()
+    const [amountOfBorder, setAmountOfBorder] = useState()
+    useEffect(()=>{
+
+    }, [sizeComponent])
     return <Modal
         supportedOrientations={['portrait', 'landscape']}
         animationType="slide"
@@ -47,7 +55,7 @@ const PaymentModal = (props: any) => {
             <View style={styles.container}>
                 <View style={
                     {
-                        padding: 20,
+                       paddingVertical: 25,
                         alignItems: 'flex-end',
                         backgroundColor: "#041B6E"
                     }}>
@@ -60,39 +68,54 @@ const PaymentModal = (props: any) => {
                     </TouchableOpacity>
                 </View>
                 <ScrollView>
-                    {/* <BackgroundPayment style={{position:"absolute", marginTop: -150}} width={width}></BackgroundPayment> */}
-                    <View style={{position: "absolute", top: -60}}>
-                        <BackgroundPayment width={width}></BackgroundPayment>
-                    </View>
-                    <View style={{position: "absolute", top: 60}}>
-                        <BackgroundPayment width={width}></BackgroundPayment>
-                    </View>
-                    <View style={[styles.group8, {alignItems: 'center', marginBottom: 100}]}>
-                        <View style={styles.group5}>
-                            <Text style={styles.title}>Payment received for</Text>
-                            <Text style={[styles.description]}>NTC-EDGE</Text>
-                            <Text style={styles.description}>the amout of</Text>
-                            <Text style={[styles.description, {fontFamily: Bold}]}>PHP {props?.totalFee}</Text>
 
-                            {props?.paymentMethod &&
-                            <Text style={styles.description}>using your {capitalize(props?.paymentMethod.replace("-", " ")) }</Text>}
-                        </View>
-                        <View style={styles.group2}>
-                            <View style={styles.rect}>
-                                <Text style={styles.refNo12345678910}>Ref. No. 12345678910</Text>
-                                {props?.updatedAt &&
-                                <Text style={styles.text}>{moment(props?.updatedAt).format('LLL')}</Text>}
-                            </View>
-                        </View>
-                        <View style={styles.group6}>
-                            <Text style={styles.details}>Details</Text>
-                            <View style={styles.gridContainer}>
-                                {data.map((column, index) => (
-                                    <Row key={index} column={column} />
-                                ))}
-                            </View>
 
-                        </View>
+
+                    <View style={[styles.group8, { alignItems: 'center', marginBottom: 100}]}>
+
+                        <View >
+                            <View style={{flexDirection: "row"}}>
+                                {
+                                    !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentTop/>)
+                                }
+                            </View>
+                           <View  onLayout={onLayoutComponent} style={{backgroundColor: "white"}}>
+                               <View style={styles.group5}>
+                                   <Text style={styles.title}>Payment received for</Text>
+                                   <Text style={[styles.description]}>NTC-EDGE</Text>
+                                   <Text style={styles.description}>the amout of</Text>
+                                   <Text style={[styles.description, {fontFamily: Bold}]}>PHP {props?.totalFee}</Text>
+
+                                   {props?.paymentMethod &&
+                                   <Text style={styles.description}>using your {capitalize(props?.paymentMethod.replace("-", " ")) }</Text>}
+                               </View>
+                               <View style={styles.group2}>
+                                   <View style={styles.rect}>
+                                       <Text style={styles.refNo12345678910}>Ref. No. 12345678910</Text>
+                                       {props?.updatedAt &&
+                                       <Text style={styles.text}>{moment(props?.updatedAt).format('LLL')}</Text>}
+                                   </View>
+                               </View>
+                               <View style={styles.group6}>
+                                   <Text style={styles.details}>Details</Text>
+                                   <View style={styles.gridContainer}>
+                                       {data.map((column, index) => (
+                                           <Row key={index} column={column} />
+                                       ))}
+                                   </View>
+
+                               </View>
+
+
+                           </View>
+                            <View style={{flexDirection: "row"}}>
+                                {
+                                    !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentBottom/>)
+                                }
+                            </View>
+                       </View>
+
+
                     </View>
                 </ScrollView>
             </View>
@@ -107,6 +130,7 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     rowStyle: {
+
         width: "90%",
         paddingHorizontal: 20,
         flexDirection: "row",
@@ -118,7 +142,9 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     container: {
-        flex: 1
+        flex: 1,
+        
+
     },
     group7: {
 
@@ -140,23 +166,27 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     group5: {
+           paddingTop: 20,
         alignItems: "center"
     },
     title: {
+        fontSize: RFValue(12),
         fontFamily: Bold,
         color: "#121212",
         textAlign: 'center'
     },
     description: {
+        fontSize: RFValue(12),
         fontFamily: Regular,
     },
     ntcEdge: {
-
+        fontSize: RFValue(12),
         color: "#121212",
         marginTop: 4,
         textAlign: 'center'
     },
     theAmoutOf: {
+        fontSize: RFValue(12),
         color: "#121212",
         marginTop: 24,
         textAlign: 'center'
@@ -190,6 +220,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     text: {
+        fontSize: RFValue(12),
         color: "#121212",
         marginTop: 11,
         textAlign: 'center',
@@ -199,6 +230,7 @@ const styles = StyleSheet.create({
         marginTop: 23
     },
     details: {
+          fontSize: RFValue(12), 
         fontFamily: Bold,
         color: "#121212",
         alignSelf: "center"

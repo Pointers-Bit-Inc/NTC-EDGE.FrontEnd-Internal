@@ -16,6 +16,7 @@ import { resetMeeting } from 'src/reducers/meeting/actions';
 import { resetChannel } from 'src/reducers/channel/actions';
 import Api from 'src/services/api';
 import UserProfileScreen from "@screens/HomeScreen/UserProfile";
+import {useWindowDimensions} from "react-native";
 const Drawer = createDrawerNavigator();
 
 
@@ -38,9 +39,12 @@ const ActivitiesScreen = (props:any) => {
             });
         }, 500);
     }, []);
+    const dimensions = useWindowDimensions();
     return <>
+
         <Drawer.Navigator
             screenOptions={{
+                //drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
                 drawerItemStyle:{
                     backgroundColor: 'rgba(0,0,0,0)',
                     marginLeft: 20,

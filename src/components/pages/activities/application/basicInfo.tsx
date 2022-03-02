@@ -48,7 +48,7 @@ const BasicInfo = (props: any) => {
         <View style={ { padding : 10 , flex : 1 , alignSelf : "center" } }>
             <ProfileImage
                 style={ { borderRadius : 4 } }
-                size={ 150 }
+                size={ RFValue(150) }
                 textSize={ 22 }
                 image={ applicant?.user?.profilePicture?.small }
                 name={ `${ applicant?.user?.firstName } ${ applicant?.user?.lastName }` }
@@ -103,7 +103,7 @@ const BasicInfo = (props: any) => {
 
                             { personnel != undefined &&
                             (getStatusText(props , personnel) == APPROVED ? getStatusText(props , personnel) : !excludeStatus(props , personnel)  )  &&
-                            <CustomText style={ { flex : 1 , color : "#37405B" } }>
+                            <CustomText style={ { fontSize: RFValue(12), flex : 1 , color : "#37405B" } }>
                                 {(
                                       personnel !== undefined ? `by ${ personnel?.firstName } ${ personnel?.lastName }` : ``)}
 
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
         fontFamily : Bold ,
         fontSize : RFValue(14) ,
         textAlign : "left" ,
-        paddingHorizontal : 10
+        paddingHorizontal : RFValue(10)
     } ,
     submitted : {
         color : "rgba(105,114,135,1)" ,
@@ -195,20 +195,19 @@ const styles = StyleSheet.create({
         fontSize : RFValue(10)
     } ,
     container : {
-
         flex : 1
     } ,
     group4 : {} ,
     group3 : {
-        paddingRight : 10 ,
-        paddingLeft : 10
+        paddingRight : RFValue(10) ,
+        paddingLeft : RFValue(10)
     } ,
     group : {} ,
     rect : {
-
         backgroundColor : "#EFF0F6"
     } ,
     header : {
+        fontSize: RFValue(12),
         fontFamily : Regular500 ,
         color : "#565961" ,
         padding : 5 ,
@@ -219,9 +218,11 @@ const styles = StyleSheet.create({
         justifyContent : "flex-start" ,
         alignItems : "center" ,
         marginTop : 8 ,
-        paddingHorizontal : 10
+        paddingHorizontal : 10  ,
+        fontSize: RFValue(12)
     } ,
     detail : {
+        fontSize: RFValue(14),
         fontFamily : Regular ,
         paddingRight : 0 ,
         textAlign : "left" ,
@@ -229,6 +230,7 @@ const styles = StyleSheet.create({
         alignSelf : "flex-start"
     } ,
     detailInput : {
+        fontSize: RFValue(14),
         fontFamily : Regular500 ,
         color : "#121212" ,
         flex : 1 ,

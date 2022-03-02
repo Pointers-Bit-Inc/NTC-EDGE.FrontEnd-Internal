@@ -69,15 +69,18 @@ export const requirementStyles = StyleSheet.create({
         justifyContent : "space-between" ,
     } ,
     title : {
+        fontSize: RFValue(12),
         fontFamily: Bold,
         color : "#37405B"
     } ,
 
     paymentDescription:{
+        fontSize: RFValue(12),
         fontFamily: Regular,
         color: "#37405B"
     },
     description : {
+        fontSize: RFValue(12),
         color : "#1F2022",
         justifyContent: "center"
     } ,
@@ -89,6 +92,7 @@ export const requirementStyles = StyleSheet.create({
         margin : 0
     } ,
     text : {
+        fontSize: RFValue(12),
         fontFamily: Regular,
         width : "80%" ,
         color : "#606A80"

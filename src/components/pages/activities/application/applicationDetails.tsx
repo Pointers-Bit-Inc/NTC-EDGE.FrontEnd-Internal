@@ -75,11 +75,12 @@ const styles = StyleSheet.create({
         marginLeft : 1
     } ,
     service : {
+        fontSize: RFValue(14),
         color : "#121212" ,
         marginLeft : 1
     } ,
     text : {
-
+        fontSize: RFValue(14),
         color : "#121212" ,
         marginTop : 2 ,
         marginLeft : 1
