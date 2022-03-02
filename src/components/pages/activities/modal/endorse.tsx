@@ -79,12 +79,14 @@ const Endorsed = (props: any) => {
         }
     }, [])
     const onEndorseConfirm = () => {
+        const pickedItem = pickedEndorsed?.find(picked => {
 
-        setMessage(`` + pickedEndorsed?.find(picked => {
             return picked.value === endorsed
-        })?.label)
+        })?.label
+        setMessage(`` +  pickedItem)
         props.remarks({endorseId: endorsed, remarks: text, message})
-        if(pickedEndorsed){
+
+        if(pickedEndorsed  && !!pickedItem){
             setShowAlert(true)
         } else{
             Alert.alert('Alert',"Something went wrong." )
