@@ -41,7 +41,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
     };
 
     componentDidMount() {
-        Image.getSize(this.source.uri , (width , height) => {
+        Image.getSize(this?.source?.uri , (width , height) => {
             this._imageSize = {
                 width : width ,
                 height : height
