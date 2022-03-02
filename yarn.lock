@@ -9208,9 +9208,10 @@ react-native-animatable@1.3.3:
   dependencies:
     prop-types "^15.7.2"
 
-"react-native-animated-image-viewer@https://github.com/edward1986/react-native-animated-image-viewer":
+react-native-animated-image-viewer@^1.0.5:
   version "1.0.5"
-  resolved "https://github.com/edward1986/react-native-animated-image-viewer#ac1069387b3997ac7cccd27f880eb982a6f207cb"
+  resolved "https://registry.yarnpkg.com/react-native-animated-image-viewer/-/react-native-animated-image-viewer-1.0.5.tgz#bb79c894a65cd366e6e1ff973ca198e1141c496b"
+  integrity sha512-k5f3JEZM78OpM1KEIIPkPREivAJZ19g+j2HSuqYmySx4HjlUVTwCSelx9k4ztoYISuvOsihSTbFO1J+cUehyCQ==
 
 react-native-app-intro-slider@^4.0.4:
   version "4.0.4"
