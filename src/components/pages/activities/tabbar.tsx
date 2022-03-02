@@ -108,8 +108,10 @@ export default function TabBar() {
                     const focused = "#2863D6";
                     const unfocused = "#606A80";
                     const disabled = "#DADFE4"
+                    const isDisabled = !(route.name === CHAT || route.name === MEET);
                     return (<View key={route.key} style={{ flex: 1 }}>
                             <TouchableOpacity
+                                disabled={isDisabled}
                                 accessibilityRole="button"
                                 accessibilityState={isFocused ? {selected: true} : {}}
                                 accessibilityLabel={options.tabBarAccessibilityLabel}
@@ -121,7 +123,7 @@ export default function TabBar() {
                                     alignItems: 'center',
                                 }}>
                                     {label == ACTIVITIES
-                                        ? ( <ActivityTabbar notification={false } width={RFValue(30)} height={RFValue(30)} fill={isFocused ? focused : unfocused}/>) :
+                                        ? ( <ActivityTabbar notification={false } width={RFValue(30)} height={RFValue(30)} fill={isDisabled ? disabled : isFocused ? focused : unfocused}/>) :
                                         label == CHAT
                                             ?
                                             (<ChatIcon notification={hasNewChat} width={RFValue(30)} height={RFValue(30)} fill={isFocused ? focused : unfocused}/>)
@@ -132,11 +134,11 @@ export default function TabBar() {
                                                 :
                                                 label == SCANQR
                                                     ?
-                                                    (<ScanQrIcon notification={false} width={RFValue(30)} height={RFValue(30)} fill={isFocused ? focused : unfocused}/> )
+                                                    (<ScanQrIcon notification={false} width={RFValue(30)} height={RFValue(30)} fill={isDisabled ? disabled : isFocused ? focused : unfocused}/> )
                                                     :
                                                     label == MORE
                                                         ?
-                                                        (<MoreTabBarIcon notification={false} width={RFValue(30)} height={RFValue(30)} fill={isFocused ? focused : unfocused}/>)
+                                                        (<MoreTabBarIcon notification={false} width={RFValue(30)} height={RFValue(30)} fill={isDisabled ? disabled : isFocused ? focused : unfocused}/>)
 
                                                         :
                                                         <Entypo name="book"></Entypo>}
@@ -144,7 +146,7 @@ export default function TabBar() {
                                     <Text style={[{
                                         fontSize: RFValue(14),
                                         fontFamily: isFocused ? Bold : Regular,
-                                        color: isFocused ? '#2863d6' : '#606a80'
+                                        color: isDisabled ? disabled : isFocused ? '#2863d6' : '#606a80'
                                     }]}>{label}</Text>
                                 </View>
 
@@ -159,7 +161,7 @@ export default function TabBar() {
     }
     return (
 
-            <Tab.Navigator   tabBar={(props) => <ActivityTab  {...props} />}>
+            <Tab.Navigator   tabBar={(props) => <ActivityTab  {...props} />} initialRouteName={CHAT}>
                 <Tab.Screen   options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                 <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
