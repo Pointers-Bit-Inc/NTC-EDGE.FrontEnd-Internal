@@ -37,9 +37,10 @@ const useSignalr = () => {
     signalr.current?.on(connection, callback),
   []);
 
-  const createChannel = useCallback((participants, callback = () => {}) => {
+  const createChannel = useCallback(({ participants, name }, callback = () => {}) => {
     api.post('/room', {
       participants,
+      name,
     })
     .then(res => {
       return callback(null, res.data);

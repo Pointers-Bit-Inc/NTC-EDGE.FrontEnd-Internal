@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import {
   RefreshControl,
   ActivityIndicator,
@@ -11,19 +11,18 @@ import {
   StatusBar
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useSelector, useDispatch } from 'react-redux';
 import lodash from 'lodash';
-import { setSelectedChannel, addToChannelList, addChannel } from 'src/reducers/channel/actions';
 import { outline, button, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
 import { ContactItem, ListFooter, SelectedContact } from '@components/molecules/list-item';
-import { ArrowLeftIcon, ArrowDownIcon, CheckIcon, CloseIcon } from '@components/atoms/icon'
-import { SearchField } from '@components/molecules/form-fields'
+import { ArrowRightIcon, ArrowDownIcon, CheckIcon, CloseIcon, NewGroupIcon } from '@components/atoms/icon'
+import { InputField, SearchField } from '@components/molecules/form-fields'
 import { primaryColor, header } from '@styles/color';
 import { Bold, Regular, Regular500 } from '@styles/font';
 import useSignalr from 'src/hooks/useSignalr';
 import axios from 'axios';
+import { InputTags } from '@components/molecules/form-fields';
 import { RFValue } from 'react-native-responsive-fontsize';
 const { width } = Dimensions.get('window');
 
@@ -33,7 +32,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    paddingHorizontal: 15,
   },
   horizontal: {
     flexDirection: 'row',
@@ -94,16 +92,71 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomColor: '#E5E5E5',
     borderBottomWidth: 1,
+  },
+  newGroupContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: '#EAEAF4',
+    alignContent: 'center',
+    justifyContent: 'space-between',
+  },
+  outlineText: {
+    borderRadius: 10,
+  },
+  inputText: {
+    fontSize: RFValue(16),
+  },
+  groupName: {
+    height: undefined,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: 'white',
+    backgroundColor: 'white',
+    marginBottom: -30,
+    marginTop: 20,
+    paddingHorizontal: 10
   }
-})
+});
+
+const tagStyles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: '#D6D6D6',
+  },
+  container: {
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'flex-start',
+  },
+  tag: {
+    borderRadius: 10,
+    margin: 2,
+  },
+  textTag: {
+    color: header.default,
+    fontFamily: Bold,
+    fontSize: RFValue(14),
+  },
+  input: {
+    backgroundColor: '#FFFFFF',
+    color: '#606060',
+    fontSize: RFValue(14),
+    fontFamily: Bold,
+    paddingLeft: 0,
+    paddingRight: 0,
+    marginBottom: -2,
+  },
+});
 
 const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
-  const dispatch = useDispatch();
-  const user = useSelector(state => state.user);
   const {
     getParticipantList,
     createChannel,
   } = useSignalr();
+  const inputRef:any = useRef(null);
+  const inputTagRef:any = useRef(null);
+  const groupNameRef:any = useRef(null);
   const [loading, setLoading] = useState(false);
   const [nextLoading, setNextLoading] = useState(false);
   const [participants, setParticipants]:any = useState([]);
@@ -115,6 +168,9 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   const [fetching, setFetching] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [groupName, setGroupName] = useState('');
+  const [isGroup, setIsGroup] = useState(false);
+  const [initialTags, setInitialTags] = useState([])
 
   const onRequestData = () => setSendRequest(request => request + 1);
 
@@ -141,37 +197,49 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   }
 
   useEffect(() => {
-    setLoading(true);
-    setPageIndex(1);
-    setHasMore(false);
-    setHasError(false);
-    const source = axios.CancelToken.source();
-    const url = searchValue ?
-      `/room/search-participants?pageIndex=1&search=${searchValue}` :
-      `/room/list-participants?pageIndex=1`;
+    inputTagRef?.current?.focus();
+  }, []);
 
-    InteractionManager.runAfterInteractions(() => {
-      getParticipantList(url, (err:any, res:any) => {
-        if (res) {
-          setContacts(res.list);
-          setPageIndex(current => current + 1);
-          setHasMore(res.hasMore);
-        }
-        if (err) {
-          console.log('ERR', err);
-        }
-        setLoading(false);
+  useEffect(() => {
+    if (searchValue) {
+      setLoading(true);
+      setPageIndex(1);
+      setHasMore(false);
+      setHasError(false);
+      const source = axios.CancelToken.source();
+      const url = searchValue ?
+        `/room/search-participants?pageIndex=1&search=${searchValue}` :
+        `/room/list-participants?pageIndex=1`;
+
+      InteractionManager.runAfterInteractions(() => {
+        getParticipantList(url, (err:any, res:any) => {
+          if (res) {
+            setContacts(res.list);
+            setPageIndex(current => current + 1);
+            setHasMore(res.hasMore);
+          }
+          if (err) {
+            console.log('ERR', err);
+          }
+          setLoading(false);
+        });
       });
-    });
-  
-    return () => {
-      source.cancel();
-    };
+    
+      return () => {
+        source.cancel();
+      };
+    } else {
+      setContacts([]);
+      setPageIndex(1);
+      setHasMore(false);
+      setLoading(false);
+      setHasError(false);
+    }
   }, [sendRequest, searchValue]);
 
   const onNext = () => {
     setNextLoading(true);
-    createChannel(participants, (err:any, res:any) => {
+    createChannel({ participants, name: groupName }, (err:any, res:any) => {
       setNextLoading(false);
       if (res) {
         onSubmit(res);
@@ -182,9 +250,24 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     });
   }
 
+  const onBeforeClose = () => {
+    if (isGroup) {
+      setGroupName('');
+      setIsGroup(false);
+      inputRef.current?.focus();
+    } else {
+      onClose();
+    }
+  }
+
   const onSelectParticipants = (selectedId:string) => {
     const selected = lodash.find(contacts, c => c._id === selectedId);
     setParticipants(p => ([...p, selected]));
+    if (!isGroup) {
+      inputTagRef?.current?.addTag(selected);
+      inputTagRef?.current?.blur();
+      setSearchValue('');
+    }
   }
 
   const onRemoveParticipants = (selectedId:string) => {
@@ -205,6 +288,22 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     const selected = lodash.find(participants, c => c._id === contactId);
     return !!selected;
   }
+
+  const onChangeTags = (tags:any) => {
+    setInitialTags(tags);
+    setParticipants(tags);
+  };
+
+  const renderTag = ({ tag, index, onPress, deleteTagOnPress, readonly }:any) => {
+    return (
+      <TouchableOpacity
+        key={`${tag?._id}-${index}`}
+        onPress={onPress}
+        style={tagStyles.tag}>
+        <Text style={tagStyles.textTag}>{tag?.firstName},</Text>
+      </TouchableOpacity>
+    );
+  };
 
   const headerComponent = () => (
     <View>
@@ -275,9 +374,9 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
-        <View style={[styles.horizontal, { paddingVertical: 5 }]}>
+        <View style={[styles.horizontal, { paddingVertical: 5, marginHorizontal: 15 }]}>
           <View style={{ position: 'absolute', left: 0, zIndex: 999 }}>
-            <TouchableOpacity onPress={onClose}>
+            <TouchableOpacity onPress={onBeforeClose}>
               <CloseIcon
                 type='close'
                 size={RFValue(18)}
@@ -318,17 +417,87 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
             )
           }
         </View>
-        <SearchField
-          inputStyle={[InputStyles.text, styles.input]}
-          iconStyle={styles.icon}
-          placeholder="Search"
-          outlineStyle={[InputStyles.outlineStyle, styles.outline]}
-          placeholderTextColor="#6E7191"
-          value={searchText}
-          onChangeText={setSearchText}
-          onChangeTextDebounce={setSearchValue}
-          onSubmitEditing={(event:any) => setSearchText(event.nativeEvent.text)}
-        />
+        {
+          isGroup ? (
+            <View style={{ paddingHorizontal: 15 }}>
+              <InputField
+                ref={groupNameRef}
+                placeholder={'Group name'}
+                containerStyle={styles.groupName}
+                placeholderTextColor={'#C4C4C4'}
+                inputStyle={[styles.inputText, { backgroundColor: 'white' }]}
+                outlineStyle={[styles.outlineText, { backgroundColor: 'white' }]}
+                value={groupName}
+                onChangeText={setGroupName}
+                returnKeyType={'done'}
+              />
+              <SearchField
+                inputStyle={[styles.input]}
+                iconStyle={styles.icon}
+                placeholder="Search"
+                outlineStyle={[styles.outline]}
+                placeholderTextColor="#6E7191"
+                value={searchText}
+                onChangeText={setSearchText}
+                onChangeTextDebounce={setSearchValue}
+                onSubmitEditing={(event:any) => setSearchText(event.nativeEvent.text)}
+              />
+            </View>
+          ) : (
+            <View style={{ marginBottom: 5, marginTop: 20 }}>
+              <View style={{ flexDirection: 'row', alignContent: 'center', paddingHorizontal: 15, paddingTop: 10 }}>
+                <Text
+                  color={text.default}
+                  size={14}
+                  style={{ fontFamily: Regular }}
+                >
+                  To:
+                </Text>
+                <View style={{ flex: 1, marginTop: -RFValue(10), paddingLeft: 5 }}>
+                  <InputTags
+                    ref={inputTagRef}
+                    containerStyle={tagStyles.container}
+                    initialTags={participants}
+                    initialText={''}
+                    inputStyle={tagStyles.input}
+                    onChangeTags={onChangeTags}
+                    renderTag={renderTag}
+                    onChangeTextDebounce={setSearchValue}
+                    onSubmitEditing={(event:any) => setSearchText(event.nativeEvent.text)}
+                  />
+                </View>
+              </View>
+              <View style={styles.newGroupContainer}>
+                <View style={{ alignContent: 'center', flexDirection: 'row' }}>
+                  <NewGroupIcon
+                    width={RFValue(22)}
+                    height={RFValue(22)}
+                    color={header.default}
+                  />
+                  <Text
+                    color={header.default}
+                    size={14}
+                    style={{ fontFamily: Regular500, marginLeft: 5 }}
+                  >
+                    Create new group
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsGroup(true);
+                    groupNameRef.current?.focus();
+                  }}
+                >
+                  <ArrowRightIcon
+                    type='chevron-right'
+                    color={'#606A80'}
+                    size={RFValue(22)}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )
+        }
       </View>
       <FlatList
         data={contacts}
@@ -374,7 +543,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
         ItemSeparatorComponent={
           () => <View style={styles.separator} />
         }
-        ListHeaderComponent={headerComponent}
+        ListHeaderComponent={isGroup ? headerComponent : undefined}
         ListEmptyComponent={emptyComponent}
         ListFooterComponent={ListFooterComponent}
         onEndReached={() => fetchMoreParticipants()}
