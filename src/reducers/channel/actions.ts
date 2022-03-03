@@ -51,7 +51,7 @@ interface MessageProps {
   edited: boolean;
 }
 
-export function setSelectedChannel(payload:ChannelProps, isChannelExist = false) {
+export function setSelectedChannel(payload:ChannelProps | {}, isChannelExist = false) {
   return {
     type: SET_SELECTED_CHANNEL,
     payload,

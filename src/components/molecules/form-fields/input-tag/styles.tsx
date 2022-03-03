@@ -10,19 +10,13 @@ export default StyleSheet.create({
   textInputContainer: {
     flex: 1,
     minWidth: 100,
-    height: 32,
-    margin: 4,
     borderRadius: 16,
     backgroundColor: "#ccc"
   },
 
   textInput: {
-    margin: 0,
-    padding: 0,
     paddingLeft: 12,
     paddingRight: 12,
-    flex: 1,
-    height: 32,
     fontSize: 13,
     color: "rgba(0, 0, 0, 0.87)"
   },
@@ -33,7 +27,6 @@ export default StyleSheet.create({
     borderRadius: 16,
     paddingLeft: 12,
     paddingRight: 12,
-    height: 32,
     margin: 4
   },
   tagLabel: {

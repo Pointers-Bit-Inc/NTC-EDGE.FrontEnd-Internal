@@ -1,0 +1,255 @@
+import React, { useRef, useState, useCallback, useEffect, FC } from 'react'
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  useWindowDimensions,
+  StatusBar,
+  Dimensions,
+  FlatList,
+  InteractionManager,
+} from 'react-native'
+import lodash from 'lodash';
+import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
+import { setMeetingId, setMeetings } from 'src/reducers/meeting/actions';
+import { MeetingNotif } from '@components/molecules/list-item';
+import useSignalR from 'src/hooks/useSignalr';
+import ChatList from '@screens/chat/chat-list';
+import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
+import FileList from '@components/organisms/chat/files';
+import {
+  ArrowLeftIcon,
+  PhoneIcon,
+  VideoIcon,
+  MenuIcon,
+  PlusIcon,
+  CheckIcon,
+  CameraIcon,
+  MicIcon,
+  SendIcon,
+  NewCallIcon,
+  NewVideoIcon,
+  NewMessageIcon,
+} from '@components/atoms/icon';
+import { InputField } from '@components/molecules/form-fields';
+import { outline, text, button, primaryColor, header } from '@styles/color';
+import InputStyles from 'src/styles/input-style';
+import {
+  removeSelectedMessage,
+  setSelectedChannel,
+} from 'src/reducers/channel/actions';
+import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
+import { RFValue } from 'react-native-responsive-fontsize';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  header: {
+    padding: 15,
+    paddingTop: 40,
+    paddingBottom: 5,
+    backgroundColor: header.secondary,
+  },
+  horizontal: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  info: {
+    flex: 1,
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+  },
+  bubbleContainer: {
+    alignItems: 'flex-start',
+    paddingHorizontal: 15,
+    paddingVertical: 4,
+  },
+  keyboardAvoiding: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    paddingBottom: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderTopColor: '#E5E5E5',
+    borderTopWidth: 1,
+  },
+  outline: {
+    borderRadius: 10,
+  },
+  input: {
+    fontSize: RFValue(16),
+  },
+  plus: {
+    backgroundColor: '#D1D1D6',
+    borderRadius: RFValue(24),
+    width: RFValue(24),
+    height: RFValue(24),
+    marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  circle: {
+    backgroundColor: button.primary,
+    borderRadius: 28,
+    width: 28,
+    height: 28,
+    marginLeft: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  floatingNotif: {},
+  bar: {
+    height: 15,
+    width: 35,
+    borderRadius: 4,
+  },
+});
+
+interface Props {
+  onNext: Function;
+  participants: Array<any>;
+}
+
+const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
+  const dispatch = useDispatch();
+  const {
+    sendMessage,
+    editMessage,
+  } = useSignalR();
+  const inputRef:any = useRef(null);
+  const user = useSelector((state:RootStateOrAny) => state.user);
+  const { _id } = useSelector(
+    (state:RootStateOrAny) => {
+      const { selectedChannel } = state.channel;
+      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
+      return selectedChannel;
+    }
+  );
+  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
+  const [inputText, setInputText] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+  const [rendered, setRendered] = useState(false);
+  const channelId = _id;
+  
+  const _sendMessage = (channelId:string, inputText:string) => {
+    sendMessage({
+      roomId: channelId,
+      message: inputText,
+    }, (err:any, result:any) => {
+      if (err) {
+        console.log('ERR', err);
+      }
+    })
+  }
+
+  const _editMessage = (messageId:string, message:string) => {
+    editMessage({
+      messageId,
+      message,
+    }, (err:any, result:any) => {
+      if (err) {
+        console.log('ERR', err);
+      }
+    })
+  }
+
+  const onSendMessage = useCallback(() => {
+    if (!inputText || !participants) {
+      return;
+    }
+    if (!channelId) {
+      return onNext(inputText);
+    }
+    if (selectedMessage._id) {
+      _editMessage(selectedMessage._id, inputText);
+      inputRef.current?.blur();
+      dispatch(removeSelectedMessage())
+    } else {
+      _sendMessage(channelId, inputText);
+      inputRef.current?.blur();
+      setInputText('');
+    }
+  }, [channelId, inputText])
+
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => {
+      setRendered(true);
+    })
+  }, []);
+
+  useEffect(() => {
+    if (rendered) {
+      setInputText(selectedMessage?.message || '');
+      if (selectedMessage._id) {
+        setTimeout(() => inputRef.current?.focus(), 500);
+      } else {
+        inputRef.current?.blur();
+      }
+    }
+  }, [selectedMessage, rendered]);
+    
+
+  return (
+    <View style={styles.container}>
+      <View style={{ flex: 1 }}>
+        {
+          !!channelId && (<ChatList />)
+        }
+      </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={150}
+        enabled
+      >
+        <View style={styles.keyboardAvoiding}>
+          <View style={{ marginTop: RFValue(-18) }}>
+            <TouchableOpacity  disabled={true}>
+              <View style={styles.plus}>
+                <PlusIcon
+                  color="white"
+                  size={RFValue(12)}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={{ flex: 1, paddingHorizontal: 5 }}>
+            <InputField
+              ref={inputRef}
+              placeholder={'Type a message'}
+              containerStyle={{ height: null, paddingVertical: 10, borderWidth: 1, borderColor: isFocused ? '#C1CADC' : 'white', backgroundColor: 'white' }}
+              placeholderTextColor={'#C4C4C4'}
+              inputStyle={[InputStyles.text, styles.input, { backgroundColor: 'white' }]}
+              outlineStyle={[InputStyles.outlineStyle, styles.outline, { backgroundColor: 'white' }]}
+              value={inputText}
+              onChangeText={setInputText}
+              onSubmitEditing={() => inputText && onSendMessage()}
+              returnKeyType={'send'}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+          </View>
+          <View style={{ marginTop: RFValue(-18), flexDirection: 'row' }}>
+            <TouchableOpacity
+              disabled={!inputText}
+              onPress={onSendMessage}
+            >
+              <View style={{ marginLeft: 10 }}>
+                <NewMessageIcon
+                  color={inputText ? button.info : '#D1D1D6'}
+                  height={RFValue(30)}
+                  width={RFValue(30)}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </View>
+  )
+}
+
+export default ChatView

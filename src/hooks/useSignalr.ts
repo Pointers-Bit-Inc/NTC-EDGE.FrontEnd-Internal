@@ -37,10 +37,23 @@ const useSignalr = () => {
     signalr.current?.on(connection, callback),
   []);
 
-  const createChannel = useCallback(({ participants, name }, callback = () => {}) => {
+  const createChannel = useCallback(({ participants, name, message }, callback = () => {}) => {
     api.post('/room', {
       participants,
       name,
+      message,
+    })
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
+  const getChannelByParticipants = useCallback(({ participants }, callback = () => {}) => {
+    api.post('/room/get-room', {
+      participants,
     })
     .then(res => {
       return callback(null, res.data);
@@ -225,6 +238,7 @@ const useSignalr = () => {
     destroySignalR,
     onConnection,
     createChannel,
+    getChannelByParticipants,
     leaveChannel,
     getChatList,
     getParticipantList,

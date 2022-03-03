@@ -467,7 +467,7 @@ const onClose = (item, leave = false) => {
         backdropOpacity={0}
         onBackdropPress={() => {}}
       >
-        <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
+        <View style={{ height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
           <NewChat
             onClose={() => modalRef.current?.close()}
             onSubmit={(res:any) => {

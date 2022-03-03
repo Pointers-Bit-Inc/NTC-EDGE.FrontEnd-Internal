@@ -134,18 +134,25 @@ const List = () => {
     setPageIndex(1);
     setHasMore(false);
     setHasError(false);
+    let unmount = false;
     getMessages(channelId, 1, (err, res) => {
-      setLoading(false);
-      if (res) {
-        dispatch(setMessages(res.list));
-        setPageIndex(current => current + 1);
-        setHasMore(res.hasMore);
-      }
-      if (err) {
-        console.log('ERR', err);
-        setHasError(true);
+      if (!unmount) {
+        setLoading(false);
+        if (res) {
+          dispatch(setMessages(res.list));
+          setPageIndex(current => current + 1);
+          setHasMore(res.hasMore);
+        }
+        if (err) {
+          console.log('ERR', err);
+          setHasError(true);
+        }
       }
     })
+
+    return () => {
+      unmount = true;
+    }
   }, [])
 
   useEffect(() => {
