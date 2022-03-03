@@ -170,7 +170,7 @@ const Endorsed = (props: any) => {
                 message={message}/>
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={[styles.container, !showAlert ||  {display: "none"}]}
+                style={[styles.container, {display: !showAlert ? "block" : "none"}]}
             >
 
                 <View style={[styles.rect, {height: orientation == "LANDSCAPE" ? "100%" : "80%",}]}>

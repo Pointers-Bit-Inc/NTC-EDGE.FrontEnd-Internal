@@ -62,9 +62,9 @@ const RequirementModal = (props: any) => {
                 justifyContent : "center" ,
                 alignSelf : "center" ,
 
-            } }>
-                <Loader/>
-            </View> }
+                } }>
+                    <Loader/>
+                </View> }
 
             <View style={ { height : '100%' , width : '100%' } }>
 

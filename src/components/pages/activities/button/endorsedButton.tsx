@@ -34,7 +34,7 @@ export function EndorsedButton(props: { currentLoading: string, allButton: boole
 
                         )
                     }
-                    <ForwardIcon isDisable={props.allButton} style={{marginLeft: 6}}/>
+                    <ForwardIcon isdisable={props.allButton} style={{marginLeft: 6}}/>
                 </View>
 
             </View>

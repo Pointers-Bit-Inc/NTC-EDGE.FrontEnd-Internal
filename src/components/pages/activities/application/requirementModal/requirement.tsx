@@ -6,6 +6,7 @@ import {requirementStyles, styles} from "@pages/activities/application/requireme
 import {RFValue} from "react-native-responsive-fontsize";
 import AnimatedImage from 'react-native-animated-image-viewer';
 import FadeBackground from "@assets/svg/fade-background";
+import Loader from "@pages/activities/bottomLoad";
 const { width  } = Dimensions.get("screen");
 
 class RequirementView extends React.Component<{ requirement: any }> {
@@ -13,6 +14,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
     imageModal = null;
     image = null;
     state = {
+        onLoad: false,
         visible : false
     };
     _imageSize = {
@@ -27,7 +29,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
     };
     _showImageModal = () => this.setState({ visible : true });
     _hideImageModal = () => this.setState({ visible : false });
-    _requestClose = () => this.imageModal.close();
+    _requestClose = () => this.imageModal?.close();
     _showImage = () => {
         this.image.measure((x , y , width , height , pageX , pageY) => {
             this._sourceMeasure = {
@@ -85,11 +87,20 @@ class RequirementView extends React.Component<{ requirement: any }> {
                             borderColor : "rgba(213,214,214,1)" ,
                             borderStyle : "dashed" ,
                         } }>
-                            <TouchableOpacity ref={ image => (
+                            <TouchableOpacity disabled={this.state.onLoad} ref={ image => (
                                 this.image = image) }
                                               onPress={ this._showImage }>
+                                { this.state.onLoad && <View style={ {
+                                    zIndex : 1 ,
+                                    elevation : 1 ,
+                                    height : "100%" ,
+                                    justifyContent : "center" ,
+                                    alignSelf : "center" ,
+                                    position: "absolute"
+                                } }>
+                                    <Loader/>
+                                </View> }
                                 <Image
-
                                     style={ { width : undefined , height : RFValue(300) } }
                                     source={ {
                                         uri : this.props?.requirement?.links?.small ,
@@ -117,6 +128,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
 
                         <Text style={ styles.fileName }>{ this.props?.requirement?.file?.name }</Text>
                         { this.props?.requirement?.file?.name &&
+
                         <FadeBackground style={ {  position : "absolute" , zIndex : 1 } }
                                         width={ width }></FadeBackground> }
 

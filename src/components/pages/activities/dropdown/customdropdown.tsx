@@ -18,6 +18,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
     const [visible, setVisible] = useState(false);
     const [selected, setSelected] = useState(undefined);
     const [dropdownTop, setDropdownTop] = useState(0);
+    const [dropdownWidth, setDropdownWidth] = useState(0);
     const [selectedIndex, setSelectedIndex] = useState(null)
     const toggleDropdown = (): void => {
         visible ? setVisible(false) : openDropdown();
@@ -39,6 +40,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
 
     useEffect(()=>{
         DropdownButton?.current?.measure((_fx: number, _fy: number, _w: number, h: number, _px: number, py: number) => {
+        setDropdownWidth(_w)
             setDropdownTop(py + h);
         });
     }, [visible, dropdownTop])
@@ -81,7 +83,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
                     style={styles.overlay}
                     onPress={() => setVisible(false)}
                 >
-                    {dropdownTop>0 && <View style={[styles.dropdown, {width: '100%',flex: 1, top: dropdownTop}]}>
+                    {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, {width: dropdownWidth,flex: 1, top: dropdownTop}]}>
                         {data?.length > 0 ? <FlatList
                             style={styles.items}
                             data={data}
