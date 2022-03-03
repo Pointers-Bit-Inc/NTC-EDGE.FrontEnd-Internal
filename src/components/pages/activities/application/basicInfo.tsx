@@ -202,11 +202,14 @@ const styles = StyleSheet.create({
         paddingRight : RFValue(10) ,
         paddingLeft : RFValue(10)
     } ,
-    group : {} ,
+    group : {
+
+    } ,
     rect : {
-        backgroundColor : "#EFF0F6"
     } ,
     header : {
+        backgroundColor : "#EFF0F6",
+        textTransform: 'uppercase',
         fontSize: RFValue(12),
         fontFamily : Regular500 ,
         color : "#565961" ,

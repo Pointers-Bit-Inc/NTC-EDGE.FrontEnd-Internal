@@ -55,6 +55,7 @@ const PaymentModal = (props: any) => {
             <View style={styles.container}>
                 <View style={
                     {
+                        paddingHorizontal: 15,
                        paddingVertical: 25,
                         alignItems: 'flex-end',
                         backgroundColor: "#041B6E"
@@ -76,7 +77,7 @@ const PaymentModal = (props: any) => {
                         <View >
                             <View style={{flexDirection: "row"}}>
                                 {
-                                    !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentTop/>)
+                                    !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentTop  style={{marginBottom: -1}}/>)
                                 }
                             </View>
                            <View  onLayout={onLayoutComponent} style={{backgroundColor: "white"}}>
@@ -108,9 +109,9 @@ const PaymentModal = (props: any) => {
 
 
                            </View>
-                            <View style={{flexDirection: "row"}}>
+                            <View style={{flexDirection: "row", }}>
                                 {
-                                    !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentBottom/>)
+                                    !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentBottom style={{marginTop: -1}}/>)
                                 }
                             </View>
                        </View>

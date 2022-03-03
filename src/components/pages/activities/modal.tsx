@@ -246,6 +246,7 @@ function ActivityModal(props: any) {
             <View style={ { flex : 1 } }>
                 <View style={ {
                     flexDirection : "row" ,
+                    alignItems: "center",
                     borderBottomColor: "#F0F0F0",
                     justifyContent : "space-between" ,
                     padding : 15 ,
@@ -257,7 +258,7 @@ function ActivityModal(props: any) {
                         props.onDismissed(change);
                         setChange(false)
                     } }>
-                        <CloseIcon color="#606A80"/>
+                        <CloseIcon width={RFValue(16)} height={RFValue(16)} color="#606A80"/>
                     </TouchableOpacity>
                     <Text style={ styles.applicationType }>{ props?.details?.applicationType }</Text>
                     <View></View>

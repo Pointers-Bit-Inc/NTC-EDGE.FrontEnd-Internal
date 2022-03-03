@@ -32,6 +32,7 @@ export const styles = StyleSheet.create({
         backgroundColor : "rgba(0,0,0,0.5)"
     } ,
     close : {
+
         fontFamily : Regular500 ,
         color : "rgba(239,231,231,1)" ,
         fontSize : RFValue(18) ,

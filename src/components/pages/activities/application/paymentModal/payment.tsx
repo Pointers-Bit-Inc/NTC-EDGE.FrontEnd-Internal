@@ -26,7 +26,7 @@ const {width, height} = Dimensions.get("screen")
 import AnimatedImage from 'react-native-animated-image-viewer';
 
 class ProofPaymentView extends React.Component<{onPress: () => void, totalFee: any, paymentMethod: any, proofOfPayment: any, onPress1: () => void }> {
-    source = { uri : this.props?.proofOfPayment?.medium || "" };
+    source = { uri : this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" };
     imageModal = null;
     image = null;
     state = {
@@ -58,7 +58,7 @@ class ProofPaymentView extends React.Component<{onPress: () => void, totalFee: a
     };
 
     componentDidMount() {
-        Image.getSize(this.source.uri , (width , height) => {
+        Image.getSize(this?.source?.uri , (width , height) => {
             this._imageSize = {
                 width : width ,
                 height : height
@@ -114,9 +114,10 @@ class ProofPaymentView extends React.Component<{onPress: () => void, totalFee: a
                                        onPress={this._showImage}>
 
                         <Image
+
                             style={ { height : 216 } }
                             source={ {
-                                uri : this.props.proofOfPayment?.small ,
+                                uri : this.props?.proofOfPayment?.small ,
                             } }
                         />
                     </TouchableOpacity>
