@@ -8,7 +8,8 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  StatusBar
+  StatusBar,
+  Platform
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import lodash from 'lodash';
@@ -157,6 +158,7 @@ const tagStyles = StyleSheet.create({
     fontFamily: Bold,
     paddingLeft: 0,
     paddingRight: 0,
+    marginTop: Platform.OS === 'ios' ? 0 : -3
   },
 });
 
@@ -574,7 +576,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
                 >
                   To:
                 </Text>
-                <View style={{ flex: 1, paddingLeft: 5 }}>
+                <View style={{ flex: 1, paddingLeft: 5, marginTop: Platform.OS === 'ios' ? 0 : -2 }}>
                   <InputTags
                     ref={inputTagRef}
                     containerStyle={tagStyles.container}

@@ -10,6 +10,7 @@ import {
   Dimensions,
   FlatList,
   InteractionManager,
+  Keyboard,
 } from 'react-native'
 import lodash from 'lodash';
 import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
@@ -133,6 +134,7 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
   const [inputText, setInputText] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [rendered, setRendered] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const channelId = _id;
   
   const _sendMessage = (channelId:string, inputText:string) => {
@@ -158,7 +160,7 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
   }
 
   const onSendMessage = useCallback(() => {
-    if (!inputText || !participants) {
+    if (!inputText || lodash.size(participants) === 0) {
       return;
     }
     if (!channelId) {
@@ -175,10 +177,23 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
     }
   }, [channelId, inputText])
 
+  const _keyboardDidShow = (e:any) => {
+    setKeyboardHeight(e?.endCoordinates?.height || 0);
+  }
+
+  const _keyboardDidHide = () => setKeyboardHeight(0);
+
   useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
     InteractionManager.runAfterInteractions(() => {
       setRendered(true);
     })
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    }
   }, []);
 
   useEffect(() => {
@@ -202,8 +217,9 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
       </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={150}
         enabled
+        keyboardVerticalOffset={Platform.OS === 'ios' ? RFValue(160) : 0 }
+        style={{ bottom: Platform.OS === 'ios' ? 0 : RFValue(keyboardHeight) }}
       >
         <View style={styles.keyboardAvoiding}>
           <View style={{ marginTop: RFValue(-18) }}>
