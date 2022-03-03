@@ -18,7 +18,7 @@ import {BASE_URL} from "../../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
 import {ACCOUNTANT , DIRECTOR , EVALUATOR , FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
-import {errorColor , primaryColor} from "@styles/color";
+import {disabledColor , errorColor , primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import {useOrientation} from "@pages/activities/hooks/useOrientation";
@@ -59,13 +59,9 @@ const Endorsed = (props: any) => {
                 return {value: item._id, label: item.firstName + " " + item.lastName}
             })
 
-            if (isCurrent) {
+            if (isCurrent && res) {
                 setPickedEndorsed(res)
-            }
-            if (res) {
-                if (isCurrent) {
-                    setEndorsed(props?.assignedPersonnel || res[0]?.value)
-                }
+                setEndorsed(props?.assignedPersonnel || res[0]?.value)
             }
 
         })
@@ -78,15 +74,20 @@ const Endorsed = (props: any) => {
             isCurrent = false
         }
     }, [])
-    const onEndorseConfirm = () => {
-        const pickedItem = pickedEndorsed?.find(picked => {
+    const [picked, setPicked] = useState(false)
+    useEffect(()=>{
 
+        setPicked(pickedEndorsed?.find(picked => {
             return picked.value === endorsed
-        })?.label
-        setMessage(`` +  pickedItem)
-        props.remarks({endorseId: endorsed, remarks: text, message})
+        })?.label);
+    }, [endorsed, picked])
 
-        if(pickedEndorsed  && !!pickedItem){
+    const onEndorseConfirm = () => {
+
+
+        setMessage(`` + picked)
+        props.remarks({endorseId: endorsed, remarks: text, message})
+        if(pickedEndorsed && !!picked ){
             setShowAlert(true)
         } else{
             Alert.alert('Alert',"Something went wrong." )
@@ -169,7 +170,7 @@ const Endorsed = (props: any) => {
                 message={message}/>
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={[styles.container, {display: !showAlert ? "block": "none"}]}
+                style={[styles.container, !showAlert ||  {display: "none"}]}
             >
 
                 <View style={[styles.rect, {height: orientation == "LANDSCAPE" ? "100%" : "80%",}]}>
@@ -180,12 +181,12 @@ const Endorsed = (props: any) => {
                                 setValidateRemarks({error: false})
                                 props.onDismissed()
                             }}>
-                                <CloseIcon height={RFValue(16)} width={RFValue(16)}/>
+                                <CloseIcon/>
                             </TouchableOpacity>
                         </View>
                         <View style={{paddingHorizontal: 20}}>
                             <View style={{flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5, paddingVertical: 10}}>
-                                <EndorseToIcon width={RFValue(43)} height={RFValue(20)} style={styles.icon2}/>
+                                <EndorseToIcon style={styles.icon2}/>
                                 <Text style={styles.endorseTo}>Endorse to</Text>
                             </View>
 
@@ -227,8 +228,8 @@ const Endorsed = (props: any) => {
                     </View>
 
                     <View style={{ width: '100%', paddingHorizontal: 15}}>
-                        <TouchableOpacity onPress={onEndorseConfirm}>
-                            <View style={styles.confirmButton}>
+                        <TouchableOpacity disabled={!picked} onPress={onEndorseConfirm}>
+                            <View style={[styles.confirmButton, {backgroundColor:  picked ? primaryColor : disabledColor,}]}>
                                 <Text style={styles.confirm}>Confirm</Text>
                             </View>
                         </TouchableOpacity>
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     rect: {
-       justifyContent: "space-between",
+        justifyContent: "space-between",
         paddingBottom: 20,
 
 
@@ -314,7 +315,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     confirmButton: {
-        backgroundColor: primaryColor,
+
         borderRadius: 12,
         paddingVertical: 16,
         alignItems: 'center',
