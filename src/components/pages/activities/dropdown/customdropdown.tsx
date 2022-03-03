@@ -4,6 +4,7 @@ import CaretDownIcon from "@assets/svg/caret-down";
 import {useOrientation} from "@pages/activities/hooks/useOrientation";
 import {Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import useKeyboard from "../../../../hooks/useKeyboard";
 
 
 interface Props {
@@ -36,11 +37,15 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
           }
     }, [value, selectedIndex])
 
-    const openDropdown = (): void => {
-
+    useEffect(()=>{
         DropdownButton?.current?.measure((_fx: number, _fy: number, _w: number, h: number, _px: number, py: number) => {
             setDropdownTop(py + h);
         });
+    }, [visible, dropdownTop])
+
+    const openDropdown = (): void => {
+
+
         setVisible(true);
     };
     const orientation = useOrientation()
@@ -63,9 +68,9 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
                 }}>{item.label}</Text>
             </TouchableOpacity>
     );
-
     const renderDropdown = (): ReactElement<any, any> => {
         const flatListRef = useRef()
+
         return (
             <Modal
                     supportedOrientations={['portrait', 'landscape']}
