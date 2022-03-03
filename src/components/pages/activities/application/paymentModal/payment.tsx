@@ -21,8 +21,6 @@ import {capitalize} from "@pages/activities/script";
 import {RFValue} from "react-native-responsive-fontsize";
 import {RootStateOrAny , useSelector} from "react-redux";
 import {ACCOUNTANT} from "../../../../../reducers/activity/initialstate";
-import FadeBackground from "@assets/svg/fade-background";
-const {width, height} = Dimensions.get("screen")
 import AnimatedImage from 'react-native-animated-image-viewer';
 
 class ProofPaymentView extends React.Component<{onPress: () => void, totalFee: any, paymentMethod: any, proofOfPayment: any, onPress1: () => void }> {
