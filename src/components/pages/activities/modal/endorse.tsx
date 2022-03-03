@@ -59,7 +59,7 @@ const Endorsed = (props: any) => {
                 return {value: item._id, label: item.firstName + " " + item.lastName}
             })
 
-            if (isCurrent && res) {
+            if (isCurrent && !!res) {
                 setPickedEndorsed(res)
                 setEndorsed(props?.assignedPersonnel || res[0]?.value)
             }
@@ -170,7 +170,7 @@ const Endorsed = (props: any) => {
                 message={message}/>
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={[styles.container, {display: !showAlert ? "block" : "none"}]}
+                style={[styles.container, {display: !showAlert ? undefined : "none"}]}
             >
 
                 <View style={[styles.rect, {height: orientation == "LANDSCAPE" ? "100%" : "80%",}]}>

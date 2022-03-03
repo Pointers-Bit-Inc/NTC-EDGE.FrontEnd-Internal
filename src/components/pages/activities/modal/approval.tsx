@@ -196,7 +196,7 @@ const Approval = (props: any) => {
             >
 
                 {
-                <Animated.View style={ [styles.group ,   {display: !showAlert ? "block" : "none"},  { transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
+                <Animated.View style={ [styles.group ,   {display: !showAlert ? undefined : "none"},  { transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
                     <View style={ styles.rect }>
                         <View style={ { alignSelf : 'flex-start' } }>
                             <TouchableOpacity onPress={ _springHide }>
