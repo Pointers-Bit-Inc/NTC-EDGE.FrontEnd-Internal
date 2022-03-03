@@ -147,9 +147,7 @@ function ActivityModal(props: any) {
     }
 
     useEffect(() => {
-        console.log(props?.details);
         return () => {
-
             setChange(false);
             setStatus("");
             setAssignId("")
@@ -157,7 +155,6 @@ function ActivityModal(props: any) {
     } , []);
 
     const statusMemo = useMemo(() => {
-
         setStatus(status);
         setAssignId(assignId || props?.details?.assignedPersonnel);
         return status ? (
