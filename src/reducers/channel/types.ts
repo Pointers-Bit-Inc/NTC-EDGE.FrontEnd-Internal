@@ -19,4 +19,8 @@ export default keyMirror({
   UPDATE_MEETING_CHANNEL: null,
   REMOVE_MEETING_CHANNEL: null,
   SET_MEETINGS_CHANNEL: null,
+
+  SET_SEARCH_VALUE: null,
+
+  RESET_CHANNEL: null,
 });

@@ -1,4 +1,4 @@
-const { SET_USER } = require('./types').default;
+const { SET_USER, UPDATE_USER, RESET_USER } = require('./types').default;
 
 export function setUser(payload) {
   return {
@@ -6,3 +6,17 @@ export function setUser(payload) {
     payload,
   };
 }
+
+export function resetUser() {
+  return {
+    type: RESET_USER,
+  };
+}
+
+export function updateUser(payload) {
+  return {
+    type: UPDATE_USER,
+    payload,
+  };
+}
+

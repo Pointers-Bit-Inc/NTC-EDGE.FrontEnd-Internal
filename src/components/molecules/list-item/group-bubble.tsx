@@ -87,6 +87,7 @@ const ChatBubble:FC<Props> = ({
   seenByOthers = [],
   seenByEveryone = false,
   showSeen = false,
+  isSeen = false,
   showDate = false,
   onLongPress,
   deleted = false,
@@ -127,7 +128,7 @@ const ChatBubble:FC<Props> = ({
           {
             !isSender ?(
               <ProfileImage
-                image={sender.image}
+                image={sender?.image}
                 name={`${sender.firstName} ${sender.lastName}`}
                 size={25}
                 textSize={10}
@@ -207,7 +208,7 @@ const ChatBubble:FC<Props> = ({
             )
           }
           {
-            (!lodash.size(seenByOthers) && isSender) && (
+            (!isSeen && isSender) && (
               <View
                 style={styles.check}
               >
@@ -258,7 +259,7 @@ const ChatBubble:FC<Props> = ({
                       <ProfileImage
                         style={[{ marginHorizontal: 1, }, isSender && styles.flipX]}
                         key={seen._id}
-                        image={seen.image}
+                        image={seen?.image}
                         name={`${seen.firstName} ${seen.lastName}`}
                         size={12}
                         textSize={5}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {DropdownField, InputField} from "@molecules/form-fields";
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -6,6 +6,7 @@ import Button from "@atoms/button";
 import Text from "@atoms/text";
 import {Ionicons} from "@expo/vector-icons";
 import {outline, text} from "@styles/color";
+import CustomDropdown from "@pages/user-profile/custom-dropdown";
 
 const FormField = ({
                        color,
@@ -14,11 +15,9 @@ const FormField = ({
                        onSubmit,
                        ...otherProps
                    }: any) => {
-    const inputColor = color ? color : "#486c86";
+    // const inputColor = color ? color : "#486c86";
 
-    const renderElements = (id: number, element: any, color: any, styleProps: any) => {
-
-        element.color = color;
+    const renderElements = (id: number, element: any, /*color: any,*/ styleProps: any) => {
         const {type, pickerData, ...otherProps} = element;
         const buttonElement = () => {
 
@@ -32,11 +31,12 @@ const FormField = ({
             case 'image':
                 return otherProps.value ? <Image
                     {...styleProps}
-
+                    key={id}
                     {...otherProps}
                     source={{uri: otherProps.value}}
                     resizeMode={"cover"}
                 /> : <Image
+                    key={id}
                     {...styleProps}
                     {...otherProps}
                     source={require('../../../../assets/favicon.png')}
@@ -50,14 +50,26 @@ const FormField = ({
                                        onChange(id, e.nativeEvent.text, 'input')
                                    }
                                    }
+                                   onChangeText={(text: string) => onChange(id, text, 'input', element?.stateName)}
+                                   onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'input', element?.stateName)}/>;
+            case "select":
+                return <><InputField key={id}  {...styleProps} {...otherProps}
+                                   onEndEditing={(e: any) => {
+                                       onChange(id, e.nativeEvent.text, 'input')
+                                   }
+                                   }
                                    onChangeText={(text: string) => onChange(id, text, 'input')}
-                                   onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'input')}/>;
+                                   onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'input')}/>
+
+                    </>
+
             case 'password':
                 return <InputField  {...styleProps} {...otherProps}
                                     onEndEditing={(e: any) => {
                                         onChange(id, e.nativeEvent.text, 'password')
                                     }
                                     }
+                                    key={id}
                                     onChangeText={(text: string) => onChange(id, text, 'password')}
                                     onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'password')}/>
             case "date":
@@ -128,16 +140,20 @@ const FormField = ({
     }
     return (
         <>
+
             {formElements.map((element: any, key: number) => {
                 return element.type != 'submit' && element.type && (
-                    <View  key={element.id}>
-                        {renderElements(
-                            element.id,
-                            element,
-                            inputColor,
-                            otherProps
-                        )}
-                    </View>
+                    <Fragment key={element.id}>
+                        <View  key={element.id}>
+                            {renderElements(
+                                element.id,
+                                element,
+                                // inputColor,
+                                otherProps
+                            )}
+                        </View>
+                    </Fragment>
+
                 );
             })}
         </>

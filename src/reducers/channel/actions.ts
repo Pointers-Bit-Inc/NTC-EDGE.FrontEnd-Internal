@@ -16,6 +16,9 @@ const {
   UPDATE_MEETING_CHANNEL,
   REMOVE_MEETING_CHANNEL,
   SET_MEETINGS_CHANNEL,
+
+  SET_SEARCH_VALUE,
+  RESET_CHANNEL,
 } = require('./types').default;
 
 interface ChannelProps {
@@ -46,10 +49,11 @@ interface MessageProps {
   edited: boolean;
 }
 
-export function setSelectedChannel(payload:ChannelProps) {
+export function setSelectedChannel(payload:ChannelProps, isChannelExist = false) {
   return {
     type: SET_SELECTED_CHANNEL,
     payload,
+    isChannelExist,
   };
 }
 
@@ -148,5 +152,18 @@ export function removeMeeting(payload) {
     type: REMOVE_MEETING_CHANNEL,
     payload,
   };
+}
+
+export function setSearchValue(payload) {
+  return {
+    type: SET_SEARCH_VALUE,
+    payload,
+  }
+}
+
+export function resetChannel() {
+  return {
+    type: RESET_CHANNEL,
+  }
 }
 

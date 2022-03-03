@@ -20,7 +20,7 @@ interface Props {
 }
 
 const Text: FC<Props> = ({
-  color,
+  color = 'black',
   size,
   weight,
   children,
@@ -32,7 +32,7 @@ const Text: FC<Props> = ({
     <RNText
       style={[
         styles.default,
-        { color, fontSize: size, fontWeight: weight, textAlign: align },
+        { color, fontSize: size, fontWeight: weight, textAlign: align, fontFamily: 'Poppins_400Regular' },
         style
       ]}
       {...otherProps}

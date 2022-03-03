@@ -3,8 +3,8 @@ import Svg, { SvgProps, Path } from "react-native-svg";
 
 const QrScanCodeIcon = (props: SvgProps) => {
  return (<Svg
-     width={40}
-     height={40}
+     width={26}
+     height={26}
      viewBox="0 0 40 40"
      fill="none"
      xmlns="http://www.w3.org/2000/svg"

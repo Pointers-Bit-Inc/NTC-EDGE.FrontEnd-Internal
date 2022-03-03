@@ -17,6 +17,9 @@ const {
   UPDATE_MEETING_CHANNEL,
   REMOVE_MEETING_CHANNEL,
   SET_MEETINGS_CHANNEL,
+
+  SET_SEARCH_VALUE,
+  RESET_CHANNEL,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -26,8 +29,11 @@ const initialState = new InitialState();
 export default function basket(state = initialState, action:any) {
   switch (action.type) {
     case SET_SELECTED_CHANNEL: {
-      return state.setIn(['selectedChannel'], action.payload)
-      .setIn(['messages'], []);
+      if (!action.isChannelExist) {
+        return state.setIn(['selectedChannel'], action.payload)
+        .setIn(['messages'], []);
+      }
+      return state.setIn(['selectedChannel'], action.payload);
     }
     case SET_CHANNEL_LIST: {
       return state.setIn(['channelList'], action.payload);
@@ -86,6 +92,18 @@ export default function basket(state = initialState, action:any) {
     case REMOVE_MEETING_CHANNEL: {
       const updatedList = lodash.reject(state.meetingList, l => l._id === action.payload);
       return state.setIn(['meetingList'], updatedList);
+    }
+    case SET_SEARCH_VALUE: {
+      return state.setIn(['searchValue'], action.payload);
+    }
+    case RESET_CHANNEL: {
+      return state.setIn(['selectedChannel'], {})
+        .setIn(['agora'], {})
+        .setIn(['channelList'], [])
+        .setIn(['messages'], [])
+        .setIn(['selectedMessage'], {})
+        .setIn(['meetingList'], [])
+        .setIn(['searchValue'], '');
     }
     default:
       return state;

@@ -191,10 +191,10 @@ const Meet = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.openDrawer()}>
+        <TouchableOpacity onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
           <ProfileImage
             size={45}
-            image={user.image}
+            image={user?.image}
             name={`${user.firstName} ${user.lastName}`}
           />
         </TouchableOpacity>

@@ -21,6 +21,7 @@ import { CloseIcon, ArrowDownIcon, CheckIcon } from '@components/atoms/icon'
 import { SearchField } from '@components/molecules/form-fields'
 import { primaryColor } from '@styles/color';
 import useApi from 'src/services/api';
+import axios from 'axios';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    fontWeight: '500',
+    fontWeight: "500"  ,
     flex: 1,
   },
   outline: {
@@ -92,9 +93,12 @@ const Participants = ({ navigation }:any) => {
   const [participants, setParticipants]:any = useState([]);
   const [contacts, setContacts]:any = useState([]);
   const [searchText, setSearchText] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const onFetchData = useCallback(() => {
     setLoading(true);
-    api.post('/internal/users')
+    api.post('/internal/users', {
+      searchValue,
+    })
     .then(res => {
       setLoading(false);
       setContacts(res.data);
@@ -102,11 +106,26 @@ const Participants = ({ navigation }:any) => {
     .catch(e => {
       setLoading(false);
     });
-  }, []);
+  }, [searchValue]);
 
   useEffect(() => {
-    onFetchData();
-  }, []);
+    const source = axios.CancelToken.source(); 
+    setLoading(true);
+    api.post('/internal/users', {
+      searchValue,
+    })
+    .then(res => {
+      setLoading(false);
+      setContacts(res.data);
+    })
+    .catch(e => {
+      setLoading(false);
+    });
+    return () => {
+      setLoading(false);
+      source.cancel();
+    };
+  }, [searchValue]);
 
   const onBack = () => navigation.goBack();
   const onNext = () => navigation.replace('CreateMeeting', { participants });
@@ -144,14 +163,13 @@ const Participants = ({ navigation }:any) => {
         data={participants}
         renderItem={({ item }) => (
           <SelectedContact
-            image={item.image}
+            image={item?.image}
             name={item.name}
             onPress={() => onRemoveParticipants(item._id)}
           />
         )}
         keyExtractor={(item) => item._id}
         ListFooterComponent={() => <View style={{ width: 20 }} />}
-        showsHorizontalScrollIndicator={false}
       />
       <View style={styles.contactTitle}>
         <ArrowDownIcon
@@ -232,6 +250,7 @@ const Participants = ({ navigation }:any) => {
           outlineStyle={[InputStyles.outlineStyle, styles.outline]}
           value={searchText}
           onChangeText={setSearchText}
+          onChangeTextDebounce={setSearchValue}
           onSubmitEditing={(event:any) => setSearchText(event.nativeEvent.text)}
         />
       </View>
@@ -249,7 +268,7 @@ const Participants = ({ navigation }:any) => {
         }
         renderItem={({ item }) => (
           <ContactItem
-            image={item.image}
+            image={item?.image}
             name={item.name}
             onPress={() => onTapCheck(item._id)}
             rightIcon={

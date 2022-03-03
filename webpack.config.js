@@ -11,7 +11,8 @@ const aliases = {
   "@templates": "./src/components/templates",
   "@pages": "./src/components/pages",
   "@screens": "./src/screens",
-  "@reducers": "./src/reducers"
+  "@reducers": "./src/reducers",
+  "@utils": "./src/utils"
 };
 
 const babelLoaderRules = {

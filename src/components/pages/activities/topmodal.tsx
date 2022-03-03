@@ -1,101 +1,143 @@
-import React, { Component } from "react";
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity} from "react-native";
-import {Ionicons, Feather, EvilIcons, MaterialCommunityIcons} from '@expo/vector-icons'
+import React, {useRef} from "react";
+import {Dimensions, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import {Ionicons,} from '@expo/vector-icons'
 
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {setVisible, on_checked} from "../../../reducers/activity/actions";
+import {on_checked, setVisible} from "../../../reducers/activity/actions";
 import CalendarIcon from "@assets/svg/calendar";
 import EvaluationIcon from "@assets/svg/evaluation";
 import ApprovedIcon from "@assets/svg/approved";
 import DeclineIcon from "@assets/svg/decline";
 import lodash from 'lodash';
+import RadioButtonOnIcon from "@assets/svg/radioButtonOn";
+import RadioButtonOffIcon from "@assets/svg/radioButtonOff";
+import {getRole} from "@pages/activities/script";
+import {Bold , Regular , Regular500} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const window = Dimensions.get("window")
 
-function TopModal(props:any) {
+function TopModal(props: any) {
+
     const {visible, statusCode} = useSelector((state: RootStateOrAny) => state.activity)
     const dispatch = useDispatch()
-
+    const user = useSelector((state: RootStateOrAny) => state.user);
     const renderIcon = (item) => {
-        switch(item.iconBrand) {
+        switch (item.iconBrand) {
             case 'feather': {
                 return (
-                    <CalendarIcon width={20} height={20} fill={item.checked? "#003aa9" : "black" } />
+                    <CalendarIcon width={RFValue(20)} height={RFValue(20)} fill={item.checked ? "#003aa9" : "black"}/>
                 );
             }
             case 'evil': {
                 return (
-                    <EvaluationIcon width={20} height={20} fill={item.checked? "#003aa9" : "black"}/>
+                    <EvaluationIcon width={RFValue(20)} height={RFValue(20)} fill={item.checked ? "#003aa9" : "black"}/>
                 )
             }
             case 'material-community': {
-                return(
-                    <ApprovedIcon width={20} height={20} fill={item.checked? "#003aa9" : "black"}/>
+                return (
+                    <ApprovedIcon width={RFValue(20)} height={RFValue(20)} fill={item.checked ? "#003aa9" : "black"}/>
                 )
             }
             case 'ionicons': {
                 return (
-                    <DeclineIcon width={22} height={22} fill={item.checked? "#003aa9" : "black"}/>
+                    <DeclineIcon width={RFValue(22)} height={RFValue(22)} fill={item.checked ? "#003aa9" : "black"}/>
                 )
             }
-            default: 
+            default:
                 return null
         }
     }
-
+    const inputRef = useRef();
     return (
-        <View style={visible ? {
-            position: "absolute",
-            zIndex: 2,
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-        } : {}}>
-            { <View style={styles.container}>
-                <View style={styles.header1}>
-                    <Text style={styles.filter1}>FILTER</Text>
-                    <TouchableOpacity onPress={() => {
-                        dispatch(setVisible(false))
-                    } }>
-                        <Ionicons name="md-close" style={styles.icon1}></Ionicons>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.rect2_1}>
-                    <Text style={styles.sort1}>Sort By</Text>
-                </View>
-                <View style={styles.group7_1}>
-                    {statusCode.map((top: any, index: number)=> {
-                        return (
-                            <TouchableOpacity
-                                key={index}
-                                onPress={() =>  dispatch(on_checked(top))}
-                            >
-                                <View style={[
-                                    styles.itemGroup,
-                                    styles.item,
-                                    lodash.size(statusCode) - 1 === index && {
-                                        borderBottomWidth: 0,
-                                    }
-                                ]}>
-                                    <View style={[styles.itemGroup, { paddingHorizontal: 0 }]}>
-                                        {renderIcon(top)}
-                                        <Text style={[styles.label1, {color: top.checked ? "#003aa9" : "rgba(128,128,128,1)"}]}>{top.status}</Text>
-                                    </View>
-                                    <TouchableOpacity onPress={() =>  dispatch(on_checked(top))}>
-                                        <Ionicons
-                                            name={top.checked  ? "md-radio-button-on" : "md-radio-button-off"}
-                                            style={[styles.icon6_1, {color: top.checked ? "#003aa9" : "rgba(128,128,128,1)"}]}
-                                        ></Ionicons>
+        <Modal
+            supportedOrientations={['portrait', 'landscape']}
+            animationType="fade"
+            transparent={true}
+            visible={visible}
+
+            onRequestClose={() => {
+                dispatch(setVisible(false))
+            }}>
+            <View ref={inputRef} style={visible ? {
+
+                position: "absolute",
+                zIndex: 2,
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+            } : {}}>
+
+                {<TouchableWithoutFeedback onPressOut={() => dispatch(setVisible(false))}>
+
+                    <View style={[styles.container]}>
+
+                        <View style={styles.header1}>
+                            <View style={{width: 25}}>
+
+                            </View>
+                            <View>
+                                <Text style={styles.filter1}>FILTER</Text>
+                            </View>
+
+                            <View>
+                                <TouchableOpacity onPress={() => dispatch(setVisible(false))}>
+                                    <Ionicons name="md-close" style={styles.icon1}></Ionicons>
+                                </TouchableOpacity>
+                            </View>
+
+
+                        </View>
+                        <View style={styles.rect2_1}>
+                            <Text style={styles.sort1}>Sort By</Text>
+                        </View>
+                        <View style={styles.group7_1}>
+
+                            {statusCode.filter((item: any) => {
+                                return getRole(user, item?.isShow)
+                            }).map((top: any, index: number) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={index}
+                                        onPress={() => dispatch(on_checked(top))}
+                                    >
+                                        <View style={[
+                                            styles.itemGroup,
+                                            styles.item,
+                                            lodash.size(statusCode) - 1 === index && {
+                                                borderBottomWidth: 0,
+                                            }
+                                        ]}>
+                                            <View style={[styles.itemGroup, {paddingHorizontal: 0}]}>
+                                                {renderIcon(top)}
+                                                <Text
+                                                    style={[styles.label1, {color: top.checked ? "#003aa9" : "#1F2022"}]}>{top.status}</Text>
+                                            </View>
+                                            <TouchableOpacity onPress={() => {
+
+                                                dispatch(on_checked(top))
+                                            }}>
+                                                {
+                                                    top.checked ? <RadioButtonOnIcon width={RFValue(32)} height={RFValue(32)}/> :
+                                                        <RadioButtonOffIcon width={RFValue(32)} height={RFValue(32)}/>
+                                                }
+
+                                            </TouchableOpacity>
+                                        </View>
                                     </TouchableOpacity>
-                                </View>
-                            </TouchableOpacity>
-                        )
-                    })}
-                </View>
-            </View>}
-        </View>
+                                )
+                            })}
+                        </View>
+                    </View>
+
+
+                </TouchableWithoutFeedback>}
+
+            </View>
+        </Modal>
+
     );
 }
 
@@ -118,17 +160,17 @@ const styles = StyleSheet.create({
         paddingTop: 15,
     },
     sort: {
-        fontSize: 18,
-        fontWeight: "bold",
+        fontSize: RFValue(15),
+        fontFamily: Bold,
         color: "#121212",
         textAlign: "left",
         marginTop: 20,
         marginLeft: 18
     },
     sort1: {
-        fontSize: 18,
-        fontWeight: "bold",
-        color: "#121212",
+        fontSize: RFValue(16),
+        fontFamily: Regular500,
+        color: "#000",
     },
     header: {
         height: 100,
@@ -139,34 +181,34 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 15,
-        paddingVertical: 20,
-        paddingTop: 35,
-        backgroundColor: 'rgba(0,65,172,1)'
+        paddingVertical: 28,
+        backgroundColor: '#041B6E'
     },
     rect: {
         height: 100,
-        backgroundColor: "rgba(0,65,172,1)",
+        backgroundColor: "#041B6E",
         flexDirection: "row"
     },
     filter: {
-        fontWeight: "bold",
+        fontFamily: Bold,
         color: "rgba(255,255,255,1)",
-        fontSize: 16,
+        fontSize: RFValue(16),
         marginTop: 5
     },
     filter1: {
-        fontWeight: "bold",
+        alignSelf: "center",
+        fontFamily: Bold,
         color: "rgba(255,255,255,1)",
-        fontSize: 16,
+        fontSize: RFValue(16),
     },
     icon: {
         color: "rgba(255,255,255,1)",
-        fontSize: 25,
+        fontSize: RFValue(25),
         marginLeft: 272
     },
     icon1: {
         color: "rgba(255,255,255,1)",
-        fontSize: 25,
+        fontSize: RFValue(25),
     },
     filterRow: {
         height: 29,
@@ -196,15 +238,16 @@ const styles = StyleSheet.create({
     },
     icon4: {
 
-        fontSize: 32
+        fontSize: RFValue(32)
     },
     label: {
-        fontWeight: "bold",
+        fontFamily: Bold,
         color: "#121212",
         marginLeft: 7,
     },
     label1: {
-        fontWeight: "bold",
+        fontSize: RFValue(14),
+        fontFamily: Regular,
         color: "#121212",
         marginLeft: 7,
     },
@@ -230,19 +273,19 @@ const styles = StyleSheet.create({
     },
     icon6: {
         color: "rgba(128,128,128,1)",
-        fontSize: 25,
+        fontSize: RFValue(25),
         marginRight: 21,
         marginTop: 15
     },
     icon6_1: {
         color: "rgba(128,128,128,1)",
-        fontSize: 25,
+        fontSize: RFValue(25),
     },
     item: {
         justifyContent: 'space-between',
-        paddingVertical: 15,
+        paddingVertical: 10,
         borderBottomColor: 'rgba(128,128,128,1)',
-        borderBottomWidth: StyleSheet.hairlineWidth,
+        // borderBottomWidth: StyleSheet.hairlineWidth,
         paddingHorizontal: 0,
         marginHorizontal: 15,
     },
@@ -251,9 +294,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 15
     },
-    itemContent: {
-
-    },
+    itemContent: {},
 
 });
 

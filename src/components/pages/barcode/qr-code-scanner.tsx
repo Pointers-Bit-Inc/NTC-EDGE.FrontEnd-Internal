@@ -1,250 +1,192 @@
 import React, {useEffect, useState,} from 'react';
-import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View, Alert} from 'react-native';
+import { openSettings } from 'react-native-permissions'
 import {BarCodeScanner, BarCodeScannerResult} from 'expo-barcode-scanner';
+import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
-import Button from '@atoms/button';
 import axios from "axios";
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { defaultColor, errorColor, button, text, warningColor} from '@styles/color';
+import AwesomeAlert from 'react-native-awesome-alerts';
 import QrScanCodeIcon from "@assets/svg/qrCodeScanIcon";
 import UploadIcon from "@assets/svg/uploadQrCode";
-import QrBasicInfo from "@pages/barcode/basicinfo";
+import {Response} from "./response"
+import * as ImagePicker from "expo-image-picker";
+import {styles} from "./styles"
 import {RootStateOrAny, useSelector} from "react-redux";
+import {BASE_URL} from "../../../services/config";
 const finderWidth: number = 280;
 const finderHeight: number = 230;
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 const viewMinX = (width - finderWidth) / 2;
 const viewMinY = (height - finderHeight) / 2;
+
+
 export default function QrCodeScan(props: any) {
+
     const user = useSelector((state: RootStateOrAny) => state.user);
+    const [isVerified, setIsVerified] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+    const [isError, setIsError] = useState(false)
     const [hasPermission, setHasPermission] = useState<boolean | null>(null);
     const [type, setType] = useState<any>(BarCodeScanner.Constants.Type.back);
     const [scanned, setScanned] = useState<boolean>(false);
-    const [visible, setVisible] = useState(false)
-    const onDismiss = () =>{
-        setVisible(false)
-    }
+    const [verifiedInfo, setVerifiedInfo] = useState()
+    const [alert, setAlert] = useState({
+        title: '',
+        message: '',
+        color: defaultColor,
+    });
+    const [showAlert, setShowAlert] = useState(false);
     useEffect(() => {
         (async () => {
             const {status} = await BarCodeScanner.requestPermissionsAsync();
             setHasPermission(status === 'granted');
+           if(!(status === 'granted')){
+               props.onScanned()
+           }
         })();
     }, []);
-    const handleBarCodeScanned = (scanningResult: BarCodeScannerResult) => {
-        setVisible(true)
-        const {type, data, bounds: {origin} = {}} = scanningResult;
-        if (!scanned && (origin ? 1: 0)) {
+    const handleResponse = async (data: string) => {
+        const query = `${BASE_URL}/qr/${data}`
+        await axios.get(query, {headers: {Authorization: "Bearer ".concat(user.sessionToken)}}).then((response) => {
 
+            setVerifiedInfo(response.data)
+            setIsLoading(false)
+            setIsError(false)
+            setIsVerified(true)
+
+        }).catch((e) => {
+            setIsLoading(false)
+            setIsError(true)
+            setIsVerified(false)
+        })
+    }
+    const handleBarCodeScanned = (scanningResult: any) => {
+
+        try {
+            setIsLoading(true)
+            const {type, data, bounds: {origin} = {}} = scanningResult;
+            if (!scanned && (origin ? 1: 0)) {
                 if(origin ? 1: 0){
                     const {x, y}: any = origin;
                     if (x >= viewMinX && y >= viewMinY && x <= (viewMinX + finderWidth / 2) && y <= (viewMinY + finderHeight / 2)) {
-                        setScanned(true);
-                        axios.get(`https://ntc.astrotechenergy.com/qr/` + '61c52b526929f6099c48aa4d', { headers: { Authorization: "Bearer".concat(user.sessionToken) } }).then((response) =>{
-                            setVisible(true)
-
-                            props.onScanned()
-                        }).catch((e) =>{
-                            console.log(e)
-                        })
+                        handleResponse(data)
+                        return;
                     }
                 }
-
-        }else{
-
-            axios.get(`https://ntc.astrotechenergy.com/qr/` + '61c52b526929f6099c48aa4d', { headers: { Authorization: `Bearer ` } }).then((response) =>{
-
-
-                props.onScanned()
-            }).catch((e) =>{
-                console.log(e)
-            })
-
-
+            }
+            handleResponse(data);
+        }catch (error) {
+            setIsLoading(false)
         }
+
     };
-    if (hasPermission === null) {
-        return <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: 16, color: 'white' }}>Requesting for camera permission</Text>
-        </View>;
+    let openImagePickerAsync = async (callback:any = () => {}) => {
+        let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+            setAlert({
+                title: 'Permission Denied',
+                message: 'Permission to access photo library is required.',
+                color: warningColor
+            });
+            setShowAlert(true);
+            return callback('error');
+        }
+        let picker = await ImagePicker.launchImageLibraryAsync({
+            presentationStyle: 0
+        })
+        return callback(null, picker);
     }
-    if (hasPermission === false) {
-        return <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: 16, color: 'white' }}>No access to camera</Text>
-        </View>;
+
+    const decode = async () => {
+        setIsLoading(true)
+        try {
+            openImagePickerAsync(async (err:any, r: any) => {
+                if (!err) {
+                    if(!r.uri) return setIsLoading(false)
+                    const results = await BarCodeScanner.scanFromURLAsync(r?.uri)
+                    const query = `${BASE_URL}/qr/${results[0]?.data}`
+                    axios.get(query, { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
+                        setIsLoading(false)
+                        setIsVerified(true)
+                        setVerifiedInfo(response.data)
+                    }).catch((e) =>{
+                        setIsLoading(false)
+                        setIsError(true)
+                    })
+                } else {
+                    setIsLoading(false)
+                }
+            })
+        } catch (error) {
+            setIsLoading(false)
+            setIsError(true)
+        }
     }
+   
     return (
-        <View style={styles.container}>
-            <BarCodeScanner onBarCodeScanned={handleBarCodeScanned}
-                            type={type}
-                            barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
-                            style={[StyleSheet.absoluteFillObject]}>
+        <View style={[styles.container, { backgroundColor: 'black' }]}>
+            {
+                hasPermission && (
+                    <RNCamera
+                        onBarCodeRead={handleBarCodeScanned}
+                        type={RNCamera.Constants.Type.back}
+                        barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
+                        style={[StyleSheet.absoluteFillObject, styles.container]}
+                    >
+                        <BarcodeMask edgeColor="#62B1F6" showAnimatedLine/>
+                    </RNCamera>
+                )
+            }
+            <View style={styles.group7}>
+                <View style={styles.header}>
+                    <View>
+                        <Text style={styles.qrReader}>QR Reader</Text>
+                    </View>
 
-                <BarcodeMask edgeColor="#62B1F6" showAnimatedLine/>
-
-            </BarCodeScanner>
-
-
-
-            {visible && <QrBasicInfo dismiss={onDismiss} />}
-            <View style={styles.group2}>
-                <TouchableOpacity onPress={handleBarCodeScanned}>
-                    <View style={styles.group}>
-                        <View style={styles.rect}>
-                            <QrScanCodeIcon  style={styles.icon}></QrScanCodeIcon>
-                            <Text style={styles.generateQrCode}>Generate QR Code</Text>
+                </View>
+                {isLoading && <View style={styles.group34}>
+                    <View style={styles.rect19}>
+                        <ActivityIndicator style={styles.icon2} color={'white'}/>
+                    </View>
+                </View>}
+                <Response verified={isVerified}
+                          verifiedInfo={verifiedInfo}
+                          onPress={() => setIsVerified(false)}
+                          error={isError}
+                          onPress1={() => setIsError(false)}/>
+                <View style={styles.group6}>
+                   
+                    <View style={styles.group3}>
+                        <View style={styles.rect2}>
+                            <TouchableOpacity onPress={decode} style={styles.group2}>
+                                <UploadIcon style={styles.icon}/>
+                                <Text style={styles.generateQrCode1}>Upload QR Code</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
-                </TouchableOpacity>
-
-                <View style={styles.group1}>
-                    <View style={styles.rect1}>
-                       <UploadIcon style={styles.icon1}/>
-                        <Text style={styles.generateQrCode1}>Upload QR Code</Text>
-                    </View>
                 </View>
             </View>
+            <AwesomeAlert
+                actionContainerStyle={{ flexDirection: 'row-reverse' }}
+                show={showAlert}
+                showProgress={false}
+                title={alert?.title}
+                titleStyle={{ color: text.default }}
+                message={alert?.message}
+                messageStyle={{ textAlign: 'center', color: text.default }}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showConfirmButton={true}
+                confirmText='Close'
+                confirmButtonColor={alert?.color}
+                onConfirmPressed={() => setShowAlert(false)}
+            />
         </View>
-        /*<View style={styles.container}>
-            <View style={styles.group1}>
-                <View style={styles.rect}>
-                    <View style={styles.iconRow}>
-                        <TouchableOpacity onPress={()=>{
-                            props.onBack()
-                        }}>
-                            <Ionicons name="md-arrow-back" style={styles.icon}></Ionicons>
-                        </TouchableOpacity>
 
-                        <View style={styles.rect2}></View>
-                        <Text style={styles.testTester}>Test Tester</Text>
-                    </View>
-                    <View style={styles.iconRowFiller}></View>
-                   <TouchableOpacity onPress={handleBarCodeScanned}>
-                        <Text style={styles.scanQr}>SCAN{"\n"}QR</Text>
-                   </TouchableOpacity>
-
-                </View>
-            </View>
-            <View style={{flex: 1}}>
-                <BarCodeScanner onBarCodeScanned={handleBarCodeScanned}
-                                type={type}
-                                barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
-                                style={[StyleSheet.absoluteFillObject, styles.container]}>
-
-                    <BarcodeMask edgeColor="#62B1F6" showAnimatedLine/>
-
-                </BarCodeScanner>
-            </View>
-        </View>*/
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    group2: {
-        width: 335,
-        height: 100,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginTop: "auto",
-        alignSelf: "center"
-    },
-    group: {
-        width: 160,
-        height: 70
-    },
-    rect: {
-            display: 'flex',
-        alignItems: 'center',
-justifyContent: 'center',
-        width: 160,
-        height: 70,
-        backgroundColor: "rgba(255,255,255,1)",
-        borderRadius: 10
-    },
-    icon: {
-        color: "rgba(128,128,128,1)",
-        fontSize: 28,
-        height: 32,
-        width: 28,
-    },
-    generateQrCode: {
-        color: "#121212",
-    },
-    group1: {
-        width: 160,
-        height: 70
-    },
-    rect1: {
-        width: 160,
-        height: 70,
-        backgroundColor: "rgba(255,255,255,1)",
-        borderRadius: 10
-    },
-    icon1: {
-        color: "rgba(128,128,128,1)",
-        fontSize: 28,
-        height: 32,
-        width: 28,
-        marginTop: 12,
-        marginLeft: 66
-    },
-    generateQrCode1: {
-        color: "#606A80",
-        marginLeft: 23
-    }
-});
-/*const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    group1: {
-        height: 124,
-        width: "100%",
-        alignSelf: "center"
-    },
-    rect: {
-        height: 124,
-        backgroundColor: "#E6E6E6",
-        flexDirection: "row"
-    },
-    icon: {
-        color: "rgba(128,128,128,1)",
-        fontSize: 40,
-        height: 44,
-        width: 27,
-        marginTop: 3
-    },
-    rect2: {
-        borderRadius: 25,
-        height: 50,
-        backgroundColor: "rgba(181,181,181,1)",
-        width: 50,
-        marginLeft: 7
-    },
-    testTester: {
-        color: "#121212",
-        fontSize: 20,
-        marginLeft: 9,
-        marginTop: 13
-    },
-    iconRow: {
-        height: 50,
-        flexDirection: "row",
-        marginLeft: 23,
-        marginTop: 53
-    },
-    iconRowFiller: {
-        flex: 1,
-        flexDirection: "row"
-    },
-    scanQr: {
-        fontWeight: 'bold',
-        color: "#121212",
-        marginRight: 28,
-        marginTop: 62
-    }
-});*/
 
 

@@ -18,6 +18,7 @@ import Text from '@atoms/text';
 import Button from '@components/atoms/button';
 import { text, button } from 'src/styles/color';
 import useKeyboard from 'src/hooks/useKeyboard';
+import {Regular500} from "@styles/font";
 const { height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 15,
-    fontWeight: '500',
+      fontFamily: Regular500  ,
     color: '#37405B',
     marginTop: 90,
   },
@@ -71,7 +72,7 @@ const errorResponse = {
   username: 'Please enter a valid username',
   email: 'Please enter a valid email address',
   password: 'Password must be atleast 6 characters',
-  confirm: 'password does not match',
+  confirm: 'Passwords do not match',
 };
 
 const Registration = ({ navigation }:any) => {

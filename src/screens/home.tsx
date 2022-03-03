@@ -3,8 +3,11 @@ import {SafeAreaView, Text, StyleSheet, View} from 'react-native';
 import { RootStateOrAny, useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { setUser } from 'src/reducers/user/actions'
+import { resetMeeting } from 'src/reducers/meeting/actions';
+import { resetChannel } from 'src/reducers/channel/actions';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { button, text } from 'src/styles/color';
+import {RFValue} from "react-native-responsive-fontsize";
 
 const styles = StyleSheet.create({
   container: {
@@ -33,12 +36,12 @@ const styles = StyleSheet.create({
   },
   confirmText: {
     color: 'white',
-    fontSize: 14,
+    fontSize: RFValue(14),
     fontWeight: '600',
   },
   cancelText: {
     color: text.default,
-    fontSize: 14,
+    fontSize: RFValue(14),
     fontWeight: '600',
   }
 });
@@ -50,6 +53,8 @@ const Home = ({ navigation }:any) => {
   const onLogout = useCallback(() => {
     onHide();
     dispatch(setUser({}));
+    dispatch(resetMeeting());
+    dispatch(resetChannel());
     setTimeout(() => {
       navigation.replace('Login');
     }, 100);

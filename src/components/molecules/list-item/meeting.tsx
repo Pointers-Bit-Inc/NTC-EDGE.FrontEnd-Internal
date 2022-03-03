@@ -96,7 +96,7 @@ const Meeting: FC<Props> = ({
                   <ProfileImage
                     style={{ marginHorizontal: 1, }}
                     key={seen._id}
-                    image={seen.image}
+                    image={seen?.image}
                     name={`${seen.firstName} ${seen.lastName}`}
                     size={18}
                     textSize={5}

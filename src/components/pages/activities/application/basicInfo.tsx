@@ -1,202 +1,253 @@
-import React, {useEffect, useMemo, useState} from "react";
-import {StyleSheet, Text, View} from "react-native";
-import {formatDate} from "@pages/activities/script";
+import React from "react";
+import {ActivityIndicator , Dimensions , ScrollView , StyleSheet , Text , View} from "react-native";
+import {
+    excludeStatus ,
+    getRole ,
+    getStatusText ,
+    PaymentStatusText ,
+    statusColor ,
+    statusIcon ,
+    StatusText
+} from "@pages/activities/script";
+import ProfileImage from "@atoms/image/profile";
+import CustomText from "@atoms/text";
+import {
+    APPROVED , DECLINED , FORAPPROVAL
+} from "../../../../reducers/activity/initialstate";
+import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
+import moment from "moment";
+import {Bold , Regular , Regular500} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
+const { width , height } = Dimensions.get("screen");
+
+
+
+const Row = (props: { label: string, applicant: any }) => <View style={ styles.group2 }>
+    <Text style={ styles.detail }>{ props.label }</Text>
+    <Text style={ styles.detailInput }>{ props.applicant }</Text>
+</View>;
 
 
 const BasicInfo = (props: any) => {
-    const applicant = props.applicant
-    return <>
+    const {
+        personnel ,
+        loading
+    } = useAssignPersonnel( !!props.paymentMethod && props.assignedPersonnel ?
+                            props.assignedPersonnel : (props.paymentStatus == APPROVED || props.paymentStatus == DECLINED ?
+                            (props?.paymentHistory?.[0]?.userId ) :
+                            (props?.approvalHistory?.[0]?.userId ?
+                             props?.approvalHistory?.[0]?.userId :
+                             props?.assignedPersonnel)) , {
+        headers : {
+            Authorization : "Bearer ".concat(props.user?.sessionToken)
+        }
+    });
+    const applicant = props.applicant;
+    return <ScrollView style={ { width : "100%" , backgroundColor : "#fff" , } }>
+        <View style={ { padding : 10 , flex : 1 , alignSelf : "center" } }>
+            <ProfileImage
+                style={ { borderRadius : 4 } }
+                size={ RFValue(150) }
+                textSize={ 22 }
+                image={ applicant?.user?.profilePicture?.small }
+                name={ `${ applicant?.user?.firstName } ${ applicant?.user?.lastName }` }
+            />
 
-        {props.applicant && <View style={styles.container}>
-            <View style={styles.group2}>
-                <View style={styles.rect}>
-                    <Text style={styles.basicInfo}>Basic Information</Text>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                    <Text style={styles.label}>Last Name</Text>
-                    <View style={styles.labelFiller}></View>
-                    <Text style={styles.input}>{applicant?.user.lastName}</Text>
-                </View>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>Middle Name</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant?.user.middleName}</Text>
+        </View>
+
+        { props.applicant &&
+        <View style={ styles.elevation }>
+            <View style={ [styles.container , { marginTop : 20 }] }>
+                <View style={ styles.group4 }>
+                    <View style={ styles.group3 }>
+                        <View style={ styles.group }>
+                            <View style={ styles.rect }>
+                                <Text style={ styles.header }>Status</Text>
+                            </View>
+                        </View>
+
+                        <View style={ styles.status }>
+
+                            <View
+                                style={ { flexDirection : "row" , justifyContent : "center" , alignItems : "center" } }>
+                                {loading && <ActivityIndicator/> }
+                                {!loading ?
+                                    statusIcon(
+                                        getStatusText(props , personnel)
+                                        ,
+                                        styles.icon2 ,
+                                        1
+                                    ) : <></>
+                                }
+                                {!loading ?
+                                 <CustomText
+                                    style={ [
+                                        styles.role ,
+                                        statusColor(
+                                            getStatusText(props , personnel)
+                                        ) ,
+                                        {
+                                            fontSize : RFValue(16) ,
+                                            fontFamily : Bold ,
+                                        }
+                                    ] }
+                                    numberOfLines={ 1 }
+                                >
+                                    {
+                                        getStatusText(props , personnel)?.toUpperCase()
+                                    }
+                                </CustomText> : <></>}
+                            </View>
+
+
+                            { personnel != undefined &&
+                            (getStatusText(props , personnel) == APPROVED ? getStatusText(props , personnel) : !excludeStatus(props , personnel)  )  &&
+                            <CustomText style={ { fontSize: RFValue(12), flex : 1 , color : "#37405B" } }>
+                                {(
+                                      personnel !== undefined ? `by ${ personnel?.firstName } ${ personnel?.lastName }` : ``)}
+
+                            </CustomText> }
+
+                        </View>
                     </View>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>First Name</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant?.user.firstName}</Text>
+                    <View style={ styles.group3 }>
+                        <View style={ styles.group }>
+                            <View style={ styles.rect }>
+                                <Text style={ styles.header }>Basic Information</Text>
+                            </View>
+                        </View>
+                        <Row label={ "Full Name:" }
+                             applicant={ applicant?.user?.firstName + " " + applicant?.user?.middleName?.charAt() + "." + " " + applicant?.user?.lastName }/>
+                        <Row label={ "Date of Birth:" }
+                             applicant={ moment(applicant?.user?.dateOfBirth).format('LL') }/>
+                        <Row label={ "Gender:" } applicant={ applicant?.user?.gender }/>
+                        <Row label={ "Nationality:" } applicant={ applicant?.user?.nationality }/>
                     </View>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>Date of Birth</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{formatDate(applicant?.user?.dateOfBirth)}</Text>
+                    <View style={ styles.divider }/>
+                    <View style={ styles.group3 }>
+                        <View style={ styles.group }>
+                            <View style={ styles.rect }>
+                                <Text style={ styles.header }>Address</Text>
+                            </View>
+                        </View>
+                        <Row label={ "Unit/Rm/Bldg./Street:" } applicant={ applicant?.unit }/>
+                        <Row label={ "Barangay:" } applicant={ applicant?.barangay }/>
+                        <Row label={ "Province:" } applicant={ applicant?.province }/>
+                        <Row label={ "City/Municipality:" } applicant={ applicant?.city }/>
+                        <Row label={ "Zip Code:" } applicant={ applicant?.zipCode }/>
+
                     </View>
+                    <View style={ styles.divider }/>
+                    <View style={ styles.group3 }>
+                        <View style={ styles.group }>
+                            <View style={ styles.rect }>
+                                <Text style={ styles.header }>Additional Details</Text>
+                            </View>
+                        </View>
+                        <Row label={ "School Attended:" } applicant={ applicant?.schoolAttended }/>
+                        <Row label={ "Course Taken:" } applicant={ applicant?.courseTaken }/>
+                        <Row label={ "Year Graduated:" } applicant={ applicant?.yearGraduated }/>
+                        <Row label={ "Contact Number:" } applicant={ applicant?.user?.contactNumber }/>
+                        <Row label={ "Email:" } applicant={ applicant?.user?.email }/>
+
+                    </View>
+                    <View style={ styles.divider }/>
+
                 </View>
 
-                <View style={[styles.rect4]}></View>
-                <View style={[styles.rect4, {backgroundColor: "#E6E6E6"}]}></View>
             </View>
-            <View style={styles.group2}>
-                <View style={styles.rect}>
-                    <Text style={styles.basicInfo}>Address</Text>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>Unit/Rm/House/Bldg No.:</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant?.unit}</Text>
-                    </View>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>Barangay:</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant?.barangay?.name}</Text>
-                    </View>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>Province:</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant?.province?.name}</Text>
-                    </View>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>City/Municipality:</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant?.city?.name}</Text>
-                    </View>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>Zip Code:</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant?.zipCode}</Text>
-                    </View>
-                </View>
-                <View style={[styles.rect4]}></View>
-                <View style={[styles.rect4, {backgroundColor: "#E6E6E6"}]}></View>
-            </View>
-            <View style={styles.group2}>
-                <View style={styles.rect}>
-                    <Text style={styles.basicInfo}>Additional Details</Text>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>School Attended:</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant.schoolAttended}</Text>
-                    </View>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>Course Taken:</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant.courseTaken}</Text>
-                    </View>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>Year Graduated:</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant.yearGraduated}</Text>
-                    </View>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>Contact Number:</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant.user.contactNumber}</Text>
-                    </View>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>Email:</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant.user.email}</Text>
-                    </View>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>City/Municipality:</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant.city.name}</Text>
-                    </View>
-                </View>
-                <View style={styles.group}>
-                    <View style={styles.rect3}>
-                        <Text style={styles.label}>Zip Code:</Text>
-                        <View style={styles.labelFiller}></View>
-                        <Text style={styles.input}>{applicant.zipCode}</Text>
-                    </View>
-                </View>
-                <View style={[styles.rect4]}></View>
-                <View style={[styles.rect4, {backgroundColor: "#E6E6E6"}]}></View>
-            </View>
-        </View>}
-    </>
+        </View>
+        }
+    </ScrollView>
 
-}
+};
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: "center",
-        paddingHorizontal: 15,
-    },
-    group2: {
-        marginBottom: 10,
-        width: '100%',
+    elevation : {
+        marginBottom : 20 ,
+        borderRadius : 5 ,
+        alignSelf : "center" ,
+        width : "90%" ,
+        backgroundColor : "#fff" ,
+        shadowColor : "rgba(0,0,0,1)" ,
+        shadowOffset : {
+            height : 0 ,
+            width : 0
+        } ,
+        elevation : 6 ,
+        shadowOpacity : 0.1 ,
+        shadowRadius : 2 ,
+    } ,
+    icon2 : {
+        color : "rgba(248,170,55,1)" ,
+        fontSize : RFValue(10)
+    } ,
+    role : {
 
-    },
-    rect: {
-        width: '100%',
-        height: 27,
-        backgroundColor: "#E6E6E6"
-    },
-    basicInfo: {
+        fontFamily : Bold ,
+        fontSize : RFValue(14) ,
+        textAlign : "left" ,
+        paddingHorizontal : RFValue(10)
+    } ,
+    submitted : {
+        color : "rgba(105,114,135,1)" ,
+        textAlign : "right" ,
+        fontSize : RFValue(10)
+    } ,
+    container : {
+        flex : 1
+    } ,
+    group4 : {} ,
+    group3 : {
+        paddingRight : RFValue(10) ,
+        paddingLeft : RFValue(10)
+    } ,
+    group : {} ,
+    rect : {
+        backgroundColor : "#EFF0F6"
+    } ,
+    header : {
+        fontSize: RFValue(12),
+        fontFamily : Regular500 ,
+        color : "#565961" ,
+        padding : 5 ,
+        marginLeft : 5
+    } ,
+    group2 : {
+        flexDirection : "row" ,
+        justifyContent : "flex-start" ,
+        alignItems : "center" ,
+        marginTop : 8 ,
+        paddingHorizontal : 10  ,
+        fontSize: RFValue(12)
+    } ,
+    detail : {
+        fontSize: RFValue(14),
+        fontFamily : Regular ,
+        paddingRight : 0 ,
+        textAlign : "left" ,
+        flex : 1 ,
+        alignSelf : "flex-start"
+    } ,
+    detailInput : {
+        fontSize: RFValue(14),
+        fontFamily : Regular500 ,
+        color : "#121212" ,
+        flex : 1 ,
+        textAlign : "left"
+    } ,
+    divider : {
+        padding : 2 ,
+        paddingBottom : 20
+    } ,
+    status : {
 
-        color: "rgba(86,89,97,1)",
-        marginTop: 6,
-        marginLeft: 13
-    },
-    group: {
-        width: '100%',
-        marginTop: 11
-    },
-    rect3: {
-
-        height: 14,
-        backgroundColor: "rgba(255,255,255,1)",
-        flexDirection: "row"
-    },
-    label: {
-
-        color: "rgba(86,89,97,1)",
-        fontSize: 12,
-
-    },
-    labelFiller: {
-        flex: 1,
-        flexDirection: "row"
-    },
-    input: {
-        fontWeight: "bold",
-        color: "#000",
-        fontSize: 12,
-    },
-    rect4: {
-        width: '100%',
-        height: 10,
+        flexDirection : 'row' ,
+        flexWrap : "wrap" ,
+        justifyContent : "center" ,
+        alignItems : "center" ,
+        paddingVertical : 15 ,
+        paddingLeft : 10
     }
 });
 export default BasicInfo

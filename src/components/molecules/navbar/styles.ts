@@ -1,21 +1,32 @@
 import { StyleSheet, Dimensions } from 'react-native';
-import { disabledColor } from '@styles/color';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { primaryColor, text } from '@styles/color';
+import { Bold } from '@styles/font';
 
 const { width } = Dimensions.get('window');
 
 export default StyleSheet.create({
-  statusBar: {
-    backgroundColor: '#fff',
-  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    backgroundColor: '#fff',
+    padding: 15,
+    backgroundColor: primaryColor,
     borderBottomWidth: 1,
-    borderBottomColor: disabledColor,
+    borderBottomColor: primaryColor,
+  },
+  shadowContainer: {
+    overflow: 'hidden',
+    paddingBottom: 15,
+    zIndex: 1,
+  },
+  shadow: {
+    borderBottomWidth: 0,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+    shadowOffset: { width: 1, height: 1 },
   },
   titleContainer: {
     maxWidth: width * .70,
@@ -23,5 +34,11 @@ export default StyleSheet.create({
   },
   title: {
     textAlign: 'center',
+    color: '#fff',
+    fontSize: RFValue(18),
+    fontFamily: Bold,
   },
+  lightTitle: {
+    color: text.default,
+  }
 });

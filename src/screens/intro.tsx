@@ -23,7 +23,11 @@ const styles = StyleSheet.create({
     marginTop: height * 0.18,
     marginBottom: 15,
   },
+  textButton: {
+    fontWeight: "500"  ,
+  },
   title: {
+
     textAlign: 'center',
     marginBottom: 10,
   },

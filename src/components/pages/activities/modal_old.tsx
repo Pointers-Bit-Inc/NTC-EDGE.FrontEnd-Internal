@@ -2,13 +2,13 @@ import React, {useState} from "react";
 import {Dimensions, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Entypo, Ionicons} from "@expo/vector-icons";
 import {primaryColor, text} from "@styles/color";
-import Disapproval from "@pages/activities/disapproval";
-import Endorsed from "@pages/activities/endorse";
-import Approval from "@pages/activities/approval";
+import Disapproval from "@pages/activities/modal/disapproval";
+import Endorsed from "@pages/activities/modal/endorse";
+import Approval from "@pages/activities/modal/approval";
 import BasicInfo from "@pages/activities/application/basicInfo";
-import Requirement from "@pages/activities/application/requirement";
+import Requirement from "@pages/activities/application/requirementModal/requirement";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
-import Payment from "@pages/activities/application/payment";
+import Payment from "@pages/activities/application/paymentModal/payment";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {formatDate, handleInfinityScroll, statusColor, statusIcon} from "@pages/activities/script";
 import axios from "axios";
@@ -16,6 +16,8 @@ import {BASE_URL} from "../../../services/config";
 import {APPROVED, DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
 import {updateActivityStatus} from "../../../reducers/activity/actions";
 import AwesomeAlert from "react-native-awesome-alerts";
+import {Bold} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const {width} = Dimensions.get('window');
 
@@ -79,7 +81,7 @@ function ActivityModal(props: any) {
                 status: status
             }, config ).then((response) => {
 
-                return axios.get(BASE_URL + `/applications/${id}`, config)
+                return axios.get(BASE_URL + `/application/${id}`, config)
             }).then((response) => {
                 dispatch(updateActivityStatus({application: response.data, status: status}))
                 setStatus(status)
@@ -115,6 +117,9 @@ function ActivityModal(props: any) {
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
             } : {}}/>
             <AwesomeAlert
+                actionContainerStyle={{
+                    flexDirection: "row-reverse"
+                }}
                 show={showAlert}
                 showProgress={false}
                 title="Confirm?"
@@ -226,7 +231,8 @@ function ActivityModal(props: any) {
                                                 service = props?.details?.activityDetails?.application?.service,
                                                 soa = props?.details?.activityDetails?.application?.soa,
                                                 totalFee = props?.details?.activityDetails?.application?.totalFee,
-                                                requirements = props?.details?.activityDetails?.application?.requirements
+                                                requirements = props?.details?.activityDetails?.application?.requirements,
+                                                proofOfPayment = props?.details?.activityDetails?.application?.proofOfPayment
                                             if (isShow && tab.id == 1 && tab.active) {
                                                 return <BasicInfo
                                                     applicant={applicant}
@@ -240,7 +246,7 @@ function ActivityModal(props: any) {
                                             } else if (isShow && tab.id == 3 && tab.active) {
                                                 return <Requirement requirements={requirements} key={index}/>
                                             } else if (isShow && tab.id == 4 && tab.active) {
-                                                return <Payment totalFee={totalFee}
+                                                return <Payment proofOfPayment={} applicant={applicant}  totalFee={totalFee}
                                                                 soa={soa} key={index}/>
                                             }
                                         })
@@ -366,11 +372,11 @@ const styles = StyleSheet.create({
     },
     rect2: {
         height: 100,
-        backgroundColor: "rgba(0,65,172,1)"
+        backgroundColor: "#041B6E"
     },
     icon: {
         color: "rgba(255,255,255,1)",
-        fontSize: 24,
+        fontSize: RFValue(24),
         marginTop: 55,
         marginLeft: 14
     },
@@ -594,14 +600,14 @@ const styles = StyleSheet.create({
         marginTop: 26
     },
     name: {
-        fontWeight: "bold",
+        fontFamily: Bold,
         color: "#121212",
         textAlign: "left",
-        fontSize: 20
+        fontSize: RFValue(20)
     },
     job: {
         color: "rgba(98,108,130,1)",
-        fontSize: 10,
+        fontSize:  RFValue(10),
         textAlign: "left"
     },
     group2: {
@@ -614,11 +620,11 @@ const styles = StyleSheet.create({
     },
     icon2: {
         color: "rgba(248,170,55,1)",
-        fontSize: 10
+        fontSize: RFValue(10)
     },
     role: {
-        fontWeight: "bold",
-        fontSize: 10,
+        fontFamily: Bold,
+        fontSize: RFValue(10),
         textAlign: "left",
         marginLeft: 4
     },

@@ -13,13 +13,12 @@ const styles = StyleSheet.create({
     top: 2,
     paddingHorizontal: 5,
     backgroundColor: 'white',
-    zIndex: 99,
     flexDirection: 'row'
   },
   inputContainer: {
     borderWidth: 1,
     borderColor: 'black',
-    borderRadius: 10,
+    borderRadius: 15,
     overflow: 'hidden',
     width: '100%',
     flexDirection: 'row',
@@ -27,6 +26,7 @@ const styles = StyleSheet.create({
   },
   description: {
     paddingTop: 2,
+    marginLeft: 15,
   },
   info: {
     flexDirection: 'row',
@@ -121,12 +121,13 @@ const OTPField: FC<Props> = ({
         {children}
       </View>
       {
-        hasValidation && (
+        hasValidation && (!!error || !!description) && (
           <View style={styles.description}>
             <View style={styles.info}>
               {
                 !!error && (
                   <ExclamationIcon
+                    type='circle'
                     size={12}
                     color={errorColor}
                   />
@@ -136,7 +137,7 @@ const OTPField: FC<Props> = ({
                 style={[
                   labelStyle,
                   !!error && {
-                    marginLeft: 10,
+                    marginLeft: 5,
                     color: errorColor
                   }
                 ]}

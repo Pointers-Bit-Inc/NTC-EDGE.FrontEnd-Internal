@@ -1,46 +1,74 @@
 import React, { FC, ReactNode } from 'react';
 import { View, TouchableOpacity } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
 import StatusBar from '@atoms/status-bar';
 import Text from '@atoms/text';
+import { disabledColor, primaryColor } from '@styles/color';
 import styles from './styles';
 
 interface Props {
-  title?: string,
-  titleStyle?: any,
-  leftIcon?: ReactNode,
-  rightIcon?: ReactNode,
-  onLeft?: any,
-  onRight?: any,
+  title?: string;
+  titleStyle?: any;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
+  onLeft?: any;
+  onRight?: any;
+  shadow?: any;
+  light?: boolean;
 };
 
-const Navbar: FC<Props> = ({
+const NavBar: FC<Props> = ({
   title = '',
   titleStyle = {},
-  leftIcon = <View />,
-  rightIcon = <View />,
+  leftIcon,
+  rightIcon,
   onLeft = () => {},
   onRight = () => {},
+  shadow,
+  light,
 }) => {
+  leftIcon = !!leftIcon ? leftIcon : <View style={{width: RFValue(24)}} />
+  rightIcon = !!rightIcon ? rightIcon : <View style={{width: RFValue(24)}} />
+  const backgroundColor = light ? '#fff' : primaryColor;
+  const statusBar = {
+    backgroundColor,
+    barStyle: light ? 'dark-content' : 'light-content',
+  };
   return (
     <>
 
-      <StatusBar {...styles.statusBar} />
+      <StatusBar {...statusBar} />
 
-      <View style={styles.container}>
+      <View style={shadow && styles.shadowContainer}>
 
-        <TouchableOpacity onPress={onLeft}>
-          {leftIcon}
-        </TouchableOpacity>
+        <View style={[
+          styles.container,
+          shadow && styles.shadow,
+          light && {backgroundColor},
+          light && {borderBottomColor: disabledColor}
+        ]}>
 
-        <View style={styles.titleContainer}>
-          <Text numberOfLines={3} style={[styles.title, titleStyle]}>
-            {title}
-          </Text>
+          <TouchableOpacity onPress={onLeft}>
+            {leftIcon}
+          </TouchableOpacity>
+
+          <View style={styles.titleContainer}>
+            <Text
+              numberOfLines={3}
+              style={[
+                styles.title,
+                light && styles.lightTitle,
+                titleStyle
+              ]}>
+              {title}
+            </Text>
+          </View>
+
+          <TouchableOpacity onPress={onRight}>
+            {rightIcon}
+          </TouchableOpacity>
+
         </View>
-
-        <TouchableOpacity onPress={onRight}>
-          {rightIcon}
-        </TouchableOpacity>
 
       </View>
 
@@ -48,4 +76,4 @@ const Navbar: FC<Props> = ({
   )
 };
 
-export default Navbar;
+export default NavBar;

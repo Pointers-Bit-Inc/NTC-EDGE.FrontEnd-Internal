@@ -9,9 +9,12 @@ const InitialState = Record({
   firstName: '',
   middleName: '',
   lastName: '',
-  phone: '',
+  contactNumber: '',
   address: '',
-  profileImage: ''
+  profileImage: '',
+  image: '',
+  name: '',
+  profilePicture: {},
 });
 
 export default InitialState;

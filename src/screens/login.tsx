@@ -1,67 +1,86 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import {
-  ImageBackground,
-  SafeAreaView,
-  ScrollView,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  Image,
-  ActivityIndicator,
+  ImageBackground ,
+  ScrollView ,
+  View ,
+  TouchableOpacity ,
+  StyleSheet ,
+  KeyboardAvoidingView ,
+  Platform ,
+  Image ,
+  ActivityIndicator ,
+  Dimensions , StatusBar
 } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { setUser } from 'src/reducers/user/actions'
-import {
-  validateEmail,
-  validatePassword,
-} from 'src/utils/form-validations';
-import LoginForm from '@organisms/forms/login';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { validateEmail, validatePassword } from 'src/utils/form-validations';
 import Text from '@atoms/text';
-import Button from '@components/atoms/button';
-import { text, button, outline } from 'src/styles/color';
+import Button from '@atoms/button';
+import LoginForm from '@organisms/forms/login';
+import { text, button, outline } from '@styles/color';
+import { Bold } from '@styles/font';
 import useApi  from 'src/services/api';
-const logo = require('../../assets/logo.png');
-const background = require('../../assets/background.png');
+import { setUser } from 'src/reducers/user/actions';
+import { StackActions } from '@react-navigation/native';
+import Ellipsis from "@atoms/ellipsis";
+import {setTabBarHeight} from "../reducers/application/actions";
+const logo = require('@assets/ntc-edge-horizontal.png');
+const background = require('@assets/background.png');
+
+const { width, height } = Dimensions.get('screen');
+const navigationBarHeight = height - Dimensions.get('window').height;
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  bgImage: {
+    height ,
+    width,
   },
-  header: {
-    marginVertical: '20%',
-    marginBottom: '25%',
-  },
-  image: {
-    height: 55,
-    width: 55,
-  },
-  formContainer: {
-    borderColor: outline.default,
-    borderWidth: 1,
-    borderRadius: 15,
-    padding: 30,
-    paddingVertical: 40,
-    backgroundColor: 'white',
-  },
-  footer: {
-    marginTop: 35,
+  formTitleText: {
+    color: text.primary,
+    fontSize: RFValue(20),
+    textAlign: 'center',
+    fontFamily: Bold,
     marginBottom: 30,
   },
-  button: {
-    borderRadius: 5,
-    paddingVertical: 12,
+  image: {
+    height: width * .15,
+    width: width * .60,
+    marginTop: height * .10,
+    marginVertical: height * .08,
+    alignSelf: 'center',
   },
-  horizontal: {
+  formContainer: {
+    flex: 1,
+    borderRadius: 15,
+    borderWidth: 0.5,
+    borderBottomWidth: 0,
+    borderColor: outline.disabled,
+    backgroundColor: '#fff',
+    padding: 30,
+  },
+  bottomContainer: {
+    
+  },
+  loginButton: {
+    borderRadius: 10,
+
+    paddingVertical: RFValue(15),
+    justifyContent: 'center',
+  },
+  boldText: {
+    fontFamily: Bold,
+  },
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginVertical: 20,
   }
 });
 
 const errorResponse = {
-  email: 'Please enter a valid email address',
-  password: 'Password must be atleast 6 characters',
+  email: 'Enter a valid email address',
+  password: 'Password must be at least 8 characters',
 };
 
 const Login = ({ navigation }:any) => {
@@ -74,23 +93,23 @@ const Login = ({ navigation }:any) => {
       email: data.email,
       password: data.password,
     })
-    .then(res => {
-      setLoading(false);
-      dispatch(setUser(res.data));
-      navigation.navigate('ActivitiesScreen');
-    })
-    .catch(e => {
-      setLoading(false);
-      if (e) {
-        setFormValue({
-          ...formValue,
-          email: {
-            ...formValue.email,
-            error: 'Authentication failed'
+        .then(res => {
+          setLoading(false);
+          dispatch(setUser(res.data));
+          navigation.dispatch(StackActions.replace('ActivitiesScreen'));
+        })
+        .catch(e => {
+          setLoading(false);
+          if (e) {
+            setFormValue({
+              ...formValue,
+              email: {
+                ...formValue.email,
+                error: 'Authentication failed'
+              }
+            });
           }
         });
-      }
-    });
   };
   const [formValue, setFormValue] = useState({
     email: {
@@ -177,57 +196,74 @@ const Login = ({ navigation }:any) => {
     }
   }
   const isValid =
-    formValue.email.isValid &&
-    formValue.password.isValid;
+      formValue.email.isValid &&
+      formValue.password.isValid;
 
   return (
-    <ImageBackground
-      resizeMode={'stretch'}
-      source={background}
-      style={styles.container}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
+      <ImageBackground
+          resizeMode='stretch'
+          source={background}
+          style={styles.bgImage}
+          imageStyle={{flex: 1}}
       >
-      <ScrollView
-        style={{ padding: 20 }}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.header}>
-          <View style={styles.horizontal}>
-            <Image style={styles.image} source={logo} />
-            <View style={{ marginLeft: 10 }}>
-              <Text color={text.default} size={10}>
-                Republic of the Philippines
-              </Text>
-              <Text color={text.default} size={10} weight={'500'}>
-                NATIONAL TELECOMMUNICATIONS COMMISSION
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.formContainer}>
-          <LoginForm onChangeValue={onChangeValue} form={formValue} />
-          <View style={styles.footer}>
-            <Button
-              style={[styles.button, { backgroundColor: isValid ? button.primary : button.default }]}
-              disabled={loading}
-              onPress={onCheckValidation}
-            >
+        <StatusBar barStyle='dark-content' />
+
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            showsVerticalScrollIndicator={false}
+        >
+
+          <Image
+              resizeMode='contain'
+              source={logo}
+              style={styles.image}
+          />
+
+          <View style={styles.formContainer}>
+
+            <Text style={styles.formTitleText}>Login</Text>
+
+            <LoginForm onChangeValue={onChangeValue} form={formValue} />
+
+            <View style={styles.bottomContainer}>
+              <Button
+                  style={[
+                    styles.loginButton,
+                    {
+                      backgroundColor:  loading
+                                       ? button.info
+                                       : isValid
+                                         ? button.primary
+                                         : button.default
+                    }
+                  ]}
+                  disabled={loading}
+                  onPress={onCheckValidation}
+              >
+                {
+                  loading ? (
+                      <View style={{paddingVertical: 10  }}>
+                        <Ellipsis   color='#fff' size={10} />
+                      </View>
+
+                  ) : (
+                      <View>
+                        <Text style={styles.boldText} color={isValid ? '#fff' : text.disabled} size={18}>Login</Text>
+                      </View>
+
+                  )
+                }
+              </Button>
               {
-                loading ? (
-                  <ActivityIndicator color={'white'} size={'small'} />
-                ) : (
-                  <Text color="white" size={18}>Login</Text>
-                )
+                Platform.OS === 'android' && <View style={{height: navigationBarHeight}} />
               }
-            </Button>
+            </View>
+
           </View>
-        </View>
-      </ScrollView>
-      </KeyboardAvoidingView>
-    </ImageBackground>
+
+        </ScrollView>
+
+      </ImageBackground>
   );
 };
 

@@ -5,13 +5,21 @@ export const DATE_ADDED = "Date Added",
     DECLINED = "Declined",
     DECLINE = "Decline",
     VERIFICATION = "Verification",
+    VERIFIED = "Verified",
+    UNVERIFIED = "Unverified",
     PAID = "Paid",
+    PENDING = "Pending",
+    FORVERIFICATION = 'For Verification',
     FORPAYMENT = "For Payment",
+    FORAPPROVAL = "For Approval",
     RELEASED = "Released",
     OTHERS = "Others",
     CASHIER = "cashier",
     DIRECTOR = "director",
-    EVALUATOR = "evaluator"
+    EVALUATOR = "evaluator",
+    VERIFIER = "verifier" ,
+    CHECKER = "checker",
+    ACCOUNTANT = "accountant";
 
 const InitialState = Record({
   visible: false,
@@ -21,29 +29,49 @@ const InitialState = Record({
       checked: false,
       status: DATE_ADDED,
       iconBrand: 'feather',
-      iconName: 'calendar'
+      iconName: 'calendar',
+      isShow: [CHECKER, CASHIER, DIRECTOR, EVALUATOR, ACCOUNTANT]
     },
     {
       id: 2,
       checked: false,
       status: FOREVALUATION,
       iconBrand: 'evil',
-      iconName: 'redo'
+      iconName: 'redo',
+      isShow: [CHECKER, DIRECTOR, EVALUATOR]
     },
     {
       id: 3,
       checked: false,
       status: APPROVED,
       iconBrand: 'material-community',
-      iconName: 'check-circle-outline'
+      iconName: 'check-circle-outline',
+      isShow: [CHECKER, DIRECTOR, EVALUATOR, ACCOUNTANT]
     },
     {
       id: 4,
       checked: false,
       status: DECLINED,
       iconBrand: 'ionicons',
-      iconName: 'md-close-circle-outline'
-    }
+      iconName: 'md-close-circle-outline',
+      isShow: [CHECKER, DIRECTOR, EVALUATOR, ACCOUNTANT]
+    },
+    {
+      id: 5,
+      checked: false,
+      status: VERIFIED,
+      iconBrand: 'feather',
+      iconName: 'calendar',
+      isShow: [CHECKER, CASHIER]
+    },
+    {
+      id: 6,
+      checked: false,
+      status: UNVERIFIED,
+      iconBrand: 'evil',
+      iconName: 'redo',
+      isShow: [CHECKER, CASHIER]
+    },
   ],
   selectedChangeStatus:[],
   activities:[]

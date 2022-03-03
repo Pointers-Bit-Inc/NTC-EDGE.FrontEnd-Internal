@@ -1,6 +1,7 @@
 import React  from "react";
 import {StyleSheet, View, Text, Modal, TouchableOpacity} from "react-native";
 import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
+import {RFValue} from "react-native-responsive-fontsize";
 
 function QrBasicInfo(props: any) {
     return (
@@ -81,9 +82,8 @@ const styles = StyleSheet.create({
         fontSize: 34
     },
     verified: {
-        fontFamily: "roboto-regular",
         color: "rgba(0,171,118,1)",
-        fontSize: 25
+        fontSize: RFValue(25)
     },
     icon2: {
         color: "rgba(128,128,128,1)",
@@ -109,7 +109,6 @@ const styles = StyleSheet.create({
         marginLeft: 11
     },
     basicInfo: {
-        fontFamily: "roboto-700",
         color: "#121212"
     },
     group3: {
@@ -120,12 +119,10 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     nameAddress: {
-        fontFamily: "roboto-regular",
         color: "rgba(96,106,128,1)",
         fontSize: 16
     },
     nameAddress1: {
-        fontFamily: "roboto-regular",
         color: "rgba(96,106,128,1)",
         fontSize: 16
     }

@@ -81,6 +81,24 @@ const useFirebase = (user:any) => {
     return unsubscribe;
   }, [user]);
 
+  const userActiveMeetingSubscriber = useCallback((callback = () => {}) => {
+    const unsubscribe = firestore()
+      .collection('meetings')
+      .where(
+        'participantsId',
+        'array-contains',
+        user._id,
+      )
+      .where(
+        'ended',
+        '==',
+        false,
+      )
+      .orderBy('createdAt', 'desc')
+      .onSnapshot(callback);
+    return unsubscribe;
+  }, [user]);
+
   const userMeetingSubscriber = useCallback((callback = () => {}) => {
     const unsubscribe = firestore()
       .collection('meetings')
@@ -132,7 +150,7 @@ const useFirebase = (user:any) => {
         createdAt: firestore.FieldValue.serverTimestamp(),
         updatedAt: firestore.FieldValue.serverTimestamp(),
         lastMessage: {
-          message: `created a new ${isGroup ? 'group ' : ' '}chat`,
+          message: `Created a new ${isGroup ? 'group ' : ' '}chat`,
           sender: user,
         },
         isGroup,
@@ -172,7 +190,7 @@ const useFirebase = (user:any) => {
         createdAt: serverTimeStamp,
         updatedAt: serverTimeStamp,
         lastMessage: {
-          message: `created a new meeting.`,
+          message: `Created a new meeting.`,
           sender: user,
         },
         isGroup,
@@ -426,6 +444,7 @@ const useFirebase = (user:any) => {
     channelSubscriber,
     messagesSubscriber,
     channelMeetingSubscriber,
+    userActiveMeetingSubscriber,
     userMeetingSubscriber,
     meetingSubscriber,
     memberMeetingSubscriber,

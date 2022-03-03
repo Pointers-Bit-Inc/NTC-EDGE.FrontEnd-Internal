@@ -1,4 +1,6 @@
 import {StyleSheet} from "react-native";
+import {Bold} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 export const styles = StyleSheet.create({
     container: {
@@ -10,10 +12,13 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
     group: {
+        width: "100%",
+        zIndex: 10,
+        elevation: 10
     },
     rect: {
-        paddingVertical: 15,
-        backgroundColor: "rgba(0,65,172,1)",
+        paddingVertical:15,
+        backgroundColor: "#041B6E",
         flexDirection: "row"
     },
     rect4: {
@@ -24,9 +29,9 @@ export const styles = StyleSheet.create({
     },
     activity: {
         color: "rgba(255,255,255,1)",
-        fontSize: 20,
+        fontSize: RFValue(20),
         marginLeft: 15,
-        fontWeight: "bold"
+        fontFamily: Bold,
     },
     rect4Row: {
         height: 40,
@@ -46,36 +51,35 @@ export const styles = StyleSheet.create({
 
     },
     searcg: {
-
+        left: 0,
+        right: 0,
     },
     rect26: {
-        height: 83,
         backgroundColor: "rgba(255,255,255,1)"
     },
     rect7: {
 
         width: "90%",
-        backgroundColor: "#E6E6E6",
-        borderRadius: 10,
+        backgroundColor: "#EFF0F7",
+        borderRadius: 12,
         flexDirection: "row",
-        marginTop: 20,
-        marginLeft: 20
+        paddingTop: RFValue(5),
+        paddingLeft: RFValue(10),
+        paddingBottom: RFValue(5)
     },
     icon: {
         color: "rgba(190,199,218,1)",
-        fontSize: 26,
-        height: 23,
-        width: 26,
-        marginTop: 9
+        fontSize: RFValue(26),
+        alignSelf: "center"
+
     },
     textInput: {
+        padding: 10,
         color: "rgba(149,157,175,1)",
-        width: 272,
-        height: 40,
-        marginLeft: 7
+        justifyContent: "center"
     },
     iconRow: {
-        height: 40,
+        height: RFValue(40),
         flexDirection: "row",
         flex: 1,
         marginRight: 17,
@@ -84,7 +88,7 @@ export const styles = StyleSheet.create({
     rect27: {
         width: "100%",
         height: 10,
-        backgroundColor: "#E6E6E6"
+        //backgroundColor: "#E6E6E6"
     },
     group26: {
         marginTop: 6
@@ -96,16 +100,17 @@ export const styles = StyleSheet.create({
         marginBottom: 32
     },
     group25: {
-    },
-    rect34: {
-        height: 57,
-        flexDirection: "row",
+        paddingHorizontal: 20,
+
         backgroundColor: "rgba(255,255,255,1)"
     },
-    group24: {
-        width: 59,
-        height: 57
+    rect34: {
+        paddingVertical: 20,
+        justifyContent: "space-between",
+        flexDirection: "row",
+           alignItems: "center"
     },
+
     pinnedgroup: {
         width: "100%",
         height: 16,
@@ -114,16 +119,26 @@ export const styles = StyleSheet.create({
         backgroundColor: "rgba(255,255,255,1)"
     },
     pinnedActivity: {
-        color: "rgba(0,65,172,1)",
+        fontSize: RFValue(16),
+        color: "#2863D6",
         textAlign: "left",
         marginLeft: 20
     },
     date: {
-        fontWeight: "bold",
-        top: 24,
-        left: 31,
-        position: "absolute",
-        color: "rgba(87,98,121,1)"
+        alignItems: "center",
+        flexDirection:'row',
+
+    },
+    dot:{
+        height: 6,
+        width: 6,
+        backgroundColor:  "#000",
+        borderRadius: 3
+    },
+    dateText:{
+        color: "#606A80",
+        fontFamily: Bold,
+        fontSize: RFValue(14),
     },
     rect36: {
         top: 0,
@@ -133,16 +148,12 @@ export const styles = StyleSheet.create({
         position: "absolute"
     },
     dateStack: {
-        width: 100,
-        height: 57
     },
     group24Filler: {
         flex: 1,
         flexDirection: "row"
     },
     group23: {
-        width: 32,
-        height: 57,
         flexDirection: "row"
     },
     stackFiller: {
@@ -153,7 +164,7 @@ export const styles = StyleSheet.create({
         top: 22,
         position: "absolute",
         color: "rgba(128,128,128,1)",
-        fontSize: 12,
+        fontSize: RFValue(12),
         right: 20
     },
     rect35: {
@@ -164,8 +175,6 @@ export const styles = StyleSheet.create({
         right: 0
     },
     icon4Stack: {
-        width: 33,
-        height: 57
     },
     group17: {
         height: 80
@@ -251,9 +260,9 @@ export const styles = StyleSheet.create({
         marginTop: 26
     },
     name: {
-        fontWeight:  "bold",
+        fontFamily: Bold,
         color: "#121212",
-        fontSize: 12
+        fontSize: RFValue(12)
     },
     group2: {
         width: 135,
@@ -283,7 +292,7 @@ export const styles = StyleSheet.create({
     },
     application: {
         color: "rgba(28,61,121,1)",
-        fontSize: 9,
+        fontSize: RFValue(9),
         marginTop: 3
     },
     group20: {
@@ -299,7 +308,7 @@ export const styles = StyleSheet.create({
     },
     icon2: {
         color: "rgba(28,61,121,1)",
-        fontSize: 13,
+        fontSize: RFValue(13),
         height: 15,
         width: 10,
         marginTop: 3,
@@ -350,7 +359,7 @@ export const styles = StyleSheet.create({
     loremIpsum: {
         color: "rgba(133,141,158,1)",
         textAlign: "right",
-        fontSize: 10,
+        fontSize: RFValue(10),
         marginTop: 25
     },
     rect24: {
@@ -406,11 +415,12 @@ export const styles = StyleSheet.create({
         marginTop: 1
     },
     icon3: {
+
         top: 4,
         left: 25,
         position: "absolute",
 
-        fontSize: 16
+        fontSize: RFValue(16)
     },
     rect29: {
         top: 0,
@@ -427,7 +437,7 @@ export const styles = StyleSheet.create({
     approved: {
         top: 8,
 
-        fontSize: 10
+        fontSize: RFValue(10)
     },
     rect30Stack: {
         width: 81,
