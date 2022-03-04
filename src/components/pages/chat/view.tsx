@@ -11,6 +11,7 @@ import {
   FlatList,
   InteractionManager,
   Keyboard,
+  Animated,
 } from 'react-native'
 import lodash from 'lodash';
 import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
@@ -134,7 +135,7 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
   const [inputText, setInputText] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [rendered, setRendered] = useState(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const Height = useRef(new Animated.Value(0));
   const channelId = _id;
   
   const _sendMessage = (channelId:string, inputText:string) => {
@@ -177,15 +178,14 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
     }
   }, [channelId, inputText])
 
-  const _keyboardDidShow = (e:any) => {
-    setKeyboardHeight(e?.endCoordinates?.height || 0);
-  }
-
-  const _keyboardDidHide = () => setKeyboardHeight(0);
-
   useEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
+    const animateTo = (y, duration) => Animated.timing(Height.current, { toValue: y, duration, useNativeDriver: false }).start();
+    const showSubscription = Keyboard.addListener("keyboardDidShow", evt => {
+      const height = evt.endCoordinates.height + (Platform.OS === 'ios' ? 0 : 25);
+      animateTo(height, evt.duration);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", evt => {animateTo(0, evt.duration)});
+        
     InteractionManager.runAfterInteractions(() => {
       setRendered(true);
     })
@@ -215,55 +215,60 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
           !!channelId && (<ChatList />)
         }
       </View>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        enabled
-        keyboardVerticalOffset={Platform.OS === 'ios' ? RFValue(160) : 0 }
-        style={{ bottom: Platform.OS === 'ios' ? 0 : RFValue(keyboardHeight) }}
-      >
-        <View style={styles.keyboardAvoiding}>
-          <View style={{ marginTop: RFValue(-18) }}>
-            <TouchableOpacity  disabled={true}>
-              <View style={styles.plus}>
-                <PlusIcon
-                  color="white"
-                  size={RFValue(12)}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={{ flex: 1, paddingHorizontal: 5 }}>
-            <InputField
-              ref={inputRef}
-              placeholder={'Type a message'}
-              containerStyle={{ height: null, paddingVertical: 10, borderWidth: 1, borderColor: isFocused ? '#C1CADC' : 'white', backgroundColor: 'white' }}
-              placeholderTextColor={'#C4C4C4'}
-              inputStyle={[InputStyles.text, styles.input, { backgroundColor: 'white' }]}
-              outlineStyle={[InputStyles.outlineStyle, styles.outline, { backgroundColor: 'white' }]}
-              value={inputText}
-              onChangeText={setInputText}
-              onSubmitEditing={() => inputText && onSendMessage()}
-              returnKeyType={'send'}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-            />
-          </View>
-          <View style={{ marginTop: RFValue(-18), flexDirection: 'row' }}>
-            <TouchableOpacity
-              disabled={!inputText}
-              onPress={onSendMessage}
-            >
-              <View style={{ marginLeft: 10 }}>
-                <NewMessageIcon
-                  color={inputText ? button.info : '#D1D1D6'}
-                  height={RFValue(30)}
-                  width={RFValue(30)}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
+      <Animated.View style={[styles.keyboardAvoiding, { marginBottom: Height.current }]}>
+        <View style={{ marginTop: RFValue(-20) }}>
+          <TouchableOpacity  disabled={true}>
+            <View style={styles.plus}>
+              <PlusIcon
+                color="white"
+                size={RFValue(12)}
+              />
+            </View>
+          </TouchableOpacity>
         </View>
-      </KeyboardAvoidingView>
+        <View style={{ flex: 1, paddingHorizontal: 5 }}>
+          <InputField
+            ref={inputRef}
+            placeholder={'Type a message'}
+            containerStyle={{ height: null, paddingVertical: 10, borderWidth: 1, borderColor: isFocused ? '#C1CADC' : 'white', backgroundColor: 'white' }}
+            placeholderTextColor={'#C4C4C4'}
+            inputStyle={[InputStyles.text, styles.input, { backgroundColor: 'white' }]}
+            outlineStyle={[InputStyles.outlineStyle, styles.outline, { backgroundColor: 'white' }]}
+            value={inputText}
+            onChangeText={setInputText}
+            onSubmitEditing={() => inputText && onSendMessage()}
+            returnKeyType={'send'}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          />
+        </View>
+        <View style={{ marginTop: RFValue(-18), flexDirection: 'row' }}>
+          <TouchableOpacity
+            disabled={!inputText}
+            onPress={onSendMessage}
+          >
+            {
+              selectedMessage?._id ? (
+                <View style={[styles.plus, { marginRight: 0, marginLeft: 10, backgroundColor: button.info }]}>
+                  <CheckIcon
+                    type='check1'
+                    size={14}
+                    color={'white'}
+                  />
+                </View>
+              ) : (
+                <View style={{ marginLeft: 10 }}>
+                  <NewMessageIcon
+                    color={inputText ? button.info : '#D1D1D6'}
+                    height={RFValue(30)}
+                    width={RFValue(30)}
+                  />
+                </View>
+              )
+            }
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
     </View>
   )
 }
