@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    paddingVertical: RFValue(10),
-    marginBottom: Platform.OS === 'ios' ? 0 : -5,
+    paddingVertical: RFValue(15),
+    marginBottom: Platform.OS === 'ios' ? -2 : -5,
   },
   description: {
     paddingTop: 2,
@@ -137,8 +137,8 @@ const InputField: FC<Props> = ({
       >
         <NewSearchIcon
           style={[styles.icon, iconStyle]}
-          height={RFValue(18)}
-          width={RFValue(18)}
+          height={RFValue(20)}
+          width={RFValue(20)}
           color={'#6E7191'}
         />
         <TextInput

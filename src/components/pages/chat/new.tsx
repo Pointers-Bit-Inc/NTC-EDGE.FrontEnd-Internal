@@ -158,7 +158,7 @@ const tagStyles = StyleSheet.create({
     fontFamily: Bold,
     paddingLeft: 0,
     paddingRight: 0,
-    marginTop: Platform.OS === 'ios' ? 0 : -3
+    marginTop: Platform.OS === 'ios' ? 0 : -2
   },
 });
 

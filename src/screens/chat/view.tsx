@@ -363,13 +363,25 @@ const ChatView = ({ navigation, route }:any) => {
             <TouchableOpacity
               onPress={onSendMessage}
             >
-              <View style={{ marginLeft: 10 }}>
-                <NewMessageIcon
-                  color={inputText ? button.info : '#D1D1D6'}
-                  height={RFValue(30)}
-                  width={RFValue(30)}
-                />
-              </View>
+              {
+                selectedMessage?._id ? (
+                  <View style={[styles.plus, { marginRight: 0, marginLeft: 10, backgroundColor: button.info }]}>
+                    <CheckIcon
+                      type='check1'
+                      size={14}
+                      color={'white'}
+                    />
+                  </View>
+                ) : (
+                  <View style={{ marginLeft: 10 }}>
+                    <NewMessageIcon
+                      color={inputText ? button.info : '#D1D1D6'}
+                      height={RFValue(30)}
+                      width={RFValue(30)}
+                    />
+                  </View>
+                )
+              }
             </TouchableOpacity>
             {/* {
               !!selectedMessage._id ? (

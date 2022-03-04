@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     fontSize: 16,
-    color: text.primary,
+    color: text.info,
   },
   confirmText: {
     fontSize: 16,
