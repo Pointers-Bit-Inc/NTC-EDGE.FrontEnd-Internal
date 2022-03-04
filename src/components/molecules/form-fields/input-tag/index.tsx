@@ -97,11 +97,7 @@ const InputTags: ForwardRefRenderFunction<TextInputRef, Props> = ({
   };
 
   const onChangeText = (text:string) => {
-    if (text.length === 0) {
-      showLastTag();
-    } else {
-      setState((current:any) =>({ ...current, text }));
-    }
+    setState((current:any) =>({ ...current, text }));
   };
 
   const onChangeTextFn = (text:string) => {
@@ -110,8 +106,8 @@ const InputTags: ForwardRefRenderFunction<TextInputRef, Props> = ({
   }
 
   const onKeyPress = ({ nativeEvent: { key } }:any) => {
-    if(state?.text?.length === 0 && key === 'Backspace') {
-      onChangeTextFn('');
+    if(state.text.length === 0 && key === 'Backspace') {
+      showLastTag();
     }
   }
   
