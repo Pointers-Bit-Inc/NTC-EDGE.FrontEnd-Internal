@@ -212,10 +212,6 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   }
 
   useEffect(() => {
-    inputTagRef?.current?.focus();
-  }, []);
-
-  useEffect(() => {
     let unmount = false;
     setLoading(true);
     setPageIndex(1);

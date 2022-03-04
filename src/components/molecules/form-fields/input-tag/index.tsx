@@ -106,7 +106,7 @@ const InputTags: ForwardRefRenderFunction<TextInputRef, Props> = ({
   }
 
   const onKeyPress = ({ nativeEvent: { key } }:any) => {
-    if(state.text.length === 0 && key === 'Backspace') {
+    if(!state?.text && key === 'Backspace') {
       showLastTag();
     }
   }
