@@ -3,6 +3,7 @@ import {Dimensions , ScrollView , StyleSheet , Text , View} from "react-native";
 import {Bold , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import Loader from "@pages/activities/bottomLoad";
+import {fontValue} from "@pages/activities/script";
 
 const { width , height } = Dimensions.get("screen");
 const ApplicationDetails = (props: any) => {
@@ -63,24 +64,24 @@ const styles = StyleSheet.create({
         backgroundColor : "#EFF0F6"
     } ,
     file : {
-        fontSize : RFValue(12) ,
+        fontSize : fontValue(12) ,
           fontFamily: Regular500   ,
         color : "#565961" ,
     } ,
     applicationType : {
         fontFamily: Bold,
         color : "#121212" ,
-        fontSize : RFValue(16) ,
+        fontSize : fontValue(16) ,
         marginTop : 8 ,
         marginLeft : 1
     } ,
     service : {
-        fontSize: RFValue(14),
+        fontSize: fontValue(14),
         color : "#121212" ,
         marginLeft : 1
     } ,
     text : {
-        fontSize: RFValue(14),
+        fontSize: fontValue(14),
         color : "#121212" ,
         marginTop : 2 ,
         marginLeft : 1

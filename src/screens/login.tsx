@@ -25,6 +25,7 @@ import { setUser } from 'src/reducers/user/actions';
 import { StackActions } from '@react-navigation/native';
 import Ellipsis from "@atoms/ellipsis";
 import {setTabBarHeight} from "../reducers/application/actions";
+import {fontValue} from "@pages/activities/script";
 const logo = require('@assets/ntc-edge-horizontal.png');
 const background = require('@assets/background.png');
 
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
   },
   formTitleText: {
     color: text.primary,
-    fontSize: RFValue(20),
+    fontSize: fontValue(20),
     textAlign: 'center',
     fontFamily: Bold,
     marginBottom: 30,
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
   loginButton: {
     borderRadius: 10,
 
-    paddingVertical: RFValue(15),
+    paddingVertical: fontValue(15),
     justifyContent: 'center',
   },
   boldText: {

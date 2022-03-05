@@ -5,6 +5,7 @@ import {useOrientation} from "@pages/activities/hooks/useOrientation";
 import {Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import useKeyboard from "../../../../hooks/useKeyboard";
+import {fontValue} from "@pages/activities/script";
 
 
 interface Props {
@@ -66,7 +67,7 @@ const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
                 onPress={() => onItemPress(item)}>
                 <Text style={{
 
-                    fontSize: RFValue(16)
+                    fontSize: fontValue(16)
                 }}>{item.label}</Text>
             </TouchableOpacity>
     );

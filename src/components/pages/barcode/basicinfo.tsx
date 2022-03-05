@@ -2,6 +2,7 @@ import React  from "react";
 import {StyleSheet, View, Text, Modal, TouchableOpacity} from "react-native";
 import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/script";
 
 function QrBasicInfo(props: any) {
     return (
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     },
     verified: {
         color: "rgba(0,171,118,1)",
-        fontSize: RFValue(25)
+        fontSize: fontValue(25)
     },
     icon2: {
         color: "rgba(128,128,128,1)",

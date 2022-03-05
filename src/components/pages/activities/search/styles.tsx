@@ -2,6 +2,7 @@ import {Dimensions, StyleSheet} from "react-native";
 import {outline} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/script";
 const {width, height} = Dimensions.get('window');
 export const styles = StyleSheet.create({
    header:{
@@ -9,8 +10,8 @@ export const styles = StyleSheet.create({
 
        flexDirection: "row",
        paddingBottom: 5,
-       paddingHorizontal: RFValue(20),
-       paddingTop: RFValue(20),
+       paddingHorizontal: fontValue(20),
+       paddingTop: fontValue(20),
        alignItems: "center"
    },
     rect4: {
@@ -36,20 +37,20 @@ export const styles = StyleSheet.create({
         borderBottomWidth: StyleSheet.hairlineWidth,
     },
     group2: {
-      paddingTop: RFValue(40),
-        paddingBottom:RFValue(20),
-       paddingHorizontal: RFValue(20),
+      paddingTop: fontValue(40),
+        paddingBottom:fontValue(20),
+       paddingHorizontal: fontValue(20),
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
     },
     icon: {
         color: "rgba(128,128,128,1)",
-        fontSize: RFValue(14),
+        fontSize: fontValue(14),
 
     },
     group: {
-        height: RFValue(50),
+        height: fontValue(50),
         flex: 1
     },
     rect2: {
@@ -68,14 +69,14 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 15,
         paddingVertical: 12,
         color: "#121212",
-        fontSize: RFValue(14),
+        fontSize: fontValue(14),
         textAlign: "left"
     },
     icon2: {
         alignSelf: "flex-end",
          position: "absolute",
         color: "rgba(128,128,128,1)",
-        fontSize: RFValue(25),
+        fontSize: fontValue(25),
     },
     textInputStack: {
          flexDirection: "row"
@@ -96,8 +97,8 @@ export const styles = StyleSheet.create({
    
     recentSearches: {
         fontFamily: Bold,
-        fontSize: RFValue(18),
-        lineHeight: RFValue(28),
+        fontSize: fontValue(18),
+        lineHeight: fontValue(28),
         color: "#000",
 
     },
@@ -106,21 +107,21 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-       paddingLeft: RFValue(20),
-       paddingRight: RFValue(20),
-       paddingTop: RFValue(20),
+       paddingLeft: fontValue(20),
+       paddingRight: fontValue(20),
+       paddingTop: fontValue(20),
     },
     group5: {
        alignItems: "center",
         flexDirection: "row",
     },
     icon3: {
-        marginRight: RFValue(10),
+        marginRight: fontValue(10),
         color: "rgba(128,128,128,1)",
-        fontSize: RFValue(25)
+        fontSize: fontValue(25)
     },
     loremIpsum: {
-       fontSize: RFValue(18),
+       fontSize: fontValue(18),
         fontFamily: Regular,
         color: "#121212"
     },

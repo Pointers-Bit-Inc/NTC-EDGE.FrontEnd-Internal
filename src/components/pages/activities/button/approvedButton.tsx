@@ -3,6 +3,7 @@ import {APPROVED} from "../../../../reducers/activity/initialstate";
 import React from "react";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/script";
 
 export const ApprovedButton = (props: { currentLoading: string, allButton: boolean, onPress: () => void }) => {
 
@@ -17,7 +18,7 @@ export const ApprovedButton = (props: { currentLoading: string, allButton: boole
                 backgroundColor : (
                     props.allButton ? "#C4C4C4" : "rgba(0,171,118,1)") ,
                 height : undefined ,
-                paddingVertical : props.currentLoading === APPROVED ? RFValue(9) : RFValue(10.5)
+                paddingVertical : props.currentLoading === APPROVED ? fontValue(9) : fontValue(10.5)
             }] }>
                 {
                     props.currentLoading === APPROVED ? (

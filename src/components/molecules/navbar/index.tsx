@@ -5,6 +5,7 @@ import StatusBar from '@atoms/status-bar';
 import Text from '@atoms/text';
 import { disabledColor, primaryColor } from '@styles/color';
 import styles from './styles';
+import {fontValue} from "@pages/activities/script";
 
 interface Props {
   title?: string;
@@ -27,8 +28,8 @@ const NavBar: FC<Props> = ({
   shadow,
   light,
 }) => {
-  leftIcon = !!leftIcon ? leftIcon : <View style={{width: RFValue(24)}} />
-  rightIcon = !!rightIcon ? rightIcon : <View style={{width: RFValue(24)}} />
+  leftIcon = !!leftIcon ? leftIcon : <View style={{width: fontValue(24)}} />
+  rightIcon = !!rightIcon ? rightIcon : <View style={{width: fontValue(24)}} />
   const backgroundColor = light ? '#fff' : primaryColor;
   const statusBar = {
     backgroundColor,

@@ -11,7 +11,7 @@ import DeclineIcon from "@assets/svg/decline";
 import lodash from 'lodash';
 import RadioButtonOnIcon from "@assets/svg/radioButtonOn";
 import RadioButtonOffIcon from "@assets/svg/radioButtonOff";
-import {getRole} from "@pages/activities/script";
+import {fontValue , getRole} from "@pages/activities/script";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 
@@ -26,22 +26,22 @@ function TopModal(props: any) {
         switch (item.iconBrand) {
             case 'feather': {
                 return (
-                    <CalendarIcon width={RFValue(20)} height={RFValue(20)} fill={item.checked ? "#003aa9" : "black"}/>
+                    <CalendarIcon width={fontValue(20)} height={fontValue(20)} fill={item.checked ? "#003aa9" : "black"}/>
                 );
             }
             case 'evil': {
                 return (
-                    <EvaluationIcon width={RFValue(20)} height={RFValue(20)} fill={item.checked ? "#003aa9" : "black"}/>
+                    <EvaluationIcon width={fontValue(20)} height={fontValue(20)} fill={item.checked ? "#003aa9" : "black"}/>
                 )
             }
             case 'material-community': {
                 return (
-                    <ApprovedIcon width={RFValue(20)} height={RFValue(20)} fill={item.checked ? "#003aa9" : "black"}/>
+                    <ApprovedIcon width={fontValue(20)} height={fontValue(20)} fill={item.checked ? "#003aa9" : "black"}/>
                 )
             }
             case 'ionicons': {
                 return (
-                    <DeclineIcon width={RFValue(22)} height={RFValue(22)} fill={item.checked ? "#003aa9" : "black"}/>
+                    <DeclineIcon width={fontValue(22)} height={fontValue(22)} fill={item.checked ? "#003aa9" : "black"}/>
                 )
             }
             default:
@@ -120,8 +120,8 @@ function TopModal(props: any) {
                                                 dispatch(on_checked(top))
                                             }}>
                                                 {
-                                                    top.checked ? <RadioButtonOnIcon width={RFValue(32)} height={RFValue(32)}/> :
-                                                        <RadioButtonOffIcon width={RFValue(32)} height={RFValue(32)}/>
+                                                    top.checked ? <RadioButtonOnIcon width={fontValue(32)} height={fontValue(32)}/> :
+                                                        <RadioButtonOffIcon width={fontValue(32)} height={fontValue(32)}/>
                                                 }
 
                                             </TouchableOpacity>
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
         paddingTop: 15,
     },
     sort: {
-        fontSize: RFValue(15),
+        fontSize: fontValue(15),
         fontFamily: Bold,
         color: "#121212",
         textAlign: "left",
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
         marginLeft: 18
     },
     sort1: {
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         fontFamily: Regular500,
         color: "#000",
     },
@@ -192,23 +192,23 @@ const styles = StyleSheet.create({
     filter: {
         fontFamily: Bold,
         color: "rgba(255,255,255,1)",
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         marginTop: 5
     },
     filter1: {
         alignSelf: "center",
         fontFamily: Bold,
         color: "rgba(255,255,255,1)",
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
     },
     icon: {
         color: "rgba(255,255,255,1)",
-        fontSize: RFValue(25),
+        fontSize: fontValue(25),
         marginLeft: 272
     },
     icon1: {
         color: "rgba(255,255,255,1)",
-        fontSize: RFValue(25),
+        fontSize: fontValue(25),
     },
     filterRow: {
         height: 29,
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     },
     icon4: {
 
-        fontSize: RFValue(32)
+        fontSize: fontValue(32)
     },
     label: {
         fontFamily: Bold,
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
         marginLeft: 7,
     },
     label1: {
-        fontSize: RFValue(14),
+        fontSize: fontValue(14),
         fontFamily: Regular,
         color: "#121212",
         marginLeft: 7,
@@ -273,13 +273,13 @@ const styles = StyleSheet.create({
     },
     icon6: {
         color: "rgba(128,128,128,1)",
-        fontSize: RFValue(25),
+        fontSize: fontValue(25),
         marginRight: 21,
         marginTop: 15
     },
     icon6_1: {
         color: "rgba(128,128,128,1)",
-        fontSize: RFValue(25),
+        fontSize: fontValue(25),
     },
     item: {
         justifyContent: 'space-between',

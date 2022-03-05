@@ -11,6 +11,7 @@ import ScrollableTabView from "@pages/activities/tabs";
 import {primaryColor} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/script";
  
 
 const Tab = ({ tab , page , isTabActive , onPressHandler , onTabLayout , styles }) => {
@@ -28,7 +29,7 @@ const Tab = ({ tab , page , isTabActive , onPressHandler , onTabLayout , styles 
                 <Animated.Text style={ {
                     color : isTabActive ? primaryColor : "#606A80" ,
                     fontFamily : isTabActive ? Bold : Regular ,
-                    fontSize : RFValue(12)
+                    fontSize : fontValue(12)
                 } }>{ label }</Animated.Text>
             </Animated.View>
         </TouchableOpacity>

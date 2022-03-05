@@ -10,7 +10,7 @@ import axios from "axios";
 import {BASE_URL} from "../../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
 import {CASHIER, CHECKER, DATE_ADDED, DIRECTOR, EVALUATOR} from "../../../../reducers/activity/initialstate";
-import {formatDate, getFilter} from "@pages/activities/script";
+import {fontValue , formatDate , getFilter} from "@pages/activities/script";
 import moment from "moment";
 import Loader from "@pages/activities/bottomLoad";
 import {defaultSanitize} from "@pages/activities/search/utils";
@@ -238,7 +238,7 @@ function Search(props: any) {
     }
 
     const handleBackButtonClick = () => {
-        props.navigation.goBack()
+        props.navigation.navigate('activity');
         return true;
     };
 
@@ -285,14 +285,14 @@ function Search(props: any) {
                     setTextInput(search)
                 }}>
                     <View style={styles.group5}>
-                        <HistoryIcon height={RFValue(20)} width={RFValue(20)} style={ styles.icon3 }/>
+                        <HistoryIcon height={fontValue(20)} width={fontValue(20)} style={ styles.icon3 }/>
                         <Text style={styles.loremIpsum}>{search}</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {
                     removeSearchHistory(index)
                 }}>
-                    <CloseIcon height={RFValue(16)} width={RFValue(16)}/>
+                    <CloseIcon height={fontValue(16)} width={fontValue(16)}/>
                 </TouchableOpacity>
 
             </View>

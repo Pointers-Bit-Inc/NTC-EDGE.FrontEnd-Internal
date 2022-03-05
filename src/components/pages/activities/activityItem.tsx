@@ -1,10 +1,12 @@
 import React , {useEffect} from "react";
 import {Swipeable} from "react-native-gesture-handler";
-import {ActivityIndicator , StyleSheet , TouchableOpacity , View} from "react-native";
+import {ActivityIndicator , Platform , StyleSheet , TouchableOpacity , View} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
+import {RFValue} from "react-native-responsive-fontsize";
 import {
+    fontValue ,
     formatDate ,
     getRole ,
     PaymentStatusText ,
@@ -29,7 +31,7 @@ import Highlighter from "@pages/activities/search/highlighter";
 import EndorseIcon from "@assets/svg/endorse";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 import {Bold , Regular} from "@styles/font";
-import {RFValue} from "react-native-responsive-fontsize";
+
 
 const styles = StyleSheet.create({
     container : {
@@ -92,6 +94,8 @@ const styles = StyleSheet.create({
     }
 });
 
+
+
 const RenderStatus = ({ trigger , status }: any) => {
 
     return (
@@ -105,7 +109,7 @@ const RenderStatus = ({ trigger , status }: any) => {
             { statusIcon(status , { marginRight : 3 }) }
             <Text
                 style={ [statusColor(status)] }
-                size={ RFValue(12) }
+                size={ fontValue(14) }
                 numberOfLines={ 1 }
             >
                 { status?.toUpperCase() }
@@ -125,13 +129,13 @@ const RenderApplication = ({ applicationType }: any) => {
             ] }
         >
             <FileIcon
-                width={ RFValue(20) }
-                height={ RFValue(20) }
+                width={ fontValue(20) }
+                height={ fontValue(20) }
             />
             <Text
                 style={ { marginLeft : 3 , marginRight : 5 } }
                 color="#2A00A2"
-                size={ RFValue(10) }
+                size={ fontValue(10) }
                 numberOfLines={ 1 }
             >
                 { applicationType }
@@ -152,14 +156,14 @@ const RenderPinned = ({ assignedPersonnel , config }: any) => {
             ] }
         >
             { loading ? <></> : <EndorseIcon
-                width={ RFValue(20) }
-                height={ RFValue(20) }
+                width={ fontValue(20) }
+                height={ fontValue(20) }
             /> }
             { loading ? <ActivityIndicator/> :
               <Text
                   style={ { "marginLeft" : 3 , "marginRight" : 5 } }
                   color="#606A80"
-                  size={ RFValue(10) }
+                  size={ fontValue(10) }
                   numberOfLines={ 1 }
               >
                   { personnel != undefined ? `${ personnel?.firstName } ${ personnel?.lastName }` : `` }
@@ -225,9 +229,9 @@ export function ActivityItem(props: any) {
                                 height : 0 ,
                                 width : 0
                             } ,
-                            elevation : RFValue(2) ,
+                            elevation : fontValue(2) ,
                             shadowOpacity : 0.2 ,
-                            shadowRadius : RFValue(2) ,
+                            shadowRadius : fontValue(2) ,
                             flex : 1 ,
 
                         } }>
@@ -236,15 +240,15 @@ export function ActivityItem(props: any) {
                             } }>
                                 <View style={
                                     {
-                                        borderRadius : RFValue(10) ,
+                                        borderRadius : fontValue(10) ,
                                         flex : 1 ,
-                                        padding : RFValue(10) ,
+                                        padding : fontValue(10) ,
                                         flexDirection : "row" ,
                                         alignItems : "center"
                                     }
                                 }>
                                     <ProfileImage
-                                        size={ RFValue(45) }
+                                        size={ fontValue(45) }
                                         image={ userActivity?.profilePicture?.small }
                                         name={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
                                     />
@@ -255,7 +259,7 @@ export function ActivityItem(props: any) {
                                                     //style={{color: props?.activity?.dateRead ? "#565961" : "#000"}}
                                                     style={ {
                                                         fontFamily : Bold ,
-                                                        fontSize : RFValue(14)
+                                                        fontSize : fontValue(14,)
                                                     } }
                                                     numberOfLines={ 1 }
                                                 >
@@ -274,7 +278,7 @@ export function ActivityItem(props: any) {
                                                         {
                                                             color : "#606A80" ,
                                                             fontFamily : Regular ,
-                                                            fontSize : RFValue(10)
+                                                            fontSize : fontValue(10)
                                                         }
                                                     }
                                                     numberOfLines={ 1 }

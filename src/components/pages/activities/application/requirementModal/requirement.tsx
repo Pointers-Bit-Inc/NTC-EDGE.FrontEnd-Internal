@@ -33,7 +33,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
     _showImage = () => {
         this.image.measure((x , y , width , height , pageX , pageY) => {
             this._sourceMeasure = {
-                width ,
+                width  ,
                 height ,
                 pageX ,
                 pageY
@@ -45,8 +45,8 @@ class RequirementView extends React.Component<{ requirement: any }> {
     componentDidMount() {
         Image.getSize(this?.source?.uri , (width , height) => {
             this._imageSize = {
-                width : width ,
-                height : height
+                width : width || 300 ,
+                height : height || 300
             }
         });
     }
@@ -72,8 +72,8 @@ class RequirementView extends React.Component<{ requirement: any }> {
                                     flex : 1 ,
                                     flexDirection : "row"
                                 } }>
-                                    <View style={ { paddingRight : RFValue(10) } }>
-                                        <FileOutlineIcon height={RFValue(20)} width={RFValue(16)}/>
+                                    <View style={ { paddingRight : fontValue(10) } }>
+                                        <FileOutlineIcon height={fontValue(20)} width={fontValue(16)}/>
                                     </View>
                                     <Text style={ requirementStyles.text }>{ this.props?.requirement?.file?.name }</Text>
                                 </TouchableOpacity>
@@ -81,7 +81,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
 
                         </View>
                         <View style={ {
-                            height : RFValue(300) ,
+                            height : fontValue(300) ,
                             backgroundColor : "rgba(220,226,229,1)" ,
                             borderWidth : 1 ,
                             borderColor : "rgba(213,214,214,1)" ,
@@ -101,7 +101,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
                                     <Loader/>
                                 </View> }
                                 <Image
-                                    style={ { width : undefined , height : RFValue(300) } }
+                                    style={ { width : undefined , height : fontValue(300) } }
                                     source={ {
                                         uri : this.props?.requirement?.links?.small ,
                                     } }

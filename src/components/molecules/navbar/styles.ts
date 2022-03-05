@@ -2,6 +2,7 @@ import { StyleSheet, Dimensions } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { primaryColor, text } from '@styles/color';
 import { Bold } from '@styles/font';
+import {fontValue} from "@pages/activities/script";
 
 const { width } = Dimensions.get('window');
 
@@ -35,7 +36,7 @@ export default StyleSheet.create({
   title: {
     textAlign: 'center',
     color: '#fff',
-    fontSize: RFValue(18),
+    fontSize: fontValue(18),
     fontFamily: Bold,
   },
   lightTitle: {

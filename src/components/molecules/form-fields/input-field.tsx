@@ -13,6 +13,7 @@ import {defaultColor , primaryColor, text} from '@styles/color';
  import inputStyles from "@styles/input-style"
  import {input} from "@styles/color"
 import CloseIcon from "@assets/svg/close";
+import {fontValue} from "@pages/activities/script";
 const styles = StyleSheet.create({
     container: {
         paddingVertical: 10
@@ -171,7 +172,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                 {
                     (clearable && isFocused && !!editable && !!otherProps.value) &&
                     <TouchableOpacity onPress={() => otherProps?.onChangeText ? otherProps?.onChangeText('') : {}}>
-                        <CloseIcon height={RFValue(10)} width={RFValue(10)} color={error ? input.text.errorColor : input.text.mainColor}/>
+                        <CloseIcon height={fontValue(10)} width={fontValue(10)} color={error ? input.text.errorColor : input.text.mainColor}/>
                     </TouchableOpacity>
                 }
             </View>

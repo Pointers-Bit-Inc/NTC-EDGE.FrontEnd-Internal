@@ -1,7 +1,8 @@
 import * as React from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {Image , Platform , Text , TouchableOpacity , useWindowDimensions , View} from 'react-native';
+import {createDrawerNavigator , DrawerContentScrollView , DrawerItem ,} from '@react-navigation/drawer';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import ActivitiesScreen from "@pages/activities";
+
 import QrCodeScanner from "@pages/barcode/view";
 import MeetScreen from '@screens/meet';
 import ChatScreen from '@screens/chat';
@@ -16,12 +17,15 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {setTabBarHeight} from "../../../reducers/application/actions";
 import lodash from 'lodash';
-import {getRole} from "@pages/activities/script";
+import {fontValue , getRole} from "@pages/activities/script";
 import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import CustomSidebarMenu from "@pages/activities/customNavigationDrawer";
+import Search from "@pages/activities/search";
+import ActivitiesPage from "@pages/activities/index";
 const Tab = createBottomTabNavigator();
 
-
+const Drawer = createDrawerNavigator();
 
 export default function TabBar() {
 
@@ -122,28 +126,28 @@ export default function TabBar() {
                                     alignItems: 'center',
                                 }}>
                                     {label == ACTIVITIES
-                                        ? ( <ActivityTabbar notification={false } width={RFValue(30)} height={RFValue(30)} fill={isFocused ? focused : unfocused}/>) :
+                                        ? ( <ActivityTabbar notification={false } width={fontValue(30)} height={fontValue(30)} fill={isFocused ? focused : unfocused}/>) :
                                         label == CHAT
                                             ?
-                                            (<ChatIcon notification={hasNewChat} width={RFValue(30)} height={RFValue(30)} fill={(route.name === 'Meet' || route.name === 'Chat') ? disabled : isFocused ? focused : unfocused}/>)
+                                            (<ChatIcon notification={hasNewChat} width={fontValue(30)} height={fontValue(30)} fill={(route.name === 'Meet' || route.name === 'Chat') ? disabled : isFocused ? focused : unfocused}/>)
                                             : label == MEET
                                                 ?
-                                                (<MeetIcon notification={hasMeet} width={RFValue(30)} height={RFValue(30)} fill={(route.name === 'Meet' || route.name === 'Chat') ? disabled : isFocused ? focused : unfocused}/>)
+                                                (<MeetIcon notification={hasMeet} width={fontValue(30)} height={fontValue(30)} fill={(route.name === 'Meet' || route.name === 'Chat') ? disabled : isFocused ? focused : unfocused}/>)
 
                                                 :
                                                 label == SCANQR
                                                     ?
-                                                    (<ScanQrIcon notification={false} width={RFValue(30)} height={RFValue(30)} fill={isFocused ? focused : unfocused}/> )
+                                                    (<ScanQrIcon notification={false} width={fontValue(30)} height={fontValue(30)} fill={isFocused ? focused : unfocused}/> )
                                                     :
                                                     label == MORE
                                                         ?
-                                                        (<MoreTabBarIcon notification={false} width={RFValue(30)} height={RFValue(30)} fill={isFocused ? focused : unfocused}/>)
+                                                        (<MoreTabBarIcon notification={false} width={fontValue(30)} height={fontValue(30)} fill={isFocused ? focused : unfocused}/>)
 
                                                         :
                                                         <Entypo name="book"></Entypo>}
 
                                     <Text style={[{
-                                        fontSize: RFValue(14),
+                                        fontSize: fontValue(14),
                                         fontFamily: isFocused ? Bold : Regular,
                                         color: (route.name === 'Meet' || route.name === 'Chat') ? disabled : isFocused ? '#2863d6' : '#606a80'
                                     }]}>{label}</Text>
@@ -158,14 +162,43 @@ export default function TabBar() {
             </View>
         );
     }
-    return (
 
-            <Tab.Navigator   tabBar={(props) => <ActivityTab  {...props} />}>
-                <Tab.Screen   options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesScreen}/>
-                <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
-                <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
-                {getRole(user, [CHECKER, EVALUATOR, DIRECTOR]) && <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>  }
-            </Tab.Navigator>
+
+
+    const dimensions = useWindowDimensions();
+    return (
+            <>
+                {Platform.OS == "ios" || Platform.OS == "android"   ?  <Tab.Navigator   tabBar={(props) => <ActivityTab  {...props} />}>
+                    <Tab.Screen   options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesPage}/>
+                    <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
+                    <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
+                    {getRole(user, [CHECKER, EVALUATOR, DIRECTOR]) && <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>  }
+                </Tab.Navigator> :  <Drawer.Navigator
+
+                    screenOptions={{
+
+                        drawerStyle: {
+                            width: 108
+                        },
+                        drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
+                        drawerItemStyle:{
+                            backgroundColor: 'rgba(0,0,0,0)',
+                            marginLeft: 20,
+                            marginBottom: 20,
+                        },
+                    }}
+                    backBehavior='none'
+
+                    drawerContent={(props) => <CustomSidebarMenu {...props} />} initialRouteName="Home">
+                    <Drawer.Screen   options={{ drawerLabel: "Activity",   headerShown: false }}  name="activity"  component={ActivitiesPage} />
+                    <Drawer.Screen   options={{ drawerLabel: "Chat",   headerShown: false }}  name="chat"  component={ActivitiesPage} />
+                    <Drawer.Screen   options={{ drawerLabel: "Meet",   headerShown: false }}  name="meet"  component={ActivitiesPage} />
+
+                    <Drawer.Screen  options={{ drawerItemStyle: {display: "none"}, headerShown: false }}  name="search" component={Search} />
+
+                </Drawer.Navigator> }
+            </>
+
 
 
 

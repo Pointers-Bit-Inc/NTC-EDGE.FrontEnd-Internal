@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { RFValue } from 'react-native-responsive-fontsize';
+import {fontValue} from "@pages/activities/script";
 
 interface Props {
   type?: string;
@@ -18,7 +19,7 @@ const Left: FC<Props> = ({
   return (
     <AntDesign
       name='left'
-      size={RFValue(size)}
+      size={fontValue(size)}
       color={color}
       {...otherProps}
     />

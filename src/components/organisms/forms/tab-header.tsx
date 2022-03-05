@@ -4,6 +4,7 @@ import {primaryColor, text} from "../../../styles/color";
 import RNPickerSelect from "react-native-picker-select";
 import {Ionicons} from "@expo/vector-icons";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/script";
 
 const Header = (props: any) => {
     const {
@@ -29,7 +30,7 @@ const Header = (props: any) => {
                             }}>
                                 <Text
                                     style={{
-                                        fontSize: RFValue(10),
+                                        fontSize: fontValue(10),
                                         lineHeight: 50,
                                         textTransform: "uppercase",
                                         color: `${t.isRouteActive ? '#2f5bfa' : '#808196'}`,

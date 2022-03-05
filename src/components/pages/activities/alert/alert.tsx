@@ -9,6 +9,7 @@ import ApplicationApproved from "@assets/svg/application-approved";
 import {useAlert} from "@pages/activities/hooks/useAlert";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/script";
 
 const {width} = Dimensions.get('window');
 
@@ -41,7 +42,7 @@ function CustomAlert(props) {
                                 }
                                 {
                                     props?.type == FOREVALUATION && <View>
-                                        <EndorseToIcon height_={RFValue(60)} width_={RFValue(60)} color={"#2863D6"}></EndorseToIcon>
+                                        <EndorseToIcon height_={fontValue(60)} width_={fontValue(60)} color={"#2863D6"}></EndorseToIcon>
                                     </View>
                                 }
                                 {
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: Bold,
-        fontSize: RFValue(14),
+        fontSize: fontValue(14),
         color: "#121212",
         textAlign: "center"
     },

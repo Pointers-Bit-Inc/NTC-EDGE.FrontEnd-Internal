@@ -18,6 +18,7 @@ import {FileTextIcon} from "@assets/svg/fileText";
 import {input , primaryColor} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/script";
 const { height, width } = Dimensions.get('window');
 
 function Disapproval(props: any) {
@@ -114,7 +115,7 @@ function Disapproval(props: any) {
                             paddingHorizontal: 20
                         }}
                     >
-                       <FileTextIcon width={RFValue(24)} height={RFValue(24)} style={styles.fileTextIcon}/>
+                       <FileTextIcon width={fontValue(24)} height={fontValue(24)} style={styles.fileTextIcon}/>
                         <View style={styles.nodRemarksColumn}>
                             <Text style={styles.nodRemarks}>NOD/Remarks</Text>
                             <Text style={styles.pleaseProvide}>
@@ -137,7 +138,7 @@ function Disapproval(props: any) {
                                 height: (height < 720 && isKeyboardVisible) ? 100 : height * 0.25
                             }}
                             placeholder={'Remarks'}
-                            inputStyle={{fontWeight: "400", fontSize: RFValue(14)}}
+                            inputStyle={{fontWeight: "400", fontSize: fontValue(14)}}
                             multiline={true}
                             value={text}
                             onChangeText={setText}
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     fileTextIcon:{
-       paddingLeft: RFValue(15),
+       paddingLeft: fontValue(15),
     },
     group3Filler: {
         flex: 1
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         color: "rgba(0,0,0,1)",
-        fontSize: RFValue(30),
+        fontSize: fontValue(30),
         marginLeft: 4
     },
     group: {
@@ -196,18 +197,18 @@ const styles = StyleSheet.create({
     },
     icon2: {
         color: "rgba(53,62,89,1)",
-        fontSize: RFValue(30)
+        fontSize: fontValue(30)
     },
     nodRemarks: {
         fontFamily: Bold,
         textAlign: "left",
-        fontSize: RFValue(18),
+        fontSize: fontValue(18),
         marginLeft: -1
     },
     pleaseProvide: {
 
         color: "#121212",
-        fontSize: RFValue(12),
+        fontSize: fontValue(12),
         marginLeft: -1
     },
     nodRemarksColumn: {
@@ -252,7 +253,7 @@ const styles = StyleSheet.create({
     confirm: {
         color: "rgba(255,255,255,1)",
         fontFamily: Bold,
-        fontSize: RFValue(18),
+        fontSize: fontValue(18),
     },
     confirmButton: {
         backgroundColor: primaryColor,

@@ -1,7 +1,7 @@
 import React from "react";
 import {ActivityIndicator , Dimensions , ScrollView , StyleSheet , Text , View} from "react-native";
 import {
-    excludeStatus ,
+    excludeStatus , fontValue ,
     getRole ,
     getStatusText ,
     PaymentStatusText ,
@@ -48,7 +48,7 @@ const BasicInfo = (props: any) => {
         <View style={ { padding : 10 , flex : 1 , alignSelf : "center" } }>
             <ProfileImage
                 style={ { borderRadius : 4 } }
-                size={ RFValue(150) }
+                size={ fontValue(150) }
                 textSize={ 22 }
                 image={ applicant?.user?.profilePicture?.small }
                 name={ `${ applicant?.user?.firstName } ${ applicant?.user?.lastName }` }
@@ -88,7 +88,7 @@ const BasicInfo = (props: any) => {
                                             getStatusText(props , personnel)
                                         ) ,
                                         {
-                                            fontSize : RFValue(16) ,
+                                            fontSize : fontValue(16) ,
                                             fontFamily : Bold ,
                                         }
                                     ] }
@@ -103,7 +103,7 @@ const BasicInfo = (props: any) => {
 
                             { personnel != undefined &&
                             (getStatusText(props , personnel) == APPROVED ? getStatusText(props , personnel) : !excludeStatus(props , personnel)  )  &&
-                            <CustomText style={ { fontSize: RFValue(12), flex : 1 , color : "#37405B" } }>
+                            <CustomText style={ { fontSize: fontValue(12), flex : 1 , color : "#37405B" } }>
                                 {(
                                       personnel !== undefined ? `by ${ personnel?.firstName } ${ personnel?.lastName }` : ``)}
 
@@ -180,27 +180,27 @@ const styles = StyleSheet.create({
     } ,
     icon2 : {
         color : "rgba(248,170,55,1)" ,
-        fontSize : RFValue(10)
+        fontSize : fontValue(10)
     } ,
     role : {
 
         fontFamily : Bold ,
-        fontSize : RFValue(14) ,
+        fontSize : fontValue(14) ,
         textAlign : "left" ,
-        paddingHorizontal : RFValue(10)
+        paddingHorizontal : fontValue(10)
     } ,
     submitted : {
         color : "rgba(105,114,135,1)" ,
         textAlign : "right" ,
-        fontSize : RFValue(10)
+        fontSize : fontValue(10)
     } ,
     container : {
         flex : 1
     } ,
     group4 : {} ,
     group3 : {
-        paddingRight : RFValue(10) ,
-        paddingLeft : RFValue(10)
+        paddingRight : fontValue(10) ,
+        paddingLeft : fontValue(10)
     } ,
     group : {
 
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     header : {
         backgroundColor : "#EFF0F6",
         textTransform: 'uppercase',
-        fontSize: RFValue(12),
+        fontSize: fontValue(12),
         fontFamily : Regular500 ,
         color : "#565961" ,
         padding : 5 ,
@@ -222,10 +222,10 @@ const styles = StyleSheet.create({
         alignItems : "center" ,
         marginTop : 8 ,
         paddingHorizontal : 10  ,
-        fontSize: RFValue(12)
+        fontSize: fontValue(12)
     } ,
     detail : {
-        fontSize: RFValue(14),
+        fontSize: fontValue(14),
         fontFamily : Regular ,
         paddingRight : 0 ,
         textAlign : "left" ,
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
         alignSelf : "flex-start"
     } ,
     detailInput : {
-        fontSize: RFValue(14),
+        fontSize: fontValue(14),
         fontFamily : Regular500 ,
         color : "#121212" ,
         flex : 1 ,

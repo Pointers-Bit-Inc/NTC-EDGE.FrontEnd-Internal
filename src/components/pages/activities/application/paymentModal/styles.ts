@@ -1,6 +1,7 @@
 import {StyleSheet} from "react-native";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/script";
 
 export const styles = StyleSheet.create({
     container: {
@@ -15,7 +16,7 @@ export const styles = StyleSheet.create({
     statementOfAccount: {
         fontFamily: Bold,
         color: "#37405B",
-        fontSize: RFValue(14)
+        fontSize: fontValue(14)
     },
     soaItem: {
         flexDirection: 'row',
@@ -40,14 +41,14 @@ export const styles = StyleSheet.create({
         top: 0,
         left: 0,
 
-        fontSize: RFValue(16)
+        fontSize: fontValue(16)
     },
     text: {
         width: 350,
 
         left: 0,
 
-        fontSize: RFValue(14)
+        fontSize: fontValue(14)
     },
     applicantStack: {
     },
@@ -107,7 +108,7 @@ export const styles = StyleSheet.create({
     },
     subtotal2: {
 
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         textAlign: "right",
         marginTop: 13,
         marginRight: 62
@@ -115,7 +116,7 @@ export const styles = StyleSheet.create({
     vat: {
 
 
-        fontSize: RFValue(32),
+        fontSize: fontValue(32),
         textAlign: "right",
         marginTop: 1,
         marginRight: 63
@@ -154,7 +155,7 @@ export const styles = StyleSheet.create({
     },
     paymentReceiptPng: {
 
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         marginTop: 10,
         textAlign: "center"
     },
@@ -165,7 +166,7 @@ export const styles = StyleSheet.create({
     },
     ntcEdge: {
 
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         marginTop: 17,
         textAlign: "center"
     },
@@ -176,7 +177,7 @@ export const styles = StyleSheet.create({
     },
     php5000: {
 
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         textAlign: "center"
     },
     text2: {
@@ -207,7 +208,7 @@ export const styles = StyleSheet.create({
     },
     icon: {
         color: "rgba(40,99,214,1)",
-        fontSize: RFValue(18)
+        fontSize: fontValue(18)
     },
     rect7: {
         color: "#2763d6",

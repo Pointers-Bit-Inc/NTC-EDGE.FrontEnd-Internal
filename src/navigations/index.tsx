@@ -22,6 +22,7 @@ import NewChat from '@screens/chat/new-chat';
 import InitiateVideoCall from '@screens/meet/create';
 import JoinVideoCall from '@screens/meet/video';
 import Search from "@pages/activities/search";
+import TabBar from "@pages/activities/tabbar";
 
 type RootStackParamList = {
   App: undefined;
@@ -52,6 +53,7 @@ const RootNavigator = () => {
     <NavigationContainer>
 
       <Stack.Navigator
+          headerMode="float"
         screenOptions={{
           gestureEnabled: false,
           headerShown: false
@@ -62,8 +64,7 @@ const RootNavigator = () => {
         <Stack.Screen name="AppIntro" component={AppIntro} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="HomeScreen" component={DrawerNavigation} />
-        <Stack.Screen name="ActivitiesScreen" component={ActivitiesScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ActivitiesScreen" component={TabBar} options={{   headerShown: false }} />
         <Stack.Screen name="UserProfileScreen" component={UserProfile} />
         <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="Dial" component={Dial} />
@@ -76,7 +77,7 @@ const RootNavigator = () => {
         <Stack.Screen name="NewChat" component={NewChat} />
         <Stack.Screen name="InitiateVideoCall" component={InitiateVideoCall} />
         <Stack.Screen name="JoinVideoCall" component={JoinVideoCall} />
-        <Stack.Screen name="SearchActivities" component={Search} />
+        <Stack.Screen  name="SearchActivities" component={Search} />
 
       </Stack.Navigator>
     </NavigationContainer>

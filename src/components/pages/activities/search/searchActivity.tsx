@@ -16,7 +16,7 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import ApplicationList from "@pages/activities/applicationList";
-import {unreadReadApplication} from "@pages/activities/script";
+import {fontValue , unreadReadApplication} from "@pages/activities/script";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import Loader from "@pages/activities/bottomLoad";
@@ -74,15 +74,15 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                     <View style={styles.group2}>
                         <TouchableOpacity style={{  paddingRight: 10}} onPress={props.onPress}>
                             <BackSpaceIcon
-                                width={RFValue(20)}
-                                height={RFValue(16)}
+                                width={fontValue(20)}
+                                height={fontValue(16)}
                                 style={styles.icon}
                             ></BackSpaceIcon>
                         </TouchableOpacity>
 
                         <View style={styles.group}>
                             <InputField  ref={inputRef}
-                                         inputStyle={{fontWeight: "400", fontSize: RFValue(14)}}
+                                         inputStyle={{fontWeight: "400", fontSize: fontValue(14)}}
                                          value={props.value}
                                          onEndEditing={props.onEndEditing}
                                          onChange={props.onChange}
@@ -105,7 +105,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
                     <TouchableOpacity onPress={props.clearAll}>
                         <Text style={{
-                            fontSize: RFValue(14),
+                            fontSize: fontValue(14),
                             color: '#2863D6',
                              fontFamily: Regular500  ,
                         }}>{props.nevers.length ? "Clear all" : ""}</Text>

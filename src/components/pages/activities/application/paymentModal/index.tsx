@@ -3,7 +3,7 @@ import BackgroundPayment from "@assets/svg/backgroundpayment";
 import {Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
-import {capitalize} from "@pages/activities/script";
+import {capitalize , fontValue} from "@pages/activities/script";
 import {RFValue} from "react-native-responsive-fontsize";
 import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
 import BorderPaymentTop from "@assets/svg/borderPayment";
@@ -14,7 +14,7 @@ const PaymentModal = (props: any) => {
     function Cell({ data }) {
         return (
             <View style={styles.cellStyle}>
-                <Text style={{fontSize: RFValue(12), fontFamily: Regular}}>{data}</Text>
+                <Text style={{fontSize: fontValue(12), fontFamily: Regular}}>{data}</Text>
             </View>
         );
     }
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     },
     close: {
         color: "rgba(239,231,231,1)",
-        fontSize: RFValue(18),
+        fontSize: fontValue(18),
     },
     group8: {
         width: "100%",
@@ -171,23 +171,23 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     title: {
-        fontSize: RFValue(12),
+        fontSize: fontValue(12),
         fontFamily: Bold,
         color: "#121212",
         textAlign: 'center'
     },
     description: {
-        fontSize: RFValue(12),
+        fontSize: fontValue(12),
         fontFamily: Regular,
     },
     ntcEdge: {
-        fontSize: RFValue(12),
+        fontSize: fontValue(12),
         color: "#121212",
         marginTop: 4,
         textAlign: 'center'
     },
     theAmoutOf: {
-        fontSize: RFValue(12),
+        fontSize: fontValue(12),
         color: "#121212",
         marginTop: 24,
         textAlign: 'center'
@@ -217,11 +217,11 @@ const styles = StyleSheet.create({
     group: {},
     refNo12345678910: {
         color: "#121212",
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         textAlign: 'center',
     },
     text: {
-        fontSize: RFValue(12),
+        fontSize: fontValue(12),
         color: "#121212",
         marginTop: 11,
         textAlign: 'center',
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
         marginTop: 23
     },
     details: {
-          fontSize: RFValue(12), 
+          fontSize: fontValue(12),
         fontFamily: Bold,
         color: "#121212",
         alignSelf: "center"

@@ -5,7 +5,7 @@ import Disapproval from "@pages/activities/modal/disapproval";
 import Endorsed from "@pages/activities/modal/endorse";
 import Approval from "@pages/activities/modal/approval";
 import {RootStateOrAny , useDispatch , useSelector} from "react-redux";
-import {getRole , PaymentStatusText , StatusText} from "@pages/activities/script";
+import {fontValue , getRole , PaymentStatusText , StatusText} from "@pages/activities/script";
 import {
     ACCOUNTANT ,
     APPROVED ,
@@ -255,7 +255,7 @@ function ActivityModal(props: any) {
                         props.onDismissed(change);
                         setChange(false)
                     } }>
-                        <CloseIcon width={RFValue(16)} height={RFValue(16)} color="#606A80"/>
+                        <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
                     </TouchableOpacity>
                     <Text style={ styles.applicationType }>{ props?.details?.applicationType }</Text>
                     <View></View>
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
     applicationType : {
 
         fontFamily : Bold ,
-        fontSize : RFValue(14) ,
+        fontSize : fontValue(14) ,
         lineHeight : 16.5 ,
         color : "#606A80"
     } ,

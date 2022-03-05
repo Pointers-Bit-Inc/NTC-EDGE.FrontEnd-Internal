@@ -8,6 +8,7 @@ import { resetChannel } from 'src/reducers/channel/actions';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { button, text } from 'src/styles/color';
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/script";
 
 const styles = StyleSheet.create({
   container: {
@@ -36,12 +37,12 @@ const styles = StyleSheet.create({
   },
   confirmText: {
     color: 'white',
-    fontSize: RFValue(14),
+    fontSize: fontValue(14),
     fontWeight: '600',
   },
   cancelText: {
     color: text.default,
-    fontSize: RFValue(14),
+    fontSize: fontValue(14),
     fontWeight: '600',
   }
 });

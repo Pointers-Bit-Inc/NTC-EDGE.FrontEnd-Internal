@@ -3,7 +3,7 @@ import {Animated , FlatList , Text , TouchableOpacity , TouchableWithoutFeedback
 import {styles} from "@pages/activities/styles";
 import ChevronDownIcon from "@assets/svg/chevron-down";
 import Collapsible from "react-native-collapsible";
-import {checkFormatIso, formatDate} from "@pages/activities/script";
+import {checkFormatIso , fontValue , formatDate} from "@pages/activities/script";
 import moment from "moment";
 import {useAlert} from "@pages/activities/hooks/useAlert";
 import * as Animatable from 'react-native-animatable'
@@ -66,7 +66,7 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
                             <TouchableWithoutFeedback onPress={() => setIsOpen(open => !open)}>
                                 <View >
 
-                                    {isOpen ? <ChevronUpIcon width={RFValue(24)} height={RFValue(24)} color={"#000"}/> : <ChevronDownIcon  width={RFValue(24)} height={RFValue(24)} color={"#000"}/>}
+                                    {isOpen ? <ChevronUpIcon width={fontValue(24)} height={fontValue(24)} color={"#000"}/> : <ChevronDownIcon  width={fontValue(24)} height={fontValue(24)} color={"#000"}/>}
 
 
                                 </View>
@@ -75,7 +75,7 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
                         </View>
                         <View style={{alignItems: "center"}}>
                             <TouchableOpacity>
-                                <DotVertical  width={RFValue(4)} height={RFValue(18)}  />
+                                <DotVertical  width={fontValue(4)} height={fontValue(18)}  />
                             </TouchableOpacity>
 
                         </View>

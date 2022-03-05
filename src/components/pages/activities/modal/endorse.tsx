@@ -22,7 +22,7 @@ import {disabledColor , errorColor , primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import {useOrientation} from "@pages/activities/hooks/useOrientation";
-import {getRole} from "@pages/activities/script";
+import {fontValue , getRole} from "@pages/activities/script";
 import {Bold , Regular , Regular500} from "@styles/font";
 import CloseIcon from "@assets/svg/close";
 import {RFValue} from "react-native-responsive-fontsize";
@@ -211,7 +211,7 @@ const Endorsed = (props: any) => {
                                         paddingTop: 10,
                                         height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.15
                                     }}
-                                    inputStyle={{fontWeight: "400", fontSize: RFValue(14)}}
+                                    inputStyle={{fontWeight: "400", fontSize: fontValue(14)}}
                                     error={validateRemarks.error}
                                     errorColor={errorColor}
                                     placeholder={'Remarks'}
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         color: "rgba(128,128,128,1)",
-        fontSize: RFValue(25),
+        fontSize: fontValue(25),
     },
     group: {
         width: 138,
@@ -272,12 +272,12 @@ const styles = StyleSheet.create({
     },
     icon2: {
         color: "#000",
-        fontSize: RFValue(30)
+        fontSize: fontValue(30)
     },
     endorseTo: {
         fontFamily: Regular500,
         color: "#121212",
-        fontSize: RFValue(18),
+        fontSize: fontValue(18),
         paddingLeft: 10,
         paddingTop: 3
     },
