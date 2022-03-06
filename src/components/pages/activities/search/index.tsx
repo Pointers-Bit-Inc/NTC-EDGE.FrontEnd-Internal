@@ -9,7 +9,14 @@ import {styles} from '@pages/activities/search/styles'
 import axios from "axios";
 import {BASE_URL} from "../../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
-import {CASHIER, CHECKER, DATE_ADDED, DIRECTOR, EVALUATOR} from "../../../../reducers/activity/initialstate";
+import {
+    ACTIVITIES ,
+    CASHIER ,
+    CHECKER ,
+    DATE_ADDED ,
+    DIRECTOR ,
+    EVALUATOR
+} from "../../../../reducers/activity/initialstate";
 import {fontValue , formatDate , getFilter} from "@pages/activities/script";
 import moment from "moment";
 import Loader from "@pages/activities/bottomLoad";
@@ -238,7 +245,7 @@ function Search(props: any) {
     }
 
     const handleBackButtonClick = () => {
-        props.navigation.navigate('activity');
+        props.navigation.navigate(ACTIVITIES);
         return true;
     };
 

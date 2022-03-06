@@ -45,9 +45,9 @@ const ActivitiesScreen = (props:any) => {
     return <>
 
         <Drawer.Navigator
-
+           
             screenOptions={{
-              
+
                 drawerStyle: {
                     width: 108
                 },

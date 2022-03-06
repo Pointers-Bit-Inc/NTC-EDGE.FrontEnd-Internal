@@ -1,5 +1,5 @@
 import React from "react";
-import {ActivityIndicator , Dimensions , ScrollView , StyleSheet , Text , View} from "react-native";
+import {ActivityIndicator , Dimensions , Platform , ScrollView , StyleSheet , Text , View} from "react-native";
 import {
     excludeStatus , fontValue ,
     getRole ,
@@ -45,120 +45,126 @@ const BasicInfo = (props: any) => {
     });
     const applicant = props.applicant;
     return <ScrollView style={ { width : "100%" , backgroundColor : "#fff" , } }>
-        <View style={ { padding : 10 , flex : 1 , alignSelf : "center" } }>
-            <ProfileImage
-                style={ { borderRadius : 4 } }
-                size={ fontValue(150) }
-                textSize={ 22 }
-                image={ applicant?.user?.profilePicture?.small }
-                name={ `${ applicant?.user?.firstName } ${ applicant?.user?.lastName }` }
-            />
-
-        </View>
-
-        { props.applicant &&
-        <View style={ styles.elevation }>
-            <View style={ [styles.container , { marginTop : 20 }] }>
-                <View style={ styles.group4 }>
-                    <View style={ styles.group3 }>
-                        <View style={ styles.group }>
-                            <View style={ styles.rect }>
-                                <Text style={ styles.header }>Status</Text>
-                            </View>
-                        </View>
-
-                        <View style={ styles.status }>
-
-                            <View
-                                style={ { flexDirection : "row" , justifyContent : "center" , alignItems : "center" } }>
-                                {loading && <ActivityIndicator/> }
-                                {!loading ?
-                                    statusIcon(
-                                        getStatusText(props , personnel)
-                                        ,
-                                        styles.icon2 ,
-                                        1
-                                    ) : <></>
-                                }
-                                {!loading ?
-                                 <CustomText
-                                    style={ [
-                                        styles.role ,
-                                        statusColor(
-                                            getStatusText(props , personnel)
-                                        ) ,
-                                        {
-                                            fontSize : fontValue(16) ,
-                                            fontFamily : Bold ,
-                                        }
-                                    ] }
-                                    numberOfLines={ 1 }
-                                >
-                                    {
-                                        getStatusText(props , personnel)?.toUpperCase()
-                                    }
-                                </CustomText> : <></>}
-                            </View>
-
-
-                            { personnel != undefined &&
-                            (getStatusText(props , personnel) == APPROVED ? getStatusText(props , personnel) : !excludeStatus(props , personnel)  )  &&
-                            <CustomText style={ { fontSize: fontValue(12), flex : 1 , color : "#37405B" } }>
-                                {(
-                                      personnel !== undefined ? `by ${ personnel?.firstName } ${ personnel?.lastName }` : ``)}
-
-                            </CustomText> }
-
-                        </View>
-                    </View>
-                    <View style={ styles.group3 }>
-                        <View style={ styles.group }>
-                            <View style={ styles.rect }>
-                                <Text style={ styles.header }>Basic Information</Text>
-                            </View>
-                        </View>
-                        <Row label={ "Full Name:" }
-                             applicant={ applicant?.user?.firstName + " " + applicant?.user?.middleName?.charAt() + "." + " " + applicant?.user?.lastName }/>
-                        <Row label={ "Date of Birth:" }
-                             applicant={ moment(applicant?.user?.dateOfBirth).format('LL') }/>
-                        <Row label={ "Gender:" } applicant={ applicant?.user?.gender }/>
-                        <Row label={ "Nationality:" } applicant={ applicant?.user?.nationality }/>
-                    </View>
-                    <View style={ styles.divider }/>
-                    <View style={ styles.group3 }>
-                        <View style={ styles.group }>
-                            <View style={ styles.rect }>
-                                <Text style={ styles.header }>Address</Text>
-                            </View>
-                        </View>
-                        <Row label={ "Unit/Rm/Bldg./Street:" } applicant={ applicant?.unit }/>
-                        <Row label={ "Barangay:" } applicant={ applicant?.barangay }/>
-                        <Row label={ "Province:" } applicant={ applicant?.province }/>
-                        <Row label={ "City/Municipality:" } applicant={ applicant?.city }/>
-                        <Row label={ "Zip Code:" } applicant={ applicant?.zipCode }/>
-
-                    </View>
-                    <View style={ styles.divider }/>
-                    <View style={ styles.group3 }>
-                        <View style={ styles.group }>
-                            <View style={ styles.rect }>
-                                <Text style={ styles.header }>Additional Details</Text>
-                            </View>
-                        </View>
-                        <Row label={ "School Attended:" } applicant={ applicant?.schoolAttended }/>
-                        <Row label={ "Course Taken:" } applicant={ applicant?.courseTaken }/>
-                        <Row label={ "Year Graduated:" } applicant={ applicant?.yearGraduated }/>
-                        <Row label={ "Contact Number:" } applicant={ applicant?.user?.contactNumber }/>
-                        <Row label={ "Email:" } applicant={ applicant?.user?.email }/>
-
-                    </View>
-                    <View style={ styles.divider }/>
-
-                </View>
+        <View style={{flexDirection:  Platform.OS == "ios" || Platform.OS == "android" ? "column" : "row"}}>
+            <View style={  Platform.OS == "ios" || Platform.OS == "android" ?  { padding : 10 , flex : 1 , alignSelf : "center" }  : {paddingVertical: 20, paddingHorizontal: 20} }>
+                <ProfileImage
+                    style={ { borderRadius : 4 } }
+                    size={ fontValue(150) }
+                    textSize={ 22 }
+                    image={ applicant?.user?.profilePicture?.small }
+                    name={ `${ applicant?.user?.firstName } ${ applicant?.user?.lastName }` }
+                />
 
             </View>
+
+            { props.applicant &&
+                <View style={!(Platform.OS == "ios" || Platform.OS == "android") && { flex: 1, padding: 20}}>
+                    <View style={styles.elevation}>
+                        <View style={ [styles.container , { marginTop : 20 }] }>
+                            <View style={ styles.group4 }>
+                                <View style={ styles.group3 }>
+                                    <View style={ styles.group }>
+                                        <View style={ styles.rect }>
+                                            <Text style={ styles.header }>Status</Text>
+                                        </View>
+                                    </View>
+
+                                    <View style={ styles.status }>
+
+                                        <View
+                                            style={ { flexDirection : "row" , justifyContent : "center" , alignItems : "center" } }>
+                                            {loading && <ActivityIndicator/> }
+                                            {!loading ?
+                                             statusIcon(
+                                                 getStatusText(props , personnel)
+                                                 ,
+                                                 styles.icon2 ,
+                                                 1
+                                             ) : <></>
+                                            }
+                                            {!loading ?
+                                             <CustomText
+                                                 style={ [
+                                                     styles.role ,
+                                                     statusColor(
+                                                         getStatusText(props , personnel)
+                                                     ) ,
+                                                     {
+                                                         fontSize : fontValue(16) ,
+                                                         fontFamily : Bold ,
+                                                     }
+                                                 ] }
+                                                 numberOfLines={ 1 }
+                                             >
+                                                 {
+                                                     getStatusText(props , personnel)?.toUpperCase()
+                                                 }
+                                             </CustomText> : <></>}
+                                        </View>
+
+
+                                        { personnel != undefined &&
+                                        (getStatusText(props , personnel) == APPROVED ? getStatusText(props , personnel) : !excludeStatus(props , personnel)  )  &&
+                                        <CustomText style={ { fontSize: fontValue(12), flex : 1 , color : "#37405B" } }>
+                                            {(
+                                                personnel !== undefined ? `by ${ personnel?.firstName } ${ personnel?.lastName }` : ``)}
+
+                                        </CustomText> }
+
+                                    </View>
+                                </View>
+                                <View style={ styles.group3 }>
+                                    <View style={ styles.group }>
+                                        <View style={ styles.rect }>
+                                            <Text style={ styles.header }>Basic Information</Text>
+                                        </View>
+                                    </View>
+                                    <Row label={ "Full Name:" }
+                                         applicant={ applicant?.user?.firstName + " " + applicant?.user?.middleName?.charAt() + "." + " " + applicant?.user?.lastName }/>
+                                    <Row label={ "Date of Birth:" }
+                                         applicant={ moment(applicant?.user?.dateOfBirth).format('LL') }/>
+                                    <Row label={ "Gender:" } applicant={ applicant?.user?.gender }/>
+                                    <Row label={ "Nationality:" } applicant={ applicant?.user?.nationality }/>
+                                </View>
+                                <View style={ styles.divider }/>
+                                <View style={ styles.group3 }>
+                                    <View style={ styles.group }>
+                                        <View style={ styles.rect }>
+                                            <Text style={ styles.header }>Address</Text>
+                                        </View>
+                                    </View>
+                                    <Row label={ "Unit/Rm/Bldg./Street:" } applicant={ applicant?.unit }/>
+                                    <Row label={ "Barangay:" } applicant={ applicant?.barangay }/>
+                                    <Row label={ "Province:" } applicant={ applicant?.province }/>
+                                    <Row label={ "City/Municipality:" } applicant={ applicant?.city }/>
+                                    <Row label={ "Zip Code:" } applicant={ applicant?.zipCode }/>
+
+                                </View>
+                                <View style={ styles.divider }/>
+                                <View style={ styles.group3 }>
+                                    <View style={ styles.group }>
+                                        <View style={ styles.rect }>
+                                            <Text style={ styles.header }>Additional Details</Text>
+                                        </View>
+                                    </View>
+                                    <Row label={ "School Attended:" } applicant={ applicant?.schoolAttended }/>
+                                    <Row label={ "Course Taken:" } applicant={ applicant?.courseTaken }/>
+                                    <Row label={ "Year Graduated:" } applicant={ applicant?.yearGraduated }/>
+                                    <Row label={ "Contact Number:" } applicant={ applicant?.user?.contactNumber }/>
+                                    <Row label={ "Email:" } applicant={ applicant?.user?.email }/>
+
+                                </View>
+                                <View style={ styles.divider }/>
+
+                            </View>
+
+                        </View>
+                    </View>
+                </View>
+
+            }
         </View>
-        }
+
     </ScrollView>
 
 };

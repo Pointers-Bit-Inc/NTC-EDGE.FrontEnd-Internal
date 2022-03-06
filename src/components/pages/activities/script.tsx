@@ -11,12 +11,13 @@ import {
     VERIFICATION ,
     VERIFIED
 } from "../../../reducers/activity/initialstate";
-import {Alert , Dimensions , PixelRatio , Platform} from "react-native";
+import React from "react";
+import {Alert , Dimensions , PixelRatio , Platform , StatusBar} from "react-native";
 import EvaluationStatus from "@assets/svg/evaluationstatus";
 import {styles} from "@pages/activities/styles";
 import CheckMarkIcon from "@assets/svg/checkmark";
 import DeclineStatusIcon from "@assets/svg/declineStatus";
-import React from "react";
+
 import CheckIcon from "@assets/svg/check";
 import axios from "axios";
 import {BASE_URL} from "../../../services/config";
@@ -25,7 +26,7 @@ import {readUnreadApplications} from "../../../reducers/application/actions";
 import {Dispatch} from "redux";
 import {Regular500} from "@styles/font";
 import {Role , UserApplication} from "@pages/activities/interface";
-import {RFValue} from "react-native-responsive-fontsize";
+import {isIphoneX} from "react-native-iphone-x-helper";
 
 export const capitalize = (str) => {
     return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)).join(' ');
@@ -255,6 +256,23 @@ export function getStatus(props: any , personnel?: { _id: string | undefined; up
         );
 }
 
-export function fontValue(number) {
-    return Platform.OS == "native"  ? RFValue(number) :   number;
+export function RFValue(fontSize, standardScreenHeight = 680) {
+    const { height, width } = Dimensions.get("window");
+
+    const standardLength = width > height ? (Platform.OS === "ios" || Platform.OS === "android" ? width : width * 0.6 ): height;
+
+    const offset =
+        width > height ? 0 : Platform.OS === "ios" ? 78 : StatusBar.currentHeight; // iPhone X style SafeAreaView size in portrait
+
+    const deviceHeight =
+        Platform.OS === "ios" || Platform.OS === "android"
+        ? standardLength - offset
+        : standardLength;
+
+    const heightPercent = (fontSize * deviceHeight) / standardScreenHeight;
+    return Math.round(heightPercent);
+}
+export let fontValue = (number) => {
+
+    return number;
 }

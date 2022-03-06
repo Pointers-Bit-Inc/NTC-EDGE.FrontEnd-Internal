@@ -1,4 +1,6 @@
 import React , {Fragment , useRef, useCallback , useEffect , useMemo , useState} from "react";
+
+import {fontValue , formatDate , getFilter , unreadReadApplication ,} from "@pages/activities/script";
 import {
     Alert ,
     Animated ,
@@ -11,7 +13,7 @@ import {
     TouchableOpacity ,
     View
 } from "react-native";
-import {styles} from "@pages/activities/styles";
+
 import {
     APPROVED ,
     DATE_ADDED ,
@@ -20,7 +22,7 @@ import {
     FOREVALUATION ,
     FORVERIFICATION ,
     PAID ,
-    PENDING ,
+    PENDING , SEARCH ,
     UNVERIFIED ,
     VERIFIED
 } from "../../../reducers/activity/initialstate";
@@ -34,7 +36,7 @@ import {
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
 import FilterIcon from "@assets/svg/filterIcon";
-import {fontValue , formatDate , getFilter , unreadReadApplication ,} from "@pages/activities/script";
+
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import {BASE_URL} from "../../../services/config";
@@ -62,15 +64,14 @@ import {Bold , Regular , Regular500} from "@styles/font";
 import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
 import {RFValue} from "react-native-responsive-fontsize";
 import NoActivity from "@assets/svg/noActivity";
-
+import {ModalTab} from "@pages/activities/modalTab.web";
 const {width} = Dimensions.get('window')
 
-
-
+import {styles} from "@pages/activities/styles";
 
 export default function ActivitiesPage(props: any) {
 
-   
+
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(0)
     const [size, setSize] = useState(0)
@@ -429,7 +430,6 @@ export default function ActivitiesPage(props: any) {
     const [activitySizeComponent, onActivityLayoutComponent] = useComponentLayout()
     const [containerHeight, setContainerHeight] = useState(148)
     useEffect(() => {
-        console.log(activitySizeComponent)
         if(sizeComponent?.height && searchSizeComponent?.height)setContainerHeight(sizeComponent?.height + searchSizeComponent?.height )
     }, [sizeComponent, searchSizeComponent, activitySizeComponent ])
 
@@ -501,7 +501,7 @@ export default function ActivitiesPage(props: any) {
         extrapolate: 'clamp',
     })
 
-
+      const [tempDetail, setTempDetail] = useState([])
     return (
         <Fragment>
             <StatusBar   barStyle={'light-content'}/>
@@ -559,8 +559,9 @@ export default function ActivitiesPage(props: any) {
 
                          </View>
                          <FakeSearchBar onSearchLayoutComponent={onSearchLayoutComponent}  animated={!modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { ...{ opacity }, top: sizeComponent?.height || 80 * (1 + lodash.size(meetingList)), elevation: 10, zIndex: 10,  position: "absolute", transform: [{ translateY: headerTranslate }] }}  onPress={() => {
+
                              //setSearchVisible(true)
-                             props.navigation.navigate('search')
+                             props.navigation.navigate(SEARCH);
                          }} searchVisible={searchVisible}/>
 
                          <Animated.FlatList
@@ -602,7 +603,6 @@ export default function ActivitiesPage(props: any) {
                                                                  onPressUser={ (event: any) => {
                                                                      /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                                      })*/
-
                                                                      setIsOpen(undefined);
                                                                      setDetails({ ...act , isOpen : `pin${ i }${ index }` });
                                                                      if (event?.icon == 'more') {
@@ -677,8 +677,8 @@ export default function ActivitiesPage(props: any) {
                                                  activity={activity}
                                                  currentUser={user}
                                                  onPressUser={(event: any) => {
-
                                                      setIsOpen(undefined)
+                                                     setTempDetail({...activity, isOpen:`${index}${i}`})
                                                      setDetails({...activity, isOpen:`${index}${i}`})
                                                      /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
                                                      })*/
@@ -700,19 +700,70 @@ export default function ActivitiesPage(props: any) {
 
                      </View>
                      {
-                         (Platform.OS !== "ios") && <View style={{backgroundColor: "#F8F8F8", flex: (Platform.OS === "ios" || Platform.OS === "android") ? 0 : 0.6 , justifyContent: "center", alignItems: "center"}}>
+                         !(Platform.OS === "ios" || Platform.OS === "android") && lodash.isEmpty(details) &&
+                         <View style={ [{ flex : 0.6 , justifyContent : "center" , alignItems : "center" }] }>
 
                              <NoActivity/>
-                             <Text style={{color: "#A0A3BD", fontSize: fontValue(24)}}>No activity selected</Text>
+                             <Text style={ { color : "#A0A3BD" , fontSize : fontValue(24) } }>No activity
+                                 selected</Text>
+
 
 
                          </View>
                      }
+                     {!(Platform.OS === "ios" || Platform.OS === "android") && !lodash.isEmpty(details) && <View style={{flex : 0.6}}>
+                         <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={() =>{
 
+                         onMoreModalDismissed(details?.isOpen)
+                     }}/>
+                         <ActivityModal updateModal={updateModalFn}
+                                        readFn={unReadReadApplicationFn}
+                                        details={details}
+                                        onChangeAssignedId={(event) => {
+                                            setDetails(event)
+                                        }}
+                                        visible={modalVisible}
+                                        onDismissed={(event: boolean, _id: number) => {
+                                            setUpdateModal(false)
+                                            setDetails({})
+                                            if (event && _id) {
+                                                //  dispatch(deleteApplications(_id))
+                                            }
+                                            if (event) {
+                                                onRefresh()
+                                            }
+                                            onDismissed()
+                                        }}/></View>}
+
+                     {(Platform.OS === "ios" || Platform.OS === "android") && !lodash.isEmpty(details) && <>
+                         <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={() =>{
+
+                             onMoreModalDismissed(details?.isOpen)
+                         }}/>
+                         <ActivityModal updateModal={updateModalFn}
+                                        readFn={unReadReadApplicationFn}
+                                        details={details}
+                                        onChangeAssignedId={(event) => {
+                                            setDetails(event)
+                                        }}
+                                        visible={modalVisible}
+                                        onDismissed={(event: boolean, _id: number) => {
+                                            setUpdateModal(false)
+                                            setDetails({})
+                                            if (event && _id) {
+                                                //  dispatch(deleteApplications(_id))
+                                            }
+                                            if (event) {
+                                                onRefresh()
+                                            }
+                                            onDismissed()
+                                        }}/></>}
                  </View>
 
 
         </Fragment>
 
     );
+
 }
+

@@ -235,7 +235,7 @@ export function ActivityItem(props: any) {
                             flex : 1 ,
 
                         } }>
-                            <TouchableOpacity onPress={ () => {
+                            <TouchableOpacity  onPress={ () => {
                                 props.onPressUser()
                             } }>
                                 <View style={

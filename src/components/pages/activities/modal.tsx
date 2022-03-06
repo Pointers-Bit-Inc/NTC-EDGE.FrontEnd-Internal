@@ -1,4 +1,4 @@
-import React , {useEffect , useMemo , useState} from "react";
+import React , {useEffect , useMemo , useRef , useState} from "react";
 import {Alert , Modal , Platform , StatusBar , StyleSheet , Text , TouchableOpacity , View} from "react-native";
 import {primaryColor} from "@styles/color";
 import Disapproval from "@pages/activities/modal/disapproval";
@@ -34,7 +34,7 @@ const { ModalTab } = Platform.select({
     native: () => require('@pages/activities/modalTab'),
     default: () => require("@pages/activities/modalTab.web")
 })();
-
+const NativeView = Platform.OS === 'ios' || Platform.OS == "android" ? Modal : View;
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
 
@@ -145,8 +145,8 @@ function ActivityModal(props: any) {
         setShowAlert(true)
 
     }
-
     useEffect(() => {
+
         return () => {
             setChange(false);
             setStatus("");
@@ -178,8 +178,8 @@ function ActivityModal(props: any) {
     const [showClose , setShowClose] = useState(false);
 
     return (
-        <Modal
-
+        <NativeView
+            style={{height: "100%"}}
             supportedOrientations={ ['portrait' , 'landscape'] }
             animationType="slide"
             transparent={ false }
@@ -241,7 +241,7 @@ function ActivityModal(props: any) {
                 show={ showAlert } title={ title }
                 message={ message }/>
             <View style={ { flex : 1 } }>
-                <View style={ {
+                {(Platform.OS == "ios" || Platform.OS == "android") && <View style={ {
                     flexDirection : "row" ,
                     alignItems: "center",
                     borderBottomColor: "#F0F0F0",
@@ -259,153 +259,60 @@ function ActivityModal(props: any) {
                     </TouchableOpacity>
                     <Text style={ styles.applicationType }>{ props?.details?.applicationType }</Text>
                     <View></View>
-                </View>
+                </View>}
 
                 <ModalTab details={ props.details } status={ status }/>
                 {
-                    <View style={ styles.footer }>
-                        { getRole(user , [DIRECTOR , EVALUATOR , CASHIER , ACCOUNTANT]) &&
-                        <View style={ styles.groupButton }>
+                    <View style={{  borderTopColor : 'rgba(0, 0, 0, 0.1)' ,
+                        borderTopWidth : 1 ,}}>
+                        <View style={!(Platform.OS == "ios" || Platform.OS == "android") && { width: "60%", alignSelf: "flex-end"} }>
+                            <View style={ styles.footer }>
+                                { getRole(user , [DIRECTOR , EVALUATOR , CASHIER , ACCOUNTANT]) &&
+                                <View style={ styles.groupButton }>
 
-                            <ApprovedButton
-                                currentLoading={ currentLoading }
-                                allButton={ allButton }
-                                onPress={ () => {
+                                    <ApprovedButton
+                                        currentLoading={ currentLoading }
+                                        allButton={ allButton }
+                                        onPress={ () => {
 
-                                    if (cashier) {
-                                        onShowConfirmation(APPROVED)
-                                    } else {
-                                        setApproveVisible(true)
-                                    }
-
-
-                                } }/>
-
-                            <DeclineButton
-                                currentLoading={ currentLoading }
-                                allButton={ allButton }
-                                onPress={ () => {
-                                    setVisible(true)
-                                } }/>
-
-                        </View> }
-
-                        { getRole(user , [EVALUATOR]) &&
-                        <EndorsedButton
-                            currentLoading={ currentLoading }
-                            allButton={ allButton }
-                            onPress={ () => {
-                                setEndorseVisible(true)
-                            } }/> }
+                                            if (cashier) {
+                                                onShowConfirmation(APPROVED)
+                                            } else {
+                                                setApproveVisible(true)
+                                            }
 
 
+                                        } }/>
+
+                                    <DeclineButton
+                                        currentLoading={ currentLoading }
+                                        allButton={ allButton }
+                                        onPress={ () => {
+                                            setVisible(true)
+                                        } }/>
+
+                                </View> }
+
+                                { getRole(user , [EVALUATOR]) &&
+                                <EndorsedButton
+                                    currentLoading={ currentLoading }
+                                    allButton={ allButton }
+                                    onPress={ () => {
+                                        setEndorseVisible(true)
+                                    } }/> }
+
+
+                            </View>
+                        </View>
                     </View>
+
+
+
 
                 }
             </View>
-            <Approval
-                onModalDismissed={ () => {
-                    setStatus(prevStatus);
-                    setRemarks(prevRemarks);
-                    setAssignId(props?.details?.assignedPersonnel)
-                } }
-                onChangeRemarks={ (_remark: string , _assign ,) => {
-                    setPrevStatus(status);
-                    setPrevRemarks(remarks);
-                    setPrevAssignId(assignId);
 
-                    setRemarks(_remark);
-                    setAssignId(_assign)
-
-                } }
-                visible={ approveVisible }
-                confirm={ (event: any , callback: (res , callback) => {}) => {
-
-                    let status = "";
-                    if (getRole(user , [DIRECTOR , EVALUATOR])) {
-                        status = FORAPPROVAL
-                    } else if (getRole(user , [ACCOUNTANT])) {
-                        status = APPROVED
-                    } else if (getRole(user , [CASHIER])) {
-                        status = PAID
-                    }
-                    onChangeApplicationStatus(status , (err , appId) => {
-                        if (!err) {
-                            callback(true , (bool) => {
-                                // props.onDismissed(true, appId)
-                            })
-                        } else {
-
-                            callback(false , (bool) => {
-
-                            })
-                        }
-
-                    })
-
-
-                } }
-                onDismissed={ (event?: any , callback?: (bool) => {}) => {
-                    if (event == APPROVED) {
-                        onApproveDismissed()
-                    }
-                    if (callback) {
-                        callback(true)
-                    }
-                } }
-            />
-            <Disapproval
-                user={ props?.details?.applicant?.user }
-                remarks={ setRemarks }
-                onChangeApplicationStatus={ (event: any , callback: (bool , appId) => {}) => {
-                    onChangeApplicationStatus(DECLINED , (err , id) => {
-
-                        if (!err) {
-                            callback(true , (response) => {
-
-                            })
-                        } else {
-                            callback(false , (response) => {
-
-                            })
-                        }
-                    })
-                }
-                }
-                visible={ visible }
-                onDismissed={ onDismissed }
-            />
-            <Endorsed
-                assignedPersonnel={ props?.details?.assignedPersonnel }
-                onModalDismissed={ () => {
-                    setRemarks(prevRemarks);
-                    setAssignId(props?.details?.assignedPersonnel)
-                } }
-                remarks={ (event: any) => {
-                    setPrevRemarks(remarks);
-                    setPrevAssignId(assignId);
-                    setRemarks(event.remarks);
-                    setAssignId(event.endorseId)
-                } }
-                onChangeApplicationStatus={ (event: any , callback: (bool , response) => {}) => {
-                    onChangeApplicationStatus(event.status , (err , id) => {
-                        console.log(!err , err);
-                        if (!err) {
-                            callback(true , (response) => {
-
-                            })
-                        } else {
-                            callback(false , (response) => {
-
-                            })
-                        }
-
-                    });
-                } }
-                visible={ endorseVisible }
-                onDismissed={ onEndorseDismissed }
-            />
-        </Modal>
+        </NativeView>
     );
 }
 
@@ -703,10 +610,10 @@ const styles = StyleSheet.create({
         height : 812
     } ,
     footer : {
+
         paddingHorizontal : 20 ,
         paddingVertical : 30 ,
         flexDirection : 'row' ,
-        borderTopColor : 'rgba(0, 0, 0, 0.1)' ,
-        borderTopWidth : 1 ,
+
     }
 });

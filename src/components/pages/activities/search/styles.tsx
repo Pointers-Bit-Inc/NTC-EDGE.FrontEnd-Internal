@@ -21,6 +21,7 @@ export const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
+
     },
     group9: {
         alignItems: "center",

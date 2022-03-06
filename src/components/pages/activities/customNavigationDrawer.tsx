@@ -9,6 +9,7 @@ import {CommonActions , DrawerActions} from "@react-navigation/native";
 import ChatIcon from "@assets/svg/chattabbar";
 import MeetIcon from "@assets/svg/meettabbar";
 import {fontValue} from "@pages/activities/script";
+import {ACTIVITIES , CHAT , MEET , SEARCH} from "../../../reducers/activity/initialstate";
 
 const CustomSidebarMenu = (props: any) => {
 
@@ -54,16 +55,16 @@ const CustomSidebarMenu = (props: any) => {
 
 
 
-                    return route.name != "search" && <View>
+                    return route.name != SEARCH && <View>
                         <DrawerItem  key={route.key} label={""} activeBackgroundColor={"transparent"} focused={focused} label={ '' } icon={ () => (
                             <View style={{ width: "100%"}}>
                                 <View style={ [styles.itemContainer , { borderLeftColor : focused ? "#113196" : "transparent" , }] }>
                                     <View style={{alignItems : "center" ,
                                         justifyContent : "center" ,}} >
 
-                                        {route.name == 'activity' ?
-                                            <ActivitySidebar fill={focused ? "#113196" : "#6E7191"}  height={ 25 } width={ 24 }/>
-                                        : route.name == 'chat'  ?  <ChatIcon fill={focused ? "#113196" : "#6E7191"} /> : route.name == 'meet' ? <MeetIcon fill={focused ? "#113196" : "#6E7191"}/> : <></> }
+                                        {route.name == ACTIVITIES ?
+                                            <ActivitySidebar fill={focused? "#113196" : "#6E7191"}  height={ 25 } width={ 24 }/>
+                                        : route.name == CHAT  ?  <ChatIcon fill={focused ? "#113196" : "#6E7191"} /> : route.name = MEET ? <MeetIcon fill={focused ? "#113196" : "#6E7191"}/> : <></> }
 
                                         <Text style={ [styles.label, {color: focused ? "#113196" : "#6E7191"  }] }>{  drawerLabel !== undefined
                                                                         ? drawerLabel

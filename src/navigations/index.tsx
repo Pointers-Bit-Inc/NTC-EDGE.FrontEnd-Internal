@@ -23,6 +23,9 @@ import InitiateVideoCall from '@screens/meet/create';
 import JoinVideoCall from '@screens/meet/video';
 import Search from "@pages/activities/search";
 import TabBar from "@pages/activities/tabbar";
+import {Platform , View} from "react-native";
+import {primaryColor} from "@styles/color";
+import EdgeLogo from "@assets/svg/edge";
 
 type RootStackParamList = {
   App: undefined;
@@ -53,18 +56,35 @@ const RootNavigator = () => {
     <NavigationContainer>
 
       <Stack.Navigator
-          headerMode="float"
-        screenOptions={{
+        
+          screenOptions={{
           gestureEnabled: false,
-          headerShown: false
+          headerShown: false,
+
         }}
+
         initialRouteName="App"
       >
+
         <Stack.Screen name="App" component={App} />
         <Stack.Screen name="AppIntro" component={AppIntro} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="ActivitiesScreen" component={TabBar} options={{   headerShown: false }} />
+        <Stack.Screen name="ActivitiesScreen" component={TabBar} options={
+          {
+            title: null,
+            headerLeft: () => (
+                <View style={{paddingHorizontal: 32}}>
+                  <EdgeLogo width={127} height={29}/>
+                </View>
+            ),
+          headerShown: Platform.OS == "ios" || Platform.OS == "android" ? false : true,
+            headerStyle: {
+
+              backgroundColor: primaryColor,
+            }
+          }
+        } />
         <Stack.Screen name="UserProfileScreen" component={UserProfile} />
         <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="Dial" component={Dial} />

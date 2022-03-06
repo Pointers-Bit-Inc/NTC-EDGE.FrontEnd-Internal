@@ -19,7 +19,13 @@ export const DATE_ADDED = "Date Added",
     EVALUATOR = "evaluator",
     VERIFIER = "verifier" ,
     CHECKER = "checker",
-    ACCOUNTANT = "accountant";
+    ACCOUNTANT = "accountant",
+    ACTIVITIES = "Activities",
+    CHAT = "Chat",
+    MEET = "Meet",
+    SCANQR = "QR",
+    MORE = "More",
+SEARCH = "Search";
 
 const InitialState = Record({
   visible: false,
