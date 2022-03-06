@@ -74,7 +74,7 @@ export default StyleSheet.create({
   },
   inputText: {
     paddingHorizontal: 0,
-    paddingVertical: -100,
+    paddingVertical: 0,
     marginVertical: -(3),
     color: text?.mainColor,
     fontFamily: Regular,

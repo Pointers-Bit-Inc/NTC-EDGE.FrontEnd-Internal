@@ -554,7 +554,7 @@ export default function ActivitiesPage(props: any) {
                             transform : [{ translateY : headerTranslate }]
                         }] }>
 
-                            { isMobile  || activityScreenComponent?.width <800&&
+                            { (isMobile  || activityScreenComponent?.width <800)&&
                             <TouchableOpacity onPress={ () => props.navigation.navigate('Settings')/*openDrawer()*/ }>
                                 <HomeMenuIcon height={ fontValue(24) } width={ fontValue(24) }/>
                             </TouchableOpacity> }

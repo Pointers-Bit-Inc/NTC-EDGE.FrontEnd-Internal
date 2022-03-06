@@ -7,7 +7,7 @@ import VideoCall from '@screens/meet/video';
 import JoinVideoCall from '@screens/meet/video';
 import App from '@screens/app';
 import AppIntro from '@screens/intro';
-import Login from '@screens/login';
+import Login from '@screens/login/login';
 import UserProfile from "@pages/user-profile";
 import Settings from '@pages/settings';
 
@@ -35,7 +35,7 @@ import {isMobile} from "@pages/activities/script";
 type RootStackParamList = {
     App: undefined;
     AppIntro: undefined;
-    Login: undefined;
+    LoginNative: undefined;
     ForgotPassword: undefined;
     HomeScreen: undefined;
     QrCodeScreen: undefined;

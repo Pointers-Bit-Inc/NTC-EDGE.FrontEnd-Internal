@@ -159,7 +159,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                     >
                         <TextInput
                         ref={inputRef}
-                        style={[inputStyle, isFocused ? inputStyles.inputText : { ...inputStyles.inputText, color: defaultColor}, !editable && {color: disabledColor}]}
+                        style={[inputStyle,inputStyles.inputText , !editable && {color: disabledColor}]}
                         placeholder={placeholder || label}
                         placeholderTextColor={!editable ? disabledColor : (!!error ? input.text?.errorColor : defaultColor)}
                         secureTextEntry={secureTextEntry}
