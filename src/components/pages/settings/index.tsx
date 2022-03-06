@@ -19,6 +19,7 @@ import {RFValue} from "react-native-responsive-fontsize";
 import Api from "../../../services/api";
 import {StackActions} from "@react-navigation/native";
 import {fontValue} from "@pages/activities/fontValue";
+import {setApplicationItem} from "../../../reducers/application/actions";
 
 export default ({
   navigation
@@ -61,10 +62,12 @@ export default ({
     setTimeout(() => {
       api.post('/user/logout')
           .then(() => {
+            dispatch(setApplicationItem({}))
             dispatch(resetUser());
             dispatch(resetMeeting());
             dispatch(resetChannel());
             navigation.dispatch(StackActions.replace('Login'));
+
           });
     }, 500);
   }, []);

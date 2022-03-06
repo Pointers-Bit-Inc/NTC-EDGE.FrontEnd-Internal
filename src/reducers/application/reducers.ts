@@ -18,7 +18,8 @@ const {
     DELETE_APPLICATIONS,
     HANDLE_LOAD,
     READ_UNREAD_APPLICATIONS,
-    SET_TAB_BAR_HEIGHT
+    SET_TAB_BAR_HEIGHT,
+    SET_APPLICATION_ITEM
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -29,6 +30,10 @@ export default function basket(state = initialState, action = {}) {
     switch (action.type) {
         case SET_TAB_BAR_HEIGHT: {
             state = state.set('tabBarHeight' , action.payload);
+            return state
+        }
+        case SET_APPLICATION_ITEM: {
+            state = state.set('applicationItem' , action.payload);
             return state
         }
         case SET_PINNED_APPLICATION: {

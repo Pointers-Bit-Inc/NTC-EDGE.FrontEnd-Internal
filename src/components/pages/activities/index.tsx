@@ -29,7 +29,7 @@ import {
 } from "../../../reducers/activity/initialstate";
 import {RootStateOrAny , useDispatch , useSelector} from "react-redux";
 import {
-    handleInfiniteLoad ,
+    handleInfiniteLoad , setApplicationItem ,
     setApplications ,
     setNotPinnedApplication ,
     setPinnedApplication
@@ -92,7 +92,7 @@ export default function ActivitiesPage(props: any) {
 
 
     const { selectedChangeStatus , visible } = useSelector((state: RootStateOrAny) => state.activity);
-    const { pinnedApplications , notPinnedApplications } = useSelector((state: RootStateOrAny) => state.application);
+    const { pinnedApplications , notPinnedApplications, applicationItem } = useSelector((state: RootStateOrAny) => state.application);
     const dispatch = useDispatch();
     const { userActiveMeetingSubscriber , endMeeting } = useFirebase({
         _id : user._id ,
@@ -294,7 +294,6 @@ export default function ActivitiesPage(props: any) {
         setModalVisible(false)
     };
 
-    const [details , setDetails] = useState({});
     const initialMove = new Animated.Value(-400);
     const endMove = 400;
     const duration = 1000;
@@ -669,7 +668,8 @@ export default function ActivitiesPage(props: any) {
                                                                 /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                                 })*/
                                                                 setIsOpen(undefined);
-                                                                setDetails({ ...act , isOpen : `pin${ i }${ index }` });
+                                                                dispatch(setApplicationItem({ ...act , isOpen : `pin${ i }${ index }` }))
+                                                                //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
                                                                 if (event?.icon == 'more') {
                                                                     setMoreModalVisible(true)
                                                                 } else {
@@ -743,8 +743,8 @@ export default function ActivitiesPage(props: any) {
                                             currentUser={ user }
                                             onPressUser={ (event: any) => {
                                                 setIsOpen(undefined);
-
-                                                setDetails({ ...activity , isOpen : `${ index }${ i }` });
+                                                dispatch(setApplicationItem({ ...activity , isOpen : `${ index }${ i }` }))
+                                                //setDetails({ ...activity , isOpen : `${ index }${ i }` });
                                                 /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
                                                 })*/
                                                 if (event?.icon == 'more') {
@@ -766,7 +766,7 @@ export default function ActivitiesPage(props: any) {
                 </View>
                 {
                     !(
-                        isMobile )  && lodash.isEmpty(details) && activityScreenComponent?.width >800  &&
+                        isMobile )  && lodash.isEmpty(applicationItem) && activityScreenComponent?.width >800  &&
                     <View style={ [{ flex : 0.6 , justifyContent : "center" , alignItems : "center" }] }>
 
                         <NoActivity/>
@@ -777,21 +777,21 @@ export default function ActivitiesPage(props: any) {
                     </View>
                 }
 
-                { (!lodash.isEmpty(details) )  && <ActivityModalView>
-                    <ItemMoreModal details={ details } visible={ moreModalVisible } onDismissed={ () => {
+                { (!lodash.isEmpty(applicationItem) )  && <ActivityModalView>
+                    <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
 
-                        onMoreModalDismissed(details?.isOpen)
+                        onMoreModalDismissed(applicationItem?.isOpen)
                     } }/>
                     <ActivityModal updateModal={ updateModalFn }
                                    readFn={ unReadReadApplicationFn }
-                                   details={ details }
+                                   details={ applicationItem }
                                    onChangeAssignedId={ (event) => {
-                                       setDetails(event)
+                                       dispatch(setApplicationItem(event))
                                    } }
                                    visible={ modalVisible }
                                    onDismissed={ (event: boolean , _id: number) => {
                                        setUpdateModal(false);
-                                       setDetails({});
+                                       dispatch(setApplicationItem({  }))
                                        if (event && _id) {
                                            //  dispatch(deleteApplications(_id))
                                        }

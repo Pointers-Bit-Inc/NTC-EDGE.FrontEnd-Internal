@@ -80,7 +80,8 @@ const InitialState = Record({
     },
   ],
   selectedChangeStatus:[],
-  activities:[]
+  activities:[],
+
 });
 
 export default InitialState;
