@@ -42,12 +42,12 @@ class RequirementView extends React.Component<{ requirement: any }> {
     }
     _showImage = () => {
         this.state.image.measure((x , y , width , height , pageX , pageY) => {
-            this.state._sourceMeasure = {
+            this.setState({_sourceMeasure : {
                 width  ,
                 height ,
                 pageX ,
                 pageY
-            };
+            }});
             this._showImageModal();
         });
     };
@@ -60,18 +60,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
     }
 
     private setImage() {
-        this.setState({imageModal:null})
-        this.setState({image :null});
-        this.setState({_imageSize: {
-            width : 0 ,
-            height : 0
-        }})
-        this.setState({_sourceMeasure:  {
-            width : 0 ,
-            height : 0 ,
-            pageX : 0 ,
-            pageY : 0
-        }});
+       
         this.setState({ source : { uri : this.props?.requirement?.links?.medium } })
         Image.getSize(this.props?.requirement?.links?.medium , (width , height) => {
             this.setState({
