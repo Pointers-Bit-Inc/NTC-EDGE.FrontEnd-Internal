@@ -9,7 +9,7 @@ import ApplicationApproved from "@assets/svg/application-approved";
 import {useAlert} from "@pages/activities/hooks/useAlert";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 const {width} = Dimensions.get('window');
 

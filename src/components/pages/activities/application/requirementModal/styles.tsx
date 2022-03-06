@@ -1,7 +1,7 @@
 import {Dimensions , StyleSheet} from "react-native";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 
 

@@ -2,7 +2,7 @@ import { StyleSheet, Platform, Dimensions } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { input, outline } from './color';
 import { Bold, Regular } from './font';
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 const { text, background } = input;
 

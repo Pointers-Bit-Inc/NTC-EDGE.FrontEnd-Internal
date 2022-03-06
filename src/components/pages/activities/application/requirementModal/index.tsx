@@ -16,7 +16,7 @@ import FadeBackground from "@assets/svg/fade-background";
 import {RFValue} from "react-native-responsive-fontsize";
 import ImageView from "@pages/activities/application/ImageView";
 import AnimatedImage from 'react-native-animated-image-viewer';
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 const { width , height } = Dimensions.get('window');
 
 const RequirementModal = (props: any) => {

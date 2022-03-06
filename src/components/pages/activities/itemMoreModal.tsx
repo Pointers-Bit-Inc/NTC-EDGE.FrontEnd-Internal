@@ -15,7 +15,7 @@ import DeleteIcon from "@assets/svg/delete";
 import {Bold , Regular} from "@styles/font";
 import {disabledColor} from "@styles/color";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 const ItemMoreModal = (props: any) => {
     const applicant = props?.details?.applicant?.user

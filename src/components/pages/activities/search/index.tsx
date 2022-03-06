@@ -17,12 +17,13 @@ import {
     DIRECTOR ,
     EVALUATOR
 } from "../../../../reducers/activity/initialstate";
-import {fontValue , formatDate , getFilter} from "@pages/activities/script";
+import {formatDate , getFilter} from "@pages/activities/script";
 import moment from "moment";
 import Loader from "@pages/activities/bottomLoad";
 import {defaultSanitize} from "@pages/activities/search/utils";
 import {useUserRole} from "@pages/activities/hooks/useUserRole";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 function Search(props: any) {
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)

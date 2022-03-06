@@ -10,7 +10,7 @@ import Requirement from "@pages/activities/application/requirementModal/requirem
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Payment from "@pages/activities/application/paymentModal/payment";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {fontValue , formatDate , handleInfinityScroll , statusColor , statusIcon} from "@pages/activities/script";
+import {formatDate , handleInfinityScroll , statusColor , statusIcon} from "@pages/activities/script";
 import axios from "axios";
 import {BASE_URL} from "../../../services/config";
 import {APPROVED, DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
@@ -18,6 +18,7 @@ import {updateActivityStatus} from "../../../reducers/activity/actions";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 const {width} = Dimensions.get('window');
 

@@ -8,7 +8,7 @@ import { resetChannel } from 'src/reducers/channel/actions';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { button, text } from 'src/styles/color';
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 const styles = StyleSheet.create({
   container: {

@@ -4,7 +4,7 @@ import {primaryColor, text} from "../../../styles/color";
 import RNPickerSelect from "react-native-picker-select";
 import {Ionicons} from "@expo/vector-icons";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 const Header = (props: any) => {
     const {

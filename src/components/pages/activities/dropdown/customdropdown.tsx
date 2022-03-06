@@ -5,7 +5,7 @@ import {useOrientation} from "@pages/activities/hooks/useOrientation";
 import {Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import useKeyboard from "../../../../hooks/useKeyboard";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 
 interface Props {

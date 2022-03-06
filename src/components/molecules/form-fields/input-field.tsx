@@ -13,7 +13,7 @@ import {defaultColor , primaryColor, text} from '@styles/color';
  import inputStyles from "@styles/input-style"
  import {input} from "@styles/color"
 import CloseIcon from "@assets/svg/close";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 const styles = StyleSheet.create({
     container: {
         paddingVertical: 10

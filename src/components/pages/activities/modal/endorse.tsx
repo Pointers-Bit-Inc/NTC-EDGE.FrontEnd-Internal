@@ -22,10 +22,11 @@ import {disabledColor , errorColor , primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import {useOrientation} from "@pages/activities/hooks/useOrientation";
-import {fontValue , getRole} from "@pages/activities/script";
+import {getRole} from "@pages/activities/script";
 import {Bold , Regular , Regular500} from "@styles/font";
 import CloseIcon from "@assets/svg/close";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 const {height, width} = Dimensions.get('window');
 

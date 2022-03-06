@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { View, Animated } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import styles from './styles';
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 interface Props {
     color?: string;

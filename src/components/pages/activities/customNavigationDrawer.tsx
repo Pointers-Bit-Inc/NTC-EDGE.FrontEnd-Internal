@@ -8,8 +8,8 @@ import {Regular} from "@styles/font";
 import {CommonActions , DrawerActions} from "@react-navigation/native";
 import ChatIcon from "@assets/svg/chattabbar";
 import MeetIcon from "@assets/svg/meettabbar";
-import {fontValue} from "@pages/activities/script";
 import {ACTIVITIES , CHAT , MEET , SEARCH} from "../../../reducers/activity/initialstate";
+import {fontValue} from "@pages/activities/fontValue";
 
 const CustomSidebarMenu = (props: any) => {
 

@@ -22,9 +22,10 @@ import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor , primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import {useAlert} from "@pages/activities/hooks/useAlert";
-import {fontValue , getRole} from "@pages/activities/script";
+import {getRole} from "@pages/activities/script";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 const { width , height } = Dimensions.get('window');
 

@@ -3,7 +3,7 @@ import {APPROVED} from "../../../../reducers/activity/initialstate";
 import React from "react";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 export const ApprovedButton = (props: { currentLoading: string, allButton: boolean, onPress: () => void }) => {
 

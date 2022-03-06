@@ -27,7 +27,7 @@ import Loading from '@components/atoms/loading';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold } from '@styles/font';
 import Alert from '@components/atoms/alert';
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 const {height} = Dimensions.get('window');
 const styles = StyleSheet.create({

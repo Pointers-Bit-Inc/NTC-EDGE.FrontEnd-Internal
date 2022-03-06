@@ -1,7 +1,7 @@
 import {StyleSheet} from "react-native";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 export const styles = StyleSheet.create({
     container: {

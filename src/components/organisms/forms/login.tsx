@@ -11,7 +11,7 @@ import Text from '@atoms/text';
 import inputStyles from "src/styles/input-style";
 import {Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 const styles = StyleSheet.create({
   container: {

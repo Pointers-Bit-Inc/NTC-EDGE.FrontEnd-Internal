@@ -16,18 +16,19 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import ApplicationList from "@pages/activities/applicationList";
-import {fontValue , unreadReadApplication} from "@pages/activities/script";
+import { unreadReadApplication} from "@pages/activities/script";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import Loader from "@pages/activities/bottomLoad";
 import useCountUp from "@pages/activities/hooks/useCountUp";
 import {Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
-import {RFValue} from "react-native-responsive-fontsize";
+
 import NoActivity from "@assets/svg/noActivity";
 
 const {height} = Dimensions.get('screen');
 import lodash from 'lodash';
+import {fontValue} from "@pages/activities/fontValue";
 export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const inputRef = useRef(null);
     const [details, setDetails] = useState({})
@@ -69,7 +70,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
         return <Text>{countUp}</Text>
     }
     return <View style={[styles.container, {flexDirection: "row"}]}>
-        <View style={[styles.group9, {flex: 0.4} ]}>
+        <View style={[styles.group9, { flex: (Platform.OS === "ios" || Platform.OS === "android") ? 1 : 0.4,} ]}>
             <View style={styles.group4}>
                 <View style={styles.rect}>
                     <View style={styles.group2}>

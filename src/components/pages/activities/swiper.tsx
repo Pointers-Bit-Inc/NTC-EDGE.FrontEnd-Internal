@@ -6,7 +6,7 @@ import SeeIcon from "@assets/svg/see";
 import {Bold , Regular} from "@styles/font";
 import {disabledColor} from "@styles/color";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 export const renderSwiper = (index: number, progress: any, dragX: any, onPressUser: any, activity, unReadReadApplicationFn) => {
     let action = activity?.dateRead ? "Unread" : "Read"

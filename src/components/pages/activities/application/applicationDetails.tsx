@@ -3,7 +3,7 @@ import {Dimensions , ScrollView , StyleSheet , Text , View} from "react-native";
 import {Bold , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import Loader from "@pages/activities/bottomLoad";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 const { width , height } = Dimensions.get("screen");
 const ApplicationDetails = (props: any) => {

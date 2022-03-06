@@ -7,7 +7,7 @@ import {requirementStyles, styles} from "@pages/activities/application/requireme
 import AnimatedImage from 'react-native-animated-image-viewer';
 import FadeBackground from "@assets/svg/fade-background";
 import Loader from "@pages/activities/bottomLoad";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 const { width  } = Dimensions.get("screen");
 
 class RequirementView extends React.Component<{ requirement: any }> {

@@ -4,7 +4,7 @@ import ForwardIcon from "@assets/svg/forward";
 import React from "react";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 export function EndorsedButton(props: { currentLoading: string, allButton: boolean, onPress: () => void }) {
     return <View style={{flex: 0.8,}}>

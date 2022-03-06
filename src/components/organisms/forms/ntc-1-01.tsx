@@ -11,7 +11,7 @@ import FormField from "@organisms/forms/form";
 import {outline, primaryColor} from "@styles/color";
 import Header from "@organisms/forms/tab-header";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 interface RadioOperatorServices {
     id: number,

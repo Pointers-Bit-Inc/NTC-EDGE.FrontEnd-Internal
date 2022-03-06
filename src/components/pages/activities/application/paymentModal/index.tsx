@@ -3,11 +3,12 @@ import BackgroundPayment from "@assets/svg/backgroundpayment";
 import {Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
-import {capitalize , fontValue} from "@pages/activities/script";
+import {capitalize } from "@pages/activities/script";
 import {RFValue} from "react-native-responsive-fontsize";
 import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
 import BorderPaymentTop from "@assets/svg/borderPayment";
 import BorderPaymentBottom from "@assets/svg/borderPaymentBottom";
+import {fontValue} from "@pages/activities/fontValue";
 
 const {width, height} = Dimensions.get('window');
 const PaymentModal = (props: any) => {

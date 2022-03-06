@@ -2,7 +2,7 @@ import {Dimensions, StyleSheet} from "react-native";
 import {outline} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 const {width, height} = Dimensions.get('window');
 export const styles = StyleSheet.create({
    header:{

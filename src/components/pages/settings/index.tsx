@@ -18,7 +18,7 @@ import { resetChannel } from 'src/reducers/channel/actions';
 import {RFValue} from "react-native-responsive-fontsize";
 import Api from "../../../services/api";
 import {StackActions} from "@react-navigation/native";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 export default ({
   navigation

@@ -11,9 +11,10 @@ import DeclineIcon from "@assets/svg/decline";
 import lodash from 'lodash';
 import RadioButtonOnIcon from "@assets/svg/radioButtonOn";
 import RadioButtonOffIcon from "@assets/svg/radioButtonOff";
-import {fontValue , getRole} from "@pages/activities/script";
+import {getRole} from "@pages/activities/script";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 const window = Dimensions.get("window")
 

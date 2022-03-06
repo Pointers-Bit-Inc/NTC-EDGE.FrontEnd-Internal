@@ -5,7 +5,7 @@ import StatusBar from '@atoms/status-bar';
 import Text from '@atoms/text';
 import { disabledColor, primaryColor } from '@styles/color';
 import styles from './styles';
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 interface Props {
   title?: string;

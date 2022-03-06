@@ -6,7 +6,6 @@ import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
 import {RFValue} from "react-native-responsive-fontsize";
 import {
-    fontValue ,
     formatDate ,
     getRole ,
     PaymentStatusText ,
@@ -31,6 +30,7 @@ import Highlighter from "@pages/activities/search/highlighter";
 import EndorseIcon from "@assets/svg/endorse";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 import {Bold , Regular} from "@styles/font";
+import {fontValue} from "@pages/activities/fontValue";
 
 
 const styles = StyleSheet.create({

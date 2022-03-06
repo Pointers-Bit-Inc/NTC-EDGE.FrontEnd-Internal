@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { AntDesign } from '@expo/vector-icons'; 
 import { RFValue } from 'react-native-responsive-fontsize';
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 interface Props {
   type?: string;

@@ -2,7 +2,7 @@ import { button, text } from '@styles/color';
 import { Bold } from '@styles/font';
 import { StyleSheet, Dimensions } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 const { width } = Dimensions.get('window');
 

@@ -18,7 +18,7 @@ import {FileTextIcon} from "@assets/svg/fileText";
 import {input , primaryColor} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 const { height, width } = Dimensions.get('window');
 
 function Disapproval(props: any) {

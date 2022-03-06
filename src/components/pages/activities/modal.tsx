@@ -5,7 +5,7 @@ import Disapproval from "@pages/activities/modal/disapproval";
 import Endorsed from "@pages/activities/modal/endorse";
 import Approval from "@pages/activities/modal/approval";
 import {RootStateOrAny , useDispatch , useSelector} from "react-redux";
-import {fontValue , getRole , PaymentStatusText , StatusText} from "@pages/activities/script";
+import {getRole , PaymentStatusText , StatusText} from "@pages/activities/script";
 import {
     ACCOUNTANT ,
     APPROVED ,
@@ -29,6 +29,7 @@ import {DeclineButton} from "@pages/activities/button/declineButton";
 import {EndorsedButton} from "@pages/activities/button/endorsedButton";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 const { ModalTab } = Platform.select({
     native: () => require('@pages/activities/modalTab'),

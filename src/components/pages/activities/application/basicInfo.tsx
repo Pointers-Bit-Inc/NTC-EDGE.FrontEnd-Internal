@@ -1,8 +1,7 @@
 import React from "react";
 import {ActivityIndicator , Dimensions , Platform , ScrollView , StyleSheet , Text , View} from "react-native";
 import {
-    excludeStatus , fontValue ,
-    getRole ,
+    excludeStatus , getRole ,
     getStatusText ,
     PaymentStatusText ,
     statusColor ,
@@ -18,6 +17,7 @@ import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 const { width , height } = Dimensions.get("screen");
 

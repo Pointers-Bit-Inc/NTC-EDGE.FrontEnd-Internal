@@ -6,7 +6,7 @@ import {setTabBarHeight} from "../../../reducers/application/actions";
 import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
 import {RFValue} from "react-native-responsive-fontsize";
 import {Regular} from "@styles/font";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
  export const FakeSearchBar = (props: { onSearchLayoutComponent,  animated,  onPress: () => void, searchVisible: boolean }) => {
 

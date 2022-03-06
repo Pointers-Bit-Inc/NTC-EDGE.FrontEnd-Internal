@@ -25,7 +25,7 @@ import { setUser } from 'src/reducers/user/actions';
 import { StackActions } from '@react-navigation/native';
 import Ellipsis from "@atoms/ellipsis";
 import {setTabBarHeight} from "../reducers/application/actions";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 const logo = require('@assets/ntc-edge-horizontal.png');
 const background = require('@assets/background.png');
 

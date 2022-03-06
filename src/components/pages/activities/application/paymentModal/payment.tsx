@@ -17,11 +17,12 @@ import {requirementStyles} from "@pages/activities/application/requirementModal/
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {Bold , Regular , Regular500} from "@styles/font";
 import _ from "lodash";
-import {capitalize , fontValue} from "@pages/activities/script";
+import {capitalize } from "@pages/activities/script";
 import {RFValue} from "react-native-responsive-fontsize";
 import {RootStateOrAny , useSelector} from "react-redux";
 import {ACCOUNTANT} from "../../../../../reducers/activity/initialstate";
 import AnimatedImage from 'react-native-animated-image-viewer';
+import {fontValue} from "@pages/activities/fontValue";
 
 class ProofPaymentView extends React.Component<{onPress: () => void, totalFee: any, paymentMethod: any, proofOfPayment: any, onPress1: () => void }> {
     source = { uri : this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" };

@@ -20,7 +20,7 @@ import { BASE_URL, BASE_URL_NODE } from '../../../services/config';
 import { validateEmail, validatePassword, validatePhone, validateText } from 'src/utils/form-validations';
 import { setUser } from '../../../reducers/user/actions';
 import { Bold } from '@styles/font';
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const { width, height } = Dimensions.get('window');

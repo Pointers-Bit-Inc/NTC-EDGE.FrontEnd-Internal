@@ -2,7 +2,7 @@ import React  from "react";
 import {StyleSheet, View, Text, Modal, TouchableOpacity} from "react-native";
 import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 function QrBasicInfo(props: any) {
     return (

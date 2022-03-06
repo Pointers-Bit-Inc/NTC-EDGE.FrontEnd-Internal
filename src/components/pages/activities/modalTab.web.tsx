@@ -11,7 +11,7 @@ import {Animated, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Poppins_400Regular , Poppins_500Medium} from "@expo-google-fonts/poppins";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 let initial = {};
 

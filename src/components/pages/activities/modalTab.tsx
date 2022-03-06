@@ -11,7 +11,7 @@ import ScrollableTabView from "@pages/activities/tabs";
 import {primaryColor} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
  
 
 const Tab = ({ tab , page , isTabActive , onPressHandler , onTabLayout , styles }) => {

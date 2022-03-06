@@ -4,7 +4,7 @@ import {DATE_ADDED} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useSelector} from "react-redux";
 import NoActivity from "@assets/svg/noActivity";
 import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/script";
+import {fontValue} from "@pages/activities/fontValue";
 
 export const styles = StyleSheet.create({
    noContent:{

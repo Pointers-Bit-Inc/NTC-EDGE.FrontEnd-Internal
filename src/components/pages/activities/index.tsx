@@ -1,6 +1,6 @@
 import React , {Fragment , useRef, useCallback , useEffect , useMemo , useState} from "react";
 
-import {fontValue , formatDate , getFilter , unreadReadApplication ,} from "@pages/activities/script";
+import {formatDate , getFilter , unreadReadApplication ,} from "@pages/activities/script";
 import {
     Alert ,
     Animated ,
@@ -68,6 +68,7 @@ import {ModalTab} from "@pages/activities/modalTab.web";
 const {width} = Dimensions.get('window')
 
 import {styles} from "@pages/activities/styles";
+import {fontValue} from "@pages/activities/fontValue";
 
 export default function ActivitiesPage(props: any) {
 
