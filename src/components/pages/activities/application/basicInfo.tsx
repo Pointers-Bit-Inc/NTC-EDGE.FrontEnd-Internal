@@ -2,7 +2,7 @@ import React from "react";
 import {ActivityIndicator , Dimensions , Platform , ScrollView , StyleSheet , Text , View} from "react-native";
 import {
     excludeStatus , getRole ,
-    getStatusText ,
+    getStatusText , isMobile ,
     PaymentStatusText ,
     statusColor ,
     statusIcon ,
@@ -45,8 +45,8 @@ const BasicInfo = (props: any) => {
     });
     const applicant = props.applicant;
     return <ScrollView style={ { width : "100%" , backgroundColor : "#fff" , } }>
-        <View style={{flexDirection:  Platform.OS == "ios" || Platform.OS == "android" ? "column" : "row"}}>
-            <View style={  Platform.OS == "ios" || Platform.OS == "android" ?  { padding : 10 , flex : 1 , alignSelf : "center" }  : {paddingLeft: 20, paddingVertical: 20} }>
+        <View style={{flexDirection:  isMobile ? "column" : "row"}}>
+            <View style={  isMobile ?  { padding : 10 , flex : 1 , alignSelf : "center" }  : {paddingLeft: 20, paddingVertical: 20} }>
                 <ProfileImage
                     style={ { borderRadius : 4 } }
                     size={ fontValue(150) }
@@ -58,7 +58,7 @@ const BasicInfo = (props: any) => {
             </View>
 
             { props.applicant &&
-                <View style={!(Platform.OS == "ios" || Platform.OS == "android") && { flex: 1,  paddingRight: 10}}>
+                <View style={!(isMobile) && { flex: 1,  paddingRight: 10}}>
                     <View style={styles.elevation}>
                         <View style={ [styles.container , { marginTop : 20 }] }>
                             <View style={ styles.group4 }>

@@ -30,6 +30,7 @@ import {RootStateOrAny ,  useSelector} from "react-redux";
 import {fontValue} from "@pages/activities/fontValue";
 import ProfileImage from "@atoms/image/profile";
 import {createRef , useRef} from "react";
+import {isMobile} from "@pages/activities/script";
 
 type RootStackParamList = {
     App: undefined;
@@ -92,7 +93,7 @@ const RootNavigator = () => {
                                         style={ {
                                             borderRadius : 26 , } }
                                         size={ fontValue(28) }
-                                        textSize={ 26/2 }
+                                       
                                         image={ user?.profilePicture?.small }
                                         name={ `${ user?.firstName } ${ user?.lastName }` }
                                     />
@@ -105,7 +106,7 @@ const RootNavigator = () => {
                                 <EdgeLogo width={ 127 } height={ 29 }/>
                             </View>
                         ) ,
-                        headerShown : Platform.OS == "ios" || Platform.OS == "android" ? false : true ,
+                        headerShown : isMobile ? false : true ,
                         headerStyle : {
 
                             backgroundColor : primaryColor ,

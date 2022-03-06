@@ -16,7 +16,7 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import ApplicationList from "@pages/activities/applicationList";
-import { unreadReadApplication} from "@pages/activities/script";
+import {isMobile , unreadReadApplication} from "@pages/activities/script";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import Loader from "@pages/activities/bottomLoad";
@@ -70,7 +70,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
         return <Text>{countUp}</Text>
     }
     return <View style={[styles.container, {flexDirection: "row"}]}>
-        <View style={[styles.group9, { flex: (Platform.OS === "ios" || Platform.OS === "android") ? 1 : 0.4,} ]}>
+        <View style={[styles.group9, { flex: (isMobile) ? 1 : 0.4,} ]}>
             <View style={styles.group4}>
                 <View style={styles.rect}>
                     <View style={styles.group2}>
@@ -196,7 +196,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
         </View>
 
         {
-            !(Platform.OS === "ios" || Platform.OS === "android") && lodash.isEmpty(details) &&
+            !(isMobile) && lodash.isEmpty(details) &&
             <View style={ [{ flex : 0.6 , justifyContent : "center" , alignItems : "center" }] }>
 
                 <NoActivity/>
@@ -207,7 +207,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
             </View>
         }
-        {!(Platform.OS === "ios" || Platform.OS === "android") && !lodash.isEmpty(details) && <View style={{flex : 0.6}}>
+        {!(isMobile) && !lodash.isEmpty(details) && <View style={{flex : 0.6}}>
         <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={()=>{
             onMoreModalDismissed(details?.isOpen)
         }
@@ -223,7 +223,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                            onDismissed()
                        }}/>   </View>}
 
-        {(Platform.OS === "ios" || Platform.OS === "android") && !lodash.isEmpty(details) && <>
+        {(isMobile) && !lodash.isEmpty(details) && <>
         <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={()=>{
             onMoreModalDismissed(details?.isOpen)
         }

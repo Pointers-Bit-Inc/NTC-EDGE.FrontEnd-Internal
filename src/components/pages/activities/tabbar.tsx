@@ -27,7 +27,7 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {setTabBarHeight} from "../../../reducers/application/actions";
 import lodash from 'lodash';
-import {getRole} from "@pages/activities/script";
+import {getRole , isMobile} from "@pages/activities/script";
 import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import CustomSidebarMenu from "@pages/activities/customNavigationDrawer";
@@ -175,7 +175,7 @@ export default function TabBar() {
     const dimensions = useWindowDimensions();
     return (
             <>
-                {Platform.OS == "ios" || Platform.OS == "android"    ?  <Tab.Navigator   tabBar={(props) => <ActivityTab  {...props} />}>
+                {isMobile    ?  <Tab.Navigator   tabBar={(props) => <ActivityTab  {...props} />}>
                     <Tab.Screen options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesPage}/>
                     <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                     <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>

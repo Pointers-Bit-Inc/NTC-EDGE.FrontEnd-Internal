@@ -16,7 +16,7 @@ import {
     VERIFIED
 } from "../../../reducers/activity/initialstate";
 import React from "react";
-import {Alert} from "react-native";
+import {Alert , Platform} from "react-native";
 import EvaluationStatus from "@assets/svg/evaluationstatus";
 import {styles} from "@pages/activities/styles";
 import CheckMarkIcon from "@assets/svg/checkmark";
@@ -31,6 +31,7 @@ import {Dispatch} from "redux";
 import {Regular500} from "@styles/font";
 import {Role , UserApplication} from "@pages/activities/interface";
 import {fontValue} from "@pages/activities/fontValue";
+import {widthPercentageToDP} from "react-native-responsive-screen";
 
 export const capitalize = (str) => {
     return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)).join(' ');
@@ -261,3 +262,4 @@ export function getStatus(props: any , personnel?: { _id: string | undefined; up
 }
 
 
+export const isMobile =Platform.OS === "ios" || Platform.OS === "android"

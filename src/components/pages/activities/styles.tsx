@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     },
     rect: {
         paddingVertical:15,
-        backgroundColor: "#041B6E",
+
         flexDirection: "row"
     },
     rect4: {
@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
         backgroundColor: "#fff"
     },
     activity: {
-        color: "rgba(255,255,255,1)",
+
         fontSize: fontValue(20) ,
         marginLeft: 15,
         fontFamily: Bold,
