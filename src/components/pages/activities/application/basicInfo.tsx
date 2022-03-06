@@ -46,7 +46,7 @@ const BasicInfo = (props: any) => {
     const applicant = props.applicant;
     return <ScrollView style={ { width : "100%" , backgroundColor : "#fff" , } }>
         <View style={{flexDirection:  Platform.OS == "ios" || Platform.OS == "android" ? "column" : "row"}}>
-            <View style={  Platform.OS == "ios" || Platform.OS == "android" ?  { padding : 10 , flex : 1 , alignSelf : "center" }  : {paddingVertical: 20, paddingHorizontal: 20} }>
+            <View style={  Platform.OS == "ios" || Platform.OS == "android" ?  { padding : 10 , flex : 1 , alignSelf : "center" }  : {paddingLeft: 20, paddingVertical: 20} }>
                 <ProfileImage
                     style={ { borderRadius : 4 } }
                     size={ fontValue(150) }
@@ -58,7 +58,7 @@ const BasicInfo = (props: any) => {
             </View>
 
             { props.applicant &&
-                <View style={!(Platform.OS == "ios" || Platform.OS == "android") && { flex: 1, padding: 20}}>
+                <View style={!(Platform.OS == "ios" || Platform.OS == "android") && { flex: 1,  paddingRight: 10}}>
                     <View style={styles.elevation}>
                         <View style={ [styles.container , { marginTop : 20 }] }>
                             <View style={ styles.group4 }>
@@ -170,7 +170,7 @@ const BasicInfo = (props: any) => {
 };
 const styles = StyleSheet.create({
     elevation : {
-        marginBottom : 20 ,
+        marginVertical : 20 ,
         borderRadius : 5 ,
         alignSelf : "center" ,
         width : "90%" ,
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
             width : 0
         } ,
         elevation : 6 ,
-        shadowOpacity : 0.1 ,
+        shadowOpacity : 0.2 ,
         shadowRadius : 2 ,
     } ,
     icon2 : {

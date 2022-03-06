@@ -14,12 +14,14 @@ import ScanQrIcon from "@assets/svg/scanqrtabbar";
 import MoreTabBarIcon from "@assets/svg/moretabbar";
 import {
     ACTIVITIES ,
-    CASHIER , CHAT ,
+    CHAT ,
     CHECKER ,
     DIRECTOR ,
-    EVALUATOR , MEET , MORE , SCANQR , SEARCH ,
-    VERIFIED ,
-    VERIFIER
+    EVALUATOR ,
+    MEET ,
+    MORE ,
+    SCANQR ,
+    SEARCH ,
 } from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
@@ -180,7 +182,7 @@ export default function TabBar() {
                     <Tab.Screen  options={{ tabBarItemStyle: {display: "none"} , headerShown: false }}  name={SEARCH} component={Search} />
                     {getRole(user, [CHECKER, EVALUATOR, DIRECTOR]) && <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>  }
                 </Tab.Navigator> :  <Drawer.Navigator
-                   
+
                     screenOptions={{
 
                         drawerStyle: {
