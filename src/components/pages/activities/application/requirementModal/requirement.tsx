@@ -14,32 +14,35 @@ class RequirementView extends React.Component<{ requirement: any }> {
 
 
 
-    source = { uri : this.props?.requirement?.links?.medium || "https://dummyimage.com/350x350/fff/aaa" };
-    imageModal = null;
-    image = null;
+
+
     state = {
         onLoad: false,
-        visible : false
+        visible : false ,
+        source: { uri : this.props?.requirement?.links?.medium || "https://dummyimage.com/350x350/fff/aaa" }  ,
+        _imageSize:  {
+            width : 0 ,
+            height : 0
+        },
+        _sourceMeasure:{
+            width : 0 ,
+            height : 0 ,
+            pageX : 0 ,
+            pageY : 0
+        },
+        imageModal:null,
+        image:null
     };
-    _imageSize = {
-        width : 0 ,
-        height : 0
-    };
-    _sourceMeasure = {
-        width : 0 ,
-        height : 0 ,
-        pageX : 0 ,
-        pageY : 0
-    };
+
     _showImageModal = () => this.setState({ visible : true });
     _hideImageModal = () => this.setState({ visible : false });
     _requestClose = () => {
-        this.imageModal?.close();
+        this.state.imageModal?.close();
         
     }
     _showImage = () => {
-        this.image.measure((x , y , width , height , pageX , pageY) => {
-            this._sourceMeasure = {
+        this.state.image.measure((x , y , width , height , pageX , pageY) => {
+            this.state._sourceMeasure = {
                 width  ,
                 height ,
                 pageX ,
@@ -48,16 +51,40 @@ class RequirementView extends React.Component<{ requirement: any }> {
             this._showImageModal();
         });
     };
+    componentDidUpdate(prevProps, prevState) {
+           if(prevProps?.requirement?.links?.medium != this.props?.requirement?.links?.medium) {
+
+               this.setImage();
+
+           }
+    }
+
+    private setImage() {
+        this.setState({imageModal:null})
+        this.setState({image :null});
+        this.setState({_imageSize: {
+            width : 0 ,
+            height : 0
+        }})
+        this.setState({_sourceMeasure:  {
+            width : 0 ,
+            height : 0 ,
+            pageX : 0 ,
+            pageY : 0
+        }});
+        this.setState({ source : { uri : this.props?.requirement?.links?.medium } })
+        Image.getSize(this.props?.requirement?.links?.medium , (width , height) => {
+            this.setState({
+                _imageSize : {
+                    width : width || 300 ,
+                    height : height || 300
+                }
+            });
+        })
+    }
 
     componentDidMount() {
-        Image.getSize(this?.source?.uri , (width , height) => {
-            this._imageSize = {
-                width : width || 300 ,
-                height : height || 300
-            }
-        });
-
-          console.log(1)
+        this.setImage();
     }
     render() {
         return <>
@@ -74,7 +101,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
 
 
                                 <TouchableOpacity ref={ image => (
-                                    this.image = image) }
+                                    this.state.image = image) }
                                                   onPress={ this._showImage } style={ {
                                     alignItems : "center" ,
                                     flex : 1 ,
@@ -96,7 +123,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
                             borderStyle : "dashed" ,
                         } }>
                             <TouchableOpacity disabled={this.state.onLoad} ref={ image => (
-                                this.image = image) }
+                                this.state.image = image) }
                                               onPress={ this._showImage }>
 
                                 <Image
@@ -134,10 +161,10 @@ class RequirementView extends React.Component<{ requirement: any }> {
                                 <AnimatedImage
 
                                     ref={ imageModal => (
-                                        this.imageModal = imageModal) }
-                                    source={ this.source }
-                                    sourceMeasure={ this._sourceMeasure }
-                                    imageSize={ this._imageSize }
+                                        this.state.imageModal = imageModal) }
+                                    source={ this?.state?.source }
+                                    sourceMeasure={ this.state._sourceMeasure }
+                                    imageSize={ this.state._imageSize }
                                     onClose={ this._hideImageModal }
                                     animationDuration={ 200 }
                                 />
