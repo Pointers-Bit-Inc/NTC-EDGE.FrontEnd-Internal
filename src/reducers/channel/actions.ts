@@ -1,11 +1,13 @@
 const {
   SET_SELECTED_CHANNEL,
   SET_CHANNEL_LIST,
+  ADD_TO_CHANNEL_LIST,
   ADD_CHANNEL,
   UPDATE_CHANNEL,
   REMOVE_CHANNEL,
 
   SET_MESSAGES,
+  ADD_TO_MESSAGES,
   ADD_MESSAGES,
   UPDATE_MESSAGES,
   REMOVE_MESSAGES,
@@ -64,6 +66,13 @@ export function setChannelList(payload:[ChannelProps]) {
   };
 }
 
+export function addToChannelList(payload:[ChannelProps]) {
+  return {
+    type: ADD_TO_CHANNEL_LIST,
+    payload,
+  };
+}
+
 export function addChannel(payload:ChannelProps) {
   return {
     type: ADD_CHANNEL,
@@ -88,6 +97,13 @@ export function removeChannel(payload:string) {
 export function setMessages(payload:MessageProps) {
   return {
     type: SET_MESSAGES,
+    payload,
+  };
+}
+
+export function addToMessages(payload: [MessageProps]) {
+  return {
+    type: ADD_TO_MESSAGES,
     payload,
   };
 }

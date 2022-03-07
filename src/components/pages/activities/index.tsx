@@ -46,10 +46,18 @@ import ItemMoreModal from "@pages/activities/itemMoreModal";
 import moment from "moment";
 import ApplicationList from "@pages/activities/applicationList";
 import Loader from "@pages/activities/bottomLoad";
-import useFirebase from 'src/hooks/useFirebase';
+import useSignalr from "src/hooks/useSignalr";
+import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {getChannelName} from 'src/utils/formatting';
 import lodash from 'lodash';
-import {removeActiveMeeting , setMeetingId ,} from 'src/reducers/meeting/actions';
+import {
+    addActiveMeeting ,
+    removeActiveMeeting ,
+    setMeeting ,
+    setActiveMeetings,
+    updateActiveMeeting ,
+} from 'src/reducers/meeting/actions';
+import { setSelectedChannel } from 'src/reducers/channel/actions';
 import {MeetingNotif} from '@components/molecules/list-item';
 import listEmpty from "@pages/activities/listEmpty";
 import HomeMenuIcon from "@assets/svg/homemenu";
@@ -81,10 +89,10 @@ export default function ActivitiesPage(props: any) {
     const { user , cashier , director , evaluator , checker , accountant } = useUserRole();
     const [updateModal , setUpdateModal] = useState(false);
     const meetingList = useSelector((state: RootStateOrAny) => {
-        const { activeMeetings } = state.meeting;
-        const sortedMeeting = lodash.orderBy(activeMeetings , 'updatedAt' , 'desc');
-        return sortedMeeting;
-    });
+        const { normalizeActiveMeetings } = state.meeting
+        const meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
+        return lodash.orderBy(meetingList, 'updatedAt', 'desc');
+    })
     const config = {
         headers : {
             Authorization : "Bearer ".concat(user?.sessionToken)
@@ -92,17 +100,10 @@ export default function ActivitiesPage(props: any) {
     };
 
 
-    const { selectedChangeStatus , visible } = useSelector((state: RootStateOrAny) => state.activity);
-    const { pinnedApplications , notPinnedApplications, applicationItem } = useSelector((state: RootStateOrAny) => state.application);
-    const dispatch = useDispatch();
-    const { userActiveMeetingSubscriber , endMeeting } = useFirebase({
-        _id : user._id ,
-        name : user.name ,
-        firstName : user.firstName ,
-        lastName : user.lastName ,
-        email : user.email ,
-        image : user.image ,
-    });
+    const {selectedChangeStatus, visible} = useSelector((state: RootStateOrAny) => state.activity)
+    const {pinnedApplications, notPinnedApplications, applicationItem} = useSelector((state: RootStateOrAny) => state.application)
+    const dispatch = useDispatch()
+    const { getActiveMeetingList, endMeeting, leaveMeeting } = useSignalr();
 
     function getList(list: any , selectedClone) {
         return getFilter({
@@ -321,40 +322,19 @@ export default function ActivitiesPage(props: any) {
         return infiniteLoad ? <Loader/> : null
     };
 
-    // useEffect(() => {
-    //     let unMount = false;
-    //     const unsubscriber = userActiveMeetingSubscriber((querySnapshot: FirebaseFirestoreTypes.QuerySnapshot) => {
-    //         if (!unMount) {
-    //             querySnapshot.docChanges().forEach((change: any) => {
-    //                 const data = change.doc.data();
-    //                 data._id = change.doc.id;
-    //                 switch (change.type) {
-    //                     case 'added': {
-    //                         const hasSave = lodash.find(meetingList, (ch: any) => ch._id === data._id);
-    //                         if (!hasSave) {
-    //                             dispatch(addActiveMeeting(data));
-    //                         }
-    //                         return;
-    //                     }
-    //                     case 'modified': {
-    //                         dispatch(updateActiveMeeting(data));
-    //                         return;
-    //                     }
-    //                     case 'removed': {
-    //                         dispatch(removeActiveMeeting(data._id));
-    //                         return;
-    //                     }
-    //                     default:
-    //                         return;
-    //                 }
-    //             });
-    //         }
-    //     })
-    //     return () => {
-    //         unMount = true;
-    //         unsubscriber();
-    //     }
-    // }, []);
+    useEffect(() => {
+        let unMount = false;
+        getActiveMeetingList((err, result) => {
+            if (!unMount) {
+                if (result) {
+                    dispatch(setActiveMeetings(result));
+                }
+            }
+        });
+        return () => {
+            unMount = true;
+        }
+    }, []);
 
     const handleLoad = useCallback(() => {
 
@@ -410,22 +390,26 @@ export default function ActivitiesPage(props: any) {
     } , [size , total , page]);
 
     const onJoin = (item) => {
-        dispatch(setMeetingId(item._id));
-        props.navigation.navigate('Dial' , {
-            isHost : item.host._id === user._id ,
-            isVoiceCall : item.isVoiceCall ,
-            options : {
-                isMute : false ,
-                isVideoEnable : true ,
+        dispatch(setSelectedChannel(item.room));
+        dispatch(setMeeting(item));
+        props.navigation.navigate('Dial', {
+            isHost: item.host._id === user._id,
+            isVoiceCall: item.isVoiceCall,
+            options: {
+                isMute: false,
+                isVideoEnable: true,
             }
         });
     };
 
-    const onClose = (item) => {
-        if (item.host._id === user._id) {
-            endMeeting(item._id);
+    const onClose = (item, leave = false) => {
+        if (leave) {
+          dispatch(removeActiveMeeting(item._id));
+          return leaveMeeting(item._id);
+        } else if (item.host._id === user._id) {
+          return endMeeting(item._id);
         } else {
-            dispatch(removeActiveMeeting(item._id));
+          return dispatch(removeActiveMeeting(item._id));
         }
     };
 

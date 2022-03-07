@@ -1,11 +1,13 @@
 import React, { FC, useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
 import { CheckIcon, DeleteIcon, WriteIcon } from '@components/atoms/icon';
 import { getChatTimeString } from 'src/utils/formatting'
 import { primaryColor, bubble, text, outline } from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
+import NewDeleteIcon from '@components/atoms/icon/new-delete';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
   container: {
@@ -50,12 +52,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: 12,
     height: 12,
-    borderColor: outline.primary,
+    borderColor: text.info,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 5,
     paddingLeft: 0.5,
+    paddingBottom: Platform.OS === 'ios' ? 0 : 1
   }
 })
 
@@ -74,6 +77,7 @@ interface Props {
   deleted?: boolean;
   unSend?: boolean;
   edited?: boolean;
+  system?: boolean;
   [x: string]: any;
 }
 
@@ -93,6 +97,7 @@ const ChatBubble:FC<Props> = ({
   deleted = false,
   unSend = false,
   edited = false,
+  system = false,
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -108,20 +113,20 @@ const ChatBubble:FC<Props> = ({
   return (
     <>
       {
-        (showDetails || showDate) && (
+        (showDetails || showDate || system) && (
           <View style={styles.seenTimeContainer}>
             <Text
               color={text.default}
               size={12}
             >
-              {getChatTimeString(createdAt?.seconds)}
+              {getChatTimeString(createdAt)}
             </Text>
           </View>
         )
       }
       <TouchableOpacity
         onPress={() => setShowDetails(!showDetails)}
-        onLongPress={(isSender && !(deleted || unSend)) ? onLongPress : null}
+        onLongPress={(isSender && !(deleted || unSend || system)) ? onLongPress : null}
         {...otherProps}
       >
         <View style={[styles.container, { maxWidth }, style]}>
@@ -132,6 +137,7 @@ const ChatBubble:FC<Props> = ({
                 name={`${sender.firstName} ${sender.lastName}`}
                 size={25}
                 textSize={10}
+                style={{ marginLeft: -5 }}
               />
             ) : null
           }
@@ -140,7 +146,7 @@ const ChatBubble:FC<Props> = ({
               <View style={{ alignSelf: 'center', marginRight: 0 }}>
                 <WriteIcon
                   type='pen'
-                  color={text.primary}
+                  color={text.info}
                   size={14}
                 />
               </View>
@@ -162,15 +168,16 @@ const ChatBubble:FC<Props> = ({
               {
                 backgroundColor: isSender ? bubble.primary : bubble.secondary
               },
-              (deleted || (unSend && isSender)) && {
+              (deleted || (unSend && isSender) || system) && {
                 backgroundColor: '#E5E5E5'
               },
             ]}>
               {
                 (deleted || (unSend && isSender)) ? (
                   <>
-                    <DeleteIcon
-                      size={18}
+                    <NewDeleteIcon
+                      height={RFValue(18)}
+                      width={RFValue(18)}
                       color={'#979797'}
                     />
                     <Text
@@ -188,7 +195,7 @@ const ChatBubble:FC<Props> = ({
                 ) : (
                   <Text
                     size={14}
-                    color={isSender ? 'white' : text.default}
+                    color={(isSender && !system) ? 'white' : 'black'}
                   >
                     {message}
                   </Text>
@@ -208,14 +215,14 @@ const ChatBubble:FC<Props> = ({
             )
           }
           {
-            (!isSeen && isSender) && (
+            (!isSeen && isSender && !deleted) && (
               <View
                 style={styles.check}
               >
                 <CheckIcon
                   type='check1'
                   size={8}
-                  color={text.primary}
+                  color={text.info}
                 />
               </View>
             )

@@ -1,13 +1,14 @@
 import React, { useState, useCallback, FC } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import lodash from 'lodash';
-import { ExclamationIcon, SearchIcon } from '@atoms/icon';
+import { ExclamationIcon, NewSearchIcon } from '@atoms/icon';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 10
+    paddingVertical: RFValue(10),
   },
   label: {
     position: 'absolute',
@@ -27,6 +28,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  input: {
+    paddingVertical: RFValue(10),
+    marginBottom: Platform.OS === 'ios' ? 0 : -5,
+  },
   description: {
     paddingTop: 2,
   },
@@ -35,7 +40,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    marginLeft: 5,
+    marginLeft: 15,
   }
 });
 
@@ -130,12 +135,14 @@ const InputField: FC<Props> = ({
           !!error && { borderColor: errorColor }
         ]}
       >
-        <SearchIcon
+        <NewSearchIcon
           style={[styles.icon, iconStyle]}
-          size={22}
+          height={RFValue(18)}
+          width={RFValue(18)}
+          color={'#6E7191'}
         />
         <TextInput
-          style={inputStyle}
+          style={[styles.input, inputStyle]}
           placeholder={placeholder || label}
           secureTextEntry={secureTextEntry}
           onFocus={onFocus}

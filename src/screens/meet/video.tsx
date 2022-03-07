@@ -5,7 +5,8 @@ import {
   StyleSheet,
   StatusBar,
   TouchableOpacity,
-  Platform
+  Platform,
+  Animated
 } from 'react-native'
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
@@ -14,12 +15,13 @@ import { ArrowLeftIcon, ChatIcon, PeopleIcon } from '@components/atoms/icon'
 import {
   setMeeting,
   setMeetingParticipants,
+  setNotification,
 } from 'src/reducers/meeting/actions';
 import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
 import { getChannelName, getTimerString } from 'src/utils/formatting'
-import useFirebase from 'src/hooks/useFirebase';
-import useApi from 'src/services/api';
+import useSignalr from 'src/hooks/useSignalr';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
   container: {
@@ -48,73 +50,53 @@ const styles = StyleSheet.create({
   },
   icon: {
     paddingHorizontal: 5
+  },
+  notif: {
+    position: 'absolute',
+    bottom: 90,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingVertical: 3,
+    paddingHorizontal: 15,
   }
 })
 
 const Dial = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const api = useApi('');
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { meetingId, meeting, meetingParticipants } = useSelector((state:RootStateOrAny) => state.meeting);
-  const { options, isHost = false, isVoiceCall } = route.params;
-  const { channelId, isGroup, channelName, otherParticipants } = useSelector(
-    (state:RootStateOrAny) => state.channel.selectedChannel
-  );
-  const {
-    joinMeeting,
-    meetingSubscriber,
-    endMeeting
-  } = useFirebase({
-    _id: user._id,
-    name: user.name,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    image: user.image,
+  const meeting = useSelector((state:RootStateOrAny) => {
+    const { meeting } = state.meeting;
+    meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
+      return meeting;
   });
+  const { options, isHost = false, isVoiceCall } = route.params;
+  const { endMeeting, joinMeeting } = useSignalr();
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
   const [timer, setTimer] = useState(0);
+  const [fadeAnim] = useState(new Animated.Value(1))
 
   useEffect(() => {
     let unmounted = false;
-    console.log('CHANNELID', channelId);
-    api.post('/meeting/token', {
-      channelName: meetingId,
-      isHost,
-    }).then((res) => {
+    
+    joinMeeting(meeting._id, (err, result) => {
+      console.log('ERR RESULT', err, result);
       if (!unmounted) {
-        setLoading(false);
-        dispatch(setMeetingParticipants([]));
-        joinMeeting(meetingId, res.data.uid, isHost);
-        setAgora(res.data);
-      }
-    })
-    .catch(() => {
-      if (!unmounted) {
-        setLoading(false);
-        Alert.alert('Something went wrong.');
+        if (result) {
+          setLoading(false);
+          setAgora(result);
+        } else {
+          setLoading(false);
+          Alert.alert('Something went wrong.');
+        }
       }
     });
+  
     return () => {
       unmounted = true;
     }
   }, []);
-
-  useEffect(() => {
-    if (meetingId) {
-      const unsubscriber = meetingSubscriber(meetingId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
-        querySnapshot.docChanges().forEach((change:any) => {
-          const data = change.doc.data();
-          data._id = change.doc.id;
-          dispatch(setMeeting(data));
-        });
-      })
-      return () => {
-        unsubscriber();
-      }
-    }
-  }, [meetingId])
 
   useEffect(() => {
     let interval:any = null;
@@ -134,6 +116,19 @@ const Dial = ({ navigation, route }) => {
     return () => clearTimeout(timeRef);
   }, [meeting.ended]);
 
+  useEffect(() => {
+    if (meeting.notification) {
+      Animated.timing(
+        fadeAnim,
+        {
+          toValue: 0,
+          duration: 5000,
+          useNativeDriver: true,
+        }
+      ).start(() => setNotification(''));
+    }
+  }, [meeting.notification]);
+
   const header = () => (
     <View style={styles.header}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -147,7 +142,7 @@ const Dial = ({ navigation, route }) => {
           size={16}
           numberOfLines={1}
         >
-          {getChannelName({ otherParticipants, isGroup, channelName: meeting.channelName })}
+          {getChannelName({ otherParticipants: meeting?.otherParticipants, isGroup: meeting?.isGroup, hasRoomName: meeting.hasRoomName, name: meeting.name })}
         </Text>
         <Text
           color='white'
@@ -174,9 +169,13 @@ const Dial = ({ navigation, route }) => {
     </View>
   )
 
-  const onEndCall = () => {
-    if (isHost) {
-      endMeeting(meetingId)
+  const onEndCall = (endCall) => {
+    if (isHost || endCall) {
+      endMeeting(meeting._id, (err, res) => {
+        if (res) {
+          navigation.goBack();
+        }
+      })
     } else {
       navigation.goBack();
     }
@@ -190,13 +189,26 @@ const Dial = ({ navigation, route }) => {
         header={header()}
         options={options}
         user={user}
-        participants={otherParticipants}
-        meetingParticipants={meetingParticipants}
+        participants={meeting.otherParticipants}
+        meetingParticipants={meeting.participants}
         agora={agora}
         isVoiceCall={isVoiceCall}
         callEnded={meeting?.ended}
         onEndCall={onEndCall}
+        isGroup={meeting?.isGroup}
       />
+      {
+        !!meeting?.notification && (
+          <Animated.View style={[styles.notif, { opacity: fadeAnim }]}>
+            <Text
+              color='white'
+              size={12}
+            >
+              {meeting?.notification}
+            </Text>
+          </Animated.View>
+        )
+      }
     </View>
   )
 }

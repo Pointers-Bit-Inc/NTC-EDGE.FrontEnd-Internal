@@ -6,6 +6,7 @@ import GroupImage from '@components/molecules/image/group';
 import ProfileImage from '@components/atoms/image/profile';
 import { text, primaryColor } from 'src/styles/color';
 import { GroupIcon } from '@components/atoms/icon';
+import { Bold, Regular, Regular500 } from '@styles/font';
 
 const styles = StyleSheet.create({
   container: {
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 10,
-    backgroundColor: primaryColor
+    backgroundColor: '#2863D6'
   }
 })
 
@@ -93,13 +94,13 @@ const ChatItem: FC<Props> = ({
           )
         }
         <View style={styles.content}>
-          <View style={[styles.horizontal, styles.channelInfo]}>
+          <View style={[styles.horizontal]}>
             <View style={{ flex: 1, paddingRight: 5 }}>
               <Text
-                color={text.default}
-                weight={!seen ? 'bold' : 'normal'}
+                color={'black'}
                 size={18}
                 numberOfLines={1}
+                style={{ fontFamily: !seen ? Regular500 : Regular }}
               >
                 {name}
               </Text>
@@ -108,18 +109,19 @@ const ChatItem: FC<Props> = ({
           <View style={styles.horizontal}>
             <View style={[styles.horizontal, { flex: 1, paddingRight: 60 }]}>
               <Text
-                weight={!seen ? 'bold' : 'normal'}
-                color={text.default}
-                size={14}
+                color={!seen ? 'black' : text.default}
+                size={12}
                 numberOfLines={1}
+                style={{ fontFamily: Regular }}
               >
-                {message.message}
+                {message?.message}
               </Text>
               <Text
                 color={text.default}
                 size={12}
+                style={{ fontFamily: Regular }}
               >
-                {` · ${time}`}
+                {message?.message ? ` · ${time}` : `${time}`}
               </Text>
             </View>
           </View>

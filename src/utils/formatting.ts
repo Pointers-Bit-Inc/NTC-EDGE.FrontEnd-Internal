@@ -6,14 +6,20 @@ const getInitial = (value:any) => {
 }
 
 const getChannelName = (channel:any) => {
-  if (!channel.isGroup && !channel.hasChannelName) {
+  if (channel.hasRoomName) {
+    return channel.name;
+  }
+  if (!channel.isGroup) {
     const result = channel.otherParticipants;
     if (result && result[0]) {
       const data = result[0];
       return `${data.firstName}`;
     }
   }
-  return channel.channelName;
+  if (!channel.hasRoomName) {
+    return channel?.otherParticipants?.map(p => p.firstName)?.toString();
+  }
+  return channel.name;
 }
 
 const getChannelImage = (channel:any) => {
@@ -30,7 +36,7 @@ const getChannelImage = (channel:any) => {
 const getTimeString = (time:any) => {
   if (time) {
     const dateNow = dayjs();
-    const dateUpdate = dayjs(new Date(time * 1000));
+    const dateUpdate = dayjs(new Date(time));
     const diff = dateNow.diff(dateUpdate, 'days');
 
     if (diff === 0) {
@@ -48,7 +54,7 @@ const getTimeString = (time:any) => {
 const getChatTimeString = (time:any) => {
   if (time) {
     const dateNow = dayjs();
-    const dateUpdate = dayjs(new Date(time * 1000));
+    const dateUpdate = dayjs(new Date(time));
     const diff = dateNow.diff(dateUpdate, 'days');
     const yearNow = dateNow.format('YYYY');
     const yearUpdate = dateUpdate.format('YYYY');
@@ -67,17 +73,17 @@ const getChatTimeString = (time:any) => {
   return '';
 }
 
-const getDateTimeString = (time:any) => {
+const getDateTimeString = (time:any, format:string) => {
   if (time) {
-    const dateTime = dayjs(new Date(time * 1000));
-    return dateTime.format('MMM. DD, hh:mm A');
+    const dateTime = dayjs(new Date(time));
+    return dateTime.format(format || 'MMM. DD, hh:mm A');
   }
   return '';
 }
 
 const chatSameDate = (time1:number, time2:number) => {
-  const time1format = dayjs(time1 && new Date(time1 * 1000)).format('DD/MM/YY');
-  const time2format = dayjs(time2 && new Date(time2 * 1000)).format('DD/MM/YY');
+  const time1format = dayjs(time1 && new Date(time1)).format('DD/MM/YY');
+  const time2format = dayjs(time2 && new Date(time2)).format('DD/MM/YY');
   return time1format === time2format;
 }
 

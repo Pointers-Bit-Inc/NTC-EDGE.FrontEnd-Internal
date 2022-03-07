@@ -4,6 +4,7 @@ import Text from '@components/atoms/text'
 import { text, primaryColor } from 'src/styles/color';
 import { CloseIcon } from '@components/atoms/icon';
 import ProfileImage from '@components/atoms/image/profile'
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const imageSize = 42;
 
@@ -11,7 +12,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 5,
     alignItems: 'center',
-    width: imageSize + 10,
+    width: RFValue(imageSize + 10),
   },
   horizontal: {
     flexDirection: 'row',
@@ -43,9 +44,9 @@ const styles = StyleSheet.create({
     top: 0,
   },
   button: {
-    height: 18,
-    width: 18,
-    borderRadius: 18,
+    height: RFValue(18),
+    width: RFValue(18),
+    borderRadius: RFValue(18),
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
@@ -67,6 +68,7 @@ interface Props {
   name?: string;
   contact?: string;
   onPress?: any;
+  data?: any;
   [x: string]: any;
 }
 
@@ -75,6 +77,7 @@ const ChatItem: FC<Props> = ({
   name = '',
   contact = '',
   onPress = () => {},
+  data = {},
   ...otherProps
 }) => {
 
@@ -86,7 +89,7 @@ const ChatItem: FC<Props> = ({
             <CloseIcon
               type={'md-close'}
               color={text.default}
-              size={14}
+              size={RFValue(14)}
             />
           </View>
         </TouchableOpacity>
@@ -95,14 +98,14 @@ const ChatItem: FC<Props> = ({
         image={image}
         name={name}
         size={imageSize}
-        textSize={10}
+        textSize={14}
       />
       <Text
         size={10}
         numberOfLines={1}
         color={text.default}
       >
-        {name}
+        {`${data.title ? `${data.title}` : ''} ${name}${data.suffix ? `, ${data.suffix}` : ''}`}
       </Text>
     </View>
   )

@@ -3,12 +3,13 @@ import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import Text from '@components/atoms/text'
 import { text, primaryColor } from 'src/styles/color';
 import ProfileImage from '@components/atoms/image/profile';
+import { Regular500 } from '@styles/font';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
   horizontal: {
     flexDirection: 'row',
@@ -42,6 +43,7 @@ interface Props {
   contact?: string;
   onPress?: any;
   rightIcon?: any;
+  data?: any,
   [x: string]: any;
 }
 
@@ -51,6 +53,7 @@ const ChatItem: FC<Props> = ({
   contact = '',
   onPress = () => {},
   rightIcon,
+  data = {},
   ...otherProps
 }) => {
   return (
@@ -59,24 +62,28 @@ const ChatItem: FC<Props> = ({
         <ProfileImage
           image={image}
           name={name}
-          textSize={12}
+          size={42}
+          textSize={14}
         />
         <View style={styles.content}>
           <Text
-            color={text.default}
-            weight={'bold'}
+            color={'black'}
             size={16}
             numberOfLines={1}
+            style={{ fontFamily: Regular500, marginBottom: -3 }}
           >
-            {name}
+            {`${data.title ? `${data.title}` : ''} ${name}${data.suffix ? `, ${data.suffix}` : ''}`}
           </Text>
-          <Text
-            color={text.default}
-            size={12}
-            numberOfLines={1}
-          >
-            {contact}
-          </Text>
+          {
+            (!!data.designation || !!data.position) &&
+              <Text
+                color={text.default}
+                size={12}
+                numberOfLines={1}
+              >
+                {`${data.designation || ''} ${data.position ? `- ${data.position}` : ''}`}
+              </Text>
+          }
         </View>
         {rightIcon}
       </View>

@@ -65,8 +65,11 @@ const ChatList: FC<Props> = ({
   )
 
   const renderItem = ({ item, index }:any) => {
+    if (!item.isGroup && !item.message && item.system) {
+      return;
+    }
     const isSender = item.sender._id === user._id;
-    const isSameDate = chatSameDate(messages[index + 1]?.createdAt?.seconds, item.createdAt?.seconds);
+    const isSameDate = chatSameDate(messages[index + 1]?.createdAt, item.createdAt);
     const latestSeen = messages && messages[index - 1] ? messages[index - 1].seen : [];
     const latestSeenSize = lodash.size(latestSeen) - 1;
     let seenByOthers = lodash.reject(
@@ -84,7 +87,7 @@ const ChatList: FC<Props> = ({
     }
     let seenByOthersCount = lodash.size(seenByOthers) + (isSender ? 0 : 1);
     const seenByEveryone = seenByOthersCount === lodash.size(participants);
-    const showSeen = lastMessage?.messageId === item._id ||
+    const showSeen = lastMessage?._id === item._id ||
       latestSeenSize === 0 ||
       seenByOthersCount > 0 && seenByOthersCount < lodash.size(participants);
     return (
@@ -106,6 +109,7 @@ const ChatList: FC<Props> = ({
               deleted={item.deleted}
               unSend={item.unSend}
               edited={item.edited}
+              system={item.system}
             />
           ) : (
             <ChatBubble
@@ -123,6 +127,7 @@ const ChatList: FC<Props> = ({
               deleted={item.deleted}
               unSend={item.unSend}
               edited={item.edited}
+              system={item.system}
             />
           )
         }
@@ -147,6 +152,7 @@ const ChatList: FC<Props> = ({
       keyExtractor={(item:any) => item._id}
       ListEmptyComponent={emptyComponent}
       ListFooterComponent={() => <View style={{ height: 15 }} />}
+      ListHeaderComponent={() => <View style={{ height: 15 }} />}
       {...otherProps}
     />
   )

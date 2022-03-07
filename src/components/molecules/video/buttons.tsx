@@ -99,7 +99,7 @@ const VideoButtons: FC<Props> = ({
           />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={onMore}>
+      {/* <TouchableOpacity onPress={onMore}>
         <View style={[styles.moreButton, { backgroundColor: 'transparent' }]}>
           <MenuIcon
             size={32}
@@ -107,7 +107,7 @@ const VideoButtons: FC<Props> = ({
             color='white'
           />
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <TouchableOpacity onPress={onEndCall}>
         <View style={[styles.button, styles.endCall, styles.shadow]}>
           <PhoneIcon

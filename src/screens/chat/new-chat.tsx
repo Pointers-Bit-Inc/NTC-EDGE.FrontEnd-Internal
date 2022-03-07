@@ -12,17 +12,17 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
 import lodash from 'lodash';
-import { setSelectedChannel } from 'src/reducers/channel/actions';
+import { setSelectedChannel, addToChannelList, addChannel } from 'src/reducers/channel/actions';
 import { outline, button, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
-import { ContactItem, SelectedContact } from '@components/molecules/list-item';
+import { ContactItem, ListFooter, SelectedContact } from '@components/molecules/list-item';
 import { ArrowLeftIcon, ArrowDownIcon, CheckIcon } from '@components/atoms/icon'
 import { SearchField } from '@components/molecules/form-fields'
 import { primaryColor } from '@styles/color';
-import useFirebase from 'src/hooks/useFirebase';
-import useApi from 'src/services/api';
+import useSignalr from 'src/hooks/useSignalr';
 import axios from 'axios';
+import { RFValue } from 'react-native-responsive-fontsize';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -62,21 +62,21 @@ const styles = StyleSheet.create({
     backgroundColor: outline.default,
   },
   notSelected: {
-    height: 20,
-    width: 20,
-    borderRadius: 20,
+    height: RFValue(20),
+    width: RFValue(20),
+    borderRadius: RFValue(20),
     borderWidth: 1,
     borderColor: button.default,
     alignItems: 'center',
     justifyContent: 'center',
   },
   selected: {
-    height: 20,
-    width: 20,
-    borderRadius: 20,
+    height: RFValue(20),
+    width: RFValue(20),
+    borderRadius: RFValue(20),
     borderWidth: 1,
-    borderColor: button.primary,
-    backgroundColor: button.primary,
+    borderColor: button.info,
+    backgroundColor: button.info,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -90,65 +90,90 @@ const styles = StyleSheet.create({
 const NewChat = ({ navigation }:any) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
-  const api = useApi(user.sessionToken);
-  const { createChannel } = useFirebase({
-    _id: user._id,
-    name: user.name,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    image: user.image,
-  });
+  const {
+    getParticipantList,
+    createChannel,
+  } = useSignalr();
   const [loading, setLoading] = useState(false);
   const [nextLoading, setNextLoading] = useState(false);
   const [participants, setParticipants]:any = useState([]);
+  const [sendRequest, setSendRequest] = useState(0);
   const [contacts, setContacts]:any = useState([]);
   const [searchText, setSearchText] = useState('');
   const [searchValue, setSearchValue] = useState('');
-  const onFetchData = useCallback(() => {
-    setLoading(true);
-    api.post('/internal/users', {
-      searchValue,
-    })
-    .then(res => {
-      setLoading(false);
-      setContacts(res.data);
-    })
-    .catch(e => {
-      setLoading(false);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [fetching, setFetching] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  const onRequestData = () => setSendRequest(request => request + 1);
+
+  const fetchMoreParticipants = (isPressed = false) => {
+    if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
+    setFetching(true);
+    setHasError(false);
+    const url = searchValue ?
+      `/room/search-participants?pageIndex=${pageIndex}&search=${searchValue}` :
+      `/room/list-participants?pageIndex=${pageIndex}`;
+
+    getParticipantList(url, (err:any, res:any) => {
+      if (res) {
+        setContacts([...contacts, ...res.list]);
+        setPageIndex(current => current + 1);
+        setHasMore(res.hasMore);
+      }
+      if (err) {
+        console.log('ERR', err);
+        setHasError(true);
+      }
+      setFetching(false);
     });
-  }, [searchValue]);
+  }
 
   useEffect(() => {
-    const source = axios.CancelToken.source(); 
     setLoading(true);
-    api.post('/internal/users', {
-      searchValue,
-    })
-    .then(res => {
-      setLoading(false);
-      setContacts(res.data);
-    })
-    .catch(e => {
+    setPageIndex(1);
+    setHasMore(false);
+    setHasError(false);
+    const source = axios.CancelToken.source();
+    const url = searchValue ?
+      `/room/search-participants?pageIndex=1&search=${searchValue}` :
+      `/room/list-participants?pageIndex=1`;
+
+    getParticipantList(url, (err:any, res:any) => {
+      if (res) {
+        setContacts(res.list);
+        setPageIndex(current => current + 1);
+        setHasMore(res.hasMore);
+      }
+      if (err) {
+        console.log('ERR', err);
+      }
       setLoading(false);
     });
+  
     return () => {
       setLoading(false);
       source.cancel();
     };
-  }, [searchValue]);
+  }, [sendRequest, searchValue]);
 
   const onBack = () => navigation.goBack();
   const onNext = () => {
     setNextLoading(true);
-    createChannel(participants, (error, data) => {
+    createChannel(participants, (err:any, res:any) => {
       setNextLoading(false);
-      if (!error) {
-        dispatch(setSelectedChannel(data));
-        navigation.replace('ViewChat', data);
+      if (res) {
+        res.otherParticipants = lodash.reject(res.participants, p => p._id === user._id);
+        dispatch(setSelectedChannel(res));
+        dispatch(addChannel(res));
+        navigation.replace('ViewChat', res);
+      }
+      if (err) {
+        console.log('ERROR', err);
       }
     });
-  };
+  }
 
   const onSelectParticipants = (selectedId:string) => {
     const selected = lodash.find(contacts, c => c._id === selectedId);
@@ -224,6 +249,19 @@ const NewChat = ({ navigation }:any) => {
     </View>
   )
 
+  const ListFooterComponent = () => {
+    return (
+      <ListFooter
+        hasError={hasError}
+        fetching={fetching}
+        loadingText="Loading more users..."
+        errorText="Unable to load users"
+        refreshText="Refresh"
+        onRefresh={() => fetchMoreParticipants(true)}
+      />
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'dark-content'} />
@@ -281,7 +319,7 @@ const NewChat = ({ navigation }:any) => {
             progressBackgroundColor={primaryColor} // android
             colors={['white']} // android
             refreshing={loading}
-            onRefresh={onFetchData}
+            onRefresh={onRequestData}
           />
         }
         renderItem={({ item }) => (
@@ -289,6 +327,7 @@ const NewChat = ({ navigation }:any) => {
             image={item?.image}
             name={item.name}
             onPress={() => onTapCheck(item._id)}
+            disabled={true}
             rightIcon={
               <TouchableOpacity
                 onPress={() => onTapCheck(item._id)}
@@ -298,7 +337,7 @@ const NewChat = ({ navigation }:any) => {
                     <View style={styles.selected}>
                       <CheckIcon
                         type={'check1'}
-                        size={16}
+                        size={RFValue(16)}
                         color="white"
                       />
                     </View>
@@ -317,6 +356,9 @@ const NewChat = ({ navigation }:any) => {
         }
         ListHeaderComponent={headerComponent}
         ListEmptyComponent={emptyComponent}
+        ListFooterComponent={ListFooterComponent}
+        onEndReached={() => fetchMoreParticipants()}
+        onEndReachedThreshold={0.5}
       />
     </SafeAreaView>
   )

@@ -42,16 +42,18 @@ export const useInitializeAgora = ({
   const [peerIds, setPeerIds] = useState<number[]>([]);
   const [peerVideoState, setPeerVideState] = useState({});
   const [peerAudioState, setPeerAudioState] = useState({});
-  const [myId, setMyId] = useState<number|null>(null);
+  const [myId, setMyId] = useState<number>(0);
   const [isMute, setIsMute] = useState(options?.isMute);
   const [isSpeakerEnable, setIsSpeakerEnable] = useState(true);
   const [isVideoEnable, setIsVideoEnable] = useState(options?.isVideoEnable);
+  const [activeSpeaker, setActiveSpeaker] = useState(0);
   const rtcEngine = useRef<RtcEngine|null>(null);
 
   const initAgora = useCallback(async () => {
     rtcEngine.current = await RtcEngine.create(appId);
     await rtcEngine.current?.enableVideo();
     await rtcEngine.current?.enableAudio();
+    await rtcEngine.current?.enableAudioVolumeIndication(1000, 3, false);
     await rtcEngine.current?.muteLocalAudioStream(options?.isMute);
     await rtcEngine.current?.muteLocalVideoStream(!options?.isVideoEnable);
     await rtcEngine.current?.setEnableSpeakerphone(true);
@@ -102,6 +104,19 @@ export const useInitializeAgora = ({
     rtcEngine.current?.addListener('Error', error => {
       console.log('Error', error);
     });
+
+    rtcEngine.current?.addListener('AudioVolumeIndication', volumes => {
+      const sortedVolumes = _.sortBy(volumes, ['volume']).reverse();
+      if (sortedVolumes && sortedVolumes[0]) {
+        const highestVolume = sortedVolumes[0];
+        if (highestVolume && highestVolume.uid === 0) {
+          setActiveSpeaker(myId);
+        } else {
+          setActiveSpeaker(highestVolume.uid);
+        }
+      }
+    });
+
     setIsInit(true);
   }, [appId, token, channelName, uid]);
 
@@ -112,7 +127,7 @@ export const useInitializeAgora = ({
   const leaveChannel = useCallback(async () => {
     await rtcEngine.current?.leaveChannel();
     setPeerIds([]);
-    setMyId(null);
+    setMyId(0);
     setJoinSucceed(false);
   }, []);
 
@@ -157,6 +172,7 @@ export const useInitializeAgora = ({
     isSpeakerEnable,
     isVideoEnable,
     joinSucceed,
+    activeSpeaker,
     peerIds,
     peerVideoState,
     peerAudioState,

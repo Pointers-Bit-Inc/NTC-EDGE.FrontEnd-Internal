@@ -2,11 +2,13 @@ import lodash from 'lodash';
 const {
   SET_SELECTED_CHANNEL,
   SET_CHANNEL_LIST,
+  ADD_TO_CHANNEL_LIST,
   ADD_CHANNEL,
   UPDATE_CHANNEL,
   REMOVE_CHANNEL,
 
   SET_MESSAGES,
+  ADD_TO_MESSAGES,
   ADD_MESSAGES,
   UPDATE_MESSAGES,
   REMOVE_MESSAGES,
@@ -31,43 +33,92 @@ export default function basket(state = initialState, action:any) {
     case SET_SELECTED_CHANNEL: {
       if (!action.isChannelExist) {
         return state.setIn(['selectedChannel'], action.payload)
-        .setIn(['messages'], []);
+        .setIn(['normalizedMessages'], {});
       }
       return state.setIn(['selectedChannel'], action.payload);
     }
     case SET_CHANNEL_LIST: {
-      return state.setIn(['channelList'], action.payload);
+      return state.setIn(['normalizedChannelList'], action.payload);
+    }
+    case ADD_TO_CHANNEL_LIST: {
+      return state.setIn(['normalizedChannelList'], {...state.normalizedChannelList, ...action.payload});
     }
     case ADD_CHANNEL: {
-      const channelList = lodash.clone(state.channelList);
-      channelList.push(action.payload);
-      return state.setIn(['channelList'], channelList);
+      return state.setIn(['normalizedChannelList', action.payload._id], action.payload);
     }
     case UPDATE_CHANNEL: {
-      const updatedList = lodash.reject(state.channelList, ch => ch._id === action.payload._id);
-      updatedList.push(action.payload);
-      return state.setIn(['channelList'], updatedList)
-      .setIn(['selectedChannel'], action.payload);
+      return state.setIn(['normalizedChannelList', action.payload._id], action.payload);
     }
     case REMOVE_CHANNEL: {
-      const updatedList = lodash.reject(state.channelList, ch => ch._id === action.payload);
-      return state.setIn(['channelList'], updatedList);
+      return state.removeIn(['normalizedChannelList', action.payload]);
     }
     case SET_MESSAGES: {
-      return state.setIn(['messages'], action.payload);
+      return state.setIn(['normalizedMessages'], action.payload);
+    }
+    case ADD_TO_MESSAGES: {
+      return state.setIn(['normalizedMessages'], {...state.normalizedMessages, ...action.payload});
     }
     case ADD_MESSAGES: {
-      const messageList = lodash.clone(state.messages);
-      messageList.push(action.payload);
-      return state.setIn(['messages'],messageList);
+      let newState = state;
+
+      if (state.selectedChannel._id === action.payload.roomId) {
+        newState = newState.setIn(['normalizedMessages', action.payload._id], action.payload)
+        .setIn(['selectedChannel', 'lastMessage'], action.payload)
+        .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
+      }
+
+      newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+      .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+
+      return newState;
+      // if (state.selectedChannel._id === action.payload.roomId) {
+      //   return state.setIn(['normalizedMessages', action.payload._id], action.payload)
+      //   .setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+      //   .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+      //   .setIn(['selectedChannel', 'lastMessage'], action.payload)
+      //   .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
+      // } else {
+      //   return state.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+      //   .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+      // }
     }
     case UPDATE_MESSAGES: {
-      const updatedList = lodash.reject(state.messages, ch => ch._id === action.payload._id);
-      updatedList.push(action.payload);
-      return state.setIn(['messages'], updatedList);
+      let newState = state;
+
+      if (state.selectedChannel._id === action.payload.roomId) {
+        newState = newState.setIn(['normalizedMessages', action.payload._id], action.payload)
+        .setIn(['selectedChannel', 'lastMessage'], action.payload)
+        .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
+      }
+
+      if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
+          newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+          .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt);
+      }
+
+      return newState;
+      // if (state.selectedChannel._id === action.payload.roomId) {
+      //   if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
+      //     return state.setIn(['normalizedMessages', action.payload._id], action.payload)
+      //     .setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+      //     .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+      //     .setIn(['selectedChannel', 'lastMessage'], action.payload)
+      //     .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
+      //   } else {
+      //     return state.setIn(['normalizedMessages', action.payload._id], action.payload)
+      //     .setIn(['selectedChannel', 'lastMessage'], action.payload)
+      //     .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
+      //   }
+      // } else {
+      //   if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
+      //     return state.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+      //     .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+      //   }
+      //   return state;
+      // }
     }
     case REMOVE_MESSAGES: {
-      const updatedList = lodash.reject(state.messages, ch => ch._id === action.payload);
+      const updatedList = lodash.reject(state.messages, m => m._id === action.payload);
       return state.setIn(['messages'], updatedList);
     }
     case SET_SELECTED_MESSAGES: {
@@ -99,8 +150,8 @@ export default function basket(state = initialState, action:any) {
     case RESET_CHANNEL: {
       return state.setIn(['selectedChannel'], {})
         .setIn(['agora'], {})
-        .setIn(['channelList'], [])
-        .setIn(['messages'], [])
+        .setIn(['normalizedChannelList'], [])
+        .setIn(['normalizedMessages'], [])
         .setIn(['selectedMessage'], {})
         .setIn(['meetingList'], [])
         .setIn(['searchValue'], '');

@@ -1,5 +1,6 @@
 const {
   SET_MEETINGS,
+  ADD_TO_MEETINGS,
   ADD_MEETING,
   UPDATE_MEETING,
   REMOVE_MEETING,
@@ -9,15 +10,39 @@ const {
   ADD_MEETING_PARTICIPANTS,
   UPDATE_MEETING_PARTICIPANTS,
   REMOVE_MEETING_PARTICIPANTS,
+  SET_ACTIVE_MEETING,
   ADD_ACTIVE_MEETING,
   UPDATE_ACTIVE_MEETING,
   REMOVE_ACTIVE_MEETING,
   RESET_MEETING,
+  CONNECTION_STATUS,
+  SET_NOTIFICATION,
 } = require('./types').default;
+
+export function setConnectionStatus(payload) {
+  return {
+    type: CONNECTION_STATUS,
+    payload,
+  };
+}
+
+export function setNotification(payload) {
+  return {
+    type: SET_NOTIFICATION,
+    payload,
+  };
+}
 
 export function setMeetings(payload) {
   return {
     type: SET_MEETINGS,
+    payload,
+  };
+}
+
+export function addToMeetings(payload) {
+  return {
+    type: ADD_TO_MEETINGS,
     payload,
   };
 }
@@ -81,6 +106,13 @@ export function updateMeetingParticipants(payload) {
 export function removeMeetingParticipants(payload) {
   return {
     type: REMOVE_MEETING_PARTICIPANTS,
+    payload,
+  };
+}
+
+export function setActiveMeetings(payload) {
+  return {
+    type: SET_ACTIVE_MEETING,
     payload,
   };
 }
