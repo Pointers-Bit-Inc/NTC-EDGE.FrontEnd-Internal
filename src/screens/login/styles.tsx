@@ -1,18 +1,28 @@
 import {Dimensions , Platform , StyleSheet} from "react-native";
 import {outline , text} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
-import {Bold} from "@styles/font";
+import {Bold , Regular} from "@styles/font";
 const { width, height } = Dimensions.get('screen');
 
 
 export const styles = StyleSheet.create({
+     edgeFooter: {
+         justifyContent: "center",
+         alignItems: "center",
+         flexDirection: "row"
+     },
+    footerContainer:{
+        flexDirection : "row" ,
+        paddingVertical : 45 ,
+        justifyContent : "center" ,
+        alignItems : "center" ,
+        backgroundColor : "#fff",
 
-    fixed: {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
+    },
+    footer: {
+        lineHeight: 24,
+        fontSize: 14,
+        fontFamily: Regular
     },
     bgImage: {
         backgroundColor: "#fff",
@@ -49,16 +59,15 @@ export const styles = StyleSheet.create({
     formContainer: {
        
         ...Platform.select({
-            ios: {
+            native: {
                 flex: 1,
                 borderBottomWidth: 0,
-            },
-            android: {
-                flex: 1,
-                borderBottomWidth: 0,
+                paddingHorizontal: 30,
             },
             default:{
                 borderBottomWidth: 0.5,
+                paddingHorizontal: 47,
+
             }
         }),
         borderRadius: 15,
@@ -66,7 +75,7 @@ export const styles = StyleSheet.create({
 
         borderColor: outline.disabled,
         backgroundColor: '#fff',
-        paddingHorizontal: 47,
+
         paddingTop: 39,
         paddingBottom: 30
     },

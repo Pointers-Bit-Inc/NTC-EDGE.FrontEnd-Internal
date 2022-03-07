@@ -4,7 +4,7 @@ import {ActivityIndicator , Platform , StyleSheet , TouchableOpacity , View} fro
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
-import {RFValue} from "react-native-responsive-fontsize";
+import { Hoverable } from 'react-native-web-hooks';
 import {
     formatDate ,
     getRole ,
@@ -187,6 +187,10 @@ export function ActivityItem(props: any) {
     const userActivity = props?.activity?.applicant?.user;
     const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!props?.activity?.paymentHistory?.[0]?.status ? StatusText(props?.activity?.paymentHistory?.[0]?.status) : getRole(props.currentUser , [ACCOUNTANT]) && props?.activity?.approvalHistory[0].status == FOREVALUATION && props?.activity?.approvalHistory[1].status == FORAPPROVAL ? DECLINED : status;
 
+    function createLogger(startHover: string) {
+        console.log(startHover)
+    }
+
     useEffect(() => {
         let unsubscribe = true;
         unsubscribe && props?.isOpen == props?.index  && row[props?.index]?.close();
@@ -195,8 +199,11 @@ export function ActivityItem(props: any) {
             unsubscribe = false
         }
     } , [props.isOpen == props.index]);
-    return (
-        <View style={ { backgroundColor : "#fff" } }>
+
+    return (   <Hoverable onHoverIn={createLogger('start hover')} onHoverOut={createLogger('end hover')}>
+        {isHovered => (
+
+        <View style={ { backgroundColor : isHovered ?  "#D4D3FF" : "#fff"} }>
 
 
             <Swipeable
@@ -210,20 +217,20 @@ export function ActivityItem(props: any) {
                 }
             >
 
-                <View style={ styles.container }>
+                    <View style={ styles.container }>
 
                     <View style={ styles.applicationContainer }>
                         <View style={ { padding : 5 } }>
                             <View style={ {
                                 height : 8 ,
                                 width : 8 ,
-                                backgroundColor : "#fff" ,//props?.activity?.dateRead  ? "#fff" : "#2863D6" ,
+                                backgroundColor : undefined ,//props?.activity?.dateRead  ? "#fff" : "#2863D6" ,
                                 borderRadius : 4
                             } }/>
                         </View>
                         <View style={ {
                             borderRadius : 10 ,
-                            backgroundColor : "#fff" ,
+                            backgroundColor :  "#fff" ,
                             shadowColor : "rgba(0,0,0,1)" ,
                             shadowOffset : {
                                 height : 0 ,
@@ -310,9 +317,12 @@ export function ActivityItem(props: any) {
                         </View>
                     </View>
                 </View>
-            </Swipeable>
-        </View>
 
+
+            </Swipeable>
+
+        </View>  )}
+            </Hoverable>
 
     );
 }

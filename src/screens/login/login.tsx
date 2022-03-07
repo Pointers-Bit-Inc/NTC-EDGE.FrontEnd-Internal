@@ -9,7 +9,8 @@ import {StackActions} from '@react-navigation/native';
 
 import {LoginNative} from "@screens/login/login.native";
 import {LoginWeb} from "@screens/login/login.web";
-import {isMobile} from "@pages/activities/script";
+import {Platform} from "react-native";
+import {isMobile} from "@pages/activities/isMobile";
 
 
 const errorResponse = {
@@ -137,7 +138,7 @@ const Login = ({ navigation }: any) => {
         formValue.password.isValid;
 
     return <>{
-        isMobile ?
+       isMobile ?
         <LoginNative onChangeValue={ onChangeValue } form={ formValue } loading={ loading } valid={ isValid }
                      onPress={ onCheckValidation }/> :
         <LoginWeb onChangeValue={ onChangeValue } form={ formValue } loading={ loading } valid={ isValid }

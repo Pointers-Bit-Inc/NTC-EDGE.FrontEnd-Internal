@@ -3,6 +3,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { input, outline } from './color';
 import { Bold, Regular } from './font';
 import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 const { text, background } = input;
 
@@ -74,7 +75,17 @@ export default StyleSheet.create({
   },
   inputText: {
     paddingHorizontal: 0,
-    paddingVertical: 0,
+    ...Platform.select({
+      ios: {
+        paddingVertical:  0,
+      },
+      android:{
+        paddingVertical: -100,
+      },
+      default: {
+        paddingVertical:  0,
+      }
+    }),
     marginVertical: -(3),
     color: text?.mainColor,
     fontFamily: Regular,

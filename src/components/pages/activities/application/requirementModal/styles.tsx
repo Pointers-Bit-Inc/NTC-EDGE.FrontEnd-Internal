@@ -41,10 +41,10 @@ export const styles = StyleSheet.create({
 });
 export const requirementStyles = StyleSheet.create({
     container : {
-        flex : 1
+        flex : 1 ,
     } ,
     card : {
-        padding : 10 ,
+
         width : "100%" ,
 
     } ,

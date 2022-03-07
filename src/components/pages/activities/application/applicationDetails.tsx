@@ -8,7 +8,7 @@ import {fontValue} from "@pages/activities/fontValue";
 const { width , height } = Dimensions.get("screen");
 const ApplicationDetails = (props: any) => {
 
-    return <ScrollView style={ { paddingTop : 20 , width : "100%" , backgroundColor : "#fff" , } }>
+    return <ScrollView style={ { paddingTop : 20 , width : "100%" , backgroundColor : "#f8f8f8" , } }>
 
             <View style={ [styles.container , { marginVertical : 12 }] }>
                 <View style={ styles.group2 }>

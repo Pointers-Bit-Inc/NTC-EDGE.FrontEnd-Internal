@@ -1,8 +1,21 @@
-import {StyleSheet} from "react-native";
+import {Platform , StyleSheet} from "react-native";
 import {Bold} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
+import hairlineWidth = StyleSheet.hairlineWidth;
 
 export const styles = StyleSheet.create({
+    pinnedActivityContainer:{
+      
+        shadowColor: "rgba(0,0,0,0.1)",
+        shadowOffset: {
+            width: 0,
+            height: 4
+        },
+        elevation: 30,
+        shadowOpacity: 1,
+        shadowRadius: 10,
+
+    },
     container: {
 
         backgroundColor: "rgba(230, 230, 230,1)"
@@ -17,7 +30,18 @@ export const styles = StyleSheet.create({
         elevation: 10
     },
     rect: {
+        ...Platform.select({
+            native: {
+                paddingTop : 40,
+                paddingHorizontal : 30 ,
+            },
+            default: {
+               paddingTop: 22,
+                paddingHorizontal : 24 ,
+            }
+        }),
         paddingVertical:15,
+
 
         flexDirection: "row"
     },
@@ -55,7 +79,23 @@ export const styles = StyleSheet.create({
         right: 0,
     },
     rect26: {
-        backgroundColor: "rgba(255,255,255,1)"
+        backgroundColor: "rgba(255,255,255,1)",
+        ...Platform.select({
+            native: {
+                height: undefined,
+                paddingHorizontal: 30,
+                paddingVertical: 10
+            },
+            default: {
+                height: undefined,
+                paddingHorizontal: 30,
+                paddingBottom: 21,
+                borderBottomWidth: hairlineWidth,
+                borderBottomColor: "#EFEFEF"
+            }
+        }),
+
+
     },
     rect7: {
 
@@ -120,7 +160,15 @@ export const styles = StyleSheet.create({
     },
     pinnedActivity: {
         fontSize: fontValue(16),
-        color: "#2863D6",
+        ...Platform.select({
+            native: {
+                color: "#2863D6",
+            },
+            default: {
+                color: "#4E4B66",
+            }
+        }),
+
         textAlign: "left",
         marginLeft: 20
     },

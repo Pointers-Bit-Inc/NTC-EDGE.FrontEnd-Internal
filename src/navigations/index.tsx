@@ -7,7 +7,7 @@ import VideoCall from '@screens/meet/video';
 import JoinVideoCall from '@screens/meet/video';
 import App from '@screens/app';
 import AppIntro from '@screens/intro';
-import Login from '@screens/login/login';
+import Login from '@screens/login/login.tsx';
 import UserProfile from "@pages/user-profile";
 import Settings from '@pages/settings';
 
@@ -30,7 +30,7 @@ import {RootStateOrAny ,  useSelector} from "react-redux";
 import {fontValue} from "@pages/activities/fontValue";
 import ProfileImage from "@atoms/image/profile";
 import {createRef , useRef} from "react";
-import {isMobile} from "@pages/activities/script";
+import {isMobile} from "@pages/activities/isMobile";
 
 type RootStackParamList = {
     App: undefined;
@@ -63,7 +63,7 @@ const RootNavigator = () => {
     const navigationRef = useRef();
 
     return (
-        <NavigationContainer ref={navigationRef}>
+        <NavigationContainer>
 
             <Stack.Navigator
 
@@ -93,7 +93,7 @@ const RootNavigator = () => {
                                         style={ {
                                             borderRadius : 26 , } }
                                         size={ fontValue(28) }
-                                       
+
                                         image={ user?.profilePicture?.small }
                                         name={ `${ user?.firstName } ${ user?.lastName }` }
                                     />

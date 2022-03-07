@@ -11,7 +11,7 @@ import {fontValue} from "@pages/activities/fontValue";
  export const FakeSearchBar = (props: { onSearchLayoutComponent,  animated,  onPress: () => void, searchVisible: boolean }) => {
 
      return <Animated.View onLayout={ props.onSearchLayoutComponent}  style={[styles.searcg, props.animated]}>
-        <View style={[styles.rect26, {height: undefined, paddingHorizontal: 30, paddingVertical: 10}]}>
+        <View style={[styles.rect26, ]}>
             <TouchableOpacity onPress={props.onPress}>
                 {!props.searchVisible &&
                 <View style={[styles.rect7, {marginTop: 0, width: "100%", marginLeft: 0}]}>

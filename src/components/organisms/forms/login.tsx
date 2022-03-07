@@ -12,7 +12,7 @@ import inputStyles from "src/styles/input-style";
 import {Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
-import {isMobile} from "@pages/activities/script";
+import {isMobile} from "@pages/activities/isMobile";
 
 const styles = StyleSheet.create({
   container: {

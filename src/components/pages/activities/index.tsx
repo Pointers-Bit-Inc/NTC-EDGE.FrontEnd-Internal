@@ -1,6 +1,6 @@
 import React , {Fragment , useCallback , useEffect , useMemo , useRef , useState} from "react";
 
-import {formatDate , getFilter , isMobile , unreadReadApplication ,} from "@pages/activities/script";
+import {formatDate , getFilter , unreadReadApplication ,} from "@pages/activities/script";
 import {
     Alert ,
     Animated ,
@@ -63,6 +63,7 @@ import {fontValue} from "@pages/activities/fontValue";
 import FilterWeb from "@assets/svg/filterWeb";
 import RefreshWeb from "@assets/svg/refreshWeb";
 import {primaryColor} from "@styles/color";
+import {isMobile} from "@pages/activities/isMobile";
 
 const { width } = Dimensions.get('window');
 
@@ -456,9 +457,9 @@ export default function ActivitiesPage(props: any) {
     const [searchSizeComponent , onSearchLayoutComponent] = useComponentLayout();
     const [activitySizeComponent , onActivityLayoutComponent] = useComponentLayout();
     const [activityScreenComponent , onActivityScreenComponent] = useComponentLayout();
+
     const [containerHeight , setContainerHeight] = useState(148);
     useEffect(() => {
-        console.log(activityScreenComponent);
         if (sizeComponent?.height && searchSizeComponent?.height) setContainerHeight(sizeComponent?.height + searchSizeComponent?.height)
     } , [sizeComponent , searchSizeComponent , activitySizeComponent , activityScreenComponent]);
 
@@ -531,7 +532,7 @@ export default function ActivitiesPage(props: any) {
         extrapolate : 'clamp' ,
     });
 
-    const [tempDetail , setTempDetail] = useState([]);
+
     return (
         <Fragment>
             <StatusBar barStyle={ 'light-content' }/>
@@ -546,8 +547,7 @@ export default function ActivitiesPage(props: any) {
                           style={ [styles.group , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { position : "absolute" , }] }>
                         <Animated.View style={ [styles.rect , styles.horizontal , {
                             backgroundColor : isMobile  || activityScreenComponent?.width <800 ? "#041B6E" : "#fff" ,
-                            paddingHorizontal : 30 ,
-                            paddingTop : 40
+
                         } , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && {
                             ...{ opacity } ,
                             transform : [{ translateY : headerTranslate }]
@@ -559,7 +559,7 @@ export default function ActivitiesPage(props: any) {
                             </TouchableOpacity> }
 
                             <Text
-                                style={ [styles.activity , { color : isMobile  || activityScreenComponent?.width <800 ? "rgba(255,255,255,1)" : primaryColor , }] }>{ isMobile || activityScreenComponent?.width <800 ? `Activity` : `Feed` }</Text>
+                                style={ [styles.activity , { color : isMobile  || activityScreenComponent?.width < 800 ? "rgba(255,255,255,1)" : primaryColor , }] }>{ isMobile || activityScreenComponent?.width <800 ? `Activity` : `Feed` }</Text>
                             <View style={ { flex : 1 } }/>
                             <TouchableOpacity onPress={ () => {
                                 dispatch(setVisible(true))
@@ -641,11 +641,11 @@ export default function ActivitiesPage(props: any) {
                         ListHeaderComponent={ () => (
                             <>
                                 { !searchVisible && !!pnApplications?.length &&
-                                <View style={ { paddingBottom : 10 , backgroundColor : "#fff" } }>
+                                <View style={[styles.pinnedActivityContainer, {  marginBottom: 5,  paddingBottom : 20 , backgroundColor : "#fff" } ]}>
                                     { !!pnApplications?.length &&
                                     <View style={ [styles.pinnedgroup , { height : undefined }] }>
                                         <View style={ [styles.pinnedcontainer , { paddingVertical : 10 }] }>
-                                            <Text style={ [styles.pinnedActivity , { fontFamily : Regular500 , }] }>Pinned
+                                            <Text style={ [styles.pinnedActivity , {  fontFamily : Regular500 , }] }>Pinned
                                                 Activity</Text>
                                         </View>
                                     </View> }

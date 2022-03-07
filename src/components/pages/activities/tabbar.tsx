@@ -27,13 +27,14 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {setTabBarHeight} from "../../../reducers/application/actions";
 import lodash from 'lodash';
-import {getRole , isMobile} from "@pages/activities/script";
+import {getRole } from "@pages/activities/script";
 import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import CustomSidebarMenu from "@pages/activities/customNavigationDrawer";
 import Search from "@pages/activities/search";
 import ActivitiesPage from "@pages/activities/index";
 import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 const Tab = createBottomTabNavigator();
 
 const Drawer = createDrawerNavigator();

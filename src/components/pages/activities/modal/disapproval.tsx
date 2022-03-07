@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React , {useEffect , useState} from "react";
 import {
     Dimensions,
     KeyboardAvoidingView,
@@ -19,6 +19,8 @@ import {input , primaryColor} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
+import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
+import {isMobile} from "@pages/activities/isMobile";
 const { height, width } = Dimensions.get('window');
 
 function Disapproval(props: any) {
@@ -39,10 +41,13 @@ function Disapproval(props: any) {
             props.onDismissed()
         }
     }
+    useEffect(()=>{
+               console.log(props?.size?.width)
+    }, [])
     return (
 
         <Modal
-
+              
             supportedOrientations={['portrait', 'landscape']}
             animationType="slide"
             transparent={true}
@@ -60,7 +65,7 @@ function Disapproval(props: any) {
                 width: "100%",
                 height: "100%",
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'flex-end',
                 position: 'absolute',
                 backgroundColor: 'rgba(52,52,52,0.5)'
             } : {}}>
@@ -97,11 +102,11 @@ function Disapproval(props: any) {
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={[styles.container,]}
+                style={[styles.container]}
             >
-               
+
                 <View style={styles.rectFiller}></View>
-                <View style={[styles.rect,   {display: !showAlert ? undefined :"none"}]}>
+                <View style={[styles.rect,   { width: isMobile ? "100%" :  props?.size?.width, display: !showAlert ? undefined :"none"}]}>
                     <View style={{padding: 10}}>
                         <TouchableOpacity onPress={() => {
                             props.onDismissed()
@@ -181,7 +186,8 @@ const styles = StyleSheet.create({
     },
     rect: {
         borderRadius: 15,
-        width: "100%",
+        alignSelf: "flex-end",
+
         backgroundColor: "rgba(255,255,255,1)",
         borderBottomRightRadius: 0,
         borderBottomLeftRadius: 0,

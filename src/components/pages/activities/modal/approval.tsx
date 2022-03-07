@@ -26,6 +26,7 @@ import {getRole} from "@pages/activities/script";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 const { width , height } = Dimensions.get('window');
 
@@ -193,11 +194,11 @@ const Approval = (props: any) => {
                 message={ message }/>
             <KeyboardAvoidingView
                 behavior={ Platform.OS === "ios" ? "padding" : "height" }
-                style={ [styles.container] }
+                style={ [styles.container, { alignItems : isMobile ? 'center' : 'flex-end' ,}] }
             >
 
                 {
-                <Animated.View style={ [styles.group ,   {display: !showAlert ? undefined : "none"},  { transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
+                <Animated.View style={ [styles.group ,   { width: isMobile ? "100%" :props?.size?.width , display: !showAlert ? undefined : "none"},  { transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
                     <View style={ styles.rect }>
                         <View style={ { alignSelf : 'flex-start' } }>
                             <TouchableOpacity onPress={ _springHide }>
@@ -270,7 +271,7 @@ const styles = StyleSheet.create({
 
         flex : 1 ,
         justifyContent : 'center' ,
-        alignItems : 'center' ,
+
     } ,
     group : {
         width : '100%' ,

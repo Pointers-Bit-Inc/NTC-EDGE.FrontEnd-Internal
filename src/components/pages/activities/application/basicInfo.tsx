@@ -2,8 +2,7 @@ import React from "react";
 import {ActivityIndicator , Dimensions , Platform , ScrollView , StyleSheet , Text , View} from "react-native";
 import {
     excludeStatus , getRole ,
-    getStatusText , isMobile ,
-    PaymentStatusText ,
+    getStatusText , PaymentStatusText ,
     statusColor ,
     statusIcon ,
     StatusText
@@ -18,6 +17,7 @@ import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 const { width , height } = Dimensions.get("screen");
 
@@ -44,7 +44,7 @@ const BasicInfo = (props: any) => {
         }
     });
     const applicant = props.applicant;
-    return <ScrollView style={ { width : "100%" , backgroundColor : "#fff" , } }>
+    return <ScrollView style={ { width : "100%" , backgroundColor : "#f8f8f8" , } }>
         <View style={{flexDirection:  isMobile ? "column" : "row"}}>
             <View style={  isMobile ?  { padding : 10 , flex : 1 , alignSelf : "center" }  : {paddingLeft: 20, paddingVertical: 20} }>
                 <ProfileImage

@@ -5,7 +5,7 @@ import Disapproval from "@pages/activities/modal/disapproval";
 import Endorsed from "@pages/activities/modal/endorse";
 import Approval from "@pages/activities/modal/approval";
 import {RootStateOrAny , useDispatch , useSelector} from "react-redux";
-import {getRole , isMobile , PaymentStatusText , StatusText} from "@pages/activities/script";
+import {getRole , PaymentStatusText , StatusText} from "@pages/activities/script";
 import {
     ACCOUNTANT ,
     APPROVED ,
@@ -30,6 +30,8 @@ import {EndorsedButton} from "@pages/activities/button/endorsedButton";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
+import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
 
 const { ModalTab } = Platform.select({
     native: () => require('@pages/activities/modalTab'),
@@ -177,9 +179,10 @@ function ActivityModal(props: any) {
     const [approvalIcon , setApprovalIcon] = useState(false);
     const [title , setTitle] = useState("Approve Application");
     const [showClose , setShowClose] = useState(false);
-
+    const [activityModalScreenComponent , onActivityModalScreenComponent] = useComponentLayout();
     return (
         <NativeView
+            onLayout={onActivityModalScreenComponent}
             style={{height: "100%"}}
             supportedOrientations={ ['portrait' , 'landscape'] }
             animationType="slide"
@@ -191,7 +194,7 @@ function ActivityModal(props: any) {
                 setChange(false)
             } }>
 
-            <View style={ approveVisible || visible || endorseVisible || showAlert ? {
+            <View  style={ approveVisible || visible || endorseVisible || showAlert ? {
 
                 position : "absolute" ,
                 zIndex : 2 ,
@@ -265,7 +268,7 @@ function ActivityModal(props: any) {
                 <ModalTab details={ props.details } status={ status }/>
                 {
                     <View style={{  borderTopColor : 'rgba(0, 0, 0, 0.1)' ,
-                        borderTopWidth : 1 ,}}>
+                        borderTopWidth : 1 , backgroundColor: "white"}}>
                         <View style={!(isMobile) && { width: "60%", alignSelf: "flex-end"} }>
                             <View style={ styles.footer }>
                                 { getRole(user , [DIRECTOR , EVALUATOR , CASHIER , ACCOUNTANT]) &&
@@ -313,6 +316,7 @@ function ActivityModal(props: any) {
                 }
             </View>
             <Approval
+                size={activityModalScreenComponent}
                 onModalDismissed={ () => {
                     setStatus(prevStatus);
                     setRemarks(prevRemarks);
@@ -364,6 +368,7 @@ function ActivityModal(props: any) {
                 } }
             />
             <Disapproval
+                size={activityModalScreenComponent}
                 user={ props?.details?.applicant?.user }
                 remarks={ setRemarks }
                 onChangeApplicationStatus={ (event: any , callback: (bool , appId) => {}) => {
@@ -385,6 +390,7 @@ function ActivityModal(props: any) {
                 onDismissed={ onDismissed }
             />
             <Endorsed
+                size={activityModalScreenComponent}
                 assignedPersonnel={ props?.details?.assignedPersonnel }
                 onModalDismissed={ () => {
                     setRemarks(prevRemarks);

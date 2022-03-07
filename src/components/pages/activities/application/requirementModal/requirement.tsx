@@ -9,7 +9,6 @@ import FadeBackground from "@assets/svg/fade-background";
 import Loader from "@pages/activities/bottomLoad";
 import {fontValue} from "@pages/activities/fontValue";
 const { width  } = Dimensions.get("screen");
-
 class RequirementView extends React.Component<{ requirement: any }> {
 
 
@@ -60,9 +59,12 @@ class RequirementView extends React.Component<{ requirement: any }> {
     }
 
     private setImage() {
-       
-        this.setState({ source : { uri : this.props?.requirement?.links?.medium } })
-        Image.getSize(this.props?.requirement?.links?.medium , (width , height) => {
+
+        this.setState({
+            ...this.state,
+            source : { ...this?.state?.source,  uri: this?.props?.requirement?.links?.medium || "https://dummyimage.com/350x350/fff/aaa" } })
+
+        Image.getSize(this.props?.requirement?.links?.medium|| "https://dummyimage.com/350x350/fff/aaa", (width , height) => {
             this.setState({
                 _imageSize : {
                     width : width || 300 ,
@@ -76,7 +78,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
         this.setImage();
     }
     render() {
-        return <>
+        return <><View style={{padding: 10}}>
             <View style={ requirementStyles.container }>
                 <View style={ requirementStyles.card }>
                     <View style={ requirementStyles.cardContainer }>
@@ -116,6 +118,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
                                               onPress={ this._showImage }>
 
                                 <Image
+                                    resizeMode={"cover"}
                                     style={ { width : undefined , height : 300} }
                                     source={ {
                                         uri : this.props?.requirement?.links?.small ,
@@ -160,14 +163,14 @@ class RequirementView extends React.Component<{ requirement: any }> {
                     </View>
                 </View>
             </Modal>
-        </>;
+        </View></>;
     }
 }
 
 
 const Requirement = (props: any) => {
     
-    return <ScrollView style={ { backgroundColor : "#fff" , width : "100%" } }>
+    return <ScrollView style={ { backgroundColor : "#f8f8f8" , width : "100%" } }>
         { props?.requirements?.map((requirement: any , index: number) => {
             return <RequirementView key={ index } requirement={ requirement }/>
         })

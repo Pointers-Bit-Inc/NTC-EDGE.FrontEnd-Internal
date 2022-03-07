@@ -16,7 +16,7 @@ import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import ApplicationList from "@pages/activities/applicationList";
-import {isMobile , unreadReadApplication} from "@pages/activities/script";
+import {unreadReadApplication} from "@pages/activities/script";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import Loader from "@pages/activities/bottomLoad";
@@ -29,6 +29,7 @@ import NoActivity from "@assets/svg/noActivity";
 const {height} = Dimensions.get('screen');
 import lodash from 'lodash';
 import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const inputRef = useRef(null);
     const [details, setDetails] = useState({})
@@ -82,7 +83,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                             ></BackSpaceIcon>
                         </TouchableOpacity>
 
-                        <View style={styles.group}>
+                        <View  style={styles.group}>
                             <InputField  ref={inputRef}
                                          inputStyle={{fontWeight: "400", fontSize: fontValue(14)}}
                                          value={props.value}
