@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Image , Platform , Text , TouchableOpacity , useWindowDimensions , View} from 'react-native';
+import {Dimensions, Image , Linking, Platform , Text , TouchableOpacity , useWindowDimensions , View, StyleSheet} from 'react-native';
 import {createDrawerNavigator , DrawerContentScrollView , DrawerItem ,} from '@react-navigation/drawer';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
@@ -35,6 +35,40 @@ import Search from "@pages/activities/search";
 import ActivitiesPage from "@pages/activities/index";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
+import useSignalr from 'src/hooks/useSignalr';
+import { resetMeeting, addMeeting, updateMeeting, setConnectionStatus } from 'src/reducers/meeting/actions';
+import { resetChannel, addMessages, updateMessages, addChannel, removeChannel } from 'src/reducers/channel/actions';
+import RNExitApp from 'react-native-exit-app';
+import AwesomeAlert from 'react-native-awesome-alerts';
+import { outline, text } from '@styles/color';
+
+const { width } = Dimensions.get('window');
+
+const customStyles = StyleSheet.create({
+  confirmText: {
+    fontSize: RFValue(14),
+    fontFamily: Regular,
+    color: text.primary,
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: RFValue(16),
+    fontFamily: Bold,
+    color: '#1F2022'
+  },
+  message: {
+    textAlign: 'center',
+    fontSize: RFValue(14),
+    fontFamily: Regular,
+    marginHorizontal: 15,
+    marginBottom: 15,
+  },
+  content: {
+    borderBottomColor: outline.default,
+    borderBottomWidth: 1,
+  }
+})
+
 const Tab = createBottomTabNavigator();
 
 const Drawer = createDrawerNavigator();
@@ -43,7 +77,19 @@ export default function TabBar() {
 
 
     const user = useSelector((state: RootStateOrAny) => state.user);
-
+    const onHide = () => setShowAlert(false)
+    const onShow = () => setShowAlert(true);
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertData, setAlertData]:any = useState({});
+    const [versionChecked, setVersionChecked] = useState(false);
+    const {
+        connectionStatus,
+        initSignalR,
+        destroySignalR,
+        onConnection,
+        checkVersion,
+      } = useSignalr();
+      
     const {tabBarHeight,  pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const { hasNewChat = false, hasMeet = false } = useSelector((state: RootStateOrAny) => {
         const { channel = {}, meeting = {} } = state;
@@ -60,6 +106,91 @@ export default function TabBar() {
     const [pnApplication, setPnApplication] = useState(pinnedApplications)
     const [notPnApplication, setNotPnApplication] = useState(notPinnedApplications)
    const dispatch = useDispatch()
+
+   const onPressAlert = () => {
+    if (alertData.link) {
+      return Linking.openURL(alertData.link);
+    } else {
+      return RNExitApp.exitApp();
+    }
+  }
+
+  useEffect(() => {
+    dispatch(setConnectionStatus(connectionStatus));
+    let unmount = false
+
+    if (!versionChecked && connectionStatus === 'connected') {
+      checkVersion((err, res) => {
+        if (!unmount) {
+          setVersionChecked(true);
+          if (res) {
+            setAlertData(res);
+            setShowAlert(true);
+          }
+        }
+      })
+    }
+    return () => {
+      unmount = true;
+    }
+  }, [connectionStatus])
+
+  useEffect(() => {
+      console.log('INIT')
+      initSignalR();
+      onConnection('OnChatUpdate', (users, type, data) => {
+        if (data) {
+          switch(type) {
+            case 'create': {
+              dispatch(addMessages(data));
+              break;
+            }
+            case 'update': {
+              dispatch(updateMessages(data));
+              break;
+            }
+          }
+        }
+      });
+
+      onConnection('OnRoomUpdate', (users, type, data) => {
+        if (data) {
+          switch(type) {
+            case 'create': {
+              dispatch(addChannel(data));
+              dispatch(addMessages(data.lastMessage));
+              break;
+            }
+            case 'delete': dispatch(removeChannel(data._id)); break;
+          }
+        }
+      });
+
+      onConnection('OnMeetingUpdate', (users, type, data) => {
+        if (data) {
+          switch(type) {
+            case 'create': {
+              const { room } = data;
+              const { lastMessage } = room;
+              dispatch(addChannel(room));
+              dispatch(addMessages(lastMessage));
+              dispatch(addMeeting(data));
+              break;
+            };
+            case 'update': {
+              const { room = {} } = data;
+              const { lastMessage } = room;
+              if (lastMessage) dispatch(addChannel(room));
+              if (lastMessage) dispatch(addMessages(lastMessage));
+              dispatch(updateMeeting(data));
+              break;
+            }
+          }
+        }
+      });
+  
+      return () => destroySignalR();
+    }, []);
 
     useEffect(()=>{
 
@@ -204,6 +335,25 @@ export default function TabBar() {
                     <Drawer.Screen  options={{  drawerLabel: SEARCH, drawerItemStyle: {display: "none"}, headerShown: false }}  name={SEARCH} component={Search} />
 
                 </Drawer.Navigator> }
+                <AwesomeAlert
+                    show={showAlert}
+                    showProgress={false}
+                    contentContainerStyle={{ borderRadius: 15, maxWidth: width * 0.7 }}
+                    titleStyle={customStyles.title}
+                    title={alertData?.title || 'Alert'}
+                    message={alertData?.message}
+                    messageStyle={customStyles.message}
+                    contentStyle={customStyles.content}
+                    closeOnTouchOutside={false}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText={alertData.button || 'OK'}
+                    confirmButtonColor={'white'}
+                    confirmButtonTextStyle={customStyles.confirmText}
+                    actionContainerStyle={{ justifyContent: 'space-around' }}
+                    onConfirmPressed={onPressAlert}
+                />
             </>
 
 

@@ -76,7 +76,7 @@ const useSignalr = () => {
   }, []);
 
   const getChatList = useCallback((payload, callback = () => {}) => {
-    api.get(`rooms?pageIndex=${payload.pageIndex}&keyword=${payload.keyword}`)
+    api.get(`rooms?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(roomSchema));
@@ -88,7 +88,7 @@ const useSignalr = () => {
   }, []);
 
   const getParticipantList = useCallback((payload, callback = () => {}) => {
-    api.get(`users/${user._id}/contacts?pageIndex=${payload.pageIndex}&keyword=${payload.keyword}`)
+    api.get(`users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`)
     .then(res => {
       return callback(null, res.data);
     })
@@ -138,7 +138,7 @@ const useSignalr = () => {
   }, []);
 
   const seenMessage = useCallback((id, callback = () => {}) => {
-    api.patch(`/messages/${id}/seen}`)
+    api.patch(`/messages/${id}/seen`)
     .then(res => {
       return callback(null, res.data);
     })
@@ -200,7 +200,7 @@ const useSignalr = () => {
   }, []);
 
   const getMeetingList = useCallback((payload, callback = () => {}) => {
-    api.get(`meetings?pageIndex=${payload.pageIndex}`)
+    api.get(`meetings?pageIndex=${payload.pageIndex || 1}`)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(meetingSchema));
@@ -225,7 +225,7 @@ const useSignalr = () => {
   const checkVersion = useCallback((callback = () => {}) => {
     const version = DeviceInfo.getVersion();
     const os = Platform.OS;
-    api.get(`/rooms/check-version?os=${os}&version=${version}`)
+    api.post('/rooms/check-version', { os, version })
     .then(res => {
       return callback(null, res.data);
     })
