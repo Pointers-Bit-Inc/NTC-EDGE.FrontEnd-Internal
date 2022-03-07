@@ -25,6 +25,8 @@ import {useAlert} from "@pages/activities/hooks/useAlert";
 import {getRole} from "@pages/activities/script";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 const { width , height } = Dimensions.get('window');
 
@@ -192,15 +194,15 @@ const Approval = (props: any) => {
                 message={ message }/>
             <KeyboardAvoidingView
                 behavior={ Platform.OS === "ios" ? "padding" : "height" }
-                style={ [styles.container] }
+                style={ [styles.container, { alignItems : isMobile ? 'center' : 'flex-end' ,}] }
             >
 
                 {
-                <Animated.View style={ [styles.group , !showAlert ||  {display: "none"},  { transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
+                <Animated.View style={ [styles.group ,   { width: isMobile ? "100%" :props?.size?.width , display: !showAlert ? undefined : "none"},  { transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
                     <View style={ styles.rect }>
                         <View style={ { alignSelf : 'flex-start' } }>
                             <TouchableOpacity onPress={ _springHide }>
-                                <Ionicons name="md-close" style={ { fontSize : RFValue(25) } }/>
+                                <Ionicons name="md-close" style={ { fontSize : fontValue(25) } }/>
                             </TouchableOpacity>
                         </View>
                         <ApplicationApproved style={ styles.icon }/>
@@ -211,7 +213,7 @@ const Approval = (props: any) => {
 
                             { getRole(user , [DIRECTOR , EVALUATOR, ACCOUNTANT]) &&
                             <InputField
-                                inputStyle={{fontWeight: "400", fontSize: RFValue(14)}}
+                                inputStyle={{fontWeight: "400", fontSize: fontValue(14)}}
                                 onBlur={()=>setOnFocus(false)}
                                 onFocus={()=>setOnFocus(true)}
                                 containerStyle={{
@@ -269,7 +271,7 @@ const styles = StyleSheet.create({
 
         flex : 1 ,
         justifyContent : 'center' ,
-        alignItems : 'center' ,
+
     } ,
     group : {
         width : '100%' ,
@@ -285,14 +287,14 @@ const styles = StyleSheet.create({
     } ,
     icon : {
         color : "rgba(100,219,68,1)" ,
-        fontSize : RFValue(94) ,
+        fontSize : fontValue(94) ,
         height : 102 ,
         width : 94 ,
     } ,
     applicationApproved : {
         fontFamily: Bold,
         color : "#121212" ,
-        fontSize : RFValue(18) ,
+        fontSize : fontValue(18) ,
     } ,
     group2 : {
         width : '100%' ,
@@ -301,7 +303,7 @@ const styles = StyleSheet.create({
     confirm : {
         color : "rgba(255,255,255,1)" ,
         fontFamily: Bold,
-        fontSize : RFValue(18) ,
+        fontSize : fontValue(18) ,
     } ,
     confirmButton : {
         backgroundColor : primaryColor ,

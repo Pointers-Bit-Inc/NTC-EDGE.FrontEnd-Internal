@@ -1,12 +1,12 @@
 import React, {useEffect, useRef, useState} from "react";
 import {
-    ActivityIndicator,
-    Dimensions,
-    FlatList,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
+    ActivityIndicator ,
+    Dimensions ,
+    FlatList , Platform ,
+    ScrollView ,
+    Text ,
+    TextInput ,
+    TouchableOpacity ,
     View
 } from "react-native";
 import BackSpaceIcon from "@assets/svg/backspace";
@@ -23,10 +23,13 @@ import Loader from "@pages/activities/bottomLoad";
 import useCountUp from "@pages/activities/hooks/useCountUp";
 import {Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
-import {RFValue} from "react-native-responsive-fontsize";
+
+import NoActivity from "@assets/svg/noActivity";
 
 const {height} = Dimensions.get('screen');
-
+import lodash from 'lodash';
+import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const inputRef = useRef(null);
     const [details, setDetails] = useState({})
@@ -67,22 +70,22 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
         const countUp = Math.max(0, Math.round(progress * props.total))
         return <Text>{countUp}</Text>
     }
-    return <View style={styles.container}>
-        <View style={styles.group9}>
+    return <View style={[styles.container, {flexDirection: "row"}]}>
+        <View style={[styles.group9, { flex: (isMobile) ? 1 : 0.4,} ]}>
             <View style={styles.group4}>
                 <View style={styles.rect}>
                     <View style={styles.group2}>
                         <TouchableOpacity style={{  paddingRight: 10}} onPress={props.onPress}>
                             <BackSpaceIcon
-                                width={RFValue(20)}
-                                height={RFValue(16)}
+                                width={fontValue(20)}
+                                height={fontValue(16)}
                                 style={styles.icon}
                             ></BackSpaceIcon>
                         </TouchableOpacity>
 
-                        <View style={styles.group}>
+                        <View  style={styles.group}>
                             <InputField  ref={inputRef}
-                                         inputStyle={{fontWeight: "400", fontSize: RFValue(14)}}
+                                         inputStyle={{fontWeight: "400", fontSize: fontValue(14)}}
                                          value={props.value}
                                          onEndEditing={props.onEndEditing}
                                          onChange={props.onChange}
@@ -105,7 +108,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
                     <TouchableOpacity onPress={props.clearAll}>
                         <Text style={{
-                            fontSize: RFValue(14),
+                            fontSize: fontValue(14),
                             color: '#2863D6',
                              fontFamily: Regular500  ,
                         }}>{props.nevers.length ? "Clear all" : ""}</Text>
@@ -192,6 +195,20 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
 
         </View>
+
+        {
+            !(isMobile) && lodash.isEmpty(details) &&
+            <View style={ [{ flex : 0.6 , justifyContent : "center" , alignItems : "center" }] }>
+
+                <NoActivity/>
+                <Text style={ { color : "#A0A3BD" , fontSize : fontValue(24) } }>No activity
+                    selected</Text>
+
+
+
+            </View>
+        }
+        {!(isMobile) && !lodash.isEmpty(details) && <View style={{flex : 0.6}}>
         <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={()=>{
             onMoreModalDismissed(details?.isOpen)
         }
@@ -205,6 +222,22 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                //  dispatch(deleteApplications(_id))
                            }
                            onDismissed()
-                       }}/>
+                       }}/>   </View>}
+
+        {(isMobile) && !lodash.isEmpty(details) && <>
+        <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={()=>{
+            onMoreModalDismissed(details?.isOpen)
+        }
+        }/>
+        <ActivityModal details={details}
+                       visible={modalVisible}
+                       onDismissed={(event: boolean, _id: number) => {
+
+                           setDetails({})
+                           if (event && _id) {
+                               //  dispatch(deleteApplications(_id))
+                           }
+                           onDismissed()
+                       }}/>  </>}
     </View>;
 }

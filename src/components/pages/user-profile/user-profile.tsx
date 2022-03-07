@@ -20,6 +20,7 @@ import { BASE_URL, BASE_URL_NODE } from '../../../services/config';
 import { validateEmail, validatePassword, validatePhone, validateText } from 'src/utils/form-validations';
 import { setUser } from '../../../reducers/user/actions';
 import { Bold } from '@styles/font';
+import {fontValue} from "@pages/activities/fontValue";
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const { width, height } = Dimensions.get('window');
@@ -430,7 +431,7 @@ const styles = StyleSheet.create({
     },
     change2: {
         color: text.info,
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         marginLeft: 5,
     },
     activityIndicator: {
@@ -443,7 +444,7 @@ const styles = StyleSheet.create({
     },
     changePassword: {
         color: 'rgba(0,74,215,1)',
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         marginTop: 20,
         marginHorizontal: 10,
         fontFamily: Bold,
@@ -460,7 +461,7 @@ const styles = StyleSheet.create({
     },
     bottomButtonText: {
         color: '#fff',
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
     }
 });
 

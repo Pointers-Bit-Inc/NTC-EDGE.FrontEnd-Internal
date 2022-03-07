@@ -1,4 +1,4 @@
-import React , {useEffect , useMemo , useState} from "react";
+import React , {useEffect , useMemo , useRef , useState} from "react";
 import {Alert , Modal , Platform , StatusBar , StyleSheet , Text , TouchableOpacity , View} from "react-native";
 import {primaryColor} from "@styles/color";
 import Disapproval from "@pages/activities/modal/disapproval";
@@ -29,12 +29,15 @@ import {DeclineButton} from "@pages/activities/button/declineButton";
 import {EndorsedButton} from "@pages/activities/button/endorsedButton";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
+import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
 
 const { ModalTab } = Platform.select({
     native: () => require('@pages/activities/modalTab'),
     default: () => require("@pages/activities/modalTab.web")
 })();
-
+const NativeView = Platform.OS === 'ios' || Platform.OS == "android" ? Modal : View;
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
 
@@ -145,11 +148,9 @@ function ActivityModal(props: any) {
         setShowAlert(true)
 
     }
-
     useEffect(() => {
-        console.log(props?.details);
-        return () => {
 
+        return () => {
             setChange(false);
             setStatus("");
             setAssignId("")
@@ -157,7 +158,6 @@ function ActivityModal(props: any) {
     } , []);
 
     const statusMemo = useMemo(() => {
-
         setStatus(status);
         setAssignId(assignId || props?.details?.assignedPersonnel);
         return status ? (
@@ -179,10 +179,11 @@ function ActivityModal(props: any) {
     const [approvalIcon , setApprovalIcon] = useState(false);
     const [title , setTitle] = useState("Approve Application");
     const [showClose , setShowClose] = useState(false);
-
+    const [activityModalScreenComponent , onActivityModalScreenComponent] = useComponentLayout();
     return (
-        <Modal
-
+        <NativeView
+            onLayout={onActivityModalScreenComponent}
+            style={{height: "100%"}}
             supportedOrientations={ ['portrait' , 'landscape'] }
             animationType="slide"
             transparent={ false }
@@ -192,8 +193,8 @@ function ActivityModal(props: any) {
                 props.onDismissed(change);
                 setChange(false)
             } }>
-           
-            <View style={ approveVisible || visible || endorseVisible || showAlert ? {
+
+            <View  style={ approveVisible || visible || endorseVisible || showAlert ? {
 
                 position : "absolute" ,
                 zIndex : 2 ,
@@ -202,7 +203,7 @@ function ActivityModal(props: any) {
                 width : "100%" ,
                 height : "100%" ,
                 backgroundColor : "rgba(0, 0, 0, 0.5)" ,
-            } : {} }>
+            } : { position : "absolute" ,} }>
 
             </View>
 
@@ -244,8 +245,9 @@ function ActivityModal(props: any) {
                 show={ showAlert } title={ title }
                 message={ message }/>
             <View style={ { flex : 1 } }>
-                <View style={ {
+                {(isMobile) && <View style={ {
                     flexDirection : "row" ,
+                    alignItems: "center",
                     borderBottomColor: "#F0F0F0",
                     justifyContent : "space-between" ,
                     padding : 15 ,
@@ -257,55 +259,64 @@ function ActivityModal(props: any) {
                         props.onDismissed(change);
                         setChange(false)
                     } }>
-                        <CloseIcon color="#606A80"/>
+                        <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
                     </TouchableOpacity>
                     <Text style={ styles.applicationType }>{ props?.details?.applicationType }</Text>
                     <View></View>
-                </View>
+                </View>}
 
                 <ModalTab details={ props.details } status={ status }/>
                 {
-                    <View style={ styles.footer }>
-                        { getRole(user , [DIRECTOR , EVALUATOR , CASHIER , ACCOUNTANT]) &&
-                        <View style={ styles.groupButton }>
+                    <View style={{  borderTopColor : 'rgba(0, 0, 0, 0.1)' ,
+                        borderTopWidth : 1 , backgroundColor: "white"}}>
+                        <View style={!(isMobile) && { width: "60%", alignSelf: "flex-end"} }>
+                            <View style={ styles.footer }>
+                                { getRole(user , [DIRECTOR , EVALUATOR , CASHIER , ACCOUNTANT]) &&
+                                <View style={ styles.groupButton }>
 
-                            <ApprovedButton
-                                currentLoading={ currentLoading }
-                                allButton={ allButton }
-                                onPress={ () => {
+                                    <ApprovedButton
+                                        currentLoading={ currentLoading }
+                                        allButton={ allButton }
+                                        onPress={ () => {
 
-                                    if (cashier) {
-                                        onShowConfirmation(APPROVED)
-                                    } else {
-                                        setApproveVisible(true)
-                                    }
-
-
-                                } }/>
-
-                            <DeclineButton
-                                currentLoading={ currentLoading }
-                                allButton={ allButton }
-                                onPress={ () => {
-                                    setVisible(true)
-                                } }/>
-
-                        </View> }
-
-                        { getRole(user , [EVALUATOR]) &&
-                        <EndorsedButton
-                            currentLoading={ currentLoading }
-                            allButton={ allButton }
-                            onPress={ () => {
-                                setEndorseVisible(true)
-                            } }/> }
+                                            if (cashier) {
+                                                onShowConfirmation(APPROVED)
+                                            } else {
+                                                setApproveVisible(true)
+                                            }
 
 
+                                        } }/>
+
+                                    <DeclineButton
+                                        currentLoading={ currentLoading }
+                                        allButton={ allButton }
+                                        onPress={ () => {
+                                            setVisible(true)
+                                        } }/>
+
+                                </View> }
+
+                                { getRole(user , [EVALUATOR]) &&
+                                <EndorsedButton
+                                    currentLoading={ currentLoading }
+                                    allButton={ allButton }
+                                    onPress={ () => {
+                                        setEndorseVisible(true)
+                                    } }/> }
+
+
+                            </View>
+                        </View>
                     </View>
+
+
+
 
                 }
             </View>
             <Approval
+                size={activityModalScreenComponent}
                 onModalDismissed={ () => {
                     setStatus(prevStatus);
                     setRemarks(prevRemarks);
@@ -357,6 +368,7 @@ function ActivityModal(props: any) {
                 } }
             />
             <Disapproval
+                size={activityModalScreenComponent}
                 user={ props?.details?.applicant?.user }
                 remarks={ setRemarks }
                 onChangeApplicationStatus={ (event: any , callback: (bool , appId) => {}) => {
@@ -378,6 +390,7 @@ function ActivityModal(props: any) {
                 onDismissed={ onDismissed }
             />
             <Endorsed
+                size={activityModalScreenComponent}
                 assignedPersonnel={ props?.details?.assignedPersonnel }
                 onModalDismissed={ () => {
                     setRemarks(prevRemarks);
@@ -407,7 +420,7 @@ function ActivityModal(props: any) {
                 visible={ endorseVisible }
                 onDismissed={ onEndorseDismissed }
             />
-        </Modal>
+        </NativeView>
     );
 }
 
@@ -416,7 +429,7 @@ const styles = StyleSheet.create({
     applicationType : {
 
         fontFamily : Bold ,
-        fontSize : RFValue(14) ,
+        fontSize : fontValue(14) ,
         lineHeight : 16.5 ,
         color : "#606A80"
     } ,
@@ -705,10 +718,10 @@ const styles = StyleSheet.create({
         height : 812
     } ,
     footer : {
+
         paddingHorizontal : 20 ,
         paddingVertical : 30 ,
         flexDirection : 'row' ,
-        borderTopColor : 'rgba(0, 0, 0, 0.1)' ,
-        borderTopWidth : 1 ,
+
     }
 });

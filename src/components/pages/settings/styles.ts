@@ -2,6 +2,7 @@ import { button, text } from '@styles/color';
 import { Bold } from '@styles/font';
 import { StyleSheet, Dimensions } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import {fontValue} from "@pages/activities/fontValue";
 
 const { width } = Dimensions.get('window');
 
@@ -25,7 +26,7 @@ export default StyleSheet.create({
   },
   nameText: {
     fontFamily: Bold,
-    fontSize: RFValue(20),
+    fontSize: fontValue(20),
     marginTop: 10,
   },
   emailText: {
@@ -48,7 +49,7 @@ export default StyleSheet.create({
   },
 
   textSettings: {
-    fontSize: RFValue(16),
+    fontSize: fontValue(16),
     marginLeft: 15,
   },
 

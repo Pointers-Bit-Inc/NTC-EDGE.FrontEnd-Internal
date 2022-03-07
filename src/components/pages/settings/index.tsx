@@ -16,6 +16,10 @@ import {resetUser , setUser} from 'src/reducers/user/actions'
 import { resetMeeting } from 'src/reducers/meeting/actions';
 import { resetChannel } from 'src/reducers/channel/actions';
 import {RFValue} from "react-native-responsive-fontsize";
+import Api from "../../../services/api";
+import {StackActions} from "@react-navigation/native";
+import {fontValue} from "@pages/activities/fontValue";
+import {setApplicationItem} from "../../../reducers/application/actions";
 
 export default ({
   navigation
@@ -29,38 +33,44 @@ export default ({
     {
       label: 'Notifications',
       value: 'notifications',
-      icon: <BellIcon width={RFValue(21)} height={RFValue(21)} />,
+      icon: <BellIcon width={fontValue(21)} height={fontValue(21)} />,
       onPress: () => {},
     },
     {
       label: 'Help Center',
       value: 'help-center',
-      icon: <DonutIcon width={RFValue(21)} height={RFValue(21)} />,
+      icon: <DonutIcon width={fontValue(21)} height={fontValue(21)} />,
       onPress: () => {},
     },
     {
       label: 'About',
       value: 'about',
-      icon: <ExclamationIcon  size={RFValue(21)} type='circle' />,
+      icon: <ExclamationIcon  size={fontValue(21)} type='circle' />,
       onPress: () => {},
     },
   ];
   const logout = {
     label: 'Log out',
     value: 'logout',
-    icon: <LogoutIcon width={RFValue(21)} height={RFValue(21)} color={text.error} />,
+    icon: <LogoutIcon width={fontValue(21)} height={fontValue(21)} color={text.error} />,
     onPress: () => setVisible(true),
   };
-  const onLogout = useCallback(() => {
+
+  const onLogout =  useCallback(() => {
+    const api = Api(user.sessionToken);
     setVisible(false)
-    dispatch(resetUser());
-    dispatch(resetMeeting());
-    dispatch(resetChannel());
     setTimeout(() => {
-      navigation.replace('Login');
+      api.post('/user/logout')
+          .then(() => {
+            dispatch(setApplicationItem({}))
+            dispatch(resetUser());
+            dispatch(resetMeeting());
+            dispatch(resetChannel());
+            navigation.dispatch(StackActions.replace('Login'));
+
+          });
     }, 500);
   }, []);
-
   const renderRow = ({item}: any) => {
     return (
       <TouchableOpacity onPress={item?.onPress}>

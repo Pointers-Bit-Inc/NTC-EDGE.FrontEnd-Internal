@@ -10,6 +10,9 @@ import { text } from 'src/styles/color';
 import Text from '@atoms/text';
 import inputStyles from "src/styles/input-style";
 import {Regular500} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 const styles = StyleSheet.create({
   container: {
@@ -79,7 +82,8 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         placeholder="Email address"
         required={true}
         hasValidation={true}
-        
+      inputStyle={[InputStyles.text, { minWidth: 330,}]}
+      outlineStyle={InputStyles.outlineStyle}
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
@@ -91,13 +95,13 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
       />
 
       <PasswordField
-        inputStyle={InputStyles.text}
+      inputStyle={InputStyles.text}
         label={'Password'}
         placeholder="Password"
         textContentType="oneTimeCode"
         required={true}
         hasValidation={true}
-        outlineStyle={InputStyles.outlineStyle}
+      outlineStyle={InputStyles.outlineStyle}
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
@@ -108,16 +112,16 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         onChangeText={(value: string) => onChangeValue('password', value)}
         onSubmitEditing={(event:any) => onChangeValue('password', event.nativeEvent.text)}
       />
-      <View style={[styles.horizontal, { justifyContent: 'flex-start' }]}>
+      {isMobile && <View style={[styles.horizontal, { justifyContent: 'flex-start' }]}>
         <TouchableOpacity onPress={() => onChangeValue('forgotPassword')}>
           <Text
-              style={[InputStyles.text, {  fontFamily: Regular500  , color: text.primary }]}
+              style={[InputStyles.text, { fontSize: fontValue(12),   fontFamily: Regular500  , color: text.primary }]}
               size={12}
           >
             Forgot your password?
           </Text>
         </TouchableOpacity>
-      </View>
+      </View>}
      {/* <View style={[styles.horizontal, { marginTop: 15 }]}>
         <TouchableOpacity onPress={() => onChangeValue('keepLoggedIn', !form?.keepLoggedIn?.value)}>
           {keepMeLoggedInChecker(form?.keepLoggedIn?.value)}

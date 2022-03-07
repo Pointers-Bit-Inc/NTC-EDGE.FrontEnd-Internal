@@ -10,7 +10,7 @@ import Requirement from "@pages/activities/application/requirementModal/requirem
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Payment from "@pages/activities/application/paymentModal/payment";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {formatDate, handleInfinityScroll, statusColor, statusIcon} from "@pages/activities/script";
+import {formatDate , handleInfinityScroll , statusColor , statusIcon} from "@pages/activities/script";
 import axios from "axios";
 import {BASE_URL} from "../../../services/config";
 import {APPROVED, DECLINED, FOREVALUATION} from "../../../reducers/activity/initialstate";
@@ -18,6 +18,7 @@ import {updateActivityStatus} from "../../../reducers/activity/actions";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 const {width} = Dimensions.get('window');
 
@@ -376,7 +377,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         color: "rgba(255,255,255,1)",
-        fontSize: RFValue(24),
+        fontSize: fontValue(24),
         marginTop: 55,
         marginLeft: 14
     },
@@ -603,11 +604,11 @@ const styles = StyleSheet.create({
         fontFamily: Bold,
         color: "#121212",
         textAlign: "left",
-        fontSize: RFValue(20)
+        fontSize: fontValue(20)
     },
     job: {
         color: "rgba(98,108,130,1)",
-        fontSize:  RFValue(10),
+        fontSize:  fontValue(10),
         textAlign: "left"
     },
     group2: {
@@ -620,11 +621,11 @@ const styles = StyleSheet.create({
     },
     icon2: {
         color: "rgba(248,170,55,1)",
-        fontSize: RFValue(10)
+        fontSize: fontValue(10)
     },
     role: {
         fontFamily: Bold,
-        fontSize: RFValue(10),
+        fontSize: fontValue(10),
         textAlign: "left",
         marginLeft: 4
     },

@@ -13,6 +13,7 @@ import {defaultColor , primaryColor, text} from '@styles/color';
  import inputStyles from "@styles/input-style"
  import {input} from "@styles/color"
 import CloseIcon from "@assets/svg/close";
+import {fontValue} from "@pages/activities/fontValue";
 const styles = StyleSheet.create({
     container: {
         paddingVertical: 10
@@ -158,7 +159,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                     >
                         <TextInput
                         ref={inputRef}
-                        style={[isFocused ? inputStyles.inputText : { ...inputStyles.inputText, color: defaultColor}, !editable && {color: disabledColor}, inputStyle]}
+                        style={[inputStyle,inputStyles.inputText , !editable && {color: disabledColor}]}
                         placeholder={placeholder || label}
                         placeholderTextColor={!editable ? disabledColor : (!!error ? input.text?.errorColor : defaultColor)}
                         secureTextEntry={secureTextEntry}
@@ -171,7 +172,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                 {
                     (clearable && isFocused && !!editable && !!otherProps.value) &&
                     <TouchableOpacity onPress={() => otherProps?.onChangeText ? otherProps?.onChangeText('') : {}}>
-                        <CloseIcon height={RFValue(10)} width={RFValue(10)} color={error ? input.text.errorColor : input.text.mainColor}/>
+                        <CloseIcon height={fontValue(10)} width={fontValue(10)} color={error ? input.text.errorColor : input.text.mainColor}/>
                     </TouchableOpacity>
                 }
             </View>

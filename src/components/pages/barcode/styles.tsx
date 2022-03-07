@@ -1,5 +1,6 @@
 import {Dimensions, StyleSheet} from "react-native";
 import {Bold} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 const { height, width } = Dimensions.get('window');
 export const styles = StyleSheet.create({
     rect19: {
@@ -29,7 +30,7 @@ export const styles = StyleSheet.create({
     },
     header: {
         backgroundColor: "#041B6E",
-        height: 80,
+        height: 78,
         width: "100%"
     },
     rect: {
@@ -40,7 +41,7 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         fontFamily: Bold,
         color: "rgba(255,255,255,1)",
-        fontSize: 18,
+        fontSize: RFValue(18),
         textAlign: "center",
         marginTop: 40
     },

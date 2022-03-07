@@ -5,7 +5,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from 'src/services/store';
 import Navigation from 'src/navigations';
 import TopModal from "@pages/activities/topmodal";
-
 export default function App() {
     return (
     <Provider store={store}>

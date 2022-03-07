@@ -3,8 +3,8 @@ import Svg, { Path } from "react-native-svg";
 
 const EndorseToIcon = (props:any) => (
     <Svg
-        width={props.width_ || 43}
-        height={props.height_ || 20}
+        width={props.width || 43}
+        height={props.height || 20}
         viewBox="0 0 43 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

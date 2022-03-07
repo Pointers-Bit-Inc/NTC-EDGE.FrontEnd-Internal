@@ -6,7 +6,8 @@ const {
     DELETE_APPLICATIONS,
     HANDLE_LOAD,
     READ_UNREAD_APPLICATIONS,
-    SET_TAB_BAR_HEIGHT
+    SET_TAB_BAR_HEIGHT,
+    SET_APPLICATION_ITEM
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -58,6 +59,13 @@ export function readUnreadApplications(payload) {
 export function handleInfiniteLoad(payload) {
     return {
         type: HANDLE_LOAD,
+        payload,
+    };
+}
+
+export function setApplicationItem(payload) {
+    return {
+        type: SET_APPLICATION_ITEM,
         payload,
     };
 }

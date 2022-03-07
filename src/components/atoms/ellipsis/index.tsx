@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { View, Animated } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import styles from './styles';
+import {fontValue} from "@pages/activities/fontValue";
 
 interface Props {
     color?: string;
@@ -46,9 +47,9 @@ const Ellipsis: FC<Props> = ({
 
     const propStyles = (_c: any) => {
         return {
-            height: RFValue(size),
-            width: RFValue(size),
-            borderRadius: RFValue(size),
+            height: fontValue(size),
+            width: fontValue(size),
+            borderRadius: fontValue(size),
             backgroundColor: _c.interpolate({
                 inputRange: [0, 300],
                 outputRange: ['rgba(255, 255, 255, 0.2)', color],

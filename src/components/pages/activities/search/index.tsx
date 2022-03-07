@@ -9,13 +9,21 @@ import {styles} from '@pages/activities/search/styles'
 import axios from "axios";
 import {BASE_URL} from "../../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
-import {CASHIER, CHECKER, DATE_ADDED, DIRECTOR, EVALUATOR} from "../../../../reducers/activity/initialstate";
-import {formatDate, getFilter} from "@pages/activities/script";
+import {
+    ACTIVITIES ,
+    CASHIER ,
+    CHECKER ,
+    DATE_ADDED ,
+    DIRECTOR ,
+    EVALUATOR
+} from "../../../../reducers/activity/initialstate";
+import {formatDate , getFilter} from "@pages/activities/script";
 import moment from "moment";
 import Loader from "@pages/activities/bottomLoad";
 import {defaultSanitize} from "@pages/activities/search/utils";
 import {useUserRole} from "@pages/activities/hooks/useUserRole";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 function Search(props: any) {
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
@@ -238,7 +246,7 @@ function Search(props: any) {
     }
 
     const handleBackButtonClick = () => {
-        props.navigation.goBack()
+        props.navigation.navigate(ACTIVITIES);
         return true;
     };
 
@@ -285,14 +293,14 @@ function Search(props: any) {
                     setTextInput(search)
                 }}>
                     <View style={styles.group5}>
-                        <HistoryIcon height={RFValue(20)} width={RFValue(20)} style={ styles.icon3 }/>
+                        <HistoryIcon height={fontValue(20)} width={fontValue(20)} style={ styles.icon3 }/>
                         <Text style={styles.loremIpsum}>{search}</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {
                     removeSearchHistory(index)
                 }}>
-                    <CloseIcon height={RFValue(16)} width={RFValue(16)}/>
+                    <CloseIcon height={fontValue(16)} width={fontValue(16)}/>
                 </TouchableOpacity>
 
             </View>

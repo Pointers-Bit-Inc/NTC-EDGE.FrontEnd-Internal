@@ -2,6 +2,8 @@ import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from "react
 import {DECLINED} from "../../../../reducers/activity/initialstate";
 import React from "react";
 import {Bold} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 export function DeclineButton(props: { currentLoading: string, allButton: boolean, onPress: () => void }) {
     return <View style={{flex: 1}}>
@@ -15,7 +17,7 @@ export function DeclineButton(props: { currentLoading: string, allButton: boolea
                     {
                         backgroundColor:"#fff",
                         height: undefined,
-                        paddingVertical: props.currentLoading === DECLINED ? 8.5 : 9,
+                        paddingVertical: props.currentLoading === DECLINED ? fontValue(8.5) : fontValue(9),
                         borderWidth: 2,
                         borderColor: (props.allButton) ? "#C4C4C4" : "rgba(194,0,0,1)",
                     }]

@@ -166,21 +166,30 @@ const ActivitiesScreen = (props:any) => {
       }, []);
 
     return <>
+
         <Drawer.Navigator
+           
             screenOptions={{
+
+                drawerStyle: {
+                    width: 108
+                },
+                drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
                 drawerItemStyle:{
                     backgroundColor: 'rgba(0,0,0,0)',
                     marginLeft: 20,
                     marginBottom: 20,
-                }
+                },
             }}
             backBehavior='none'
+
             drawerContent={(props) => <CustomSidebarMenu onLogout={onShow} {...props} />} initialRouteName="Home">
-            <Drawer.Screen   options={{ drawerLabel: `${user?.firstName} ${user?.lastName}`,   headerShown: false , drawerIcon: ({ color, size }) => <AccountIcon/>}}  name="profile" component={UserProfileScreen} />
-            <Drawer.Screen   options={{ drawerLabel: "Home",   headerShown: false , drawerIcon: ({ color, size }) => <AccountIcon/>}}  name="Home"  component={ActivitiesPage} />
-            <Drawer.Screen  options={{ drawerLabel: "Notifications",   headerShown: false , drawerIcon: ({ color, size }) => <BellIcon/> }}  name="notification" component={ActivitiesPage} />
-            <Drawer.Screen  options={{ drawerLabel: "Help Center", headerShown: false , drawerIcon: ({ color, size }) => <DonutIcon/> }}  name="help" component={ActivitiesPage} />
-            <Drawer.Screen  options={{drawerLabel: "About" ,headerShown: false , drawerIcon: ({ color, size }) => <WarningIcon/> }}  name="about" component={ActivitiesPage} />
+           <Drawer.Screen   options={{ drawerLabel: "Activity",   headerShown: false }}  name="activity"  component={ActivitiesPage} />
+           <Drawer.Screen   options={{ drawerLabel: "Chat",   headerShown: false }}  name="chat"  component={ActivitiesPage} />
+           <Drawer.Screen   options={{ drawerLabel: "Meet",   headerShown: false }}  name="meet"  component={ActivitiesPage} />
+
+            <Drawer.Screen  options={{ drawerItemStyle: {display: "none"}, headerShown: false }}  name="search" component={Search} />
+
         </Drawer.Navigator>
         <AwesomeAlert
             show={showAlert}

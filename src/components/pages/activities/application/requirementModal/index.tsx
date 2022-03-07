@@ -16,6 +16,7 @@ import FadeBackground from "@assets/svg/fade-background";
 import {RFValue} from "react-native-responsive-fontsize";
 import ImageView from "@pages/activities/application/ImageView";
 import AnimatedImage from 'react-native-animated-image-viewer';
+import {fontValue} from "@pages/activities/fontValue";
 const { width , height } = Dimensions.get('window');
 
 const RequirementModal = (props: any) => {
@@ -62,9 +63,9 @@ const RequirementModal = (props: any) => {
                 justifyContent : "center" ,
                 alignSelf : "center" ,
 
-            } }>
-                <Loader/>
-            </View> }
+                } }>
+                    <Loader/>
+                </View> }
 
             <View style={ { height : '100%' , width : '100%' } }>
 
@@ -97,7 +98,7 @@ const RequirementModal = (props: any) => {
 const styles = StyleSheet.create({
     fileName:{
         flexWrap: "wrap",
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         color: "#fff",
         paddingHorizontal: 30,
         position: "absolute",
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     close : {
         fontFamily : Regular500 ,
         color : "rgba(239,231,231,1)" ,
-        fontSize : RFValue(18) ,
+        fontSize : fontValue(18) ,
     } ,
 });
 export default RequirementModal

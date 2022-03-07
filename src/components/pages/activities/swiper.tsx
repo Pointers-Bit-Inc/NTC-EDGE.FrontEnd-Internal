@@ -6,6 +6,7 @@ import SeeIcon from "@assets/svg/see";
 import {Bold , Regular} from "@styles/font";
 import {disabledColor} from "@styles/color";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 export const renderSwiper = (index: number, progress: any, dragX: any, onPressUser: any, activity, unReadReadApplicationFn) => {
     let action = activity?.dateRead ? "Unread" : "Read"
@@ -29,7 +30,7 @@ export const renderSwiper = (index: number, progress: any, dragX: any, onPressUs
             }
             }>
 
-                {action == "Read" ? <UnseeIcon width={RFValue(18)} height={RFValue(18)}/> :  <SeeIcon width={18} height={18}/>}
+                {action == "Read" ? <UnseeIcon width={fontValue(18)} height={fontValue(18)}/> :  <SeeIcon width={18} height={18}/>}
                 <Text
                     style={{
                         color: 'white',
@@ -66,7 +67,7 @@ export const renderSwiper = (index: number, progress: any, dragX: any, onPressUs
                     padding: 5,
                     alignSelf: "center",
                 }}>
-                    <MoreIcon width={RFValue(18)} height={RFValue(18)} fill={"#000"}/>
+                    <MoreIcon width={fontValue(18)} height={fontValue(18)} fill={"#000"}/>
                 </View>
 
                 <Text

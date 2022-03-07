@@ -3,6 +3,8 @@ import {FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import ForwardIcon from "@assets/svg/forward";
 import React from "react";
 import {Bold} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 export function EndorsedButton(props: { currentLoading: string, allButton: boolean, onPress: () => void }) {
     return <View style={{flex: 0.8,}}>
@@ -18,7 +20,7 @@ export function EndorsedButton(props: { currentLoading: string, allButton: boole
                 borderColor: "#c4c4c4",
                 backgroundColor: "#fff",
                 height: undefined,
-                paddingVertical: props.currentLoading === FOREVALUATION ? 8.5 : 10
+                paddingVertical: props.currentLoading === FOREVALUATION ? fontValue(8.5) : fontValue(10)
             }]}>
                 <View
                     style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
@@ -33,7 +35,7 @@ export function EndorsedButton(props: { currentLoading: string, allButton: boole
 
                         )
                     }
-                    <ForwardIcon isDisable={props.allButton} style={{marginLeft: 6}}/>
+                    <ForwardIcon isdisable={props.allButton} style={{marginLeft: 6}}/>
                 </View>
 
             </View>

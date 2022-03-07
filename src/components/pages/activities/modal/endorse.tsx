@@ -18,7 +18,7 @@ import {BASE_URL} from "../../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
 import {ACCOUNTANT , DIRECTOR , EVALUATOR , FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
-import {errorColor , primaryColor} from "@styles/color";
+import {disabledColor , errorColor , primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import {useOrientation} from "@pages/activities/hooks/useOrientation";
@@ -26,6 +26,7 @@ import {getRole} from "@pages/activities/script";
 import {Bold , Regular , Regular500} from "@styles/font";
 import CloseIcon from "@assets/svg/close";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 const {height, width} = Dimensions.get('window');
 
@@ -59,13 +60,9 @@ const Endorsed = (props: any) => {
                 return {value: item._id, label: item.firstName + " " + item.lastName}
             })
 
-            if (isCurrent) {
+            if (isCurrent && !!res) {
                 setPickedEndorsed(res)
-            }
-            if (res) {
-                if (isCurrent) {
-                    setEndorsed(props?.assignedPersonnel || res[0]?.value)
-                }
+                setEndorsed(props?.assignedPersonnel || res[0]?.value)
             }
 
         })
@@ -78,13 +75,20 @@ const Endorsed = (props: any) => {
             isCurrent = false
         }
     }, [])
+    const [picked, setPicked] = useState(false)
+    useEffect(()=>{
+
+        setPicked(pickedEndorsed?.find(picked => {
+            return picked.value === endorsed
+        })?.label);
+    }, [endorsed, picked])
+
     const onEndorseConfirm = () => {
 
-        setMessage(`` + pickedEndorsed?.find(picked => {
-            return picked.value === endorsed
-        })?.label)
+
+        setMessage(`` + picked)
         props.remarks({endorseId: endorsed, remarks: text, message})
-        if(pickedEndorsed){
+        if(pickedEndorsed && !!picked ){
             setShowAlert(true)
         } else{
             Alert.alert('Alert',"Something went wrong." )
@@ -167,7 +171,7 @@ const Endorsed = (props: any) => {
                 message={message}/>
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={[styles.container, !showAlert ||  {display: "none"}]}
+                style={[styles.container, {display: !showAlert ? undefined : "none"}]}
             >
 
                 <View style={[styles.rect, {height: orientation == "LANDSCAPE" ? "100%" : "80%",}]}>
@@ -208,7 +212,7 @@ const Endorsed = (props: any) => {
                                         paddingTop: 10,
                                         height: (height < 720 && isKeyboardVisible) ? 75 : height * 0.15
                                     }}
-                                    inputStyle={{fontWeight: "400", fontSize: RFValue(14)}}
+                                    inputStyle={{fontWeight: "400", fontSize: fontValue(14)}}
                                     error={validateRemarks.error}
                                     errorColor={errorColor}
                                     placeholder={'Remarks'}
@@ -225,8 +229,8 @@ const Endorsed = (props: any) => {
                     </View>
 
                     <View style={{ width: '100%', paddingHorizontal: 15}}>
-                        <TouchableOpacity onPress={onEndorseConfirm}>
-                            <View style={styles.confirmButton}>
+                        <TouchableOpacity disabled={!picked} onPress={onEndorseConfirm}>
+                            <View style={[styles.confirmButton, {backgroundColor:  picked ? primaryColor : disabledColor,}]}>
                                 <Text style={styles.confirm}>Confirm</Text>
                             </View>
                         </TouchableOpacity>
@@ -248,7 +252,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     rect: {
-       justifyContent: "space-between",
+        justifyContent: "space-between",
         paddingBottom: 20,
 
 
@@ -259,7 +263,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         color: "rgba(128,128,128,1)",
-        fontSize: RFValue(25),
+        fontSize: fontValue(25),
     },
     group: {
         width: 138,
@@ -269,12 +273,12 @@ const styles = StyleSheet.create({
     },
     icon2: {
         color: "#000",
-        fontSize: RFValue(30)
+        fontSize: fontValue(30)
     },
     endorseTo: {
         fontFamily: Regular500,
         color: "#121212",
-        fontSize: RFValue(18),
+        fontSize: fontValue(18),
         paddingLeft: 10,
         paddingTop: 3
     },
@@ -312,7 +316,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     confirmButton: {
-        backgroundColor: primaryColor,
+
         borderRadius: 12,
         paddingVertical: 16,
         alignItems: 'center',

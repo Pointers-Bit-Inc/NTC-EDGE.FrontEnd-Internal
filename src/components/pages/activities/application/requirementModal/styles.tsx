@@ -1,6 +1,7 @@
 import {Dimensions , StyleSheet} from "react-native";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 
 
@@ -10,7 +11,7 @@ export const styles = StyleSheet.create({
         fontFamily: Regular,
         
         flexWrap : "wrap" ,
-        fontSize : RFValue(16) ,
+        fontSize : fontValue(16) ,
         color : "#fff" ,
         paddingHorizontal : 30 ,
         position : "absolute" ,
@@ -32,17 +33,18 @@ export const styles = StyleSheet.create({
         backgroundColor : "rgba(0,0,0,0.5)"
     } ,
     close : {
+
         fontFamily : Regular500 ,
         color : "rgba(239,231,231,1)" ,
-        fontSize : RFValue(18) ,
+        fontSize : fontValue(18) ,
     } ,
 });
 export const requirementStyles = StyleSheet.create({
     container : {
-        flex : 1
+        flex : 1 ,
     } ,
     card : {
-        padding : 10 ,
+
         width : "100%" ,
 
     } ,
@@ -69,15 +71,18 @@ export const requirementStyles = StyleSheet.create({
         justifyContent : "space-between" ,
     } ,
     title : {
+        fontSize: fontValue(14),
         fontFamily: Bold,
         color : "#37405B"
     } ,
 
     paymentDescription:{
+        fontSize: fontValue(14),
         fontFamily: Regular,
         color: "#37405B"
     },
     description : {
+        fontSize: fontValue(14),
         color : "#1F2022",
         justifyContent: "center"
     } ,
@@ -89,6 +94,7 @@ export const requirementStyles = StyleSheet.create({
         margin : 0
     } ,
     text : {
+        fontSize: fontValue(14),
         fontFamily: Regular,
         width : "80%" ,
         color : "#606A80"

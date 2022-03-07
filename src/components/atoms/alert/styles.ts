@@ -2,6 +2,7 @@ import { outline, text } from '@styles/color';
 import { Bold, Regular } from '@styles/font';
 import { StyleSheet } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import {fontValue} from "@pages/activities/fontValue";
 
 export default StyleSheet.create({
   alertContainerStyle: {
@@ -17,14 +18,14 @@ export default StyleSheet.create({
   titleStyle: {
     fontFamily: Bold,
     color: '#000',
-    fontSize: RFValue(18),
+    fontSize: fontValue(18),
   },
   messageStyle: {
     fontFamily: Regular,
     paddingHorizontal: 15,
     textAlign: 'center',
     color: '#000',
-    fontSize: RFValue(15),
+    fontSize: fontValue(15),
   },
   actionContainerStyle: {
     justifyContent: 'space-around',
@@ -41,11 +42,11 @@ export default StyleSheet.create({
   confirmButtonTextStyle: {
     fontFamily: Bold,
     color: text.primary,
-    fontSize: RFValue(15),
+    fontSize: fontValue(15),
   },
   cancelButtonTextStyle: {
     fontFamily: Bold,
     color: text.default,
-    fontSize: RFValue(15),
+    fontSize: fontValue(15),
   }
 });

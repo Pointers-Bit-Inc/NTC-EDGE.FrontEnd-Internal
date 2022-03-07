@@ -1,56 +1,84 @@
-import React , {useState} from "react";
+import React , {useEffect , useState} from "react";
 import {Dimensions , Image , Modal , ScrollView , StyleSheet , Text , TouchableOpacity , View} from "react-native";
 import RequirementModal from "@pages/activities/application/requirementModal/index";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles, styles} from "@pages/activities/application/requirementModal/styles";
-import {RFValue} from "react-native-responsive-fontsize";
+
 import AnimatedImage from 'react-native-animated-image-viewer';
 import FadeBackground from "@assets/svg/fade-background";
+import Loader from "@pages/activities/bottomLoad";
+import {fontValue} from "@pages/activities/fontValue";
 const { width  } = Dimensions.get("screen");
-
 class RequirementView extends React.Component<{ requirement: any }> {
-    source = { uri : this.props?.requirement?.links?.medium || "https://dummyimage.com/350x350/fff/aaa" };
-    imageModal = null;
-    image = null;
+
+
+
+
+
     state = {
-        visible : false
+        onLoad: false,
+        visible : false ,
+        source: { uri : this.props?.requirement?.links?.medium || "https://dummyimage.com/350x350/fff/aaa" }  ,
+        _imageSize:  {
+            width : 0 ,
+            height : 0
+        },
+        _sourceMeasure:{
+            width : 0 ,
+            height : 0 ,
+            pageX : 0 ,
+            pageY : 0
+        },
+        imageModal:null,
+        image:null
     };
-    _imageSize = {
-        width : 0 ,
-        height : 0
-    };
-    _sourceMeasure = {
-        width : 0 ,
-        height : 0 ,
-        pageX : 0 ,
-        pageY : 0
-    };
+
     _showImageModal = () => this.setState({ visible : true });
     _hideImageModal = () => this.setState({ visible : false });
-    _requestClose = () => this.imageModal.close();
+    _requestClose = () => {
+        this.state.imageModal?.close();
+        
+    }
     _showImage = () => {
-        this.image.measure((x , y , width , height , pageX , pageY) => {
-            this._sourceMeasure = {
-                width ,
+        this.state.image.measure((x , y , width , height , pageX , pageY) => {
+            this.setState({_sourceMeasure : {
+                width  ,
                 height ,
                 pageX ,
                 pageY
-            };
+            }});
             this._showImageModal();
         });
     };
+    componentDidUpdate(prevProps, prevState) {
+           if(prevProps?.requirement?.links?.medium != this.props?.requirement?.links?.medium) {
 
-    componentDidMount() {
-        Image.getSize(this.source.uri , (width , height) => {
-            this._imageSize = {
-                width : width ,
-                height : height
-            }
-        });
+               this.setImage();
+
+           }
     }
 
+    private setImage() {
+
+        this.setState({
+            ...this.state,
+            source : { ...this?.state?.source,  uri: this?.props?.requirement?.links?.medium || "https://dummyimage.com/350x350/fff/aaa" } })
+
+        Image.getSize(this.props?.requirement?.links?.medium|| "https://dummyimage.com/350x350/fff/aaa", (width , height) => {
+            this.setState({
+                _imageSize : {
+                    width : width || 300 ,
+                    height : height || 300
+                }
+            });
+        })
+    }
+
+    componentDidMount() {
+        this.setImage();
+    }
     render() {
-        return <>
+        return <><View style={{padding: 10}}>
             <View style={ requirementStyles.container }>
                 <View style={ requirementStyles.card }>
                     <View style={ requirementStyles.cardContainer }>
@@ -64,14 +92,14 @@ class RequirementView extends React.Component<{ requirement: any }> {
 
 
                                 <TouchableOpacity ref={ image => (
-                                    this.image = image) }
+                                    this.state.image = image) }
                                                   onPress={ this._showImage } style={ {
                                     alignItems : "center" ,
                                     flex : 1 ,
                                     flexDirection : "row"
                                 } }>
-                                    <View style={ { paddingRight : 10 } }>
-                                        <FileOutlineIcon/>
+                                    <View style={ { paddingRight : fontValue(10) } }>
+                                        <FileOutlineIcon height={fontValue(20)} width={fontValue(16)}/>
                                     </View>
                                     <Text style={ requirementStyles.text }>{ this.props?.requirement?.file?.name }</Text>
                                 </TouchableOpacity>
@@ -79,18 +107,19 @@ class RequirementView extends React.Component<{ requirement: any }> {
 
                         </View>
                         <View style={ {
-                            height : RFValue(300) ,
+                            height : 300 ,
                             backgroundColor : "rgba(220,226,229,1)" ,
                             borderWidth : 1 ,
                             borderColor : "rgba(213,214,214,1)" ,
                             borderStyle : "dashed" ,
                         } }>
-                            <TouchableOpacity ref={ image => (
-                                this.image = image) }
+                            <TouchableOpacity disabled={this.state.onLoad} ref={ image => (
+                                this.state.image = image) }
                                               onPress={ this._showImage }>
-                                <Image
 
-                                    style={ { width : undefined , height : RFValue(300) } }
+                                <Image
+                                    resizeMode={"cover"}
+                                    style={ { width : undefined , height : 300} }
                                     source={ {
                                         uri : this.props?.requirement?.links?.small ,
                                     } }
@@ -102,7 +131,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
                 </View>
             </View>
 
-            <Modal visible={ this.state.visible } transparent onRequestClose={ this._requestClose }>
+            <Modal visible={ this.state.visible } transparent  onRequestClose={ this._requestClose }>
                 <View style={ styles.container}>
                     <View style={ styles.rect2 }>
                         <View style={ {  alignSelf :  'flex-end' ,  paddingHorizontal : 15 , paddingVertical : 15 } }>
@@ -117,29 +146,31 @@ class RequirementView extends React.Component<{ requirement: any }> {
 
                         <Text style={ styles.fileName }>{ this.props?.requirement?.file?.name }</Text>
                         { this.props?.requirement?.file?.name &&
+
                         <FadeBackground style={ {  position : "absolute" , zIndex : 1 } }
                                         width={ width }></FadeBackground> }
 
                                 <AnimatedImage
 
                                     ref={ imageModal => (
-                                        this.imageModal = imageModal) }
-                                    source={ this.source }
-                                    sourceMeasure={ this._sourceMeasure }
-                                    imageSize={ this._imageSize }
+                                        this.state.imageModal = imageModal) }
+                                    source={ this?.state?.source }
+                                    sourceMeasure={ this.state._sourceMeasure }
+                                    imageSize={ this.state._imageSize }
                                     onClose={ this._hideImageModal }
                                     animationDuration={ 200 }
                                 />
                     </View>
                 </View>
             </Modal>
-        </>;
+        </View></>;
     }
 }
 
 
 const Requirement = (props: any) => {
-    return <ScrollView style={ { backgroundColor : "#fff" , width : "100%" } }>
+    
+    return <ScrollView style={ { backgroundColor : "#f8f8f8" , width : "100%" } }>
         { props?.requirements?.map((requirement: any , index: number) => {
             return <RequirementView key={ index } requirement={ requirement }/>
         })

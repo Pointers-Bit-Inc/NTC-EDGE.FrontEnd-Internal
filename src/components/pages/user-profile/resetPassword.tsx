@@ -27,6 +27,7 @@ import Loading from '@components/atoms/loading';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold } from '@styles/font';
 import Alert from '@components/atoms/alert';
+import {fontValue} from "@pages/activities/fontValue";
 
 const {height} = Dimensions.get('window');
 const styles = StyleSheet.create({
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: '100%',
         padding: 0,
-        height: RFValue(50),
+        height: fontValue(50),
         justifyContent: 'center',
     },
     keyboardAvoiding: {
