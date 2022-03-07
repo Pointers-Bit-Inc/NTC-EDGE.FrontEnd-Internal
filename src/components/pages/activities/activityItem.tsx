@@ -200,9 +200,7 @@ export function ActivityItem(props: any) {
         }
     } , [props.isOpen == props.index]);
 
-    return (   <Hoverable onHoverIn={createLogger('start hover')} onHoverOut={createLogger('end hover')}>
-        {isHovered => (
-
+    return (
         <View style={ { backgroundColor : isHovered ?  "#D4D3FF" : "#fff"} }>
 
 
@@ -321,8 +319,7 @@ export function ActivityItem(props: any) {
 
             </Swipeable>
 
-        </View>  )}
-            </Hoverable>
+        </View>
 
     );
 }
