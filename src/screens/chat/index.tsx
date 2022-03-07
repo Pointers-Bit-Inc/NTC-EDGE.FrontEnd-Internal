@@ -194,10 +194,9 @@ const ChatList = ({ navigation }:any) => {
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);
     setHasError(false);
-    const url = searchValue ?
-      `/room/search?pageIndex=${pageIndex}&search=${searchValue}` :
-      `/room/list?pageIndex=${pageIndex}`;
-    getChatList(url, (err:any, res:any) => {
+    const payload = searchValue ? { pageIndex, keyword: searchValue } : { pageIndex };
+
+    getChatList(payload, (err:any, res:any) => {
       if (res) {
         if (res.list) dispatch(addToChannelList(res.list));
         setPageIndex(current => current + 1);
@@ -230,10 +229,9 @@ const ChatList = ({ navigation }:any) => {
     setHasMore(false);
     setHasError(false);
     let unMount = false;
-    const url = searchValue ?
-      `/room/search?pageIndex=1&search=${searchValue}` :
-      `/room/list?pageIndex=1`;
-    getChatList(url, (err:any, res:any) => {
+    const payload = searchValue ? { pageIndex: 1, keyword: searchValue } : { pageIndex: 1 };
+
+    getChatList(payload, (err:any, res:any) => {
       if (!unMount) {
         if (res) {
           dispatch(setChannelList(res.list));

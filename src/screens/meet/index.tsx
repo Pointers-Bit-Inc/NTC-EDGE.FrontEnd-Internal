@@ -193,8 +193,9 @@ const Meet = ({ navigation }) => {
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);
     setHasError(false);
-    const url = `/room/list?pageIndex=${pageIndex}`;
-    getMeetingList(url, (err:any, res:any) => {
+    const payload = { pageIndex };
+
+    getMeetingList(payload, (err:any, res:any) => {
       if (res) {
         if (res.list) dispatch(addToMeetings(res.list));
         setPageIndex(current => current + 1);
@@ -214,8 +215,9 @@ const Meet = ({ navigation }) => {
     setHasMore(false);
     setHasError(false);
     let unMount = false;
-    const url = `/meeting/list?pageIndex=1`;
-    getMeetingList(url, (err:any, res:any) => {
+    const payload = { pageIndex: 1 };
+
+    getMeetingList(payload, (err:any, res:any) => {
       if (!unMount) {
         if (res) {
           dispatch(setMeetings(res.list));

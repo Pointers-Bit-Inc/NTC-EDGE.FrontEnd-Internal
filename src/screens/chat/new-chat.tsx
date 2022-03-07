@@ -112,11 +112,9 @@ const NewChat = ({ navigation }:any) => {
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);
     setHasError(false);
-    const url = searchValue ?
-      `/room/search-participants?pageIndex=${pageIndex}&search=${searchValue}` :
-      `/room/list-participants?pageIndex=${pageIndex}`;
+    const payload = searchValue ? { pageIndex, keyword: searchValue } : { pageIndex };
 
-    getParticipantList(url, (err:any, res:any) => {
+    getParticipantList(payload, (err:any, res:any) => {
       if (res) {
         setContacts([...contacts, ...res.list]);
         setPageIndex(current => current + 1);
@@ -136,11 +134,9 @@ const NewChat = ({ navigation }:any) => {
     setHasMore(false);
     setHasError(false);
     const source = axios.CancelToken.source();
-    const url = searchValue ?
-      `/room/search-participants?pageIndex=1&search=${searchValue}` :
-      `/room/list-participants?pageIndex=1`;
+    const payload = searchValue ? { pageIndex: 1, keyword: searchValue } : { pageIndex: 1 };
 
-    getParticipantList(url, (err:any, res:any) => {
+    getParticipantList(payload, (err:any, res:any) => {
       if (res) {
         setContacts(res.list);
         setPageIndex(current => current + 1);

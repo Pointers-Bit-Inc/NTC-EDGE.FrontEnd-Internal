@@ -193,11 +193,9 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);
     setHasError(false);
-    const url = searchValue ?
-      `/room/search-participants?pageIndex=${pageIndex}&search=${searchValue}` :
-      `/room/list-participants?pageIndex=${pageIndex}`;
+    const payload = searchValue ? { pageIndex, keyword: searchValue } : { pageIndex };
 
-    getParticipantList(url, (err:any, res:any) => {
+    getParticipantList(payload, (err:any, res:any) => {
       if (res) {
         setContacts([...contacts, ...res.list]);
         setPageIndex(current => current + 1);
@@ -217,12 +215,11 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     setPageIndex(1);
     setHasMore(false);
     setHasError(false);
-    const url = searchValue ?
-      `/room/search-participants?pageIndex=1&search=${searchValue}` :
-      `/room/list-participants?pageIndex=1`;
+    const payload = searchValue ? { pageIndex: 1, keyword: searchValue } : { pageIndex: 1 };
+
     if (searchValue) {
       InteractionManager.runAfterInteractions(() => {
-        getParticipantList(url, (err:any, res:any) => {
+        getParticipantList(payload, (err:any, res:any) => {
           if (!unmount) {
             if (res) {
               let resultList = res.list;
