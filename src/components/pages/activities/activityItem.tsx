@@ -201,7 +201,7 @@ export function ActivityItem(props: any) {
     } , [props.isOpen == props.index]);
 
     return (
-        <View style={ { backgroundColor : isHovered ?  "#D4D3FF" : "#fff"} }>
+        <View style={ { backgroundColor :"#fff"} }>
 
 
             <Swipeable
