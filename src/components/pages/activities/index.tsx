@@ -721,6 +721,7 @@ export default function ActivitiesPage(props: any) {
                                             isPinned={true}*/
                                             searchQuery={ searchTerm }
                                             key={ i }
+                                            selected={applicationItem?._id == activity?._id}
                                             parentIndex={ index }
                                             role={ user?.role?.key }
                                             activity={ activity }

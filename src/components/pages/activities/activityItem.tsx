@@ -31,6 +31,7 @@ import EndorseIcon from "@assets/svg/endorse";
 import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 import {Bold , Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
+import {RootStateOrAny , useDispatch , useSelector} from "react-redux";
 
 
 const styles = StyleSheet.create({
@@ -187,9 +188,7 @@ export function ActivityItem(props: any) {
     const userActivity = props?.activity?.applicant?.user;
     const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!props?.activity?.paymentHistory?.[0]?.status ? StatusText(props?.activity?.paymentHistory?.[0]?.status) : getRole(props.currentUser , [ACCOUNTANT]) && props?.activity?.approvalHistory[0].status == FOREVALUATION && props?.activity?.approvalHistory[1].status == FORAPPROVAL ? DECLINED : status;
 
-    function createLogger(startHover: string) {
-        console.log(startHover)
-    }
+
 
     useEffect(() => {
         let unsubscribe = true;
@@ -200,10 +199,10 @@ export function ActivityItem(props: any) {
         }
     } , [props.isOpen == props.index]);
 
-    return (   <Hoverable onHoverIn={createLogger('start hover')} onHoverOut={createLogger('end hover')}>
+    return (   <Hoverable >
         {isHovered => (
 
-        <View style={ { backgroundColor : isHovered ?  "#EEF3F6" : "#fff"} }>
+        <View style={ { backgroundColor : props.selected ? "#D4D3FF" : isHovered ?  "#EEF3F6" : "#fff"} }>
 
 
             <Swipeable
