@@ -57,9 +57,11 @@ const BasicInfo = (props: any) => {
                     name={ `${ applicant?.user?.firstName } ${ applicant?.user?.lastName }` }
                 />
 
-                <View style={{justifyContent: "center", alignItems: "center",  backgroundColor: "#EFF0F6"}}>
-                    <Text>PHOTO</Text>
-                </View>
+                {!isMobile && <View style={{paddingVertical: 20}}>
+                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center",  backgroundColor: "#EFF0F6"}}>
+                        <Text style={{fontFamily: Regular, fontSize: 12, lineHeight: 24, color: "#565961"  }}>PHOTO</Text>
+                    </View>
+                </View>}
 
             </View>
 

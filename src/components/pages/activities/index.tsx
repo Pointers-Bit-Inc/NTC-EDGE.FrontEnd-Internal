@@ -72,12 +72,11 @@ import FilterWeb from "@assets/svg/filterWeb";
 import RefreshWeb from "@assets/svg/refreshWeb";
 import {primaryColor} from "@styles/color";
 import {isMobile} from "@pages/activities/isMobile";
+import ActivityModalView from "@pages/activities/ActivityModalView";
 
 const { width } = Dimensions.get('window');
 
-function ActivityModalView(props) {
-    return isMobile ? <>{ props.children }</> : <View style={ { flex : 0.6 } }> { props.children }</View>;
-}
+
 
 const Filter = isMobile ? FilterIcon : FilterWeb;
 export default function ActivitiesPage(props: any) {
@@ -643,6 +642,7 @@ export default function ActivitiesPage(props: any) {
                                                             isOpen={ isOpen }
                                                             config={ config }
                                                             key={ i }
+                                                            selected={applicationItem?._id == act?._id}
                                                             currentUser={ user }
                                                             role={ user?.role?.key }
                                                             searchQuery={ searchTerm }

@@ -32,12 +32,28 @@ import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
 import {Bold , Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {RootStateOrAny , useDispatch , useSelector} from "react-redux";
+import {RFValue} from "react-native-responsive-fontsize";
 
 
 const styles = StyleSheet.create({
+    containerBlur: {
+        borderColor: "#AAB6DF",
+        borderRadius : 10 ,
+        backgroundColor :  "#fff" ,
+        shadowColor : "rgba(0,0,0,1)" ,
+        shadowOffset : {
+            height : 0 ,
+            width : 0
+        } ,
+        elevation : fontValue(2) ,
+        shadowOpacity : 0.2 ,
+        shadowRadius : fontValue(2) ,
+        flex : 1
+    },
     container : {
         paddingVertical : 5 ,
         paddingRight : 20 ,
+        
     } ,
     horizontal : {
 
@@ -227,20 +243,7 @@ export function ActivityItem(props: any) {
                                 borderRadius : 4
                             } }/>
                         </View>
-                        <View style={ {
-                            borderRadius : 10 ,
-                            backgroundColor :  "#fff" ,
-                            shadowColor : "rgba(0,0,0,1)" ,
-                            shadowOffset : {
-                                height : 0 ,
-                                width : 0
-                            } ,
-                            elevation : fontValue(2) ,
-                            shadowOpacity : 0.2 ,
-                            shadowRadius : fontValue(2) ,
-                            flex : 1 ,
-
-                        } }>
+                        <View style={ [styles.containerBlur, {borderWidth: props.selected ? 4 : 0,}] }>
                             <TouchableOpacity  onPress={ () => {
                                 props.onPressUser()
                             } }>
