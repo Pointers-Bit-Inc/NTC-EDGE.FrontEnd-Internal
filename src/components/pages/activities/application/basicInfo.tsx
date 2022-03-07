@@ -29,6 +29,7 @@ const Row = (props: { label: string, applicant: any }) => <View style={ styles.g
 </View>;
 
 
+
 const BasicInfo = (props: any) => {
     const {
         personnel ,
@@ -45,6 +46,7 @@ const BasicInfo = (props: any) => {
     });
     const applicant = props.applicant;
     return <ScrollView style={ { width : "100%" , backgroundColor : "#f8f8f8" , } }>
+
         <View style={{flexDirection:  isMobile ? "column" : "row"}}>
             <View style={  isMobile ?  { padding : 10 , flex : 1 , alignSelf : "center" }  : {paddingLeft: 20, paddingVertical: 20} }>
                 <ProfileImage
@@ -54,6 +56,10 @@ const BasicInfo = (props: any) => {
                     image={ applicant?.user?.profilePicture?.small }
                     name={ `${ applicant?.user?.firstName } ${ applicant?.user?.lastName }` }
                 />
+
+                <View style={{justifyContent: "center", alignItems: "center",  backgroundColor: "#EFF0F6"}}>
+                    <Text>PHOTO</Text>
+                </View>
 
             </View>
 

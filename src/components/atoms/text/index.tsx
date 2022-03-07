@@ -1,6 +1,7 @@
 import React, { ReactNode, FC } from 'react';
 import { StyleSheet, Text as RNText } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import {isMobile} from "@pages/activities/isMobile";
 
 const styles = StyleSheet.create({
   default: {
@@ -33,7 +34,7 @@ const Text: FC<Props> = ({
     <RNText
       style={[
         styles.default,
-        { color, fontSize: RFValue(size), fontWeight: weight, textAlign: align, fontFamily: 'Poppins_400Regular' },
+        { color, fontSize: isMobile ? RFValue(size) : size, fontWeight: weight, textAlign: align, fontFamily: 'Poppins_400Regular' },
         style
       ]}
       {...otherProps}

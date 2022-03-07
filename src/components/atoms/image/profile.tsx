@@ -5,6 +5,7 @@ import { getInitial, getColorFromName } from 'src/utils/formatting';
 import { primaryColor } from '@styles/color';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold } from '@styles/font';
+import {isMobile} from "@pages/activities/isMobile";
 
 const styles = StyleSheet.create({
   image: {
@@ -14,7 +15,7 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: RFValue(1.5),
+    borderWidth: isMobile ? RFValue(1.5) : 1,
     borderColor: 'white',
   },
 });
@@ -41,8 +42,8 @@ const ProfileImage = ({
           styles.image,
           {
             backgroundColor: getBackgroundColor(),
-            height: RFValue(size),
-            width: RFValue(size),
+            height: isMobile ? RFValue(size) : size,
+            width: isMobile ? RFValue(size) : size,
             borderRadius: size,
           },
           style
@@ -58,8 +59,8 @@ const ProfileImage = ({
         styles.image,
         {
           backgroundColor: getBackgroundColor(),
-          height: RFValue(size),
-          width: RFValue(size),
+          height: isMobile ? RFValue(size) : size,
+          width: isMobile ? RFValue(size) : size,
           borderRadius: size,
         },
         style
