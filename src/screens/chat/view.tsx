@@ -46,6 +46,7 @@ import {
 import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
 import CreateMeeting from '@components/pages/chat/meeting';
+import IMeetings from 'src/interfaces/IMeetings';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -190,7 +191,7 @@ const ChatView = ({ navigation, route }:any) => {
 
   const onBack = () => navigation.goBack();
 
-  const onJoin = (item) => {
+  const onJoin = (item:IMeetings) => {
     dispatch(setSelectedChannel(item.room));
     dispatch(setMeeting(item));
     navigation.navigate('Dial', {
@@ -203,7 +204,7 @@ const ChatView = ({ navigation, route }:any) => {
     });
   }
 
-  const onClose = (item, leave = false) => {
+  const onClose = (item:IMeetings, leave = false) => {
     if (leave) {
       dispatch(removeActiveMeeting(item._id));
       return leaveMeeting(item._id);

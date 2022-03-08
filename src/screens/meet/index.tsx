@@ -31,6 +31,7 @@ import HomeMenuIcon from "@assets/svg/homemenu";
 import { RFValue } from 'react-native-responsive-fontsize';
 import {Bold} from "@styles/font";
 import CreateMeeting from '@components/pages/chat/meeting';
+import IMeetings from 'src/interfaces/IMeetings';
 
 const { width, height } = Dimensions.get('window');
 
@@ -174,7 +175,7 @@ const Meet = ({ navigation }) => {
   const [isNext, setIsNext] = useState(false);
   const [participants, setParticipants] = useState([]);
 
-  const onJoin = (item) => {
+  const onJoin = (item:IMeetings) => {
     dispatch(setSelectedChannel(item.room));
     dispatch(setMeeting(item));
     navigation.navigate('Dial', {

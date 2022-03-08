@@ -72,6 +72,7 @@ import FilterWeb from "@assets/svg/filterWeb";
 import RefreshWeb from "@assets/svg/refreshWeb";
 import {primaryColor} from "@styles/color";
 import {isMobile} from "@pages/activities/isMobile";
+import IMeetings from "src/interfaces/IMeetings";
 
 const { width } = Dimensions.get('window');
 
@@ -389,7 +390,7 @@ export default function ActivitiesPage(props: any) {
 
     } , [size , total , page]);
 
-    const onJoin = (item) => {
+    const onJoin = (item:IMeetings) => {
         dispatch(setSelectedChannel(item.room));
         dispatch(setMeeting(item));
         props.navigation.navigate('Dial', {
@@ -402,7 +403,7 @@ export default function ActivitiesPage(props: any) {
         });
     };
 
-    const onClose = (item:any, leave = false) => {
+    const onClose = (item:IMeetings, leave = false) => {
         if (leave) {
           dispatch(removeActiveMeeting(item._id));
           return leaveMeeting(item._id);

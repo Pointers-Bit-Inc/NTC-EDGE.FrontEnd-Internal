@@ -46,6 +46,7 @@ import {
   removeActiveMeeting ,
   setMeeting ,
 } from 'src/reducers/meeting/actions';
+import IMeetings from 'src/interfaces/IMeetings';
 
 const { width, height } = Dimensions.get('window');
 
@@ -250,7 +251,7 @@ const ChatList = ({ navigation }:any) => {
     }
   }, [sendRequest, searchValue])
 
-  const onJoin = (item) => {
+  const onJoin = (item:IMeetings) => {
       dispatch(setSelectedChannel(item.room));
       dispatch(setMeeting(item));
       navigation.navigate('Dial', {
@@ -263,7 +264,7 @@ const ChatList = ({ navigation }:any) => {
       });
   }
 
-const onClose = (item, leave = false) => {
+const onClose = (item:IMeetings, leave = false) => {
     if (leave) {
       dispatch(removeActiveMeeting(item._id));
       return leaveMeeting(item._id);
@@ -372,7 +373,7 @@ const onClose = (item, leave = false) => {
                     time={item.createdAt}
                     host={item.host}
                     onJoin={() => onJoin(item)}
-                    onClose={(leave) => onClose(item, leave)}
+                    onClose={(leave:boolean) => onClose(item, leave)}
                     closeText={'Cancel'}
                   />
                 )}

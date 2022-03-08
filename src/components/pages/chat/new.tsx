@@ -513,7 +513,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
               <View style={{ position: 'absolute', right: 0, zIndex: 999 }}>
                 <TouchableOpacity
                   disabled={!lodash.size(participants) || nextLoading}
-                  onPress={onNext}
+                  onPress={() => onNext("")}
                 >
                   {
                     nextLoading ? (
