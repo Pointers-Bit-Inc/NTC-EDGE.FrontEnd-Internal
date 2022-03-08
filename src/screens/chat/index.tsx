@@ -285,7 +285,7 @@ const onClose = (item, leave = false) => {
         color={text.default}
         size={14}
       >
-        No matches found
+        No chat found
       </Text>
     </View>
   )

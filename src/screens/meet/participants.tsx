@@ -24,6 +24,7 @@ import useSignalr from 'src/hooks/useSignalr';
 import axios from 'axios';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold, Regular, Regular500 } from '@styles/font';
+import IParticipants from 'src/interfaces/IParticipants';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -165,12 +166,12 @@ const Participants = ({ navigation }:any) => {
   const onNext = () => navigation.replace('CreateMeeting', { participants });
 
   const onSelectParticipants = (selectedId:string) => {
-    const selected = lodash.find(contacts, c => c._id === selectedId);
+    const selected = lodash.find(contacts, (c:IParticipants) => c._id === selectedId);
     setParticipants(p => ([...p, selected]));
   }
 
   const onRemoveParticipants = (selectedId:string) => {
-    const result = lodash.reject(participants, c => c._id === selectedId);
+    const result = lodash.reject(participants, (c:IParticipants) => c._id === selectedId);
     setParticipants(result);
   }
 
@@ -184,7 +185,7 @@ const Participants = ({ navigation }:any) => {
   }
 
   const checkIfSelected = (contactId:string) => {
-    const selected = lodash.find(participants, c => c._id === contactId);
+    const selected = lodash.find(participants, (c:IParticipants) => c._id === contactId);
     return !!selected;
   }
 

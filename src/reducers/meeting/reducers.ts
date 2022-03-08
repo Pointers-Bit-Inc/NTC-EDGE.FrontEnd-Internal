@@ -1,4 +1,6 @@
 import lodash from 'lodash';
+import IMeetings from 'src/interfaces/IMeetings';
+import IParticipants from 'src/interfaces/IParticipants';
 const {
   SET_MEETINGS,
   ADD_TO_MEETINGS,
@@ -24,7 +26,7 @@ const InitialState = require('./initialstate').default;
 
 const initialState = new InitialState();
 
-export default function basket(state = initialState, action = {}) {
+export default function Meeting(state = initialState, action:any = {}) {
   switch (action.type) {
     case CONNECTION_STATUS: {
       return state.setIn(['connectionStatus'], action.payload);
@@ -53,7 +55,7 @@ export default function basket(state = initialState, action = {}) {
         if (!meeting) {
           return state;
         }
-        const leavingParticipant = lodash.find(meeting.participants, p => !lodash.find(action.payload.participants, pt => pt._id === p._id));
+        const leavingParticipant = lodash.find(meeting.participants, (p:IParticipants) => !lodash.find(action.payload.participants, (pt:IParticipants) => pt._id === p._id));
         const participants = action.payload.participants;
         const participantsId = action.payload.participantsId;
 
@@ -90,7 +92,7 @@ export default function basket(state = initialState, action = {}) {
       }
     }
     case REMOVE_MEETING: {
-      const updatedList = lodash.reject(state.list, l => l._id === action.payload);
+      const updatedList = lodash.reject(state.list, (l:IMeetings) => l._id === action.payload);
       return state.setIn(['list'], updatedList);
     }
     case SET_MEETING: {
@@ -108,12 +110,24 @@ export default function basket(state = initialState, action = {}) {
       return state.setIn(['meetingParticipants'], list);
     }
     case UPDATE_MEETING_PARTICIPANTS: {
-      const updatedList = lodash.reject(state.meetingParticipants, l => l._id === action.payload._id);
-      updatedList.push(action.payload);
-      return state.setIn(['meetingParticipants'], updatedList);
+      const meeting = state.normalizedMeetingList[action.payload._id];
+
+      if (!meeting) {
+        return state;
+      }
+      
+      const participants = action.payload.participants;
+
+      let newState = state.setIn(['normalizedMeetingList', action.payload._id, 'participants'], participants)
+
+      if (!action.payload.ended) {
+        newState = state.setIn(['normalizeActiveMeetings', action.payload._id, 'participants'], participants)
+      }
+
+      return newState;
     }
     case REMOVE_MEETING_PARTICIPANTS: {
-      const updatedList = lodash.reject(state.meetingParticipants, l => l._id === action.payload);
+      const updatedList = lodash.reject(state.meetingParticipants, (l:IParticipants) => l._id === action.payload);
       return state.setIn(['meetingParticipants'], updatedList);
     }
     case SET_ACTIVE_MEETING: {
@@ -123,7 +137,7 @@ export default function basket(state = initialState, action = {}) {
       return state.setIn(['normalizeActiveMeetings', action.payload._id], action.payload);
     }
     case UPDATE_ACTIVE_MEETING: {
-      const updatedList = lodash.reject(state.activeMeetings, l => l._id === action.payload._id);
+      const updatedList = lodash.reject(state.activeMeetings, (l:IMeetings) => l._id === action.payload._id);
       updatedList.push(action.payload);
       return state.setIn(['activeMeetings'], updatedList);
     }

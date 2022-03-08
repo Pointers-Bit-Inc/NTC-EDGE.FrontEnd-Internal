@@ -30,6 +30,7 @@ import lodash from 'lodash';
 import {getRole } from "@pages/activities/script";
 import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import { Audio } from 'expo-av';
 import CustomSidebarMenu from "@pages/activities/customNavigationDrawer";
 import Search from "@pages/activities/search";
 import ActivitiesPage from "@pages/activities/index";
@@ -41,6 +42,9 @@ import { resetChannel, addMessages, updateMessages, addChannel, removeChannel } 
 import RNExitApp from 'react-native-exit-app';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { outline, text } from '@styles/color';
+import IMeetings from 'src/interfaces/IMeetings';
+import IParticipants from 'src/interfaces/IParticipants';
+import IRooms from 'src/interfaces/IRooms';
 
 const { width } = Dimensions.get('window');
 
@@ -96,18 +100,33 @@ export default function TabBar() {
         const { channelList = [] } = channel;
         const { activeMeetings = [] } = meeting;
 
-        const hasNewChat = lodash.reject(channelList, ch => ch.hasSeen);
-        const hasMeet = lodash.reject(activeMeetings, mt => mt.ended);
+        const hasNewChat = lodash.reject(channelList, (ch:IRooms) => ch.hasSeen);
+        const hasMeet = lodash.reject(activeMeetings, (mt:IMeetings) => mt.ended);
         return {
             hasNewChat: lodash.size(hasNewChat) > 0,
             hasMeet: lodash.size(hasMeet) > 0,
         }
     })
+    const newMeeting = useSelector((state: RootStateOrAny) => {
+      const { normalizeActiveMeetings } = state.meeting
+      const meetingList = lodash.keys(normalizeActiveMeetings).map((m:string) => normalizeActiveMeetings[m])
+      const hasMeet = lodash.reject(meetingList, (mt:IMeetings) => mt.ended);
+      const newMeeting = lodash.find(hasMeet, (am:IMeetings) => lodash.find(am.participants, (ap:IParticipants) => ap._id === user._id && ap.hasJoined === false));
+      return newMeeting;
+    })
     const [pnApplication, setPnApplication] = useState(pinnedApplications)
     const [notPnApplication, setNotPnApplication] = useState(notPinnedApplications)
-   const dispatch = useDispatch()
-
-   const onPressAlert = () => {
+    const dispatch = useDispatch()
+    const soundRef:any = React.useRef();
+    const playSound = async () => {
+      const { sound } = await Audio.Sound.createAsync(
+         require('../../../../assets/sound/incoming.wav')
+      );
+      sound.setIsLoopingAsync(true);
+      soundRef.current = sound;
+      await sound.playAsync();
+    }
+    const onPressAlert = () => {
     if (alertData.link) {
       return Linking.openURL(alertData.link);
     } else {
@@ -120,7 +139,7 @@ export default function TabBar() {
     let unmount = false
 
     if (!versionChecked && connectionStatus === 'connected') {
-      checkVersion((err, res) => {
+      checkVersion((err:any, res:any) => {
         if (!unmount) {
           setVersionChecked(true);
           if (res) {
@@ -136,9 +155,8 @@ export default function TabBar() {
   }, [connectionStatus])
 
   useEffect(() => {
-      console.log('INIT')
       initSignalR();
-      onConnection('OnChatUpdate', (users, type, data) => {
+      onConnection('OnChatUpdate', (users:Array<string>, type:string, data:any) => {
         if (data) {
           switch(type) {
             case 'create': {
@@ -153,7 +171,7 @@ export default function TabBar() {
         }
       });
 
-      onConnection('OnRoomUpdate', (users, type, data) => {
+      onConnection('OnRoomUpdate', (users:Array<string>, type:string, data:any) => {
         if (data) {
           switch(type) {
             case 'create': {
@@ -166,7 +184,7 @@ export default function TabBar() {
         }
       });
 
-      onConnection('OnMeetingUpdate', (users, type, data) => {
+      onConnection('OnMeetingUpdate', (users:Array<string>, type:string, data:any) => {
         if (data) {
           switch(type) {
             case 'create': {
@@ -191,6 +209,16 @@ export default function TabBar() {
   
       return () => destroySignalR();
     }, []);
+
+    useEffect(() => {
+      if (lodash.size(newMeeting)) {
+        playSound();
+      }
+      console.log('NEW MEETING', newMeeting);
+      return () => {
+        soundRef?.current?.unloadAsync();
+      }
+    }, [newMeeting]);
 
     useEffect(()=>{
 

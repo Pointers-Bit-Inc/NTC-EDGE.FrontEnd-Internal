@@ -1,4 +1,6 @@
 import lodash from 'lodash';
+import IMeetings from 'src/interfaces/IMeetings';
+import IMessages from 'src/interfaces/IMessages';
 const {
   SET_SELECTED_CHANNEL,
   SET_CHANNEL_LIST,
@@ -118,7 +120,7 @@ export default function basket(state = initialState, action:any) {
       // }
     }
     case REMOVE_MESSAGES: {
-      const updatedList = lodash.reject(state.messages, m => m._id === action.payload);
+      const updatedList = lodash.reject(state.messages, (m:IMessages) => m._id === action.payload);
       return state.setIn(['messages'], updatedList);
     }
     case SET_SELECTED_MESSAGES: {
@@ -136,12 +138,12 @@ export default function basket(state = initialState, action:any) {
       return state.setIn(['meetingList'], list);
     }
     case UPDATE_MEETING_CHANNEL: {
-      const updatedList = lodash.reject(state.meetingList, l => l._id === action.payload._id);
+      const updatedList = lodash.reject(state.meetingList, (l:IMeetings) => l._id === action.payload._id);
       updatedList.push(action.payload);
       return state.setIn(['meetingList'], updatedList);
     }
     case REMOVE_MEETING_CHANNEL: {
-      const updatedList = lodash.reject(state.meetingList, l => l._id === action.payload);
+      const updatedList = lodash.reject(state.meetingList, (l:IMeetings) => l._id === action.payload);
       return state.setIn(['meetingList'], updatedList);
     }
     case SET_SEARCH_VALUE: {
