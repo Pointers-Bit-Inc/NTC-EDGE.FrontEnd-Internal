@@ -28,6 +28,7 @@ import { InputTags } from '@components/molecules/form-fields';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useDispatch } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
+import AwesomeAlert from 'react-native-awesome-alerts';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -130,6 +131,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 5,
   },
+  cancelText: {
+    fontSize: RFValue(16),
+    color: text.info,
+    fontFamily: Regular500,
+  },
+  confirmText: {
+    fontSize: RFValue(16),
+    color: text.error,
+    fontFamily: Regular500,
+  },
+  title: {
+    color: '#14142B',
+    textAlign: 'center',
+    fontSize: RFValue(16),
+    fontFamily: Regular500,
+  },
+  message: {
+    color: '#4E4B66',
+    textAlign: 'center',
+    fontSize:RFValue(14),
+    marginHorizontal: 15,
+    marginBottom: 15,
+    fontFamily: Regular,
+  },
+  content: {
+    borderBottomColor: outline.default,
+    borderBottomWidth: 1,
+  }
 });
 
 const tagStyles = StyleSheet.create({
@@ -186,7 +215,8 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   const [groupName, setGroupName] = useState('');
   const [isGroup, setIsGroup] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-
+  const [showAlert, setShowAlert] = useState(false);
+  
   const onRequestData = () => setSendRequest(request => request + 1);
 
   const fetchMoreParticipants = (isPressed = false) => {
@@ -291,8 +321,17 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
       setParticipants([]);
       inputRef.current?.focus();
     } else {
-      onClose();
+      if (lodash.size(participants) > 1) {
+        setShowAlert(true);
+      } else {
+        onClose();
+      }
     }
+  }
+
+  const onConfirmPressed = () => {
+    setShowAlert(false);
+    onClose();
   }
 
   const onSelectParticipants = (selectedId:string) => {
@@ -631,6 +670,29 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
         }
       </View>
       {renderList()}
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        contentContainerStyle={{ borderRadius: 15 }}
+        title={'Discard group?'}
+        titleStyle={styles.title}
+        message={"Are you sure you would like to discard this group? your changes won't be saved"}
+        messageStyle={styles.message}
+        contentStyle={styles.content}
+        closeOnTouchOutside={false}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        cancelButtonColor={'white'}
+        confirmButtonColor={'white'}
+        cancelButtonTextStyle={styles.cancelText}
+        confirmButtonTextStyle={styles.confirmText}
+        actionContainerStyle={{ justifyContent: 'space-around' }}
+        cancelText="Cancel"
+        confirmText="Discard"
+        onCancelPressed={() => setShowAlert(false)}
+        onConfirmPressed={onConfirmPressed}
+      />
     </View>
   )
 }

@@ -24,6 +24,7 @@ import ChatList from '@components/organisms/chat/list';
 import { primaryColor, outline, text, button } from '@styles/color';
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { Regular, Regular500 } from '@styles/font';
 
 const styles = StyleSheet.create({
   button: {
@@ -50,23 +51,28 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   cancelText: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     color: text.info,
+    fontFamily: Regular500,
   },
   confirmText: {
-    fontSize: 16,
+    fontSize: RFValue(16),
     color: text.error,
+    fontFamily: Regular500,
   },
   title: {
+    color: '#14142B',
     textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: RFValue(16),
+    fontFamily: Regular500,
   },
   message: {
+    color: '#4E4B66',
     textAlign: 'center',
-    fontSize: 14,
+    fontSize:RFValue(14),
     marginHorizontal: 15,
     marginBottom: 15,
+    fontFamily: Regular,
   },
   content: {
     borderBottomColor: outline.default,
