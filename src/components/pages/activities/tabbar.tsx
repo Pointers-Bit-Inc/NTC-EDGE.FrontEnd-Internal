@@ -120,10 +120,10 @@ export default function TabBar() {
     const soundRef:any = React.useRef();
     const playSound = async () => {
       const { sound } = await Audio.Sound.createAsync(
-         require('../../../../assets/sound/incoming.wav')
+         require('@assets/sound/incoming.wav')
       );
-      sound.setIsLoopingAsync(true);
       soundRef.current = sound;
+      await sound.setIsLoopingAsync(true);
       await sound.playAsync();
     }
     const onPressAlert = () => {
@@ -214,7 +214,6 @@ export default function TabBar() {
       if (lodash.size(newMeeting)) {
         playSound();
       }
-      console.log('NEW MEETING', newMeeting);
       return () => {
         soundRef?.current?.unloadAsync();
       }
