@@ -12,29 +12,10 @@ import {primaryColor} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
- 
+import Tab from "@pages/activities/tabs/Tab";
 
-const Tab = ({ tab , page , isTabActive , onPressHandler , onTabLayout , styles }) => {
-    const { label , icon } = tab;
-    const style = {
-        marginLeft : 20 ,
-        paddingBottom : 10 ,
-    };
-    const containerStyle = {
-        transform : [{ scale : styles.scale }] ,
-    };
-    return (
-        <TouchableOpacity style={ style } onPress={ onPressHandler } onLayout={ onTabLayout } key={ page }>
-            <Animated.View style={ containerStyle }>
-                <Animated.Text style={ {
-                    color : isTabActive ? primaryColor : "#606A80" ,
-                    fontFamily : isTabActive ? Bold : Regular ,
-                    fontSize : fontValue(12)
-                } }>{ label }</Animated.Text>
-            </Animated.View>
-        </TouchableOpacity>
-    );
-};
+
+
 export const ModalTab = props => {
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [_scrollX , set_scrollX] = useState(new Animated.Value(0));

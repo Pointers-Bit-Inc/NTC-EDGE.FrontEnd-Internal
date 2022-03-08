@@ -1,4 +1,4 @@
-import React from "react";
+import React , {useEffect} from "react";
 import {ActivityIndicator , Dimensions , Platform , ScrollView , StyleSheet , Text , View} from "react-native";
 import {
     excludeStatus , getRole ,

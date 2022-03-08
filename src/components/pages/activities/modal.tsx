@@ -32,7 +32,6 @@ import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
-
 const { ModalTab } = Platform.select({
     native: () => require('@pages/activities/modalTab'),
     default: () => require("@pages/activities/modalTab.web")
