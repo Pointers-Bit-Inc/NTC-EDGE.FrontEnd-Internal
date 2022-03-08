@@ -16,6 +16,7 @@ import ApplicationDetails from "@pages/activities/application/applicationDetails
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
 import {getRole} from "@pages/activities/script";
+import {Hoverable} from "react-native-web-hooks";
 
 
 export const ModalTab = props => {
@@ -70,7 +71,6 @@ export const ModalTab = props => {
          render
         vertical={ false }
         renderPosition='top'
-
         renderHeader={ (params) => {
             const _tabs = [...tabs]
 
@@ -92,12 +92,26 @@ export const ModalTab = props => {
                 }
             }
 
-            
+            function  renderTab ({ onPress, onLayout, tab: { label } }) {
+                return (
+
+                    <TouchableOpacity onPress={onPress}>
+                        <Hoverable >
+                            {isHovered => (
+                       <View  style={{  backgroundColor: isHovered ? "#DFE5F1": undefined, paddingVertical: 25 }}>
+                           <Text>{label}</Text>
+                       </View>
+                          )}
+                        </Hoverable>
+
+                    </TouchableOpacity>
+
+                )
+            }
             return (
                 <View style={{backgroundColor: "#fff"}}>
                     <TabBar
-                        style={{paddingTop: 20, }}
-                        tabTextStyle={{marginBottom: 21}}
+                        renderTab={renderTab}
                         scrollViewStyle={ { paddingLeft: 60, flex : 1 , justifyContent : "flex-start" , gap : 35 } }
                         underlineStyle={ { backgroundColor: "#2863D6",     height : 7 } }
                         tabs={ tabs.filter((tab, index) => tab.isShow.indexOf(user?.role?.key) !== -1) }
