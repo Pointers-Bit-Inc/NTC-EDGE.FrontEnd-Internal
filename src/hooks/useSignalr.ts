@@ -88,7 +88,7 @@ const useSignalr = () => {
   }, []);
 
   const getParticipantList = useCallback((payload, callback = () => {}) => {
-    api.get(`users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`)
+    api.get(`users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}&loadRooms=${payload.loadRooms || false}`)
     .then(res => {
       return callback(null, res.data);
     })

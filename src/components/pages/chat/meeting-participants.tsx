@@ -146,12 +146,12 @@ const MeetingParticipants = ({
     setHasMore(false);
     setHasError(false);
     const source = axios.CancelToken.source();
-    const payload = searchValue ? { pageIndex: 1, keyword: searchValue } : { pageIndex: 1 };
+    const payload = searchValue ? { pageIndex: 1, keyword: searchValue, loadRooms: true } : { pageIndex: 1, loadRooms: true };
 
     InteractionManager.runAfterInteractions(() => {
       getParticipantList(payload, (err:any, res:any) => {
         if (res) {
-          setContacts(res.list);
+          setContacts([...res.rooms, ...res.list]);
           setPageIndex(current => current + 1);
           setHasMore(res.hasMore);
         }
@@ -206,6 +206,7 @@ const MeetingParticipants = ({
           <SelectedContact
             image={item?.image}
             name={item.name}
+            isGroup={item.isGroup}
             data={item}
             onPress={() => onRemoveParticipants(item._id)}
           />
@@ -334,6 +335,7 @@ const MeetingParticipants = ({
           <ContactItem
             image={item?.image}
             data={item}
+            isGroup={item.isGroup}
             name={item.name}
             onPress={() => onTapCheck(item._id)}
             rightIcon={
