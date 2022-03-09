@@ -519,7 +519,7 @@ export default function ActivitiesPage(props: any) {
         <Fragment>
             <StatusBar barStyle={ 'light-content' }/>
 
-            <View onLayout={ onActivityScreenComponent } style={ { flex : 1 , flexDirection : "row" } }>
+            <View onLayout={ onActivityScreenComponent } style={ { backgroundColor: "#F8F8F8", flex : 1 , flexDirection : "row" } }>
                 <View onLayout={ onActivityLayoutComponent } style={ [styles.container , {
                     flex : (
                                isMobile  || activityScreenComponent?.width <800) ? 1 : 0.4 ,
@@ -642,8 +642,6 @@ export default function ActivitiesPage(props: any) {
                                                             isOpen={ isOpen }
                                                             config={ config }
                                                             key={ i }
-                                                            setActivityMore={(index)=>setActivityMore(   `pin${ i }${ index }`)}
-                                                            activityMore={activityMore}
                                                             selected={applicationItem?._id == act?._id}
                                                             currentUser={ user }
                                                             role={ user?.role?.key }

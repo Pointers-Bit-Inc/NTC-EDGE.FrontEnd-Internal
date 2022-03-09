@@ -24,9 +24,10 @@ function CustomAlert(props) {
             animationType="none"
             transparent={true}
             visible={props.show}
-            onRequestClose={() => {
-                _springHide()
-            }}
+                onRequestClose={() => {
+                    _springHide()
+                }
+            }
         >
             <Animated.View style={[ { transform: [{ scale: !props.onLoading ? springValue :  1}] }]}>
                 <View style={styles.group}>

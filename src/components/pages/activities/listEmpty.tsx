@@ -5,9 +5,11 @@ import {RootStateOrAny, useSelector} from "react-redux";
 import NoActivity from "@assets/svg/noActivity";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
+import {Regular} from "@styles/font";
 
 export const styles = StyleSheet.create({
    noContent:{
+       fontFamily: Regular,
        textAlign: "center", alignSelf: "center", color: "#A0A3BD", fontSize: fontValue(24)
    }
 })
