@@ -244,12 +244,8 @@ export function ActivityItem(props: any) {
     } , [props.activityMore]);
     const [selectedMoreCircle , setSelectedMoreCircle] = useState(false);
     const onMoreCircle = () => {
-        props.setActivityMore(props.index);
-        if (!selectedMoreCircle) {
-            setSelectedMoreCircle(props.activityMore == props.index)
-        } else {
+      
             setSelectedMoreCircle(value => !value)
-        }
 
     };
 

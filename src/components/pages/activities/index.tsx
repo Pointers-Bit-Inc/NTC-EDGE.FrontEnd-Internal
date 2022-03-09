@@ -643,6 +643,8 @@ export default function ActivitiesPage(props: any) {
                                                             isOpen={ isOpen }
                                                             config={ config }
                                                             key={ i }
+                                                            setActivityMore={(index)=>setActivityMore(   `pin${ i }${ index }`)}
+                                                            activityMore={activityMore}
                                                             selected={applicationItem?._id == act?._id}
                                                             currentUser={ user }
                                                             role={ user?.role?.key }
@@ -652,7 +654,6 @@ export default function ActivitiesPage(props: any) {
                                                             onPressUser={ (event: any) => {
                                                                 /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                                 })*/
-                                                                setIsOpen(undefined);
                                                                 dispatch(setApplicationItem({ ...act , isOpen : `pin${ i }${ index }` }))
                                                                 //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
                                                                 if (event?.icon == 'more') {
