@@ -5,9 +5,11 @@ import React from "react";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
+import {Hoverable} from "react-native-web-hooks";
 
 export function EndorsedButton(props: { currentLoading: string, allButton: boolean, onPress: () => void }) {
-    return <View style={{flex: 0.8,}}>
+    return  <Hoverable>
+        { isHovered => (<View style={{flex: 0.8,}}>
         <TouchableOpacity
             disabled={(props.currentLoading === FOREVALUATION || props.allButton)}
             onPress={props.onPress}
@@ -15,12 +17,12 @@ export function EndorsedButton(props: { currentLoading: string, allButton: boole
             <View style={[{
                 width: "85%",
                 alignSelf: "flex-end",
-                borderWidth: (props.allButton) ? 2 : 1,
+                borderWidth: (props.allButton || isHovered) ? 2 :  1,
                 borderRadius: 24,
-                borderColor: "#c4c4c4",
-                backgroundColor: "#fff",
+                borderColor: props.allButton ? "#c4c4c4" : isHovered && "#7792F3",
+                backgroundColor: props.allButton ? "#fff" : isHovered && "#E0E7FE",
                 height: undefined,
-                paddingVertical: props.currentLoading === FOREVALUATION ? fontValue(8.5) : fontValue(10)
+                paddingVertical: props.currentLoading === FOREVALUATION ? fontValue(8.5) : (props.allButton || isHovered) ?  fontValue(9) : fontValue(10)
             }]}>
                 <View
                     style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
@@ -40,7 +42,8 @@ export function EndorsedButton(props: { currentLoading: string, allButton: boole
 
             </View>
         </TouchableOpacity>
-    </View>;
+    </View>) }
+    </Hoverable>;
 }
 
 
