@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
 const ProfileImage = ({
   image = '',
   name = '',
+  others = '',
   size = 35,
   textSize = 14,
   backgroundColor = '',
@@ -69,7 +70,7 @@ const ProfileImage = ({
         color={'white'}
         style={{ fontFamily: Bold, marginRight: -1, marginTop: 1 }}
       >
-        {getInitial(name)}
+        {others || getInitial(name)}
       </Text>
     </View>
   )

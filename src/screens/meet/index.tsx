@@ -305,7 +305,8 @@ const Meet = ({ navigation }) => {
       <Meeting
         name={getChannelName(item)}
         time={item.createdAt}
-        participants={lodash.take(item?.room?.otherParticipants, 5)}
+        participants={lodash.take(item?.room?.otherParticipants, 4)}
+        others={lodash.size(item?.room?.otherParticipants) - 4}
         ended={item.ended}
         data={item}
         onJoin={() => onJoin(item)}

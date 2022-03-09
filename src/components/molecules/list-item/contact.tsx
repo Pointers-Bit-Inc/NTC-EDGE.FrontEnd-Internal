@@ -29,7 +29,8 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     justifyContent: 'center',
-    paddingLeft: 10
+    paddingLeft: 10,
+    paddingRight: 5,
   },
   channelInfo: {
     paddingBottom: 3,

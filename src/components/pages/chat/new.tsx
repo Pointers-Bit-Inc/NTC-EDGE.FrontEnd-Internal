@@ -247,7 +247,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     setHasError(false);
     const payload = searchValue ? { pageIndex: 1, keyword: searchValue } : { pageIndex: 1 };
 
-    if (searchValue) {
+    if (searchValue || isGroup) {
       InteractionManager.runAfterInteractions(() => {
         getParticipantList(payload, (err:any, res:any) => {
           if (!unmount) {
@@ -276,7 +276,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     return () => {
       unmount = true;
     }
-  }, [sendRequest, searchValue]);
+  }, [sendRequest, searchValue, isGroup]);
 
   useEffect(() => {
     let unmount = false;

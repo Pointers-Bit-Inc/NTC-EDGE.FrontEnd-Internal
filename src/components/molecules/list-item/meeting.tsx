@@ -46,6 +46,7 @@ interface Props {
   onJoin?: () => void,
   ended?: boolean,
   data: any,
+  others: any,
   style?: any,
 }
 
@@ -56,6 +57,7 @@ const Meeting: FC<Props> = ({
   onJoin = () => {},
   ended = false,
   data = {},
+  others = 0,
   style,
 }) => {
   return (
@@ -100,6 +102,18 @@ const Meeting: FC<Props> = ({
                     textSize={8}
                   />
                 ))
+              }
+              {
+                others > 0 && (
+                  <ProfileImage
+                    style={{ marginHorizontal: 1, }}
+                    key={'others'}
+                    image={''}
+                    others={`+${others}`}
+                    size={20}
+                    textSize={8}
+                  />
+                )
               }
             </View>
           </View>
