@@ -41,7 +41,7 @@ import FilterIcon from "@assets/svg/filterIcon";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import {BASE_URL} from "../../../services/config";
-import {setVisible} from "../../../reducers/activity/actions";
+import {setActivity , setVisible} from "../../../reducers/activity/actions";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import moment from "moment";
 import ApplicationList from "@pages/activities/applicationList";
@@ -72,7 +72,7 @@ import FilterWeb from "@assets/svg/filterWeb";
 import RefreshWeb from "@assets/svg/refreshWeb";
 import {primaryColor} from "@styles/color";
 import {isMobile} from "@pages/activities/isMobile";
-import ActivityModalView from "@pages/activities/ActivityModalView";
+import ActivityModalView from "@pages/activities/nativeView/activityModalView";
 
 const { width } = Dimensions.get('window');
 
@@ -515,10 +515,11 @@ export default function ActivitiesPage(props: any) {
         extrapolate : 'clamp' ,
     });
 
-
+    const [activityMore, setActivityMore] = useState(undefined)
     return (
         <Fragment>
             <StatusBar barStyle={ 'light-content' }/>
+
             <View onLayout={ onActivityScreenComponent } style={ { flex : 1 , flexDirection : "row" } }>
                 <View onLayout={ onActivityLayoutComponent } style={ [styles.container , {
                     flex : (
@@ -721,13 +722,15 @@ export default function ActivitiesPage(props: any) {
                                             isPinned={true}*/
                                             searchQuery={ searchTerm }
                                             key={ i }
+                                            setActivityMore={(index)=>setActivityMore(index)}
+                                            activityMore={activityMore}
                                             selected={applicationItem?._id == activity?._id}
                                             parentIndex={ index }
                                             role={ user?.role?.key }
                                             activity={ activity }
                                             currentUser={ user }
                                             onPressUser={ (event: any) => {
-                                                setIsOpen(undefined);
+                                                
                                                 dispatch(setApplicationItem({ ...activity , isOpen : `${ index }${ i }` }))
                                                 //setDetails({ ...activity , isOpen : `${ index }${ i }` });
                                                 /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {

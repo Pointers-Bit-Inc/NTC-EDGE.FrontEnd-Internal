@@ -33,8 +33,8 @@ import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
 const { ModalTab } = Platform.select({
-    native: () => require('@pages/activities/modalTab'),
-    default: () => require("@pages/activities/modalTab.web")
+    native: () => require('@pages/activities/modalTab/modalTab'),
+    default: () => require("@pages/activities/modalTab/modalTab.web")
 })();
 const NativeView = Platform.OS === 'ios' || Platform.OS == "android" ? Modal : View;
 function ActivityModal(props: any) {

@@ -4,7 +4,7 @@ import ApplicationDetails from "@pages/activities/application/applicationDetails
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React , {useState} from "react";
-import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../reducers/activity/initialstate";
+import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
 import {Animated , StyleSheet , TouchableOpacity} from "react-native";
 import TabBar from "@pages/activities/tabs/tabbar";
 import ScrollableTabView from "@pages/activities/tabs";

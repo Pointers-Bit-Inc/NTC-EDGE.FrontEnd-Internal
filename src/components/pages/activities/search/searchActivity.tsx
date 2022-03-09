@@ -30,7 +30,7 @@ const {height} = Dimensions.get('screen');
 import lodash from 'lodash';
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
-import ActivityModalView from "@pages/activities/ActivityModalView";
+import ActivityModalView from "@pages/activities/nativeView/activityModalView";
 import {setApplicationItem} from "../../../../reducers/application/actions";
 export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const inputRef = useRef(null);
