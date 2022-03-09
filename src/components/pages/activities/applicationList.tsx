@@ -65,7 +65,7 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
                         <View style={{flex: 0.1, alignItems: "center"}} >
 
                             <TouchableWithoutFeedback onPress={() => setIsOpen(open => !open)}>
-                                <View >
+                                <View>
 
                                     {isOpen ? <ChevronUpIcon width={fontValue(24)} height={fontValue(24)} color={"#000"}/> : <ChevronDownIcon  width={fontValue(24)} height={fontValue(24)} color={"#000"}/>}
 

@@ -5,15 +5,10 @@ import Requirement from "@pages/activities/application/requirementModal/requirem
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React , {useState} from "react";
 import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
-import {Animated , StyleSheet , TouchableOpacity} from "react-native";
+import {Animated , StyleSheet} from "react-native";
 import TabBar from "@pages/activities/tabs/tabbar";
 import ScrollableTabView from "@pages/activities/tabs";
-import {primaryColor} from "@styles/color";
-import {Bold , Regular} from "@styles/font";
-import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/fontValue";
 import Tab from "@pages/activities/tabs/Tab";
-
 
 
 export const ModalTab = props => {
@@ -90,7 +85,7 @@ export const ModalTab = props => {
             tabs.map((tab , index) => {
                 const isShow = tab.isShow.indexOf(user?.role?.key) !== -1;
                 if (isShow && tab.id === 1) {
-                     
+
                     return <BasicInfo
                         tabLabel={ { label : tab.name } } label={ tab.name }
                         paymentMethod={ paymentMethod }
@@ -113,10 +108,10 @@ export const ModalTab = props => {
                         applicantType={ applicationType }
                         key={ index }/>
                 } else if (isShow && tab.id === 3) {
-                    return <Requirement  tabLabel={ { label : tab.name } } label={ tab.name }
+                    return <Requirement tabLabel={ { label : tab.name } } label={ tab.name }
                                         requirements={ requirements } key={ index }/>
                 } else if (isShow && tab.id === 4) {
-                    return <Payment  tabLabel={ { label : tab.name } } label={ tab.name }
+                    return <Payment tabLabel={ { label : tab.name } } label={ tab.name }
                                     proofOfPayment={ proofOfPayment }
                                     updatedAt={ updatedAt }
                                     paymentMethod={ paymentMethod }

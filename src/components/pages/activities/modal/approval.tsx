@@ -2,7 +2,7 @@ import React , {useEffect , useRef , useState} from "react";
 import {
     Alert ,
     Animated ,
-    Dimensions , Keyboard ,
+    Dimensions ,
     KeyboardAvoidingView ,
     Modal ,
     Platform ,
@@ -24,7 +24,6 @@ import CustomAlert from "@pages/activities/alert/alert";
 import {useAlert} from "@pages/activities/hooks/useAlert";
 import {getRole} from "@pages/activities/script";
 import {Bold} from "@styles/font";
-import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 
@@ -32,8 +31,8 @@ const { width , height } = Dimensions.get('window');
 
 const Approval = (props: any) => {
 
-    const { springValue , _springHide ,_springCollapse } = useAlert(props.visible , () => {
-        setOnFocus(false)
+    const { springValue , _springHide , _springCollapse } = useAlert(props.visible , () => {
+        setOnFocus(false);
         return props.onDismissed(APPROVED);
     });
 
@@ -50,8 +49,8 @@ const Approval = (props: any) => {
 
     useEffect(() => {
         setLoading(true);
-        const userEvaluator = getRole(user , [EVALUATOR ]);
-        const userDirector = getRole(user , [DIRECTOR ]);
+        const userEvaluator = getRole(user , [EVALUATOR]);
+        const userDirector = getRole(user , [DIRECTOR]);
         const userAccountantRole = getRole(user , [ACCOUNTANT]);
         const userCashier = getRole(user , [CASHIER]);
         let isCurrent = true;
@@ -69,7 +68,7 @@ const Approval = (props: any) => {
                     return getRole(item , [ACCOUNTANT])   //get accountant
                 } else if (userAccountantRole) {   // if accountant
                     return getRole(item , [CASHIER]) //get cashier
-                } else if(userCashier){ //if cashier
+                } else if (userCashier) { //if cashier
                     return false
                 }
             });
@@ -132,7 +131,7 @@ const Approval = (props: any) => {
     const [title , setTitle] = useState("Approve Application");
     const [showClose , setShowClose] = useState(false);
     const [isTyping , setIsTyping] = useState(true);
-     const [onFocus, setOnFocus] = useState(false)
+    const [onFocus , setOnFocus] = useState(false);
     const textInput = useRef(null);
     return (
 
@@ -194,65 +193,69 @@ const Approval = (props: any) => {
                 message={ message }/>
             <KeyboardAvoidingView
                 behavior={ Platform.OS === "ios" ? "padding" : "height" }
-                style={ [styles.container, { alignItems : isMobile ? 'center' : 'flex-end' ,}] }
+                style={ [styles.container , { alignItems : isMobile ? 'center' : 'flex-end' , }] }
             >
 
                 {
-                <Animated.View style={ [styles.group ,   { width: isMobile ? "100%" :props?.size?.width , display: !showAlert ? undefined : "none"},  { transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
-                    <View style={ styles.rect }>
-                        <View style={ { alignSelf : 'flex-start' } }>
-                            <TouchableOpacity onPress={ _springHide }>
-                                <Ionicons name="md-close" style={ { fontSize : fontValue(25) } }/>
-                            </TouchableOpacity>
-                        </View>
-                        <ApplicationApproved style={ styles.icon }/>
-                        <Text style={ styles.applicationApproved }>
-                            { getRole(user , [CASHIER]) ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED' }
-                        </Text>
-                        <View style={ styles.group2 }>
-
-                            { getRole(user , [DIRECTOR , EVALUATOR, ACCOUNTANT]) &&
-                            <InputField
-                                inputStyle={{fontWeight: "400", fontSize: fontValue(14)}}
-                                onBlur={()=>setOnFocus(false)}
-                                onFocus={()=>setOnFocus(true)}
-                                containerStyle={{
-                                    height: undefined ,
-                                    borderColor: "#D1D1D6",
-                                    borderWidth: 1 ,
-                                    backgroundColor: undefined,
-                                }}
-                                clearable={false}
-                                outlineStyle={ {
-                                    borderColor : "rgba(202,210,225,1)" ,
-                                    paddingTop : 5 ,
-                                    height : (height < 720 && isKeyboardVisible) ? 70 : height * 0.15
-                                } }
-                                placeholder={ 'Remarks' }
-                                multiline={ true }
-                                value={ remarks }
-                                error={ validateRemarks.error }
-                                errorColor={ errorColor }
-                                onEndEditing={ () => {
-                                    setIsTyping(false)
-                                } }
-                                onChangeText={ (text: string) => {
-                                    setIsTyping(true);
-
-                                    setRemarks(text)
-                                }
-                                }
-                            /> }
-                            <View style={ { marginTop : 5 } }>
-                                <TouchableOpacity onPress={ onConfirmation }>
-                                    <View style={ styles.confirmButton }>
-                                        <Text style={ styles.confirm }>Confirm</Text>
-                                    </View>
+                    <Animated.View style={ [styles.group , {
+                        width : isMobile ? "100%" : props?.size?.width ,
+                        display : !showAlert ? undefined : "none"
+                    } , { transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
+                        <View style={ styles.rect }>
+                            <View style={ { alignSelf : 'flex-start' } }>
+                                <TouchableOpacity onPress={ _springHide }>
+                                    <Ionicons name="md-close" style={ { fontSize : fontValue(25) } }/>
                                 </TouchableOpacity>
                             </View>
+                            <ApplicationApproved style={ styles.icon }/>
+                            <Text style={ styles.applicationApproved }>
+                                { getRole(user , [CASHIER]) ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED' }
+                            </Text>
+                            <View style={ styles.group2 }>
+
+                                { getRole(user , [DIRECTOR , EVALUATOR , ACCOUNTANT]) &&
+                                <InputField
+                                    inputStyle={ { fontWeight : "400" , fontSize : fontValue(14) } }
+                                    onBlur={ () => setOnFocus(false) }
+                                    onFocus={ () => setOnFocus(true) }
+                                    containerStyle={ {
+                                        height : undefined ,
+                                        borderColor : "#D1D1D6" ,
+                                        borderWidth : 1 ,
+                                        backgroundColor : undefined ,
+                                    } }
+                                    clearable={ false }
+                                    outlineStyle={ {
+                                        borderColor : "rgba(202,210,225,1)" ,
+                                        paddingTop : 5 ,
+                                        height : (
+                                                     height < 720 && isKeyboardVisible) ? 70 : height * 0.15
+                                    } }
+                                    placeholder={ 'Remarks' }
+                                    multiline={ true }
+                                    value={ remarks }
+                                    error={ validateRemarks.error }
+                                    errorColor={ errorColor }
+                                    onEndEditing={ () => {
+                                        setIsTyping(false)
+                                    } }
+                                    onChangeText={ (text: string) => {
+                                        setIsTyping(true);
+
+                                        setRemarks(text)
+                                    }
+                                    }
+                                /> }
+                                <View style={ { marginTop : 5 } }>
+                                    <TouchableOpacity onPress={ onConfirmation }>
+                                        <View style={ styles.confirmButton }>
+                                            <Text style={ styles.confirm }>Confirm</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
                         </View>
-                    </View>
-                </Animated.View> }
+                    </Animated.View> }
             </KeyboardAvoidingView>
         </Modal>
 
@@ -292,7 +295,7 @@ const styles = StyleSheet.create({
         width : 94 ,
     } ,
     applicationApproved : {
-        fontFamily: Bold,
+        fontFamily : Bold ,
         color : "#121212" ,
         fontSize : fontValue(18) ,
     } ,
@@ -302,7 +305,7 @@ const styles = StyleSheet.create({
     } ,
     confirm : {
         color : "rgba(255,255,255,1)" ,
-        fontFamily: Bold,
+        fontFamily : Bold ,
         fontSize : fontValue(18) ,
     } ,
     confirmButton : {

@@ -75,7 +75,7 @@ const PaymentModal = (props: any) => {
 
                     <View style={[styles.group8, { alignItems: 'center', marginBottom: 100}]}>
 
-                        <View >
+                        <View>
                             <View style={{flexDirection: "row"}}>
                                 {
                                     !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentTop  style={{marginBottom: -1}}/>)

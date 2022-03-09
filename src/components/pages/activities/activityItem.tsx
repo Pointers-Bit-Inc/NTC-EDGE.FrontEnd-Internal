@@ -131,8 +131,8 @@ const styles = StyleSheet.create({
         fontSize : 14 ,
         paddingVertical : 3 ,
         paddingHorizontal : 10 ,
-    },
-    menuItem:   {
+    } ,
+    menuItem : {
         flexDirection : "row" ,
         paddingHorizontal : 10 ,
         alignItems : "center"
@@ -244,8 +244,8 @@ export function ActivityItem(props: any) {
     } , [props.activityMore]);
     const [selectedMoreCircle , setSelectedMoreCircle] = useState(false);
     const onMoreCircle = () => {
-      
-            setSelectedMoreCircle(value => !value)
+
+        setSelectedMoreCircle(value => !value)
 
     };
 
@@ -355,7 +355,9 @@ export function ActivityItem(props: any) {
                                     </TouchableOpacity>
                                 </View>
                                 { !isMobile && <View style={ { paddingHorizontal : selectedMoreCircle ? 14 : 18 , } }>
-                                    <Menu  onClose={()=>{setSelectedMoreCircle(false)}}  onSelect={ value => setSelectedMoreCircle(true) }>
+                                    <Menu onClose={ () => {
+                                        setSelectedMoreCircle(false)
+                                    } } onSelect={ value => setSelectedMoreCircle(true) }>
 
                                         <MenuTrigger onPress={ onMoreCircle } text={
                                             <View style={ [styles.moreCircle , selectedMoreCircle && {
@@ -367,8 +369,8 @@ export function ActivityItem(props: any) {
 
                                         </MenuTrigger>
 
-                                        <MenuOptions  optionsContainerStyle={ {
-                                           marginTop: 50,
+                                        <MenuOptions optionsContainerStyle={ {
+                                            marginTop : 50 ,
 
                                             shadowColor : "rgba(0,0,0,1)" ,
                                             paddingVertical : 10 ,
@@ -383,31 +385,31 @@ export function ActivityItem(props: any) {
                                         } }>
                                             <MenuOption value={ "Unread" }>
                                                 <View style={ styles.menuItem }>
-                                                    <UnseeIcon color={ "#000" }/><Text
-                                                    style={ styles.menuItemText }>Unread</Text>
+                                                    <UnseeIcon color={ "#000" }/>
+                                                    <Text style={ styles.menuItemText }>Unread</Text>
                                                 </View>
                                             </MenuOption>
                                             <MenuOption value={ "Pin to top" }>
                                                 <View style={ styles.menuItem }>
-                                                    <PinToTopIcon width={16.67} height={16.67}/>
+                                                    <PinToTopIcon width={ 16.67 } height={ 16.67 }/>
                                                     <Text style={ styles.menuItemText }>Pin to top</Text> </View>
                                             </MenuOption>
                                             <MenuOption value={ "Archive" }>
                                                 <View style={ styles.menuItem }>
-                                                    <BellMuteIcon width={16.67} height={16.67}/>
+                                                    <BellMuteIcon width={ 16.67 } height={ 16.67 }/>
                                                     <Text style={ styles.menuItemText }>Mute</Text> </View>
                                             </MenuOption>
                                             <MenuOption
                                                 style={ { borderBottomWidth : 1 , borderBottomColor : "#E5E5E5" } }
                                                 value={ "Archive" }>
                                                 <View style={ styles.menuItem }>
-                                                    <ArchiveIcon width={16.67} height={16.67}/>
+                                                    <ArchiveIcon width={ 16.67 } height={ 16.67 }/>
                                                     <Text style={ styles.menuItemText }>Archive</Text> </View>
                                             </MenuOption>
 
                                             <MenuOption value={ "Archive" }>
                                                 <View style={ styles.menuItem }>
-                                                    <DeleteIcon width={16.67} height={16.67}/>
+                                                    <DeleteIcon width={ 16.67 } height={ 16.67 }/>
                                                     <Text
                                                         style={ [styles.menuItemText , { color : "#CF0327" }] }>Delete</Text>
                                                 </View>

@@ -723,15 +723,13 @@ export default function ActivitiesPage(props: any) {
                                             isPinned={true}*/
                                             searchQuery={ searchTerm }
                                             key={ i }
-                                            setActivityMore={(index)=>setActivityMore(index)}
-                                            activityMore={activityMore}
                                             selected={applicationItem?._id == activity?._id}
                                             parentIndex={ index }
                                             role={ user?.role?.key }
                                             activity={ activity }
                                             currentUser={ user }
                                             onPressUser={ (event: any) => {
-                                                
+
                                                 dispatch(setApplicationItem({ ...activity , isOpen : `${ index }${ i }` }))
                                                 //setDetails({ ...activity , isOpen : `${ index }${ i }` });
                                                 /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
@@ -768,7 +766,6 @@ export default function ActivitiesPage(props: any) {
 
                 { (!lodash.isEmpty(applicationItem) )  && <ActivityModalView>
                     <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
-
                         onMoreModalDismissed(applicationItem?.isOpen)
                     } }/>
                     <ActivityModal updateModal={ updateModalFn }
