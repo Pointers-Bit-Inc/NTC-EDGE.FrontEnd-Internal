@@ -1,25 +1,27 @@
-import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {ActivityIndicator , StyleSheet , Text , TouchableOpacity , TouchableWithoutFeedback , View} from "react-native";
 import {APPROVED} from "../../../../reducers/activity/initialstate";
-import React from "react";
+import React , {useState} from "react";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
 import {Hoverable} from "react-native-web-hooks";
 
 export const ApprovedButton = (props: { currentLoading: string, allButton: boolean, onPress: () => void }) => {
-
+    const [pressed, setPressed] = useState(false)
     return <Hoverable>
         { isHovered => (<View
         style={ { flex : 1 , paddingRight : 5 } }>
-        <TouchableOpacity
+        <TouchableWithoutFeedback
+            onPressIn={()=>setPressed(true)}
+            onPressOut={()=>setPressed(false)}
             disabled={ props.currentLoading === APPROVED || props.allButton }
             onPress={ props.onPress }
         >
             <View style={ [styles.rect22 , {
-                borderColor: (props.allButton) ? "transparent" : isHovered && "#4DFBC5",
-                 borderWidth: isHovered ? 4 :  undefined,
+                borderColor: (props.allButton || pressed) ? "transparent" :   isHovered && "#4DFBC5",
+                 borderWidth:  isHovered ? 4 :  undefined,
                 backgroundColor : (
-                    props.allButton ? "#C4C4C4" : "rgba(0,171,118,1)") ,
+                    props.allButton ? "#C4C4C4" : pressed ? "#097352" :  "rgba(0,171,118,1)") ,
                 height : undefined ,
                 paddingVertical : props.currentLoading === APPROVED ? fontValue(9) : isHovered ? fontValue(6.5)  : fontValue(10.5)
             }] }>
@@ -37,7 +39,7 @@ export const ApprovedButton = (props: { currentLoading: string, allButton: boole
                     )
                 }
             </View>
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
     </View>) }
     </Hoverable>;
 }

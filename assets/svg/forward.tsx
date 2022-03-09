@@ -12,7 +12,7 @@ const ForwardIcon = (props: SvgProps) => (
   >
     <Path
       d="M8 1L13 6M13 6L8 11M13 6L1 6"
-      stroke={!!props?.isdisable ? "#C4C4C4" : "#041B6E"}
+      stroke={!!props?.isdisable ? "#C4C4C4" : (props.color ? "#fff" : "#041B6E")}
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"

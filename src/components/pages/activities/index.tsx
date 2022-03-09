@@ -600,6 +600,8 @@ export default function ActivitiesPage(props: any) {
                                    } } onPress={ () => {
 
                         //setSearchVisible(true)
+                        dispatch(setApplicationItem({  }))
+
                         props.navigation.navigate(SEARCH);
                     } } searchVisible={ searchVisible }/>
 
@@ -649,6 +651,7 @@ export default function ActivitiesPage(props: any) {
                                                             activity={ act }
                                                             isPinned={ true }
                                                             onPressUser={ (event: any) => {
+
                                                                 /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                                 })*/
                                                                 dispatch(setApplicationItem({ ...act , isOpen : `pin${ i }${ index }` }))
@@ -726,7 +729,7 @@ export default function ActivitiesPage(props: any) {
                                             activity={ activity }
                                             currentUser={ user }
                                             onPressUser={ (event: any) => {
-
+                                               
                                                 dispatch(setApplicationItem({ ...activity , isOpen : `${ index }${ i }` }))
                                                 //setDetails({ ...activity , isOpen : `${ index }${ i }` });
                                                 /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {

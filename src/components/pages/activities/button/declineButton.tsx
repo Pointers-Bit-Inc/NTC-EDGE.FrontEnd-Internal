@@ -1,16 +1,19 @@
-import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {ActivityIndicator , StyleSheet , Text , TouchableOpacity , TouchableWithoutFeedback , View} from "react-native";
 import {DECLINED} from "../../../../reducers/activity/initialstate";
-import React from "react";
+import React , {useState} from "react";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
 import {Hoverable} from "react-native-web-hooks";
 
 export function DeclineButton(props: { currentLoading: string, allButton: boolean, onPress: () => void }) {
+    const [pressed, setPressed] = useState(false)
     return <Hoverable>
         { isHovered => (
             <View style={{flex: 1}}>
-        <TouchableOpacity
+        <TouchableWithoutFeedback
+            onPressIn={()=>setPressed(true)}
+            onPressOut={()=>setPressed(false)}
             disabled={(props.currentLoading === DECLINED || props.allButton)}
             onPress={props.onPress}
         >
@@ -38,7 +41,7 @@ export function DeclineButton(props: { currentLoading: string, allButton: boolea
                     )
                 }
             </View>
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
     </View> ) }
     </Hoverable>;
 }
