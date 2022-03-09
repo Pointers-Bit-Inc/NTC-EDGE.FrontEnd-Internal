@@ -123,36 +123,36 @@ const getDayMonthString = (time:number) => {
 const getColorFromName = (value:string) => {
   const firstChar = String(value).charAt(0);
   const lowerCaseValue = String(firstChar).toLowerCase();
-  const colors = ['#D74D43', '#D4883A', '#91B798', '#42495B', '#ADB6D7']
+  const colors = ['#DC4833', '#D4883A', '#91B798', '#42495B', '#ADB6D7', '#6281C3', '#7AC4D3', '#AFDF8D', '#F19133', '#4362B5', '#599CB4', '#71D789']
   const colorFromLetters:any = {
     a: colors[0],
     b: colors[1],
     c: colors[2],
     d: colors[3],
     e: colors[4],
-    f: colors[0],
-    g: colors[1],
-    h: colors[2],
-    i: colors[3],
-    j: colors[4],
-    k: colors[0],
-    l: colors[1],
-    m: colors[2],
-    n: colors[3],
-    o: colors[4],
-    p: colors[0],
-    q: colors[1],
-    r: colors[2],
-    s: colors[3],
-    t: colors[4],
-    u: colors[0],
-    v: colors[1],
-    w: colors[2],
-    x: colors[3],
-    y: colors[4],
-    z: colors[0],
+    f: colors[5],
+    g: colors[6],
+    h: colors[7],
+    i: colors[8],
+    j: colors[9],
+    k: colors[10],
+    l: colors[11],
+    m: colors[0],
+    n: colors[1],
+    o: colors[2],
+    p: colors[3],
+    q: colors[4],
+    r: colors[5],
+    s: colors[6],
+    t: colors[7],
+    u: colors[8],
+    v: colors[9],
+    w: colors[10],
+    x: colors[11],
+    y: colors[0],
+    z: colors[1],
   }
-  return colorFromLetters[lowerCaseValue] || colors[0];
+  return colorFromLetters[lowerCaseValue] || colors[3];
 }
 
 export {
