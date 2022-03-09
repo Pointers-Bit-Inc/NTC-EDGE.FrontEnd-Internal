@@ -276,7 +276,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               <ProfileImage
                 size={80}
                 textSize={24}
-                image={user?.image}
+                image={user?.profilePicture?.thumb}
                 name={`${user.firstName} ${user.lastName}`}
               />
             )
@@ -327,7 +327,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             />
           ) : (
             <ProfileImage
-              image={findParticipant?.image}
+              image={findParticipant?.profilePicture?.thumb}
               name={`${findParticipant?.firstName} ${findParticipant?.lastName}`}
               size={80}
               textSize={24}
@@ -375,7 +375,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                   />
                 ) : (
                   <ProfileImage
-                    image={findParticipant?.image}
+                    image={findParticipant?.profilePicture?.thumb}
                     name={`${findParticipant.firstName} ${findParticipant.lastName}`}
                     size={50}
                     textSize={16}
@@ -429,7 +429,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                 />
               ) : (
                 <ProfileImage
-                  image={findParticipant?.image}
+                  image={findParticipant?.profilePicture?.thumb}
                   name={`${findParticipant.firstName} ${findParticipant.lastName}`}
                   size={50}
                   textSize={16}

@@ -386,7 +386,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
         data={participants}
         renderItem={({ item }) => (
           <SelectedContact
-            image={item?.image}
+            image={item?.profilePicture?.thumb}
             name={item.name}
             data={item}
             onPress={() => onRemoveParticipants(item._id)}
@@ -447,7 +447,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     if (isGroup) {
       return (
         <ContactItem
-          image={item?.image}
+          image={item?.profilePicture?.thumb}
           data={item}
           name={item.name}
           onPress={() => onTapCheck(item._id)}
@@ -476,7 +476,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     }
     return (
       <ContactItem
-        image={item?.image}
+        image={item?.profilePicture?.thumb}
         data={item}
         name={item.name}
         onPress={() => onTapCheck(item._id)}

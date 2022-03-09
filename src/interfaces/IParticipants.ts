@@ -1,3 +1,5 @@
+import IImage from "./IImage";
+
 interface IParticipants {
   id: string;
   _id: string;
@@ -14,6 +16,7 @@ interface IParticipants {
   uid?: 0;
   hasJoined: false;
   isFocused: false;
+  profilePicture: IImage
 }
 
 export default IParticipants;

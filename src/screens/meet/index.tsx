@@ -353,11 +353,6 @@ const Meet = ({ navigation }) => {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
           <HomeMenuIcon/>
-          {/* <ProfileImage
-            size={45}
-            image={user?.image}
-            name={`${user.firstName} ${user.lastName}`}
-          /> */}
         </TouchableOpacity>
         <View style={styles.titleContainer}>
           <Text

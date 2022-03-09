@@ -204,7 +204,7 @@ const MeetingParticipants = ({
         data={participants}
         renderItem={({ item }) => (
           <SelectedContact
-            image={item?.image}
+            image={item?.profilePicture?.thumb}
             name={item.name}
             isGroup={item.isGroup}
             data={item}
@@ -333,7 +333,7 @@ const MeetingParticipants = ({
         }
         renderItem={({ item }) => (
           <ContactItem
-            image={item?.image}
+            image={item?.profilePicture?.thumb}
             data={item}
             isGroup={item.isGroup}
             name={item.name}

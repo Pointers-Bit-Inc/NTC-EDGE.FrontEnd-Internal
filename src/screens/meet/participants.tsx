@@ -198,7 +198,7 @@ const Participants = ({ navigation }:any) => {
         data={participants}
         renderItem={({ item }) => (
           <SelectedContact
-            image={item?.image}
+            image={item?.profilePicture?.thumb}
             name={item.name}
             onPress={() => onRemoveParticipants(item._id)}
           />
@@ -325,7 +325,7 @@ const Participants = ({ navigation }:any) => {
         }
         renderItem={({ item }) => (
           <ContactItem
-            image={item?.image}
+            image={item?.profilePicture?.thumb}
             name={item.name}
             onPress={() => onTapCheck(item._id)}
             disabled={true}
