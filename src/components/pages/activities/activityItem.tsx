@@ -129,8 +129,13 @@ const styles = StyleSheet.create({
     } ,
     menuItemText : {
         fontSize : 14 ,
-        paddingVertical : 5 ,
+        paddingVertical : 3 ,
         paddingHorizontal : 10 ,
+    },
+    menuItem:   {
+        flexDirection : "row" ,
+        paddingHorizontal : 10 ,
+        alignItems : "center"
     }
 });
 
@@ -381,52 +386,32 @@ export function ActivityItem(props: any) {
                                             shadowRadius : 15 ,
                                         } }>
                                             <MenuOption value={ "Unread" }>
-                                                <View style={ {
-                                                    flexDirection : "row" ,
-                                                    paddingHorizontal : 10 ,
-                                                    alignItems : "center"
-                                                } }>
+                                                <View style={ styles.menuItem }>
                                                     <UnseeIcon color={ "#000" }/><Text
                                                     style={ styles.menuItemText }>Unread</Text>
                                                 </View>
                                             </MenuOption>
                                             <MenuOption value={ "Pin to top" }>
-                                                <View style={ {
-                                                    flexDirection : "row" ,
-                                                    paddingHorizontal : 10 ,
-                                                    alignItems : "center"
-                                                } }>
-                                                    <PinToTopIcon/>
+                                                <View style={ styles.menuItem }>
+                                                    <PinToTopIcon width={16.67} height={16.67}/>
                                                     <Text style={ styles.menuItemText }>Pin to top</Text> </View>
                                             </MenuOption>
                                             <MenuOption value={ "Archive" }>
-                                                <View style={ {
-                                                    flexDirection : "row" ,
-                                                    paddingHorizontal : 10 ,
-                                                    alignItems : "center"
-                                                } }>
-                                                    <BellMuteIcon/>
+                                                <View style={ styles.menuItem }>
+                                                    <BellMuteIcon width={16.67} height={16.67}/>
                                                     <Text style={ styles.menuItemText }>Mute</Text> </View>
                                             </MenuOption>
                                             <MenuOption
                                                 style={ { borderBottomWidth : 1 , borderBottomColor : "#E5E5E5" } }
                                                 value={ "Archive" }>
-                                                <View style={ {
-                                                    flexDirection : "row" ,
-                                                    paddingHorizontal : 10 ,
-                                                    alignItems : "center"
-                                                } }>
-                                                    <ArchiveIcon/>
+                                                <View style={ styles.menuItem }>
+                                                    <ArchiveIcon width={16.67} height={16.67}/>
                                                     <Text style={ styles.menuItemText }>Archive</Text> </View>
                                             </MenuOption>
 
                                             <MenuOption value={ "Archive" }>
-                                                <View style={ {
-                                                    flexDirection : "row" ,
-                                                    paddingHorizontal : 10 ,
-                                                    alignItems : "center"
-                                                } }>
-                                                    <DeleteIcon/>
+                                                <View style={ styles.menuItem }>
+                                                    <DeleteIcon width={16.67} height={16.67}/>
                                                     <Text
                                                         style={ [styles.menuItemText , { color : "#CF0327" }] }>Delete</Text>
                                                 </View>
