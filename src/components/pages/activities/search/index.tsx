@@ -21,7 +21,7 @@ import {formatDate , getFilter} from "@pages/activities/script";
 import moment from "moment";
 import Loader from "@pages/activities/bottomLoad";
 import {defaultSanitize} from "@pages/activities/search/utils";
-import {useUserRole} from "@pages/activities/hooks/useUserRole";
+import {useUserRole} from "../../../../hooks/useUserRole";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
 

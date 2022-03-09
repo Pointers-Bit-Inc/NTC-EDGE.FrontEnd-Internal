@@ -30,7 +30,7 @@ import {EndorsedButton} from "@pages/activities/button/endorsedButton";
 import {Bold} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
-import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
+import {useComponentLayout} from "../../../hooks/useComponentLayout";
 
 const { ModalTab } = Platform.select({
     native : () => require('@pages/activities/modalTab/modalTab') ,
@@ -117,7 +117,7 @@ function ActivityModal(props: any) {
                             dispatch(updateApplicationStatus({
                                 application : res.data ,
                                 status : status ,
-                                assignedPersonnel : res?.data?.assignedPersonnel ,
+                                assignedPersonnel : res?.data?.assignedPersonnel?._id || res?.data?.assignedPersonnel ,
                                 userType : user?.role?.key
                             }));
 
@@ -160,14 +160,16 @@ function ActivityModal(props: any) {
 
     const statusMemo = useMemo(() => {
         setStatus(status);
-        setAssignId(assignId || props?.details?.assignedPersonnel);
+        setAssignId(assignId || (props?.details?.assignedPersonnel?.id || props?.details?.assignedPersonnel));
         return status ? (
             cashier ? PaymentStatusText(status) : StatusText(status)) : (
                    cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
-    } , [assignId , status , props?.details?.assignedPersonnel , props.details.paymentStatus , props.details._id , props.details.status]);
+    } , [assignId , status , (props?.details?.assignedPersonnel?._id ||props?.details?.assignedPersonnel ), props.details.paymentStatus , props.details._id , props.details.status]);
     const approveButton = statusMemo === APPROVED || statusMemo === VERIFIED;
     const declineButton = cashier ? (
         statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED;
+
+    console.log(assignId, "assign id ")
     const allButton = (
                           cashier) ? (
                           !!props?.details?.paymentMethod ? (
@@ -325,7 +327,7 @@ function ActivityModal(props: any) {
                 onModalDismissed={ () => {
                     setStatus(prevStatus);
                     setRemarks(prevRemarks);
-                    setAssignId(props?.details?.assignedPersonnel)
+                    setAssignId(props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel)
                 } }
                 onChangeRemarks={ (_remark: string , _assign ,) => {
                     setPrevStatus(status);
@@ -396,10 +398,10 @@ function ActivityModal(props: any) {
             />
             <Endorsed
                 size={ activityModalScreenComponent }
-                assignedPersonnel={ props?.details?.assignedPersonnel }
+                assignedPersonnel={ props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel }
                 onModalDismissed={ () => {
                     setRemarks(prevRemarks);
-                    setAssignId(props?.details?.assignedPersonnel)
+                    setAssignId(props?.details?.assignedPersonnel?._id ||props?.details?.assignedPersonnel)
                 } }
                 remarks={ (event: any) => {
                     setPrevRemarks(remarks);

@@ -66,7 +66,7 @@ export const ModalTab = props => {
         requirements = props?.details?.requirements ,
         updatedAt = props?.details?.updatedAt ,
         approvalHistory = props?.details?.approvalHistory ,
-        assignedPersonnel = props?.details?.assignedPersonnel ,
+        assignedPersonnel = props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel,
         createdAt = props?.details?.createdAt ,
         proofOfPayment = props?.details?.proofOfPayment;
 

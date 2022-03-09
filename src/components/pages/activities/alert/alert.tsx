@@ -6,7 +6,7 @@ import CloseModal from "@assets/svg/closeModal";
 import {APPROVED, DECLINED, FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import EndorseToIcon from "@assets/svg/endorseTo";
 import ApplicationApproved from "@assets/svg/application-approved";
-import {useAlert} from "@pages/activities/hooks/useAlert";
+import {useAlert} from "../../../../hooks/useAlert";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";

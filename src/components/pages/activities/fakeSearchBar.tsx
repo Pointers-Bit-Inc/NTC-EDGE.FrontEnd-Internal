@@ -3,7 +3,7 @@ import {styles} from "@pages/activities/styles";
 import SearchIcon from "@assets/svg/search";
 import React , {useEffect , useState} from "react";
 import {setTabBarHeight} from "../../../reducers/application/actions";
-import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
+import {useComponentLayout} from "../../../hooks/useComponentLayout";
 import {RFValue} from "react-native-responsive-fontsize";
 import {Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";

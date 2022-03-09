@@ -20,7 +20,7 @@ import useKeyboard from 'src/hooks/useKeyboard';
 import {disabledColor , errorColor , primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
-import {useOrientation} from "@pages/activities/hooks/useOrientation";
+import {useOrientation} from "../../../../hooks/useOrientation";
 import {getRole} from "@pages/activities/script";
 import {Bold , Regular500} from "@styles/font";
 import CloseIcon from "@assets/svg/close";
@@ -60,7 +60,7 @@ const Endorsed = (props: any) => {
 
             if (isCurrent && !!res) {
                 setPickedEndorsed(res);
-                setEndorsed(props?.assignedPersonnel || res[0]?.value)
+                setEndorsed((props?.assignedPersonnel?._id || props?.assignedPersonnel)|| res[0]?.value)
             }
 
         })

@@ -27,7 +27,7 @@ import {outline} from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
 
 import EndorseIcon from "@assets/svg/endorse";
-import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
+import {useAssignPersonnel} from "../../../hooks/useAssignPersonnel";
 import {Bold , Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {ActivitySwipeable} from "@pages/activities/nativeView/activitySwipeable";
@@ -190,6 +190,7 @@ const RenderApplication = ({ applicationType }: any) => {
 
 
 const RenderPinned = ({ assignedPersonnel , config }: any) => {
+
     const { personnel , loading } = useAssignPersonnel(assignedPersonnel , config);
     return (
         <View
@@ -343,7 +344,7 @@ export function ActivityItem(props: any) {
                                                         status={ getStatus }
                                                     />
                                                 </View>
-                                                { props?.isPinned && props?.activity?.assignedPersonnel &&
+                                                { props?.isPinned && (props?.activity?.assignedPersonnel._id || props?.activity?.assignedPersonnel) &&
                                                 <View style={ styles.section }>
                                                     <View style={ { flex : 1 , alignItems : 'flex-start' } }>
                                                         <RenderPinned config={ props.config }

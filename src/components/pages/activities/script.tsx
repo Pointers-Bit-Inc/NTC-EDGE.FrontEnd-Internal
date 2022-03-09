@@ -192,13 +192,13 @@ export const getFilter = ({
     const search =
         (selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true);
     if (cashier) {
-        return (item?.status == APPROVED || item?.status == DECLINED && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search)
+        return (item?.status == APPROVED || item?.status == DECLINED && (item?.assignedPersonnel == user?._id || (item?.assignedPersonnel?._id || item?.assignedPersonnel) === null || _approvalHistory) && search)
     } else if (director) {
         return (item?.status == FORAPPROVAL  || item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search
     } else if (checker || accountant) {
-        return (item?.assignedPersonnel == user?._id || item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
+        return ((item?.assignedPersonnel?._id || (item?.assignedPersonnel?._id || item?.assignedPersonnel)) == user?._id || item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
     } else if (evaluator) {
-        return item?.status.length > 0 || item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory
+        return item?.status.length > 0 || (item?.assignedPersonnel?._id || item?.assignedPersonnel) == user?._id || item?.assignedPersonnel === null || _approvalHistory
     }
 });
 

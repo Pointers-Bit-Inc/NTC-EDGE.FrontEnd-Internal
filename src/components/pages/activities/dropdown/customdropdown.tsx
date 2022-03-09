@@ -1,7 +1,7 @@
     import React , {FC , ReactElement , useEffect , useRef , useState} from 'react';
     import {FlatList , Modal , StyleSheet , Text , TouchableOpacity , View ,} from 'react-native';
     import CaretDownIcon from "@assets/svg/caret-down";
-    import {useOrientation} from "@pages/activities/hooks/useOrientation";
+    import {useOrientation} from "../../../../hooks/useOrientation";
     import {Regular500} from "@styles/font";
     import {RFValue} from "react-native-responsive-fontsize";
     import useKeyboard from "../../../../hooks/useKeyboard";

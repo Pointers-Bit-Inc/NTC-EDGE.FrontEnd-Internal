@@ -12,7 +12,7 @@ import CustomText from "@atoms/text";
 import {
     APPROVED , DECLINED , FORAPPROVAL
 } from "../../../../reducers/activity/initialstate";
-import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
+import {useAssignPersonnel} from "../../../../hooks/useAssignPersonnel";
 import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
@@ -34,12 +34,12 @@ const BasicInfo = (props: any) => {
     const {
         personnel ,
         loading
-    } = useAssignPersonnel( !!props.paymentMethod && props.assignedPersonnel ?
-                            props.assignedPersonnel : (props.paymentStatus == APPROVED || props.paymentStatus == DECLINED ?
+    } = useAssignPersonnel( !!props.paymentMethod && (props.assignedPersonnel?._id || props.assignedPersonnel ) ?
+                            (props.assignedPersonnel?._id || props.assignedPersonnel ) : (props.paymentStatus == APPROVED || props.paymentStatus == DECLINED ?
                             (props?.paymentHistory?.[0]?.userId ) :
                             (props?.approvalHistory?.[0]?.userId ?
                              props?.approvalHistory?.[0]?.userId :
-                             props?.assignedPersonnel)) , {
+                             (props.assignedPersonnel?._id || props?.assignedPersonnel))) , {
         headers : {
             Authorization : "Bearer ".concat(props.user?.sessionToken)
         }

@@ -20,7 +20,7 @@ import {unreadReadApplication} from "@pages/activities/script";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import Loader from "@pages/activities/bottomLoad";
-import useCountUp from "@pages/activities/hooks/useCountUp";
+import useCountUp from "../../../../hooks/useCountUp";
 import {Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
 

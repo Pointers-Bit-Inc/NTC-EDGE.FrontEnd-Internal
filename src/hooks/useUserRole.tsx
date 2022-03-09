@@ -1,5 +1,5 @@
 import {RootStateOrAny , useSelector} from "react-redux";
-import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
+import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../reducers/activity/initialstate";
 
 export const useUserRole = () => {
     const user = useSelector((state: RootStateOrAny) => state.user);

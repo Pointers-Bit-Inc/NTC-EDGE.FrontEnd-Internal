@@ -5,7 +5,7 @@ import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {capitalize } from "@pages/activities/script";
 import {RFValue} from "react-native-responsive-fontsize";
-import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
+import {useComponentLayout} from "../../../../../hooks/useComponentLayout";
 import BorderPaymentTop from "@assets/svg/borderPayment";
 import BorderPaymentBottom from "@assets/svg/borderPaymentBottom";
 import {fontValue} from "@pages/activities/fontValue";

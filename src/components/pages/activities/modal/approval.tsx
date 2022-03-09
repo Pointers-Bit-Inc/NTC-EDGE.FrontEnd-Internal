@@ -21,7 +21,7 @@ import {RootStateOrAny , useSelector} from "react-redux";
 import useKeyboard from 'src/hooks/useKeyboard';
 import {errorColor , primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
-import {useAlert} from "@pages/activities/hooks/useAlert";
+import {useAlert} from "../../../../hooks/useAlert";
 import {getRole} from "@pages/activities/script";
 import {Bold} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";

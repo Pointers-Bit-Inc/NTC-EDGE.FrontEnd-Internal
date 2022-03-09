@@ -5,7 +5,7 @@ import ChevronDownIcon from "@assets/svg/chevron-down";
 import Collapsible from "react-native-collapsible";
 import {checkFormatIso , formatDate} from "@pages/activities/script";
 import moment from "moment";
-import {useAlert} from "@pages/activities/hooks/useAlert";
+import {useAlert} from "../../../hooks/useAlert";
 import * as Animatable from 'react-native-animatable'
 import DotVertical from "@assets/svg/dotsVertical";
 import ChevronUpIcon from "@assets/svg/chevron-up";

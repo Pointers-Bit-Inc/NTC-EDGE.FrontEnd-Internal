@@ -62,9 +62,9 @@ import {MeetingNotif} from '@components/molecules/list-item';
 import listEmpty from "@pages/activities/listEmpty";
 import HomeMenuIcon from "@assets/svg/homemenu";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
-import {useUserRole} from "@pages/activities/hooks/useUserRole";
+import {useUserRole} from "../../../hooks/useUserRole";
 import {Regular500} from "@styles/font";
-import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
+import {useComponentLayout} from "../../../hooks/useComponentLayout";
 import NoActivity from "@assets/svg/noActivity";
 import {styles} from "@pages/activities/styles";
 import {fontValue} from "@pages/activities/fontValue";
@@ -131,7 +131,7 @@ export default function ActivitiesPage(props: any) {
 
         const groups = list?.reduce((groups: any , activity: any) => {
 
-            if (activity.assignedPersonnel == user?._id) {
+            if ((activity.assignedPersonnel?._id || activity.assignedPersonnel ) == user?._id) {
                 //  isPinned++
 
 
@@ -274,7 +274,6 @@ export default function ActivitiesPage(props: any) {
     } , [updateUnReadReadApplication , updateModal , searchTerm , selectedChangeStatus?.length , pinnedApplications?.length , currentPage]);
 
     const notPnApplications = useMemo(() => {
-        console.log("update props?.details?.assignedPersonnel:");
         setUpdateUnReadReadApplication(false);
         return ispinnedApplications(notPinnedApplications)
     } , [updateUnReadReadApplication , updateModal , searchTerm , selectedChangeStatus?.length , notPinnedApplications?.length , currentPage]);
@@ -639,7 +638,7 @@ export default function ActivitiesPage(props: any) {
                                             {
                                                 pnApplications.map((item: any , index: number) => {
                                                     return item?.activity && item?.activity.map((act: any , i: number) => {
-                                                        return act?.assignedPersonnel == user?._id && <ActivityItem
+                                                        return (act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <ActivityItem
                                                             isOpen={ isOpen }
                                                             config={ config }
                                                             key={ i }
