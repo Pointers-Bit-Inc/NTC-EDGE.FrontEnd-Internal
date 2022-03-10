@@ -16,6 +16,8 @@ import {
   setMeeting,
   setMeetingParticipants,
   setNotification,
+  updateMeeting,
+  updateMeetingParticipants,
 } from 'src/reducers/meeting/actions';
 import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
@@ -80,12 +82,14 @@ const Dial = ({ navigation, route }) => {
   useEffect(() => {
     let unmounted = false;
     
-    joinMeeting(meeting._id, (err, result) => {
-      console.log('ERR RESULT', err, result);
+    joinMeeting(meeting._id, (err:any, result:any) => {
       if (!unmounted) {
         if (result) {
           setLoading(false);
-          setAgora(result);
+          if (result) {
+            dispatch(updateMeetingParticipants(result.meeting));
+            setAgora(result?.agora);
+          }
         } else {
           setLoading(false);
           Alert.alert('Something went wrong.');

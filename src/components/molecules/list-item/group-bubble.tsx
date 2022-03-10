@@ -133,7 +133,7 @@ const ChatBubble:FC<Props> = ({
           {
             !isSender ?(
               <ProfileImage
-                image={sender?.image}
+                image={sender?.profilePicture?.thumb}
                 name={`${sender.firstName} ${sender.lastName}`}
                 size={25}
                 textSize={10}
@@ -266,7 +266,7 @@ const ChatBubble:FC<Props> = ({
                       <ProfileImage
                         style={[{ marginHorizontal: 1, }, isSender && styles.flipX]}
                         key={seen._id}
-                        image={seen?.image}
+                        image={seen?.profilePicture?.thumb}
                         name={`${seen.firstName} ${seen.lastName}`}
                         size={12}
                         textSize={5}

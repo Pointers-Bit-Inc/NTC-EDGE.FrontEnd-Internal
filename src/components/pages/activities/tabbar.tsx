@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Image , Platform , Text , TouchableOpacity , useWindowDimensions , View} from 'react-native';
+import {Dimensions, Image , Linking, Platform , Text , TouchableOpacity , useWindowDimensions , View, StyleSheet} from 'react-native';
 import {createDrawerNavigator , DrawerContentScrollView , DrawerItem ,} from '@react-navigation/drawer';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
@@ -30,11 +30,49 @@ import lodash from 'lodash';
 import {getRole } from "@pages/activities/script";
 import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import { Audio } from 'expo-av';
 import CustomSidebarMenu from "@pages/activities/customNavigationDrawer";
 import Search from "@pages/activities/search";
 import ActivitiesPage from "@pages/activities/index";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
+import useSignalr from 'src/hooks/useSignalr';
+import { resetMeeting, addMeeting, updateMeeting, setConnectionStatus } from 'src/reducers/meeting/actions';
+import { resetChannel, addMessages, updateMessages, addChannel, removeChannel } from 'src/reducers/channel/actions';
+import RNExitApp from 'react-native-exit-app';
+import AwesomeAlert from 'react-native-awesome-alerts';
+import { outline, text } from '@styles/color';
+import IMeetings from 'src/interfaces/IMeetings';
+import IParticipants from 'src/interfaces/IParticipants';
+import IRooms from 'src/interfaces/IRooms';
+
+const { width } = Dimensions.get('window');
+
+const customStyles = StyleSheet.create({
+  confirmText: {
+    fontSize: RFValue(14),
+    fontFamily: Regular,
+    color: text.primary,
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: RFValue(16),
+    fontFamily: Bold,
+    color: '#1F2022'
+  },
+  message: {
+    textAlign: 'center',
+    fontSize: RFValue(14),
+    fontFamily: Regular,
+    marginHorizontal: 15,
+    marginBottom: 15,
+  },
+  content: {
+    borderBottomColor: outline.default,
+    borderBottomWidth: 1,
+  }
+})
+
 const Tab = createBottomTabNavigator();
 
 const Drawer = createDrawerNavigator();
@@ -43,23 +81,143 @@ export default function TabBar() {
 
 
     const user = useSelector((state: RootStateOrAny) => state.user);
-
+    const onHide = () => setShowAlert(false)
+    const onShow = () => setShowAlert(true);
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertData, setAlertData]:any = useState({});
+    const [versionChecked, setVersionChecked] = useState(false);
+    const {
+        connectionStatus,
+        initSignalR,
+        destroySignalR,
+        onConnection,
+        checkVersion,
+      } = useSignalr();
+      
     const {tabBarHeight,  pinnedApplications, notPinnedApplications} = useSelector((state: RootStateOrAny) => state.application)
     const { hasNewChat = false, hasMeet = false } = useSelector((state: RootStateOrAny) => {
         const { channel = {}, meeting = {} } = state;
         const { channelList = [] } = channel;
         const { activeMeetings = [] } = meeting;
 
-        const hasNewChat = lodash.reject(channelList, ch => ch.hasSeen);
-        const hasMeet = lodash.reject(activeMeetings, mt => mt.ended);
+        const hasNewChat = lodash.reject(channelList, (ch:IRooms) => ch.hasSeen);
+        const hasMeet = lodash.reject(activeMeetings, (mt:IMeetings) => mt.ended);
         return {
             hasNewChat: lodash.size(hasNewChat) > 0,
             hasMeet: lodash.size(hasMeet) > 0,
         }
     })
+    const newMeeting = useSelector((state: RootStateOrAny) => {
+      const { normalizeActiveMeetings } = state.meeting
+      const meetingList = lodash.keys(normalizeActiveMeetings).map((m:string) => normalizeActiveMeetings[m])
+      const hasMeet = lodash.reject(meetingList, (mt:IMeetings) => mt.ended);
+      const newMeeting = lodash.find(hasMeet, (am:IMeetings) => lodash.find(am.participants, (ap:IParticipants) => ap._id === user._id && ap.hasJoined === false));
+      return newMeeting;
+    })
     const [pnApplication, setPnApplication] = useState(pinnedApplications)
     const [notPnApplication, setNotPnApplication] = useState(notPinnedApplications)
-   const dispatch = useDispatch()
+    const dispatch = useDispatch()
+    const soundRef:any = React.useRef();
+    const playSound = async () => {
+      const { sound } = await Audio.Sound.createAsync(
+         require('@assets/sound/incoming.wav')
+      );
+      soundRef.current = sound;
+      await sound.setIsLoopingAsync(true);
+      await sound.playAsync();
+    }
+    const onPressAlert = () => {
+    if (alertData.link) {
+      return Linking.openURL(alertData.link);
+    } else {
+      return RNExitApp.exitApp();
+    }
+  }
+
+  useEffect(() => {
+    dispatch(setConnectionStatus(connectionStatus));
+    let unmount = false
+
+    if (!versionChecked && connectionStatus === 'connected') {
+      checkVersion((err:any, res:any) => {
+        if (!unmount) {
+          setVersionChecked(true);
+          if (res) {
+            setAlertData(res);
+            setShowAlert(true);
+          }
+        }
+      })
+    }
+    return () => {
+      unmount = true;
+    }
+  }, [connectionStatus])
+
+  useEffect(() => {
+      initSignalR();
+      onConnection('OnChatUpdate', (users:Array<string>, type:string, data:any) => {
+        if (data) {
+          switch(type) {
+            case 'create': {
+              dispatch(addMessages(data));
+              break;
+            }
+            case 'update': {
+              dispatch(updateMessages(data));
+              break;
+            }
+          }
+        }
+      });
+
+      onConnection('OnRoomUpdate', (users:Array<string>, type:string, data:any) => {
+        if (data) {
+          switch(type) {
+            case 'create': {
+              dispatch(addChannel(data));
+              dispatch(addMessages(data.lastMessage));
+              break;
+            }
+            case 'delete': dispatch(removeChannel(data._id)); break;
+          }
+        }
+      });
+
+      onConnection('OnMeetingUpdate', (users:Array<string>, type:string, data:any) => {
+        if (data) {
+          switch(type) {
+            case 'create': {
+              const { room } = data;
+              const { lastMessage } = room;
+              dispatch(addChannel(room));
+              dispatch(addMessages(lastMessage));
+              dispatch(addMeeting(data));
+              break;
+            };
+            case 'update': {
+              const { room = {} } = data;
+              const { lastMessage } = room;
+              if (lastMessage) dispatch(addChannel(room));
+              if (lastMessage) dispatch(addMessages(lastMessage));
+              dispatch(updateMeeting(data));
+              break;
+            }
+          }
+        }
+      });
+  
+      return () => destroySignalR();
+    }, []);
+
+    useEffect(() => {
+      if (lodash.size(newMeeting)) {
+        playSound();
+      }
+      return () => {
+        soundRef?.current?.unloadAsync();
+      }
+    }, [newMeeting]);
 
     useEffect(()=>{
 
@@ -204,6 +362,25 @@ export default function TabBar() {
                     <Drawer.Screen  options={{  drawerLabel: SEARCH, drawerItemStyle: {display: "none"}, headerShown: false }}  name={SEARCH} component={Search} />
 
                 </Drawer.Navigator> }
+                <AwesomeAlert
+                    show={showAlert}
+                    showProgress={false}
+                    contentContainerStyle={{ borderRadius: 15, maxWidth: width * 0.7 }}
+                    titleStyle={customStyles.title}
+                    title={alertData?.title || 'Alert'}
+                    message={alertData?.message}
+                    messageStyle={customStyles.message}
+                    contentStyle={customStyles.content}
+                    closeOnTouchOutside={false}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText={alertData.button || 'OK'}
+                    confirmButtonColor={'white'}
+                    confirmButtonTextStyle={customStyles.confirmText}
+                    actionContainerStyle={{ justifyContent: 'space-around' }}
+                    onConfirmPressed={onPressAlert}
+                />
             </>
 
 

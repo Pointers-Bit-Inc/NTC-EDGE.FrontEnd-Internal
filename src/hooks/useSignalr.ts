@@ -37,8 +37,24 @@ const useSignalr = () => {
     signalr.current?.on(connection, callback),
   []);
 
-  const createChannel = useCallback((participants, callback = () => {}) => {
-    api.post('/room', {
+  const createChannel = useCallback(({ participants, name, message }, callback = () => {}) => {
+    api.post('/rooms', {
+      participants,
+      name,
+      message,
+    })
+    .then(res => {
+      console.log('RESult', res);
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      console.log('ERROR ERROR', err);
+      return callback(err);
+    });
+  }, []);
+
+  const getChannelByParticipants = useCallback(({ participants }, callback = () => {}) => {
+    api.post('/rooms/get-room', {
       participants,
     })
     .then(res => {
@@ -50,7 +66,7 @@ const useSignalr = () => {
   }, []);
 
   const leaveChannel = useCallback((channelId, callback = () => {}) => {
-    api.delete(`/room/delete?id=${channelId}`)
+    api.delete(`/rooms/${channelId}/delete`)
     .then(res => {
       return callback(null, res.data);
     })
@@ -59,8 +75,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getChatList = useCallback((url, callback = () => {}) => {
-    api.get(url)
+  const getChatList = useCallback((payload, callback = () => {}) => {
+    api.get(`rooms?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(roomSchema));
@@ -71,8 +87,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getParticipantList = useCallback((url, callback = () => {}) => {
-    api.get(url)
+  const getParticipantList = useCallback((payload, callback = () => {}) => {
+    api.get(`users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}&loadRooms=${payload.loadRooms || false}`)
     .then(res => {
       return callback(null, res.data);
     })
@@ -82,7 +98,7 @@ const useSignalr = () => {
   }, []);
 
   const sendMessage = useCallback((payload, callback = () => {}) => {
-    api.post('/message', payload)
+    api.post('/messages', payload)
     .then(res => {
       return callback(null, res.data);
     })
@@ -92,7 +108,7 @@ const useSignalr = () => {
   }, []);
 
   const editMessage = useCallback((payload, callback = () => {}) => {
-    api.patch('/message/edit', payload)
+    api.patch(`/messages/${payload.messageId}`, payload)
     .then(res => {
       return callback(null, res.data);
     })
@@ -102,7 +118,7 @@ const useSignalr = () => {
   }, []);
 
   const unSendMessage = useCallback((messageId, callback = () => {}) => {
-    api.patch(`/message/unsend?id=${messageId}`)
+    api.patch(`/messages/${messageId}/unsend`)
     .then(res => {
       return callback(null, res.data);
     })
@@ -112,7 +128,7 @@ const useSignalr = () => {
   }, []);
 
   const deleteMessage = useCallback((messageId, callback = () => {}) => {
-    api.delete(`/message/delete?id=${messageId}`)
+    api.delete(`/messages/${messageId}/delete`)
     .then(res => {
       return callback(null, res.data);
     })
@@ -122,7 +138,7 @@ const useSignalr = () => {
   }, []);
 
   const seenMessage = useCallback((id, callback = () => {}) => {
-    api.patch(`/message/seen?id=${id}`)
+    api.patch(`/messages/${id}/seen`)
     .then(res => {
       return callback(null, res.data);
     })
@@ -132,7 +148,7 @@ const useSignalr = () => {
   }, []);
 
   const getMessages = useCallback((channelId, pageIndex, callback = () => {}) => {
-    api.get(`/message/list?roomId=${channelId}&pageIndex=${pageIndex}`)
+    api.get(`/messages?roomId=${channelId}&pageIndex=${pageIndex}`)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(messageSchema));
@@ -144,7 +160,7 @@ const useSignalr = () => {
   }, []);
 
   const createMeeting = useCallback((payload, callback = () => {}) => {
-    api.post('/meeting', payload)
+    api.post('/meetings', payload)
     .then(res => {
       return callback(null, res.data);
     })
@@ -154,7 +170,7 @@ const useSignalr = () => {
   }, []);
 
   const joinMeeting = useCallback((meetingId, callback = () => {}) => {
-    api.get(`/meeting/join?meetingId=${meetingId}`)
+    api.get(`/meetings/${meetingId}/join`)
     .then(res => {
       return callback(null, res.data);
     })
@@ -164,7 +180,7 @@ const useSignalr = () => {
   }, []);
 
   const endMeeting = useCallback((id, callback = () => {}) => {
-    api.patch(`/meeting/end?id=${id}`)
+    api.patch(`/meetings/${id}/end`)
     .then(res => {
       return callback(null, res.data);
     })
@@ -174,7 +190,7 @@ const useSignalr = () => {
   }, []);
 
   const leaveMeeting = useCallback((id, callback = () => {}) => {
-    api.patch(`/meeting/leave?id=${id}`)
+    api.patch(`/meetings/${id}/leave`)
     .then(res => {
       return callback(null, res.data);
     })
@@ -183,8 +199,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getMeetingList = useCallback((url, callback = () => {}) => {
-    api.get(url)
+  const getMeetingList = useCallback((payload, callback = () => {}) => {
+    api.get(`meetings?pageIndex=${payload.pageIndex || 1}`)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(meetingSchema));
@@ -196,7 +212,7 @@ const useSignalr = () => {
   }, []);
 
   const getActiveMeetingList = useCallback((callback = () => {}) => {
-    api.get('/meeting/get-active-meetings')
+    api.get(`/users/${user._id}/meetings?status=${"active"}`)
     .then(res => {
       const normalized = normalize(res.data, new schema.Array(meetingSchema));
       return callback(null, normalized?.entities?.meetings);
@@ -209,7 +225,7 @@ const useSignalr = () => {
   const checkVersion = useCallback((callback = () => {}) => {
     const version = DeviceInfo.getVersion();
     const os = Platform.OS;
-    api.get(`/room/check-version?os=${os}&version=${version}`)
+    api.post('/rooms/check-version', { os, version })
     .then(res => {
       return callback(null, res.data);
     })
@@ -224,6 +240,7 @@ const useSignalr = () => {
     destroySignalR,
     onConnection,
     createChannel,
+    getChannelByParticipants,
     leaveChannel,
     getChatList,
     getParticipantList,

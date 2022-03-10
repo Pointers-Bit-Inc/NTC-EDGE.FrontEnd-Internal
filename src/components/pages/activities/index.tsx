@@ -73,6 +73,7 @@ import RefreshWeb from "@assets/svg/refreshWeb";
 import {primaryColor} from "@styles/color";
 import {isMobile} from "@pages/activities/isMobile";
 import ActivityModalView from "@pages/activities/nativeView/activityModalView";
+import IMeetings from "src/interfaces/IMeetings";
 
 const { width } = Dimensions.get('window');
 
@@ -387,7 +388,7 @@ export default function ActivitiesPage(props: any) {
 
     } , [size , total , page]);
 
-    const onJoin = (item) => {
+    const onJoin = (item:IMeetings) => {
         dispatch(setSelectedChannel(item.room));
         dispatch(setMeeting(item));
         props.navigation.navigate('Dial', {
@@ -400,7 +401,7 @@ export default function ActivitiesPage(props: any) {
         });
     };
 
-    const onClose = (item, leave = false) => {
+    const onClose = (item:IMeetings, leave = false) => {
         if (leave) {
           dispatch(removeActiveMeeting(item._id));
           return leaveMeeting(item._id);
@@ -564,25 +565,24 @@ export default function ActivitiesPage(props: any) {
                         {
                             !!lodash.size(meetingList) && (
                                 <FlatList
-                                    data={ meetingList }
-                                    bounces={ false }
+                                    data={meetingList}
+                                    bounces={false}
                                     horizontal
-                                    showsHorizontalScrollIndicator={ false }
-                                    snapToInterval={ width }
-                                    decelerationRate={ 0 }
-                                    keyExtractor={ (item: any) => item._id }
-                                    renderItem={ ({ item }) => (
+                                    showsHorizontalScrollIndicator={false}
+                                    snapToInterval={width}
+                                    decelerationRate={0}
+                                    keyExtractor={(item: any) => item._id}
+                                    renderItem={({item}) => (
                                         <MeetingNotif
-                                            style={ { width } }
-                                            name={ getChannelName(item) }
-                                            time={ item.createdAt }
-                                            onJoin={ () => onJoin(item) }
-                                            onClose={ () => onClose(item) }
-                                            closeText={
-                                                item.host._id === user._id ? 'End' : 'Close'
-                                            }
+                                            style={{width}}
+                                            name={getChannelName({...item, otherParticipants: item?.participants})}
+                                            time={item.createdAt}
+                                            host={item.host}
+                                            onJoin={() => onJoin(item)}
+                                            onClose={(leave:any) => onClose(item, leave)}
+                                            closeText={'Cancel'}
                                         />
-                                    ) }
+                                    )}
                                 />
                             )
                         }

@@ -33,6 +33,7 @@ import NewCallIcon from './new-call';
 import NewMessageIcon from './new-message';
 import NewSearchIcon from './new-search';
 import NewEditIcon from './new-edit';
+import NewGroupIcon from './new-group';
 
 export {
   ExclamationIcon,
@@ -70,4 +71,5 @@ export {
   NewMessageIcon,
   NewSearchIcon,
   NewEditIcon,
+  NewGroupIcon
 };

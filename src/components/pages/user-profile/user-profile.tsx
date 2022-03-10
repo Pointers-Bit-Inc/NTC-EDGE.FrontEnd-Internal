@@ -97,7 +97,7 @@ const UserProfileScreen = ({navigation}: any) => {
 
             axios
                 .patch(
-                    `${dp ? BASE_URL_NODE : BASE_URL}/user/profile/${user._id}`,
+                    dp ? `${BASE_URL_NODE}/user/profile/${user._id}` : `${BASE_URL}/users/${user._id}`,
                     formData,
                     {headers: {
                         'Authorization': `Bearer ${user?.sessionToken}`,

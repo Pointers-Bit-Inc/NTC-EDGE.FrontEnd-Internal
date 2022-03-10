@@ -28,7 +28,7 @@ const text = {
   secondary: '#FFFFFF',
   default: '#565962',
   success: '#34C759',
-  error: '#CA024F',
+  error: '#CF0327',
   warning: '#FFAE42',
   disabled: '#808197',
 };

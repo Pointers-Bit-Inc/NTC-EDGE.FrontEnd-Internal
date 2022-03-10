@@ -12,12 +12,9 @@ import {
   InteractionManager,
 } from 'react-native'
 import lodash from 'lodash';
-import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
-import { setMeetingId } from 'src/reducers/meeting/actions';
+import { setMeetingId, setMeetings } from 'src/reducers/meeting/actions';
 import { MeetingNotif } from '@components/molecules/list-item';
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import useFirebase from 'src/hooks/useFirebase';
 import useSignalR from 'src/hooks/useSignalr';
 import ChatList from '@screens/chat/chat-list';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
@@ -49,6 +46,7 @@ import {
 import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
 import CreateMeeting from '@components/pages/chat/meeting';
+import IMeetings from 'src/interfaces/IMeetings';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -115,13 +113,6 @@ const styles = StyleSheet.create({
     width: 35,
     borderRadius: 4,
   },
-});
-
-const ChatRoute = () => (<ChatList />);
-const FileRoute = () => (<FileList />);
-const renderScene = SceneMap({
-  chat: ChatRoute,
-  files: FileRoute,
 });
 
 const ChatView = ({ navigation, route }:any) => {
@@ -200,25 +191,7 @@ const ChatView = ({ navigation, route }:any) => {
 
   const onBack = () => navigation.goBack();
 
-  const renderTabBar = (props:any) => (
-    <TabBar
-      {...props}
-      labelStyle={{ color: text.default }}
-      indicatorStyle={{ backgroundColor: outline.primary }}
-      style={{ backgroundColor: 'white' }}
-      renderLabel={({ route, focused, color }) => (
-        <Text
-          color={focused ? text.primary : color}
-          size={16}
-          weight={focused ? '600' : 'normal'}
-        >
-          {route.title}
-        </Text>
-      )}
-    />
-  );
-
-  const onJoin = (item) => {
+  const onJoin = (item:IMeetings) => {
     dispatch(setSelectedChannel(item.room));
     dispatch(setMeeting(item));
     navigation.navigate('Dial', {
@@ -231,7 +204,7 @@ const ChatView = ({ navigation, route }:any) => {
     });
   }
 
-  const onClose = (item, leave = false) => {
+  const onClose = (item:IMeetings, leave = false) => {
     if (leave) {
       dispatch(removeActiveMeeting(item._id));
       return leaveMeeting(item._id);
@@ -246,6 +219,9 @@ const ChatView = ({ navigation, route }:any) => {
     InteractionManager.runAfterInteractions(() => {
       setRendered(true);
     })
+    return () => {
+      dispatch(setSelectedChannel({}));
+    }
   }, []);
 
   useEffect(() => {
@@ -351,13 +327,6 @@ const ChatView = ({ navigation, route }:any) => {
         }
       </View>
       <View style={{ flex: 1 }}>
-        {/* <TabView
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          initialLayout={{ width: layout.width }}
-          renderTabBar={renderTabBar}
-        /> */}
         <ChatList />
       </View>
       <KeyboardAvoidingView
@@ -395,13 +364,25 @@ const ChatView = ({ navigation, route }:any) => {
             <TouchableOpacity
               onPress={onSendMessage}
             >
-              <View style={{ marginLeft: 10 }}>
-                <NewMessageIcon
-                  color={inputText ? button.info : '#D1D1D6'}
-                  height={RFValue(30)}
-                  width={RFValue(30)}
-                />
-              </View>
+              {
+                selectedMessage?._id ? (
+                  <View style={[styles.plus, { marginRight: 0, marginLeft: 10, backgroundColor: button.info }]}>
+                    <CheckIcon
+                      type='check1'
+                      size={14}
+                      color={'white'}
+                    />
+                  </View>
+                ) : (
+                  <View style={{ marginLeft: 10 }}>
+                    <NewMessageIcon
+                      color={inputText ? button.info : '#D1D1D6'}
+                      height={RFValue(30)}
+                      width={RFValue(30)}
+                    />
+                  </View>
+                )
+              }
             </TouchableOpacity>
             {/* {
               !!selectedMessage._id ? (
