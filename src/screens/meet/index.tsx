@@ -31,6 +31,8 @@ import HomeMenuIcon from "@assets/svg/homemenu";
 import { RFValue } from 'react-native-responsive-fontsize';
 import {Bold} from "@styles/font";
 import CreateMeeting from '@components/pages/chat/meeting';
+import IMeetings from 'src/interfaces/IMeetings';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -173,8 +175,13 @@ const Meet = ({ navigation }) => {
   const [hasError, setHasError] = useState(false);
   const [isNext, setIsNext] = useState(false);
   const [participants, setParticipants] = useState([]);
+  const [currentMeeting, setCurrentMeeting] = useState({
+    channelId: '',
+    isChannelExist: false,
+    participants: [],
+  });
 
-  const onJoin = (item) => {
+  const onJoin = (item:IMeetings) => {
     dispatch(setSelectedChannel(item.room));
     dispatch(setMeeting(item));
     navigation.navigate('Dial', {
@@ -193,8 +200,9 @@ const Meet = ({ navigation }) => {
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);
     setHasError(false);
-    const url = `/room/list?pageIndex=${pageIndex}`;
-    getMeetingList(url, (err:any, res:any) => {
+    const payload = { pageIndex };
+
+    getMeetingList(payload, (err:any, res:any) => {
       if (res) {
         if (res.list) dispatch(addToMeetings(res.list));
         setPageIndex(current => current + 1);
@@ -214,8 +222,9 @@ const Meet = ({ navigation }) => {
     setHasMore(false);
     setHasError(false);
     let unMount = false;
-    const url = `/meeting/list?pageIndex=1`;
-    getMeetingList(url, (err:any, res:any) => {
+    const payload = { pageIndex: 1 };
+
+    getMeetingList(payload, (err:any, res:any) => {
       if (!unMount) {
         if (res) {
           dispatch(setMeetings(res.list));
@@ -296,12 +305,46 @@ const Meet = ({ navigation }) => {
       <Meeting
         name={getChannelName(item)}
         time={item.createdAt}
-        participants={lodash.take(item?.room?.otherParticipants, 5)}
+        participants={lodash.take(item?.room?.otherParticipants, 4)}
+        others={lodash.size(item?.room?.otherParticipants) - 4}
         ended={item.ended}
         data={item}
         onJoin={() => onJoin(item)}
       />
     )
+  }
+
+  const checkSelectedItems = (selectedItem:any) => {
+    if (lodash.size(selectedItem) === 1 && selectedItem[0].isGroup) {
+      setCurrentMeeting({
+        channelId: selectedItem[0]._id,
+        isChannelExist: true,
+        participants: selectedItem[0].participants,
+      })
+    } else {
+      const tempParticipants:any = [];
+      lodash.map(selectedItem, (item:any) => {
+        if (item.isGroup) {
+          lodash.map(item.participants, (p:IParticipants) => {
+            const isExists = lodash.find(tempParticipants, (temp:IParticipants) => temp._id === p._id);
+            if (!isExists) {
+              tempParticipants.push(p);
+            }
+          })
+        } else {
+          const isExists = lodash.find(tempParticipants, (temp:IParticipants) => temp._id === item._id);
+          if (!isExists) {
+            tempParticipants.push(item);
+          }
+        }
+      });
+
+      setCurrentMeeting({
+        channelId: '',
+        isChannelExist: false,
+        participants: tempParticipants,
+      })
+    }
   }
 
   return (
@@ -310,11 +353,6 @@ const Meet = ({ navigation }) => {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
           <HomeMenuIcon/>
-          {/* <ProfileImage
-            size={45}
-            image={user?.image}
-            name={`${user.firstName} ${user.lastName}`}
-          /> */}
         </TouchableOpacity>
         <View style={styles.titleContainer}>
           <Text
@@ -391,11 +429,18 @@ const Meet = ({ navigation }) => {
           {
             isNext ? (
               <CreateMeeting
-                participants={participants}
+                participants={currentMeeting.participants}
                 onClose={() => setIsNext(false)}
+                channelId={currentMeeting.channelId}
+                isChannelExist={currentMeeting.isChannelExist}
                 onSubmit={(type, params) => {
                   modalRef.current?.close();
                   setParticipants([]);
+                  setCurrentMeeting({
+                    channelId: '',
+                    isChannelExist: false,
+                    participants: [],
+                  })
                   setIsNext(false);
                   setTimeout(() => navigation.navigate(type, params), 300);
                 }}
@@ -408,6 +453,7 @@ const Meet = ({ navigation }) => {
                   modalRef.current?.close();
                 }}
                 onSubmit={(res:any) => {
+                  checkSelectedItems(res);
                   setParticipants(res);
                   setIsNext(true);
                 }}

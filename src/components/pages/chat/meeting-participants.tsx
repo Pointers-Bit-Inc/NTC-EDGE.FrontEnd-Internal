@@ -124,11 +124,9 @@ const MeetingParticipants = ({
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);
     setHasError(false);
-    const url = searchValue ?
-      `/room/search-participants?pageIndex=${pageIndex}&search=${searchValue}` :
-      `/room/list-participants?pageIndex=${pageIndex}`;
+    const payload = searchValue ? { pageIndex, keyword: searchValue } : { pageIndex };
 
-    getParticipantList(url, (err:any, res:any) => {
+    getParticipantList(payload, (err:any, res:any) => {
       if (res) {
         setContacts([...contacts, ...res.list]);
         setPageIndex(current => current + 1);
@@ -148,14 +146,12 @@ const MeetingParticipants = ({
     setHasMore(false);
     setHasError(false);
     const source = axios.CancelToken.source();
-    const url = searchValue ?
-      `/room/search-participants?pageIndex=1&search=${searchValue}` :
-      `/room/list-participants?pageIndex=1`;
+    const payload = searchValue ? { pageIndex: 1, keyword: searchValue, loadRooms: true } : { pageIndex: 1, loadRooms: true };
 
     InteractionManager.runAfterInteractions(() => {
-      getParticipantList(url, (err:any, res:any) => {
+      getParticipantList(payload, (err:any, res:any) => {
         if (res) {
-          setContacts(res.list);
+          setContacts([...res.rooms, ...res.list]);
           setPageIndex(current => current + 1);
           setHasMore(res.hasMore);
         }
@@ -208,8 +204,9 @@ const MeetingParticipants = ({
         data={participants}
         renderItem={({ item }) => (
           <SelectedContact
-            image={item?.image}
+            image={item?.profilePicture?.thumb}
             name={item.name}
+            isGroup={item.isGroup}
             data={item}
             onPress={() => onRemoveParticipants(item._id)}
           />
@@ -336,8 +333,9 @@ const MeetingParticipants = ({
         }
         renderItem={({ item }) => (
           <ContactItem
-            image={item?.image}
+            image={item?.profilePicture?.thumb}
             data={item}
+            isGroup={item.isGroup}
             name={item.name}
             onPress={() => onTapCheck(item._id)}
             rightIcon={

@@ -4,7 +4,10 @@ import Text from '@components/atoms/text'
 import { text, primaryColor } from 'src/styles/color';
 import { CloseIcon } from '@components/atoms/icon';
 import ProfileImage from '@components/atoms/image/profile'
+import GroupImage from '@components/molecules/image/group';
 import { RFValue } from 'react-native-responsive-fontsize';
+import IParticipants from 'src/interfaces/IParticipants';
+import lodash from 'lodash';
 
 const imageSize = 42;
 
@@ -69,17 +72,43 @@ interface Props {
   contact?: string;
   onPress?: any;
   data?: any;
+  isGroup?: boolean,
   [x: string]: any;
 }
 
-const ChatItem: FC<Props> = ({
+const SelectedItem: FC<Props> = ({
   image = '',
   name = '',
   contact = '',
   onPress = () => {},
   data = {},
+  isGroup = false,
   ...otherProps
 }) => {
+  const getName = (data:any) => {
+    let result = '';
+    
+    if (isGroup) {
+      if (data.name) {
+        result += data.name;
+      } else {
+        lodash.map(data.participants, (participant:IParticipants) => {
+          let participantName = '';
+
+          if (participant.title) participantName += participant.title + ' ';
+          participantName += participant.firstName;
+
+          result += participantName + ',';
+        });
+      }
+    } else {
+      if (data.title) result += data.title + ' ';
+      if (data.name) result += data.name;
+      if (data.suffix) result += ', ' + data.suffix;
+    }
+
+    return result;
+  }
 
   return (
     <View style={[styles.container]} {...otherProps}>
@@ -94,21 +123,31 @@ const ChatItem: FC<Props> = ({
           </View>
         </TouchableOpacity>
       </View>
-      <ProfileImage
-        image={image}
-        name={name}
-        size={imageSize}
-        textSize={14}
-      />
+      {
+        !isGroup ? (
+          <ProfileImage
+            image={image}
+            name={name}
+            size={imageSize}
+            textSize={14}
+          />
+        ) : (
+          <GroupImage
+            participants={data.participants}
+            size={imageSize}
+            textSize={14}
+          />
+        )
+      }
       <Text
         size={10}
         numberOfLines={1}
         color={text.default}
       >
-        {`${data.title ? `${data.title}` : ''} ${name}${data.suffix ? `, ${data.suffix}` : ''}`}
+        {getName(data)}
       </Text>
     </View>
   )
 }
 
-export default ChatItem
+export default SelectedItem

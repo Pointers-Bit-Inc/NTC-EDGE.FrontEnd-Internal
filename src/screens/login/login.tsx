@@ -25,7 +25,7 @@ const Login = ({ navigation }: any) => {
     const [loading , setLoading] = useState(false);
     const onLogin = async (data) => {
         setLoading(true);
-        api.post('/internal/signin' , {
+        api.post('/signin' , {
             email : data.email ,
             password : data.password ,
         })
@@ -136,8 +136,6 @@ const Login = ({ navigation }: any) => {
     const isValid =
         formValue.email.isValid &&
         formValue.password.isValid;
-
-    
 
     return <>{
        isMobile ?

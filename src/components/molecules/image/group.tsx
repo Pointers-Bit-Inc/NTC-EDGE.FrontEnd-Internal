@@ -47,7 +47,7 @@ const GroupImage: FC<Props> = ({
   if (lodash.size(participants) === 1) {
     return (
       <ProfileImage
-        image={participants[0]?.image}
+        image={participants[0]?.profilePicture?.thumb}
         name={`${participants[0].firstName} ${participants[0].lastName}`}
         size={size}
         textSize={textSize}
@@ -61,7 +61,7 @@ const GroupImage: FC<Props> = ({
         <View style={styles.topPosition}>
           <ProfileImage
             style={styles.border}
-            image={participants[0]?.image}
+            image={participants[0]?.profilePicture?.thumb}
             name={`${participants[0].firstName} ${participants[0].lastName}`}
             size={imageSize}
             textSize={textSize/2}
@@ -70,7 +70,7 @@ const GroupImage: FC<Props> = ({
         <View style={styles.bottomPosition}>
           <ProfileImage
             style={styles.border}
-            image={participants[1]?.image}
+            image={participants[1]?.profilePicture?.thumb}
             name={`${participants[1].firstName} ${participants[1].lastName}`}
             size={imageSize}
             textSize={textSize/2}
@@ -85,7 +85,7 @@ const GroupImage: FC<Props> = ({
       <View style={styles.topPosition}>
         <ProfileImage
           style={styles.border}
-          image={participants[0]?.image}
+          image={participants[0]?.profilePicture?.thumb}
           name={`${participants[0].firstName} ${participants[0].lastName}`}
           size={imageSize}
           textSize={textSize/2}
@@ -94,7 +94,7 @@ const GroupImage: FC<Props> = ({
       <View style={styles.bottomPosition}>
         <ProfileImage
           style={styles.border}
-          image={participants[1]?.image}
+          image={participants[1]?.profilePicture?.thumb}
           name={`${participants[1].firstName} ${participants[1].lastName}`}
           size={imageSize}
           textSize={textSize/2}

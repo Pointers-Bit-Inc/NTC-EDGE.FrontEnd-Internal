@@ -46,6 +46,7 @@ import {
   removeActiveMeeting ,
   setMeeting ,
 } from 'src/reducers/meeting/actions';
+import IMeetings from 'src/interfaces/IMeetings';
 
 const { width, height } = Dimensions.get('window');
 
@@ -194,10 +195,9 @@ const ChatList = ({ navigation }:any) => {
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);
     setHasError(false);
-    const url = searchValue ?
-      `/room/search?pageIndex=${pageIndex}&search=${searchValue}` :
-      `/room/list?pageIndex=${pageIndex}`;
-    getChatList(url, (err:any, res:any) => {
+    const payload = searchValue ? { pageIndex, keyword: searchValue } : { pageIndex };
+
+    getChatList(payload, (err:any, res:any) => {
       if (res) {
         if (res.list) dispatch(addToChannelList(res.list));
         setPageIndex(current => current + 1);
@@ -230,10 +230,9 @@ const ChatList = ({ navigation }:any) => {
     setHasMore(false);
     setHasError(false);
     let unMount = false;
-    const url = searchValue ?
-      `/room/search?pageIndex=1&search=${searchValue}` :
-      `/room/list?pageIndex=1`;
-    getChatList(url, (err:any, res:any) => {
+    const payload = searchValue ? { pageIndex: 1, keyword: searchValue } : { pageIndex: 1 };
+
+    getChatList(payload, (err:any, res:any) => {
       if (!unMount) {
         if (res) {
           dispatch(setChannelList(res.list));
@@ -252,7 +251,7 @@ const ChatList = ({ navigation }:any) => {
     }
   }, [sendRequest, searchValue])
 
-  const onJoin = (item) => {
+  const onJoin = (item:IMeetings) => {
       dispatch(setSelectedChannel(item.room));
       dispatch(setMeeting(item));
       navigation.navigate('Dial', {
@@ -265,7 +264,7 @@ const ChatList = ({ navigation }:any) => {
       });
   }
 
-const onClose = (item, leave = false) => {
+const onClose = (item:IMeetings, leave = false) => {
     if (leave) {
       dispatch(removeActiveMeeting(item._id));
       return leaveMeeting(item._id);
@@ -287,7 +286,7 @@ const onClose = (item, leave = false) => {
         color={text.default}
         size={14}
       >
-        No matches found
+        No chat found
       </Text>
     </View>
   )
@@ -374,7 +373,7 @@ const onClose = (item, leave = false) => {
                     time={item.createdAt}
                     host={item.host}
                     onJoin={() => onJoin(item)}
-                    onClose={(leave) => onClose(item, leave)}
+                    onClose={(leave:boolean) => onClose(item, leave)}
                     closeText={'Cancel'}
                   />
                 )}
@@ -467,7 +466,7 @@ const onClose = (item, leave = false) => {
         backdropOpacity={0}
         onBackdropPress={() => {}}
       >
-        <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
+        <View style={{ height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
           <NewChat
             onClose={() => modalRef.current?.close()}
             onSubmit={(res:any) => {

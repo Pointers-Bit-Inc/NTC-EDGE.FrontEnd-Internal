@@ -60,15 +60,11 @@ export default ({
     const api = Api(user.sessionToken);
     setVisible(false)
     setTimeout(() => {
-      api.post('/user/logout')
-          .then(() => {
-            dispatch(setApplicationItem({}))
-            dispatch(resetUser());
-            dispatch(resetMeeting());
-            dispatch(resetChannel());
-            navigation.dispatch(StackActions.replace('Login'));
-
-          });
+      dispatch(setApplicationItem({}))
+      dispatch(resetUser());
+      dispatch(resetMeeting());
+      dispatch(resetChannel());
+      navigation.dispatch(StackActions.replace('Login'));
     }, 500);
   }, []);
   const renderRow = ({item}: any) => {

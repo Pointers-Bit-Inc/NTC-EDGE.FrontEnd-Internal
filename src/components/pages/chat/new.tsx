@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import {
   RefreshControl,
   ActivityIndicator,
@@ -8,23 +8,27 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  StatusBar
+  StatusBar,
+  Platform
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useSelector, useDispatch } from 'react-redux';
 import lodash from 'lodash';
-import { setSelectedChannel, addToChannelList, addChannel } from 'src/reducers/channel/actions';
 import { outline, button, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
 import { ContactItem, ListFooter, SelectedContact } from '@components/molecules/list-item';
-import { ArrowLeftIcon, ArrowDownIcon, CheckIcon, CloseIcon } from '@components/atoms/icon'
-import { SearchField } from '@components/molecules/form-fields'
+import ChatView from './view';
+import { ArrowRightIcon, ArrowDownIcon, CheckIcon, CloseIcon, NewGroupIcon, PlusIcon } from '@components/atoms/icon'
+import { InputField, SearchField } from '@components/molecules/form-fields'
 import { primaryColor, header } from '@styles/color';
 import { Bold, Regular, Regular500 } from '@styles/font';
 import useSignalr from 'src/hooks/useSignalr';
 import axios from 'axios';
+import { InputTags } from '@components/molecules/form-fields';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { useDispatch } from 'react-redux';
+import { setSelectedChannel } from 'src/reducers/channel/actions';
+import AwesomeAlert from 'react-native-awesome-alerts';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -33,7 +37,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    paddingHorizontal: 15,
   },
   horizontal: {
     flexDirection: 'row',
@@ -94,16 +97,110 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomColor: '#E5E5E5',
     borderBottomWidth: 1,
+  },
+  newGroupContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: '#EAEAF4',
+    alignContent: 'center',
+    justifyContent: 'space-between',
+  },
+  outlineText: {
+    borderRadius: 10,
+  },
+  inputText: {
+    fontSize: RFValue(16),
+  },
+  groupName: {
+    height: undefined,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: 'white',
+    backgroundColor: 'white',
+    marginBottom: -30,
+    marginTop: 20,
+    paddingHorizontal: 10
+  },
+  plus: {
+    backgroundColor: button.info,
+    borderRadius: RFValue(20),
+    width: RFValue(20),
+    height: RFValue(20),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 5,
+  },
+  cancelText: {
+    fontSize: RFValue(16),
+    color: text.info,
+    fontFamily: Regular500,
+  },
+  confirmText: {
+    fontSize: RFValue(16),
+    color: text.error,
+    fontFamily: Regular500,
+  },
+  title: {
+    color: '#14142B',
+    textAlign: 'center',
+    fontSize: RFValue(16),
+    fontFamily: Regular500,
+  },
+  message: {
+    color: '#4E4B66',
+    textAlign: 'center',
+    fontSize:RFValue(14),
+    marginHorizontal: 15,
+    marginBottom: 15,
+    fontFamily: Regular,
+  },
+  content: {
+    borderBottomColor: outline.default,
+    borderBottomWidth: 1,
   }
-})
+});
+
+const tagStyles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: '#D6D6D6',
+  },
+  container: {
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'flex-start',
+  },
+  tag: {
+    borderRadius: 10,
+    margin: 2,
+  },
+  textTag: {
+    color: header.default,
+    fontFamily: Bold,
+    fontSize: RFValue(14),
+  },
+  input: {
+    backgroundColor: '#FFFFFF',
+    color: header.default,
+    fontSize: RFValue(14),
+    fontFamily: Bold,
+    paddingLeft: 0,
+    paddingRight: 0,
+    marginTop: Platform.OS === 'ios' ? 0 : -2
+  },
+});
 
 const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
-  const dispatch = useDispatch();
-  const user = useSelector(state => state.user);
   const {
     getParticipantList,
     createChannel,
+    getChannelByParticipants,
   } = useSignalr();
+  const dispatch = useDispatch();
+  const inputRef:any = useRef(null);
+  const inputTagRef:any = useRef(null);
+  const groupNameRef:any = useRef(null);
   const [loading, setLoading] = useState(false);
   const [nextLoading, setNextLoading] = useState(false);
   const [participants, setParticipants]:any = useState([]);
@@ -115,18 +212,20 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   const [fetching, setFetching] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [hasError, setHasError] = useState(false);
-
+  const [groupName, setGroupName] = useState('');
+  const [isGroup, setIsGroup] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  
   const onRequestData = () => setSendRequest(request => request + 1);
 
   const fetchMoreParticipants = (isPressed = false) => {
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);
     setHasError(false);
-    const url = searchValue ?
-      `/room/search-participants?pageIndex=${pageIndex}&search=${searchValue}` :
-      `/room/list-participants?pageIndex=${pageIndex}`;
+    const payload = searchValue ? { pageIndex, keyword: searchValue } : { pageIndex };
 
-    getParticipantList(url, (err:any, res:any) => {
+    getParticipantList(payload, (err:any, res:any) => {
       if (res) {
         setContacts([...contacts, ...res.list]);
         setPageIndex(current => current + 1);
@@ -141,50 +240,108 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   }
 
   useEffect(() => {
+    let unmount = false;
     setLoading(true);
     setPageIndex(1);
     setHasMore(false);
     setHasError(false);
-    const source = axios.CancelToken.source();
-    const url = searchValue ?
-      `/room/search-participants?pageIndex=1&search=${searchValue}` :
-      `/room/list-participants?pageIndex=1`;
+    const payload = searchValue ? { pageIndex: 1, keyword: searchValue } : { pageIndex: 1 };
 
-    InteractionManager.runAfterInteractions(() => {
-      getParticipantList(url, (err:any, res:any) => {
+    if (searchValue || isGroup) {
+      InteractionManager.runAfterInteractions(() => {
+        getParticipantList(payload, (err:any, res:any) => {
+          if (!unmount) {
+            if (res) {
+              let resultList = res.list;
+
+              if (resultList && participants) {
+                resultList = lodash.reject(resultList, r => lodash.find(participants, p => p._id === r._id));
+              }
+
+              setContacts(resultList);
+              setPageIndex(current => current + 1);
+              setHasMore(res.hasMore);
+            }
+            if (err) {
+              console.log('ERR', err);
+            }
+            setLoading(false);
+          }
+        });
+      });
+    } else {
+      setLoading(false);
+    }
+
+    return () => {
+      unmount = true;
+    }
+  }, [sendRequest, searchValue, isGroup]);
+
+  useEffect(() => {
+    let unmount = false;
+    dispatch(setSelectedChannel({}));
+    if (participants) {
+      getChannelByParticipants({ participants }, (err:any, res:any) => {
+        if (!unmount) {
+          if (res) {
+            dispatch(setSelectedChannel(res));
+          }
+          if (err) {
+            console.log('ERROR', err);
+          }
+        }
+      });
+    }
+
+    return () => {
+      unmount = true;
+    }
+  }, [participants]);
+
+  const onNext = (message:string) => {
+    if (participants) {
+      setNextLoading(true);
+      createChannel({ participants, name: groupName, message }, (err:any, res:any) => {
+        setNextLoading(false);
         if (res) {
-          setContacts(res.list);
-          setPageIndex(current => current + 1);
-          setHasMore(res.hasMore);
+          onSubmit(res);
         }
         if (err) {
-          console.log('ERR', err);
+          console.log('ERROR', err);
         }
-        setLoading(false);
       });
-    });
-  
-    return () => {
-      source.cancel();
-    };
-  }, [sendRequest, searchValue]);
+    }
+  }
 
-  const onNext = () => {
-    setNextLoading(true);
-    createChannel(participants, (err:any, res:any) => {
-      setNextLoading(false);
-      if (res) {
-        onSubmit(res);
+  const onBeforeClose = () => {
+    if (isGroup) {
+      setGroupName('');
+      setIsGroup(false);
+      setParticipants([]);
+      inputRef.current?.focus();
+    } else {
+      if (lodash.size(participants) > 1) {
+        setShowAlert(true);
+      } else {
+        onClose();
       }
-      if (err) {
-        console.log('ERROR', err);
-      }
-    });
+    }
+  }
+
+  const onConfirmPressed = () => {
+    setShowAlert(false);
+    onClose();
   }
 
   const onSelectParticipants = (selectedId:string) => {
     const selected = lodash.find(contacts, c => c._id === selectedId);
     setParticipants(p => ([...p, selected]));
+    if (!isGroup) {
+      inputTagRef?.current?.addTag(selected);
+      inputTagRef?.current?.blur();
+      setSearchValue('');
+    }
   }
 
   const onRemoveParticipants = (selectedId:string) => {
@@ -195,7 +352,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   const onTapCheck = (selectedId:string) => {
     const isSelected = checkIfSelected(selectedId);
     if (isSelected) {
-      onRemoveParticipants(selectedId);
+      if (isGroup) onRemoveParticipants(selectedId);
     } else {
       onSelectParticipants(selectedId);
     }
@@ -206,15 +363,30 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     return !!selected;
   }
 
+  const onChangeTags = (tags:any) => {
+    setParticipants(tags);
+  };
+
+  const renderTag = ({ tag, index, onPress, deleteTagOnPress, readonly }:any) => {
+    return (
+      <TouchableOpacity
+        key={`${tag?._id}-${index}`}
+        onPress={onPress}
+        style={tagStyles.tag}>
+        <Text style={tagStyles.textTag}>{tag?.firstName},</Text>
+      </TouchableOpacity>
+    );
+  };
+
   const headerComponent = () => (
-    <View>
+    <>
       <FlatList
         style={[styles.outlineBorder, !lodash.size(participants) && { borderBottomWidth: 0 }]}
         horizontal
         data={participants}
         renderItem={({ item }) => (
           <SelectedContact
-            image={item?.image}
+            image={item?.profilePicture?.thumb}
             name={item.name}
             data={item}
             onPress={() => onRemoveParticipants(item._id)}
@@ -239,7 +411,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
           My contacts
         </Text>
       </View>
-    </View>
+    </>
   )
 
   const emptyComponent = () => (
@@ -271,13 +443,95 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     );
   }
 
+  const renderContactItem = ({ item }:any) => {
+    if (isGroup) {
+      return (
+        <ContactItem
+          image={item?.profilePicture?.thumb}
+          data={item}
+          name={item.name}
+          onPress={() => onTapCheck(item._id)}
+          rightIcon={
+            <TouchableOpacity
+              onPress={() => onTapCheck(item._id)}
+            >
+              {
+                checkIfSelected(item._id) ? (
+                  <View style={styles.selected}>
+                    <CheckIcon
+                      type={'check1'}
+                      size={RFValue(16)}
+                      color="white"
+                    />
+                  </View>
+                ) : (
+                  <View style={styles.notSelected} />
+                )
+              }
+            </TouchableOpacity>
+          }
+          contact={item.email || ''}
+        />
+      );
+    }
+    return (
+      <ContactItem
+        image={item?.profilePicture?.thumb}
+        data={item}
+        name={item.name}
+        onPress={() => onTapCheck(item._id)}
+        contact={item.email || ''}
+      />
+    )
+  }
+
+  const renderList = () => {
+    if (isGroup || searchValue) {
+      return (
+        <FlatList
+          data={contacts}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              tintColor={primaryColor} // ios
+              progressBackgroundColor={primaryColor} // android
+              colors={['white']} // android
+              refreshing={loading}
+              onRefresh={onRequestData}
+            />
+          }
+          renderItem={renderContactItem}
+          keyExtractor={(item) => item._id}
+          ItemSeparatorComponent={
+            () => <View style={styles.separator} />
+          }
+          ListHeaderComponent={isGroup ? headerComponent : undefined}
+          ListEmptyComponent={emptyComponent}
+          ListFooterComponent={ListFooterComponent}
+          onEndReached={() => fetchMoreParticipants()}
+          onEndReachedThreshold={0.5}
+        />
+      );
+    } else {
+      return (<ChatView onNext={(message:string) => onNext(message)} participants={participants} />);
+    }
+  }
+
+  const onGroup = () => {
+    setIsGroup(true);
+    setIsFocused(false);
+    setSearchValue('');
+    setSearchText('');
+    setContacts([]);
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
-        <View style={[styles.horizontal, { paddingVertical: 5 }]}>
+        <View style={[styles.horizontal, { paddingVertical: 5, marginHorizontal: 15 }]}>
           <View style={{ position: 'absolute', left: 0, zIndex: 999 }}>
-            <TouchableOpacity onPress={onClose}>
+            <TouchableOpacity onPress={onBeforeClose}>
               <CloseIcon
                 type='close'
                 size={RFValue(18)}
@@ -294,11 +548,11 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
             </Text>
           </View>
           {
-            !!lodash.size(participants) && (
+            lodash.size(participants) > 1 && isGroup && (
               <View style={{ position: 'absolute', right: 0, zIndex: 999 }}>
                 <TouchableOpacity
                   disabled={!lodash.size(participants) || nextLoading}
-                  onPress={onNext}
+                  onPress={() => onNext("")}
                 >
                   {
                     nextLoading ? (
@@ -318,69 +572,128 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
             )
           }
         </View>
-        <SearchField
-          inputStyle={[InputStyles.text, styles.input]}
-          iconStyle={styles.icon}
-          placeholder="Search"
-          outlineStyle={[InputStyles.outlineStyle, styles.outline]}
-          placeholderTextColor="#6E7191"
-          value={searchText}
-          onChangeText={setSearchText}
-          onChangeTextDebounce={setSearchValue}
-          onSubmitEditing={(event:any) => setSearchText(event.nativeEvent.text)}
-        />
-      </View>
-      <FlatList
-        data={contacts}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            tintColor={primaryColor} // ios
-            progressBackgroundColor={primaryColor} // android
-            colors={['white']} // android
-            refreshing={loading}
-            onRefresh={onRequestData}
-          />
-        }
-        renderItem={({ item }) => (
-          <ContactItem
-            image={item?.image}
-            data={item}
-            name={item.name}
-            onPress={() => onTapCheck(item._id)}
-            rightIcon={
-              <TouchableOpacity
-                onPress={() => onTapCheck(item._id)}
-              >
+        {
+          isGroup ? (
+            <View style={{ paddingHorizontal: 15 }}>
+              <InputField
+                ref={groupNameRef}
+                placeholder={'Group name'}
+                containerStyle={styles.groupName}
+                placeholderTextColor={'#C4C4C4'}
+                inputStyle={[styles.inputText, { backgroundColor: 'white' }]}
+                outlineStyle={[styles.outlineText, { backgroundColor: 'white' }]}
+                value={groupName}
+                onChangeText={setGroupName}
+                returnKeyType={'done'}
+              />
+              <SearchField
+                inputStyle={[styles.input]}
+                iconStyle={styles.icon}
+                placeholder="Search"
+                outlineStyle={[styles.outline]}
+                placeholderTextColor="#6E7191"
+                value={searchText}
+                onChangeText={setSearchText}
+                onChangeTextDebounce={setSearchValue}
+                onSubmitEditing={(event:any) => setSearchText(event.nativeEvent.text)}
+              />
+            </View>
+          ) : (
+            <View style={{ marginBottom: 5, marginTop: 20 }}>
+              <View style={{ flexDirection: 'row', alignContent: 'center', paddingHorizontal: 15, paddingTop: 10, marginBottom: 5 }}>
+                <Text
+                  color={text.default}
+                  size={14}
+                  style={{ fontFamily: Regular }}
+                >
+                  To:
+                </Text>
+                <View style={{ flex: 1, paddingLeft: 5, marginTop: Platform.OS === 'ios' ? 0 : -2 }}>
+                  <InputTags
+                    ref={inputTagRef}
+                    containerStyle={tagStyles.container}
+                    initialTags={participants}
+                    initialText={searchValue}
+                    inputStyle={tagStyles.input}
+                    onChangeTags={onChangeTags}
+                    renderTag={renderTag}
+                    onChangeTextDebounce={setSearchValue}
+                    onSubmitEditing={(event:any) => setSearchText(event.nativeEvent.text)}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                  />
+                </View>
                 {
-                  checkIfSelected(item._id) ? (
-                    <View style={styles.selected}>
-                      <CheckIcon
-                        type={'check1'}
-                        size={RFValue(16)}
-                        color="white"
-                      />
-                    </View>
-                  ) : (
-                    <View style={styles.notSelected} />
+                  !isFocused && (
+                    <TouchableOpacity onPress={() => inputTagRef?.current?.focus()}>
+                      <View style={styles.plus}>
+                        <PlusIcon
+                          color="white"
+                          size={RFValue(12)}
+                        />
+                      </View>
+                    </TouchableOpacity>
                   )
                 }
-              </TouchableOpacity>
-            }
-            contact={item.email || ''}
-          />
-        )}
-        keyExtractor={(item) => item._id}
-        ItemSeparatorComponent={
-          () => <View style={styles.separator} />
+              </View>
+              {
+                !lodash.size(participants) && (
+                  <View style={styles.newGroupContainer}>
+                    <View style={{ alignContent: 'center', flexDirection: 'row' }}>
+                      <NewGroupIcon
+                        width={RFValue(22)}
+                        height={RFValue(22)}
+                        color={header.default}
+                      />
+                      <Text
+                        color={header.default}
+                        size={14}
+                        style={{ fontFamily: Regular500, marginLeft: 5 }}
+                      >
+                        Create new group
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={onGroup}
+                    >
+                      <ArrowRightIcon
+                        type='chevron-right'
+                        color={'#606A80'}
+                        size={RFValue(22)}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )
+              }
+            </View>
+          )
         }
-        ListHeaderComponent={headerComponent}
-        ListEmptyComponent={emptyComponent}
-        ListFooterComponent={ListFooterComponent}
-        onEndReached={() => fetchMoreParticipants()}
-        onEndReachedThreshold={0.5}
+      </View>
+      {renderList()}
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        contentContainerStyle={{ borderRadius: 15 }}
+        title={'Discard group?'}
+        titleStyle={styles.title}
+        message={"Are you sure you would like to discard this group? your changes won't be saved"}
+        messageStyle={styles.message}
+        contentStyle={styles.content}
+        closeOnTouchOutside={false}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        cancelButtonColor={'white'}
+        confirmButtonColor={'white'}
+        cancelButtonTextStyle={styles.cancelText}
+        confirmButtonTextStyle={styles.confirmText}
+        actionContainerStyle={{ justifyContent: 'space-around' }}
+        cancelText="Cancel"
+        confirmText="Discard"
+        onCancelPressed={() => setShowAlert(false)}
+        onConfirmPressed={onConfirmPressed}
       />
-    </SafeAreaView>
+    </View>
   )
 }
 

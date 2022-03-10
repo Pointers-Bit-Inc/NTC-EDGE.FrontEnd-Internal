@@ -24,6 +24,7 @@ import useSignalr from 'src/hooks/useSignalr';
 import axios from 'axios';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold, Regular, Regular500 } from '@styles/font';
+import IParticipants from 'src/interfaces/IParticipants';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -119,11 +120,9 @@ const Participants = ({ navigation }:any) => {
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);
     setHasError(false);
-    const url = searchValue ?
-      `/room/search-participants?pageIndex=${pageIndex}&search=${searchValue}` :
-      `/room/list-participants?pageIndex=${pageIndex}`;
+    const payload = searchValue ? { pageIndex, keyword: searchValue } : { pageIndex };
 
-    getParticipantList(url, (err:any, res:any) => {
+    getParticipantList(payload, (err:any, res:any) => {
       if (res) {
         setContacts([...contacts, ...res.list]);
         setPageIndex(current => current + 1);
@@ -143,11 +142,9 @@ const Participants = ({ navigation }:any) => {
     setHasMore(false);
     setHasError(false);
     const source = axios.CancelToken.source();
-    const url = searchValue ?
-      `/room/search-participants?pageIndex=1&search=${searchValue}` :
-      `/room/list-participants?pageIndex=1`;
+    const payload = searchValue ? { pageIndex: 1, keyword: searchValue } : { pageIndex: 1 };
 
-    getParticipantList(url, (err:any, res:any) => {
+    getParticipantList(payload, (err:any, res:any) => {
       if (res) {
         setContacts(res.list);
         setPageIndex(current => current + 1);
@@ -169,12 +166,12 @@ const Participants = ({ navigation }:any) => {
   const onNext = () => navigation.replace('CreateMeeting', { participants });
 
   const onSelectParticipants = (selectedId:string) => {
-    const selected = lodash.find(contacts, c => c._id === selectedId);
+    const selected = lodash.find(contacts, (c:IParticipants) => c._id === selectedId);
     setParticipants(p => ([...p, selected]));
   }
 
   const onRemoveParticipants = (selectedId:string) => {
-    const result = lodash.reject(participants, c => c._id === selectedId);
+    const result = lodash.reject(participants, (c:IParticipants) => c._id === selectedId);
     setParticipants(result);
   }
 
@@ -188,7 +185,7 @@ const Participants = ({ navigation }:any) => {
   }
 
   const checkIfSelected = (contactId:string) => {
-    const selected = lodash.find(participants, c => c._id === contactId);
+    const selected = lodash.find(participants, (c:IParticipants) => c._id === contactId);
     return !!selected;
   }
 
@@ -201,7 +198,7 @@ const Participants = ({ navigation }:any) => {
         data={participants}
         renderItem={({ item }) => (
           <SelectedContact
-            image={item?.image}
+            image={item?.profilePicture?.thumb}
             name={item.name}
             onPress={() => onRemoveParticipants(item._id)}
           />
@@ -328,7 +325,7 @@ const Participants = ({ navigation }:any) => {
         }
         renderItem={({ item }) => (
           <ContactItem
-            image={item?.image}
+            image={item?.profilePicture?.thumb}
             name={item.name}
             onPress={() => onTapCheck(item._id)}
             disabled={true}

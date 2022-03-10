@@ -3,7 +3,10 @@ import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import Text from '@components/atoms/text'
 import { text, primaryColor } from 'src/styles/color';
 import ProfileImage from '@components/atoms/image/profile';
+import GroupImage from '@components/molecules/image/group';
 import { Regular500 } from '@styles/font';
+import lodash from 'lodash';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const styles = StyleSheet.create({
   container: {
@@ -26,7 +29,8 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     justifyContent: 'center',
-    paddingLeft: 10
+    paddingLeft: 10,
+    paddingRight: 5,
   },
   channelInfo: {
     paddingBottom: 3,
@@ -44,27 +48,87 @@ interface Props {
   onPress?: any;
   rightIcon?: any;
   data?: any,
+  isGroup?: boolean,
   [x: string]: any;
 }
 
-const ChatItem: FC<Props> = ({
+const ContactItem: FC<Props> = ({
   image = '',
   name = '',
   contact = '',
   onPress = () => {},
   rightIcon,
   data = {},
+  isGroup = false,
   ...otherProps
 }) => {
+  const getName = (data:any) => {
+    let result = '';
+    
+    if (isGroup) {
+      if (data.name) {
+        result += data.name;
+      } else {
+        lodash.map(data.participants, (participant:IParticipants) => {
+          let participantName = '';
+
+          if (participant.title) participantName += participant.title + ' ';
+          participantName += participant.firstName;
+
+          result += participantName + ',';
+        });
+      }
+    } else {
+      if (data.title) result += data.title + ' ';
+      if (data.name) result += data.name;
+      if (data.suffix) result += ', ' + data.suffix;
+    }
+
+    return result;
+  }
+
+  const getInfo = (data:any) => {
+    let result = '';
+    
+    if (isGroup) {
+      if (data.name) {
+        lodash.map(data.participants, (participant:IParticipants) => {
+          let participantName = '';
+
+          if (participant.title) participantName += participant.title + ' ';
+          participantName += participant.firstName;
+
+          result += participantName + ',';
+        });
+      }
+    } else {
+      if (data.designation) result += data.designation;
+      if (data.designation && data.position) result += ' - ';
+      if (data.position) result += data.position;
+    }
+
+    return result;
+  } 
+
   return (
     <TouchableOpacity onPress={onPress} {...otherProps}>
       <View style={[styles.container, styles.horizontal]}>
-        <ProfileImage
-          image={image}
-          name={name}
-          size={42}
-          textSize={14}
-        />
+        {
+          !isGroup ? (
+            <ProfileImage
+              image={image}
+              name={name}
+              size={42}
+              textSize={14}
+            />
+          ) : (
+            <GroupImage
+              participants={data.participants}
+              size={42}
+              textSize={14}
+            />
+          )
+        }
         <View style={styles.content}>
           <Text
             color={'black'}
@@ -72,23 +136,23 @@ const ChatItem: FC<Props> = ({
             numberOfLines={1}
             style={{ fontFamily: Regular500, marginBottom: -3 }}
           >
-            {`${data.title ? `${data.title}` : ''} ${name}${data.suffix ? `, ${data.suffix}` : ''}`}
+            {getName(data)}
           </Text>
           {
-            (!!data.designation || !!data.position) &&
+            (!!data.designation || !!data.position || (isGroup && !!name)) &&
               <Text
                 color={text.default}
                 size={12}
                 numberOfLines={1}
               >
-                {`${data.designation || ''} ${data.position ? `- ${data.position}` : ''}`}
+                {getInfo(data)}
               </Text>
           }
         </View>
         {rightIcon}
       </View>
     </TouchableOpacity>
-  )
+  );
 }
 
-export default ChatItem
+export default ContactItem
