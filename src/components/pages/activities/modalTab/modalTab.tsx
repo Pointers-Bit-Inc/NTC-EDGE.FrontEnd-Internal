@@ -4,37 +4,13 @@ import ApplicationDetails from "@pages/activities/application/applicationDetails
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React , {useState} from "react";
-import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../reducers/activity/initialstate";
-import {Animated , StyleSheet , TouchableOpacity} from "react-native";
+import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
+import {Animated , StyleSheet} from "react-native";
 import TabBar from "@pages/activities/tabs/tabbar";
 import ScrollableTabView from "@pages/activities/tabs";
-import {primaryColor} from "@styles/color";
-import {Bold , Regular} from "@styles/font";
-import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/fontValue";
- 
+import Tab from "@pages/activities/tabs/Tab";
 
-const Tab = ({ tab , page , isTabActive , onPressHandler , onTabLayout , styles }) => {
-    const { label , icon } = tab;
-    const style = {
-        marginLeft : 20 ,
-        paddingBottom : 10 ,
-    };
-    const containerStyle = {
-        transform : [{ scale : styles.scale }] ,
-    };
-    return (
-        <TouchableOpacity style={ style } onPress={ onPressHandler } onLayout={ onTabLayout } key={ page }>
-            <Animated.View style={ containerStyle }>
-                <Animated.Text style={ {
-                    color : isTabActive ? primaryColor : "#606A80" ,
-                    fontFamily : isTabActive ? Bold : Regular ,
-                    fontSize : fontValue(12)
-                } }>{ label }</Animated.Text>
-            </Animated.View>
-        </TouchableOpacity>
-    );
-};
+
 export const ModalTab = props => {
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [_scrollX , set_scrollX] = useState(new Animated.Value(0));
@@ -84,7 +60,7 @@ export const ModalTab = props => {
         requirements = props?.details?.requirements ,
         updatedAt = props?.details?.updatedAt ,
         approvalHistory = props?.details?.approvalHistory ,
-        assignedPersonnel = props?.details?.assignedPersonnel ,
+        assignedPersonnel = props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel ,
         createdAt = props?.details?.createdAt ,
         proofOfPayment = props?.details?.proofOfPayment;
     return <ScrollableTabView
@@ -109,7 +85,7 @@ export const ModalTab = props => {
             tabs.map((tab , index) => {
                 const isShow = tab.isShow.indexOf(user?.role?.key) !== -1;
                 if (isShow && tab.id === 1) {
-                     
+
                     return <BasicInfo
                         tabLabel={ { label : tab.name } } label={ tab.name }
                         paymentMethod={ paymentMethod }
@@ -132,10 +108,10 @@ export const ModalTab = props => {
                         applicantType={ applicationType }
                         key={ index }/>
                 } else if (isShow && tab.id === 3) {
-                    return <Requirement  tabLabel={ { label : tab.name } } label={ tab.name }
+                    return <Requirement tabLabel={ { label : tab.name } } label={ tab.name }
                                         requirements={ requirements } key={ index }/>
                 } else if (isShow && tab.id === 4) {
-                    return <Payment  tabLabel={ { label : tab.name } } label={ tab.name }
+                    return <Payment tabLabel={ { label : tab.name } } label={ tab.name }
                                     proofOfPayment={ proofOfPayment }
                                     updatedAt={ updatedAt }
                                     paymentMethod={ paymentMethod }

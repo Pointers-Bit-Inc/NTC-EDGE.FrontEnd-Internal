@@ -1,4 +1,4 @@
-import React from "react";
+import React , {useEffect} from "react";
 import {ActivityIndicator , Dimensions , Platform , ScrollView , StyleSheet , Text , View} from "react-native";
 import {
     excludeStatus , getRole ,
@@ -12,7 +12,7 @@ import CustomText from "@atoms/text";
 import {
     APPROVED , DECLINED , FORAPPROVAL
 } from "../../../../reducers/activity/initialstate";
-import {useAssignPersonnel} from "@pages/activities/hooks/useAssignPersonnel";
+import {useAssignPersonnel} from "../../../../hooks/useAssignPersonnel";
 import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
@@ -29,22 +29,24 @@ const Row = (props: { label: string, applicant: any }) => <View style={ styles.g
 </View>;
 
 
+
 const BasicInfo = (props: any) => {
     const {
         personnel ,
         loading
-    } = useAssignPersonnel( !!props.paymentMethod && props.assignedPersonnel ?
-                            props.assignedPersonnel : (props.paymentStatus == APPROVED || props.paymentStatus == DECLINED ?
+    } = useAssignPersonnel( !!props.paymentMethod && (props.assignedPersonnel?._id || props.assignedPersonnel ) ?
+                            (props.assignedPersonnel?._id || props.assignedPersonnel ) : (props.paymentStatus == APPROVED || props.paymentStatus == DECLINED ?
                             (props?.paymentHistory?.[0]?.userId ) :
                             (props?.approvalHistory?.[0]?.userId ?
                              props?.approvalHistory?.[0]?.userId :
-                             props?.assignedPersonnel)) , {
+                             (props.assignedPersonnel?._id || props?.assignedPersonnel))) , {
         headers : {
             Authorization : "Bearer ".concat(props.user?.sessionToken)
         }
     });
     const applicant = props.applicant;
     return <ScrollView style={ { width : "100%" , backgroundColor : "#f8f8f8" , } }>
+
         <View style={{flexDirection:  isMobile ? "column" : "row"}}>
             <View style={  isMobile ?  { padding : 10 , flex : 1 , alignSelf : "center" }  : {paddingLeft: 20, paddingVertical: 20} }>
                 <ProfileImage
@@ -54,6 +56,12 @@ const BasicInfo = (props: any) => {
                     image={ applicant?.user?.profilePicture?.small }
                     name={ `${ applicant?.user?.firstName } ${ applicant?.user?.lastName }` }
                 />
+
+                {!isMobile && <View style={{paddingVertical: 20}}>
+                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center",  backgroundColor: "#EFF0F6"}}>
+                        <Text style={{fontFamily: Regular, fontSize: 12, lineHeight: 24, color: "#565961"  }}>PHOTO</Text>
+                    </View>
+                </View>}
 
             </View>
 

@@ -8,6 +8,7 @@ import AnimatedImage from 'react-native-animated-image-viewer';
 import FadeBackground from "@assets/svg/fade-background";
 import Loader from "@pages/activities/bottomLoad";
 import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 const { width  } = Dimensions.get("screen");
 class RequirementView extends React.Component<{ requirement: any }> {
 
@@ -82,13 +83,13 @@ class RequirementView extends React.Component<{ requirement: any }> {
             <View style={ requirementStyles.container }>
                 <View style={ requirementStyles.card }>
                     <View style={ requirementStyles.cardContainer }>
-                        <View style={ requirementStyles.cardLabel }>
+                        <View style={ [{  paddingHorizontal : isMobile ? 30 : 40  } , requirementStyles.cardLabel ]}>
                             <View style={ requirementStyles.cardTitle }>
                                 <Text style={ requirementStyles.title }>{ this.props?.requirement?.title }</Text>
                                 <Text
                                     style={ requirementStyles.description }>{ this.props?.requirement?.description }</Text>
                             </View>
-                            <View style={ [{ paddingTop : 30 , paddingBottom : 9 } , requirementStyles.cardDocument] }>
+                            <View style={ [requirementStyles.cardDocument] }>
 
 
                                 <TouchableOpacity ref={ image => (
@@ -106,8 +107,12 @@ class RequirementView extends React.Component<{ requirement: any }> {
                             </View>
 
                         </View>
+
                         <View style={ {
-                            height : 300 ,
+                            marginHorizontal: isMobile ? undefined :46,
+                            marginBottom: isMobile ? undefined :25,
+                            width: isMobile ? undefined : 240,
+                            height : isMobile ? 300 : 160 ,
                             backgroundColor : "rgba(220,226,229,1)" ,
                             borderWidth : 1 ,
                             borderColor : "rgba(213,214,214,1)" ,
@@ -119,7 +124,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
 
                                 <Image
                                     resizeMode={"cover"}
-                                    style={ { width : undefined , height : 300} }
+                                    style={ {  width : isMobile ? undefined : 240 , height : isMobile ? 300 : 160, borderRadius: isMobile ? undefined : 10} }
                                     source={ {
                                         uri : this.props?.requirement?.links?.small ,
                                     } }

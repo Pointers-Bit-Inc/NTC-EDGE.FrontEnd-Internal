@@ -20,7 +20,7 @@ import {unreadReadApplication} from "@pages/activities/script";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import Loader from "@pages/activities/bottomLoad";
-import useCountUp from "@pages/activities/hooks/useCountUp";
+import useCountUp from "../../../../hooks/useCountUp";
 import {Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
 
@@ -30,9 +30,10 @@ const {height} = Dimensions.get('screen');
 import lodash from 'lodash';
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
+import ActivityModalView from "@pages/activities/nativeView/activityModalView";
+import {setApplicationItem} from "../../../../reducers/application/actions";
 export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const inputRef = useRef(null);
-    const [details, setDetails] = useState({})
     const [moreModalVisible, setMoreModalVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
     const user = useSelector((state: RootStateOrAny) => state.user);
@@ -42,6 +43,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
             Authorization: "Bearer ".concat(user?.sessionToken)
         }
     }
+    const {applicationItem} = useSelector((state: RootStateOrAny) => state.application)
     const [activityItemLength, setActivityItemLength] = useState(0)
     const [updateUnReadReadApplication, setUpdateUnReadReadApplication] = useState(false)
     const onFocusHandler = () => {
@@ -172,10 +174,10 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                                     role={user?.role?.key}
                                                     activity={activity}
                                                     currentUser={user}
-
+                                                    selected={applicationItem?._id == activity?._id}
                                                     onPressUser={(event: any) => {
                                                         setIsOpen(undefined)
-                                                        setDetails({...activity, isOpen:`${index}${i}`})
+                                                        dispatch(setApplicationItem({...activity, isOpen:`${index}${i}`}))
                                                         if (event?.icon == 'more') {
                                                             setMoreModalVisible(true)
                                                         } else {
@@ -197,7 +199,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
         </View>
 
         {
-            !(isMobile) && lodash.isEmpty(details) &&
+            !(isMobile) && lodash.isEmpty(applicationItem) &&
             <View style={ [{ flex : 0.6 , justifyContent : "center" , alignItems : "center" }] }>
 
                 <NoActivity/>
@@ -208,36 +210,22 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
             </View>
         }
-        {!(isMobile) && !lodash.isEmpty(details) && <View style={{flex : 0.6}}>
-        <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={()=>{
-            onMoreModalDismissed(details?.isOpen)
+
+
+        { !lodash.isEmpty(applicationItem) && <ActivityModalView>
+        <ItemMoreModal details={applicationItem} visible={moreModalVisible} onDismissed={()=>{
+            onMoreModalDismissed(applicationItem?.isOpen)
         }
         }/>
-        <ActivityModal details={details}
+        <ActivityModal details={applicationItem}
                        visible={modalVisible}
                        onDismissed={(event: boolean, _id: number) => {
 
-                           setDetails({})
+                           dispatch(setApplicationItem({}))
                            if (event && _id) {
                                //  dispatch(deleteApplications(_id))
                            }
                            onDismissed()
-                       }}/>   </View>}
-
-        {(isMobile) && !lodash.isEmpty(details) && <>
-        <ItemMoreModal details={details} visible={moreModalVisible} onDismissed={()=>{
-            onMoreModalDismissed(details?.isOpen)
-        }
-        }/>
-        <ActivityModal details={details}
-                       visible={modalVisible}
-                       onDismissed={(event: boolean, _id: number) => {
-
-                           setDetails({})
-                           if (event && _id) {
-                               //  dispatch(deleteApplications(_id))
-                           }
-                           onDismissed()
-                       }}/>  </>}
+                       }}/>  </ActivityModalView>}
     </View>;
 }

@@ -5,7 +5,7 @@ import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {capitalize } from "@pages/activities/script";
 import {RFValue} from "react-native-responsive-fontsize";
-import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
+import {useComponentLayout} from "../../../../../hooks/useComponentLayout";
 import BorderPaymentTop from "@assets/svg/borderPayment";
 import BorderPaymentBottom from "@assets/svg/borderPaymentBottom";
 import {fontValue} from "@pages/activities/fontValue";
@@ -75,7 +75,7 @@ const PaymentModal = (props: any) => {
 
                     <View style={[styles.group8, { alignItems: 'center', marginBottom: 100}]}>
 
-                        <View >
+                        <View>
                             <View style={{flexDirection: "row"}}>
                                 {
                                     !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentTop  style={{marginBottom: -1}}/>)

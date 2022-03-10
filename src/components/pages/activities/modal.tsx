@@ -1,5 +1,14 @@
-import React , {useEffect , useMemo , useRef , useState} from "react";
-import {Alert , Modal , Platform , StatusBar , StyleSheet , Text , TouchableOpacity , View} from "react-native";
+import React , {useEffect , useMemo , useState} from "react";
+import {
+    Alert ,
+    Modal ,
+    Platform ,
+    StyleSheet ,
+    Text ,
+    TouchableOpacity ,
+    TouchableWithoutFeedback ,
+    View
+} from "react-native";
 import {primaryColor} from "@styles/color";
 import Disapproval from "@pages/activities/modal/disapproval";
 import Endorsed from "@pages/activities/modal/endorse";
@@ -28,16 +37,16 @@ import {ApprovedButton} from "@pages/activities/button/approvedButton";
 import {DeclineButton} from "@pages/activities/button/declineButton";
 import {EndorsedButton} from "@pages/activities/button/endorsedButton";
 import {Bold} from "@styles/font";
-import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
-import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
+import {useComponentLayout} from "../../../hooks/useComponentLayout";
 
 const { ModalTab } = Platform.select({
-    native: () => require('@pages/activities/modalTab'),
-    default: () => require("@pages/activities/modalTab.web")
+    native : () => require('@pages/activities/modalTab/modalTab') ,
+    default : () => require("@pages/activities/modalTab/modalTab.web")
 })();
 const NativeView = Platform.OS === 'ios' || Platform.OS == "android" ? Modal : View;
+
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
 
@@ -117,7 +126,7 @@ function ActivityModal(props: any) {
                             dispatch(updateApplicationStatus({
                                 application : res.data ,
                                 status : status ,
-                                assignedPersonnel : res?.data?.assignedPersonnel ,
+                                assignedPersonnel : res?.data?.assignedPersonnel?._id || res?.data?.assignedPersonnel ,
                                 userType : user?.role?.key
                             }));
 
@@ -148,6 +157,7 @@ function ActivityModal(props: any) {
         setShowAlert(true)
 
     }
+
     useEffect(() => {
 
         return () => {
@@ -155,18 +165,20 @@ function ActivityModal(props: any) {
             setStatus("");
             setAssignId("")
         }
-    } , []);
+    } , [props?.details._id]);
 
     const statusMemo = useMemo(() => {
         setStatus(status);
-        setAssignId(assignId || props?.details?.assignedPersonnel);
+        setAssignId(assignId || (props?.details?.assignedPersonnel?.id || props?.details?.assignedPersonnel));
         return status ? (
             cashier ? PaymentStatusText(status) : StatusText(status)) : (
                    cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
-    } , [assignId , status , props?.details?.assignedPersonnel , props.details.paymentStatus , props.details.status]);
+    } , [assignId , status , (props?.details?.assignedPersonnel?._id ||props?.details?.assignedPersonnel ), props.details.paymentStatus , props.details._id , props.details.status]);
     const approveButton = statusMemo === APPROVED || statusMemo === VERIFIED;
     const declineButton = cashier ? (
         statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED;
+
+    console.log(assignId, "assign id ")
     const allButton = (
                           cashier) ? (
                           !!props?.details?.paymentMethod ? (
@@ -180,10 +192,11 @@ function ActivityModal(props: any) {
     const [title , setTitle] = useState("Approve Application");
     const [showClose , setShowClose] = useState(false);
     const [activityModalScreenComponent , onActivityModalScreenComponent] = useComponentLayout();
+
     return (
         <NativeView
-            onLayout={onActivityModalScreenComponent}
-            style={{height: "100%"}}
+            onLayout={ onActivityModalScreenComponent }
+            style={ { height : "100%" } }
             supportedOrientations={ ['portrait' , 'landscape'] }
             animationType="slide"
             transparent={ false }
@@ -194,18 +207,19 @@ function ActivityModal(props: any) {
                 setChange(false)
             } }>
 
-            <View  style={ approveVisible || visible || endorseVisible || showAlert ? {
+                <View style={ isMobile && (approveVisible || visible || endorseVisible || showAlert) ? {
 
-                position : "absolute" ,
-                zIndex : 2 ,
-                top : 0 ,
-                left : 0 ,
-                width : "100%" ,
-                height : "100%" ,
-                backgroundColor : "rgba(0, 0, 0, 0.5)" ,
-            } : { position : "absolute" ,} }>
+                    position : "absolute" ,
+                    zIndex : 2 ,
+                    top : 0 ,
+                    left : 0 ,
+                    width : "100%" ,
+                    height : "100%" ,
+                    backgroundColor : "rgba(0, 0, 0, 0.5)" ,
+                } : { position : "absolute" , } }>
 
-            </View>
+                </View>
+
 
 
             <CustomAlert
@@ -245,10 +259,11 @@ function ActivityModal(props: any) {
                 show={ showAlert } title={ title }
                 message={ message }/>
             <View style={ { flex : 1 } }>
-                {(isMobile) && <View style={ {
+                { (
+                    isMobile) && <View style={ {
                     flexDirection : "row" ,
-                    alignItems: "center",
-                    borderBottomColor: "#F0F0F0",
+                    alignItems : "center" ,
+                    borderBottomColor : "#F0F0F0" ,
                     justifyContent : "space-between" ,
                     padding : 15 ,
                     paddingTop : 40
@@ -259,24 +274,30 @@ function ActivityModal(props: any) {
                         props.onDismissed(change);
                         setChange(false)
                     } }>
-                        <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
+                        <CloseIcon width={ fontValue(16) } height={ fontValue(16) } color="#606A80"/>
                     </TouchableOpacity>
                     <Text style={ styles.applicationType }>{ props?.details?.applicationType }</Text>
                     <View></View>
-                </View>}
+                </View> }
 
-                <ModalTab details={ props.details } status={ status }/>
+                <ModalTab dismissed={()=>{
+                    props.onDismissed(change);
+                }}  details={ props.details } status={ status }/>
                 {
-                    <View style={{  borderTopColor : 'rgba(0, 0, 0, 0.1)' ,
-                        borderTopWidth : 1 , backgroundColor: "white"}}>
-                        <View style={!(isMobile) && { width: "60%", alignSelf: "flex-end"} }>
+                    <View style={ {
+                        paddingHorizontal: !isMobile && 64,
+                        borderTopColor : 'rgba(0, 0, 0, 0.1)' ,
+                        borderTopWidth : 1 , backgroundColor : "white"
+                    } }>
+                        <View style={ !(
+                            isMobile) && {  width : "60%" , alignSelf : "flex-end" } }>
                             <View style={ styles.footer }>
                                 { getRole(user , [DIRECTOR , EVALUATOR , CASHIER , ACCOUNTANT]) &&
                                 <View style={ styles.groupButton }>
 
                                     <ApprovedButton
                                         currentLoading={ currentLoading }
-                                        allButton={ allButton }
+                                        allButton={ false }
                                         onPress={ () => {
 
                                             if (cashier) {
@@ -290,7 +311,7 @@ function ActivityModal(props: any) {
 
                                     <DeclineButton
                                         currentLoading={ currentLoading }
-                                        allButton={ allButton }
+                                        allButton={ false }
                                         onPress={ () => {
                                             setVisible(true)
                                         } }/>
@@ -300,7 +321,7 @@ function ActivityModal(props: any) {
                                 { getRole(user , [EVALUATOR]) &&
                                 <EndorsedButton
                                     currentLoading={ currentLoading }
-                                    allButton={ allButton }
+                                    allButton={ false }
                                     onPress={ () => {
                                         setEndorseVisible(true)
                                     } }/> }
@@ -311,16 +332,14 @@ function ActivityModal(props: any) {
                     </View>
 
 
-
-
                 }
             </View>
             <Approval
-                size={activityModalScreenComponent}
+                size={ activityModalScreenComponent }
                 onModalDismissed={ () => {
                     setStatus(prevStatus);
                     setRemarks(prevRemarks);
-                    setAssignId(props?.details?.assignedPersonnel)
+                    setAssignId(props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel)
                 } }
                 onChangeRemarks={ (_remark: string , _assign ,) => {
                     setPrevStatus(status);
@@ -368,7 +387,7 @@ function ActivityModal(props: any) {
                 } }
             />
             <Disapproval
-                size={activityModalScreenComponent}
+                size={ activityModalScreenComponent }
                 user={ props?.details?.applicant?.user }
                 remarks={ setRemarks }
                 onChangeApplicationStatus={ (event: any , callback: (bool , appId) => {}) => {
@@ -390,11 +409,11 @@ function ActivityModal(props: any) {
                 onDismissed={ onDismissed }
             />
             <Endorsed
-                size={activityModalScreenComponent}
-                assignedPersonnel={ props?.details?.assignedPersonnel }
+                size={ activityModalScreenComponent }
+                assignedPersonnel={ props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel }
                 onModalDismissed={ () => {
                     setRemarks(prevRemarks);
-                    setAssignId(props?.details?.assignedPersonnel)
+                    setAssignId(props?.details?.assignedPersonnel?._id ||props?.details?.assignedPersonnel)
                 } }
                 remarks={ (event: any) => {
                     setPrevRemarks(remarks);

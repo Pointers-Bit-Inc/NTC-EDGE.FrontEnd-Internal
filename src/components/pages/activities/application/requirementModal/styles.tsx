@@ -2,6 +2,7 @@ import {Dimensions , StyleSheet} from "react-native";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 
 
@@ -49,7 +50,7 @@ export const requirementStyles = StyleSheet.create({
 
     } ,
     cardContainer : {
-
+        paddingTop: 20,
         backgroundColor : "rgba(255,255,255,1)" ,
         shadowColor : "rgba(0,0,0,1)" ,
         shadowOffset : {
@@ -64,7 +65,6 @@ export const requirementStyles = StyleSheet.create({
     cardLabel : {
         width : "100%" ,
         justifyContent : "space-between" ,
-        paddingVertical : 12 ,
         paddingLeft : 12
     } ,
     cardTitle : {
@@ -82,12 +82,13 @@ export const requirementStyles = StyleSheet.create({
         color: "#37405B"
     },
     description : {
+        
         fontSize: fontValue(14),
         color : "#1F2022",
         justifyContent: "center"
     } ,
     cardDocument : {
-
+            paddingVertical: 10,
         flexDirection : "row" ,
         justifyContent : "flex-start" ,
         alignItems : "center" ,
@@ -96,12 +97,9 @@ export const requirementStyles = StyleSheet.create({
     text : {
         fontSize: fontValue(14),
         fontFamily: Regular,
-        width : "80%" ,
         color : "#606A80"
     } ,
     cardPicture : {
-
-        height : "70%" ,
 
         backgroundColor : "#E6E6E6"
     }

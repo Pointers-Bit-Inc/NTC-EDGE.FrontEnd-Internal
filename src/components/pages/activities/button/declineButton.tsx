@@ -1,13 +1,19 @@
-import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {ActivityIndicator , StyleSheet , Text , TouchableOpacity , TouchableWithoutFeedback , View} from "react-native";
 import {DECLINED} from "../../../../reducers/activity/initialstate";
-import React from "react";
+import React , {useState} from "react";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
+import {Hoverable} from "react-native-web-hooks";
 
 export function DeclineButton(props: { currentLoading: string, allButton: boolean, onPress: () => void }) {
-    return <View style={{flex: 1}}>
-        <TouchableOpacity
+    const [pressed, setPressed] = useState(false)
+    return <Hoverable>
+        { isHovered => (
+            <View style={{flex: 1}}>
+        <TouchableWithoutFeedback
+            onPressIn={()=>setPressed(true)}
+            onPressOut={()=>setPressed(false)}
             disabled={(props.currentLoading === DECLINED || props.allButton)}
             onPress={props.onPress}
         >
@@ -15,7 +21,7 @@ export function DeclineButton(props: { currentLoading: string, allButton: boolea
                 style={[
                     styles.rect24,
                     {
-                        backgroundColor:"#fff",
+                        backgroundColor:props.allButton ?  "#fff" :  isHovered ? "#DE7C8D" : "#fff" ,
                         height: undefined,
                         paddingVertical: props.currentLoading === DECLINED ? fontValue(8.5) : fontValue(9),
                         borderWidth: 2,
@@ -30,13 +36,14 @@ export function DeclineButton(props: { currentLoading: string, allButton: boolea
                         <Text
                             style={[styles.endorse, {
                                 fontFamily: Bold,
-                                color: (props.allButton) ? "#C4C4C4" : "rgba(194,0,0,1)",
+                                color: (props.allButton) ? "#C4C4C4" : isHovered ? "#fff" : "rgba(194,0,0,1)",
                             }]}>Decline</Text>
                     )
                 }
             </View>
-        </TouchableOpacity>
-    </View>;
+        </TouchableWithoutFeedback>
+    </View> ) }
+    </Hoverable>;
 }
 
 const styles = StyleSheet.create({

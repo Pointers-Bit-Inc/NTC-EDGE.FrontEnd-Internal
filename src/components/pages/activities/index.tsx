@@ -41,7 +41,7 @@ import FilterIcon from "@assets/svg/filterIcon";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import {BASE_URL} from "../../../services/config";
-import {setVisible} from "../../../reducers/activity/actions";
+import {setActivity , setVisible} from "../../../reducers/activity/actions";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import moment from "moment";
 import ApplicationList from "@pages/activities/applicationList";
@@ -62,9 +62,9 @@ import {MeetingNotif} from '@components/molecules/list-item';
 import listEmpty from "@pages/activities/listEmpty";
 import HomeMenuIcon from "@assets/svg/homemenu";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
-import {useUserRole} from "@pages/activities/hooks/useUserRole";
+import {useUserRole} from "../../../hooks/useUserRole";
 import {Regular500} from "@styles/font";
-import {useComponentLayout} from "@pages/activities/hooks/useComponentLayout";
+import {useComponentLayout} from "../../../hooks/useComponentLayout";
 import NoActivity from "@assets/svg/noActivity";
 import {styles} from "@pages/activities/styles";
 import {fontValue} from "@pages/activities/fontValue";
@@ -72,13 +72,12 @@ import FilterWeb from "@assets/svg/filterWeb";
 import RefreshWeb from "@assets/svg/refreshWeb";
 import {primaryColor} from "@styles/color";
 import {isMobile} from "@pages/activities/isMobile";
+import ActivityModalView from "@pages/activities/nativeView/activityModalView";
 import IMeetings from "src/interfaces/IMeetings";
 
 const { width } = Dimensions.get('window');
 
-function ActivityModalView(props) {
-    return isMobile ? <>{ props.children }</> : <View style={ { flex : 0.6 } }> { props.children }</View>;
-}
+
 
 const Filter = isMobile ? FilterIcon : FilterWeb;
 export default function ActivitiesPage(props: any) {
@@ -133,7 +132,7 @@ export default function ActivitiesPage(props: any) {
 
         const groups = list?.reduce((groups: any , activity: any) => {
 
-            if (activity.assignedPersonnel == user?._id) {
+            if ((activity.assignedPersonnel?._id || activity.assignedPersonnel ) == user?._id) {
                 //  isPinned++
 
 
@@ -276,7 +275,6 @@ export default function ActivitiesPage(props: any) {
     } , [updateUnReadReadApplication , updateModal , searchTerm , selectedChangeStatus?.length , pinnedApplications?.length , currentPage]);
 
     const notPnApplications = useMemo(() => {
-        console.log("update props?.details?.assignedPersonnel:");
         setUpdateUnReadReadApplication(false);
         return ispinnedApplications(notPinnedApplications)
     } , [updateUnReadReadApplication , updateModal , searchTerm , selectedChangeStatus?.length , notPinnedApplications?.length , currentPage]);
@@ -517,11 +515,12 @@ export default function ActivitiesPage(props: any) {
         extrapolate : 'clamp' ,
     });
 
-
+    const [activityMore, setActivityMore] = useState(undefined)
     return (
         <Fragment>
             <StatusBar barStyle={ 'light-content' }/>
-            <View onLayout={ onActivityScreenComponent } style={ { flex : 1 , flexDirection : "row" } }>
+
+            <View onLayout={ onActivityScreenComponent } style={ { backgroundColor: "#F8F8F8", flex : 1 , flexDirection : "row" } }>
                 <View onLayout={ onActivityLayoutComponent } style={ [styles.container , {
                     flex : (
                                isMobile  || activityScreenComponent?.width <800) ? 1 : 0.4 ,
@@ -601,6 +600,8 @@ export default function ActivitiesPage(props: any) {
                                    } } onPress={ () => {
 
                         //setSearchVisible(true)
+                        dispatch(setApplicationItem({  }))
+
                         props.navigation.navigate(SEARCH);
                     } } searchVisible={ searchVisible }/>
 
@@ -639,19 +640,20 @@ export default function ActivitiesPage(props: any) {
                                             {
                                                 pnApplications.map((item: any , index: number) => {
                                                     return item?.activity && item?.activity.map((act: any , i: number) => {
-                                                        return act?.assignedPersonnel == user?._id && <ActivityItem
+                                                        return (act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <ActivityItem
                                                             isOpen={ isOpen }
                                                             config={ config }
                                                             key={ i }
+                                                            selected={applicationItem?._id == act?._id}
                                                             currentUser={ user }
                                                             role={ user?.role?.key }
                                                             searchQuery={ searchTerm }
                                                             activity={ act }
                                                             isPinned={ true }
                                                             onPressUser={ (event: any) => {
+
                                                                 /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                                 })*/
-                                                                setIsOpen(undefined);
                                                                 dispatch(setApplicationItem({ ...act , isOpen : `pin${ i }${ index }` }))
                                                                 //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
                                                                 if (event?.icon == 'more') {
@@ -721,12 +723,13 @@ export default function ActivitiesPage(props: any) {
                                             isPinned={true}*/
                                             searchQuery={ searchTerm }
                                             key={ i }
+                                            selected={applicationItem?._id == activity?._id}
                                             parentIndex={ index }
                                             role={ user?.role?.key }
                                             activity={ activity }
                                             currentUser={ user }
                                             onPressUser={ (event: any) => {
-                                                setIsOpen(undefined);
+                                               
                                                 dispatch(setApplicationItem({ ...activity , isOpen : `${ index }${ i }` }))
                                                 //setDetails({ ...activity , isOpen : `${ index }${ i }` });
                                                 /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
@@ -763,7 +766,6 @@ export default function ActivitiesPage(props: any) {
 
                 { (!lodash.isEmpty(applicationItem) )  && <ActivityModalView>
                     <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
-
                         onMoreModalDismissed(applicationItem?.isOpen)
                     } }/>
                     <ActivityModal updateModal={ updateModalFn }
