@@ -180,7 +180,7 @@ function Disapproval(props: any) {
 const styles = StyleSheet.create({
     container : {
         flex : 1 ,
-        paddingRight: !isMobile && 64,
+        paddingRight: !isMobile ? undefined : 64,
     } ,
     fileTextIcon : {
         paddingLeft : fontValue(15) ,
