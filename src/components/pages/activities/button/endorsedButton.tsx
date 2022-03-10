@@ -23,8 +23,8 @@ export function EndorsedButton(props: { currentLoading: string, allButton: boole
                 alignSelf: "flex-end",
                 borderWidth: (props.allButton || isHovered) ? 2 :  1,
                 borderRadius: 24,
-                borderColor: props.allButton   ? "#c4c4c4" : pressed ? "#041B6E" :  isHovered ? "#7792F3" : "#c4c4c4",
-                backgroundColor:  props.allButton  ? "#fff" :  pressed ? "#041B6E" :  isHovered && "#E0E7FE",
+                borderColor: props.allButton   ? "#c4c4c4" :  pressed ? "#041B6E" :  isHovered ? "#7792F3" : "#c4c4c4",
+                backgroundColor:  props.allButton  ? "#fff" :  pressed ? "#041B6E" :  isHovered ? "#E0E7FE" : "#fff",
                 height: undefined,
                 paddingVertical: props.currentLoading === FOREVALUATION ? fontValue(8.5) : (props.allButton || isHovered) ?  fontValue(9) : fontValue(10)
             }]}>

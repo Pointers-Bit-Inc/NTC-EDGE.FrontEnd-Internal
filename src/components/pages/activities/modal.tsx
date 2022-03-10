@@ -1,5 +1,14 @@
 import React , {useEffect , useMemo , useState} from "react";
-import {Alert , Modal , Platform , StyleSheet , Text , TouchableOpacity , View} from "react-native";
+import {
+    Alert ,
+    Modal ,
+    Platform ,
+    StyleSheet ,
+    Text ,
+    TouchableOpacity ,
+    TouchableWithoutFeedback ,
+    View
+} from "react-native";
 import {primaryColor} from "@styles/color";
 import Disapproval from "@pages/activities/modal/disapproval";
 import Endorsed from "@pages/activities/modal/endorse";
@@ -183,6 +192,7 @@ function ActivityModal(props: any) {
     const [title , setTitle] = useState("Approve Application");
     const [showClose , setShowClose] = useState(false);
     const [activityModalScreenComponent , onActivityModalScreenComponent] = useComponentLayout();
+
     return (
         <NativeView
             onLayout={ onActivityModalScreenComponent }
@@ -197,18 +207,19 @@ function ActivityModal(props: any) {
                 setChange(false)
             } }>
 
-            <View style={ approveVisible || visible || endorseVisible || showAlert ? {
+                <View style={ isMobile && (approveVisible || visible || endorseVisible || showAlert) ? {
 
-                position : "absolute" ,
-                zIndex : 2 ,
-                top : 0 ,
-                left : 0 ,
-                width : "100%" ,
-                height : "100%" ,
-                backgroundColor : "rgba(0, 0, 0, 0.5)" ,
-            } : { position : "absolute" , } }>
+                    position : "absolute" ,
+                    zIndex : 2 ,
+                    top : 0 ,
+                    left : 0 ,
+                    width : "100%" ,
+                    height : "100%" ,
+                    backgroundColor : "rgba(0, 0, 0, 0.5)" ,
+                } : { position : "absolute" , } }>
 
-            </View>
+                </View>
+
 
 
             <CustomAlert
@@ -274,18 +285,19 @@ function ActivityModal(props: any) {
                 }}  details={ props.details } status={ status }/>
                 {
                     <View style={ {
+                        paddingHorizontal: !isMobile && 64,
                         borderTopColor : 'rgba(0, 0, 0, 0.1)' ,
                         borderTopWidth : 1 , backgroundColor : "white"
                     } }>
                         <View style={ !(
-                            isMobile) && { width : "60%" , alignSelf : "flex-end" } }>
+                            isMobile) && {  width : "60%" , alignSelf : "flex-end" } }>
                             <View style={ styles.footer }>
                                 { getRole(user , [DIRECTOR , EVALUATOR , CASHIER , ACCOUNTANT]) &&
                                 <View style={ styles.groupButton }>
 
                                     <ApprovedButton
                                         currentLoading={ currentLoading }
-                                        allButton={ allButton }
+                                        allButton={ false }
                                         onPress={ () => {
 
                                             if (cashier) {
@@ -299,7 +311,7 @@ function ActivityModal(props: any) {
 
                                     <DeclineButton
                                         currentLoading={ currentLoading }
-                                        allButton={ allButton }
+                                        allButton={ false }
                                         onPress={ () => {
                                             setVisible(true)
                                         } }/>
@@ -309,7 +321,7 @@ function ActivityModal(props: any) {
                                 { getRole(user , [EVALUATOR]) &&
                                 <EndorsedButton
                                     currentLoading={ currentLoading }
-                                    allButton={ allButton }
+                                    allButton={ false }
                                     onPress={ () => {
                                         setEndorseVisible(true)
                                     } }/> }

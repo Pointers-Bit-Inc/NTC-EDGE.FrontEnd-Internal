@@ -6,6 +6,7 @@
     import {RFValue} from "react-native-responsive-fontsize";
     import useKeyboard from "../../../../hooks/useKeyboard";
     import {fontValue} from "@pages/activities/fontValue";
+    import {isMobile} from "@pages/activities/isMobile";
 
 
     interface Props {
@@ -157,7 +158,7 @@
         dropdown: {
             marginTop: 5,
             bottom: "15%",
-            alignSelf: "center",
+            alignSelf: isMobile ? "center" : "flex-end",
             position: 'absolute',
 
             backgroundColor: "rgba(255,255,255,1)",

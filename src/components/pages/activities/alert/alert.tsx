@@ -29,12 +29,12 @@ function CustomAlert(props) {
                 }
             }
         >
-            <Animated.View style={[ { transform: [{ scale: !props.onLoading ? springValue :  1}] }]}>
+            <Animated.View style={[   { transform: [{ scale: !props.onLoading ? springValue :  1}] }]}>
                 <View style={styles.group}>
-                    <View style={styles.container___}>
+                    <View style={[styles.container___, styles.shadow]}>
                         <View style={styles.container__}>
 
-                            <View style={[styles.container_, {padding: "5%"}]}>
+                            <View style={[styles.container_, {padding: "5%", paddingHorizontal: 48,}]}>
                                 {
                                     props?.type == DECLINED && <View>
                                         <CloseModal></CloseModal>
@@ -103,7 +103,16 @@ const styles = StyleSheet.create({
 
         alignSelf: "center"
     },
+    shadow: {shadowColor: "rgba(0,0,0,1)",
+        shadowOffset: {
+            height: 0,
+            width: 0
+        },
+        elevation: 60,
+        shadowOpacity: 0.25,
+        shadowRadius: 20,},
     container___: {
+
                 flexDirection: "column",
         justifyContent: "space-around",
         backgroundColor: "rgba(255,255,255,1)",
