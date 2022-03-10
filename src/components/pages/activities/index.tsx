@@ -514,8 +514,6 @@ export default function ActivitiesPage(props: any) {
         outputRange : [1 , 0.5 , 0] ,
         extrapolate : 'clamp' ,
     });
-
-    const [activityMore, setActivityMore] = useState(undefined)
     return (
         <Fragment>
             <StatusBar barStyle={ 'light-content' }/>

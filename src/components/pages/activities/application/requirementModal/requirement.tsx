@@ -109,6 +109,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
                         </View>
 
                         <View style={ {
+                            borderRadius: isMobile ? undefined : 10,
                             marginHorizontal: isMobile ? undefined :46,
                             marginBottom: isMobile ? undefined :25,
                             width: isMobile ? undefined : 240,

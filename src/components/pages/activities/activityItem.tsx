@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     } ,
     container : {
         paddingVertical : 5 ,
-        paddingRight : 20 ,
+        paddingRight : isMobile ? 20 : undefined ,
 
     } ,
     horizontal : {

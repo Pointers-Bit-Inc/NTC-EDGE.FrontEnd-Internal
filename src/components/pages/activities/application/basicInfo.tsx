@@ -15,13 +15,8 @@ import {
 import {useAssignPersonnel} from "../../../../hooks/useAssignPersonnel";
 import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
-import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
-
-const { width , height } = Dimensions.get("screen");
-
-
 
 const Row = (props: { label: string, applicant: any }) => <View style={ styles.group2 }>
     <Text style={ styles.detail }>{ props.label }</Text>
