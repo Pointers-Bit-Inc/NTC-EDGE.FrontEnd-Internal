@@ -26,6 +26,7 @@ import {Bold , Regular500} from "@styles/font";
 import CloseIcon from "@assets/svg/close";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
+import hairlineWidth = StyleSheet.hairlineWidth;
 
 const { height , width } = Dimensions.get('window');
 
@@ -193,14 +194,6 @@ const Endorsed = (props: any) => {
 
                           <View >
                               <View style={ styles.iconColumn }>
-                                  <TouchableOpacity onPress={ () => {
-                                      setValidateRemarks({ error : false });
-                                      props.onDismissed()
-                                  } }>
-                                      <CloseIcon/>
-                                  </TouchableOpacity>
-                              </View>
-                              <View style={ { paddingHorizontal : 20 } }>
                                   <View style={ {
                                       flexDirection : 'row' ,
                                       alignItems : 'center' ,
@@ -210,6 +203,15 @@ const Endorsed = (props: any) => {
                                       <EndorseToIcon style={ styles.icon2 }/>
                                       <Text style={ styles.endorseTo }>Endorse to</Text>
                                   </View>
+
+                                  <TouchableOpacity onPress={ () => {
+                                      setValidateRemarks({ error : false });
+                                      props.onDismissed()
+                                  } }>
+                                      <CloseIcon/>
+                                  </TouchableOpacity>
+                              </View>
+                              <View style={ {paddingVertical: 20,  paddingHorizontal : 20 } }>
 
 
                                   <CustomDropdown value={ endorsed }
@@ -330,10 +332,13 @@ const styles = StyleSheet.create({
         marginTop : 9 ,
     } ,
     iconColumn : {
-        width : '100%' ,
-        paddingTop : 22 ,
-        paddingHorizontal : 30 ,
-        paddingBottom : 15
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        borderBottomWidth: hairlineWidth,
+        borderBottomColor: "#E5E5E5",
+        paddingVertical : 20 ,
+        paddingHorizontal: 24,
     } ,
     iconColumnFiller : {
         flex : 1

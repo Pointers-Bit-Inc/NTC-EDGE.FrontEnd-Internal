@@ -16,10 +16,12 @@ import useKeyboard from 'src/hooks/useKeyboard';
 import CustomAlert from "@pages/activities/alert/alert";
 import {FileTextIcon} from "@assets/svg/fileText";
 import {primaryColor} from "@styles/color";
-import {Bold} from "@styles/font";
+import {Bold , Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
+import CloseIcon from "@assets/svg/close";
+import hairlineWidth = StyleSheet.hairlineWidth;
 
 const { height , width } = Dimensions.get('window');
 
@@ -105,29 +107,38 @@ function Disapproval(props: any) {
                     display : !showAlert ? undefined : "none"
                 }] }>
 
-                    <View style={ { padding : 10 } }>
+                    <View style={ {
+
+                        borderBottomColor: "#e5e5e5",
+                        borderBottomWidth: hairlineWidth,
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding : 20} }>
+                        <View
+                            style={ {
+                                flexDirection : 'row' ,
+                                alignItems : 'flex-start' ,
+
+                            } }
+                        >
+                            <FileTextIcon width={ fontValue(24) } height={ fontValue(24) } style={ styles.fileTextIcon }/>
+                            <View style={ styles.nodRemarksColumn }>
+                                <Text style={ styles.nodRemarks }>NOD/Remarks</Text>
+
+                            </View>
+                        </View>
                         <TouchableOpacity onPress={ () => {
                             props.onDismissed()
                         } }>
-                            <Ionicons name="md-close" style={ styles.icon }/>
+                            <CloseIcon/>
                         </TouchableOpacity>
                     </View>
-                    <View
-                        style={ {
-                            flexDirection : 'row' ,
-                            alignItems : 'flex-start' ,
-                            paddingHorizontal : 20
-                        } }
-                    >
-                        <FileTextIcon width={ fontValue(24) } height={ fontValue(24) } style={ styles.fileTextIcon }/>
-                        <View style={ styles.nodRemarksColumn }>
-                            <Text style={ styles.nodRemarks }>NOD/Remarks</Text>
-                            <Text style={ styles.pleaseProvide }>
-                                Please provide reason of disapproval
-                            </Text>
-                        </View>
-                    </View>
+
                     <View style={ { paddingVertical : 10 , paddingHorizontal : 20 } }>
+                        <Text style={ styles.pleaseProvide }>
+                            Please provide reason of disapproval
+                        </Text>
                         <InputField
                             containerStyle={ {
                                 height : undefined ,
@@ -169,6 +180,7 @@ function Disapproval(props: any) {
 const styles = StyleSheet.create({
     container : {
         flex : 1 ,
+        paddingRight: !isMobile && 64,
     } ,
     fileTextIcon : {
         paddingLeft : fontValue(15) ,
@@ -220,10 +232,11 @@ const styles = StyleSheet.create({
         marginLeft : -1
     } ,
     pleaseProvide : {
-
-        color : "#121212" ,
-        fontSize : fontValue(12) ,
-        marginLeft : -1
+        fontFamily: Regular,
+        fontWeight: "400",
+        paddingTop: fontValue(25),
+        paddingBottom: fontValue(14),
+        fontSize : fontValue(14) ,
     } ,
     nodRemarksColumn : {
         marginLeft : 6

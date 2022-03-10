@@ -26,6 +26,7 @@ import {getRole} from "@pages/activities/script";
 import {Bold} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
+import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 
 const { width , height } = Dimensions.get('window');
 
@@ -195,6 +196,7 @@ const Approval = (props: any) => {
                 behavior={ Platform.OS === "ios" ? "padding" : "height" }
                 style={ [styles.container , {  marginHorizontal: 10, alignItems :"center", }] }
             >
+                <OnBackdropPress onPressOut={_springHide} />
 
                 {
 
