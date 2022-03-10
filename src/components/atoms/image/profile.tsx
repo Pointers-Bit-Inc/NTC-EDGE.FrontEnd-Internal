@@ -34,7 +34,7 @@ const ProfileImage = ({
       return getColorFromName(name);
     }
     return backgroundColor;
-  }, []);
+  }, [name]);
 
   if (image) {
     return (
