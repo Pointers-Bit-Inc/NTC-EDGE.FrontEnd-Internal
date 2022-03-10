@@ -7,7 +7,7 @@ import {
     Platform ,
     StyleSheet ,
     Text ,
-    TouchableOpacity ,
+    TouchableOpacity , TouchableWithoutFeedback ,
     View
 } from "react-native";
 import {InputField} from "@molecules/form-fields";
@@ -25,6 +25,7 @@ import {getRole} from "@pages/activities/script";
 import {Bold , Regular500} from "@styles/font";
 import CloseIcon from "@assets/svg/close";
 import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 const { height , width } = Dimensions.get('window');
 
@@ -169,78 +170,95 @@ const Endorsed = (props: any) => {
                 message={ message }/>
             <KeyboardAvoidingView
                 behavior={ Platform.OS === "ios" ? "padding" : "height" }
-                style={ [styles.container , { display : !showAlert ? undefined : "none" }] }
+                style={ [styles.container ,  {
+
+                       width: "100%",
+                    display : !showAlert ? undefined : "none" }] }
             >
 
-                <View style={ [styles.rect , { height : orientation == "LANDSCAPE" ? "100%" : "80%" , }] }>
 
-                    <View>
-                        <View style={ styles.iconColumn }>
-                            <TouchableOpacity onPress={ () => {
-                                setValidateRemarks({ error : false });
-                                props.onDismissed()
-                            } }>
-                                <CloseIcon/>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={ { paddingHorizontal : 20 } }>
-                            <View style={ {
-                                flexDirection : 'row' ,
-                                alignItems : 'center' ,
-                                paddingHorizontal : 5 ,
-                                paddingVertical : 10
-                            } }>
-                                <EndorseToIcon style={ styles.icon2 }/>
-                                <Text style={ styles.endorseTo }>Endorse to</Text>
-                            </View>
+                  <View style={{flex: 1,  paddingHorizontal: !isMobile && 64, alignItems: "flex-end", justifyContent: "flex-end"}}>
+                      <TouchableWithoutFeedback onPressOut={ props.onDismissed}>
+                          <View style={   {
+
+                              flex : 1 ,
+                              width : "100%" ,
+                              height : "100%" ,
+                              alignItems : 'center' ,
+                              justifyContent : 'center' ,
+                              position : 'absolute' ,
+                          } }/>
+                      </TouchableWithoutFeedback>
+                      <View style={ [styles.rect , styles.shadow, { height : isMobile ? orientation == "LANDSCAPE"  ? "100%" : "80%" : "80%" , }] }>
+
+                          <View >
+                              <View style={ styles.iconColumn }>
+                                  <TouchableOpacity onPress={ () => {
+                                      setValidateRemarks({ error : false });
+                                      props.onDismissed()
+                                  } }>
+                                      <CloseIcon/>
+                                  </TouchableOpacity>
+                              </View>
+                              <View style={ { paddingHorizontal : 20 } }>
+                                  <View style={ {
+                                      flexDirection : 'row' ,
+                                      alignItems : 'center' ,
+                                      paddingHorizontal : 5 ,
+                                      paddingVertical : 10
+                                  } }>
+                                      <EndorseToIcon style={ styles.icon2 }/>
+                                      <Text style={ styles.endorseTo }>Endorse to</Text>
+                                  </View>
 
 
-                            <CustomDropdown value={ endorsed }
-                                            label="Select Item"
-                                            data={ pickedEndorsed }
-                                            onSelect={ ({ value }) => {
-                                                if (value) setEndorsed(value)
-                                            } }/>
-                            <View style={ { paddingVertical : 10 } }>
-                                <InputField
-                                    clearable={ false }
-                                    containerStyle={ {
-                                        height : undefined ,
-                                        borderColor : "#D1D1D6" ,
-                                        borderWidth : 1 ,
-                                        backgroundColor : undefined ,
-                                    } }
-                                    outlineStyle={ {
-                                        borderRadius : 4 ,
-                                        paddingTop : 10 ,
-                                        height : (
-                                                     height < 720 && isKeyboardVisible) ? 75 : height * 0.15
-                                    } }
-                                    inputStyle={ { fontWeight : "400" , fontSize : fontValue(14) } }
-                                    error={ validateRemarks.error }
-                                    errorColor={ errorColor }
-                                    placeholder={ 'Remarks' }
-                                    multiline={ true }
-                                    value={ text }
-                                    onChangeText={ (text: string) => {
+                                  <CustomDropdown value={ endorsed }
+                                                  label="Select Item"
+                                                  data={ pickedEndorsed }
+                                                  onSelect={ ({ value }) => {
+                                                      if (value) setEndorsed(value)
+                                                  } }/>
+                                  <View style={ { paddingVertical : 10 } }>
+                                      <InputField
+                                          clearable={ false }
+                                          containerStyle={ {
+                                              height : undefined ,
+                                              borderColor : "#D1D1D6" ,
+                                              borderWidth : 1 ,
+                                              backgroundColor : undefined ,
+                                          } }
+                                          outlineStyle={ {
+                                              borderRadius : 4 ,
+                                              paddingTop : 10 ,
+                                              height : (
+                                                           height < 720 && isKeyboardVisible) ? 75 : height * 0.15
+                                          } }
+                                          inputStyle={ { fontWeight : "400" , fontSize : fontValue(14) } }
+                                          error={ validateRemarks.error }
+                                          errorColor={ errorColor }
+                                          placeholder={ 'Remarks' }
+                                          multiline={ true }
+                                          value={ text }
+                                          onChangeText={ (text: string) => {
 
-                                        setText(text)
-                                    } }
-                                />
-                            </View>
+                                              setText(text)
+                                          } }
+                                      />
+                                  </View>
 
-                        </View>
-                    </View>
+                              </View>
+                          </View>
 
-                    <View style={ { width : '100%' , paddingHorizontal : 15 } }>
-                        <TouchableOpacity disabled={ !picked } onPress={ onEndorseConfirm }>
-                            <View
-                                style={ [styles.confirmButton , { backgroundColor : picked ? primaryColor : disabledColor , }] }>
-                                <Text style={ styles.confirm }>Confirm</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                          <View style={ { width : '100%' , paddingHorizontal : 15 } }>
+                              <TouchableOpacity disabled={ !picked } onPress={ onEndorseConfirm }>
+                                  <View
+                                      style={ [styles.confirmButton , { backgroundColor : picked ? primaryColor : disabledColor , }] }>
+                                      <Text style={ styles.confirm }>Confirm</Text>
+                                  </View>
+                              </TouchableOpacity>
+                          </View>
+                      </View>
+                  </View>
 
             </KeyboardAvoidingView>
         </Modal>
@@ -249,6 +267,14 @@ const Endorsed = (props: any) => {
 };
 
 const styles = StyleSheet.create({
+    shadow: {shadowColor: "rgba(0,0,0,1)",
+        shadowOffset: {
+            height: 0,
+            width: 0
+        },
+        elevation: 60,
+        shadowOpacity: 0.25,
+        shadowRadius: 20,},
     container : {
         flex : 1 ,
         justifyContent : "flex-end"
@@ -257,6 +283,7 @@ const styles = StyleSheet.create({
         flex : 1
     } ,
     rect : {
+         width: isMobile ? "100%" : "32.6%",
         justifyContent : "space-between" ,
         paddingBottom : 20 ,
 

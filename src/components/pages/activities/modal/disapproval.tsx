@@ -19,6 +19,7 @@ import {primaryColor} from "@styles/color";
 import {Bold} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
+import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 
 const { height , width } = Dimensions.get('window');
 
@@ -57,18 +58,9 @@ function Disapproval(props: any) {
             } }>
 
 
-            <View style={ showAlert ? {
-                zIndex : 1 ,
-                flex : 1 ,
-                width : "100%" ,
-                height : "100%" ,
-                alignItems : 'center' ,
-                justifyContent : 'flex-end' ,
-                position : 'absolute' ,
-                backgroundColor : 'rgba(52,52,52,0.5)'
-            } : {} }>
+            <OnBackdropPress onPressOut={ props.onDismissed }/>
 
-            </View>
+
             <CustomAlert
                 showClose={ showClose }
                 type={ DECLINED }
@@ -98,16 +90,21 @@ function Disapproval(props: any) {
                 } } show={ showAlert } title={ title }
                 message={ message }/>
 
+
             <KeyboardAvoidingView
                 behavior={ Platform.OS === "ios" ? "padding" : "height" }
                 style={ [styles.container] }
             >
-
-                <View style={ styles.rectFiller }></View>
+                <OnBackdropPress onPressOut={ props.onDismissed }/>
+                <View style={ styles.rectFiller }>
+                    <OnBackdropPress onPressOut={ props.onDismissed }/>
+                </View>
                 <View style={ [styles.rect , {
-                    width : isMobile ? "100%" : props?.size?.width ,
+
+                    width: isMobile ? "100%" : "32%",
                     display : !showAlert ? undefined : "none"
                 }] }>
+
                     <View style={ { padding : 10 } }>
                         <TouchableOpacity onPress={ () => {
                             props.onDismissed()
@@ -187,6 +184,14 @@ const styles = StyleSheet.create({
         flex : 1
     } ,
     rect : {
+        shadowColor: "rgba(0,0,0,1)",
+            shadowOffset: {
+                height: 0,
+                width: 0
+            },
+            elevation: 60,
+            shadowOpacity: 0.25,
+            shadowRadius: 20,
         borderRadius : 15 ,
         alignSelf : "flex-end" ,
 
