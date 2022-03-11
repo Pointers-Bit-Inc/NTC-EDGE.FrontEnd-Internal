@@ -79,6 +79,13 @@ const styles = StyleSheet.create({
     borderTopColor: '#E5E5E5',
     borderTopWidth: 1,
   },
+  containerStyle: {
+    height: undefined,
+    paddingVertical: 10,
+    borderWidth: 1,
+    backgroundColor: 'white',
+    paddingHorizontal: 10,
+  },
   outline: {
     borderRadius: 10,
   },
@@ -230,10 +237,10 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
           <InputField
             ref={inputRef}
             placeholder={'Type a message'}
-            containerStyle={{ height: null, paddingVertical: 10, borderWidth: 1, borderColor: isFocused ? '#C1CADC' : 'white', backgroundColor: 'white' }}
+            containerStyle={[styles.containerStyle, { borderColor: isFocused ? '#C1CADC' : 'white' }]}
             placeholderTextColor={'#C4C4C4'}
-            inputStyle={[InputStyles.text, styles.input, { backgroundColor: 'white' }]}
-            outlineStyle={[InputStyles.outlineStyle, styles.outline, { backgroundColor: 'white' }]}
+            inputStyle={[styles.input, { backgroundColor: 'white' }]}
+            outlineStyle={[styles.outline, { backgroundColor: 'white' }]}
             value={inputText}
             onChangeText={setInputText}
             onSubmitEditing={() => inputText && onSendMessage()}

@@ -83,6 +83,13 @@ const styles = StyleSheet.create({
     borderTopColor: '#E5E5E5',
     borderTopWidth: 1,
   },
+  containerStyle: {
+    height: undefined,
+    paddingVertical: 10,
+    borderWidth: 1,
+    backgroundColor: 'white',
+    paddingHorizontal: 10,
+  },
   outline: {
     borderRadius: 10,
   },
@@ -347,10 +354,10 @@ const ChatView = ({ navigation, route }:any) => {
             <InputField
               ref={inputRef}
               placeholder={'Type a message'}
-              containerStyle={{ height: null, paddingVertical: 10, borderWidth: 1, borderColor: isFocused ? '#C1CADC' : 'white', backgroundColor: 'white' }}
+              containerStyle={[styles.containerStyle, { borderColor: isFocused ? '#C1CADC' : 'white' }]}
               placeholderTextColor={'#C4C4C4'}
-              inputStyle={[InputStyles.text, styles.input, { backgroundColor: 'white' }]}
-              outlineStyle={[InputStyles.outlineStyle, styles.outline, { backgroundColor: 'white' }]}
+              inputStyle={[styles.input, { backgroundColor: 'white' }]}
+              outlineStyle={[styles.outline, { backgroundColor: 'white' }]}
               value={inputText}
               onChangeText={setInputText}
               onSubmitEditing={() => inputText && onSendMessage()}
@@ -384,57 +391,6 @@ const ChatView = ({ navigation, route }:any) => {
                 )
               }
             </TouchableOpacity>
-            {/* {
-              !!selectedMessage._id ? (
-                <TouchableOpacity
-                  onPress={() => {
-                    _editMessage(selectedMessage._id, inputText);
-                    dispatch(removeSelectedMessage())
-                  }}
-                >
-                  <View style={styles.circle}>
-                    <CheckIcon
-                      type='check1'
-                      color="white"
-                      size={RFValue(16)}
-                    />
-                  </View>
-                </TouchableOpacity>
-              ) : (
-                isFocused ? (
-                  <TouchableOpacity
-                    onPress={onSendMessage}
-                  >
-                    <View style={{ marginLeft: 10 }}>
-                      <NewMessageIcon
-                        color={inputText ? button.info : button.default}
-                        height={RFValue(30)}
-                        width={RFValue(30)}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                ) : (
-                  <>
-                    <TouchableOpacity disabled={true}>
-                      <View style={{ paddingLeft: 10 }}>
-                        <CameraIcon
-                          size={RFValue(22)}
-                          color={button.default}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity disabled={true}>
-                      <View style={{ paddingLeft: 15 }}>
-                        <MicIcon
-                          size={RFValue(20)}
-                          color={button.default}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                  </>
-                )
-              )
-            } */}
           </View>
         </View>
       </KeyboardAvoidingView>

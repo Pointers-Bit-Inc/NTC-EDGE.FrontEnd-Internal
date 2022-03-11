@@ -173,7 +173,6 @@ const tagStyles = StyleSheet.create({
   },
   tag: {
     borderRadius: 10,
-    margin: 2,
   },
   textTag: {
     color: header.default,
@@ -187,6 +186,7 @@ const tagStyles = StyleSheet.create({
     fontFamily: Bold,
     paddingLeft: 0,
     paddingRight: 0,
+    paddingTop: 1,
     marginTop: Platform.OS === 'ios' ? 0 : -2
   },
 });
