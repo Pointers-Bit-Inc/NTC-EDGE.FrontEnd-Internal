@@ -25,7 +25,7 @@ const Login = ({ navigation }: any) => {
     const [loading , setLoading] = useState(false);
     const onLogin = async (data) => {
         setLoading(true);
-        api.post('/user/signin' , {
+        api.post('/signin' , {
             email : data.email ,
             password : data.password ,
         })

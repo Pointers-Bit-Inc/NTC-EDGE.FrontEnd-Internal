@@ -219,7 +219,7 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
     <View style={styles.container}>
       <View style={{ flex: 1 }}>
         {
-          !!channelId && (<ChatList />)
+          rendered && !!channelId && (<ChatList />)
         }
       </View>
       <Animated.View style={[styles.keyboardAvoiding, { marginBottom: Height.current }]}>

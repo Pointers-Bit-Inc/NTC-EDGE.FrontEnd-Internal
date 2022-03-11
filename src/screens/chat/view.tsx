@@ -334,7 +334,9 @@ const ChatView = ({ navigation, route }:any) => {
         }
       </View>
       <View style={{ flex: 1 }}>
-        <ChatList />
+        {
+          rendered && <ChatList />
+        }
       </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}

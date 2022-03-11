@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: RFValue(10),
     flexDirection: 'row',
     alignItems: 'center',
+    paddingBottom: Platform.OS === 'ios' ? undefined : 1,
   },
   seenContainer: {
     paddingTop: 5,
