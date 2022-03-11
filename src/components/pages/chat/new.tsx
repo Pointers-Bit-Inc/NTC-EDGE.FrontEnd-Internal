@@ -247,7 +247,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     setHasError(false);
     const payload = searchValue ? { pageIndex: 1, keyword: searchValue } : { pageIndex: 1 };
 
-    if (searchValue || isGroup) {
+    if (!lodash.size(participants) || searchValue || isGroup || isFocused) {
       InteractionManager.runAfterInteractions(() => {
         getParticipantList(payload, (err:any, res:any) => {
           if (!unmount) {
@@ -276,7 +276,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     return () => {
       unmount = true;
     }
-  }, [sendRequest, searchValue, isGroup]);
+  }, [sendRequest, searchValue, isGroup, participants, isFocused]);
 
   useEffect(() => {
     let unmount = false;
@@ -486,7 +486,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   }
 
   const renderList = () => {
-    if (isGroup || searchValue) {
+    if (isGroup || !lodash.size(participants) || searchValue || isFocused) {
       return (
         <FlatList
           data={contacts}
@@ -624,7 +624,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
                   />
                 </View>
                 {
-                  !isFocused && (
+                  !searchValue && (
                     <TouchableOpacity onPress={() => inputTagRef?.current?.focus()}>
                       <View style={styles.plus}>
                         <PlusIcon
