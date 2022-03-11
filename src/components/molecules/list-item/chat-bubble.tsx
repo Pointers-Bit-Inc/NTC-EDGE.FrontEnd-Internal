@@ -11,10 +11,18 @@ import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: primaryColor,
-    borderRadius: 15,
-    padding: 8,
-    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+  },
+  bubbleContainer: {
+    marginTop: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  bubble: {
+    borderRadius: RFValue(15),
+    padding: RFValue(5),
+    paddingHorizontal: RFValue(10),
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -116,7 +124,7 @@ const ChatBubble:FC<Props> = ({
         onLongPress={(isSender && !(deleted || unSend || system)) ? onLongPress : null}
         {...otherProps}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+        <View style={[styles.container, { maxWidth }, style]}>
           {
             (edited && isSender && !(deleted || unSend)) && (
               <View style={{ alignSelf: 'center', marginRight: 5 }}>
@@ -128,46 +136,48 @@ const ChatBubble:FC<Props> = ({
               </View>
             )
           }
-          <View style={[
-            styles.container,
-            {
-              backgroundColor: isSender ? bubble.primary : bubble.secondary,
-              maxWidth,
-            },
-            (deleted || (unSend && isSender) || system) && {
-              backgroundColor: '#E5E5E5'
-            },
-            style
-          ]}>
-            {
-              (deleted || (unSend && isSender)) ? (
-                <>
-                  <NewDeleteIcon
-                    height={RFValue(18)}
-                    width={RFValue(18)}
-                    color={'#979797'}
-                  />
+          <View style={styles.bubbleContainer}>
+            <View
+              style={[
+                styles.bubble,
+                {
+                  backgroundColor: isSender ? bubble.primary : bubble.secondary
+                },
+                (deleted || (unSend && isSender) || system) && {
+                  backgroundColor: '#E5E5E5'
+                },
+              ]}
+            >
+              {
+                (deleted || (unSend && isSender)) ? (
+                  <>
+                    <NewDeleteIcon
+                      height={RFValue(18)}
+                      width={RFValue(18)}
+                      color={'#979797'}
+                    />
+                    <Text
+                      style={{ marginLeft: 5 }}
+                      size={14}
+                      color={'#979797'}
+                    >
+                      {
+                        (unSend && isSender) ?
+                        'Unsent for you'
+                        : `${isSender ? 'You' : sender.firstName } deleted a message`
+                      }
+                    </Text>
+                  </>
+                ) : (
                   <Text
-                    style={{ marginLeft: 5 }}
                     size={14}
-                    color={'#979797'}
+                    color={(isSender && !system) ? 'white' : 'black'}
                   >
-                    {
-                      (unSend && isSender) ?
-                      'Unsent for you'
-                      : `${isSender ? 'You' : sender.firstName } deleted a message`
-                    }
+                    {message}
                   </Text>
-                </>
-              ) : (
-                <Text
-                  size={14}
-                  color={(isSender && !system) ? 'white' : 'black'}
-                >
-                  {message}
-                </Text>
-              )
-            }
+                )
+              }
+            </View>
           </View>
           {
             (edited && !isSender) && (
