@@ -32,7 +32,7 @@ import {
     handleInfiniteLoad , setApplicationItem ,
     setApplications , setFilterRect ,
     setNotPinnedApplication ,
-    setPinnedApplication
+    setPinnedApplication , setRightLayoutComponent
 } from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
@@ -439,13 +439,14 @@ export default function ActivitiesPage(props: any) {
         setMoreModalVisible(false)
     };
     const [sizeComponent , onLayoutComponent] = useComponentLayout();
+    const [sizeRightComponent , onSizeRightLayoutComponent] = useComponentLayout();
     const [searchSizeComponent , onSearchLayoutComponent] = useComponentLayout();
     const [activitySizeComponent , onActivityLayoutComponent] = useComponentLayout();
     const [activityScreenComponent , onActivityScreenComponent] = useComponentLayout();
 
     const [containerHeight , setContainerHeight] = useState(148);
     useEffect(() => {
-
+        dispatch(setRightLayoutComponent(sizeRightComponent))
         dispatch(setFilterRect(sizeComponent))
         if (sizeComponent?.height && searchSizeComponent?.height) setContainerHeight(sizeComponent?.height + searchSizeComponent?.height)
     } , [sizeComponent , searchSizeComponent , activitySizeComponent , activityScreenComponent]);
@@ -757,7 +758,7 @@ export default function ActivitiesPage(props: any) {
                 {
                     !(
                         isMobile )  && lodash.isEmpty(applicationItem) && activityScreenComponent?.width >800  &&
-                    <View style={ [{ flex : 0.6 , justifyContent : "center" , alignItems : "center" }] }>
+                    <View   style={ [{ flex : 0.6 , justifyContent : "center" , alignItems : "center" }] }>
 
                         <NoActivity/>
                         <Text style={ { color : "#A0A3BD" , fontSize : fontValue(24) } }>No activity
@@ -767,7 +768,7 @@ export default function ActivitiesPage(props: any) {
                     </View>
                 }
 
-                { (!lodash.isEmpty(applicationItem) )  && <ActivityModalView>
+                { (!lodash.isEmpty(applicationItem) )  && <ActivityModalView onLayout={onSizeRightLayoutComponent}>
                     <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
                         onMoreModalDismissed(applicationItem?.isOpen)
                     } }/>

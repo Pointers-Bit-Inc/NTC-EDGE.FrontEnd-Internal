@@ -8,7 +8,8 @@ const {
     READ_UNREAD_APPLICATIONS,
     SET_TAB_BAR_HEIGHT,
     SET_APPLICATION_ITEM,
-    SET_FILTER_RECT
+    SET_FILTER_RECT,
+    SET_RIGHT_LAYOUT_COMPONENT
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -67,6 +68,13 @@ export function handleInfiniteLoad(payload) {
 export function setFilterRect(payload) {
     return {
         type: SET_FILTER_RECT,
+        payload,
+    };
+}
+
+export function setRightLayoutComponent(payload) {
+    return {
+        type: SET_RIGHT_LAYOUT_COMPONENT,
         payload,
     };
 }

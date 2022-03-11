@@ -184,7 +184,7 @@ class RequirementView extends React.Component<{ requirement: any }> {
 
 const Requirement = (props: any) => {
 
-    return <ScrollView style={ { backgroundColor : "#f8f8f8" , width : "100%" } }>
+    return <ScrollView  style={ { backgroundColor : "#f8f8f8" , width : "100%" } }>
         { props?.requirements?.map((requirement: any , index: number) => {
             return <RequirementView key={ index } requirement={ requirement }/>
         })
