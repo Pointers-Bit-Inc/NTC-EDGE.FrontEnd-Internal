@@ -82,6 +82,7 @@ interface Props {
   unSend?: boolean;
   edited?: boolean;
   system?: boolean;
+  delivered?: boolean;
   [x: string]: any;
 }
 
@@ -102,6 +103,7 @@ const ChatBubble:FC<Props> = ({
   unSend = false,
   edited = false,
   system = false,
+  delivered = false,
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -225,12 +227,12 @@ const ChatBubble:FC<Props> = ({
           {
             (!isSeen && isSender && !deleted) && (
               <View
-                style={styles.check}
+                style={[styles.check, delivered && { backgroundColor: text.info }]}
               >
                 <CheckIcon
                   type='check1'
                   size={8}
-                  color={text.info}
+                  color={delivered ? 'white' : text.info}
                 />
               </View>
             )
