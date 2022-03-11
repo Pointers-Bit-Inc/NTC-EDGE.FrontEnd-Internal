@@ -30,7 +30,7 @@ import {
 import {RootStateOrAny , useDispatch , useSelector} from "react-redux";
 import {
     handleInfiniteLoad , setApplicationItem ,
-    setApplications ,
+    setApplications , setFilterRect ,
     setNotPinnedApplication ,
     setPinnedApplication
 } from "../../../reducers/application/actions";
@@ -74,12 +74,13 @@ import {primaryColor} from "@styles/color";
 import {isMobile} from "@pages/activities/isMobile";
 import ActivityModalView from "@pages/activities/nativeView/activityModalView";
 import IMeetings from "src/interfaces/IMeetings";
+import FilterPressIcon from "@assets/svg/filterPress";
 
 const { width } = Dimensions.get('window');
 
 
 
-const Filter = isMobile ? FilterIcon : FilterWeb;
+const Filter = isMobile ? FilterIcon : FilterPressIcon;
 export default function ActivitiesPage(props: any) {
 
 
@@ -101,7 +102,7 @@ export default function ActivitiesPage(props: any) {
 
 
     const {selectedChangeStatus, visible} = useSelector((state: RootStateOrAny) => state.activity)
-    const {pinnedApplications, notPinnedApplications, applicationItem} = useSelector((state: RootStateOrAny) => state.application)
+    const {pinnedApplications, notPinnedApplications, applicationItem,  } = useSelector((state: RootStateOrAny) => state.application)
     const dispatch = useDispatch()
     const { getActiveMeetingList, endMeeting, leaveMeeting } = useSignalr();
 
@@ -322,6 +323,7 @@ export default function ActivitiesPage(props: any) {
     };
 
     useEffect(() => {
+
         let unMount = false;
         getActiveMeetingList((err, result) => {
             if (!unMount) {
@@ -443,6 +445,8 @@ export default function ActivitiesPage(props: any) {
 
     const [containerHeight , setContainerHeight] = useState(148);
     useEffect(() => {
+
+        dispatch(setFilterRect(sizeComponent))
         if (sizeComponent?.height && searchSizeComponent?.height) setContainerHeight(sizeComponent?.height + searchSizeComponent?.height)
     } , [sizeComponent , searchSizeComponent , activitySizeComponent , activityScreenComponent]);
 
@@ -465,7 +469,6 @@ export default function ActivitiesPage(props: any) {
     var _offsetValue = 0;
     var _scrollValue = 0;
     useEffect(() => {
-
         scrollY.addListener(({ value }) => {
 
             const diff = value - _scrollValue;
@@ -514,8 +517,9 @@ export default function ActivitiesPage(props: any) {
         outputRange : [1 , 0.5 , 0] ,
         extrapolate : 'clamp' ,
     });
+
     return (
-        <Fragment>
+        <View style={{flex: 1}}>
             <StatusBar barStyle={ 'light-content' }/>
 
             <View onLayout={ onActivityScreenComponent } style={ { backgroundColor: "#F8F8F8", flex : 1 , flexDirection : "row" } }>
@@ -548,7 +552,8 @@ export default function ActivitiesPage(props: any) {
                             }
 
                             }>
-                                <Filter width={ fontValue(32) } height={ fontValue(32) } fill={ "#fff" }/>
+
+                                <Filter pressed={visible} width={ fontValue(32) } height={ fontValue(32) }/>
 
                             </TouchableOpacity>
                             { ( !isMobile && activityScreenComponent?.width > 800)&&
@@ -787,7 +792,7 @@ export default function ActivitiesPage(props: any) {
             </View>
 
 
-        </Fragment>
+        </View>
 
     );
 

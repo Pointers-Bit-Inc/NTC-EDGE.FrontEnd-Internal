@@ -18,7 +18,7 @@ const {
     DELETE_APPLICATIONS,
     HANDLE_LOAD,
     READ_UNREAD_APPLICATIONS,
-    SET_TAB_BAR_HEIGHT,
+    SET_FILTER_RECT,
     SET_APPLICATION_ITEM
 } = require('./types').default;
 
@@ -28,8 +28,10 @@ export default function basket(state = initialState, action = {}) {
 
 
     switch (action.type) {
-        case SET_TAB_BAR_HEIGHT: {
-            state = state.set('tabBarHeight' , action.payload);
+
+        case SET_FILTER_RECT: {
+            console.log(action.payload)
+            state = state.set('filterRect' , action.payload);
             return state
         }
         case SET_APPLICATION_ITEM: {

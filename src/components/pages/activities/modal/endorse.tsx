@@ -52,7 +52,8 @@ const Endorsed = (props: any) => {
                     Authorization : "Bearer ".concat(user.sessionToken)
                 }
             }).then((response) => {
-            const filterResponse = [...response.data].filter((item) => {
+
+            const filterResponse = [...(response?.data?.docs || response?.data)].filter((item) => {
                 return getRole(item , [DIRECTOR , EVALUATOR , ACCOUNTANT]) //&& user?._id != item?._id
             });
 

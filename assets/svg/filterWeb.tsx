@@ -2,6 +2,7 @@ import * as React from "react";
 import Svg, { SvgProps, Path } from "react-native-svg";
 
 const FilterWeb = (props: SvgProps) => (
+
     <Svg
         width={props.width || 30}
         height={props.height || 30}

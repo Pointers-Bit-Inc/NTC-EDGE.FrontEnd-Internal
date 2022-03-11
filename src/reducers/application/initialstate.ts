@@ -6,6 +6,7 @@ const InitialState = Record({
   notPinnedApplications:[],
   applications: [],
   tabBarHeight: 0,
+  filterRect: {width: 0, height: 0, left: 0, top: 0},
   applicationItem: {}
 });
 

@@ -93,7 +93,6 @@ const RootNavigator = () => {
                                         style={ {
                                             borderRadius : 26 , } }
                                         size={ fontValue(28) }
-
                                         image={ user?.profilePicture?.small }
                                         name={ `${ user?.firstName } ${ user?.lastName }` }
                                     />

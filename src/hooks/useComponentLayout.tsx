@@ -4,9 +4,10 @@ export function useComponentLayout() {
     const [size, setSize] = useState(null);
 
     const onLayout = useCallback(event => {
-        const { width, height } = event.nativeEvent.layout;
-        console.log({ width, height })
-        setSize({ width, height });
+                 console.log(event.nativeEvent)
+
+        const layout = event.nativeEvent.layout;
+        setSize(layout);
     }, []);
 
     return [size, onLayout];

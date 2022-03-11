@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: isMobile ? RFValue(1.5) : 1,
+    borderWidth: isMobile ? RFValue(1.5) : 1.5,
     borderColor: 'white',
   },
 });

@@ -21,7 +21,7 @@ const ApplicationDetails = (props: any) => {
                     <Text style={ [styles.service, {fontFamily: Regular500}] }>{ `\u2022${ props?.service?.radioType?.selected }` }</Text>
                     { props?.selectedType?.map((type: any , idx: number) => {
                         return <Text key={ idx } style={ styles.text }>
-                            { type.name } { type.selectedItems.map((item: string , index: number) => {
+                            { type?.name } { type?.selectedItems.map((item: string , index: number) => {
                             return <Text  key={ index } style={{fontFamily: Bold}}>{ `\n\u2022${ item }` }</Text>
                         }) }
                         </Text>

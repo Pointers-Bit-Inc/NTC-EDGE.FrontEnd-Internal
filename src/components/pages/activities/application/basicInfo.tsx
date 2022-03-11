@@ -43,7 +43,7 @@ const BasicInfo = (props: any) => {
     return <ScrollView style={ { width : "100%" , backgroundColor : "#f8f8f8" , } }>
 
         <View style={{flexDirection:  isMobile ? "column" : "row"}}>
-            <View style={  isMobile ?  { padding : 10 , flex : 1 , alignSelf : "center" }  : {paddingLeft: 20, paddingVertical: 20} }>
+            <View style={  isMobile ?  { padding : 10  , alignSelf : "center" }  : {paddingLeft: 20, paddingVertical: 20} }>
                 <ProfileImage
                     style={ { borderRadius : 4 } }
                     size={ fontValue(150) }

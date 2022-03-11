@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React , {useEffect , useRef} from "react";
 import {Dimensions, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import {Ionicons,} from '@expo/vector-icons'
 
@@ -13,13 +13,13 @@ import RadioButtonOnIcon from "@assets/svg/radioButtonOn";
 import RadioButtonOffIcon from "@assets/svg/radioButtonOff";
 import {getRole} from "@pages/activities/script";
 import {Bold , Regular , Regular500} from "@styles/font";
-import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 const window = Dimensions.get("window")
 
 function TopModal(props: any) {
-
+    const {filterRect} = useSelector((state: RootStateOrAny) => state.application)
     const {visible, statusCode} = useSelector((state: RootStateOrAny) => state.activity)
     const dispatch = useDispatch()
     const user = useSelector((state: RootStateOrAny) => state.user);
@@ -49,9 +49,12 @@ function TopModal(props: any) {
                 return null
         }
     }
+
+
     const inputRef = useRef();
     return (
         <Modal
+
             supportedOrientations={['portrait', 'landscape']}
             animationType="fade"
             transparent={true}
@@ -68,14 +71,14 @@ function TopModal(props: any) {
                 left: 0,
                 width: '100%',
                 height: '100%',
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                backgroundColor: isMobile ? "rgba(0, 0, 0, 0.5)" : "rgba(255, 255, 255, 0)",
             } : {}}>
 
                 {<TouchableWithoutFeedback onPressOut={() => dispatch(setVisible(false))}>
 
-                    <View style={[styles.container]}>
+                    <View style={styles.container}>
 
-                        <View style={styles.header1}>
+                        {isMobile && <View style={styles.header1}>
                             <View style={{width: 25}}>
 
                             </View>
@@ -90,11 +93,11 @@ function TopModal(props: any) {
                             </View>
 
 
-                        </View>
-                        <View style={styles.rect2_1}>
+                        </View>}
+                        {isMobile && <View style={styles.rect2_1}>
                             <Text style={styles.sort1}>Sort By</Text>
-                        </View>
-                        <View style={styles.group7_1}>
+                        </View>}
+                        <View  style={[styles.group7_1, !isMobile ?  {width: filterRect?.width, left: filterRect?.left, top: filterRect?.top + filterRect?.height} : {}]}>
 
                             {statusCode.filter((item: any) => {
                                 return getRole(user, item?.isShow)

@@ -9,5 +9,6 @@ export default keyMirror({
   HANDLE_LOAD: null,
   READ_UNREAD_APPLICATIONS: null,
   SET_TAB_BAR_HEIGHT: null,
-  SET_APPLICATION_ITEM: null
+  SET_APPLICATION_ITEM: null,
+  SET_FILTER_RECT: null
 });

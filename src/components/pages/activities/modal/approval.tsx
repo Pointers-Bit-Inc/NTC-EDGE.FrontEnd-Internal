@@ -63,7 +63,7 @@ const Approval = (props: any) => {
             }).then((response) => {
 
             setLoading(false);
-            const filterResponse = [...response.data].filter((item: any) => {
+            const filterResponse = [...response?.data?.docs || response?.data].filter((item: any) => {
                 //evaluator and director -> accountant -> cashier -> null
                 if (userEvaluator || userDirector) { //if evaluator  and director
                     return getRole(item , [ACCOUNTANT])   //get accountant
