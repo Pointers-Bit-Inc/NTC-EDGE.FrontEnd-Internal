@@ -1,12 +1,13 @@
 import {ActivityIndicator , StyleSheet , Text , TouchableOpacity , TouchableWithoutFeedback , View} from "react-native";
-import {APPROVED} from "../../../../reducers/activity/initialstate";
+import {APPROVED , CASHIER} from "../../../../reducers/activity/initialstate";
 import React , {useState} from "react";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
 import {Hoverable} from "react-native-web-hooks";
+import {getRole} from "@pages/activities/script";
 
-export const ApprovedButton = (props: { currentLoading: string, allButton: boolean, onPress: () => void }) => {
+export const ApprovedButton = (props: { currentLoading: string, allButton: boolean, onPress: () => void, user: any }) => {
     const [pressed, setPressed] = useState(false)
     return <Hoverable>
         { isHovered => (<View
@@ -34,7 +35,7 @@ export const ApprovedButton = (props: { currentLoading: string, allButton: boole
                                 fontFamily: Bold,
                                 color : props.allButton ? "#FCFCFC" : "rgba(255,255,255,1)" ,
                             }] }>
-                            Approve
+                            {getRole(props.user , [CASHIER]) ? 'Confirm' : 'Approve'}
                         </Text>
                     )
                 }

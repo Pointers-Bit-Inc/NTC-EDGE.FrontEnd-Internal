@@ -298,6 +298,7 @@ function ActivityModal(props: any) {
                                 <View style={ styles.groupButton }>
 
                                     <ApprovedButton
+                                        user={user}
                                         currentLoading={ currentLoading }
                                         allButton={ allButton }
                                         onPress={ () => {

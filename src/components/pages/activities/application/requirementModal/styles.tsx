@@ -51,16 +51,10 @@ export const requirementStyles = StyleSheet.create({
 
     } ,
     cardContainer : {
-        paddingTop: 20,
+        paddingVertical: 20,
         backgroundColor : "rgba(255,255,255,1)" ,
-        shadowColor : "rgba(0,0,0,1)" ,
-        shadowOffset : {
-            width : 0 ,
-            height : 0
-        } ,
-        elevation : 1.5 ,
-        shadowOpacity : 0.1 ,
-        shadowRadius : 5 ,
+         borderWidth: 1,
+        borderColor:"#E5E5E5",
         borderRadius : 5
     } ,
     cardLabel : {

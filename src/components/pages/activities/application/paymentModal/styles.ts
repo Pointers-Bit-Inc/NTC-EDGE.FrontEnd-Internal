@@ -6,7 +6,6 @@ import {fontValue} from "@pages/activities/fontValue";
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 15,
         marginBottom: 15
     },
     group: {
@@ -24,6 +23,7 @@ export const styles = StyleSheet.create({
         paddingTop: 15,
         paddingBottom: 5,
         borderBottomWidth: 1,
+        borderStyle: "dashed",
         borderBottomColor: '#D1D1D6',
     },
     rect2: {

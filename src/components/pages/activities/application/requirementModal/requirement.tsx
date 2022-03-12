@@ -1,14 +1,5 @@
 import React from "react";
-import {
-    Dimensions ,
-    Image ,
-    Modal ,
-    ScrollView ,
-    Text ,
-    TouchableOpacity ,
-    TouchableWithoutFeedback ,
-    View
-} from "react-native";
+import {Dimensions , Image , Modal , ScrollView , Text , TouchableOpacity , View} from "react-native";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles , styles} from "@pages/activities/application/requirementModal/styles";
 import AnimatedImage from 'react-native-animated-image-viewer';
@@ -18,7 +9,10 @@ import {isMobile} from "@pages/activities/isMobile";
 import {RootStateOrAny , useSelector} from "react-redux";
 import ImageZoom from 'react-native-image-pan-zoom';
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
+import {Card} from "@pages/activities/application/requirementModal/card";
+
 const { width , height } = Dimensions.get("screen");
+
 class RequirementView extends React.Component<{ requirement: any, rightLayoutComponent: any }> {
 
 
@@ -79,110 +73,117 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
     imageZoom = null;
     render() {
         return <><View style={ { padding : 10 } }>
-            <View style={ requirementStyles.container }>
-                <View style={ requirementStyles.card }>
-                    <View style={ requirementStyles.cardContainer }>
-                        <View style={ [{ paddingHorizontal : isMobile ? 30 : 40 } , requirementStyles.cardLabel] }>
-                            <View style={ requirementStyles.cardTitle }>
-                                <Text style={ requirementStyles.title }>{ this.props?.requirement?.title }</Text>
-                                <Text
-                                    style={ requirementStyles.description }>{ this.props?.requirement?.description }</Text>
-                            </View>
-                            <View style={ [requirementStyles.cardDocument] }>
-
-
-                                <TouchableOpacity ref={ image => (
-                                    this.state.image = image) }
-                                                  onPress={ this._showImage } style={ {
-                                    alignItems : "center" ,
-                                    flex : 1 ,
-                                    flexDirection : "row"
-                                } }>
-                                    <View style={ { paddingRight : fontValue(10) } }>
-                                        <FileOutlineIcon height={ fontValue(20) } width={ fontValue(16) }/>
-                                    </View>
-                                    <Text
-                                        style={ requirementStyles.text }>{ this.props?.requirement?.file?.name }</Text>
-                                </TouchableOpacity>
-                            </View>
-
-                        </View>
-
-                        <View style={ {
-                            borderRadius : isMobile ? undefined : 10 ,
-                            marginHorizontal : isMobile ? undefined : 46 ,
-                            marginBottom : isMobile ? undefined : 25 ,
-                            width : isMobile ? undefined : 240 ,
-                            height : isMobile ? 300 : 160 ,
-                            backgroundColor : "rgba(220,226,229,1)" ,
-                            borderWidth : 1 ,
-                            borderColor : "rgba(213,214,214,1)" ,
-                            borderStyle : "dashed" ,
-                        } }>
-                            <TouchableOpacity disabled={ this.state.onLoad } ref={ image => (
-                                this.state.image = image) }
-                                              onPress={ this._showImage }>
-
-                                <Image
-                                    resizeMode={ "cover" }
-                                    style={ {
-                                        width : isMobile ? undefined : 240 ,
-                                        height : isMobile ? 300 : 160 ,
-                                        borderRadius : isMobile ? undefined : 10
-                                    } }
-                                    source={ {
-                                        uri : this.props?.requirement?.links?.small ,
-                                    } }
-                                />
-                            </TouchableOpacity>
-                        </View>
-
+            <Card>
+                <View style={ [{ paddingHorizontal : isMobile ? 30 : 40 } , requirementStyles.cardLabel] }>
+                    <View style={ requirementStyles.cardTitle }>
+                        <Text style={ requirementStyles.title }>{ this.props?.requirement?.title }</Text>
+                        <Text
+                            style={ requirementStyles.description }>{ this.props?.requirement?.description }</Text>
                     </View>
+                    <View style={ [requirementStyles.cardDocument] }>
+
+
+                        <TouchableOpacity ref={ image => (
+                            this.state.image = image) }
+                                          onPress={ this._showImage } style={ {
+                            alignItems : "center" ,
+                            flex : 1 ,
+                            flexDirection : "row"
+                        } }>
+                            <View style={ { paddingRight : fontValue(10) } }>
+                                <FileOutlineIcon height={ fontValue(20) } width={ fontValue(16) }/>
+                            </View>
+                            <Text
+                                style={ requirementStyles.text }>{ this.props?.requirement?.file?.name }</Text>
+                        </TouchableOpacity>
+                    </View>
+
                 </View>
-            </View>
+
+                <View style={ {
+                    borderRadius : isMobile ? undefined : 10 ,
+                    marginHorizontal : isMobile ? undefined : 46 ,
+                    marginBottom : isMobile ? undefined : 25 ,
+                    width : isMobile ? undefined : 240 ,
+                    height : isMobile ? 300 : 160 ,
+                    backgroundColor : "rgba(220,226,229,1)" ,
+                    borderWidth : 1 ,
+                    borderColor : "rgba(213,214,214,1)" ,
+                    borderStyle : "dashed" ,
+                } }>
+                    <TouchableOpacity disabled={ this.state.onLoad } ref={ image => (
+                        this.state.image = image) }
+                                      onPress={ this._showImage }>
+
+                        <Image
+                            resizeMode={ "cover" }
+                            style={ {
+                                width : isMobile ? undefined : 240 ,
+                                height : isMobile ? 300 : 160 ,
+                                borderRadius : isMobile ? undefined : 10
+                            } }
+                            source={ {
+                                uri : this.props?.requirement?.links?.small ,
+                            } }
+                        />
+                    </TouchableOpacity>
+                </View>
+            </Card>
 
             <Modal visible={ this.state?.visible } transparent={ true } onRequestClose={ this._hideImageModal }>
 
-                   <View style={ [styles.container, isMobile ? {} : {alignItems: "flex-end", top: this.props?.rightLayoutComponent?.top} ] }>
-                       <OnBackdropPress styles={{width: this.props?.rightLayoutComponent.width, backgroundColor : "rgba(0, 0, 0, 0.5)"}}  onPressOut={this._hideImageModal}/>
-                       <View style={ [styles.rect2,{width: this.props?.rightLayoutComponent.width} ] }>
-                           <View style={ { alignSelf : 'flex-end' , paddingHorizontal : 15 , paddingVertical : 15 } }>
-                               <TouchableOpacity onPress={ this._hideImageModal }>
-                                   <Text style={ styles.close }>Close</Text>
-                               </TouchableOpacity>
-                           </View>
-                       </View>
-                       <View>
-                           <Text style={ styles.fileName }>{ this.props?.requirement?.file?.name }</Text>
-                           { !!this.props?.requirement?.file?.name &&
-                           <FadeBackground style={ { position : "absolute" , zIndex : 1 } }
-                                           width={ width }/> }
+                <View style={ [styles.container , isMobile ? {} : {
+                    alignItems : "flex-end" ,
+                    top : this.props?.rightLayoutComponent?.top
+                }] }>
+                    <OnBackdropPress styles={ {
+                        width : this.props?.rightLayoutComponent?.width || undefined ,
+                        backgroundColor : "rgba(0, 0, 0, 0.5)"
+                    } } onPressOut={ this._hideImageModal }/>
+                    <View style={ [styles.rect2 , { width : this.props?.rightLayoutComponent?.width }] }>
+                        <View style={ { alignSelf : 'flex-end' , paddingHorizontal : 15 , paddingVertical : 15 } }>
+                            <TouchableOpacity onPress={ this._hideImageModal }>
+                                <Text style={ styles.close }>Close</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View>
+                        <Text style={ styles.fileName }>{ this.props?.requirement?.file?.name }</Text>
+                        { !!this.props?.requirement?.file?.name &&
+                        <FadeBackground style={ { position : "absolute" , zIndex : 1 } }
+                                        width={ width }/> }
 
-                           {isMobile ? <AnimatedImage
-                                         useNativeDriver={true}
-                                         ref={ imageModal => (
-                                             this.state.imageModal = imageModal) }
-                                         source={ this?.state?.source }
-                                         sourceMeasure={ this.state?._sourceMeasure }
-                                         imageSize={ this.state._imageSize }
-                                         onClose={ this._hideImageModal }
-                                         animationDuration={ 200 }
-                                     /> :
-                               //height = height * (this.state._imageSize.height / width)
+                        { isMobile ? <AnimatedImage
+                                       useNativeDriver={ true }
+                                       ref={ imageModal => (
+                                           this.state.imageModal = imageModal) }
+                                       source={ this?.state?.source }
+                                       sourceMeasure={ this.state?._sourceMeasure }
+                                       imageSize={ this.state._imageSize }
+                                       onClose={ this._hideImageModal }
+                                       animationDuration={ 200 }
+                                   /> :
+                            //height = height * (this.state._imageSize.height / width)
 
-                            <ImageZoom onSwipeDown={this._hideImageModal} enableSwipeDown={true} cropWidth={this.props?.rightLayoutComponent.width}
-                                       enableDoubleClickZoom={true}
-                                       cropHeight={this.props?.rightLayoutComponent.height }
-                                       imageWidth={this.props?.rightLayoutComponent.width}
-                                       imageHeight={height * (this.state._imageSize.height / width)}>
-                                <Image style={{width: this.state._imageSize.width, height: height * (this.state._imageSize.height / width)}}
-                                       resizeMode={"contain"}
-                                       source={this?.state?.source}/>
-                            </ImageZoom>
-                           }
-                       </View>
-                   </View>
-              
+                          <ImageZoom onSwipeDown={ this._hideImageModal } enableSwipeDown={ true }
+                                     cropWidth={ this.props?.rightLayoutComponent?.width }
+                                     enableDoubleClickZoom={ true }
+                                     cropHeight={ this.props?.rightLayoutComponent?.height }
+                                     imageWidth={ this.props?.rightLayoutComponent?.width }
+                                     imageHeight={ height * (
+                                         this.state._imageSize.height / width) }>
+                              <Image style={ {
+                                  width : this.state._imageSize.width ,
+                                  height : height * (
+                                      this.state._imageSize.height / width)
+                              } }
+                                     resizeMode={ "contain" }
+                                     source={ this?.state?.source }/>
+                          </ImageZoom>
+                        }
+                    </View>
+                </View>
+
 
             </Modal>
         </View></>;
