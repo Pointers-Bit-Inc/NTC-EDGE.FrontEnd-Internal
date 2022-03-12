@@ -29,7 +29,7 @@ import {
     VERIFIED ,
 } from "../../../reducers/activity/initialstate";
 import Api from 'src/services/api';
-import {updateApplicationStatus} from "../../../reducers/application/actions";
+import {setRightLayoutComponent , updateApplicationStatus} from "../../../reducers/application/actions";
 
 import CustomAlert from "@pages/activities/alert/alert";
 import CloseIcon from "@assets/svg/close";
@@ -192,7 +192,9 @@ function ActivityModal(props: any) {
     const [title , setTitle] = useState("Approve Application");
     const [showClose , setShowClose] = useState(false);
     const [activityModalScreenComponent , onActivityModalScreenComponent] = useComponentLayout();
-
+     useEffect(()=>{
+         dispatch(setRightLayoutComponent(activityModalScreenComponent))
+     }, [activityModalScreenComponent])
     return (
         <NativeView
             onLayout={ onActivityModalScreenComponent }

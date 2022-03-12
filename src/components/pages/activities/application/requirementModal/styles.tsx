@@ -24,13 +24,14 @@ export const styles = StyleSheet.create({
         width : width ,
     } ,
     container : {
-        flex : 1
+        flex : 1 ,
+
+
     } ,
     group7 : {} ,
     rect2 : {
         zIndex : 3 ,
 
-        width : "100%" ,
         backgroundColor : "rgba(0,0,0,0.5)"
     } ,
     close : {

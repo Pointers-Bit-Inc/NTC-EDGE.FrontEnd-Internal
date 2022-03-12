@@ -32,7 +32,7 @@ import {
     handleInfiniteLoad , setApplicationItem ,
     setApplications , setFilterRect ,
     setNotPinnedApplication ,
-    setPinnedApplication , setRightLayoutComponent
+    setPinnedApplication
 } from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
 import axios from "axios";
@@ -439,14 +439,13 @@ export default function ActivitiesPage(props: any) {
         setMoreModalVisible(false)
     };
     const [sizeComponent , onLayoutComponent] = useComponentLayout();
-    const [sizeRightComponent , onSizeRightLayoutComponent] = useComponentLayout();
     const [searchSizeComponent , onSearchLayoutComponent] = useComponentLayout();
     const [activitySizeComponent , onActivityLayoutComponent] = useComponentLayout();
     const [activityScreenComponent , onActivityScreenComponent] = useComponentLayout();
 
     const [containerHeight , setContainerHeight] = useState(148);
     useEffect(() => {
-        dispatch(setRightLayoutComponent(sizeRightComponent))
+
         dispatch(setFilterRect(sizeComponent))
         if (sizeComponent?.height && searchSizeComponent?.height) setContainerHeight(sizeComponent?.height + searchSizeComponent?.height)
     } , [sizeComponent , searchSizeComponent , activitySizeComponent , activityScreenComponent]);
@@ -768,7 +767,7 @@ export default function ActivitiesPage(props: any) {
                     </View>
                 }
 
-                { (!lodash.isEmpty(applicationItem) )  && <ActivityModalView onLayout={onSizeRightLayoutComponent}>
+                { (!lodash.isEmpty(applicationItem) )  && <ActivityModalView >
                     <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
                         onMoreModalDismissed(applicationItem?.isOpen)
                     } }/>

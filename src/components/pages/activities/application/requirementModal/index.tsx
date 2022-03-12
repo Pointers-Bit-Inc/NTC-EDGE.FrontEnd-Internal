@@ -14,8 +14,6 @@ import Loader from "@pages/activities/bottomLoad";
 import {Regular500} from "@styles/font";
 import FadeBackground from "@assets/svg/fade-background";
 import {RFValue} from "react-native-responsive-fontsize";
-import ImageView from "@pages/activities/application/ImageView";
-import AnimatedImage from 'react-native-animated-image-viewer';
 import {fontValue} from "@pages/activities/fontValue";
 const { width , height } = Dimensions.get('window');
 
@@ -81,8 +79,7 @@ const RequirementModal = (props: any) => {
                                 uri : props?.image ? props?.image : 'https://dummyimage.com/350x350/fff/aaa' ,
                             } }
                             resizeMode="contain"
-                            onLoadStart={ () => setOnLoad(true) }
-                            onLoadEnd={ () => setOnLoad(false) }
+
                             onZoomBegin={ () => console.log("On Zoom begin") }
                             onZoomEnd={ () => console.log("On Zoom End") }
                         />
