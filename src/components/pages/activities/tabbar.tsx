@@ -117,14 +117,10 @@ export default function TabBar() {
     const [pnApplication, setPnApplication] = useState(pinnedApplications)
     const [notPnApplication, setNotPnApplication] = useState(notPinnedApplications)
     const dispatch = useDispatch()
-    const soundRef:any = React.useRef();
+    const soundRef:any = React.useRef(new Audio.Sound());
     const playSound = async () => {
-      const { sound } = await Audio.Sound.createAsync(
-         require('@assets/sound/incoming.wav')
-      );
-      soundRef.current = sound;
-      await sound.setIsLoopingAsync(true);
-      await sound.playAsync();
+      await soundRef.current?.loadAsync(require('@assets/sound/incoming.wav'), { shouldPlay: true });
+      await soundRef.current?.setIsLoopingAsync(true);
     }
     const onPressAlert = () => {
     if (alertData.link) {

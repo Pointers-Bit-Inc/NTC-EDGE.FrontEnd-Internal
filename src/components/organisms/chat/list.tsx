@@ -5,14 +5,15 @@ import Text from '@components/atoms/text';
 import { chatSameDate } from 'src/utils/formatting'; 
 import { ChatBubble, GroupBubble } from '@components/molecules/list-item';
 import { text } from 'src/styles/color';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   bubbleContainer: {
     alignItems: 'flex-start',
-    paddingHorizontal: 15,
-    paddingVertical: 4,
+    paddingHorizontal: RFValue(15),
+    paddingVertical: RFValue(5),
   },
   loadingContainer: {
     flex: 1,
@@ -110,6 +111,7 @@ const ChatList: FC<Props> = ({
               unSend={item.unSend}
               edited={item.edited}
               system={item.system}
+              delivered={item.delivered}
             />
           ) : (
             <ChatBubble
@@ -128,6 +130,7 @@ const ChatList: FC<Props> = ({
               unSend={item.unSend}
               edited={item.edited}
               system={item.system}
+              delivered={item.delivered}
             />
           )
         }

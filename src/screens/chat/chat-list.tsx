@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Dimensions, InteractionManager } from 'react-native';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -108,6 +108,7 @@ const List = () => {
   const [fetching, setFetching] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [rendered, setRendered] = useState(false);
 
   const {
     getMessages,
@@ -136,39 +137,47 @@ const List = () => {
   }
 
   useEffect(() => {
+    InteractionManager.runAfterInteractions(() => {
+      setRendered(true);
+    });
+  }, []);
+
+  useEffect(() => {
     setLoading(true);
     setPageIndex(1);
     setHasMore(false);
     setHasError(false);
     let unmount = false;
-    getMessages(channelId, 1, (err, res) => {
-      if (!unmount) {
-        setLoading(false);
-        if (res) {
-          dispatch(setMessages(res.list));
-          setPageIndex(current => current + 1);
-          setHasMore(res.hasMore);
+    if (rendered) {
+      getMessages(channelId, 1, (err, res) => {
+        if (!unmount) {
+          setLoading(false);
+          if (res) {
+            dispatch(setMessages(res.list));
+            setPageIndex(current => current + 1);
+            setHasMore(res.hasMore);
+          }
+          if (err) {
+            console.log('ERR', err);
+            setHasError(true);
+          }
         }
-        if (err) {
-          console.log('ERR', err);
-          setHasError(true);
-        }
-      }
-    })
+      })
+    }
 
     return () => {
       unmount = true;
     }
-  }, [])
+  }, [rendered]);
 
   useEffect(() => {
-    if (lastMessage) {
+    if (lastMessage && rendered) {
       const hasSeen = lodash.find(lastMessage?.seen, s => s._id === user._id);
       if (!hasSeen) {
         seenMessage(lastMessage._id);
       }
     }
-  }, [lastMessage]);
+  }, [lastMessage, rendered]);
 
   const showOption = (item) => {
     setMessage(item);

@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Image, TouchableOpacity, Platform } from 'react-native'
 import lodash from 'lodash';
 import Text from '@components/atoms/text'
 import GroupImage from '@components/molecules/image/group';
@@ -107,7 +107,7 @@ const ChatItem: FC<Props> = ({
             </View>
           </View>
           <View style={styles.horizontal}>
-            <View style={[styles.horizontal, { flex: 1, paddingRight: 60 }]}>
+            <View style={[styles.horizontal, { flex: 1, paddingRight: 60, marginTop: Platform.OS === 'ios' ? 0 : -5 }]}>
               <Text
                 color={!seen ? 'black' : text.default}
                 size={12}

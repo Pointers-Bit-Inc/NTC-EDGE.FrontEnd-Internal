@@ -14,14 +14,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
   },
-  bubble: {
-    backgroundColor: primaryColor,
-    borderRadius: 15,
-    padding: 8,
-    paddingHorizontal: 10,
+  bubbleContainer: {
     marginTop: 2,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  bubble: {
+    borderRadius: RFValue(15),
+    padding: RFValue(5),
+    paddingHorizontal: RFValue(10),
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: Platform.OS === 'ios' ? undefined : 1,
   },
   image: {
     width: 25,
@@ -78,6 +82,7 @@ interface Props {
   unSend?: boolean;
   edited?: boolean;
   system?: boolean;
+  delivered?: boolean;
   [x: string]: any;
 }
 
@@ -98,6 +103,7 @@ const ChatBubble:FC<Props> = ({
   unSend = false,
   edited = false,
   system = false,
+  delivered = false,
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -163,44 +169,48 @@ const ChatBubble:FC<Props> = ({
                 </Text>
               ) : null
             }
-            <View style={[
-              styles.bubble,
-              {
-                backgroundColor: isSender ? bubble.primary : bubble.secondary
-              },
-              (deleted || (unSend && isSender) || system) && {
-                backgroundColor: '#E5E5E5'
-              },
-            ]}>
-              {
-                (deleted || (unSend && isSender)) ? (
-                  <>
-                    <NewDeleteIcon
-                      height={RFValue(18)}
-                      width={RFValue(18)}
-                      color={'#979797'}
-                    />
+            <View style={styles.bubbleContainer}>
+              <View
+                style={[
+                  styles.bubble,
+                  {
+                    backgroundColor: isSender ? bubble.primary : bubble.secondary
+                  },
+                  (deleted || (unSend && isSender) || system) && {
+                    backgroundColor: '#E5E5E5'
+                  },
+                ]}
+              >
+                {
+                  (deleted || (unSend && isSender)) ? (
+                    <>
+                      <NewDeleteIcon
+                        height={RFValue(18)}
+                        width={RFValue(18)}
+                        color={'#979797'}
+                      />
+                      <Text
+                        style={{ marginLeft: 5 }}
+                        size={14}
+                        color={'#979797'}
+                      >
+                        {
+                          (unSend && isSender) ?
+                          'Unsent for you'
+                          : `${isSender ? 'You' : sender.firstName } deleted a message`
+                        }
+                      </Text>
+                    </>
+                  ) : (
                     <Text
-                      style={{ marginLeft: 5 }}
                       size={14}
-                      color={'#979797'}
+                      color={(isSender && !system) ? 'white' : 'black'}
                     >
-                      {
-                        (unSend && isSender) ?
-                        'Unsent for you'
-                        : `${isSender ? 'You' : sender.firstName } deleted a message`
-                      }
+                      {message}
                     </Text>
-                  </>
-                ) : (
-                  <Text
-                    size={14}
-                    color={(isSender && !system) ? 'white' : 'black'}
-                  >
-                    {message}
-                  </Text>
-                )
-              }
+                  )
+                }
+              </View>
             </View>
           </View>
           {
@@ -217,12 +227,12 @@ const ChatBubble:FC<Props> = ({
           {
             (!isSeen && isSender && !deleted) && (
               <View
-                style={styles.check}
+                style={[styles.check, delivered && { backgroundColor: text.info }]}
               >
                 <CheckIcon
                   type='check1'
                   size={8}
-                  color={text.info}
+                  color={delivered ? 'white' : text.info}
                 />
               </View>
             )

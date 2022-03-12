@@ -12,6 +12,7 @@ interface IMessages {
   edited: boolean;
   unSend: boolean;
   hasSeen: boolean;
+  delivered: boolean;
   message: string;
   createdAt: Date;
   updatedAt: Date;
