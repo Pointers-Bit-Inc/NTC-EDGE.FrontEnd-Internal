@@ -22,9 +22,6 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingTop: 15,
         paddingBottom: 5,
-        borderBottomWidth: 1,
-        borderStyle: "dashed",
-        borderBottomColor: '#D1D1D6',
     },
     rect2: {
         width: 328,

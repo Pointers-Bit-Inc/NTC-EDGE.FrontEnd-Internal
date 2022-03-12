@@ -14,6 +14,7 @@ import {fontValue} from "@pages/activities/fontValue";
 import BorderPaymentBottom from "@assets/svg/borderPaymentBottom";
 import {useComponentLayout} from "../../../../../hooks/useComponentLayout";
 import {isMobile} from "@pages/activities/isMobile";
+import DottedLine from "@assets/svg/dotted";
 
 class ProofPaymentView extends React.Component<{ onPress: () => void, totalFee: any, paymentMethod: any, proofOfPayment: any, onPress1: () => void }> {
     source = { uri : this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" };
@@ -154,6 +155,7 @@ class ProofPaymentView extends React.Component<{ onPress: () => void, totalFee: 
 }
 
 const Payment = (props: any) => {
+
     const [visibleModal , setVisibleModal] = useState(false);
     const [visibleRequireModal , setVisibleRequireModal] = useState(false);
     const [selectImage , setSelectImage] = useState('');
@@ -234,22 +236,32 @@ const Payment = (props: any) => {
                 </View>
                 {
                     props?.soa?.map(soa => (
-                        <View
-                            key={ soa._id }
-                            style={ paymentStyles.soaItem }
-                        >
-                            <Text
-                                color="#37405B"
-                                style={ { fontSize : fontValue(14) } }
+                        <View style={{width: "100%"}}>
+                            <View
+                                key={ soa._id }
+                                style={ paymentStyles.soaItem }
                             >
-                                { soa.item }
-                            </Text>
-                            <Text
-                                color="#37405B"
-                                style={ { fontSize : fontValue(14) } }
-                            >
-                                P{ soa.amount }
-                            </Text>
+
+
+                                <Text
+                                    color="#37405B"
+                                    style={ { fontSize : fontValue(14) } }
+                                >
+                                    { soa.item }
+                                </Text>
+
+                                <Text
+                                    color="#37405B"
+                                    style={ { fontSize : fontValue(14) } }
+                                >
+                                    ₱{ soa.amount }
+                                </Text>
+
+                            </View>
+                            <View style={{overflow: "hidden"}}>
+                                <DottedLine />
+                            </View>
+
                         </View>
                     ))
                 }
@@ -282,7 +294,7 @@ const Payment = (props: any) => {
                         style={ { fontSize : fontValue(16) , fontFamily : Bold } }
                         color="#37405B"
                     >
-                        P{ props.totalFee }
+                        ₱{ props.totalFee }
                     </Text>
                 </View>
             </View>
@@ -292,7 +304,7 @@ const Payment = (props: any) => {
         <View style={ { overflow: "hidden", zIndex : -1 , flexDirection :"row" , } }>
             {
                 !!sizeComponent && Array(Math?.round(sizeComponent?.width / 20))?.fill(0)?.map(() =>
-                    <BorderPaymentBottom style={ {  marginTop : -1 } }/>)
+                    <BorderPaymentBottom style={ {  marginTop : -2 } }/>)
             }
         </View>
 

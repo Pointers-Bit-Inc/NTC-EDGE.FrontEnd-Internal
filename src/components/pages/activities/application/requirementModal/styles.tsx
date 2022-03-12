@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
         backgroundColor : "rgba(0,0,0,0.5)"
     } ,
     close : {
-
+         fontWeight: "bold",
         fontFamily : Regular500 ,
         color : "rgba(239,231,231,1)" ,
         fontSize : fontValue(18) ,
