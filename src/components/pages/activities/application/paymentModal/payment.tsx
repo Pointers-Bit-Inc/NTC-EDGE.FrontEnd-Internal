@@ -1,5 +1,5 @@
 import React , {useState} from "react";
-import {Image , Modal , ScrollView , TouchableOpacity , View} from "react-native";
+import {Image , Modal , Platform , ScrollView , TouchableOpacity , View} from "react-native";
 import PaymentModal from "@pages/activities/application/paymentModal/index";
 import Text from "@atoms/text";
 import {styles as paymentStyles} from "@pages/activities/application/paymentModal/styles"
@@ -13,6 +13,7 @@ import AnimatedImage from 'react-native-animated-image-viewer';
 import {fontValue} from "@pages/activities/fontValue";
 import BorderPaymentBottom from "@assets/svg/borderPaymentBottom";
 import {useComponentLayout} from "../../../../../hooks/useComponentLayout";
+import {isMobile} from "@pages/activities/isMobile";
 
 class ProofPaymentView extends React.Component<{ onPress: () => void, totalFee: any, paymentMethod: any, proofOfPayment: any, onPress1: () => void }> {
     source = { uri : this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" };
@@ -95,10 +96,10 @@ class ProofPaymentView extends React.Component<{ onPress: () => void, totalFee: 
                         borderWidth : 1 ,
                         backgroundColor : "#FBFBFB" ,
                         borderRadius : 5
-                    } } horizontal={ true }>
+                    } } horizontal={ isMobile ? false : true }>
                         { this.props.proofOfPayment?.small && <View style={ {
-                            paddingRight : 30
-
+                            paddingRight : 30,
+                            paddingVertical: 10
                         } }>
                             { this.props.proofOfPayment?.small && <View style={ { paddingBottom : 16 } }>
                                 <FileOutlineIcon height={ fontValue(20) } width={ fontValue(16) }/>
@@ -117,7 +118,6 @@ class ProofPaymentView extends React.Component<{ onPress: () => void, totalFee: 
                             />
                             </TouchableOpacity>
                         </View> }
-                        
                     </ScrollView>
                 </View>}
 
@@ -177,7 +177,14 @@ const Payment = (props: any) => {
     return <ScrollView style={ {
         backgroundColor : "#F8F8F8" ,
         width : "100%" ,
-        paddingHorizontal : 64 ,
+        ...Platform.select({
+           native:{
+               paddingHorizontal : 20 ,
+           },
+           default:{
+               paddingHorizontal : 64 ,
+           }
+        }),
         paddingTop : 34 ,
         paddingBottom : 45
     } }>
@@ -282,10 +289,10 @@ const Payment = (props: any) => {
 
 
         </View>
-        <View style={ { zIndex : -1 , flexDirection : "row" , } }>
+        <View style={ { overflow: "hidden", zIndex : -1 , flexDirection :"row" , } }>
             {
                 !!sizeComponent && Array(Math?.round(sizeComponent?.width / 20))?.fill(0)?.map(() =>
-                    <BorderPaymentBottom style={ { borderWidth : 1 , borderColor : "#E5E5E5" , marginTop : -1 } }/>)
+                    <BorderPaymentBottom style={ {  marginTop : -1 } }/>)
             }
         </View>
 

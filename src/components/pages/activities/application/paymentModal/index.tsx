@@ -110,7 +110,7 @@ const PaymentModal = (props: any) => {
 
 
                            </View>
-                            <View style={{flexDirection: "row", }}>
+                            <View style={{ overflow: "hidden",flexDirection: "row", }}>
                                 {
                                     !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentBottom style={{marginTop: -1}}/>)
                                 }
