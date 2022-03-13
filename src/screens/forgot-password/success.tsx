@@ -10,7 +10,8 @@ import Statusbar from '@atoms/status-bar';
 import Text from '@atoms/text';
 import { text, primaryColor } from '@styles/color';
 import { Bold } from '@styles/font';
-import {ArrowRightIcon} from "@atoms/icon";
+import ArrowRightIcon from "@assets/svg/ArrowRightIcon";
+import FilledSuccessIcon from "@assets/svg/FilledSuccess";
 
 const { width } = Dimensions.get('window');
 
@@ -31,7 +32,6 @@ const styles = StyleSheet.create({
     borderRadius: width / 5,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: primaryColor,
     marginBottom: 30,
   },
   subMessage: {
@@ -68,11 +68,10 @@ const ForgotPasswordSuccess = ({ navigation }:any) => {
         <Statusbar barStyle='dark-content' />
         <View style={styles.content}>
           <View style={styles.circle}>
-            <Check
-                color='#fff'
-                size={40}
+            <FilledSuccessIcon
             />
           </View>
+
           <Text
               style={styles.boldText}
               color={text.primary}
