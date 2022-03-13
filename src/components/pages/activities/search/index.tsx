@@ -10,7 +10,7 @@ import axios from "axios";
 import {BASE_URL} from "../../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
 import {
-    ACTIVITIES ,
+    ACTIVITIES , ACTIVITIESLIST ,
     CASHIER ,
     CHECKER ,
     DATE_ADDED ,
@@ -246,7 +246,7 @@ function Search(props: any) {
     }
 
     const handleBackButtonClick = () => {
-        props.navigation.navigate(ACTIVITIES);
+        props.navigation.navigate(ACTIVITIESLIST);
         return true;
     };
 

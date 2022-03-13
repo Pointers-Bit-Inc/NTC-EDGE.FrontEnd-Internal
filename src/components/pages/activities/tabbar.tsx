@@ -21,7 +21,6 @@ import {
     MEET ,
     MORE ,
     SCANQR ,
-    SEARCH ,
 } from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
@@ -32,8 +31,6 @@ import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import { Audio } from 'expo-av';
 import CustomSidebarMenu from "@pages/activities/customNavigationDrawer";
-import Search from "@pages/activities/search";
-import ActivitiesPage from "@pages/activities/index";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import useSignalr from 'src/hooks/useSignalr';
@@ -274,7 +271,7 @@ export default function TabBar() {
 
                     const focused = "#2863D6";
                     const unfocused = "#606A80";
-                    return (route.name ===  SEARCH || <View key={route.key} style={{ flex: 1 }}>
+                    return ( <View key={route.key} style={{ flex: 1 }}>
                             <TouchableOpacity
                                 accessibilityRole="button"
                                 accessibilityState={isFocused ? {selected: true} : {}}

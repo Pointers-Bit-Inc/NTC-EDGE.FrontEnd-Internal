@@ -21,6 +21,8 @@ export const DATE_ADDED = "Date Added",
     CHECKER = "checker",
     ACCOUNTANT = "accountant",
     ACTIVITIES = "Activities",
+    ACTIVITIESLIST = "ActivitiesList",
+
     CHAT = "Chat",
     MEET = "Meet",
     SCANQR = "QR",
