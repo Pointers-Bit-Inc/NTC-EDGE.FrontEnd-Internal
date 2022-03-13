@@ -1,4 +1,4 @@
-import {Dimensions , StyleSheet} from "react-native";
+import {Dimensions , Platform , StyleSheet} from "react-native";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
@@ -8,6 +8,30 @@ import {isMobile} from "@pages/activities/isMobile";
 
 const { width , height } = Dimensions.get("screen");
 export const styles = StyleSheet.create({
+    containers:{
+        width : "100%" ,
+        ...Platform.select({
+            native:{
+                paddingHorizontal : 20 ,
+            },
+            default:{
+                paddingHorizontal : 64 ,
+            }
+        }),
+        paddingTop : 34 ,
+        paddingBottom : 45
+    },
+    statement:  {
+        borderRadius : 10 ,
+        borderBottomStartRadius : 0 ,
+        borderBottomEndRadius : 0 ,
+        paddingHorizontal : 17 ,
+        paddingVertical : 36 ,
+        borderBottomWidth : 0 ,
+        backgroundColor : "#fff" ,
+        borderWidth : 1 ,
+        borderColor : "#E5E5E5" ,
+    } ,
     fileName : {
         fontFamily: Regular,
         

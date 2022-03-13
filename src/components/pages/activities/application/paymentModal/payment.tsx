@@ -178,151 +178,134 @@ const Payment = (props: any) => {
     const [sizeComponent , onLayoutComponent] = useComponentLayout();
     return <ScrollView style={ {
         backgroundColor : "#F8F8F8" ,
-        width : "100%" ,
-        ...Platform.select({
-           native:{
-               paddingHorizontal : 20 ,
-           },
-           default:{
-               paddingHorizontal : 64 ,
-           }
-        }),
-        paddingTop : 34 ,
-        paddingBottom : 45
     } }>
-        <View onLayout={ onLayoutComponent } style={ {
-            borderRadius : 10 ,
-            borderBottomStartRadius : 0 ,
-            borderBottomEndRadius : 0 ,
-            paddingHorizontal : 17 ,
-            paddingVertical : 36 ,
-            borderBottomWidth : 0 ,
-            backgroundColor : "#fff" ,
-            borderWidth : 1 ,
-            borderColor : "#E5E5E5" ,
-        } }>
-            <View style={ { alignItems : 'center' , backgroundColor : "#EFF0F6" } }>
-                <Text
-                    style={ { paddingVertical : 6 , fontSize : fontValue(14) , fontFamily : Bold } }
-                    color="#37405B"
+       <View style={styles.containers}>
+           <View onLayout={ onLayoutComponent } style={styles.statement}>
 
-                >
-                    Statement of Account
-                </Text>
-            </View>
-            <View style={ { marginTop : 20 } }>
-                <View
-                    style={ {
-                        paddingHorizontal : 15 ,
-                        paddingVertical : 10 ,
-                        width : "100%" ,
-                        backgroundColor : "#EFF0F6" ,
-                        flexDirection : 'row' ,
-                        justifyContent : 'space-between'
-                    } }
-                >
-                    <Text
-                        style={ { fontSize : fontValue(14) , fontFamily : Bold } }
-                        color="#37405B"
-                    >
-                        Particular
-                    </Text>
-                    <Text
-                        style={ { fontSize : fontValue(14) , fontFamily : Bold } }
-                        color="#37405B"
-                    >
-                        Amount
-                    </Text>
-                </View>
-                {
-                    props?.soa?.map(soa => (
-                        <View style={{width: "100%"}}>
-                            <View
-                                key={ soa._id }
-                                style={ paymentStyles.soaItem }
-                            >
+               <View style={ { alignItems : 'center' , backgroundColor : "#EFF0F6" } }>
+                   <Text
+                       style={ { paddingVertical : 6 , fontSize : fontValue(14) , fontFamily : Bold } }
+                       color="#37405B"
+
+                   >
+                       Statement of Account
+                   </Text>
+               </View>
+               <View style={ { marginTop : 20 } }>
+                   <View
+                       style={ {
+                           paddingHorizontal : 15 ,
+                           paddingVertical : 10 ,
+                           width : "100%" ,
+                           backgroundColor : "#EFF0F6" ,
+                           flexDirection : 'row' ,
+                           justifyContent : 'space-between'
+                       } }
+                   >
+                       <Text
+                           style={ { fontSize : fontValue(14) , fontFamily : Bold } }
+                           color="#37405B"
+                       >
+                           Particular
+                       </Text>
+                       <Text
+                           style={ { fontSize : fontValue(14) , fontFamily : Bold } }
+                           color="#37405B"
+                       >
+                           Amount
+                       </Text>
+                   </View>
+                   {
+                       props?.soa?.map(soa => (
+                           <View style={{width: "100%"}}>
+                               <View
+                                   key={ soa._id }
+                                   style={ paymentStyles.soaItem }
+                               >
 
 
-                                <Text
-                                    color="#37405B"
-                                    style={ { fontSize : fontValue(14) } }
-                                >
-                                    { soa.item }
-                                </Text>
+                                   <Text
+                                       color="#37405B"
+                                       style={ { fontSize : fontValue(14) } }
+                                   >
+                                       { soa.item }
+                                   </Text>
 
-                                <Text
-                                    color="#37405B"
-                                    style={ { fontSize : fontValue(14) } }
-                                >
-                                    ₱{ soa.amount }
-                                </Text>
+                                   <Text
+                                       color="#37405B"
+                                       style={ { fontSize : fontValue(14) } }
+                                   >
+                                       ₱{ soa.amount }
+                                   </Text>
 
-                            </View>
-                            <View style={{overflow: "hidden"}}>
-                                <DottedLine />
-                            </View>
+                               </View>
+                               <View style={{overflow: "hidden"}}>
+                                   <DottedLine />
+                               </View>
 
-                        </View>
-                    ))
-                }
-                <View
-                    style={ {
-                        backgroundColor : "#EFF0F6" ,
-                        flexDirection : 'row' ,
-                        justifyContent : 'flex-end' ,
-                        alignItems : 'center' ,
-                        marginTop : 15
-                    } }
-                >
-                    <Text
+                           </View>
+                       ))
+                   }
+                   <View
+                       style={ {
+                           backgroundColor : "#EFF0F6" ,
+                           flexDirection : 'row' ,
+                           justifyContent : 'flex-end' ,
+                           alignItems : 'center' ,
+                           marginTop : 15
+                       } }
+                   >
+                       <Text
 
-                        color="#37405B"
-                        style={ { fontSize : fontValue(16) , fontFamily : Bold } }
-                    >
-                        Total
-                    </Text>
-                </View>
-                <View
-                    style={ {
-                        flexDirection : 'row' ,
-                        justifyContent : 'flex-end' ,
-                        alignItems : 'center' ,
-                        marginTop : 15
-                    } }
-                >
-                    <Text
-                        style={ { fontSize : fontValue(16) , fontFamily : Bold } }
-                        color="#37405B"
-                    >
-                        ₱{ props.totalFee }
-                    </Text>
-                </View>
-            </View>
-
-
-        </View>
-        <View style={ { overflow: "hidden", zIndex : -1 , flexDirection :"row" , } }>
-            {
-                !!sizeComponent && Array(Math?.round(sizeComponent?.width / 20))?.fill(0)?.map(() =>
-                    <BorderPaymentBottom style={ {  marginTop : -2 } }/>)
-            }
-        </View>
-
-        <View style={ [paymentStyles.container , { marginTop : 12 }] }>
+                           color="#37405B"
+                           style={ { fontSize : fontValue(16) , fontFamily : Bold } }
+                       >
+                           Total
+                       </Text>
+                   </View>
+                   <View
+                       style={ {
+                           flexDirection : 'row' ,
+                           justifyContent : 'flex-end' ,
+                           alignItems : 'center' ,
+                           marginTop : 15
+                       } }
+                   >
+                       <Text
+                           style={ { fontSize : fontValue(16) , fontFamily : Bold } }
+                           color="#37405B"
+                       >
+                           ₱{ props.totalFee }
+                       </Text>
+                   </View>
+               </View>
 
 
-            { user?.role?.key !== ACCOUNTANT && <View style={ requirementStyles.container }>
-                <ProofPaymentView onPress={ () => {
-                    setVisibleModal(true)
-                } } totalFee={ props?.totalFee } paymentMethod={ props?.paymentMethod }
-                                  proofOfPayment={ props?.proofOfPayment } onPress1={ () => {
-                    setSelectImage(props?.proofOfPayment?.large);
-                    setVisibleRequireModal(true)
-                } }/>
-            </View> }
+           </View>
+           <View style={ { overflow: "hidden", zIndex : -1 , flexDirection :"row" , } }>
+               {
+                   !!sizeComponent && Array(Math?.round(sizeComponent?.width / 20))?.fill(0)?.map(() =>
+                       <BorderPaymentBottom style={ {  marginTop : -2 } }/>)
+               }
+           </View>
+
+           <View style={ [paymentStyles.container , { paddingTop : 12 }] }>
 
 
-        </View>
+               { user?.role?.key !== ACCOUNTANT && <View style={ requirementStyles.container }>
+                   <ProofPaymentView onPress={ () => {
+                       setVisibleModal(true)
+                   } } totalFee={ props?.totalFee } paymentMethod={ props?.paymentMethod }
+                                     proofOfPayment={ props?.proofOfPayment } onPress1={ () => {
+                       setSelectImage(props?.proofOfPayment?.large);
+                       setVisibleRequireModal(true)
+                   } }/>
+               </View> }
+
+
+           </View>
+       </View>
+
 
 
         <PaymentModal updatedAt={ props?.updatedAt } paymentMethod={ props?.paymentMethod }

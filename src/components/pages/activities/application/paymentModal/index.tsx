@@ -11,6 +11,7 @@ import BorderPaymentBottom from "@assets/svg/borderPaymentBottom";
 import {fontValue} from "@pages/activities/fontValue";
 import {RootStateOrAny , useSelector} from "react-redux";
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
+import {isMobile} from "@pages/activities/isMobile";
 
 const {width, height} = Dimensions.get('window');
 const PaymentModal = (props: any) => {
@@ -84,56 +85,58 @@ const PaymentModal = (props: any) => {
                              <Text style={styles.close}>Close</Text>
                          </TouchableOpacity>
                      </View>
+                     
                      <ScrollView>
 
 
+                            <View style={[styles.group8, { height: isMobile ? undefined : rightLayoutComponent.height- rightLayoutComponent?.top , alignItems: 'center'}]}>
 
-                         <View style={[styles.group8, { height: rightLayoutComponent.height- rightLayoutComponent?.top,alignItems: 'center'}]}>
+                                <View>
+                                    <View style={{flexDirection: "row"}}>
+                                        {
+                                            !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentTop  style={{marginBottom: -1}}/>)
+                                        }
+                                    </View>
+                                    <View  onLayout={onLayoutComponent} style={{backgroundColor: "white"}}>
+                                        <View style={styles.group5}>
+                                            <Text style={styles.title}>Payment received for</Text>
+                                            <Text style={[styles.description]}>NTC-EDGE</Text>
+                                            <Text style={styles.description}>the amout of</Text>
+                                            <Text style={[styles.description, {fontFamily: Bold}]}>PHP {props?.totalFee}</Text>
 
-                             <View>
-                                 <View style={{flexDirection: "row"}}>
-                                     {
-                                         !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentTop  style={{marginBottom: -1}}/>)
-                                     }
-                                 </View>
-                                 <View  onLayout={onLayoutComponent} style={{backgroundColor: "white"}}>
-                                     <View style={styles.group5}>
-                                         <Text style={styles.title}>Payment received for</Text>
-                                         <Text style={[styles.description]}>NTC-EDGE</Text>
-                                         <Text style={styles.description}>the amout of</Text>
-                                         <Text style={[styles.description, {fontFamily: Bold}]}>PHP {props?.totalFee}</Text>
+                                            {props?.paymentMethod &&
+                                            <Text style={styles.description}>using your {capitalize(props?.paymentMethod.replace("-", " ")) }</Text>}
+                                        </View>
+                                        <View style={styles.group2}>
+                                            <View style={styles.rect}>
+                                                <Text style={styles.refNo12345678910}>Ref. No. 12345678910</Text>
+                                                {props?.updatedAt &&
+                                                <Text style={styles.text}>{moment(props?.updatedAt).format('LLL')}</Text>}
+                                            </View>
+                                        </View>
+                                        <View style={styles.group6}>
+                                            <Text style={styles.details}>Details</Text>
+                                            <View style={styles.gridContainer}>
+                                                {data.map((column, index) => (
+                                                    <Row key={index} column={column} />
+                                                ))}
+                                            </View>
 
-                                         {props?.paymentMethod &&
-                                         <Text style={styles.description}>using your {capitalize(props?.paymentMethod.replace("-", " ")) }</Text>}
-                                     </View>
-                                     <View style={styles.group2}>
-                                         <View style={styles.rect}>
-                                             <Text style={styles.refNo12345678910}>Ref. No. 12345678910</Text>
-                                             {props?.updatedAt &&
-                                             <Text style={styles.text}>{moment(props?.updatedAt).format('LLL')}</Text>}
-                                         </View>
-                                     </View>
-                                     <View style={styles.group6}>
-                                         <Text style={styles.details}>Details</Text>
-                                         <View style={styles.gridContainer}>
-                                             {data.map((column, index) => (
-                                                 <Row key={index} column={column} />
-                                             ))}
-                                         </View>
-
-                                     </View>
-
-
-                                 </View>
-                                 <View style={{ overflow: "hidden",flexDirection: "row", }}>
-                                     {
-                                         !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentBottom style={{marginTop: -1}}/>)
-                                     }
-                                 </View>
-                             </View>
+                                        </View>
 
 
-                         </View>
+                                    </View>
+                                    <View style={{ overflow: "hidden",flexDirection: "row", }}>
+                                        {
+                                            !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentBottom style={{marginTop: -1}}/>)
+                                        }
+                                    </View>
+                                </View>
+
+
+                            </View>
+
+
                      </ScrollView>
                  </View>
              </View>
@@ -146,6 +149,7 @@ const styles = StyleSheet.create({
     modalContainer:{
        ...Platform.select({
            native:{
+
                flex: 1,
                justifyContent: 'center',
                alignItems: "center"
@@ -174,7 +178,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        
+        paddingHorizontal: 10,
 
     },
     group7: {
@@ -187,6 +191,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#041B6E"
     },
     close: {
+        fontWeight: "bold",
+        fontFamily: Bold,
         color: "rgba(239,231,231,1)",
         fontSize: fontValue(18),
     },
