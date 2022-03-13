@@ -1,9 +1,9 @@
-import useApi from "../../services/api";
+import useApi from "../services/api";
 import {useDispatch} from "react-redux";
 import {useState} from "react";
-import {setUser} from "../../reducers/user/actions";
+import {setUser} from "../reducers/user/actions";
 import {StackActions} from "@react-navigation/native";
-import {validateEmail , validatePassword} from "../../utils/form-validations";
+import {validateEmail , validatePassword} from "../utils/form-validations";
 
 export function useLogin(navigation) {
     const errorResponse = {

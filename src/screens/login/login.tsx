@@ -6,7 +6,7 @@ import {button , text} from "@styles/color";
 import Ellipsis from "@atoms/ellipsis";
 import React from "react";
 import {styles} from "@screens/login/styles";
-import {useLogin} from "@screens/login/useLogin";
+import {useLogin} from "../../hooks/useLogin";
 
 const logo = require('@assets/ntc-edge-horizontal.png');
 const background = require('@assets/background.png');
@@ -17,71 +17,72 @@ const Login = ({ navigation }: any) => {
     const { loading , formValue , onChangeValue , onCheckValidation , isValid } = useLogin(navigation);
 
 
-    return (<ImageBackground
-        resizeMode="stretch"
-        source={ background }
-        style={ styles.bgImage }
-        imageStyle={ { flex : 1 } }
-    >
-        <StatusBar barStyle="dark-content"/>
-
-        <ScrollView
-            contentContainerStyle={ { flexGrow : 1 } }
-            showsVerticalScrollIndicator={ false }
+    return (
+        <ImageBackground
+            resizeMode="stretch"
+            source={ background }
+            style={ styles.bgImage }
+            imageStyle={ { flex : 1 } }
         >
+            <StatusBar barStyle="dark-content"/>
 
-            <Image
-                resizeMode="contain"
-                source={ logo }
-                style={ styles.image }
-            />
+            <ScrollView
+                contentContainerStyle={ { flexGrow : 1 } }
+                showsVerticalScrollIndicator={ false }
+            >
 
-            <View style={ styles.formContainer }>
+                <Image
+                    resizeMode="contain"
+                    source={ logo }
+                    style={ styles.image }
+                />
 
-                <Text style={ styles.formTitleText }>Login</Text>
+                <View style={ styles.formContainer }>
 
-                <LoginForm onChangeValue={ onChangeValue } form={ formValue }/>
+                    <Text style={ styles.formTitleText }>Login</Text>
 
-                <View style={ styles.bottomContainer }>
-                    <Button
-                        style={ [
-                            styles.loginButton ,
+                    <LoginForm onChangeValue={ onChangeValue } form={ formValue }/>
+
+                    <View style={ styles.bottomContainer }>
+                        <Button
+                            style={ [
+                                styles.loginButton ,
+                                {
+                                    backgroundColor : loading
+                                                      ? button.info
+                                                      : isValid
+                                                        ? button.primary
+                                                        : button.default
+                                }
+                            ] }
+                            disabled={ loading }
+                            onPress={ onCheckValidation }
+                        >
                             {
-                                backgroundColor : loading
-                                                  ? button.info
-                                                  : isValid
-                                                    ? button.primary
-                                                    : button.default
+                                loading ? (
+                                    <View style={ { paddingVertical : 10 } }>
+                                        <Ellipsis color="#fff" size={ 10 }/>
+                                    </View>
+
+                                ) : (
+                                    <View>
+                                        <Text style={ styles.boldText } color={ isValid ? "#fff" : text.disabled }
+                                              size={ 18 }>Login</Text>
+                                    </View>
+
+                                )
                             }
-                        ] }
-                        disabled={ loading }
-                        onPress={ onCheckValidation }
-                    >
+                        </Button>
                         {
-                            loading ? (
-                                <View style={ { paddingVertical : 10 } }>
-                                    <Ellipsis color="#fff" size={ 10 }/>
-                                </View>
-
-                            ) : (
-                                <View>
-                                    <Text style={ styles.boldText } color={ isValid ? "#fff" : text.disabled }
-                                          size={ 18 }>Login</Text>
-                                </View>
-
-                            )
+                            Platform.OS === "android" && <View style={ { height : navigationBarHeight } }/>
                         }
-                    </Button>
-                    {
-                        Platform.OS === "android" && <View style={ { height : navigationBarHeight } }/>
-                    }
+                    </View>
+
                 </View>
 
-            </View>
+            </ScrollView>
 
-        </ScrollView>
-
-    </ImageBackground>);
+        </ImageBackground>);
 };
 
 export default Login

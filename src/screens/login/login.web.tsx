@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {isMobile} from "@pages/activities/isMobile";
-import {useLogin} from "@screens/login/useLogin";
+import {useLogin} from "../../hooks/useLogin";
 import {ImageBackground , StatusBar , TouchableOpacity , View} from "react-native";
 import EdgeBlue from "@assets/svg/edgeBlue";
 import {styles} from "@screens/login/styles";
