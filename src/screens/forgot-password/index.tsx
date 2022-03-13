@@ -1,181 +1,142 @@
-import React, { useState, useCallback } from 'react';
-import { Platform, KeyboardAvoidingView, Dimensions, ActivityIndicator, View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
-import Text from '@components/atoms/text';
+
+
+import React, { useState } from 'react';
+import { Platform, KeyboardAvoidingView, View, StyleSheet, Alert } from 'react-native';
+import Text from '@atoms/text';
 import { InputField } from '@molecules/form-fields';
-import Button from '@components/atoms/button';
+import Button from '@atoms/button';
 import { text, button } from 'src/styles/color';
-import { validateEmail, validatePhone } from 'src/utils/form-validations';
-import InputStyles from 'src/styles/input-style';
-const { height } = Dimensions.get('window');
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  header: {
-    marginTop: 10,
-    padding: 20,
-    paddingBottom: 0,
-    alignItems: 'flex-end',
-  },
-  content: {
-    padding: 20,
-    flex: 1,
-  },
-  description: {
-    paddingVertical: 25,
-    paddingBottom: 15,
-  },
-  button: {
-    backgroundColor: button.primary,
-    borderRadius: 5,
-    marginHorizontal: 20,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  keyboardAvoiding: {
-    position: 'absolute',
-    bottom: 30,
-    width: '100%',
-  },
-})
+import { validateEmail } from 'src/utils/form-validations';
+import { ScrollView } from 'react-native-gesture-handler';
+import Ellipsis from '@atoms/ellipsis';
+import styles from './styles';
+import api from "../../services/api";
+import NavBar from "@molecules/navbar";
 
 const errorResponse = {
-  account: 'The email address or Mobile number entered is invalid.',
+    account: 'Enter a valid email address',
 };
 
 
 const ForgotPassword = ({ navigation }:any) => {
-  const [account, setAccount] = useState({
-    value: '',
-    error: '',
-    isValid: false
-  });
-  const [accountType, setAccountType] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const onSubmit = useCallback(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigation.navigate('ForgotPasswordOTP', {
-        account: account.value,
-        accountType,
-      })
-    }, 3000);
-  }, [accountType]);
-
-  const onChangeText = (value: string) => {
-    const checkedEmail = validateEmail(value);
-    const checkedPhone = validatePhone(value);
-    const valid = checkedEmail || checkedPhone;
-    if (checkedEmail) {
-      setAccountType('email');
-    } else if (checkedPhone) {
-      setAccountType('phone');
-    }
-    setAccount({
-      value: value,
-      isValid: valid,
-      error: !valid ? errorResponse['account'] : '',
+    const [account, setAccount] = useState({
+        value: '',
+        error: '',
+        isValid: false
     });
-  }
+    const [loading, setLoading] = useState(false);
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Login')}
-        >
-          <Text
-            size={18}
-            color={text.default}
-          >
-            Close
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.content}>
-        <Text
-          size={22}
-          color={text.default}
-          weight={'600'}
-        >
-          Forgot password?
-        </Text>
-        <View style={styles.description}>
-          <Text
-            size={16}
-            color={text.default}
-          >
-            {`Don't worry! it happens.\nPlease enter the email address or mobile number\nassociated with your account.`}
-          </Text>
-        </View>
-        <InputField
-          inputStyle={InputStyles.text}
-          label={'Email address/ Mobile number'}
-          placeholder="Email address/ Mobile number"
-          required={true}
-          hasValidation={true}
-          outlineStyle={InputStyles.outlineStyle}
-          activeColor={text.primary}
-          errorColor={text.error}
-          requiredColor={text.error}
-          error={account.error}
-          value={account.value}
-          onChangeText={onChangeText}
-        />
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-          keyboardVerticalOffset={height * 0.12}
-          style={styles.keyboardAvoiding}
-        >
-          <Button
-            disabled={!account.isValid || loading}
-            style={[
-              styles.button,
-              !account.isValid && {
-                backgroundColor: button.default
-              },
-              loading && {
-                backgroundColor: '#60A5FA'
-              }
-            ]}
-            onPress={onSubmit}
-          >
-            {
-              loading ? (
-                <>
-                  <ActivityIndicator
-                    color={'white'}
-                    size={'small'}
-                  />
-                  <Text
-                    style={{ marginLeft: 10 }}
-                    color="white"
-                    size={16}
-                    weight={'500'}
-                  >
-                    Submitting...
-                  </Text>
-                </>
-              ) : (
-                <Text
-                  color="white"
-                  size={16}
-                  weight={'500'}
+    const onSubmit = () => {
+        setLoading(true);
+        api(null, '')
+            .post(`/account/reset-password-request`, {email: account?.value})
+            .then((res: any) => {
+                setLoading(false);
+                if (res?.data?.success) {
+                    navigation.navigate('ForgotPasswordOTP', {
+                        account: account.value,
+                        accountType: 'email',
+                        token: res?.data?.token,
+                    });
+                }
+                else {
+                    setAccount({
+                        value: account?.value,
+                        error: res?.data?.message || 'Cannot process forgot password.',
+                        isValid: true,
+                    });
+                }
+            })
+            .catch((err: any) => {
+                setLoading(false);
+                Alert.alert('Alert', err?.message);
+            });
+    };
+
+    const onChangeText = (value: string) => {
+        const valid = validateEmail(value);
+        setAccount({
+            value: value,
+            isValid: valid,
+            error: !valid ? errorResponse['account'] : '',
+        });
+    }
+
+    return (
+        <View style={styles.container}>
+            <NavBar
+                title=''
+                rightIcon={<Text size={16} color='#fff'>Close</Text>}
+                onRight={() => navigation.navigate('Login')}
+            />
+            <KeyboardAvoidingView
+                behavior={Platform.select({ ios: 'padding', android: undefined })}
+                keyboardVerticalOffset={Platform.select({ ios: 75, android: undefined })}
+                style={styles.container}
+            >
+                <ScrollView
+                    style={styles.scrollview}
+                    showsVerticalScrollIndicator={false}
                 >
-                  Submit
-                </Text>
-              )
-            }
-            
-          </Button>
-        </KeyboardAvoidingView>
-      </View>
-    </SafeAreaView>
-  )
+                    <Text
+                        size={22}
+                        color={text.primary}
+                        style={styles.boldText}
+                    >
+                        Forgot password?
+                    </Text>
+                    <View style={styles.description}>
+                        <Text
+                            size={14}
+                            color={text.default}
+                        >
+                            {`Don't worry, it happens!\nPlease enter the email address associated with your account.`}
+                        </Text>
+                    </View>
+                    <InputField
+                        label='Email Address'
+                        placeholder='Email Address'
+                        required={true}
+                        hasValidation={true}
+                        error={account.error}
+                        value={account.value}
+                        onChangeText={onChangeText}
+                    />
+                </ScrollView>
+            </KeyboardAvoidingView>
+            <KeyboardAvoidingView
+                behavior={Platform.select({ ios: 'position', android: undefined })}
+                style={styles.keyboardAvoiding}
+            >
+                <Button
+                    disabled={!account.isValid || loading}
+                    style={[
+                        styles.button,
+                        !account.isValid && {
+                            backgroundColor: button.default
+                        },
+                        loading && {
+                            backgroundColor: '#60A5FA'
+                        }
+                    ]}
+                    onPress={onSubmit}
+                >
+                    {
+                        loading
+                        ? <Ellipsis color='#fff' size={10} />
+                        : <Text
+                            color='#fff'
+                            size={16}
+                            style={styles.boldText}
+                        >
+                            {loading ? 'Submitting...' : 'Submit'}
+                        </Text>
+                    }
+
+                </Button>
+            </KeyboardAvoidingView>
+        </View>
+    )
 }
 
 export default ForgotPassword

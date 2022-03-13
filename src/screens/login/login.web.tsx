@@ -1,19 +1,24 @@
+import React from 'react';
+
+import {isMobile} from "@pages/activities/isMobile";
+import {useLogin} from "@screens/login/useLogin";
 import {ImageBackground , StatusBar , TouchableOpacity , View} from "react-native";
+import EdgeBlue from "@assets/svg/edgeBlue";
+import {styles} from "@screens/login/styles";
 import Text from "@atoms/text";
 import LoginForm from "@organisms/forms/login";
 import Button from "@atoms/button";
 import {button , text} from "@styles/color";
 import Ellipsis from "@atoms/ellipsis";
-import React from "react";
-import {styles} from "@screens/login/styles";
-import EdgeBlue from "@assets/svg/edgeBlue";
 import {Regular500} from "@styles/font";
-import {isMobile} from "@pages/activities/isMobile";
 
 const background = require('@assets/webbackground.png');
-export const LoginWeb = (props: { onChangeValue: (key: string , value: any) => (void), form: { password: { strength: string; isValid: boolean; upperAndLowerCase: boolean; characterLength: boolean; atLeastOneNumber: boolean; error: string; value: string }; keepLoggedIn: { value: boolean }; showPassword: { value: boolean }; email: { isValid: boolean; error: string; value: string } }, loading: boolean, valid: boolean, onPress: () => (any) }) =>
-    <>
-        <ImageBackground
+const Login = ({ navigation }: any) => {
+    const { loading , formValue , onChangeValue , onCheckValidation , isValid } = useLogin(navigation);
+
+
+
+    return (<ImageBackground
             resizeMode="cover"
             source={ background }
             style={ {
@@ -32,32 +37,32 @@ export const LoginWeb = (props: { onChangeValue: (key: string , value: any) => (
 
                     <Text style={ [styles.formTitleText] }>Login</Text>
 
-                    <LoginForm onChangeValue={ props.onChangeValue } form={ props.form }/>
+                    <LoginForm onChangeValue={ onChangeValue } form={ formValue }/>
 
                     <View style={ styles.bottomContainer }>
                         <Button
                             style={ [
                                 styles.loginButton ,
                                 {
-                                    backgroundColor : props.loading
+                                    backgroundColor : loading
                                                       ? button.info
-                                                      : props.valid
+                                                      : isValid
                                                         ? button.primary
                                                         : button.default
                                 }
                             ] }
-                            disabled={ props.loading }
-                            onPress={ props.onPress }
+                            disabled={ loading }
+                            onPress={ onCheckValidation }
                         >
                             {
-                                props.loading ? (
+                                loading ? (
                                     <View style={ { paddingVertical : 10 } }>
                                         <Ellipsis color="#fff" size={ 10 }/>
                                     </View>
 
                                 ) : (
                                     <View>
-                                        <Text style={ styles.boldText } color={ props.valid ? "#fff" : text.disabled }
+                                        <Text style={ styles.boldText } color={ isValid ? "#fff" : text.disabled }
                                               size={ 18 }>Login</Text>
                                     </View>
 
@@ -67,7 +72,7 @@ export const LoginWeb = (props: { onChangeValue: (key: string , value: any) => (
                     </View>
                     { !isMobile && <View style={ [{ paddingTop : 15 , justifyContent : 'flex-start' }] }>
                         <TouchableOpacity onPress={ () => {
-                            props.onChangeValue('forgotPassword')
+                            onChangeValue('forgotPassword')
                         } }>
                             <Text
                                 style={ [{ fontSize : 18 , fontFamily : Regular500 , color : text.info }] }
@@ -91,7 +96,7 @@ export const LoginWeb = (props: { onChangeValue: (key: string , value: any) => (
                 <Text style={ styles.footer }>Help Center</Text>
             </View>
 
-        </ImageBackground>
+        </ImageBackground>)
+};
 
-    </>
-;
+export default Login;

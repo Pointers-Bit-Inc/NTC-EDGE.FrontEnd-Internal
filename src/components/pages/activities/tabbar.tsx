@@ -45,6 +45,7 @@ import { outline, text } from '@styles/color';
 import IMeetings from 'src/interfaces/IMeetings';
 import IParticipants from 'src/interfaces/IParticipants';
 import IRooms from 'src/interfaces/IRooms';
+import ActivitiesNavigator from "../../../navigations/activities";
 
 const { width } = Dimensions.get('window');
 
@@ -329,10 +330,9 @@ export default function TabBar() {
     return (
             <>
                 {isMobile    ?  <Tab.Navigator   tabBar={(props) => <ActivityTab  {...props} />}>
-                    <Tab.Screen options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesPage}/>
+                    <Tab.Screen options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesNavigator}/>
                     <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                     <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
-                    <Tab.Screen  options={{ tabBarItemStyle: {display: "none"} , headerShown: false }}  name={SEARCH} component={Search} />
                     {getRole(user, [CHECKER, EVALUATOR, DIRECTOR]) && <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>  }
                 </Tab.Navigator> :  <Drawer.Navigator
 
@@ -351,11 +351,9 @@ export default function TabBar() {
                     backBehavior='none'
 
                     drawerContent={(props) => <CustomSidebarMenu {...props} />} initialRouteName={ACTIVITIES}>
-                    <Drawer.Screen   options={{ drawerLabel: ACTIVITIES,   headerShown: false }}  name={ACTIVITIES}  component={ActivitiesPage} />
+                    <Drawer.Screen   options={{ drawerLabel: ACTIVITIES,   headerShown: false }}  name={ACTIVITIES}  component={ActivitiesNavigator} />
                     <Drawer.Screen   options={{ drawerLabel: CHAT,   headerShown: false }}  name={CHAT}  component={ChatScreen} />
                     <Drawer.Screen   options={{ drawerLabel: MEET,   headerShown: false }}  name={MEET}  component={MeetScreen} />
-
-                    <Drawer.Screen  options={{  drawerLabel: SEARCH, drawerItemStyle: {display: "none"}, headerShown: false }}  name={SEARCH} component={Search} />
 
                 </Drawer.Navigator> }
                 <AwesomeAlert

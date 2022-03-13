@@ -519,33 +519,35 @@ export default function ActivitiesPage(props: any) {
     });
 
     return (
+
         <View style={{flex: 1}}>
             <StatusBar barStyle={ 'light-content' }/>
 
-            <View onLayout={ onActivityScreenComponent } style={ { backgroundColor: "#F8F8F8", flex : 1 , flexDirection : "row" } }>
+            <View onLayout={ onActivityScreenComponent } style={ { flex : 1 , flexDirection : "row" } }>
                 <View onLayout={ onActivityLayoutComponent } style={ [styles.container , {
+                   
                     flex : (
-                               isMobile  || activityScreenComponent?.width <800) ? 1 : 0.4 ,
+                                isMobile ) ? 1 : 0.4 ,
                 }] }>
 
 
                     <View onLayout={ onLayoutComponent }
                           style={ [styles.group , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { position : "absolute" , }] }>
                         <Animated.View style={ [styles.rect , styles.horizontal , {
-                            backgroundColor : isMobile  || activityScreenComponent?.width <800 ? "#041B6E" : "#fff" ,
+                            backgroundColor : (isMobile  ? "#041B6E" : "#fff")  ,
 
                         } , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && {
                             ...{ opacity } ,
                             transform : [{ translateY : headerTranslate }]
                         }] }>
 
-                            { (isMobile  || activityScreenComponent?.width <800)&&
+                            { (isMobile )&&
                             <TouchableOpacity onPress={ () => props.navigation.navigate('Settings')/*openDrawer()*/ }>
                                 <HomeMenuIcon height={ fontValue(24) } width={ fontValue(24) }/>
                             </TouchableOpacity> }
 
                             <Text
-                                style={ [styles.activity , { color : isMobile  || activityScreenComponent?.width < 800 ? "rgba(255,255,255,1)" : primaryColor , }] }>{ isMobile || activityScreenComponent?.width <800 ? `Activity` : `Feed` }</Text>
+                                style={ [styles.activity , { color : isMobile   ? "rgba(255,255,255,1)" : primaryColor , }] }>{ isMobile ? `Activity` : `Feed` }</Text>
                             <View style={ { flex : 1 } }/>
                             <TouchableOpacity onPress={ () => {
                                 dispatch(setVisible(true))
@@ -556,7 +558,7 @@ export default function ActivitiesPage(props: any) {
                                 <Filter pressed={visible} width={ fontValue(32) } height={ fontValue(32) }/>
 
                             </TouchableOpacity>
-                            { ( !isMobile && activityScreenComponent?.width > 800)&&
+                            { ( !isMobile  )&&
                             <TouchableOpacity onPress={ onRefresh }>
                                 <RefreshWeb style={ { paddingLeft : 15 } } width={ fontValue(26) }
                                             height={ fontValue(24) } fill={ "#fff" }/>
@@ -756,7 +758,7 @@ export default function ActivitiesPage(props: any) {
                 </View>
                 {
                     !(
-                        isMobile )  && lodash.isEmpty(applicationItem) && activityScreenComponent?.width >800  &&
+                        isMobile )  && lodash.isEmpty(applicationItem)  &&
                     <View   style={ [{ flex : 0.6 , justifyContent : "center" , alignItems : "center" }] }>
 
                         <NoActivity/>
@@ -789,7 +791,7 @@ export default function ActivitiesPage(props: any) {
                                        }
                                        onDismissed()
                                    } }/></ActivityModalView> }
-            </View>
+            </View>}
 
 
         </View>

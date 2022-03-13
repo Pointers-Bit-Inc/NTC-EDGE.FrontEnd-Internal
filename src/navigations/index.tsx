@@ -7,7 +7,6 @@ import VideoCall from '@screens/meet/video';
 import JoinVideoCall from '@screens/meet/video';
 import App from '@screens/app';
 import AppIntro from '@screens/intro';
-import Login from '@screens/login/login.tsx';
 import UserProfile from "@pages/user-profile";
 import Settings from '@pages/settings';
 
@@ -31,6 +30,7 @@ import {fontValue} from "@pages/activities/fontValue";
 import ProfileImage from "@atoms/image/profile";
 import {createRef , useRef} from "react";
 import {isMobile} from "@pages/activities/isMobile";
+import Login from "@screens/login/login";
 
 type RootStackParamList = {
     App: undefined;
