@@ -168,6 +168,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                             return (
                                                 <ActivityItem
                                                     isOpen={isOpen}
+                                                    config={config}
                                                     searchQuery={props.value}
                                                     key={i}
                                                     parentIndex={index}
