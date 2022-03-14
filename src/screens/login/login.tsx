@@ -6,7 +6,7 @@ import {button , text} from "@styles/color";
 import Ellipsis from "@atoms/ellipsis";
 import React from "react";
 import {styles} from "@screens/login/styles";
-import {useLogin} from "../../hooks/useLogin";
+import {useAuth} from "../../hooks/useAuth";
 
 const logo = require('@assets/ntc-edge-horizontal.png');
 const background = require('@assets/background.png');
@@ -14,7 +14,7 @@ const { height } = Dimensions.get('screen');
 const navigationBarHeight = height - Dimensions.get('window').height;
 const Login = ({ navigation }: any) => {
 
-    const { loading , formValue , onChangeValue , onCheckValidation , isValid } = useLogin(navigation);
+    const { loading , formValue , onChangeValue , onCheckValidation , isValid } = useAuth(navigation);
 
 
     return (

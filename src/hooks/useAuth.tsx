@@ -5,7 +5,7 @@ import {setUser} from "../reducers/user/actions";
 import {StackActions} from "@react-navigation/native";
 import {validateEmail , validatePassword} from "../utils/form-validations";
 
-export function useLogin(navigation) {
+export function useAuth(navigation) {
     const errorResponse = {
         email : 'Enter a valid email address' ,
         password : 'Password must be at least 8 characters' ,

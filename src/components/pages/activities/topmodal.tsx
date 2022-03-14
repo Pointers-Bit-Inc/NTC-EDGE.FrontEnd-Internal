@@ -115,11 +115,11 @@ function TopModal(props: any) {
                         } : {} }>
                             <View style={ styles.rect2_1 }>
                                 <Text style={ styles.sort1 }>Sort By</Text>
-                                <View  style={{paddingHorizontal: 10}}>
+                                {!isMobile &&  <View  style={{paddingHorizontal: 10}}>
                                     <TouchableOpacity onPress={ () => dispatch(setVisible(false))}>
                                         <CloseIcon/>
                                     </TouchableOpacity>
-                                </View>
+                                </View> }
 
                             </View>
                             <View style={ styles.group7_1 }>

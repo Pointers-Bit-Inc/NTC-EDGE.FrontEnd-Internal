@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {isMobile} from "@pages/activities/isMobile";
-import {useLogin} from "../../hooks/useLogin";
+import {useAuth} from "../../hooks/useAuth";
 import {ImageBackground , StatusBar , TouchableOpacity , View} from "react-native";
 import EdgeBlue from "@assets/svg/edgeBlue";
 import {styles} from "@screens/login/styles";
@@ -14,7 +14,7 @@ import {Regular500} from "@styles/font";
 
 const background = require('@assets/webbackground.png');
 const Login = ({ navigation }: any) => {
-    const { loading , formValue , onChangeValue , onCheckValidation , isValid } = useLogin(navigation);
+    const { loading , formValue , onChangeValue , onCheckValidation , isValid } = useAuth(navigation);
 
 
 

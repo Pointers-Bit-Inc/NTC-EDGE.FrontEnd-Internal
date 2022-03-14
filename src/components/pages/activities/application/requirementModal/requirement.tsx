@@ -137,9 +137,12 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                     top : this.props?.rightLayoutComponent?.top
                 }] }>
                     <OnBackdropPress styles={ {
+
+                    } } onPressOut={ this._hideImageModal }/>
+                    <OnBackdropPress styles={ {
                         width : this.props?.rightLayoutComponent?.width || undefined ,
                         backgroundColor : "rgba(0, 0, 0, 0.5)"
-                    } } onPressOut={ this._hideImageModal }/>
+                    } }/>
                     <View style={ [styles.rect2 , { width : this.props?.rightLayoutComponent?.width }] }>
                         <View style={ { alignSelf : 'flex-end' , paddingHorizontal : 15 , paddingVertical : 15 } }>
                             <TouchableOpacity onPress={ this._hideImageModal }>
