@@ -89,7 +89,7 @@ const PaymentModal = (props: any) => {
                      <ScrollView>
 
 
-                            <View style={[styles.group8, { height: isMobile ? undefined : rightLayoutComponent.height- rightLayoutComponent?.top , alignItems: 'center'}]}>
+                            <View style={[styles.group8, { height: isMobile ? undefined : rightLayoutComponent?.height- rightLayoutComponent?.top , alignItems: 'center'}]}>
 
                                 <View>
                                     <View style={{flexDirection: "row"}}>

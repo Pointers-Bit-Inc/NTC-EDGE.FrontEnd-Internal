@@ -174,7 +174,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                                      cropHeight={ this.props?.rightLayoutComponent?.height }
                                      imageWidth={ this.props?.rightLayoutComponent?.width }
                                      imageHeight={ height * (
-                                         this.state._imageSize.height / width) }>
+                                         this.state._imageSize?.height / width) }>
                               <Image style={ {
                                   width : this.state._imageSize.width ,
                                   height : height * (
