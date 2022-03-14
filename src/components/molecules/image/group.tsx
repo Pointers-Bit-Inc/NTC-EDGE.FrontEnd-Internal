@@ -4,6 +4,7 @@ import lodash from 'lodash';
 import ProfileImage from '@components/atoms/image/profile';
 import { primaryColor } from '@styles/color';
 import { RFValue } from 'react-native-responsive-fontsize';
+import {isMobile} from "@pages/activities/isMobile";
 
 const styles = StyleSheet.create({
   image: {
@@ -14,7 +15,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   border: {
-    borderWidth: 1.5,
+    borderWidth: isMobile ? RFValue(2) : 2,
     borderColor: 'white',
   },
   topPosition: {

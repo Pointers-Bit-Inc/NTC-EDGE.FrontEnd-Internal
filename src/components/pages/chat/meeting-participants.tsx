@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   RefreshControl,
   ActivityIndicator,
   InteractionManager,
-  Dimensions,
   StyleSheet,
   View,
   TouchableOpacity,
@@ -11,10 +10,8 @@ import {
   StatusBar
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useSelector, useDispatch } from 'react-redux';
 import lodash from 'lodash';
-import { setSelectedChannel } from 'src/reducers/channel/actions';
-import { outline, button, text, header } from '@styles/color';
+import { button, text, header } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
 import { ContactItem, ListFooter, SelectedContact } from '@components/molecules/list-item';
@@ -25,7 +22,6 @@ import useSignalr from 'src/hooks/useSignalr';
 import axios from 'axios';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold, Regular, Regular500 } from '@styles/font';
-const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -337,6 +333,7 @@ const MeetingParticipants = ({
             data={item}
             isGroup={item.isGroup}
             name={item.name}
+            isOnline={item.isOnline}
             onPress={() => onTapCheck(item._id)}
             rightIcon={
               <TouchableOpacity

@@ -11,34 +11,27 @@ import {
   Animated,
   RefreshControl,
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
-import { setSelectedChannel, setChannelList, addToChannelList, addChannel, updateChannel, removeChannel, setMeetings, removeSelectedMessage, setSearchValue as setSearchValueFN } from 'src/reducers/channel/actions';
+import { setSelectedChannel, setChannelList, addToChannelList, addChannel, removeChannel, setMeetings, removeSelectedMessage } from 'src/reducers/channel/actions';
 import { SearchField } from '@components/molecules/form-fields';
 import { ChatItem, ListFooter, MeetingNotif } from '@components/molecules/list-item';
-import { VideoIcon, WriteIcon, DeleteIcon } from '@components/atoms/icon';
-import { primaryColor, outline, text, button } from '@styles/color';
+import { primaryColor, outline, text } from '@styles/color';
 import {
   getChannelName,
   getChannelImage,
   getTimeString,
-  getOtherParticipants,
-  checkSeen,
 } from 'src/utils/formatting';
-import useFirebase from 'src/hooks/useFirebase';
 import useSignalr from 'src/hooks/useSignalr';
 import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
-import ProfileImage from '@components/atoms/image/profile';
 import InputStyles from 'src/styles/input-style';
 import HomeMenuIcon from "@assets/svg/homemenu";
 import { NewChatIcon } from '@atoms/icon';
-import {Bold, Regular, Regular500} from "@styles/font";
+import {Bold, Regular} from "@styles/font";
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
-import rtt from 'reactotron-react-native';
 import NewChat from '@pages/chat/new';
 import { RFValue } from 'react-native-responsive-fontsize';
 import NewDeleteIcon from '@components/atoms/icon/new-delete';

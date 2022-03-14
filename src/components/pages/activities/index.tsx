@@ -51,11 +51,9 @@ import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {getChannelName} from 'src/utils/formatting';
 import lodash from 'lodash';
 import {
-    addActiveMeeting ,
     removeActiveMeeting ,
     setMeeting ,
     setActiveMeetings,
-    updateActiveMeeting ,
 } from 'src/reducers/meeting/actions';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import {MeetingNotif} from '@components/molecules/list-item';

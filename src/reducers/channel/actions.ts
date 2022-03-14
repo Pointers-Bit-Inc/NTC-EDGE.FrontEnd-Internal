@@ -14,7 +14,6 @@ const {
   ADD_TO_MESSAGES,
   ADD_MESSAGES,
   UPDATE_MESSAGES,
-  REMOVE_MESSAGES,
 
   SET_SELECTED_MESSAGES,
   REMOVE_SELECTED_MESSAGES,
@@ -23,37 +22,8 @@ const {
   REMOVE_MEETING_CHANNEL,
   SET_MEETINGS_CHANNEL,
 
-  SET_SEARCH_VALUE,
   RESET_CHANNEL,
 } = require('./types').default;
-
-interface ChannelProps {
-  _id: string;
-  createdAt: any;
-  updatedAt: any;
-  channelId: string;
-  channelName: string;
-  isGroup: boolean;
-  lastMessage: any;
-  participants: any;
-  otherParticipants: any;
-  hasSeen: boolean,
-  participantsId: any;
-  seen: any
-}
-
-interface MessageProps {
-  _id: string;
-  createdAt: any;
-  updatedAt: any;
-  channelId: string;
-  message: string;
-  seen: any;
-  sender: any;
-  deleted: boolean;
-  unSend: boolean;
-  edited: boolean;
-}
 
 export function setSelectedChannel(payload:IRooms | {}, isChannelExist = false) {
   return {
@@ -126,13 +96,6 @@ export function updateMessages(payload:Array<IMessages>) {
   };
 }
 
-export function removeMessages(payload:IMessages) {
-  return {
-    type: REMOVE_MESSAGES,
-    payload,
-  };
-}
-
 export function setSelectedMessage(payload:IMessages) {
   return {
     type: SET_SELECTED_MESSAGES,
@@ -153,32 +116,11 @@ export function setMeetings(payload:Array<IMeetings>) {
   };
 }
 
-export function addMeeting(payload:IMeetings) {
-  return {
-    type: ADD_MEETING_CHANNEL,
-    payload,
-  };
-}
-
 export function updateMeeting(payload:IMeetings) {
   return {
     type: UPDATE_MEETING_CHANNEL,
     payload,
   };
-}
-
-export function removeMeeting(payload:string) {
-  return {
-    type: REMOVE_MEETING_CHANNEL,
-    payload,
-  };
-}
-
-export function setSearchValue(payload:string) {
-  return {
-    type: SET_SEARCH_VALUE,
-    payload,
-  }
 }
 
 export function resetChannel() {

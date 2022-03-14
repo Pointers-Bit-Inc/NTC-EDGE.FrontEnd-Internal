@@ -15,9 +15,14 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: isMobile ? RFValue(1.5) : 1.5,
+    borderWidth: isMobile ? RFValue(2) : 2,
     borderColor: 'white',
   },
+  onlineBorder: {
+    backgroundColor: 'black',
+    borderColor: '#34C759',
+    borderWidth: isMobile ? RFValue(2) : 2,
+  }
 });
 
 const ProfileImage = ({
@@ -27,8 +32,12 @@ const ProfileImage = ({
   size = 35,
   textSize = 14,
   backgroundColor = '',
+  isOnline = false,
   style = {},
+  onlineStyle = {},
 }) => {
+  const imageSize = isOnline ? isMobile ? RFValue(size - 6) : size - 6 : isMobile ? RFValue(size) : size
+
   const getBackgroundColor = useCallback(() => {
     if (!backgroundColor) {
       return getColorFromName(name);
@@ -38,41 +47,45 @@ const ProfileImage = ({
 
   if (image) {
     return (
-      <Image
+      <View style={isOnline && [styles.onlineBorder, { borderRadius: size * 1.5 }, onlineStyle]}>
+        <Image
+          style={[
+            styles.image,
+            {
+              backgroundColor: getBackgroundColor(),
+              height: imageSize,
+              width: imageSize,
+              borderRadius: size,
+            },
+            style
+          ]}
+          borderRadius={size}
+          source={{ uri: image }}
+        />
+      </View>
+    );
+  }
+  return (
+    <View style={isOnline && [styles.onlineBorder, { borderRadius: size * 1.5 }, onlineStyle]}>
+      <View
         style={[
           styles.image,
           {
             backgroundColor: getBackgroundColor(),
-            height: isMobile ? RFValue(size) : size,
-            width: isMobile ? RFValue(size) : size,
+            height: imageSize,
+            width: imageSize,
             borderRadius: size,
           },
           style
-        ]}
-        borderRadius={size}
-        source={{ uri: image }}
-      />
-    );
-  }
-  return (
-    <View
-      style={[
-        styles.image,
-        {
-          backgroundColor: getBackgroundColor(),
-          height: isMobile ? RFValue(size) : size,
-          width: isMobile ? RFValue(size) : size,
-          borderRadius: size,
-        },
-        style
-      ]}>
-      <Text
-        size={textSize}
-        color={'white'}
-        style={{ fontFamily: Bold, marginRight: -1, marginTop: 1 }}
-      >
-        {others || getInitial(name)}
-      </Text>
+        ]}>
+        <Text
+          size={textSize}
+          color={'white'}
+          style={{ fontFamily: Bold, marginRight: -1, marginTop: 1 }}
+        >
+          {others || getInitial(name)}
+        </Text>
+      </View>
     </View>
   )
 }
