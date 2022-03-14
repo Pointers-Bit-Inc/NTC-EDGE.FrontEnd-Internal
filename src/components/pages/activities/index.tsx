@@ -722,8 +722,9 @@ export default function ActivitiesPage(props: any) {
 
                                         <ActivityItem
                                             isOpen={ isOpen }
-                                            /*config={config}
-                                            isPinned={true}*/
+
+                                            config={config}
+                                            //isPinned={true}
                                             searchQuery={ searchTerm }
                                             key={ i }
                                             selected={applicationItem?._id == activity?._id}

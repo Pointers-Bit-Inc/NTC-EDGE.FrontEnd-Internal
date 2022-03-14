@@ -74,12 +74,12 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
                             </TouchableWithoutFeedback>
 
                         </View>
-                        <View style={{alignItems: "center"}}>
+                        {/*<View style={{alignItems: "center"}}>
                             <TouchableOpacity>
                                 <DotVertical  width={fontValue(4)} height={fontValue(18)}  />
                             </TouchableOpacity>
 
-                        </View>
+                        </View>*/}
 
 
                     </View>

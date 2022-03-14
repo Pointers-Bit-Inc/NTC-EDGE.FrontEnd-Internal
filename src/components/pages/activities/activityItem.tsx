@@ -1,5 +1,5 @@
 import React , {useEffect , useRef , useState} from "react";
-import {ActivityIndicator , StyleSheet , TouchableOpacity , View} from "react-native";
+import {ActivityIndicator , Platform , StyleSheet , TouchableOpacity , View} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
@@ -39,11 +39,12 @@ import PinToTopIcon from "@assets/svg/pintotop";
 import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
+import hairlineWidth = StyleSheet.hairlineWidth;
 
 const styles = StyleSheet.create({
 
     containerBlur : {
-        borderColor : "#AAB6DF" ,
+        borderColor : !isMobile ? "#AAB6DF" : "transparent" ,
         borderRadius : 10 ,
         backgroundColor : "#fff" ,
         shadowColor : "rgba(0,0,0,1)" ,
@@ -88,8 +89,6 @@ const styles = StyleSheet.create({
     } ,
     application : {
 
-        paddingHorizontal : 3 ,
-        paddingVertical : 3 ,
         borderRadius : 5 ,
         marginLeft : 0 ,
         //borderWidth: StyleSheet.hairlineWidth,
@@ -190,12 +189,13 @@ const RenderApplication = ({ applicationType }: any) => {
 
 
 const RenderPinned = ({ assignedPersonnel , config }: any) => {
-
     const { personnel , loading } = useAssignPersonnel(assignedPersonnel , config);
     return (
         <View
             style={ [
-                { backgroundColor : "#F3F7FF" , marginTop : 5 } ,
+                {
+                    //backgroundColor : "#F3F7FF" ,
+                    } ,
                 styles.horizontal ,
                 styles.application
             ] }
@@ -208,7 +208,7 @@ const RenderPinned = ({ assignedPersonnel , config }: any) => {
               <Text
                   style={ { "marginLeft" : 3 , "marginRight" : 5 } }
                   color="#606A80"
-                  size={ fontValue(10) }
+                  size={ fontValue(12) }
                   numberOfLines={ 1 }
               >
                   { personnel != undefined ? `${ personnel?.firstName } ${ personnel?.lastName }` : `` }
@@ -230,7 +230,6 @@ export function ActivityItem(props: any) {
     const status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status);
     const userActivity = props?.activity?.applicant?.user;
     const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!props?.activity?.paymentHistory?.[0]?.status ? StatusText(props?.activity?.paymentHistory?.[0]?.status) : getRole(props.currentUser , [ACCOUNTANT]) && props?.activity?.approvalHistory[0].status == FOREVALUATION && props?.activity?.approvalHistory[1].status == FORAPPROVAL ? DECLINED : status;
-
 
     useEffect(() => {
         let unsubscribe = true;
@@ -256,15 +255,14 @@ export function ActivityItem(props: any) {
         <Hoverable>
             { isHovered => (
 
-                <View style={ { backgroundColor : props.selected ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff" } }>
-
-
+                <View style={ { backgroundColor : props.selected && !(isMobile)  ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff" } }>
                     <ActivitySwipeable
                         ref={ ref => row[props.index] = ref }
                         key={ props.index }
                         onSwipeableRightOpen={ () => {
-                            closeRow(props.index)
-                        } }
+                                closeRow(props.index)
+                            }
+                        }
                         renderRightActions={
                             (progress , dragX) => props.swiper(props.index , progress , dragX , props.onPressUser)
                         }
@@ -289,7 +287,9 @@ export function ActivityItem(props: any) {
                                             {
                                                 borderRadius : fontValue(10) ,
                                                 flex : 1 ,
-                                                padding : fontValue(10) ,
+
+                                                paddingHorizontal : fontValue(10) ,
+                                                paddingVertical:  props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel ? undefined :  fontValue(10),
                                                 flexDirection : "row" ,
                                                 alignItems : "center"
                                             }
@@ -334,7 +334,7 @@ export function ActivityItem(props: any) {
                                                         </Text>
                                                     </View>
                                                 </View>
-                                                <View style={ styles.section }>
+                                                <View style={ styles.section}>
                                                     <View style={ { flex : 1 , alignItems : 'flex-start' } }>
                                                         <RenderApplication
                                                             applicationType={ props?.activity?.applicationType }/>
@@ -344,15 +344,20 @@ export function ActivityItem(props: any) {
                                                         status={ getStatus }
                                                     />
                                                 </View>
-                                                { props?.isPinned && (props?.activity?.assignedPersonnel._id || props?.activity?.assignedPersonnel) &&
-                                                <View style={ styles.section }>
-                                                    <View style={ { flex : 1 , alignItems : 'flex-start' } }>
-                                                        <RenderPinned config={ props.config }
-                                                                      assignedPersonnel={ props?.activity?.assignedPersonnel }/>
-                                                    </View>
-                                                </View> }
+                                              
                                             </View>
+
                                         </View>
+                                        {  props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel &&
+                                           <View style={{padding : fontValue(10) , borderTopColor: "#EFEFEF",  borderTopWidth: 1}}>
+                                               <View style={styles.section}>
+                                                   <View style={{ flex : 1 , alignItems : 'flex-start' } }>
+                                                       <RenderPinned config={ props.config }
+                                                                     assignedPersonnel={ props?.activity?.assignedPersonnel }/>
+                                                   </View>
+                                               </View>
+                                           </View>
+                                        }
                                     </TouchableOpacity>
                                 </View>
                                 { !isMobile && <View style={ { paddingHorizontal : selectedMoreCircle ? 14 : 18 , } }>

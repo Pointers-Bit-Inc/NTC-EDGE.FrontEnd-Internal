@@ -113,7 +113,7 @@ export default ({
           </Button>
         </View>
 
-        {separator}
+        {/*{separator}
 
         <View style={styles.sectionContainer}>
           <FlatList
@@ -124,7 +124,7 @@ export default ({
           />
         </View>
 
-        {separator}
+        {separator}*/}
 
         <View style={styles.sectionContainer}>
           {renderRow({item: logout})}
