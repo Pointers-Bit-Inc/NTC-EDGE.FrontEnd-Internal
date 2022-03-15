@@ -377,13 +377,16 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
             </View>
 
             <SearchField
-                containerStyle={ { paddingHorizontal : 20 , paddingVertical : 20 , paddingBottom : 20 } }
-                inputStyle={ [InputStyles.text , styles.input] }
-                iconStyle={ styles.icon }
+                containerStyle={{ paddingHorizontal: 20, paddingVertical: 20, paddingBottom: 10 }}
+                inputStyle={[InputStyles.text, styles.input]}
+                iconStyle={styles.icon}
                 placeholder="Search"
                 placeholderTextColor="#6E7191"
-                outlineStyle={ [InputStyles.outlineStyle , styles.outline] }
-
+                outlineStyle={[InputStyles.outlineStyle, styles.outline]}
+                value={searchText}
+                onChangeText={setSearchText}
+                onChangeTextDebounce={setSearchValue}
+                onSubmitEditing={(event:any) => setSearchText(event.nativeEvent.text)}
 
             />
         </View>
