@@ -13,22 +13,14 @@ import {
 } from 'react-native'
 import lodash from 'lodash';
 import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
-import { setMeetingId, setMeetings } from 'src/reducers/meeting/actions';
 import { MeetingNotif } from '@components/molecules/list-item';
 import useSignalR from 'src/hooks/useSignalr';
 import ChatList from '@screens/chat/chat-list';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
-import FileList from '@components/organisms/chat/files';
 import {
   ArrowLeftIcon,
-  PhoneIcon,
-  VideoIcon,
-  MenuIcon,
   PlusIcon,
   CheckIcon,
-  CameraIcon,
-  MicIcon,
-  SendIcon,
   NewCallIcon,
   NewVideoIcon,
   NewMessageIcon,
@@ -36,9 +28,8 @@ import {
 import Text from '@components/atoms/text';
 import GroupImage from '@components/molecules/image/group';
 import { InputField } from '@components/molecules/form-fields';
-import { outline, text, button, primaryColor, header } from '@styles/color';
+import { button, header } from '@styles/color';
 import { getChannelName } from 'src/utils/formatting';
-import InputStyles from 'src/styles/input-style';
 import {
   removeSelectedMessage,
   setSelectedChannel,

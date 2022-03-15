@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
 import lodash from 'lodash';
-import { setSelectedChannel, addToChannelList, addChannel } from 'src/reducers/channel/actions';
+import { setSelectedChannel, addChannel } from 'src/reducers/channel/actions';
 import { outline, button, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';

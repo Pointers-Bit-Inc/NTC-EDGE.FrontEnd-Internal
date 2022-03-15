@@ -2,13 +2,16 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { Platform } from "react-native";
 import DeviceInfo from 'react-native-device-info';
 import { HubConnectionBuilder, HubConnection, LogLevel, HttpTransportType } from "@microsoft/signalr";
-import { useSelector, RootStateOrAny } from "react-redux";
+import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
 import { BASE_URL } from 'src/services/config';
 import useApi from 'src/services/api';
 import { normalize, schema } from 'normalizr';
 import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
+import { addMeeting, updateMeeting, setConnectionStatus } from 'src/reducers/meeting/actions';
+import { addMessages, updateMessages, addChannel, removeChannel, updateChannel } from 'src/reducers/channel/actions';
 
 const useSignalr = () => {
+  const dispatch = useDispatch();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const [connectionStatus, setConnectionStatus] = useState('');
   const signalr = useRef<HubConnection|null>(null);
@@ -36,6 +39,63 @@ const useSignalr = () => {
   const onConnection = useCallback((connection, callback = () => {}) =>
     signalr.current?.on(connection, callback),
   []);
+
+  const onChatUpdate = (users:Array<string>, type:string, data:any) => {
+    if (data) {
+      switch(type) {
+        case 'create': {
+          dispatch(addMessages(data));
+          break;
+        }
+        case 'update': {
+          console.log('UPDATE CHAT', data.seen.length)
+          dispatch(updateMessages(data));
+          break;
+        }
+      }
+    }
+  };
+
+  const onRoomUpdate = (users:Array<string>, type:string, data:any) => {
+    if (data) {
+      switch(type) {
+        case 'create': {
+          dispatch(addChannel(data));
+          if (data.lastMessage) dispatch(addMessages(data.lastMessage));
+          break;
+        }
+        case 'update': {
+          dispatch(updateChannel(data));
+          if (data.lastMessage) dispatch(addMessages(data.lastMessage));
+          break;
+        }
+        case 'delete': dispatch(removeChannel(data._id)); break;
+      }
+    }
+  };
+
+  const onMeetingUpdate = (users:Array<string>, type:string, data:any) => {
+    if (data) {
+      switch(type) {
+        case 'create': {
+          const { room } = data;
+          const { lastMessage } = room;
+          dispatch(updateChannel(room));
+          dispatch(addMessages(lastMessage));
+          dispatch(addMeeting(data));
+          break;
+        };
+        case 'update': {
+          const { room = {} } = data;
+          const { lastMessage } = room;
+          if (lastMessage) dispatch(updateChannel(room));
+          if (lastMessage) dispatch(addMessages(lastMessage));
+          dispatch(updateMeeting(data));
+          break;
+        }
+      }
+    }
+  };
 
   const createChannel = useCallback(({ participants, name, message }, callback = () => {}) => {
     api.post('/rooms', {
@@ -239,6 +299,9 @@ const useSignalr = () => {
     initSignalR,
     destroySignalR,
     onConnection,
+    onChatUpdate,
+    onRoomUpdate,
+    onMeetingUpdate,
     createChannel,
     getChannelByParticipants,
     leaveChannel,

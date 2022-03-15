@@ -16,7 +16,9 @@ interface IParticipants {
   uid?: 0;
   hasJoined: false;
   isFocused: false;
-  profilePicture: IImage
+  profilePicture: IImage,
+  isOnline: Boolean;
+  lastOnline: Date;
 }
 
 export default IParticipants;

@@ -13,7 +13,6 @@ interface IMeetings {
   room: IRooms;
   participants: Array<IParticipants>;
   participantsId: Array<string>;
-  meetingParticipants: Array<IParticipants>;
   ended: boolean;
   createdAt: Date;
   updatedAt: Date;

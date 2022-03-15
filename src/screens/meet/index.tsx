@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   View,
   StyleSheet,
@@ -12,19 +12,16 @@ import {
 } from 'react-native'
 import lodash from 'lodash';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
-import { addMeeting, removeMeeting, updateMeeting, setMeetingId, setMeeting, setMeetings, addToMeetings } from 'src/reducers/meeting/actions';
+import { setMeeting, setMeetings, addToMeetings } from 'src/reducers/meeting/actions';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import useSignalr from 'src/hooks/useSignalr';
-import ProfileImage from '@components/atoms/image/profile'
 import Meeting from '@components/molecules/list-item/meeting';
 import Text from '@components/atoms/text'
-import { getChannelName, getDayMonthString, getOtherParticipants } from 'src/utils/formatting';
-import { PeopleIcon, CalendarIcon, VideoIcon, NewVideoIcon, PlusIcon } from '@atoms/icon';
+import { getChannelName } from 'src/utils/formatting';
+import { NewVideoIcon, PlusIcon } from '@atoms/icon';
 import { text, outline, primaryColor } from 'src/styles/color';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
-import Button from '@components/atoms/button';
 import { ListFooter } from '@components/molecules/list-item';
 import MeetingParticipants from '@components/pages/chat/meeting-participants';
 import HomeMenuIcon from "@assets/svg/homemenu";

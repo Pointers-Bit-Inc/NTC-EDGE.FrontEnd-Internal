@@ -1,30 +1,26 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { View, TouchableOpacity, StyleSheet, Dimensions, InteractionManager } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, InteractionManager } from 'react-native';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
-import useFirebase from 'src/hooks/useFirebase';
 import useSignalr from 'src/hooks/useSignalr';
-import { checkSeen } from 'src/utils/formatting';
 import { ListFooter } from '@components/molecules/list-item';
-import { DeleteIcon, NewEditIcon, WriteIcon } from '@components/atoms/icon';
+import { NewEditIcon } from '@components/atoms/icon';
 import {
   setMessages,
   addToMessages,
-  addMessages,
-  updateMessages,
-  removeMessages,
   setSelectedMessage
 } from 'src/reducers/channel/actions';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import Text from '@atoms/text';
 import Button from '@components/atoms/button';
 import ChatList from '@components/organisms/chat/list';
-import { primaryColor, outline, text, button } from '@styles/color';
+import { outline, text, button } from '@styles/color';
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Regular, Regular500 } from '@styles/font';
+import IMessages from 'src/interfaces/IMessages';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const styles = StyleSheet.create({
   button: {
@@ -86,10 +82,23 @@ const List = () => {
   const user = useSelector((state:RootStateOrAny) => state.user);
   const messages = useSelector((state:RootStateOrAny) => {
     const { normalizedMessages } = state.channel;
-    const messagesList = lodash.keys(normalizedMessages).map(m => {
+    const messagesList = lodash.keys(normalizedMessages).map((m:string) => {
       return normalizedMessages[m];
     });
-    return lodash.orderBy(messagesList, 'createdAt', 'desc');
+    let delivered = false;
+    let seen:any = [];
+    return lodash.orderBy(messagesList, 'createdAt', 'desc')
+    .map((msg:IMessages) => {
+      if (!delivered && msg.delivered) {
+        delivered = true;
+      }
+      if (delivered) msg.delivered = true;
+
+      seen = lodash.unionBy(seen, msg.seen, 'id');
+      msg.seen = seen;
+      
+      return msg;
+    });
   });
   const { _id, isGroup, lastMessage, otherParticipants } = useSelector(
     (state:RootStateOrAny) => {

@@ -11,7 +11,6 @@ interface IRooms {
   lastMessage: IMessages;
   deleted: Boolean;
   hasRoomName: boolean;
-  hasSeen: false;
   isGroup: boolean;
   createdAt: Date;
   updatedAt: Date;

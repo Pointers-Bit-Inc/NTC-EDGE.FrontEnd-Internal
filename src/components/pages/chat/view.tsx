@@ -3,46 +3,25 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  KeyboardAvoidingView,
   Platform,
-  useWindowDimensions,
-  StatusBar,
-  Dimensions,
-  FlatList,
   InteractionManager,
   Keyboard,
   Animated,
 } from 'react-native'
 import lodash from 'lodash';
 import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
-import { setMeetingId, setMeetings } from 'src/reducers/meeting/actions';
-import { MeetingNotif } from '@components/molecules/list-item';
 import useSignalR from 'src/hooks/useSignalr';
 import ChatList from '@screens/chat/chat-list';
-import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
-import FileList from '@components/organisms/chat/files';
 import {
-  ArrowLeftIcon,
-  PhoneIcon,
-  VideoIcon,
-  MenuIcon,
   PlusIcon,
   CheckIcon,
-  CameraIcon,
-  MicIcon,
-  SendIcon,
-  NewCallIcon,
-  NewVideoIcon,
   NewMessageIcon,
 } from '@components/atoms/icon';
 import { InputField } from '@components/molecules/form-fields';
-import { outline, text, button, primaryColor, header } from '@styles/color';
-import InputStyles from 'src/styles/input-style';
+import { button, header } from '@styles/color';
 import {
   removeSelectedMessage,
-  setSelectedChannel,
 } from 'src/reducers/channel/actions';
-import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
@@ -172,6 +151,8 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
       return;
     }
     if (!channelId) {
+      inputRef.current?.blur();
+      setInputText('');
       return onNext(inputText);
     }
     if (selectedMessage._id) {

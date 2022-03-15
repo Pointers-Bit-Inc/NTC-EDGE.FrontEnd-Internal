@@ -10,27 +10,36 @@ import {
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
-import { setSelectedChannel, setChannelList, addToChannelList, addChannel, updateChannel, removeChannel, setMeetings, removeSelectedMessage, setSearchValue as setSearchValueFN } from 'src/reducers/channel/actions';
+import { setSelectedChannel, setChannelList, addToChannelList, addChannel, removeChannel, setMeetings, removeSelectedMessage } from 'src/reducers/channel/actions';
 import { SearchField } from '@components/molecules/form-fields';
 import { primaryColor, outline, text, button } from '@styles/color';
+import { ChatItem, ListFooter, MeetingNotif } from '@components/molecules/list-item';
+import {
+  getChannelName,
+  getChannelImage,
+  getTimeString,
+} from 'src/utils/formatting';
 import useSignalr from 'src/hooks/useSignalr';
 import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
 import HomeMenuIcon from "@assets/svg/homemenu";
 import { NewChatIcon } from '@atoms/icon';
-import {Bold, Regular, Regular500} from "@styles/font";
+import {Bold, Regular} from "@styles/font";
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import NewChat from '@pages/chat/new';
 import {fontValue} from "@pages/activities/fontValue";
 import MeetIcon from "@assets/svg/meetIcon";
 import hairlineWidth = StyleSheet.hairlineWidth;
-import {getChannelImage , getChannelName , getTimeString} from "../../utils/formatting";
-import IMeetings from "../../interfaces/IMeetings";
-import {removeActiveMeeting , setMeeting} from "../../reducers/meeting/actions";
-import {ChatItem , ListFooter , MeetingNotif} from "@molecules/list-item";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import NewDeleteIcon from "@atoms/icon/new-delete";
+import { RFValue } from 'react-native-responsive-fontsize';
+import NewDeleteIcon from '@components/atoms/icon/new-delete';
+import {
+  removeActiveMeeting ,
+  setMeeting ,
+} from 'src/reducers/meeting/actions';
+import IMeetings from 'src/interfaces/IMeetings';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -145,8 +154,8 @@ const ChatList = ({ navigation }:any) => {
     const { normalizedChannelList } = state.channel
     const channelList = lodash.keys(normalizedChannelList).map(ch => {
       const channel = normalizedChannelList[ch];
-      channel.otherParticipants = lodash.reject(channel.participants, p => p._id === user._id);
-      channel.lastMessage.hasSeen = !!lodash.find(channel.lastMessage.seen, s => s._id === user._id);
+      channel.otherParticipants = lodash.reject(channel.participants, (p:IParticipants) => p._id === user._id);
+      channel.lastMessage.hasSeen = !!lodash.find(channel.lastMessage.seen, (s:IParticipants) => s._id === user._id);
       return channel;
     });
     return lodash.orderBy(channelList, 'lastMessage.createdAt', 'desc');

@@ -49,6 +49,7 @@ interface Props {
   rightIcon?: any;
   data?: any,
   isGroup?: boolean,
+  isOnline?: boolean,
   [x: string]: any;
 }
 
@@ -60,6 +61,7 @@ const ContactItem: FC<Props> = ({
   rightIcon,
   data = {},
   isGroup = false,
+  isOnline = false,
   ...otherProps
 }) => {
   const getName = (data:any) => {
@@ -118,13 +120,14 @@ const ContactItem: FC<Props> = ({
             <ProfileImage
               image={image}
               name={name}
-              size={42}
+              size={50}
               textSize={14}
+              isOnline={isOnline}
             />
           ) : (
             <GroupImage
               participants={data.participants}
-              size={42}
+              size={50}
               textSize={14}
             />
           )
@@ -147,6 +150,17 @@ const ContactItem: FC<Props> = ({
               >
                 {getInfo(data)}
               </Text>
+          }
+          {
+            !isGroup && (
+              <Text
+                color={isOnline ? '#00AB76' : '#A0A3BD'}
+                size={10}
+                numberOfLines={1}
+              >
+                {isOnline ? 'Active' : 'Offline'}
+              </Text>
+            )
           }
         </View>
         {rightIcon}

@@ -6,16 +6,9 @@ const {
   ADD_TO_MEETINGS,
   ADD_MEETING,
   UPDATE_MEETING,
-  REMOVE_MEETING,
   SET_MEETING,
-  SET_MEETING_ID,
-  SET_MEETING_PARTICIPANTS,
-  ADD_MEETING_PARTICIPANTS,
   UPDATE_MEETING_PARTICIPANTS,
-  REMOVE_MEETING_PARTICIPANTS,
   SET_ACTIVE_MEETING,
-  ADD_ACTIVE_MEETING,
-  UPDATE_ACTIVE_MEETING,
   REMOVE_ACTIVE_MEETING,
   RESET_MEETING,
   CONNECTION_STATUS,
@@ -68,37 +61,9 @@ export function updateMeeting(payload:IMeetings) {
   };
 }
 
-export function removeMeeting(payload:string) {
-  return {
-    type: REMOVE_MEETING,
-    payload,
-  };
-}
-
 export function setMeeting(payload:IMeetings) {
   return {
     type: SET_MEETING,
-    payload,
-  };
-}
-
-export function setMeetingId(payload:string) {
-  return {
-    type: SET_MEETING_ID,
-    payload,
-  };
-}
-
-export function setMeetingParticipants(payload:Array<IParticipants>) {
-  return {
-    type: SET_MEETING_PARTICIPANTS,
-    payload,
-  };
-}
-
-export function addMeetingParticipants(payload:IParticipants) {
-  return {
-    type: ADD_MEETING_PARTICIPANTS,
     payload,
   };
 }
@@ -110,30 +75,9 @@ export function updateMeetingParticipants(payload:IParticipants) {
   };
 }
 
-export function removeMeetingParticipants(payload:string) {
-  return {
-    type: REMOVE_MEETING_PARTICIPANTS,
-    payload,
-  };
-}
-
 export function setActiveMeetings(payload:NormalizedMeeting) {
   return {
     type: SET_ACTIVE_MEETING,
-    payload,
-  };
-}
-
-export function addActiveMeeting(payload:IMeetings) {
-  return {
-    type: ADD_ACTIVE_MEETING,
-    payload,
-  };
-}
-
-export function updateActiveMeeting(payload:IMeetings) {
-  return {
-    type: UPDATE_ACTIVE_MEETING,
     payload,
   };
 }
