@@ -169,7 +169,7 @@ function ActivityModal(props: any) {
 
     const statusMemo = useMemo(() => {
         setStatus(status);
-        setAssignId(assignId || (props?.details?.assignedPersonnel?.id || props?.details?.assignedPersonnel));
+        setAssignId(assignId || (props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel));
         return status ? (
             cashier ? PaymentStatusText(status) : StatusText(status)) : (
                    cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))

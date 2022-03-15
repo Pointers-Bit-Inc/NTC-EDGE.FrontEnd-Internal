@@ -15,7 +15,7 @@ export function useAuth(navigation) {
     const [loading , setLoading] = useState(false);
     const onLogin = async (data) => {
         setLoading(true);
-        api.post('/signin' , {
+        api.post('/user/signin' , {
             email : data.email ,
             password : data.password ,
         })
