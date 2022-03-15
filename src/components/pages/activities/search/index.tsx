@@ -8,7 +8,7 @@ import {SearchActivity} from "@pages/activities/search/searchActivity";
 import {styles} from '@pages/activities/search/styles'
 import axios from "axios";
 import {BASE_URL} from "../../../../services/config";
-import {RootStateOrAny, useSelector} from "react-redux";
+import {RootStateOrAny , useDispatch , useSelector} from "react-redux";
 import {
     ACTIVITIES , ACTIVITIESLIST ,
     CASHIER ,
@@ -24,8 +24,10 @@ import {defaultSanitize} from "@pages/activities/search/utils";
 import {useUserRole} from "../../../../hooks/useUserRole";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
+import {setApplicationItem} from "../../../../reducers/application/actions";
 
 function Search(props: any) {
+    const dispatch = useDispatch()
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
     const user = useSelector((state: RootStateOrAny) => state.user);
      const [isHandleLoad, setIsHandleLoad] = useState(true)
@@ -246,6 +248,7 @@ function Search(props: any) {
     }
 
     const handleBackButtonClick = () => {
+        dispatch(setApplicationItem({}))
         props.navigation.navigate(ACTIVITIESLIST);
         return true;
     };

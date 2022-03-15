@@ -77,7 +77,10 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
             <View style={styles.group4}>
                 <View style={styles.rect}>
                     <View style={styles.group2}>
-                        <TouchableOpacity style={{  paddingRight: 10}} onPress={props.onPress}>
+                        <TouchableOpacity style={{  paddingRight: 10}} onPress={()=> {
+                            onDismissed()
+                            props.onPress()
+                        }}>
                             <BackSpaceIcon
                                 width={fontValue(20)}
                                 height={fontValue(16)}
