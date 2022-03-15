@@ -6,6 +6,8 @@ import { chatSameDate } from 'src/utils/formatting';
 import { ChatBubble, GroupBubble } from '@components/molecules/list-item';
 import { text } from 'src/styles/color';
 import { RFValue } from 'react-native-responsive-fontsize';
+import NoConversationIcon from "@assets/svg/noConversations";
+import {Regular} from "@styles/font";
 
 const { width } = Dimensions.get('window');
 
@@ -147,17 +149,25 @@ const ChatList: FC<Props> = ({
     )
   }
   return (
-    <FlatList
-      showsVerticalScrollIndicator={false}
-      inverted={true}
-      data={error ? [] : messages}
-      renderItem={renderItem}
-      keyExtractor={(item:any) => item._id}
-      ListEmptyComponent={emptyComponent}
-      ListFooterComponent={() => <View style={{ height: 15 }} />}
-      ListHeaderComponent={() => <View style={{ height: 15 }} />}
-      {...otherProps}
-    />
+      <>
+        { messages ?  <View style={{ flex: 1, alignItems: "center", justifyContent: "center"}}>
+          <NoConversationIcon/>
+           <Text style={{color: "#A0A3BD", paddingVertical: 30, fontSize: 24, fontFamily: Regular, fontWeight: "400"}}>No conversations yet</Text>
+        </View> : 
+
+        <FlatList
+            showsVerticalScrollIndicator={false}
+            inverted={true}
+            data={error ? [] : messages}
+            renderItem={renderItem}
+            keyExtractor={(item:any) => item._id}
+            ListEmptyComponent={emptyComponent}
+            ListFooterComponent={() => <View style={{ height: 15 }} />}
+            ListHeaderComponent={() => <View style={{ height: 15 }} />}
+            {...otherProps}
+        /> }
+      </>
+
   )
 }
 
