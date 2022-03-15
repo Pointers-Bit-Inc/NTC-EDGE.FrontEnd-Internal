@@ -240,7 +240,7 @@ const ChatView = ({ navigation, route }:any) => {
         inputRef.current?.blur();
       }
     }
-  }, [selectedMessage, rendered]);
+  }, [selectedMessage, rendered, _id]);
 
   const onInitiateCall = (isVideoEnable = false) => {
     setIsVideoEnable(isVideoEnable);

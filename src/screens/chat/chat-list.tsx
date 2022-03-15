@@ -94,6 +94,7 @@ const List = () => {
   const { _id, isGroup, lastMessage, otherParticipants } = useSelector(
     (state:RootStateOrAny) => {
       const { selectedChannel } = state.channel;
+
       selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
       return selectedChannel;
     }
@@ -168,7 +169,7 @@ const List = () => {
     return () => {
       unmount = true;
     }
-  }, [rendered]);
+  }, [rendered, _id]);
 
   useEffect(() => {
     if (lastMessage && rendered) {

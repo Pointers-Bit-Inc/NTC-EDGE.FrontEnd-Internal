@@ -5,7 +5,7 @@ import {
     TouchableOpacity ,
     Dimensions ,
     Platform ,
-    StatusBar , ActivityIndicator , FlatList , RefreshControl , Animated ,
+    StatusBar , ActivityIndicator , FlatList , RefreshControl , Animated , ScrollView ,
 } from 'react-native'
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -435,7 +435,7 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                                     if (selectedMessage && selectedMessage.channelId !== item._id) {
                                         dispatch(removeSelectedMessage());
                                     }
-                                    props.navigation.navigate('ViewChat', item)
+                                    //props.navigation.navigate('ViewChat', item)
                                 }}
                             />
                         </Swipeable>
@@ -516,8 +516,11 @@ const ChatList = ({ navigation }:any) => {
                         setTimeout(() => navigation.navigate('ViewChat' , res) , 300);
                     } }/>
             </View>
-              <View style={ { flex : 0.6 , alignItems: "center", justifyContent: "center"} }>
-                  <List></List>
+              <View style={ { flex : 0.6 ,} }>
+                 <ScrollView>
+                     <List/>
+                 </ScrollView>
+
               </View>
         </View>
 
