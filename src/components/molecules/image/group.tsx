@@ -49,9 +49,10 @@ const GroupImage: FC<Props> = ({
     return (
       <ProfileImage
         image={participants[0]?.profilePicture?.thumb}
-        name={`${participants[0].firstName} ${participants[0].lastName}`}
+        name={`${participants[0]?.firstName} ${participants[0]?.lastName}`}
         size={size}
         textSize={textSize}
+        isOnline={participants[0]?.isOnline}
       />
     );
   }
@@ -63,7 +64,7 @@ const GroupImage: FC<Props> = ({
           <ProfileImage
             style={styles.border}
             image={participants[0]?.profilePicture?.thumb}
-            name={`${participants[0].firstName} ${participants[0].lastName}`}
+            name={`${participants[0]?.firstName} ${participants[0]?.lastName}`}
             size={imageSize}
             textSize={textSize/2}
           />
@@ -72,7 +73,7 @@ const GroupImage: FC<Props> = ({
           <ProfileImage
             style={styles.border}
             image={participants[1]?.profilePicture?.thumb}
-            name={`${participants[1].firstName} ${participants[1].lastName}`}
+            name={`${participants[1]?.firstName} ${participants[1]?.lastName}`}
             size={imageSize}
             textSize={textSize/2}
           />
@@ -87,7 +88,7 @@ const GroupImage: FC<Props> = ({
         <ProfileImage
           style={styles.border}
           image={participants[0]?.profilePicture?.thumb}
-          name={`${participants[0].firstName} ${participants[0].lastName}`}
+          name={`${participants[0]?.firstName} ${participants[0]?.lastName}`}
           size={imageSize}
           textSize={textSize/2}
         />
@@ -96,7 +97,7 @@ const GroupImage: FC<Props> = ({
         <ProfileImage
           style={styles.border}
           image={participants[1]?.profilePicture?.thumb}
-          name={`${participants[1].firstName} ${participants[1].lastName}`}
+          name={`${participants[1]?.firstName} ${participants[1]?.lastName}`}
           size={imageSize}
           textSize={textSize/2}
         />
