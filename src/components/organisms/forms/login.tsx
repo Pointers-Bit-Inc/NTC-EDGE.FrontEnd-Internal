@@ -82,7 +82,7 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         placeholder="Email address"
         required={true}
         hasValidation={true}
-      inputStyle={[InputStyles.text, { minWidth: 330,}]}
+      inputStyle={[InputStyles.text]}
       outlineStyle={InputStyles.outlineStyle}
         activeColor={text.primary}
         errorColor={text.error}

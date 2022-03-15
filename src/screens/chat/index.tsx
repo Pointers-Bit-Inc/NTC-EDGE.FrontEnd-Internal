@@ -1,52 +1,36 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import {
-  StyleSheet,
-  View,
-  FlatList,
-  TouchableOpacity,
-  Dimensions,
-  Platform,
-  ActivityIndicator,
-  StatusBar,
-  Animated,
-  RefreshControl,
+  StyleSheet ,
+  View ,
+  TouchableOpacity ,
+  Dimensions ,
+  Platform ,
+  StatusBar , ActivityIndicator , FlatList , RefreshControl , Animated ,
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
 import { setSelectedChannel, setChannelList, addToChannelList, addChannel, updateChannel, removeChannel, setMeetings, removeSelectedMessage, setSearchValue as setSearchValueFN } from 'src/reducers/channel/actions';
 import { SearchField } from '@components/molecules/form-fields';
-import { ChatItem, ListFooter, MeetingNotif } from '@components/molecules/list-item';
-import { VideoIcon, WriteIcon, DeleteIcon } from '@components/atoms/icon';
 import { primaryColor, outline, text, button } from '@styles/color';
-import {
-  getChannelName,
-  getChannelImage,
-  getTimeString,
-  getOtherParticipants,
-  checkSeen,
-} from 'src/utils/formatting';
-import useFirebase from 'src/hooks/useFirebase';
 import useSignalr from 'src/hooks/useSignalr';
 import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
-import ProfileImage from '@components/atoms/image/profile';
 import InputStyles from 'src/styles/input-style';
 import HomeMenuIcon from "@assets/svg/homemenu";
 import { NewChatIcon } from '@atoms/icon';
 import {Bold, Regular, Regular500} from "@styles/font";
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
-import rtt from 'reactotron-react-native';
 import NewChat from '@pages/chat/new';
-import { RFValue } from 'react-native-responsive-fontsize';
-import NewDeleteIcon from '@components/atoms/icon/new-delete';
-import {
-  removeActiveMeeting ,
-  setMeeting ,
-} from 'src/reducers/meeting/actions';
-import IMeetings from 'src/interfaces/IMeetings';
+import {fontValue} from "@pages/activities/fontValue";
+import MeetIcon from "@assets/svg/meetIcon";
+import hairlineWidth = StyleSheet.hairlineWidth;
+import {getChannelImage , getChannelName , getTimeString} from "../../utils/formatting";
+import IMeetings from "../../interfaces/IMeetings";
+import {removeActiveMeeting , setMeeting} from "../../reducers/meeting/actions";
+import {ChatItem , ListFooter , MeetingNotif} from "@molecules/list-item";
+import Swipeable from "react-native-gesture-handler/Swipeable";
+import NewDeleteIcon from "@atoms/icon/new-delete";
 
 const { width, height } = Dimensions.get('window');
 
@@ -172,7 +156,7 @@ const ChatList = ({ navigation }:any) => {
     const meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
 })
-  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
+    const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
   const {
     getChatList,
     leaveChannel,

@@ -51,6 +51,7 @@ export default StyleSheet.create({
   labelContainer: {
     flexDirection: 'row',
     padding: 0,
+
   },
   headerLabelText: {
     color: text?.defaultColor,
@@ -60,6 +61,7 @@ export default StyleSheet.create({
   labelText: {
     color: text?.defaultColor,
     fontSize: fontValue(12),
+
   },
   requiredText: {
     color: text?.errorColor,
@@ -84,13 +86,15 @@ export default StyleSheet.create({
       },
       default: {
         paddingVertical:  0,
-      }
+      },
+
     }),
     marginVertical: -(3),
     color: text?.mainColor,
     fontFamily: Regular,
     fontWeight: 'normal',
-    marginTop: -3
+    marginTop: -3,
+
   },
   iconStyle: {
     height: fontValue(20),
