@@ -517,9 +517,8 @@ const ChatList = ({ navigation }:any) => {
                     } }/>
             </View>
               <View style={ { flex : 0.6 ,} }>
-                 <ScrollView>
+
                      <List/>
-                 </ScrollView>
 
               </View>
         </View>
