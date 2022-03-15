@@ -47,7 +47,22 @@ export default function basket(state = initialState, action:any) {
       return state.setIn(['normalizedChannelList', action.payload._id], action.payload);
     }
     case UPDATE_CHANNEL: {
-      return state.setIn(['normalizedChannelList', action.payload._id], action.payload);
+      let newState = state;
+      const channel = state.normalizedChannelList[action.payload._id];
+
+      if(channel.updatedAt > action.payload.updatedAt) {
+        return newState;
+      }
+
+      if(channel) {
+        newState = newState.setIn(['normalizedChannelList', action.payload._id, 'name'], action.payload.name);
+        if (action.payload.lastMessage) newState = newState.setIn(['normalizedChannelList', action.payload._id, 'lastMessage'], action.payload.lastMessage);
+        newState = newState.setIn(['normalizedChannelList', action.payload._id, 'participants'], action.payload.participants);
+        newState = newState.setIn(['normalizedChannelList', action.payload._id, 'participantsId'], action.payload.participantsId);
+        newState = newState.setIn(['normalizedChannelList', action.payload._id, 'updatedAt'], action.payload.updatedAt);
+      }
+
+      return newState;
     }
     case REMOVE_CHANNEL: {
       return state.removeIn(['normalizedChannelList', action.payload]);

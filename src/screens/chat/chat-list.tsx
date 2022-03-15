@@ -19,6 +19,8 @@ import { outline, text, button } from '@styles/color';
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Regular, Regular500 } from '@styles/font';
+import IMessages from 'src/interfaces/IMessages';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const styles = StyleSheet.create({
   button: {
@@ -80,10 +82,23 @@ const List = () => {
   const user = useSelector((state:RootStateOrAny) => state.user);
   const messages = useSelector((state:RootStateOrAny) => {
     const { normalizedMessages } = state.channel;
-    const messagesList = lodash.keys(normalizedMessages).map(m => {
+    const messagesList = lodash.keys(normalizedMessages).map((m:string) => {
       return normalizedMessages[m];
     });
-    return lodash.orderBy(messagesList, 'createdAt', 'desc');
+    let delivered = false;
+    let seen:any = [];
+    return lodash.orderBy(messagesList, 'createdAt', 'desc')
+    .map((msg:IMessages) => {
+      if (!delivered && msg.delivered) {
+        delivered = true;
+      }
+      if (delivered) msg.delivered = true;
+
+      seen = lodash.unionBy(seen, msg.seen, 'id');
+      msg.seen = seen;
+      
+      return msg;
+    });
   });
   const { _id, isGroup, lastMessage, otherParticipants } = useSelector(
     (state:RootStateOrAny) => {

@@ -49,6 +49,9 @@ const ProfileImage = ({
     return (
       <View style={isOnline && [styles.onlineBorder, { borderRadius: size * 1.5 }, onlineStyle]}>
         <Image
+          width={imageSize}
+          height={imageSize}
+          resizeMode={"contain"}
           style={[
             styles.image,
             {

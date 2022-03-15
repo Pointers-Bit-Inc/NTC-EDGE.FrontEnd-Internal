@@ -151,6 +151,8 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
       return;
     }
     if (!channelId) {
+      inputRef.current?.blur();
+      setInputText('');
       return onNext(inputText);
     }
     if (selectedMessage._id) {

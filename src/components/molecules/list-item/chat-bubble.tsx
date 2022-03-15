@@ -194,7 +194,7 @@ const ChatBubble:FC<Props> = ({
             )
           }
           {
-            (!isSeen && isSender && !deleted) && (
+            (!isSeen && isSender && !deleted && !system) && (
               <View
                 style={[styles.check, delivered && { backgroundColor: text.info }]}
               >

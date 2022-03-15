@@ -40,6 +40,7 @@ import {
   setMeeting ,
 } from 'src/reducers/meeting/actions';
 import IMeetings from 'src/interfaces/IMeetings';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -154,8 +155,8 @@ const ChatList = ({ navigation }:any) => {
     const { normalizedChannelList } = state.channel
     const channelList = lodash.keys(normalizedChannelList).map(ch => {
       const channel = normalizedChannelList[ch];
-      channel.otherParticipants = lodash.reject(channel.participants, p => p._id === user._id);
-      channel.lastMessage.hasSeen = !!lodash.find(channel.lastMessage.seen, s => s._id === user._id);
+      channel.otherParticipants = lodash.reject(channel.participants, (p:IParticipants) => p._id === user._id);
+      channel.lastMessage.hasSeen = !!lodash.find(channel.lastMessage.seen, (s:IParticipants) => s._id === user._id);
       return channel;
     });
     return lodash.orderBy(channelList, 'lastMessage.createdAt', 'desc');
