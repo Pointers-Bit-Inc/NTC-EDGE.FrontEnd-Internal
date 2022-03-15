@@ -60,8 +60,6 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
     const user = useSelector((state: RootStateOrAny) => state.user) || {};
-    const navigationRef = useRef();
-
     return (
         <NavigationContainer>
 

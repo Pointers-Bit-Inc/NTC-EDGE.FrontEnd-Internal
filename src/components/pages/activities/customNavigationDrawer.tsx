@@ -64,7 +64,7 @@ const CustomSidebarMenu = (props: any) => {
 
                                         {route.name == ACTIVITIES ?
                                             <ActivitySidebar fill={focused? "#113196" : "#6E7191"}  height={ 25 } width={ 24 }/>
-                                        : route.name == CHAT  ?  <ChatIcon fill={focused ? "#113196" : "#6E7191"} /> : route.name = MEET ? <MeetIcon fill={focused ? "#113196" : "#6E7191"}/> : <></> }
+                                        : route.name == CHAT  ?  <ChatIcon focused={focused} fill={focused ? "#113196" : "#6E7191"} /> : route.name = MEET ? <MeetIcon fill={focused ? "#113196" : "#6E7191"}/> : <></> }
 
                                         <Text style={ [styles.label, {color: focused ? "#113196" : "#6E7191"  }] }>{  drawerLabel !== undefined
                                                                         ? drawerLabel
