@@ -1,9 +1,8 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   RefreshControl,
   ActivityIndicator,
   InteractionManager,
-  Dimensions,
   StyleSheet,
   View,
   TouchableOpacity,
@@ -11,11 +10,9 @@ import {
   StatusBar,
   Platform
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import lodash from 'lodash';
 import { outline, button, text } from '@styles/color';
 import Text from '@atoms/text';
-import InputStyles from 'src/styles/input-style';
 import { ContactItem, ListFooter, SelectedContact } from '@components/molecules/list-item';
 import ChatView from './view';
 import { ArrowRightIcon, ArrowDownIcon, CheckIcon, CloseIcon, NewGroupIcon, PlusIcon } from '@components/atoms/icon'
@@ -23,13 +20,11 @@ import { InputField, SearchField } from '@components/molecules/form-fields'
 import { primaryColor, header } from '@styles/color';
 import { Bold, Regular, Regular500 } from '@styles/font';
 import useSignalr from 'src/hooks/useSignalr';
-import axios from 'axios';
 import { InputTags } from '@components/molecules/form-fields';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useDispatch } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import AwesomeAlert from 'react-native-awesome-alerts';
-const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -479,6 +474,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
         image={item?.profilePicture?.thumb}
         data={item}
         name={item.name}
+        isOnline={item.isOnline}
         onPress={() => onTapCheck(item._id)}
         contact={item.email || ''}
       />

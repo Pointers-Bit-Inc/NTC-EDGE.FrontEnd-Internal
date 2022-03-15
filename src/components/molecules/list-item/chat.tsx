@@ -84,6 +84,7 @@ const ChatItem: FC<Props> = ({
               name={name}
               size={imageSize}
               textSize={textSize}
+              isOnline={participants[0]?.isOnline}
             />
           ) : (
             <GroupImage

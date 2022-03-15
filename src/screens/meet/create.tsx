@@ -1,29 +1,24 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import {
-  RefreshControl,
   ActivityIndicator,
-  Dimensions,
   StyleSheet,
   View,
   TouchableOpacity,
-  FlatList,
   StatusBar
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
-import { setMeetingId, setMeeting } from 'src/reducers/meeting/actions';
-import { outline, button, text } from '@styles/color';
+import { setMeeting } from 'src/reducers/meeting/actions';
+import { button, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
-import { ArrowLeftIcon, ToggleIcon, CheckIcon } from '@components/atoms/icon'
+import { ArrowLeftIcon, ToggleIcon } from '@components/atoms/icon'
 import { InputField } from '@components/molecules/form-fields'
-import useFirebase from 'src/hooks/useFirebase';
 import useSignalr from 'src/hooks/useSignalr';
 import Button from '@components/atoms/button';
 import lodash from 'lodash';
 import { RFValue } from 'react-native-responsive-fontsize';
-const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {

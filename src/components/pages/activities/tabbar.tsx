@@ -34,8 +34,8 @@ import CustomSidebarMenu from "@pages/activities/customNavigationDrawer";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import useSignalr from 'src/hooks/useSignalr';
-import { resetMeeting, addMeeting, updateMeeting, setConnectionStatus } from 'src/reducers/meeting/actions';
-import { resetChannel, addMessages, updateMessages, addChannel, removeChannel } from 'src/reducers/channel/actions';
+import { addMeeting, updateMeeting, setConnectionStatus } from 'src/reducers/meeting/actions';
+import { addMessages, updateMessages, addChannel, removeChannel } from 'src/reducers/channel/actions';
 import RNExitApp from 'react-native-exit-app';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { outline, text } from '@styles/color';
@@ -89,6 +89,9 @@ export default function TabBar() {
         initSignalR,
         destroySignalR,
         onConnection,
+        onChatUpdate,
+        onRoomUpdate,
+        onMeetingUpdate,
         checkVersion,
       } = useSignalr();
       
@@ -150,56 +153,11 @@ export default function TabBar() {
 
   useEffect(() => {
       initSignalR();
-      onConnection('OnChatUpdate', (users:Array<string>, type:string, data:any) => {
-        if (data) {
-          switch(type) {
-            case 'create': {
-              dispatch(addMessages(data));
-              break;
-            }
-            case 'update': {
-              dispatch(updateMessages(data));
-              break;
-            }
-          }
-        }
-      });
+      onConnection('OnChatUpdate', onChatUpdate);
 
-      onConnection('OnRoomUpdate', (users:Array<string>, type:string, data:any) => {
-        if (data) {
-          switch(type) {
-            case 'create': {
-              dispatch(addChannel(data));
-              dispatch(addMessages(data.lastMessage));
-              break;
-            }
-            case 'delete': dispatch(removeChannel(data._id)); break;
-          }
-        }
-      });
+      onConnection('OnRoomUpdate', onRoomUpdate);
 
-      onConnection('OnMeetingUpdate', (users:Array<string>, type:string, data:any) => {
-        if (data) {
-          switch(type) {
-            case 'create': {
-              const { room } = data;
-              const { lastMessage } = room;
-              dispatch(addChannel(room));
-              dispatch(addMessages(lastMessage));
-              dispatch(addMeeting(data));
-              break;
-            };
-            case 'update': {
-              const { room = {} } = data;
-              const { lastMessage } = room;
-              if (lastMessage) dispatch(addChannel(room));
-              if (lastMessage) dispatch(addMessages(lastMessage));
-              dispatch(updateMeeting(data));
-              break;
-            }
-          }
-        }
-      });
+      onConnection('OnMeetingUpdate', onMeetingUpdate);
   
       return () => destroySignalR();
     }, []);

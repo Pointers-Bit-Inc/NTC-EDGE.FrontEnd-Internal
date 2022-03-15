@@ -13,7 +13,6 @@ const {
   ADD_TO_MESSAGES,
   ADD_MESSAGES,
   UPDATE_MESSAGES,
-  REMOVE_MESSAGES,
 
   SET_SELECTED_MESSAGES,
   REMOVE_SELECTED_MESSAGES,
@@ -22,7 +21,6 @@ const {
   REMOVE_MEETING_CHANNEL,
   SET_MEETINGS_CHANNEL,
 
-  SET_SEARCH_VALUE,
   RESET_CHANNEL,
 } = require('./types').default;
 
@@ -49,7 +47,22 @@ export default function basket(state = initialState, action:any) {
       return state.setIn(['normalizedChannelList', action.payload._id], action.payload);
     }
     case UPDATE_CHANNEL: {
-      return state.setIn(['normalizedChannelList', action.payload._id], action.payload);
+      let newState = state;
+      const channel = state.normalizedChannelList[action.payload._id];
+
+      if(channel.updatedAt > action.payload.updatedAt) {
+        return newState;
+      }
+
+      if(channel) {
+        newState = newState.setIn(['normalizedChannelList', action.payload._id, 'name'], action.payload.name);
+        if (action.payload.lastMessage) newState = newState.setIn(['normalizedChannelList', action.payload._id, 'lastMessage'], action.payload.lastMessage);
+        newState = newState.setIn(['normalizedChannelList', action.payload._id, 'participants'], action.payload.participants);
+        newState = newState.setIn(['normalizedChannelList', action.payload._id, 'participantsId'], action.payload.participantsId);
+        newState = newState.setIn(['normalizedChannelList', action.payload._id, 'updatedAt'], action.payload.updatedAt);
+      }
+
+      return newState;
     }
     case REMOVE_CHANNEL: {
       return state.removeIn(['normalizedChannelList', action.payload]);
@@ -73,16 +86,6 @@ export default function basket(state = initialState, action:any) {
       .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
 
       return newState;
-      // if (state.selectedChannel._id === action.payload.roomId) {
-      //   return state.setIn(['normalizedMessages', action.payload._id], action.payload)
-      //   .setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
-      //   .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
-      //   .setIn(['selectedChannel', 'lastMessage'], action.payload)
-      //   .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
-      // } else {
-      //   return state.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
-      //   .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
-      // }
     }
     case UPDATE_MESSAGES: {
       let newState = state;
@@ -99,29 +102,6 @@ export default function basket(state = initialState, action:any) {
       }
 
       return newState;
-      // if (state.selectedChannel._id === action.payload.roomId) {
-      //   if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
-      //     return state.setIn(['normalizedMessages', action.payload._id], action.payload)
-      //     .setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
-      //     .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
-      //     .setIn(['selectedChannel', 'lastMessage'], action.payload)
-      //     .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
-      //   } else {
-      //     return state.setIn(['normalizedMessages', action.payload._id], action.payload)
-      //     .setIn(['selectedChannel', 'lastMessage'], action.payload)
-      //     .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
-      //   }
-      // } else {
-      //   if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
-      //     return state.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
-      //     .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
-      //   }
-      //   return state;
-      // }
-    }
-    case REMOVE_MESSAGES: {
-      const updatedList = lodash.reject(state.messages, (m:IMessages) => m._id === action.payload);
-      return state.setIn(['messages'], updatedList);
     }
     case SET_SELECTED_MESSAGES: {
       return state.setIn(['selectedMessage'], action.payload);
@@ -145,9 +125,6 @@ export default function basket(state = initialState, action:any) {
     case REMOVE_MEETING_CHANNEL: {
       const updatedList = lodash.reject(state.meetingList, (l:IMeetings) => l._id === action.payload);
       return state.setIn(['meetingList'], updatedList);
-    }
-    case SET_SEARCH_VALUE: {
-      return state.setIn(['searchValue'], action.payload);
     }
     case RESET_CHANNEL: {
       return state.setIn(['selectedChannel'], {})

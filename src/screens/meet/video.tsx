@@ -5,25 +5,19 @@ import {
   StyleSheet,
   StatusBar,
   TouchableOpacity,
-  Platform,
   Animated
 } from 'react-native'
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import lodash from 'lodash';
-import { ArrowLeftIcon, ChatIcon, PeopleIcon } from '@components/atoms/icon'
+import { ArrowLeftIcon } from '@components/atoms/icon'
 import {
-  setMeeting,
-  setMeetingParticipants,
   setNotification,
-  updateMeeting,
   updateMeetingParticipants,
 } from 'src/reducers/meeting/actions';
 import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
 import { getChannelName, getTimerString } from 'src/utils/formatting'
 import useSignalr from 'src/hooks/useSignalr';
-import { RFValue } from 'react-native-responsive-fontsize';
 
 const styles = StyleSheet.create({
   container: {
