@@ -29,7 +29,7 @@ import Text from '@components/atoms/text';
 import GroupImage from '@components/molecules/image/group';
 import { InputField } from '@components/molecules/form-fields';
 import { button, header } from '@styles/color';
-import { getChannelName } from 'src/utils/formatting';
+import { getChannelName, getTimeDifference } from 'src/utils/formatting';
 import {
   removeSelectedMessage,
   setSelectedChannel,
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     justifyContent: 'center',
+    paddingLeft: 5,
   },
   bubbleContainer: {
     alignItems: 'flex-start',
@@ -262,10 +263,10 @@ const ChatView = ({ navigation, route }:any) => {
             />
           </View>
         </TouchableOpacity>
-        <View style={{ paddingLeft: 5 }}>
+        <View>
           <GroupImage
             participants={otherParticipants}
-            size={route?.params?.isGroup ? 55 : 40}
+            size={route?.params?.isGroup ? 45 : 30}
             textSize={route?.params?.isGroup ? 24 : 16}
             inline={true}
           />
@@ -278,6 +279,18 @@ const ChatView = ({ navigation, route }:any) => {
           >
             {getChannelName(route.params)}
           </Text>
+          {
+            !route?.params?.isGroup && (
+              <Text
+                color={'#606A80'}
+                size={10}
+                numberOfLines={1}
+                style={{ marginTop: -5 }}
+              >
+                {otherParticipants[0]?.isOnline ? 'Active now' : getTimeDifference(otherParticipants[0]?.lastOnline)}
+              </Text>
+            )
+          }
         </View>
         <TouchableOpacity onPress={() => onInitiateCall(false)}>
           <View style={{ paddingRight: 5 }}>

@@ -60,6 +60,11 @@ export default function basket(state = initialState, action:any) {
         newState = newState.setIn(['normalizedChannelList', action.payload._id, 'participants'], action.payload.participants);
         newState = newState.setIn(['normalizedChannelList', action.payload._id, 'participantsId'], action.payload.participantsId);
         newState = newState.setIn(['normalizedChannelList', action.payload._id, 'updatedAt'], action.payload.updatedAt);
+
+        if (state.selectedChannel._id === action.payload._id) {
+          newState = newState.setIn(['selectedChannel', 'participants'], action.payload.participants)
+          .setIn(['selectedChannel', 'participantsId'], action.payload.participantsId);
+        }
       }
 
       return newState;

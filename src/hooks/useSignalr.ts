@@ -48,7 +48,6 @@ const useSignalr = () => {
           break;
         }
         case 'update': {
-          console.log('UPDATE CHAT', data.seen.length)
           dispatch(updateMessages(data));
           break;
         }
