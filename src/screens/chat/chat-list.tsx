@@ -21,6 +21,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { Regular, Regular500 } from '@styles/font';
 import IMessages from 'src/interfaces/IMessages';
 import IParticipants from 'src/interfaces/IParticipants';
+import NoConversationIcon from "@assets/svg/noConversations";
 
 const styles = StyleSheet.create({
   button: {
@@ -315,53 +316,62 @@ const List = () => {
 
   return (
     <>
-      <ChatList
-        user={user}
-        messages={messages}
-        participants={otherParticipants}
-        lastMessage={lastMessage}
-        isGroup={isGroup}
-        loading={loading}
-        error={error}
-        showOption={showOption}
-        ListFooterComponent={ListFooterComponent}
-        onEndReached={() => fetchMoreMessages()}
-        onEndReachedThreshold={0.5}
-      />
-      <BottomModal
-        ref={modalRef}
-        onModalHide={() => setShowDeleteOption(false)}
-        header={
-          <View style={styles.bar} />
-        }
-      >
-        <View style={{ paddingBottom: 20 }}>
-          {showDeleteOption ? deletOptions() : options()}
-        </View>
-      </BottomModal>
-      <AwesomeAlert
-        show={showAlert}
-        showProgress={false}
-        contentContainerStyle={{ borderRadius: 15 }}
-        title={'Unsend for You?'}
-        titleStyle={styles.title}
-        message={'This message will be unsend for you. Other chat members will still able to see it.'}
-        messageStyle={styles.message}
-        contentStyle={styles.content}
-        closeOnTouchOutside={false}
-        closeOnHardwareBackPress={false}
-        showCancelButton={true}
-        showConfirmButton={true}
-        cancelButtonColor={'white'}
-        confirmButtonColor={'white'}
-        cancelButtonTextStyle={styles.cancelText}
-        confirmButtonTextStyle={styles.confirmText}
-        actionContainerStyle={{ justifyContent: 'space-around' }}
-        cancelText="Cancel"
-        confirmText="Unsend"
-        onCancelPressed={() => setShowAlert(false)}
-        onConfirmPressed={unSendMessageForYou}
-      />
+      {!messages.length ? <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+        <NoConversationIcon/>
+                          <Text style={{color: "#A0A3BD", paddingVertical: 30, fontSize: 24, fontFamily: Regular, fontWeight: "400"}}>No conversations yet</Text>
+      </View> :
+      <>
+        <ChatList
+            user={user}
+            messages={messages}
+            participants={otherParticipants}
+            lastMessage={lastMessage}
+            isGroup={isGroup}
+            loading={loading}
+            error={error}
+            showOption={showOption}
+            ListFooterComponent={ListFooterComponent}
+            onEndReached={() => fetchMoreMessages()}
+            onEndReachedThreshold={0.5}
+        />
+        <BottomModal
+            ref={modalRef}
+            onModalHide={() => setShowDeleteOption(false)}
+            header={
+              <View style={styles.bar} />
+            }
+        >
+          <View style={{ paddingBottom: 20 }}>
+            {showDeleteOption ? deletOptions() : options()}
+          </View>
+        </BottomModal>
+        <AwesomeAlert
+            show={showAlert}
+            showProgress={false}
+            contentContainerStyle={{ borderRadius: 15 }}
+            title={'Unsend for You?'}
+            titleStyle={styles.title}
+            message={'This message will be unsend for you. Other chat members will still able to see it.'}
+            messageStyle={styles.message}
+            contentStyle={styles.content}
+            closeOnTouchOutside={false}
+            closeOnHardwareBackPress={false}
+            showCancelButton={true}
+            showConfirmButton={true}
+            cancelButtonColor={'white'}
+            confirmButtonColor={'white'}
+            cancelButtonTextStyle={styles.cancelText}
+            confirmButtonTextStyle={styles.confirmText}
+            actionContainerStyle={{ justifyContent: 'space-around' }}
+            cancelText="Cancel"
+            confirmText="Unsend"
+            onCancelPressed={() => setShowAlert(false)}
+            onConfirmPressed={unSendMessageForYou}
+        />
+
+      </> }
+
+
     </>
   )
 }

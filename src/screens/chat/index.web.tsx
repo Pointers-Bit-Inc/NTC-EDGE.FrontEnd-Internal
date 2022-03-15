@@ -33,8 +33,6 @@ import Swipeable from "react-native-gesture-handler/Swipeable";
 import NewDeleteIcon from "@atoms/icon/new-delete";
 import ChatView from "@screens/chat/view";
 import List from "@screens/chat/chat-list";
-import noConversationIcon from "@assets/svg/noConversations";
-import NoConversationIcon from "@assets/svg/noConversations";
 
 const { width, height } = Dimensions.get('window');
 
