@@ -27,7 +27,7 @@ export default function Loader(refreshing, searchTerm, size) {
                                                                 <Text style={styles.noContent}>No Content "{selectedClone.toString()}"</Text>
                                                             </>
 
-                                                 : <><NoActivity ></NoActivity><Text style={styles.noContent}>No Content</Text></>}
+                                                 : <><NoActivity></NoActivity><Text style={styles.noContent}>No Content</Text></>}
         </View>
     );
 }

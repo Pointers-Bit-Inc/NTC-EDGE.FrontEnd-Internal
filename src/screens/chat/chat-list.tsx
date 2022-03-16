@@ -317,7 +317,10 @@ const List = () => {
   return (
     <>
       {!messages.length ? <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
-        <NoConversationIcon/>
+                          <View >
+                            <NoConversationIcon />
+                          </View>
+
                           <Text style={{color: "#A0A3BD", paddingVertical: 30, fontSize: 24, fontFamily: Regular, fontWeight: "400"}}>No conversations yet</Text>
       </View> :
       <>
