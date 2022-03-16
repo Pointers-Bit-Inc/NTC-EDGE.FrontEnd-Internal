@@ -90,8 +90,6 @@ export default function ActivitiesPage(props: any) {
         onLayoutComponent ,
         onSearchLayoutComponent ,
         onActivityLayoutComponent ,
-        activityScreenComponent ,
-        onActivityScreenComponent ,
         containerHeight ,
         scrollY ,
         onMomentumScrollBegin ,
@@ -151,7 +149,7 @@ export default function ActivitiesPage(props: any) {
         <SafeAreaView style={{backgroundColor: '#041B6E', flex: 1}}>
             <StatusBar barStyle={ 'light-content' }/>
 
-            <View onLayout={ onActivityScreenComponent } style={ { backgroundColor: "#F8F8F8", flex : 1 , flexDirection : "row" } }>
+            <View style={ { backgroundColor: "#F8F8F8", flex : 1 , flexDirection : "row" } }>
                 <View onLayout={ onActivityLayoutComponent } style={ [styles.container , {
 
                     flex : (

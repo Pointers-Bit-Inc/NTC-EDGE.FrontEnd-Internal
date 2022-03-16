@@ -35,6 +35,8 @@ import ChatView from "@screens/chat/view";
 import List from "@screens/chat/chat-list";
 import {RFValue} from "react-native-responsive-fontsize";
 import useSignalR from "../../hooks/useSignalr";
+import {useComponentLayout} from "../../hooks/useComponentLayout";
+import {setChatLayout} from "../../reducers/layout/actions";
 
 const { width, height } = Dimensions.get('window');
 
@@ -174,7 +176,9 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
         leaveMeeting,
     } = useSignalr();
     const swipeableRef:any = useRef({});
-    const { selectedMessage, selectedChannel } = useSelector((state:RootStateOrAny) => state.channel);
+    const {selectedChannel } = useSelector((state:RootStateOrAny) => state.channel);
+    const {chatLayout } = useSelector((state:RootStateOrAny) => state.layout);
+
     const modalRef = useRef<BottomModalRef>(null);
     const dispatch = useDispatch();
     const meetingList = useSelector((state: RootStateOrAny) => {
@@ -475,6 +479,7 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
             )
         }
         <BottomModal
+             style={{width: chatLayout?.width, left: chatLayout?.x, marginLeft: 108  }}
             ref={modalRef}
             onModalHide={() => modalRef.current?.close()}
             avoidKeyboard={false}
@@ -605,6 +610,12 @@ const ChatList = ({ navigation }:any) => {
             }
         }
     }, [selectedMessage, rendered, _id]);
+
+    const [chatSize , onChatLayout] = useComponentLayout();
+    useEffect(()=>{
+
+        dispatch(setChatLayout(chatSize))
+    }, [chatSize])
     return (
         <View style={ { flexDirection : "row" , flex: 1} }>
             <View style={ { flex : 0.4,} }>
@@ -619,7 +630,7 @@ const ChatList = ({ navigation }:any) => {
                         setTimeout(() => navigation.navigate('ViewChat' , res) , 300);
                     } }/>
             </View>
-              <View style={ { backgroundColor: "#F8F8F8", flex : 0.6 ,} }>
+              <View onLayout={ onChatLayout } style={ { backgroundColor: "#F8F8F8", flex : 0.6 ,} }>
 
                   {rendered && <List/>}
                   {_id && <View style={styles.keyboardAvoiding}>

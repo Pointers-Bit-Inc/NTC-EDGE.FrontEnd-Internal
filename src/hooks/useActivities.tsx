@@ -343,14 +343,13 @@ export function useActivities() {
     const [sizeComponent , onLayoutComponent] = useComponentLayout();
     const [searchSizeComponent , onSearchLayoutComponent] = useComponentLayout();
     const [activitySizeComponent , onActivityLayoutComponent] = useComponentLayout();
-    const [activityScreenComponent , onActivityScreenComponent] = useComponentLayout();
 
     const [containerHeight , setContainerHeight] = useState(148);
     useEffect(() => {
 
         dispatch(setFilterRect(sizeComponent))
         if (sizeComponent?.height && searchSizeComponent?.height) setContainerHeight(sizeComponent?.height + searchSizeComponent?.height)
-    } , [sizeComponent , searchSizeComponent , activitySizeComponent , activityScreenComponent]);
+    } , [sizeComponent , searchSizeComponent , activitySizeComponent]);
 
     const scrollY = useRef(new Animated.Value(0)).current;
     const offsetAnim = useRef(new Animated.Value(0)).current;
@@ -455,8 +454,6 @@ export function useActivities() {
         onLayoutComponent ,
         onSearchLayoutComponent ,
         onActivityLayoutComponent ,
-        activityScreenComponent ,
-        onActivityScreenComponent ,
         containerHeight ,
         scrollY ,
         onMomentumScrollBegin ,
