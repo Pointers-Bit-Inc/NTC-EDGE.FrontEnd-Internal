@@ -2,11 +2,13 @@
     import {FlatList , Modal , StyleSheet , Text , TouchableOpacity , View ,} from 'react-native';
     import CaretDownIcon from "@assets/svg/caret-down";
     import {useOrientation} from "../../../../hooks/useOrientation";
+
     import {Regular500} from "@styles/font";
     import {RFValue} from "react-native-responsive-fontsize";
     import useKeyboard from "../../../../hooks/useKeyboard";
     import {fontValue} from "@pages/activities/fontValue";
     import {isMobile} from "@pages/activities/isMobile";
+    import useIsKeyboardShown from "@react-navigation/bottom-tabs/lib/typescript/src/utils/useIsKeyboardShown";
 
 
     interface Props {
@@ -21,7 +23,9 @@
         const [selected, setSelected] = useState(undefined);
         const [dropdownTop, setDropdownTop] = useState(0);
         const [dropdownWidth, setDropdownWidth] = useState(0);
+        const [dropdownLeft, setDropdownLeft] = useState(0);
         const [selectedIndex, setSelectedIndex] = useState(null)
+        const isKeyboardVisible = useKeyboard();
         const toggleDropdown = (): void => {
             visible ? setVisible(false) : openDropdown();
         };
@@ -41,9 +45,11 @@
         }, [value, selectedIndex])
 
         useEffect(()=>{
+            console.log(isKeyboardVisible)
             DropdownButton?.current?.measure((_fx: number, _fy: number, _w: number, h: number, _px: number, py: number) => {
             setDropdownWidth(_w)
-                setDropdownTop(py + h);
+                setDropdownLeft(_px)
+                setDropdownTop(isKeyboardVisible ? py + h + h : py + h );
             });
         }, [visible, dropdownTop])
 
@@ -85,7 +91,7 @@
                         style={styles.overlay}
                         onPress={() => setVisible(false)}
                     >
-                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, {width: dropdownWidth,flex: 1, top: dropdownTop}]}>
+                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, {width: dropdownWidth,flex: 1, left: dropdownLeft, top: dropdownTop}]}>
                             {data?.length > 0 ? <FlatList
                                 style={styles.items}
                                 data={data}
