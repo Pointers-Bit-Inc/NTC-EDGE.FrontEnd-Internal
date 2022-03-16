@@ -23,14 +23,14 @@ export const styles = StyleSheet.create({
     group7: {
         position: "absolute",
         width: "100%",
-        height: "95%",
+        height: "100%",
         alignItems: "center",
         justifyContent: "space-between",
         alignSelf: "center"
     },
     header: {
         backgroundColor: "#041B6E",
-        height: 78,
+         height: 58,
         width: "100%"
     },
     rect: {
@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
         color: "rgba(255,255,255,1)",
         fontSize: RFValue(18),
         textAlign: "center",
-        marginTop: 40
+        paddingVertical: 20
     },
     group32: {
         width: "100%",
