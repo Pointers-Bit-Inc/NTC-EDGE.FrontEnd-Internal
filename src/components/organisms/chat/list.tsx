@@ -6,8 +6,6 @@ import { chatSameDate } from 'src/utils/formatting';
 import { ChatBubble, GroupBubble } from '@components/molecules/list-item';
 import { text } from 'src/styles/color';
 import { RFValue } from 'react-native-responsive-fontsize';
-import NoConversationIcon from "@assets/svg/noConversations";
-import {Regular} from "@styles/font";
 
 const { width } = Dimensions.get('window');
 
@@ -15,7 +13,7 @@ const styles = StyleSheet.create({
   bubbleContainer: {
     alignItems: 'flex-start',
     paddingHorizontal: RFValue(15),
-    paddingVertical: RFValue(5),
+    paddingTop: 3,
   },
   loadingContainer: {
     flex: 1,

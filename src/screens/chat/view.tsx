@@ -16,6 +16,7 @@ import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
 import { MeetingNotif } from '@components/molecules/list-item';
 import useSignalR from 'src/hooks/useSignalr';
 import ChatList from '@screens/chat/chat-list';
+import FileList from '@components/organisms/chat/files';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import {
   ArrowLeftIcon,
@@ -28,7 +29,7 @@ import {
 import Text from '@components/atoms/text';
 import GroupImage from '@components/molecules/image/group';
 import { InputField } from '@components/molecules/form-fields';
-import { button, header } from '@styles/color';
+import { button, header, outline, text } from '@styles/color';
 import { getChannelName, getTimeDifference } from 'src/utils/formatting';
 import {
   removeSelectedMessage,
@@ -38,6 +39,8 @@ import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
 import CreateMeeting from '@components/pages/chat/meeting';
 import IMeetings from 'src/interfaces/IMeetings';
+import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import { Regular, Regular500 } from '@styles/font';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -112,6 +115,13 @@ const styles = StyleSheet.create({
     width: 35,
     borderRadius: 4,
   },
+});
+
+const ChatRoute = () => (<ChatList />);
+const FileRoute = () => (<FileList />);
+const renderScene = SceneMap({
+  chat: ChatRoute,
+  files: FileRoute,
 });
 
 const ChatView = ({ navigation, route }:any) => {
@@ -190,6 +200,25 @@ const ChatView = ({ navigation, route }:any) => {
 
   const onBack = () => navigation.goBack();
 
+  const renderTabBar = (props:any) => (
+    <TabBar
+      {...props}
+      indicatorContainerStyle={{ borderBottomColor: '#DDDDDD', borderBottomWidth: 1 }}
+      labelStyle={{ color: '#94A3B8' }}
+      indicatorStyle={{ backgroundColor: outline.info, height: 3 }}
+      style={{ backgroundColor: 'white' }}
+      renderLabel={({ route, focused, color }) => (
+        <Text
+          color={focused ? text.info : color}
+          size={14}
+          style={{ fontFamily: focused ? Regular500 : Regular }}
+        >
+          {route.title}
+        </Text>
+      )}
+    />
+  );
+
   const onJoin = (item:IMeetings) => {
     dispatch(setSelectedChannel(item.room));
     dispatch(setMeeting(item));
@@ -237,16 +266,6 @@ const ChatView = ({ navigation, route }:any) => {
   const onInitiateCall = (isVideoEnable = false) => {
     setIsVideoEnable(isVideoEnable);
     modalRef.current?.open();
-    // navigation.navigate(
-    //   'InitiateVideoCall',
-    //   {
-    //     participants,
-    //     isVideoEnable,
-    //     isVoiceCall: !isVideoEnable,
-    //     isChannelExist: true,
-    //     channelId,
-    //   }
-    // );
   }
     
 
@@ -338,9 +357,14 @@ const ChatView = ({ navigation, route }:any) => {
         }
       </View>
       <View style={{ flex: 1 }}>
-        {
-          rendered && <ChatList />
-        }
+        <TabView
+          lazy
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{ width: layout.width }}
+          renderTabBar={renderTabBar}
+        />
       </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}

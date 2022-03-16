@@ -8,6 +8,7 @@ import { primaryColor, bubble, text, outline } from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { Regular500 } from '@styles/font';
 
 const styles = StyleSheet.create({
   container: {
@@ -37,7 +38,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   seenContainer: {
-    paddingTop: 5,
+    paddingTop: 3,
+    paddingBottom: 10,
     flexDirection: 'row',
   },
   seenTimeContainer: {
@@ -60,7 +62,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 5,
+    marginLeft: 2,
     paddingLeft: 0.5,
     paddingBottom: Platform.OS === 'ios' ? 0 : 1
   }
@@ -107,14 +109,6 @@ const ChatBubble:FC<Props> = ({
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const getSeen = () => {
-    return seenByOthers.map((seen:any, index:number) => {
-      if (index === 0) {
-        return seen.firstName;
-      }
-      return `, ${seen.firstName}`;
-    });
-  }
 
   return (
     <>
@@ -247,7 +241,7 @@ const ChatBubble:FC<Props> = ({
               {
                 maxWidth,
                 alignSelf: isSender ? 'flex-end' : 'flex-start',
-                paddingLeft: isSender ? 0 : 20,
+                paddingLeft: isSender ? 0 : 30,
               }
             ]}
           >
@@ -260,8 +254,8 @@ const ChatBubble:FC<Props> = ({
                 >
                   <Text
                     color={text.default}
-                    weight={'600'}
                     size={10}
+                    style={{ fontFamily: Regular500 }}
                   >
                     {'Seen by '}
                   </Text>

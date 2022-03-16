@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 5,
+    marginLeft: 2,
     paddingLeft: 0.5,
     paddingBottom: Platform.OS === 'ios' ? 0 : 1
   }
@@ -99,14 +99,6 @@ const ChatBubble:FC<Props> = ({
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const getSeen = () => {
-    return seenByOthers.map((seen:any, index:number) => {
-      if (index === 0) {
-        return seen.firstName;
-      }
-      return `, ${seen.firstName}`;
-    });
-  }
 
   return (
     <>
@@ -211,7 +203,7 @@ const ChatBubble:FC<Props> = ({
       {
         ((showDetails || showSeen) && seenByEveryone) && !edited && (
           <View
-            style={[{ flexDirection: 'row', paddingTop: 5 }, isSender && styles.flipX]}
+            style={[{ flexDirection: 'row', paddingTop: 3, paddingBottom: 10 }, isSender && styles.flipX]}
           >
             {
               seenByOthers.map(seen => (
