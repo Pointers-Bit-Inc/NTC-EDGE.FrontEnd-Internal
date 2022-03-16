@@ -623,12 +623,12 @@ const ChatList = ({ navigation }:any) => {
 
                   {rendered && <List/>}
                   {_id && <View style={styles.keyboardAvoiding}>
-                      <View style={{ marginTop: RFValue(-18) }}>
+                      <View style={{ marginTop: fontValue(-18) }}>
                           <TouchableOpacity  disabled={true}>
                               <View style={styles.plus}>
                                   <PlusIcon
                                       color="white"
-                                      size={RFValue(12)}
+                                      size={fontValue(12)}
                                   />
                               </View>
                           </TouchableOpacity>
@@ -667,8 +667,8 @@ const ChatList = ({ navigation }:any) => {
                                       <View style={{ marginLeft: 10 }}>
                                           <NewMessageIcon
                                               color={inputText ? button.info : '#D1D1D6'}
-                                              height={RFValue(30)}
-                                              width={RFValue(30)}
+                                              height={fontValue(30)}
+                                              width={fontValue(30)}
                                           />
                                       </View>
                                   )

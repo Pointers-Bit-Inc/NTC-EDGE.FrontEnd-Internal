@@ -1,11 +1,12 @@
 import React, { FC } from 'react'
 import Svg, { SvgProps, Path } from "react-native-svg";
 import { RFValue } from 'react-native-responsive-fontsize';
+import {fontValue} from "@pages/activities/fontValue";
 
 const NewMessageIcon: FC = (props: SvgProps) => (
   <Svg
-    width={RFValue(23)}
-    height={RFValue(23)}
+    width={fontValue(23)}
+    height={fontValue(23)}
     viewBox="0 0 30 30"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
