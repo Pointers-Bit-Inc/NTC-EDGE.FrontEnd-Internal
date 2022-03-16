@@ -219,7 +219,7 @@ export const styles = StyleSheet.create({
         alignSelf: "center"
     },
     group6: {
-        height: 70,
+        height: 90,
 
         flexDirection: "row",
 
