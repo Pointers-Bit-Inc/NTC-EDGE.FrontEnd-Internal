@@ -6,7 +6,7 @@ import {
     StyleSheet ,
     Text ,
     TouchableOpacity ,
-    TouchableWithoutFeedback ,
+    useWindowDimensions ,
     View
 } from "react-native";
 import {primaryColor} from "@styles/color";
@@ -45,11 +45,12 @@ const { ModalTab } = Platform.select({
     native : () => require('@pages/activities/modalTab/modalTab') ,
     default : () => require("@pages/activities/modalTab/modalTab.web")
 })();
-const NativeView = isMobile ? Modal : View;
+
 
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
-
+    const dimensions = useWindowDimensions();
+    const NativeView = isMobile || dimensions?.width <= 768  ? Modal : View;
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [change , setChange] = useState<boolean>(false);
     const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
@@ -169,16 +170,18 @@ function ActivityModal(props: any) {
 
     const statusMemo = useMemo(() => {
         setStatus(status);
-        setAssignId(assignId || (props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel));
+        setAssignId(assignId || (
+            props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel));
         return status ? (
             cashier ? PaymentStatusText(status) : StatusText(status)) : (
                    cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
-    } , [assignId , status , (props?.details?.assignedPersonnel?._id ||props?.details?.assignedPersonnel ), props.details.paymentStatus , props.details._id , props.details.status]);
+    } , [assignId , status , (
+        props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel) , props.details.paymentStatus , props.details._id , props.details.status]);
     const approveButton = statusMemo === APPROVED || statusMemo === VERIFIED;
     const declineButton = cashier ? (
         statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED;
 
-    console.log(assignId, "assign id ")
+    console.log(assignId , "assign id ")
     const allButton = (
                           cashier) ? (
                           !!props?.details?.paymentMethod ? (
@@ -192,9 +195,9 @@ function ActivityModal(props: any) {
     const [title , setTitle] = useState("Approve Application");
     const [showClose , setShowClose] = useState(false);
     const [activityModalScreenComponent , onActivityModalScreenComponent] = useComponentLayout();
-     useEffect(()=>{
-         dispatch(setRightLayoutComponent(activityModalScreenComponent))
-     }, [activityModalScreenComponent])
+    useEffect(() => {
+        dispatch(setRightLayoutComponent(activityModalScreenComponent))
+    } , [activityModalScreenComponent])
     return (
         <NativeView
             onLayout={ onActivityModalScreenComponent }
@@ -209,19 +212,18 @@ function ActivityModal(props: any) {
                 setChange(false)
             } }>
 
-                <View style={ isMobile && (approveVisible || visible || endorseVisible || showAlert) ? {
+            <View style={ isMobile && (
+                approveVisible || visible || endorseVisible || showAlert) ? {
+                position : "absolute" ,
+                zIndex : 2 ,
+                top : 0 ,
+                left : 0 ,
+                width : "100%" ,
+                height : "100%" ,
+                backgroundColor : "rgba(0, 0, 0, 0.5)" ,
+            } : { position : "absolute" , } }>
 
-                    position : "absolute" ,
-                    zIndex : 2 ,
-                    top : 0 ,
-                    left : 0 ,
-                    width : "100%" ,
-                    height : "100%" ,
-                    backgroundColor : "rgba(0, 0, 0, 0.5)" ,
-                } : { position : "absolute" , } }>
-
-                </View>
-
+            </View>
 
 
             <CustomAlert
@@ -282,23 +284,23 @@ function ActivityModal(props: any) {
                     <View></View>
                 </View> }
 
-                <ModalTab dismissed={()=>{
+                <ModalTab dismissed={ () => {
                     props.onDismissed(change);
-                }}  details={ props.details } status={ status }/>
+                } }  details={ props.details } status={ status }/>
                 {
                     <View style={ {
-                        paddingHorizontal: !isMobile && 64,
+                        paddingHorizontal : !isMobile && 64 ,
                         borderTopColor : 'rgba(0, 0, 0, 0.1)' ,
                         borderTopWidth : 1 , backgroundColor : "white"
                     } }>
                         <View style={ !(
-                            isMobile) && {  width : "60%" , alignSelf : "flex-end" } }>
+                            isMobile) && { width :dimensions?.width <= 768 ? "100%" : "60%" , alignSelf : "flex-end" } }>
                             <View style={ styles.footer }>
                                 { getRole(user , [DIRECTOR , EVALUATOR , CASHIER , ACCOUNTANT]) &&
                                 <View style={ styles.groupButton }>
 
                                     <ApprovedButton
-                                        user={user}
+                                        user={ user }
                                         currentLoading={ currentLoading }
                                         allButton={ allButton }
                                         onPress={ () => {
@@ -416,7 +418,7 @@ function ActivityModal(props: any) {
                 assignedPersonnel={ props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel }
                 onModalDismissed={ () => {
                     setRemarks(prevRemarks);
-                    setAssignId(props?.details?.assignedPersonnel?._id ||props?.details?.assignedPersonnel)
+                    setAssignId(props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel)
                 } }
                 remarks={ (event: any) => {
                     setPrevRemarks(remarks);

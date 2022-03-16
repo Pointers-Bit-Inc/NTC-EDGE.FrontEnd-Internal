@@ -47,12 +47,13 @@ import {useActivities} from "../../../hooks/useActivities";
 
 const { width } = Dimensions.get('window');
 
-const Filter = isMobile ? FilterIcon : FilterPressIcon;
+
 
 
 export default function ActivitiesPage(props: any) {
 
-
+    const dimensions = useWindowDimensions();
+    const Filter = isMobile || dimensions?.width <= 768 ? FilterIcon : FilterPressIcon;
     const {
         total ,
         user ,
@@ -143,7 +144,7 @@ export default function ActivitiesPage(props: any) {
             return dispatch(removeActiveMeeting(item._id));
         }
     };
-    const dimensions = useWindowDimensions();
+
 
 
     return (

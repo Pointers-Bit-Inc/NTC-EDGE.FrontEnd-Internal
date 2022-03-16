@@ -137,7 +137,6 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                     top : this.props?.rightLayoutComponent?.top
                 }] }>
                     <OnBackdropPress styles={ {
-
                     } } onPressOut={ this._hideImageModal }/>
                     <OnBackdropPress styles={ {
                         width : this.props?.rightLayoutComponent?.width || undefined ,
