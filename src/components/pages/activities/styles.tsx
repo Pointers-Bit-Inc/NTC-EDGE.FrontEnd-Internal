@@ -87,6 +87,7 @@ export const styles = StyleSheet.create({
                 paddingVertical: 10
             },
             default: {
+
                 height: undefined,
                 paddingHorizontal: 30,
                 paddingBottom: 21,

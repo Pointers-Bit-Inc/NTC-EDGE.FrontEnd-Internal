@@ -153,6 +153,7 @@ export default function ActivitiesPage(props: any) {
 
             <View onLayout={ onActivityScreenComponent } style={ { backgroundColor: "#F8F8F8", flex : 1 , flexDirection : "row" } }>
                 <View onLayout={ onActivityLayoutComponent } style={ [styles.container , {
+
                     flex : (
                                isMobile  || dimensions?.width <800) ? 1 : 0.4 ,
                 }] }>
