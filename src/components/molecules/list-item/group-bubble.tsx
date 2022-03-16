@@ -110,6 +110,13 @@ const ChatBubble:FC<Props> = ({
 }) => {
   const [showDetails, setShowDetails] = useState(false);
 
+  const _getSenderName = () => {
+    let result = '';
+    if (sender.title) result += sender.title + ' ';
+    result += sender.firstName;
+    return result;
+  }
+
   return (
     <>
       {
@@ -159,7 +166,7 @@ const ChatBubble:FC<Props> = ({
                   size={10}
                   color={text.default}
                 >
-                  {sender.firstName}
+                  {_getSenderName()}
                 </Text>
               ) : null
             }

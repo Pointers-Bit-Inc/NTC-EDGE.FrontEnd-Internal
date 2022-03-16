@@ -16,7 +16,7 @@ import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
 import { MeetingNotif } from '@components/molecules/list-item';
 import useSignalR from 'src/hooks/useSignalr';
 import ChatList from '@screens/chat/chat-list';
-import FileList from '@components/organisms/chat/files';
+import FileList from '@screens/chat/file-list';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import {
   ArrowLeftIcon,
@@ -366,64 +366,68 @@ const ChatView = ({ navigation, route }:any) => {
           renderTabBar={renderTabBar}
         />
       </View>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <View style={styles.keyboardAvoiding}>
-          <View style={{ marginTop: RFValue(-18) }}>
-            <TouchableOpacity  disabled={true}>
-              <View style={styles.plus}>
-                <PlusIcon
-                  color="white"
-                  size={RFValue(12)}
+      {
+        index === 0 ? (
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
+            <View style={styles.keyboardAvoiding}>
+              <View style={{ marginTop: RFValue(-18) }}>
+                <TouchableOpacity  disabled={true}>
+                  <View style={styles.plus}>
+                    <PlusIcon
+                      color="white"
+                      size={RFValue(12)}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View style={{ flex: 1, paddingHorizontal: 5 }}>
+                <InputField
+                  ref={inputRef}
+                  placeholder={'Type a message'}
+                  containerStyle={[styles.containerStyle, { borderColor: isFocused ? '#C1CADC' : 'white' }]}
+                  placeholderTextColor={'#C4C4C4'}
+                  inputStyle={[styles.input, { backgroundColor: 'white' }]}
+                  outlineStyle={[styles.outline, { backgroundColor: 'white' }]}
+                  value={inputText}
+                  onChangeText={setInputText}
+                  onSubmitEditing={() => inputText && onSendMessage()}
+                  returnKeyType={'send'}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  
                 />
               </View>
-            </TouchableOpacity>
-          </View>
-          <View style={{ flex: 1, paddingHorizontal: 5 }}>
-            <InputField
-              ref={inputRef}
-              placeholder={'Type a message'}
-              containerStyle={[styles.containerStyle, { borderColor: isFocused ? '#C1CADC' : 'white' }]}
-              placeholderTextColor={'#C4C4C4'}
-              inputStyle={[styles.input, { backgroundColor: 'white' }]}
-              outlineStyle={[styles.outline, { backgroundColor: 'white' }]}
-              value={inputText}
-              onChangeText={setInputText}
-              onSubmitEditing={() => inputText && onSendMessage()}
-              returnKeyType={'send'}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-              
-            />
-          </View>
-          <View style={{ marginTop: RFValue(-18), flexDirection: 'row' }}>
-            <TouchableOpacity
-              onPress={onSendMessage}
-            >
-              {
-                selectedMessage?._id ? (
-                  <View style={[styles.plus, { marginRight: 0, marginLeft: 10, backgroundColor: button.info }]}>
-                    <CheckIcon
-                      type='check1'
-                      size={14}
-                      color={'white'}
-                    />
-                  </View>
-                ) : (
-                  <View style={{ marginLeft: 10 }}>
-                    <NewMessageIcon
-                      color={inputText ? button.info : '#D1D1D6'}
-                      height={RFValue(30)}
-                      width={RFValue(30)}
-                    />
-                  </View>
-                )
-              }
-            </TouchableOpacity>
-          </View>
-        </View>
-      </KeyboardAvoidingView>
+              <View style={{ marginTop: RFValue(-18), flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={onSendMessage}
+                >
+                  {
+                    selectedMessage?._id ? (
+                      <View style={[styles.plus, { marginRight: 0, marginLeft: 10, backgroundColor: button.info }]}>
+                        <CheckIcon
+                          type='check1'
+                          size={14}
+                          color={'white'}
+                        />
+                      </View>
+                    ) : (
+                      <View style={{ marginLeft: 10 }}>
+                        <NewMessageIcon
+                          color={inputText ? button.info : '#D1D1D6'}
+                          height={RFValue(30)}
+                          width={RFValue(30)}
+                        />
+                      </View>
+                    )
+                  }
+                </TouchableOpacity>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+        ) : null
+      }
       <BottomModal
         ref={modalRef}
         onModalHide={() => modalRef.current?.close()}
