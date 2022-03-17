@@ -3,8 +3,8 @@ import { View, StyleSheet } from 'react-native'
 import lodash from 'lodash';
 import ProfileImage from '@components/atoms/image/profile';
 import { primaryColor } from '@styles/color';
-import { RFValue } from 'react-native-responsive-fontsize';
 import {isMobile} from "@pages/activities/isMobile";
+import {fontValue} from "@pages/activities/fontValue";
 
 const styles = StyleSheet.create({
   image: {
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   border: {
-    borderWidth: isMobile ? RFValue(2) : 2,
+    borderWidth: isMobile ? fontValue(2) : 2,
     borderColor: 'white',
   },
   topPosition: {
@@ -59,7 +59,7 @@ const GroupImage: FC<Props> = ({
 
   if (inline) {
     return (
-      <View style={{ width: RFValue((imageSize * 2) - 10), height: RFValue(imageSize) }}>
+      <View style={{ width: fontValue((imageSize * 2) - 10), height: fontValue(imageSize) }}>
         <View style={styles.topPosition}>
           <ProfileImage
             style={styles.border}
@@ -83,7 +83,7 @@ const GroupImage: FC<Props> = ({
   }
 
   return (
-    <View style={{ width: RFValue(size), height: RFValue(size) }}>
+    <View style={{ width: fontValue(size), height: fontValue(size) }}>
       <View style={styles.topPosition}>
         <ProfileImage
           style={styles.border}

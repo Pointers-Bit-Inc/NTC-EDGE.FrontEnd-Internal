@@ -6,6 +6,7 @@ import NoActivity from "@assets/svg/noActivity";
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular} from "@styles/font";
+import NoConversationIcon from "@assets/svg/noConversations";
 
 export const styles = StyleSheet.create({
    noContent:{
@@ -27,7 +28,7 @@ export default function Loader(refreshing, searchTerm, size) {
                                                                 <Text style={styles.noContent}>No Content "{selectedClone.toString()}"</Text>
                                                             </>
 
-                                                 : <><NoActivity ></NoActivity><Text style={styles.noContent}>No Content</Text></>}
+                                                 : <><NoActivity></NoActivity><Text style={styles.noContent}>No Content</Text></>}
         </View>
     );
 }

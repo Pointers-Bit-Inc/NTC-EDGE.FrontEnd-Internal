@@ -25,7 +25,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: RFValue(10),
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: Platform.OS === 'ios' ? undefined : 1,
+    ...Platform.select({
+      native: {
+        paddingBottom: Platform.OS === 'ios' ? undefined : 1,
+      },
+      default: {
+        paddingBottom:  undefined,
+      }
+    })
   },
   seenContainer: {
     paddingTop: 5,
@@ -54,7 +61,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 2,
     paddingLeft: 0.5,
-    paddingBottom: Platform.OS === 'ios' ? 0 : 1
+    ...Platform.select({
+      native: {
+        paddingBottom: Platform.OS === 'ios' ? undefined : 1,
+      },
+      default: {
+        paddingBottom:  undefined,
+      }
+    })
   }
 })
 

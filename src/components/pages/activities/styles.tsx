@@ -32,11 +32,11 @@ export const styles = StyleSheet.create({
     rect: {
         ...Platform.select({
             native: {
-                paddingTop : 40,
+                paddingTop : 20 ,
                 paddingHorizontal : 30 ,
             },
             default: {
-               paddingTop: 22,
+               paddingTop: 10,
                 paddingHorizontal : 24 ,
             }
         }),

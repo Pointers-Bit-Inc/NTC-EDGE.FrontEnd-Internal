@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import QrCodeScan from "@pages/barcode/qr-code-scanner";
-import {Dimensions, StatusBar, Text} from "react-native";
+import {Dimensions , SafeAreaView , StatusBar , Text} from "react-native";
 
 const Scan = (props: any) => {
     const screenW = Dimensions.get( 'window' ).width;
@@ -19,10 +19,10 @@ const Scan = (props: any) => {
 
     const [scanner, setScanner] = useState(true)
     return <>
-        {scanner && <>
+        {scanner && <SafeAreaView style={{backgroundColor: '#041B6E', flex: 1}}>
 
             <QrCodeScan onBack={()=> props.navigation.goBack()} onScanned={() => props.navigation.navigate("Activities")}/>
-        </>}
+        </SafeAreaView>}
 
     </>
 }
