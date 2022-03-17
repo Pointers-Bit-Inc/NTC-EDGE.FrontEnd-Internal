@@ -130,7 +130,6 @@ const renderScene = SceneMap({
 const ChatView = ({ navigation, route }:any) => {
   const dispatch = useDispatch();
   const {
-    sendMessage,
     editMessage,
     endMeeting,
     leaveMeeting,
@@ -250,7 +249,7 @@ const ChatView = ({ navigation, route }:any) => {
   useEffect(() => {
     if (lodash.size(selectedFile)) {
       dispatch(addPendingMessage({
-        ...selectedFile,
+        attachment: selectedFile,
         channelId,
         messageType: 'file'
       }))

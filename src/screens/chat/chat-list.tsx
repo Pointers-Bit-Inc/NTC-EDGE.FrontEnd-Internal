@@ -111,13 +111,6 @@ const List = () => {
 
     return lodash.concat(pendingMessagesArray, messageArray);
   });
-  const pendingMessages = useSelector((state:RootStateOrAny) => {
-    const { pendingMessages } = state.channel;
-    const messagesList = lodash.keys(pendingMessages).map((m:string) => {
-      return pendingMessages[m];
-    });
-    return lodash.orderBy(messagesList, 'createdAt', 'desc');
-  });
   const { _id, isGroup, lastMessage, otherParticipants } = useSelector(
     (state:RootStateOrAny) => {
       const { selectedChannel } = state.channel;
@@ -140,6 +133,7 @@ const List = () => {
 
   const {
     sendMessage,
+    sendFile,
     getMessages,
     unSendMessage,
     deleteMessage,
@@ -165,14 +159,28 @@ const List = () => {
     })
   }
 
-  const _sendMessage = (data:any, messageId:string) => {
+  const _sendMessage = (data:any, messageId:string, config: any) => {
     sendMessage(data, (err:any, result:IMessages) => {
       if (err) {
-        dispatch(setPendingMessageError(messageId));
+        if (err?.message !== 'canceled') {
+          dispatch(setPendingMessageError(messageId));
+        }
       } else {
         dispatch(removePendingMessage(messageId, result));
       }
-    });
+    }, config);
+  }
+
+  const _sendFile = (channelId:string, messageId:string, data:any, config:any) => {
+    sendFile(channelId, data, (err:any, result:any) => {
+      if (err) {
+        if (err?.message !== 'canceled') {
+          dispatch(setPendingMessageError(messageId));
+        }
+      } else {
+        dispatch(removePendingMessage(messageId, result));
+      }
+    }, config);
   }
 
   useEffect(() => {
@@ -365,6 +373,7 @@ const List = () => {
             onEndReached={() => fetchMoreMessages()}
             onEndReachedThreshold={0.5}
             onSendMessage={_sendMessage}
+            onSendFile={_sendFile}
         />
         <BottomModal
             ref={modalRef}

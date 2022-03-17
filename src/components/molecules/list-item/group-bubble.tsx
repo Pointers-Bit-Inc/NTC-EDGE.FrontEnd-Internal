@@ -1,14 +1,17 @@
 import React, { FC, useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, ScrollView, Platform, Dimensions } from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
-import { CheckIcon, DeleteIcon, WriteIcon } from '@components/atoms/icon';
-import { getChatTimeString } from 'src/utils/formatting'
+import { CheckIcon, DeleteIcon, NewFileIcon, WriteIcon } from '@components/atoms/icon';
+import { getChatTimeString, getFileSize } from 'src/utils/formatting'
 import { primaryColor, bubble, text, outline } from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
 import { Regular500 } from '@styles/font';
 import { fontValue } from '@components/pages/activities/fontValue';
+import IAttachment from 'src/interfaces/IAttachment';
+
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -80,11 +83,22 @@ const styles = StyleSheet.create({
         paddingBottom:  undefined,
       }
     })
-  }
+  },
+  file: {
+    borderColor: '#E5E5E5',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 5,
+    backgroundColor: 'white',
+  },
 })
 
 interface Props {
   message?: string;
+  attachment?: IAttachment;
   sender?: any;
   isSender?: boolean;
   maxWidth?: any;
@@ -105,6 +119,7 @@ interface Props {
 
 const ChatBubble:FC<Props> = ({
   message,
+  attachment,
   sender = {},
   isSender = false,
   maxWidth = '60%',
@@ -217,6 +232,28 @@ const ChatBubble:FC<Props> = ({
                         }
                       </Text>
                     </>
+                  ) : attachment ? (
+                    <View style={styles.file}>
+                      <NewFileIcon
+                        color={'#606A80'}
+                      />
+                      <View style={{ paddingHorizontal: 5, maxWidth: width * 0.25 }}>
+                        <Text
+                          size={12}
+                          color={'#606A80'}
+                        >
+                          {attachment.name}
+                        </Text>
+                        <Text
+                          size={10}
+                          color={'#606A80'}
+                          style={{ top: -2 }}
+                        >
+                          {getFileSize(attachment.size)}
+                        </Text>
+                      </View>
+                      <View style={{ width: 10 }} />
+                    </View>
                   ) : (
                     <Text
                       size={14}

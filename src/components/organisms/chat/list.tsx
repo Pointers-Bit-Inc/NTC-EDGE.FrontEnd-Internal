@@ -41,6 +41,7 @@ interface Props {
   lastMessage?: any;
   showOption?: any;
   onSendMessage?: any;
+  onSendFile?: any;
   [x: string]: any;
 }
 
@@ -54,6 +55,7 @@ const ChatList: FC<Props> = ({
   lastMessage,
   showOption = () => {},
   onSendMessage = () => {},
+  onSendFile = () => {},
   ...otherProps
 }) => {
   const emptyComponent = () => (
@@ -78,9 +80,10 @@ const ChatList: FC<Props> = ({
             messageId={item._id}
             message={item.message}
             messageType={item.messageType}
-            data={item}
+            attachment={item.attachment}
             error={item.error}
             onSendMessage={onSendMessage}
+            onSendFile={onSendFile}
           />
         </View>
       )
@@ -116,6 +119,7 @@ const ChatList: FC<Props> = ({
           isGroup ? (
             <GroupBubble
               message={item.message}
+              attachment={item.attachment}
               isSender={isSender}
               sender={item.sender}
               seenByOthers={seenByOthers}
@@ -135,6 +139,7 @@ const ChatList: FC<Props> = ({
           ) : (
             <ChatBubble
               message={item.message}
+              attachment={item.attachment}
               isSender={isSender}
               sender={item.sender}
               createdAt={item.createdAt}

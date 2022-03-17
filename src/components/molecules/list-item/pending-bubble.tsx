@@ -1,10 +1,11 @@
 import React, { FC, useEffect, useState } from 'react'
 import { View, StyleSheet, TouchableOpacity, Platform, Dimensions } from 'react-native'
 import Text from '@components/atoms/text'
-import { CheckIcon, DeleteIcon, ExclamationIcon, NewFileIcon, WriteIcon } from '@components/atoms/icon'
-import { primaryColor, bubble, text, outline, errorColor } from '@styles/color'
+import { NewFileIcon } from '@components/atoms/icon'
+import { bubble, outline } from '@styles/color'
 import { fontValue } from '@components/pages/activities/fontValue';
 import { getFileSize } from 'src/utils/formatting';
+import * as Progress from 'react-native-progress';
 
 const { width } = Dimensions.get('window');
 
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     borderRadius: fontValue(12),
     width: fontValue(12),
     height: fontValue(12),
-    borderColor: text.info,
+    borderColor: outline.info,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -69,6 +70,11 @@ const styles = StyleSheet.create({
         paddingBottom:  undefined,
       }
     })
+  },
+  progress: {
+    marginLeft: 2,
+    paddingLeft: 0,
+    paddingTop: 0,
   },
   file: {
     borderColor: '#E5E5E5',
@@ -94,6 +100,7 @@ interface Props {
   createdAt?: any;
   onLongPress?: any;
   onSendMessage?: any;
+  onSendFile?: any;
   [x: string]: any;
 }
 
@@ -102,23 +109,46 @@ const PendingBubble:FC<Props> = ({
   messageId,
   messageType = 'text',
   channelId,
-  data = {},
+  attachment = {},
   error = false,
   maxWidth = '60%',
   style,
   createdAt,
   onLongPress,
   onSendMessage = () => {},
+  onSendFile = () => {},
   ...otherProps
 }) => {
+  const [progress, setProgress] = useState(0);
+
   useEffect(() => {
+    const controller = new AbortController();
+    const config = {
+      signal: controller.signal,
+      onUploadProgress ({ loaded, total }:any) {
+        const percentComplete = (loaded / total) * 1;
+        setProgress(percentComplete);
+      }
+    };
+
     if (messageType === 'file') {
-      console.log('DATA DATA', data);
+      var file:any = {
+        name: attachment?.name,
+        type: attachment?.mimeType,
+        uri: attachment?.uri,
+      };
+      var formData = new FormData();
+      formData.append('file', file);
+      onSendFile(channelId, messageId, formData, config);
     } else {
       onSendMessage({
         roomId: channelId,
         message,
-      }, messageId);
+      }, messageId, config);
+    }
+
+    return () => {
+      controller.abort();
     }
   }, [messageId]);
 
@@ -148,14 +178,14 @@ const PendingBubble:FC<Props> = ({
                       size={12}
                       color={'#606A80'}
                     >
-                      {data.name}
+                      {attachment.name}
                     </Text>
                     <Text
                       size={10}
                       color={'#606A80'}
                       style={{ top: -2 }}
                     >
-                      {getFileSize(data.size)}
+                      {getFileSize(attachment.size)}
                     </Text>
                   </View>
                   <View style={{ width: 10 }} />
@@ -171,19 +201,15 @@ const PendingBubble:FC<Props> = ({
             }
           </View>
         </View>
-        <View
-          style={[styles.check, error && { borderColor: errorColor }]}
-        >
-          {
-            error && (
-              <ExclamationIcon
-                name='exclamation'
-                size={8}
-                color={errorColor}
-              />
-            )
-          }
-        </View>
+        <Progress.Circle
+          style={styles.progress}
+          size={fontValue(12)}
+          progress={progress}
+          thickness={1.5}
+          borderWidth={0}
+          color={outline.info}
+          unfilledColor={outline.default}
+        />
       </View>
     </TouchableOpacity>
   )

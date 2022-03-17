@@ -1,3 +1,4 @@
+import IAttachment from "./IAttachment";
 import IParticipants from "./IParticipants";
 
 interface IMessages {
@@ -14,6 +15,7 @@ interface IMessages {
   hasSeen: boolean;
   delivered: boolean;
   message: string;
+  attachment: IAttachment;
   createdAt: Date;
   updatedAt: Date;
 }
