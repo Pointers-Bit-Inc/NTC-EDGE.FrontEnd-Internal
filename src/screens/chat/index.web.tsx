@@ -37,6 +37,7 @@ import {RFValue} from "react-native-responsive-fontsize";
 import useSignalR from "../../hooks/useSignalr";
 import {useComponentLayout} from "../../hooks/useComponentLayout";
 import {setChatLayout} from "../../reducers/layout/actions";
+import {Hoverable} from "react-native-web-hooks";
 
 const { width, height } = Dimensions.get('window');
 
@@ -444,30 +445,35 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                         <Swipeable
                             ref={ref => swipeableRef.current[item._id] = ref}
                             renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, item)}
-                        >
-                            <ChatItem
-                                image={getChannelImage(item)}
-                                imageSize={50}
-                                textSize={18}
-                                name={getChannelName(item)}
-                                user={props.user}
-                                participants={item.otherParticipants}
-                                message={item?.lastMessage}
-                                isGroup={item.isGroup}
-                                seen={item?.lastMessage?.hasSeen}
-                                time={getTimeString(item?.lastMessage?.createdAt)}
-                                onPress={() => {
-                                    if(selectedChannel._id != item._id){
-                                        dispatch(setSelectedChannel(item));
-                                    }
+                        >    <Hoverable>
+                            { isHovered => (
+                            <View style={{backgroundColor: isHovered ?  "#F0F0FF" : "transparent"}}>
+                                <ChatItem
+                                    image={getChannelImage(item)}
+                                    imageSize={50}
+                                    textSize={18}
+                                    name={getChannelName(item)}
+                                    user={props.user}
+                                    participants={item.otherParticipants}
+                                    message={item?.lastMessage}
+                                    isGroup={item.isGroup}
+                                    seen={item?.lastMessage?.hasSeen}
+                                    time={getTimeString(item?.lastMessage?.createdAt)}
+                                    onPress={() => {
+                                        if(selectedChannel._id != item._id){
+                                            dispatch(setSelectedChannel(item));
+                                        }
 
-                                    dispatch(setMeetings([]));
-                                    /*if (selectedMessage && selectedMessage.channelId !== item._id) {
-                                        dispatch(removeSelectedMessage());
-                                    }*/
-                                    //props.navigation.navigate('ViewChat', item)
-                                }}
-                            />
+                                        dispatch(setMeetings([]));
+                                        /*if (selectedMessage && selectedMessage.channelId !== item._id) {
+                                            dispatch(removeSelectedMessage());
+                                        }*/
+                                        //props.navigation.navigate('ViewChat', item)
+                                    }}
+                                />
+                            </View>
+                            ) }
+                        </Hoverable>
                         </Swipeable>
                     )}
                     keyExtractor={(item:any) => item._id}
@@ -618,14 +624,7 @@ const ChatList = ({ navigation }:any) => {
     }, [chatSize])
     return (
         <View style={ { flexDirection : "row" , flex: 1} }>
-            <View style={ { flex : 0.4, shadowColor: "rgba(0,0,0,0.1)",
-                shadowOffset: {
-                    width: 0,
-                    height: 4
-                },
-                elevation: 30,
-                shadowOpacity: 1,
-                shadowRadius: 10, } }>
+            <View style={ { flex : 0.4}}>
                 <Chat
                     user={user}
                     navigation={navigation}
