@@ -142,7 +142,55 @@ export default function ActivitiesPage(props: any) {
             return dispatch(removeActiveMeeting(item._id));
         }
     };
+    const listHeaderComponent = () => <>
+        { !searchVisible && !!pnApplications?.length &&
+        <View style={[styles.pinnedActivityContainer, {  marginBottom: 5,  paddingBottom : 20 , backgroundColor : "#fff" } ]}>
+            { !!pnApplications?.length &&
+            <View style={ [styles.pinnedgroup , { height : undefined }] }>
+                <View style={ [styles.pinnedcontainer , { paddingVertical : 10 }] }>
+                    <Text style={ [styles.pinnedActivity , {  fontFamily : Regular500 , }] }>Pinned
+                        Activity</Text>
+                </View>
+            </View> }
+            { !searchVisible && (
 
+                <ScrollView style={ { maxHeight : 300 } }>
+                    {
+                        pnApplications.map((item: any , index: number) => {
+                            return item?.activity && item?.activity.map((act: any , i: number) => {
+                                return (act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <ActivityItem
+                                    isOpen={ isOpen }
+                                    config={ config }
+                                    key={ i }
+                                    selected={applicationItem?._id == act?._id}
+                                    currentUser={ user }
+                                    role={ user?.role?.key }
+                                    searchQuery={ searchTerm }
+                                    activity={ act }
+                                    isPinned={ true }
+                                    onPressUser={ (event: any) => {
+
+                                        /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
+                                        })*/
+                                        dispatch(setApplicationItem({ ...act , isOpen : `pin${ i }${ index }` }))
+                                        //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
+                                        if (event?.icon == 'more') {
+                                            setMoreModalVisible(true)
+                                        } else {
+                                            setModalVisible(true)
+                                        }
+
+                                    } } index={ `pin${ i }${ index }` }
+                                    swiper={ (index: number , progress: any , dragX: any , onPressUser: any) => renderSwiper(index , progress , dragX , onPressUser , act , unReadReadApplicationFn) }/>
+                            })
+                        })
+                    }
+                </ScrollView>
+
+            )
+            }
+        </View> }
+    </>
 
 
     return (
@@ -254,58 +302,7 @@ export default function ActivitiesPage(props: any) {
                                     lodash.size(meetingList) || 1)) || 0 , flexGrow : 1
                         } }
                         ListEmptyComponent={ () => listEmpty(refreshing , searchTerm , total) }
-                        ListHeaderComponent={ () => (
-                            <>
-                                { !searchVisible && !!pnApplications?.length &&
-                                <View style={[styles.pinnedActivityContainer, {  marginBottom: 5,  paddingBottom : 20 , backgroundColor : "#fff" } ]}>
-                                    { !!pnApplications?.length &&
-                                    <View style={ [styles.pinnedgroup , { height : undefined }] }>
-                                        <View style={ [styles.pinnedcontainer , { paddingVertical : 10 }] }>
-                                            <Text style={ [styles.pinnedActivity , {  fontFamily : Regular500 , }] }>Pinned
-                                                Activity</Text>
-                                        </View>
-                                    </View> }
-                                    { !searchVisible && (
-
-                                        <ScrollView style={ { maxHeight : 300 } }>
-                                            {
-                                                pnApplications.map((item: any , index: number) => {
-                                                    return item?.activity && item?.activity.map((act: any , i: number) => {
-                                                        return (act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <ActivityItem
-                                                            isOpen={ isOpen }
-                                                            config={ config }
-                                                            key={ i }
-                                                            selected={applicationItem?._id == act?._id}
-                                                            currentUser={ user }
-                                                            role={ user?.role?.key }
-                                                            searchQuery={ searchTerm }
-                                                            activity={ act }
-                                                            isPinned={ true }
-                                                            onPressUser={ (event: any) => {
-
-                                                                /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
-                                                                })*/
-                                                                dispatch(setApplicationItem({ ...act , isOpen : `pin${ i }${ index }` }))
-                                                                //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
-                                                                if (event?.icon == 'more') {
-                                                                    setMoreModalVisible(true)
-                                                                } else {
-                                                                    setModalVisible(true)
-                                                                }
-
-                                                            } } index={ `pin${ i }${ index }` }
-                                                            swiper={ (index: number , progress: any , dragX: any , onPressUser: any) => renderSwiper(index , progress , dragX , onPressUser , act , unReadReadApplicationFn) }/>
-                                                    })
-                                                })
-                                            }
-                                        </ScrollView>
-
-                                    )
-                                    }
-                                </View> }
-                            </>
-
-                        ) }
+                        ListHeaderComponent={ listHeaderComponent() }
                         refreshControl={
 
                             <RefreshControl
