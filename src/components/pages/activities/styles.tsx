@@ -17,7 +17,15 @@ export const styles = StyleSheet.create({
 
     },
     container: {
-
+        zIndex: 1,
+        shadowColor: "rgba(0,0,0,0.1)",
+        shadowOffset: {
+            width: 0,
+            height: 4
+        },
+        elevation: 30,
+        shadowOpacity: 1,
+        shadowRadius: 10,
         backgroundColor: "rgba(230, 230, 230,1)"
     },
     horizontal: {
