@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 import { View, Image, StyleSheet } from 'react-native'
+import FastImage from 'react-native-fast-image'
 import Text from '../text';
 import { getInitial, getColorFromName } from 'src/utils/formatting';
 import { primaryColor } from '@styles/color';
@@ -48,10 +49,7 @@ const ProfileImage = ({
   if (image) {
     return (
       <View style={isOnline && [styles.onlineBorder, { borderRadius: size * 1.5 }, onlineStyle]}>
-        <Image
-          width={imageSize}
-          height={imageSize}
-          resizeMode={"contain"}
+        <FastImage
           style={[
             styles.image,
             {
@@ -62,8 +60,11 @@ const ProfileImage = ({
             },
             style
           ]}
-          borderRadius={size}
-          source={{ uri: image }}
+          source={{
+            uri: image,
+            priority: FastImage.priority.normal,
+          }}
+          resizeMode={FastImage.resizeMode.contain}
         />
       </View>
     );

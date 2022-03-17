@@ -18,7 +18,7 @@ interface IParticipants {
   isFocused: false;
   profilePicture: IImage,
   isOnline: Boolean;
-  lastOnline: Date;
+  lastOnline?: Date;
 }
 
 export default IParticipants;

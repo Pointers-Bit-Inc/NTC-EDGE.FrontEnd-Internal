@@ -299,7 +299,7 @@ const ChatView = ({ navigation, route }:any) => {
             {getChannelName(route.params)}
           </Text>
           {
-            !route?.params?.isGroup && (
+            !route?.params?.isGroup && !!otherParticipants[0]?.lastOnline && (
               <Text
                 color={'#606A80'}
                 size={10}
