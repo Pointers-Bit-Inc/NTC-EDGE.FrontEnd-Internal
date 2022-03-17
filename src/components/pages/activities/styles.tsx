@@ -16,8 +16,7 @@ export const styles = StyleSheet.create({
         shadowRadius: 10,
 
     },
-    container: {
-        zIndex: 1,
+    shadow: {
         shadowColor: "rgba(0,0,0,0.1)",
         shadowOffset: {
             width: 0,
@@ -26,6 +25,10 @@ export const styles = StyleSheet.create({
         elevation: 30,
         shadowOpacity: 1,
         shadowRadius: 10,
+    },
+    container: {
+        zIndex: 1,
+
         backgroundColor: "rgba(230, 230, 230,1)"
     },
     horizontal: {

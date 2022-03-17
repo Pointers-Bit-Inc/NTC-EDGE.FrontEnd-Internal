@@ -618,7 +618,14 @@ const ChatList = ({ navigation }:any) => {
     }, [chatSize])
     return (
         <View style={ { flexDirection : "row" , flex: 1} }>
-            <View style={ { flex : 0.4,} }>
+            <View style={ { flex : 0.4, shadowColor: "rgba(0,0,0,0.1)",
+                shadowOffset: {
+                    width: 0,
+                    height: 4
+                },
+                elevation: 30,
+                shadowOpacity: 1,
+                shadowRadius: 10, } }>
                 <Chat
                     user={user}
                     navigation={navigation}

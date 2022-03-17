@@ -198,7 +198,7 @@ export default function ActivitiesPage(props: any) {
             <StatusBar barStyle={ 'light-content' }/>
 
             <View style={ { backgroundColor: "#F8F8F8", flex : 1 , flexDirection : "row" } }>
-                <View onLayout={ onActivityLayoutComponent } style={ [styles.container , {
+                <View onLayout={ onActivityLayoutComponent } style={ [styles.container, styles.shadow , {
 
                     flex : (
                                isMobile  || dimensions?.width <800) ? 1 : 0.4 ,
