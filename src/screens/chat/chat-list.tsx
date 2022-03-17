@@ -9,7 +9,10 @@ import { NewEditIcon } from '@components/atoms/icon';
 import {
   setMessages,
   addToMessages,
-  setSelectedMessage
+  setSelectedMessage,
+  setPendingMessageError,
+  removePendingMessage,
+  addMessages
 } from 'src/reducers/channel/actions';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import Text from '@atoms/text';
@@ -82,13 +85,16 @@ const List = () => {
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const messages = useSelector((state:RootStateOrAny) => {
-    const { normalizedMessages } = state.channel;
+    const { normalizedMessages, pendingMessages } = state.channel;
     const messagesList = lodash.keys(normalizedMessages).map((m:string) => {
       return normalizedMessages[m];
     });
+    const pendingMessageList = lodash.keys(pendingMessages).map((m:string) => {
+      return pendingMessages[m];
+    });
     let delivered = false;
     let seen:any = [];
-    return lodash.orderBy(messagesList, 'createdAt', 'desc')
+    const messageArray = lodash.orderBy(messagesList, 'createdAt', 'desc')
     .map((msg:IMessages) => {
       if (!delivered && msg.delivered) {
         delivered = true;
@@ -100,6 +106,10 @@ const List = () => {
       
       return msg;
     });
+
+    const pendingMessagesArray = lodash.orderBy(pendingMessageList, 'createdAt', 'desc');
+
+    return lodash.concat(pendingMessagesArray, messageArray);
   });
   const { _id, isGroup, lastMessage, otherParticipants } = useSelector(
     (state:RootStateOrAny) => {
@@ -122,6 +132,8 @@ const List = () => {
   const [rendered, setRendered] = useState(false);
 
   const {
+    sendMessage,
+    sendFile,
     getMessages,
     unSendMessage,
     deleteMessage,
@@ -145,6 +157,30 @@ const List = () => {
       }
       setFetching(false);
     })
+  }
+
+  const _sendMessage = (data:any, messageId:string, config: any) => {
+    sendMessage(data, (err:any, result:IMessages) => {
+      if (err) {
+        if (err?.message !== 'canceled') {
+          dispatch(setPendingMessageError(messageId));
+        }
+      } else {
+        dispatch(removePendingMessage(messageId, result));
+      }
+    }, config);
+  }
+
+  const _sendFile = (channelId:string, messageId:string, data:any, config:any) => {
+    sendFile(channelId, data, (err:any, result:any) => {
+      if (err) {
+        if (err?.message !== 'canceled') {
+          dispatch(setPendingMessageError(messageId));
+        }
+      } else {
+        dispatch(removePendingMessage(messageId, result));
+      }
+    }, config);
   }
 
   useEffect(() => {
@@ -198,27 +234,31 @@ const List = () => {
   const options = () => {
     return (
       <>
-        <TouchableOpacity
-          onPress={() => {
-            dispatch(setSelectedMessage(message));
-            modalRef.current?.close();
-          }}
-        >
-          <View style={styles.button}>
-            <NewEditIcon
-              height={RFValue(22)}
-              width={RFValue(22)}
-              color={text.default}
-            />
-            <Text
-              style={{ marginLeft: 15 }}
-              color={text.default}
-              size={18}
+        {
+          !lodash.size(message?.attachment) && (
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(setSelectedMessage(message));
+                modalRef.current?.close();
+              }}
             >
-              Edit
-            </Text>
-          </View>
-        </TouchableOpacity>
+              <View style={styles.button}>
+                <NewEditIcon
+                  height={RFValue(22)}
+                  width={RFValue(22)}
+                  color={text.default}
+                />
+                <Text
+                  style={{ marginLeft: 15 }}
+                  color={text.default}
+                  size={18}
+                >
+                  Edit
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )
+        }
         <TouchableOpacity
           onPress={() => setShowDeleteOption(true)}
         >
@@ -336,6 +376,8 @@ const List = () => {
             ListFooterComponent={ListFooterComponent}
             onEndReached={() => fetchMoreMessages()}
             onEndReachedThreshold={0.5}
+            onSendMessage={_sendMessage}
+            onSendFile={_sendFile}
         />
         <BottomModal
             ref={modalRef}

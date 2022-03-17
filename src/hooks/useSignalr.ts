@@ -156,8 +156,18 @@ const useSignalr = () => {
     });
   }, []);
 
-  const sendMessage = useCallback((payload, callback = () => {}) => {
-    api.post('/messages', payload)
+  const sendMessage = useCallback((payload, callback = () => {}, config = {}) => {
+    api.post('/messages', payload, config)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
+  const sendFile = useCallback((channelId, payload, callback = () => {}, config = {}) => {
+    api.post(`/messages/${channelId}/upload-file`, payload, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -307,6 +317,7 @@ const useSignalr = () => {
     getChatList,
     getParticipantList,
     sendMessage,
+    sendFile,
     editMessage,
     unSendMessage,
     deleteMessage,

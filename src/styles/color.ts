@@ -20,6 +20,7 @@ const outline = {
   error: '#CA024F',
   warning: '#FFAE42',
   disabled: '#D1D1D1',
+  info: '#2F5BFA',
 }
 
 const text = {

@@ -1,13 +1,17 @@
 import React, { FC, useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, ScrollView, Platform, Dimensions } from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
-import { CheckIcon, DeleteIcon, WriteIcon } from '@components/atoms/icon';
-import { getChatTimeString } from 'src/utils/formatting'
+import { CheckIcon, DeleteIcon, NewFileIcon, WriteIcon } from '@components/atoms/icon';
+import { getChatTimeString, getFileSize } from 'src/utils/formatting'
 import { primaryColor, bubble, text, outline } from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
-import { RFValue } from 'react-native-responsive-fontsize';
+import { Regular500 } from '@styles/font';
+import { fontValue } from '@components/pages/activities/fontValue';
+import IAttachment from 'src/interfaces/IAttachment';
+
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -20,9 +24,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bubble: {
-    borderRadius: RFValue(15),
-    padding: RFValue(5),
-    paddingHorizontal: RFValue(10),
+    borderRadius: fontValue(15),
+    padding: fontValue(5),
+    paddingHorizontal: fontValue(10),
     flexDirection: 'row',
     alignItems: 'center',
     ...Platform.select({
@@ -45,7 +49,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   seenContainer: {
-    paddingTop: 5,
+    paddingTop: 3,
+    paddingBottom: 10,
     flexDirection: 'row',
   },
   seenTimeContainer: {
@@ -61,14 +66,14 @@ const styles = StyleSheet.create({
     ]
   },
   check: {
-    borderRadius: 12,
-    width: 12,
-    height: 12,
+    borderRadius: fontValue(12),
+    width: fontValue(12),
+    height: fontValue(12),
     borderColor: text.info,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 5,
+    marginLeft: 2,
     paddingLeft: 0.5,
     ...Platform.select({
       native: {
@@ -78,11 +83,22 @@ const styles = StyleSheet.create({
         paddingBottom:  undefined,
       }
     })
-  }
+  },
+  file: {
+    borderColor: '#E5E5E5',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 5,
+    backgroundColor: 'white',
+  },
 })
 
 interface Props {
   message?: string;
+  attachment?: IAttachment;
   sender?: any;
   isSender?: boolean;
   maxWidth?: any;
@@ -103,6 +119,7 @@ interface Props {
 
 const ChatBubble:FC<Props> = ({
   message,
+  attachment,
   sender = {},
   isSender = false,
   maxWidth = '60%',
@@ -122,13 +139,12 @@ const ChatBubble:FC<Props> = ({
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const getSeen = () => {
-    return seenByOthers.map((seen:any, index:number) => {
-      if (index === 0) {
-        return seen.firstName;
-      }
-      return `, ${seen.firstName}`;
-    });
+
+  const _getSenderName = () => {
+    let result = '';
+    if (sender.title) result += sender.title + ' ';
+    result += sender.firstName;
+    return result;
   }
 
   return (
@@ -180,7 +196,7 @@ const ChatBubble:FC<Props> = ({
                   size={10}
                   color={text.default}
                 >
-                  {sender.firstName}
+                  {_getSenderName()}
                 </Text>
               ) : null
             }
@@ -200,8 +216,8 @@ const ChatBubble:FC<Props> = ({
                   (deleted || (unSend && isSender)) ? (
                     <>
                       <NewDeleteIcon
-                        height={RFValue(18)}
-                        width={RFValue(18)}
+                        height={fontValue(18)}
+                        width={fontValue(18)}
                         color={'#979797'}
                       />
                       <Text
@@ -216,6 +232,28 @@ const ChatBubble:FC<Props> = ({
                         }
                       </Text>
                     </>
+                  ) : attachment ? (
+                    <View style={styles.file}>
+                      <NewFileIcon
+                        color={'#606A80'}
+                      />
+                      <View style={{ paddingHorizontal: 5, maxWidth: width * 0.25 }}>
+                        <Text
+                          size={12}
+                          color={'#606A80'}
+                        >
+                          {attachment.name}
+                        </Text>
+                        <Text
+                          size={10}
+                          color={'#606A80'}
+                          style={{ top: -2 }}
+                        >
+                          {getFileSize(attachment.size)}
+                        </Text>
+                      </View>
+                      <View style={{ width: 10 }} />
+                    </View>
                   ) : (
                     <Text
                       size={14}
@@ -275,8 +313,8 @@ const ChatBubble:FC<Props> = ({
                 >
                   <Text
                     color={text.default}
-                    weight={'600'}
                     size={10}
+                    style={{ fontFamily: Regular500 }}
                   >
                     {'Seen by '}
                   </Text>

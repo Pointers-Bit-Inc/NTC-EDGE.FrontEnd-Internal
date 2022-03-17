@@ -11,6 +11,7 @@ const InitialState = Record({
   meetingList: [],
   normalizedMeetingList: {},
   searchValue: '',
+  pendingMessages: {},
 });
 
 export default InitialState;
