@@ -111,7 +111,6 @@ export default function basket(state = initialState, action = {}) {
             return state
         }
         case HANDLE_LOAD: {
-
             const isNotPinned = []
             const isPinned = []
             const cashier = [CASHIER].indexOf(action.payload?.user?.role?.key) != -1;

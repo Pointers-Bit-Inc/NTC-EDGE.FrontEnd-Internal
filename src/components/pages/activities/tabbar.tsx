@@ -284,7 +284,7 @@ export default function TabBar() {
     const dimensions = useWindowDimensions();
     return (
             <>
-                {isMobile    ?  <Tab.Navigator   tabBar={(props) => <ActivityTab  {...props} />}>
+                {dimensions.width <= 768    ?  <Tab.Navigator   tabBar={(props) => <ActivityTab  {...props} />}>
                     <Tab.Screen options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesNavigator}/>
                     <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                     <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
