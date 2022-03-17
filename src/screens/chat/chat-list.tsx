@@ -234,27 +234,31 @@ const List = () => {
   const options = () => {
     return (
       <>
-        <TouchableOpacity
-          onPress={() => {
-            dispatch(setSelectedMessage(message));
-            modalRef.current?.close();
-          }}
-        >
-          <View style={styles.button}>
-            <NewEditIcon
-              height={RFValue(22)}
-              width={RFValue(22)}
-              color={text.default}
-            />
-            <Text
-              style={{ marginLeft: 15 }}
-              color={text.default}
-              size={18}
+        {
+          !lodash.size(message?.attachment) && (
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(setSelectedMessage(message));
+                modalRef.current?.close();
+              }}
             >
-              Edit
-            </Text>
-          </View>
-        </TouchableOpacity>
+              <View style={styles.button}>
+                <NewEditIcon
+                  height={RFValue(22)}
+                  width={RFValue(22)}
+                  color={text.default}
+                />
+                <Text
+                  style={{ marginLeft: 15 }}
+                  color={text.default}
+                  size={18}
+                >
+                  Edit
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )
+        }
         <TouchableOpacity
           onPress={() => setShowDeleteOption(true)}
         >
