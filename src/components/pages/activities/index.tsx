@@ -295,6 +295,7 @@ export default function ActivitiesPage(props: any) {
                             }] ,
                             { useNativeDriver : true }
                         ) }
+
                         contentContainerStyle={ {
                             paddingTop : (
                                 !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && containerHeight * (
