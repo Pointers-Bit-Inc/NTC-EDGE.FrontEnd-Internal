@@ -122,12 +122,16 @@ function ActivityModal(props: any) {
                     setCurrentLoading('');
                     if (res.status === 200) {
                         if (res.data) {
-                            console.log("res?.data?.assignedPersonnel" , res?.data?.assignedPersonnel , assignId);
-                            props.onChangeAssignedId(res.data);
+
+                              const data = res.data?.doc || res?.data
+
+
+                            console.log(data?.assignedPersonnel?._id || data?.assignedPersonnel, "assigned personnel")
+                            props.onChangeAssignedId(data);
                             dispatch(updateApplicationStatus({
-                                application : res.data ,
+                                application : data ,
                                 status : status ,
-                                assignedPersonnel : res?.data?.assignedPersonnel?._id || res?.data?.assignedPersonnel ,
+                                assignedPersonnel : data?.assignedPersonnel?._id || data?.assignedPersonnel ,
                                 userType : user?.role?.key
                             }));
 
@@ -181,7 +185,7 @@ function ActivityModal(props: any) {
     const declineButton = cashier ? (
         statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED;
 
-    console.log(assignId , "assign id ")
+
     const allButton = (
                           cashier) ? (
                           !!props?.details?.paymentMethod ? (
@@ -189,7 +193,6 @@ function ActivityModal(props: any) {
                                   declineButton || approveButton || grayedOut)) : true) : (
                           assignId != user?._id ? true : (
                               declineButton || approveButton || grayedOut));
-
     const [alertLoading , setAlertLoading] = useState(false);
     const [approvalIcon , setApprovalIcon] = useState(false);
     const [title , setTitle] = useState("Approve Application");
@@ -347,6 +350,7 @@ function ActivityModal(props: any) {
                     setAssignId(props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel)
                 } }
                 onChangeRemarks={ (_remark: string , _assign ,) => {
+                    
                     setPrevStatus(status);
                     setPrevRemarks(remarks);
                     setPrevAssignId(assignId);

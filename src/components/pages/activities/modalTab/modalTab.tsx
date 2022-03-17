@@ -125,13 +125,3 @@ export const ModalTab = props => {
 
     </ScrollableTabView>
 };
-
-const styles = StyleSheet.create({
-    group5 : {
-        height : 28
-    } ,
-    rect6 : {
-        height : 3 ,
-        marginTop : -5
-    } ,
-});

@@ -91,9 +91,8 @@ export default function basket(state = initialState, action = {}) {
             const isNotPinned = []
             const isPinned = []
             for (let i = 0; i < action.payload?.data?.docs?.length; i++) {
-                       
                 if ((
-                        action.payload?.data.docs[i].assignedPersonnel == action.payload?.user?._id) &&
+                    (action.payload?.data.docs[i]?.assignedPersonnel?._id || action.payload?.data.docs[i]?.assignedPersonnel ) == action.payload?.user?._id) &&
                     !(
                         cashier ?
                         (
@@ -118,7 +117,7 @@ export default function basket(state = initialState, action = {}) {
             const cashier = [CASHIER].indexOf(action.payload?.user?.role?.key) != -1;
             for (let i = 0; i < action.payload?.data.length; i++) {
 
-                if (action.payload?.data[i].assignedPersonnel === action.payload?.user?._id &&
+                if ((action.payload?.data[i]?.assignedPersonnel?._id || action.payload?.data[i]?.assignedPersonnel ) === action.payload?.user?._id &&
                     !(
                         cashier ? (
                                     !action.payload?.data[i]?.paymentMethod?.length
@@ -161,7 +160,7 @@ export default function basket(state = initialState, action = {}) {
                     notPinned[index].paymentStatus = action.payload.status
                 } else if (directorAndEvaluator) {
                     notPinned[index].status = action.payload.status
-                    notPinned[index].assignedPersonnel = action.payload.assignedPersonnel?._id || action.payload.assignedPersonnel
+                    notPinned[index].assignedPersonnel = action.payload.assignedPersonnel
                 }
                 state = state.set("notPinnedApplications" , notPinned)
 
@@ -187,8 +186,7 @@ export default function basket(state = initialState, action = {}) {
                     if (action.payload.status == FORAPPROVAL || action.payload.status == FOREVALUATION || action.payload.status == APPROVED || action.payload.status == DECLINED) {
                         console.log("if directoe and evaluator")
                         _notPinned.status = action.payload.status
-                        _notPinned.assignedPersonnel = action.payload.assignedPersonnel?._id || action.payload.assignedPersonnel
-                        console.log(_notPinned.assignedPersonnel , action.payload.assignedPersonnel)
+                        _notPinned.assignedPersonnel = action.payload.assignedPersonnel
                         state = state.set('pinnedApplications' , pinned.filter(o => o._id !== pinned[pinnedIndex]._id));
                         state = state.set('notPinnedApplications' , [
                             ...notPinned.concat(_notPinned) ,
