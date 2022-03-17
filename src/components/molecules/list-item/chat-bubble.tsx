@@ -7,7 +7,7 @@ import { getChatTimeString } from 'src/utils/formatting'
 import { primaryColor, bubble, text, outline } from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
-import { RFValue } from 'react-native-responsive-fontsize';
+import { fontValue } from '@components/pages/activities/fontValue';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,9 +20,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bubble: {
-    borderRadius: RFValue(15),
-    padding: RFValue(5),
-    paddingHorizontal: RFValue(10),
+    borderRadius: fontValue(15),
+    padding: fontValue(5),
+    paddingHorizontal: fontValue(10),
     flexDirection: 'row',
     alignItems: 'center',
     ...Platform.select({
@@ -52,9 +52,9 @@ const styles = StyleSheet.create({
     ]
   },
   check: {
-    borderRadius: 12,
-    width: 12,
-    height: 12,
+    borderRadius: fontValue(12),
+    width: fontValue(12),
+    height: fontValue(12),
     borderColor: text.info,
     borderWidth: 1,
     alignItems: 'center',
@@ -161,8 +161,8 @@ const ChatBubble:FC<Props> = ({
                 (deleted || (unSend && isSender)) ? (
                   <>
                     <NewDeleteIcon
-                      height={RFValue(18)}
-                      width={RFValue(18)}
+                      height={fontValue(18)}
+                      width={fontValue(18)}
                       color={'#979797'}
                     />
                     <Text

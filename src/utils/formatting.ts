@@ -186,6 +186,25 @@ const getColorFromName = (value:string) => {
   return colorFromLetters[lowerCaseValue] || colors[3];
 }
 
+const getFileSize = (byte = 0) => {
+  if (byte) {
+    const kb = Math.floor(byte / 1024);
+    const mb = Math.floor(kb / 1024);
+    const gb = Math.floor(mb / 1024);
+
+    if (gb > 0) {
+      return `${gb} GB`;
+    } else if (mb > 0) {
+      return `${mb} MB`;
+    } else if (kb > 0) {
+      return `${kb} KB`;
+    } else {
+      return `${byte} B`;
+    }
+  }
+  return byte;
+}
+
 export {
   getInitial,
   getChannelName,
@@ -200,4 +219,5 @@ export {
   getTimerString,
   getDayMonthString,
   getColorFromName,
+  getFileSize,
 }

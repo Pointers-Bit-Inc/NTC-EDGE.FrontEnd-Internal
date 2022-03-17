@@ -358,7 +358,7 @@ PODS:
     - ZXingObjC/PDF417
   - EXConstants (12.1.3):
     - ExpoModulesCore
-  - EXDocumentPicker (10.0.3):
+  - EXDocumentPicker (10.1.3):
     - ExpoModulesCore
   - EXErrorRecovery (3.0.5):
     - ExpoModulesCore
@@ -500,15 +500,6 @@ PODS:
     - gRPC-Core/Interface (= 1.28.2)
   - gRPC-Core/Interface (1.28.2)
   - leveldb-library (1.22.1)
-  - libwebp (1.2.1):
-    - libwebp/demux (= 1.2.1)
-    - libwebp/mux (= 1.2.1)
-    - libwebp/webp (= 1.2.1)
-  - libwebp/demux (1.2.1):
-    - libwebp/webp
-  - libwebp/mux (1.2.1):
-    - libwebp/demux
-  - libwebp/webp (1.2.1)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -799,10 +790,6 @@ PODS:
     - React-Core
   - RNExitApp (1.1.0):
     - React
-  - RNFastImage (8.5.11):
-    - React-Core
-    - SDWebImage (~> 5.11.1)
-    - SDWebImageWebPCoder (~> 0.8.4)
   - RNFBApp (13.1.1):
     - Firebase/CoreOnly (= 8.10.0)
     - React-Core
@@ -848,12 +835,6 @@ PODS:
     - React-RCTImage
   - RNSVG (12.1.1):
     - React
-  - SDWebImage (5.11.1):
-    - SDWebImage/Core (= 5.11.1)
-  - SDWebImage/Core (5.11.1)
-  - SDWebImageWebPCoder (0.8.4):
-    - libwebp (~> 1.0)
-    - SDWebImage/Core (~> 5.10)
   - Yoga (1.14.0)
   - ZXingObjC/Core (3.6.5)
   - ZXingObjC/OneD (3.6.5):
@@ -926,7 +907,6 @@ DEPENDENCIES:
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNExitApp (from `../node_modules/react-native-exit-app`)
-  - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
@@ -951,11 +931,8 @@ SPEC REPOS:
     - "gRPC-C++"
     - gRPC-Core
     - leveldb-library
-    - libwebp
     - nanopb
     - PromisesObjC
-    - SDWebImage
-    - SDWebImageWebPCoder
     - ZXingObjC
 
 EXTERNAL SOURCES:
@@ -1083,8 +1060,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-device-info"
   RNExitApp:
     :path: "../node_modules/react-native-exit-app"
-  RNFastImage:
-    :path: "../node_modules/react-native-fast-image"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBFirestore:
@@ -1112,7 +1087,7 @@ SPEC CHECKSUMS:
   EXAV: 8adf9a1c0161144d77e96149a1e5a5f9358be290
   EXBarCodeScanner: cc450529b9c5e02dd9e2498cc0dddf153f120dfe
   EXConstants: 6d585d93723b18d7a8c283591a335609e3bc153e
-  EXDocumentPicker: 9329610c4fb22531093cecb0b617222c71bda77b
+  EXDocumentPicker: d3eb6a207e1f370e496bea959b3ac145126560f5
   EXErrorRecovery: b0d7582714a2cc896e94a2308a356f94dbf14ef7
   EXFileSystem: 99aac7962c11c680681819dd9cbca24e20e5b1e7
   EXFont: 2597c10ac85a69d348d44d7873eccf5a7576ef5e
@@ -1145,7 +1120,6 @@ SPEC CHECKSUMS:
   "gRPC-C++": 13d8ccef97d5c3c441b7e3c529ef28ebee86fad2
   gRPC-Core: 4afa11bfbedf7cdecd04de535a9e046893404ed5
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
-  libwebp: 98a37e597e40bfdb4c911fc98f2c53d0b12d05fc
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   Permission-Camera: 597646618d1edcc055a3f660844c2ee6de8e0596
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
@@ -1181,7 +1155,6 @@ SPEC CHECKSUMS:
   RNDateTimePicker: 7658208086d86d09e1627b5c34ba0cf237c60140
   RNDeviceInfo: 4944cf8787b9c5bffaf301fda68cc1a2ec003341
   RNExitApp: c4e052df2568b43bec8a37c7cd61194d4cfee2c3
-  RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
   RNFBApp: 6e20f07b316346d96737191f377777f61f51a8d2
   RNFBFirestore: 1629b5e89bdab92493fdc0e88753a9089ef13940
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
@@ -1189,8 +1162,6 @@ SPEC CHECKSUMS:
   RNReanimated: 024eff8202342abf4b24e11575a16afc441dabfe
   RNScreens: 6e1ea5787989f92b0671049b808aef64fa1ef98c
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
-  SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
-  SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815
   Yoga: e6ecf3fa25af9d4c87e94ad7d5d292eedef49749
   ZXingObjC: fdbb269f25dd2032da343e06f10224d62f537bdb
 

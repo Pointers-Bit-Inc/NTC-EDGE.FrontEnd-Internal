@@ -9,7 +9,10 @@ import { NewEditIcon } from '@components/atoms/icon';
 import {
   setMessages,
   addToMessages,
-  setSelectedMessage
+  setSelectedMessage,
+  setPendingMessageError,
+  removePendingMessage,
+  addMessages
 } from 'src/reducers/channel/actions';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import Text from '@atoms/text';
@@ -82,13 +85,16 @@ const List = () => {
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const messages = useSelector((state:RootStateOrAny) => {
-    const { normalizedMessages } = state.channel;
+    const { normalizedMessages, pendingMessages } = state.channel;
     const messagesList = lodash.keys(normalizedMessages).map((m:string) => {
       return normalizedMessages[m];
     });
+    const pendingMessageList = lodash.keys(pendingMessages).map((m:string) => {
+      return pendingMessages[m];
+    });
     let delivered = false;
     let seen:any = [];
-    return lodash.orderBy(messagesList, 'createdAt', 'desc')
+    const messageArray = lodash.orderBy(messagesList, 'createdAt', 'desc')
     .map((msg:IMessages) => {
       if (!delivered && msg.delivered) {
         delivered = true;
@@ -100,6 +106,17 @@ const List = () => {
       
       return msg;
     });
+
+    const pendingMessagesArray = lodash.orderBy(pendingMessageList, 'createdAt', 'desc');
+
+    return lodash.concat(pendingMessagesArray, messageArray);
+  });
+  const pendingMessages = useSelector((state:RootStateOrAny) => {
+    const { pendingMessages } = state.channel;
+    const messagesList = lodash.keys(pendingMessages).map((m:string) => {
+      return pendingMessages[m];
+    });
+    return lodash.orderBy(messagesList, 'createdAt', 'desc');
   });
   const { _id, isGroup, lastMessage, otherParticipants } = useSelector(
     (state:RootStateOrAny) => {
@@ -122,6 +139,7 @@ const List = () => {
   const [rendered, setRendered] = useState(false);
 
   const {
+    sendMessage,
     getMessages,
     unSendMessage,
     deleteMessage,
@@ -145,6 +163,16 @@ const List = () => {
       }
       setFetching(false);
     })
+  }
+
+  const _sendMessage = (data:any, messageId:string) => {
+    sendMessage(data, (err:any, result:IMessages) => {
+      if (err) {
+        dispatch(setPendingMessageError(messageId));
+      } else {
+        dispatch(removePendingMessage(messageId, result));
+      }
+    });
   }
 
   useEffect(() => {
@@ -336,6 +364,7 @@ const List = () => {
             ListFooterComponent={ListFooterComponent}
             onEndReached={() => fetchMoreMessages()}
             onEndReachedThreshold={0.5}
+            onSendMessage={_sendMessage}
         />
         <BottomModal
             ref={modalRef}

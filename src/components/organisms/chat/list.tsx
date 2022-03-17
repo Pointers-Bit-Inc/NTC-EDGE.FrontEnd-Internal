@@ -3,7 +3,7 @@ import { View, FlatList, Dimensions, StyleSheet, ActivityIndicator } from 'react
 import lodash from 'lodash';
 import Text from '@components/atoms/text';
 import { chatSameDate } from 'src/utils/formatting'; 
-import { ChatBubble, GroupBubble } from '@components/molecules/list-item';
+import { ChatBubble, GroupBubble, PendingBubble } from '@components/molecules/list-item';
 import { text } from 'src/styles/color';
 import { RFValue } from 'react-native-responsive-fontsize';
 
@@ -40,6 +40,7 @@ interface Props {
   participants?: any;
   lastMessage?: any;
   showOption?: any;
+  onSendMessage?: any;
   [x: string]: any;
 }
 
@@ -52,6 +53,7 @@ const ChatList: FC<Props> = ({
   participants = [],
   lastMessage,
   showOption = () => {},
+  onSendMessage = () => {},
   ...otherProps
 }) => {
   const emptyComponent = () => (
@@ -63,9 +65,26 @@ const ChatList: FC<Props> = ({
         {error? 'Unable to fetch messages' : 'No messages yet'}
       </Text>
     </View>
-  )
+  );
+
+  const listHeaderComponent = () => <View style={{ height: 15 }} />;
 
   const renderItem = ({ item, index }:any) => {
+    if (!lodash.size(item.sender)) {
+      return (
+        <View style={[styles.bubbleContainer, { alignItems: 'flex-end' }]}>
+          <PendingBubble
+            channelId={item.channelId}
+            messageId={item._id}
+            message={item.message}
+            messageType={item.messageType}
+            data={item}
+            error={item.error}
+            onSendMessage={onSendMessage}
+          />
+        </View>
+      )
+    }
     if (!item.isGroup && !item.message && item.system) {
       return;
     }
@@ -147,19 +166,19 @@ const ChatList: FC<Props> = ({
     )
   }
   return (
-      <>
-        <FlatList
-            showsVerticalScrollIndicator={false}
-            inverted={true}
-            data={error ? [] : messages}
-            renderItem={renderItem}
-            keyExtractor={(item:any) => item._id}
-            ListEmptyComponent={emptyComponent}
-            ListFooterComponent={() => <View style={{ height: 15 }} />}
-            ListHeaderComponent={() => <View style={{ height: 15 }} />}
-            {...otherProps}
-        />
-      </>
+    <>
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        inverted={true}
+        data={error ? [] : messages}
+        renderItem={renderItem}
+        keyExtractor={(item:any) => item._id}
+        ListEmptyComponent={emptyComponent}
+        ListFooterComponent={() => <View style={{ height: 15 }} />}
+        ListHeaderComponent={listHeaderComponent}
+        {...otherProps}
+      />
+    </>
 
   )
 }

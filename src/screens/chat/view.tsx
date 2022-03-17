@@ -32,7 +32,9 @@ import { InputField } from '@components/molecules/form-fields';
 import { button, header, outline, text } from '@styles/color';
 import { getChannelName, getTimeDifference } from 'src/utils/formatting';
 import {
+  addPendingMessage,
   removeSelectedMessage,
+  resetPendingMessages,
   setSelectedChannel,
 } from 'src/reducers/channel/actions';
 import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
@@ -40,6 +42,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import CreateMeeting from '@components/pages/chat/meeting';
 import IMeetings from 'src/interfaces/IMeetings';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import useDocumentPicker from 'src/hooks/useDocumentPicker';
 import { Regular, Regular500 } from '@styles/font';
 const { width, height } = Dimensions.get('window');
 
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
     fontSize: RFValue(16),
   },
   plus: {
-    backgroundColor: '#D1D1D6',
+    backgroundColor: button.info,
     borderRadius: RFValue(24),
     width: RFValue(24),
     height: RFValue(24),
@@ -132,6 +135,10 @@ const ChatView = ({ navigation, route }:any) => {
     endMeeting,
     leaveMeeting,
   } = useSignalR();
+  const {
+    selectedFile,
+    pickDocument,
+  } = useDocumentPicker();
   const modalRef = useRef<BottomModalRef>(null);
   const inputRef:any = useRef(null);
   const layout = useWindowDimensions();
@@ -162,14 +169,11 @@ const ChatView = ({ navigation, route }:any) => {
   const channelId = _id;
 
   const _sendMessage = (channelId:string, inputText:string) => {
-    sendMessage({
-      roomId: channelId,
+    dispatch(addPendingMessage({
+      channelId: channelId,
       message: inputText,
-    }, (err:any, result:any) => {
-      if (err) {
-        console.log('ERR', err);
-      }
-    })
+      messageType: 'text',
+    }));
   }
 
   const _editMessage = (messageId:string, message:string) => {
@@ -241,7 +245,17 @@ const ChatView = ({ navigation, route }:any) => {
     } else {
       return dispatch(removeActiveMeeting(item._id));
     }
-}
+  }
+
+  useEffect(() => {
+    if (lodash.size(selectedFile)) {
+      dispatch(addPendingMessage({
+        ...selectedFile,
+        channelId,
+        messageType: 'file'
+      }))
+    }
+  }, [selectedFile]);
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
@@ -249,6 +263,7 @@ const ChatView = ({ navigation, route }:any) => {
     })
     return () => {
       dispatch(setSelectedChannel({}));
+      dispatch(resetPendingMessages());
     }
   }, []);
 
@@ -373,7 +388,7 @@ const ChatView = ({ navigation, route }:any) => {
           >
             <View style={styles.keyboardAvoiding}>
               <View style={{ marginTop: RFValue(-18) }}>
-                <TouchableOpacity  disabled={true}>
+                <TouchableOpacity onPress={pickDocument}>
                   <View style={styles.plus}>
                     <PlusIcon
                       color="white"
