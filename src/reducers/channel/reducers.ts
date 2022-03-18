@@ -22,6 +22,11 @@ const {
   SET_MEETINGS_CHANNEL,
 
   RESET_CHANNEL,
+
+  RESET_PENDING_MESSAGES,
+  ADD_PENDING_MESSAGE,
+  SET_PENDING_MESSAGE_ERROR,
+  REMOVE_PENDING_MESSAGE,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -139,6 +144,21 @@ export default function basket(state = initialState, action:any) {
         .setIn(['selectedMessage'], {})
         .setIn(['meetingList'], [])
         .setIn(['searchValue'], '');
+    }
+    case ADD_PENDING_MESSAGE: {
+      return state.setIn(['pendingMessages'], {...state.pendingMessages, ...action.payload});
+    }
+    case SET_PENDING_MESSAGE_ERROR: {
+      return state.setIn(['pendingMessages', action.payload, 'error'], true);
+    }
+    case REMOVE_PENDING_MESSAGE: {
+      return state.setIn(['normalizedMessages', action.message._id], action.message)
+      .setIn(['selectedChannel', 'lastMessage'], action.message)
+      .setIn(['selectedChannel', 'updatedAt'], action.message.updatedAt)
+      .removeIn(['pendingMessages', action.messageId]);
+    }
+    case RESET_PENDING_MESSAGES: {
+      return state.setIn(['pendingMessages'], {});
     }
     default:
       return state;

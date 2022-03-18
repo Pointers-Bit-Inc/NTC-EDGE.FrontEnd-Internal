@@ -1,3 +1,6 @@
+import { pendingMessageSchema } from 'src/reducers/schema';
+import { normalize, schema } from 'normalizr';
+import uuid from 'react-native-uuid';
 import IMeetings from "src/interfaces/IMeetings";
 import IMessages from "src/interfaces/IMessages";
 import IRooms from "src/interfaces/IRooms";
@@ -23,6 +26,11 @@ const {
   SET_MEETINGS_CHANNEL,
 
   RESET_CHANNEL,
+
+  RESET_PENDING_MESSAGES,
+  ADD_PENDING_MESSAGE,
+  REMOVE_PENDING_MESSAGE,
+  SET_PENDING_MESSAGE_ERROR,
 } = require('./types').default;
 
 export function setSelectedChannel(payload:IRooms | {}, isChannelExist = false) {
@@ -82,7 +90,7 @@ export function addToMessages(payload:Array<IMessages>) {
   };
 }
 
-export function addMessages(payload:Array<IMessages>) {
+export function addMessages(payload:IMessages) {
   return {
     type: ADD_MESSAGES,
     payload,
@@ -127,5 +135,37 @@ export function resetChannel() {
   return {
     type: RESET_CHANNEL,
   }
+}
+
+export function addPendingMessage (payload:any) {
+  payload._id = uuid.v4();
+  payload.createdAt = new Date();
+  payload.error = false;
+  const normalized = normalize([payload], new schema.Array(pendingMessageSchema));
+  return {
+    payload: normalized?.entities?.pendingMessage,
+    type: ADD_PENDING_MESSAGE,
+  };
+}
+
+export function setPendingMessageError (payload:any) {
+  return {
+    payload,
+    type: SET_PENDING_MESSAGE_ERROR,
+  };
+}
+
+export function removePendingMessage (messageId:string, message:IMessages) {
+  return {
+    messageId,
+    message,
+    type: REMOVE_PENDING_MESSAGE,
+  };
+}
+
+export function resetPendingMessages () {
+  return {
+    type: RESET_PENDING_MESSAGES,
+  };
 }
 

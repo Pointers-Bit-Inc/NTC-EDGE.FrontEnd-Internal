@@ -34,6 +34,11 @@ import NewMessageIcon from './new-message';
 import NewSearchIcon from './new-search';
 import NewEditIcon from './new-edit';
 import NewGroupIcon from './new-group';
+import DownloadIcon from './download';
+import TrashIcon from './trash';
+import NewFileIcon from './new-file';
+import NewCheckIcon from './new-check';
+import MinusIcon from './minus';
 
 export {
   ExclamationIcon,
@@ -71,5 +76,10 @@ export {
   NewMessageIcon,
   NewSearchIcon,
   NewEditIcon,
-  NewGroupIcon
+  NewGroupIcon,
+  DownloadIcon,
+  TrashIcon,
+  NewFileIcon,
+  NewCheckIcon,
+  MinusIcon
 };

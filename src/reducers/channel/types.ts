@@ -25,4 +25,9 @@ export default keyMirror({
   SET_SEARCH_VALUE: null,
 
   RESET_CHANNEL: null,
+
+  RESET_PENDING_MESSAGES: null,
+  ADD_PENDING_MESSAGE: null,
+  SET_PENDING_MESSAGE_ERROR: null,
+  REMOVE_PENDING_MESSAGE: null,
 });

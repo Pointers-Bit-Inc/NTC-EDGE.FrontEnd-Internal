@@ -16,6 +16,7 @@ import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
 import { MeetingNotif } from '@components/molecules/list-item';
 import useSignalR from 'src/hooks/useSignalr';
 import ChatList from '@screens/chat/chat-list';
+import FileList from '@screens/chat/file-list';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import {
   ArrowLeftIcon,
@@ -28,16 +29,21 @@ import {
 import Text from '@components/atoms/text';
 import GroupImage from '@components/molecules/image/group';
 import { InputField } from '@components/molecules/form-fields';
-import { button, header } from '@styles/color';
+import { button, header, outline, text } from '@styles/color';
 import { getChannelName, getTimeDifference } from 'src/utils/formatting';
 import {
+  addPendingMessage,
   removeSelectedMessage,
+  resetPendingMessages,
   setSelectedChannel,
 } from 'src/reducers/channel/actions';
 import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
 import CreateMeeting from '@components/pages/chat/meeting';
 import IMeetings from 'src/interfaces/IMeetings';
+import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import useDocumentPicker from 'src/hooks/useDocumentPicker';
+import { Regular, Regular500 } from '@styles/font';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -89,7 +95,7 @@ const styles = StyleSheet.create({
     fontSize: RFValue(16),
   },
   plus: {
-    backgroundColor: '#D1D1D6',
+    backgroundColor: button.info,
     borderRadius: RFValue(24),
     width: RFValue(24),
     height: RFValue(24),
@@ -114,14 +120,24 @@ const styles = StyleSheet.create({
   },
 });
 
+const ChatRoute = () => (<ChatList />);
+const FileRoute = () => (<FileList />);
+const renderScene = SceneMap({
+  chat: ChatRoute,
+  files: FileRoute,
+});
+
 const ChatView = ({ navigation, route }:any) => {
   const dispatch = useDispatch();
   const {
-    sendMessage,
     editMessage,
     endMeeting,
     leaveMeeting,
   } = useSignalR();
+  const {
+    selectedFile,
+    pickDocument,
+  } = useDocumentPicker();
   const modalRef = useRef<BottomModalRef>(null);
   const inputRef:any = useRef(null);
   const layout = useWindowDimensions();
@@ -152,14 +168,11 @@ const ChatView = ({ navigation, route }:any) => {
   const channelId = _id;
 
   const _sendMessage = (channelId:string, inputText:string) => {
-    sendMessage({
-      roomId: channelId,
+    dispatch(addPendingMessage({
+      channelId: channelId,
       message: inputText,
-    }, (err:any, result:any) => {
-      if (err) {
-        console.log('ERR', err);
-      }
-    })
+      messageType: 'text',
+    }));
   }
 
   const _editMessage = (messageId:string, message:string) => {
@@ -190,6 +203,25 @@ const ChatView = ({ navigation, route }:any) => {
 
   const onBack = () => navigation.goBack();
 
+  const renderTabBar = (props:any) => (
+    <TabBar
+      {...props}
+      indicatorContainerStyle={{ borderBottomColor: '#DDDDDD', borderBottomWidth: 1 }}
+      labelStyle={{ color: '#94A3B8' }}
+      indicatorStyle={{ backgroundColor: outline.info, height: 3 }}
+      style={{ backgroundColor: 'white' }}
+      renderLabel={({ route, focused, color }) => (
+        <Text
+          color={focused ? text.info : color}
+          size={14}
+          style={{ fontFamily: focused ? Regular500 : Regular }}
+        >
+          {route.title}
+        </Text>
+      )}
+    />
+  );
+
   const onJoin = (item:IMeetings) => {
     dispatch(setSelectedChannel(item.room));
     dispatch(setMeeting(item));
@@ -212,7 +244,17 @@ const ChatView = ({ navigation, route }:any) => {
     } else {
       return dispatch(removeActiveMeeting(item._id));
     }
-}
+  }
+
+  useEffect(() => {
+    if (lodash.size(selectedFile)) {
+      dispatch(addPendingMessage({
+        attachment: selectedFile,
+        channelId,
+        messageType: 'file'
+      }))
+    }
+  }, [selectedFile]);
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
@@ -220,6 +262,7 @@ const ChatView = ({ navigation, route }:any) => {
     })
     return () => {
       dispatch(setSelectedChannel({}));
+      dispatch(resetPendingMessages());
     }
   }, []);
 
@@ -237,16 +280,6 @@ const ChatView = ({ navigation, route }:any) => {
   const onInitiateCall = (isVideoEnable = false) => {
     setIsVideoEnable(isVideoEnable);
     modalRef.current?.open();
-    // navigation.navigate(
-    //   'InitiateVideoCall',
-    //   {
-    //     participants,
-    //     isVideoEnable,
-    //     isVoiceCall: !isVideoEnable,
-    //     isChannelExist: true,
-    //     channelId,
-    //   }
-    // );
   }
     
 
@@ -280,7 +313,7 @@ const ChatView = ({ navigation, route }:any) => {
             {getChannelName(route.params)}
           </Text>
           {
-            !route?.params?.isGroup && (
+            !route?.params?.isGroup && !!otherParticipants[0]?.lastOnline && (
               <Text
                 color={'#606A80'}
                 size={10}
@@ -338,68 +371,77 @@ const ChatView = ({ navigation, route }:any) => {
         }
       </View>
       <View style={{ flex: 1 }}>
-        {
-          rendered && <ChatList />
-        }
+        <TabView
+          lazy
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{ width: layout.width }}
+          renderTabBar={renderTabBar}
+        />
       </View>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <View style={styles.keyboardAvoiding}>
-          <View style={{ marginTop: RFValue(-18) }}>
-            <TouchableOpacity  disabled={true}>
-              <View style={styles.plus}>
-                <PlusIcon
-                  color="white"
-                  size={RFValue(12)}
+      {
+        index === 0 ? (
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
+            <View style={styles.keyboardAvoiding}>
+              <View style={{ marginTop: RFValue(-18) }}>
+                <TouchableOpacity onPress={pickDocument}>
+                  <View style={styles.plus}>
+                    <PlusIcon
+                      color="white"
+                      size={RFValue(12)}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View style={{ flex: 1, paddingHorizontal: 5 }}>
+                <InputField
+                  ref={inputRef}
+                  placeholder={'Type a message'}
+                  containerStyle={[styles.containerStyle, { borderColor: isFocused ? '#C1CADC' : 'white' }]}
+                  placeholderTextColor={'#C4C4C4'}
+                  inputStyle={[styles.input, { backgroundColor: 'white' }]}
+                  outlineStyle={[styles.outline, { backgroundColor: 'white' }]}
+                  value={inputText}
+                  onChangeText={setInputText}
+                  onSubmitEditing={() => inputText && onSendMessage()}
+                  returnKeyType={'send'}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  
                 />
               </View>
-            </TouchableOpacity>
-          </View>
-          <View style={{ flex: 1, paddingHorizontal: 5 }}>
-            <InputField
-              ref={inputRef}
-              placeholder={'Type a message'}
-              containerStyle={[styles.containerStyle, { borderColor: isFocused ? '#C1CADC' : 'white' }]}
-              placeholderTextColor={'#C4C4C4'}
-              inputStyle={[styles.input, { backgroundColor: 'white' }]}
-              outlineStyle={[styles.outline, { backgroundColor: 'white' }]}
-              value={inputText}
-              onChangeText={setInputText}
-              onSubmitEditing={() => inputText && onSendMessage()}
-              returnKeyType={'send'}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-              
-            />
-          </View>
-          <View style={{ marginTop: RFValue(-18), flexDirection: 'row' }}>
-            <TouchableOpacity
-              onPress={onSendMessage}
-            >
-              {
-                selectedMessage?._id ? (
-                  <View style={[styles.plus, { marginRight: 0, marginLeft: 10, backgroundColor: button.info }]}>
-                    <CheckIcon
-                      type='check1'
-                      size={14}
-                      color={'white'}
-                    />
-                  </View>
-                ) : (
-                  <View style={{ marginLeft: 10 }}>
-                    <NewMessageIcon
-                      color={inputText ? button.info : '#D1D1D6'}
-                      height={RFValue(30)}
-                      width={RFValue(30)}
-                    />
-                  </View>
-                )
-              }
-            </TouchableOpacity>
-          </View>
-        </View>
-      </KeyboardAvoidingView>
+              <View style={{ marginTop: RFValue(-18), flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={onSendMessage}
+                >
+                  {
+                    selectedMessage?._id ? (
+                      <View style={[styles.plus, { marginRight: 0, marginLeft: 10, backgroundColor: button.info }]}>
+                        <CheckIcon
+                          type='check1'
+                          size={14}
+                          color={'white'}
+                        />
+                      </View>
+                    ) : (
+                      <View style={{ marginLeft: 10 }}>
+                        <NewMessageIcon
+                          color={inputText ? button.info : '#D1D1D6'}
+                          height={RFValue(30)}
+                          width={RFValue(30)}
+                        />
+                      </View>
+                    )
+                  }
+                </TouchableOpacity>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+        ) : null
+      }
       <BottomModal
         ref={modalRef}
         onModalHide={() => modalRef.current?.close()}
