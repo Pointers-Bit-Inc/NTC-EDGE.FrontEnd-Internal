@@ -252,7 +252,7 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
             onChangeText={setInputText}
             onSubmitEditing={() => inputText && onSendMessage()}
             returnKeyType={'send'}
-            onFocus={() => setIsFocused(true)}
+            onFocus={() => { onHideAttachmentOption(); setIsFocused(true); }}
             onBlur={() => setIsFocused(false)}
           />
         </View>
