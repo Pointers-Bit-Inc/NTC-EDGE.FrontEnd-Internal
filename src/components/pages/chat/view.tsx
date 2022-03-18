@@ -26,6 +26,7 @@ import {
 } from 'src/reducers/channel/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
 import useAttachmentPicker from 'src/hooks/useAttachment';
+import { AttachmentMenu } from '@components/molecules/menu';
 
 const styles = StyleSheet.create({
   container: {
@@ -60,6 +61,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopColor: '#E5E5E5',
     borderTopWidth: 1,
+    backgroundColor: 'white',
   },
   containerStyle: {
     height: undefined,
@@ -82,6 +84,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingLeft: 1,
+    paddingTop: 1,
   },
   circle: {
     backgroundColor: button.primary,
@@ -112,6 +116,7 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
   } = useSignalR();
   const {
     selectedFile,
+    pickImage,
     pickDocument,
   } = useAttachmentPicker();
   const inputRef:any = useRef(null);
@@ -127,6 +132,7 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
   const [inputText, setInputText] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [rendered, setRendered] = useState(false);
+  const [showAttachmentOption, setShowAttachmentOption] = useState(false);
   const Height = useRef(new Animated.Value(0));
   const channelId = _id;
   
@@ -154,20 +160,26 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
       return;
     }
     if (!channelId) {
-      inputRef.current?.blur();
       setInputText('');
       return onNext(inputText);
     }
     if (selectedMessage._id) {
       _editMessage(selectedMessage._id, inputText);
-      inputRef.current?.blur();
       dispatch(removeSelectedMessage())
     } else {
       _sendMessage(channelId, inputText);
-      inputRef.current?.blur();
       setInputText('');
     }
   }, [channelId, inputText])
+
+  const onShowAttachmentOption = () => {
+    inputRef.current?.blur();
+    setShowAttachmentOption(true);
+  }
+
+  const onHideAttachmentOption = () => {
+    setShowAttachmentOption(false);
+  }
 
   useEffect(() => {
     if (lodash.size(selectedFile)) {
@@ -219,7 +231,7 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
       </View>
       <Animated.View style={[styles.keyboardAvoiding, { marginBottom: Height.current }]}>
         <View style={{ marginTop: RFValue(-18) }}>
-          <TouchableOpacity onPress={pickDocument}>
+          <TouchableOpacity onPress={onShowAttachmentOption}>
             <View style={styles.plus}>
               <PlusIcon
                 color="white"
@@ -271,6 +283,9 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
           </TouchableOpacity>
         </View>
       </Animated.View>
+      {
+        showAttachmentOption && <AttachmentMenu onPickImage={pickImage} onPickDocument={pickDocument} />
+      }
     </View>
   )
 }

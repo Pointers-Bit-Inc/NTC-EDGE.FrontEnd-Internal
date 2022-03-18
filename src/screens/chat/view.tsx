@@ -46,6 +46,7 @@ import IMeetings from 'src/interfaces/IMeetings';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import useAttachmentPicker from 'src/hooks/useAttachment';
 import { Regular, Regular500 } from '@styles/font';
+import { AttachmentMenu } from '@components/molecules/menu';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -82,6 +83,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopColor: '#E5E5E5',
     borderTopWidth: 1,
+    backgroundColor: 'white',
   },
   containerStyle: {
     height: undefined,
@@ -102,6 +104,8 @@ const styles = StyleSheet.create({
     width: RFValue(24),
     height: RFValue(24),
     marginRight: 10,
+    paddingLeft: 1,
+    paddingTop: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -120,23 +124,6 @@ const styles = StyleSheet.create({
     width: 35,
     borderRadius: 4,
   },
-  fileButtonContainer: {
-    paddingTop: 20,
-    paddingHorizontal: 15,
-    height: height * 0.25,
-    backgroundColor: '#F0F1F2',
-    flexDirection: 'row',
-  },
-  attachmentButton: {
-    backgroundColor: 'white',
-    width: 60,
-    height: 60,
-    marginHorizontal: 10,
-    marginBottom: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 5,
-  }
 });
 
 const ChatRoute = () => (<ChatList />);
@@ -470,34 +457,7 @@ const ChatView = ({ navigation, route }:any) => {
               </View>
             </View>
             {
-              showAttachmentOption && (
-                <View style={styles.fileButtonContainer}>
-                  <TouchableOpacity onPress={pickImage}>
-                    <View style={{ alignItems: 'center' }}>
-                      <View style={styles.attachmentButton}>
-                        <MediaIcon
-                          color={'#606A80'}
-                          height={RFValue(30)}
-                          width={RFValue(30)}
-                        />
-                      </View>
-                      <Text size={12} color={'#606A80'}>Media</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={pickDocument}>
-                    <View style={{ alignItems: 'center' }}>
-                      <View style={styles.attachmentButton}>
-                        <AttachIcon
-                          color={'#606A80'}
-                          height={RFValue(30)}
-                          width={RFValue(30)}
-                        />
-                      </View>
-                      <Text size={12} color={'#606A80'}>Attach</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              )
+              showAttachmentOption && <AttachmentMenu onPickImage={pickImage} onPickDocument={pickDocument} />
             }
           </KeyboardAvoidingView>
         ) : null

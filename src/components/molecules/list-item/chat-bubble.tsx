@@ -37,6 +37,13 @@ const styles = StyleSheet.create({
       }
     })
   },
+  imageBubble: {
+    marginRight: 2,
+    marginTop: 2,
+    width: width * 0.3,
+    height: width * 0.3,
+    backgroundColor: bubble.primary,
+  },
   seenContainer: {
     paddingTop: 5,
     flexDirection: 'row',
@@ -169,78 +176,83 @@ const ChatBubble:FC<Props> = ({
               </View>
             )
           }
-          <View style={styles.bubbleContainer}>
-            <View
-              style={[
-                styles.bubble,
-                {
-                  backgroundColor: isSender ? bubble.primary : bubble.secondary
-                },
-                (deleted || (unSend && isSender) || system) && {
-                  backgroundColor: '#E5E5E5'
-                },
-                checkIfImage(attachment?.uri) && { padding: 0 }
-              ]}
-            >
-              {
-                (deleted || (unSend && isSender)) ? (
-                  <>
-                    <NewDeleteIcon
-                      height={fontValue(18)}
-                      width={fontValue(18)}
-                      color={'#979797'}
-                    />
-                    <Text
-                      style={{ marginLeft: 5 }}
-                      size={14}
-                      color={'#979797'}
-                    >
-                      {
-                        (unSend && isSender) ?
-                        'Unsent for you'
-                        : `${isSender ? 'You' : sender.firstName } deleted a message`
-                      }
-                    </Text>
-                  </>
-                ) : !!attachment ? checkIfImage(attachment?.uri) ? (
-                  <Image
-                    resizeMode={"contain"}
-                    style={styles.imageFile}
-                    source={{ uri: attachment.uri }}
-                  />
-                ) : (
-                  <View style={styles.file}>
-                    <NewFileIcon
-                      color={'#606A80'}
-                    />
-                    <View style={{ paddingHorizontal: 5, maxWidth: width * 0.3 }}>
+          {
+            checkIfImage(attachment?.uri) ? (
+              <Image
+                resizeMode={'cover'}
+                style={styles.imageBubble}
+                borderRadius={10}
+                source={{ uri: attachment?.uri }}
+              />
+            ) : (
+              <View style={styles.bubbleContainer}>
+                <View
+                  style={[
+                    styles.bubble,
+                    {
+                      backgroundColor: isSender ? bubble.primary : bubble.secondary
+                    },
+                    (deleted || (unSend && isSender) || system) && {
+                      backgroundColor: '#E5E5E5'
+                    },
+                  ]}
+                >
+                  {
+                    (deleted || (unSend && isSender)) ? (
+                      <>
+                        <NewDeleteIcon
+                          height={fontValue(18)}
+                          width={fontValue(18)}
+                          color={'#979797'}
+                        />
+                        <Text
+                          style={{ marginLeft: 5 }}
+                          size={14}
+                          color={'#979797'}
+                        >
+                          {
+                            (unSend && isSender) ?
+                            'Unsent for you'
+                            : `${isSender ? 'You' : sender.firstName } deleted a message`
+                          }
+                        </Text>
+                      </>
+                    ) : !!attachment ? (
+                      <View style={styles.file}>
+                        <NewFileIcon
+                          color={'#606A80'}
+                        />
+                        <View style={{ paddingHorizontal: 5, maxWidth: width * 0.3 }}>
+                          <Text
+                            size={12}
+                            color={'#606A80'}
+                          >
+                            {attachment.name}
+                          </Text>
+                          <Text
+                            size={10}
+                            color={'#606A80'}
+                            style={{ top: -2 }}
+                          >
+                            {getFileSize(attachment.size)}
+                          </Text>
+                        </View>
+                        <View style={{ width: 10 }} />
+                      </View>
+                    ) : (
                       <Text
-                        size={12}
-                        color={'#606A80'}
+                        size={14}
+                        color={(isSender && !system) ? 'white' : 'black'}
                       >
-                        {attachment.name}
+                        {message}
                       </Text>
-                      <Text
-                        size={10}
-                        color={'#606A80'}
-                        style={{ top: -2 }}
-                      >
-                        {getFileSize(attachment.size)}
-                      </Text>
-                    </View>
-                    <View style={{ width: 10 }} />
-                  </View>
-                ) : (
-                  <Text
-                    size={14}
-                    color={(isSender && !system) ? 'white' : 'black'}
-                  >
-                    {message}
-                  </Text>
-                )
-              }
-            </View>
-          </View>
+                    )
+                  }
+                </View>
+              </View>
+            )
+          }
+          
           {
             (edited && !isSender) && (
               <View style={{ alignSelf: 'center', marginLeft: 5 }}>

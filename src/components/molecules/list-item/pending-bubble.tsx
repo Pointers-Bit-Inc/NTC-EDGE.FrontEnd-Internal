@@ -163,54 +163,64 @@ const PendingBubble:FC<Props> = ({
     >
       <View style={[styles.container, { maxWidth }, style]}>
         <View style={styles.bubbleContainer}>
-          <View
-            style={[
-              styles.bubble,
-              {
-                backgroundColor: bubble.primary
-              },
-              attachment?.mimeType === 'image' && { padding: 0 }
-            ]}
-          >
-            {
-              messageType === 'file' ? attachment?.mimeType === 'image' ? (
-                <Image
-                  resizeMode={"contain"}
-                  style={styles.imageFile}
-                  source={{ uri: attachment.uri }}
-                />
-              ) : (
-                <View style={styles.file}>
-                  <NewFileIcon
-                    color={'#606A80'}
-                  />
-                  <View style={{ paddingHorizontal: 5, maxWidth: width * 0.3 }}>
+          {
+            attachment?.mimeType === 'image' ? (
+              <Image
+                resizeMode={'cover'}
+                style={[
+                  {
+                    marginRight: 2,
+                    width: width * 0.3,
+                    height: width * 0.3,
+                  }
+                ]}
+                borderRadius={10}
+                source={{ uri: attachment.uri }}
+              />
+            ) : (
+              <View
+                style={[
+                  styles.bubble,
+                  {
+                    backgroundColor: bubble.primary
+                  },
+                ]}
+              >
+                {
+                  messageType === 'file' ? (
+                    <View style={styles.file}>
+                      <NewFileIcon
+                        color={'#606A80'}
+                      />
+                      <View style={{ paddingHorizontal: 5, maxWidth: width * 0.3 }}>
+                        <Text
+                          size={12}
+                          color={'#606A80'}
+                        >
+                          {attachment.name}
+                        </Text>
+                        <Text
+                          size={10}
+                          color={'#606A80'}
+                          style={{ top: -2 }}
+                        >
+                          {getFileSize(attachment.size)}
+                        </Text>
+                      </View>
+                      <View style={{ width: 10 }} />
+                    </View>
+                  ) : (
                     <Text
-                      size={12}
-                      color={'#606A80'}
+                      size={14}
+                      color={'white'}
                     >
-                      {attachment.name}
+                      {message}
                     </Text>
-                    <Text
-                      size={10}
-                      color={'#606A80'}
-                      style={{ top: -2 }}
-                    >
-                      {getFileSize(attachment.size)}
-                    </Text>
-                  </View>
-                  <View style={{ width: 10 }} />
-                </View>
-              ) : (
-                <Text
-                  size={14}
-                  color={'white'}
-                >
-                  {message}
-                </Text>
-              )
-            }
-          </View>
+                  )
+                }
+              </View>
+            )
+          }
         </View>
         <Progress.Circle
           style={styles.progress}
