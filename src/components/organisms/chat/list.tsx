@@ -84,6 +84,7 @@ const ChatList: FC<Props> = ({
             error={item.error}
             onSendMessage={onSendMessage}
             onSendFile={onSendFile}
+            onLongPress={() => showOption(item)}
           />
         </View>
       )

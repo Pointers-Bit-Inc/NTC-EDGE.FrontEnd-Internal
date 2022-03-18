@@ -122,30 +122,29 @@ const PendingBubble:FC<Props> = ({
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    const formData = new FormData();
     const controller = new AbortController();
     const config = {
       signal: controller.signal,
       onUploadProgress ({ loaded, total }:any) {
-        const percentComplete = (loaded / total) * 1;
+        const percentComplete = loaded / total;
         setProgress(percentComplete);
-      }
+      },
     };
-
+    
     if (messageType === 'file') {
-      var file:any = {
+      const file:any = {
         name: attachment?.name,
         type: attachment?.mimeType,
         uri: attachment?.uri,
       };
-      var formData = new FormData();
       formData.append('file', file);
-      onSendFile(channelId, messageId, formData, config);
-    } else {
-      onSendMessage({
-        roomId: channelId,
-        message,
-      }, messageId, config);
     }
+
+    formData.append('roomId', channelId);
+    formData.append('message', message);
+    
+    onSendMessage(formData, messageId, config);
 
     return () => {
       controller.abort();
@@ -173,7 +172,7 @@ const PendingBubble:FC<Props> = ({
                   <NewFileIcon
                     color={'#606A80'}
                   />
-                  <View style={{ paddingHorizontal: 5, maxWidth: width * 0.25 }}>
+                  <View style={{ paddingHorizontal: 5, maxWidth: width * 0.3 }}>
                     <Text
                       size={12}
                       color={'#606A80'}

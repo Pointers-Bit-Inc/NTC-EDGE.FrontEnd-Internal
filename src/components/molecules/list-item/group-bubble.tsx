@@ -237,7 +237,7 @@ const ChatBubble:FC<Props> = ({
                       <NewFileIcon
                         color={'#606A80'}
                       />
-                      <View style={{ paddingHorizontal: 5, maxWidth: width * 0.25 }}>
+                      <View style={{ paddingHorizontal: 5, maxWidth: width * 0.3 }}>
                         <Text
                           size={12}
                           color={'#606A80'}

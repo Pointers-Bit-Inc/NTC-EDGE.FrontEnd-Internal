@@ -19,6 +19,7 @@ const useDocumentPicker = () => {
         'text/csv',
       ],
       multiple: true,
+      copyToCacheDirectory: true
     });
     if (result.type === 'success') {
       setSelectedFile(result)
