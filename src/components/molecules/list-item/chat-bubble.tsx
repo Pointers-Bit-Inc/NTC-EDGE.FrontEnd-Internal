@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, Platform, Dimensions } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Platform, Dimensions, Image } from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
 import { CheckIcon, DeleteIcon, NewFileIcon, WriteIcon } from '@components/atoms/icon'
@@ -83,6 +83,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: 'white',
   },
+  imageFile: {
+    width: width * 0.3,
+    height: width * 0.3,
+  }
 })
 
 interface Props {
@@ -129,6 +133,11 @@ const ChatBubble:FC<Props> = ({
 }) => {
   const [showDetails, setShowDetails] = useState(false);
 
+  const checkIfImage = (uri:any) => {
+    if (uri && (uri.endsWith(".png") || uri.endsWith(".jpg"))) return true;
+    return false;
+  };
+
   return (
     <>
       {
@@ -170,6 +179,7 @@ const ChatBubble:FC<Props> = ({
                 (deleted || (unSend && isSender) || system) && {
                   backgroundColor: '#E5E5E5'
                 },
+                checkIfImage(attachment?.uri) && { padding: 0 }
               ]}
             >
               {
@@ -192,7 +202,13 @@ const ChatBubble:FC<Props> = ({
                       }
                     </Text>
                   </>
-                ) : attachment ? (
+                ) : !!attachment ? checkIfImage(attachment?.uri) ? (
+                  <Image
+                    resizeMode={"contain"}
+                    style={styles.imageFile}
+                    source={{ uri: attachment.uri }}
+                  />
+                ) : (
                   <View style={styles.file}>
                     <NewFileIcon
                       color={'#606A80'}

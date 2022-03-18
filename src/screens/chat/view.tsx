@@ -25,6 +25,8 @@ import {
   NewCallIcon,
   NewVideoIcon,
   NewMessageIcon,
+  MediaIcon,
+  AttachIcon,
 } from '@components/atoms/icon';
 import Text from '@components/atoms/text';
 import GroupImage from '@components/molecules/image/group';
@@ -42,7 +44,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import CreateMeeting from '@components/pages/chat/meeting';
 import IMeetings from 'src/interfaces/IMeetings';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
-import useDocumentPicker from 'src/hooks/useDocumentPicker';
+import useAttachmentPicker from 'src/hooks/useAttachment';
 import { Regular, Regular500 } from '@styles/font';
 const { width, height } = Dimensions.get('window');
 
@@ -118,6 +120,23 @@ const styles = StyleSheet.create({
     width: 35,
     borderRadius: 4,
   },
+  fileButtonContainer: {
+    paddingTop: 20,
+    paddingHorizontal: 15,
+    height: height * 0.25,
+    backgroundColor: '#F0F1F2',
+    flexDirection: 'row',
+  },
+  attachmentButton: {
+    backgroundColor: 'white',
+    width: 60,
+    height: 60,
+    marginHorizontal: 10,
+    marginBottom: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+  }
 });
 
 const ChatRoute = () => (<ChatList />);
@@ -137,7 +156,8 @@ const ChatView = ({ navigation, route }:any) => {
   const {
     selectedFile,
     pickDocument,
-  } = useDocumentPicker();
+    pickImage,
+  } = useAttachmentPicker();
   const modalRef = useRef<BottomModalRef>(null);
   const inputRef:any = useRef(null);
   const layout = useWindowDimensions();
@@ -161,6 +181,7 @@ const ChatView = ({ navigation, route }:any) => {
   const [isFocused, setIsFocused] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [isVideoEnable, setIsVideoEnable] = useState(false);
+  const [showAttachmentOption, setShowAttachmentOption] = useState(false);
   const [routes] = useState([
     { key: 'chat', title: 'Chat' },
     { key: 'files', title: 'Files' },
@@ -244,6 +265,15 @@ const ChatView = ({ navigation, route }:any) => {
     } else {
       return dispatch(removeActiveMeeting(item._id));
     }
+  }
+
+  const onShowAttachmentOption = () => {
+    inputRef.current?.blur();
+    setShowAttachmentOption(true);
+  }
+
+  const onHideAttachmentOption = () => {
+    setShowAttachmentOption(false);
   }
 
   useEffect(() => {
@@ -387,7 +417,7 @@ const ChatView = ({ navigation, route }:any) => {
           >
             <View style={styles.keyboardAvoiding}>
               <View style={{ marginTop: RFValue(-18) }}>
-                <TouchableOpacity onPress={pickDocument}>
+                <TouchableOpacity onPress={onShowAttachmentOption}>
                   <View style={styles.plus}>
                     <PlusIcon
                       color="white"
@@ -408,7 +438,7 @@ const ChatView = ({ navigation, route }:any) => {
                   onChangeText={setInputText}
                   onSubmitEditing={() => inputText && onSendMessage()}
                   returnKeyType={'send'}
-                  onFocus={() => setIsFocused(true)}
+                  onFocus={() => { onHideAttachmentOption(); setIsFocused(true) }}
                   onBlur={() => setIsFocused(false)}
                   
                 />
@@ -439,6 +469,36 @@ const ChatView = ({ navigation, route }:any) => {
                 </TouchableOpacity>
               </View>
             </View>
+            {
+              showAttachmentOption && (
+                <View style={styles.fileButtonContainer}>
+                  <TouchableOpacity onPress={pickImage}>
+                    <View style={{ alignItems: 'center' }}>
+                      <View style={styles.attachmentButton}>
+                        <MediaIcon
+                          color={'#606A80'}
+                          height={RFValue(30)}
+                          width={RFValue(30)}
+                        />
+                      </View>
+                      <Text size={12} color={'#606A80'}>Media</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={pickDocument}>
+                    <View style={{ alignItems: 'center' }}>
+                      <View style={styles.attachmentButton}>
+                        <AttachIcon
+                          color={'#606A80'}
+                          height={RFValue(30)}
+                          width={RFValue(30)}
+                        />
+                      </View>
+                      <Text size={12} color={'#606A80'}>Attach</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              )
+            }
           </KeyboardAvoidingView>
         ) : null
       }

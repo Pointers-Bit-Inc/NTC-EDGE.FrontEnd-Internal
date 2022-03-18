@@ -25,7 +25,7 @@ import {
   resetPendingMessages,
 } from 'src/reducers/channel/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
-import useDocumentPicker from 'src/hooks/useDocumentPicker';
+import useAttachmentPicker from 'src/hooks/useAttachment';
 
 const styles = StyleSheet.create({
   container: {
@@ -113,7 +113,7 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
   const {
     selectedFile,
     pickDocument,
-  } = useDocumentPicker();
+  } = useAttachmentPicker();
   const inputRef:any = useRef(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { _id } = useSelector(

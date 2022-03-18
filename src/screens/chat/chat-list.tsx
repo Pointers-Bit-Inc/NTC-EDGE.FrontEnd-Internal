@@ -260,7 +260,13 @@ const List = () => {
           )
         }
         <TouchableOpacity
-          onPress={() => setShowDeleteOption(true)}
+          onPress={() => {
+            if (message?.messageType === 'file') {
+              dispatch(removePendingMessage(message._id, null));
+            } else {
+              setShowDeleteOption(true)
+            }
+          }}
         >
           <View style={[styles.button, { borderBottomWidth: 0 }]}>
             <NewDeleteIcon

@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, Platform, Dimensions } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Platform, Dimensions, Image } from 'react-native'
 import Text from '@components/atoms/text'
 import { NewFileIcon } from '@components/atoms/icon'
 import { bubble, outline } from '@styles/color'
@@ -86,6 +86,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: 'white',
   },
+  imageFile: {
+    width: width * 0.3,
+    height: width * 0.3,
+  }
 })
 
 interface Props {
@@ -105,10 +109,10 @@ interface Props {
 }
 
 const PendingBubble:FC<Props> = ({
-  message,
-  messageId,
+  message = '',
+  messageId = '',
   messageType = 'text',
-  channelId,
+  channelId = '',
   attachment = {},
   error = false,
   maxWidth = '60%',
@@ -133,11 +137,12 @@ const PendingBubble:FC<Props> = ({
     };
     
     if (messageType === 'file') {
-      const file:any = {
+      let file:any = {
         name: attachment?.name,
         type: attachment?.mimeType,
         uri: attachment?.uri,
       };
+
       formData.append('file', file);
     }
 
@@ -164,10 +169,17 @@ const PendingBubble:FC<Props> = ({
               {
                 backgroundColor: bubble.primary
               },
+              attachment?.mimeType === 'image' && { padding: 0 }
             ]}
           >
             {
-              messageType === 'file' ? (
+              messageType === 'file' ? attachment?.mimeType === 'image' ? (
+                <Image
+                  resizeMode={"contain"}
+                  style={styles.imageFile}
+                  source={{ uri: attachment.uri }}
+                />
+              ) : (
                 <View style={styles.file}>
                   <NewFileIcon
                     color={'#606A80'}
