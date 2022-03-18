@@ -17,6 +17,7 @@ import {getRole} from "@pages/activities/script";
 import {Hoverable} from "react-native-web-hooks";
 import CloseIcon from "@assets/svg/close";
 import hairlineWidth = StyleSheet.hairlineWidth;
+import useApplicant from "@pages/activities/modalTab/useApplicant";
 
 
 export const ModalTab = props => {
@@ -56,20 +57,21 @@ export const ModalTab = props => {
                 style={ styles.tabTextItem }> SOA & Payment</Text></View>
         } ,
     ]);
-    const applicant = props?.details?.applicant ,
-        selectedTypes = props?.details?.selectedTypes ,
-        applicationType = props?.details?.applicationType ,
-        service = props?.details?.service ,
-        soa = props?.details?.soa ,
-        totalFee = props?.details?.totalFee ,
-        paymentMethod = props?.details?.paymentMethod ,
-        requirements = props?.details?.requirements ,
-        updatedAt = props?.details?.updatedAt ,
-        approvalHistory = props?.details?.approvalHistory ,
-        assignedPersonnel = props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel,
-        createdAt = props?.details?.createdAt ,
-        proofOfPayment = props?.details?.proofOfPayment;
-
+    const {
+        applicant ,
+        selectedTypes ,
+        applicationType ,
+        service ,
+        soa ,
+        totalFee ,
+        paymentMethod ,
+        requirements ,
+        updatedAt ,
+        approvalHistory ,
+        assignedPersonnel ,
+        createdAt ,
+        proofOfPayment
+    } = useApplicant(props.details)
 
     return <ViewPaged
         render

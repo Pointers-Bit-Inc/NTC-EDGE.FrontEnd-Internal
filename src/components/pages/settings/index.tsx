@@ -9,7 +9,7 @@ import { ArrowRightIcon, CloseIcon, ExclamationIcon, RightIcon } from '@atoms/ic
 import Alert from '@atoms/alert';
 import Button from '@atoms/button';
 import NavBar from '@molecules/navbar';
-import { text } from '@styles/color';
+import {disabledColor , text} from '@styles/color';
 import styles from './styles';
 import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import {resetUser , setUser} from 'src/reducers/user/actions'
@@ -33,19 +33,22 @@ export default ({
     {
       label: 'Notifications',
       value: 'notifications',
-      icon: <BellIcon width={fontValue(21)} height={fontValue(21)} />,
-      onPress: () => {},
+      disabled: true,
+      icon: <BellIcon disabled={true} width={fontValue(21)} height={fontValue(21)} />,
+      onPress: () => {alert(123)},
     },
     {
       label: 'Help Center',
       value: 'help-center',
-      icon: <DonutIcon width={fontValue(21)} height={fontValue(21)} />,
+      disabled: true,
+      icon: <DonutIcon disabled={true} width={fontValue(21)} height={fontValue(21)} />,
       onPress: () => {},
     },
     {
       label: 'About',
       value: 'about',
-      icon: <ExclamationIcon  size={fontValue(21)} type='circle' />,
+      disabled: true,
+      icon: <ExclamationIcon color={disabledColor} disabled={true}  size={fontValue(21)} type='circle' />,
       onPress: () => {},
     },
   ];
@@ -69,11 +72,11 @@ export default ({
   }, []);
   const renderRow = ({item}: any) => {
     return (
-      <TouchableOpacity onPress={item?.onPress}>
+      <TouchableOpacity disabled={item?.disabled ? true : false} onPress={item?.onPress}>
         <View style={[styles?.row, {justifyContent: 'space-between'}]}>
           <View style={styles?.row}>
             {item?.icon}
-            <Text style={[styles.textSettings, item?.value === 'logout' && {color: text.error}]}>{item?.label}</Text>
+            <Text style={[styles.textSettings, !!item?.disabled && {color: disabledColor} , item?.value === 'logout' && {color: text.error}]}>{item?.label}</Text>
           </View>
           {
             item?.value !== 'logout' &&

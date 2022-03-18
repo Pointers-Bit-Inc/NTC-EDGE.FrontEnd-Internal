@@ -65,7 +65,7 @@ function CustomAlert(props) {
                             {
 
                                 props?.showClose == false && <>
-                                    {props.onLoading ? <ActivityIndicator style={{alignSelf: "center"}}
+                                    {props.onLoading ?  <ActivityIndicator style={{alignSelf: "center"}}
                                                                           color={"rgba(40,99,214,1)"}/> :
                                         <TouchableOpacity onPress={props.onConfirmPressed}>
 

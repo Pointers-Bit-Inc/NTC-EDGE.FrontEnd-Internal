@@ -7,7 +7,7 @@ import {
     Platform ,
     StyleSheet ,
     Text ,
-    TouchableOpacity , TouchableWithoutFeedback ,
+    TouchableOpacity , TouchableWithoutFeedback , useWindowDimensions ,
     View
 } from "react-native";
 import {InputField} from "@molecules/form-fields";
@@ -27,6 +27,7 @@ import CloseIcon from "@assets/svg/close";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import hairlineWidth = StyleSheet.hairlineWidth;
+import button from "@pages/activities/modal/styles";
 
 const { height , width } = Dimensions.get('window');
 
@@ -114,7 +115,7 @@ const Endorsed = (props: any) => {
 
 
     const orientation = useOrientation();
-
+    const dimensions = useWindowDimensions();
     return (
         <Modal
             supportedOrientations={ ['portrait' , 'landscape'] }
@@ -191,7 +192,7 @@ const Endorsed = (props: any) => {
                               position : 'absolute' ,
                           } }/>
                       </TouchableWithoutFeedback>
-                      <View style={ [styles.rect , styles.shadow, { height : isMobile ? orientation == "LANDSCAPE"  ? "100%" : "80%" : "80%" , }] }>
+                      <View style={ [styles.rect , styles.shadow, { width:  dimensions.width <= 768 ? "100%" : "32.6%", height : isMobile ? orientation == "LANDSCAPE"  ? "100%" : "80%" : "80%" , }] }>
 
                           <View >
                               <View style={ styles.iconColumn }>
@@ -251,15 +252,17 @@ const Endorsed = (props: any) => {
 
                               </View>
                           </View>
+                           <View style={ button.confirmButtonContainer}>
+                               <View style={ [{  padding : 15 }, ]}>
+                                   <TouchableOpacity disabled={ !picked } onPress={ onEndorseConfirm }>
+                                       <View
+                                           style={ [button.confirmButton , { backgroundColor : picked ? primaryColor : disabledColor , }] }>
+                                           <Text style={ button.confirm }>Confirm</Text>
+                                       </View>
+                                   </TouchableOpacity>
+                               </View>
+                           </View>
 
-                          <View style={ { width : '100%' , paddingHorizontal : 15 } }>
-                              <TouchableOpacity disabled={ !picked } onPress={ onEndorseConfirm }>
-                                  <View
-                                      style={ [styles.confirmButton , { backgroundColor : picked ? primaryColor : disabledColor , }] }>
-                                      <Text style={ styles.confirm }>Confirm</Text>
-                                  </View>
-                              </TouchableOpacity>
-                          </View>
                       </View>
                   </View>
 
@@ -270,6 +273,7 @@ const Endorsed = (props: any) => {
 };
 
 const styles = StyleSheet.create({
+
     shadow: {shadowColor: "rgba(0,0,0,1)",
         shadowOffset: {
             height: 0,
@@ -286,9 +290,9 @@ const styles = StyleSheet.create({
         flex : 1
     } ,
     rect : {
-         width: isMobile ? "100%" : "32.6%",
+
         justifyContent : "space-between" ,
-        paddingBottom : 20 ,
+       
 
 
         backgroundColor : "rgba(255,255,255,1)" ,
@@ -348,18 +352,7 @@ const styles = StyleSheet.create({
         paddingHorizontal : 15 ,
         width : '100%' ,
     } ,
-    confirm : {
-        color : "rgba(255,255,255,1)" ,
-        fontFamily : Bold ,
-        fontSize : 18 ,
-    } ,
-    confirmButton : {
 
-        borderRadius : 12 ,
-        paddingVertical : 16 ,
-        alignItems : 'center' ,
-        justifyContent : 'center' ,
-    }
 });
 
 export default Endorsed;

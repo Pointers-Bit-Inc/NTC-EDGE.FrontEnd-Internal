@@ -6,7 +6,7 @@ import {
     Platform ,
     StyleSheet ,
     Text ,
-    TouchableOpacity ,
+    TouchableOpacity , useWindowDimensions ,
     View
 } from "react-native";
 import {InputField} from "@molecules/form-fields";
@@ -22,6 +22,7 @@ import {isMobile} from "@pages/activities/isMobile";
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import CloseIcon from "@assets/svg/close";
 import hairlineWidth = StyleSheet.hairlineWidth;
+import button from "@pages/activities/modal/styles";
 
 const { height , width } = Dimensions.get('window');
 
@@ -43,9 +44,7 @@ function Disapproval(props: any) {
             props.onDismissed()
         }
     };
-    useEffect(() => {
-        console.log(props?.size?.width)
-    } , []);
+    const dimensions = useWindowDimensions();
     return (
 
         <Modal
@@ -95,7 +94,7 @@ function Disapproval(props: any) {
 
             <KeyboardAvoidingView
                 behavior={ Platform.OS === "ios" ? "padding" : "height" }
-                style={ [styles.container] }
+                style={ [styles.container, {paddingRight: dimensions.width <= 768 ? undefined : 64,}] }
             >
                 <OnBackdropPress onPressOut={ props.onDismissed }/>
                 <View style={ styles.rectFiller }>
@@ -103,7 +102,7 @@ function Disapproval(props: any) {
                 </View>
                 <View style={ [styles.rect , {
 
-                    width: isMobile ? "100%" : "32%",
+                    width: dimensions.width <= 768 ? "100%" : "32%",
                     display : !showAlert ? undefined : "none"
                 }] }>
 
@@ -160,16 +159,19 @@ function Disapproval(props: any) {
                             onChangeText={ setText }
                         />
                     </View>
-                    <View style={ { padding : 20 , paddingBottom : 25 } }>
-                        <TouchableOpacity onPress={ () => {
-                            props.remarks(text);
-                            setShowAlert(true)
-                        } }>
-                            <View style={ styles.confirmButton }>
-                                <Text style={ styles.confirm }>Confirm</Text>
-                            </View>
-                        </TouchableOpacity>
+                    <View style={button.confirmButtonContainer}>
+                        <View style={ { padding : 20 , } }>
+                            <TouchableOpacity onPress={ () => {
+                                props.remarks(text);
+                                setShowAlert(true)
+                            } }>
+                                <View style={ button.confirmButton }>
+                                    <Text style={ button.confirm }>Confirm</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
                     </View>
+
                 </View>
             </KeyboardAvoidingView>
         </Modal>
@@ -180,7 +182,7 @@ function Disapproval(props: any) {
 const styles = StyleSheet.create({
     container : {
         flex : 1 ,
-        paddingRight: !isMobile ? undefined : 64,
+
     } ,
     fileTextIcon : {
         paddingLeft : fontValue(15) ,
@@ -277,19 +279,7 @@ const styles = StyleSheet.create({
         backgroundColor : primaryColor ,
         borderRadius : 9
     } ,
-    confirm : {
-        color : "rgba(255,255,255,1)" ,
-        fontFamily : Bold ,
-        fontSize : fontValue(18) ,
-    } ,
-    confirmButton : {
-        backgroundColor : primaryColor ,
-        borderRadius : 12 ,
 
-        paddingVertical : 16 ,
-        alignItems : 'center' ,
-        justifyContent : 'center' ,
-    }
 });
 
 export default Disapproval;

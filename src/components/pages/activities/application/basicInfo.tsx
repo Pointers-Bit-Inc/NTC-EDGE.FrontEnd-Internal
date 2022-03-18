@@ -36,20 +36,21 @@ const BasicInfo = (props: any) => {
                              props?.approvalHistory?.[0]?.userId :
                              (props.assignedPersonnel?._id || props?.assignedPersonnel))) , {
         headers : {
-            Authorization : "Bearer ".concat(props.user?.sessionToken)
+            Authorization : "Bearer ".concat(props.user.sessionToken)
         }
     });
-    const applicant = props.applicant;
+    const applicant = props.applicant?.user || props.applicant;
     return <ScrollView style={ { width : "100%" , backgroundColor : "#f8f8f8" , } }>
 
         <View style={{flexDirection:  isMobile ? "column" : "row"}}>
             <View style={  isMobile ?  { padding : 10  , alignSelf : "center" }  : {paddingLeft: 20, paddingVertical: 20} }>
                 <ProfileImage
-                    style={ { borderRadius : 4 } }
                     size={ fontValue(150) }
+                    style={ { borderRadius : 4 } }
+
                     textSize={ 22 }
-                    image={ applicant?.user?.profilePicture?.small }
-                    name={ `${ applicant?.user?.firstName } ${ applicant?.user?.lastName }` }
+                    image={ applicant.profilePicture?.small || applicant?.profilePicture?.small }
+                    name={ `${ applicant.firstName ||  applicant?.firstName } ${ applicant.lastName ||  applicant?.firstName }` }
                 />
 
                 {!isMobile && <View style={{paddingVertical: 20}}>
@@ -123,11 +124,11 @@ const BasicInfo = (props: any) => {
                                         </View>
                                     </View>
                                     <Row label={ "Full Name:" }
-                                         applicant={ applicant?.user?.firstName + " " + applicant?.user?.middleName?.charAt() + "." + " " + applicant?.user?.lastName }/>
+                                         applicant={ applicant.firstName + " " + applicant.middleName?.charAt() + "." + " " + applicant.lastName }/>
                                     <Row label={ "Date of Birth:" }
-                                         applicant={ moment(applicant?.user?.dateOfBirth).format('LL') }/>
-                                    <Row label={ "Gender:" } applicant={ applicant?.user?.gender }/>
-                                    <Row label={ "Nationality:" } applicant={ applicant?.user?.nationality }/>
+                                         applicant={ moment(applicant.dateOfBirth).format('LL') }/>
+                                    <Row label={ "Gender:" } applicant={ applicant.gender  }/>
+                                    <Row label={ "Nationality:" } applicant={ applicant.nationality }/>
                                 </View>
                                 <View style={ styles.divider }/>
                                 <View style={ styles.group3 }>
@@ -153,8 +154,8 @@ const BasicInfo = (props: any) => {
                                     <Row label={ "School Attended:" } applicant={ applicant?.schoolAttended }/>
                                     <Row label={ "Course Taken:" } applicant={ applicant?.courseTaken }/>
                                     <Row label={ "Year Graduated:" } applicant={ applicant?.yearGraduated }/>
-                                    <Row label={ "Contact Number:" } applicant={ applicant?.user?.contactNumber }/>
-                                    <Row label={ "Email:" } applicant={ applicant?.user?.email }/>
+                                    <Row label={ "Contact Number:" } applicant={ applicant.contactNumber }/>
+                                    <Row label={ "Email:" } applicant={ applicant.email }/>
 
                                 </View>
                                 <View style={ styles.divider }/>

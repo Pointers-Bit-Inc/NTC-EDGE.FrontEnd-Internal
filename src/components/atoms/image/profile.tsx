@@ -52,6 +52,7 @@ const ProfileImage = ({
           width={imageSize}
           height={imageSize}
           resizeMode={"contain"}
+          borderRadius={size}
           style={[
             styles.image,
             {
@@ -62,7 +63,7 @@ const ProfileImage = ({
             },
             style
           ]}
-          borderRadius={size}
+
           source={{ uri: image }}
         />
       </View>

@@ -126,30 +126,7 @@ export function useActivities() {
         return status == DATE_ADDED
     });
     const query = () => {
-               console.log({
-                   ...(
-                       searchTerm && { keyword : searchTerm }) ,
-                   ...(
-                       { sort : checkDateAdded.length ? "asc" : "desc" }) ,
-                   ...(
-                       selectedClone.length > 0 && {
-                           [cashier ? "paymentStatus" : 'status'] : selectedClone.map((item: any) => {
-                               if (cashier) {
-                                   if (item == VERIFIED) {
-                                       return [PAID , VERIFIED , APPROVED]
-                                   } else if (item == UNVERIFIED) {
-                                       return [DECLINED , UNVERIFIED]
-                                   } else if (item == FORVERIFICATION) {
-                                       return [PENDING , FORVERIFICATION , FOREVALUATION , FORAPPROVAL].toString()
-                                   }
-                               } else if (item == FOREVALUATION) {
-                                   return [FOREVALUATION , PENDING , FORAPPROVAL , FORVERIFICATION].toString()
-                               }
 
-                               return item
-                           }).toString()
-                       })
-               })
         return {
             ...(
                 searchTerm && { keyword : searchTerm }) ,

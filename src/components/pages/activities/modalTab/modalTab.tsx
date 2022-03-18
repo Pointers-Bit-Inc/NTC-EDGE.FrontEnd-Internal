@@ -5,10 +5,11 @@ import Requirement from "@pages/activities/application/requirementModal/requirem
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React , {useState} from "react";
 import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
-import {Animated , StyleSheet} from "react-native";
+import {Animated} from "react-native";
 import TabBar from "@pages/activities/tabs/tabbar";
 import ScrollableTabView from "@pages/activities/tabs";
 import Tab from "@pages/activities/tabs/Tab";
+import useApplicant from "@pages/activities/modalTab/useApplicant";
 
 
 export const ModalTab = props => {
@@ -50,19 +51,23 @@ export const ModalTab = props => {
             isShow : [CASHIER , ACCOUNTANT]
         } ,
     ]);
-    const applicant = props?.details?.applicant ,
-        selectedTypes = props?.details?.selectedTypes ,
-        applicationType = props?.details?.applicationType ,
-        service = props?.details?.service ,
-        soa = props?.details?.soa ,
-        totalFee = props?.details?.totalFee ,
-        paymentMethod = props?.details?.paymentMethod ,
-        requirements = props?.details?.requirements ,
-        updatedAt = props?.details?.updatedAt ,
-        approvalHistory = props?.details?.approvalHistory ,
-        assignedPersonnel = props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel ,
-        createdAt = props?.details?.createdAt ,
-        proofOfPayment = props?.details?.proofOfPayment;
+
+
+    const {
+        applicant ,
+        selectedTypes ,
+        applicationType ,
+        service ,
+        soa ,
+        totalFee ,
+        paymentMethod ,
+        requirements ,
+        updatedAt ,
+        approvalHistory ,
+        assignedPersonnel ,
+        createdAt ,
+        proofOfPayment
+    } = useApplicant(props.details)
     return <ScrollableTabView
         onScroll={ (x) => _scrollX.setValue(x) }
         renderTabBar={ () => <TabBar

@@ -281,9 +281,12 @@ function ActivityModal(props: any) {
                         props.onDismissed(change);
                         setChange(false)
                     } }>
-                        <CloseIcon width={ fontValue(16) } height={ fontValue(16) } color="#606A80"/>
+                        <View>
+                            <CloseIcon width={ fontValue(16) } height={ fontValue(16) } color="#606A80"/>
+                        </View>
+
                     </TouchableOpacity>
-                    <Text style={ styles.applicationType }>{ props?.details?.applicationType }</Text>
+                    <Text style={ styles.applicationType }>{ props?.details?.applicationType || props?.details?.service?.name }</Text>
                     <View></View>
                 </View> }
 
@@ -305,7 +308,7 @@ function ActivityModal(props: any) {
                                     <ApprovedButton
                                         user={ user }
                                         currentLoading={ currentLoading }
-                                        allButton={ allButton }
+                                        allButton={ false }
                                         onPress={ () => {
 
                                             if (cashier) {
@@ -319,7 +322,7 @@ function ActivityModal(props: any) {
 
                                     <DeclineButton
                                         currentLoading={ currentLoading }
-                                        allButton={ allButton }
+                                        allButton={ false }
                                         onPress={ () => {
                                             setVisible(true)
                                         } }/>
@@ -329,7 +332,7 @@ function ActivityModal(props: any) {
                                 { getRole(user , [EVALUATOR]) &&
                                 <EndorsedButton
                                     currentLoading={ currentLoading }
-                                    allButton={ allButton }
+                                    allButton={ false }
                                     onPress={ () => {
                                         setEndorseVisible(true)
                                     } }/> }
@@ -456,6 +459,7 @@ export default ActivityModal
 const styles = StyleSheet.create({
     applicationType : {
 
+         textAlign: "center",
         fontFamily : Bold ,
         fontSize : fontValue(14) ,
         lineHeight : 16.5 ,

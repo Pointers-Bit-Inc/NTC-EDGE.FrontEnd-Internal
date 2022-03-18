@@ -13,6 +13,8 @@ export function useAssignPersonnel(assignedPersonnel, config) {
     const fetchData = async (isCurrent) => {
        InteractionManager.runAfterInteractions( async () => {
             setLoading(true)
+
+
             const _assignPersonnel = (assignedPersonnel?._id || assignedPersonnel)
 
             if(!_assignPersonnel) return

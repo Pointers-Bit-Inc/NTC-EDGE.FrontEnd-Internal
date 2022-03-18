@@ -8,7 +8,7 @@ import {
     Platform ,
     StyleSheet ,
     Text ,
-    TouchableOpacity ,
+    TouchableOpacity , useWindowDimensions ,
     View
 } from "react-native";
 import ApplicationApproved from "@assets/svg/application-approved";
@@ -133,7 +133,7 @@ const Approval = (props: any) => {
     const [showClose , setShowClose] = useState(false);
     const [isTyping , setIsTyping] = useState(true);
     const [onFocus , setOnFocus] = useState(false);
-    const textInput = useRef(null);
+    const dimensions = useWindowDimensions();
     return (
 
         <Modal
@@ -202,7 +202,7 @@ const Approval = (props: any) => {
 
                     <Animated.View style={ [styles.group  , {
 
-                        width : isMobile ? "100%" : "31.6%" ,  //474/1500
+                        width : isMobile || dimensions.width <= 768 ? "100%" : "31.6%" ,  //474/1500
                         display : !showAlert ? undefined : "none"
                     },  {transform : [{ scale : onFocus && isTyping ? 1 : springValue }] }] }>
                        <View style={styles.shadow}>

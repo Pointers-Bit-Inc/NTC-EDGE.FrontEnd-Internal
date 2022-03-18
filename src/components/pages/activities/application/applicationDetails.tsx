@@ -15,10 +15,10 @@ const ApplicationDetails = (props: any) => {
                     <View style={ styles.rect }>
                         <Text style={ styles.file }>APPLICATION FORM</Text>
                     </View>
-                    <Text style={ styles.applicationType }>{ props?.applicantType }</Text>
-                    <Text style={ [styles.service, {fontFamily: Regular500}] }>{ props?.service?.name }</Text>
-                    <Text style={ [styles.service, {fontFamily: Regular500}] }>{ props?.service?.radioType?.label }</Text>
-                    <Text style={ [styles.service, {fontFamily: Regular500}] }>{ `\u2022${ props?.service?.radioType?.selected }` }</Text>
+                    <Text style={ styles.applicationType }>{ props?.applicantType ||  props?.service?.name   }</Text>
+                    <Text style={ [styles.service, {fontFamily: Regular500}] }>{  props?.service?.applicationType?.label || props?.service?.name }</Text>
+                    <Text style={ [styles.service, {fontFamily: Regular500}] }>{  props?.service?.applicationType?.element  || props?.service?.radioType?.label }</Text>
+                    { props?.service?.radioType?.selected && <Text style={ [styles.service, {fontFamily: Regular500}] }>{ `\u2022${ props?.service?.radioType?.selected }` }</Text>}
                     { props?.selectedType?.map((type: any , idx: number) => {
                         return <Text key={ idx } style={ styles.text }>
                             { type?.name } { type?.selectedItems.map((item: string , index: number) => {
