@@ -180,7 +180,12 @@ const ChatBubble:FC<Props> = ({
             checkIfImage(attachment?.uri) ? (
               <Image
                 resizeMode={'cover'}
-                style={styles.imageBubble}
+                style={[
+                  styles.imageBubble,
+                  {
+                    backgroundColor: isSender ? bubble.primary : bubble.secondary
+                  }
+                ]}
                 borderRadius={10}
                 source={{ uri: attachment?.uri }}
               />
