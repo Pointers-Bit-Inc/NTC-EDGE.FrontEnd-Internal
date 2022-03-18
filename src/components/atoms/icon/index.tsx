@@ -39,6 +39,8 @@ import TrashIcon from './trash';
 import NewFileIcon from './new-file';
 import NewCheckIcon from './new-check';
 import MinusIcon from './minus';
+import MediaIcon from './media';
+import AttachIcon from './attach';
 
 export {
   ExclamationIcon,
@@ -81,5 +83,7 @@ export {
   TrashIcon,
   NewFileIcon,
   NewCheckIcon,
-  MinusIcon
+  MinusIcon,
+  MediaIcon,
+  AttachIcon,
 };
