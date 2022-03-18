@@ -201,7 +201,7 @@ export default function ActivitiesPage(props: any) {
                 <View onLayout={ onActivityLayoutComponent } style={ [styles.container, styles.shadow , {
 
                     flex : (
-                               isMobile  || dimensions?.width <800) ? 1 : 0.4 ,
+                               isMobile  || dimensions?.width <768) ? 1 : 0.4 ,
                 }] }>
 
 
@@ -382,8 +382,8 @@ export default function ActivitiesPage(props: any) {
                 </View>
                 {
                     !(
-                        isMobile )  && lodash.isEmpty(applicationItem) && dimensions?.width >800  &&
-                    <View style={ [{ flex : 0.6 , justifyContent : "center" , alignItems : "center" }] }>
+                        isMobile )  && lodash.isEmpty(applicationItem) && dimensions?.width >768  &&
+                    <View style={ [{ flex :  0.6 , justifyContent : "center" , alignItems : "center" }] }>
 
                         <NoActivity/>
                         <Text style={ { color : "#A0A3BD" , fontSize : fontValue(24) } }>No activity
