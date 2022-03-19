@@ -5,7 +5,14 @@ import {
     TouchableOpacity ,
     Dimensions ,
     Platform ,
-    StatusBar , ActivityIndicator , FlatList , RefreshControl , Animated , ScrollView , InteractionManager ,
+    StatusBar ,
+    ActivityIndicator ,
+    FlatList ,
+    RefreshControl ,
+    Animated ,
+    ScrollView ,
+    InteractionManager ,
+    useWindowDimensions ,
 } from 'react-native'
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -47,7 +54,10 @@ import {useComponentLayout} from "../../hooks/useComponentLayout";
 import {setChatLayout} from "../../reducers/layout/actions";
 import {Hoverable} from "react-native-web-hooks";
 import GroupImage from "@molecules/image/group";
-import {TabView} from "react-native-tab-view";
+import {SceneMap , TabBar , TabView} from "react-native-tab-view";
+import FileList from "@screens/chat/file-list";
+import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
+import NoConversationIcon from "@assets/svg/noConversations";
 
 const { width, height } = Dimensions.get('window');
 
@@ -190,6 +200,7 @@ const styles = StyleSheet.create({
 
 function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: () => void, onSubmit: (res: any) => void }) {
    // useRequestCameraAndAudioPermission();
+
     const {
         getChatList,
         leaveChannel,
@@ -485,6 +496,8 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                                         }
 
                                         dispatch(setMeetings([]));
+                                        props.onSubmit()
+
                                         /*if (selectedMessage && selectedMessage.channelId !== item._id) {
                                             dispatch(removeSelectedMessage());
                                         }*/
@@ -520,9 +533,6 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                 <NewChat
                     onClose={() => modalRef.current?.close()}
                     onSubmit={(res:any) => {
-
-
-
                         res.otherParticipants = lodash.reject(res.participants, p => p._id === props.user._id);
                         dispatch(setSelectedChannel(res));
                         dispatch(addChannel(res));
@@ -555,7 +565,7 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
         />
     </View>;
 }
-
+const Tab = createMaterialTopTabNavigator();
 
 const ChatList = ({ navigation }:any) => {
     const dispatch = useDispatch();
@@ -565,13 +575,14 @@ const ChatList = ({ navigation }:any) => {
         endMeeting,
         leaveMeeting,
     } = useSignalR();
+    const layout = useWindowDimensions();
 
     const user = useSelector((state:RootStateOrAny) => state.user);
     const inputRef:any = useRef(null);
     const [inputText, setInputText] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const [rendered, setRendered] = useState(false);
-
+    const [showLayout, setShowLayout] = useState(false);
     const { _id, otherParticipants, participants, isGroup, hasRoomName, name,  } = useSelector(
         (state:RootStateOrAny) => {
             const { selectedChannel } = state.channel;
@@ -579,6 +590,25 @@ const ChatList = ({ navigation }:any) => {
             return selectedChannel;
         }
     );
+    const meetingList = useSelector((state: RootStateOrAny) => {
+        const { normalizeActiveMeetings } = state.meeting
+        let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
+        meetingList = lodash.filter(meetingList, m => m.roomId === _id);
+        return lodash.orderBy(meetingList, 'updatedAt', 'desc');
+    })
+
+    const onJoin = (item:IMeetings) => {
+        dispatch(setSelectedChannel(item.room));
+        dispatch(setMeeting(item));
+        navigation.navigate('Dial', {
+            isHost: item.host._id === user._id,
+            isVoiceCall: item.isVoiceCall,
+            options: {
+                isMute: false,
+                isVideoEnable: true,
+            }
+        });
+    }
     const _editMessage = (messageId:string, message:string) => {
         editMessage({
             messageId,
@@ -655,14 +685,19 @@ const ChatList = ({ navigation }:any) => {
                     onBackdropPress={ () => {
                     } }
                     onSubmit={ (res: any) => {
-                        console.log()
-                        res.otherParticipants = lodash.reject(res.participants , p => p._id === user._id);
-                        setTimeout(() => navigation.navigate('ViewChat' , res) , 300);
+                        setShowLayout(true)
                     } }/>
             </View>
               <View onLayout={ onChatLayout } style={ { backgroundColor: "#F8F8F8", flex : 0.6 ,} }>
-                  {_id &&<View style={[styles.header, styles.horizontal]}>
-                      <TouchableOpacity onPress={()=>{}}>
+                  {!(_id && showLayout) &&<View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+                      <View >
+                          <NoConversationIcon />
+                      </View>
+
+                      <Text style={{color: "#A0A3BD", paddingVertical: 30, fontSize: 24, fontFamily: Regular, fontWeight: "400"}}>No conversations yet</Text>
+                  </View>}
+                  {_id && showLayout &&<View style={[styles.header, styles.horizontal]}>
+                      <TouchableOpacity onPress={()=>{setShowLayout(false)}}>
                           <View style={{ paddingRight: 5 }}>
                               <ArrowLeftIcon
                                   type='chevron-left'
@@ -719,8 +754,48 @@ const ChatList = ({ navigation }:any) => {
                           </View>
                       </TouchableOpacity>
                   </View> }
-                  {rendered && <List/>}
-                  {_id && <View style={styles.keyboardAvoiding}>
+                  {_id && showLayout && <View>
+                      {
+                          !!lodash.size(meetingList) && (
+                              <FlatList
+                                  data={meetingList}
+                                  bounces={false}
+                                  horizontal
+                                  showsHorizontalScrollIndicator={false}
+                                  snapToInterval={width}
+                                  decelerationRate={0}
+                                  keyExtractor={(item:any) => item._id}
+                                  renderItem={({ item }) => (
+                                      <MeetingNotif
+                                          style={{ width }}
+                                          name={getChannelName({...item, otherParticipants: item?.participants})}
+                                          host={item.host}
+                                          time={item.createdAt}
+                                          onJoin={() => onJoin(item)}
+                                          onClose={() => onClose(item)}
+                                          closeText={'Cancel'}
+                                      />
+                                  )}
+                              />
+                          )
+                      }
+                  </View> }
+                  {_id && showLayout &&<Tab.Navigator   screenOptions={({ route }) => ({
+                      tabBarIndicatorContainerStyle: { borderBottomColor: '#DDDDDD', borderBottomWidth: 1 },
+                      tabBarLabelStyle: { textTransform: 'none' },
+                      tabBarIndicatorStyle: {backgroundColor: outline.info, height: 3},
+                      tabBarStyle:{ backgroundColor: 'white' },
+                      tabBarActiveTintColor: text.info,
+                      tabBarLabel: ({ tintColor, focused, item }) => {
+                          return focused
+                                 ? (<Text style={{color: text.info, fontSize: 14,fontWeight: 'bold',}} >{route.name}</Text>)
+                                 : (<Text style={{color: tintColor, fontSize: 14, fontWeight: 'normal'}} >{route.name}</Text>)
+                      },
+                  })} >
+                      <Tab.Screen  name="Home" component={List} />
+                      <Tab.Screen name="Settings" component={FileList} />
+                  </Tab.Navigator> }
+                  {_id && showLayout && <View style={styles.keyboardAvoiding}>
 
                       <View style={{ marginTop: fontValue(-18) }}>
                           <TouchableOpacity  disabled={true}>

@@ -173,6 +173,7 @@ const ChatList: FC<Props> = ({
   }
   return (
     <>
+
       <FlatList
         showsVerticalScrollIndicator={false}
         inverted={true}
