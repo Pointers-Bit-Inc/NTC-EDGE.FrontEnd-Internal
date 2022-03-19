@@ -50,7 +50,7 @@ const { ModalTab } = Platform.select({
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
     const dimensions = useWindowDimensions();
-    const NativeView = isMobile || dimensions?.width <= 768  ? Modal : View;
+    const NativeView = isMobile || dimensions?.width <= 768 ? Modal : View;
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [change , setChange] = useState<boolean>(false);
     const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
@@ -123,10 +123,10 @@ function ActivityModal(props: any) {
                     if (res.status === 200) {
                         if (res.data) {
 
-                              const data = res.data?.doc || res?.data
+                            const data = res.data?.doc || res?.data;
 
 
-                            console.log(data?.assignedPersonnel?._id || data?.assignedPersonnel, "assigned personnel")
+                            console.log(data?.assignedPersonnel?._id || data?.assignedPersonnel , "assigned personnel");
                             props.onChangeAssignedId(data);
                             dispatch(updateApplicationStatus({
                                 application : data ,
@@ -200,7 +200,7 @@ function ActivityModal(props: any) {
     const [activityModalScreenComponent , onActivityModalScreenComponent] = useComponentLayout();
     useEffect(() => {
         dispatch(setRightLayoutComponent(activityModalScreenComponent))
-    } , [activityModalScreenComponent])
+    } , [activityModalScreenComponent]);
     return (
         <NativeView
             onLayout={ onActivityModalScreenComponent }
@@ -271,9 +271,10 @@ function ActivityModal(props: any) {
                     flexDirection : "row" ,
                     alignItems : "center" ,
                     borderBottomColor : "#F0F0F0" ,
+
                     justifyContent : "space-between" ,
                     padding : 15 ,
-                    paddingTop : 40
+                    paddingTop : 40 ,
                 } }>
                     <TouchableOpacity onPress={ () => {
                         setAssignId("");
@@ -281,18 +282,18 @@ function ActivityModal(props: any) {
                         props.onDismissed(change);
                         setChange(false)
                     } }>
-                        <View>
-                            <CloseIcon width={ fontValue(16) } height={ fontValue(16) } color="#606A80"/>
-                        </View>
 
+                        <CloseIcon width={ fontValue(16) } height={ fontValue(16) } color="#606A80"/>
                     </TouchableOpacity>
-                    <Text style={ styles.applicationType }>{ props?.details?.applicationType || props?.details?.service?.name }</Text>
+
+                    <Text
+                        style={ [styles.applicationType, {width: "90%"}] }>{ props?.details?.applicationType || props?.details?.service?.name }</Text>
                     <View></View>
                 </View> }
 
                 <ModalTab dismissed={ () => {
                     props.onDismissed(change);
-                } }  details={ props.details } status={ status }/>
+                } } details={ props.details } status={ status }/>
                 {
                     <View style={ {
                         paddingHorizontal : !isMobile && 64 ,
@@ -300,7 +301,10 @@ function ActivityModal(props: any) {
                         borderTopWidth : 1 , backgroundColor : "white"
                     } }>
                         <View style={ !(
-                            isMobile) && { width :dimensions?.width <= 768 ? "100%" : "60%" , alignSelf : "flex-end" } }>
+                            isMobile) && {
+                            width : dimensions?.width <= 768 ? "100%" : "60%" ,
+                            alignSelf : "flex-end"
+                        } }>
                             <View style={ styles.footer }>
                                 { getRole(user , [DIRECTOR , EVALUATOR , CASHIER , ACCOUNTANT]) &&
                                 <View style={ styles.groupButton }>
@@ -308,7 +312,7 @@ function ActivityModal(props: any) {
                                     <ApprovedButton
                                         user={ user }
                                         currentLoading={ currentLoading }
-                                        allButton={ false }
+                                        allButton={ allButton }
                                         onPress={ () => {
 
                                             if (cashier) {
@@ -322,7 +326,7 @@ function ActivityModal(props: any) {
 
                                     <DeclineButton
                                         currentLoading={ currentLoading }
-                                        allButton={ false }
+                                        allButton={ allButton }
                                         onPress={ () => {
                                             setVisible(true)
                                         } }/>
@@ -332,7 +336,7 @@ function ActivityModal(props: any) {
                                 { getRole(user , [EVALUATOR]) &&
                                 <EndorsedButton
                                     currentLoading={ currentLoading }
-                                    allButton={ false }
+                                    allButton={ allButton }
                                     onPress={ () => {
                                         setEndorseVisible(true)
                                     } }/> }
@@ -353,7 +357,7 @@ function ActivityModal(props: any) {
                     setAssignId(props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel)
                 } }
                 onChangeRemarks={ (_remark: string , _assign ,) => {
-                    
+
                     setPrevStatus(status);
                     setPrevRemarks(remarks);
                     setPrevAssignId(assignId);
@@ -459,7 +463,7 @@ export default ActivityModal
 const styles = StyleSheet.create({
     applicationType : {
 
-         textAlign: "center",
+        textAlign : "center" ,
         fontFamily : Bold ,
         fontSize : fontValue(14) ,
         lineHeight : 16.5 ,

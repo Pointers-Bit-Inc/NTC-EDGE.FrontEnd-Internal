@@ -1,5 +1,5 @@
 import {RootStateOrAny , useSelector} from "react-redux";
-import React , {useState} from "react";
+import React , {useEffect , useState} from "react";
 import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
 import {StyleSheet , Text , TouchableOpacity , View} from "react-native";
 import {Regular , Regular500} from "@styles/font";
@@ -38,7 +38,7 @@ export const ModalTab = props => {
             active : false ,
             isShow : [CHECKER , ACCOUNTANT , CASHIER , DIRECTOR , EVALUATOR] ,
             label : <View style={ [styles.tabItem , { gap : 5 }] }><ApplicationDetailWebIcon/><Text
-                style={ styles.tabTextItem }> Application</Text></View>
+                style={ styles.tabTextItem }> Application Details</Text></View>
         } ,
         {
             id : 3 ,
@@ -72,19 +72,29 @@ export const ModalTab = props => {
         createdAt ,
         proofOfPayment
     } = useApplicant(props.details)
-
+        const [initialPage, setInitialPage] = useState(true)
+    useEffect(()=>{
+               setInitialPage(true)
+    }, [props.details._id])
     return <ViewPaged
+       
+        isMovingRender
         render
         vertical={ false }
         renderPosition='top'
         renderHeader={ (params) => {
+            if(initialPage){
+                params.goToPage(0)
+                setInitialPage(false)
+            }
+
             const _tabs = [...tabs]
 
             _tabs[0].label =
                 <View style={ [styles.tabItem , { gap : 5 }] }><BasicInfoWebIcon/> <Text style={ [styles.tabTextItem] }>Basic
                     Info</Text></View>
             _tabs[1].label = <View style={ [styles.tabItem , { gap : 5 }] }><ApplicationDetailWebIcon/><Text
-                style={ [styles.tabTextItem] }>Application</Text></View>
+                style={ [styles.tabTextItem] }>Application Details</Text></View>
             _tabs[2].label = <View style={ [styles.tabItem , { gap : 5 }] }><RequirementWebIcon/><Text
                 style={ [styles.tabTextItem] }>Requirements</Text></View>
             _tabs[3].label = <View style={ [styles.tabItem , { gap : 5 }] }><SoaPaymentWebIcon/><Text
@@ -97,7 +107,7 @@ export const ModalTab = props => {
             if (params.activeTab == 1) {
                 _tabs.find(a => a.id == 2).label =
                     <View style={ [styles.tabItem , { gap : 5 }] }><ApplicationDetailWebIcon fill={ "#2863D6" }/><Text
-                        style={ [styles.tabTextItem , styles.tabSelected] }>Application</Text></View>
+                        style={ [styles.tabTextItem , styles.tabSelected] }>Application Details</Text></View>
             }
             if (params.activeTab == 2) {
                 if (getRole(user , [ACCOUNTANT , CASHIER])) {

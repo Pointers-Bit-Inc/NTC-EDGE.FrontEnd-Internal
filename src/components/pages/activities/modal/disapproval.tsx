@@ -23,6 +23,7 @@ import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import CloseIcon from "@assets/svg/close";
 import hairlineWidth = StyleSheet.hairlineWidth;
 import button from "@pages/activities/modal/styles";
+import ConfirmRightArrow from "@assets/svg/confirmArrow";
 
 const { height , width } = Dimensions.get('window');
 
@@ -165,8 +166,9 @@ function Disapproval(props: any) {
                                 props.remarks(text);
                                 setShowAlert(true)
                             } }>
-                                <View style={ button.confirmButton }>
+                                <View style={ [button.confirmButton, {gap: 5} ]}>
                                     <Text style={ button.confirm }>Confirm</Text>
+                                    <ConfirmRightArrow></ConfirmRightArrow>
                                 </View>
                             </TouchableOpacity>
                         </View>

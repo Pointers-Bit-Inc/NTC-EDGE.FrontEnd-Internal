@@ -18,14 +18,22 @@ import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
 import HomeMenuIcon from "@assets/svg/homemenu";
-import {CheckIcon , NewChatIcon , NewMessageIcon , PlusIcon} from '@atoms/icon';
+import {
+    ArrowLeftIcon ,
+    CheckIcon ,
+    NewCallIcon ,
+    NewChatIcon ,
+    NewMessageIcon ,
+    NewVideoIcon ,
+    PlusIcon
+} from '@atoms/icon';
 import {Bold, Regular, Regular500} from "@styles/font";
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import NewChat from '@pages/chat/new';
 import {fontValue} from "@pages/activities/fontValue";
 import MeetIcon from "@assets/svg/meetIcon";
 import hairlineWidth = StyleSheet.hairlineWidth;
-import {getChannelImage , getChannelName , getTimeString} from "../../utils/formatting";
+import {getChannelImage , getChannelName , getTimeDifference , getTimeString} from "../../utils/formatting";
 import IMeetings from "../../interfaces/IMeetings";
 import {removeActiveMeeting , setMeeting} from "../../reducers/meeting/actions";
 import {ChatItem , ListFooter , MeetingNotif} from "@molecules/list-item";
@@ -38,6 +46,8 @@ import useSignalR from "../../hooks/useSignalr";
 import {useComponentLayout} from "../../hooks/useComponentLayout";
 import {setChatLayout} from "../../reducers/layout/actions";
 import {Hoverable} from "react-native-web-hooks";
+import GroupImage from "@molecules/image/group";
+import {TabView} from "react-native-tab-view";
 
 const { width, height } = Dimensions.get('window');
 
@@ -93,6 +103,10 @@ const styles = StyleSheet.create({
         width: width - 70,
         alignSelf: 'flex-end',
         backgroundColor: outline.default,
+    },
+    horizontal: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     shadow: {
         shadowColor: "#000",
@@ -165,6 +179,12 @@ const styles = StyleSheet.create({
         marginRight: 10,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    info: {
+        flex: 1,
+        paddingHorizontal: 10,
+        justifyContent: 'center',
+        paddingLeft: 5,
     },
 });
 
@@ -485,21 +505,24 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
             )
         }
         <BottomModal
-             style={{width: chatLayout?.width, left: chatLayout?.x, marginLeft: 108  }}
+             style={{  width: chatLayout?.width, left: chatLayout?.x, marginBottom: chatLayout?.y,marginLeft: 108  }}
             ref={modalRef}
             onModalHide={() => modalRef.current?.close()}
             avoidKeyboard={false}
             header={
                 <View style={styles.bar} />
             }
-            containerStyle={{ maxHeight: null }}
+            containerStyle={{  maxHeight: null }}
             backdropOpacity={0}
             onBackdropPress={() => {}}
         >
-            <View style={{ height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
+            <View style={{height: (chatLayout?.height)   }}>
                 <NewChat
                     onClose={() => modalRef.current?.close()}
                     onSubmit={(res:any) => {
+
+
+
                         res.otherParticipants = lodash.reject(res.participants, p => p._id === props.user._id);
                         dispatch(setSelectedChannel(res));
                         dispatch(addChannel(res));
@@ -549,7 +572,7 @@ const ChatList = ({ navigation }:any) => {
     const [isFocused, setIsFocused] = useState(false);
     const [rendered, setRendered] = useState(false);
 
-    const { _id, otherParticipants, participants } = useSelector(
+    const { _id, otherParticipants, participants, isGroup, hasRoomName, name,  } = useSelector(
         (state:RootStateOrAny) => {
             const { selectedChannel } = state.channel;
             selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
@@ -632,14 +655,73 @@ const ChatList = ({ navigation }:any) => {
                     onBackdropPress={ () => {
                     } }
                     onSubmit={ (res: any) => {
+                        console.log()
                         res.otherParticipants = lodash.reject(res.participants , p => p._id === user._id);
                         setTimeout(() => navigation.navigate('ViewChat' , res) , 300);
                     } }/>
             </View>
               <View onLayout={ onChatLayout } style={ { backgroundColor: "#F8F8F8", flex : 0.6 ,} }>
-
+                  {_id &&<View style={[styles.header, styles.horizontal]}>
+                      <TouchableOpacity onPress={()=>{}}>
+                          <View style={{ paddingRight: 5 }}>
+                              <ArrowLeftIcon
+                                  type='chevron-left'
+                                  color={'#111827'}
+                                  size={RFValue(26)}
+                              />
+                          </View>
+                      </TouchableOpacity>
+                      <View>
+                          <GroupImage
+                              participants={otherParticipants}
+                              size={isGroup ? 45 : 30}
+                              textSize={isGroup ? 24 : 16}
+                              inline={true}
+                          />
+                      </View>
+                      <View style={styles.info}>
+                          <Text
+                              color={'black'}
+                              size={16}
+                              numberOfLines={1}
+                          >
+                              {getChannelName({  otherParticipants, isGroup, hasRoomName, name  })}
+                          </Text>
+                          {
+                              !isGroup && !!otherParticipants[0]?.lastOnline && (
+                                  <Text
+                                      color={'#606A80'}
+                                      size={10}
+                                      numberOfLines={1}
+                                      style={{ marginTop: -5 }}
+                                  >
+                                      {otherParticipants[0]?.isOnline ? 'Active now' : getTimeDifference(otherParticipants[0]?.lastOnline)}
+                                  </Text>
+                              )
+                          }
+                      </View>
+                      <TouchableOpacity onPress={() => {}}>
+                          <View style={{ paddingRight: 5 }}>
+                              <NewCallIcon
+                                  color={button.info}
+                                  height={RFValue(24)}
+                                  width={RFValue(24)}
+                              />
+                          </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => {}}>
+                          <View style={{ paddingLeft: 5, paddingTop: 5 }}>
+                              <NewVideoIcon
+                                  color={button.info}
+                                  height={RFValue(28)}
+                                  width={RFValue(28)}
+                              />
+                          </View>
+                      </TouchableOpacity>
+                  </View> }
                   {rendered && <List/>}
                   {_id && <View style={styles.keyboardAvoiding}>
+
                       <View style={{ marginTop: fontValue(-18) }}>
                           <TouchableOpacity  disabled={true}>
                               <View style={styles.plus}>

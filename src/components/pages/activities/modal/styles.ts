@@ -28,7 +28,8 @@ const button = StyleSheet.create({
                 padding : 10
             }
         }) ,
-
+        
+        flexDirection: "row",
         alignItems : 'center' ,
         justifyContent : 'center' ,
     }

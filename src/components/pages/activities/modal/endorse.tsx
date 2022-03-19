@@ -28,6 +28,7 @@ import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import hairlineWidth = StyleSheet.hairlineWidth;
 import button from "@pages/activities/modal/styles";
+import ConfirmRightArrow from "@assets/svg/confirmArrow";
 
 const { height , width } = Dimensions.get('window');
 
@@ -256,8 +257,10 @@ const Endorsed = (props: any) => {
                                <View style={ [{  padding : 15 }, ]}>
                                    <TouchableOpacity disabled={ !picked } onPress={ onEndorseConfirm }>
                                        <View
-                                           style={ [button.confirmButton , { backgroundColor : picked ? primaryColor : disabledColor , }] }>
+                                           style={ [button.confirmButton , { gap: 5,  backgroundColor : picked ? primaryColor : disabledColor , }] }>
+
                                            <Text style={ button.confirm }>Confirm</Text>
+                                           <ConfirmRightArrow></ConfirmRightArrow>
                                        </View>
                                    </TouchableOpacity>
                                </View>

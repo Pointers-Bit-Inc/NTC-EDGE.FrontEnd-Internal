@@ -1,5 +1,14 @@
 import React , {useEffect} from "react";
-import {ActivityIndicator , Dimensions , Platform , ScrollView , StyleSheet , Text , View} from "react-native";
+import {
+    ActivityIndicator ,
+    Dimensions ,
+    Platform ,
+    ScrollView ,
+    StyleSheet ,
+    Text ,
+    useWindowDimensions ,
+    View
+} from "react-native";
 import {
     excludeStatus , getRole ,
     getStatusText , PaymentStatusText ,
@@ -40,22 +49,23 @@ const BasicInfo = (props: any) => {
         }
     });
     const applicant = props.applicant?.user || props.applicant;
+    const dimensions = useWindowDimensions();
     return <ScrollView style={ { width : "100%" , backgroundColor : "#f8f8f8" , } }>
 
-        <View style={{flexDirection:  isMobile ? "column" : "row"}}>
-            <View style={  isMobile ?  { padding : 10  , alignSelf : "center" }  : {paddingLeft: 20, paddingVertical: 20} }>
+        <View style={{flexDirection:  isMobile || dimensions?.width <= 768  ? "column" : "row"}}>
+            <View style={  isMobile || dimensions?.width <= 768 ?  { padding : 10  , alignSelf : "center" }  : {paddingLeft: 20, paddingVertical: 20} }>
                 <ProfileImage
                     size={ fontValue(150) }
                     style={ { borderRadius : 4 } }
 
                     textSize={ 22 }
                     image={ applicant.profilePicture?.small || applicant?.profilePicture?.small }
-                    name={ `${ applicant.firstName ||  applicant?.firstName } ${ applicant.lastName ||  applicant?.firstName }` }
+                    name={ `${ applicant.firstName } ${ applicant.lastName }` }
                 />
 
-                {!isMobile && <View style={{paddingVertical: 20}}>
+                {(dimensions?.width >= 768) && <View style={{paddingVertical: 20}}>
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center",  backgroundColor: "#EFF0F6"}}>
-                        <Text style={{fontFamily: Regular, fontSize: 12, lineHeight: 24, color: "#565961"  }}>PHOTO</Text>
+                        <Text style={{fontWeight: "bold", fontFamily: Regular, fontSize: 12, lineHeight: 24, color: "#565961"  }}>PHOTO</Text>
                     </View>
                 </View>}
 
