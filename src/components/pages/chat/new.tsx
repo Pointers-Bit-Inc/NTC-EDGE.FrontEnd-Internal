@@ -125,6 +125,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 5,
+    paddingLeft: 1,
+    paddingTop: 1,
   },
   cancelText: {
     fontSize: RFValue(16),
@@ -506,6 +508,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
           ListFooterComponent={ListFooterComponent}
           onEndReached={() => fetchMoreParticipants()}
           onEndReachedThreshold={0.5}
+          keyboardShouldPersistTaps={'handled'}
         />
       );
     } else {

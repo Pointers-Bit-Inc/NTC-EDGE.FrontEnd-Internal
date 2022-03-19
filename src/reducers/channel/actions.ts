@@ -155,7 +155,7 @@ export function setPendingMessageError (payload:any) {
   };
 }
 
-export function removePendingMessage (messageId:string, message:IMessages) {
+export function removePendingMessage (messageId:string, message:any) {
   return {
     messageId,
     message,

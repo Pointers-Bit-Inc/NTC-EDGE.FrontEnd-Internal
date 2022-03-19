@@ -152,10 +152,15 @@ export default function basket(state = initialState, action:any) {
       return state.setIn(['pendingMessages', action.payload, 'error'], true);
     }
     case REMOVE_PENDING_MESSAGE: {
-      return state.setIn(['normalizedMessages', action.message._id], action.message)
-      .setIn(['selectedChannel', 'lastMessage'], action.message)
-      .setIn(['selectedChannel', 'updatedAt'], action.message.updatedAt)
-      .removeIn(['pendingMessages', action.messageId]);
+      let newState = state.removeIn(['pendingMessages', action.messageId]);
+
+      if (action.message) {
+        newState = newState.setIn(['normalizedMessages', action.message._id], action.message)
+        .setIn(['selectedChannel', 'lastMessage'], action.message)
+        .setIn(['selectedChannel', 'updatedAt'], action.message.updatedAt);
+      }
+      
+      return newState;
     }
     case RESET_PENDING_MESSAGES: {
       return state.setIn(['pendingMessages'], {});
