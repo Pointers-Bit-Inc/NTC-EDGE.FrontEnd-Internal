@@ -356,7 +356,7 @@ export function ActivityItem(props: any) {
                                                    <View style={{ flex : 1 , alignItems : 'flex-start' } }>
                                                        <RenderPinned config={ props.config }
                                                                      assignedPersonnel={
-                                                                         !!props?.activity.paymentMethod && (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) ?
+                                                                         props?.activity.assignedPersonnel?._id || !!props?.activity.paymentMethod && (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) ?
                                                                          (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) : (props?.activity?.paymentStatus == APPROVED || props?.activity?.paymentStatus == DECLINED ?
                                                                                                                                        (props?.activity?.paymentHistory?.[0]?.userId ) :
                                                                                                                                        (props?.activity?.approvalHistory?.[0]?.userId ?
