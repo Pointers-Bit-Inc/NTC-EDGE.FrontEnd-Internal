@@ -33,22 +33,6 @@ export interface User {
     _id: string;
 }
 
-export interface Applicant {
-    yearGraduated: string;
-    courseTaken: string;
-    schoolAttended: string;
-    company: string;
-    zipCode: string;
-    province: string;
-    city: string;
-    barangay: string;
-    unit: string;
-    street: string;
-    user: User;
-    _id: string;
-    category: string;
-}
-
 export interface RadioType {
     value: string;
     selected: string;
@@ -74,32 +58,22 @@ export interface Soa {
     amount: number;
 }
 
-export interface SelectedType {
-    name: string;
-    _id: string;
-    selectedItems: string[];
-}
-
 export interface Doc {
     _id: string;
-    updatedAt: Date;
-    createdAt: Date;
-    assignedPersonnel?: any;
     applicant: Applicant;
     service: Service;
-    paymentHistory: any[];
-    approvalHistory: ApprovalHistory[];
-    soa: Soa[];
-    requirements: any[];
-    selectedType: SelectedType[];
-    paymentStatus: string;
-    totalFee: number;
     status: string;
-    __v: number;
-    selectedTypes: SelectedType[];
-    applicationType: string;
-    isPinned: boolean;
-    id: string;
+    paymentStatus?: any;
+    paymentMethod?: any;
+    totalFee: number;
+    assignedPersonnel: AssignedPersonnel;
+    soa?: any;
+    approvalHistory: ApprovalHistory[];
+    paymentHistory: PaymentHistory[];
+    exam?: any;
+    ORNumber?: any;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Application {
@@ -156,3 +130,74 @@ export interface ProfilePicture {
 }
 
 
+export interface Contact {
+    contactNumber: string;
+    email: string;
+}
+
+export interface DateOfBirth {
+    day: string;
+    month: string;
+    year: string;
+}
+
+export interface Education {
+    schoolAttended: string;
+    courseTaken: string;
+    yearGraduated: string;
+}
+
+export interface Applicant {
+    _id: string;
+    userId: string;
+    firstName: string;
+    lastName: string;
+    middleName: string;
+    nationality: string;
+    sex: string;
+    birthDate?: any;
+    contact: Contact;
+    dateOfBirth: DateOfBirth;
+    education: Education;
+}
+
+export interface Requirement {
+    key: string;
+    title: string;
+    links: any;
+}
+
+export interface ApplicationType {
+    label: string;
+    element: string;
+    requirements: Requirement[];
+}
+
+export interface Service {
+    _id: string;
+    name: string;
+    serviceCode: string;
+    applicationType: ApplicationType;
+}
+
+export interface AssignedPersonnel {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    middleName?: any;
+    email: string;
+}
+
+export interface ApprovalHistory {
+    time: Date;
+    action: string;
+    userId: string;
+    status: string;
+}
+
+export interface PaymentHistory {
+    time: Date;
+    action: string;
+    userId: string;
+    status: string;
+}

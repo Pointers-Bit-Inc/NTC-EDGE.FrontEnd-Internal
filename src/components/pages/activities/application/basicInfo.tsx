@@ -140,7 +140,7 @@ const BasicInfo = (props: any) => {
                                          applicant={ applicant.firstName + " " + applicant.middleName?.charAt() + "." + " " + applicant.lastName }/>
                                     <Row label={ "Date of Birth:" }
                                          applicant={ moment(applicant.dateOfBirth).format('LL') }/>
-                                    <Row label={ "Gender:" } applicant={ applicant.gender  }/>
+                                    <Row label={ "Gender:" } applicant={ applicant?.gender || applicant?.sex  }/>
                                     <Row label={ "Nationality:" } applicant={ applicant.nationality }/>
                                 </View>
                                 <View style={ styles.divider }/>
@@ -164,11 +164,11 @@ const BasicInfo = (props: any) => {
                                             <Text style={ styles.header }>Additional Details</Text>
                                         </View>
                                     </View>
-                                    <Row label={ "School Attended:" } applicant={ applicant?.schoolAttended }/>
-                                    <Row label={ "Course Taken:" } applicant={ applicant?.courseTaken }/>
-                                    <Row label={ "Year Graduated:" } applicant={ applicant?.yearGraduated }/>
-                                    <Row label={ "Contact Number:" } applicant={ applicant.contactNumber }/>
-                                    <Row label={ "Email:" } applicant={ applicant.email }/>
+                                    <Row label={ "School Attended:" } applicant={ applicant?.education?.schoolAttended }/>
+                                    <Row label={ "Course Taken:" } applicant={ applicant?.education?.courseTaken }/>
+                                    <Row label={ "Year Graduated:" } applicant={ applicant?.education?.yearGraduated }/>
+                                    <Row label={ "Contact Number:" } applicant={ applicant?.contact?.contactNumber }/>
+                                    <Row label={ "Email:" } applicant={ applicant?.contact.email }/>
 
                                 </View>
                                 <View style={ styles.divider }/>
