@@ -18,11 +18,11 @@ export function useAssignPersonnel(assignedPersonnel, config) {
             const _assignPersonnel = (assignedPersonnel?._id || assignedPersonnel)
 
             if(!_assignPersonnel) return
-           
+
             await axios
                 .get(BASE_URL + `/users/${_assignPersonnel}`, config)
                 .then((res) => {
-                         console.log(res.data, assignedPersonnel)
+                         console.log("assignPersonnel", assignedPersonnel)
                         if(isCurrent){
                         setLoading(false)
                         setPersonnel(res.data);

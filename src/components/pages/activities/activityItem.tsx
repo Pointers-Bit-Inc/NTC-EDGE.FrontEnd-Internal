@@ -21,7 +21,7 @@ import {
     DIRECTOR ,
     EVALUATOR ,
     FORAPPROVAL ,
-    FOREVALUATION , FORVERIFICATION , VERIFICATION
+    FOREVALUATION , FORVERIFICATION , PENDING , VERIFICATION
 } from "../../../reducers/activity/initialstate";
 import {outline} from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
@@ -39,7 +39,7 @@ import PinToTopIcon from "@assets/svg/pintotop";
 import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
-
+ import lodash from "lodash"
 const styles = StyleSheet.create({
 
     containerBlur : {
@@ -229,9 +229,12 @@ const closeRow = (index) => {
 };
 
 export function ActivityItem(props: any) {
+    const approvalHistory = (index = 1) => props?.activity?.approvalHistory?.[props?.activity?.approvalHistory?.length - index]
+    const paymentHistory = (index = 1) => props?.activity?.paymentHistory?.[props?.activity?.paymentHistory?.length - index]
+
     const status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status);
     const userActivity = props?.activity?.applicant?.user ||  props?.activity?.applicant;
-    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!props?.activity?.paymentHistory?.[0]?.status ? StatusText(props?.activity?.paymentHistory?.[0]?.status) : getRole(props.currentUser , [ACCOUNTANT]) && props?.activity?.approvalHistory[0].status == FOREVALUATION && props?.activity?.approvalHistory[1].status == FORAPPROVAL ? DECLINED :  getRole(props?.currentUser , [CASHIER]) && !props?.activity?.paymentMethod ? FORVERIFICATION :  status;
+    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!approvalHistory()?.userId && approvalHistory()?.status !== FOREVALUATION && approvalHistory()?.status!==FORVERIFICATION &&  approvalHistory()?.status!==FORAPPROVAL &&  approvalHistory()?.status!==PENDING? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!paymentHistory()?.status ? StatusText(paymentHistory()?.status) : getRole(props.currentUser , [ACCOUNTANT]) && approvalHistory()?.status == FOREVALUATION && approvalHistory(2)?.status == FORAPPROVAL ? DECLINED :  getRole(props?.currentUser , [CASHIER]) && !props?.activity?.paymentMethod ? FORVERIFICATION :  status;
 
     useEffect(() => {
         let unsubscribe = true;
@@ -250,7 +253,6 @@ export function ActivityItem(props: any) {
         setSelectedMoreCircle(value => !value)
 
     };
-
     const dimensions = useWindowDimensions();
     return (
 
@@ -356,12 +358,12 @@ export function ActivityItem(props: any) {
                                                    <View style={{ flex : 1 , alignItems : 'flex-start' } }>
                                                        <RenderPinned config={ props.config }
                                                                      assignedPersonnel={
-                                                                         props?.activity.assignedPersonnel?._id || !!props?.activity.paymentMethod && (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) ?
+                                                                         approvalHistory()?.status == FORAPPROVAL ? props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel  :!!props?.activity.paymentMethod && (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) ?
                                                                          (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) : (props?.activity?.paymentStatus == APPROVED || props?.activity?.paymentStatus == DECLINED ?
-                                                                                                                                       (props?.activity?.paymentHistory?.[0]?.userId ) :
-                                                                                                                                       (props?.activity?.approvalHistory?.[0]?.userId ?
-                                                                                                                                        props?.activity?.approvalHistory?.[0]?.userId :
-                                                                                                                                        (props?.activity?.assignedPersonnel?._id || props?.assignedPersonnel)))
+                                                                                                                                       (paymentHistory()?.userId ) :
+                                                                                                                                       (approvalHistory()?.userId ?
+                                                                                                                                        approvalHistory()?.userId :
+                                                                                                                                        (props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel)))
                                                                           }/>
                                                    </View>
                                                </View>

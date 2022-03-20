@@ -35,14 +35,17 @@ const Row = (props: { label: string, applicant: any }) => <View style={ styles.g
 
 
 const BasicInfo = (props: any) => {
+    const approvalHistory = (index = 1) => props?.approvalHistory?.[props?.approvalHistory?.length - index]
+    const paymentHistory = (index = 1) => props?.paymentHistory?.[props?.paymentHistory?.length - index]
+
     const {
         personnel ,
         loading
     } = useAssignPersonnel( !!props.paymentMethod && (props.assignedPersonnel?._id || props.assignedPersonnel ) ?
                             (props.assignedPersonnel?._id || props.assignedPersonnel ) : (props.paymentStatus == APPROVED || props.paymentStatus == DECLINED ?
-                            (props?.paymentHistory?.[0]?.userId ) :
-                            (props?.approvalHistory?.[0]?.userId ?
-                             props?.approvalHistory?.[0]?.userId :
+                            (paymentHistory()?.userId ) :
+                            (approvalHistory()?.userId ?
+                             approvalHistory()?.userId :
                              (props.assignedPersonnel?._id || props?.assignedPersonnel))) , {
         headers : {
             Authorization : "Bearer ".concat(props.user.sessionToken)

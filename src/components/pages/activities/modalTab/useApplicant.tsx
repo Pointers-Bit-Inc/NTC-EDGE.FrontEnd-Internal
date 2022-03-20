@@ -9,7 +9,7 @@ export default function useApplicant(props) {
         requirements = props?.requirements || props?.service?.applicationType?.requirements ,
         updatedAt = props?.updatedAt ,
         approvalHistory = props?.approvalHistory ,
-        assignedPersonnel = props?.assignedPersonnel?._id || props?.assignedPersonnel,
+        assignedPersonnel = props?.assignedPersonnel,
         createdAt = props?.createdAt ,
         proofOfPayment = props?.proofOfPayment;
     return {applicant,

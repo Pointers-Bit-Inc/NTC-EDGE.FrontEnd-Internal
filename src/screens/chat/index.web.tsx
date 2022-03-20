@@ -792,8 +792,8 @@ const ChatList = ({ navigation }:any) => {
                                  : (<Text style={{color: tintColor, fontSize: 14, fontWeight: 'normal'}} >{route.name}</Text>)
                       },
                   })} >
-                      <Tab.Screen  name="Home" component={List} />
-                      <Tab.Screen name="Settings" component={FileList} />
+                      <Tab.Screen  name="Chat" component={List} />
+                      <Tab.Screen name="Files" component={FileList} />
                   </Tab.Navigator> }
                   {_id && showLayout && <View style={styles.keyboardAvoiding}>
 
