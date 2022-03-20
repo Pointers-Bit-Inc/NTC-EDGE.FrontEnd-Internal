@@ -117,7 +117,6 @@ export const statusColor = (status: string) => {
         return { color : "#F79E1B" ,   fontFamily: Regular500   }
     }
 };
-
 export const statusIcon = (status: string , icon: any = styles.icon3 , item: any = 0) => {
 
     if (status == FOREVALUATION) {

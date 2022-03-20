@@ -21,7 +21,7 @@ import {
     DIRECTOR ,
     EVALUATOR ,
     FORAPPROVAL ,
-    FOREVALUATION
+    FOREVALUATION , FORVERIFICATION , VERIFICATION
 } from "../../../reducers/activity/initialstate";
 import {outline} from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
@@ -154,7 +154,7 @@ const RenderStatus = ({ trigger , status }: any) => {
                 size={ fontValue(14) }
                 numberOfLines={ 1 }
             >
-                { status?.toUpperCase() }
+                { `${status?.toUpperCase()}` }
             </Text>
         </View>
     )
@@ -231,7 +231,7 @@ const closeRow = (index) => {
 export function ActivityItem(props: any) {
     const status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status);
     const userActivity = props?.activity?.applicant?.user ||  props?.activity?.applicant;
-    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!props?.activity?.paymentHistory?.[0]?.status ? StatusText(props?.activity?.paymentHistory?.[0]?.status) : getRole(props.currentUser , [ACCOUNTANT]) && props?.activity?.approvalHistory[0].status == FOREVALUATION && props?.activity?.approvalHistory[1].status == FORAPPROVAL ? DECLINED : status;
+    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!props?.activity?.paymentHistory?.[0]?.status ? StatusText(props?.activity?.paymentHistory?.[0]?.status) : getRole(props.currentUser , [ACCOUNTANT]) && props?.activity?.approvalHistory[0].status == FOREVALUATION && props?.activity?.approvalHistory[1].status == FORAPPROVAL ? DECLINED :  getRole(props?.currentUser , [CASHIER]) && !props?.activity?.paymentMethod ? FORVERIFICATION :  status;
 
     useEffect(() => {
         let unsubscribe = true;
