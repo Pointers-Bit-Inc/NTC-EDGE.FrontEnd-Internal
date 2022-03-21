@@ -21,7 +21,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
         count: 1,
         onLoad : false ,
         visible : false ,
-        source : { uri : this.props?.requirement?.links?.[0]?.medium || "https://dummyimage.com/350x350/fff/aaa",  } ,
+        source : { uri : this.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa",  } ,
         _imageSize : {
             width : 0 ,
             height : 0
@@ -59,7 +59,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
     };
 
     componentDidUpdate(prevProps , prevState) {
-        if (prevProps?.requirement?.links?.[0]?.medium != this.props?.requirement?.links?.[0]?.medium) {
+        if (prevProps?.requirement?.medium != this.props?.requirement?.medium) {
 
             this.setImage();
 
@@ -72,34 +72,24 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
 
     imageZoom = null;
     render() {
-        return <><View style={ { padding : 10 } }>
-            <Card>
-                <View style={ [{ paddingHorizontal : isMobile ? 30 : 40 } , requirementStyles.cardLabel] }>
-                    <View style={ requirementStyles.cardTitle }>
-                        <Text style={ requirementStyles.title }>{ this.props?.requirement?.title }</Text>
-                        <Text
-                            style={ requirementStyles.description }>{ this.props?.requirement?.description }</Text>
+        return <>
+            <View style={ [requirementStyles.cardDocument] }>
+
+
+                <TouchableOpacity ref={ image => (
+                    this.state.image = image) }
+                                  onPress={ this._showImage } style={ {
+                    alignItems : "center" ,
+                    flex : 1 ,
+                    flexDirection : "row"
+                } }>
+                    <View style={ { paddingRight : fontValue(10) } }>
+                        <FileOutlineIcon height={ fontValue(20) } width={ fontValue(16) }/>
                     </View>
-                    <View style={ [requirementStyles.cardDocument] }>
-
-
-                        <TouchableOpacity ref={ image => (
-                            this.state.image = image) }
-                                          onPress={ this._showImage } style={ {
-                            alignItems : "center" ,
-                            flex : 1 ,
-                            flexDirection : "row"
-                        } }>
-                            <View style={ { paddingRight : fontValue(10) } }>
-                                <FileOutlineIcon height={ fontValue(20) } width={ fontValue(16) }/>
-                            </View>
-                            <Text
-                                style={ requirementStyles.text }>{ this.props?.requirement?.file?.name }</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                </View>
-
+                    <Text
+                        style={ requirementStyles.text }>{ this.props?.requirement?.small?.split("/")?.[this.props?.requirement?.small?.split("/")?.length-1] }</Text>
+                </TouchableOpacity>
+            </View>
                 <View style={ {
                     borderRadius : isMobile ? undefined : 10 ,
                     marginHorizontal : isMobile ? undefined : 46 ,
@@ -123,12 +113,12 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                                 borderRadius : isMobile ? undefined : 10
                             } }
                             source={ {
-                                uri : this.props?.requirement?.links?.[0]?.small ,
+                                uri : this.props?.requirement?.small ,
                             } }
                         />
                     </TouchableOpacity>
                 </View>
-            </Card>
+
 
             <Modal visible={ this.state?.visible } transparent={ true } onRequestClose={ this._hideImageModal }>
 
@@ -188,7 +178,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
 
 
             </Modal>
-        </View></>;
+        </>;
     }
 
     private setImage() {
@@ -197,11 +187,11 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
             ...this.state ,
             source : {
                 ...this?.state?.source ,
-                uri : this?.props?.requirement?.links?.[0]?.medium || "https://dummyimage.com/350x350/fff/aaa"
+                uri : this?.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa"
             }
         });
 
-        Image.getSize(this.props?.requirement?.links?.[0]?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
+        Image.getSize(this.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
             this.setState({
                 _imageSize : {
                     width : width || 300 ,
@@ -218,7 +208,29 @@ const Requirement = (props: any) => {
 
     return <ScrollView style={ { backgroundColor : "#f8f8f8" , width : "100%" } }>
         { props?.requirements?.map((requirement: any , index: number) => {
-            return <RequirementView rightLayoutComponent={rightLayoutComponent} key={ index } requirement={ requirement }/>
+            return <View style={ { padding : 10 } }>
+                <Card>
+                    <View style={ [{ paddingHorizontal : isMobile ? 30 : 40 } , requirementStyles.cardLabel] }>
+                        <View style={ requirementStyles.cardTitle }>
+                            <Text style={ requirementStyles.title }>{ requirement?.title }</Text>
+                            <Text
+                                style={ requirementStyles.description }>{ requirement?.description }</Text>
+                        </View>
+                       
+
+                        <ScrollView style={{flex: 1}}>
+                            {
+                                requirement?.links?.map((link: any , idx: number) => {
+
+                                    return <RequirementView rightLayoutComponent={ rightLayoutComponent } key={ idx }
+                                                     requirement={ link }/>
+                                })
+                            }
+                        </ScrollView>
+
+                    </View>
+                </Card>
+            </View>
         })
         }
     </ScrollView>
