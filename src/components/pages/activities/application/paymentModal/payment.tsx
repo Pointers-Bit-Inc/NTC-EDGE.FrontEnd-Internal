@@ -17,7 +17,7 @@ import {isMobile} from "@pages/activities/isMobile";
 import DottedLine from "@assets/svg/dotted";
 
 class ProofPaymentView extends React.Component<{ onPress: () => void, totalFee: any, paymentMethod: any, proofOfPayment: any, onPress1: () => void }> {
-    source = { uri : this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" };
+    source = { uri : this.props?.proofOfPayment?.[0]?.medium || this.props?.proofOfPayment?.medium   || "https://dummyimage.com/350x350/fff/aaa" };
     imageModal = null;
     image = null;
     state = {
@@ -89,7 +89,7 @@ class ProofPaymentView extends React.Component<{ onPress: () => void, totalFee: 
 
                     </View>
                 </TouchableOpacity>
-                {this.props.proofOfPayment?.small && <View style={ { padding : 22 , } }>
+                {this.props.proofOfPayment?.[0]?.small || this.props.proofOfPayment?.small && <View style={ { padding : 22 , } }>
                     <ScrollView style={ {
                         padding : 25 ,
                         flex : 1 ,
@@ -98,11 +98,11 @@ class ProofPaymentView extends React.Component<{ onPress: () => void, totalFee: 
                         backgroundColor : "#FBFBFB" ,
                         borderRadius : 5
                     } } horizontal={ isMobile ? false : true }>
-                        { this.props.proofOfPayment?.small && <View style={ {
+                        { this.props.proofOfPayment?.[0]?.small && <View style={ {
                             paddingRight : 30,
                             paddingVertical: 10
                         } }>
-                            { this.props.proofOfPayment?.small && <View style={ { paddingBottom : 16 } }>
+                            { this.props.proofOfPayment?.[0]?.small &&this.props.proofOfPayment?.small && <View style={ { paddingBottom : 16 } }>
                                 <FileOutlineIcon height={ fontValue(20) } width={ fontValue(16) }/>
                             </View> }
                             <TouchableOpacity  ref={image => (this.image = image)}
@@ -114,7 +114,7 @@ class ProofPaymentView extends React.Component<{ onPress: () => void, totalFee: 
                                     borderColor : "#fff"
                                 } }
                                 source={ {
-                                    uri : this.props?.proofOfPayment?.small ,
+                                    uri : this.props?.proofOfPayment?.[0]?.small || this.props?.proofOfPayment?.small ,
                                 } }
                             />
                             </TouchableOpacity>

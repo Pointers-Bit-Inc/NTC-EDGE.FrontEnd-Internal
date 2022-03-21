@@ -1,5 +1,13 @@
 import React , {useEffect , useRef , useState} from "react";
-import {ActivityIndicator , Platform , StyleSheet , TouchableOpacity , useWindowDimensions , View} from "react-native";
+import {
+    ActivityIndicator ,
+    Dimensions ,
+    Platform ,
+    StyleSheet ,
+    TouchableOpacity ,
+    useWindowDimensions ,
+    View
+} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
@@ -39,7 +47,10 @@ import PinToTopIcon from "@assets/svg/pintotop";
 import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
- import lodash from "lodash"
+
+
+
+const {width} = Dimensions.get('window')
 const styles = StyleSheet.create({
 
     containerBlur : {
@@ -150,7 +161,7 @@ const RenderStatus = ({ trigger , status }: any) => {
         >
             { statusIcon(status , { marginRight : 3 }) }
             <Text
-                style={ [statusColor(status)] }
+                style={ [statusColor(status),] }
                 size={ fontValue(14) }
                 numberOfLines={ 1 }
             >
@@ -176,7 +187,7 @@ const RenderApplication = ({ applicationType }: any) => {
             />
             <Text
 
-                style={ { marginLeft : 3 , marginRight : 5 } }
+                style={ {  marginLeft : 3 , marginRight : 5 } }
                 color="#2A00A2"
                 size={ fontValue(10) }
                 numberOfLines={ 1 }
@@ -322,6 +333,7 @@ export function ActivityItem(props: any) {
                                                             numberOfLines={ 1 }
                                                         >
                                                             <Highlighter
+                                                                
                                                                 highlightStyle={ { backgroundColor : '#BFD6FF' } }
                                                                 searchWords={ [props?.searchQuery] }
                                                                 textToHighlight={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }

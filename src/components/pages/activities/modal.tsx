@@ -40,12 +40,7 @@ import {Bold} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import {useComponentLayout} from "../../../hooks/useComponentLayout";
-
-const { ModalTab } = Platform.select({
-    native : () => require('@pages/activities/modalTab/modalTab') ,
-    default : () => require("@pages/activities/modalTab/modalTab.web")
-})();
-
+import ModalTab from "@pages/activities/modalTab/modalTab";
 
 function ActivityModal(props: any) {
     const dispatch = useDispatch();

@@ -12,7 +12,7 @@ import Tab from "@pages/activities/tabs/Tab";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
 
 
-export const ModalTab = props => {
+const ModalTab = props => {
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [_scrollX , set_scrollX] = useState(new Animated.Value(0));
     // 6 is a quantity of tabs
@@ -130,3 +130,5 @@ export const ModalTab = props => {
 
     </ScrollableTabView>
 };
+
+export default ModalTab

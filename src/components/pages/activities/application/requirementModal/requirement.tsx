@@ -21,7 +21,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
         count: 1,
         onLoad : false ,
         visible : false ,
-        source : { uri : this.props?.requirement?.links?.medium || "https://dummyimage.com/350x350/fff/aaa",  } ,
+        source : { uri : this.props?.requirement?.links?.[0]?.medium || "https://dummyimage.com/350x350/fff/aaa",  } ,
         _imageSize : {
             width : 0 ,
             height : 0
@@ -59,7 +59,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
     };
 
     componentDidUpdate(prevProps , prevState) {
-        if (prevProps?.requirement?.links?.medium != this.props?.requirement?.links?.medium) {
+        if (prevProps?.requirement?.links?.[0]?.medium != this.props?.requirement?.links?.[0]?.medium) {
 
             this.setImage();
 
@@ -123,7 +123,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                                 borderRadius : isMobile ? undefined : 10
                             } }
                             source={ {
-                                uri : this.props?.requirement?.links?.small ,
+                                uri : this.props?.requirement?.links?.[0]?.small ,
                             } }
                         />
                     </TouchableOpacity>
@@ -197,11 +197,11 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
             ...this.state ,
             source : {
                 ...this?.state?.source ,
-                uri : this?.props?.requirement?.links?.medium || "https://dummyimage.com/350x350/fff/aaa"
+                uri : this?.props?.requirement?.links?.[0]?.medium || "https://dummyimage.com/350x350/fff/aaa"
             }
         });
 
-        Image.getSize(this.props?.requirement?.links?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
+        Image.getSize(this.props?.requirement?.links?.[0]?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
             this.setState({
                 _imageSize : {
                     width : width || 300 ,

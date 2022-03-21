@@ -20,7 +20,7 @@ import hairlineWidth = StyleSheet.hairlineWidth;
 import useApplicant from "@pages/activities/modalTab/useApplicant";
 
 
-export const ModalTab = props => {
+const ModalTab = props => {
     const user = useSelector((state: RootStateOrAny) => state.user);
 
     const [tabs , setTabs] = useState([
@@ -211,7 +211,7 @@ export const ModalTab = props => {
     </ViewPaged>
 
 };
-
+export default ModalTab
 const styles = StyleSheet.create({
     tabSelected : {
         color : "#2863D6" ,
