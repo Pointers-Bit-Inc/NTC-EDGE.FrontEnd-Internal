@@ -149,16 +149,22 @@ export interface Education {
 
 export interface Applicant {
     _id: string;
-    userId: string;
-    firstName: string;
-    lastName: string;
-    middleName: string;
-    nationality: string;
-    sex: string;
-    birthDate?: any;
-    contact: Contact;
-    dateOfBirth: DateOfBirth;
-    education: Education;
+    applicant: Applicant;
+    service: Service;
+    region?: any;
+    status: string;
+    paymentStatus?: any;
+    paymentMethod?: any;
+    totalFee: number;
+    assignedPersonnel: AssignedPersonnel;
+    soa?: any;
+    approvalHistory: ApprovalHistory[];
+    paymentHistory: PaymentHistory[];
+    exam?: any;
+    ORNumber?: any;
+    schedule?: any;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Requirement {

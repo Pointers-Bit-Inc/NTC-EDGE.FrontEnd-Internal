@@ -1,3 +1,4 @@
+import lodash from 'lodash'
 export type Chunk = {
     highlight: boolean,
     start: number,
@@ -137,5 +138,5 @@ export function defaultSanitize(string: string): string {
 }
 
 function escapeRegExpFn(string: string): string {
-    return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&')
+    return lodash.escapeRegExp(string)
 }

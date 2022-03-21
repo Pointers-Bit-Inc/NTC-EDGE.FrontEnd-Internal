@@ -254,12 +254,20 @@ function ActivityModal(props: any) {
                     }
                     // setShowAlert(false)
                     setAlertLoading(true);
-                    onChangeApplicationStatus(status , () => {
-                        setApprovalIcon(true);
-                        setAlertLoading(false);
+                    onChangeApplicationStatus(status , (err) => {
 
-                        setTitle("Application Approved");
-                        setMessage("Application has been approved.");
+
+                        setAlertLoading(false);
+                        if(!err){
+                            setApprovalIcon(true);
+                            setTitle("Application Approved");
+                            setMessage("Application has been approved.");
+                        }else{
+                            setApprovalIcon(false);
+                            setTitle("Alert");
+                            setMessage(err?.message || 'Something went wrong.');
+
+                        }
                         setShowClose(true)
                     })
                 } }
@@ -378,7 +386,9 @@ function ActivityModal(props: any) {
                         status = PAID
                     }
                     onChangeApplicationStatus(status , (err , appId) => {
+
                         if (!err) {
+
                             callback(true , (bool) => {
                                 // props.onDismissed(true, appId)
                             })

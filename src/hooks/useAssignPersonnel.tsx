@@ -22,7 +22,7 @@ export function useAssignPersonnel(assignedPersonnel, config) {
             await axios
                 .get(BASE_URL + `/users/${_assignPersonnel}`, config)
                 .then((res) => {
-                         console.log("assignPersonnel", assignedPersonnel)
+
                         if(isCurrent){
                         setLoading(false)
                         setPersonnel(res.data);

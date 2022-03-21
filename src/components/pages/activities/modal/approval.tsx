@@ -166,6 +166,7 @@ const Approval = (props: any) => {
 
                     setAlertLoading(true);
                     props.confirm({ cashier : cashier , remarks : remarks } , (response , callback) => {
+
                         setAlertLoading(false);
                         if (response) {
                             props.onDismissed(null , (bool) => {

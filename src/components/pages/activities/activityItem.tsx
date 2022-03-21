@@ -190,8 +190,10 @@ const RenderApplication = ({ applicationType }: any) => {
 };
 
 
-const RenderPinned = ({ assignedPersonnel , config }: any) => {
-    const { personnel , loading } = useAssignPersonnel(assignedPersonnel , config);
+const RenderPinned = ({ assignedPersonnel }: any) => {
+
+
+
     return (
         <View
             style={ [
@@ -202,18 +204,18 @@ const RenderPinned = ({ assignedPersonnel , config }: any) => {
                 styles.application
             ] }
         >
-            { loading ? <></> : <EndorseIcon
+            { assignedPersonnel?.loading ? <></> : <EndorseIcon
                 width={ fontValue(20) }
                 height={ fontValue(20) }
             /> }
-            { loading ? <ActivityIndicator/> :
+            { assignedPersonnel?.loading ? <ActivityIndicator/> :
               <Text
                   style={ { "marginLeft" : 3 , "marginRight" : 5 } }
                   color="#606A80"
                   size={ fontValue(12) }
                   numberOfLines={ 1 }
               >
-                  { personnel != undefined ?  `Assigned to ${ personnel?.firstName } ${ personnel?.lastName }` : `` }
+                  { assignedPersonnel?.personnel != undefined ?  `Assigned to ${ assignedPersonnel?.personnel?.firstName } ${ assignedPersonnel?.personnel?.lastName }` : `` }
               </Text>
             }
         </View>
@@ -231,11 +233,16 @@ const closeRow = (index) => {
 export function ActivityItem(props: any) {
     const approvalHistory = (index = 1) => props?.activity?.approvalHistory?.[props?.activity?.approvalHistory?.length - index]
     const paymentHistory = (index = 1) => props?.activity?.paymentHistory?.[props?.activity?.paymentHistory?.length - index]
+    const { personnel , loading } = useAssignPersonnel(approvalHistory()?.status == FORAPPROVAL || approvalHistory()?.status == PENDING ? props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel  :!!props?.activity?.paymentMethod && (props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) ?
+                                                                                                                                                                                                                          (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) : (props?.activity?.paymentStatus == APPROVED || props?.activity?.paymentStatus == DECLINED ?
+                                                                                                                                                                                                                                                                                                             (paymentHistory()?.userId ) :
+                                                                                                                                                                                                                                                                                                             (approvalHistory()?.userId ? approvalHistory()?.userId :
+                                                                                                                                                                                                                                                                                                              (props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel))) , props.config );
 
     const status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status);
     const userActivity = props?.activity?.applicant?.user ||  props?.activity?.applicant;
     const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!approvalHistory()?.userId && approvalHistory()?.status !== FOREVALUATION && approvalHistory()?.status!==FORVERIFICATION &&  approvalHistory()?.status!==FORAPPROVAL &&  approvalHistory()?.status!==PENDING? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!paymentHistory()?.status ? StatusText(paymentHistory()?.status) : getRole(props.currentUser , [ACCOUNTANT]) && approvalHistory()?.status == FOREVALUATION && approvalHistory(2)?.status == FORAPPROVAL ? DECLINED :  getRole(props?.currentUser , [CASHIER]) && !props?.activity?.paymentMethod ? FORVERIFICATION :  status;
-
+     console.log("activity item ", props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel )
     useEffect(() => {
         let unsubscribe = true;
         unsubscribe && props?.isOpen == props?.index && row[props?.index]?.close();
@@ -293,7 +300,7 @@ export function ActivityItem(props: any) {
                                                 flex : 1 ,
 
                                                 paddingHorizontal : fontValue(10) ,
-                                                paddingVertical:  props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel ? undefined :  fontValue(10),
+                                                paddingVertical:  personnel ? undefined :  fontValue(10),
                                                 flexDirection : "row" ,
                                                 alignItems : "center"
                                             }
@@ -348,22 +355,17 @@ export function ActivityItem(props: any) {
                                                         status={ getStatus }
                                                     />
                                                 </View>
-                                              
+
                                             </View>
 
                                         </View>
-                                        {  props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel &&
+                                        { personnel &&
                                            <View style={{padding : fontValue(10) , borderTopColor: "#EFEFEF",  borderTopWidth: 1}}>
                                                <View style={styles.section}>
                                                    <View style={{ flex : 1 , alignItems : 'flex-start' } }>
-                                                       <RenderPinned config={ props.config }
+                                                       <RenderPinned
                                                                      assignedPersonnel={
-                                                                         approvalHistory()?.status == FORAPPROVAL ? props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel  :!!props?.activity.paymentMethod && (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) ?
-                                                                         (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) : (props?.activity?.paymentStatus == APPROVED || props?.activity?.paymentStatus == DECLINED ?
-                                                                                                                                       (paymentHistory()?.userId ) :
-                                                                                                                                       (approvalHistory()?.userId ?
-                                                                                                                                        approvalHistory()?.userId :
-                                                                                                                                        (props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel)))
+                                                                         {personnel, loading}
                                                                           }/>
                                                    </View>
                                                </View>

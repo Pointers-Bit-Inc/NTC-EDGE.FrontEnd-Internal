@@ -1,4 +1,5 @@
 import {
+    ACCOUNTANT ,
     APPROVED ,
     CASHIER ,
     DECLINED ,
@@ -151,7 +152,7 @@ export default function basket(state = initialState, action = {}) {
                 return app._id == action.payload.application._id
             })
             const cashier = [CASHIER].indexOf(action.payload.userType) != -1;
-            const directorAndEvaluator = [DIRECTOR , EVALUATOR].indexOf(action.payload.userType) != -1;
+            const directorAndEvaluator = [ACCOUNTANT, DIRECTOR , EVALUATOR].indexOf(action.payload.userType) != -1;
 
 
             if (index != -1) {

@@ -19,7 +19,7 @@ import {
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
 import {
-    APPROVED , DECLINED , FORAPPROVAL
+    APPROVED , DECLINED , FORAPPROVAL , PENDING
 } from "../../../../reducers/activity/initialstate";
 import {useAssignPersonnel} from "../../../../hooks/useAssignPersonnel";
 import moment from "moment";
@@ -41,7 +41,7 @@ const BasicInfo = (props: any) => {
     const {
         personnel ,
         loading
-    } = useAssignPersonnel( !!props.paymentMethod && (props.assignedPersonnel?._id || props.assignedPersonnel ) ?
+    } = useAssignPersonnel( approvalHistory()?.status == FORAPPROVAL || approvalHistory()?.status == PENDING ? props?.assignedPersonnel?._id || props?.assignedPersonnel  : !!props.paymentMethod && (props.assignedPersonnel?._id || props.assignedPersonnel ) ?
                             (props.assignedPersonnel?._id || props.assignedPersonnel ) : (props.paymentStatus == APPROVED || props.paymentStatus == DECLINED ?
                             (paymentHistory()?.userId ) :
                             (approvalHistory()?.userId ?
@@ -150,11 +150,11 @@ const BasicInfo = (props: any) => {
                                             <Text style={ styles.header }>Address</Text>
                                         </View>
                                     </View>
-                                    <Row label={ "Unit/Rm/Bldg./Street:" } applicant={ applicant?.unit }/>
-                                    <Row label={ "Barangay:" } applicant={ applicant?.barangay }/>
-                                    <Row label={ "Province:" } applicant={ applicant?.province }/>
-                                    <Row label={ "City/Municipality:" } applicant={ applicant?.city }/>
-                                    <Row label={ "Zip Code:" } applicant={ applicant?.zipCode }/>
+                                    <Row label={ "Unit/Rm/Bldg./Street:" } applicant={ applicant?.address?.unit || applicant?.unit }/>
+                                    <Row label={ "Barangay:" } applicant={ applicant?.address?.barangay || applicant?.barangay }/>
+                                    <Row label={ "Province:" } applicant={ applicant?.address?.province || applicant?.province }/>
+                                    <Row label={ "City/Municipality:" } applicant={ applicant?.address?.city ||  applicant?.city }/>
+                                    <Row label={ "Zip Code:" } applicant={ applicant?.address?.zipCode || applicant?.zipCode }/>
 
                                 </View>
                                 <View style={ styles.divider }/>
