@@ -1,5 +1,5 @@
 import React , {useState} from "react";
-import {Image , Modal , ScrollView , TouchableOpacity , View} from "react-native";
+import {FlatList , Image , Modal , ScrollView , TouchableOpacity , View} from "react-native";
 import PaymentModal from "@pages/activities/application/paymentModal/index";
 import Text from "@atoms/text";
 import {styles as paymentStyles} from "@pages/activities/application/paymentModal/styles"
@@ -304,21 +304,23 @@ const Payment = (props: any) => {
                             </TouchableOpacity>
 
                             { props?.proofOfPayment && <View style={ { padding : 22 , } }>
-                                <ScrollView style={ {
-                                    padding : 25 ,
-                                    flex : 1 ,
-                                    borderColor : "#ECECEC" ,
-                                    borderWidth : 1 ,
-                                    backgroundColor : "#FBFBFB" ,
-                                    borderRadius : 5
-                                } } horizontal={ isMobile ? false : true }>
-                                    {
-                                        props?.proofOfPayment?.map((payment) => {
-                                            return <ProofPaymentView proofOfPayment={ payment }/>
-                                        })
+                                <FlatList
+                                    style={ {
+                                        padding : 25 ,
+                                        flex : 1 ,
+                                        borderColor : "#ECECEC" ,
+                                        borderWidth : 1 ,
+                                        backgroundColor : "#FBFBFB" ,
+                                        borderRadius : 5
+                                    } }
+                                    horizontal={ isMobile ? false : true }
+                                    data={props?.proofOfPayment}
+                                    keyExtractor={item => item.id}
+                                    renderItem={({ item, index }) => (
+                                        <ProofPaymentView proofOfPayment={ item }/>
+                                    )}
+                                />
 
-                                    }
-                                </ScrollView>
                             </View> }
                         </View>
 
