@@ -1,5 +1,5 @@
 import React from "react";
-import {Dimensions , Image , Modal , Platform , ScrollView , Text , TouchableOpacity , View} from "react-native";
+import {Dimensions , Image , Modal , ScrollView , Text , TouchableOpacity , View} from "react-native";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles , styles} from "@pages/activities/application/requirementModal/styles";
 import AnimatedImage from 'react-native-animated-image-viewer';
@@ -10,7 +10,8 @@ import {RootStateOrAny , useSelector} from "react-redux";
 import ImageZoom from 'react-native-image-pan-zoom';
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {Card} from "@pages/activities/application/requirementModal/card";
-//import Pdf from 'react-native-pdf';
+import PdfViewr from "@pages/activities/application/pdf/index";
+
 
 const { width , height } = Dimensions.get("screen");
 
@@ -142,14 +143,13 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                     </View>
                     <View>
                         <Text style={ styles.fileName }>{ this.state.fileName }</Text>
-                        { !!this.props?.requirement?.file?.name &&
+                        { !!this.state.fileName &&
                         <FadeBackground style={ { position : "absolute" , zIndex : 1 } }
                                         width={ width }/> }
 
                         { (/(pdf)$/ig.test(this.state.fileName.substr((
-                                  this.state.fileName.lastIndexOf('.') + 1)))) ?
-                          /*<Pdf style={ requirementStyles.pdf }
-                                                                                      source={ { uri : this.props?.requirement?.small , } }/> */ <></>: (
+                                  this.state.fileName.lastIndexOf('.') + 1))) && isMobile) ?
+                          <PdfViewr requirement={ this.props?.requirement }/> : (
                               isMobile ? <AnimatedImage
                                            useNativeDriver={ true }
                                            ref={ imageModal => (
