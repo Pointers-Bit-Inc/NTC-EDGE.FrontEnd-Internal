@@ -91,7 +91,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                 </TouchableOpacity>
             </View>
 
-                <View style={{ alignSelf: isMobile ? "center" : undefined,}}>
+                <View style={{ flex: 1, alignItems: isMobile ? "center" : undefined,}}>
                     <TouchableOpacity disabled={ this.state.onLoad } ref={ image => (
                         this.state.image = image) }
                                       onPress={ this._showImage }>
