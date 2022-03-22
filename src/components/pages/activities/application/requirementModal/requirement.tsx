@@ -99,7 +99,6 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                         <Image
                             resizeMode={ "cover" }
                             style={ {
-
                                 marginBottom : isMobile ? undefined : 25 ,
                                 backgroundColor : "rgba(220,226,229,1)" ,
                                 borderWidth : 1 ,
