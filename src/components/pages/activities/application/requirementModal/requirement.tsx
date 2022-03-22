@@ -1,5 +1,5 @@
 import React from "react";
-import {Dimensions , Image , Modal , ScrollView , Text , TouchableOpacity , View} from "react-native";
+import {Dimensions , Image , Modal , Platform , ScrollView , Text , TouchableOpacity , View} from "react-native";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles , styles} from "@pages/activities/application/requirementModal/styles";
 import AnimatedImage from 'react-native-animated-image-viewer';
@@ -10,7 +10,7 @@ import {RootStateOrAny , useSelector} from "react-redux";
 import ImageZoom from 'react-native-image-pan-zoom';
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {Card} from "@pages/activities/application/requirementModal/card";
-import Pdf from 'react-native-pdf';
+//import Pdf from 'react-native-pdf';
 
 const { width , height } = Dimensions.get("screen");
 
@@ -147,8 +147,9 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                                         width={ width }/> }
 
                         { (/(pdf)$/ig.test(this.state.fileName.substr((
-                                  this.state.fileName.lastIndexOf('.') + 1)))) ? <Pdf style={ requirementStyles.pdf }
-                                                                                      source={ { uri : this.props?.requirement?.small , } }/> : (
+                                  this.state.fileName.lastIndexOf('.') + 1)))) ?
+                          /*<Pdf style={ requirementStyles.pdf }
+                                                                                      source={ { uri : this.props?.requirement?.small , } }/> */ <></>: (
                               isMobile ? <AnimatedImage
                                            useNativeDriver={ true }
                                            ref={ imageModal => (
@@ -226,6 +227,14 @@ const Requirement = (props: any) => {
 
                         <ScrollView style={ { flex : 1 , } }>
                             {
+                                /*[{
+                                    "original": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "thumb": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "small": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "medium": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "large": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "xlarge": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf"
+                                }]*/
                                 requirement?.links?.map((link: any , idx: number) => {
                                     return <RequirementView rightLayoutComponent={ rightLayoutComponent } key={ idx }
                                                             requirement={ link }/>

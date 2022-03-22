@@ -15,7 +15,7 @@ import BorderPaymentBottom from "@assets/svg/borderPaymentBottom";
 import {useComponentLayout} from "../../../../../hooks/useComponentLayout";
 import {isMobile} from "@pages/activities/isMobile";
 import DottedLine from "@assets/svg/dotted";
-import Pdf from "react-native-pdf";
+//import Pdf from "react-native-pdf";
 
 class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 
@@ -139,8 +139,9 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
                         </View>
                     </View>
                     {(/(pdf)$/ig.test(this.state.fileName.substr((
-                        this.state.fileName.lastIndexOf('.') + 1)))) ? <Pdf style={ [requirementStyles.pdf, {flex: 1}]}
-                                                                            source={ { uri : this.props?.proofOfPayment?.small } }/> : <View style={ { height : '100%' , width : '100%' } }>
+                        this.state.fileName.lastIndexOf('.') + 1)))) ?
+                     /*<Pdf style={ [requirementStyles.pdf, {flex: 1}]}
+                                                                            source={ { uri : this.props?.proofOfPayment?.small } }/> */ <></>: <View style={ { height : '100%' , width : '100%' } }>
                         <AnimatedImage
 
                             ref={ imageModal => (
