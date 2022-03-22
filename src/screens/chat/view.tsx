@@ -16,7 +16,8 @@ import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
 import { MeetingNotif } from '@components/molecules/list-item';
 import useSignalR from 'src/hooks/useSignalr';
 import ChatList from '@screens/chat/chat-list';
-import FileList from '@screens/chat/file-list';
+// import FileList from '@screens/chat/file-list';
+import FileList from '@components/organisms/chat/files';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import {
   ArrowLeftIcon,
@@ -404,8 +405,8 @@ const ChatView = ({ navigation, route }:any) => {
           >
             <View style={styles.keyboardAvoiding}>
               <View style={{ marginTop: RFValue(-18) }}>
-                <TouchableOpacity onPress={onShowAttachmentOption}>
-                  <View style={styles.plus}>
+                <TouchableOpacity disabled={true} onPress={onShowAttachmentOption}>
+                  <View style={[styles.plus, { backgroundColor: '#D1D1D6' }]}>
                     <PlusIcon
                       color="white"
                       size={RFValue(12)}

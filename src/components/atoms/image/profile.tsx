@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: isMobile ? RFValue(2) : 2,
     borderColor: 'white',
+    overflow: 'hidden'
   },
   onlineBorder: {
     backgroundColor: 'black',
@@ -36,7 +37,7 @@ const ProfileImage = ({
   style = {},
   onlineStyle = {},
 }) => {
-  const imageSize = isOnline ? isMobile ? RFValue(size - 10) : size - 10 : isMobile ? RFValue(size) : size
+  const imageSize = isOnline ? isMobile ? RFValue(size - 5) : size - 5 : isMobile ? RFValue(size) : size
 
   const getBackgroundColor = useCallback(() => {
     if (!backgroundColor) {
@@ -48,24 +49,29 @@ const ProfileImage = ({
   if (image) {
     return (
       <View style={isOnline && [styles.onlineBorder, { borderRadius: size * 1.5 }, onlineStyle]}>
-        <Image
-          width={imageSize}
-          height={imageSize}
-          resizeMode={"contain"}
-          borderRadius={size}
-          style={[
+        <View style={[
             styles.image,
             {
               backgroundColor: getBackgroundColor(),
               height: imageSize,
               width: imageSize,
-              borderRadius: size,
+              borderRadius: imageSize,
             },
             style
-          ]}
-
-          source={{ uri: image }}
-        />
+          ]}>
+            <Image
+              width={imageSize}
+              height={imageSize}
+              resizeMode={"contain"}
+              source={{ uri: image }}
+              style={{
+                height: imageSize,
+                width: imageSize,
+                borderRadius: imageSize
+              }}
+            />
+        </View>
+        
       </View>
     );
   }
