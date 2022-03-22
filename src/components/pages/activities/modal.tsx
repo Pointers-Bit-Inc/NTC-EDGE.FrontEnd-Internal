@@ -93,8 +93,7 @@ function ActivityModal(props: any) {
             assignUserId ? setAssignId(props?.details.approvalHistory[0].userId) : (
                 assignId ? assignId : undefined);
             params = {
-                status : (
-                             assignUserId) ? FOREVALUATION : status ,
+                status : (assignUserId) ? FOREVALUATION : status ,
                 assignedPersonnel : assignUserId ? props?.details.approvalHistory[0].userId : (
                     assignId ? assignId : undefined) ,
                 addDocumentaryStamp : true ,
