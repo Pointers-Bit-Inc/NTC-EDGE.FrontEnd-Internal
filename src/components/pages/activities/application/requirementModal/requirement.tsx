@@ -90,17 +90,8 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                         style={ requirementStyles.text }>{ this.props?.requirement?.small?.split("/")?.[this.props?.requirement?.small?.split("/")?.length-1] }</Text>
                 </TouchableOpacity>
             </View>
-                <View style={ {
-                    borderRadius : isMobile ? undefined : 10 ,
-                    marginHorizontal : isMobile ? undefined : 46 ,
-                    marginBottom : isMobile ? undefined : 25 ,
-                    width : isMobile ? undefined : 240 ,
-                    height : isMobile ? 300 : 160 ,
-                    backgroundColor : "rgba(220,226,229,1)" ,
-                    borderWidth : 1 ,
-                    borderColor : "rgba(213,214,214,1)" ,
-                    borderStyle : "dashed" ,
-                } }>
+
+                <View style={{ alignSelf: isMobile ? "center" : undefined,}}>
                     <TouchableOpacity disabled={ this.state.onLoad } ref={ image => (
                         this.state.image = image) }
                                       onPress={ this._showImage }>
@@ -108,7 +99,13 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                         <Image
                             resizeMode={ "cover" }
                             style={ {
-                                width : isMobile ? undefined : 240 ,
+
+                                marginBottom : isMobile ? undefined : 25 ,
+                                backgroundColor : "rgba(220,226,229,1)" ,
+                                borderWidth : 1 ,
+                                borderColor : "rgba(213,214,214,1)" ,
+                                borderStyle : "solid" ,
+                                width : isMobile ? 300 : 240 ,
                                 height : isMobile ? 300 : 160 ,
                                 borderRadius : isMobile ? undefined : 10
                             } }
@@ -218,10 +215,9 @@ const Requirement = (props: any) => {
                         </View>
                        
 
-                        <ScrollView style={{flex: 1}}>
+                        <ScrollView style={{flex: 1,}}>
                             {
                                 requirement?.links?.map((link: any , idx: number) => {
-
                                     return <RequirementView rightLayoutComponent={ rightLayoutComponent } key={ idx }
                                                      requirement={ link }/>
                                 })
