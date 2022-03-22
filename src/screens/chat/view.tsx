@@ -223,7 +223,7 @@ const ChatView = ({ navigation, route }:any) => {
         <Text
           color={focused ? text.info : color}
           size={14}
-          style={{ fontFamily: focused ? Regular500 : Regular }}
+          style={{ fontFamily: focused ? Regular500 : Regular, width: width / 2, textAlign: 'center' }}
         >
           {route.title}
         </Text>
