@@ -225,6 +225,7 @@ const Endorsed = (props: any) => {
                                                   } }/>
                                   <View style={ { paddingVertical : 10 } }>
                                       <InputField
+
                                           clearable={ false }
                                           containerStyle={ {
                                               height : undefined ,
@@ -238,7 +239,8 @@ const Endorsed = (props: any) => {
                                               height : (
                                                            height < 720 && isKeyboardVisible) ? 75 : height * 0.15
                                           } }
-                                          inputStyle={ { fontWeight : "400" , fontSize : fontValue(14) } }
+                                          inputStyle={ { height : (
+                                                                      height < 720 && isKeyboardVisible) ? 70 : height * 0.15,fontWeight : "400" , fontSize : fontValue(14) } }
                                           error={ validateRemarks.error }
                                           errorColor={ errorColor }
                                           placeholder={ 'Remarks' }

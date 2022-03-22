@@ -208,20 +208,20 @@ export default function ActivitiesPage(props: any) {
                     <View onLayout={ onLayoutComponent }
                           style={ [styles.group , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { position : "absolute" , }] }>
                         <Animated.View style={ [styles.rect , styles.horizontal , {
-                            backgroundColor : isMobile  || dimensions?.width <800 ? "#041B6E" : "#fff" ,
+                            backgroundColor : isMobile  || dimensions?.width <768 ? "#041B6E" : "#fff" ,
 
                         } , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && {
                             ...{ opacity } ,
                             transform : [{ translateY : headerTranslate }]
                         }] }>
 
-                            { (isMobile  || dimensions?.width <800)&&
+                            { (isMobile  || dimensions?.width <768)&&
                             <TouchableOpacity onPress={ () => props.navigation.navigate('Settings')/*openDrawer()*/ }>
                                 <HomeMenuIcon height={ fontValue(24) } width={ fontValue(24) }/>
                             </TouchableOpacity> }
 
                             <Text
-                                style={ [styles.activity , { color : isMobile  || dimensions?.width < 800 ? "rgba(255,255,255,1)" : primaryColor , }] }>{ isMobile || dimensions?.width <800 ? `Activity` : `Feed` }</Text>
+                                style={ [styles.activity , { color : isMobile  || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor , }] }>{ isMobile || dimensions?.width <768 ? `Activity` : `Feed` }</Text>
                             <View style={ { flex : 1 } }/>
                             <TouchableOpacity onPress={ () => {
                                 dispatch(setVisible(true))
@@ -232,7 +232,7 @@ export default function ActivitiesPage(props: any) {
                                 <Filter pressed={visible} width={ fontValue(32) } height={ fontValue(32) }/>
 
                             </TouchableOpacity>
-                            { ( !isMobile && dimensions?.width > 800)&&
+                            { ( !isMobile && dimensions?.width > 768)&&
                             <TouchableOpacity onPress={ onRefresh }>
                                 <RefreshWeb style={ { paddingLeft : 15 } } width={ fontValue(26) }
                                             height={ fontValue(24) } fill={ "#fff" }/>

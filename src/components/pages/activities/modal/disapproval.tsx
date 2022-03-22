@@ -140,6 +140,7 @@ function Disapproval(props: any) {
                             Please provide reason of disapproval
                         </Text>
                         <InputField
+
                             containerStyle={ {
                                 height : undefined ,
                                 borderColor : "#D1D1D6" ,
@@ -154,7 +155,8 @@ function Disapproval(props: any) {
                                              height < 720 && isKeyboardVisible) ? 100 : height * 0.25
                             } }
                             placeholder={ 'Remarks' }
-                            inputStyle={ { fontWeight : "400" , fontSize : fontValue(14) } }
+                            inputStyle={ { height : (
+                                                        height < 720 && isKeyboardVisible) ? 70 : height * 0.15,fontWeight : "400" , fontSize : fontValue(14) } }
                             multiline={ true }
                             value={ text }
                             onChangeText={ setText }
