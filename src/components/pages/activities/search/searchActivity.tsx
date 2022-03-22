@@ -6,7 +6,7 @@ import {
     ScrollView ,
     Text ,
     TextInput ,
-    TouchableOpacity ,
+    TouchableOpacity , useWindowDimensions ,
     View
 } from "react-native";
 import BackSpaceIcon from "@assets/svg/backspace";
@@ -33,6 +33,7 @@ import {isMobile} from "@pages/activities/isMobile";
 import ActivityModalView from "@pages/activities/nativeView/activityModalView";
 import {setApplicationItem} from "../../../../reducers/application/actions";
 export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
+    const dimensions = useWindowDimensions();
     const inputRef = useRef(null);
     const [moreModalVisible, setMoreModalVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
@@ -73,7 +74,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
         return <Text>{countUp}</Text>
     }
     return <View style={[styles.container, {flexDirection: "row"}]}>
-        <View style={[styles.group9, { flex: (isMobile) ? 1 : 0.4,} ]}>
+        <View style={[styles.group9, { flex: (isMobile  || dimensions?.width <768 ) ? 1 : 0.4,} ]}>
             <View style={styles.group4}>
                 <View style={styles.rect}>
                     <View style={styles.group2}>
@@ -203,7 +204,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
         </View>
 
         {
-            !(isMobile) && lodash.isEmpty(applicationItem) &&
+            !(isMobile) && lodash.isEmpty(applicationItem)  && dimensions?.width >768  &&
             <View style={ [{ flex : 0.6 , justifyContent : "center" , alignItems : "center" }] }>
 
                 <NoActivity/>

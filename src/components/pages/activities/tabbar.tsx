@@ -231,6 +231,7 @@ export default function TabBar() {
                     const unfocused = "#606A80";
                     return ( <View key={route.key} style={{ flex: 1 }}>
                             <TouchableOpacity
+                                disabled={((label == CHAT && !isMobile)  || (label == MEET && !isMobile) || (label == SCANQR && !isMobile)  ) }
                                 accessibilityRole="button"
                                 accessibilityState={isFocused ? {selected: true} : {}}
                                 accessibilityLabel={options.tabBarAccessibilityLabel}
@@ -286,8 +287,8 @@ export default function TabBar() {
             <>
                 {dimensions.width <= 768    ?  <Tab.Navigator    tabBar={(props) => <ActivityTab  {...props} />}>
                     <Tab.Screen options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesNavigator}/>
-                    <Tab.Screen options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
-                    <Tab.Screen options={{headerShown: false}} name={MEET} component={MeetScreen}/>
+                    <Tab.Screen  options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
+                    <Tab.Screen  options={{headerShown: false}} name={MEET} component={MeetScreen}/>
                     {getRole(user, [CHECKER, EVALUATOR, DIRECTOR]) && <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>  }
                 </Tab.Navigator> :  <Drawer.Navigator
 

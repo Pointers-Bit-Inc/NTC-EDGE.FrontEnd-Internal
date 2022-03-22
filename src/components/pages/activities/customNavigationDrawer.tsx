@@ -8,8 +8,10 @@ import {Regular} from "@styles/font";
 import {CommonActions , DrawerActions} from "@react-navigation/native";
 import ChatIcon from "@assets/svg/chattabbar";
 import MeetIcon from "@assets/svg/meettabbar";
-import {ACTIVITIES , CHAT , MEET , SEARCH} from "../../../reducers/activity/initialstate";
+import {ACTIVITIES , CHAT , MEET , SCANQR , SEARCH} from "../../../reducers/activity/initialstate";
 import {fontValue} from "@pages/activities/fontValue";
+import {disabledColor} from "@styles/color";
+import {isMobile} from "@pages/activities/isMobile";
 
 const CustomSidebarMenu = (props: any) => {
 
@@ -36,6 +38,9 @@ const CustomSidebarMenu = (props: any) => {
                         drawerLabel,
                     } = props.descriptors[route.key].options;
                     const onPress = () => {
+
+                        if(((route.name == CHAT && !isMobile)  || (route.name == MEET && !isMobile) || (route.name == SCANQR && !isMobile)  ) ) return
+
                         const event = props.navigation.emit({
                             type: 'drawerItemPress',
                             target: route.key,
@@ -56,7 +61,7 @@ const CustomSidebarMenu = (props: any) => {
 
 
                     return route.name != SEARCH && <View>
-                        <DrawerItem  key={route.key} label={""} activeBackgroundColor={"transparent"} focused={focused} label={ '' } icon={ () => (
+                        <DrawerItem key={route.key} label={""} activeBackgroundColor={"transparent"} focused={focused} label={ '' } icon={ () => (
                             <View style={{ width: "100%"}}>
                                 <View style={ [styles.itemContainer , { borderLeftColor : focused ? "#113196" : "transparent" , }] }>
                                     <View style={{alignItems : "center" ,
@@ -77,7 +82,7 @@ const CustomSidebarMenu = (props: any) => {
 
                             </View>
 
-                        ) } style={ styles.item } onPress={onPress}/>
+                        ) } style={ styles.item }  onPress={onPress}/>
                     </View>
 
                 })}
