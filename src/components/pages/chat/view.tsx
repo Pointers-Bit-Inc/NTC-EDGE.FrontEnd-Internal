@@ -231,8 +231,8 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
       </View>
       <Animated.View style={[styles.keyboardAvoiding, { marginBottom: Height.current }]}>
         <View style={{ marginTop: RFValue(-18) }}>
-          <TouchableOpacity onPress={onShowAttachmentOption}>
-            <View style={styles.plus}>
+          <TouchableOpacity disabled={true} onPress={onShowAttachmentOption}>
+            <View style={[styles.plus, { backgroundColor: '#D1D1D6' }]}>
               <PlusIcon
                 color="white"
                 size={RFValue(12)}
