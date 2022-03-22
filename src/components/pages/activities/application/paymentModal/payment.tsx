@@ -59,25 +59,28 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 
     render() {
         return <>
-            {  this.props.proofOfPayment?.small &&
+            { this.props.proofOfPayment?.small &&
 
             <View style={ {
                 paddingRight : 30 ,
                 paddingVertical : 10
             } }>
-                {  this.props.proofOfPayment?.small &&
+                { this.props.proofOfPayment?.small &&
                 <TouchableOpacity ref={ image => (
                     this.image = image) }
                                   onPress={ this._showImage }>
-                <View style={ { justifyContent: "center",  alignItems : "center" ,
-                    flex : 1 ,
-                    gap: 5,
-                    flexDirection : "row", paddingBottom : 16 } }>
-                    <FileOutlineIcon height={ fontValue(20) } width={ fontValue(16) }/>
-                    <Text style={{width: 240}}>{this.props?.proofOfPayment?.small?.split("/")?.[this.props?.proofOfPayment?.small?.split("/")?.length-1]}</Text>
-                </View>
+                    <View style={ {
+                        justifyContent : "center" , alignItems : "center" ,
+                        flex : 1 ,
+                        gap : 5 ,
+                        flexDirection : "row" , paddingBottom : 16
+                    } }>
+                        <FileOutlineIcon height={ fontValue(20) } width={ fontValue(16) }/>
+                        <Text
+                            style={ { width : 240 } }>{ this.props?.proofOfPayment?.small?.split("/")?.[this.props?.proofOfPayment?.small?.split("/")?.length - 1] }</Text>
+                    </View>
                 </TouchableOpacity>
-                    }
+                }
 
                 <TouchableOpacity ref={ image => (
                     this.image = image) }
@@ -89,7 +92,7 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
                             borderColor : "#fff"
                         } }
                         source={ {
-                            uri :  this.props?.proofOfPayment?.small ,
+                            uri : this.props?.proofOfPayment?.small ,
                         } }
                     />
                 </TouchableOpacity>
@@ -310,13 +313,13 @@ const Payment = (props: any) => {
                                     borderRadius : 5
                                 } } horizontal={ isMobile ? false : true }>
                                     {
-                                       props?.proofOfPayment?.map((payment) => {
+                                        props?.proofOfPayment?.map((payment) => {
                                             return <ProofPaymentView proofOfPayment={ payment }/>
                                         })
 
                                     }
                                 </ScrollView>
-                            </View>}
+                            </View> }
                         </View>
 
                     </View>
@@ -335,7 +338,6 @@ const Payment = (props: any) => {
     </ScrollView>
 
 };
-
 
 
 export default Payment
