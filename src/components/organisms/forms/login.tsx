@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import {View , StyleSheet , TouchableOpacity , Platform} from 'react-native';
 import { CheckIcon } from '@atoms/icon';
 import {
   InputField,
@@ -17,6 +17,12 @@ import {isMobile} from "@pages/activities/isMobile";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    ...Platform.select({
+      native: {},
+      default: {
+        minWidth: 330,
+      }
+    })
   },
   label: {
     marginLeft: 10
@@ -76,7 +82,7 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
     );
   }
   return (
-    <View style={[styles.container,  { minWidth: 330,}]}>
+    <View style={[styles.container]}>
       <InputField
         label={'Email address'}
         placeholder="Email address"
