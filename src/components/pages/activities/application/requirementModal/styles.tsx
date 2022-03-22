@@ -66,6 +66,11 @@ export const styles = StyleSheet.create({
     } ,
 });
 export const requirementStyles = StyleSheet.create({
+    pdf:{
+
+        width : Dimensions.get('window').width ,
+        height : Dimensions.get('window').height ,
+    },
     container : {
         flex : 1 ,
     } ,

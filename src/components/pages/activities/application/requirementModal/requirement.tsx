@@ -10,6 +10,7 @@ import {RootStateOrAny , useSelector} from "react-redux";
 import ImageZoom from 'react-native-image-pan-zoom';
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {Card} from "@pages/activities/application/requirementModal/card";
+import Pdf from 'react-native-pdf';
 
 const { width , height } = Dimensions.get("screen");
 
@@ -17,11 +18,11 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
 
 
     state = {
-        zoomed: false,
-        count: 1,
+        zoomed : false ,
+        count : 1 ,
         onLoad : false ,
         visible : false ,
-        source : { uri : this.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa",  } ,
+        source : { uri : this.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa" , } ,
         _imageSize : {
             width : 0 ,
             height : 0
@@ -33,17 +34,22 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
             pageY : 0
         } ,
         imageModal : null ,
-        image : null
+        image : null ,
+        fileName : ""
     };
+    imageZoom = null;
 
     _showImageModal = () => this.setState({ visible : true });
+
     _hideImageModal = () => this.setState({ visible : false });
+
     _requestClose = () => {
         this.state.imageModal?.close();
-         if(!isMobile) {
-             this._hideImageModal()
-         }
+        if (!isMobile) {
+            this._hideImageModal()
+        }
     };
+
     _showImage = () => {
         this.state.image.measure((x , y , width , height , pageX , pageY) => {
             this.setState({
@@ -59,6 +65,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
     };
 
     componentDidUpdate(prevProps , prevState) {
+
         if (prevProps?.requirement?.medium != this.props?.requirement?.medium) {
 
             this.setImage();
@@ -70,15 +77,14 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
         this.setImage();
     }
 
-    imageZoom = null;
     render() {
         return <>
             <View style={ [requirementStyles.cardDocument] }>
 
 
-                <TouchableOpacity ref={ image => (
+                { <TouchableOpacity ref={ image => (
                     this.state.image = image) }
-                                  onPress={ this._showImage } style={ {
+                                    onPress={ this._showImage } style={ {
                     alignItems : "center" ,
                     flex : 1 ,
                     flexDirection : "row"
@@ -87,33 +93,33 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                         <FileOutlineIcon height={ fontValue(20) } width={ fontValue(16) }/>
                     </View>
                     <Text
-                        style={ requirementStyles.text }>{ this.props?.requirement?.small?.split("/")?.[this.props?.requirement?.small?.split("/")?.length-1] }</Text>
-                </TouchableOpacity>
+                        style={ requirementStyles.text }>{ this.state.fileName }</Text>
+                </TouchableOpacity> }
             </View>
 
-                <View style={{ flex: 1, alignItems: isMobile ? "center" : undefined,}}>
-                    <TouchableOpacity disabled={ this.state.onLoad } ref={ image => (
-                        this.state.image = image) }
-                                      onPress={ this._showImage }>
+            <View style={ { flex : 1 , alignItems : isMobile ? "center" : undefined , } }>
+                <TouchableOpacity disabled={ this.state.onLoad } ref={ image => (
+                    this.state.image = image) }
+                                  onPress={ this._showImage }>
 
-                        <Image
-                            resizeMode={ "cover" }
-                            style={ {
-                                marginBottom : isMobile ? undefined : 25 ,
-                                backgroundColor : "rgba(220,226,229,1)" ,
-                                borderWidth : 1 ,
-                                borderColor : "rgba(213,214,214,1)" ,
-                                borderStyle : "solid" ,
-                                width : isMobile ? 300 : 240 ,
-                                height : isMobile ? 300 : 160 ,
-                                borderRadius : isMobile ? undefined : 10
-                            } }
-                            source={ {
-                                uri : this.props?.requirement?.small ,
-                            } }
-                        />
-                    </TouchableOpacity>
-                </View>
+                    { <Image
+                        resizeMode={ "cover" }
+                        style={ {
+                            marginBottom : isMobile ? undefined : 25 ,
+                            backgroundColor : "rgba(220,226,229,1)" ,
+                            borderWidth : 1 ,
+                            borderColor : "rgba(213,214,214,1)" ,
+                            borderStyle : "solid" ,
+                            width : isMobile ? 300 : 240 ,
+                            height : isMobile ? 300 : 160 ,
+                            borderRadius : isMobile ? undefined : 10
+                        } }
+                        source={ {
+                            uri : this.props?.requirement?.small ,
+                        } }
+                    /> }
+                </TouchableOpacity>
+            </View>
 
 
             <Modal visible={ this.state?.visible } transparent={ true } onRequestClose={ this._hideImageModal }>
@@ -122,8 +128,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                     alignItems : "flex-end" ,
                     top : this.props?.rightLayoutComponent?.top
                 }] }>
-                    <OnBackdropPress styles={ {
-                    } } onPressOut={ this._hideImageModal }/>
+                    <OnBackdropPress styles={ {} } onPressOut={ this._hideImageModal }/>
                     <OnBackdropPress styles={ {
                         width : this.props?.rightLayoutComponent?.width || undefined ,
                         backgroundColor : "rgba(0, 0, 0, 0.5)"
@@ -136,38 +141,41 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                         </View>
                     </View>
                     <View>
-                        <Text style={ styles.fileName }>{ this.props?.requirement?.file?.name }</Text>
+                        <Text style={ styles.fileName }>{ this.state.fileName }</Text>
                         { !!this.props?.requirement?.file?.name &&
                         <FadeBackground style={ { position : "absolute" , zIndex : 1 } }
                                         width={ width }/> }
 
-                        { isMobile ? <AnimatedImage
-                                       useNativeDriver={ true }
-                                       ref={ imageModal => (
-                                           this.state.imageModal = imageModal) }
-                                       source={ this?.state?.source }
-                                       sourceMeasure={ this.state?._sourceMeasure }
-                                       imageSize={ this.state._imageSize }
-                                       onClose={ this._hideImageModal }
-                                       animationDuration={ 200 }
-                                   /> :
-                            //height = height * (this.state._imageSize.height / width)
+                        { (/(pdf)$/ig.test(this.state.fileName.substr((
+                                  this.state.fileName.lastIndexOf('.') + 1)))) ? <Pdf style={ requirementStyles.pdf }
+                                                                                      source={ { uri : this.props?.requirement?.small , } }/> : (
+                              isMobile ? <AnimatedImage
+                                           useNativeDriver={ true }
+                                           ref={ imageModal => (
+                                               this.state.imageModal = imageModal) }
+                                           source={ this?.state?.source }
+                                           sourceMeasure={ this.state?._sourceMeasure }
+                                           imageSize={ this.state._imageSize }
+                                           onClose={ this._hideImageModal }
+                                           animationDuration={ 200 }
+                                       /> :
+                                  //height = height * (this.state._imageSize.height / width)
 
-                          <ImageZoom onSwipeDown={ this._hideImageModal } enableSwipeDown={ true }
-                                     cropWidth={ this.props?.rightLayoutComponent?.width }
-                                     enableDoubleClickZoom={ true }
-                                     cropHeight={ this.props?.rightLayoutComponent?.height }
-                                     imageWidth={ this.props?.rightLayoutComponent?.width }
-                                     imageHeight={ height * (
-                                         this.state._imageSize?.height / width) }>
-                              <Image style={ {
-                                  width : this.state._imageSize.width ,
-                                  height : height * (
-                                      this.state._imageSize.height / width)
-                              } }
-                                     resizeMode={ "contain" }
-                                     source={ this?.state?.source }/>
-                          </ImageZoom>
+                              <ImageZoom onSwipeDown={ this._hideImageModal } enableSwipeDown={ true }
+                                         cropWidth={ this.props?.rightLayoutComponent?.width }
+                                         enableDoubleClickZoom={ true }
+                                         cropHeight={ this.props?.rightLayoutComponent?.height }
+                                         imageWidth={ this.props?.rightLayoutComponent?.width }
+                                         imageHeight={ height * (
+                                             this.state._imageSize?.height / width) }>
+                                  <Image style={ {
+                                      width : this.state._imageSize.width ,
+                                      height : height * (
+                                          this.state._imageSize.height / width)
+                                  } }
+                                         resizeMode={ "contain" }
+                                         source={ this?.state?.source }/>
+                              </ImageZoom>)
                         }
                     </View>
                 </View>
@@ -187,6 +195,8 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
             }
         });
 
+        this.setState({ fileName : this.props?.requirement?.small?.split("/")?.[this.props?.requirement?.small?.split("/")?.length - 1]  });
+
         Image.getSize(this.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
             this.setState({
                 _imageSize : {
@@ -200,7 +210,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
 
 
 const Requirement = (props: any) => {
-    const {rightLayoutComponent} = useSelector((state: RootStateOrAny) => state.application)
+    const { rightLayoutComponent } = useSelector((state: RootStateOrAny) => state.application);
 
     return <ScrollView style={ { backgroundColor : "#f8f8f8" , width : "100%" } }>
         { props?.requirements?.map((requirement: any , index: number) => {
@@ -212,13 +222,13 @@ const Requirement = (props: any) => {
                             <Text
                                 style={ requirementStyles.description }>{ requirement?.description }</Text>
                         </View>
-                       
 
-                        <ScrollView style={{flex: 1,}}>
+
+                        <ScrollView style={ { flex : 1 , } }>
                             {
                                 requirement?.links?.map((link: any , idx: number) => {
                                     return <RequirementView rightLayoutComponent={ rightLayoutComponent } key={ idx }
-                                                     requirement={ link }/>
+                                                            requirement={ link }/>
                                 })
                             }
                         </ScrollView>

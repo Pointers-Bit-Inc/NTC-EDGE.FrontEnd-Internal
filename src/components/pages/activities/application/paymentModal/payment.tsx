@@ -15,46 +15,75 @@ import BorderPaymentBottom from "@assets/svg/borderPaymentBottom";
 import {useComponentLayout} from "../../../../../hooks/useComponentLayout";
 import {isMobile} from "@pages/activities/isMobile";
 import DottedLine from "@assets/svg/dotted";
+import Pdf from "react-native-pdf";
 
 class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
-    source = { uri : this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" };
-    imageModal = null;
-    image = null;
+
+
     state = {
-        visible : false
+        visible : false ,
+        source: { uri : this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" },
+        imageModal:  null,
+        image:null,
+        _imageSize:  {
+            width : 0 ,
+            height : 0
+        },
+        _sourceMeasure: {
+            width : 0 ,
+            height : 0 ,
+            pageX : 0 ,
+            pageY : 0
+        } ,
+        fileName: ''
     };
-    _imageSize = {
-        width : 0 ,
-        height : 0
-    };
-    _sourceMeasure = {
-        width : 0 ,
-        height : 0 ,
-        pageX : 0 ,
-        pageY : 0
-    };
+
     _showImageModal = () => this.setState({ visible : true });
     _hideImageModal = () => this.setState({ visible : false });
-    _requestClose = () => this.imageModal.close();
+    _requestClose = () => this.state.imageModal?.close();
     _showImage = () => {
-        this.image.measure((x , y , width , height , pageX , pageY) => {
-            this._sourceMeasure = {
-                width ,
-                height ,
-                pageX ,
-                pageY
-            };
+        this.state.image.measure((x , y , width , height , pageX , pageY) => {
+            this.setState({
+                _sourceMeasure : {
+                    width ,
+                    height ,
+                    pageX ,
+                    pageY
+                }
+            });
             this._showImageModal();
         });
     };
+    componentDidUpdate(prevProps , prevState) {
 
-    componentDidMount() {
-        Image.getSize(this?.source?.uri , (width , height) => {
-            this._imageSize = {
-                width : width ,
-                height : height
+        if (prevProps?.proofOfPayment?.medium != this.props?.proofOfPayment?.medium) {
+
+            this.setImage();
+
+        }
+    }
+    private setImage() {
+        this.setState({
+            ...this.state ,
+            source : {
+                ...this?.state?.source ,
+                uri : this?.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa"
             }
         });
+
+        this.setState({ fileName : this.props?.proofOfPayment?.small?.split("/")?.[this.props?.proofOfPayment?.small?.split("/")?.length - 1]  });
+
+        Image.getSize(this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
+            this.setState({
+                _imageSize : {
+                    width : width || 300 ,
+                    height : height || 300
+                }
+            });
+        })
+    }
+    componentDidMount() {
+        this.setImage()
     }
 
     render() {
@@ -67,7 +96,7 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
             } }>
                 { this.props.proofOfPayment?.small &&
                 <TouchableOpacity ref={ image => (
-                    this.image = image) }
+                    this.state.image = image) }
                                   onPress={ this._showImage }>
                     <View style={ {
                         justifyContent : "center" , alignItems : "center" ,
@@ -83,7 +112,7 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
                 }
 
                 <TouchableOpacity ref={ image => (
-                    this.image = image) }
+                    this.state.image = image) }
                                   onPress={ this._showImage }>
                     <Image
 
@@ -100,27 +129,29 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
             }
 
 
-            <Modal visible={ this.state.visible } transparent onRequestClose={ this._requestClose }>
+            <Modal visible={ this.state.visible } transparent onRequestClose={ this._hideImageModal }>
                 <View style={ styles.container }>
                     <View style={ styles.rect2 }>
                         <View style={ { alignSelf : 'flex-end' , paddingHorizontal : 15 , paddingVertical : 15 } }>
-                            <TouchableOpacity onPress={ this._requestClose }>
+                            <TouchableOpacity onPress={ this._hideImageModal }>
                                 <Text style={ styles.close }>Close</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={ { height : '100%' , width : '100%' } }>
+                    {(/(pdf)$/ig.test(this.state.fileName.substr((
+                        this.state.fileName.lastIndexOf('.') + 1)))) ? <Pdf style={ [requirementStyles.pdf, {flex: 1}]}
+                                                                            source={ { uri : this.props?.proofOfPayment?.small } }/> : <View style={ { height : '100%' , width : '100%' } }>
                         <AnimatedImage
 
                             ref={ imageModal => (
-                                this.imageModal = imageModal) }
-                            source={ this.source }
-                            sourceMeasure={ this._sourceMeasure }
-                            imageSize={ this._imageSize }
+                                this.state.imageModal = imageModal) }
+                            source={ this.state.source }
+                            sourceMeasure={ this.state._sourceMeasure }
+                            imageSize={ this.state._imageSize }
                             onClose={ this._hideImageModal }
                             animationDuration={ 200 }
                         />
-                    </View>
+                    </View> }
 
                 </View>
             </Modal>
