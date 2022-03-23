@@ -17,7 +17,10 @@ export function useAssignPersonnel(assignedPersonnel, config) {
 
             const _assignPersonnel = (assignedPersonnel?._id || assignedPersonnel)
 
-            if(!_assignPersonnel) return
+            if(!_assignPersonnel)  {
+                setLoading(false)
+                return
+            }
 
             await axios
                 .get(BASE_URL + `/users/${_assignPersonnel}`, config)
