@@ -98,27 +98,32 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                 </TouchableOpacity> }
             </View>
 
-            <View style={ { flex : 1 , alignItems : isMobile ? "center" : undefined , } }>
+            <View style={ {  alignItems : isMobile ? "center" : undefined } }>
                 <TouchableOpacity disabled={ this.state.onLoad } ref={ image => (
                     this.state.image = image) }
                                   onPress={ this._showImage }>
 
-                    { <Image
-                        resizeMode={ "cover" }
-                        style={ {
-                            marginBottom : isMobile ? undefined : 25 ,
-                            backgroundColor : "rgba(220,226,229,1)" ,
-                            borderWidth : 1 ,
-                            borderColor : "rgba(213,214,214,1)" ,
-                            borderStyle : "solid" ,
-                            width : isMobile ? 300 : 240 ,
-                            height : isMobile ? 300 : 160 ,
-                            borderRadius : isMobile ? undefined : 10
-                        } }
-                        source={ {
-                            uri : this.props?.requirement?.small ,
-                        } }
-                    /> }
+                    {
+                        <Image
+                            resizeMode={ "cover" }
+                            style={ {
+
+                                marginBottom : isMobile ? undefined : 25 ,
+                                backgroundColor : "rgba(220,226,229,1)" ,
+                                borderWidth : 1 ,
+                                borderColor : "rgba(213,214,214,1)" ,
+                                borderStyle : "solid" ,
+                                width : isMobile ? 300 : 240 ,
+                                height : isMobile ? 300 : 160 ,
+                                borderRadius :  10
+                            } }
+                            source={ {
+                                uri : this.props?.requirement?.small ,
+                            } }
+                        />
+
+
+                         }
                 </TouchableOpacity>
             </View>
 
@@ -151,6 +156,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                                   this.state.fileName.lastIndexOf('.') + 1)))) ?
                           <PdfViewr width={this.props?.rightLayoutComponent?.width} height={this.props?.rightLayoutComponent?.height}  requirement={ this.props?.requirement }/> : (
                               isMobile ? <AnimatedImage
+
                                            useNativeDriver={ true }
                                            ref={ imageModal => (
                                                this.state.imageModal = imageModal) }
@@ -217,30 +223,32 @@ const Requirement = (props: any) => {
         { props?.requirements?.map((requirement: any , index: number) => {
             return <View style={ { padding : 10 } }>
                 <Card>
-                    <View style={ [{ paddingHorizontal : isMobile ? 30 : 40 } , requirementStyles.cardLabel] }>
+                    <View style={ [{ paddingHorizontal : isMobile ? 20 : 40 }] }>
                         <View style={ requirementStyles.cardTitle }>
                             <Text style={ requirementStyles.title }>{ requirement?.title }</Text>
                             <Text
                                 style={ requirementStyles.description }>{ requirement?.description }</Text>
                         </View>
 
+                      
+                             <ScrollView style={ { flex : 1 , } }>
+                                 {
+                                     /*[{
+                                         "original": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                         "thumb": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                         "small": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                         "medium": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                         "large": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                         "xlarge": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf"
+                                     }]*/
+                                     requirement?.links?.map((link: any , idx: number) => {
+                                         return <RequirementView rightLayoutComponent={ rightLayoutComponent } key={ idx }
+                                                                 requirement={ link }/>
+                                     })
+                                 }
+                             </ScrollView>
 
-                        <ScrollView style={ { flex : 1 , } }>
-                            {
-                                /*[{
-                                    "original": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                    "thumb": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                    "small": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                    "medium": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                    "large": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                    "xlarge": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf"
-                                }]*/
-                                requirement?.links?.map((link: any , idx: number) => {
-                                    return <RequirementView rightLayoutComponent={ rightLayoutComponent } key={ idx }
-                                                            requirement={ link }/>
-                                })
-                            }
-                        </ScrollView>
+
 
                     </View>
                 </Card>

@@ -86,11 +86,6 @@ export const requirementStyles = StyleSheet.create({
         borderColor:"#E5E5E5",
         borderRadius : 5
     } ,
-    cardLabel : {
-        width : "100%" ,
-        justifyContent : "space-between" ,
-        paddingLeft : 12
-    } ,
     cardTitle : {
         justifyContent : "space-between" ,
     } ,
