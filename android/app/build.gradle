@@ -124,6 +124,12 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 def enableHermes = project.ext.react.get("enableHermes", false);
 
 android {
+    packagingOptions {
+      pickFirst 'lib/x86/libc++_shared.so'
+      pickFirst 'lib/x86_64/libc++_shared.so'
+      pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+      pickFirst 'lib/arm64-v8a/libc++_shared.so'
+    }
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     compileOptions {
@@ -132,11 +138,11 @@ android {
     }
 
     defaultConfig {
-        applicationId 'ntc.edge.internal'
+        applicationId 'com.ntcedge.portal'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.5.2"
+        versionCode 1
+        versionName "1.0.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     splits {
@@ -244,5 +250,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
 apply from: new File(["node", "--print", "require.resolve('@react-native-community/cli-platform-android/package.json')"].execute(null, rootDir).text.trim(), "../native_modules.gradle");
 applyNativeModulesAppBuildGradle(project)
 
-apply plugin: 'com.google.gms.google-services'
 apply from: "./eas-build.gradle"
