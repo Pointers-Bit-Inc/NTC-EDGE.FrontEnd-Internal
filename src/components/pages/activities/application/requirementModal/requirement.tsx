@@ -11,8 +11,7 @@ import ImageZoom from 'react-native-image-pan-zoom';
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {Card} from "@pages/activities/application/requirementModal/card";
 import PdfViewr from "@pages/activities/application/pdf/index";
-
-
+import FileIcon from "@assets/svg/file";
 const { width , height } = Dimensions.get("screen");
 
 class RequirementView extends React.Component<{ requirement: any, rightLayoutComponent: any }> {
@@ -36,7 +35,8 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
         } ,
         imageModal : null ,
         image : null ,
-        fileName : ""
+        fileName : "",
+        extension: ''
     };
     imageZoom = null;
 
@@ -104,6 +104,11 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                                   onPress={ this._showImage }>
 
                     {
+                        this.state.extension ?  <FileIcon
+                                                color={"#606A80"}
+                                                 width={ 150 }
+                                                 height={ 150}
+                                             />:
                         <Image
                             resizeMode={ "cover" }
                             style={ {
@@ -152,8 +157,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                         <FadeBackground style={ { position : "absolute" , zIndex : 1 } }
                                         width={ width }/> }
 
-                        { (/(pdf)$/ig.test(this.state.fileName.substr((
-                                  this.state.fileName.lastIndexOf('.') + 1)))) ?
+                        { this.state.extension ?
                           <PdfViewr width={this.props?.rightLayoutComponent?.width} height={this.props?.rightLayoutComponent?.height}  requirement={ this.props?.requirement }/> : (
                               isMobile ? <AnimatedImage
 
@@ -202,7 +206,11 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
             }
         });
 
-        this.setState({ fileName : this.props?.requirement?.small?.split("/")?.[this.props?.requirement?.small?.split("/")?.length - 1]  });
+        let _fileName = this.props?.requirement?.small?.split("/")?.[this.props?.requirement?.small?.split("/")?.length - 1]
+        this.setState({
+            fileName : _fileName ,
+            extension: (/(pdf)$/ig.test(_fileName.substr((_fileName.lastIndexOf('.') + 1)))),
+        });
 
         Image.getSize(this.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
             this.setState({
@@ -230,7 +238,7 @@ const Requirement = (props: any) => {
                                 style={ requirementStyles.description }>{ requirement?.description }</Text>
                         </View>
 
-                      
+
                              <ScrollView style={ { flex : 1 , } }>
                                  {
                                      /*[{
@@ -240,8 +248,7 @@ const Requirement = (props: any) => {
                                          "medium": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
                                          "large": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
                                          "xlarge": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf"
-                                     }]*/
-                                     requirement?.links?.map((link: any , idx: number) => {
+                                     }]*/requirement?.links?.map((link: any , idx: number) => {
                                          return <RequirementView rightLayoutComponent={ rightLayoutComponent } key={ idx }
                                                                  requirement={ link }/>
                                      })

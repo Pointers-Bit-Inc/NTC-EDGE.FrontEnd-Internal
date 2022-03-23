@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     application : {
 
         borderRadius : 5 ,
-        marginLeft : 0 ,
+        paddingVertical: 3,
         //borderWidth: StyleSheet.hairlineWidth,
         borderColor : '#163776' ,
     } ,
@@ -372,7 +372,7 @@ export function ActivityItem(props: any) {
 
                                         </View>
                                         { personnel &&
-                                           <View style={{padding : fontValue(10) , borderTopColor: "#EFEFEF",  borderTopWidth: 1}}>
+                                           <View style={{padding : fontValue(5) , borderTopColor: "#EFEFEF",  borderTopWidth: 1}}>
                                                <View style={styles.section}>
                                                    <View style={{ flex : 1 , alignItems : 'flex-start' } }>
                                                        <RenderPinned
