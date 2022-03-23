@@ -148,8 +148,8 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                                         width={ width }/> }
 
                         { (/(pdf)$/ig.test(this.state.fileName.substr((
-                                  this.state.fileName.lastIndexOf('.') + 1))) && isMobile) ?
-                          <PdfViewr requirement={ this.props?.requirement }/> : (
+                                  this.state.fileName.lastIndexOf('.') + 1)))) ?
+                          <PdfViewr width={this.props?.rightLayoutComponent?.width} height={this.props?.rightLayoutComponent?.height}  requirement={ this.props?.requirement }/> : (
                               isMobile ? <AnimatedImage
                                            useNativeDriver={ true }
                                            ref={ imageModal => (
@@ -227,15 +227,14 @@ const Requirement = (props: any) => {
 
                         <ScrollView style={ { flex : 1 , } }>
                             {
-                                /*[{
+                                [{
                                     "original": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
                                     "thumb": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
                                     "small": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
                                     "medium": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
                                     "large": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
                                     "xlarge": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf"
-                                }]*/
-                                requirement?.links?.map((link: any , idx: number) => {
+                                }]?.map((link: any , idx: number) => {
                                     return <RequirementView rightLayoutComponent={ rightLayoutComponent } key={ idx }
                                                             requirement={ link }/>
                                 })

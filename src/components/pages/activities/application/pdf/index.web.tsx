@@ -1,7 +1,17 @@
 import React from "react";
-import {View} from "react-native";
-const  PdfViewr = (props: { requirement: any }) => {
-    return <View></View>;
+import {View, Text} from "react-native";
+
+const  PdfViewr = (props: { width: any, height: any, requirement: any }) => {
+    return <View>
+        <object
+            {...props}
+            style={{height: props?.height, width: props?.width}}
+            type="application/pdf"
+            data={props.requirement?.small}
+        >
+            <Text>Could not load PDF. Make sure the source is correct and the browser is not on device mode.</Text>
+        </object>
+    </View>;
 }
 
 export default PdfViewr
