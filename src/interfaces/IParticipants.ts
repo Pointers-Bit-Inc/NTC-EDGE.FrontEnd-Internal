@@ -4,7 +4,7 @@ interface IParticipants {
   id: string;
   _id: string;
   email: string;
-  ContactNumber: string;
+  contactNumber: string;
   firstName: string;
   lastName: string;
   name: string;

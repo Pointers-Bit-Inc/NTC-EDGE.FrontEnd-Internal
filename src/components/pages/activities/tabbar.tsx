@@ -43,6 +43,7 @@ import IMeetings from 'src/interfaces/IMeetings';
 import IParticipants from 'src/interfaces/IParticipants';
 import IRooms from 'src/interfaces/IRooms';
 import ActivitiesNavigator from "../../../navigations/activities";
+import useOneSignal from 'src/hooks/useOneSignal';
 
 const { width } = Dimensions.get('window');
 
@@ -130,6 +131,7 @@ export default function TabBar() {
       return RNExitApp.exitApp();
     }
   }
+  const { initialize } = useOneSignal(user);
 
   useEffect(() => {
     dispatch(setConnectionStatus(connectionStatus));
@@ -152,6 +154,7 @@ export default function TabBar() {
   }, [connectionStatus])
 
   useEffect(() => {
+      initialize();
       initSignalR();
       onConnection('OnChatUpdate', onChatUpdate);
 

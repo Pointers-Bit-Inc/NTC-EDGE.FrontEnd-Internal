@@ -47,6 +47,9 @@
           "photosPermission": "Allow $(PRODUCT_NAME) to access your photos"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "oneSignalAppId": "5d0ccbc7-fec7-4375-b029-cbd082a9510f"
+    }
   }
 }
