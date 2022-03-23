@@ -6,8 +6,8 @@ const useOneSignal = (user:IParticipants) => {
   const initialize = () => {
     OneSignal.setAppId(Constants.manifest?.extra?.oneSignalAppId);
     OneSignal.setExternalUserId(user._id);
-    OneSignal.setEmail(user.email);
-    OneSignal.setSMSNumber(user.contactNumber);
+    if (user.email) OneSignal.setEmail(user.email);
+    if (user.contactNumber) OneSignal.setSMSNumber(user.contactNumber);
     OneSignal.setLocationShared(true);
   }
 
