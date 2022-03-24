@@ -6,7 +6,7 @@ const useOneSignal = (user:IUser) => {
   const initialize = () => {
     OneSignal.setAppId(Constants.manifest?.extra?.oneSignalAppId);
     OneSignal.setExternalUserId(user._id);
-    OneSignal.setNotificationWillShowInForegroundHandler(e => e.complete());
+    // OneSignal.setNotificationWillShowInForegroundHandler(e => e.complete());
     if (user.email) OneSignal.setEmail(user.email);
     if (user.contactNumber) OneSignal.setSMSNumber(user.contactNumber);
     if (user.role?.key) OneSignal.sendTag("role", user.role.key);
