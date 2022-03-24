@@ -6,18 +6,13 @@ executors:
       - image: cimg/node:lts
     working_directory: ~/ntc-edge-internal
 
-jobs:
-  stage:
+  build:
     executor: default
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: npm ci
-  build:
-    executor: default
-    steps:
-      - checkout
       - run:
           name: Android Build
           command: npx eas-cli build --platform android --non-interactive
@@ -28,17 +23,14 @@ jobs:
 workflows:
   build_app:
     jobs:
-      - stage:
-          filters:
-            branches:
-              only:
-                - master
-                - develop
       - hold:
           type: approval
-          requires:
-            - stage
       - build:
           requires:
             - hold
+          filters:
+            branches:
+              - master
+              - develop
+          
           
