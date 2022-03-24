@@ -30,7 +30,7 @@ workflows:
       - stage:
           filters:
             branches:
-              include:
+              only:
                 - master
                 - develop
       - hold:
