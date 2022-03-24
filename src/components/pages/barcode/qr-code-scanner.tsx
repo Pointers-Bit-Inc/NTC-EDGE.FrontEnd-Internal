@@ -14,6 +14,8 @@ import * as ImagePicker from "expo-image-picker";
 import {styles} from "./styles"
 import {RootStateOrAny, useSelector} from "react-redux";
 import {BASE_URL} from "../../../services/config";
+import NavBar from "@molecules/navbar";
+import {CloseIcon} from "@atoms/icon";
 const finderWidth: number = 280;
 const finderHeight: number = 230;
 const width = Dimensions.get('window').width;
@@ -127,7 +129,10 @@ export default function QrCodeScan(props: any) {
     }
    
     return (
+
         <View style={[styles.container, { backgroundColor: 'black' }]}>
+
+            
             {
                 hasPermission && (
                     <RNCamera
@@ -140,13 +145,11 @@ export default function QrCodeScan(props: any) {
                     </RNCamera>
                 )
             }
+            <NavBar
+                title='QR Reader'
+            />
             <View style={styles.group7}>
-                <View style={styles.header}>
-                    <View>
-                        <Text style={styles.qrReader}>QR Reader</Text>
-                    </View>
-
-                </View>
+                
                 {isLoading && <View style={styles.group34}>
                     <View style={styles.rect19}>
                         <ActivityIndicator style={styles.icon2} color={'white'}/>
