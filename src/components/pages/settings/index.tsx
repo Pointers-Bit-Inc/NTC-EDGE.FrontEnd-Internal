@@ -30,7 +30,7 @@ export default ({
   const photo = profilePicture ? {uri: profilePicture} : require('@assets/avatar.png');
   const [visible, setVisible] = useState(false);
   const settings = [
-    {
+    /*{
       label: 'Notifications',
       value: 'notifications',
       disabled: true,
@@ -50,7 +50,7 @@ export default ({
       disabled: true,
       icon: <ExclamationIcon color={disabledColor} disabled={true}  size={fontValue(21)} type='circle' />,
       onPress: () => {},
-    },
+    },*/
   ];
   const logout = {
     label: 'Log out',
@@ -116,7 +116,7 @@ export default ({
           </Button>
         </View>
 
-        {separator}
+        {!!settings.length &&separator}
 
         <View style={styles.sectionContainer}>
           <FlatList

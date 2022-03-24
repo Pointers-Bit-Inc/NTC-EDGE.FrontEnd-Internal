@@ -80,12 +80,12 @@ export const styles = StyleSheet.create({
         paddingBottom: 30
     },
     bottomContainer: {
-        
+
     },
     loginButton: {
         borderRadius: 10,
+       maxHeight: fontValue(56),
 
-        paddingVertical: fontValue(15),
         justifyContent: 'center',
     },
     boldText: {

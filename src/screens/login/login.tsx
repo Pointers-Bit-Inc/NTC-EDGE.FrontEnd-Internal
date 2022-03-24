@@ -7,6 +7,7 @@ import Ellipsis from "@atoms/ellipsis";
 import React from "react";
 import {styles} from "@screens/login/styles";
 import {useAuth} from "../../hooks/useAuth";
+import {fontValue} from "@pages/activities/fontValue";
 
 const logo = require('@assets/ntc-edge-horizontal.png');
 const background = require('@assets/background.png');
@@ -48,6 +49,8 @@ const Login = ({ navigation }: any) => {
                             style={ [
                                 styles.loginButton ,
                                 {
+
+                                  
                                     backgroundColor : loading
                                                       ? button.info
                                                       : isValid
@@ -60,14 +63,14 @@ const Login = ({ navigation }: any) => {
                         >
                             {
                                 loading ? (
-                                    <View style={ { paddingVertical : 10 } }>
+                                    <View style={ { paddingVertical : fontValue(10) } }>
                                         <Ellipsis color="#fff" size={ 10 }/>
                                     </View>
 
                                 ) : (
                                     <View>
                                         <Text style={ styles.boldText } color={ isValid ? "#fff" : text.disabled }
-                                              size={ 18 }>Login</Text>
+                                              size={ fontValue(18) }>Login</Text>
                                     </View>
 
                                 )

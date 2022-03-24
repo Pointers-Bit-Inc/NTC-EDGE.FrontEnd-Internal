@@ -45,7 +45,7 @@
         }, [value, selectedIndex])
 
         useEffect(()=>{
-            console.log(isKeyboardVisible)
+
             DropdownButton?.current?.measure((_fx: number, _fy: number, _w: number, h: number, _px: number, py: number) => {
             setDropdownWidth(_w)
                 setDropdownLeft(_px)

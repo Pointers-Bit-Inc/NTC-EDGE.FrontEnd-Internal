@@ -1,10 +1,11 @@
+import Pdf from "react-native-pdf";
 
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
 import React from "react";
-import {View} from "react-native";
 const  PdfViewr = (props: { requirement: any }) => {
 
-    return <View/>;
+    return <Pdf style={ requirementStyles.pdf }
+                source={ { uri : props.requirement?.small , } }/>;
 }
 
 export default PdfViewr

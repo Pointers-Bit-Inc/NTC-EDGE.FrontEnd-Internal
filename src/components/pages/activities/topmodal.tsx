@@ -25,6 +25,7 @@ import {Bold , Regular , Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import CloseIcon from "@assets/svg/close";
+import StatusBar from "@atoms/status-bar";
 
 const window = Dimensions.get("window");
 
@@ -77,6 +78,7 @@ function TopModal(props: any) {
             onRequestClose={ () => {
                 dispatch(setVisible(false))
             } }>
+
             <View ref={ inputRef } style={ visible ? {
 
                 position : "absolute" ,
@@ -177,7 +179,8 @@ function TopModal(props: any) {
 
 const styles = StyleSheet.create({
     container : {
-        flex : 1
+        flex : 1 ,
+       
     } ,
     group : {
         height : 56 ,
@@ -228,9 +231,8 @@ const styles = StyleSheet.create({
         flexDirection : 'row' ,
         justifyContent : 'space-between' ,
         alignItems : 'center' ,
-        paddingHorizontal : 15 ,
-        paddingTop: 40,
-        paddingVertical : 20 ,
+        padding  : 15 ,
+        paddingTop: 45 ,
         backgroundColor : '#041B6E'
     } ,
     rect : {

@@ -221,7 +221,7 @@ const Approval = (props: any) => {
 
                                    { getRole(user , [DIRECTOR , EVALUATOR , ACCOUNTANT]) &&
                                    <InputField
-                                       inputStyle={ {  height : (
+                                       inputStyle={ {  [Platform.OS == "android" ? "padding" : "height"] : (
                                                                     height < 720 && isKeyboardVisible) ? 70 : height * 0.15, fontWeight : "400" , fontSize : fontValue(14) } }
                                        onBlur={ () => setOnFocus(false) }
                                        onFocus={ () => setOnFocus(true) }

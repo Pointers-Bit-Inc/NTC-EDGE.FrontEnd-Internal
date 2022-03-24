@@ -60,12 +60,12 @@ const Endorsed = (props: any) => {
             });
 
             const res = filterResponse?.map((item) => {
-                return { value : item._id , label : item.firstName + " " + item.lastName }
+                return { value : item?._id , label : item?.firstName + " " + item?.lastName }
             });
 
             if (isCurrent && !!res) {
                 setPickedEndorsed(res);
-                setEndorsed((props?.assignedPersonnel?._id || props?.assignedPersonnel)|| res[0]?.value)
+                setEndorsed( res[0]?.value || (props?.assignedPersonnel?._id || props?.assignedPersonnel))
             }
 
         })
@@ -239,7 +239,7 @@ const Endorsed = (props: any) => {
                                               height : (
                                                            height < 720 && isKeyboardVisible) ? 75 : height * 0.15
                                           } }
-                                          inputStyle={ { height : (
+                                          inputStyle={ { [Platform.OS == "android" ? "padding" : "height"] : (
                                                                       height < 720 && isKeyboardVisible) ? 70 : height * 0.15,fontWeight : "400" , fontSize : fontValue(14) } }
                                           error={ validateRemarks.error }
                                           errorColor={ errorColor }

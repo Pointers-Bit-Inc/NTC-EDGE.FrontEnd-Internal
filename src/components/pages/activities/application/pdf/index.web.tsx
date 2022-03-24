@@ -1,7 +1,7 @@
 import React from "react";
 import {View, Text} from "react-native";
 const  PdfViewr = (props: { width: any, height: any, requirement: any }) => {
-    return <View>
+    return <View>     
         <object
             {...props}
             style={{height: props?.height, width: props?.width}}
