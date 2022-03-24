@@ -209,7 +209,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
         let _fileName = this.props?.requirement?.small?.split("/")?.[this.props?.requirement?.small?.split("/")?.length - 1]
         this.setState({
             fileName : _fileName ,
-            extension: (/(pdf)$/ig.test(_fileName.substr((_fileName.lastIndexOf('.') + 1)))),
+            extension: (/(pdf|docx|doc)$/ig.test(_fileName.substr((_fileName.lastIndexOf('.') + 1)))),
         });
 
         Image.getSize(this.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
