@@ -20,6 +20,7 @@ import Button from '@components/atoms/button';
 import lodash from 'lodash';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold, Regular500 } from '@styles/font';
+import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 
 const styles = StyleSheet.create({
   container: {
@@ -85,6 +86,7 @@ const CreateMeeting = ({
   channelId,
 }:any) => {
   const dispatch = useDispatch();
+  useRequestCameraAndAudioPermission();
   const user = useSelector(state => state.user);
   const { createMeeting } = useSignalr();
   const [loading, setLoading] = useState(false);

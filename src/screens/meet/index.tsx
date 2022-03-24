@@ -12,7 +12,6 @@ import {
 } from 'react-native'
 import lodash from 'lodash';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
-import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import { setMeeting, setMeetings, addToMeetings } from 'src/reducers/meeting/actions';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import useSignalr from 'src/hooks/useSignalr';
@@ -147,7 +146,6 @@ const styles = StyleSheet.create({
 
 const Meet = ({ navigation }) => {
   const dispatch = useDispatch();
-  useRequestCameraAndAudioPermission();
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const meetingList = useSelector((state:RootStateOrAny) => {

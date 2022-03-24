@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 30,
     backgroundColor: primaryColor,
-    paddingTop: 40,
+    paddingTop: Platform.OS === 'android' ? 41.5 : 41,
   },
   titleContainer: {
     flex: 1,
@@ -145,7 +145,6 @@ const styles = StyleSheet.create({
 });
 
 const ChatList = ({ navigation }:any) => {
-  useRequestCameraAndAudioPermission();
   const modalRef = useRef<BottomModalRef>(null);
   const dispatch = useDispatch();
   const swipeableRef:any = useRef({});
@@ -323,7 +322,7 @@ const onClose = (item:IMeetings, leave = false) => {
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
         <View style={styles.headerContent}>
-          <TouchableOpacity onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
+          <TouchableOpacity style={{ paddingTop: 1 }} onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
             <HomeMenuIcon/>
             {/* <ProfileImage
               size={45}

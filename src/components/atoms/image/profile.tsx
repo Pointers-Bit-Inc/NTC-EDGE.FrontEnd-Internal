@@ -62,7 +62,7 @@ const ProfileImage = ({
             <Image
               width={imageSize}
               height={imageSize}
-              resizeMode={"contain"}
+              resizeMode={"cover"}
               source={{ uri: image }}
               style={{
                 height: imageSize,
