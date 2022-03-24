@@ -7,21 +7,37 @@ executors:
     working_directory: ~/ntc-edge-internal
 
 jobs:
-  eas_build:
+  stage:
     executor: default
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: npm ci
+  build:
+    executor: default
+    steps:
       - run:
-          name: Trigger build
-          command: npx eas-cli build --platform all --non-interactive
+          name: Android Build
+          command: npx eas-cli build --platform android --non-interactive
+      - run:
+          name: IOS Build
+          command: npx eas-cli build --platform ios --non-interactive
 
 workflows:
   build_app:
     jobs:
-      - eas_build:
+      - stage:
           filters:
             branches:
-              only: testflight
+              include:
+                - master
+                - develop
+      - hold:
+          type: approval
+          requires:
+            - stage
+      - build:
+          requires:
+            - hold
+          
