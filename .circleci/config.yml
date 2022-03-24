@@ -30,7 +30,8 @@ workflows:
             - hold
           filters:
             branches:
-              - master
-              - develop
+              only:
+                - master
+                - develop
           
           
