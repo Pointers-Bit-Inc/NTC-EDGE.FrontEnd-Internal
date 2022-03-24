@@ -25,14 +25,10 @@ export const styles = StyleSheet.create({
         width: "100%",
         height: "100%",
         alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: "flex-end",
         alignSelf: "center"
     },
-    header: {
-        backgroundColor: "#041B6E",
-         height: 58,
-        width: "100%"
-    },
+
     rect: {
         height: 100,
 

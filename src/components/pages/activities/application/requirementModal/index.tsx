@@ -79,7 +79,6 @@ const RequirementModal = (props: any) => {
                                 uri : props?.image ? props?.image : 'https://dummyimage.com/350x350/fff/aaa' ,
                             } }
                             resizeMode="contain"
-
                             onZoomBegin={ () => console.log("On Zoom begin") }
                             onZoomEnd={ () => console.log("On Zoom End") }
                         />

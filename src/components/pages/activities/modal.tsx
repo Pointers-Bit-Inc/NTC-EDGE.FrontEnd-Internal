@@ -298,7 +298,7 @@ function ActivityModal(props: any) {
                 } } details={ props.details } status={ status }/>
                 {
                     <View style={ {
-                        paddingHorizontal : !isMobile && 64 ,
+                        paddingHorizontal : !isMobile ? 64 : 0 ,
                         borderTopColor : 'rgba(0, 0, 0, 0.1)' ,
                         borderTopWidth : 1 , backgroundColor : "white"
                     } }>

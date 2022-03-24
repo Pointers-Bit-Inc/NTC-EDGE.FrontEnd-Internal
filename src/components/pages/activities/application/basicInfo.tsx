@@ -137,11 +137,11 @@ const BasicInfo = (props: any) => {
                                         </View>
                                     </View>
                                     <Row label={ "Full Name:" }
-                                         applicant={ applicant.firstName + " " + applicant.middleName?.charAt() + "." + " " + applicant.lastName }/>
+                                         applicant={ applicant?.firstName + " " + applicant?.middleName?.charAt() + "." + " " + applicant?.lastName }/>
                                     <Row label={ "Date of Birth:" }
                                          applicant={ moment(applicant.dateOfBirth).format('LL') }/>
                                     <Row label={ "Gender:" } applicant={ applicant?.gender || applicant?.sex  }/>
-                                    <Row label={ "Nationality:" } applicant={ applicant.nationality }/>
+                                    <Row label={ "Nationality:" } applicant={ applicant?.nationality }/>
                                 </View>
                                 <View style={ styles.divider }/>
                                 <View style={ styles.group3 }>
@@ -168,7 +168,7 @@ const BasicInfo = (props: any) => {
                                     <Row label={ "Course Taken:" } applicant={ applicant?.education?.courseTaken }/>
                                     <Row label={ "Year Graduated:" } applicant={ applicant?.education?.yearGraduated }/>
                                     <Row label={ "Contact Number:" } applicant={ applicant?.contact?.contactNumber }/>
-                                    <Row label={ "Email:" } applicant={ applicant?.contact.email }/>
+                                    <Row label={ "Email:" } applicant={ applicant?.contact?.email }/>
 
                                 </View>
                                 <View style={ styles.divider }/>

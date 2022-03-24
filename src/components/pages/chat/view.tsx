@@ -84,8 +84,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingLeft: 1,
-    paddingTop: 1,
+    paddingLeft: Platform.OS === 'ios' ? 1 : 0,
+    paddingTop: Platform.OS === 'ios' ? 1 : 0,
   },
   circle: {
     backgroundColor: button.primary,
