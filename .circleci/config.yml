@@ -6,6 +6,7 @@ executors:
       - image: cimg/node:lts
     working_directory: ~/ntc-edge-internal
 
+jobs:
   build:
     executor: default
     steps:
