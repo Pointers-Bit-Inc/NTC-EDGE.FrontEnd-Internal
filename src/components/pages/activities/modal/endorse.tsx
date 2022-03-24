@@ -181,7 +181,7 @@ const Endorsed = (props: any) => {
             >
 
 
-                  <View style={{flex: 1,  paddingHorizontal: !isMobile && 64, alignItems: "flex-end", justifyContent: "flex-end"}}>
+                  <View style={{flex: 1,  paddingHorizontal: !isMobile ? 64 : 0, alignItems: "flex-end", justifyContent: "flex-end"}}>
                       <TouchableWithoutFeedback onPressOut={ props.onDismissed}>
                           <View style={   {
 
