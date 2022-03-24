@@ -139,9 +139,9 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
                         </View>
                     </View>
 
-                    {(/(pdf)$/ig.test(this.state.fileName.substr((
+                    {(/(pdf|docx|doc)$/ig.test(this.state.fileName.substr((
                         this.state.fileName.lastIndexOf('.') + 1))) && isMobile) ?
-                     <PdfViewr requirement={ this.props?.proofOfPayment }/> : <View style={ { height : '100%' , width : '100%' } }>
+                     <PdfViewr   requirement={ this.props?.proofOfPayment }/> : <View style={ { height : '100%' , width : '100%' } }>
                         <AnimatedImage
 
                             ref={ imageModal => (
