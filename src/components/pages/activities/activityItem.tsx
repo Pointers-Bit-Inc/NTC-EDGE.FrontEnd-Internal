@@ -1,5 +1,5 @@
-import React , {useEffect , useRef , useState} from "react";
-import {ActivityIndicator , Platform , StyleSheet , TouchableOpacity , useWindowDimensions , View} from "react-native";
+import React , {useEffect , useState} from "react";
+import {ActivityIndicator , StyleSheet , TouchableOpacity , useWindowDimensions , View} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
@@ -21,7 +21,9 @@ import {
     DIRECTOR ,
     EVALUATOR ,
     FORAPPROVAL ,
-    FOREVALUATION , FORVERIFICATION , PENDING
+    FOREVALUATION ,
+    FORVERIFICATION ,
+    PENDING
 } from "../../../reducers/activity/initialstate";
 import {outline} from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
@@ -165,7 +167,7 @@ const RenderApplication = ({ applicationType }: any) => {
     return (
         <View
             style={ [
-                {backgroundColor : "#BFBEFC" } ,
+                { backgroundColor : "#BFBEFC" } ,
                 styles.horizontal ,
                 styles.application
             ] }
@@ -181,9 +183,14 @@ const RenderApplication = ({ applicationType }: any) => {
                 size={ fontValue(10) }
                 numberOfLines={ 1 }
             >
-                { isMobile ? applicationType :((applicationType).length > 30) ?
-                                              (((applicationType).substring(0,30-3)) + '...') :
-                                              applicationType  }
+                { isMobile ? applicationType : (
+                                                   (
+                                                       applicationType).length > 30) ?
+                                               (
+                                                   (
+                                                       (
+                                                           applicationType).substring(0 , 30 - 3)) + '...') :
+                                               applicationType }
             </Text>
         </View>
     )
@@ -213,7 +220,7 @@ const RenderPinned = ({ assignedPersonnel , config }: any) => {
                   size={ fontValue(12) }
                   numberOfLines={ 1 }
               >
-                  { personnel != undefined ?  `Assigned to ${ personnel?.firstName } ${ personnel?.lastName }` : `` }
+                  { personnel != undefined ? `Assigned to ${ personnel?.firstName } ${ personnel?.lastName }` : `` }
               </Text>
             }
         </View>
@@ -230,8 +237,14 @@ const closeRow = (index) => {
 
 export function ActivityItem(props: any) {
     const status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status);
-    const userActivity = props?.activity?.applicant?.user ||  props?.activity?.applicant;
-    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!props?.activity?.paymentHistory?.[0]?.status ? StatusText(props?.activity?.paymentHistory?.[0]?.status) : getRole(props.currentUser , [ACCOUNTANT]) && props?.activity?.approvalHistory?.[0]?.status == FOREVALUATION && props?.activity?.approvalHistory?.[1]?.status == FORAPPROVAL ? DECLINED : getRole(props.currentUser , [CASHIER]) && props?.activity?.paymentHistory?.status == PENDING ? FORVERIFICATION  :   status ;
+    const userActivity = props?.activity?.applicant?.user || props?.activity?.applicant;
+    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && (
+        !!props?.activity?.approvalHistory?.[0]?.userId || !!props?.activity?.approvalHistory?.userId) && (
+        props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION || props?.activity?.approvalHistory?.status !== FOREVALUATION) ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && (
+        !!props?.activity?.paymentHistory?.[0]?.status || !!props?.activity?.paymentHistory?.status) ? StatusText(props?.activity?.paymentHistory?.[0]?.status || props?.activity?.paymentHistory?.status) : getRole(props.currentUser , [ACCOUNTANT]) && (
+        props?.activity?.approvalHistory?.[0]?.status == FOREVALUATION || props?.activity?.approvalHistory?.status == FOREVALUATION) && (
+        props?.activity?.approvalHistory?.[1]?.status == FORAPPROVAL) ? DECLINED : getRole(props.currentUser , [CASHIER]) && (
+        props?.activity?.paymentHistory?.[0]?.status == PENDING || props?.activity?.paymentHistory?.status == PENDING) ? FORVERIFICATION : status;
 
     useEffect(() => {
         let unsubscribe = true;
@@ -257,7 +270,10 @@ export function ActivityItem(props: any) {
         <Hoverable>
             { isHovered => (
 
-                <View style={ { backgroundColor : props.selected && !(isMobile)  ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff" } }>
+                <View style={ {
+                    backgroundColor : props.selected && !(
+                        isMobile) ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff"
+                } }>
                     <ActivitySwipeable
                         ref={ ref => row[props.index] = ref }
                         key={ props.index }
@@ -270,7 +286,8 @@ export function ActivityItem(props: any) {
                         }
                     >
 
-                        <View style={ [styles.container, {paddingRight : dimensions.width <= 768 ? 20 : undefined ,}] }>
+                        <View
+                            style={ [styles.container , { paddingRight : dimensions.width <= 768 ? 20 : undefined , }] }>
 
                             <View style={ styles.applicationContainer }>
                                 <View style={ { padding : 5 } }>
@@ -291,7 +308,7 @@ export function ActivityItem(props: any) {
                                                 flex : 1 ,
 
                                                 paddingHorizontal : fontValue(10) ,
-                                                paddingVertical:  props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel ? undefined :  fontValue(10),
+                                                paddingVertical : props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel ? undefined : fontValue(10) ,
                                                 flexDirection : "row" ,
                                                 alignItems : "center"
                                             }
@@ -336,10 +353,10 @@ export function ActivityItem(props: any) {
                                                         </Text>
                                                     </View>
                                                 </View>
-                                                <View style={ styles.section}>
+                                                <View style={ styles.section }>
                                                     <View style={ { flex : 1 , alignItems : 'flex-start' } }>
                                                         <RenderApplication
-                                                            applicationType={ props?.activity?.applicationType  || props?.activity?.service?.name  }/>
+                                                            applicationType={ props?.activity?.applicationType || props?.activity?.service?.name }/>
                                                     </View>
 
                                                     <RenderStatus
@@ -350,18 +367,28 @@ export function ActivityItem(props: any) {
                                             </View>
 
                                         </View>
-                                        {  props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel &&
-                                        <View style={{padding : fontValue(10) , borderTopColor: "#EFEFEF",  borderTopWidth: 1}}>
-                                            <View style={styles.section}>
-                                                <View style={{ flex : 1 , alignItems : 'flex-start' } }>
+                                        { props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel &&
+                                        <View style={ {
+                                            padding : fontValue(10) ,
+                                            borderTopColor : "#EFEFEF" ,
+                                            borderTopWidth : 1
+                                        } }>
+                                            <View style={ styles.section }>
+                                                <View style={ { flex : 1 , alignItems : 'flex-start' } }>
                                                     <RenderPinned config={ props.config }
                                                                   assignedPersonnel={
-                                                                      !!props?.activity.paymentMethod && (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) ?
-                                                                      (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) : (props?.activity?.paymentStatus == APPROVED || props?.activity?.paymentStatus == DECLINED ?
-                                                                                                                                                         (props?.activity?.paymentHistory?.[0]?.userId ) :
-                                                                                                                                                         (props?.activity?.approvalHistory?.[0]?.userId ?
-                                                                                                                                                          props?.activity?.approvalHistory?.[0]?.userId :
-                                                                                                                                                          (props?.activity?.assignedPersonnel?._id || props?.assignedPersonnel)))
+                                                                      !!props?.activity.paymentMethod && (
+                                                                          props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) ?
+                                                                      (
+                                                                          props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) : (
+                                                                          props?.activity?.paymentStatus == APPROVED || props?.activity?.paymentStatus == DECLINED ?
+                                                                          (
+                                                                              props?.activity?.paymentHistory?.[0]?.userId) :
+                                                                          (
+                                                                              props?.activity?.approvalHistory?.[0]?.userId ?
+                                                                              props?.activity?.approvalHistory?.[0]?.userId :
+                                                                              (
+                                                                                  props?.activity?.assignedPersonnel?._id || props?.assignedPersonnel)))
                                                                   }/>
                                                 </View>
                                             </View>
@@ -369,7 +396,8 @@ export function ActivityItem(props: any) {
                                         }
                                     </TouchableOpacity>
                                 </View>
-                                { dimensions.width >= 768 && <View style={ { paddingHorizontal : selectedMoreCircle ? 14 : 18 , } }>
+                                { dimensions.width >= 768 &&
+                                <View style={ { paddingHorizontal : selectedMoreCircle ? 14 : 18 , } }>
                                     <Menu onClose={ () => {
                                         setSelectedMoreCircle(false)
                                     } } onSelect={ value => setSelectedMoreCircle(true) }>

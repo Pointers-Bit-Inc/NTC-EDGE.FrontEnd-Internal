@@ -90,6 +90,7 @@ export const requirementStyles = StyleSheet.create({
         justifyContent : "space-between" ,
     } ,
     title : {
+        paddingHorizontal: 15,
         fontSize: fontValue(14),
         fontFamily: Bold,
         color : "#37405B"

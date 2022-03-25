@@ -35,21 +35,19 @@ const Row = (props: { label: string, applicant: any }) => <View style={ styles.g
 
 
 const BasicInfo = (props: any) => {
-    const approvalHistory = (index = 0) => props?.approvalHistory
-    const paymentHistory = (index = 0) => props?.paymentHistory
     const {
         personnel ,
         loading
-    } = useAssignPersonnel( approvalHistory()?.status == FORAPPROVAL || approvalHistory()?.status == PENDING ? props?.assignedPersonnel?._id || props?.assignedPersonnel  : !!props.paymentMethod && (props.assignedPersonnel?._id || props.assignedPersonnel ) ?
+    } = useAssignPersonnel( !!props.paymentMethod && (props.assignedPersonnel?._id || props.assignedPersonnel ) ?
                             (props.assignedPersonnel?._id || props.assignedPersonnel ) : (props.paymentStatus == APPROVED || props.paymentStatus == DECLINED ?
-                            (paymentHistory()?.userId ) :
-                            (approvalHistory()?.userId ?
-                             approvalHistory()?.userId :
-                             (props.assignedPersonnel?._id || props?.assignedPersonnel))) , {
+                                                                                          (props?.paymentHistory?.[0]?.userId ||  props?.paymentHistory?.userId ) :
+                                                                                          (props?.approvalHistory?.[0]?.userId || props?.approvalHistory?.userId ?
+                                                                                           props?.approvalHistory?.[0]?.userId || props?.approvalHistory?.userId :
+                                                                                           (props?.approvalHistory?.[0]?.userId || props?.approvalHistory?.userId))) , {
         headers : {
             Authorization : "Bearer ".concat(props.user.sessionToken)
-        },
-    }, props.assignedPersonnel?._id ? props.assignedPersonnel : null);
+        }
+    });
     const applicant = props.applicant?.user || props.applicant;
     const dimensions = useWindowDimensions();
     return <ScrollView style={ { width : "100%" , backgroundColor : "#f8f8f8" , } }>

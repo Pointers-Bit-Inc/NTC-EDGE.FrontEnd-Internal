@@ -305,7 +305,7 @@ const Payment = (props: any) => {
                             <TouchableOpacity onPress={ () => {
                                 setVisibleModal(true)
                             } }>
-                                <View style={ requirementStyles.cardLabel }>
+                                <View>
                                     <Text style={ requirementStyles.title }>Payment</Text>
                                     <View style={ requirementStyles.cardTitle }>
 

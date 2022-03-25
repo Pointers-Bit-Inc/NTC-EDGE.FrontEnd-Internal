@@ -72,7 +72,8 @@ export const formatDate = (date: string) => {
 
     date = !date?.split("T") ? checkFormatIso(date) : date;
     let d = new Date(date) ,
-        month = '' + (d.getMonth() + 1) ,
+        month = '' + (
+            d.getMonth() + 1) ,
         day = '' + d.getDate() ,
         year = d.getFullYear()?.toString()?.slice(-2);
     if (month.length < 2)
@@ -80,7 +81,7 @@ export const formatDate = (date: string) => {
     if (day.length < 2)
         day = '0' + day;
 
-    return [month , day,  year].join('/');
+    return [month , day , year].join('/');
 };
 export const checkFormatIso = (date: string , separator?: string) => {
 
@@ -98,7 +99,9 @@ export const checkFormatIso = (date: string , separator?: string) => {
     }
     let newDate = "";
     for (let i = 0; i < isoStringSplit.length; i++) {
-        newDate += isoStringSplit[i] + (i != isoStringSplit.length - 1 ? (separator ? separator : "/") : "")
+        newDate += isoStringSplit[i] + (
+            i != isoStringSplit.length - 1 ? (
+                separator ? separator : "/") : "")
     }
     return newDate
 };
@@ -107,31 +110,35 @@ export const statusColor = (status: string) => {
 
     if (status == FOREVALUATION) {
 
-        return { color : "#F79E1B" ,   fontFamily: Regular500   }
+        return { color : "#F79E1B" , fontFamily : Regular500 }
     } else if (status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) {
 
-        return { color : "#00AB76" ,   fontFamily: Regular500   , }
+        return { color : "#00AB76" , fontFamily : Regular500 , }
     } else if (status == DECLINED || status == DECLINE || status == UNVERIFIED) {
 
-        return { color : "#CF0327" ,   fontFamily: Regular500   }
+        return { color : "#CF0327" , fontFamily : Regular500 }
     } else {
 
-        return { color : "#F79E1B" ,   fontFamily: Regular500   }
+        return { color : "#F79E1B" , fontFamily : Regular500 }
     }
 };
 export const statusIcon = (status: string , icon: any = styles.icon3 , item: any = 0) => {
 
     if (status == FOREVALUATION) {
 
-        return <EvaluationStatus width={fontValue(20)} height={fontValue(20)} style={ [icon , { flex: 1, color : "#f66500" , }] }/>
-    } else if ((status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) && item == 0) {
-        return <CheckMarkIcon  width={fontValue(20)} height={fontValue(20)} style={ [icon, {flex: 1} ]}/>
-    } else if ((status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) && item == 1) {
-        return <CheckIcon width={fontValue(20)} height={fontValue(20)} style={ [icon, {flex: 1} ] }/>
+        return <EvaluationStatus width={ fontValue(20) } height={ fontValue(20) }
+                                 style={ [icon , { flex : 1 , color : "#f66500" , }] }/>
+    } else if ((
+        status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) && item == 0) {
+        return <CheckMarkIcon width={ fontValue(20) } height={ fontValue(20) } style={ [icon , { flex : 1 }] }/>
+    } else if ((
+        status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) && item == 1) {
+        return <CheckIcon width={ fontValue(20) } height={ fontValue(20) } style={ [icon , { flex : 1 }] }/>
     } else if (status == DECLINED || status == DECLINE || status == UNVERIFIED) {
-        return <DeclineStatusIcon  width={fontValue(20)} height={fontValue(20)} style={ [icon, {flex: 1} ] }/>
+        return <DeclineStatusIcon width={ fontValue(20) } height={ fontValue(20) } style={ [icon , { flex : 1 }] }/>
     } else {
-        return <EvaluationStatus width={fontValue(20)} height={fontValue(20)} style={ [icon , { flex: 1 , color : "#f66500" , }] }/>
+        return <EvaluationStatus width={ fontValue(20) } height={ fontValue(20) }
+                                 style={ [icon , { flex : 1 , color : "#f66500" , }] }/>
     }
 };
 export const statusBackgroundColor = (status: string) => {
@@ -191,15 +198,25 @@ export const getFilter = ({
         _approvalHistory = item?.approvalHistory?.[0]?.userId == user?._id
     }
     const search =
-        (selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true);
+        (
+            selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true);
     if (cashier) {
-        return (item?.status == APPROVED || item?.status == DECLINED && (item?.assignedPersonnel == user?._id || (item?.assignedPersonnel?._id || item?.assignedPersonnel) === null || _approvalHistory) && search)
+        return (
+            item?.status == APPROVED || item?.status == DECLINED && (
+                item?.assignedPersonnel == user?._id || (
+                    item?.assignedPersonnel?._id || item?.assignedPersonnel) === null || _approvalHistory) && search)
     } else if (director) {
-        return (item?.status == FORAPPROVAL  || item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search
+        return (
+            item?.status == FORAPPROVAL || item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (
+            item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search
     } else if (checker || accountant) {
-        return ((item?.assignedPersonnel?._id || (item?.assignedPersonnel?._id || item?.assignedPersonnel)) == user?._id || item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
+        return (
+            (
+                item?.assignedPersonnel?._id || (
+                    item?.assignedPersonnel?._id || item?.assignedPersonnel)) == user?._id || item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
     } else if (evaluator) {
-        return item?.status.length > 0 || (item?.assignedPersonnel?._id || item?.assignedPersonnel) == user?._id || item?.assignedPersonnel === null || _approvalHistory
+        return item?.status.length > 0 || (
+            item?.assignedPersonnel?._id || item?.assignedPersonnel) == user?._id || item?.assignedPersonnel === null || _approvalHistory
     }
 });
 
@@ -213,8 +230,17 @@ interface UnreadReadApplicationParams {
     callback: (action: any) => void;
 }
 
-export const unreadReadApplication = ({unReadBtn, dateRead, id, config, dispatch, setUpdateUnReadReadApplication, callback}: UnreadReadApplicationParams) => {
-    const action = unReadBtn ? (dateRead ? "unread" : "read") : "read";
+export const unreadReadApplication = ({
+                                          unReadBtn ,
+                                          dateRead ,
+                                          id ,
+                                          config ,
+                                          dispatch ,
+                                          setUpdateUnReadReadApplication ,
+                                          callback
+                                      }: UnreadReadApplicationParams) => {
+    const action = unReadBtn ? (
+        dateRead ? "unread" : "read") : "read";
 
     const params = {
         "action" : action
@@ -239,13 +265,20 @@ export const excludeStatus = (props: any , personnel: UserApplication) => getSta
     getStatusText(props , personnel) == FOREVALUATION;
 
 export function getStatusText(props: any , personnel: UserApplication | undefined) {
-    return getRole(props.user , [EVALUATOR , DIRECTOR]) && getStatus(props , personnel) == FORAPPROVAL && !!props?.approvalHistory?.[0]?.userId && props?.approvalHistory?.[0]?.status!==FOREVALUATION  ? StatusText(APPROVED) : getRole(props.user, [ACCOUNTANT]) && !!props.paymentMethod && !!props?.paymentHistory?.[0]?.status ? StatusText(props.paymentHistory?.[0]?.status) : getRole(props.user, [ACCOUNTANT]) && props.approvalHistory?.[0]?.status == FOREVALUATION &&  props.approvalHistory[1].status == FORAPPROVAL ? DECLINED : getRole(props.user , [CASHIER]) && props?.paymentHistory?.status == PENDING ? FORVERIFICATION : getStatus(props , personnel);
+    return getRole(props.user , [EVALUATOR , DIRECTOR]) && getStatus(props , personnel) == FORAPPROVAL && (
+        !!props?.approvalHistory?.[0]?.userId || !!props?.approvalHistory?.userId) && (
+        props?.approvalHistory?.[0]?.status !== FOREVALUATION || props?.approvalHistory?.status !== FOREVALUATION) ? StatusText(APPROVED) : getRole(props.user , [ACCOUNTANT]) && !!props.paymentMethod && (
+        !!props?.paymentHistory?.[0]?.status || !!props?.paymentHistory?.status) ? StatusText(props.paymentHistory?.[0]?.status || props.paymentHistory?.status) : getRole(props.user , [ACCOUNTANT]) && (
+        props.approvalHistory?.[0]?.status == FOREVALUATION || props.approvalHistory?.status == FOREVALUATION) && props.approvalHistory[1].status == FORAPPROVAL ? DECLINED : getRole(props.user , [CASHIER]) && (
+        props?.paymentHistory?.[0]?.status == PENDING || props?.paymentHistory?.status == PENDING) ? FORVERIFICATION : getStatus(props , personnel);
 }
+
 export function getStatus(props: any , personnel?: { _id: string | undefined; updatedAt: string | undefined; createdAt: string | undefined; username: string | undefined; role: Role | undefined; email: string | undefined; firstName: string | undefined; lastName: string | undefined; password: string | undefined; contactNumber: string | undefined; __v: number | undefined; address: string | undefined; profilePicture: ProfilePicture | undefined; avatar: string | undefined } , wordCase?: string) {
 
-    return (personnel || true) &&
+    return (
+            personnel || true) &&
         (
-            props?.user?.role?.key == CASHIER?
+            props?.user?.role?.key == CASHIER ?
             (
                 wordCase === "toUpperCase" ?
                 PaymentStatusText(props?.paymentStatus).toUpperCase() :
