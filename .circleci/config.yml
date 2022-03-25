@@ -7,13 +7,22 @@ executors:
     working_directory: ~/ntc-edge-internal
 
 jobs:
-  test-build:
+  Install Dependencies:
     executor: default
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: npm ci
+      - persist_to_workspace:
+          root: ~/ntc-edge-internal
+          paths:
+            - .
+  App Build for Testing:
+    executor: default
+    steps:
+      - attach_workspace:
+          at: ~/ntc-edge-internal
       - run:
           name: Android Build
           command: npx eas-cli build --platform android --non-interactive
@@ -26,13 +35,11 @@ jobs:
           environment:
             API_URL: $TEST_URL
           no_output_timeout: 30m
-  prod-build:
+  App Build for Production:
     executor: default
     steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: npm ci
+      - attach_workspace:
+          at: ~/ntc-edge-internal
       - run:
           name: Android Build
           command: npx eas-cli build --platform android --non-interactive
@@ -45,60 +52,51 @@ jobs:
           environment:
             API_URL: $PROD_URL
           no_output_timeout: 30m
-  submit:
+  Submit to Appstore:
     executor: default
     steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: npm ci
+      - attach_workspace:
+          at: ~/ntc-edge-internal
       - run:
           name: Submit to Apple Appstore
           command: npx eas-cli submit -p ios --latest --non-interactive
 
 workflows:
-  build-test-app:
+  Build and Deploy:
     jobs:
-      - hold-build:
+      - Request for Build:
           type: approval
-      - test-build:
-          context: ntc-edge
+      - Install Dependencies:
           filters:
             branches:
               only:
                 - master
                 - develop
           requires:
-            - hold-build
-      - hold-submit:
+            - Request for Build
+      - Build for Testing:
           type: approval
           requires:
-            - test-build
-      - submit:
-          context: ntc-edge
-          requires:
-            - hold-submit
-  build-prod-app:
-    jobs:
-      - hold-build:
-          type: approval
-      - prod-build:
-          context: ntc-edge
-          filters:
-            branches:
-              only:
-                - master
-                - develop
-          requires:
-            - hold-build
-      - hold-submit:
+            - Install Dependencies
+      - Build for Production:
           type: approval
           requires:
-            - prod-build
-      - submit:
+            - Install Dependencies
+      - App Build for Testing:
           context: ntc-edge
           requires:
-            - hold-submit
-
-          
+            - Build for Testing
+      - App Build for Production:
+          context: ntc-edge
+          requires:
+            - Build for Production
+      - Request for Submit:
+          type: approval
+          requires:
+            - App Build for Testing
+            - App Build for Production
+      - Submit to Appstore:
+          context: ntc-edge
+          requires:
+            - Request for Submit          
           
