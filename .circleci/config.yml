@@ -72,6 +72,8 @@ workflows:
             - hold-build
       - hold-submit:
           type: approval
+          requires:
+            - test-build
       - submit:
           context: ntc-edge
           requires:
@@ -91,6 +93,8 @@ workflows:
             - hold-build
       - hold-submit:
           type: approval
+          requires:
+            - prod-build
       - submit:
           context: ntc-edge
           requires:
