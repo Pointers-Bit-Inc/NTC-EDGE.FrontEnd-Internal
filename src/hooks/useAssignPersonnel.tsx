@@ -4,7 +4,7 @@ import axios from "axios";
 import {BASE_URL} from "../services/config";
 import {Alert , InteractionManager} from "react-native";
 
-export function useAssignPersonnel(assignedPersonnel, config) {
+export function useAssignPersonnel(assignedPersonnel, config, existing=null, user=null) {
 
 
     const [personnel, setPersonnel] = useState<UserApplication>()
@@ -44,7 +44,14 @@ export function useAssignPersonnel(assignedPersonnel, config) {
     };
     useEffect(() => {
         let isCurrent = true
-       fetchData(isCurrent);
+        if(existing ) {
+            setPersonnel(existing)
+        }else if(!existing){
+            setPersonnel(existing)
+        }else{
+            fetchData(isCurrent);
+        }
+
         return () =>{
             isCurrent = false
         }

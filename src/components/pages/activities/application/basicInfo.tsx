@@ -35,9 +35,8 @@ const Row = (props: { label: string, applicant: any }) => <View style={ styles.g
 
 
 const BasicInfo = (props: any) => {
-    const approvalHistory = (index = 0) => props?.approvalHistory?.[index]
-    const paymentHistory = (index = 0) => props?.paymentHistory?.[index]
-
+    const approvalHistory = (index = 0) => props?.approvalHistory
+    const paymentHistory = (index = 0) => props?.paymentHistory
     const {
         personnel ,
         loading
@@ -49,8 +48,8 @@ const BasicInfo = (props: any) => {
                              (props.assignedPersonnel?._id || props?.assignedPersonnel))) , {
         headers : {
             Authorization : "Bearer ".concat(props.user.sessionToken)
-        }
-    });
+        },
+    }, props.assignedPersonnel?._id ? props.assignedPersonnel : null);
     const applicant = props.applicant?.user || props.applicant;
     const dimensions = useWindowDimensions();
     return <ScrollView style={ { width : "100%" , backgroundColor : "#f8f8f8" , } }>

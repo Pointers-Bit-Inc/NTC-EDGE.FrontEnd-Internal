@@ -29,7 +29,7 @@ import {
     DIRECTOR ,
     EVALUATOR ,
     FORAPPROVAL ,
-    FOREVALUATION , FORVERIFICATION , PENDING , VERIFICATION
+    FOREVALUATION , FORPAYMENT , FORVERIFICATION , PENDING , VERIFICATION
 } from "../../../reducers/activity/initialstate";
 import {outline} from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
@@ -242,18 +242,18 @@ const closeRow = (index) => {
 };
 
 export function ActivityItem(props: any) {
-    const approvalHistory = (index = 0) => props?.activity?.approvalHistory?.[index]
-    const paymentHistory = (index = 0) => props?.activity?.paymentHistory?.[index]
+    const approvalHistory = (index = 0) => props?.activity?.approvalHistory
+    const paymentHistory = (index = 0) => props?.activity?.paymentHistory
     const { personnel , loading } = useAssignPersonnel(approvalHistory()?.status == FORAPPROVAL || approvalHistory()?.status == PENDING ? props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel  :!!props?.activity?.paymentMethod && (props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) ?
                                                                                                                                                                                                                           (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) : (props?.activity?.paymentStatus == APPROVED || props?.activity?.paymentStatus == DECLINED ?
                                                                                                                                                                                                                                                                                                              (paymentHistory()?.userId ) :
                                                                                                                                                                                                                                                                                                              (approvalHistory()?.userId ? approvalHistory()?.userId :
-                                                                                                                                                                                                                                                                                                              (props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel))) , props.config );
+                                                                                                                                                                                                                                                                                                              (props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel))) , props.config, props?.activity?.assignedPersonnel?._id ? props?.activity?.assignedPersonnel : null);
 
     const status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status);
     const userActivity = props?.activity?.applicant?.user ||  props?.activity?.applicant;
-    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!approvalHistory()?.userId && approvalHistory()?.status !== FOREVALUATION && approvalHistory()?.status!==FORVERIFICATION &&  approvalHistory()?.status!==FORAPPROVAL &&  approvalHistory()?.status!==PENDING? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!paymentHistory()?.status ? StatusText(paymentHistory()?.status) : getRole(props.currentUser , [ACCOUNTANT]) && approvalHistory()?.status == FOREVALUATION && approvalHistory(1)?.status == FORAPPROVAL ? DECLINED :  getRole(props?.currentUser , [CASHIER]) && !props?.activity?.paymentMethod ? FORVERIFICATION :  status;
-     console.log("activity item ", props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel )
+    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!approvalHistory()?.userId && approvalHistory()?.status !== FOREVALUATION && approvalHistory()?.status!==FORVERIFICATION &&  approvalHistory()?.status!==FORAPPROVAL &&  approvalHistory()?.status!==PENDING? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!paymentHistory()?.status ? StatusText(paymentHistory()?.status) : getRole(props.currentUser , [ACCOUNTANT]) && approvalHistory()?.status == FOREVALUATION && approvalHistory(1)?.status == FORAPPROVAL ? DECLINED :  getRole(props?.currentUser , [CASHIER]) && !props?.activity?.paymentMethod ? FORVERIFICATION : getRole(props?.currentUser , [ACCOUNTANT]) && (props?.activity?.assignedPersonnel == null && props?.activity?.paymentMethod ==null) ? FORAPPROVAL : status;
+
     useEffect(() => {
         let unsubscribe = true;
         unsubscribe && props?.isOpen == props?.index && row[props?.index]?.close();

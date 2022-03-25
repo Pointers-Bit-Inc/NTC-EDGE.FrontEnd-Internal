@@ -29,6 +29,7 @@ export default ({
   const profilePicture = user?.profilePicture?.small;
   const photo = profilePicture ? {uri: profilePicture} : require('@assets/avatar.png');
   const [visible, setVisible] = useState(false);
+
   const settings = [
     /*{
       label: 'Notifications',
