@@ -57,30 +57,44 @@ jobs:
           command: npx eas-cli submit -p ios --latest --non-interactive
 
 workflows:
-  build_app:
+  build-test-app:
     jobs:
+      - hold-build:
+          type: approval
       - test-build:
           context: ntc-edge
-          type: approval
           filters:
             branches:
               only:
                 - master
                 - develop
-      - prod-build:
-          context: ntc-edge
+          requires:
+            - hold-build
+      - hold-submit:
           type: approval
-          filters:
-            branches:
-              only:
-                - master
-                - develop
       - submit:
           context: ntc-edge
-          type: approval
           requires:
-            - test-build
-            - prod-build
+            - hold-submit
+  build-prod-app:
+    jobs:
+      - hold-build:
+          type: approval
+      - prod-build:
+          context: ntc-edge
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+          requires:
+            - hold-build
+      - hold-submit:
+          type: approval
+      - submit:
+          context: ntc-edge
+          requires:
+            - hold-submit
 
           
           
