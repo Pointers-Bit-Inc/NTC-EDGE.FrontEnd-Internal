@@ -1,13 +1,5 @@
 import React , {useEffect , useRef , useState} from "react";
-import {
-    ActivityIndicator ,
-    Dimensions ,
-    Platform ,
-    StyleSheet ,
-    TouchableOpacity ,
-    useWindowDimensions ,
-    View
-} from "react-native";
+import {ActivityIndicator , Platform , StyleSheet , TouchableOpacity , useWindowDimensions , View} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
@@ -29,7 +21,7 @@ import {
     DIRECTOR ,
     EVALUATOR ,
     FORAPPROVAL ,
-    FOREVALUATION , FORPAYMENT , FORVERIFICATION , PENDING , VERIFICATION
+    FOREVALUATION
 } from "../../../reducers/activity/initialstate";
 import {outline} from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
@@ -48,9 +40,6 @@ import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 
-
-
-const {width} = Dimensions.get('window')
 const styles = StyleSheet.create({
 
     containerBlur : {
@@ -100,7 +89,7 @@ const styles = StyleSheet.create({
     application : {
 
         borderRadius : 5 ,
-        paddingVertical: 3,
+        marginLeft : 0 ,
         //borderWidth: StyleSheet.hairlineWidth,
         borderColor : '#163776' ,
     } ,
@@ -161,11 +150,11 @@ const RenderStatus = ({ trigger , status }: any) => {
         >
             { statusIcon(status , { marginRight : 3 }) }
             <Text
-                style={ [statusColor(status),] }
+                style={ [statusColor(status)] }
                 size={ fontValue(14) }
                 numberOfLines={ 1 }
             >
-                { `${status?.toUpperCase()}` }
+                { status?.toUpperCase() }
             </Text>
         </View>
     )
@@ -187,46 +176,44 @@ const RenderApplication = ({ applicationType }: any) => {
             />
             <Text
 
-                style={ {  marginLeft : 3 , marginRight : 5 } }
+                style={ { marginLeft : 3 , marginRight : 5 } }
                 color="#2A00A2"
                 size={ fontValue(10) }
                 numberOfLines={ 1 }
             >
                 { isMobile ? applicationType :((applicationType).length > 30) ?
-                  (((applicationType).substring(0,30-3)) + '...') :
-                  applicationType  }
+                                              (((applicationType).substring(0,30-3)) + '...') :
+                                              applicationType  }
             </Text>
         </View>
     )
 };
 
 
-const RenderPinned = ({ assignedPersonnel }: any) => {
-
-
-
+const RenderPinned = ({ assignedPersonnel , config }: any) => {
+    const { personnel , loading } = useAssignPersonnel(assignedPersonnel , config);
     return (
         <View
             style={ [
                 {
                     //backgroundColor : "#F3F7FF" ,
-                    } ,
+                } ,
                 styles.horizontal ,
                 styles.application
             ] }
         >
-            { assignedPersonnel?.loading ? <></> : <EndorseIcon
+            { loading ? <></> : <EndorseIcon
                 width={ fontValue(20) }
                 height={ fontValue(20) }
             /> }
-            { assignedPersonnel?.loading ? <ActivityIndicator/> :
+            { loading ? <ActivityIndicator/> :
               <Text
                   style={ { "marginLeft" : 3 , "marginRight" : 5 } }
                   color="#606A80"
                   size={ fontValue(12) }
                   numberOfLines={ 1 }
               >
-                  { assignedPersonnel?.personnel != undefined ?  `Assigned to ${ assignedPersonnel?.personnel?.firstName } ${ assignedPersonnel?.personnel?.lastName }` : `` }
+                  { personnel != undefined ?  `Assigned to ${ personnel?.firstName } ${ personnel?.lastName }` : `` }
               </Text>
             }
         </View>
@@ -242,17 +229,9 @@ const closeRow = (index) => {
 };
 
 export function ActivityItem(props: any) {
-    const approvalHistory = (index = 0) => props?.activity?.approvalHistory
-    const paymentHistory = (index = 0) => props?.activity?.paymentHistory
-    const { personnel , loading } = useAssignPersonnel(approvalHistory()?.status == FORAPPROVAL || approvalHistory()?.status == PENDING ? props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel  :!!props?.activity?.paymentMethod && (props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) ?
-                                                                                                                                                                                                                          (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) : (props?.activity?.paymentStatus == APPROVED || props?.activity?.paymentStatus == DECLINED ?
-                                                                                                                                                                                                                                                                                                             (paymentHistory()?.userId ) :
-                                                                                                                                                                                                                                                                                                             (approvalHistory()?.userId ? approvalHistory()?.userId :
-                                                                                                                                                                                                                                                                                                              (props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel))) , props.config, props?.activity?.assignedPersonnel?._id ? props?.activity?.assignedPersonnel : null);
-
     const status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status);
     const userActivity = props?.activity?.applicant?.user ||  props?.activity?.applicant;
-    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!approvalHistory()?.userId && approvalHistory()?.status !== FOREVALUATION && approvalHistory()?.status!==FORVERIFICATION &&  approvalHistory()?.status!==FORAPPROVAL &&  approvalHistory()?.status!==PENDING? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!paymentHistory()?.status ? StatusText(paymentHistory()?.status) : getRole(props.currentUser , [ACCOUNTANT]) && approvalHistory()?.status == FOREVALUATION && approvalHistory(1)?.status == FORAPPROVAL ? DECLINED :  getRole(props?.currentUser , [CASHIER]) && !props?.activity?.paymentMethod ? FORVERIFICATION : getRole(props?.currentUser , [ACCOUNTANT]) && (props?.activity?.assignedPersonnel == null && props?.activity?.paymentMethod ==null) ? FORAPPROVAL : status;
+    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!props?.activity?.approvalHistory?.[0]?.userId && props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!props?.activity?.paymentHistory?.[0]?.status ? StatusText(props?.activity?.paymentHistory?.[0]?.status) : getRole(props.currentUser , [ACCOUNTANT]) && props?.activity?.approvalHistory?.[0]?.status == FOREVALUATION && props?.activity?.approvalHistory[1].status == FORAPPROVAL ? DECLINED : status;
 
     useEffect(() => {
         let unsubscribe = true;
@@ -271,6 +250,7 @@ export function ActivityItem(props: any) {
         setSelectedMoreCircle(value => !value)
 
     };
+
     const dimensions = useWindowDimensions();
     return (
 
@@ -282,8 +262,8 @@ export function ActivityItem(props: any) {
                         ref={ ref => row[props.index] = ref }
                         key={ props.index }
                         onSwipeableRightOpen={ () => {
-                                closeRow(props.index)
-                            }
+                            closeRow(props.index)
+                        }
                         }
                         renderRightActions={
                             (progress , dragX) => props.swiper(props.index , progress , dragX , props.onPressUser)
@@ -311,7 +291,7 @@ export function ActivityItem(props: any) {
                                                 flex : 1 ,
 
                                                 paddingHorizontal : fontValue(10) ,
-                                                paddingVertical:  personnel ? undefined :  fontValue(10),
+                                                paddingVertical:  props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel ? undefined :  fontValue(10),
                                                 flexDirection : "row" ,
                                                 alignItems : "center"
                                             }
@@ -333,7 +313,6 @@ export function ActivityItem(props: any) {
                                                             numberOfLines={ 1 }
                                                         >
                                                             <Highlighter
-                                                                
                                                                 highlightStyle={ { backgroundColor : '#BFD6FF' } }
                                                                 searchWords={ [props?.searchQuery] }
                                                                 textToHighlight={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
@@ -371,17 +350,22 @@ export function ActivityItem(props: any) {
                                             </View>
 
                                         </View>
-                                        { personnel &&
-                                           <View style={{padding : fontValue(5) , borderTopColor: "#EFEFEF",  borderTopWidth: 1}}>
-                                               <View style={styles.section}>
-                                                   <View style={{ flex : 1 , alignItems : 'flex-start' } }>
-                                                       <RenderPinned
-                                                                     assignedPersonnel={
-                                                                         {personnel, loading}
-                                                                          }/>
-                                                   </View>
-                                               </View>
-                                           </View>
+                                        {  props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel &&
+                                        <View style={{padding : fontValue(10) , borderTopColor: "#EFEFEF",  borderTopWidth: 1}}>
+                                            <View style={styles.section}>
+                                                <View style={{ flex : 1 , alignItems : 'flex-start' } }>
+                                                    <RenderPinned config={ props.config }
+                                                                  assignedPersonnel={
+                                                                      !!props?.activity.paymentMethod && (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) ?
+                                                                      (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) : (props?.activity?.paymentStatus == APPROVED || props?.activity?.paymentStatus == DECLINED ?
+                                                                                                                                                         (props?.activity?.paymentHistory?.[0]?.userId ) :
+                                                                                                                                                         (props?.activity?.approvalHistory?.[0]?.userId ?
+                                                                                                                                                          props?.activity?.approvalHistory?.[0]?.userId :
+                                                                                                                                                          (props?.activity?.assignedPersonnel?._id || props?.assignedPersonnel)))
+                                                                  }/>
+                                                </View>
+                                            </View>
+                                        </View>
                                         }
                                     </TouchableOpacity>
                                 </View>
@@ -466,4 +450,3 @@ export function ActivityItem(props: any) {
 
     );
 }
-

@@ -44,13 +44,8 @@ export function useAssignPersonnel(assignedPersonnel, config, existing=null, use
     };
     useEffect(() => {
         let isCurrent = true
-        if(existing ) {
-            setPersonnel(existing)
-        }else if(!existing){
-            setPersonnel(existing)
-        }else{
+
             fetchData(isCurrent);
-        }
 
         return () =>{
             isCurrent = false
