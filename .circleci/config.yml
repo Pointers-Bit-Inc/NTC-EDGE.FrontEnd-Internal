@@ -17,9 +17,11 @@ jobs:
       - run:
           name: Android Build
           command: npx eas-cli build --platform android --non-interactive
+          no_output_timeout: 1h
       - run:
           name: IOS Build
           command: npx eas-cli build --platform ios --non-interactive
+          no_output_timeout: 1h
 
 workflows:
   build_app:
