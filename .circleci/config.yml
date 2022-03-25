@@ -7,7 +7,7 @@ executors:
     working_directory: ~/ntc-edge-internal
 
 jobs:
-  build:
+  test-build:
     executor: default
     steps:
       - checkout
@@ -17,15 +17,41 @@ jobs:
       - run:
           name: Android Build
           command: npx eas-cli build --platform android --non-interactive
+          environment:
+            API_URL: $TEST_URL
           no_output_timeout: 30m
       - run:
           name: IOS Build
           command: npx eas-cli build --platform ios --non-interactive
+          environment:
+            API_URL: $TEST_URL
+          no_output_timeout: 30m
+  prod-build:
+    executor: default
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm ci
+      - run:
+          name: Android Build
+          command: npx eas-cli build --platform android --non-interactive
+          environment:
+            API_URL: $PROD_URL
+          no_output_timeout: 30m
+      - run:
+          name: IOS Build
+          command: npx eas-cli build --platform ios --non-interactive
+          environment:
+            API_URL: $PROD_URL
           no_output_timeout: 30m
   submit:
     executor: default
     steps:
       - checkout
+      - run:
+          name: Install dependencies
+          command: npm ci
       - run:
           name: Submit to Apple Appstore
           command: npx eas-cli submit -p ios --latest --non-interactive
@@ -33,7 +59,16 @@ jobs:
 workflows:
   build_app:
     jobs:
-      - build:
+      - test-build:
+          context: ntc-edge
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+      - prod-build:
+          context: ntc-edge
           type: approval
           filters:
             branches:
@@ -41,9 +76,11 @@ workflows:
                 - master
                 - develop
       - submit:
+          context: ntc-edge
           type: approval
           requires:
-            - build
+            - test-build
+            - prod-build
 
           
           
