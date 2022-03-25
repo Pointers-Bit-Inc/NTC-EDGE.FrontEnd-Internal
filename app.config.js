@@ -1,4 +1,4 @@
-{
+export default {
   "expo": {
     "name": "ntc-edge-internal",
     "slug": "ntc-edge-internal",
@@ -47,6 +47,9 @@
           "photosPermission": "Allow $(PRODUCT_NAME) to access your photos"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "API_URL": process.env.API_URL
+    }
   }
 }
