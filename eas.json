@@ -6,7 +6,7 @@
     "development": {
       "distribution": "internal",
       "android": {
-        "buildType": "apk",
+        "buildType": "app-bundle",
         "gradleCommand": ":app:assembleRelease"
       },
       "ios": {
@@ -15,7 +15,7 @@
     },
     "production": {
       "android": {
-        "buildType": "apk"
+        "buildType": "app-bundle"
       },
       "ios": {
         "cocoapods": "1.11.2"
