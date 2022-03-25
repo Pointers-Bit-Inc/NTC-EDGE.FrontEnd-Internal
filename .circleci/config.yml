@@ -9,6 +9,7 @@ executors:
 jobs:
   test-build:
     executor: default
+    description: "running on " $TEST_URL
     steps:
       - checkout
       - run:
@@ -28,6 +29,7 @@ jobs:
           no_output_timeout: 30m
   prod-build:
     executor: default
+    description: "running on " $PROD_URL
     steps:
       - checkout
       - run:
