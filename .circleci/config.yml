@@ -15,24 +15,15 @@ executors:
     working_directory: ~/ntc-edge-internal
 
 jobs:
-  Install Dependencies:
-    executor: default
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: npm ci
-      - persist_to_workspace:
-          root: ~/ntc-edge-internal
-          paths:
-            - .
   App Build for Testing:
     executor: default
     environment:
       API_URL: << pipeline.parameters.test-url >>
     steps:
-      - attach_workspace:
-          at: ~/ntc-edge-internal
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm ci
       - run:
           name: Android Build
           command: npx eas-cli build --platform android --non-interactive
@@ -46,8 +37,10 @@ jobs:
     environment:
       API_URL: << pipeline.parameters.prod-url >>
     steps:
-      - attach_workspace:
-          at: ~/ntc-edge-internal
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm ci
       - run:
           name: Android Build
           command: npx eas-cli build --platform android --non-interactive
@@ -59,8 +52,10 @@ jobs:
   Submit to Appstore:
     executor: default
     steps:
-      - attach_workspace:
-          at: ~/ntc-edge-internal
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm ci
       - run:
           name: Submit to Apple Appstore
           command: npx eas-cli submit -p ios --latest --non-interactive
@@ -68,24 +63,20 @@ jobs:
 workflows:
   Build and Deploy:
     jobs:
-      - Request for Build:
+      - Build for Testing:
           type: approval
-      - Install Dependencies:
           filters:
             branches:
               only:
                 - master
                 - develop
-          requires:
-            - Request for Build
-      - Build for Testing:
-          type: approval
-          requires:
-            - Install Dependencies
       - Build for Production:
           type: approval
-          requires:
-            - Install Dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - develop
       - App Build for Testing:
           context: ntc-edge
           requires:
