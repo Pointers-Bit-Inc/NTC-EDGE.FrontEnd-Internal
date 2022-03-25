@@ -237,10 +237,10 @@ export const excludeStatus = (props: any , personnel: UserApplication) => getSta
     getStatusText(props , personnel) == FOREVALUATION;
 
 export function getStatusText(props: any , personnel: UserApplication | undefined) {
-    const approvalHistory = (index = 1) => props?.approvalHistory?.[props?.approvalHistory?.length - index]
-    const paymentHistory = (index = 1) => props?.paymentHistory?.[props?.paymentHistory?.length - index]
+    const approvalHistory = (index = 0) => props?.approvalHistory?.[index]
+    const paymentHistory = (index = 0) => props?.paymentHistory?.[index]
 
-    return getRole(props.user , [EVALUATOR , DIRECTOR]) && getStatus(props , personnel) == FORAPPROVAL && !!approvalHistory()?.userId && approvalHistory()?.status!==FOREVALUATION && approvalHistory()?.status!==FORVERIFICATION &&  approvalHistory()?.status!==FORAPPROVAL &&  approvalHistory()?.status!==PENDING ? StatusText(APPROVED) : getRole(props.user, [ACCOUNTANT]) && !!props.paymentMethod && !!paymentHistory()?.status ? StatusText(paymentHistory()?.status) : getRole(props.user, [ACCOUNTANT]) && approvalHistory()?.status == FOREVALUATION &&  approvalHistory(2)?.status == FORAPPROVAL ? DECLINED : getRole(props.user, [CASHIER]) && !props?.paymentMethod ? FORVERIFICATION : getStatus(props , personnel);
+    return getRole(props.user , [EVALUATOR , DIRECTOR]) && getStatus(props , personnel) == FORAPPROVAL && !!approvalHistory()?.userId && approvalHistory()?.status!==FOREVALUATION && approvalHistory()?.status!==FORVERIFICATION &&  approvalHistory()?.status!==FORAPPROVAL &&  approvalHistory()?.status!==PENDING ? StatusText(APPROVED) : getRole(props.user, [ACCOUNTANT]) && !!props.paymentMethod && !!paymentHistory()?.status ? StatusText(paymentHistory()?.status) : getRole(props.user, [ACCOUNTANT]) && approvalHistory()?.status == FOREVALUATION &&  approvalHistory(1)?.status == FORAPPROVAL ? DECLINED : getRole(props.user, [CASHIER]) && !props?.paymentMethod ? FORVERIFICATION : getStatus(props , personnel);
 }
 export function getStatus(props: any , personnel?: { _id: string | undefined; updatedAt: string | undefined; createdAt: string | undefined; username: string | undefined; role: Role | undefined; email: string | undefined; firstName: string | undefined; lastName: string | undefined; password: string | undefined; contactNumber: string | undefined; __v: number | undefined; address: string | undefined; profilePicture: ProfilePicture | undefined; avatar: string | undefined } , wordCase?: string) {
 

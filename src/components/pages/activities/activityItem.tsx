@@ -242,8 +242,8 @@ const closeRow = (index) => {
 };
 
 export function ActivityItem(props: any) {
-    const approvalHistory = (index = 1) => props?.activity?.approvalHistory?.[props?.activity?.approvalHistory?.length - index]
-    const paymentHistory = (index = 1) => props?.activity?.paymentHistory?.[props?.activity?.paymentHistory?.length - index]
+    const approvalHistory = (index = 0) => props?.activity?.approvalHistory?.[index]
+    const paymentHistory = (index = 0) => props?.activity?.paymentHistory?.[index]
     const { personnel , loading } = useAssignPersonnel(approvalHistory()?.status == FORAPPROVAL || approvalHistory()?.status == PENDING ? props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel  :!!props?.activity?.paymentMethod && (props?.activity?.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) ?
                                                                                                                                                                                                                           (props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel ) : (props?.activity?.paymentStatus == APPROVED || props?.activity?.paymentStatus == DECLINED ?
                                                                                                                                                                                                                                                                                                              (paymentHistory()?.userId ) :
@@ -252,7 +252,7 @@ export function ActivityItem(props: any) {
 
     const status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status);
     const userActivity = props?.activity?.applicant?.user ||  props?.activity?.applicant;
-    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!approvalHistory()?.userId && approvalHistory()?.status !== FOREVALUATION && approvalHistory()?.status!==FORVERIFICATION &&  approvalHistory()?.status!==FORAPPROVAL &&  approvalHistory()?.status!==PENDING? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!paymentHistory()?.status ? StatusText(paymentHistory()?.status) : getRole(props.currentUser , [ACCOUNTANT]) && approvalHistory()?.status == FOREVALUATION && approvalHistory(2)?.status == FORAPPROVAL ? DECLINED :  getRole(props?.currentUser , [CASHIER]) && !props?.activity?.paymentMethod ? FORVERIFICATION :  status;
+    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && !!approvalHistory()?.userId && approvalHistory()?.status !== FOREVALUATION && approvalHistory()?.status!==FORVERIFICATION &&  approvalHistory()?.status!==FORAPPROVAL &&  approvalHistory()?.status!==PENDING? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && !!paymentHistory()?.status ? StatusText(paymentHistory()?.status) : getRole(props.currentUser , [ACCOUNTANT]) && approvalHistory()?.status == FOREVALUATION && approvalHistory(1)?.status == FORAPPROVAL ? DECLINED :  getRole(props?.currentUser , [CASHIER]) && !props?.activity?.paymentMethod ? FORVERIFICATION :  status;
      console.log("activity item ", props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel )
     useEffect(() => {
         let unsubscribe = true;

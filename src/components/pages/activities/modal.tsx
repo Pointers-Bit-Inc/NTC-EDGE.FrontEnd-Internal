@@ -96,7 +96,7 @@ function ActivityModal(props: any) {
                 status : (assignUserId) ? FOREVALUATION : status ,
                 assignedPersonnel : assignUserId ? props?.details?.approvalHistory?.[0].userId : (
                     assignId ? assignId : undefined) ,
-                addDocumentaryStamp : true ,
+
                 remarks : remarks ? remarks : undefined ,
             };
         }
