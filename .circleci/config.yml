@@ -17,24 +17,33 @@ jobs:
       - run:
           name: Android Build
           command: npx eas-cli build --platform android --non-interactive
-          no_output_timeout: 1h
+          no_output_timeout: 30m
       - run:
           name: IOS Build
           command: npx eas-cli build --platform ios --non-interactive
-          no_output_timeout: 1h
+          no_output_timeout: 30m
+  submit:
+    executor: default
+    steps:
+      - checkout
+      - run:
+          name: Submit to Apple Appstore
+          command: npx eas-cli submit -p ios --latest --non-interactive
 
 workflows:
   build_app:
     jobs:
-      - build-approval:
+      - build:
           type: approval
           filters:
             branches:
               only:
                 - master
                 - develop
-      - build:
+      - submit:
+          type: approval
           requires:
-            - build-approval
+            - build
+
           
           
