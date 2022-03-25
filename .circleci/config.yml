@@ -1,5 +1,13 @@
 version: 2.1
 
+parameters:
+  test-url:
+    type: string
+    default: "https://test-edge-application-processing-appsvc.azurewebsites.net"
+  prod-url:
+    type: string
+    default: "https://prod-edge-application-processing-appsvc.azurewebsites.net"
+
 executors:
   default:
     docker:
@@ -20,37 +28,33 @@ jobs:
             - .
   App Build for Testing:
     executor: default
+    environment:
+      API_URL: << pipeline.parameters.test-url >>
     steps:
       - attach_workspace:
           at: ~/ntc-edge-internal
       - run:
           name: Android Build
           command: npx eas-cli build --platform android --non-interactive
-          environment:
-            API_URL: $TEST_URL
           no_output_timeout: 30m
       - run:
           name: IOS Build
           command: npx eas-cli build --platform ios --non-interactive
-          environment:
-            API_URL: $TEST_URL
           no_output_timeout: 30m
   App Build for Production:
     executor: default
+    environment:
+      API_URL: << pipeline.parameters.prod-url >>
     steps:
       - attach_workspace:
           at: ~/ntc-edge-internal
       - run:
           name: Android Build
           command: npx eas-cli build --platform android --non-interactive
-          environment:
-            API_URL: $PROD_URL
           no_output_timeout: 30m
       - run:
           name: IOS Build
           command: npx eas-cli build --platform ios --non-interactive
-          environment:
-            API_URL: $PROD_URL
           no_output_timeout: 30m
   Submit to Appstore:
     executor: default
@@ -105,5 +109,5 @@ workflows:
       - Submit to Appstore:
           context: ntc-edge
           requires:
-            - Request for Submit Production Build
+            - Request for Submit Production Build         
           
