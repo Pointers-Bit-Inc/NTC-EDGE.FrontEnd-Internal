@@ -4,5 +4,5 @@ import React , {Fragment} from "react";
 
 export default function ActivityModalView(props) {
     const dimensions = useWindowDimensions();
-    return isMobile || dimensions?.width <= 768  ? <View>{ props?.children }</View> : <View style={{ flex:0.6}}> { props?.children }</View>;
+    return isMobile || dimensions?.width <= 768   ? <View>{ props?.children }</View> : <View style={{ flex:1}}> { props?.children }</View>;
 }

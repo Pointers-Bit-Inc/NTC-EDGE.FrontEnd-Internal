@@ -37,7 +37,9 @@ const Row = (props: { label: string, applicant: any }) => <View style={ styles.g
 const BasicInfo = (props: any) => {
     const approvalHistory = (index = 1) => props?.approvalHistory?.[props?.approvalHistory?.length - index]
     const paymentHistory = (index = 1) => props?.paymentHistory?.[props?.paymentHistory?.length - index]
-
+       useEffect(()=>{
+           console.log(props?.assignedPersonnel?._id || props?.assignedPersonnel)
+       }, [props?.assignedPersonnel?._id || props?.assignedPersonnel])
     const {
         personnel ,
         loading

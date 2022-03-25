@@ -186,7 +186,7 @@ export const getFilter = ({
                           }: FilterList) => list?.filter((item: any) => {
     let _approvalHistory = false;
     if (item?.approvalHistory.length) {
-        _approvalHistory = item?.approvalHistory[0].userId == user?._id
+        _approvalHistory = item?.approvalHistory?.[0]?.userId == user?._id
     }
     const search =
         (selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true);

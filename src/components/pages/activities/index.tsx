@@ -202,6 +202,10 @@ export default function ActivitiesPage(props: any) {
 
                          flex : (
                                     isMobile  || dimensions?.width <768) ? 1 : 0.4 ,
+                         flexBasis:  (
+                                         isMobile  || dimensions?.width <768) ? "100%" : 466,
+                         flexGrow: 0,
+                         flexShrink: 0
                      }] }>
 
 
@@ -383,7 +387,7 @@ export default function ActivitiesPage(props: any) {
                      {
                          !(
                              isMobile )  && lodash.isEmpty(applicationItem) && dimensions?.width >768  &&
-                         <View style={ [{ flex :  0.6 , justifyContent : "center" , alignItems : "center" }] }>
+                         <View style={ [{ flex : 1 , justifyContent : "center" , alignItems : "center" }] }>
 
                              <NoActivity/>
                              <Text style={ { color : "#A0A3BD" , fontSize : fontValue(24) } }>No activity

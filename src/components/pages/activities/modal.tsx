@@ -89,12 +89,12 @@ function ActivityModal(props: any) {
         }
 
         if (user?.role?.key == ACCOUNTANT) {
-            const assignUserId = status == DECLINED && props?.details.approvalHistory[0].status == FORAPPROVAL && props?.details.approvalHistory[0].userId != user._id;
-            assignUserId ? setAssignId(props?.details.approvalHistory[0].userId) : (
+            const assignUserId = status == DECLINED && props?.details?.approvalHistory?.[0]?.status == FORAPPROVAL && props?.details?.approvalHistory?.[0]?.userId != user?._id;
+            assignUserId ? setAssignId(props?.details?.approvalHistory?.[0].userId) : (
                 assignId ? assignId : undefined);
             params = {
                 status : (assignUserId) ? FOREVALUATION : status ,
-                assignedPersonnel : assignUserId ? props?.details.approvalHistory[0].userId : (
+                assignedPersonnel : assignUserId ? props?.details?.approvalHistory?.[0].userId : (
                     assignId ? assignId : undefined) ,
                 addDocumentaryStamp : true ,
                 remarks : remarks ? remarks : undefined ,
@@ -365,6 +365,7 @@ function ActivityModal(props: any) {
                     setPrevAssignId(assignId);
 
                     setRemarks(_remark);
+
                     setAssignId(_assign)
 
                 } }

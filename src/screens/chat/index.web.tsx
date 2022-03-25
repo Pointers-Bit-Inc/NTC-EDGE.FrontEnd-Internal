@@ -21,7 +21,7 @@ import { setSelectedChannel, setChannelList, addToChannelList, addChannel, updat
 import {InputField , SearchField} from '@components/molecules/form-fields';
 import { primaryColor, outline, text, button } from '@styles/color';
 import useSignalr from 'src/hooks/useSignalr';
-import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
+//import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
 import HomeMenuIcon from "@assets/svg/homemenu";
