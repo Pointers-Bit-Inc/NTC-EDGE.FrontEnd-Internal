@@ -24,15 +24,15 @@ jobs:
 workflows:
   build_app:
     jobs:
-      - hold:
+      - build-approval:
           type: approval
-      - build:
-          requires:
-            - hold
           filters:
             branches:
               only:
                 - master
                 - develop
+      - build:
+          requires:
+            - build-approval
           
           
