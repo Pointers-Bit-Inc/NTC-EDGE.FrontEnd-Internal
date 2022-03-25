@@ -95,7 +95,15 @@ const UserProfileScreen = ({ navigation }: any) => {
                             }
                         })
                             .then(res => res.json())
-                            .then(res => console.log(res))
+                            .then(res => {
+                                if (dp) {
+                                    dispatch(setUser({
+                                        ...user , ...res?.data?.doc ,
+                                        profilePictureObj : res?.data?.doc?.profilePicture
+                                    }));
+                                    save({ dp : false });
+                                }
+                            })
                     })
 
             }
