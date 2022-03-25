@@ -90,13 +90,20 @@ workflows:
           context: ntc-edge
           requires:
             - Build for Production
-      - Request for Submit:
+      - Request for Submit Testing Build:
           type: approval
           requires:
             - App Build for Testing
+      - Request for Submit Production Build:
+          type: approval
+          requires:
             - App Build for Production
       - Submit to Appstore:
           context: ntc-edge
           requires:
-            - Request for Submit          
+            - Request for Submit Testing Build
+      - Submit to Appstore:
+          context: ntc-edge
+          requires:
+            - Request for Submit Production Build
           
