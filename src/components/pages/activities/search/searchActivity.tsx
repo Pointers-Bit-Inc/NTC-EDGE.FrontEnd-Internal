@@ -32,21 +32,30 @@ import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import ActivityModalView from "@pages/activities/nativeView/activityModalView";
 import {setApplicationItem} from "../../../../reducers/application/actions";
-export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
+import {useActivities} from "../../../../hooks/useActivities";
+export function SearchActivity(props: {onBlur: any ,  isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
+    const {
+        setIsOpen,
+        user ,
+        setUpdateModal ,
+        config ,
+        applicationItem ,
+        dispatch ,
+        onRefresh ,
+        modalVisible ,
+        setModalVisible ,
+        moreModalVisible ,
+        setMoreModalVisible ,
+        onDismissed ,
+        onEndReachedCalledDuringMomentum ,
+        setOnEndReachedCalledDuringMomentum ,
+        unReadReadApplicationFn ,
+        updateModalFn ,
+        isOpen ,
+        onMoreModalDismissed
+    } = useActivities();
     const dimensions = useWindowDimensions();
     const inputRef = useRef(null);
-    const [moreModalVisible, setMoreModalVisible] = useState(false)
-    const [modalVisible, setModalVisible] = useState(false)
-    const user = useSelector((state: RootStateOrAny) => state.user);
-    const dispatch = useDispatch()
-    const config = {
-        headers: {
-            Authorization: "Bearer ".concat(user?.sessionToken)
-        }
-    }
-    const {applicationItem} = useSelector((state: RootStateOrAny) => state.application)
-    const [activityItemLength, setActivityItemLength] = useState(0)
-    const [updateUnReadReadApplication, setUpdateUnReadReadApplication] = useState(false)
     const onFocusHandler = () => {
         inputRef.current && inputRef.current.focus();
     }
@@ -54,25 +63,13 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
         onFocusHandler()
     }, [])
 
-    const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(false)
-    const unReadReadApplicationFn = (id, dateRead, unReadBtn, callback: (action: any) => void) => {
-        unreadReadApplication({unReadBtn : unReadBtn, dateRead : dateRead, id : id, config : config, dispatch : dispatch, setUpdateUnReadReadApplication : setUpdateUnReadReadApplication, callback : callback});
-    }
-    const [isOpen, setIsOpen] = useState()
 
-    const onMoreModalDismissed = (isOpen) => {
-
-        setIsOpen(isOpen)
-        setMoreModalVisible(false)
-    }
-    const onDismissed = () => {
-        setModalVisible(false)
-    }
     const AnimatedTotal = (props) => {
         const progress = useCountUp(2000)
         const countUp = Math.max(0, Math.round(progress * props.total))
         return <Text>{countUp}</Text>
     }
+
     return <View style={[styles.container, {flexDirection: "row"}]}>
         <View style={[styles.group9, { flex: (isMobile  || dimensions?.width <768 ) ? 1 : 0.4,} ]}>
             <View style={styles.group4}>
@@ -90,11 +87,14 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                         </TouchableOpacity>
 
                         <View  style={styles.group}>
+                            
                             <InputField  ref={inputRef}
+
                                          inputStyle={{fontWeight: "400", fontSize: fontValue(14)}}
                                          value={props.value}
                                          onEndEditing={props.onEndEditing}
                                          onChange={props.onChange}
+                                         onBlur={props.onBlur}
                                          onChangeText={props.onChangeText}
                                          placeholder="Search"/>
 
@@ -132,10 +132,10 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                 <View style={{flex: 1}}>
                     {props.value.length < 1 ?
                         <ScrollView showsVerticalScrollIndicator={false}>
-                            {props.nevers.map(props.callbackfn)}
+                            {props.nevers?.map(props.callbackfn)}
                         </ScrollView>
                         : <>
-                            {!props?.loading && props.value.length > 0 &&
+                            {!props?.loading && !!props.value.length &&
                             <View style={styles.header}>
                                 <Text style={styles.recentSearches}>
                                     {props.isHandleLoad ? <AnimatedTotal total={props.total}/> : props.total } results of
@@ -147,7 +147,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                 data={props.applications}
                                 keyExtractor={(item, index) => index.toString()}
                                 onEndReached={() => {
-                                    if (    !onEndReachedCalledDuringMomentum) {
+                                    if (!onEndReachedCalledDuringMomentum) {
                                         props.handleLoad(props.value)
                                         setOnEndReachedCalledDuringMomentum(true);
                                     }
@@ -181,8 +181,9 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                                     currentUser={user}
                                                     selected={applicationItem?._id == activity?._id}
                                                     onPressUser={(event: any) => {
+
                                                         setIsOpen(undefined)
-                                                        dispatch(setApplicationItem({...activity, isOpen:`${index}${i}`}))
+                                                        dispatch(setApplicationItem({ ...activity , isOpen : `${ index }${ i }` }))
                                                         if (event?.icon == 'more') {
                                                             setMoreModalVisible(true)
                                                         } else {
@@ -192,7 +193,7 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
                                                     }} index={`${index}${i}`}
                                                     swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
                                             )
-                                        }}/>
+                                        }} numbers={[]}/>
                                 )}
                             />
                         </>
@@ -203,34 +204,42 @@ export function SearchActivity(props: {isHandleLoad:any, isRecentSearches: any, 
 
         </View>
 
+        
+
         {
-            !(isMobile) && lodash.isEmpty(applicationItem)  && dimensions?.width >768  &&
-            <View style={ [{ flex : 0.6 , justifyContent : "center" , alignItems : "center" }] }>
+            !(
+                isMobile )  && lodash.isEmpty(applicationItem) && dimensions?.width >768  &&
+            <View style={ [{ flex : 1 , justifyContent : "center" , alignItems : "center" }] }>
 
                 <NoActivity/>
                 <Text style={ { color : "#A0A3BD" , fontSize : fontValue(24) } }>No activity
                     selected</Text>
 
 
-
             </View>
         }
 
-
-        { !lodash.isEmpty(applicationItem) && <ActivityModalView>
-        <ItemMoreModal details={applicationItem} visible={moreModalVisible} onDismissed={()=>{
-            onMoreModalDismissed(applicationItem?.isOpen)
-        }
-        }/>
-        <ActivityModal details={applicationItem}
-                       visible={modalVisible}
-                       onDismissed={(event: boolean, _id: number) => {
-
-                           dispatch(setApplicationItem({}))
-                           if (event && _id) {
-                               //  dispatch(deleteApplications(_id))
-                           }
-                           onDismissed()
-                       }}/>  </ActivityModalView>}
+        { (!lodash.isEmpty(applicationItem) )  && <ActivityModalView>
+            <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
+                onMoreModalDismissed(applicationItem?.isOpen)
+            } }/>
+            <ActivityModal updateModal={ updateModalFn }
+                           readFn={ unReadReadApplicationFn }
+                           details={ applicationItem }
+                           onChangeAssignedId={ (event) => {
+                               dispatch(setApplicationItem(event))
+                           } }
+                           visible={ modalVisible }
+                           onDismissed={ (event: boolean , _id: number) => {
+                               setUpdateModal(false);
+                               dispatch(setApplicationItem({  }))
+                               if (event && _id) {
+                                   //  dispatch(deleteApplications(_id))
+                               }
+                               if (event) {
+                                   onRefresh()
+                               }
+                               onDismissed()
+                           } }/></ActivityModalView> }
     </View>;
 }

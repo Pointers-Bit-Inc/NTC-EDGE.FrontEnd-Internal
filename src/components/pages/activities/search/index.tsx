@@ -221,17 +221,6 @@ function Search(props: any) {
                 response?.data?.size ? setSize(response?.data?.size) : setSize(0)
                 setApplications(groupApplications(response?.data?.docs))
 
-                await AsyncStorage.getItem('searchHistory').then(async (value) => {
-                    value = JSON.parse(value) || []
-
-                    let newArr = [...value, text];
-                    await AsyncStorage.setItem(
-                        'searchHistory',
-                        JSON.stringify(newArr)
-                    );
-
-                    setSearchHistory(newArr)
-                })
 
                 callback(true)
             }).catch((err) => {
@@ -280,8 +269,20 @@ function Search(props: any) {
             applications={applications}
             onPress={handleBackButtonClick}
             value={textInput}
-            onEndEditing={() => {
+            onEndEditing={async () => {
+                await AsyncStorage.getItem('searchHistory').then(async (value) => {
+                    value = JSON.parse(value) || []
 
+                    let newArr = [...value , textInput];
+                    await AsyncStorage.setItem(
+                        'searchHistory' ,
+                        JSON.stringify(newArr)
+                    );
+
+                    setSearchHistory(newArr)
+                }).catch((e) => {
+                    Alert.alert('Alert' , e?.message || 'Something went wrong.')
+                })
             }}
             onChange={(event) => onTextChange(event.nativeEvent.text)}
             onChangeText={(text) => setTextInput(text)}

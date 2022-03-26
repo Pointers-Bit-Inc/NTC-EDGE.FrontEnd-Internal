@@ -421,6 +421,7 @@ export function useActivities() {
         extrapolate : 'clamp' ,
     });
     return {
+        setIsOpen,
         total ,
         user ,
         setUpdateModal ,

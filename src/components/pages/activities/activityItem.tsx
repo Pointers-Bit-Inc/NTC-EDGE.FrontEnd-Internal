@@ -287,7 +287,7 @@ export function ActivityItem(props: any) {
                     >
 
                         <View
-                            style={ [styles.container , { paddingRight : dimensions.width <= 768 ? 20 : undefined , }] }>
+                            style={ [styles.container , { paddingRight : dimensions.width <= 768 ? 20 : undefined }] }>
 
                             <View style={ styles.applicationContainer }>
                                 <View style={ { padding : 5 } }>
