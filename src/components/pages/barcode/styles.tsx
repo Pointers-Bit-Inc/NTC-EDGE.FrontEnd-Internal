@@ -1,6 +1,7 @@
 import {Dimensions, StyleSheet} from "react-native";
-import {Bold} from "@styles/font";
+import {Bold , Regular} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 const { height, width } = Dimensions.get('window');
 export const styles = StyleSheet.create({
     rect19: {
@@ -222,14 +223,11 @@ export const styles = StyleSheet.create({
     },
     group3: {
 
-        padding: 3,
-        width: 150,
-        height: 70
     },
     rect2: {
         backgroundColor: "#fff",
         borderRadius: 10,
-        height: 70
+
     },
     group2: {
         height: 44,
@@ -238,7 +236,6 @@ export const styles = StyleSheet.create({
     },
     icon: {
         color: "rgba(128,128,128,1)",
-        fontSize: 26,
         alignSelf: "center"
     },
     generateQrCode: {
@@ -267,7 +264,11 @@ export const styles = StyleSheet.create({
         alignSelf: "center"
     },
     generateQrCode1: {
-        color: "#121212",
+        fontFamily: Regular,
+        fontWeight: "500",
+           paddingTop: 5,
+        fontSize: fontValue(14),
+        color: "#606A80",
         alignSelf: "center"
     }
 });

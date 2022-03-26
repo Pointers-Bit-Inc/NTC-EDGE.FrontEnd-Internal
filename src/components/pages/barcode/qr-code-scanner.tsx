@@ -168,9 +168,12 @@ export default function QrCodeScan(props: any) {
 
                     <View style={styles.group3}>
                         <View style={styles.rect2}>
-                            <TouchableOpacity onPress={decode} style={styles.group2}>
-                                <UploadIcon style={styles.icon}/>
-                                <Text style={styles.generateQrCode1}>Upload QR Code</Text>
+                            <TouchableOpacity onPress={decode} >
+                               <View style={{paddingHorizontal: 25, paddingVertical: 10,}}>
+                                   <UploadIcon style={styles.icon}/>
+                                   <Text style={styles.generateQrCode1}>Upload QR Code</Text>
+                               </View>
+
                             </TouchableOpacity>
                         </View>
                     </View>
