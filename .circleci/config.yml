@@ -1,10 +1,10 @@
 version: 2.1
 
 parameters:
-  test-url:
+  test_url:
     type: string
     default: "https://test-edge-application-processing-appsvc.azurewebsites.net"
-  prod-url:
+  prod_url:
     type: string
     default: "https://prod-edge-application-processing-appsvc.azurewebsites.net"
 
@@ -15,10 +15,13 @@ executors:
     working_directory: ~/ntc-edge-internal
 
 jobs:
-  App Build for Testing:
+  Build App:
     executor: default
+    parameters:
+      api_url:
+        type: string
     environment:
-      API_URL: << pipeline.parameters.test-url >>
+      API_URL: << parameters.api_url >>
     steps:
       - checkout
       - run:
@@ -26,28 +29,15 @@ jobs:
           command: npm ci
       - run:
           name: Android Build
-          command: npx eas-cli build --platform android --non-interactive
+          command: |
+            echo building for ${API_URL}
+            npx eas-cli build --platform android --non-interactive
           no_output_timeout: 30m
       - run:
           name: IOS Build
-          command: npx eas-cli build --platform ios --non-interactive
-          no_output_timeout: 30m
-  App Build for Production:
-    executor: default
-    environment:
-      API_URL: << pipeline.parameters.prod-url >>
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: npm ci
-      - run:
-          name: Android Build
-          command: npx eas-cli build --platform android --non-interactive
-          no_output_timeout: 30m
-      - run:
-          name: IOS Build
-          command: npx eas-cli build --platform ios --non-interactive
+          command: |
+            echo building for ${API_URL}
+            npx eas-cli build --platform ios --non-interactive
           no_output_timeout: 30m
   Submit to Appstore:
     executor: default
@@ -61,44 +51,46 @@ jobs:
           command: npx eas-cli submit -p ios --latest --non-interactive
 
 workflows:
-  Build and Deploy:
+  Development Build and Deploy:
     jobs:
       - Build for Testing:
           type: approval
           filters:
             branches:
               only:
-                - master
                 - develop
+      - Build App:
+          api_url: << pipeline.parameters.test_url >>
+          context: ntc-edge
+          requires:
+            - Build for Testing
+      - Ready for Submission:
+          type: approval
+          requires:
+            - Build App
+      - Submit to Appstore:
+          context: ntc-edge
+          requires:
+            - Ready for Submission
+  Production Build and Deploy:
+    jobs:
       - Build for Production:
           type: approval
           filters:
             branches:
               only:
                 - master
-                - develop
-      - App Build for Testing:
-          context: ntc-edge
-          requires:
-            - Build for Testing
-      - App Build for Production:
+      - Build App:
+          api_url: << pipeline.parameters.prod_url >>
           context: ntc-edge
           requires:
             - Build for Production
-      - Request for Submit Testing Build:
+      - Ready for Submission:
           type: approval
           requires:
-            - App Build for Testing
-      - Request for Submit Production Build:
-          type: approval
-          requires:
-            - App Build for Production
+            - Build App
       - Submit to Appstore:
           context: ntc-edge
           requires:
-            - Request for Submit Testing Build
-      - Submit to Appstore:
-          context: ntc-edge
-          requires:
-            - Request for Submit Production Build         
+            - Ready for Submission    
           
