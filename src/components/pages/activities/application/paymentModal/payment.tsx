@@ -16,7 +16,6 @@ import {useComponentLayout} from "../../../../../hooks/useComponentLayout";
 import {isMobile} from "@pages/activities/isMobile";
 import DottedLine from "@assets/svg/dotted";
 import PdfViewr from "@pages/activities/application/pdf";
-import Placeholder from "@assets/svg/placeholder";
 import FileIcon from "@assets/svg/file";
 class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 
@@ -128,8 +127,6 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
                             height={ 150}
                         />  : <Image
 
-                            defaultSource={require ("@assets/dots.gif")}
-                            progressiveRenderingEnabled
                             style={ [styles.pictureContainer, { display: this.state.onLoadStart ? "none" : undefined,} ]}
                             source={ {
                                 uri : this.props?.proofOfPayment?.small ,
