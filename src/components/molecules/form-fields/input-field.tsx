@@ -87,6 +87,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
       disabledColor,
       onBlur = () => {},
       onFocus = () => {},
+    onClose = () => {},
       ...otherProps
   }, ref) => {
     const inputRef:any = useRef(null);
@@ -173,7 +174,12 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                 </View>
                 {
                     (clearable && isFocused && !!editable && !!otherProps.value) &&
-                    <TouchableOpacity onPress={() => otherProps?.onChangeText ? otherProps?.onChangeText('') : {}}>
+                    <TouchableOpacity onPress={() => {
+                        if(otherProps?.onChangeText){
+                            onClose()
+                            otherProps?.onChangeText('')
+                        }
+                    }}>
                         <CloseIcon height={fontValue(10)} width={fontValue(10)} color={error ? input.text.errorColor : input.text.mainColor}/>
                     </TouchableOpacity>
                 }
