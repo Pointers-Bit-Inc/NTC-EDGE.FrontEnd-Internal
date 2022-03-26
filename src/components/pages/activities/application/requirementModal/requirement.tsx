@@ -19,7 +19,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
 
 
     state = {
-        onLoadStart : false ,
+        onLoadStart : true ,
         zoomed : false ,
         count : 1 ,
         onLoad : false ,
@@ -52,7 +52,6 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
             this._hideImageModal()
         }
     };
-
     _showImage = () => {
         this.state.image?.measure((x , y , width , height , pageX , pageY) => {
             this.setState({
@@ -101,7 +100,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
             </View>
 
             <View style={ { alignItems : isMobile ? "center" : undefined } }>
-                <TouchableOpacity ref={ image => (
+                <TouchableOpacity disabled={this.state.onLoadStart} ref={ image => (
                     this.state.image = image) }
                                   onPress={ this._showImage }>
 
@@ -223,6 +222,10 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                     height : height || 300
                 }
             });
+
+            this.setState({onLoadStart: false})
+        }, error => {
+            this.setState({onLoadStart: true})
         })
     }
 }

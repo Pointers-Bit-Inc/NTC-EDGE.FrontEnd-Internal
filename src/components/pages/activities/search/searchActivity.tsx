@@ -101,7 +101,7 @@ export function SearchActivity(props: {onBlur: any ,  isHandleLoad:any, isRecent
                                          value={props.value}
                                          onEndEditing={props.onEndEditing}
                                          onChange={props.onChange}
-                                         onBlur={props.onBlur}
+                                         onBlur={props.onEndEditing}
                                          onChangeText={props.onChangeText}
                                          placeholder="Search"/>
 

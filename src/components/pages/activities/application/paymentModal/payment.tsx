@@ -86,12 +86,15 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
                     height : height || 300
                 }
             });
+
+            this.setState({onLoadStart: false})
+        }, error => {
+            this.setState({onLoadStart: true})
         })
     }
     componentDidMount() {
         this.setImage()
     }
-
     render() {
         return <>
             { this.props.proofOfPayment?.small &&
@@ -117,7 +120,7 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
                 </TouchableOpacity>
                 }
 
-                <TouchableOpacity ref={ image => (
+                <TouchableOpacity disabled={this.state.onLoadStart} ref={ image => (
                     this.state.image = image) }
                                   onPress={ this._showImage }>
                     {

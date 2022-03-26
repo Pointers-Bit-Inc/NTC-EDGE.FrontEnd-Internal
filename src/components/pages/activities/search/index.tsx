@@ -271,9 +271,10 @@ function Search(props: any) {
             value={textInput}
             onEndEditing={async () => {
                 await AsyncStorage.getItem('searchHistory').then(async (value) => {
+                    
                     value = JSON.parse(value) || []
-
-                    let newArr = [...value , textInput];
+                         if(!textInput) return
+                    let newArr = _.uniq([ textInput, ...value]);
                     await AsyncStorage.setItem(
                         'searchHistory' ,
                         JSON.stringify(newArr)
