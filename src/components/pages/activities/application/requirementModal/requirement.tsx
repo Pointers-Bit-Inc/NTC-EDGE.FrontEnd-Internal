@@ -54,13 +54,13 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
     };
 
     _showImage = () => {
-        this.state.image.measure((x , y , width , height , pageX , pageY) => {
+        this.state.image?.measure((x , y , width , height , pageX , pageY) => {
             this.setState({
                 _sourceMeasure : {
-                    width ,
-                    height ,
-                    pageX ,
-                    pageY
+                    width: width || 0 ,
+                    height: height || 0 ,
+                    pageX: pageX || 0 ,
+                    pageY: pageY || 0
                 }
             });
             this._showImageModal();
