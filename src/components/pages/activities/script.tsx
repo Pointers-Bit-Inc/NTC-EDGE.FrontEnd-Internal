@@ -267,7 +267,8 @@ export const excludeStatus = (props: any , personnel: UserApplication) => getSta
 export function getStatusText(props: any , personnel: UserApplication | undefined) {
     return getRole(props.user , [EVALUATOR , DIRECTOR]) && getStatus(props , personnel) == FORAPPROVAL && (
         !!props?.approvalHistory?.[0]?.userId || !!props?.approvalHistory?.userId) && (
-        props?.approvalHistory?.[0]?.status !== FOREVALUATION || props?.approvalHistory?.status !== FOREVALUATION) ? StatusText(APPROVED) : getRole(props.user , [ACCOUNTANT]) && !!props.paymentMethod && (
+        props?.approvalHistory?.[0]?.status !== FOREVALUATION && props?.approvalHistory?.status !== FOREVALUATION) &&(
+        props?.approvalHistory?.[0]?.status !== PENDING && props?.approvalHistory?.status !== PENDING)  ? StatusText(APPROVED) : getRole(props.user , [ACCOUNTANT]) && !!props.paymentMethod && (
         !!props?.paymentHistory?.[0]?.status || !!props?.paymentHistory?.status) ? StatusText(props.paymentHistory?.[0]?.status || props.paymentHistory?.status) : getRole(props.user , [ACCOUNTANT]) && (
         props.approvalHistory?.[0]?.status == FOREVALUATION || props.approvalHistory?.status == FOREVALUATION) && props.approvalHistory[1].status == FORAPPROVAL ? DECLINED : getRole(props.user , [CASHIER]) && (
         props?.paymentHistory?.[0]?.status == PENDING || props?.paymentHistory?.status == PENDING) ? FORVERIFICATION : getStatus(props , personnel);

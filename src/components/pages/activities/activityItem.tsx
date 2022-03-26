@@ -1,3 +1,5 @@
+
+
 import React , {useEffect , useState} from "react";
 import {ActivityIndicator , StyleSheet , TouchableOpacity , useWindowDimensions , View} from "react-native";
 import Text from "@components/atoms/text";
@@ -240,7 +242,8 @@ export function ActivityItem(props: any) {
     const userActivity = props?.activity?.applicant?.user || props?.activity?.applicant;
     const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && (
         !!props?.activity?.approvalHistory?.[0]?.userId || !!props?.activity?.approvalHistory?.userId) && (
-        props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION || props?.activity?.approvalHistory?.status !== FOREVALUATION) ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && (
+        props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION && props?.activity?.approvalHistory?.status !== FOREVALUATION) && (
+        props?.activity?.approvalHistory?.[0]?.status !== PENDING && props?.activity?.approvalHistory?.status !== PENDING) ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && (
         !!props?.activity?.paymentHistory?.[0]?.status || !!props?.activity?.paymentHistory?.status) ? StatusText(props?.activity?.paymentHistory?.[0]?.status || props?.activity?.paymentHistory?.status) : getRole(props.currentUser , [ACCOUNTANT]) && (
         props?.activity?.approvalHistory?.[0]?.status == FOREVALUATION || props?.activity?.approvalHistory?.status == FOREVALUATION) && (
         props?.activity?.approvalHistory?.[1]?.status == FORAPPROVAL) ? DECLINED : getRole(props.currentUser , [CASHIER]) && (
