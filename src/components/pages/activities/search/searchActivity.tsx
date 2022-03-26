@@ -71,7 +71,14 @@ export function SearchActivity(props: {onBlur: any ,  isHandleLoad:any, isRecent
     }
 
     return <View style={[styles.container, {flexDirection: "row"}]}>
-        <View style={[styles.group9, { flex: (isMobile  || dimensions?.width <768 ) ? 1 : 0.4,} ]}>
+        <View style={[styles.group9, {
+            flex : (
+                       isMobile  || dimensions?.width <768) ? 1 : 0.4 ,
+            flexBasis:  (
+                            isMobile  || dimensions?.width <768) ? "100%" : 466,
+            flexGrow: 0,
+            flexShrink: 0
+        } ]}>
             <View style={styles.group4}>
                 <View style={styles.rect}>
                     <View style={styles.group2}>
