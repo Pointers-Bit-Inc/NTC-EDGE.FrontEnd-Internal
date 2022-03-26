@@ -7,7 +7,7 @@ const  PdfViewr = (props: { width: any, height: any, requirement: any }) => {
             {...props}
             style={{height: props?.height, width: props?.width}}
             
-            data={ `https://docs.google.com/viewer?url=${encodeURIComponent(props.requirement?.small)}`  }
+            data={  props.requirement?.small  }
         >
             <Text>Could not load PDF. Make sure the source is correct and the browser is not on device mode.</Text>
         </object>
