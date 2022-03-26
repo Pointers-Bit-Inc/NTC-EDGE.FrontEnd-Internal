@@ -77,11 +77,11 @@ const UserProfileScreen = ({ navigation }: any) => {
     };
     const save = ({ dp = false }) => {
         var updatedUser = {} , formData = new FormData();
-        userProfileForm?.forEach((up: any) => {
+        userProfileForm?.forEach(async (up: any) => {
             updatedUser = { ...updatedUser , [up?.stateName] : up?.value };
             if (dp && up?.stateName === 'profilePicture' && up?.file?.uri) {
                 const base64 = up?.file?.uri;
-                fetch(base64)
+                await fetch(base64)
                     .then(res => res.blob())
                     .then(blob => {
                         const fd = new FormData();
@@ -126,7 +126,7 @@ const UserProfileScreen = ({ navigation }: any) => {
 
             axios
                 .patch(
-                    dp ? `${ BASE_URL_NODE }/user/profile/${ user._id }` : `${ BASE_URL }/users/${ user._id }` ,
+                    dp ? `${ BASE_URL_NODE }/user/${ user._id }` : `${ BASE_URL }/users/${ user._id }` ,
                     formData ,
                     {
                         headers : {

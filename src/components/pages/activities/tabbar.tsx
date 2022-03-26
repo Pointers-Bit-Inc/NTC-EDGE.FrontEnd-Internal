@@ -1,5 +1,16 @@
 import * as React from 'react';
-import {Dimensions, Image , Linking, Platform , Text , TouchableOpacity , useWindowDimensions , View, StyleSheet} from 'react-native';
+import {
+    Dimensions ,
+    Image ,
+    Linking ,
+    Platform ,
+    Text ,
+    TouchableOpacity ,
+    useWindowDimensions ,
+    View ,
+    StyleSheet ,
+    Animated
+} from 'react-native';
 import {createDrawerNavigator , DrawerContentScrollView , DrawerItem ,} from '@react-navigation/drawer';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
@@ -20,7 +31,7 @@ import {
     EVALUATOR ,
     MEET ,
     MORE ,
-    SCANQR ,
+    SCANQR , SEARCH ,
 } from "../../../reducers/activity/initialstate";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
@@ -43,6 +54,8 @@ import IMeetings from 'src/interfaces/IMeetings';
 import IParticipants from 'src/interfaces/IParticipants';
 import IRooms from 'src/interfaces/IRooms';
 import ActivitiesNavigator from "../../../navigations/activities";
+import {getFocusedRouteNameFromRoute} from "@react-navigation/native";
+import {setVisible} from "../../../reducers/activity/actions";
 
 const { width } = Dimensions.get('window');
 
@@ -75,7 +88,7 @@ const Tab = createBottomTabNavigator();
 
 const Drawer = createDrawerNavigator();
 
-export default function TabBar() {
+export default function TabBar({ navigation, route }) {
 
 
     const user = useSelector((state: RootStateOrAny) => state.user);
@@ -177,17 +190,18 @@ export default function TabBar() {
         setNotPnApplication(notPinnedApplications.reduce((n, e) => !e?.dateRead ? n+1 : n, 0))
 
     }, [pinnedApplications, notPinnedApplications, pnApplication, notPnApplication])
-
+   
     function ActivityTab({state, descriptors, navigation}: any) {
-
+         const currentRoute = state.routes.map((route: any, index: number) =>  getFocusedRouteNameFromRoute(route) )
+           const hidden = currentRoute.find((route: string) => route == SEARCH)
 
         return (
-            <View  onLayout={(event)=>{
+            <View   onLayout={(event)=>{
                 if(tabBarHeight == 0){
                     dispatch(setTabBarHeight(event.nativeEvent.layout.height))
                 }
 
-            }} style={{flexDirection: 'row', justifyContent: 'space-around',
+            }} style={{display: hidden? "none": "flex",  flexDirection: 'row', justifyContent: 'space-around',
                 alignItems: 'center',
                 paddingHorizontal: 20,
                 backgroundColor: 'white',
@@ -196,6 +210,10 @@ export default function TabBar() {
                 borderWidth: 1,
                 borderColor: '#E5E5E5' }}>
                 {state.routes.map((route: any, index: number) => {
+
+
+
+
                     const {options} = descriptors[route.key];
 
                     const label =
@@ -229,7 +247,7 @@ export default function TabBar() {
 
                     const focused = "#2863D6";
                     const unfocused = "#606A80";
-                    return ( <View key={route.key} style={{ flex: 1 }}>
+                    return ( <View  key={route.key} style={{ flex: 1 }}>
                             <TouchableOpacity
                                 disabled={((label == CHAT && !isMobile)  || (label == MEET && !isMobile) || (label == SCANQR && !isMobile)  ) }
                                 accessibilityRole="button"
@@ -282,11 +300,14 @@ export default function TabBar() {
 
 
 
+
     const dimensions = useWindowDimensions();
     return (
             <>
                 {dimensions.width <= 768    ?  <Tab.Navigator    tabBar={(props) => <ActivityTab  {...props} />}>
-                    <Tab.Screen options={{headerShown: false}} name={ACTIVITIES} component={ActivitiesNavigator}/>
+                    <Tab.Screen options={({ route }) => ({
+                        headerShown: false,
+                    })}  name={ACTIVITIES} component={ActivitiesNavigator}/>
                     <Tab.Screen  options={{headerShown: false}} name={CHAT} component={ChatScreen}/>
                     <Tab.Screen  options={{headerShown: false}} name={MEET} component={MeetScreen}/>
                     {getRole(user, [CHECKER, EVALUATOR, DIRECTOR]) && <Tab.Screen  options={{headerShown: false}} name={SCANQR} component={QrCodeScanner}/>  }
