@@ -12,12 +12,14 @@ import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {Card} from "@pages/activities/application/requirementModal/card";
 import PdfViewr from "@pages/activities/application/pdf/index";
 import FileIcon from "@assets/svg/file";
+
 const { width , height } = Dimensions.get("screen");
 
 class RequirementView extends React.Component<{ requirement: any, rightLayoutComponent: any }> {
 
 
     state = {
+        onLoadStart : false ,
         zoomed : false ,
         count : 1 ,
         onLoad : false ,
@@ -35,8 +37,8 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
         } ,
         imageModal : null ,
         image : null ,
-        fileName : "",
-        extension: ''
+        fileName : "" ,
+        extension : ''
     };
     imageZoom = null;
 
@@ -98,21 +100,20 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                 </TouchableOpacity> }
             </View>
 
-            <View style={ {  alignItems : isMobile ? "center" : undefined } }>
-                <TouchableOpacity disabled={ this.state.onLoad } ref={ image => (
+            <View style={ { alignItems : isMobile ? "center" : undefined } }>
+                <TouchableOpacity disabled={ this.state.onLoadStart } ref={ image => (
                     this.state.image = image) }
                                   onPress={ this._showImage }>
 
                     {
-                        this.state.extension ?  <FileIcon
-                                                color={"#606A80"}
-                                                 width={ 150 }
-                                                 height={ 150}
-                                             />:
-                        <Image
+                        this.state.extension ? <FileIcon
+                            color={ "#606A80" }
+                            width={ 150 }
+                            height={ 150 }
+                        /> : <Image
+                            progressiveRenderingEnabled
                             resizeMode={ "cover" }
                             style={ {
-
                                 marginBottom : isMobile ? undefined : 25 ,
                                 backgroundColor : "rgba(220,226,229,1)" ,
                                 borderWidth : 1 ,
@@ -120,7 +121,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                                 borderStyle : "solid" ,
                                 width : isMobile ? 300 : 240 ,
                                 height : isMobile ? 300 : 160 ,
-                                borderRadius :  10
+                                borderRadius : 10
                             } }
                             source={ {
                                 uri : this.props?.requirement?.small ,
@@ -128,7 +129,9 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                         />
 
 
-                         }
+                    }
+
+
                 </TouchableOpacity>
             </View>
 
@@ -158,10 +161,10 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                                         width={ width }/> }
 
                         { this.state.extension ?
-                          <PdfViewr width={this.props?.rightLayoutComponent?.width} height={this.props?.rightLayoutComponent?.height}  requirement={ this.props?.requirement }/> : (
+                          <PdfViewr width={ this.props?.rightLayoutComponent?.width }
+                                    height={ this.props?.rightLayoutComponent?.height }
+                                    requirement={ this.props?.requirement }/> : (
                               isMobile ? <AnimatedImage
-
-                                           useNativeDriver={ true }
                                            ref={ imageModal => (
                                                this.state.imageModal = imageModal) }
                                            source={ this?.state?.source }
@@ -197,23 +200,27 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
     }
 
     private setImage() {
-
         this.setState({
             ...this.state ,
             source : {
                 ...this?.state?.source ,
                 uri : this?.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa"
-            }
+            },
+            onLoadStart: true
         });
 
-        let _fileName = this.props?.requirement?.small?.split("/")?.[this.props?.requirement?.small?.split("/")?.length - 1]
+        let _fileName = this.props?.requirement?.small?.split("/")?.[this.props?.requirement?.small?.split("/")?.length - 1];
         this.setState({
             fileName : _fileName ,
-            extension: (/(pdf|docx|doc)$/ig.test(_fileName.substr((_fileName.lastIndexOf('.') + 1)))),
+            extension : (
+                /(pdf|docx|doc)$/ig.test(_fileName.substr((
+                    _fileName.lastIndexOf('.') + 1)))) ,
         });
 
         Image.getSize(this.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
+        
             this.setState({
+                onLoadStart: false,
                 _imageSize : {
                     width : width || 300 ,
                     height : height || 300
@@ -239,23 +246,22 @@ const Requirement = (props: any) => {
                         </View>
 
 
-                             <ScrollView style={ { flex : 1 , } }>
-                                 {
-                                     /*[{
-                                         "original": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                         "thumb": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                         "small": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                         "medium": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                         "large": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                         "xlarge": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf"
-                                     }]*/
-                                     requirement?.links?.map((link: any , idx: number) => {
-                                         return <RequirementView rightLayoutComponent={ rightLayoutComponent } key={ idx }
-                                                                 requirement={ link }/>
-                                     })
-                                 }
-                             </ScrollView>
-
+                        <ScrollView style={ { flex : 1 , } }>
+                            {
+                                /*[{
+                                    "original": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "thumb": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "small": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "medium": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "large": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "xlarge": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf"
+                                }]*/
+                                requirement?.links?.map((link: any , idx: number) => {
+                                    return <RequirementView rightLayoutComponent={ rightLayoutComponent } key={ idx }
+                                                            requirement={ link }/>
+                                })
+                            }
+                        </ScrollView>
 
 
                     </View>

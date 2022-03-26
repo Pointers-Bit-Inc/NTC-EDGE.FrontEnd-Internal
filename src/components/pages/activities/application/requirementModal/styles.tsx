@@ -8,6 +8,10 @@ import {isMobile} from "@pages/activities/isMobile";
 
 const { width , height } = Dimensions.get("screen");
 export const styles = StyleSheet.create({
+    pictureContainer: {
+        width : 240 , height : 200 , borderRadius : 5 , borderWidth : 4 ,
+        borderColor : "#fff"
+    },
     containers:{
         width : "100%" ,
         ...Platform.select({
@@ -67,7 +71,6 @@ export const styles = StyleSheet.create({
 });
 export const requirementStyles = StyleSheet.create({
     pdf:{
-         flex: 1,
         width : Dimensions.get('window').width ,
         height : Dimensions.get('window').height ,
     },

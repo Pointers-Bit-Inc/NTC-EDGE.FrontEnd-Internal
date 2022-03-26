@@ -16,11 +16,14 @@ import {useComponentLayout} from "../../../../../hooks/useComponentLayout";
 import {isMobile} from "@pages/activities/isMobile";
 import DottedLine from "@assets/svg/dotted";
 import PdfViewr from "@pages/activities/application/pdf";
-
+import Placeholder from "@assets/svg/placeholder";
+import FileIcon from "@assets/svg/file";
 class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 
 
     state = {
+        onLoadStart: false,
+       onError: false,
         visible : false ,
         source: { uri : this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" },
         imageModal:  null,
@@ -35,7 +38,8 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
             pageX : 0 ,
             pageY : 0
         } ,
-        fileName: ''
+        fileName: '',
+        extension: ''
     };
 
     _showImageModal = () => this.setState({ visible : true });
@@ -63,18 +67,21 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
         }
     }
     private setImage() {
+        let _fileName = this.props?.proofOfPayment?.small?.split("/")?.[this.props?.proofOfPayment?.small?.split("/")?.length - 1]
         this.setState({
             ...this.state ,
             source : {
                 ...this?.state?.source ,
                 uri : this?.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa"
-            }
+            },
+            onLoadStart: true,
+            fileName : _fileName ,
+            extension: (/(pdf|docx|doc)$/ig.test(_fileName.substr((_fileName.lastIndexOf('.') + 1)))),
         });
-
-        this.setState({ fileName : this.props?.proofOfPayment?.small?.split("/")?.[this.props?.proofOfPayment?.small?.split("/")?.length - 1]  });
 
         Image.getSize(this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
             this.setState({
+                onLoadStart: false,
                 _imageSize : {
                     width : width || 300 ,
                     height : height || 300
@@ -111,19 +118,26 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
                 </TouchableOpacity>
                 }
 
-                <TouchableOpacity ref={ image => (
+                <TouchableOpacity disabled={ this.state.onLoadStart } ref={ image => (
                     this.state.image = image) }
                                   onPress={ this._showImage }>
-                    <Image
+                    {
+                        this.state.extension ?  <FileIcon
+                            color={"#606A80"}
+                            width={ 150 }
+                            height={ 150}
+                        />  : <Image
 
-                        style={ {
-                            width : 240 , height : 200 , borderRadius : 5 , borderWidth : 4 ,
-                            borderColor : "#fff"
-                        } }
-                        source={ {
-                            uri : this.props?.proofOfPayment?.small ,
-                        } }
-                    />
+                            defaultSource={require ("@assets/dots.gif")}
+                            progressiveRenderingEnabled
+                            style={ [styles.pictureContainer, { display: this.state.onLoadStart ? "none" : undefined,} ]}
+                            source={ {
+                                uri : this.props?.proofOfPayment?.small ,
+                            } }
+                        />
+                     }
+
+
                 </TouchableOpacity>
             </View>
             }
