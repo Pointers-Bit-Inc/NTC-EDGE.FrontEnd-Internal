@@ -101,7 +101,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
             </View>
 
             <View style={ { alignItems : isMobile ? "center" : undefined } }>
-                <TouchableOpacity disabled={ this.state.onLoadStart } ref={ image => (
+                <TouchableOpacity ref={ image => (
                     this.state.image = image) }
                                   onPress={ this._showImage }>
 
@@ -111,7 +111,6 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                             width={ 150 }
                             height={ 150 }
                         /> : <Image
-                            progressiveRenderingEnabled
                             resizeMode={ "cover" }
                             style={ {
                                 marginBottom : isMobile ? undefined : 25 ,
@@ -206,7 +205,6 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                 ...this?.state?.source ,
                 uri : this?.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa"
             },
-            onLoadStart: true
         });
 
         let _fileName = this.props?.requirement?.small?.split("/")?.[this.props?.requirement?.small?.split("/")?.length - 1];
@@ -220,7 +218,6 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
         Image.getSize(this.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
         
             this.setState({
-                onLoadStart: false,
                 _imageSize : {
                     width : width || 300 ,
                     height : height || 300

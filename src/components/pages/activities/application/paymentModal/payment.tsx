@@ -73,14 +73,14 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
                 ...this?.state?.source ,
                 uri : this?.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa"
             },
-            onLoadStart: true,
+
             fileName : _fileName ,
             extension: (/(pdf|docx|doc)$/ig.test(_fileName.substr((_fileName.lastIndexOf('.') + 1)))),
         });
 
         Image.getSize(this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
             this.setState({
-                onLoadStart: false,
+
                 _imageSize : {
                     width : width || 300 ,
                     height : height || 300
@@ -117,7 +117,7 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
                 </TouchableOpacity>
                 }
 
-                <TouchableOpacity disabled={ this.state.onLoadStart } ref={ image => (
+                <TouchableOpacity ref={ image => (
                     this.state.image = image) }
                                   onPress={ this._showImage }>
                     {
