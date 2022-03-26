@@ -1,5 +1,3 @@
-
-
 import React , {useEffect , useState} from "react";
 import {ActivityIndicator , StyleSheet , TouchableOpacity , useWindowDimensions , View} from "react-native";
 import Text from "@components/atoms/text";
@@ -244,8 +242,9 @@ export function ActivityItem(props: any) {
         !!props?.activity?.approvalHistory?.[0]?.userId || !!props?.activity?.approvalHistory?.userId) && (
         props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION && props?.activity?.approvalHistory?.status !== FOREVALUATION) && (
         props?.activity?.approvalHistory?.[0]?.status !== PENDING && props?.activity?.approvalHistory?.status !== PENDING) && (
-        props?.activity?.approvalHistory?.[0]?.status !== FORVERIFICATION && props?.activity?.approvalHistory?.status !== FORVERIFICATION)&& (
-        props?.activity?.approvalHistory?.[0]?.status !== FORAPPROVAL && props?.activity?.approvalHistory?.status !== FORAPPROVAL || (props?.activity?.assignedPersonnel?._id !== props.currentUser?._id)) ?   APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && (
+        props?.activity?.approvalHistory?.[0]?.status !== FORVERIFICATION && props?.activity?.approvalHistory?.status !== FORVERIFICATION) && (
+        props?.activity?.approvalHistory?.[0]?.status !== FORAPPROVAL && props?.activity?.approvalHistory?.status !== FORAPPROVAL || (
+            props?.activity?.assignedPersonnel?._id !== props.currentUser?._id)) ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && (
         !!props?.activity?.paymentHistory?.[0]?.status || !!props?.activity?.paymentHistory?.status) ? StatusText(props?.activity?.paymentHistory?.[0]?.status || props?.activity?.paymentHistory?.status) : getRole(props.currentUser , [ACCOUNTANT]) && (
         props?.activity?.approvalHistory?.[0]?.status == FOREVALUATION || props?.activity?.approvalHistory?.status == FOREVALUATION) && (
         props?.activity?.approvalHistory?.[1]?.status == FORAPPROVAL) ? DECLINED : getRole(props.currentUser , [CASHIER]) && (
