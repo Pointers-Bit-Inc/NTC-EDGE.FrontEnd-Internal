@@ -21,7 +21,7 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 
 
     state = {
-        onLoadStart: false,
+        onLoadStart: true,
        onError: false,
         visible : false ,
         source: { uri : this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" },
@@ -130,7 +130,7 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
                             height={ 150}
                         />  : <Image
 
-                            style={ [styles.pictureContainer, { display: this.state.onLoadStart ? "none" : undefined,} ]}
+                            style={ [styles.pictureContainer]}
                             source={ {
                                 uri : this.props?.proofOfPayment?.small ,
                             } }
