@@ -155,13 +155,10 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                     </View>
 
 
-                        { !!this.state.fileName &&
-                        <FadeBackground style={ { position : "absolute" , zIndex : 1 } }
-                                        width={ width }/> }
 
                         { this.state.extension ?
 
-                          <PdfViewr width={ this.props?.rightLayoutComponent?.width }
+                          <PdfViewr  width={ this.props?.rightLayoutComponent?.width }
                                     height={ this.props?.rightLayoutComponent?.height }
                                     requirement={ this.props?.requirement }/> : (
                               isMobile ? <AnimatedImage
