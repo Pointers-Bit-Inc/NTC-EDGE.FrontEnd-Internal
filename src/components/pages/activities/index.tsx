@@ -3,11 +3,12 @@ import {
     Animated ,
     Dimensions ,
     FlatList ,
-    RefreshControl , SafeAreaView ,
+    RefreshControl ,
     ScrollView ,
     StatusBar ,
     Text ,
-    TouchableOpacity , useWindowDimensions ,
+    TouchableOpacity ,
+    useWindowDimensions ,
     View
 } from "react-native";
 
@@ -23,12 +24,8 @@ import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ApplicationList from "@pages/activities/applicationList";
 import {getChannelName} from 'src/utils/formatting';
 import lodash from 'lodash';
-import {
-    removeActiveMeeting ,
-    setMeeting ,
-    setActiveMeetings,
-} from 'src/reducers/meeting/actions';
-import { setSelectedChannel } from 'src/reducers/channel/actions';
+import {removeActiveMeeting , setActiveMeetings , setMeeting ,} from 'src/reducers/meeting/actions';
+import {setSelectedChannel} from 'src/reducers/channel/actions';
 import {MeetingNotif} from '@components/molecules/list-item';
 import listEmpty from "@pages/activities/listEmpty";
 import HomeMenuIcon from "@assets/svg/homemenu";
@@ -46,8 +43,6 @@ import FilterPressIcon from "@assets/svg/filterPress";
 import {useActivities} from "../../../hooks/useActivities";
 
 const { width } = Dimensions.get('window');
-
-
 
 
 export default function ActivitiesPage(props: any) {
@@ -144,11 +139,15 @@ export default function ActivitiesPage(props: any) {
     };
     const listHeaderComponent = () => <>
         { !searchVisible && !!pnApplications?.length &&
-        <View style={[styles.pinnedActivityContainer, {  marginBottom: 5,  paddingBottom : 20 , backgroundColor : "#fff" } ]}>
+        <View style={ [styles.pinnedActivityContainer , {
+            marginBottom : 5 ,
+            paddingBottom : 20 ,
+            backgroundColor : "#fff"
+        }] }>
             { !!pnApplications?.length &&
             <View style={ [styles.pinnedgroup , { height : undefined }] }>
                 <View style={ [styles.pinnedcontainer , { paddingVertical : 10 }] }>
-                    <Text style={ [styles.pinnedActivity , {  fontFamily : Regular500 , }] }>Pinned
+                    <Text style={ [styles.pinnedActivity , { fontFamily : Regular500 , }] }>Pinned
                         Activity</Text>
                 </View>
             </View> }
@@ -158,11 +157,12 @@ export default function ActivitiesPage(props: any) {
                     {
                         pnApplications.map((item: any , index: number) => {
                             return item?.activity && item?.activity.map((act: any , i: number) => {
-                                return (act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <ActivityItem
+                                return (
+                                    act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <ActivityItem
                                     isOpen={ isOpen }
                                     config={ config }
                                     key={ i }
-                                    selected={applicationItem?._id == act?._id}
+                                    selected={ applicationItem?._id == act?._id }
                                     currentUser={ user }
                                     role={ user?.role?.key }
                                     searchQuery={ searchTerm }
@@ -172,7 +172,7 @@ export default function ActivitiesPage(props: any) {
 
                                         /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                         })*/
-                                        dispatch(setApplicationItem({ ...act , isOpen : `pin${ i }${ index }` }))
+                                        dispatch(setApplicationItem({ ...act , isOpen : `pin${ i }${ index }` }));
                                         //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
                                         if (event?.icon == 'more') {
                                             setMoreModalVisible(true)
@@ -190,241 +190,249 @@ export default function ActivitiesPage(props: any) {
             )
             }
         </View> }
-    </>
+    </>;
 
 
     return (
-             <>
-                 <StatusBar barStyle={ 'light-content' }/>
+        <>
+            <StatusBar barStyle={ 'light-content' }/>
 
-                 <View style={ { backgroundColor: "#F8F8F8", flex : 1 , flexDirection : "row" } }>
-                     <View onLayout={ onActivityLayoutComponent } style={ [styles.container, styles.shadow , {
+            <View style={ { backgroundColor : "#F8F8F8" , flex : 1 , flexDirection : "row" } }>
+                <View onLayout={ onActivityLayoutComponent } style={ [styles.container , styles.shadow , {
 
-                         flex : (
-                                    isMobile  || dimensions?.width <768) ? 1 : 0.4 ,
-                         flexBasis:  (
-                                         isMobile  || dimensions?.width <768) ? "100%" : 466,
-                         flexGrow: 0,
-                         flexShrink: 0
-                     }] }>
+                    flex : (
+                               isMobile || dimensions?.width < 768) ? 1 : 0.4 ,
+                    flexBasis : (
+                                    isMobile || dimensions?.width < 768) ? "100%" : 466 ,
+                    flexGrow : 0 ,
+                    flexShrink : 0
+                }] }>
 
 
-                         <View onLayout={ onLayoutComponent }
-                               style={ [styles.group , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { position : "absolute" , }] }>
-                             <Animated.View style={ [styles.rect , styles.horizontal , {
-                                 backgroundColor : isMobile  || dimensions?.width <768 ? "#041B6E" : "#fff" ,
+                    <View onLayout={ onLayoutComponent }
+                          style={ [styles.group , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { position : "absolute" , }] }>
+                        <Animated.View style={ [styles.rect , styles.horizontal , {
+                            backgroundColor : isMobile || dimensions?.width < 768 ? "#041B6E" : "#fff" ,
 
-                             } , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && {
-                                 ...{ opacity } ,
-                                 transform : [{ translateY : headerTranslate }]
-                             }] }>
+                        } , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && {
+                            ...{ opacity } ,
+                            transform : [{ translateY : headerTranslate }]
+                        }] }>
 
-                                 { (isMobile  || dimensions?.width <768)&&
-                                 <TouchableOpacity onPress={ () => props.navigation.navigate('Settings')/*openDrawer()*/ }>
-                                     <HomeMenuIcon height={ fontValue(24) } width={ fontValue(24) }/>
-                                 </TouchableOpacity> }
+                            { (
+                                isMobile || dimensions?.width < 768) &&
+                            <TouchableOpacity onPress={ () => props.navigation.navigate('Settings')/*openDrawer()*/ }>
+                                <HomeMenuIcon height={ fontValue(24) } width={ fontValue(24) }/>
+                            </TouchableOpacity> }
 
-                                 <Text
-                                     style={ [styles.activity , { color : isMobile  || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor , }] }>{ isMobile || dimensions?.width <768 ? `Activity` : `Feed` }</Text>
-                                 <View style={ { flex : 1 } }/>
-                                 <TouchableOpacity onPress={ () => {
-                                     dispatch(setVisible(true))
-                                 }
+                            <Text
+                                style={ [styles.activity , { color : isMobile || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor , }] }>{ isMobile || dimensions?.width < 768 ? `Activity` : `Feed` }</Text>
+                            <View style={ { flex : 1 } }/>
+                            <TouchableOpacity onPress={ () => {
+                                dispatch(setVisible(true))
+                            }
 
-                                 }>
+                            }>
 
-                                     <Filter pressed={visible} width={ fontValue(32) } height={ fontValue(32) }/>
+                                <Filter pressed={ visible } width={ fontValue(32) } height={ fontValue(32) }/>
 
-                                 </TouchableOpacity>
-                                 { ( !isMobile && dimensions?.width > 768)&&
-                                 <TouchableOpacity onPress={ onRefresh }>
-                                     <RefreshWeb style={ { paddingLeft : 15 } } width={ fontValue(26) }
-                                                 height={ fontValue(24) } fill={ "#fff" }/>
-                                 </TouchableOpacity>
-                                 }
-                             </Animated.View>
-                         </View>
-                         <View>
-                             {
-                                 !!lodash.size(meetingList) && (
-                                     <FlatList
-                                         data={meetingList}
-                                         bounces={false}
-                                         horizontal
-                                         showsHorizontalScrollIndicator={false}
-                                         snapToInterval={width}
-                                         decelerationRate={0}
-                                         keyExtractor={(item: any) => item._id}
-                                         renderItem={({item}) => (
-                                             <MeetingNotif
-                                                 style={{width}}
-                                                 name={getChannelName({...item, otherParticipants: item?.participants})}
-                                                 time={item.createdAt}
-                                                 host={item.host}
-                                                 onJoin={() => onJoin(item)}
-                                                 onClose={(leave:any) => onClose(item, leave)}
-                                                 closeText={'Cancel'}
-                                             />
-                                         )}
-                                     />
-                                 )
-                             }
+                            </TouchableOpacity>
+                            { (
+                                !isMobile && dimensions?.width > 768) &&
+                            <TouchableOpacity onPress={ onRefresh }>
+                                <RefreshWeb style={ { paddingLeft : 15 } } width={ fontValue(26) }
+                                            height={ fontValue(24) } fill={ "#fff" }/>
+                            </TouchableOpacity>
+                            }
+                        </Animated.View>
+                    </View>
+                    <View>
+                        {
+                            !!lodash.size(meetingList) && (
+                                <FlatList
+                                    data={ meetingList }
+                                    bounces={ false }
+                                    horizontal
+                                    showsHorizontalScrollIndicator={ false }
+                                    snapToInterval={ width }
+                                    decelerationRate={ 0 }
+                                    keyExtractor={ (item: any) => item._id }
+                                    renderItem={ ({ item }) => (
+                                        <MeetingNotif
+                                            style={ { width } }
+                                            name={ getChannelName({
+                                                ...item ,
+                                                otherParticipants : item?.participants
+                                            }) }
+                                            time={ item.createdAt }
+                                            host={ item.host }
+                                            onJoin={ () => onJoin(item) }
+                                            onClose={ (leave: any) => onClose(item , leave) }
+                                            closeText={ 'Cancel' }
+                                        />
+                                    ) }
+                                />
+                            )
+                        }
 
-                         </View>
-                         <FakeSearchBar onSearchLayoutComponent={ onSearchLayoutComponent }
-                                        animated={ !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && {
-                                            ...{ opacity } ,
-                                            top : sizeComponent?.height || 80 * (
-                                                1 + lodash.size(meetingList)) ,
-                                            elevation : 10 ,
-                                            zIndex : 10 ,
-                                            position : "absolute" ,
-                                            transform : [{ translateY : headerTranslate }]
-                                        } } onPress={ () => {
+                    </View>
+                    <FakeSearchBar onSearchLayoutComponent={ onSearchLayoutComponent }
+                                   animated={ !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && {
+                                       ...{ opacity } ,
+                                       top : sizeComponent?.height || 80 * (
+                                           1 + lodash.size(meetingList)) ,
+                                       elevation : 10 ,
+                                       zIndex : 10 ,
+                                       position : "absolute" ,
+                                       transform : [{ translateY : headerTranslate }]
+                                   } } onPress={ () => {
 
-                             //setSearchVisible(true)
-                             dispatch(setApplicationItem({  }))
+                        //setSearchVisible(true)
+                        dispatch(setApplicationItem({}));
 
-                             props.navigation.navigate(SEARCH);
-                         } } searchVisible={ searchVisible }/>
+                        props.navigation.navigate(SEARCH);
+                    } } searchVisible={ searchVisible }/>
 
-                         <Animated.FlatList
-                             onScroll={ Animated.event(
-                                 [{
-                                     nativeEvent : {
-                                         contentOffset : {
-                                             y : scrollY
-                                         }
-                                     }
-                                 }] ,
-                                 { useNativeDriver : true }
-                             ) }
+                    <Animated.FlatList
+                        onScroll={ Animated.event(
+                            [{
+                                nativeEvent : {
+                                    contentOffset : {
+                                        y : scrollY
+                                    }
+                                }
+                            }] ,
+                            { useNativeDriver : true }
+                        ) }
 
-                             contentContainerStyle={ {
-                                 paddingTop : (
-                                     !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && containerHeight * (
-                                         lodash.size(meetingList) || 1)) || 0 , flexGrow : 1
-                             } }
-                             ListEmptyComponent={ () => listEmpty(refreshing , searchTerm , total) }
-                             ListHeaderComponent={ listHeaderComponent() }
-                             refreshControl={
+                        contentContainerStyle={ {
+                            paddingTop : (
+                                !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && containerHeight * (
+                                    lodash.size(meetingList) || 1)) || 0 , flexGrow : 1
+                        } }
+                        ListEmptyComponent={ () => listEmpty(refreshing , searchTerm , total) }
+                        ListHeaderComponent={ listHeaderComponent() }
+                        refreshControl={
 
-                                 <RefreshControl
-                                     refreshing={ refreshing }
-                                     onRefresh={ onRefresh }
-                                 />
-                             }
-                             style={ { flex : 1 , } }
+                            <RefreshControl
+                                refreshing={ refreshing }
+                                onRefresh={ onRefresh }
+                            />
+                        }
+                        style={ { flex : 1 , } }
 
-                             data={ notPnApplications }
-                             keyExtractor={ (item , index) => index.toString() }
-                             ListFooterComponent={ bottomLoader }
-                             onEndReached={ () => {
-                                 if (!onEndReachedCalledDuringMomentum) {
-                                     handleLoad();
-                                     setOnEndReachedCalledDuringMomentum(true);
-                                 }
+                        data={ notPnApplications }
+                        keyExtractor={ (item , index) => index.toString() }
+                        ListFooterComponent={ bottomLoader }
+                        onEndReached={ () => {
+                            if (!onEndReachedCalledDuringMomentum) {
+                                handleLoad();
+                                setOnEndReachedCalledDuringMomentum(true);
+                            }
 
-                             } }
-                             onScrollEndDrag={ onScrollEndDrag }
-                             onEndReachedThreshold={ 0.1 }
-                             onMomentumScrollBegin={ () => {
-                                 onMomentumScrollBegin();
-                                 setOnEndReachedCalledDuringMomentum(false)
-                             } }
-                             onMomentumScrollEnd={ onMomentumScrollEnd }
-                             scrollEventThrottle={ 1 }
-                             renderItem={ ({ item , index }) => (
-                                 <ApplicationList
-                                     key={ index }
-                                     onPress={ () => {
-                                         userPress(index)
+                        } }
+                        onScrollEndDrag={ onScrollEndDrag }
+                        onEndReachedThreshold={ 0.1 }
+                        onMomentumScrollBegin={ () => {
+                            onMomentumScrollBegin();
+                            setOnEndReachedCalledDuringMomentum(false)
+                        } }
+                        onMomentumScrollEnd={ onMomentumScrollEnd }
+                        scrollEventThrottle={ 1 }
+                        renderItem={ ({ item , index }) => (
+                            <ApplicationList
+                                key={ index }
+                                onPress={ () => {
+                                    userPress(index)
 
-                                     } }
-                                     item={ item }
-                                     numbers={ numberCollapsed }
-                                     index={ index }
+                                } }
+                                item={ item }
+                                numbers={ numberCollapsed }
+                                index={ index }
 
-                                     element={ (activity: any , i: number) => {
+                                element={ (activity: any , i: number) => {
 
-                                         return (
+                                    return (
 
-                                             <ActivityItem
-                                                 isOpen={ isOpen }
-                                                 config={config}
-                                                 /*
-                                                 isPinned={true}*/
-                                                 searchQuery={ searchTerm }
-                                                 key={ i }
-                                                 selected={applicationItem?._id == activity?._id}
-                                                 parentIndex={ index }
-                                                 role={ user?.role?.key }
-                                                 activity={ activity }
-                                                 currentUser={ user }
-                                                 onPressUser={ (event: any) => {
+                                        <ActivityItem
+                                            isOpen={ isOpen }
+                                            config={ config }
+                                            /*
+                                            isPinned={true}*/
+                                            searchQuery={ searchTerm }
+                                            key={ i }
+                                            selected={ applicationItem?._id == activity?._id }
+                                            parentIndex={ index }
+                                            role={ user?.role?.key }
+                                            activity={ activity }
+                                            currentUser={ user }
+                                            onPressUser={ (event: any) => {
 
-                                                     dispatch(setApplicationItem({ ...activity , isOpen : `${ index }${ i }` }))
-                                                     //setDetails({ ...activity , isOpen : `${ index }${ i }` });
-                                                     /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
-                                                     })*/
-                                                     if (event?.icon == 'more') {
-                                                         setMoreModalVisible(true)
-                                                     } else {
-                                                         setModalVisible(true)
-                                                     }
+                                                dispatch(setApplicationItem({
+                                                    ...activity ,
+                                                    isOpen : `${ index }${ i }`
+                                                }));
+                                                //setDetails({ ...activity , isOpen : `${ index }${ i }` });
+                                                /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
+                                                })*/
+                                                if (event?.icon == 'more') {
+                                                    setMoreModalVisible(true)
+                                                } else {
+                                                    setModalVisible(true)
+                                                }
 
-                                                 } } index={ `${ index }${ i }` }
-                                                 swiper={ (index: number , progress: any , dragX: any , onPressUser: any) => renderSwiper(index , progress , dragX , onPressUser , activity , unReadReadApplicationFn) }/>
-                                         )
-                                     } }/>
-                             ) }
-                         />
-                         {/*    right view jkadtong muslide
+                                            } } index={ `${ index }${ i }` }
+                                            swiper={ (index: number , progress: any , dragX: any , onPressUser: any) => renderSwiper(index , progress , dragX , onPressUser , activity , unReadReadApplicationFn) }/>
+                                    )
+                                } }/>
+                        ) }
+                    />
+                    {/*    right view jkadtong muslide
                 view*/ }
 
 
-                     </View>
-                     {
-                         !(
-                             isMobile )  && lodash.isEmpty(applicationItem) && dimensions?.width >768  &&
-                         <View style={ [{ flex : 1 , justifyContent : "center" , alignItems : "center" }] }>
+                </View>
+                {
+                    !(
+                        isMobile) && lodash.isEmpty(applicationItem) && dimensions?.width > 768 &&
+                    <View style={ [{ flex : 1 , justifyContent : "center" , alignItems : "center" }] }>
 
-                             <NoActivity/>
-                             <Text style={ { color : "#A0A3BD" , fontSize : fontValue(24) } }>No activity
-                                 selected</Text>
-
-
-                         </View>
-                     }
-
-                     { (!lodash.isEmpty(applicationItem) )  && <ActivityModalView>
-                         <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
-                             onMoreModalDismissed(applicationItem?.isOpen)
-                         } }/>
-                         <ActivityModal updateModal={ updateModalFn }
-                                        readFn={ unReadReadApplicationFn }
-                                        details={ applicationItem }
-                                        onChangeAssignedId={ (event) => {
-                                            dispatch(setApplicationItem(event))
-                                        } }
-                                        visible={ modalVisible }
-                                        onDismissed={ (event: boolean , _id: number) => {
-                                            setUpdateModal(false);
-                                            dispatch(setApplicationItem({  }))
-                                            if (event && _id) {
-                                                //  dispatch(deleteApplications(_id))
-                                            }
-                                            if (event) {
-                                                onRefresh()
-                                            }
-                                            onDismissed()
-                                        } }/></ActivityModalView> }
-                 </View>
-
-             </>
+                        <NoActivity/>
+                        <Text style={ { color : "#A0A3BD" , fontSize : fontValue(24) } }>No activity
+                            selected</Text>
 
 
-       
+                    </View>
+                }
+
+                { (
+                    !lodash.isEmpty(applicationItem)) && <ActivityModalView>
+                    <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
+                        onMoreModalDismissed(applicationItem?.isOpen)
+                    } }/>
+                    <ActivityModal updateModal={ updateModalFn }
+                                   readFn={ unReadReadApplicationFn }
+                                   details={ applicationItem }
+                                   onChangeAssignedId={ (event) => {
+                                       dispatch(setApplicationItem(event))
+                                   } }
+                                   visible={ modalVisible }
+                                   onDismissed={ (event: boolean , _id: number) => {
+                                       setUpdateModal(false);
+                                       dispatch(setApplicationItem({}));
+                                       if (event && _id) {
+                                           //  dispatch(deleteApplications(_id))
+                                       }
+                                       if (event) {
+                                           onRefresh()
+                                       }
+                                       onDismissed()
+                                   } }/></ActivityModalView> }
+            </View>
+
+        </>
+
+
     );
 
 }

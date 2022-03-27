@@ -1,5 +1,8 @@
+import {primaryColor} from "@styles/color";
+
 export default {
   "expo": {
+    "backgroundColor": "#1a202c",
     "name": "ntc-edge-internal",
     "slug": "ntc-edge-internal",
     "owner": "ntc-edge",
@@ -8,7 +11,7 @@ export default {
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "cover"
+      "resizeMode": "cover",
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,6 +25,11 @@ export default {
         "NSCameraUsageDescription": "This will be used for video call and live streaming.",
         "NSMicrophoneUsageDescription": "This will be used for video call and live streaming."
       }
+    },
+    "androidStatusBar": {
+      
+      "backgroundColor": '#031A6E',
+      "translucent": false
     },
     "android": {
       "adaptiveIcon": {

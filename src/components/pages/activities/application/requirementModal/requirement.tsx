@@ -1,5 +1,14 @@
 import React from "react";
-import {Dimensions , Image , Modal , ScrollView , Text , TouchableOpacity , View} from "react-native";
+import {
+    Dimensions ,
+    Image ,
+    Modal ,
+    ScrollView ,
+    Text ,
+    TouchableOpacity ,
+    useWindowDimensions ,
+    View
+} from "react-native";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles , styles} from "@pages/activities/application/requirementModal/styles";
 import AnimatedImage from 'react-native-animated-image-viewer';
@@ -16,7 +25,7 @@ import WebView from "react-native-webview";
 
 const { width , height } = Dimensions.get("screen");
 
-class RequirementView extends React.Component<{ requirement: any, rightLayoutComponent: any }> {
+class RequirementView extends React.Component<{ requirement: any, rightLayoutComponent: any, dimensions: any }> {
 
 
     state = {
@@ -100,7 +109,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                 </TouchableOpacity> }
             </View>
 
-            <View style={ { alignItems : isMobile ? "center" : undefined } }>
+            <View style={ { alignItems : isMobile  ? "center" : undefined } }>
                 <TouchableOpacity disabled={this.state.onLoadStart} ref={ image => (
                     this.state.image = image) }
                                   onPress={ this._showImage }>
@@ -137,16 +146,16 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
 
             <Modal visible={ this.state?.visible } transparent={ true } onRequestClose={ this._hideImageModal }>
 
-                <View style={ [styles.container , isMobile ? {} : {
+                <View style={ [styles.container , isMobile  || this.props.dimensions?.width <768 ? {} : {
                     alignItems : "flex-end" ,
                     top : this.props?.rightLayoutComponent?.top
                 }] }>
                     <OnBackdropPress styles={ {} } onPressOut={ this._hideImageModal }/>
-                    <OnBackdropPress styles={ {
+                    <OnBackdropPress styles={ isMobile  || this.props.dimensions?.width <768 ? {} :  {
                         width : this.props?.rightLayoutComponent?.width || undefined ,
                         backgroundColor : "rgba(0, 0, 0, 0.5)"
                     } }/>
-                    <View style={ [styles.rect2 , { width : this.props?.rightLayoutComponent?.width }] }>
+                    <View style={ [styles.rect2 ,  { width : this.props?.rightLayoutComponent?.width }] }>
                         <View style={ { alignSelf : 'flex-end' , paddingHorizontal : 15 , paddingVertical : 15 } }>
                             <TouchableOpacity onPress={ this._hideImageModal }>
                                 <Text style={ styles.close }>Close</Text>
@@ -161,7 +170,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                           <PdfViewr  width={ this.props?.rightLayoutComponent?.width }
                                     height={ this.props?.rightLayoutComponent?.height }
                                     requirement={ this.props?.requirement }/> : (
-                              isMobile ? <AnimatedImage
+                             isMobile  || this.props.dimensions?.width <768 ? <AnimatedImage
                                            ref={ imageModal => (
                                                this.state.imageModal = imageModal) }
                                            source={ this?.state?.source }
@@ -229,7 +238,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
 
 const Requirement = (props: any) => {
     const { rightLayoutComponent } = useSelector((state: RootStateOrAny) => state.application);
-
+    const dimensions = useWindowDimensions();
     return <ScrollView style={ { backgroundColor : "#f8f8f8" , width : "100%" } }>
         { props?.requirements?.map((requirement: any , index: number) => {
             return <View style={ { padding : 10 } }>
@@ -253,7 +262,7 @@ const Requirement = (props: any) => {
                                     "xlarge": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf"
                                 }]*/
                                 requirement?.links?.map((link: any , idx: number) => {
-                                    return <RequirementView rightLayoutComponent={ rightLayoutComponent } key={ idx }
+                                    return <RequirementView dimensions={dimensions} rightLayoutComponent={ rightLayoutComponent } key={ idx }
                                                             requirement={ link }/>
                                 })
                             }
