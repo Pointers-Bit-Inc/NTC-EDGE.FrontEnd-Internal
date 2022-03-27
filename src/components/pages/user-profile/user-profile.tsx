@@ -76,7 +76,7 @@ const UserProfileScreen = ({ navigation }: any) => {
         }
     };
     const save = ({ dp = false }) => {
-        var updatedUser = {} , formData = new FormData();
+        var updatedUser = {} , formData = {};
         userProfileForm?.forEach(async (up: any) => {
             updatedUser = { ...updatedUser , [up?.stateName] : up?.value };
             if (dp && up?.stateName === 'profilePicture' && up?.file?.uri) {
@@ -96,13 +96,10 @@ const UserProfileScreen = ({ navigation }: any) => {
                         })
                             .then(res => res.json())
                             .then(res => {
-                                if (dp) {
-                                    dispatch(setUser({
-                                        ...user , ...res?.data?.doc ,
-                                        profilePictureObj : res?.data?.doc?.profilePicture
-                                    }));
-                                    save({ dp : false });
+                                if(res?.success){
+                                    updateUserProfile(dp , res?.doc)
                                 }
+
                             })
                     })
 
@@ -117,78 +114,11 @@ const UserProfileScreen = ({ navigation }: any) => {
                 address : updatedUser?.address ,
                 profilePicture : user?.profilePictureObj
             }
-        }
-        if (isValid()) {
-            setLoading({
-                photo : dp ,
-                basic : !dp
-            });
 
-            axios
-                .patch(
-                    dp ? `${ BASE_URL_NODE }/user/${ user._id }` : `${ BASE_URL }/users/${ user._id }` ,
-                    formData ,
-                    {
-                        headers : {
-                            'Authorization' : `Bearer ${ user?.sessionToken }` ,
-                            'Content-Type' : dp ? 'multipart/form-data' : 'application/json' ,
-                        }
-                    } ,
-                )
-                .then((res: any) => {
-                    setLoading({
-                        photo : false ,
-                        basic : false
-                    });
-                    // setEditable(false);
-                    if (res?.status === 200) {
-                        setAlert({
-                            title : 'Success' ,
-                            message : 'Your profile has been updated!' ,
-                            color : successColor
-                        });
-                        if (dp) {
-                            dispatch(setUser({
-                                ...user , ...res?.data?.doc ,
-                                profilePictureObj : res?.data?.doc?.profilePicture
-                            }));
-                            save({ dp : false });
-                        } else {
-                            dispatch(setUser({ ...user , ...res?.data?.doc }));
-                        }
-                    } else {
-                        setAlert({
-                            title : 'Failure' ,
-                            message : (
-                                res?.statusText || res?.message) || 'Your profile was not edited.' ,
-                            color : errorColor
-                        });
-                    }
-                    setShowAlert(true);
-                })
-                .catch((err: any) => {
-                    err = JSON.parse(JSON.stringify(err));
-                    setLoading({
-                        photo : false ,
-                        basic : false
-                    });
-                    // setEditable(false);
-                    if (err?.status === 413) {
-                        setAlert({
-                            title : 'File Too Large' ,
-                            message : 'File size must be lesser than 2 MB.' ,
-                            color : warningColor
-                        });
-                    } else {
-                        setAlert({
-                            title : err?.title || 'Failure' ,
-                            message : err?.message || 'Your profile was not edited.' ,
-                            color : errorColor
-                        });
-                    }
-                    setShowAlert(true);
-                });
+            updateUserProfile(dp , formData);
+
         }
+
     };
 
     const [alert , setAlert] = useState({
@@ -326,6 +256,80 @@ const UserProfileScreen = ({ navigation }: any) => {
             return true;
         }
     };
+
+    function updateUserProfile(dp: boolean , formData: {}) {
+        if (isValid()) {
+            setLoading({
+                photo : dp ,
+                basic : !dp
+            });
+
+            console.log(formData)
+            axios
+                .patch(
+                    dp ? `${ BASE_URL_NODE }/users/${ user._id }` : `${ BASE_URL }/users/${ user._id }` ,
+                    formData ,
+                    {
+                        headers : {
+                            'Authorization' : `Bearer ${ user?.sessionToken }` ,
+                        }
+                    } ,
+                )
+                .then((res: any) => {
+                    setLoading({
+                        photo : false ,
+                        basic : false
+                    });
+                    // setEditable(false);
+                    if (res?.status === 200) {
+                        setAlert({
+                            title : 'Success' ,
+                            message : 'Your profile has been updated!' ,
+                            color : successColor
+                        });
+                        if (dp) {
+                            dispatch(setUser({
+                                ...user , ...res?.data?.doc ,
+                                profilePictureObj : res?.data?.doc?.profilePicture
+                            }));
+                            save({ dp : false });
+                        } else {
+                            dispatch(setUser({ ...user , ...res?.data?.doc }));
+                        }
+                    } else {
+                        setAlert({
+                            title : 'Failure' ,
+                            message : (
+                                res?.statusText || res?.message) || 'Your profile was not edited.' ,
+                            color : errorColor
+                        });
+                    }
+                    setShowAlert(true);
+                })
+                .catch((err: any) => {
+                    err = JSON.parse(JSON.stringify(err));
+                    setLoading({
+                        photo : false ,
+                        basic : false
+                    });
+                    // setEditable(false);
+                    if (err?.status === 413) {
+                        setAlert({
+                            title : 'File Too Large' ,
+                            message : 'File size must be lesser than 2 MB.' ,
+                            color : warningColor
+                        });
+                    } else {
+                        setAlert({
+                            title : err?.title || 'Failure' ,
+                            message : err?.message || 'Your profile was not edited.' ,
+                            color : errorColor
+                        });
+                    }
+                    setShowAlert(true);
+                });
+        }
+    }
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress' , handleBackButtonClick);
