@@ -29,7 +29,7 @@ const ForgotPassword = ({ navigation }:any) => {
     const onSubmit = () => {
         setLoading(true);
         api(null, '')
-            .post(`/account/reset-password-request`, {email: account?.value})
+            .post(`/reset-password-request`, {email: account?.value})
             .then((res: any) => {
                 setLoading(false);
                 if (res?.data?.success) {
