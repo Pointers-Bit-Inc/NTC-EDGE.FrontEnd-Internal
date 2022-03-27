@@ -190,7 +190,7 @@ const ResetPassword = ({navigation}: any) => {
                 newPassword: formValue.password.value
             }
 
-            axios.patch(BASE_URL + '/user/profile/change-password', params, config).then((response) => {
+            axios.patch(BASE_URL + `/users/${user._id}/change-password`, params, config).then((response) => {
                 setAlert({
                     title: response?.status === 200 ? 'Success' : 'Failure',
                     message: response?.data?.message || '',
