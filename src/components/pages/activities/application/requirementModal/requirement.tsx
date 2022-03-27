@@ -12,6 +12,7 @@ import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {Card} from "@pages/activities/application/requirementModal/card";
 import PdfViewr from "@pages/activities/application/pdf/index";
 import FileIcon from "@assets/svg/file";
+import WebView from "react-native-webview";
 
 const { width , height } = Dimensions.get("screen");
 
@@ -152,13 +153,14 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View>
-                        <Text style={ styles.fileName }>{ this.state.fileName }</Text>
+
+
                         { !!this.state.fileName &&
                         <FadeBackground style={ { position : "absolute" , zIndex : 1 } }
                                         width={ width }/> }
 
                         { this.state.extension ?
+
                           <PdfViewr width={ this.props?.rightLayoutComponent?.width }
                                     height={ this.props?.rightLayoutComponent?.height }
                                     requirement={ this.props?.requirement }/> : (
@@ -190,9 +192,6 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                               </ImageZoom>)
                         }
                     </View>
-                </View>
-
-
             </Modal>
         </>;
     }
