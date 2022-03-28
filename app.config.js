@@ -9,7 +9,7 @@ export default {
     "backgroundColor": "#031A6E",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
     },
     "updates": {
       "fallbackToCacheTimeout": 0
