@@ -56,6 +56,7 @@ import IRooms from 'src/interfaces/IRooms';
 import ActivitiesNavigator from "../../../navigations/activities";
 import {getFocusedRouteNameFromRoute} from "@react-navigation/native";
 import {setVisible} from "../../../reducers/activity/actions";
+import useOneSignal from 'src/hooks/useOneSignal';
 
 const { width } = Dimensions.get('window');
 
@@ -143,6 +144,7 @@ export default function TabBar({ navigation, route }) {
       return RNExitApp.exitApp();
     }
   }
+  const { initialize } = useOneSignal(user);
 
   useEffect(() => {
     dispatch(setConnectionStatus(connectionStatus));
@@ -165,6 +167,7 @@ export default function TabBar({ navigation, route }) {
   }, [connectionStatus])
 
   useEffect(() => {
+      initialize();
       initSignalR();
       onConnection('OnChatUpdate', onChatUpdate);
 
