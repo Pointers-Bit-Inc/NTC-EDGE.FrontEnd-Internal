@@ -1,88 +1,87 @@
-import React, {useState} from "react";
+import React , {useEffect , useState} from "react";
 import {
-    Dimensions,
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    StyleSheet,
-    Text,
-    TouchableOpacity, TouchableWithoutFeedback,
+    Dimensions ,
+    KeyboardAvoidingView ,
+    Modal ,
+    Platform ,
+    StyleSheet ,
+    Text ,
+    TouchableOpacity , useWindowDimensions ,
     View
 } from "react-native";
 import {InputField} from "@molecules/form-fields";
-import {Feather, Ionicons} from "@expo/vector-icons";
-import {DECLINED, FOREVALUATION} from "../../../../reducers/activity/initialstate";
+import {Ionicons} from "@expo/vector-icons";
+import {DECLINED} from "../../../../reducers/activity/initialstate";
 import useKeyboard from 'src/hooks/useKeyboard';
 import CustomAlert from "@pages/activities/alert/alert";
 import {FileTextIcon} from "@assets/svg/fileText";
-import {input , primaryColor} from "@styles/color";
+import {primaryColor} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
-import {RFValue} from "react-native-responsive-fontsize";
-const { height, width } = Dimensions.get('window');
+import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
+import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
+import CloseIcon from "@assets/svg/close";
+import hairlineWidth = StyleSheet.hairlineWidth;
+import button from "@pages/activities/modal/styles";
+import ConfirmRightArrow from "@assets/svg/confirmArrow";
+
+const { height , width } = Dimensions.get('window');
 
 function Disapproval(props: any) {
-    const [showAlert, setShowAlert] = useState(false)
-    const [text, setText] = useState("")
+    const [showAlert , setShowAlert] = useState(false);
+    const [text , setText] = useState("");
     const isKeyboardVisible = useKeyboard();
-    const [alertLoading, setAlertLoading] = useState(false)
-    const [showClose, setShowClose] = useState(false)
-    const [title, setTitle] = useState("Decline Application")
-    const [message, setMessage] = useState("Are you sure you want to reject this application?")
-    const onCancelPressed = () =>{
-        setTitle(  "Decline Application" )
-        setMessage("Are you sure you want to reject this application?")
-        setShowClose(false)
-        setShowAlert(false)
-        setAlertLoading(false)
-        if(showClose){
+    const [alertLoading , setAlertLoading] = useState(false);
+    const [showClose , setShowClose] = useState(false);
+    const [title , setTitle] = useState("Decline Application");
+    const [message , setMessage] = useState("Are you sure you want to reject this application?");
+    const onCancelPressed = () => {
+        setTitle("Decline Application");
+        setMessage("Are you sure you want to reject this application?");
+        setShowClose(false);
+        setShowAlert(false);
+        setAlertLoading(false);
+        if (showClose) {
             props.onDismissed()
         }
-    }
+    };
+    const dimensions = useWindowDimensions();
     return (
 
         <Modal
-            supportedOrientations={['portrait', 'landscape']}
+
+            supportedOrientations={ ['portrait' , 'landscape'] }
             animationType="slide"
-            transparent={true}
-            visible={props.visible}
+            transparent={ true }
+            visible={ props.visible }
 
-            onRequestClose={() => {
+            onRequestClose={ () => {
                 props.onDismissed()
-            }}>
+            } }>
 
 
-           
-            <View style={showAlert ? {
-                zIndex: 1,
-                flex: 1,
-                width: "100%",
-                height: "100%",
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'absolute',
-                backgroundColor: 'rgba(52,52,52,0.5)'
-            } : {}}>
+            <OnBackdropPress onPressOut={ props.onDismissed }/>
 
-            </View>
+
             <CustomAlert
-                showClose={showClose}
-                type={DECLINED}
-                onDismissed={onCancelPressed}
-                onLoading={alertLoading}
-                onCancelPressed={onCancelPressed}
-                onConfirmPressed={() => {
-                    setAlertLoading(true)
+                showClose={ showClose }
+                type={ DECLINED }
+                onDismissed={ onCancelPressed }
+                onLoading={ alertLoading }
+                onCancelPressed={ onCancelPressed }
+                onConfirmPressed={ () => {
+                    setAlertLoading(true);
 
-                    props.onChangeApplicationStatus(DECLINED, (bool, callback:(bool) =>{}) =>{
-                        if(bool){
-                            setAlertLoading(false)
-                            setShowClose(true)
-                            callback(true)
-                            setTitle("Application Declined")
+                    props.onChangeApplicationStatus(DECLINED , (bool , callback: (bool) => {}) => {
+                        if (bool) {
+                            setAlertLoading(false);
+                            setShowClose(true);
+                            callback(true);
+                            setTitle("Application Declined");
                             setMessage("Application has been rejected.")
-                        }else{
-                            setAlertLoading(false)
-                            setShowClose(false)
+                        } else {
+                            setAlertLoading(false);
+                            setShowClose(false);
                             setShowAlert(false)
 
                         }
@@ -90,69 +89,93 @@ function Disapproval(props: any) {
                     })
 
 
-                }} show={showAlert} title={title}
-                message={message}/>
+                } } show={ showAlert } title={ title }
+                message={ message }/>
+
 
             <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={[styles.container,]}
+                behavior={ Platform.OS === "ios" ? "padding" : "height" }
+                style={ [styles.container, {paddingRight: dimensions.width <= 768 ? undefined : 64,}] }
             >
-               
-                <View style={styles.rectFiller}></View>
-                <View style={[styles.rect,   {display: !showAlert ? "block" :"none"}]}>
-                    <View style={{padding: 10}}>
-                        <TouchableOpacity onPress={() => {
+                <OnBackdropPress onPressOut={ props.onDismissed }/>
+                <View style={ styles.rectFiller }>
+                    <OnBackdropPress onPressOut={ props.onDismissed }/>
+                </View>
+                <View style={ [styles.rect , {
+
+                    width: dimensions.width <= 768 ? "100%" : "32%",
+                    display : !showAlert ? undefined : "none"
+                }] }>
+
+                    <View style={ {
+
+                        borderBottomColor: "#e5e5e5",
+                        borderBottomWidth: hairlineWidth,
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding : 20} }>
+                        <View
+                            style={ {
+                                flexDirection : 'row' ,
+                                alignItems : 'flex-start' ,
+
+                            } }
+                        >
+                            <FileTextIcon width={ fontValue(24) } height={ fontValue(24) } style={ styles.fileTextIcon }/>
+                            <View style={ styles.nodRemarksColumn }>
+                                <Text style={ styles.nodRemarks }>NOD/Remarks</Text>
+
+                            </View>
+                        </View>
+                        <TouchableOpacity onPress={ () => {
                             props.onDismissed()
-                        }}>
-                            <Ionicons name="md-close" style={styles.icon}/>
+                        } }>
+                            <CloseIcon/>
                         </TouchableOpacity>
                     </View>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            alignItems: 'flex-start',
-                            paddingHorizontal: 20
-                        }}
-                    >
-                       <FileTextIcon width={RFValue(24)} height={RFValue(24)} style={styles.fileTextIcon}/>
-                        <View style={styles.nodRemarksColumn}>
-                            <Text style={styles.nodRemarks}>NOD/Remarks</Text>
-                            <Text style={styles.pleaseProvide}>
-                                Please provide reason of disapproval
-                            </Text>
-                        </View>
-                    </View>
-                    <View style={{paddingVertical: 10, paddingHorizontal: 20}}>
+
+                    <View style={ { paddingVertical : 10 , paddingHorizontal : 20 } }>
+                        <Text style={ styles.pleaseProvide }>
+                            Please provide reason of disapproval
+                        </Text>
                         <InputField
-                            containerStyle={{
-                                height: undefined ,
-                                borderColor: "#D1D1D6",
-                                borderWidth: 1 ,
-                                backgroundColor: undefined,
-                            }}
-                            clearable={false}
-                            outlineStyle={{
-                              //  borderColor: "rgba(202,210,225,1)",
-                               paddingTop: 10,
-                                height: (height < 720 && isKeyboardVisible) ? 100 : height * 0.25
-                            }}
-                            placeholder={'Remarks'}
-                            inputStyle={{fontWeight: "400", fontSize: RFValue(14)}}
-                            multiline={true}
-                            value={text}
-                            onChangeText={setText}
+
+                            containerStyle={ {
+                                height : undefined ,
+                                borderColor : "#D1D1D6" ,
+                                borderWidth : 1 ,
+                                backgroundColor : undefined ,
+                            } }
+                            clearable={ false }
+                            outlineStyle={ {
+                                //  borderColor: "rgba(202,210,225,1)",
+                                paddingTop : 10 ,
+                                height : (
+                                             height < 720 && isKeyboardVisible) ? 100 : height * 0.25
+                            } }
+                            placeholder={ 'Remarks' }
+                            inputStyle={ { [Platform.OS == "android" ? "padding" : "height"] : (
+                                                        height < 720 && isKeyboardVisible) ? 70 : height * 0.15,fontWeight : "400" , fontSize : fontValue(14) } }
+                            multiline={ true }
+                            value={ text }
+                            onChangeText={ setText }
                         />
                     </View>
-                    <View style={{padding: 20, paddingBottom: 25}}>
-                        <TouchableOpacity onPress={() => {
-                            props.remarks(text)
-                            setShowAlert(true)
-                        }}>
-                            <View style={styles.confirmButton}>
-                                <Text style={styles.confirm}>Confirm</Text>
-                            </View>
-                        </TouchableOpacity>
+                    <View style={button.confirmButtonContainer}>
+                        <View style={ { padding : 20 , } }>
+                            <TouchableOpacity onPress={ () => {
+                                props.remarks(text);
+                                setShowAlert(true)
+                            } }>
+                                <View style={ [button.confirmButton, {gap: 5} ]}>
+                                    <Text style={ button.confirm }>Confirm</Text>
+                                    <ConfirmRightArrow></ConfirmRightArrow>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
                     </View>
+
                 </View>
             </KeyboardAvoidingView>
         </Modal>
@@ -161,107 +184,106 @@ function Disapproval(props: any) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    fileTextIcon:{
-       paddingLeft: RFValue(15),
-    },
-    group3Filler: {
-        flex: 1
-    },
-    group3: {
-        width: "100%",
-        height: 540
-    },
-    rectFiller: {
-        flex: 1
-    },
-    rect: {
-        borderRadius: 15,
-        width: "100%",
-        backgroundColor: "rgba(255,255,255,1)",
-        borderBottomRightRadius: 0,
-        borderBottomLeftRadius: 0,
-    },
-    icon: {
-        color: "rgba(0,0,0,1)",
-        fontSize: RFValue(30),
-        marginLeft: 4
-    },
-    group: {
-        width: 232,
-        height: 35,
-        marginTop: 12
-    },
-    icon2: {
-        color: "rgba(53,62,89,1)",
-        fontSize: RFValue(30)
-    },
-    nodRemarks: {
-        fontFamily: Bold,
-        textAlign: "left",
-        fontSize: RFValue(18),
-        marginLeft: -1
-    },
-    pleaseProvide: {
+    container : {
+        flex : 1 ,
 
-        color: "#121212",
-        fontSize: RFValue(12),
-        marginLeft: -1
-    },
-    nodRemarksColumn: {
-        marginLeft: 6
-    },
-    icon2Row: {
-        height: 35,
-        flexDirection: "row"
-    },
-    rect2: {
+    } ,
+    fileTextIcon : {
+        paddingLeft : fontValue(15) ,
+    } ,
+    group3Filler : {
+        flex : 1
+    } ,
+    group3 : {
+        width : "100%" ,
+        height : 540
+    } ,
+    rectFiller : {
+        flex : 1
+    } ,
+    rect : {
+        shadowColor: "rgba(0,0,0,1)",
+            shadowOffset: {
+                height: 0,
+                width: 0
+            },
+            elevation: 60,
+            shadowOpacity: 0.25,
+            shadowRadius: 20,
+        borderRadius : 15 ,
+        alignSelf : "flex-end" ,
 
-        width: 355,
-        height: 290,
-        backgroundColor: "rgba(255,255,255,1)",
-        borderWidth: 1,
-        borderColor: "rgba(218,218,222,1)",
-        borderRadius: 8,
-        marginTop: 12,
-        marginLeft: 1
-    },
-    iconColumn: {
+        backgroundColor : "rgba(255,255,255,1)" ,
+        borderBottomRightRadius : 0 ,
+        borderBottomLeftRadius : 0 ,
+    } ,
+    icon : {
+        color : "rgba(0,0,0,1)" ,
+        fontSize : fontValue(30) ,
+        marginLeft : 4
+    } ,
+    group : {
+        width : 232 ,
+        height : 35 ,
+        marginTop : 12
+    } ,
+    icon2 : {
+        color : "rgba(53,62,89,1)" ,
+        fontSize : fontValue(30)
+    } ,
+    nodRemarks : {
+        fontFamily : Bold ,
+        textAlign : "left" ,
+        fontSize : fontValue(18) ,
+        marginLeft : -1
+    } ,
+    pleaseProvide : {
+        fontFamily: Regular,
+        fontWeight: "400",
+        paddingTop: fontValue(25),
+        paddingBottom: fontValue(14),
+        fontSize : fontValue(14) ,
+    } ,
+    nodRemarksColumn : {
+        marginLeft : 6
+    } ,
+    icon2Row : {
+        height : 35 ,
+        flexDirection : "row"
+    } ,
+    rect2 : {
 
-        width: 340,
-        marginTop: 14,
-        marginLeft: 17
-    },
-    iconColumnFiller: {
-        flex: 1
-    },
-    group2: {
-        width: 340,
-        height: 40,
-        marginBottom: 94,
-        marginLeft: 17
-    },
-    rect3: {
-        width: 340,
-        height: 40,
-        backgroundColor:primaryColor,
-        borderRadius: 9
-    },
-    confirm: {
-        color: "rgba(255,255,255,1)",
-        fontFamily: Bold,
-        fontSize: RFValue(18),
-    },
-    confirmButton: {
-        backgroundColor: primaryColor,
-        borderRadius: 12,
+        width : 355 ,
+        height : 290 ,
+        backgroundColor : "rgba(255,255,255,1)" ,
+        borderWidth : 1 ,
+        borderColor : "rgba(218,218,222,1)" ,
+        borderRadius : 8 ,
+        marginTop : 12 ,
+        marginLeft : 1
+    } ,
+    iconColumn : {
 
-        paddingVertical: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
-    }
+        width : 340 ,
+        marginTop : 14 ,
+        marginLeft : 17
+    } ,
+    iconColumnFiller : {
+        flex : 1
+    } ,
+    group2 : {
+        width : 340 ,
+        height : 40 ,
+        marginBottom : 94 ,
+        marginLeft : 17
+    } ,
+    rect3 : {
+        width : 340 ,
+        height : 40 ,
+        backgroundColor : primaryColor ,
+        borderRadius : 9
+    } ,
+
 });
 
 export default Disapproval;

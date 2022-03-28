@@ -11,12 +11,12 @@ const FadeBackground = (props: SvgProps) => (
     <Svg
         width={props.width}
         height={60}
-        viewBox="0 0 350 60"
+        viewBox={`0 0 ${props.width} 60`}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         {...props}
     >
-        <Rect width={350} height={60} fill="url(#paint0_linear_1514_15686)" />
+        <Rect width={props.width} height={60} fill="url(#paint0_linear_1514_15686)" />
         <Defs>
             <LinearGradient
                 id="paint0_linear_1514_15686"

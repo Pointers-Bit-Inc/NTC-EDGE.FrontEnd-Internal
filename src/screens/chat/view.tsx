@@ -12,38 +12,43 @@ import {
   InteractionManager,
 } from 'react-native'
 import lodash from 'lodash';
-import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
-import { setMeetingId } from 'src/reducers/meeting/actions';
 import { MeetingNotif } from '@components/molecules/list-item';
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import useFirebase from 'src/hooks/useFirebase';
+import useSignalR from 'src/hooks/useSignalr';
 import ChatList from '@screens/chat/chat-list';
+// import FileList from '@screens/chat/file-list';
 import FileList from '@components/organisms/chat/files';
+import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import {
   ArrowLeftIcon,
-  PhoneIcon,
-  VideoIcon,
-  MenuIcon,
   PlusIcon,
   CheckIcon,
-  CameraIcon,
-  MicIcon,
-  SendIcon,
+  NewCallIcon,
+  NewVideoIcon,
+  NewMessageIcon,
+  MediaIcon,
+  AttachIcon,
 } from '@components/atoms/icon';
 import Text from '@components/atoms/text';
 import GroupImage from '@components/molecules/image/group';
 import { InputField } from '@components/molecules/form-fields';
-import { outline, text, button, primaryColor } from '@styles/color';
-import { getChannelName } from 'src/utils/formatting';
-import InputStyles from 'src/styles/input-style';
+import { button, header, outline, text } from '@styles/color';
+import { getChannelName, getTimeDifference } from 'src/utils/formatting';
 import {
+  addPendingMessage,
   removeSelectedMessage,
-  addMeeting,
-  removeMeeting,
-  updateMeeting,
+  resetPendingMessages,
+  setSelectedChannel,
 } from 'src/reducers/channel/actions';
-const { width } = Dimensions.get('window');
+import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
+import { RFValue } from 'react-native-responsive-fontsize';
+import CreateMeeting from '@components/pages/chat/meeting';
+import IMeetings from 'src/interfaces/IMeetings';
+import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import useAttachmentPicker from 'src/hooks/useAttachment';
+import { Regular, Regular500 } from '@styles/font';
+import { AttachmentMenu } from '@components/molecules/menu';
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -52,8 +57,9 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 15,
-    paddingTop: 35,
-    backgroundColor: primaryColor
+    paddingTop: 40,
+    paddingBottom: 5,
+    backgroundColor: header.secondary,
   },
   horizontal: {
     flexDirection: 'row',
@@ -63,6 +69,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     justifyContent: 'center',
+    paddingLeft: 5,
   },
   bubbleContainer: {
     alignItems: 'flex-start',
@@ -72,21 +79,34 @@ const styles = StyleSheet.create({
   keyboardAvoiding: {
     paddingHorizontal: 15,
     paddingVertical: 10,
+    paddingBottom: 0,
     flexDirection: 'row',
     alignItems: 'center',
+    borderTopColor: '#E5E5E5',
+    borderTopWidth: 1,
+    backgroundColor: 'white',
+  },
+  containerStyle: {
+    height: undefined,
+    paddingVertical: 10,
+    borderWidth: 1,
+    backgroundColor: 'white',
+    paddingHorizontal: 10,
   },
   outline: {
     borderRadius: 10,
   },
   input: {
-    fontSize: 16,
+    fontSize: RFValue(16),
   },
   plus: {
-    backgroundColor: button.default,
-    borderRadius: 26,
-    width: 26,
-    height: 26,
-    marginRight: 15,
+    backgroundColor: button.info,
+    borderRadius: RFValue(24),
+    width: RFValue(24),
+    height: RFValue(24),
+    marginRight: 10,
+    paddingLeft: Platform.OS === 'ios' ? 1 : 0,
+    paddingTop: Platform.OS === 'ios' ? 1 : 0,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -99,12 +119,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  floatingNotif: {
-    width,
-    position: 'absolute',
-    top: 95,
-    zIndex: 9,
-  }
+  floatingNotif: {},
+  bar: {
+    height: 15,
+    width: 35,
+    borderRadius: 4,
+  },
 });
 
 const ChatRoute = () => (<ChatList />);
@@ -116,37 +136,75 @@ const renderScene = SceneMap({
 
 const ChatView = ({ navigation, route }:any) => {
   const dispatch = useDispatch();
+  const {
+    editMessage,
+    endMeeting,
+    leaveMeeting,
+  } = useSignalR();
+  const {
+    selectedFile,
+    pickDocument,
+    pickImage,
+  } = useAttachmentPicker();
+  const modalRef = useRef<BottomModalRef>(null);
   const inputRef:any = useRef(null);
   const layout = useWindowDimensions();
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { channelId, otherParticipants, participants } = useSelector(
-    (state:RootStateOrAny) => state.channel.selectedChannel
+  const { _id, otherParticipants, participants } = useSelector(
+    (state:RootStateOrAny) => {
+      const { selectedChannel } = state.channel;
+      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
+      return selectedChannel;
+    }
   );
-  const { selectedMessage, meetingList } = useSelector((state:RootStateOrAny) => state.channel);
-  const { sendMessage, editMessage, channelMeetingSubscriber, endMeeting } = useFirebase({
-    _id: user._id,
-    name: user.name,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    image: user.image,
-  });
+  const meetingList = useSelector((state: RootStateOrAny) => {
+    const { normalizeActiveMeetings } = state.meeting
+    let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
+    meetingList = lodash.filter(meetingList, m => m.roomId === _id);
+    return lodash.orderBy(meetingList, 'updatedAt', 'desc');
+})
+  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
   const [inputText, setInputText] = useState('');
   const [index, setIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
   const [rendered, setRendered] = useState(false);
+  const [isVideoEnable, setIsVideoEnable] = useState(false);
+  const [showAttachmentOption, setShowAttachmentOption] = useState(false);
   const [routes] = useState([
     { key: 'chat', title: 'Chat' },
     { key: 'files', title: 'Files' },
   ]);
+  const channelId = _id;
+
+  const _sendMessage = (channelId:string, inputText:string) => {
+    dispatch(addPendingMessage({
+      channelId: channelId,
+      message: inputText,
+      messageType: 'text',
+    }));
+  }
+
+  const _editMessage = (messageId:string, message:string) => {
+    editMessage({
+      messageId,
+      message,
+    }, (err:any, result:any) => {
+      if (err) {
+        console.log('ERR', err);
+      }
+    })
+  }
 
   const onSendMessage = useCallback(() => {
+    if (!inputText) {
+      return;
+    }
     if (selectedMessage._id) {
-      editMessage(selectedMessage._id, inputText);
+      _editMessage(selectedMessage._id, inputText);
       inputRef.current?.blur();
       dispatch(removeSelectedMessage())
     } else {
-      sendMessage(channelId, inputText);
+      _sendMessage(channelId, inputText);
       inputRef.current?.blur();
       setInputText('');
     }
@@ -157,14 +215,15 @@ const ChatView = ({ navigation, route }:any) => {
   const renderTabBar = (props:any) => (
     <TabBar
       {...props}
-      labelStyle={{ color: text.default }}
-      indicatorStyle={{ backgroundColor: outline.primary }}
+      indicatorContainerStyle={{ borderBottomColor: '#DDDDDD', borderBottomWidth: 1 }}
+      labelStyle={{ color: '#94A3B8' }}
+      indicatorStyle={{ backgroundColor: outline.info, height: 3 }}
       style={{ backgroundColor: 'white' }}
       renderLabel={({ route, focused, color }) => (
         <Text
-          color={focused ? text.primary : color}
-          size={16}
-          weight={focused ? '600' : 'normal'}
+          color={focused ? text.info : color}
+          size={14}
+          style={{ fontFamily: focused ? Regular500 : Regular, width: width / 2, textAlign: 'center' }}
         >
           {route.title}
         </Text>
@@ -172,8 +231,9 @@ const ChatView = ({ navigation, route }:any) => {
     />
   );
 
-  const onJoin = (item) => {
-    dispatch(setMeetingId(item._id));
+  const onJoin = (item:IMeetings) => {
+    dispatch(setSelectedChannel(item.room));
+    dispatch(setMeeting(item));
     navigation.navigate('Dial', {
       isHost: item.host._id === user._id,
       isVoiceCall: item.isVoiceCall,
@@ -184,18 +244,44 @@ const ChatView = ({ navigation, route }:any) => {
     });
   }
 
-  const onClose = (item) => {
-    if (item.host._id === user._id) {
-      endMeeting(item._id);
+  const onClose = (item:IMeetings, leave = false) => {
+    if (leave) {
+      dispatch(removeActiveMeeting(item._id));
+      return leaveMeeting(item._id);
+    } else if (item.host._id === user._id) {
+      return endMeeting(item._id);
     } else {
-      dispatch(removeMeeting(item._id));
+      return dispatch(removeActiveMeeting(item._id));
     }
   }
+
+  const onShowAttachmentOption = () => {
+    inputRef.current?.blur();
+    setShowAttachmentOption(true);
+  }
+
+  const onHideAttachmentOption = () => {
+    setShowAttachmentOption(false);
+  }
+
+  useEffect(() => {
+    if (lodash.size(selectedFile)) {
+      dispatch(addPendingMessage({
+        attachment: selectedFile,
+        channelId,
+        messageType: 'file'
+      }))
+    }
+  }, [selectedFile]);
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
       setRendered(true);
     })
+    return () => {
+      dispatch(setSelectedChannel({}));
+      dispatch(resetPendingMessages());
+    }
   }, []);
 
   useEffect(() => {
@@ -207,94 +293,71 @@ const ChatView = ({ navigation, route }:any) => {
         inputRef.current?.blur();
       }
     }
-  }, [selectedMessage, rendered]);
+  }, [selectedMessage, rendered, _id]);
 
-  useEffect(() => {
-    if (channelId && rendered) {
-      const unsubscriber = channelMeetingSubscriber(channelId, (querySnapshot:FirebaseFirestoreTypes.QuerySnapshot) => {
-        querySnapshot.docChanges().forEach((change:any) => {
-          const data = change.doc.data();
-          data._id = change.doc.id;
-          switch(change.type) {
-            case 'added': {
-              const hasSave = lodash.find(meetingList, (ch:any) => ch._id === data._id);
-              if (!hasSave) {
-                dispatch(addMeeting(data));
-              }
-              return;
-            }
-            case 'modified': {
-              dispatch(updateMeeting(data));
-              return;
-            }
-            case 'removed': {
-              dispatch(removeMeeting(data._id));
-              return;
-            }
-            default:
-              return;
-          }
-        });
-      })
-      return () => {
-        unsubscriber();
-      }
-    }
-  }, [channelId, rendered]);
-
-  const onInitiateCall = (isVideoEnable = false) =>
-    navigation.navigate(
-      'InitiateVideoCall',
-      {
-        participants,
-        isVideoEnable,
-        isVoiceCall: !isVideoEnable,
-        isChannelExist: true,
-        channelId,
-      }
-    );
+  const onInitiateCall = (isVideoEnable = false) => {
+    setIsVideoEnable(isVideoEnable);
+    modalRef.current?.open();
+  }
+    
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={'light-content'} />
+      <StatusBar barStyle={'dark-content'} />
       <View style={[styles.header, styles.horizontal]}>
         <TouchableOpacity onPress={onBack}>
-          <ArrowLeftIcon
-            type='arrow-left'
-            color={'white'}
-            size={18}
-          />
+          <View style={{ paddingRight: 5 }}>
+            <ArrowLeftIcon
+              type='chevron-left'
+              color={'#111827'}
+              size={RFValue(26)}
+            />
+          </View>
         </TouchableOpacity>
-        <View style={{ paddingLeft: 15 }}>
+        <View>
           <GroupImage
             participants={otherParticipants}
-            size={45}
-            textSize={16}
+            size={route?.params?.isGroup ? 45 : 30}
+            textSize={route?.params?.isGroup ? 24 : 16}
+            inline={true}
           />
         </View>
         <View style={styles.info}>
           <Text
-            color={'white'}
-            weight={'500'}
-            size={18}
+            color={'black'}
+            size={16}
             numberOfLines={1}
           >
             {getChannelName(route.params)}
           </Text>
+          {
+            !route?.params?.isGroup && !!otherParticipants[0]?.lastOnline && (
+              <Text
+                color={'#606A80'}
+                size={10}
+                numberOfLines={1}
+                style={{ marginTop: -5 }}
+              >
+                {otherParticipants[0]?.isOnline ? 'Active now' : getTimeDifference(otherParticipants[0]?.lastOnline)}
+              </Text>
+            )
+          }
         </View>
         <TouchableOpacity onPress={() => onInitiateCall(false)}>
           <View style={{ paddingRight: 5 }}>
-            <PhoneIcon
-              size={20}
-              color={'white'}
+            <NewCallIcon
+              color={button.info}
+              height={RFValue(24)}
+              width={RFValue(24)}
             />
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onInitiateCall(true)}>
-          <View style={{ paddingHorizontal: 8 }}>
-            <VideoIcon
-              size={20}
-              color={'white'}
+          <View style={{ paddingLeft: 5, paddingTop: 5 }}>
+            <NewVideoIcon
+              color={button.info}
+              height={RFValue(28)}
+              width={RFValue(28)}
             />
           </View>
         </TouchableOpacity>
@@ -313,13 +376,12 @@ const ChatView = ({ navigation, route }:any) => {
               renderItem={({ item }) => (
                 <MeetingNotif
                   style={{ width }}
-                  name={getChannelName(item)}
+                  name={getChannelName({...item, otherParticipants: item?.participants})}
+                  host={item.host}
                   time={item.createdAt}
                   onJoin={() => onJoin(item)}
                   onClose={() => onClose(item)}
-                  closeText={
-                    item.host._id === user._id ? 'End' : 'Close'
-                  }
+                  closeText={'Cancel'}
                 />
               )}
             />
@@ -328,6 +390,7 @@ const ChatView = ({ navigation, route }:any) => {
       </View>
       <View style={{ flex: 1 }}>
         <TabView
+          lazy
           navigationState={{ index, routes }}
           renderScene={renderScene}
           onIndexChange={setIndex}
@@ -335,84 +398,98 @@ const ChatView = ({ navigation, route }:any) => {
           renderTabBar={renderTabBar}
         />
       </View>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <View style={styles.keyboardAvoiding}>
-          <TouchableOpacity  disabled={true}>
-            <View style={styles.plus}>
-              <PlusIcon
-                color="white"
-                size={16}
-              />
-            </View>
-          </TouchableOpacity>
-          <View style={{ flex: 1 }}>
-            <InputField
-              ref={inputRef}
-              placeholder={'Type a message'}
-              inputStyle={[InputStyles.text, styles.input]}
-              outlineStyle={[InputStyles.outlineStyle, styles.outline]}
-              value={inputText}
-              onChangeText={setInputText}
-              onSubmitEditing={onSendMessage}
-              returnKeyType={'send'}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-            />
-          </View>
-          {
-            !!selectedMessage._id ? (
-              <TouchableOpacity
-                onPress={() => {
-                  editMessage(selectedMessage._id, inputText);
-                  dispatch(removeSelectedMessage())
-                }}
-              >
-                <View style={styles.circle}>
-                  <CheckIcon
-                    type='check1'
-                    color="white"
-                    size={16}
-                  />
-                </View>
-              </TouchableOpacity>
-            ) : (
-              isFocused ? (
-                <TouchableOpacity
-                  onPress={onSendMessage}
-                >
-                  <View style={{ marginLeft: 15 }}>
-                    <SendIcon
-                      color={text.primary}
-                      size={28}
+      {
+        index === 0 ? (
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
+            <View style={styles.keyboardAvoiding}>
+              <View style={{ marginTop: RFValue(-18) }}>
+                <TouchableOpacity disabled={true} onPress={onShowAttachmentOption}>
+                  <View style={[styles.plus, { backgroundColor: '#D1D1D6' }]}>
+                    <PlusIcon
+                      color="white"
+                      size={RFValue(12)}
                     />
                   </View>
                 </TouchableOpacity>
-              ) : (
-                <>
-                  <TouchableOpacity disabled={true}>
-                    <View style={{ paddingLeft: 15 }}>
-                      <CameraIcon
-                        size={22}
-                        color={button.default}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity disabled={true}>
-                    <View style={{ paddingLeft: 15 }}>
-                      <MicIcon
-                        size={20}
-                        color={button.default}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </>
-              )
-            )
-          }
+              </View>
+              <View style={{ flex: 1, paddingHorizontal: 5 }}>
+                <InputField
+                  ref={inputRef}
+                  placeholder={'Type a message'}
+                  containerStyle={[styles.containerStyle, { borderColor: isFocused ? '#C1CADC' : 'white' }]}
+                  placeholderTextColor={'#C4C4C4'}
+                  inputStyle={[styles.input, { backgroundColor: 'white' }]}
+                  outlineStyle={[styles.outline, { backgroundColor: 'white' }]}
+                  value={inputText}
+                  onChangeText={setInputText}
+                  onSubmitEditing={() => inputText && onSendMessage()}
+                  returnKeyType={'send'}
+                  onFocus={() => { onHideAttachmentOption(); setIsFocused(true) }}
+                  onBlur={() => setIsFocused(false)}
+                  
+                />
+              </View>
+              <View style={{ marginTop: RFValue(-18), flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={onSendMessage}
+                >
+                  {
+                    selectedMessage?._id ? (
+                      <View style={[styles.plus, { marginRight: 0, marginLeft: 10, backgroundColor: button.info }]}>
+                        <CheckIcon
+                          type='check1'
+                          size={14}
+                          color={'white'}
+                        />
+                      </View>
+                    ) : (
+                      <View style={{ marginLeft: 10 }}>
+                        <NewMessageIcon
+                          color={inputText ? button.info : '#D1D1D6'}
+                          height={RFValue(30)}
+                          width={RFValue(30)}
+                        />
+                      </View>
+                    )
+                  }
+                </TouchableOpacity>
+              </View>
+            </View>
+            {
+              showAttachmentOption && <AttachmentMenu onPickImage={pickImage} onPickDocument={pickDocument} />
+            }
+          </KeyboardAvoidingView>
+        ) : null
+      }
+      <BottomModal
+        ref={modalRef}
+        onModalHide={() => modalRef.current?.close()}
+        avoidKeyboard={false}
+        header={
+          <View style={styles.bar} />
+        }
+        containerStyle={{ maxHeight: null }}
+        backdropOpacity={0}
+        onBackdropPress={() => {}}
+      >
+        <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
+          <CreateMeeting
+            barStyle={'dark-content'}
+            participants={participants}
+            isVideoEnable={isVideoEnable}
+            isVoiceCall={!isVideoEnable}
+            isChannelExist={true}
+            channelId={channelId}
+            onClose={() => modalRef.current?.close()}
+            onSubmit={(type, params) => {
+              modalRef.current?.close();
+              setTimeout(() => navigation.navigate(type, params), 300);
+            }}
+          />
         </View>
-      </KeyboardAvoidingView>
+      </BottomModal>
     </View>
   )
 }

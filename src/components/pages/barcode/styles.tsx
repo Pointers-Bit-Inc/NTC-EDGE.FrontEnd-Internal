@@ -1,5 +1,7 @@
 import {Dimensions, StyleSheet} from "react-native";
-import {Bold} from "@styles/font";
+import {Bold , Regular} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 const { height, width } = Dimensions.get('window');
 export const styles = StyleSheet.create({
     rect19: {
@@ -22,16 +24,12 @@ export const styles = StyleSheet.create({
     group7: {
         position: "absolute",
         width: "100%",
-        height: "95%",
+        height: "100%",
         alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: "flex-end",
         alignSelf: "center"
     },
-    header: {
-        backgroundColor: "#041B6E",
-        height: 80,
-        width: "100%"
-    },
+
     rect: {
         height: 100,
 
@@ -40,9 +38,9 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         fontFamily: Bold,
         color: "rgba(255,255,255,1)",
-        fontSize: 18,
+        fontSize: RFValue(18),
         textAlign: "center",
-        marginTop: 40
+        paddingVertical: 20
     },
     group32: {
         width: "100%",
@@ -218,21 +216,18 @@ export const styles = StyleSheet.create({
         alignSelf: "center"
     },
     group6: {
-        height: 70,
+        height: 90,
 
         flexDirection: "row",
 
     },
     group3: {
 
-        padding: 3,
-        width: 150,
-        height: 70
     },
     rect2: {
         backgroundColor: "#fff",
         borderRadius: 10,
-        height: 70
+
     },
     group2: {
         height: 44,
@@ -241,7 +236,6 @@ export const styles = StyleSheet.create({
     },
     icon: {
         color: "rgba(128,128,128,1)",
-        fontSize: 26,
         alignSelf: "center"
     },
     generateQrCode: {
@@ -270,7 +264,11 @@ export const styles = StyleSheet.create({
         alignSelf: "center"
     },
     generateQrCode1: {
-        color: "#121212",
+        fontFamily: Regular,
+        fontWeight: "500",
+           paddingTop: 5,
+        fontSize: fontValue(14),
+        color: "#606A80",
         alignSelf: "center"
     }
 });

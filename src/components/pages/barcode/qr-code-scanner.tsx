@@ -14,6 +14,8 @@ import * as ImagePicker from "expo-image-picker";
 import {styles} from "./styles"
 import {RootStateOrAny, useSelector} from "react-redux";
 import {BASE_URL} from "../../../services/config";
+import NavBar from "@molecules/navbar";
+import {CloseIcon} from "@atoms/icon";
 const finderWidth: number = 280;
 const finderHeight: number = 230;
 const width = Dimensions.get('window').width;
@@ -127,7 +129,14 @@ export default function QrCodeScan(props: any) {
     }
    
     return (
-        <View style={[styles.container, { backgroundColor: 'black' }]}>
+        <>
+            <NavBar
+
+                title='QR Reader'
+            />
+            <View style={[styles.container, { backgroundColor: 'black' }]}>
+
+
             {
                 hasPermission && (
                     <RNCamera
@@ -139,14 +148,12 @@ export default function QrCodeScan(props: any) {
                         <BarcodeMask edgeColor="#62B1F6" showAnimatedLine/>
                     </RNCamera>
                 )
-            }
-            <View style={styles.group7}>
-                <View style={styles.header}>
-                    <View>
-                        <Text style={styles.qrReader}>QR Reader</Text>
-                    </View>
 
-                </View>
+            }
+            {!hasPermission && (<View  style={[StyleSheet.absoluteFillObject, styles.container]}></View>)}
+
+            <View style={styles.group7}>
+
                 {isLoading && <View style={styles.group34}>
                     <View style={styles.rect19}>
                         <ActivityIndicator style={styles.icon2} color={'white'}/>
@@ -158,12 +165,15 @@ export default function QrCodeScan(props: any) {
                           error={isError}
                           onPress1={() => setIsError(false)}/>
                 <View style={styles.group6}>
-                   
+
                     <View style={styles.group3}>
                         <View style={styles.rect2}>
-                            <TouchableOpacity onPress={decode} style={styles.group2}>
-                                <UploadIcon style={styles.icon}/>
-                                <Text style={styles.generateQrCode1}>Upload QR Code</Text>
+                            <TouchableOpacity onPress={decode} >
+                               <View style={{paddingHorizontal: 25, paddingVertical: 10,}}>
+                                   <UploadIcon style={styles.icon}/>
+                                   <Text style={styles.generateQrCode1}>Upload QR Code</Text>
+                               </View>
+
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -185,6 +195,9 @@ export default function QrCodeScan(props: any) {
                 onConfirmPressed={() => setShowAlert(false)}
             />
         </View>
+        </>
+
+
 
     );
 }

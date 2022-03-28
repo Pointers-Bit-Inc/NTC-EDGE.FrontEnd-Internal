@@ -1,57 +1,24 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, Dimensions, View, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
-import Text from '@components/atoms/text';
-import {
-  validateEmail,
-  validatePassword,
-  validatePhone,
-} from 'src/utils/form-validations';
-import { InputField } from '@molecules/form-fields';
-import Button from '@components/atoms/button';
-import { ArrowLeftIcon } from '@components/atoms/icon';
-import PasswordForm from '@components/organisms/forms/reset-password';
-import { text, button } from 'src/styles/color';
-import InputStyles from 'src/styles/input-style';
-const { height } = Dimensions.get('window');
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  header: {
-    marginTop: 10,
-    padding: 20,
-    paddingBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
-  content: {
-    padding: 20,
-    flex: 1,
-  },
-  description: {
-    paddingVertical: 25,
-  },
-  button: {
-    backgroundColor: button.primary,
-    borderRadius: 5,
-    marginHorizontal: 20,
-    width: '100%',
-  },
-  keyboardAvoiding: {
-    position: 'absolute',
-    bottom: 30,
-    width: '100%',
-  },
-})
+import { KeyboardAvoidingView, Platform, View, ScrollView, Alert } from 'react-native';
+import Text from '@atoms/text';
+import Button from '@atoms/button';
+import PasswordForm from '@organisms/forms/reset-password';
+import { button } from '@styles/color';
+import { validatePassword } from 'src/utils/form-validations';
+import Ellipsis from '@atoms/ellipsis';
+import styles from './styles';
+import api from "../../services/api";
+import NavBar from "@molecules/navbar";
+import Left from "@atoms/icon/left";
 
 const errorResponse = {
-  password: 'Password must be atleast 6 characters',
+  password: 'Password must be at least 8 characters',
   confirm: 'Passwords do not match',
 };
 
-const OneTimePin = ({ navigation }) => {
+const ResetPassword = ({ navigation, route }: any) => {
+  const { otpId, otp } = route?.params;
+  const [loading, setLoading] = useState(false);
   const [formValue, setFormValue] = useState({
     password: {
       value: '',
@@ -136,63 +103,87 @@ const OneTimePin = ({ navigation }) => {
     } else if (!formValue.confirmPassword.isValid) {
       return onChangeText('confirmPassword', formValue.confirmPassword.value);
     } else {
-      return navigation.navigate('ForgotPasswordSuccess')
+      setLoading(true);
+      api(null, '')
+          .post(`/reset-password`, {
+            id: otpId,
+            otp,
+            password: formValue?.password?.value,
+          })
+          .then((res: any) => {
+            setLoading(false);
+            if (res?.data?.success) {
+              return navigation.navigate('ForgotPasswordSuccess')
+            }
+            else {
+              Alert.alert('Alert', res?.data?.message || 'Cannot process reset password');
+            }
+          })
+          .catch((err: any) => {
+            setLoading(false);
+            Alert.alert('Alert', err?.message);
+          });
     }
   }
 
   const isValid = formValue.password.isValid && formValue.confirmPassword.isValid;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeftIcon
-            size={26}
-            color={text.default}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Login')}
-        >
-          <Text
-            size={18}
-            color={text.default}
-          >
-            Close
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.content}>
-        <Text
-          style={{ marginBottom: 15 }}
-          size={22}
-          color={text.default}
-          weight={'600'}
-        >
-          Reset password
-        </Text>
-        <PasswordForm onChangeValue={onChangeText} form={formValue} />
+      <View style={styles.container}>
+        <NavBar
+            title={'Forgot Password'}
+            rightIcon={<Text color='#fff'>Close</Text>}
+            onRight={() => navigation.navigate('Login')}
+            leftIcon={<Left color='#fff' size={17}/>}
+            onLeft={() => navigation.pop()}
+        />
+
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-          keyboardVerticalOffset={height * 0.12}
-          style={styles.keyboardAvoiding}
+            behavior={Platform.select({ ios: 'padding', android: undefined })}
+            keyboardVerticalOffset={Platform.select({ ios: 75, android: undefined })}
+            style={styles.container}
+        >
+          <ScrollView
+              style={styles.scrollview}
+              showsVerticalScrollIndicator={false}
+          >
+            <PasswordForm onChangeValue={onChangeText} form={formValue} />
+          </ScrollView>
+        </KeyboardAvoidingView>
+
+        <KeyboardAvoidingView
+            behavior={Platform.select({ ios: 'position', android: undefined })}
+            style={styles.keyboardAvoiding}
         >
           <Button
-            style={[styles.button, { backgroundColor: isValid ? button.primary : button.default }]}
-            onPress={onCheckValidation}
+              disabled={!isValid || loading}
+              style={[
+                styles.button,
+                !isValid && {
+                  backgroundColor: button.default
+                },
+                loading && {
+                  backgroundColor: '#2F5BFA'
+                }
+              ]}
+              onPress={onCheckValidation}
           >
-            <Text
-              color="white"
-              size={16}
-              weight={'500'}
-            >
-              Submit
-            </Text>
+            {
+              loading
+              ? <Ellipsis color='#fff' size={10} />
+              : <Text
+                  color='#fff'
+                  size={16}
+                  style={styles.boldText}
+              >
+                Reset
+              </Text>
+            }
+
           </Button>
         </KeyboardAvoidingView>
       </View>
-    </SafeAreaView>
   )
 }
 
-export default OneTimePin
+export default ResetPassword;

@@ -4,6 +4,10 @@ import Text from '@components/atoms/text'
 import { text, primaryColor } from 'src/styles/color';
 import { CloseIcon } from '@components/atoms/icon';
 import ProfileImage from '@components/atoms/image/profile'
+import GroupImage from '@components/molecules/image/group';
+import { RFValue } from 'react-native-responsive-fontsize';
+import IParticipants from 'src/interfaces/IParticipants';
+import lodash from 'lodash';
 
 const imageSize = 42;
 
@@ -11,7 +15,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 5,
     alignItems: 'center',
-    width: imageSize + 10,
+    width: RFValue(imageSize + 10),
   },
   horizontal: {
     flexDirection: 'row',
@@ -43,9 +47,9 @@ const styles = StyleSheet.create({
     top: 0,
   },
   button: {
-    height: 18,
-    width: 18,
-    borderRadius: 18,
+    height: RFValue(18),
+    width: RFValue(18),
+    borderRadius: RFValue(18),
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
@@ -67,16 +71,44 @@ interface Props {
   name?: string;
   contact?: string;
   onPress?: any;
+  data?: any;
+  isGroup?: boolean,
   [x: string]: any;
 }
 
-const ChatItem: FC<Props> = ({
+const SelectedItem: FC<Props> = ({
   image = '',
   name = '',
   contact = '',
   onPress = () => {},
+  data = {},
+  isGroup = false,
   ...otherProps
 }) => {
+  const getName = (data:any) => {
+    let result = '';
+    
+    if (isGroup) {
+      if (data.name) {
+        result += data.name;
+      } else {
+        lodash.map(data.participants, (participant:IParticipants) => {
+          let participantName = '';
+
+          if (participant.title) participantName += participant.title + ' ';
+          participantName += participant.firstName;
+
+          result += participantName + ',';
+        });
+      }
+    } else {
+      if (data.title) result += data.title + ' ';
+      if (data.name) result += data.name;
+      if (data.suffix) result += ', ' + data.suffix;
+    }
+
+    return result;
+  }
 
   return (
     <View style={[styles.container]} {...otherProps}>
@@ -86,26 +118,36 @@ const ChatItem: FC<Props> = ({
             <CloseIcon
               type={'md-close'}
               color={text.default}
-              size={14}
+              size={RFValue(14)}
             />
           </View>
         </TouchableOpacity>
       </View>
-      <ProfileImage
-        image={image}
-        name={name}
-        size={imageSize}
-        textSize={10}
-      />
+      {
+        !isGroup ? (
+          <ProfileImage
+            image={image}
+            name={name}
+            size={imageSize}
+            textSize={14}
+          />
+        ) : (
+          <GroupImage
+            participants={data.participants}
+            size={imageSize}
+            textSize={14}
+          />
+        )
+      }
       <Text
         size={10}
         numberOfLines={1}
         color={text.default}
       >
-        {name}
+        {getName(data)}
       </Text>
     </View>
   )
 }
 
-export default ChatItem
+export default SelectedItem

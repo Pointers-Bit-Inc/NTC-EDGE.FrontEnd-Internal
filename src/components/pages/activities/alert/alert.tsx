@@ -6,9 +6,10 @@ import CloseModal from "@assets/svg/closeModal";
 import {APPROVED, DECLINED, FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import EndorseToIcon from "@assets/svg/endorseTo";
 import ApplicationApproved from "@assets/svg/application-approved";
-import {useAlert} from "@pages/activities/hooks/useAlert";
+import {useAlert} from "../../../../hooks/useAlert";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
 
 const {width} = Dimensions.get('window');
 
@@ -23,16 +24,17 @@ function CustomAlert(props) {
             animationType="none"
             transparent={true}
             visible={props.show}
-            onRequestClose={() => {
-                _springHide()
-            }}
+                onRequestClose={() => {
+                    _springHide()
+                }
+            }
         >
-            <Animated.View style={[ { transform: [{ scale: !props.onLoading ? springValue :  1}] }]}>
+            <Animated.View style={[   { transform: [{ scale: !props.onLoading ? springValue :  1}] }]}>
                 <View style={styles.group}>
-                    <View style={styles.container___}>
+                    <View style={[styles.container___, styles.shadow]}>
                         <View style={styles.container__}>
 
-                            <View style={[styles.container_, {padding: "5%"}]}>
+                            <View style={[styles.container_, {padding: "5%", paddingHorizontal: 48,}]}>
                                 {
                                     props?.type == DECLINED && <View>
                                         <CloseModal></CloseModal>
@@ -41,7 +43,7 @@ function CustomAlert(props) {
                                 }
                                 {
                                     props?.type == FOREVALUATION && <View>
-                                        <EndorseToIcon height_={RFValue(60)} width_={RFValue(60)} color={"#2863D6"}></EndorseToIcon>
+                                        <EndorseToIcon height_={fontValue(60)} width_={fontValue(60)} color={"#2863D6"}></EndorseToIcon>
                                     </View>
                                 }
                                 {
@@ -63,7 +65,7 @@ function CustomAlert(props) {
                             {
 
                                 props?.showClose == false && <>
-                                    {props.onLoading ? <ActivityIndicator style={{alignSelf: "center"}}
+                                    {props.onLoading ?  <ActivityIndicator style={{alignSelf: "center"}}
                                                                           color={"rgba(40,99,214,1)"}/> :
                                         <TouchableOpacity onPress={props.onConfirmPressed}>
 
@@ -101,7 +103,16 @@ const styles = StyleSheet.create({
 
         alignSelf: "center"
     },
+    shadow: {shadowColor: "rgba(0,0,0,1)",
+        shadowOffset: {
+            height: 0,
+            width: 0
+        },
+        elevation: 60,
+        shadowOpacity: 0.25,
+        shadowRadius: 20,},
     container___: {
+
                 flexDirection: "column",
         justifyContent: "space-around",
         backgroundColor: "rgba(255,255,255,1)",
@@ -121,7 +132,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: Bold,
-        fontSize: RFValue(14),
+        fontSize: fontValue(14),
         color: "#121212",
         textAlign: "center"
     },

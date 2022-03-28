@@ -1,16 +1,46 @@
-import {Dimensions , StyleSheet} from "react-native";
+import {Dimensions , Platform , StyleSheet} from "react-native";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 
 
 const { width , height } = Dimensions.get("screen");
 export const styles = StyleSheet.create({
+    pictureContainer: {
+        width : 240 , height : 200 , borderRadius : 5 , borderWidth : 4 ,
+        borderColor : "#fff"
+    },
+    containers:{
+        width : "100%" ,
+        ...Platform.select({
+            native:{
+                paddingHorizontal : 20 ,
+            },
+            default:{
+                paddingHorizontal : 64 ,
+            }
+        }),
+        paddingTop : 34 ,
+        paddingBottom : 45
+    },
+    statement:  {
+        borderRadius : 10 ,
+        borderBottomStartRadius : 0 ,
+        borderBottomEndRadius : 0 ,
+        paddingHorizontal : 17 ,
+        paddingVertical : 36 ,
+        borderBottomWidth : 0 ,
+        backgroundColor : "#fff" ,
+        borderWidth : 1 ,
+        borderColor : "#E5E5E5" ,
+    } ,
     fileName : {
         fontFamily: Regular,
         
         flexWrap : "wrap" ,
-        fontSize : RFValue(16) ,
+        fontSize : fontValue(16) ,
         color : "#fff" ,
         paddingHorizontal : 30 ,
         position : "absolute" ,
@@ -22,84 +52,77 @@ export const styles = StyleSheet.create({
         width : width ,
     } ,
     container : {
-        flex : 1
+        flex : 1 ,
+
+
     } ,
     group7 : {} ,
     rect2 : {
         zIndex : 3 ,
 
-        width : "100%" ,
         backgroundColor : "rgba(0,0,0,0.5)"
     } ,
     close : {
+         fontWeight: "bold",
         fontFamily : Regular500 ,
         color : "rgba(239,231,231,1)" ,
-        fontSize : RFValue(18) ,
+        fontSize : fontValue(18) ,
     } ,
 });
 export const requirementStyles = StyleSheet.create({
+    pdf:{
+        width : Dimensions.get('window').width ,
+        height : Dimensions.get('window').height ,
+    },
     container : {
-        flex : 1
+        flex : 1 ,
     } ,
     card : {
-        padding : 10 ,
+
         width : "100%" ,
 
     } ,
     cardContainer : {
-
+        paddingVertical: 20,
         backgroundColor : "rgba(255,255,255,1)" ,
-        shadowColor : "rgba(0,0,0,1)" ,
-        shadowOffset : {
-            width : 0 ,
-            height : 0
-        } ,
-        elevation : 1.5 ,
-        shadowOpacity : 0.1 ,
-        shadowRadius : 5 ,
+         borderWidth: 1,
+        borderColor:"#E5E5E5",
         borderRadius : 5
-    } ,
-    cardLabel : {
-        width : "100%" ,
-        justifyContent : "space-between" ,
-        paddingVertical : 12 ,
-        paddingLeft : 12
     } ,
     cardTitle : {
         justifyContent : "space-between" ,
     } ,
     title : {
-        fontSize: RFValue(12),
+        paddingHorizontal: 15,
+        fontSize: fontValue(14),
         fontFamily: Bold,
         color : "#37405B"
     } ,
 
     paymentDescription:{
-        fontSize: RFValue(12),
+        fontSize: fontValue(14),
         fontFamily: Regular,
         color: "#37405B"
     },
     description : {
-        fontSize: RFValue(12),
+        
+        fontSize: fontValue(14),
         color : "#1F2022",
         justifyContent: "center"
     } ,
     cardDocument : {
-
+            paddingVertical: 10,
         flexDirection : "row" ,
         justifyContent : "flex-start" ,
         alignItems : "center" ,
         margin : 0
     } ,
     text : {
-        fontSize: RFValue(12),
+        fontSize: fontValue(14),
         fontFamily: Regular,
-        width : "80%" ,
         color : "#606A80"
     } ,
     cardPicture : {
-
-        height : "70%" ,
 
         backgroundColor : "#E6E6E6"
     }

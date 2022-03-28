@@ -6,7 +6,10 @@ const {
     DELETE_APPLICATIONS,
     HANDLE_LOAD,
     READ_UNREAD_APPLICATIONS,
-    SET_TAB_BAR_HEIGHT
+    SET_TAB_BAR_HEIGHT,
+    SET_APPLICATION_ITEM,
+    SET_FILTER_RECT,
+    SET_RIGHT_LAYOUT_COMPONENT
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -58,6 +61,27 @@ export function readUnreadApplications(payload) {
 export function handleInfiniteLoad(payload) {
     return {
         type: HANDLE_LOAD,
+        payload,
+    };
+}
+
+export function setFilterRect(payload) {
+    return {
+        type: SET_FILTER_RECT,
+        payload,
+    };
+}
+
+export function setRightLayoutComponent(payload) {
+    return {
+        type: SET_RIGHT_LAYOUT_COMPONENT,
+        payload,
+    };
+}
+
+export function setApplicationItem(payload) {
+    return {
+        type: SET_APPLICATION_ITEM,
         payload,
     };
 }

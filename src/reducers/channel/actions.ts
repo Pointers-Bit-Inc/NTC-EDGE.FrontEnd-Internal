@@ -1,14 +1,22 @@
+import { pendingMessageSchema } from 'src/reducers/schema';
+import { normalize, schema } from 'normalizr';
+import uuid from 'react-native-uuid';
+import IMeetings from "src/interfaces/IMeetings";
+import IMessages from "src/interfaces/IMessages";
+import IRooms from "src/interfaces/IRooms";
+
 const {
   SET_SELECTED_CHANNEL,
   SET_CHANNEL_LIST,
+  ADD_TO_CHANNEL_LIST,
   ADD_CHANNEL,
   UPDATE_CHANNEL,
   REMOVE_CHANNEL,
 
   SET_MESSAGES,
+  ADD_TO_MESSAGES,
   ADD_MESSAGES,
   UPDATE_MESSAGES,
-  REMOVE_MESSAGES,
 
   SET_SELECTED_MESSAGES,
   REMOVE_SELECTED_MESSAGES,
@@ -17,39 +25,15 @@ const {
   REMOVE_MEETING_CHANNEL,
   SET_MEETINGS_CHANNEL,
 
-  SET_SEARCH_VALUE,
   RESET_CHANNEL,
+
+  RESET_PENDING_MESSAGES,
+  ADD_PENDING_MESSAGE,
+  REMOVE_PENDING_MESSAGE,
+  SET_PENDING_MESSAGE_ERROR,
 } = require('./types').default;
 
-interface ChannelProps {
-  _id: string;
-  createdAt: any;
-  updatedAt: any;
-  channelId: string;
-  channelName: string;
-  isGroup: boolean;
-  lastMessage: any;
-  participants: any;
-  otherParticipants: any;
-  hasSeen: boolean,
-  participantsId: any;
-  seen: any
-}
-
-interface MessageProps {
-  _id: string;
-  createdAt: any;
-  updatedAt: any;
-  channelId: string;
-  message: string;
-  seen: any;
-  sender: any;
-  deleted: boolean;
-  unSend: boolean;
-  edited: boolean;
-}
-
-export function setSelectedChannel(payload:ChannelProps, isChannelExist = false) {
+export function setSelectedChannel(payload:IRooms | {}, isChannelExist = false) {
   return {
     type: SET_SELECTED_CHANNEL,
     payload,
@@ -57,21 +41,28 @@ export function setSelectedChannel(payload:ChannelProps, isChannelExist = false)
   };
 }
 
-export function setChannelList(payload:[ChannelProps]) {
+export function setChannelList(payload:Array<IRooms>) {
   return {
     type: SET_CHANNEL_LIST,
     payload,
   };
 }
 
-export function addChannel(payload:ChannelProps) {
+export function addToChannelList(payload:Array<IRooms>) {
+  return {
+    type: ADD_TO_CHANNEL_LIST,
+    payload,
+  };
+}
+
+export function addChannel(payload:IRooms) {
   return {
     type: ADD_CHANNEL,
     payload,
   }
 }
 
-export function updateChannel(payload:ChannelProps) {
+export function updateChannel(payload:IRooms) {
   return {
     type: UPDATE_CHANNEL,
     payload,
@@ -85,35 +76,35 @@ export function removeChannel(payload:string) {
   };
 }
 
-export function setMessages(payload:MessageProps) {
+export function setMessages(payload:IMessages) {
   return {
     type: SET_MESSAGES,
     payload,
   };
 }
 
-export function addMessages(payload:[MessageProps]) {
+export function addToMessages(payload:Array<IMessages>) {
+  return {
+    type: ADD_TO_MESSAGES,
+    payload,
+  };
+}
+
+export function addMessages(payload:IMessages) {
   return {
     type: ADD_MESSAGES,
     payload,
   };
 }
 
-export function updateMessages(payload:[MessageProps]) {
+export function updateMessages(payload:Array<IMessages>) {
   return {
     type: UPDATE_MESSAGES,
     payload,
   };
 }
 
-export function removeMessages(payload:MessageProps) {
-  return {
-    type: REMOVE_MESSAGES,
-    payload,
-  };
-}
-
-export function setSelectedMessage(payload:MessageProps) {
+export function setSelectedMessage(payload:IMessages) {
   return {
     type: SET_SELECTED_MESSAGES,
     payload,
@@ -126,44 +117,55 @@ export function removeSelectedMessage() {
   };
 }
 
-export function setMeetings(payload) {
+export function setMeetings(payload:Array<IMeetings>) {
   return {
     type: SET_MEETINGS_CHANNEL,
     payload,
   };
 }
 
-export function addMeeting(payload) {
-  return {
-    type: ADD_MEETING_CHANNEL,
-    payload,
-  };
-}
-
-export function updateMeeting(payload) {
+export function updateMeeting(payload:IMeetings) {
   return {
     type: UPDATE_MEETING_CHANNEL,
     payload,
   };
 }
 
-export function removeMeeting(payload) {
-  return {
-    type: REMOVE_MEETING_CHANNEL,
-    payload,
-  };
-}
-
-export function setSearchValue(payload) {
-  return {
-    type: SET_SEARCH_VALUE,
-    payload,
-  }
-}
-
 export function resetChannel() {
   return {
     type: RESET_CHANNEL,
   }
+}
+
+export function addPendingMessage (payload:any) {
+  payload._id = uuid.v4();
+  payload.createdAt = new Date();
+  payload.error = false;
+  const normalized = normalize([payload], new schema.Array(pendingMessageSchema));
+  return {
+    payload: normalized?.entities?.pendingMessage,
+    type: ADD_PENDING_MESSAGE,
+  };
+}
+
+export function setPendingMessageError (payload:any) {
+  return {
+    payload,
+    type: SET_PENDING_MESSAGE_ERROR,
+  };
+}
+
+export function removePendingMessage (messageId:string, message:any) {
+  return {
+    messageId,
+    message,
+    type: REMOVE_PENDING_MESSAGE,
+  };
+}
+
+export function resetPendingMessages () {
+  return {
+    type: RESET_PENDING_MESSAGES,
+  };
 }
 

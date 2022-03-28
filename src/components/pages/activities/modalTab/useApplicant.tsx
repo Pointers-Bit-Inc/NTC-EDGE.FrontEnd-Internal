@@ -1,0 +1,28 @@
+export default function useApplicant(props) {
+    const applicant = props?.applicant ,
+        selectedTypes = props?.selectedTypes ,
+        applicationType = props?.applicationType ,
+        service = props?.service ,
+        soa = props?.soa ,
+        totalFee = props?.totalFee ,
+        paymentMethod = props?.paymentMethod ,
+        requirements = props?.requirements || props?.service?.applicationType?.requirements ,
+        updatedAt = props?.updatedAt ,
+        approvalHistory = props?.approvalHistory ,
+        assignedPersonnel = props?.assignedPersonnel,
+        createdAt = props?.createdAt ,
+        proofOfPayment = props?.proofOfPayment;
+    return {applicant,
+        selectedTypes,
+        applicationType,
+        service,
+        soa,
+        totalFee,
+        paymentMethod,
+        requirements,
+        updatedAt,
+        approvalHistory ,
+        assignedPersonnel,
+        createdAt,
+        proofOfPayment}
+}

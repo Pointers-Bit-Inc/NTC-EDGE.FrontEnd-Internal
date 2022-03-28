@@ -95,7 +95,7 @@ const App = ({ navigation }:any) => {
 
   return (
     <View
-      style={{ flex: 1 }}
+      style={{ flex: 1  }}
       onLayout={onLayoutRootView}>
       <Image
         source={splash}

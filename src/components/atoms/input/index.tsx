@@ -6,13 +6,14 @@ import React, {
 } from 'react';
 import { TextInput, StyleSheet, Platform } from 'react-native';
 import { defaultColor } from 'src/styles/color';
+import { Regular500 } from '@styles/font';
 
 const styles = StyleSheet.create({
   input: {
     padding: 10,
     width: '100%',
     backgroundColor: 'transparent',
-    fontWeight: 'bold',
+    fontFamily: Regular500,
     ...Platform.select({
       web: {
         outlineStyle: 'none'
@@ -51,6 +52,7 @@ const Input: ForwardRefRenderFunction<TextInputRef, Props> = ({
   }));
   return (
     <TextInput
+
       ref={inputRef}
       style={[styles.input, style]}
       value={value}

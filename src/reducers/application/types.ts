@@ -8,5 +8,8 @@ export default keyMirror({
   DELETE_APPLICATIONS: null,
   HANDLE_LOAD: null,
   READ_UNREAD_APPLICATIONS: null,
-  SET_TAB_BAR_HEIGHT: null
+  SET_TAB_BAR_HEIGHT: null,
+  SET_APPLICATION_ITEM: null,
+  SET_FILTER_RECT: null,
+  SET_RIGHT_LAYOUT_COMPONENT: null
 });

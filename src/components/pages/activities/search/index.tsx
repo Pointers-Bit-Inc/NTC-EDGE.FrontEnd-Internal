@@ -8,16 +8,26 @@ import {SearchActivity} from "@pages/activities/search/searchActivity";
 import {styles} from '@pages/activities/search/styles'
 import axios from "axios";
 import {BASE_URL} from "../../../../services/config";
-import {RootStateOrAny, useSelector} from "react-redux";
-import {CASHIER, CHECKER, DATE_ADDED, DIRECTOR, EVALUATOR} from "../../../../reducers/activity/initialstate";
-import {formatDate, getFilter} from "@pages/activities/script";
+import {RootStateOrAny , useDispatch , useSelector} from "react-redux";
+import {
+    ACTIVITIES , ACTIVITIESLIST ,
+    CASHIER ,
+    CHECKER ,
+    DATE_ADDED ,
+    DIRECTOR ,
+    EVALUATOR
+} from "../../../../reducers/activity/initialstate";
+import {formatDate , getFilter} from "@pages/activities/script";
 import moment from "moment";
 import Loader from "@pages/activities/bottomLoad";
 import {defaultSanitize} from "@pages/activities/search/utils";
-import {useUserRole} from "@pages/activities/hooks/useUserRole";
+import {useUserRole} from "../../../../hooks/useUserRole";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
+import {setApplicationItem} from "../../../../reducers/application/actions";
 
 function Search(props: any) {
+    const dispatch = useDispatch()
     const {selectedChangeStatus} = useSelector((state: RootStateOrAny) => state.activity)
     const user = useSelector((state: RootStateOrAny) => state.user);
      const [isHandleLoad, setIsHandleLoad] = useState(true)
@@ -211,17 +221,6 @@ function Search(props: any) {
                 response?.data?.size ? setSize(response?.data?.size) : setSize(0)
                 setApplications(groupApplications(response?.data?.docs))
 
-                await AsyncStorage.getItem('searchHistory').then(async (value) => {
-                    value = JSON.parse(value) || []
-
-                    let newArr = [...value, text];
-                    await AsyncStorage.setItem(
-                        'searchHistory',
-                        JSON.stringify(newArr)
-                    );
-
-                    setSearchHistory(newArr)
-                })
 
                 callback(true)
             }).catch((err) => {
@@ -238,7 +237,8 @@ function Search(props: any) {
     }
 
     const handleBackButtonClick = () => {
-        props.navigation.goBack()
+        dispatch(setApplicationItem({}))
+        props.navigation.navigate(ACTIVITIESLIST);
         return true;
     };
 
@@ -269,8 +269,21 @@ function Search(props: any) {
             applications={applications}
             onPress={handleBackButtonClick}
             value={textInput}
-            onEndEditing={() => {
+            onEndEditing={async () => {
+                await AsyncStorage.getItem('searchHistory').then(async (value) => {
+                    
+                    value = JSON.parse(value) || []
+                         if(!textInput) return
+                    let newArr = _.uniq([ textInput, ...value]);
+                    await AsyncStorage.setItem(
+                        'searchHistory' ,
+                        JSON.stringify(newArr)
+                    );
 
+                    setSearchHistory(newArr)
+                }).catch((e) => {
+                    Alert.alert('Alert' , e?.message || 'Something went wrong.')
+                })
             }}
             onChange={(event) => onTextChange(event.nativeEvent.text)}
             onChangeText={(text) => setTextInput(text)}
@@ -285,14 +298,14 @@ function Search(props: any) {
                     setTextInput(search)
                 }}>
                     <View style={styles.group5}>
-                        <HistoryIcon height={RFValue(20)} width={RFValue(20)} style={ styles.icon3 }/>
+                        <HistoryIcon height={fontValue(20)} width={fontValue(20)} style={ styles.icon3 }/>
                         <Text style={styles.loremIpsum}>{search}</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {
                     removeSearchHistory(index)
                 }}>
-                    <CloseIcon height={RFValue(16)} width={RFValue(16)}/>
+                    <CloseIcon height={fontValue(16)} width={fontValue(16)}/>
                 </TouchableOpacity>
 
             </View>

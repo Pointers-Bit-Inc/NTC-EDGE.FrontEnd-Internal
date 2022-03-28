@@ -15,6 +15,7 @@ const InitialState = Record({
   image: '',
   name: '',
   profilePicture: {},
+  profilePictureObj: {},
 });
 
 export default InitialState;

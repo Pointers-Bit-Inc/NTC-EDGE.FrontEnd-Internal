@@ -12,7 +12,6 @@
 #include <EXDevLauncher/EXDevLauncherController.h>
 #import <EXUpdates/EXUpdatesDevLauncherController.h>
 #endif
-@import Firebase;
 #import <EXScreenOrientation/EXScreenOrientationViewController.h>
 
 #import <React/RCTBridge.h>
@@ -71,9 +70,6 @@ static void InitializeFlipper(UIApplication *application) {
   InitializeFlipper(application);
 #endif
   
-// @generated begin @react-native-firebase/app-didFinishLaunchingWithOptions - expo prebuild (DO NOT MODIFY) sync-ecd111c37e49fdd1ed6354203cd6b1e2a38cccda
-[FIRApp configure];
-// @generated end @react-native-firebase/app-didFinishLaunchingWithOptions
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 #if defined(EX_DEV_LAUNCHER_ENABLED)
   EXDevLauncherController *controller = [EXDevLauncherController sharedInstance];

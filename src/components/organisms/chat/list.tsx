@@ -3,16 +3,17 @@ import { View, FlatList, Dimensions, StyleSheet, ActivityIndicator } from 'react
 import lodash from 'lodash';
 import Text from '@components/atoms/text';
 import { chatSameDate } from 'src/utils/formatting'; 
-import { ChatBubble, GroupBubble } from '@components/molecules/list-item';
+import { ChatBubble, GroupBubble, PendingBubble } from '@components/molecules/list-item';
 import { text } from 'src/styles/color';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   bubbleContainer: {
     alignItems: 'flex-start',
-    paddingHorizontal: 15,
-    paddingVertical: 4,
+    paddingHorizontal: RFValue(15),
+    paddingTop: 3,
   },
   loadingContainer: {
     flex: 1,
@@ -39,6 +40,8 @@ interface Props {
   participants?: any;
   lastMessage?: any;
   showOption?: any;
+  onSendMessage?: any;
+  onSendFile?: any;
   [x: string]: any;
 }
 
@@ -51,6 +54,8 @@ const ChatList: FC<Props> = ({
   participants = [],
   lastMessage,
   showOption = () => {},
+  onSendMessage = () => {},
+  onSendFile = () => {},
   ...otherProps
 }) => {
   const emptyComponent = () => (
@@ -62,11 +67,33 @@ const ChatList: FC<Props> = ({
         {error? 'Unable to fetch messages' : 'No messages yet'}
       </Text>
     </View>
-  )
+  );
+
+  const listHeaderComponent = () => <View style={{ height: 15 }} />;
 
   const renderItem = ({ item, index }:any) => {
+    if (!lodash.size(item.sender)) {
+      return (
+        <View style={[styles.bubbleContainer, { alignItems: 'flex-end' }]}>
+          <PendingBubble
+            channelId={item.channelId}
+            messageId={item._id}
+            message={item.message}
+            messageType={item.messageType}
+            attachment={item.attachment}
+            error={item.error}
+            onSendMessage={onSendMessage}
+            onSendFile={onSendFile}
+            onLongPress={() => showOption(item)}
+          />
+        </View>
+      )
+    }
+    if (!item.isGroup && !item.message && item.system) {
+      return;
+    }
     const isSender = item.sender._id === user._id;
-    const isSameDate = chatSameDate(messages[index + 1]?.createdAt?.seconds, item.createdAt?.seconds);
+    const isSameDate = chatSameDate(messages[index + 1]?.createdAt, item.createdAt);
     const latestSeen = messages && messages[index - 1] ? messages[index - 1].seen : [];
     const latestSeenSize = lodash.size(latestSeen) - 1;
     let seenByOthers = lodash.reject(
@@ -84,7 +111,7 @@ const ChatList: FC<Props> = ({
     }
     let seenByOthersCount = lodash.size(seenByOthers) + (isSender ? 0 : 1);
     const seenByEveryone = seenByOthersCount === lodash.size(participants);
-    const showSeen = lastMessage?.messageId === item._id ||
+    const showSeen = lastMessage?._id === item._id ||
       latestSeenSize === 0 ||
       seenByOthersCount > 0 && seenByOthersCount < lodash.size(participants);
     return (
@@ -93,6 +120,7 @@ const ChatList: FC<Props> = ({
           isGroup ? (
             <GroupBubble
               message={item.message}
+              attachment={item.attachment}
               isSender={isSender}
               sender={item.sender}
               seenByOthers={seenByOthers}
@@ -106,10 +134,13 @@ const ChatList: FC<Props> = ({
               deleted={item.deleted}
               unSend={item.unSend}
               edited={item.edited}
+              system={item.system}
+              delivered={item.delivered}
             />
           ) : (
             <ChatBubble
               message={item.message}
+              attachment={item.attachment}
               isSender={isSender}
               sender={item.sender}
               createdAt={item.createdAt}
@@ -123,6 +154,8 @@ const ChatList: FC<Props> = ({
               deleted={item.deleted}
               unSend={item.unSend}
               edited={item.edited}
+              system={item.system}
+              delivered={item.delivered}
             />
           )
         }
@@ -139,16 +172,21 @@ const ChatList: FC<Props> = ({
     )
   }
   return (
-    <FlatList
-      showsVerticalScrollIndicator={false}
-      inverted={true}
-      data={error ? [] : messages}
-      renderItem={renderItem}
-      keyExtractor={(item:any) => item._id}
-      ListEmptyComponent={emptyComponent}
-      ListFooterComponent={() => <View style={{ height: 15 }} />}
-      {...otherProps}
-    />
+    <>
+
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        inverted={true}
+        data={error ? [] : messages}
+        renderItem={renderItem}
+        keyExtractor={(item:any) => item._id}
+        ListEmptyComponent={emptyComponent}
+        ListFooterComponent={() => <View style={{ height: 15 }} />}
+        ListHeaderComponent={listHeaderComponent}
+        {...otherProps}
+      />
+    </>
+
   )
 }
 

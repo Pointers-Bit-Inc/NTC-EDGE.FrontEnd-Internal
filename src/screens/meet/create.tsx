@@ -1,26 +1,25 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import {
-  RefreshControl,
   ActivityIndicator,
-  Dimensions,
   StyleSheet,
   View,
   TouchableOpacity,
-  FlatList,
   StatusBar
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
-import { setMeetingId, setMeeting } from 'src/reducers/meeting/actions';
-import { outline, button, text } from '@styles/color';
+import { setMeeting } from 'src/reducers/meeting/actions';
+import { button, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
-import { ArrowLeftIcon, ToggleIcon, CheckIcon } from '@components/atoms/icon'
+import { ArrowLeftIcon, ToggleIcon } from '@components/atoms/icon'
 import { InputField } from '@components/molecules/form-fields'
-import useFirebase from 'src/hooks/useFirebase';
+import useSignalr from 'src/hooks/useSignalr';
 import Button from '@components/atoms/button';
-const { width } = Dimensions.get('window');
+import lodash from 'lodash';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 
 const styles = StyleSheet.create({
   container: {
@@ -41,11 +40,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    fontSize: 18,
+    fontSize: RFValue(18),
+    backgroundColor: '#EEEEEE',
   },
   outline: {
     borderWidth: 0,
-    backgroundColor: '#F1F1F1',
+    backgroundColor: '#EEEEEE',
     borderRadius: 10,
   },
   icon: {
@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
 
 const CreateMeeting = ({ navigation, route }:any) => {
   const dispatch = useDispatch();
+  useRequestCameraAndAudioPermission();
   const user = useSelector(state => state.user);
   const {
     participants = [],
@@ -84,14 +85,7 @@ const CreateMeeting = ({ navigation, route }:any) => {
     isMute = false,
     channelId,
   } = route.params;
-  const { createMeeting, initiateMeeting } = useFirebase({
-    _id: user._id,
-    name: user.name,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    image: user.image,
-  });
+  const { createMeeting } = useSignalr();
   const [loading, setLoading] = useState(false);
   const [meetingName, setMeetingName] = useState('');
   const [videoOn, setVideoOn] = useState(isVideoEnable);
@@ -100,12 +94,14 @@ const CreateMeeting = ({ navigation, route }:any) => {
   const onStartMeeting = () => {
     setLoading(true);
     if (isChannelExist) {
-      initiateMeeting({ channelId, isVoiceCall, meetingName }, (error, data) => {
+      createMeeting({ roomId: channelId, isVoiceCall, participants, name: meetingName }, (error, data) => {
         setLoading(false);
         if (!error) {
-          dispatch(setSelectedChannel(data, isChannelExist));
-          dispatch(setMeetingId(data.meetingId));
-          dispatch(setMeeting({}));
+          const { room } = data;
+          data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
+          room.otherParticipants =  data.otherParticipants;
+          dispatch(setSelectedChannel(data.room, isChannelExist));
+          dispatch(setMeeting(data));
           navigation.replace('JoinVideoCall', {
             isHost: true,
             isVoiceCall,
@@ -117,12 +113,14 @@ const CreateMeeting = ({ navigation, route }:any) => {
         }
       });
     } else {
-      createMeeting({ participants, channelName: meetingName }, (error, data) => {
+      createMeeting({ participants, name: meetingName }, (error, data) => {
         setLoading(false);
         if (!error) {
-          dispatch(setSelectedChannel(data));
-          dispatch(setMeetingId(data.meetingId));
-          dispatch(setMeeting({}));
+          const { room } = data;
+          data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
+          room.otherParticipants =  data.otherParticipants;
+          dispatch(setSelectedChannel(data.room));
+          dispatch(setMeeting(data));
           navigation.replace('VideoCall', {
             isHost: true,
             options: {
@@ -156,9 +154,12 @@ const CreateMeeting = ({ navigation, route }:any) => {
           </View>
         </View>
         <InputField
+          containerStyle={{ backgroundColor: '#EEEEEE', borderWidth: 0 }}
           inputStyle={[InputStyles.text, styles.input]}
+          iconStyle={styles.icon}
           placeholder="Meeting name"
           outlineStyle={[InputStyles.outlineStyle, styles.outline]}
+          placeholderTextColor="#979797"
           value={meetingName}
           onChangeText={setMeetingName}
           onSubmitEditing={(event:any) => setMeetingName(event.nativeEvent.text)}

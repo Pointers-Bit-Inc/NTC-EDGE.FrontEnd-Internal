@@ -1,5 +1,7 @@
 import React, { ReactNode, FC } from 'react';
 import { StyleSheet, Text as RNText } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
+import {isMobile} from "@pages/activities/isMobile";
 
 const styles = StyleSheet.create({
   default: {
@@ -21,18 +23,19 @@ interface Props {
 
 const Text: FC<Props> = ({
   color = 'black',
-  size,
+  size = 12,
   weight,
   children,
   style,
   align,
+    family,
   ...otherProps
 }) => {
   return (
     <RNText
       style={[
         styles.default,
-        { color, fontSize: size, fontWeight: weight, textAlign: align, fontFamily: 'Poppins_400Regular' },
+        { color, fontSize: isMobile ? RFValue(size) : size, fontWeight: weight, textAlign: align, fontFamily: family || 'Poppins_400Regular' },
         style
       ]}
       {...otherProps}

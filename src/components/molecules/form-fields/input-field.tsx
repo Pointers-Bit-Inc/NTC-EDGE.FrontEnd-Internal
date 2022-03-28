@@ -13,6 +13,7 @@ import {defaultColor , primaryColor, text} from '@styles/color';
  import inputStyles from "@styles/input-style"
  import {input} from "@styles/color"
 import CloseIcon from "@assets/svg/close";
+import {fontValue} from "@pages/activities/fontValue";
 const styles = StyleSheet.create({
     container: {
         paddingVertical: 10
@@ -30,7 +31,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'black',
         borderRadius: 10,
-        overflow: 'hidden',
         width: '100%'
     },
     description: {
@@ -86,6 +86,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
       disabledColor,
       onBlur = () => {},
       onFocus = () => {},
+    onClose = () => {},
       ...otherProps
   }, ref) => {
     const inputRef:any = useRef(null);
@@ -153,12 +154,14 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                             outlineStyle,
                             isFocused && { borderColor: activeColor },
                             !!error && { borderColor: errorColor },
-                            !editable && {borderColor: disabledColor}
+                            !editable && {borderColor: disabledColor}  ,
+
                         ]}
                     >
                         <TextInput
+
                         ref={inputRef}
-                        style={[inputStyle, isFocused ? inputStyles.inputText : { ...inputStyles.inputText, color: defaultColor}, !editable && {color: disabledColor}]}
+                        style={[inputStyles.inputText , !editable && {color: disabledColor}, inputStyle]}
                         placeholder={placeholder || label}
                         placeholderTextColor={!editable ? disabledColor : (!!error ? input.text?.errorColor : defaultColor)}
                         secureTextEntry={secureTextEntry}
@@ -170,8 +173,13 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                 </View>
                 {
                     (clearable && isFocused && !!editable && !!otherProps.value) &&
-                    <TouchableOpacity onPress={() => otherProps?.onChangeText ? otherProps?.onChangeText('') : {}}>
-                        <CloseIcon height={RFValue(10)} width={RFValue(10)} color={error ? input.text.errorColor : input.text.mainColor}/>
+                    <TouchableOpacity onPress={() => {
+                        if(otherProps?.onChangeText){
+                            onClose()
+                            otherProps?.onChangeText('')
+                        }
+                    }}>
+                        <CloseIcon height={fontValue(10)} width={fontValue(10)} color={error ? input.text.errorColor : input.text.mainColor}/>
                     </TouchableOpacity>
                 }
             </View>

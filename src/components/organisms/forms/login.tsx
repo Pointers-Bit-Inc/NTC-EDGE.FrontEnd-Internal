@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import {View , StyleSheet , TouchableOpacity , Platform} from 'react-native';
 import { CheckIcon } from '@atoms/icon';
 import {
   InputField,
@@ -11,10 +11,18 @@ import Text from '@atoms/text';
 import inputStyles from "src/styles/input-style";
 import {Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    ...Platform.select({
+      native: {},
+      default: {
+        minWidth: 330,
+      }
+    })
   },
   label: {
     marginLeft: 10
@@ -74,31 +82,33 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
     );
   }
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       <InputField
         label={'Email address'}
         placeholder="Email address"
         required={true}
         hasValidation={true}
-        
+      inputStyle={InputStyles.text}
+      outlineStyle={InputStyles.outlineStyle}
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
         error={form?.email?.error}
         value={form?.email?.value}
+
         //keyboardType={'email-address'}
         onChangeText={(value: string) => onChangeValue('email', value)}
         onSubmitEditing={(event:any) => onChangeValue('email', event.nativeEvent.text)}
       />
 
       <PasswordField
-        inputStyle={InputStyles.text}
+      inputStyle={InputStyles.text}
         label={'Password'}
         placeholder="Password"
         textContentType="oneTimeCode"
         required={true}
         hasValidation={true}
-        outlineStyle={InputStyles.outlineStyle}
+      outlineStyle={InputStyles.outlineStyle}
         activeColor={text.primary}
         errorColor={text.error}
         requiredColor={text.error}
@@ -109,16 +119,16 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         onChangeText={(value: string) => onChangeValue('password', value)}
         onSubmitEditing={(event:any) => onChangeValue('password', event.nativeEvent.text)}
       />
-      <View style={[styles.horizontal, { justifyContent: 'flex-start' }]}>
+      {isMobile && <View style={[styles.horizontal, { justifyContent: 'flex-start' }]}>
         <TouchableOpacity onPress={() => onChangeValue('forgotPassword')}>
           <Text
-              style={[InputStyles.text, { fontSize: RFValue(12),   fontFamily: Regular500  , color: text.primary }]}
+              style={[InputStyles.text, { fontSize: fontValue(12),   fontFamily: Regular500  , color: text.primary }]}
               size={12}
           >
             Forgot your password?
           </Text>
         </TouchableOpacity>
-      </View>
+      </View>}
      {/* <View style={[styles.horizontal, { marginTop: 15 }]}>
         <TouchableOpacity onPress={() => onChangeValue('keepLoggedIn', !form?.keepLoggedIn?.value)}>
           {keepMeLoggedInChecker(form?.keepLoggedIn?.value)}

@@ -1,47 +1,58 @@
 import React, { FC } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import Text from '@components/atoms/text'
 import Button from '@components/atoms/button'
 import { text, outline, button } from 'src/styles/color';
 import { getDateTimeString } from 'src/utils/formatting';
+import { Bold, Regular500 } from '@styles/font';
+import CloseIcon from '@assets/svg/close';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { PhoneIcon } from '@components/atoms/icon';
 
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    backgroundColor: '#D1D1FA',
+    backgroundColor: '#E5EBFE',
     flexDirection: 'row',
     alignItems: 'center',
+    borderLeftColor: '#7897FF',
+    borderLeftWidth: RFValue(3),
   },
   joinButton: {
-    padding: 8,
+    padding: RFValue(5),
+    height: RFValue(30),
     paddingHorizontal: 15,
-    borderColor: outline.primary,
+    borderColor: '#610BEF',
     borderWidth: 1,
-    backgroundColor: button.primary,
-    borderRadius: 8,
+    backgroundColor: '#610BEF',
+    borderRadius: 30,
     marginHorizontal: 5,
   },
   closeButton: {
-    padding: 8,
-    paddingHorizontal: 15,
-    borderColor: outline.error,
+    paddingVertical: RFValue(4),
+    height: RFValue(30),
+    paddingHorizontal: 20,
+    borderColor: '#CF0327',
+    backgroundColor: '#CF0327',
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 30,
     marginHorizontal: 5,
   },
 })
 
 interface Props {
   name?: string;
+  host: any;
   time?: any;
   onJoin?: () => void;
-  onClose?: () => void;
+  onClose?: any;
   closeText?: string;
   style?: any;
 }
 
 const MeetingNotif: FC<Props> = ({
   name = '',
+  host = {},
   time,
   onJoin = () => {},
   onClose = () => {},
@@ -54,8 +65,8 @@ const MeetingNotif: FC<Props> = ({
         <Text
           color={'black'}
           size={14}
-          weight='bold'
           numberOfLines={1}
+          style={{ fontFamily: Bold }}
         >
           {name}
         </Text>
@@ -63,14 +74,23 @@ const MeetingNotif: FC<Props> = ({
           color={text.default}
           size={10}
         >
-          Scheduled on
+          {`Created by ${host?.firstName} ${host?.lastName}`}
         </Text>
         <Text
           color={text.default}
           size={10}
         >
-          {getDateTimeString(time?.seconds)}
+          {getDateTimeString(time)}
         </Text>
+      </View>
+      <View style={{ position: 'absolute', top: 10, right: 10 }}>
+        <TouchableOpacity onPress={onClose}>
+          <CloseIcon
+            color={'#565961'}
+            height={RFValue(10)}
+            width={RFValue(10)}
+          />
+        </TouchableOpacity>
       </View>
       <Button
         style={styles.joinButton}
@@ -79,20 +99,27 @@ const MeetingNotif: FC<Props> = ({
         <Text
           color='white'
           size={12}
+          style={{ fontFamily: Regular500 }}
         >
           Join
         </Text>
       </Button>
       <Button
         style={styles.closeButton}
-        onPress={onClose}
+        onPress={() => onClose(true)}
       >
-        <Text
-          color={text.error}
+        <PhoneIcon
+          size={RFValue(20)}
+          type='hangup'
+          color='white'
+        />
+        {/* <Text
+          color={'#CF0327'}
           size={12}
+          style={{ fontFamily: Regular500 }}
         >
           {closeText}
-        </Text>
+        </Text> */}
       </Button>
     </View>
   )

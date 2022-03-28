@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { AntDesign } from '@expo/vector-icons'; 
+import { AntDesign, Feather } from '@expo/vector-icons'; 
 
 interface Props {
   type?: string;
@@ -9,10 +9,23 @@ interface Props {
 }
 
 const CloseIcon: FC<Props> = ({
+  type = '',
   size = 24,
   color = 'black',
   ...otherProps
 }) => {
+
+  if (type === 'chevron-right') {
+    return (
+      <Feather
+        name="chevron-right"
+        size={size}
+        color={color}
+        style={{ fontWeight: 'bold' }}
+        {...otherProps}
+      />
+    );
+  }
 
   return (
     <AntDesign

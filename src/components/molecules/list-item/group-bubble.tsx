@@ -1,25 +1,50 @@
 import React, { FC, useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Image, Platform, Dimensions } from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
-import { CheckIcon, DeleteIcon, WriteIcon } from '@components/atoms/icon';
-import { getChatTimeString } from 'src/utils/formatting'
+import { CheckIcon, DeleteIcon, NewFileIcon, WriteIcon } from '@components/atoms/icon';
+import { getChatTimeString, getFileSize } from 'src/utils/formatting'
 import { primaryColor, bubble, text, outline } from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
+import NewDeleteIcon from '@components/atoms/icon/new-delete';
+import { Regular500 } from '@styles/font';
+import { fontValue } from '@components/pages/activities/fontValue';
+import IAttachment from 'src/interfaces/IAttachment';
+
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'flex-end',
   },
-  bubble: {
-    backgroundColor: primaryColor,
-    borderRadius: 15,
-    padding: 8,
-    paddingHorizontal: 10,
+  bubbleContainer: {
     marginTop: 2,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  bubble: {
+    borderRadius: fontValue(15),
+    padding: fontValue(5),
+    paddingHorizontal: fontValue(10),
+    flexDirection: 'row',
+    alignItems: 'center',
+    ...Platform.select({
+      native: {
+        paddingBottom: Platform.OS === 'ios' ? undefined : 1,
+      },
+      default: {
+        paddingBottom:  undefined,
+      }
+    })
+
+  },
+  imageBubble: {
+    marginRight: 2,
+    marginTop: 2,
+    width: width * 0.3,
+    height: width * 0.3,
+    backgroundColor: bubble.primary,
   },
   image: {
     width: 25,
@@ -31,7 +56,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   seenContainer: {
-    paddingTop: 5,
+    paddingTop: 3,
+    paddingBottom: 10,
     flexDirection: 'row',
   },
   seenTimeContainer: {
@@ -47,20 +73,43 @@ const styles = StyleSheet.create({
     ]
   },
   check: {
-    borderRadius: 12,
-    width: 12,
-    height: 12,
-    borderColor: outline.primary,
+    borderRadius: fontValue(12),
+    width: fontValue(12),
+    height: fontValue(12),
+    borderColor: text.info,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 5,
+    marginLeft: 2,
     paddingLeft: 0.5,
+    ...Platform.select({
+      native: {
+        paddingBottom: Platform.OS === 'ios' ? undefined : 1,
+      },
+      default: {
+        paddingBottom:  undefined,
+      }
+    })
+  },
+  file: {
+    borderColor: '#E5E5E5',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 5,
+    backgroundColor: 'white',
+  },
+  imageFile: {
+    width: width * 0.3,
+    height: width * 0.3,
   }
 })
 
 interface Props {
   message?: string;
+  attachment?: IAttachment;
   sender?: any;
   isSender?: boolean;
   maxWidth?: any;
@@ -74,11 +123,14 @@ interface Props {
   deleted?: boolean;
   unSend?: boolean;
   edited?: boolean;
+  system?: boolean;
+  delivered?: boolean;
   [x: string]: any;
 }
 
 const ChatBubble:FC<Props> = ({
   message,
+  attachment,
   sender = {},
   isSender = false,
   maxWidth = '60%',
@@ -93,45 +145,52 @@ const ChatBubble:FC<Props> = ({
   deleted = false,
   unSend = false,
   edited = false,
+  system = false,
+  delivered = false,
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const getSeen = () => {
-    return seenByOthers.map((seen:any, index:number) => {
-      if (index === 0) {
-        return seen.firstName;
-      }
-      return `, ${seen.firstName}`;
-    });
+
+  const _getSenderName = () => {
+    let result = '';
+    if (sender.title) result += sender.title + ' ';
+    result += sender.firstName;
+    return result;
   }
+
+  const checkIfImage = (uri:any) => {
+    if (uri && (uri.endsWith(".png") || uri.endsWith(".jpg"))) return true;
+    return false;
+  };
 
   return (
     <>
       {
-        (showDetails || showDate) && (
+        (showDetails || showDate || system) && (
           <View style={styles.seenTimeContainer}>
             <Text
               color={text.default}
               size={12}
             >
-              {getChatTimeString(createdAt?.seconds)}
+              {getChatTimeString(createdAt)}
             </Text>
           </View>
         )
       }
       <TouchableOpacity
         onPress={() => setShowDetails(!showDetails)}
-        onLongPress={(isSender && !(deleted || unSend)) ? onLongPress : null}
+        onLongPress={(isSender && !(deleted || unSend || system)) ? onLongPress : null}
         {...otherProps}
       >
         <View style={[styles.container, { maxWidth }, style]}>
           {
             !isSender ?(
               <ProfileImage
-                image={sender?.image}
+                image={sender?.profilePicture?.thumb}
                 name={`${sender.firstName} ${sender.lastName}`}
                 size={25}
                 textSize={10}
+                style={{ marginLeft: -5 }}
               />
             ) : null
           }
@@ -140,7 +199,7 @@ const ChatBubble:FC<Props> = ({
               <View style={{ alignSelf: 'center', marginRight: 0 }}>
                 <WriteIcon
                   type='pen'
-                  color={text.primary}
+                  color={text.info}
                   size={14}
                 />
               </View>
@@ -153,48 +212,91 @@ const ChatBubble:FC<Props> = ({
                   size={10}
                   color={text.default}
                 >
-                  {sender.firstName}
+                  {_getSenderName()}
                 </Text>
               ) : null
             }
-            <View style={[
-              styles.bubble,
-              {
-                backgroundColor: isSender ? bubble.primary : bubble.secondary
-              },
-              (deleted || (unSend && isSender)) && {
-                backgroundColor: '#E5E5E5'
-              },
-            ]}>
-              {
-                (deleted || (unSend && isSender)) ? (
-                  <>
-                    <DeleteIcon
-                      size={18}
-                      color={'#979797'}
-                    />
-                    <Text
-                      style={{ marginLeft: 5 }}
-                      size={14}
-                      color={'#979797'}
-                    >
+            {
+              checkIfImage(attachment?.uri) ? (
+                <Image
+                  resizeMode={'cover'}
+                  style={[
+                    styles.imageBubble,
+                    {
+                      backgroundColor: isSender ? bubble.primary : bubble.secondary
+                    }
+                  ]}
+                  borderRadius={10}
+                  source={{ uri: attachment?.uri }}
+                />
+              ) : (
+                <View style={styles.bubbleContainer}>
+                  <View
+                    style={[
+                      styles.bubble,
                       {
-                        (unSend && isSender) ?
-                        'Unsent for you'
-                        : `${isSender ? 'You' : sender.firstName } deleted a message`
-                      }
-                    </Text>
-                  </>
-                ) : (
-                  <Text
-                    size={14}
-                    color={isSender ? 'white' : text.default}
+                        backgroundColor: isSender ? bubble.primary : bubble.secondary
+                      },
+                      (deleted || (unSend && isSender) || system) && {
+                        backgroundColor: '#E5E5E5'
+                      },
+                    ]}
                   >
-                    {message}
-                  </Text>
-                )
-              }
-            </View>
+                    {
+                      (deleted || (unSend && isSender)) ? (
+                        <>
+                          <NewDeleteIcon
+                            height={fontValue(18)}
+                            width={fontValue(18)}
+                            color={'#979797'}
+                          />
+                          <Text
+                            style={{ marginLeft: 5 }}
+                            size={14}
+                            color={'#979797'}
+                          >
+                            {
+                              (unSend && isSender) ?
+                              'Unsent for you'
+                              : `${isSender ? 'You' : sender.firstName } deleted a message`
+                            }
+                          </Text>
+                        </>
+                      ) : !!attachment ? (
+                        <View style={styles.file}>
+                          <NewFileIcon
+                            color={'#606A80'}
+                          />
+                          <View style={{ paddingHorizontal: 5, maxWidth: width * 0.3 }}>
+                            <Text
+                              size={12}
+                              color={'#606A80'}
+                            >
+                              {attachment.name}
+                            </Text>
+                            <Text
+                              size={10}
+                              color={'#606A80'}
+                              style={{ top: -2 }}
+                            >
+                              {getFileSize(attachment.size)}
+                            </Text>
+                          </View>
+                          <View style={{ width: 10 }} />
+                        </View>
+                      ) : (
+                        <Text
+                          size={14}
+                          color={(isSender && !system) ? 'white' : 'black'}
+                        >
+                          {message}
+                        </Text>
+                      )
+                    }
+                  </View>
+                </View>
+              )
+            }
           </View>
           {
             (edited && !isSender && !(deleted || unSend)) && (
@@ -208,14 +310,14 @@ const ChatBubble:FC<Props> = ({
             )
           }
           {
-            (!isSeen && isSender) && (
+            (!isSeen && isSender && !deleted && !system) && (
               <View
-                style={styles.check}
+                style={[styles.check, delivered && { backgroundColor: text.info }]}
               >
                 <CheckIcon
                   type='check1'
                   size={8}
-                  color={text.primary}
+                  color={delivered ? 'white' : text.info}
                 />
               </View>
             )
@@ -243,8 +345,8 @@ const ChatBubble:FC<Props> = ({
                 >
                   <Text
                     color={text.default}
-                    weight={'600'}
                     size={10}
+                    style={{ fontFamily: Regular500 }}
                   >
                     {'Seen by '}
                   </Text>
@@ -259,7 +361,7 @@ const ChatBubble:FC<Props> = ({
                       <ProfileImage
                         style={[{ marginHorizontal: 1, }, isSender && styles.flipX]}
                         key={seen._id}
-                        image={seen?.image}
+                        image={seen?.profilePicture?.thumb}
                         name={`${seen.firstName} ${seen.lastName}`}
                         size={12}
                         textSize={5}

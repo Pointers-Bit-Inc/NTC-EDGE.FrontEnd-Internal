@@ -9,13 +9,19 @@ import { ArrowRightIcon, CloseIcon, ExclamationIcon, RightIcon } from '@atoms/ic
 import Alert from '@atoms/alert';
 import Button from '@atoms/button';
 import NavBar from '@molecules/navbar';
-import { text } from '@styles/color';
+import {disabledColor , text} from '@styles/color';
 import styles from './styles';
 import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import {resetUser , setUser} from 'src/reducers/user/actions'
 import { resetMeeting } from 'src/reducers/meeting/actions';
 import { resetChannel } from 'src/reducers/channel/actions';
 import {RFValue} from "react-native-responsive-fontsize";
+import Api from "../../../services/api";
+import {StackActions} from "@react-navigation/native";
+import {fontValue} from "@pages/activities/fontValue";
+import {setApplicationItem} from "../../../reducers/application/actions";
+import OneSignal from 'react-native-onesignal';
+import useOneSignal from 'src/hooks/useOneSignal';
 
 export default ({
   navigation
@@ -25,49 +31,56 @@ export default ({
   const profilePicture = user?.profilePicture?.small;
   const photo = profilePicture ? {uri: profilePicture} : require('@assets/avatar.png');
   const [visible, setVisible] = useState(false);
+  const { destroy } = useOneSignal(user);
   const settings = [
-    {
+    /*{
       label: 'Notifications',
       value: 'notifications',
-      icon: <BellIcon width={RFValue(21)} height={RFValue(21)} />,
-      onPress: () => {},
+      disabled: true,
+      icon: <BellIcon disabled={true} width={fontValue(21)} height={fontValue(21)} />,
+      onPress: () => {alert(123)},
     },
     {
       label: 'Help Center',
       value: 'help-center',
-      icon: <DonutIcon width={RFValue(21)} height={RFValue(21)} />,
+      disabled: true,
+      icon: <DonutIcon disabled={true} width={fontValue(21)} height={fontValue(21)} />,
       onPress: () => {},
     },
     {
       label: 'About',
       value: 'about',
-      icon: <ExclamationIcon  size={RFValue(21)} type='circle' />,
+      disabled: true,
+      icon: <ExclamationIcon color={disabledColor} disabled={true}  size={fontValue(21)} type='circle' />,
       onPress: () => {},
-    },
+    },*/
   ];
   const logout = {
     label: 'Log out',
     value: 'logout',
-    icon: <LogoutIcon width={RFValue(21)} height={RFValue(21)} color={text.error} />,
+    icon: <LogoutIcon width={fontValue(21)} height={fontValue(21)} color={text.error} />,
     onPress: () => setVisible(true),
   };
-  const onLogout = useCallback(() => {
+
+  const onLogout =  useCallback(() => {
+    const api = Api(user.sessionToken);
     setVisible(false)
-    dispatch(resetUser());
-    dispatch(resetMeeting());
-    dispatch(resetChannel());
     setTimeout(() => {
-      navigation.replace('Login');
+      dispatch(setApplicationItem({}))
+      dispatch(resetUser());
+      dispatch(resetMeeting());
+      dispatch(resetChannel());
+      destroy();
+      navigation.dispatch(StackActions.replace('Login'));
     }, 500);
   }, []);
-
   const renderRow = ({item}: any) => {
     return (
-      <TouchableOpacity onPress={item?.onPress}>
+      <TouchableOpacity disabled={item?.disabled ? true : false} onPress={item?.onPress}>
         <View style={[styles?.row, {justifyContent: 'space-between'}]}>
           <View style={styles?.row}>
             {item?.icon}
-            <Text style={[styles.textSettings, item?.value === 'logout' && {color: text.error}]}>{item?.label}</Text>
+            <Text style={[styles.textSettings, !!item?.disabled && {color: disabledColor} , item?.value === 'logout' && {color: text.error}]}>{item?.label}</Text>
           </View>
           {
             item?.value !== 'logout' &&
@@ -107,7 +120,7 @@ export default ({
           </Button>
         </View>
 
-        {separator}
+        {!!settings.length &&separator}
 
         <View style={styles.sectionContainer}>
           <FlatList

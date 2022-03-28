@@ -4,6 +4,7 @@ import OTPField from './otp-field';
 import DropdownField from './dropdown-field';
 import PasswordField from './password-field';
 import SearchField from './search-field';
+import InputTags from './input-tag';
 
 export {
   DateTimeField,
@@ -12,4 +13,5 @@ export {
   OTPField,
   PasswordField,
   SearchField,
+  InputTags,
 };

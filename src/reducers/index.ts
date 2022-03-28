@@ -7,6 +7,7 @@ import activity from './activity/reducers';
 import application from './application/reducers';
 import channel from './channel/reducers';
 import meeting from './meeting/reducers';
+import layout from "./layout/reducers";
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
@@ -14,6 +15,7 @@ const persistConfig = {
 
 export default combineReducers({
   user: persistReducer(persistConfig, user),
+  layout,
   theme,
   activity,
   application,

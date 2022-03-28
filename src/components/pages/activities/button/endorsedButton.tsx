@@ -1,25 +1,32 @@
-import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {ActivityIndicator , StyleSheet , Text , TouchableOpacity , TouchableWithoutFeedback , View} from "react-native";
 import {FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import ForwardIcon from "@assets/svg/forward";
-import React from "react";
+import React , {useEffect , useState} from "react";
 import {Bold} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
+import {fontValue} from "@pages/activities/fontValue";
+import {Hoverable} from "react-native-web-hooks";
 
 export function EndorsedButton(props: { currentLoading: string, allButton: boolean, onPress: () => void }) {
-    return <View style={{flex: 0.8,}}>
-        <TouchableOpacity
+   const [pressed, setPressed] = useState(false)
+    
+    return  <Hoverable>
+        { isHovered => (<View style={{flex: 0.8,}}>
+        <TouchableWithoutFeedback
+            onPressIn={()=>setPressed(true)}
+            onPressOut={()=>setPressed(false)}
             disabled={(props.currentLoading === FOREVALUATION || props.allButton)}
             onPress={props.onPress}
         >
             <View style={[{
                 width: "85%",
                 alignSelf: "flex-end",
-                borderWidth: (props.allButton) ? 2 : 1,
+                borderWidth: (props.allButton || isHovered) ? 2 :  1,
                 borderRadius: 24,
-                borderColor: "#c4c4c4",
-                backgroundColor: "#fff",
+                borderColor: props.allButton   ? "#c4c4c4" :  pressed ? "#041B6E" :  isHovered ? "#7792F3" : "#c4c4c4",
+                backgroundColor:  props.allButton  ? "#fff" :  pressed ? "#041B6E" :  isHovered ? "#E0E7FE" : "#fff",
                 height: undefined,
-                paddingVertical: props.currentLoading === FOREVALUATION ? RFValue(8.5) : RFValue(10)
+                paddingVertical: props.currentLoading === FOREVALUATION ? fontValue(8.5) : (props.allButton || isHovered) ?  fontValue(9) : fontValue(10)
             }]}>
                 <View
                     style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
@@ -29,17 +36,18 @@ export function EndorsedButton(props: { currentLoading: string, allButton: boole
                         ) : (
                             <Text style={[styles.endorse, {
                                 fontFamily: Bold,
-                                color: (props.allButton) ? "#C4C4C4" : "#031A6E",
+                                color: (props.allButton) ? "#C4C4C4" : pressed ? "#fff" : "#031A6E",
                             }]}>Endorse</Text>
 
                         )
                     }
-                    <ForwardIcon isDisable={props.allButton} style={{marginLeft: 6}}/>
+                    <ForwardIcon isdisable={props.allButton  } color={pressed && "#fff"} style={{marginLeft: 6}}/>
                 </View>
 
             </View>
-        </TouchableOpacity>
-    </View>;
+        </TouchableWithoutFeedback>
+    </View>) }
+    </Hoverable>;
 }
 
 

@@ -3,6 +3,8 @@ import { View, StyleSheet } from 'react-native'
 import lodash from 'lodash';
 import ProfileImage from '@components/atoms/image/profile';
 import { primaryColor } from '@styles/color';
+import {isMobile} from "@pages/activities/isMobile";
+import {fontValue} from "@pages/activities/fontValue";
 
 const styles = StyleSheet.create({
   image: {
@@ -13,7 +15,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   border: {
-    borderWidth: 1.5,
+    borderWidth: isMobile ? fontValue(2) : 2,
     borderColor: 'white',
   },
   topPosition: {
@@ -33,31 +35,60 @@ interface Props {
   size?: number;
   textSize?: number;
   backgroundColor?: string;
+  inline?: boolean;
 }
 
 const GroupImage: FC<Props> = ({
   participants = [],
   size = 35,
   textSize = 14,
+  inline = false
 }) => {
   const imageSize = size / 1.4;
   if (lodash.size(participants) === 1) {
     return (
       <ProfileImage
-        image={participants[0]?.image}
-        name={`${participants[0].firstName} ${participants[0].lastName}`}
+        image={participants[0]?.profilePicture?.thumb}
+        name={`${participants[0]?.firstName} ${participants[0]?.lastName}`}
         size={size}
         textSize={textSize}
+        isOnline={participants[0]?.isOnline}
       />
     );
   }
+
+  if (inline) {
+    return (
+      <View style={{ width: fontValue((imageSize * 2) - 10), height: fontValue(imageSize) }}>
+        <View style={styles.topPosition}>
+          <ProfileImage
+            style={styles.border}
+            image={participants[0]?.profilePicture?.thumb}
+            name={`${participants[0]?.firstName} ${participants[0]?.lastName}`}
+            size={imageSize}
+            textSize={textSize/2}
+          />
+        </View>
+        <View style={styles.bottomPosition}>
+          <ProfileImage
+            style={styles.border}
+            image={participants[1]?.profilePicture?.thumb}
+            name={`${participants[1]?.firstName} ${participants[1]?.lastName}`}
+            size={imageSize}
+            textSize={textSize/2}
+          />
+        </View>
+      </View>
+    )
+  }
+
   return (
-    <View style={{ width: size, height: size }}>
+    <View style={{ width: fontValue(size), height: fontValue(size) }}>
       <View style={styles.topPosition}>
         <ProfileImage
           style={styles.border}
-          image={participants[0]?.image}
-          name={`${participants[0].firstName} ${participants[0].lastName}`}
+          image={participants[0]?.profilePicture?.thumb}
+          name={`${participants[0]?.firstName} ${participants[0]?.lastName}`}
           size={imageSize}
           textSize={textSize/2}
         />
@@ -65,8 +96,8 @@ const GroupImage: FC<Props> = ({
       <View style={styles.bottomPosition}>
         <ProfileImage
           style={styles.border}
-          image={participants[1]?.image}
-          name={`${participants[1].firstName} ${participants[1].lastName}`}
+          image={participants[1]?.profilePicture?.thumb}
+          name={`${participants[1]?.firstName} ${participants[1]?.lastName}`}
           size={imageSize}
           textSize={textSize/2}
         />

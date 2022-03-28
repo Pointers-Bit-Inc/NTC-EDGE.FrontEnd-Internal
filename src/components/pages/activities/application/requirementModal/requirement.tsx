@@ -1,147 +1,277 @@
-import React , {useState} from "react";
-import {Dimensions , Image , Modal , ScrollView , StyleSheet , Text , TouchableOpacity , View} from "react-native";
-import RequirementModal from "@pages/activities/application/requirementModal/index";
+import React from "react";
+import {
+    Dimensions ,
+    Image ,
+    Modal ,
+    ScrollView ,
+    Text ,
+    TouchableOpacity ,
+    useWindowDimensions ,
+    View
+} from "react-native";
 import FileOutlineIcon from "@assets/svg/fileOutline";
-import {requirementStyles, styles} from "@pages/activities/application/requirementModal/styles";
-import {RFValue} from "react-native-responsive-fontsize";
+import {requirementStyles , styles} from "@pages/activities/application/requirementModal/styles";
 import AnimatedImage from 'react-native-animated-image-viewer';
 import FadeBackground from "@assets/svg/fade-background";
-const { width  } = Dimensions.get("screen");
+import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
+import {RootStateOrAny , useSelector} from "react-redux";
+import ImageZoom from 'react-native-image-pan-zoom';
+import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
+import {Card} from "@pages/activities/application/requirementModal/card";
+import PdfViewr from "@pages/activities/application/pdf/index";
+import FileIcon from "@assets/svg/file";
+import WebView from "react-native-webview";
 
-class RequirementView extends React.Component<{ requirement: any }> {
-    source = { uri : this.props?.requirement?.links?.medium || "https://dummyimage.com/350x350/fff/aaa" };
-    imageModal = null;
-    image = null;
+const { width , height } = Dimensions.get("screen");
+
+class RequirementView extends React.Component<{ requirement: any, rightLayoutComponent: any, dimensions: any }> {
+
+
     state = {
-        visible : false
+        onLoadStart : true ,
+        zoomed : false ,
+        count : 1 ,
+        onLoad : false ,
+        visible : false ,
+        source : { uri : this.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa" , } ,
+        _imageSize : {
+            width : 0 ,
+            height : 0
+        } ,
+        _sourceMeasure : {
+            width : 0 ,
+            height : 0 ,
+            pageX : 0 ,
+            pageY : 0
+        } ,
+        imageModal : null ,
+        image : null ,
+        fileName : "" ,
+        extension : ''
     };
-    _imageSize = {
-        width : 0 ,
-        height : 0
-    };
-    _sourceMeasure = {
-        width : 0 ,
-        height : 0 ,
-        pageX : 0 ,
-        pageY : 0
-    };
+    imageZoom = null;
+
     _showImageModal = () => this.setState({ visible : true });
+
     _hideImageModal = () => this.setState({ visible : false });
-    _requestClose = () => this.imageModal.close();
+
+    _requestClose = () => {
+        this.state.imageModal?.close();
+        if (!isMobile) {
+            this._hideImageModal()
+        }
+    };
     _showImage = () => {
-        this.image.measure((x , y , width , height , pageX , pageY) => {
-            this._sourceMeasure = {
-                width ,
-                height ,
-                pageX ,
-                pageY
-            };
+        this.state.image?.measure((x , y , width , height , pageX , pageY) => {
+            this.setState({
+                _sourceMeasure : {
+                    width: width || 0 ,
+                    height: height || 0 ,
+                    pageX: pageX || 0 ,
+                    pageY: pageY || 0
+                }
+            });
             this._showImageModal();
         });
     };
 
+    componentDidUpdate(prevProps , prevState) {
+
+        if (prevProps?.requirement?.medium != this.props?.requirement?.medium) {
+
+            this.setImage();
+
+        }
+    }
+
     componentDidMount() {
-        Image.getSize(this?.source?.uri , (width , height) => {
-            this._imageSize = {
-                width : width ,
-                height : height
-            }
-        });
+        this.setImage();
     }
 
     render() {
         return <>
-            <View style={ requirementStyles.container }>
-                <View style={ requirementStyles.card }>
-                    <View style={ requirementStyles.cardContainer }>
-                        <View style={ requirementStyles.cardLabel }>
-                            <View style={ requirementStyles.cardTitle }>
-                                <Text style={ requirementStyles.title }>{ this.props?.requirement?.title }</Text>
-                                <Text
-                                    style={ requirementStyles.description }>{ this.props?.requirement?.description }</Text>
-                            </View>
-                            <View style={ [{ paddingTop : 30 , paddingBottom : 9 } , requirementStyles.cardDocument] }>
+            <View style={ [requirementStyles.cardDocument] }>
 
 
-                                <TouchableOpacity ref={ image => (
-                                    this.image = image) }
-                                                  onPress={ this._showImage } style={ {
-                                    alignItems : "center" ,
-                                    flex : 1 ,
-                                    flexDirection : "row"
-                                } }>
-                                    <View style={ { paddingRight : RFValue(10) } }>
-                                        <FileOutlineIcon height={RFValue(20)} width={RFValue(16)}/>
-                                    </View>
-                                    <Text style={ requirementStyles.text }>{ this.props?.requirement?.file?.name }</Text>
-                                </TouchableOpacity>
-                            </View>
-
-                        </View>
-                        <View style={ {
-                            height : RFValue(300) ,
-                            backgroundColor : "rgba(220,226,229,1)" ,
-                            borderWidth : 1 ,
-                            borderColor : "rgba(213,214,214,1)" ,
-                            borderStyle : "dashed" ,
-                        } }>
-                            <TouchableOpacity ref={ image => (
-                                this.image = image) }
-                                              onPress={ this._showImage }>
-                                <Image
-
-                                    style={ { width : undefined , height : RFValue(300) } }
-                                    source={ {
-                                        uri : this.props?.requirement?.links?.small ,
-                                    } }
-                                />
-                            </TouchableOpacity>
-                        </View>
-
+                { <TouchableOpacity ref={ image => (
+                    this.state.image = image) }
+                                    onPress={ this._showImage } style={ {
+                    alignItems : "center" ,
+                    flex : 1 ,
+                    flexDirection : "row"
+                } }>
+                    <View style={ { paddingRight : fontValue(10) } }>
+                        <FileOutlineIcon height={ fontValue(20) } width={ fontValue(16) }/>
                     </View>
-                </View>
+                    <Text
+                        style={ requirementStyles.text }>{ this.state.fileName }</Text>
+                </TouchableOpacity> }
             </View>
 
-            <Modal visible={ this.state.visible } transparent onRequestClose={ this._requestClose }>
-                <View style={ styles.container}>
-                    <View style={ styles.rect2 }>
-                        <View style={ {  alignSelf :  'flex-end' ,  paddingHorizontal : 15 , paddingVertical : 15 } }>
-                            <TouchableOpacity onPress={this._requestClose}>
+            <View style={ { alignItems : isMobile  ? "center" : undefined } }>
+                <TouchableOpacity disabled={this.state.onLoadStart} ref={ image => (
+                    this.state.image = image) }
+                                  onPress={ this._showImage }>
+
+                    {
+                        this.state.extension ? <FileIcon
+                            color={ "#606A80" }
+                            width={ 150 }
+                            height={ 150 }
+                        /> : <Image
+                            resizeMode={ "cover" }
+                            style={ {
+                                marginBottom : isMobile ? undefined : 25 ,
+                                backgroundColor : "rgba(220,226,229,1)" ,
+                                borderWidth : 1 ,
+                                borderColor : "rgba(213,214,214,1)" ,
+                                borderStyle : "solid" ,
+                                width : isMobile ? 300 : 240 ,
+                                height : isMobile ? 300 : 160 ,
+                                borderRadius : 10
+                            } }
+                            source={ {
+                                uri : this.props?.requirement?.small ,
+                            } }
+                        />
+
+
+                    }
+
+
+                </TouchableOpacity>
+            </View>
+
+
+            <Modal visible={ this.state?.visible } transparent={ true } onRequestClose={ this._hideImageModal }>
+
+                <View style={ [styles.container , isMobile  || this.props.dimensions?.width <768 ? {} : {
+                    alignItems : "flex-end" ,
+                    top : this.props?.rightLayoutComponent?.top
+                }] }>
+                    <OnBackdropPress styles={ {} } onPressOut={ this._hideImageModal }/>
+                    <OnBackdropPress styles={ isMobile  || this.props.dimensions?.width <768 ? {} :  {
+                        width : this.props?.rightLayoutComponent?.width || undefined ,
+                        backgroundColor : "rgba(0, 0, 0, 0.5)"
+                    } }/>
+                    <View style={ [styles.rect2 ,  { width : this.props?.rightLayoutComponent?.width }] }>
+                        <View style={ { alignSelf : 'flex-end' , paddingHorizontal : 15 , paddingVertical : 15 } }>
+                            <TouchableOpacity onPress={ this._hideImageModal }>
                                 <Text style={ styles.close }>Close</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View   >
 
 
 
-                        <Text style={ styles.fileName }>{ this.props?.requirement?.file?.name }</Text>
-                        { this.props?.requirement?.file?.name &&
-                        <FadeBackground style={ {  position : "absolute" , zIndex : 1 } }
-                                        width={ width }></FadeBackground> }
+                        { this.state.extension ?
 
-                                <AnimatedImage
+                          <PdfViewr  width={ this.props?.rightLayoutComponent?.width }
+                                    height={ this.props?.rightLayoutComponent?.height }
+                                    requirement={ this.props?.requirement }/> : (
+                             isMobile  || this.props.dimensions?.width <768 ? <AnimatedImage
+                                           ref={ imageModal => (
+                                               this.state.imageModal = imageModal) }
+                                           source={ this?.state?.source }
+                                           sourceMeasure={ this.state?._sourceMeasure }
+                                           imageSize={ this.state._imageSize }
+                                           onClose={ this._hideImageModal }
+                                           animationDuration={ 200 }
+                                       /> :
+                                  //height = height * (this.state._imageSize.height / width)
 
-                                    ref={ imageModal => (
-                                        this.imageModal = imageModal) }
-                                    source={ this.source }
-                                    sourceMeasure={ this._sourceMeasure }
-                                    imageSize={ this._imageSize }
-                                    onClose={ this._hideImageModal }
-                                    animationDuration={ 200 }
-                                />
+                              <ImageZoom onSwipeDown={ this._hideImageModal } enableSwipeDown={ true }
+                                         cropWidth={ this.props?.rightLayoutComponent?.width }
+                                         enableDoubleClickZoom={ true }
+                                         cropHeight={ this.props?.rightLayoutComponent?.height }
+                                         imageWidth={ this.props?.rightLayoutComponent?.width }
+                                         imageHeight={ height * (
+                                             this.state._imageSize?.height / width) }>
+                                  <Image style={ {
+                                      width : this.state._imageSize.width ,
+                                      height : height * (
+                                          this.state._imageSize.height / width)
+                                  } }
+                                         resizeMode={ "contain" }
+                                         source={ this?.state?.source }/>
+                              </ImageZoom>)
+                        }
                     </View>
-                </View>
             </Modal>
         </>;
+    }
+
+    private setImage() {
+        this.setState({
+            ...this.state ,
+            source : {
+                ...this?.state?.source ,
+                uri : this?.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa"
+            },
+        });
+
+        let _fileName = this.props?.requirement?.small?.split("/")?.[this.props?.requirement?.small?.split("/")?.length - 1];
+        this.setState({
+            fileName : _fileName ,
+            extension : (
+                /(pdf|docx|doc)$/ig.test(_fileName.substr((
+                    _fileName.lastIndexOf('.') + 1)))) ,
+        });
+
+        Image.getSize(this.props?.requirement?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
+        
+            this.setState({
+                _imageSize : {
+                    width : width || 300 ,
+                    height : height || 300
+                }
+            });
+
+            this.setState({onLoadStart: false})
+        }, error => {
+            this.setState({onLoadStart: true})
+        })
     }
 }
 
 
 const Requirement = (props: any) => {
-    return <ScrollView style={ { backgroundColor : "#fff" , width : "100%" } }>
+    const { rightLayoutComponent } = useSelector((state: RootStateOrAny) => state.application);
+    const dimensions = useWindowDimensions();
+    return <ScrollView style={ { backgroundColor : "#f8f8f8" , width : "100%" } }>
         { props?.requirements?.map((requirement: any , index: number) => {
-            return <RequirementView key={ index } requirement={ requirement }/>
+            return <View style={ { padding : 10 } }>
+                <Card>
+                    <View style={ [{ paddingHorizontal : isMobile ? 20 : 40 }] }>
+                        <View style={ requirementStyles.cardTitle }>
+                            <Text style={ requirementStyles.title }>{ requirement?.title }</Text>
+                            <Text
+                                style={ requirementStyles.description }>{ requirement?.description }</Text>
+                        </View>
+
+
+                        <ScrollView style={ { flex : 1 , } }>
+                            {
+                                /*[{
+                                    "original": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "thumb": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "small": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "medium": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "large": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
+                                    "xlarge": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf"
+                                }]*/
+                                requirement?.links?.map((link: any , idx: number) => {
+                                    return <RequirementView dimensions={dimensions} rightLayoutComponent={ rightLayoutComponent } key={ idx }
+                                                            requirement={ link }/>
+                                })
+                            }
+                        </ScrollView>
+
+
+                    </View>
+                </Card>
+            </View>
         })
         }
     </ScrollView>

@@ -5,7 +5,7 @@ import {
 const Meet = ({ navigation }) => {
 
   return (
-    <View >
+    <View>
 
     </View>
   )

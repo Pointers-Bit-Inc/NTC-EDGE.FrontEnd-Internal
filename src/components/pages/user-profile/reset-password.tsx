@@ -30,7 +30,7 @@ function ResetPassword({navigation}) {
                         <Text onPress={() =>navigation.goBack()}  style={styles.close}>Close</Text>
                     </View>
                 </View>
-               <View >
+               <View>
                    <Text style={styles.resetPassword}>Reset Password</Text>
 
                    <TextInput

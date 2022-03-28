@@ -1,5 +1,14 @@
 import React , {useEffect , useMemo , useState} from "react";
-import {Alert , Modal , Platform , StatusBar , StyleSheet , Text , TouchableOpacity , View} from "react-native";
+import {
+    Alert ,
+    Modal ,
+    Platform ,
+    StyleSheet ,
+    Text ,
+    TouchableOpacity ,
+    useWindowDimensions ,
+    View
+} from "react-native";
 import {primaryColor} from "@styles/color";
 import Disapproval from "@pages/activities/modal/disapproval";
 import Endorsed from "@pages/activities/modal/endorse";
@@ -20,7 +29,7 @@ import {
     VERIFIED ,
 } from "../../../reducers/activity/initialstate";
 import Api from 'src/services/api';
-import {updateApplicationStatus} from "../../../reducers/application/actions";
+import {setRightLayoutComponent , updateApplicationStatus} from "../../../reducers/application/actions";
 
 import CustomAlert from "@pages/activities/alert/alert";
 import CloseIcon from "@assets/svg/close";
@@ -28,16 +37,15 @@ import {ApprovedButton} from "@pages/activities/button/approvedButton";
 import {DeclineButton} from "@pages/activities/button/declineButton";
 import {EndorsedButton} from "@pages/activities/button/endorsedButton";
 import {Bold} from "@styles/font";
-import {RFValue} from "react-native-responsive-fontsize";
-
-const { ModalTab } = Platform.select({
-    native: () => require('@pages/activities/modalTab'),
-    default: () => require("@pages/activities/modalTab.web")
-})();
+import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
+import {useComponentLayout} from "../../../hooks/useComponentLayout";
+import ModalTab from "@pages/activities/modalTab/modalTab";
 
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
-
+    const dimensions = useWindowDimensions();
+    const NativeView = isMobile || dimensions?.width <= 768 ? Modal : View;
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [change , setChange] = useState<boolean>(false);
     const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
@@ -81,15 +89,14 @@ function ActivityModal(props: any) {
         }
 
         if (user?.role?.key == ACCOUNTANT) {
-            const assignUserId = status == DECLINED && props?.details.approvalHistory[0].status == FORAPPROVAL && props?.details.approvalHistory[0].userId != user._id;
-            assignUserId ? setAssignId(props?.details.approvalHistory[0].userId) : (
+            const assignUserId = status == DECLINED && props?.details?.approvalHistory?.[0]?.status == FORAPPROVAL && props?.details?.approvalHistory?.[0]?.userId != user?._id;
+            assignUserId ? setAssignId(props?.details?.approvalHistory?.[0].userId) : (
                 assignId ? assignId : undefined);
             params = {
-                status : (
-                             assignUserId) ? FOREVALUATION : status ,
-                assignedPersonnel : assignUserId ? props?.details.approvalHistory[0].userId : (
+                status : (assignUserId) ? FOREVALUATION : status ,
+                assignedPersonnel : assignUserId ? props?.details?.approvalHistory?.[0].userId : (
                     assignId ? assignId : undefined) ,
-                addDocumentaryStamp : true ,
+
                 remarks : remarks ? remarks : undefined ,
             };
         }
@@ -109,12 +116,16 @@ function ActivityModal(props: any) {
                     setCurrentLoading('');
                     if (res.status === 200) {
                         if (res.data) {
-                            console.log("res?.data?.assignedPersonnel" , res?.data?.assignedPersonnel , assignId);
-                            props.onChangeAssignedId(res.data);
+
+                            const data = res.data?.doc || res?.data;
+
+
+                            console.log(data?.assignedPersonnel?._id || data?.assignedPersonnel , "assigned personnel");
+                            props.onChangeAssignedId(data);
                             dispatch(updateApplicationStatus({
-                                application : res.data ,
+                                application : data ,
                                 status : status ,
-                                assignedPersonnel : res?.data?.assignedPersonnel ,
+                                assignedPersonnel : data?.assignedPersonnel?._id || data?.assignedPersonnel ,
                                 userType : user?.role?.key
                             }));
 
@@ -147,26 +158,28 @@ function ActivityModal(props: any) {
     }
 
     useEffect(() => {
-        console.log(props?.details);
-        return () => {
 
+        return () => {
             setChange(false);
             setStatus("");
             setAssignId("")
         }
-    } , []);
+    } , [props?.details._id]);
 
     const statusMemo = useMemo(() => {
-
         setStatus(status);
-        setAssignId(assignId || props?.details?.assignedPersonnel);
+        setAssignId(assignId || (
+            props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel));
         return status ? (
             cashier ? PaymentStatusText(status) : StatusText(status)) : (
                    cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
-    } , [assignId , status , props?.details?.assignedPersonnel , props.details.paymentStatus , props.details.status]);
+    } , [assignId , status , (
+        props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel) , props.details.paymentStatus , props.details._id , props.details.status]);
     const approveButton = statusMemo === APPROVED || statusMemo === VERIFIED;
     const declineButton = cashier ? (
         statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED;
+
+
     const allButton = (
                           cashier) ? (
                           !!props?.details?.paymentMethod ? (
@@ -174,15 +187,18 @@ function ActivityModal(props: any) {
                                   declineButton || approveButton || grayedOut)) : true) : (
                           assignId != user?._id ? true : (
                               declineButton || approveButton || grayedOut));
-
     const [alertLoading , setAlertLoading] = useState(false);
     const [approvalIcon , setApprovalIcon] = useState(false);
     const [title , setTitle] = useState("Approve Application");
     const [showClose , setShowClose] = useState(false);
-
+    const [activityModalScreenComponent , onActivityModalScreenComponent] = useComponentLayout();
+    useEffect(() => {
+        dispatch(setRightLayoutComponent(activityModalScreenComponent))
+    } , [activityModalScreenComponent]);
     return (
-        <Modal
-
+        <NativeView
+            onLayout={ onActivityModalScreenComponent }
+            style={ { height : "100%" } }
             supportedOrientations={ ['portrait' , 'landscape'] }
             animationType="slide"
             transparent={ false }
@@ -192,9 +208,9 @@ function ActivityModal(props: any) {
                 props.onDismissed(change);
                 setChange(false)
             } }>
-           
-            <View style={ approveVisible || visible || endorseVisible || showAlert ? {
 
+            <View style={ isMobile && (
+                approveVisible || visible || endorseVisible || showAlert) ? {
                 position : "absolute" ,
                 zIndex : 2 ,
                 top : 0 ,
@@ -202,7 +218,7 @@ function ActivityModal(props: any) {
                 width : "100%" ,
                 height : "100%" ,
                 backgroundColor : "rgba(0, 0, 0, 0.5)" ,
-            } : { position : "absolute" ,} }>
+            } : { position : "absolute" , } }>
 
             </View>
 
@@ -232,24 +248,35 @@ function ActivityModal(props: any) {
                     }
                     // setShowAlert(false)
                     setAlertLoading(true);
-                    onChangeApplicationStatus(status , () => {
-                        setApprovalIcon(true);
-                        setAlertLoading(false);
+                    onChangeApplicationStatus(status , (err) => {
 
-                        setTitle("Application Approved");
-                        setMessage("Application has been approved.");
+
+                        setAlertLoading(false);
+                        if(!err){
+                            setApprovalIcon(true);
+                            setTitle("Application Approved");
+                            setMessage("Application has been approved.");
+                        }else{
+                            setApprovalIcon(false);
+                            setTitle("Alert");
+                            setMessage(err?.message || 'Something went wrong.');
+
+                        }
                         setShowClose(true)
                     })
                 } }
                 show={ showAlert } title={ title }
                 message={ message }/>
             <View style={ { flex : 1 } }>
-                <View style={ {
+                { (
+                    isMobile) && <View style={ {
                     flexDirection : "row" ,
-                    borderBottomColor: "#F0F0F0",
+                    alignItems : "center" ,
+                    borderBottomColor : "#F0F0F0" ,
+
                     justifyContent : "space-between" ,
                     padding : 15 ,
-                    paddingTop : 40
+                    paddingTop : 40 ,
                 } }>
                     <TouchableOpacity onPress={ () => {
                         setAssignId("");
@@ -257,66 +284,88 @@ function ActivityModal(props: any) {
                         props.onDismissed(change);
                         setChange(false)
                     } }>
-                        <CloseIcon color="#606A80"/>
+
+                        <CloseIcon width={ fontValue(16) } height={ fontValue(16) } color="#606A80"/>
                     </TouchableOpacity>
-                    <Text style={ styles.applicationType }>{ props?.details?.applicationType }</Text>
+
+                    <Text
+                        style={ [styles.applicationType, {width: "90%"}] }>{ props?.details?.applicationType || props?.details?.service?.name }</Text>
                     <View></View>
-                </View>
+                </View> }
 
-                <ModalTab details={ props.details } status={ status }/>
+                <ModalTab dismissed={ () => {
+                    props.onDismissed(change);
+                } } details={ props.details } status={ status }/>
                 {
-                    <View style={ styles.footer }>
-                        { getRole(user , [DIRECTOR , EVALUATOR , CASHIER , ACCOUNTANT]) &&
-                        <View style={ styles.groupButton }>
+                    <View style={ {
+                        paddingHorizontal : !isMobile ? 64 : 0 ,
+                        borderTopColor : 'rgba(0, 0, 0, 0.1)' ,
+                        borderTopWidth : 1 , backgroundColor : "white"
+                    } }>
+                        <View style={ !(
+                            isMobile) && {
+                            width : dimensions?.width <= 768 ? "100%" : "60%" ,
+                            alignSelf : "flex-end"
+                        } }>
+                            <View style={ styles.footer }>
+                                { getRole(user , [DIRECTOR , EVALUATOR , CASHIER , ACCOUNTANT]) &&
+                                <View style={ styles.groupButton }>
 
-                            <ApprovedButton
-                                currentLoading={ currentLoading }
-                                allButton={ allButton }
-                                onPress={ () => {
+                                    <ApprovedButton
+                                        user={ user }
+                                        currentLoading={ currentLoading }
+                                        allButton={ allButton }
+                                        onPress={ () => {
 
-                                    if (cashier) {
-                                        onShowConfirmation(APPROVED)
-                                    } else {
-                                        setApproveVisible(true)
-                                    }
-
-
-                                } }/>
-
-                            <DeclineButton
-                                currentLoading={ currentLoading }
-                                allButton={ allButton }
-                                onPress={ () => {
-                                    setVisible(true)
-                                } }/>
-
-                        </View> }
-
-                        { getRole(user , [EVALUATOR]) &&
-                        <EndorsedButton
-                            currentLoading={ currentLoading }
-                            allButton={ allButton }
-                            onPress={ () => {
-                                setEndorseVisible(true)
-                            } }/> }
+                                            if (cashier) {
+                                                onShowConfirmation(APPROVED)
+                                            } else {
+                                                setApproveVisible(true)
+                                            }
 
 
+                                        } }/>
+
+                                    <DeclineButton
+                                        currentLoading={ currentLoading }
+                                        allButton={ allButton }
+                                        onPress={ () => {
+                                            setVisible(true)
+                                        } }/>
+
+                                </View> }
+
+                                { getRole(user , [EVALUATOR]) &&
+                                <EndorsedButton
+                                    currentLoading={ currentLoading }
+                                    allButton={ allButton }
+                                    onPress={ () => {
+                                        setEndorseVisible(true)
+                                    } }/> }
+
+
+                            </View>
+                        </View>
                     </View>
+
 
                 }
             </View>
             <Approval
+                size={ activityModalScreenComponent }
                 onModalDismissed={ () => {
                     setStatus(prevStatus);
                     setRemarks(prevRemarks);
-                    setAssignId(props?.details?.assignedPersonnel)
+                    setAssignId(props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel)
                 } }
                 onChangeRemarks={ (_remark: string , _assign ,) => {
+
                     setPrevStatus(status);
                     setPrevRemarks(remarks);
                     setPrevAssignId(assignId);
 
                     setRemarks(_remark);
+
                     setAssignId(_assign)
 
                 } }
@@ -332,7 +381,9 @@ function ActivityModal(props: any) {
                         status = PAID
                     }
                     onChangeApplicationStatus(status , (err , appId) => {
+
                         if (!err) {
+
                             callback(true , (bool) => {
                                 // props.onDismissed(true, appId)
                             })
@@ -357,6 +408,7 @@ function ActivityModal(props: any) {
                 } }
             />
             <Disapproval
+                size={ activityModalScreenComponent }
                 user={ props?.details?.applicant?.user }
                 remarks={ setRemarks }
                 onChangeApplicationStatus={ (event: any , callback: (bool , appId) => {}) => {
@@ -378,10 +430,11 @@ function ActivityModal(props: any) {
                 onDismissed={ onDismissed }
             />
             <Endorsed
-                assignedPersonnel={ props?.details?.assignedPersonnel }
+                size={ activityModalScreenComponent }
+                assignedPersonnel={ props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel }
                 onModalDismissed={ () => {
                     setRemarks(prevRemarks);
-                    setAssignId(props?.details?.assignedPersonnel)
+                    setAssignId(props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel)
                 } }
                 remarks={ (event: any) => {
                     setPrevRemarks(remarks);
@@ -407,7 +460,7 @@ function ActivityModal(props: any) {
                 visible={ endorseVisible }
                 onDismissed={ onEndorseDismissed }
             />
-        </Modal>
+        </NativeView>
     );
 }
 
@@ -415,8 +468,9 @@ export default ActivityModal
 const styles = StyleSheet.create({
     applicationType : {
 
+        textAlign : "center" ,
         fontFamily : Bold ,
-        fontSize : RFValue(14) ,
+        fontSize : fontValue(14) ,
         lineHeight : 16.5 ,
         color : "#606A80"
     } ,
@@ -705,10 +759,10 @@ const styles = StyleSheet.create({
         height : 812
     } ,
     footer : {
+
         paddingHorizontal : 20 ,
         paddingVertical : 30 ,
         flexDirection : 'row' ,
-        borderTopColor : 'rgba(0, 0, 0, 0.1)' ,
-        borderTopWidth : 1 ,
+
     }
 });

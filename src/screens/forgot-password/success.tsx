@@ -1,91 +1,109 @@
-import React from 'react';
-import { SafeAreaView, View, StyleSheet, TouchableOpacity } from 'react-native';
-import { CheckIcon, ArrowRightIcon } from '@atoms/icon';
+import React, { useEffect } from 'react';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  BackHandler,
+} from 'react-native';
+import Statusbar from '@atoms/status-bar';
 import Text from '@atoms/text';
-import { text, button } from 'src/styles/color';
+import { text, primaryColor } from '@styles/color';
+import { Bold } from '@styles/font';
+import ArrowRightIcon from "@assets/svg/ArrowRightIcon";
+import FilledSuccessIcon from "@assets/svg/FilledSuccess";
+
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: '#fff'
   },
   content: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: '32%',
+    paddingTop: '30%',
     padding: 30,
   },
   circle: {
-    height: 80,
-    width: 80,
+    height: width / 5,
+    width: width / 5,
+    borderRadius: width / 5,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderRadius: 100,
+    marginBottom: 30,
   },
-  whitespace: {
-    height: 40,
-  },
-  text: {
+  subMessage: {
+    marginTop: 5,
     textAlign: 'center',
+    marginHorizontal: 30,
+  },
+  boldText: {
+    fontFamily: Bold
   },
   horizontal: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  footer: {
-    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 30,
-  }
+  },
 });
 
 const ForgotPasswordSuccess = ({ navigation }:any) => {
 
+  const onBack = () => {
+    navigation.replace('Login');
+    return true;
+  };
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', onBack);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', onBack);
+    };
+  }, []);
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View
-        style={styles.content}
-      >
-        <View style={[styles.circle, { borderColor: text.primary }]}>
-          <CheckIcon type={'check'} size={40} color={text.primary} />
+      <View style={styles.container}>
+        <Statusbar barStyle='dark-content' />
+        <View style={styles.content}>
+          <View style={styles.circle}>
+            <FilledSuccessIcon
+            />
+          </View>
+
+          <Text
+              style={styles.boldText}
+              color={text.primary}
+              size={24}
+          >
+            Congratulations
+          </Text>
+          <Text
+              style={styles.subMessage}
+              color={text.default}
+              size={16}
+          >
+            You can now sign in to the app using your new password.
+          </Text>
         </View>
-        <View style={styles.whitespace} />
-        <Text
-          style={styles.text}
-          color={text.primary}
-          size={24}
-          weight={'500'}
-        >
-          {'You have successfully\nreset your password'}
-        </Text>
-        <View style={styles.whitespace} />
-        <Text
-          style={[styles.text, { marginHorizontal: 30 }]}
-          color={text.default}
-          size={16}
-        >
-          {/*Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Pharetra sit amet aliquam id diam maecenas ultricies mi eget.*/}
-        </Text>
-      </View>
-      <View style={styles.footer}>
         <TouchableOpacity onPress={() => navigation.replace('Login')}>
           <View style={styles.horizontal}>
             <Text
-              color={button.primary}
-              weight={'500'}
-              size={18}
+                style={styles.boldText}
+                color={text.info}
+                size={18}
             >
               Log in
             </Text>
             <ArrowRightIcon
-              style={{ marginLeft: 5 }}
-              color={text.primary}
-              size={24}
+                style={{ marginLeft: 5 }}
+                color={text.info}
+                size={24}
             />
           </View>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
   );
 };
 

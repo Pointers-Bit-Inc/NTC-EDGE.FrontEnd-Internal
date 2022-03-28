@@ -20,6 +20,7 @@ const outline = {
   error: '#CA024F',
   warning: '#FFAE42',
   disabled: '#D1D1D1',
+  info: '#2F5BFA',
 }
 
 const text = {
@@ -28,7 +29,7 @@ const text = {
   secondary: '#FFFFFF',
   default: '#565962',
   success: '#34C759',
-  error: '#CA024F',
+  error: '#CF0327',
   warning: '#FFAE42',
   disabled: '#808197',
 };
@@ -62,9 +63,15 @@ const button = {
 };
 
 const bubble = {
-  primary: '#1F40AF',
+  primary: '#2563EB',
   secondary: '#E5E5E5',
 };
+
+const header = {
+  primary: primaryColor,
+  secondary: '#F6F6F6',
+  default: '#1F2022',
+}
 
 export {
   primaryColor,
@@ -82,4 +89,5 @@ export {
   button,
   input,
   bubble,
+  header
 }

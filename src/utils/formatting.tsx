@@ -10,7 +10,7 @@ const getChannelName = (channel:any) => {
         const result = channel.otherParticipants;
         if (result && result[0]) {
             const data = result[0];
-            return `${data.firstName}`;
+            return `${data.firstName} ${data.lastName}`;
         }
     }
     return channel.channelName;
@@ -21,7 +21,7 @@ const getChannelImage = (channel:any) => {
         const result = channel.otherParticipants;
         if (result && result[0]) {
             const data = result[0];
-            return data?.image || '';
+            return data?.profilePicture?.thumb || '';
         }
     }
     return channel.image;

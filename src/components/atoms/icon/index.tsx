@@ -25,7 +25,22 @@ import CalendarIcon from './calendar';
 import ToggleIcon from './toggle';
 import LeftIcon from './left';
 import RightIcon from './right';
+import PinIcon from './pin';
 import UploadIcon from './upload';
+import NewChatIcon from './new-chat';
+import NewVideoIcon from './new-video';
+import NewCallIcon from './new-call';
+import NewMessageIcon from './new-message';
+import NewSearchIcon from './new-search';
+import NewEditIcon from './new-edit';
+import NewGroupIcon from './new-group';
+import DownloadIcon from './download';
+import TrashIcon from './trash';
+import NewFileIcon from './new-file';
+import NewCheckIcon from './new-check';
+import MinusIcon from './minus';
+import MediaIcon from './media';
+import AttachIcon from './attach';
 
 export {
   ExclamationIcon,
@@ -55,5 +70,20 @@ export {
   ToggleIcon,
   LeftIcon,
   RightIcon,
+  PinIcon,
   UploadIcon,
+  NewChatIcon,
+  NewVideoIcon,
+  NewCallIcon,
+  NewMessageIcon,
+  NewSearchIcon,
+  NewEditIcon,
+  NewGroupIcon,
+  DownloadIcon,
+  TrashIcon,
+  NewFileIcon,
+  NewCheckIcon,
+  MinusIcon,
+  MediaIcon,
+  AttachIcon,
 };

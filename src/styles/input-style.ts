@@ -2,6 +2,8 @@ import { StyleSheet, Platform, Dimensions } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { input, outline } from './color';
 import { Bold, Regular } from './font';
+import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 const { text, background } = input;
 
@@ -9,15 +11,15 @@ const { width } = Dimensions.get('window');
 
 export default StyleSheet.create({
   mainContainer: {
-    marginBottom: RFValue(20),
+    marginBottom: fontValue(20),
   },
   container: {
     backgroundColor: background?.default,
     borderColor: background?.default,
-    borderWidth: RFValue(2),
-    borderRadius: RFValue(10),
-    paddingHorizontal: RFValue(15),
-    height: RFValue(50),
+    borderWidth: fontValue(2),
+    borderRadius: fontValue(10),
+    paddingHorizontal: fontValue(15),
+    height: fontValue(50),
     justifyContent: 'center',
   },
   rowContainer: {
@@ -26,7 +28,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   dropdownContainer: {
-    paddingHorizontal: RFValue(15),
+    paddingHorizontal: fontValue(15),
   },
   dropdownListContainer: {
     borderRadius: 10,
@@ -49,39 +51,53 @@ export default StyleSheet.create({
   labelContainer: {
     flexDirection: 'row',
     padding: 0,
+
   },
   headerLabelText: {
     color: text?.defaultColor,
-    fontSize: RFValue(16),
+    fontSize: fontValue(16),
     fontFamily: Bold,
   },
   labelText: {
     color: text?.defaultColor,
-    fontSize: RFValue(12),
+    fontSize: fontValue(12),
+
   },
   requiredText: {
     color: text?.errorColor,
   },
   validationText: {
-    fontSize: RFValue(12),
+    fontSize: fontValue(12),
     marginTop: 5,
   },
   placeholderText: {
     color: text?.defaultColor,
     fontFamily: Regular,
-    fontSize: RFValue(14),
+    fontSize: fontValue(14),
   },
   inputText: {
     paddingHorizontal: 0,
-    paddingVertical: -100,
+    ...Platform.select({
+      ios: {
+        paddingVertical:  0,
+      },
+      android:{
+        paddingVertical: -100,
+      },
+      default: {
+        paddingVertical:  0,
+      },
+
+    }),
     marginVertical: -(3),
     color: text?.mainColor,
     fontFamily: Regular,
     fontWeight: 'normal',
-    marginTop: -3
+    marginTop: -3,
+
   },
   iconStyle: {
-    height: RFValue(20),
-    width: RFValue(20),
+    height: fontValue(20),
+    width: fontValue(20),
   }
 });
