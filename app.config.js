@@ -1,14 +1,12 @@
-import {primaryColor} from "@styles/color";
-
 export default {
   "expo": {
-    "backgroundColor": "#031A6E",
     "name": "ntc-edge-internal",
     "slug": "ntc-edge-internal",
     "owner": "ntc-edge",
-    "version": "1.0.2",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "backgroundColor": "#031A6E",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",
