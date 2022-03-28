@@ -113,6 +113,7 @@
     "@types/react-native": "~0.64.12",
     "@types/styled-components": "^5.1.15",
     "babel-loader": "^8.2.3",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "key-mirror": "^1.0.1",
     "typescript": "~4.3.5"
   },
