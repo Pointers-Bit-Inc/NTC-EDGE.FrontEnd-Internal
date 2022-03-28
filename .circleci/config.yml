@@ -107,6 +107,23 @@ commands:
           key: cache-yarn-internal-v1-<< parameters.platform >>-{{ checksum "package.json" }}
 
 jobs:
+  Publish App:
+    executor: js
+    steps:
+      - checkout
+      - add_yarn_binaries_to_path
+      - restore_yarn_cache:
+          platform: linux
+      - run:
+          name: Installing expo-cli
+          command: yarn global add expo-cli
+      - run:
+          name: Publishing Expo app
+          command: |
+            yarn
+            expo publish
+      - save_yarn_cache:
+          platform: linux
   Build IOS Archive:
     executor: ios
     parameters:
@@ -275,21 +292,24 @@ workflows:
             branches:
               only:
                 - develop
+      - Publish App:
+          requires:
+            - Build for Testing
       - Build IOS Archive:
           api_url: << pipeline.parameters.test_url >>
           context: ntc-edge
           requires:
-            - Build for Testing
+            - Publish App
       - Build Android APK:
           api_url: << pipeline.parameters.test_url >>
           context: ntc-edge
           requires:
-            - Build for Testing
+            - Publish App
       - Build Android AAB:
           api_url: << pipeline.parameters.test_url >>
           context: ntc-edge
           requires:
-            - Build for Testing
+            - Publish App
       - Ready for Submission to EXPO:
           type: approval
           requires:
@@ -314,21 +334,24 @@ workflows:
             branches:
               only:
                 - master
+      - Publish App:
+          requires:
+            - Build for Production
       - Build IOS Archive:
           api_url: << pipeline.parameters.prod_url >>
           context: ntc-edge
           requires:
-            - Build for Production
+            - Publish App
       - Build Android APK:
           api_url: << pipeline.parameters.prod_url >>
           context: ntc-edge
           requires:
-            - Build for Production
+            - Publish App
       - Build Android AAB:
           api_url: << pipeline.parameters.prod_url >>
           context: ntc-edge
           requires:
-            - Build for Production
+            - Publish App
       - Ready for Submission to EXPO:
           type: approval
           requires:

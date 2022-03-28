@@ -3,7 +3,7 @@ export default {
     "name": "ntc-edge-internal",
     "slug": "ntc-edge-internal",
     "owner": "ntc-edge",
-    "version": "1.0.0",
+    "version": process.env.APP_VERSION ?? "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "backgroundColor": "#031A6E",
@@ -18,14 +18,13 @@ export default {
       "supportsTablet": true,
       "usesIcloudStorage": true,
       "bundleIdentifier": "com.ntcedge.portal",
-      "buildNumber": "1.0.0",
+      "buildNumber": process.env.APP_VERSION ?? "1.0.4",
       "infoPlist": {
         "NSCameraUsageDescription": "This will be used for video call and live streaming.",
         "NSMicrophoneUsageDescription": "This will be used for video call and live streaming."
       }
     },
     "androidStatusBar": {
-      
       "backgroundColor": '#031A6E',
       "translucent": false
     },
