@@ -295,7 +295,15 @@ const UserProfileScreen = ({ navigation }: any) => {
             return true;
         }
     };
-
+    const removeEmpty = obj => {
+        if (Array.isArray(obj)) {
+            return obj.map(v => (v && !(v instanceof Date) && typeof v === 'object' ? removeEmpty(v) : v)).filter(v => v)
+        } else {
+            return Object.entries(obj)
+                .map(([k, v]) => [k, v && !(v instanceof Date) && typeof v === 'object' ? removeEmpty(v) : v])
+                .reduce((a, [k, v]) => (typeof v !== 'boolean' && !v ? a : ((a[k] = v), a)), {})
+        }
+    }
     function updateUserProfile(dp: boolean , formData: {}) {
         if (isValid()) {
             setLoading({
@@ -306,7 +314,7 @@ const UserProfileScreen = ({ navigation }: any) => {
             axios
                 .patch(
                     dp ? `${ BASE_URL_NODE }/users/${ user._id }` : `${ BASE_URL }/users/${ user._id }` ,
-                    formData ,
+                    formData  ,
                     {
                         headers : {
                             'Authorization' : `Bearer ${ user?.sessionToken }` ,
@@ -327,13 +335,15 @@ const UserProfileScreen = ({ navigation }: any) => {
                             color : successColor
                         });
                         if (dp) {
+
                             dispatch(setUser({
-                                ...user , ...res?.data?.doc ,
+                                ...user , ...removeEmpty(res?.data?.doc),
                                 profilePictureObj : res?.data?.doc?.profilePicture
                             }));
-                           // save({ dp : false });
+                        
                         } else {
-                            dispatch(setUser({ ...user , ...res?.data?.doc }));
+                        
+                            dispatch(setUser({ ...user ,  ...removeEmpty(res?.data?.doc) }));
                         }
                     } else {
                         setAlert({
