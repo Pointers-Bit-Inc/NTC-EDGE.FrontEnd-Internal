@@ -29,6 +29,7 @@ import {validateEmail , validatePassword , validatePhone , validateText} from 's
 import {setUser} from '../../../reducers/user/actions';
 import {Bold} from '@styles/font';
 import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const { width , height } = Dimensions.get('window');
@@ -61,16 +62,13 @@ const UserProfileScreen = ({ navigation }: any) => {
 
                     let uri = picker?.uri;
                     let split = uri?.split('/');
-
                     let name = split?.[split?.length - 1];
-                    let mimeType = picker?.type || name?.split('.')?.[1];
+                    let mimeType =name?.split('.')?.[1] ||  picker?.type ;
                     let _file = {
                         name ,
                         mimeType ,
                         uri ,
                     };
-
-
                     userProfileForm[index].file = _file;
                     userProfileForm[index].value = _file?.uri;
                     setUserProfileForm(userProfileForm);
@@ -79,25 +77,33 @@ const UserProfileScreen = ({ navigation }: any) => {
             }
         }
     };
+
     const save = ({ dp = false }) => {
         var updatedUser = {} , formData = {};
         userProfileForm?.forEach(async (up: any) => {
             updatedUser = { ...updatedUser , [up?.stateName] : up?.value };
             if (dp && up?.stateName === 'profilePicture' && up?.file?.uri) {
-                const base64 = up?.file?.uri;
-                const mime = base64?.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+
+                let base64 = up?.file?.uri;
+                let mime = isMobile ?up?.file?.mimeType :  base64?.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+                   console.log(base64)
                  let mimeResult: any = null
                 if (mime && mime.length) {
-                    mimeResult = mime[1];
+                    mimeResult = isMobile ? mime :mime[1];
                 }
+                let mimeType = isMobile ? mime : mimeResult?.split("/")?.[1]
+
                 await fetch(base64)
                     .then(res => res.blob())
                     .then(blob => {
                         const fd = new FormData();
+                        const file =  isMobile ? {
+                            name: up?.file?.name,
+                            type: up?.file?.mimeType,
+                            uri: up?.file?.uri,
+                        } : new File([ blob] , (up?.file?.name + "." +  mimeType || up?.file?.mimeType) );
 
-                        const file = new File([blob] , up?.file?.name + (mimeResult.split("/")[1] || up?.file?.mimeType) , {type: mimeResult || up?.file?.mimeType});
-
-                        fd.append('profilePicture' , file,  up?.file?.name + "." + (mimeResult.split("/")[1] || up?.file?.mimeType) );
+                        fd.append('profilePicture' , file, (up?.file?.name + "." + mimeType || up?.file?.mimeType)  );
 
                         const API_URL = `${ BASE_URL_NODE }/users/upload-photo`;
                         fetch(API_URL , {
@@ -107,7 +113,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                         })
                             .then(res => res.json())
                             .then(res => {
-
+                              
                                 if(res?.success){
                                     updateUserProfile(dp , res?.doc)
                                 }
@@ -297,7 +303,6 @@ const UserProfileScreen = ({ navigation }: any) => {
                 basic : !dp
             });
 
-            console.log(formData)
             axios
                 .patch(
                     dp ? `${ BASE_URL_NODE }/users/${ user._id }` : `${ BASE_URL }/users/${ user._id }` ,
@@ -309,6 +314,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                     } ,
                 )
                 .then((res: any) => {
+                      console.log("response: ", res?.data?.doc)
                     setLoading({
                         photo : false ,
                         basic : false
@@ -325,7 +331,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                                 ...user , ...res?.data?.doc ,
                                 profilePictureObj : res?.data?.doc?.profilePicture
                             }));
-                            save({ dp : false });
+                           // save({ dp : false });
                         } else {
                             dispatch(setUser({ ...user , ...res?.data?.doc }));
                         }
@@ -371,6 +377,10 @@ const UserProfileScreen = ({ navigation }: any) => {
         };
     } , [routeIsFocused]);
 
+    useEffect(()=>{
+              console.log(photo)
+    }, [photo])
+
     return (
         <View style={ styles.container }>
             <NavBar
@@ -385,6 +395,7 @@ const UserProfileScreen = ({ navigation }: any) => {
             <ScrollView style={ styles.scrollview } showsVerticalScrollIndicator={ false }>
                 <View style={ [styles.row , { marginBottom : 20 }] }>
                     <View>
+
                         <ProfileImage
                             size={ width / 4 }
                             textSize={ 25 }
