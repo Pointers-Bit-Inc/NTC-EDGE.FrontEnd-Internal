@@ -1,5 +1,3 @@
-import {primaryColor} from "@styles/color";
-
 export default {
   "expo": {
     "name": "ntc-edge-internal",
