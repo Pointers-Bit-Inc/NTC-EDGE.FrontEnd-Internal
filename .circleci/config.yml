@@ -14,7 +14,219 @@ executors:
       - image: cimg/node:lts
     working_directory: ~/ntc-edge-internal
 
+  js:
+    docker:
+      - image: cimg/node:lts
+    working_directory: ~/ntc-edge-internal
+    environment:
+      YARN_CACHE_FOLDER: ~/yarn_cache_internal
+
+  android:
+    resource_class: xlarge
+    docker:
+      - image: dsokal/expo-turtle-android
+    working_directory: ~/ntc-edge-internal
+    environment:
+      EXPO_SDK_VERSION: 43.0.2
+      TURTLE_VERSION: 0.26.0
+      PLATFORM: android
+      YARN_CACHE_FOLDER: ~/yarn_cache_internal
+
+  ios:
+    macos:
+      xcode: 12.5.0
+    working_directory: ~/ntc-edge-internal
+    environment:
+      EXPO_SDK_VERSION: 43.0.2
+      TURTLE_VERSION: 0.26.0
+      PLATFORM: ios
+      YARN_CACHE_FOLDER: /Users/distiller/yarn_cache_internal
+      HOMEBREW_NO_AUTO_UPDATE: 1
+
+commands:
+  add_yarn_binaries_to_path:
+    steps:
+      - run:
+          name: Add yarn binaries path to $PATH
+          command: echo 'export PATH=~/.yarn/bin:$PATH' >> $BASH_ENV
+
+  determine_turtle_cache_key_component:
+    steps:
+      - run:
+          name: Determine Turtle cache key component
+          command: echo $TURTLE_VERSION $PLATFORM > /tmp/turtle-version-platform
+
+  restore_turtle_cache:
+    steps:
+      - restore_cache:
+          keys:
+          - cache-turtle-cli-v1-{{ checksum "/tmp/turtle-version-platform" }}
+
+  save_turtle_cache:
+    steps:
+      - save_cache:
+          paths:
+            - ~/.turtle
+            - ~/yarn_cache_internal
+          key: cache-turtle-cli-v1-{{ checksum "/tmp/turtle-version-platform" }}
+
+  install_turtle_ios:
+    steps:
+      - run:
+          name: Installing turtle-cli
+          command: |
+            yarn config set prefix ~/.yarn
+            yarn global add turtle-cli@$TURTLE_VERSION
+
+  setup_turtle:
+    steps:
+      - run:
+          name: Setting up environment for Turtle
+          command: turtle setup:$PLATFORM --sdk-version $EXPO_SDK_VERSION
+
+  restore_yarn_cache:
+    parameters:
+      platform:
+        type: string
+    steps:
+      - restore_cache:
+          keys:
+          - cache-yarn-internal-v1-<< parameters.platform >>-{{ checksum "package.json" }}
+
+  save_yarn_cache:
+    parameters:
+      platform:
+        type: string
+    steps:
+      - save_cache:
+          paths:
+            - ~/yarn_cache_internal
+          key: cache-yarn-internal-v1-<< parameters.platform >>-{{ checksum "package.json" }}
+
 jobs:
+  Build IOS Archive:
+    executor: ios
+    parameters:
+      api_url:
+        type: string
+    environment:
+      API_URL: << parameters.api_url >>
+    steps:
+      - checkout
+      - run:
+          name: Starting IOS Archive
+          command: |
+            echo Building for ${API_URL}
+      - restore_yarn_cache:
+          platform: darwin
+      - node/install:
+          node-version: '16.13.0'
+      - run: yarn
+      - save_yarn_cache:
+          platform: darwin
+      - add_yarn_binaries_to_path
+      - determine_turtle_cache_key_component
+      - restore_turtle_cache
+      - install_turtle_ios
+      - setup_turtle
+      - save_turtle_cache
+      - run:
+          name: Building Expo standalone app
+          command: |
+            echo $EXPO_IOS_DIST_P12_BASE64 > expo-project_dist.p12.base64
+            base64 --decode expo-project_dist.p12.base64 > expo-project_dist.p12
+            echo $EXPO_IOS_PROVISIONING_PROFILE_BASE64 > expo-project.mobileprovision.base64
+            base64 --decode expo-project.mobileprovision.base64 > expo-project.mobileprovision
+            turtle build:ios \
+              --team-id $EXPO_APPLE_TEAM_ID \
+              --dist-p12-path ./expo-project_dist.p12 \
+              --provisioning-profile-path ./expo-project.mobileprovision \
+              -o ~/ntc-edge-internal.ipa
+      - store_artifacts:
+          path: ~/ntc-edge-internal.ipa
+
+  Build Android APK:
+    executor: android
+    parameters:
+      api_url:
+        type: string
+    environment:
+      API_URL: << parameters.api_url >>
+    steps:
+      - checkout
+      - run:
+          name: Starting Android APK Build
+          command: |
+            echo Building for ${API_URL}
+      - restore_yarn_cache:
+          platform: linux
+      - node/install:
+          node-version: '16.13.0'
+      - run: yarn
+      - save_yarn_cache:
+          platform: linux
+      - add_yarn_binaries_to_path
+      - determine_turtle_cache_key_component
+      - restore_turtle_cache
+      - run:
+          name: Installing gulp-cli & turtle-cli
+          command: yarn global add gulp-cli turtle-cli@$TURTLE_VERSION
+      - setup_turtle
+      - save_turtle_cache
+      - run:
+          name: Building Expo standalone app
+          command: |
+            echo $EXPO_ANDROID_KEYSTORE_BASE64 > expo-project.jks.base64
+            base64 --decode expo-project.jks.base64 > expo-project.jks
+            turtle build:android \
+              --keystore-path ./expo-project.jks \
+              --keystore-alias $EXPO_ANDROID_KEYSTORE_ALIAS \
+              --type apk \
+              -o ~/ntc-edge-internal.apk
+      - store_artifacts:
+          path: ~/ntc-edge-internal.apk
+
+  Build Android AAB:
+    executor: android
+    parameters:
+      api_url:
+        type: string
+    environment:
+      API_URL: << parameters.api_url >>
+    steps:
+      - checkout
+      - run:
+          name: Starting Android AAB Build
+          command: |
+            echo Building for ${API_URL}
+      - restore_yarn_cache:
+          platform: linux
+      - node/install:
+          node-version: '16.13.0'
+      - run: yarn
+      - save_yarn_cache:
+          platform: linux
+      - add_yarn_binaries_to_path
+      - determine_turtle_cache_key_component
+      - restore_turtle_cache
+      - run:
+          name: Installing gulp-cli & turtle-cli
+          command: yarn global add gulp-cli turtle-cli@$TURTLE_VERSION
+      - setup_turtle
+      - save_turtle_cache
+      - run:
+          name: Building Expo standalone app
+          command: |
+            echo $EXPO_ANDROID_KEYSTORE_BASE64 > expo-project.jks.base64
+            base64 --decode expo-project.jks.base64 > expo-project.jks
+            turtle build:android \
+              --keystore-path ./expo-project.jks \
+              --keystore-alias $EXPO_ANDROID_KEYSTORE_ALIAS \
+              --type app-bundle \
+              -o ~/ntc-edge-internal.aab
+      - store_artifacts:
+          path: ~/ntc-edge-internal.aab
+
   Build App:
     executor: default
     parameters:
@@ -39,6 +251,7 @@ jobs:
             echo building for ${API_URL}
             npx eas-cli build --platform ios --non-interactive
           no_output_timeout: 30m
+
   Submit to Appstore:
     executor: default
     steps:
@@ -59,19 +272,37 @@ workflows:
             branches:
               only:
                 - develop
-      - Build App:
+      - Build IOS Archive:
           api_url: << pipeline.parameters.test_url >>
           context: ntc-edge
           requires:
             - Build for Testing
-      - Ready for Submission:
+      - Build Android APK:
+          api_url: << pipeline.parameters.test_url >>
+          context: ntc-edge
+          requires:
+            - Build for Testing
+      - Build Android AAB:
+          api_url: << pipeline.parameters.test_url >>
+          context: ntc-edge
+          requires:
+            - Build for Testing
+      - Ready for Submission to EXPO:
           type: approval
           requires:
-            - Build App
+            - Build IOS Archive
+            - Build Android APK
+            - Build Android AAB
+      - Build App:
+          api_url: << pipeline.parameters.test_url >>
+          context: ntc-edge
+          requires:
+            - Ready for Submission to EXPO
       - Submit to Appstore:
           context: ntc-edge
           requires:
-            - Ready for Submission
+            - Build App
+
   Production Build and Deploy:
     jobs:
       - Build for Production:
@@ -80,17 +311,34 @@ workflows:
             branches:
               only:
                 - master
-      - Build App:
+      - Build IOS Archive:
           api_url: << pipeline.parameters.prod_url >>
           context: ntc-edge
           requires:
             - Build for Production
-      - Ready for Submission:
+      - Build Android APK:
+          api_url: << pipeline.parameters.prod_url >>
+          context: ntc-edge
+          requires:
+            - Build for Production
+      - Build Android AAB:
+          api_url: << pipeline.parameters.prod_url >>
+          context: ntc-edge
+          requires:
+            - Build for Production
+      - Ready for Submission to EXPO:
           type: approval
           requires:
-            - Build App
+            - Build IOS Archive
+            - Build Android APK
+            - Build Android AAB
+      - Build App:
+          api_url: << pipeline.parameters.prod_url >>
+          context: ntc-edge
+          requires:
+            - Ready for Submission to EXPO
       - Submit to Appstore:
           context: ntc-edge
           requires:
-            - Ready for Submission    
+            - Build App    
           
