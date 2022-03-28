@@ -178,8 +178,8 @@ const OneTimePin = ({ navigation, route }:any) => {
                     color: text.error
                   }
                 ]}
-                maxLength={6}
-                placeholder="••••••"
+                maxLength={4}
+                placeholder="••••"
                 label={'OTP'}
                 labelStyle={styles.labelStyle}
                 required={true}
