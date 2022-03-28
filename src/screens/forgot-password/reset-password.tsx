@@ -163,7 +163,7 @@ const ResetPassword = ({ navigation, route }: any) => {
                   backgroundColor: button.default
                 },
                 loading && {
-                  backgroundColor: '#60A5FA'
+                  backgroundColor: '#2F5BFA'
                 }
               ]}
               onPress={onCheckValidation}

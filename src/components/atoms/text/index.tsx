@@ -28,13 +28,14 @@ const Text: FC<Props> = ({
   children,
   style,
   align,
+    family,
   ...otherProps
 }) => {
   return (
     <RNText
       style={[
         styles.default,
-        { color, fontSize: isMobile ? RFValue(size) : size, fontWeight: weight, textAlign: align, fontFamily: 'Poppins_400Regular' },
+        { color, fontSize: isMobile ? RFValue(size) : size, fontWeight: weight, textAlign: align, fontFamily: family || 'Poppins_400Regular' },
         style
       ]}
       {...otherProps}

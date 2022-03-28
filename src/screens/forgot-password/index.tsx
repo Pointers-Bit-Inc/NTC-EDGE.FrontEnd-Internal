@@ -28,6 +28,7 @@ const ForgotPassword = ({ navigation }:any) => {
 
     const onSubmit = () => {
         setLoading(true);
+        
         api(null, '')
             .post(`/reset-password-request`, {email: account?.value})
             .then((res: any) => {
@@ -117,7 +118,7 @@ const ForgotPassword = ({ navigation }:any) => {
                             backgroundColor: button.default
                         },
                         loading && {
-                            backgroundColor: '#60A5FA'
+                            backgroundColor: '#2F5BFA'
                         }
                     ]}
                     onPress={onSubmit}

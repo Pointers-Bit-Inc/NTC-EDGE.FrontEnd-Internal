@@ -2,7 +2,7 @@ import {primaryColor} from "@styles/color";
 
 export default {
   "expo": {
-    "backgroundColor": "#1a202c",
+    "backgroundColor": "#031A6E",
     "name": "ntc-edge-internal",
     "slug": "ntc-edge-internal",
     "owner": "ntc-edge",

@@ -50,6 +50,7 @@ export default StyleSheet.create({
         paddingBottom: 15,
     },
     input: {
+
         letterSpacing: 8,
         fontSize: 36,
         flex: 1,

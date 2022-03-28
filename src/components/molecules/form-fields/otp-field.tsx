@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { ExclamationIcon } from '@atoms/icon';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
+import {text} from "@styles/color";
 
 const styles = StyleSheet.create({
   container: {
@@ -82,8 +83,10 @@ const OTPField: FC<Props> = ({
           style={[
             labelStyle,
             (isFocused || !!otherProps.value || !!error) && {
-              color: activeColor
-            }
+              color: activeColor,
+
+            },
+
           ]}
           size={12}
         >
