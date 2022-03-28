@@ -33,10 +33,11 @@ const ForgotPassword = ({ navigation }:any) => {
             .then((res: any) => {
                 setLoading(false);
                 if (res?.data?.success) {
+                    Alert.alert(res.data.message);
                     navigation.navigate('ForgotPasswordOTP', {
                         account: account.value,
                         accountType: 'email',
-                        token: res?.data?.token,
+                        token: res?.data?.otpId,
                     });
                 }
                 else {

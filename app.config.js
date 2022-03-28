@@ -57,7 +57,8 @@ export default {
       ]
     ],
     "extra": {
-      "API_URL": process.env.API_URL
+      "API_URL": process.env.API_URL,
+      "oneSignalAppId": "3d463c09-c966-4423-9c49-9ea98d295058"
     }
   }
 }
