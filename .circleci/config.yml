@@ -281,9 +281,14 @@ jobs:
     executor: default
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: npm ci
+      - restore_yarn_cache:
+          platform: linux
+      - node/install:
+          node-version: '16.13.0'
+      - run: yarn
+      - save_yarn_cache:
+          platform: linux
+      - add_yarn_binaries_to_path
       - run:
           name: Submit to Apple Appstore
           command: npx eas-cli submit -p ios --latest --non-interactive
