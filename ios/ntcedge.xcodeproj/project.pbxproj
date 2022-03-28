@@ -7,30 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0B6E12E2C1392E14E014C79E /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BC36678520378F7CF8DA6E7 /* libPods-OneSignalNotificationServiceExtension.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1F95DE87A672AFA17ACE6CFA /* libPods-ntcedge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CD6E149083C3199FA085307 /* libPods-ntcedge.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		4287D8F127F203D40057DB5E /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4287D8F027F203D40057DB5E /* NotificationService.swift */; };
-		4287D91127F2187D0057DB5E /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 4287D8EE27F203D40057DB5E /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		525653B78FED48A6ACF38A58 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ABBEEF27124554A851BB64 /* noop-file.swift */; };
 		60874917EE044E82B29B31C4 /* antfill.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A82A4835BD7B4D9BB38821D3 /* antfill.ttf */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		F208F9DFD1164BFB91482382 /* antoutline.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E8C3F90541541FCA54CCE5C /* antoutline.ttf */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		4287D91227F2187D0057DB5E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 4287D8ED27F203D40057DB5E;
-			remoteInfo = OneSignalNotificationServiceExtension;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		4287D91027F217A20057DB5E /* Embed App Extensions */ = {
@@ -39,7 +26,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				4287D91127F2187D0057DB5E /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -56,13 +42,6 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ntcedge/main.m; sourceTree = "<group>"; };
 		196B824DE2804738CB69067E /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
 		30ABBEEF27124554A851BB64 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "ntcedge/noop-file.swift"; sourceTree = "<group>"; };
-		4256024727EAFCD700DE0EAA /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		4256024927EAFCD700DE0EAA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4287D8EE27F203D40057DB5E /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		4287D8F027F203D40057DB5E /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		4287D8F227F203D40057DB5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4287D90727F217A20057DB5E /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		4287D90927F217A20057DB5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5BC36678520378F7CF8DA6E7 /* libPods-OneSignalNotificationServiceExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneSignalNotificationServiceExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CD6E149083C3199FA085307 /* libPods-ntcedge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ntcedge.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E8C3F90541541FCA54CCE5C /* antoutline.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = antoutline.ttf; path = "../node_modules/@ant-design/icons-react-native/fonts/antoutline.ttf"; sourceTree = "<group>"; };
@@ -83,14 +62,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F95DE87A672AFA17ACE6CFA /* libPods-ntcedge.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4287D8EB27F203D40057DB5E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				0B6E12E2C1392E14E014C79E /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,33 +95,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		4256024627EAFCD700DE0EAA /* OneSignalNotificationServiceExtension */ = {
-			isa = PBXGroup;
-			children = (
-				4256024727EAFCD700DE0EAA /* NotificationService.swift */,
-				4256024927EAFCD700DE0EAA /* Info.plist */,
-			);
-			path = OneSignalNotificationServiceExtension;
-			sourceTree = "<group>";
-		};
-		4287D8EF27F203D40057DB5E /* OneSignalNotificationServiceExtension */ = {
-			isa = PBXGroup;
-			children = (
-				4287D8F027F203D40057DB5E /* NotificationService.swift */,
-				4287D8F227F203D40057DB5E /* Info.plist */,
-			);
-			path = OneSignalNotificationServiceExtension;
-			sourceTree = "<group>";
-		};
-		4287D90627F217A20057DB5E /* test */ = {
-			isa = PBXGroup;
-			children = (
-				4287D90727F217A20057DB5E /* NotificationService.swift */,
-				4287D90927F217A20057DB5E /* Info.plist */,
-			);
-			path = test;
-			sourceTree = "<group>";
-		};
 		7CCB165402784DB7A6F4219B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -172,9 +116,6 @@
 			children = (
 				13B07FAE1A68108700A75B9A /* ntcedge */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				4256024627EAFCD700DE0EAA /* OneSignalNotificationServiceExtension */,
-				4287D8EF27F203D40057DB5E /* OneSignalNotificationServiceExtension */,
-				4287D90627F217A20057DB5E /* test */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
@@ -190,7 +131,6 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* com-ntcedge-portal.app */,
-				4287D8EE27F203D40057DB5E /* OneSignalNotificationServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -251,30 +191,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				4287D91327F2187D0057DB5E /* PBXTargetDependency */,
 			);
 			name = ntcedge;
 			productName = ntcedge;
 			productReference = 13B07F961A680F5B00A75B9A /* com-ntcedge-portal.app */;
 			productType = "com.apple.product-type.application";
-		};
-		4287D8ED27F203D40057DB5E /* OneSignalNotificationServiceExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 4287D8F627F203D40057DB5E /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */;
-			buildPhases = (
-				23FC6E0B05DD1EF21F2EAD3C /* [CP] Check Pods Manifest.lock */,
-				4287D8EA27F203D40057DB5E /* Sources */,
-				4287D8EB27F203D40057DB5E /* Frameworks */,
-				4287D8EC27F203D40057DB5E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = OneSignalNotificationServiceExtension;
-			productName = OneSignalNotificationServiceExtension;
-			productReference = 4287D8EE27F203D40057DB5E /* OneSignalNotificationServiceExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -288,11 +209,6 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 4A3P2635GN;
 						LastSwiftMigration = 1250;
-					};
-					4287D8ED27F203D40057DB5E = {
-						CreatedOnToolsVersion = 12.5;
-						DevelopmentTeam = 4A3P2635GN;
-						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -310,7 +226,6 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* ntcedge */,
-				4287D8ED27F203D40057DB5E /* OneSignalNotificationServiceExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -325,13 +240,6 @@
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
 				60874917EE044E82B29B31C4 /* antfill.ttf in Resources */,
 				F208F9DFD1164BFB91482382 /* antoutline.ttf in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4287D8EC27F203D40057DB5E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,28 +259,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Fix for machines using nvm\nif [[ -s \"$HOME/.nvm/nvm.sh\" ]]; then\n. \"$HOME/.nvm/nvm.sh\"\nelif [[ -x \"$(command -v brew)\" && -s \"$(brew --prefix nvm)/nvm.sh\" ]]; then\n. \"$(brew --prefix nvm)/nvm.sh\"\nfi\n\nexport NODE_BINARY=node\n\n# The project root by default is one level up from the ios directory\nexport PROJECT_ROOT=\"$PROJECT_DIR\"/..\n\n`node --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/react-native-xcode.sh'\"`\n";
-		};
-		23FC6E0B05DD1EF21F2EAD3C /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-OneSignalNotificationServiceExtension-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
 		};
 		376EE776C9C33FC07E554233 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -414,7 +300,6 @@
 				"${PODS_ROOT}/AgoraRtcEngine_iOS/AgoraVideoSegmentationExtension.framework",
 				"${PODS_ROOT}/AgoraRtcEngine_iOS/Agorafdkaac.framework",
 				"${PODS_ROOT}/AgoraRtcEngine_iOS/Agoraffmpeg.framework",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignal.framework/OneSignal",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -429,7 +314,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AgoraVideoSegmentationExtension.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Agorafdkaac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Agoraffmpeg.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OneSignal.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -495,23 +379,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4287D8EA27F203D40057DB5E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4287D8F127F203D40057DB5E /* NotificationService.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		4287D91327F2187D0057DB5E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 4287D8ED27F203D40057DB5E /* OneSignalNotificationServiceExtension */;
-			targetProxy = 4287D91227F2187D0057DB5E /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
@@ -573,65 +441,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Release;
-		};
-		4287D8F727F203D40057DB5E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = DF14EE67B6D932EA96C52B5A /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 4A3P2635GN;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ntcedge.portal.OneSignalNotificationServiceExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		4287D8F827F203D40057DB5E /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 196B824DE2804738CB69067E /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 4A3P2635GN;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ntcedge.portal.OneSignalNotificationServiceExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -752,15 +561,6 @@
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
 				13B07F951A680F5B00A75B9A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		4287D8F627F203D40057DB5E /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4287D8F727F203D40057DB5E /* Debug */,
-				4287D8F827F203D40057DB5E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
