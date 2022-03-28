@@ -248,7 +248,7 @@ jobs:
           path: ~/ntc-edge-internal.aab
 
   Build App:
-    executor: default
+    executor: js
     parameters:
       api_url:
         type: string
@@ -257,19 +257,24 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies
-          command: npm ci
+          name: Starting Android APP Build
+          command: |
+            echo Building for ${API_URL}
+      - restore_yarn_cache:
+          platform: linux
+      - node/install:
+          node-version: '16.13.0'
+      - run: yarn
+      - save_yarn_cache:
+          platform: linux
+      - add_yarn_binaries_to_path
       - run:
           name: Android Build
-          command: |
-            echo building for ${API_URL}
-            npx eas-cli build --platform android --non-interactive
+          command: npx eas-cli build --platform android --non-interactive
           no_output_timeout: 30m
       - run:
           name: IOS Build
-          command: |
-            echo building for ${API_URL}
-            npx eas-cli build --platform ios --non-interactive
+          command: npx eas-cli build --platform ios --non-interactive
           no_output_timeout: 30m
 
   Submit to Appstore:
