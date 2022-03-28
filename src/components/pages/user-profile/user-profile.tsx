@@ -113,8 +113,9 @@ const UserProfileScreen = ({ navigation }: any) => {
                         })
                             .then(res => res.json())
                             .then(res => {
-                              
+                                  console.log(res)
                                 if(res?.success){
+                                    console.log(res?.success)
                                     updateUserProfile(dp , res?.doc)
                                 }
 
@@ -251,14 +252,19 @@ const UserProfileScreen = ({ navigation }: any) => {
 
     const isValid = () => {
         var valid = true;
+
         userProfileForm?.forEach((up: any) => {
             if (
+                up?.stateName !== 'address' &&
                 up?.stateName !== 'contactNumber' &&
                 up?.stateName !== 'userType' &&
                 up?.stateName !== 'profilePicture' &&
                 (
                     !up?.value || up?.error)
             ) {
+
+
+
                 valid = false;
                 return;
             }
@@ -305,7 +311,9 @@ const UserProfileScreen = ({ navigation }: any) => {
         }
     }
     function updateUserProfile(dp: boolean , formData: {}) {
+        console.log("outside isValid")
         if (isValid()) {
+            console.log("inside isValid")
             setLoading({
                 photo : dp ,
                 basic : !dp
