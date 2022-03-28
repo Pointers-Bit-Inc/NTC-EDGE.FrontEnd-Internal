@@ -41,6 +41,7 @@ export default function basket(state = initialState, action = {}) {
             return state
         }
         case SET_APPLICATION_ITEM: {
+
             state = state.set('applicationItem' , action.payload);
             return state
         }

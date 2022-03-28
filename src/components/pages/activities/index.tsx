@@ -414,6 +414,7 @@ export default function ActivitiesPage(props: any) {
                                    readFn={ unReadReadApplicationFn }
                                    details={ applicationItem }
                                    onChangeAssignedId={ (event) => {
+
                                        dispatch(setApplicationItem(event))
                                    } }
                                    visible={ modalVisible }

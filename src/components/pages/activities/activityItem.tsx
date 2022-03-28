@@ -198,6 +198,7 @@ const RenderApplication = ({ applicationType }: any) => {
 
 
 const RenderPinned = ({ assignedPersonnel , config }: any) => {
+
     const { personnel , loading } = useAssignPersonnel(assignedPersonnel , config);
     return (
         <View
@@ -236,6 +237,8 @@ const closeRow = (index) => {
 };
 
 export function ActivityItem(props: any) {
+
+    
     const status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status);
     const userActivity = props?.activity?.applicant?.user || props?.activity?.applicant;
     const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && (
@@ -381,7 +384,7 @@ export function ActivityItem(props: any) {
                                                 <View style={ { flex : 1 , alignItems : 'flex-start' } }>
                                                     <RenderPinned config={ props.config }
                                                                   assignedPersonnel={
-                                                                      !!props?.activity.paymentMethod && (
+                                                                      (
                                                                           props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) ?
                                                                       (
                                                                           props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) : (
@@ -389,7 +392,7 @@ export function ActivityItem(props: any) {
                                                                           (
                                                                               props?.activity?.paymentHistory?.[0]?.userId) :
                                                                           (
-                                                                              props?.activity?.approvalHistory?.[0]?.userId ?
+                                                                              (props?.activity?.approvalHistory?.[0]?.userId) ?
                                                                               props?.activity?.approvalHistory?.[0]?.userId :
                                                                               (
                                                                                   props?.activity?.assignedPersonnel?._id || props?.assignedPersonnel)))
