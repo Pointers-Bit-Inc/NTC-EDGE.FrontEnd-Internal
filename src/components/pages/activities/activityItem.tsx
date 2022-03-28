@@ -384,7 +384,7 @@ export function ActivityItem(props: any) {
                                                 <View style={ { flex : 1 , alignItems : 'flex-start' } }>
                                                     <RenderPinned config={ props.config }
                                                                   assignedPersonnel={
-                                                                      (
+                                                                      !!props?.activity.paymentMethod && (
                                                                           props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) ?
                                                                       (
                                                                           props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) : (
@@ -393,9 +393,9 @@ export function ActivityItem(props: any) {
                                                                               props?.activity?.paymentHistory?.[0]?.userId) :
                                                                           (
                                                                               (props?.activity?.approvalHistory?.[0]?.userId) ?
-                                                                              props?.activity?.approvalHistory?.[0]?.userId :
-                                                                              (
-                                                                                  props?.activity?.assignedPersonnel?._id || props?.assignedPersonnel)))
+                                                                              props?.activity?.approvalHistory?.[0]?.userId : (
+                                                                                  props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) ? props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel :
+                                                                              (props?.activity?.assignedPersonnel?._id || props?.assignedPersonnel)))
                                                                   }/>
                                                 </View>
                                             </View>
