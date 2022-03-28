@@ -3,7 +3,8 @@ import {
   View,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 import Text from '@atoms/text';
 import * as Progress from 'react-native-progress';
@@ -15,6 +16,7 @@ import Ellipsis from '@atoms/ellipsis';
 import styles from './styles';
 import NavBar from "@molecules/navbar";
 import Left from "@atoms/icon/left";
+import api from 'src/services/api';
 
 const timerLimit = 90;
 const errorResponse = 'Invalid verification code. Please try again';
@@ -32,23 +34,52 @@ const OneTimePin = ({ navigation, route }:any) => {
   const [ended, setEnded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
+  const [otpId, setOtpId] = useState(token);
   const [error, setError] = useState('');
   const onSubmit = () => {
-    if (otp === code) {
-      setEnded(true);
-      navigation.navigate('ForgotPasswordReset', {token});
-    } else {
-      setError(errorResponse);
-    }
+    setLoading(true);
+    api(null, '')
+      .post(`/${otpId}/otp-validate?code=${otp}`)
+      .then((res: any) => {
+          setLoading(false);
+          if (res?.data?.success) {
+            setEnded(true);
+            navigation.navigate('ForgotPasswordReset', { otpId, otp });
+          }
+          else {
+            setError(errorResponse);
+          }
+      })
+      .catch((err: any) => {
+          setLoading(false);
+          Alert.alert('Alert', err?.message);
+      });
+
   };
 
   const onResend = useCallback(() => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      resetTimer();
-    }, 3000);
-  }, []);
+    api(null, '')
+      .post(`/resend-reset-password-otp`, {
+        email: account,
+        otpId
+      })
+      .then((res: any) => {
+          setLoading(false);
+          if (res?.data?.success) {
+            resetTimer();
+            Alert.alert(res.data.message);
+            setOtpId(res?.data?.otpId);
+          }
+          else {
+            Alert.alert('Alert', res?.data?.message || 'Cannot process forgot password.');
+          }
+      })
+      .catch((err: any) => {
+          setLoading(false);
+          Alert.alert('Alert', err?.message);
+      });
+  }, [otpId]);
 
   const resetTimer = () => {
     setStarted(true);
@@ -147,8 +178,8 @@ const OneTimePin = ({ navigation, route }:any) => {
                     color: text.error
                   }
                 ]}
-                maxLength={4}
-                placeholder="••••"
+                maxLength={6}
+                placeholder="••••••"
                 label={'OTP'}
                 labelStyle={styles.labelStyle}
                 required={true}
