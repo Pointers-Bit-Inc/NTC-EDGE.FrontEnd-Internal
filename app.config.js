@@ -1,6 +1,6 @@
 export default {
   "expo": {
-    "name": "ntc-edge-internal",
+    "name": "NTC-EDGE PORTAL",
     "slug": "ntc-edge-internal",
     "owner": "ntc-edge",
     "version": process.env.APP_VERSION ?? "1.0.4",
@@ -9,11 +9,12 @@ export default {
     "backgroundColor": "#031A6E",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "cover",
+      "resizeMode": "contain",
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "usesIcloudStorage": true,
