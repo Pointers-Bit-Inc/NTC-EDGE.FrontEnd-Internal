@@ -58,8 +58,10 @@ const UserProfileScreen = ({ navigation }: any) => {
                     presentationStyle : 0
                 });
                 if (!picker.cancelled) {
+
                     let uri = picker?.uri;
                     let split = uri?.split('/');
+
                     let name = split?.[split?.length - 1];
                     let mimeType = picker?.type || name?.split('.')?.[1];
                     let _file = {
@@ -67,6 +69,8 @@ const UserProfileScreen = ({ navigation }: any) => {
                         mimeType ,
                         uri ,
                     };
+
+
                     userProfileForm[index].file = _file;
                     userProfileForm[index].value = _file?.uri;
                     setUserProfileForm(userProfileForm);
@@ -81,12 +85,19 @@ const UserProfileScreen = ({ navigation }: any) => {
             updatedUser = { ...updatedUser , [up?.stateName] : up?.value };
             if (dp && up?.stateName === 'profilePicture' && up?.file?.uri) {
                 const base64 = up?.file?.uri;
+                const mime = base64?.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+                 let mimeResult: any = null
+                if (mime && mime.length) {
+                    mimeResult = mime[1];
+                }
                 await fetch(base64)
                     .then(res => res.blob())
                     .then(blob => {
                         const fd = new FormData();
-                        const file = new File([blob] , up?.file?.name);
-                        fd.append('profilePicture' , file);
+
+                        const file = new File([blob] , up?.file?.name + (mimeResult.split("/")[1] || up?.file?.mimeType) , {type: mimeResult || up?.file?.mimeType});
+
+                        fd.append('profilePicture' , file,  up?.file?.name + "." + (mimeResult.split("/")[1] || up?.file?.mimeType) );
 
                         const API_URL = `${ BASE_URL_NODE }/users/upload-photo`;
                         fetch(API_URL , {
@@ -96,12 +107,34 @@ const UserProfileScreen = ({ navigation }: any) => {
                         })
                             .then(res => res.json())
                             .then(res => {
+
                                 if(res?.success){
                                     updateUserProfile(dp , res?.doc)
                                 }
 
                             })
-                    })
+                    }) .catch((err: any) => {
+                        err = JSON.parse(JSON.stringify(err));
+                        setLoading({
+                            photo : false ,
+                            basic : false
+                        });
+                        // setEditable(false);
+                        if (err?.status === 413) {
+                            setAlert({
+                                title : 'File Too Large' ,
+                                message : 'File size must be lesser than 2 MB.' ,
+                                color : warningColor
+                            });
+                        } else {
+                            setAlert({
+                                title : err?.title || 'Failure' ,
+                                message : err?.message || 'Your profile was not edited.' ,
+                                color : errorColor
+                            });
+                        }
+                        setShowAlert(true);
+                    });
 
             }
         });
