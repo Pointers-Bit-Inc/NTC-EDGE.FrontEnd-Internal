@@ -3,7 +3,7 @@ import { Platform } from "react-native";
 import DeviceInfo from 'react-native-device-info';
 import { HubConnectionBuilder, HubConnection, LogLevel, HttpTransportType } from "@microsoft/signalr";
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
-import { BASE_URL } from 'src/services/config';
+import { BASE_URL, API_VERSION } from 'src/services/config';
 import useApi from 'src/services/api';
 import { normalize, schema } from 'normalizr';
 import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
@@ -292,15 +292,18 @@ const useSignalr = () => {
   }, [])
 
   const checkVersion = useCallback((callback = () => {}) => {
-    const version = DeviceInfo.getVersion();
+    const version = API_VERSION;
     const os = Platform.OS;
-    api.post('/rooms/check-version', { os, version })
-    .then(res => {
-      return callback(null, res.data);
-    })
-    .catch(err => {
-      return callback(err);
-    });
+    if (os) {
+      api.post('/check-version', { os, version })
+      .then(res => {
+        return callback(null, res.data);
+      })
+      .catch(err => {
+        return callback(err);
+      });
+    }
+    return callback();
   }, [])
   
   return {

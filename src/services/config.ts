@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
 
 const API_URL = Constants.manifest?.extra?.API_URL;
+const API_VERSION = Constants.manifest?.extra?.API_VERSION;
 const BASE_URL = API_URL ?? 'https://test-edge-application-processing-appsvc.azurewebsites.net';
 const BASE_URL_NODE = API_URL ?? 'https://test-edge-application-processing-appsvc.azurewebsites.net';
 const firebaseConfig = {
@@ -21,6 +22,7 @@ const agoraTestConfig = {
 
 export {
   BASE_URL,
+  API_VERSION,
   BASE_URL_NODE,
   firebaseConfig,
   agoraTestConfig,
