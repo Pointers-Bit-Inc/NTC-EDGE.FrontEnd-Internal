@@ -17,7 +17,7 @@ const errorResponse = {
 };
 
 const ResetPassword = ({ navigation, route }: any) => {
-  const { token } = route?.params;
+  const { otpId, otp } = route?.params;
   const [loading, setLoading] = useState(false);
   const [formValue, setFormValue] = useState({
     password: {
@@ -105,8 +105,9 @@ const ResetPassword = ({ navigation, route }: any) => {
     } else {
       setLoading(true);
       api(null, '')
-          .post(`/account/reset-password`, {
-            token,
+          .post(`/reset-password`, {
+            id: otpId,
+            otp,
             password: formValue?.password?.value,
           })
           .then((res: any) => {

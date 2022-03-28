@@ -29,14 +29,15 @@ const ForgotPassword = ({ navigation }:any) => {
     const onSubmit = () => {
         setLoading(true);
         api(null, '')
-            .post(`/account/reset-password-request`, {email: account?.value})
+            .post(`/reset-password-request`, {email: account?.value})
             .then((res: any) => {
                 setLoading(false);
                 if (res?.data?.success) {
+                    Alert.alert(res.data.message);
                     navigation.navigate('ForgotPasswordOTP', {
                         account: account.value,
                         accountType: 'email',
-                        token: res?.data?.token,
+                        token: res?.data?.otpId,
                     });
                 }
                 else {
