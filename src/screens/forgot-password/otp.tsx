@@ -183,7 +183,7 @@ const OneTimePin = ({ navigation , route }: any) => {
 
                         ] }
 
-                        maxLength={ 6 }
+                        maxLength={ 4 }
                         placeholder="••••••"
                         label={ 'OTP' }
 
