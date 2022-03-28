@@ -305,36 +305,34 @@ workflows:
       - Publish App:
           requires:
             - Build for Testing
-      - Build IOS Archive:
-          api_url: << pipeline.parameters.test_url >>
-          context: ntc-edge
-          requires:
-            - Publish App
-      - Build Android APK:
-          api_url: << pipeline.parameters.test_url >>
-          context: ntc-edge
-          requires:
-            - Publish App
-      - Build Android AAB:
-          api_url: << pipeline.parameters.test_url >>
-          context: ntc-edge
-          requires:
-            - Publish App
-      - Ready for Submission to EXPO:
-          type: approval
-          requires:
-            - Build IOS Archive
-            - Build Android APK
-            - Build Android AAB
+      # - Build IOS Archive:
+      #     api_url: << pipeline.parameters.test_url >>
+      #     context: ntc-edge
+      #     requires:
+      #       - Publish App
+      # - Build Android APK:
+      #     api_url: << pipeline.parameters.test_url >>
+      #     context: ntc-edge
+      #     requires:
+      #       - Publish App
+      # - Build Android AAB:
+      #     api_url: << pipeline.parameters.test_url >>
+      #     context: ntc-edge
+      #     requires:
+      #       - Publish App
       - Build App:
           api_url: << pipeline.parameters.test_url >>
           context: ntc-edge
           requires:
-            - Ready for Submission to EXPO
+            - Build for Testing
+      - Ready for Submission:
+          type: approval
+          requires:
+            - Build App
       - Submit to Appstore:
           context: ntc-edge
           requires:
-            - Build App
+            - Ready for Submission
 
   Production Build and Deploy:
     jobs:
@@ -347,34 +345,32 @@ workflows:
       - Publish App:
           requires:
             - Build for Production
-      - Build IOS Archive:
-          api_url: << pipeline.parameters.prod_url >>
-          context: ntc-edge
-          requires:
-            - Publish App
-      - Build Android APK:
-          api_url: << pipeline.parameters.prod_url >>
-          context: ntc-edge
-          requires:
-            - Publish App
-      - Build Android AAB:
-          api_url: << pipeline.parameters.prod_url >>
-          context: ntc-edge
-          requires:
-            - Publish App
-      - Ready for Submission to EXPO:
-          type: approval
-          requires:
-            - Build IOS Archive
-            - Build Android APK
-            - Build Android AAB
+      # - Build IOS Archive:
+      #     api_url: << pipeline.parameters.prod_url >>
+      #     context: ntc-edge
+      #     requires:
+      #       - Publish App
+      # - Build Android APK:
+      #     api_url: << pipeline.parameters.prod_url >>
+      #     context: ntc-edge
+      #     requires:
+      #       - Publish App
+      # - Build Android AAB:
+      #     api_url: << pipeline.parameters.prod_url >>
+      #     context: ntc-edge
+      #     requires:
+      #       - Publish App
       - Build App:
           api_url: << pipeline.parameters.prod_url >>
           context: ntc-edge
           requires:
-            - Ready for Submission to EXPO
+            - Publish App
+      - Ready for Submission:
+          type: approval
+          requires:
+            - Build App
       - Submit to Appstore:
           context: ntc-edge
           requires:
-            - Build App    
+            - Ready for Submission    
           
