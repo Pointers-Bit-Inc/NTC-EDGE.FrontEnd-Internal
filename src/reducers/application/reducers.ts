@@ -93,6 +93,7 @@ export default function basket(state = initialState, action = {}) {
             const isNotPinned = []
             const isPinned = []
             for (let i = 0; i < action.payload?.data?.docs?.length; i++) {
+
                 if ((
                     (action.payload?.data.docs[i]?.assignedPersonnel?._id || action.payload?.data.docs[i]?.assignedPersonnel ) == action.payload?.user?._id) &&
                     !(
@@ -103,10 +104,11 @@ export default function basket(state = initialState, action = {}) {
                            
                     isPinned.push(action.payload?.data?.docs[i])
                 } else {
+
                     isNotPinned.push(action.payload?.data?.docs[i])
                 }
             }
-
+               //TODO no content if isNotPinned is empty
             state = state.set('notPinnedApplications' , isNotPinned);
             state = state.set('pinnedApplications' , isPinned);
 

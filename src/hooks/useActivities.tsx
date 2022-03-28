@@ -157,6 +157,7 @@ export function useActivities() {
 
         setRefreshing(true);
         axios.get(BASE_URL + `/applications` , { ...config , params : query() }).then((response) => {
+           
             if (response?.data?.message) Alert.alert(response.data.message);
             if (isCurrent) setRefreshing(false);
             if (response?.data?.docs?.length) callback(true);
@@ -169,6 +170,9 @@ export function useActivities() {
                     response?.data?.total ? setTotal(response?.data?.total) : setTotal(0);
                     response?.data?.page ? setPage(response?.data?.page) : setPage(0);
                     dispatch(setApplications({ data : response?.data , user : user }))
+                    /*if(!notPinnedApplications.length) {
+                        handleLoad()
+                    }*/
                 }
             }
             if (isCurrent) setRefreshing(false);

@@ -35,7 +35,7 @@ const OneTimePin = ({ navigation , route }: any) => {
     const onSubmit = () => {
         setLoading(true);
         api(null , '')
-            .post(`/${ otpId }/{id}/otp-validate` , {
+            .post(`/${ otpId }/otp-validate` , {
                 'code' : otp ,
                 'otpId' : otpId
             })
