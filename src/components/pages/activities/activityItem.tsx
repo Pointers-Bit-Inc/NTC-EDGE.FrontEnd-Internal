@@ -214,7 +214,7 @@ const RenderPinned = ({ assignedPersonnel , config }: any) => {
                 width={ fontValue(20) }
                 height={ fontValue(20) }
             /> }
-            { loading ? <ActivityIndicator/> :
+            { loading ? <ActivityIndicator/>  :
               <Text
                   style={ { "marginLeft" : 3 , "marginRight" : 5 } }
                   color="#606A80"

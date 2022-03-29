@@ -9,7 +9,7 @@ import {isMobile} from "@pages/activities/isMobile";
 const { width , height } = Dimensions.get("screen");
 export const styles = StyleSheet.create({
     pictureContainer: {
-        width : 240 , height : 200 , borderRadius : 5 , borderWidth : 4 ,
+        width : width/1.2 , height : 200 , borderRadius : 5 , borderWidth : 4 ,
         borderColor : "#fff"
     },
     containers:{

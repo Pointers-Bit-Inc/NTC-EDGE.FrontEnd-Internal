@@ -21,7 +21,6 @@ import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {Card} from "@pages/activities/application/requirementModal/card";
 import PdfViewr from "@pages/activities/application/pdf/index";
 import FileIcon from "@assets/svg/file";
-import WebView from "react-native-webview";
 
 const { width , height } = Dimensions.get("screen");
 
@@ -79,13 +78,14 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
     componentDidUpdate(prevProps , prevState) {
 
         if (prevProps?.requirement?.medium != this.props?.requirement?.medium) {
-
+            this.setState({onLoadStart: true})
             this.setImage();
 
         }
     }
 
     componentDidMount() {
+        this.setState({onLoadStart: true})
         this.setImage();
     }
 
@@ -119,22 +119,27 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                             color={ "#606A80" }
                             width={ 150 }
                             height={ 150 }
-                        /> : <Image
-                            resizeMode={ "cover" }
-                            style={ {
-                                marginBottom : isMobile ? undefined : 25 ,
-                                backgroundColor : "rgba(220,226,229,1)" ,
-                                borderWidth : 1 ,
-                                borderColor : "rgba(213,214,214,1)" ,
-                                borderStyle : "solid" ,
-                                width : isMobile ? 300 : 240 ,
-                                height : isMobile ? 300 : 160 ,
-                                borderRadius : 10
-                            } }
-                            source={ {
-                                uri : this.props?.requirement?.small ,
-                            } }
-                        />
+                        /> :
+                        <View style={{ }}>
+                            <Image
+                                resizeMode={ "cover" }
+                                style={ {
+                                    borderRadius : 10,
+                                    marginBottom : isMobile ? undefined : 25 ,
+                                    backgroundColor : "rgba(220,226,229,1)" ,
+                                    borderWidth : 1 ,
+                                    borderColor : "rgba(213,214,214,1)" ,
+                                    borderStyle : "solid" ,
+                                    width : isMobile ? width/1.2 : 240 ,
+                                    height : isMobile ? 300 : 160 ,
+
+                                } }
+                                source={ {
+                                    uri : this.props?.requirement?.small ,
+                                } }
+                            />
+                        </View>
+
 
 
                     }

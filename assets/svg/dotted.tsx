@@ -3,7 +3,7 @@ import Svg, { SvgProps, Line } from "react-native-svg";
 
 const DottedLine = (props: SvgProps) => (
     <Svg
-        width={726}
+        width={"100%"}
         height={1}
         viewBox="0 0 726 1"
         fill="none"
