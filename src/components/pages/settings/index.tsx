@@ -20,8 +20,8 @@ import Api from "../../../services/api";
 import {StackActions} from "@react-navigation/native";
 import {fontValue} from "@pages/activities/fontValue";
 import {setApplicationItem} from "../../../reducers/application/actions";
-import OneSignal from 'react-native-onesignal';
-import useOneSignal from 'src/hooks/useOneSignal';
+// import OneSignal from 'react-native-onesignal';
+// import useOneSignal from 'src/hooks/useOneSignal';
 
 export default ({
   navigation
@@ -31,7 +31,7 @@ export default ({
   const profilePicture = user?.profilePicture?.small;
   const photo = profilePicture ? {uri: profilePicture} : require('@assets/avatar.png');
   const [visible, setVisible] = useState(false);
-  const { destroy } = useOneSignal(user);
+  // const { destroy } = useOneSignal(user);
   const settings = [
     /*{
       label: 'Notifications',
@@ -70,7 +70,7 @@ export default ({
       dispatch(resetUser());
       dispatch(resetMeeting());
       dispatch(resetChannel());
-      destroy();
+      // destroy();
       navigation.dispatch(StackActions.replace('Login'));
     }, 500);
   }, []);
