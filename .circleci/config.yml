@@ -107,6 +107,23 @@ commands:
           key: cache-yarn-internal-v1-<< parameters.platform >>-{{ checksum "package.json" }}
 
 jobs:
+  Publish App:
+    executor: js
+    steps:
+      - checkout
+      - add_yarn_binaries_to_path
+      - restore_yarn_cache:
+          platform: linux
+      - run:
+          name: Installing expo-cli
+          command: yarn global add expo-cli
+      - run:
+          name: Publishing Expo app
+          command: |
+            yarn
+            expo publish
+      - save_yarn_cache:
+          platform: linux
   Build IOS Archive:
     executor: ios
     parameters:
@@ -231,7 +248,7 @@ jobs:
           path: ~/ntc-edge-internal.aab
 
   Build App:
-    executor: default
+    executor: js
     parameters:
       api_url:
         type: string
@@ -240,28 +257,38 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies
-          command: npm ci
+          name: Starting Android APP Build
+          command: |
+            echo Building for ${API_URL}
+      - restore_yarn_cache:
+          platform: linux
+      - node/install:
+          node-version: '16.13.0'
+      - run: yarn
+      - save_yarn_cache:
+          platform: linux
+      - add_yarn_binaries_to_path
       - run:
           name: Android Build
-          command: |
-            echo building for ${API_URL}
-            npx eas-cli build --platform android --non-interactive
+          command: npx eas-cli build --platform android --non-interactive
           no_output_timeout: 30m
       - run:
           name: IOS Build
-          command: |
-            echo building for ${API_URL}
-            npx eas-cli build --platform ios --non-interactive
+          command: npx eas-cli build --platform ios --non-interactive
           no_output_timeout: 30m
 
   Submit to Appstore:
     executor: default
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: npm ci
+      - restore_yarn_cache:
+          platform: linux
+      - node/install:
+          node-version: '16.13.0'
+      - run: yarn
+      - save_yarn_cache:
+          platform: linux
+      - add_yarn_binaries_to_path
       - run:
           name: Submit to Apple Appstore
           command: npx eas-cli submit -p ios --latest --non-interactive
@@ -275,36 +302,37 @@ workflows:
             branches:
               only:
                 - develop
-      - Build IOS Archive:
-          api_url: << pipeline.parameters.test_url >>
-          context: ntc-edge
+      - Publish App:
           requires:
             - Build for Testing
-      - Build Android APK:
-          api_url: << pipeline.parameters.test_url >>
-          context: ntc-edge
-          requires:
-            - Build for Testing
-      - Build Android AAB:
-          api_url: << pipeline.parameters.test_url >>
-          context: ntc-edge
-          requires:
-            - Build for Testing
-      - Ready for Submission to EXPO:
-          type: approval
-          requires:
-            - Build IOS Archive
-            - Build Android APK
-            - Build Android AAB
+      # - Build IOS Archive:
+      #     api_url: << pipeline.parameters.test_url >>
+      #     context: ntc-edge
+      #     requires:
+      #       - Publish App
+      # - Build Android APK:
+      #     api_url: << pipeline.parameters.test_url >>
+      #     context: ntc-edge
+      #     requires:
+      #       - Publish App
+      # - Build Android AAB:
+      #     api_url: << pipeline.parameters.test_url >>
+      #     context: ntc-edge
+      #     requires:
+      #       - Publish App
       - Build App:
           api_url: << pipeline.parameters.test_url >>
           context: ntc-edge
           requires:
-            - Ready for Submission to EXPO
+            - Build for Testing
+      - Ready for Submission:
+          type: approval
+          requires:
+            - Build App
       - Submit to Appstore:
           context: ntc-edge
           requires:
-            - Build App
+            - Ready for Submission
 
   Production Build and Deploy:
     jobs:
@@ -314,34 +342,35 @@ workflows:
             branches:
               only:
                 - master
-      - Build IOS Archive:
-          api_url: << pipeline.parameters.prod_url >>
-          context: ntc-edge
+      - Publish App:
           requires:
             - Build for Production
-      - Build Android APK:
-          api_url: << pipeline.parameters.prod_url >>
-          context: ntc-edge
-          requires:
-            - Build for Production
-      - Build Android AAB:
-          api_url: << pipeline.parameters.prod_url >>
-          context: ntc-edge
-          requires:
-            - Build for Production
-      - Ready for Submission to EXPO:
-          type: approval
-          requires:
-            - Build IOS Archive
-            - Build Android APK
-            - Build Android AAB
+      # - Build IOS Archive:
+      #     api_url: << pipeline.parameters.prod_url >>
+      #     context: ntc-edge
+      #     requires:
+      #       - Publish App
+      # - Build Android APK:
+      #     api_url: << pipeline.parameters.prod_url >>
+      #     context: ntc-edge
+      #     requires:
+      #       - Publish App
+      # - Build Android AAB:
+      #     api_url: << pipeline.parameters.prod_url >>
+      #     context: ntc-edge
+      #     requires:
+      #       - Publish App
       - Build App:
           api_url: << pipeline.parameters.prod_url >>
           context: ntc-edge
           requires:
-            - Ready for Submission to EXPO
+            - Publish App
+      - Ready for Submission:
+          type: approval
+          requires:
+            - Build App
       - Submit to Appstore:
           context: ntc-edge
           requires:
-            - Build App    
+            - Ready for Submission    
           
