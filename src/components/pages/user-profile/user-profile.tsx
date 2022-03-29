@@ -91,8 +91,8 @@ const UserProfileScreen = ({ navigation }: any) => {
 
                 let base64 = up?.file?.uri;
                 let mime = isMobile ?up?.file?.mimeType :  base64?.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
-                   console.log(base64)
-                 let mimeResult: any = null
+                console.log(base64)
+                let mimeResult: any = null
                 if (mime && mime.length) {
                     mimeResult = isMobile ? mime :mime[1];
                 }
@@ -108,7 +108,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                         const fd = new FormData();
                         const file =  isMobile ? {
                             name: up?.file?.name,
-                            type: up?.file?.mimeType,
+                            type: 'application/octet-stream',
                             uri: up?.file?.uri,
                         } : new File([ blob] , (up?.file?.name + "." +  mimeType || up?.file?.mimeType) );
 
@@ -128,7 +128,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                                 return res?.json()
                             })
                             .then(res => {
-                                  console.log(res)
+                                console.log(res)
                                 if(res?.success){
                                     console.log(res?.success)
                                     updateUserProfile(dp , res?.doc)
@@ -369,7 +369,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                     } ,
                 )
                 .then((res: any) => {
-                      console.log("response: ", res?.data?.doc)
+                    console.log("response: ", res?.data?.doc)
                     setLoading({
                         photo : false ,
                         basic : false
@@ -387,9 +387,9 @@ const UserProfileScreen = ({ navigation }: any) => {
                                 ...user , ...removeEmpty(res?.data?.doc),
                                 profilePictureObj : res?.data?.doc?.profilePicture
                             }));
-                        
+
                         } else {
-                        
+
                             dispatch(setUser({ ...user ,  ...removeEmpty(res?.data?.doc) }));
                         }
                     } else {
@@ -434,9 +434,6 @@ const UserProfileScreen = ({ navigation }: any) => {
         };
     } , [routeIsFocused]);
 
-    useEffect(()=>{
-              console.log(photo)
-    }, [photo])
 
     return (
         <View style={ styles.container }>

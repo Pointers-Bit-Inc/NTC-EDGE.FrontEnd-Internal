@@ -21,7 +21,6 @@ import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {Card} from "@pages/activities/application/requirementModal/card";
 import PdfViewr from "@pages/activities/application/pdf/index";
 import FileIcon from "@assets/svg/file";
-import WebView from "react-native-webview";
 
 const { width , height } = Dimensions.get("screen");
 
@@ -79,13 +78,14 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
     componentDidUpdate(prevProps , prevState) {
 
         if (prevProps?.requirement?.medium != this.props?.requirement?.medium) {
-
+            this.setState({onLoadStart: true})
             this.setImage();
 
         }
     }
 
     componentDidMount() {
+        this.setState({onLoadStart: true})
         this.setImage();
     }
 
