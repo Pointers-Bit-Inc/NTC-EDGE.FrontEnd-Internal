@@ -281,6 +281,84 @@ jobs:
           command: npx eas-cli build --platform ios --non-interactive
           no_output_timeout: 30m
 
+  Build APK Android:
+    executor: js
+    parameters:
+      api_url:
+        type: string
+    environment:
+      API_URL: << parameters.api_url >>
+    steps:
+      - checkout
+      - run:
+          name: Starting Android APP Build
+          command: |
+            echo Building for ${API_URL}
+      - restore_yarn_cache:
+          platform: linux
+      - node/install:
+          node-version: '16.13.0'
+      - run: yarn
+      - save_yarn_cache:
+          platform: linux
+      - add_yarn_binaries_to_path
+      - run:
+          name: Android APK Build
+          command: npx eas-cli build --platform android --profile preview --non-interactive
+          no_output_timeout: 30m
+
+  Build AAB Android:
+    executor: js
+    parameters:
+      api_url:
+        type: string
+    environment:
+      API_URL: << parameters.api_url >>
+    steps:
+      - checkout
+      - run:
+          name: Starting Android APP Build
+          command: |
+            echo Building for ${API_URL}
+      - restore_yarn_cache:
+          platform: linux
+      - node/install:
+          node-version: '16.13.0'
+      - run: yarn
+      - save_yarn_cache:
+          platform: linux
+      - add_yarn_binaries_to_path
+      - run:
+          name: Android APK Build
+          command: npx eas-cli build --platform android --non-interactive
+          no_output_timeout: 30m
+
+  Build IOS:
+    executor: js
+    parameters:
+      api_url:
+        type: string
+    environment:
+      API_URL: << parameters.api_url >>
+    steps:
+      - checkout
+      - run:
+          name: Starting Android APP Build
+          command: |
+            echo Building for ${API_URL}
+      - restore_yarn_cache:
+          platform: linux
+      - node/install:
+          node-version: '16.13.0'
+      - run: yarn
+      - save_yarn_cache:
+          platform: linux
+      - add_yarn_binaries_to_path
+      - run:
+          name: Android APK Build
+          command: npx eas-cli build --platform ios --non-interactive
+          no_output_timeout: 30m
+
   Submit to Appstore:
     executor: default
     steps:
@@ -364,15 +442,45 @@ workflows:
       #     context: ntc-edge
       #     requires:
       #       - Publish App
-      - Build App:
+
+      - Request Build APK:
+          type: approval
+          requires:
+            - Publish App
+
+      - Request Build AAB:
+          type: approval
+          requires:
+            - Publish App
+
+      - Request Build IOS:
+          type: approval
+          requires:
+            - Publish App
+
+      - Build APK Android:
           api_url: << pipeline.parameters.prod_url >>
           context: ntc-edge
           requires:
-            - Publish App
+            - Request Build APK
+
+      - Build AAB Android:
+          api_url: << pipeline.parameters.prod_url >>
+          context: ntc-edge
+          requires:
+            - Request Build AAB
+
+      - Build IOS:
+          api_url: << pipeline.parameters.prod_url >>
+          context: ntc-edge
+          requires:
+            - Request Build IOS
+
       - Ready for Submission:
           type: approval
           requires:
-            - Build App
+            - Build IOS
+
       - Submit to Appstore:
           context: ntc-edge
           requires:
