@@ -31,7 +31,7 @@ import {Bold} from '@styles/font';
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 
-const STATUSBAR_HEIGHT = StatusBar.currentHeight;
+const STATUSBAR_HEIGHT = StatusBar?.currentHeight;
 const { width , height } = Dimensions.get('window');
 
 const UserProfileScreen = ({ navigation }: any) => {
@@ -61,14 +61,19 @@ const UserProfileScreen = ({ navigation }: any) => {
                 if (!picker.cancelled) {
 
                     let uri = picker?.uri;
+                    console.log("uri", uri)
                     let split = uri?.split('/');
+                    console.log("slit", split)
                     let name = split?.[split?.length - 1];
+                    console.log("namr", name)
                     let mimeType =name?.split('.')?.[1] ||  picker?.type ;
+                    console.log("mime", mimeType)
                     let _file = {
                         name ,
                         mimeType ,
                         uri ,
                     };
+                    console.log(_file)
                     userProfileForm[index].file = _file;
                     userProfileForm[index].value = _file?.uri;
                     setUserProfileForm(userProfileForm);
@@ -92,10 +97,14 @@ const UserProfileScreen = ({ navigation }: any) => {
                     mimeResult = isMobile ? mime :mime[1];
                 }
                 let mimeType = isMobile ? mime : mimeResult?.split("/")?.[1]
-
+                console.log("blob", base64 )
                 await fetch(base64)
-                    .then(res => res.blob())
+                    .then(res => {
+                        console.log("blob", "asda" )
+                        return res?.blob()
+                    })
                     .then(blob => {
+
                         const fd = new FormData();
                         const file =  isMobile ? {
                             name: up?.file?.name,
@@ -104,14 +113,20 @@ const UserProfileScreen = ({ navigation }: any) => {
                         } : new File([ blob] , (up?.file?.name + "." +  mimeType || up?.file?.mimeType) );
 
                         fd.append('profilePicture' , file, (up?.file?.name + "." + mimeType || up?.file?.mimeType)  );
-
+                        console.log("before api")
                         const API_URL = `${ BASE_URL_NODE }/users/upload-photo`;
+                        console.log("after api", API_URL)
+
                         fetch(API_URL , {
                             method : 'POST' , body : fd , headers : {
-                                'Authorization' : `Bearer ${ user?.sessionToken }` ,
+                                'Authorization' : `Bearer ${ user?.sessionToken }`,
+
                             }
                         })
-                            .then(res => res.json())
+                            .then(res => {
+                                console.log(res, "API_URL")
+                                return res?.json()
+                            })
                             .then(res => {
                                   console.log(res)
                                 if(res?.success){
@@ -119,8 +134,32 @@ const UserProfileScreen = ({ navigation }: any) => {
                                     updateUserProfile(dp , res?.doc)
                                 }
 
-                            })
+                            }) .catch((err: any) => {
+
+                            err = JSON.parse(JSON.stringify(err));
+
+                            setLoading({
+                                photo : false ,
+                                basic : false
+                            });
+                            // setEditable(false);
+                            if (err?.status === 413) {
+                                setAlert({
+                                    title : 'File Too Large' ,
+                                    message : 'File size must be lesser than 2 MB.' ,
+                                    color : warningColor
+                                });
+                            } else {
+                                setAlert({
+                                    title : err?.title || 'Failure' ,
+                                    message : err?.message || 'Your profile was not edited.' ,
+                                    color : errorColor
+                                });
+                            }
+                            setShowAlert(true);
+                        })
                     }) .catch((err: any) => {
+
                         err = JSON.parse(JSON.stringify(err));
                         setLoading({
                             photo : false ,
@@ -335,7 +374,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                         photo : false ,
                         basic : false
                     });
-                    // setEditable(false);
+
                     if (res?.status === 200) {
                         setAlert({
                             title : 'Success' ,
