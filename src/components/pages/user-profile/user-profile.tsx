@@ -82,7 +82,32 @@ const UserProfileScreen = ({ navigation }: any) => {
             }
         }
     };
+    function uploadImage(url,params){
 
+        return new Promise(function (resolve, reject) {
+            let formData = new FormData();
+            for (var key in params){
+                formData.append(key, params[key]);
+            }
+            let file = {uri: params.path, type: 'application/octet-stream', name: 'image.jpg'};
+            formData.append("file", file);
+            const API_URL = `${ BASE_URL_NODE }/users/upload-photo`;
+            fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data;charset=utf-8',
+                    'Authorization' : `Bearer ${ user?.sessionToken }`,
+                },
+                body: formData,
+            }).then((response) => response.json())
+                .then((responseData)=> {
+                    resolve(responseData);
+                })
+                .catch((err)=> {
+                    reject(err);
+                });
+        });
+    }
     const save = ({ dp = false }) => {
         var updatedUser = {} , formData = {};
         userProfileForm?.forEach(async (up: any) => {
@@ -100,7 +125,6 @@ const UserProfileScreen = ({ navigation }: any) => {
                 console.log("blob", base64 )
                 await fetch(base64)
                     .then(res => {
-                        console.log("blob", "asda" )
                         return res?.blob()
                     })
                     .then(blob => {
