@@ -79,8 +79,8 @@ export function useAuth(navigation) {
                     ...formValue ,
                     [key] : {
                         value : value ,
-                        isValid : passwordTest?.isValid ,
-                        error : !passwordTest?.isValid ? errorResponse['password'] : '' ,
+                        isValid : true,
+                        error : '' ,
                         characterLength : passwordTest.characterLength ,
                         upperAndLowerCase : passwordTest.upperAndLowerCase ,
                         atLeastOneNumber : passwordTest.atLeastOneNumber ,
