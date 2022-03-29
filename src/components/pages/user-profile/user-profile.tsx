@@ -82,47 +82,19 @@ const UserProfileScreen = ({ navigation }: any) => {
             }
         }
     };
-    function uploadImage(url,params){
 
-        return new Promise(function (resolve, reject) {
-            let formData = new FormData();
-            for (var key in params){
-                formData.append(key, params[key]);
-            }
-            let file = {uri: params.path, type: 'application/octet-stream', name: 'image.jpg'};
-            formData.append("file", file);
-            const API_URL = `${ BASE_URL_NODE }/users/upload-photo`;
-            fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data;charset=utf-8',
-                    'Authorization' : `Bearer ${ user?.sessionToken }`,
-                },
-                body: formData,
-            }).then((response) => response.json())
-                .then((responseData)=> {
-                    resolve(responseData);
-                })
-                .catch((err)=> {
-                    reject(err);
-                });
-        });
-    }
     const save = ({ dp = false }) => {
         var updatedUser = {} , formData = {};
         userProfileForm?.forEach(async (up: any) => {
             updatedUser = { ...updatedUser , [up?.stateName] : up?.value };
             if (dp && up?.stateName === 'profilePicture' && up?.file?.uri) {
-
                 let base64 = up?.file?.uri;
                 let mime = isMobile ?up?.file?.mimeType :  base64?.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
-                console.log(base64)
                 let mimeResult: any = null
                 if (mime && mime.length) {
                     mimeResult = isMobile ? mime :mime[1];
                 }
                 let mimeType = isMobile ? mime : mimeResult?.split("/")?.[1]
-                console.log("blob", base64 )
                 await fetch(base64)
                     .then(res => {
                         return res?.blob()
@@ -137,9 +109,8 @@ const UserProfileScreen = ({ navigation }: any) => {
                         } : new File([ blob] , (up?.file?.name + "." +  mimeType || up?.file?.mimeType) );
 
                         fd.append('profilePicture' , file, (up?.file?.name + "." + mimeType || up?.file?.mimeType)  );
-                        console.log("before api")
+
                         const API_URL = `${ BASE_URL_NODE }/users/upload-photo`;
-                        console.log("after api", API_URL)
 
                         fetch(API_URL , {
                             method : 'POST' , body : fd , headers : {
@@ -148,13 +119,10 @@ const UserProfileScreen = ({ navigation }: any) => {
                             }
                         })
                             .then(res => {
-                                console.log(res, "API_URL")
                                 return res?.json()
                             })
                             .then(res => {
-                                console.log(res)
                                 if(res?.success){
-                                    console.log(res?.success)
                                     updateUserProfile(dp , res?.doc)
                                 }
 

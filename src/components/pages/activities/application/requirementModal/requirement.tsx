@@ -119,22 +119,27 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                             color={ "#606A80" }
                             width={ 150 }
                             height={ 150 }
-                        /> : <Image
-                            resizeMode={ "cover" }
-                            style={ {
-                                marginBottom : isMobile ? undefined : 25 ,
-                                backgroundColor : "rgba(220,226,229,1)" ,
-                                borderWidth : 1 ,
-                                borderColor : "rgba(213,214,214,1)" ,
-                                borderStyle : "solid" ,
-                                width : isMobile ? 300 : 240 ,
-                                height : isMobile ? 300 : 160 ,
-                                borderRadius : 10
-                            } }
-                            source={ {
-                                uri : this.props?.requirement?.small ,
-                            } }
-                        />
+                        /> :
+                        <View style={{ }}>
+                            <Image
+                                resizeMode={ "cover" }
+                                style={ {
+                                    borderRadius : 10,
+                                    marginBottom : isMobile ? undefined : 25 ,
+                                    backgroundColor : "rgba(220,226,229,1)" ,
+                                    borderWidth : 1 ,
+                                    borderColor : "rgba(213,214,214,1)" ,
+                                    borderStyle : "solid" ,
+                                    width : isMobile ? width/1.2 : 240 ,
+                                    height : isMobile ? 300 : 160 ,
+
+                                } }
+                                source={ {
+                                    uri : this.props?.requirement?.small ,
+                                } }
+                            />
+                        </View>
+
 
 
                     }
