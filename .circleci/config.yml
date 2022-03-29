@@ -269,7 +269,11 @@ jobs:
           platform: linux
       - add_yarn_binaries_to_path
       - run:
-          name: Android Build
+          name: Android APK Build
+          command: npx eas-cli build --platform android --profile preview --non-interactive
+          no_output_timeout: 30m
+      - run:
+          name: Android AAB Build
           command: npx eas-cli build --platform android --non-interactive
           no_output_timeout: 30m
       - run:
