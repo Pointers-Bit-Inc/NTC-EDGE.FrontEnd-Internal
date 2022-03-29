@@ -7,7 +7,8 @@ import {
     Text ,
     TouchableOpacity ,
     TouchableWithoutFeedback ,
-    View
+    View,
+    StatusBar as SB
 } from "react-native";
 import {Ionicons ,} from '@expo/vector-icons'
 
@@ -200,7 +201,7 @@ const styles = StyleSheet.create({
         ...Platform.select({
                 native : {
                     paddingHorizontal : 15 ,
-                    paddingTop : 15 ,
+                    paddingTop : 20 ,
                 } ,
                 default : {
                     paddingHorizontal : 15 ,
@@ -231,8 +232,9 @@ const styles = StyleSheet.create({
         flexDirection : 'row' ,
         justifyContent : 'space-between' ,
         alignItems : 'center' ,
-        padding  : 15 ,
-        paddingTop: 45 ,
+        padding: 15,
+        paddingTop: SB?.currentHeight ||20 ,
+        
         backgroundColor : '#041B6E'
     } ,
     rect : {
