@@ -2,13 +2,12 @@ import React , {useRef} from "react";
 import {
     Dimensions ,
     Modal ,
-    Platform ,
+    Platform , SafeAreaView ,
     StyleSheet ,
     Text ,
     TouchableOpacity ,
     TouchableWithoutFeedback ,
-    View,
-    StatusBar as SB
+    View
 } from "react-native";
 import {Ionicons ,} from '@expo/vector-icons'
 
@@ -80,7 +79,7 @@ function TopModal(props: any) {
                 dispatch(setVisible(false))
             } }>
 
-            <View ref={ inputRef } style={ visible ? {
+            <SafeAreaView ref={ inputRef } style={ visible ? {
 
                 position : "absolute" ,
                 zIndex : 2 ,
@@ -88,14 +87,13 @@ function TopModal(props: any) {
                 left : 0 ,
                 width : '100%' ,
                 height : '100%' ,
-                backgroundColor : isMobile ? "rgba(0, 0, 0, 0.5)" : "rgba(255, 255, 255, 0)" ,
             } : {} }>
 
                 { <TouchableWithoutFeedback onPressOut={ () => dispatch(setVisible(false)) }>
 
                     <View style={ styles.container }>
 
-                        { isMobile && <View style={ styles.header1 }>
+                        { isMobile && <View style={ styles. header1 }>
                             <View style={ { width : 25 } }>
 
                             </View>
@@ -171,7 +169,7 @@ function TopModal(props: any) {
 
                 </TouchableWithoutFeedback> }
 
-            </View>
+            </SafeAreaView>
         </Modal>
 
     );
@@ -181,7 +179,7 @@ function TopModal(props: any) {
 const styles = StyleSheet.create({
     container : {
         flex : 1 ,
-       
+
     } ,
     group : {
         height : 56 ,
@@ -201,7 +199,7 @@ const styles = StyleSheet.create({
         ...Platform.select({
                 native : {
                     paddingHorizontal : 15 ,
-                    paddingTop : 20 ,
+                    paddingTop : 15 ,
                 } ,
                 default : {
                     paddingHorizontal : 15 ,
@@ -232,9 +230,8 @@ const styles = StyleSheet.create({
         flexDirection : 'row' ,
         justifyContent : 'space-between' ,
         alignItems : 'center' ,
-        padding: 15,
-        paddingTop: SB?.currentHeight ||20 ,
-        
+        padding  : 15 ,
+        paddingTop: 25 ,
         backgroundColor : '#041B6E'
     } ,
     rect : {
@@ -252,7 +249,7 @@ const styles = StyleSheet.create({
         alignSelf : "center" ,
         fontFamily : Bold ,
         color : "rgba(255,255,255,1)" ,
-        fontSize : fontValue(16) ,
+        fontSize : fontValue(18) ,
     } ,
     icon : {
         color : "rgba(255,255,255,1)" ,
@@ -277,6 +274,7 @@ const styles = StyleSheet.create({
         marginTop : 56
     } ,
     group7_1 : {
+        paddingTop: 5,
         backgroundColor : 'white'
     } ,
     group6 : {
