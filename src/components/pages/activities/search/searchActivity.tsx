@@ -96,7 +96,7 @@ export function SearchActivity(props: {onBlur: any ,  isHandleLoad:any, isRecent
                         <View  style={styles.group}>
                             
                             <InputField  ref={inputRef}
-                                          onClose={props.onEndEditing}
+                                          onClose={() => props.onChangeText("")}
                                          inputStyle={{fontWeight: "400", fontSize: fontValue(14)}}
                                          value={props.value}
                                          onEndEditing={props.onEndEditing}
