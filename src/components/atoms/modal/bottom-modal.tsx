@@ -52,6 +52,7 @@ const BottomModal: ForwardRefRenderFunction<BottomModalRef, Props> = (
   }));
   return (
     <Modal
+
       ref={modalRef}
       isVisible={showModal}
       avoidKeyboard={avoidKeyboard}
