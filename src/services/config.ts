@@ -2,8 +2,8 @@ import Constants from 'expo-constants';
 
 const API_URL = Constants.manifest?.extra?.API_URL;
 const API_VERSION = Constants.manifest?.extra?.API_VERSION;
-const BASE_URL = API_URL ?? 'https://test-edge-application-processing-appsvc.azurewebsites.net';
-const BASE_URL_NODE = API_URL ?? 'https://test-edge-application-processing-appsvc.azurewebsites.net';
+const BASE_URL = API_URL ?? 'https://prod-edge-application-processing-appsvc.azurewebsites.net';
+const BASE_URL_NODE = API_URL ?? 'https://prod-edge-application-processing-appsvc.azurewebsites.net';
 const firebaseConfig = {
   apiKey: "AIzaSyASZc6WOG4-kKMf7I98p_5aRjbXHzWsmyU",
   authDomain: "ntc-edge-ea034.firebaseapp.com",
