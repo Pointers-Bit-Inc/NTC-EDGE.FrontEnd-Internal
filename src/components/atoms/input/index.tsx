@@ -49,6 +49,7 @@ const Input: ForwardRefRenderFunction<TextInputRef, Props> = ({
   useImperativeHandle(ref, () => ({
     blur: () => inputRef.current.blur(),
     focus: () => inputRef.current.focus(),
+    isFocused: ()=> inputRef.current.isFocused()
   }));
   return (
     <TextInput

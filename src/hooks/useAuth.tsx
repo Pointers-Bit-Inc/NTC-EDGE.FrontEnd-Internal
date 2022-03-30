@@ -1,9 +1,10 @@
 import useApi from "../services/api";
 import {useDispatch} from "react-redux";
-import {useState} from "react";
+import {useCallback , useState} from "react";
 import {setUser} from "../reducers/user/actions";
-import {StackActions} from "@react-navigation/native";
+import {StackActions , useFocusEffect} from "@react-navigation/native";
 import {validateEmail , validatePassword} from "../utils/form-validations";
+import {Alert , BackHandler} from "react-native";
 
 export function useAuth(navigation) {
     const errorResponse = {
@@ -13,6 +14,29 @@ export function useAuth(navigation) {
     const api = useApi('');
     const dispatch = useDispatch();
     const [loading , setLoading] = useState(false);
+    useFocusEffect(
+        useCallback(() => {
+            const onBackPress = () => {
+                Alert.alert(
+                    'Quit Application',
+                    'Are you sure you want to quit the application?',
+                    [
+                        {
+                            text: 'Cancel',
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => BackHandler.exitApp()
+                        },
+                    ]
+                );
+                return true;
+            };
+            BackHandler.addEventListener('hardwareBackPress', onBackPress);
+            return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        }, []),
+    );
+
     const onLogin = async (data) => {
         setLoading(true);
         api.post('/signin' , {
