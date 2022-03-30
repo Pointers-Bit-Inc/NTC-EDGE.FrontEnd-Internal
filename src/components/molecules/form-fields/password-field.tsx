@@ -104,15 +104,6 @@ const PasswordField: ForwardRefRenderFunction<TextInputRef, Props> = ({
         blur: () => inputRef.current.blur(),
         focus: () => inputRef.current.focus(),
     }));
-    useEffect(() => {
-        if(Platform.OS == "android") {
-            InteractionManager.runAfterInteractions(() => {
-                inputRef.current?.focus();
-                inputRef.current?.blur();
-            })
-        };
-
-    }, []);
     return (
         <View style={inputStyles.mainContainer}>
             
