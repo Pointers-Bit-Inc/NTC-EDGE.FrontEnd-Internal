@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { StackActions } from '@react-navigation/native';
-import { View, Image } from 'react-native';
+import { View, Image, Platform } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
@@ -84,7 +84,11 @@ const App = ({ navigation }:any) => {
       if (user && user.email) {
         navigation.dispatch(StackActions.replace('ActivitiesScreen'));
       } else {
-        navigation.replace('AppIntro');
+        if (Platform.OS === 'web') {
+          navigation.replace('Login');
+        } else {
+          navigation.replace('AppIntro');
+        }
       }
     }
   }, [appIsReady]);
