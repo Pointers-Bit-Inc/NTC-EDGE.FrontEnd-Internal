@@ -197,6 +197,11 @@ const UserProfileScreen = ({ navigation }: any) => {
         message : '' ,
         color : defaultColor ,
     });
+
+    const [saveMessage , setSaveMessage] = useState({
+        title : '' ,
+        message : ''
+    });
     const [showAlert , setShowAlert] = useState(false);
     const [discardAlert , setDiscardAlert] = useState(false);
     const [loading , setLoading] = useState({
@@ -361,7 +366,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                     } ,
                 )
                 .then((res: any) => {
-                    console.log("response: ", res?.data?.doc)
+                    console.log("response: ", dp,  res?.data?.doc)
                     setLoading({
                         photo : false ,
                         basic : false
@@ -374,7 +379,6 @@ const UserProfileScreen = ({ navigation }: any) => {
                             color : successColor
                         });
                         if (dp) {
-
                             dispatch(setUser({
                                 ...user , ...removeEmpty(res?.data?.doc),
                                 profilePictureObj : res?.data?.doc?.profilePicture
@@ -382,7 +386,13 @@ const UserProfileScreen = ({ navigation }: any) => {
 
                         } else {
 
+
                             dispatch(setUser({ ...user ,  ...removeEmpty(res?.data?.doc) }));
+                            setSaveMessage({
+                                title : 'Success' ,
+                                message : 'Your profile has been updated!' ,
+                            })
+                            handleBackButtonClick()
                         }
                     } else {
                         setAlert({
@@ -486,11 +496,17 @@ const UserProfileScreen = ({ navigation }: any) => {
 
             <Alert
                 visible={ discardAlert }
-                title='Discard Changes'
-                message='Any unsaved changes will not be saved. Continue?'
+                title={saveMessage.title || 'Discard Changes'}
+                message= {saveMessage.message ||  'Any unsaved changes will not be saved. Continue?'}
                 confirmText='OK'
-                cancelText='Cancel'
-                onConfirm={ () => navigation.pop() }
+                cancelText={saveMessage.message ? undefined : "Cancel"}
+                onConfirm={ () => {
+                    setSaveMessage({
+                        message: "",
+                        title:""
+                    })
+                    navigation.pop()
+                } }
                 onCancel={ () => setDiscardAlert(false) }
             />
 
