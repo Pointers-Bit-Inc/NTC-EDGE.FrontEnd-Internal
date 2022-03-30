@@ -425,7 +425,7 @@ export function useActivities() {
     });
     return {
         setIsOpen,
-        total ,
+        size ,
         user ,
         setUpdateModal ,
         config ,

@@ -50,7 +50,7 @@ export default function ActivitiesPage(props: any) {
     const dimensions = useWindowDimensions();
     const Filter = isMobile || dimensions?.width <= 768 ? FilterIcon : FilterPressIcon;
     const {
-        total ,
+        size ,
         user ,
         setUpdateModal ,
         config ,
@@ -310,7 +310,7 @@ export default function ActivitiesPage(props: any) {
                                 !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && containerHeight * (
                                     lodash.size(meetingList) || 1)) || 0 , flexGrow : 1
                         } }
-                        ListEmptyComponent={ () => listEmpty(refreshing , searchTerm , total) }
+                        ListEmptyComponent={ () => listEmpty(refreshing , searchTerm ,  (notPnApplications.length || 0) + pnApplications?.map((item: any , index: number) => item?.activity && item?.activity?.map((act: any , i: number) => act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id )?.length)}
                         ListHeaderComponent={ listHeaderComponent() }
                         refreshControl={
 

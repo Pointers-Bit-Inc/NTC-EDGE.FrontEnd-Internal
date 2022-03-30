@@ -17,13 +17,14 @@ export default function Loader(refreshing,searchTerm,size){
     const selectedClone=selectedChangeStatus?.filter((status:string)=>{
         return status!=DATE_ADDED
     });
+console.log(size)
     return (
         <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
 
-            {refreshing ? <ActivityIndicator/> : selectedClone.length ? <><NoActivity></NoActivity><Text
+            {refreshing  ? <ActivityIndicator/> : selectedClone.length ? <><NoActivity></NoActivity><Text
                                                                           style={styles.noContent}>No Content "{selectedClone.toString()}"</Text></>
 
-                                                                      : size.length ? <></> : <><NoActivity></NoActivity><Text style={styles.noContent}>No Content</Text></>}
+                                                                      : size || size?.length ? <></> : <><NoActivity></NoActivity><Text style={styles.noContent}>No Content</Text></>}
         </View>
     );
 }
