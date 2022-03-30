@@ -329,12 +329,12 @@ jobs:
           platform: linux
       - add_yarn_binaries_to_path
       - run:
-          name: Android APK Build
+          name: Android AAB Build
           command: npx eas-cli build --platform android --non-interactive
           no_output_timeout: 30m
 
   Build IOS:
-    executor: js
+    executor: ios
     parameters:
       api_url:
         type: string
@@ -347,15 +347,16 @@ jobs:
           command: |
             echo Building for ${API_URL}
       - restore_yarn_cache:
-          platform: linux
+          platform: darwin
       - node/install:
           node-version: '16.13.0'
       - run: yarn
       - save_yarn_cache:
-          platform: linux
+          platform: darwin
       - add_yarn_binaries_to_path
+      - run: cd ios && pod repo update && cd ..
       - run:
-          name: Android APK Build
+          name: Android IOS Build
           command: npx eas-cli build --platform ios --non-interactive
           no_output_timeout: 30m
 
