@@ -354,7 +354,6 @@ jobs:
       - save_yarn_cache:
           platform: darwin
       - add_yarn_binaries_to_path
-      - run: cd ios && pod repo update && cd ..
       - run:
           name: Android IOS Build
           command: npx eas-cli build --platform ios --non-interactive
