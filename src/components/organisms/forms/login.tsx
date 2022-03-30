@@ -112,7 +112,10 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         value={form?.email?.value}
         //keyboardType={'email-address'}
         onChangeText={(value: string) => onChangeValue('email', value)}
-        onSubmitEditing={(event:any) => onChangeValue('email', event.nativeEvent.text)}
+        onSubmitEditing={(event:any) => {
+          onChangeValue('email', event.nativeEvent.text)
+          passwordRef.current.focus()
+        }}
       />
       <PasswordField
           ref={passwordRef}
