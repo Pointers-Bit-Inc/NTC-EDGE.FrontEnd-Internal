@@ -95,6 +95,7 @@ PODS:
     - React-jsi (= 0.64.3)
     - ReactCommon/turbomodule/core (= 0.64.3)
   - glog (0.3.5)
+  - OneSignalXCFramework (3.10.1)
   - Permission-Camera (3.3.1):
     - RNPermissions
   - RCT-Folly (2020.01.13.00):
@@ -303,6 +304,9 @@ PODS:
     - React-Core
   - react-native-camera/RN (4.2.1):
     - React-Core
+  - react-native-onesignal (4.3.7):
+    - OneSignalXCFramework (= 3.10.1)
+    - React (< 1.0.0, >= 0.13.0)
   - react-native-pager-view (5.4.6):
     - React-Core
   - react-native-pdf (6.4.0):
@@ -460,6 +464,7 @@ DEPENDENCIES:
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - OneSignalXCFramework (< 4.0, >= 3.0)
   - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
@@ -477,6 +482,7 @@ DEPENDENCIES:
   - react-native-agora (from `../node_modules/react-native-agora`)
   - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - react-native-camera (from `../node_modules/react-native-camera`)
+  - react-native-onesignal (from `../node_modules/react-native-onesignal`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-pdf (from `../node_modules/react-native-pdf`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -509,6 +515,7 @@ SPEC REPOS:
   trunk:
     - AgoraRtcEngine_iOS
     - boost-for-react-native
+    - OneSignalXCFramework
     - ZXingObjC
 
 EXTERNAL SOURCES:
@@ -600,6 +607,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-blob-util"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
+  react-native-onesignal:
+    :path: "../node_modules/react-native-onesignal"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
   react-native-pdf:
@@ -687,6 +696,7 @@ SPEC CHECKSUMS:
   FBLazyVector: c71c5917ec0ad2de41d5d06a5855f6d5eda06971
   FBReactNativeSpec: 7e58ad096d3608082e2f41a0ccb7dc6a02126b2d
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
+  OneSignalXCFramework: fe027712118f2862ab193b72270487f11450ea63
   Permission-Camera: bae27a8503530770c35aadfecbb97ec71823382a
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: d34bf57e17cb6e3b2681f4809b13843c021feb6c
@@ -702,6 +712,7 @@ SPEC CHECKSUMS:
   react-native-agora: 35578ecf3a97bc500b0be25da8743dd93599b1e3
   react-native-blob-util: 7ac01cd4a4ba81016864727a756ce2c1af995e35
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
+  react-native-onesignal: 7643517fe655b94cfda8e697ec16f9b9135648b8
   react-native-pager-view: b90963d848e777def6714ab7fd40d02fa797e930
   react-native-pdf: a6a5a3f0bdf340eb2eed6c96034424d2cc3f84b0
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
@@ -731,6 +742,6 @@ SPEC CHECKSUMS:
   Yoga: e6ecf3fa25af9d4c87e94ad7d5d292eedef49749
   ZXingObjC: fdbb269f25dd2032da343e06f10224d62f537bdb
 
-PODFILE CHECKSUM: 2b9f45f8ff31534abd2c73e9cdace813a230d915
+PODFILE CHECKSUM: 8f661fad43ae879b3f62dbdffbc1f3822c5a10e8
 
 COCOAPODS: 1.11.2
