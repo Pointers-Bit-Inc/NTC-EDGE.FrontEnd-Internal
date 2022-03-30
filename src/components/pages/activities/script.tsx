@@ -273,7 +273,7 @@ export function getStatusText(props: any , personnel: UserApplication | undefine
             props?.activity?.assignedPersonnel?._id !== props.currentUser?._id)) ? StatusText(APPROVED) : getRole(props.user , [ACCOUNTANT]) && !!props.paymentMethod && (
         !!props?.paymentHistory?.[0]?.status && !!props?.paymentHistory?.status) ? StatusText(props.paymentHistory?.[0]?.status || props.paymentHistory?.status) : getRole(props.user , [ACCOUNTANT]) && (
         props.approvalHistory?.[0]?.status == FOREVALUATION && props.approvalHistory?.status == FOREVALUATION) && props.approvalHistory[1].status == FORAPPROVAL ? DECLINED : getRole(props.user , [CASHIER]) && !(props?.activity?.assignedPersonnel) || (
-        props?.paymentHistory?.[0]?.status == PENDING && props?.paymentHistory?.status == PENDING) ? FORVERIFICATION : getStatus(props , personnel);
+        props?.paymentHistory?.[0]?.status == PENDING && props?.paymentHistory?.status == PENDING) ? FORVERIFICATION :  getRole(props.user , [CASHIER]) && !props.paymentStatus && props.status == DECLINED  ? PaymentStatusText(DECLINED) : getStatus(props , personnel);
 }
 
 export function getStatus(props: any , personnel?: { _id: string | undefined; updatedAt: string | undefined; createdAt: string | undefined; username: string | undefined; role: Role | undefined; email: string | undefined; firstName: string | undefined; lastName: string | undefined; password: string | undefined; contactNumber: string | undefined; __v: number | undefined; address: string | undefined; profilePicture: ProfilePicture | undefined; avatar: string | undefined } , wordCase?: string) {

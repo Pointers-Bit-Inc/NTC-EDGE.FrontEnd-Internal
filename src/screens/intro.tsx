@@ -1,10 +1,13 @@
 import React from 'react';
 import { StyleSheet, Image, ImageBackground, View, Dimensions } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
-import Text from '@components/atoms/text';
-import Button from '@components/atoms/button';
-import { text, button } from 'src/styles/color';
-const background = require('assets/background.png');
+import { RFValue } from 'react-native-responsive-fontsize';
+import Text from '@atoms/text';
+import Button from '@atoms/button';
+import { text, button } from '@styles/color';
+import { Bold } from '@styles/font';
+const background = require('@assets/background.png');
+
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -20,30 +23,30 @@ const styles = StyleSheet.create({
   image: {
     width: width * 0.75,
     height: width * 0.75,
-    marginTop: height * 0.18,
-    marginBottom: 15,
-  },
-  textButton: {
-    fontWeight: "500"  ,
+    marginTop: 15,
   },
   title: {
-
     textAlign: 'center',
+    marginTop: height * 0.18,
     marginBottom: 10,
+    fontFamily: Bold,
   },
   text: {
     textAlign: 'center',
+    fontFamily: Bold,
   },
   footer: {
     position: 'absolute',
-    bottom: 35,
+    bottom: 20,
     paddingHorizontal: 20,
     width: '100%',
   },
   getStarted: {
     backgroundColor: button.primary,
     borderRadius: 5,
-    paddingVertical: 12,
+    padding: 0,
+    height: RFValue(50),
+    justifyContent: 'center',
   }
 });
 
@@ -67,16 +70,16 @@ const slides = [
     image: require('assets/logo.png'),
   }
 ];
- 
+
 
 const AppIntro = ({ navigation }:any) => {
   const onRenderItem = ({ item }:any) => {
     return (
-      <ImageBackground style={styles.slide} source={background}>
-        <Image style={styles.image} source={item.image} />
-        <Text style={styles.title} color={text.primary} size={22} weight={'bold'}>{item.title}</Text>
-        <Text style={styles.text} color={text.default} size={16}>{item.text}</Text>
-      </ImageBackground>
+        <ImageBackground style={styles.slide} source={background}>
+          <Image style={styles.image} source={item.image} />
+          <Text style={styles.title} color={text.primary} size={22}>{item.title}</Text>
+          <Text style={styles.text} color={text.default} size={16}>{item.text}</Text>
+        </ImageBackground>
     );
   };
   const onDone = () => {
@@ -84,16 +87,16 @@ const AppIntro = ({ navigation }:any) => {
   };
   const onRenderDoneButton = () => {
     return (
-      <View style={styles.button}>
-        <Text size={22} color={text.default}>Done</Text>
-      </View>
+        <View style={styles.button}>
+          <Text size={22} color={text.default}>Done</Text>
+        </View>
     )
   }
   const onRenderNextButton = () => {
     return (
-      <View style={styles.button}>
-        <Text size={22} color={text.default}>Next</Text>
-      </View>
+        <View style={styles.button}>
+          <Text size={22} color={text.default}>Next</Text>
+        </View>
     )
   }
 
@@ -107,42 +110,41 @@ const AppIntro = ({ navigation }:any) => {
   //   />
   // )
   return (
-    <View style={styles.slide}>
-      <Image
-        style={styles.image}
-        source={slides[0].image}
-        resizeMode='contain'
-      />
-      <Text
-        style={styles.title}
-        color={text.primary}
-        size={26}
-        weight={'bold'}
-      >
-        {slides[0].title}
-      </Text>
-      <Text
-        style={styles.title}
-        color={text.primary}
-        size={26}
-        weight={'bold'}
-      >
-        {slides[0].text}
-      </Text>
-      <View style={styles.footer}>
-        <Button
-          style={styles.getStarted}
-          onPress={onDone}
+      <ImageBackground style={styles.slide} source={background}>
+        <Text
+            style={styles.title}
+            color={text.primary}
+            size={26}
         >
-          <Text
-            color={'white'}
-            size={18}
+          {slides[0].title}
+        </Text>
+        <Text
+            style={styles.text}
+            color={text.primary}
+            size={26}
+        >
+          {slides[0].text}
+        </Text>
+        <Image
+            style={styles.image}
+            source={slides[0].image}
+            resizeMode='contain'
+        />
+        <View style={styles.footer}>
+          <Button
+              style={styles.getStarted}
+              onPress={onDone}
           >
-            Get Started
-          </Text>
-        </Button>
-      </View>
-    </View>
+            <Text
+                style={styles.text}
+                color={'white'}
+                size={18}
+            >
+              Get Started
+            </Text>
+          </Button>
+        </View>
+      </ImageBackground>
   )
 }
 
