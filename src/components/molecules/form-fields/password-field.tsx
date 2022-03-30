@@ -1,11 +1,11 @@
-import React, {
-    useRef,
-    useState,
-    forwardRef,
-    useImperativeHandle,
-    ForwardRefRenderFunction,
+import React , {
+    useRef ,
+    useState ,
+    forwardRef ,
+    useImperativeHandle ,
+    ForwardRefRenderFunction , useEffect ,
 } from 'react';
-import {View , StyleSheet , TouchableOpacity} from 'react-native';
+import {View , StyleSheet , TouchableOpacity , InteractionManager , Platform} from 'react-native';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
 import {defaultColor , primaryColor, text} from '@styles/color';
@@ -104,6 +104,15 @@ const PasswordField: ForwardRefRenderFunction<TextInputRef, Props> = ({
         blur: () => inputRef.current.blur(),
         focus: () => inputRef.current.focus(),
     }));
+    useEffect(() => {
+        if(Platform.OS == "android") {
+            InteractionManager.runAfterInteractions(() => {
+                inputRef.current?.focus();
+                inputRef.current?.blur();
+            })
+        };
+
+    }, []);
     return (
         <View style={inputStyles.mainContainer}>
             

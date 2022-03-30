@@ -1,11 +1,11 @@
-import React, {
-    useRef,
-    useState,
-    forwardRef,
-    useImperativeHandle,
-    ForwardRefRenderFunction,
+import React , {
+    useRef ,
+    useState ,
+    forwardRef ,
+    useImperativeHandle ,
+    ForwardRefRenderFunction , useEffect ,
 } from 'react';
-import {View , StyleSheet , TouchableOpacity} from 'react-native';
+import {View , StyleSheet , TouchableOpacity , InteractionManager , Platform} from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
@@ -106,7 +106,14 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
         blur: () => inputRef?.current?.blur(),
         focus: () => inputRef?.current?.focus(),
     }));
+    useEffect(() => {
+       if(Platform.OS == "android"){
+           InteractionManager.runAfterInteractions(() => {
+               inputRef.current?.focus();
+           });
+       }
 
+    }, []);
 
 
 
