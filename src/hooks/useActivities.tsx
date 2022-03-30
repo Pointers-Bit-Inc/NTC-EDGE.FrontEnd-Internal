@@ -126,7 +126,6 @@ export function useActivities() {
         return status == DATE_ADDED
     });
     const query = () => {
-
         return {
             ...(
                 searchTerm && { keyword : searchTerm }) ,
