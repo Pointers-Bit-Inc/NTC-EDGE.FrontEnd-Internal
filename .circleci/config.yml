@@ -334,7 +334,7 @@ jobs:
           no_output_timeout: 30m
 
   Build IOS:
-    executor: ios
+    executor: js
     parameters:
       api_url:
         type: string
@@ -347,17 +347,49 @@ jobs:
           command: |
             echo Building for ${API_URL}
       - restore_yarn_cache:
-          platform: darwin
+          platform: linux
       - node/install:
           node-version: '16.13.0'
       - run: yarn
       - save_yarn_cache:
-          platform: darwin
+          platform: linux
       - add_yarn_binaries_to_path
       - run:
-          name: Android IOS Build
+          name: Android APK Build
           command: npx eas-cli build --platform ios --non-interactive
           no_output_timeout: 30m
+
+  Build And Deploy Web:
+    executor: js
+    parameters:
+      api_url:
+        type: string
+    environment:
+      API_URL: << parameters.api_url >>
+    steps:
+      - checkout
+      - run:
+          name: Starting Web Build
+          command: |
+            echo Building for ${API_URL}
+      - restore_yarn_cache:
+          platform: linux
+      - node/install:
+          node-version: '16.13.0'
+      - run:
+          name: Installing expo-cli and netlify-cli
+          command: yarn global add expo-cli netlify-cli
+      - run:
+          name: Build web app
+          command: |
+            yarn
+            expo build:web
+      - save_yarn_cache:
+          platform: linux
+      - add_yarn_binaries_to_path
+      - run:
+          name: Deploying Web App
+          command: netlify deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_ACCESS_TOKEN --prod --dir=web-build
 
   Submit to Appstore:
     executor: default
@@ -458,6 +490,11 @@ workflows:
           requires:
             - Publish App
 
+      - Request Build WEB:
+          type: approval
+          requires:
+            - Publish App
+
       - Build APK Android:
           api_url: << pipeline.parameters.prod_url >>
           context: ntc-edge
@@ -475,6 +512,12 @@ workflows:
           context: ntc-edge
           requires:
             - Request Build IOS
+
+      - Build And Deploy Web:
+          api_url: << pipeline.parameters.prod_url >>
+          context: ntc-edge
+          requires:
+            - Request Build WEB
 
       - Ready for Submission:
           type: approval
