@@ -99,8 +99,8 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         onChangeText={(value: string) => onChangeValue('email', value)}
         onSubmitEditing={(event:any) => onChangeValue('email', event.nativeEvent.text)}
       />
-
       <PasswordField
+
       inputStyle={InputStyles.text}
         label={'Password'}
         placeholder="Password"
