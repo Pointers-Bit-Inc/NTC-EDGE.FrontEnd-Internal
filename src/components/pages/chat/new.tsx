@@ -32,6 +32,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
+    zIndex: 999,
+    backgroundColor: 'white'
   },
   horizontal: {
     flexDirection: 'row',
