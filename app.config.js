@@ -16,7 +16,7 @@ export default {
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "usesIcloudStorage": true,
       "bundleIdentifier": "com.ntcedge.portal",
       "buildNumber": process.env.APP_VERSION ?? "1.0.4",
@@ -30,6 +30,7 @@ export default {
       "translucent": false
     },
     "android": {
+      "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
