@@ -265,7 +265,7 @@ export const excludeStatus = (props: any , personnel: UserApplication) => getSta
     getStatusText(props , personnel) == FOREVALUATION;
 
 export function getStatusText(props: any , personnel: UserApplication | undefined) {
-    console.log(props)
+
     return getRole(props.user , [EVALUATOR , DIRECTOR]) && getStatus(props , personnel) == FORAPPROVAL && (
         !!props?.approvalHistory?.[0]?.userId || !!props?.approvalHistory?.userId) && (
         props?.approvalHistory?.[0]?.status !== FOREVALUATION && props?.approvalHistory?.status !== FOREVALUATION) && (
