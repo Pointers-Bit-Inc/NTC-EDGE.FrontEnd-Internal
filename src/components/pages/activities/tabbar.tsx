@@ -150,7 +150,7 @@ export default function TabBar({ navigation, route }) {
     dispatch(setConnectionStatus(connectionStatus));
     let unmount = false
 
-    if (!versionChecked && connectionStatus === 'connected') {
+    if (!versionChecked && connectionStatus === 'connected' && Platform.OS != 'web') {
       checkVersion((err:any, res:any) => {
         if (!unmount) {
           setVersionChecked(true);
