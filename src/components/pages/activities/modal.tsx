@@ -385,7 +385,7 @@ function ActivityModal(props: any) {
                         if (!err) {
 
                             callback(true , (bool) => {
-                                // props.onDismissed(true, appId)
+
                             })
                         } else {
 
@@ -399,8 +399,10 @@ function ActivityModal(props: any) {
 
                 } }
                 onDismissed={ (event?: any , callback?: (bool) => {}) => {
+
                     if (event == APPROVED) {
                         onApproveDismissed()
+                        props.onDismissed(true);
                     }
                     if (callback) {
                         callback(true)
@@ -412,8 +414,9 @@ function ActivityModal(props: any) {
                 user={ props?.details?.applicant?.user }
                 remarks={ setRemarks }
                 onChangeApplicationStatus={ (event: any , callback: (bool , appId) => {}) => {
-                    onChangeApplicationStatus(DECLINED , (err , id) => {
 
+                    onChangeApplicationStatus(DECLINED , (err , id) => {
+                       
                         if (!err) {
                             callback(true , (response) => {
 
@@ -427,7 +430,11 @@ function ActivityModal(props: any) {
                 }
                 }
                 visible={ visible }
-                onDismissed={ onDismissed }
+                onDismissed={ () => {
+
+                    onDismissed()
+                    props.onDismissed(true);
+                } }
             />
             <Endorsed
                 size={ activityModalScreenComponent }
@@ -458,7 +465,11 @@ function ActivityModal(props: any) {
                     });
                 } }
                 visible={ endorseVisible }
-                onDismissed={ onEndorseDismissed }
+                onDismissed={ ()=>{
+
+                    onEndorseDismissed()
+                    props.onDismissed(true);
+                } }
             />
         </NativeView>
     );
