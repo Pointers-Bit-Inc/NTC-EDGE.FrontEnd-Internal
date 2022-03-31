@@ -28,6 +28,7 @@ import {
   NewMessageIcon,
   MediaIcon,
   AttachIcon,
+  NewInfoIcon,
 } from '@components/atoms/icon';
 import Text from '@components/atoms/text';
 import GroupImage from '@components/molecules/image/group';
@@ -299,7 +300,6 @@ const ChatView = ({ navigation, route }:any) => {
     setIsVideoEnable(isVideoEnable);
     modalRef.current?.open();
   }
-    
 
   return (
     <View style={styles.container}>
@@ -323,13 +323,15 @@ const ChatView = ({ navigation, route }:any) => {
           />
         </View>
         <View style={styles.info}>
-          <Text
-            color={'black'}
-            size={16}
-            numberOfLines={1}
-          >
-            {getChannelName(route.params)}
-          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('ChatInfo')}>
+            <Text
+              color={'black'}
+              size={16}
+              numberOfLines={1}
+            >
+              {getChannelName(route.params)}
+            </Text>
+          </TouchableOpacity>
           {
             !route?.params?.isGroup && !!otherParticipants[0]?.lastOnline && (
               <Text
@@ -343,6 +345,15 @@ const ChatView = ({ navigation, route }:any) => {
             )
           }
         </View>
+        <TouchableOpacity onPress={() => navigation.navigate('ChatInfo')}>
+          <View style={{ paddingRight: 5, marginTop: 6 }}>
+            <NewInfoIcon
+              color={button.info}
+              height={RFValue(18)}
+              width={RFValue(18)}
+            />
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => onInitiateCall(false)}>
           <View style={{ paddingRight: 5 }}>
             <NewCallIcon

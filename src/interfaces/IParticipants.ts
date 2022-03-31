@@ -17,7 +17,7 @@ interface IParticipants {
   hasJoined: false;
   isFocused: false;
   profilePicture: IImage,
-  isOnline: Boolean;
+  isOnline: boolean;
   lastOnline?: Date;
 }
 
