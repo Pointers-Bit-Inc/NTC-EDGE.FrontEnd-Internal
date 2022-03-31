@@ -120,7 +120,7 @@ const ResetPassword = ({navigation}: any) => {
                         upperAndLowerCase: passwordTest.upperAndLowerCase,
                         atLeastOneNumber: passwordTest.atLeastOneNumber,
                         strength: passwordTest.strength,
-                    },
+                    },    //013021
                     'confirmPassword': {
                         ...formValue.confirmPassword,
                         isValid: checked,

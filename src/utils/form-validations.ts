@@ -7,15 +7,19 @@ const validatePassword = (text:string) => {
   const characterLength = /^.{8,}$/.test(text);
   const upperAndLowerCase = /[a-z].*[A-Z]|[A-Z].*[a-z]/.test(text);
   const atLeastOneNumber = /.*[0-9].*/.test(text);
-  const strongPassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})/.test(text);
-  const mediumPassword = /((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{6,}))|((?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{8,}))/.test(text);
+  const strongPassword = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})").test(text);
+  const mediumPassword = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})").test(text);
   let passwordStrength = 'Weak';
   if (mediumPassword && !strongPassword) {
     passwordStrength = 'Average'
   } else if (strongPassword) {
     passwordStrength = 'Strong'
   }
-
+    console.log(characterLength,
+  upperAndLowerCase,
+  atLeastOneNumber,
+  strongPassword,
+  mediumPassword)
   return {
     characterLength,
     upperAndLowerCase,
