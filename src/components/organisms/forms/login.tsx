@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import {View , StyleSheet , TouchableOpacity , Platform} from 'react-native';
+import React,{FC,useEffect,useRef} from 'react';
+import {View,StyleSheet,TouchableOpacity,Platform,InteractionManager} from 'react-native';
 import { CheckIcon } from '@atoms/icon';
 import {
   InputField,
@@ -56,6 +56,8 @@ interface Props {
 }
 
 const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
+  const inputRef:any = useRef(null);
+  const passwordRef:any = useRef(null);
   const keepMeLoggedInChecker = (checked:boolean) => {
     if (checked) {
       return (
@@ -81,9 +83,22 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
       <View style={styles.unchecked} />
     );
   }
+  useEffect(() => {
+    if(Platform.OS == "android"){
+      InteractionManager.runAfterInteractions(() => {
+        passwordRef.current?.focus()
+        passwordRef.current?.blur()
+        inputRef.current?.focus();
+      });
+    }
+
+  }, []);
+
+  
   return (
     <View style={[styles.container]}>
       <InputField
+          ref={inputRef}
         label={'Email address'}
         placeholder="Email address"
         required={true}
@@ -97,10 +112,13 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         value={form?.email?.value}
         //keyboardType={'email-address'}
         onChangeText={(value: string) => onChangeValue('email', value)}
-        onSubmitEditing={(event:any) => onChangeValue('email', event.nativeEvent.text)}
+        onSubmitEditing={(event:any) => {
+          onChangeValue('email', event.nativeEvent.text)
+          passwordRef.current.focus()
+        }}
       />
       <PasswordField
-
+          ref={passwordRef}
       inputStyle={InputStyles.text}
         label={'Password'}
         placeholder="Password"

@@ -196,7 +196,9 @@ const UserProfileScreen = ({ navigation }: any) => {
         title : '' ,
         message : '' ,
         color : defaultColor ,
+        status: undefined
     });
+          console.log(alert)
     const [showAlert , setShowAlert] = useState(false);
     const [discardAlert , setDiscardAlert] = useState(false);
     const [loading , setLoading] = useState({
@@ -361,7 +363,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                     } ,
                 )
                 .then((res: any) => {
-                    console.log("response: ", res?.data?.doc)
+                    console.log("response: ", dp,  res?.data?.doc)
                     setLoading({
                         photo : false ,
                         basic : false
@@ -371,10 +373,10 @@ const UserProfileScreen = ({ navigation }: any) => {
                         setAlert({
                             title : 'Success' ,
                             message : 'Your profile has been updated!' ,
-                            color : successColor
+                            color : successColor,
+                            status: res?.status
                         });
                         if (dp) {
-
                             dispatch(setUser({
                                 ...user , ...removeEmpty(res?.data?.doc),
                                 profilePictureObj : res?.data?.doc?.profilePicture
@@ -382,7 +384,10 @@ const UserProfileScreen = ({ navigation }: any) => {
 
                         } else {
 
+
                             dispatch(setUser({ ...user ,  ...removeEmpty(res?.data?.doc) }));
+                           
+
                         }
                     } else {
                         setAlert({
@@ -392,6 +397,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                             color : errorColor
                         });
                     }
+
                     setShowAlert(true);
                 })
                 .catch((err: any) => {
@@ -486,10 +492,10 @@ const UserProfileScreen = ({ navigation }: any) => {
 
             <Alert
                 visible={ discardAlert }
-                title='Discard Changes'
-                message='Any unsaved changes will not be saved. Continue?'
+                title={ 'Discard Changes'}
+                message= {'Any unsaved changes will not be saved. Continue?'}
                 confirmText='OK'
-                cancelText='Cancel'
+                cancelText={"Cancel"}
                 onConfirm={ () => navigation.pop() }
                 onCancel={ () => setDiscardAlert(false) }
             />
@@ -499,7 +505,12 @@ const UserProfileScreen = ({ navigation }: any) => {
                 title={ alert?.title }
                 message={ alert?.message }
                 confirmText='OK'
-                onConfirm={ () => setShowAlert(false) }
+                onConfirm={ () => {
+                   if(alert.status == 200) {
+                       navigation.pop()
+                   }
+                    setShowAlert(false)
+                } }
             />
 
         </View>
