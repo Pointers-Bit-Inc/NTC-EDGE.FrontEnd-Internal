@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React,{FC,useEffect,useState} from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { CheckIcon, CloseIcon } from '@atoms/icon';
 import {
@@ -44,6 +44,8 @@ interface Props {
 }
 
 const PasswordForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
+
+
   const validateIcon = (valid:boolean) => {
     if (valid) {
       return (

@@ -120,7 +120,7 @@ const ResetPassword = ({navigation}: any) => {
                         upperAndLowerCase: passwordTest.upperAndLowerCase,
                         atLeastOneNumber: passwordTest.atLeastOneNumber,
                         strength: passwordTest.strength,
-                    },
+                    },    //013021
                     'confirmPassword': {
                         ...formValue.confirmPassword,
                         isValid: checked,
@@ -191,11 +191,36 @@ const ResetPassword = ({navigation}: any) => {
             }
 
             axios.patch(BASE_URL + `/users/${user._id}/change-password`, params, config).then((response) => {
+
+                    setFormValue({
+                        ...formValue,
+                        ['oldPassword']: {
+                            ...formValue.oldPassword,
+                            value: "",
+                        },
+                        ['password']: {
+                            ...formValue.password,
+                            value: '',
+                            isValid: false,
+                            error: '',
+                            characterLength: false,
+                            upperAndLowerCase: false,
+                            atLeastOneNumber: false,
+                        },
+                        ['confirmPassword']: {
+                            ...formValue.confirmPassword,
+                            value: "",
+                        }
+
+                    })
+
+
                 setAlert({
                     title: response?.status === 200 ? 'Success' : 'Failure',
                     message: response?.data?.message || '',
                     color: response?.status === 200 ? successColor : errorColor,
                 });
+
                 setShowAlert(true);
                 setLoading(false);
             }).catch((err)=>{

@@ -62,8 +62,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
         }
     };
     _showImage = () => {
-        console.log(this?.state?.source,this.state?._sourceMeasure, this.state?._imageSize)
-       
+
             this.state.image?.measure((x , y , width , height , pageX , pageY) => {
 
                 this.setState({
@@ -173,40 +172,42 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                         </View>
                     </View>
 
+                         <View style={{flex: 1, backgroundColor : "rgba(0, 0, 0, 0.5)"}}>
+                             { this.state.extension ?
+
+                               <PdfViewr  width={ this.props?.rightLayoutComponent?.width }
+                                          height={ this.props?.rightLayoutComponent?.height }
+                                          requirement={ this.props?.requirement }/> : (
+                                   isMobile  || this.props.dimensions?.width <768 ? <AnimatedImage
+                                                                                      ref={ imageModal => (
+                                                                                          this.state.imageModal = imageModal) }
+                                                                                      source={ this?.state?.source }
+                                                                                      sourceMeasure={ this.state?._sourceMeasure }
+                                                                                      imageSize={ this.state?._imageSize || {height : 300, width : 300} }
+                                                                                      onClose={ this._hideImageModal }
+                                                                                      animationDuration={ 200 }
+                                                                                  /> :
+                                       //height = height * (this.state._imageSize.height / width)
+
+                                   <ImageZoom onSwipeDown={ this._hideImageModal } enableSwipeDown={ true }
+                                              cropWidth={ this.props?.rightLayoutComponent?.width }
+                                              enableDoubleClickZoom={ true }
+                                              cropHeight={ this.props?.rightLayoutComponent?.height }
+                                              imageWidth={ this.props?.rightLayoutComponent?.width }
+                                              imageHeight={ height * (
+                                                  this.state._imageSize?.height / width) }>
+                                       <Image style={ {
+                                           width : this.state._imageSize.width ,
+                                           height : height * (
+                                               this.state._imageSize.height / width)
+                                       } }
+                                              resizeMode={ "contain" }
+                                              source={ this?.state?.source }/>
+                                   </ImageZoom>)
+                             }
+                         </View>
 
 
-                        { this.state.extension ?
-
-                          <PdfViewr  width={ this.props?.rightLayoutComponent?.width }
-                                    height={ this.props?.rightLayoutComponent?.height }
-                                    requirement={ this.props?.requirement }/> : (
-                             isMobile  || this.props.dimensions?.width <768 ? <AnimatedImage
-                                           ref={ imageModal => (
-                                               this.state.imageModal = imageModal) }
-                                           source={ this?.state?.source }
-                                           sourceMeasure={ this.state?._sourceMeasure }
-                                           imageSize={ this.state?._imageSize || {height : 300, width : 300} }
-                                           onClose={ this._hideImageModal }
-                                           animationDuration={ 200 }
-                                       /> :
-                                  //height = height * (this.state._imageSize.height / width)
-
-                              <ImageZoom onSwipeDown={ this._hideImageModal } enableSwipeDown={ true }
-                                         cropWidth={ this.props?.rightLayoutComponent?.width }
-                                         enableDoubleClickZoom={ true }
-                                         cropHeight={ this.props?.rightLayoutComponent?.height }
-                                         imageWidth={ this.props?.rightLayoutComponent?.width }
-                                         imageHeight={ height * (
-                                             this.state._imageSize?.height / width) }>
-                                  <Image style={ {
-                                      width : this.state._imageSize.width ,
-                                      height : height * (
-                                          this.state._imageSize.height / width)
-                                  } }
-                                         resizeMode={ "contain" }
-                                         source={ this?.state?.source }/>
-                              </ImageZoom>)
-                        }
                     </View>
             </Modal>
         </>;

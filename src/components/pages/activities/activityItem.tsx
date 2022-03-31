@@ -59,8 +59,7 @@ const styles = StyleSheet.create({
         flex : 1
     } ,
     container : {
-        paddingVertical : 5 ,
-
+        paddingVertical : 5
 
     } ,
     horizontal : {

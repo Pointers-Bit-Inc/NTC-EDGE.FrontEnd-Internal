@@ -184,7 +184,7 @@ const OneTimePin = ({ navigation , route }: any) => {
                         ] }
 
                         maxLength={ 4 }
-                        placeholder="••••••"
+                        placeholder="••••"
                         label={ 'OTP' }
 
                         labelStyle={ [ styles.labelStyle , {  color : text.primary,  fontSize : fontValue(16), fontFamily: "Poppins_600SemiBold" }] }

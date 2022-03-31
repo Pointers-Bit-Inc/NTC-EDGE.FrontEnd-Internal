@@ -1,10 +1,10 @@
-import {Dimensions , Image , ImageBackground , Platform , ScrollView , StatusBar , View} from "react-native";
+import {Dimensions,Image,ImageBackground,InteractionManager,Platform,ScrollView,StatusBar,View} from "react-native";
 import Text from "@atoms/text";
 import LoginForm from "@organisms/forms/login";
 import Button from "@atoms/button";
 import {button , text} from "@styles/color";
 import Ellipsis from "@atoms/ellipsis";
-import React from "react";
+import React,{useEffect} from "react";
 import {styles} from "@screens/login/styles";
 import {useAuth} from "../../hooks/useAuth";
 import {fontValue} from "@pages/activities/fontValue";
@@ -28,7 +28,7 @@ const Login = ({ navigation }: any) => {
             <StatusBar barStyle="dark-content"/>
 
             <ScrollView
-                keyboardShouldPersistTaps="never"
+                keyboardShouldPersistTaps="always"
                 contentContainerStyle={ { flexGrow : 1 } }
                 showsVerticalScrollIndicator={ false }
             >
