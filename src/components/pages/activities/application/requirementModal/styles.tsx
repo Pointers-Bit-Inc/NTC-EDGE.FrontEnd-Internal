@@ -71,6 +71,7 @@ export const styles = StyleSheet.create({
 });
 export const requirementStyles = StyleSheet.create({
     pdf:{
+        zIndex: 1,
         marginTop: 20,
         width : Dimensions.get('window').width ,
         height : Dimensions.get('window').height ,
