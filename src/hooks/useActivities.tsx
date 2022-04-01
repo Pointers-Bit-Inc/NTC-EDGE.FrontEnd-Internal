@@ -185,7 +185,6 @@ export function useActivities(){
     let count=0;
     const fnApplications=(isCurrent:boolean,callback:(err:any)=>void)=>{
 
-        console.log(query());
 
         setRefreshing(true);
         axios.get(BASE_URL+`/applications`,{...config,params:query()}).then((response)=>{
