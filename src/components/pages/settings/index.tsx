@@ -19,9 +19,15 @@ import {RFValue} from "react-native-responsive-fontsize";
 import Api from "../../../services/api";
 import {StackActions} from "@react-navigation/native";
 import {fontValue} from "@pages/activities/fontValue";
-import {setApplicationItem} from "../../../reducers/application/actions";
+import {
+  setApplicationItem,
+  setApplications,
+  setNotPinnedApplication,
+  setPinnedApplication
+} from "../../../reducers/application/actions";
 // import OneSignal from 'react-native-onesignal';
 import useOneSignal from 'src/hooks/useOneSignal';
+import {setResetFilterStatus} from "../../../reducers/activity/actions";
 
 export default ({
   navigation
@@ -66,7 +72,11 @@ export default ({
     const api = Api(user.sessionToken);
     setVisible(false)
     setTimeout(() => {
+      dispatch(setApplications([]))
+      dispatch(setPinnedApplication([]))
+      dispatch(setNotPinnedApplication([]))
       dispatch(setApplicationItem({}))
+      dispatch(setResetFilterStatus([]))
       dispatch(resetUser());
       dispatch(resetMeeting());
       dispatch(resetChannel());

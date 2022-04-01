@@ -9,6 +9,7 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 import { button, text } from 'src/styles/color';
 import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
+import {setResetFilterStatus} from "../reducers/activity/actions";
 
 const styles = StyleSheet.create({
   container: {
@@ -53,6 +54,7 @@ const Home = ({ navigation }:any) => {
   const user = useSelector((state: RootStateOrAny) => state.user);
   const onLogout = useCallback(() => {
     onHide();
+    dispatch(setResetFilterStatus({}))
     dispatch(setUser({}));
     dispatch(resetMeeting());
     dispatch(resetChannel());
