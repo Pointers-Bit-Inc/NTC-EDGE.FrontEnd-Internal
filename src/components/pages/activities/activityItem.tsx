@@ -5,11 +5,11 @@ import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
 import {Hoverable} from 'react-native-web-hooks';
 import {
-    formatDate ,
-    getRole ,
-    PaymentStatusText ,
-    statusColor ,
-    statusIcon ,
+    formatDate,getActivityStatus,
+    getRole,
+    PaymentStatusText,
+    statusColor,
+    statusIcon,
     StatusText
 } from "@pages/activities/script";
 
@@ -235,22 +235,14 @@ const closeRow = (index) => {
     prevOpenedRow = row[index];
 };
 
+
+
 export function ActivityItem(props: any) {
 
     
     const status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status);
     const userActivity = props?.activity?.applicant?.user || props?.activity?.applicant;
-    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && (
-        !!props?.activity?.approvalHistory?.[0]?.userId || !!props?.activity?.approvalHistory?.userId) && (
-        props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION && props?.activity?.approvalHistory?.status !== FOREVALUATION) && (
-        props?.activity?.approvalHistory?.[0]?.status !== PENDING && props?.activity?.approvalHistory?.status !== PENDING) && (
-        props?.activity?.approvalHistory?.[0]?.status !== FORVERIFICATION && props?.activity?.approvalHistory?.status !== FORVERIFICATION) && (
-        props?.activity?.approvalHistory?.[0]?.status !== FORAPPROVAL && props?.activity?.approvalHistory?.status !== FORAPPROVAL || (
-            props?.activity?.assignedPersonnel?._id !== props.currentUser?._id)) ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && (
-        !!props?.activity?.paymentHistory?.[0]?.status || !!props?.activity?.paymentHistory?.status) ? StatusText(props?.activity?.paymentHistory?.[0]?.status || props?.activity?.paymentHistory?.status) : getRole(props.currentUser , [ACCOUNTANT]) && (
-        props?.activity?.approvalHistory?.[0]?.status == FOREVALUATION || props?.activity?.approvalHistory?.status == FOREVALUATION) && (
-        props?.activity?.approvalHistory?.[1]?.status == FORAPPROVAL) ? DECLINED : getRole(props.currentUser , [CASHIER]) && !(props?.activity?.assignedPersonnel) && (props?.activity?.approvalHistory[0]?.status != DECLINED && props?.activity?.approvalHistory?.status != DECLINED )  || (
-        props?.activity?.paymentHistory?.[0]?.status == PENDING && props?.activity?.paymentHistory?.status == PENDING) ? FORVERIFICATION : getRole(props.currentUser , [CASHIER])&& !props?.activity?.paymentStatus ? PaymentStatusText(DECLINED) : status;
+    const getStatus = getActivityStatus(props,status);
 
     useEffect(() => {
         let unsubscribe = true;

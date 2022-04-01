@@ -201,8 +201,7 @@ export default function ActivitiesPage(props: any) {
                 <View onLayout={ onActivityLayoutComponent } style={ [styles.container , styles.shadow , {
 
                  
-                    flexBasis : (
-                                    isMobile || dimensions?.width < 768) ? "100%" : 466 ,
+                    flexBasis : (isMobile || dimensions?.width < 768) ? "100%" : 466 ,
                     flexGrow : 0 ,
                     flexShrink : 0
                 }] }>
@@ -324,7 +323,6 @@ export default function ActivitiesPage(props: any) {
                         keyExtractor={ (item , index) => index.toString() }
                         ListFooterComponent={ bottomLoader }
                         onEndReached={ () => {
-                            console.log("onScroll")
                             if (!onEndReachedCalledDuringMomentum) {
                                 handleLoad();
                                 setOnEndReachedCalledDuringMomentum(true);

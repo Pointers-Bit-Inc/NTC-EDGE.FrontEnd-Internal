@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
         width: "100%",
         height: "100%",
         alignItems: "center",
-        justifyContent: "flex-end",
+        justifyContent: "center",
         alignSelf: "center"
     },
 
@@ -216,10 +216,10 @@ export const styles = StyleSheet.create({
         alignSelf: "center"
     },
     group6: {
-        height: 90,
-
-        flexDirection: "row",
-
+      flex: 1,
+        paddingVertical: 15,
+       alignSelf: "center",
+        justifyContent: "flex-end"
     },
     group3: {
 
