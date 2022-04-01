@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
-import { AntDesign } from '@expo/vector-icons'; 
+import { AntDesign } from '@expo/vector-icons';
+import {fontValue} from "@pages/activities/fontValue";
 
 interface Props {
   size?: number;
@@ -15,7 +16,7 @@ const ExclamationIcon: FC<Props> = ({
   return (
     <AntDesign
       name="exclamationcircle"
-      size={size}
+      size={fontValue(size)}
       color={color}
       {...otherProps}
     />

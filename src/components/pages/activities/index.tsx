@@ -200,8 +200,7 @@ export default function ActivitiesPage(props: any) {
             <View style={ { backgroundColor : "#F8F8F8" , flex : 1 , flexDirection : "row" } }>
                 <View onLayout={ onActivityLayoutComponent } style={ [styles.container , styles.shadow , {
 
-                    flex : (
-                               isMobile || dimensions?.width < 768) ? 1 : 0.4 ,
+                 
                     flexBasis : (
                                     isMobile || dimensions?.width < 768) ? "100%" : 466 ,
                     flexGrow : 0 ,
@@ -416,6 +415,7 @@ export default function ActivitiesPage(props: any) {
                                    onChangeAssignedId={ (event) => {
 
                                        dispatch(setApplicationItem(event))
+
                                    } }
                                    visible={ modalVisible }
                                    onDismissed={ (event: boolean , _id: number) => {

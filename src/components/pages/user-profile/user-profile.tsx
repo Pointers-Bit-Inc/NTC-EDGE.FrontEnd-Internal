@@ -363,7 +363,6 @@ const UserProfileScreen = ({ navigation }: any) => {
                     } ,
                 )
                 .then((res: any) => {
-                    console.log("response: ", dp,  res?.data?.doc)
                     setLoading({
                         photo : false ,
                         basic : false

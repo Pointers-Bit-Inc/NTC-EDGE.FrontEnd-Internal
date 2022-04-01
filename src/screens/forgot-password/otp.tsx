@@ -35,10 +35,7 @@ const OneTimePin = ({ navigation , route }: any) => {
     const onSubmit = () => {
         setLoading(true);
         api(null , '')
-            .post(`/${ otpId }/otp-validate` , {
-                'code' : otp ,
-                'otpId' : otpId
-            })
+            .post(`/${ otpId }/otp-validate?code=${otp}`)
             .then((res: any) => {
                 setLoading(false);
                 if (res?.data?.success) {
@@ -184,7 +181,7 @@ const OneTimePin = ({ navigation , route }: any) => {
                         ] }
 
                         maxLength={ 4 }
-                        placeholder="••••••"
+                        placeholder="••••"
                         label={ 'OTP' }
 
                         labelStyle={ [ styles.labelStyle , {  color : text.primary,  fontSize : fontValue(16), fontFamily: "Poppins_600SemiBold" }] }

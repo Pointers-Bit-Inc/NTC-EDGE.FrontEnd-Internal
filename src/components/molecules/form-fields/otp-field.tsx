@@ -27,9 +27,11 @@ const styles = StyleSheet.create({
   },
   description: {
     paddingTop: 2,
-    marginLeft: 15,
+    marginHorizontal: 5
   },
   info: {
+      flex: 1,
+    justifyContent: "space-around",
     flexDirection: 'row',
     alignItems: 'center',
   }
@@ -127,13 +129,14 @@ const OTPField: FC<Props> = ({
         hasValidation && (!!error || !!description) && (
           <View style={styles.description}>
             <View style={styles.info}>
+
               {
                 !!error && (
-                  <ExclamationIcon
-                    type='circle'
-                    size={12}
-                    color={errorColor}
-                  />
+                    <ExclamationIcon
+                        type='circle'
+                        size={12}
+                        color={errorColor}
+                    />
                 )
               }
               <Text

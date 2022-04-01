@@ -36,6 +36,7 @@ function Disapproval(props: any) {
     const [title , setTitle] = useState("Decline Application");
     const [message , setMessage] = useState("Are you sure you want to reject this application?");
     const onCancelPressed = () => {
+        console.log("Decline")
         setTitle("Decline Application");
         setMessage("Are you sure you want to reject this application?");
         setShowClose(false);
@@ -73,6 +74,9 @@ function Disapproval(props: any) {
                     setAlertLoading(true);
 
                     props.onChangeApplicationStatus(DECLINED , (bool , callback: (bool) => {}) => {
+
+
+
                         if (bool) {
                             setAlertLoading(false);
                             setShowClose(true);
