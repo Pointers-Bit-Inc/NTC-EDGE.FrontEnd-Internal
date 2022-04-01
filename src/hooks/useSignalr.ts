@@ -103,7 +103,6 @@ const useSignalr = () => {
       message,
     })
     .then(res => {
-      console.log('RESult', res);
       return callback(null, res.data);
     })
     .catch(err => {

@@ -13,6 +13,7 @@ import { getChannelName } from 'src/utils/formatting';
 import { ContactItem } from '@components/molecules/list-item'
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal'
 import CreateMeeting from '@components/pages/chat/meeting';
+import { outline, text } from '@styles/color'
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -94,6 +95,16 @@ const styles = StyleSheet.create({
     width: 35,
     borderRadius: 4,
   },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    paddingHorizontal: 0,
+    marginHorizontal: 20,
+    borderBottomColor: outline.default,
+    borderBottomWidth: 1,
+    justifyContent: 'center',
+  },
 })
 
 const ChatInfo = ({ navigation }) => {
@@ -107,7 +118,10 @@ const ChatInfo = ({ navigation }) => {
   );
   const [isVideoEnable, setIsVideoEnable] = useState(false);
   const [muteChat, setMuteChat] = useState(false);
+  const [showDeleteOption, setShowDeleteOption] = useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState<any>({});
   const modalRef = useRef<BottomModalRef>(null);
+  const optionModalRef = useRef<BottomModalRef>(null);
 
   const onBack = () => navigation.goBack();
 
@@ -119,6 +133,73 @@ const ChatInfo = ({ navigation }) => {
   const separator = () => (
     <View style={{ backgroundColor: '#F8F8F8', height: 10 }} />
   )
+
+  const options = () => {
+    return (
+      <>
+        <TouchableOpacity>
+          <View style={[styles.option]}>
+            <Text
+              style={{ marginLeft: 15 }}
+              color={'black'}
+              size={18}
+            >
+              Call {`${selectedParticipant.firstName} ${selectedParticipant.lastName}`}
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View style={[styles.option]}>
+            <Text
+              style={{ marginLeft: 15 }}
+              color={'black'}
+              size={18}
+            >
+              Message {`${selectedParticipant.firstName} ${selectedParticipant.lastName}`}
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View style={[styles.option]}>
+            <Text
+              style={{ marginLeft: 15 }}
+              color={'black'}
+              size={18}
+            >
+              Add as admin
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View style={[styles.option]}>
+            <Text
+              style={{ marginLeft: 15 }}
+              color={text.error}
+              size={18}
+            >
+              Remove from chat
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => optionModalRef.current?.close()}>
+          <View style={[styles.option, { borderBottomWidth: 0 }]}>
+            <Text
+              style={{ marginLeft: 15 }}
+              color={'black'}
+              size={18}
+            >
+              Cancel
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </>
+    )
+  }
+
+  const showOption = (participant:IParticipants) => {
+    setSelectedParticipant(participant)
+    optionModalRef.current?.open();
+  }
 
   const renderChannelName = () => {
     return getChannelName({
@@ -141,6 +222,19 @@ const ChatInfo = ({ navigation }) => {
         name={item.name}
         isOnline={item.isOnline}
         contact={item.email || ''}
+        rightIcon={
+          item.isAdmin ? (
+            <View style={{ marginRight: -15 }}>
+              <Text
+                color='#606A80'
+                size={12}
+              >
+                Admin
+              </Text>
+            </View>
+          ) : null
+        }
+        onLongPress={() => showOption(item)}
       />
     ))
   }
@@ -310,6 +404,17 @@ const ChatInfo = ({ navigation }) => {
               setTimeout(() => navigation.navigate(type, params), 300);
             }}
           />
+        </View>
+      </BottomModal>
+      <BottomModal
+        ref={optionModalRef}
+        onModalHide={() => setShowDeleteOption(false)}
+        header={
+          <View style={styles.bar} />
+        }
+      >
+        <View style={{ paddingBottom: 15 }}>
+          {options()}
         </View>
       </BottomModal>
     </View>

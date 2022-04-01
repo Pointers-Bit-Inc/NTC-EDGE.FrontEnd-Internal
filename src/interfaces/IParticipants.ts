@@ -19,6 +19,7 @@ interface IParticipants {
   profilePicture: IImage,
   isOnline: boolean;
   lastOnline?: Date;
+  isAdmin?: boolean;
 }
 
 export default IParticipants;
