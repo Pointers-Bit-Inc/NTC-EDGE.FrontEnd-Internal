@@ -29,7 +29,7 @@ import {
 } from "../reducers/application/actions";
 import Loader from "@pages/activities/bottomLoad";
 import {useComponentLayout} from "./useComponentLayout";
-
+import lodash from 'lodash';
 export function useActivities(){
     const [total,setTotal]=useState(0);
     const [page,setPage]=useState(0);
@@ -162,10 +162,19 @@ export function useActivities(){
                         } else if(item==FOREVALUATION){
                             return [FOREVALUATION,PENDING,FORAPPROVAL,FORVERIFICATION].toString()
                         } else if(item==APPROVED){
-                            convertedStatus.filter((converted) => {
-                                return converted == converted.statusText
+                            let _converted: never[] = []
+                            const _status = convertedStatus.map((converted) => {
+                                _converted = converted.filter((convert)=> {
+                                    return convert.statusText == item
+                                })
+                                 return _converted
                             })
-                            return [FORAPPROVAL,APPROVED].toString()
+                             const _uniqByStatus = lodash.uniqBy(_converted, 'status').map((item) => item.status)
+
+
+
+                            return _uniqByStatus.length ? _uniqByStatus.toString() : [APPROVED].toString()
+
                         }
 
                         return item

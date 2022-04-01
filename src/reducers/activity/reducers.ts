@@ -1,6 +1,6 @@
 import {CASHIER, DIRECTOR, EVALUATOR} from "./initialstate";
 
-const { SET_ACTIVITY, ON_CHECKED, UPDATE_ACTIVITY_STATUS, SET_VISIBLE, ADD_ACTIVITY } = require('./types').default;
+const { SET_ACTIVITY, ON_CHECKED, SET_RESET_FILTER_STATUS,  UPDATE_ACTIVITY_STATUS, SET_VISIBLE, ADD_ACTIVITY } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
 const initialState = new InitialState();
@@ -42,6 +42,11 @@ export default function basket(state = initialState, action = {}) {
     }
     case SET_VISIBLE:{
       return state.set('visible', action.payload)
+    }
+
+    case SET_RESET_FILTER_STATUS: {
+      state = state.set("selectedChangeStatus", [])
+       return state
     }
     default:
       return state;
