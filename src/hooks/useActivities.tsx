@@ -133,6 +133,7 @@ export function useActivities(){
     const [countRefresh,setCountRefresh]=useState(0);
     const [refreshing,setRefreshing]=React.useState(false);
     const onRefresh=React.useCallback(()=>{
+
         setRefreshing(true);
         setCountRefresh(countRefresh+1)
     },[countRefresh]);
@@ -170,10 +171,10 @@ export function useActivities(){
                             } else if(item==UNVERIFIED){
                                 return [DECLINED,UNVERIFIED]
                             } else if(item==FORVERIFICATION){
-                                return [PENDING,FORVERIFICATION,FOREVALUATION,FORAPPROVAL].toString()
+                                return [PENDING,FORVERIFICATION,FOREVALUATION].toString()
                             }
                         } else if(item==FOREVALUATION){
-                            return [FOREVALUATION,PENDING,FORAPPROVAL].toString()
+                            return [PENDING,FORVERIFICATION,FOREVALUATION].toString()
                         }
 
                         return convertStatusText(convertedStatus,item)
@@ -183,12 +184,10 @@ export function useActivities(){
     };
     let count=0;
     const fnApplications=(isCurrent:boolean,callback:(err:any)=>void)=>{
-
-
+             
         setRefreshing(true);
         axios.get(BASE_URL+`/applications`,{...config,params:query()}).then((response)=>{
-            dispatch(setNotPinnedApplication([]));
-            dispatch(setPinnedApplication([]));
+
             if(response?.data?.message) Alert.alert(response.data.message);
             if(isCurrent) setRefreshing(false);
             if(response?.data?.docs?.length) callback(true);
@@ -215,18 +214,7 @@ export function useActivities(){
             console.warn(err)
         })
     };
-    useEffect(()=>{
-
-        let isCurrent=true;
-        dispatch(setNotPinnedApplication([]));
-        dispatch(setPinnedApplication([]));
-        fnApplications(isCurrent,()=>{
-        });
-        return ()=>{
-            isCurrent=false
-        }
-    },[selectedChangeStatus.length]);
-
+    
     useEffect(()=>{
         let isCurrent=true;
 
@@ -235,7 +223,7 @@ export function useActivities(){
         return ()=>{
             isCurrent=false
         }
-    },[countRefresh,searchTerm,]);
+    },[countRefresh,searchTerm,selectedChangeStatus.length]);
 
 
     const [currentPage,setCurrentPage]=useState(1);

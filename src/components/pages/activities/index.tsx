@@ -314,7 +314,7 @@ export default function ActivitiesPage(props: any) {
                                 !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && containerHeight * (
                                     lodash.size(meetingList) || 1)) || 0 , flexGrow : 1
                         } }
-                        ListEmptyComponent={ () => listEmpty(refreshing , searchTerm ,  (notPnApplications.length || 0) + pnApplications?.map((item: any , index: number) => item?.activity && item?.activity?.map((act: any , i: number) => act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id )?.length)}
+                        ListEmptyComponent={ () => listEmpty(refreshing , searchTerm ,  (notPnApplications.length) + pnApplications?.map((item: any , index: number) => item?.activity && item?.activity?.map((act: any , i: number) => (act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id )).length)}
                         ListHeaderComponent={ listHeaderComponent() }
 
                         style={ { flex : 1 , } }

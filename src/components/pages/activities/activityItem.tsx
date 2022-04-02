@@ -41,7 +41,7 @@ import PinToTopIcon from "@assets/svg/pintotop";
 import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
-
+import * as Animatable from 'react-native-animatable'
 const styles = StyleSheet.create({
 
     containerBlur : {
@@ -296,7 +296,7 @@ export function ActivityItem(props: any) {
                                         borderRadius : 4
                                     } }/>
                                 </View>
-                                <View style={ [styles.containerBlur , { borderWidth : props.selected ? 4 : 0 , }] }>
+                                <Animatable.View   animation={'fadeIn'} style={ [styles.containerBlur , { borderWidth : props.selected ? 4 : 0 , }] }>
                                     <TouchableOpacity onPress={ () => {
                                         props.onPressUser()
                                     } }>
@@ -393,7 +393,7 @@ export function ActivityItem(props: any) {
                                         </View>
                                         }
                                     </TouchableOpacity>
-                                </View>
+                                </Animatable.View>
                                 { dimensions.width >= 768 &&
                                 <View style={ { paddingHorizontal : selectedMoreCircle ? 14 : 18 , } }>
                                     <Menu onClose={ () => {
