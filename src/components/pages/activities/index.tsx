@@ -2,7 +2,7 @@ import React , {useEffect} from "react";
 import {
     Animated,
     Dimensions,
-    FlatList,Pressable,
+    FlatList,Platform,Pressable,
     RefreshControl,
     ScrollView,
     StatusBar,
@@ -152,14 +152,7 @@ export default function ActivitiesPage(props: any) {
                 </View>
             </View> }
            
-                <ScrollView refreshControl={
-
-                    <RefreshControl
-
-                        refreshing={ refreshing }
-                        onRefresh={ onRefresh }
-                    />
-                } nestedScrollEnabled={true}
+                <ScrollView nestedScrollEnabled={true}
                             style={ { maxHeight : 300 } }>
                     {
                         pnApplications.map((item: any , index: number) => {
@@ -295,8 +288,15 @@ export default function ActivitiesPage(props: any) {
 
                         props.navigation.navigate(SEARCH);
                     } } searchVisible={ searchVisible }/>
-                    
+
                     <Animated.FlatList
+                        refreshControl={
+                            <RefreshControl
+                                progressViewOffset={refreshing ?  0 : containerHeight}
+                                refreshing={ refreshing }
+                                onRefresh={ onRefresh }
+                            />
+                        }
                         nestedScrollEnabled={true}
                         onScroll={ Animated.event(
                             [{
@@ -308,7 +308,6 @@ export default function ActivitiesPage(props: any) {
                             }] ,
                             { useNativeDriver : true }
                         ) }
-
                         contentContainerStyle={ {
                             paddingTop : (
                                 !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && containerHeight * (

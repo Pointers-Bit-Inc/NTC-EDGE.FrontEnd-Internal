@@ -19,7 +19,7 @@ import {
 import moment from "moment";
 import axios from "axios";
 import {BASE_URL} from "../services/config";
-import {Alert,Animated} from "react-native";
+import {Alert,Animated,Platform} from "react-native";
 import {
     handleInfiniteLoad,
     setApplications,
@@ -133,7 +133,6 @@ export function useActivities(){
     const [countRefresh,setCountRefresh]=useState(0);
     const [refreshing,setRefreshing]=React.useState(false);
     const onRefresh=React.useCallback(()=>{
-
         setRefreshing(true);
         setCountRefresh(countRefresh+1)
     },[countRefresh]);
