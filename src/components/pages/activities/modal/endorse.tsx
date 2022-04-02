@@ -105,7 +105,7 @@ const Endorsed = (props: any) => {
             setShowAlert(false);
             setShowClose(false);
 
-            props.onDismissed()
+            props.onExit()
         } else {
             setShowClose(false);
             setShowAlert(false);
