@@ -152,7 +152,7 @@ export default function ActivitiesPage(props: any) {
                 </View>
             </View> }
            
-                <ScrollView
+                <ScrollView nestedScrollEnabled={true}
                             style={ { maxHeight : 300 } }>
                     {
                         pnApplications.map((item: any , index: number) => {
@@ -290,7 +290,7 @@ export default function ActivitiesPage(props: any) {
                     } } searchVisible={ searchVisible }/>
 
                     <Animated.FlatList
-                        scrollEnabled={onTouch}
+                        nestedScrollEnabled={true}
                         onScroll={ Animated.event(
                             [{
                                 nativeEvent : {
