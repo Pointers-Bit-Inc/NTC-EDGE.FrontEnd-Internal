@@ -158,7 +158,7 @@ export default function ActivitiesPage(props: any) {
                         pnApplications.map((item: any , index: number) => {
                             return item?.activity && item?.activity.map((act: any , i: number) => {
                                 return (
-                                    act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <Pressable><ActivityItem
+                                    act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <ActivityItem
                                     isOpen={ isOpen }
                                     config={ config }
                                     key={ i }
@@ -181,7 +181,7 @@ export default function ActivitiesPage(props: any) {
                                         }
 
                                     } } index={ `pin${ i }${ index }` }
-                                    swiper={ (index: number , progress: any , dragX: any , onPressUser: any) => renderSwiper(index , progress , dragX , onPressUser , act , unReadReadApplicationFn) }/></Pressable>
+                                    swiper={ (index: number , progress: any , dragX: any , onPressUser: any) => renderSwiper(index , progress , dragX , onPressUser , act , unReadReadApplicationFn) }/>
                             })
                         })
                     }
@@ -310,8 +310,9 @@ export default function ActivitiesPage(props: any) {
                         ListEmptyComponent={ () => listEmpty(refreshing , searchTerm ,  (notPnApplications.length || 0) + pnApplications?.map((item: any , index: number) => item?.activity && item?.activity?.map((act: any , i: number) => act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id )?.length)}
                         ListHeaderComponent={ listHeaderComponent() }
                         refreshControl={
-
+                                 
                             <RefreshControl
+
                                 refreshing={ refreshing }
                                 onRefresh={ onRefresh }
                             />

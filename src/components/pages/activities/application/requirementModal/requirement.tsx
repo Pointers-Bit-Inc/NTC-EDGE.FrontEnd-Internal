@@ -124,7 +124,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                             width={ 150 }
                             height={ 150 }
                         /> :
-                        <View style={{ }}>
+                        <View style={{ borderStyle: "solid"}}>
                             <Image
                                 resizeMode={ "cover" }
                                 style={ {
@@ -133,7 +133,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                                     backgroundColor : "rgba(220,226,229,1)" ,
                                     borderWidth : 1 ,
                                     borderColor : "rgba(213,214,214,1)" ,
-                                    borderStyle : "solid" ,
+
                                     width : isMobile ? width/1.2 : 240 ,
                                     height : isMobile ? 300 : 160 ,
 

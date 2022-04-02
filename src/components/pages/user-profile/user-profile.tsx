@@ -123,7 +123,10 @@ const UserProfileScreen = ({ navigation }: any) => {
                     })
                     .then(res => {
                         if(res?.success){
-                            updateUserProfile(dp , res?.doc)
+                            dispatch(setUser({
+                                ...user , ...removeEmpty(res?.data?.doc),
+                                profilePictureObj : res?.data?.doc?.profilePicture
+                            }));
                         }
 
                     }) .catch((err: any) => {
