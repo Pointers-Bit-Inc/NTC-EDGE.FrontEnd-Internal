@@ -252,7 +252,7 @@ const Requirement = (props: any) => {
     const dimensions = useWindowDimensions();
     return <ScrollView style={ { backgroundColor : "#f8f8f8" , width : "100%" } }>
         { props?.requirements?.map((requirement: any , index: number) => {
-            return <View style={ { padding : 10 } }>
+            return <View key={index} style={ { padding : 10 } }>
                 <Card>
                     <View style={ [{ paddingHorizontal : isMobile ? 20 : 40 }] }>
                         <View style={ requirementStyles.cardTitle }>
@@ -273,7 +273,7 @@ const Requirement = (props: any) => {
                                     "xlarge": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf"
                                 }]*/
                                 requirement?.links?.map((link: any , idx: number) => {
-                                    return <RequirementView dimensions={dimensions} rightLayoutComponent={ rightLayoutComponent } key={ idx }
+                                    return <RequirementView  dimensions={dimensions} rightLayoutComponent={ rightLayoutComponent } key={ idx }
                                                             requirement={ link }/>
                                 })
                             }
