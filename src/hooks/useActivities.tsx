@@ -30,13 +30,26 @@ import {
 import Loader from "@pages/activities/bottomLoad";
 import {useComponentLayout} from "./useComponentLayout";
 import lodash from 'lodash';
+
+function convertStatusText(convertedStatus:any[],item:any){
+    let _converted:never[]=[]
+    const _status=convertedStatus.map((converted)=>{
+        _converted=converted.filter((convert)=>{
+            return convert.statusText==item
+        })
+        return _converted
+    })
+    const _uniqByStatus=lodash.uniqBy(_converted,'status').map((item)=>item.status)
+    return _uniqByStatus.length ? _uniqByStatus.toString() : [item].toString()
+}
+
 export function useActivities(){
     const [total,setTotal]=useState(0);
     const [page,setPage]=useState(0);
     const [size,setSize]=useState(0);
     const {user,cashier,director,evaluator,checker,accountant}=useUserRole();
     const [updateModal,setUpdateModal]=useState(false);
-
+      const [onTouch, setOnTouch] = useState(true)
     const config={
         headers:{
             Authorization:"Bearer ".concat(user?.sessionToken)
@@ -160,24 +173,10 @@ export function useActivities(){
                                 return [PENDING,FORVERIFICATION,FOREVALUATION,FORAPPROVAL].toString()
                             }
                         } else if(item==FOREVALUATION){
-                            return [FOREVALUATION,PENDING,FORAPPROVAL,FORVERIFICATION].toString()
-                        } else if(item==APPROVED){
-                            let _converted: never[] = []
-                            const _status = convertedStatus.map((converted) => {
-                                _converted = converted.filter((convert)=> {
-                                    return convert.statusText == item
-                                })
-                                 return _converted
-                            })
-                             const _uniqByStatus = lodash.uniqBy(_converted, 'status').map((item) => item.status)
-
-
-
-                            return _uniqByStatus.length ? _uniqByStatus.toString() : [APPROVED].toString()
-
+                            return [FOREVALUATION,PENDING,FORAPPROVAL].toString()
                         }
 
-                        return item
+                        return convertStatusText(convertedStatus,item)
                     }).toString()
                 })
         }
@@ -456,6 +455,7 @@ export function useActivities(){
         extrapolate:'clamp',
     });
     return {
+        onTouch, setOnTouch,
         setIsOpen,
         size,
         user,

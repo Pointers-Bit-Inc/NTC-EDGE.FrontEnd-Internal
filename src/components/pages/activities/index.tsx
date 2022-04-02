@@ -1,14 +1,14 @@
 import React , {useEffect} from "react";
 import {
-    Animated ,
-    Dimensions ,
-    FlatList ,
-    RefreshControl ,
-    ScrollView ,
-    StatusBar ,
-    Text ,
-    TouchableOpacity ,
-    useWindowDimensions ,
+    Animated,
+    Dimensions,
+    FlatList,Pressable,
+    RefreshControl,
+    ScrollView,
+    StatusBar,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
     View
 } from "react-native";
 
@@ -49,7 +49,7 @@ export default function ActivitiesPage(props: any) {
 
     const dimensions = useWindowDimensions();
     const Filter = isMobile || dimensions?.width <= 768 ? FilterIcon : FilterPressIcon;
-    const {
+    const {onTouch, setOnTouch,
         size ,
         user ,
         setUpdateModal ,
@@ -151,14 +151,14 @@ export default function ActivitiesPage(props: any) {
                         Activity</Text>
                 </View>
             </View> }
-            { !searchVisible && (
-
-                <ScrollView style={ { maxHeight : 300 } }>
+           
+                <ScrollView
+                            style={ { maxHeight : 300 } }>
                     {
                         pnApplications.map((item: any , index: number) => {
                             return item?.activity && item?.activity.map((act: any , i: number) => {
                                 return (
-                                    act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <ActivityItem
+                                    act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <Pressable><ActivityItem
                                     isOpen={ isOpen }
                                     config={ config }
                                     key={ i }
@@ -181,14 +181,12 @@ export default function ActivitiesPage(props: any) {
                                         }
 
                                     } } index={ `pin${ i }${ index }` }
-                                    swiper={ (index: number , progress: any , dragX: any , onPressUser: any) => renderSwiper(index , progress , dragX , onPressUser , act , unReadReadApplicationFn) }/>
+                                    swiper={ (index: number , progress: any , dragX: any , onPressUser: any) => renderSwiper(index , progress , dragX , onPressUser , act , unReadReadApplicationFn) }/></Pressable>
                             })
                         })
                     }
                 </ScrollView>
 
-            )
-            }
         </View> }
     </>;
 
@@ -292,6 +290,7 @@ export default function ActivitiesPage(props: any) {
                     } } searchVisible={ searchVisible }/>
 
                     <Animated.FlatList
+                        scrollEnabled={onTouch}
                         onScroll={ Animated.event(
                             [{
                                 nativeEvent : {
