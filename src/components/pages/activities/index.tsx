@@ -152,7 +152,14 @@ export default function ActivitiesPage(props: any) {
                 </View>
             </View> }
            
-                <ScrollView nestedScrollEnabled={true}
+                <ScrollView refreshControl={
+
+                    <RefreshControl
+
+                        refreshing={ refreshing }
+                        onRefresh={ onRefresh }
+                    />
+                } nestedScrollEnabled={true}
                             style={ { maxHeight : 300 } }>
                     {
                         pnApplications.map((item: any , index: number) => {
@@ -288,7 +295,7 @@ export default function ActivitiesPage(props: any) {
 
                         props.navigation.navigate(SEARCH);
                     } } searchVisible={ searchVisible }/>
-
+                    
                     <Animated.FlatList
                         nestedScrollEnabled={true}
                         onScroll={ Animated.event(
@@ -309,14 +316,7 @@ export default function ActivitiesPage(props: any) {
                         } }
                         ListEmptyComponent={ () => listEmpty(refreshing , searchTerm ,  (notPnApplications.length || 0) + pnApplications?.map((item: any , index: number) => item?.activity && item?.activity?.map((act: any , i: number) => act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id )?.length)}
                         ListHeaderComponent={ listHeaderComponent() }
-                        refreshControl={
-                                 
-                            <RefreshControl
 
-                                refreshing={ refreshing }
-                                onRefresh={ onRefresh }
-                            />
-                        }
                         style={ { flex : 1 , } }
 
                         data={ notPnApplications }

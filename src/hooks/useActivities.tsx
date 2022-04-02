@@ -187,7 +187,8 @@ export function useActivities(){
 
         setRefreshing(true);
         axios.get(BASE_URL+`/applications`,{...config,params:query()}).then((response)=>{
-
+            dispatch(setNotPinnedApplication([]));
+            dispatch(setPinnedApplication([]));
             if(response?.data?.message) Alert.alert(response.data.message);
             if(isCurrent) setRefreshing(false);
             if(response?.data?.docs?.length) callback(true);
@@ -228,8 +229,7 @@ export function useActivities(){
 
     useEffect(()=>{
         let isCurrent=true;
-        dispatch(setNotPinnedApplication([]));
-        dispatch(setPinnedApplication([]));
+
         fnApplications(isCurrent,()=>{
         });
         return ()=>{
