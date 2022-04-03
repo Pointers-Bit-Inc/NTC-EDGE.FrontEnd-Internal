@@ -159,11 +159,14 @@ export default function QrCodeScan(props: any) {
                         <ActivityIndicator style={styles.icon2} color={'white'}/>
                     </View>
                 </View>}
-                <Response verified={isVerified}
-                          verifiedInfo={verifiedInfo}
-                          onPress={() => setIsVerified(false)}
-                          error={isError}
-                          onPress1={() => setIsError(false)}/>
+                    <Response verified={isVerified}
+                              verifiedInfo={verifiedInfo}
+                              onPress={() => setIsVerified(false)}
+                              error={isError}
+                              onPress1={() => {
+                                  setIsError(false)
+                              }}/>
+
 
             </View>
                 <View style={styles.group6}>

@@ -151,17 +151,20 @@ export const styles = StyleSheet.create({
     },
     group11: {
         width: 337,
-        height: 250,
+        flex: 1,
+        justifyContent: "center",
         alignSelf: "center",
-        justifyContent: "flex-end",
-        borderRadius: 14,
-        backgroundColor: "rgba(255,255,255,1)",
+    },
+    errorContainer:{
+        borderTopLeftRadius: 14,
+        borderTopRightRadius: 14,
+        height: 180, backgroundColor: "#fff"
     },
     group10: {
-        height: 218,
-        justifyContent: "space-between",
+        padding: 5,
+        height: "100%",
+        justifyContent: "space-around",
         alignItems: "center",
-        alignSelf: "stretch"
     },
     rect6: {
         width: 60,
@@ -191,27 +194,27 @@ export const styles = StyleSheet.create({
         textAlign: "center",
     },
     group8: {
-        height: 66,
-        alignSelf: "stretch"
+
+        backgroundColor: "#fff",
+        borderBottomStartRadius: 14,
+        borderBottomRightRadius: 14,
+        width: "100%",
+        borderTopWidth: 1,
+        borderTopColor: "rgba(217,219,233,1)",
     },
     rect11: {
 
     },
     rect12: {
-        borderTopWidth: 1,
-        borderTopColor: "rgba(217,219,233,1)",
-        top: 0,
-        left: 0,
-        position: "absolute",
-        right: 0,
-        bottom: 0,
+        paddingVertical: 22,
+
         justifyContent: "center"
     },
     close: {
         fontWeight: "bold",
         color: "#121212",
         height: 16,
-        width: 80,
+        width: 100,
         textAlign: "center",
         alignSelf: "center"
     },
