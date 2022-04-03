@@ -21,6 +21,8 @@ import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {Card} from "@pages/activities/application/requirementModal/card";
 import PdfViewr from "@pages/activities/application/pdf/index";
 import FileIcon from "@assets/svg/file";
+import Left from "@atoms/icon/left";
+import NavBar from "@molecules/navbar";
 
 const { width , height } = Dimensions.get("screen");
 
@@ -164,6 +166,7 @@ class RequirementView extends React.Component<{ requirement: any, rightLayoutCom
                         width : this.props?.rightLayoutComponent?.width || undefined ,
                         backgroundColor : "rgba(0, 0, 0, 0.5)"
                     } }/>
+
                     <View style={ [styles.rect2 ,  { width : this.props?.rightLayoutComponent?.width }] }>
                         <View style={ { alignSelf : 'flex-end' , paddingHorizontal : 15 , paddingVertical : 15 } }>
                             <TouchableOpacity onPress={ this._hideImageModal }>

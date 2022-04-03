@@ -32,17 +32,18 @@
         useEffect(() => {
             let isCurrent = true
             const _selectedIndex = data?.findIndex((item) => item.value == value)
+
             if(isCurrent) setSelectedIndex(_selectedIndex)
-            if(_selectedIndex ){
+            if(_selectedIndex != null && _selectedIndex != "" ){
                 const _selected = data[_selectedIndex]
-                if(isCurrent) setSelected(_selected)
-                if(_selected) onSelect(_selected)
+                if(isCurrent) setSelected(data[_selectedIndex])
+                if(data[_selectedIndex]) onSelect(data[_selectedIndex])
             }
 
               return () =>{
                   isCurrent = false
               }
-        }, [value, selectedIndex])
+        }, [data, value, selectedIndex])
 
         useEffect(()=>{
 
