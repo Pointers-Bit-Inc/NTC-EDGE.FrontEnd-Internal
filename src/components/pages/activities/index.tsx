@@ -329,7 +329,7 @@ export default function ActivitiesPage(props: any) {
 
                         } }
                         onScrollEndDrag={ onScrollEndDrag }
-                        onEndReachedThreshold={ 0.1 }
+                        onEndReachedThreshold={ 0.5 }
                         onMomentumScrollBegin={ () => {
                             onMomentumScrollBegin();
                             setOnEndReachedCalledDuringMomentum(false)

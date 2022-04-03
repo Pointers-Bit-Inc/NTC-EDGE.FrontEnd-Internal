@@ -433,19 +433,22 @@ export function ActivityItem(props: any) {
                                             <MenuOption value={ "Pin to top" }>
                                                 <View style={ styles.menuItem }>
                                                     <PinToTopIcon width={ 16.67 } height={ 16.67 }/>
-                                                    <Text style={ styles.menuItemText }>Pin to top</Text> </View>
+                                                    <Text style={ styles.menuItemText }>Pin to top</Text>
+                                                </View>
                                             </MenuOption>
                                             <MenuOption value={ "Archive" }>
                                                 <View style={ styles.menuItem }>
                                                     <BellMuteIcon width={ 16.67 } height={ 16.67 }/>
-                                                    <Text style={ styles.menuItemText }>Mute</Text> </View>
+                                                    <Text style={ styles.menuItemText }>Mute</Text>
+                                                </View>
                                             </MenuOption>
                                             <MenuOption
                                                 style={ { borderBottomWidth : 1 , borderBottomColor : "#E5E5E5" } }
                                                 value={ "Archive" }>
                                                 <View style={ styles.menuItem }>
                                                     <ArchiveIcon width={ 16.67 } height={ 16.67 }/>
-                                                    <Text style={ styles.menuItemText }>Archive</Text> </View>
+                                                    <Text style={ styles.menuItemText }>Archive</Text>
+                                                </View>
                                             </MenuOption>
 
                                             <MenuOption value={ "Archive" }>
