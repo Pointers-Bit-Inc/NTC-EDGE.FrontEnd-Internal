@@ -34,7 +34,7 @@
             const _selectedIndex = data?.findIndex((item) => item.value == value)
 
             if(isCurrent) setSelectedIndex(_selectedIndex)
-            if(_selectedIndex != null && _selectedIndex != "" ){
+            if(_selectedIndex != null && _selectedIndex != undefined ){
                 const _selected = data[_selectedIndex]
                 if(isCurrent) setSelected(data[_selectedIndex])
                 if(data[_selectedIndex]) onSelect(data[_selectedIndex])
