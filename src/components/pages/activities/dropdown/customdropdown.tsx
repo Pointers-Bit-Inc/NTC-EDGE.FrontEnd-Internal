@@ -92,7 +92,7 @@
                         style={styles.overlay}
                         onPress={() => setVisible(false)}
                     >
-                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, {width: dropdownWidth,flex: 1, left: dropdownLeft, top: dropdownTop}]}>
+                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, { bottom: data?.length < 6  ? undefined : "15%", width: dropdownWidth,flex: 1, left: dropdownLeft, top: dropdownTop}]}>
                             {data?.length > 0 ? <FlatList
                                 style={styles.items}
                                 data={data}
@@ -164,7 +164,7 @@
         },
         dropdown: {
             marginTop: 5,
-            bottom: "15%",
+
             alignSelf: isMobile ? "center" : "flex-end",
             position: 'absolute',
 
