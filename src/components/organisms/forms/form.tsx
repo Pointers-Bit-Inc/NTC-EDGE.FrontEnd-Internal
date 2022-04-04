@@ -50,9 +50,7 @@ const FormField = ({
                                        onChange(id, e.nativeEvent.text, 'input')
                                    }
                                    }
-                                   ref={otherProps?.ref}
                                    onChangeText={(text: string) => {
-                                       console.log(otherProps?.ref.current  )
                                        onChange(id, text, 'input', element?.stateName)
                                    }}
                                    onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'input', element?.stateName)}/>;
