@@ -209,11 +209,17 @@ const RenderPinned = ({ assignedPersonnel , config }: any) => {
                 styles.application
             ] }
         >
-            { loading ? <></> : <EndorseIcon
+            <EndorseIcon
                 width={ fontValue(20) }
                 height={ fontValue(20) }
-            /> }
-            { loading ? <ActivityIndicator/>  :
+            /> 
+            { !personnel?.firstName ? <View style={{marginLeft: 3, marginRight: 5, width: "50%",  borderRadius: 14, backgroundColor: "#EAEDFF"}}><Text
+
+                                        size={ fontValue(12) }
+                                        numberOfLines={ 1 }
+                                    >
+                                        {` ` }
+                                    </Text></View>  :
               <Text
                   style={ { "marginLeft" : 3 , "marginRight" : 5 } }
                   color="#606A80"

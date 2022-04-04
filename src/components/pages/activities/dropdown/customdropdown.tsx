@@ -4,11 +4,9 @@
     import {useOrientation} from "../../../../hooks/useOrientation";
 
     import {Regular500} from "@styles/font";
-    import {RFValue} from "react-native-responsive-fontsize";
-    import useKeyboard from "../../../../hooks/useKeyboard";
     import {fontValue} from "@pages/activities/fontValue";
     import {isMobile} from "@pages/activities/isMobile";
-    import useIsKeyboardShown from "@react-navigation/bottom-tabs/lib/typescript/src/utils/useIsKeyboardShown";
+
 
 
     interface Props {
@@ -25,7 +23,6 @@
         const [dropdownWidth, setDropdownWidth] = useState(0);
         const [dropdownLeft, setDropdownLeft] = useState(0);
         const [selectedIndex, setSelectedIndex] = useState(null)
-        const isKeyboardVisible = useKeyboard();
         const toggleDropdown = (): void => {
             visible ? setVisible(false) : openDropdown();
         };
@@ -50,7 +47,7 @@
             DropdownButton?.current?.measure((_fx: number, _fy: number, _w: number, h: number, _px: number, py: number) => {
             setDropdownWidth(_w)
                 setDropdownLeft(_px)
-                setDropdownTop(isKeyboardVisible ? py + h + h : py + h );
+                setDropdownTop(py + h );
             });
         }, [visible, dropdownTop])
 
