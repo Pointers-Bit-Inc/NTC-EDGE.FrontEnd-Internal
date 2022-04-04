@@ -1,4 +1,4 @@
-import React , {useEffect , useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {RootStateOrAny , useDispatch , useSelector} from 'react-redux';
 import axios from 'axios';
 import {
@@ -95,8 +95,13 @@ const UserProfileScreen = ({ navigation }: any) => {
                     mimeResult = isMobile ? mime :mime[1];
                 }
                 let mimeType = isMobile ? mime : mimeResult?.split("/")?.[1]
+                setLoading({
+                    photo : true ,
+                    basic : !dp
+                });
                 await fetch(base64)
                 .then(res => {
+
                     return res?.blob()
                 })
                 .then(blob => {
@@ -115,21 +120,32 @@ const UserProfileScreen = ({ navigation }: any) => {
                     fetch(API_URL , {
                         method : 'POST' , body : fd , headers : {
                             'Authorization' : `Bearer ${ user?.sessionToken }`,
-
                         }
                     })
                     .then(res => {
+                     
                         return res?.json()
                     })
                     .then(res => {
+                        setLoading({
+                            photo : false ,
+                            basic : false
+                        });
                         if(res?.success){
+                            setAlert({
+                                title : 'Success' ,
+                                message : 'Your profile has been updated!' ,
+                                color : successColor,
+                                status: 201
+                            });
                             dispatch(setUser({
-                                ...user , ...removeEmpty(res?.data?.doc),
-                                profilePictureObj : res?.data?.doc?.profilePicture
+                                ...user , ...removeEmpty(res?.doc),
+                                profilePictureObj : res?.doc?.profilePicture
                             }));
+                            setShowAlert(true);
                         }
 
-                    }) .catch((err: any) => {
+                    }).catch((err: any) => {
 
                         err = JSON.parse(JSON.stringify(err));
 
@@ -222,6 +238,7 @@ const UserProfileScreen = ({ navigation }: any) => {
             error : false ,
             editable : false ,
             disabledColor : text.disabled ,
+
         } ,
         {
             stateName : 'firstName' ,
@@ -307,6 +324,17 @@ const UserProfileScreen = ({ navigation }: any) => {
         });
         return valid;
     };
+    const checkIsDisabled= () => {
+        var valid = false;
+
+        userProfileForm?.forEach((up: any) => {
+            if ( !up?.value || up?.error) {
+                valid = true;
+                return valid
+            }
+        });
+        return valid;
+    };
     const hasChanges = () => {
         var hasChanges = false;
         originalForm.forEach(of => {
@@ -314,12 +342,14 @@ const UserProfileScreen = ({ navigation }: any) => {
                 of.stateName === 'firstName' ||
                 of.stateName === 'lastName' ||
                 of.stateName === 'email' ||
-                of.stateName === 'contactNumber' ||
+                (of.stateName === 'contactNumber') ||
                 of.stateName === 'address'
             ) {
+
+
                 let index = userProfileForm.findIndex(uf => uf.stateName === of.stateName);
                 if (index > -1) {
-                    if (userProfileForm?.[index]?.value !== of?.value) {
+                    if (userProfileForm?.[index]?.value !== of?.value && userProfileForm?.[index]?.value ) {
                         hasChanges = true;
                         return;
                     }
@@ -328,7 +358,8 @@ const UserProfileScreen = ({ navigation }: any) => {
         });
         return hasChanges;
     };
-    const disabled = loading?.basic || !isValid() || !hasChanges();
+    const disabled = loading?.basic || !isValid() || !hasChanges()  ;
+
 
     const handleBackButtonClick = () => {
         if (hasChanges()) setDiscardAlert(true);
@@ -446,7 +477,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                 } }
             />
 
-            <ScrollView style={ styles.scrollview } showsVerticalScrollIndicator={ false }>
+            <ScrollView   keyboardShouldPersistTaps="always" style={ styles.scrollview } showsVerticalScrollIndicator={ false }>
                 <View style={ [styles.row , { marginBottom : 20 }] }>
                     <View>
 
@@ -508,6 +539,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                 message={ alert?.message }
                 confirmText='OK'
                 onConfirm={ () => {
+
                     if(alert.status == 200) {
                         navigation.pop()
                     }

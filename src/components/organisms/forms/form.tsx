@@ -50,7 +50,11 @@ const FormField = ({
                                        onChange(id, e.nativeEvent.text, 'input')
                                    }
                                    }
-                                   onChangeText={(text: string) => onChange(id, text, 'input', element?.stateName)}
+                                   ref={otherProps?.ref}
+                                   onChangeText={(text: string) => {
+                                       console.log(otherProps?.ref.current  )
+                                       onChange(id, text, 'input', element?.stateName)
+                                   }}
                                    onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'input', element?.stateName)}/>;
             case "select":
                 return <><InputField key={id}  {...styleProps} {...otherProps}
@@ -138,10 +142,12 @@ const FormField = ({
 
         }
     }
+
     return (
         <>
 
             {formElements.map((element: any, key: number) => {
+                
                 return element.type != 'submit' && element.type && (
                     <Fragment key={element.id}>
                         <View  key={element.id}>

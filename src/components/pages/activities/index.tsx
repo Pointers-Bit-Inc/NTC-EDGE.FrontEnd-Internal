@@ -49,8 +49,7 @@ export default function ActivitiesPage(props: any) {
 
     const dimensions = useWindowDimensions();
     const Filter = isMobile || dimensions?.width <= 768 ? FilterIcon : FilterPressIcon;
-    const {onTouch, setOnTouch,
-        size ,
+    const {isReady,
         user ,
         setUpdateModal ,
         config ,
@@ -139,7 +138,7 @@ export default function ActivitiesPage(props: any) {
     };
 
     const listHeaderComponent = () => <>
-        { !searchVisible && !!pnApplications?.length &&
+        { !searchVisible && !!pnApplications?.length && containerHeight &&
         <View style={ [styles.pinnedActivityContainer , {
             marginBottom : 5 ,
             paddingBottom : 20 ,
@@ -319,7 +318,7 @@ export default function ActivitiesPage(props: any) {
                         ListEmptyComponent={ () => listEmpty(refreshing , searchTerm ,  (notPnApplications.length) + pnApplications?.map((item: any , index: number) => item?.activity && item?.activity?.map((act: any , i: number) => (act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id )).length)}
                         ListHeaderComponent={ listHeaderComponent() }
 
-                        style={ { flex : 1 , } }
+                        style={ { flex : 1 , display: isReady ? undefined: "none"  } }
 
                         data={ notPnApplications }
                         keyExtractor={ (item , index) => index.toString() }
