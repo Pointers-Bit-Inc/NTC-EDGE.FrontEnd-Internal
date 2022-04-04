@@ -194,25 +194,25 @@ export const getFilter = ({
                               accountant
                           }: FilterList) => list?.filter((item: any) => {
     let _approvalHistory = false;
-    if (item?.approvalHistory.length) {
-        _approvalHistory = item?.approvalHistory?.[0]?.userId == user?._id
-    }
+    _approvalHistory = (item?.approvalHistory?.[0]?.userId || item?.approvalHistory?.userId) == user?._id
+    
     const search =
         (
             selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true);
     if (cashier) {
         return (
-            item?.status == APPROVED || item?.status == DECLINED && (
+            item?.status == APPROVED || item?.status == DECLINED || (
                 item?.assignedPersonnel == user?._id || (
                     item?.assignedPersonnel?._id || item?.assignedPersonnel) === null || _approvalHistory) && search)
     } else if (director) {
+       
         return (
-            item?.status == FORAPPROVAL || item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (
-            item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search
+            item?.status == FORAPPROVAL || item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) || (
+            (item?.assignedPersonnel?._id || item?.assignedPersonnel) == user?._id || (item?.assignedPersonnel?._id || item?.assignedPersonnel ) === null || _approvalHistory) && search
     } else if (checker || accountant) {
         return (
             (
-                item?.assignedPersonnel?._id || (
+                (
                     item?.assignedPersonnel?._id || item?.assignedPersonnel)) == user?._id || item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
     } else if (evaluator) {
         return item?.status.length > 0 || (

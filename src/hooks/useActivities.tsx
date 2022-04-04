@@ -62,7 +62,9 @@ export function useActivities(){
         pinnedApplications,
         notPinnedApplications,
         applicationItem,
-    }=useSelector((state:RootStateOrAny)=>state.application);
+    }=useSelector((state:RootStateOrAny)=>{
+        return state.application
+    });
     const dispatch=useDispatch();
     const {getActiveMeetingList,endMeeting,leaveMeeting}=useSignalr();
 
@@ -80,17 +82,16 @@ export function useActivities(){
     }
 
     const ispinnedApplications=(applications:any)=>{
-
+        console.log("application count: ", applications.length)
         setTotalPages(Math.ceil(applications?.length/10));
-
+        console.log("application count: ", applications.length)
         const selectedClone=selectedChangeStatus?.filter((status:string)=>{
             return status!=DATE_ADDED
         });
-
+        console.log("application count: ",selectedClone)
 
         const list=getList(applications,selectedClone);
-
-
+        console.log("application count: ", list)
         const groups=list?.reduce((groups:any,activity:any)=>{
 
             if((
@@ -107,7 +108,7 @@ export function useActivities(){
             return groups;
         },{});
 
-
+        console.log("application count: ",groups)
         const groupArrays=Object.keys(groups).map((date)=>{
             return {
                 date,
@@ -115,6 +116,8 @@ export function useActivities(){
                 activity:groups[date],
             };
         });
+
+        console.log("application count: ",groupArrays)
         let a=[],b=[];
         for(let i=0; i<groupArrays.length; i++){
             for(let j=0; j<groupArrays[i].activity.length; j++){
@@ -128,6 +131,7 @@ export function useActivities(){
         }
         return groupArrays.slice(0,currentPage*25);
     };
+    
     const [updateUnReadReadApplication,setUpdateUnReadReadApplication]=useState(false);
     const [searchTerm,setSearchTerm]=useState('');
     const [countRefresh,setCountRefresh]=useState(0);

@@ -137,6 +137,7 @@ export default function ActivitiesPage(props: any) {
             return dispatch(removeActiveMeeting(item._id));
         }
     };
+
     const listHeaderComponent = () => <>
         { !searchVisible && !!pnApplications?.length &&
         <View style={ [styles.pinnedActivityContainer , {
@@ -156,7 +157,9 @@ export default function ActivitiesPage(props: any) {
                             style={ { maxHeight : 300 } }>
                     {
                         pnApplications.map((item: any , index: number) => {
+
                             return item?.activity && item?.activity.map((act: any , i: number) => {
+
                                 return (
                                     act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <ActivityItem
                                     isOpen={ isOpen }
