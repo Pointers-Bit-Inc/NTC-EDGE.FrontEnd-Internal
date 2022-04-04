@@ -64,10 +64,11 @@ export function SearchActivity(props: {onBlur: any ,  isHandleLoad:any, isRecent
     }, [])
 
 
+
     const AnimatedTotal = (props) => {
         const progress = useCountUp(2000)
-        const countUp = Math.max(0, Math.round(progress * props.total))
-        return <Text>{countUp}</Text>
+        const countUp = (Math.max(0, Math.round(progress * props.total)))
+        return <Text>{countUp == props.total ?  props.total : countUp}</Text>
     }
 
     return <View style={[styles.container, {flexDirection: "row"}]}>
