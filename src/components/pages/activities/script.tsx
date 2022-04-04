@@ -186,12 +186,12 @@ interface FilterList {
 export const getFilter = ({
                               list ,
                               user ,
-                              selectedClone ,
-                              cashier ,
-                              director ,
-                              checker ,
-                              evaluator ,
-                              accountant
+                              selectedClone = [] ,
+                              cashier = null,
+                              director = null ,
+                              checker = null  ,
+                              evaluator = null ,
+                              accountant = null
                           }: FilterList) => list?.filter((item: any) => {
     let _approvalHistory = false;
     _approvalHistory = (item?.approvalHistory?.[0]?.userId || item?.approvalHistory?.userId) == user?._id
@@ -201,8 +201,7 @@ export const getFilter = ({
             selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true);
     if (cashier) {
         return (
-            item?.status == APPROVED || item?.status == DECLINED || (
-                item?.assignedPersonnel == user?._id || (
+            item?.status == APPROVED || item?.status == DECLINED || ( (
                     item?.assignedPersonnel?._id || item?.assignedPersonnel) === null || _approvalHistory) && search)
     } else if (director) {
        
