@@ -1,12 +1,12 @@
-import React, { useRef, useState } from 'react'
-import { Dimensions, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { Alert, Dimensions, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Text from '@components/atoms/text'
 import { Regular, Regular500 } from '@styles/font'
 import { ArrowLeftIcon, NewMeetIcon, NewPenIcon, NewPhoneIcon, ToggleIcon } from '@components/atoms/icon'
 import { RFValue } from 'react-native-responsive-fontsize'
 import AddParticipantsIcon from '@components/atoms/icon/new-add-participants'
 import LinkIcon from '@components/atoms/icon/link'
-import { RootStateOrAny, useSelector } from 'react-redux'
+import { RootStateOrAny, useDispatch, useSelector } from 'react-redux'
 import lodash from 'lodash';
 import IParticipants from 'src/interfaces/IParticipants';
 import { getChannelName } from 'src/utils/formatting';
@@ -14,6 +14,12 @@ import { ContactItem } from '@components/molecules/list-item'
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal'
 import CreateMeeting from '@components/pages/chat/meeting';
 import { outline, text } from '@styles/color'
+import AwesomeAlert from 'react-native-awesome-alerts'
+import useApi from 'src/services/api'
+import Loading from '@components/atoms/loading'
+import { updateChannel } from 'src/reducers/channel/actions'
+import AddParticipants from '@components/pages/chat/add-participants'
+import { InputField } from '@components/molecules/form-fields'
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -105,10 +111,66 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     justifyContent: 'center',
   },
+  cancelText: {
+    fontSize: RFValue(16),
+    color: '#DC2626',
+    fontFamily: Regular500,
+  },
+  confirmText: {
+    fontSize: RFValue(16),
+    color: text.info,
+    fontFamily: Regular500,
+  },
+  titleMessage: {
+    color: '#14142B',
+    textAlign: 'center',
+    fontSize: RFValue(18),
+    fontFamily: Regular500,
+  },
+  message: {
+    color: '#4E4B66',
+    textAlign: 'center',
+    fontSize:RFValue(14),
+    marginHorizontal: 15,
+    marginBottom: 15,
+    fontFamily: Regular,
+  },
+  content: {
+    borderBottomColor: outline.default,
+    borderBottomWidth: 1,
+  },
+  loading: {
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    position: 'absolute',
+    zIndex: 999,
+    width,
+    height,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  outlineText: {
+    borderRadius: 10,
+  },
+  inputText: {
+    fontSize: RFValue(16),
+    textAlign: 'center',
+  },
+  groupName: {
+    height: undefined,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: 'white',
+    backgroundColor: 'white',
+    marginBottom: -25,
+    marginTop: -5,
+    paddingHorizontal: 0
+  },
 })
 
 const ChatInfo = ({ navigation }) => {
+  const dispatch = useDispatch();
   const user = useSelector((state:RootStateOrAny) => state.user);
+  const api = useApi(user.sessionToken);
   const { _id, otherParticipants, participants, hasChannelName, channelName, isGroup } = useSelector(
     (state:RootStateOrAny) => {
       const { selectedChannel } = state.channel;
@@ -119,9 +181,83 @@ const ChatInfo = ({ navigation }) => {
   const [isVideoEnable, setIsVideoEnable] = useState(false);
   const [muteChat, setMuteChat] = useState(false);
   const [showDeleteOption, setShowDeleteOption] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [alertData, setAlertData] = useState({
+    title: '',
+    message: '',
+    cancel: '',
+    confirm: '',
+  });
   const [selectedParticipant, setSelectedParticipant] = useState<any>({});
+  const [groupName, setGroupName] = useState(channelName || '');
+  const [editName, setEditName] = useState(false);
   const modalRef = useRef<BottomModalRef>(null);
+  const participantModal = useRef<BottomModalRef>(null);
   const optionModalRef = useRef<BottomModalRef>(null);
+  const groupNameRef:any = useRef(null);
+
+  useEffect(() => {
+    if (editName) {
+      groupNameRef.current?.focus();
+    }
+  }, [editName]);
+
+  const isAdmin = () => {
+    const participant:IParticipants = lodash.find(participants, (p:IParticipants) => p._id === user._id);
+    
+    return participant.isAdmin;
+  }
+
+  const addAdmin = () => {
+    optionModalRef.current?.close();
+    setLoading(true);
+    api.post(`/rooms/${_id}/add-admin?participantId=${selectedParticipant._id}`)
+    .then((res) => {
+      setLoading(false);
+      if(res.data) {
+        dispatch(updateChannel(res.data));
+      }
+    })
+    .catch(e => {
+      setLoading(false);
+      Alert.alert('Alert', e?.message || 'Something went wrong.')
+    });
+  }
+
+  const removeMember = () => {
+    setShowAlert(false);
+    setLoading(true);
+    api.post(`/rooms/${_id}/remove-member?participantId=${selectedParticipant._id}`)
+    .then((res) => {
+      setLoading(false);
+      if(res.data) {
+        dispatch(updateChannel(res.data));
+      }
+    })
+    .catch(e => {
+      setLoading(false);
+      Alert.alert('Alert', e?.message || 'Something went wrong.')
+    });
+  }
+
+  const addMembers = (addedMembers:any) => {
+    setShowAlert(false);
+    setLoading(true);
+    api.post(`/rooms/${_id}/add-members`, {
+      participants: addedMembers
+    })
+    .then((res) => {
+      setLoading(false);
+      if(res.data) {
+        dispatch(updateChannel(res.data));
+      }
+    })
+    .catch(e => {
+      setLoading(false);
+      Alert.alert('Alert', e?.message || 'Something went wrong.')
+    });
+  }
 
   const onBack = () => navigation.goBack();
 
@@ -159,28 +295,34 @@ const ChatInfo = ({ navigation }) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <View style={[styles.option]}>
-            <Text
-              style={{ marginLeft: 15 }}
-              color={'black'}
-              size={18}
-            >
-              Add as admin
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View style={[styles.option]}>
-            <Text
-              style={{ marginLeft: 15 }}
-              color={text.error}
-              size={18}
-            >
-              Remove from chat
-            </Text>
-          </View>
-        </TouchableOpacity>
+        {
+          isAdmin() && (
+            <>
+              <TouchableOpacity onPress={addAdmin}>
+                <View style={[styles.option]}>
+                  <Text
+                    style={{ marginLeft: 15 }}
+                    color={'black'}
+                    size={18}
+                  >
+                    Add as admin
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onRemoveConfirm}>
+                <View style={[styles.option]}>
+                  <Text
+                    style={{ marginLeft: 15 }}
+                    color={text.error}
+                    size={18}
+                  >
+                    Remove from chat
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </>
+          )
+        }
         <TouchableOpacity onPress={() => optionModalRef.current?.close()}>
           <View style={[styles.option, { borderBottomWidth: 0 }]}>
             <Text
@@ -199,6 +341,17 @@ const ChatInfo = ({ navigation }) => {
   const showOption = (participant:IParticipants) => {
     setSelectedParticipant(participant)
     optionModalRef.current?.open();
+  }
+
+  const onRemoveConfirm = () => {
+    optionModalRef.current?.close();
+    setAlertData({
+      title: 'Remove Member',
+      message: `Remove ${selectedParticipant.firstName} ${selectedParticipant.lastName} from ${renderChannelName()}?`,
+      cancel: 'Cancel',
+      confirm: 'Yes',
+    });
+    setTimeout(() => setShowAlert(true), 500);
   }
 
   const renderChannelName = () => {
@@ -252,12 +405,30 @@ const ChatInfo = ({ navigation }) => {
           </View>
         </TouchableOpacity>
         <View style={{ alignContent: 'center', flex: 1, paddingHorizontal: 10 }}>
-          <Text
-            style={styles.title}
-            size={16}
-          >
-            {renderChannelName()}
-          </Text>
+          {
+            editName ? (
+              <InputField
+                ref={groupNameRef}
+                placeholder={'Group name'}
+                containerStyle={styles.groupName}
+                placeholderTextColor={'#C4C4C4'}
+                inputStyle={[styles.inputText, { backgroundColor: 'white' }]}
+                outlineStyle={[styles.outlineText, { backgroundColor: 'white' }]}
+                value={groupName}
+                onChangeText={setGroupName}
+                returnKeyType={'done'}
+                clearable={false}
+                onBlur={() => setEditName(false)}
+              />
+            ) : (
+              <Text
+                style={styles.title}
+                size={16}
+              >
+                {renderChannelName()}
+              </Text>
+            )
+          }
           {
             isGroup && (
               <Text
@@ -270,7 +441,7 @@ const ChatInfo = ({ navigation }) => {
             )
           }
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => setEditName(n => !n)}>
           <View style={{ paddingHorizontal: 5, paddingTop: 5 }}>
             <NewPenIcon color={'#2863D6'} />
           </View>
@@ -288,7 +459,7 @@ const ChatInfo = ({ navigation }) => {
               <NewMeetIcon color={'#082080'} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => participantModal.current?.open()}>
             <View style={styles.circle}>
               <AddParticipantsIcon color={'#082080'} />
             </View>
@@ -318,7 +489,7 @@ const ChatInfo = ({ navigation }) => {
             )
           }
           <View style={{ paddingTop: isGroup ? 10 : 0 }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => participantModal.current?.open()}>
               <View style={styles.participantItem}>
                 <View style={styles.smallCircle}>
                   <AddParticipantsIcon
@@ -373,7 +544,7 @@ const ChatInfo = ({ navigation }) => {
                 size={14}
                 color={'#CF0327'}
               >
-                Leave and Delete
+                {isAdmin() ? 'Leave and Delete' : 'Leave Chat'}
               </Text>
             </View>
           </TouchableOpacity>
@@ -417,6 +588,58 @@ const ChatInfo = ({ navigation }) => {
           {options()}
         </View>
       </BottomModal>
+      <BottomModal
+        ref={participantModal}
+        onModalHide={() => participantModal.current?.close()}
+        avoidKeyboard={false}
+        header={
+          <View style={styles.bar} />
+        }
+        containerStyle={{ maxHeight: null }}
+        backdropOpacity={0}
+        onBackdropPress={() => {}}
+      >
+        <View style={{ height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
+          <AddParticipants
+            members={participants}
+            onClose={() => participantModal.current?.close()}
+            onSubmit={(members:any) => {
+              participantModal.current?.close();
+              setTimeout(() => addMembers(members), 300);
+            }}
+          />
+        </View>
+      </BottomModal>
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        contentContainerStyle={{ borderRadius: 15 }}
+        title={alertData.title}
+        titleStyle={styles.titleMessage}
+        message={alertData.message}
+        messageStyle={styles.message}
+        contentStyle={styles.content}
+        closeOnTouchOutside={false}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        cancelButtonColor={'white'}
+        confirmButtonColor={'white'}
+        cancelButtonTextStyle={styles.cancelText}
+        confirmButtonTextStyle={styles.confirmText}
+        actionContainerStyle={{ justifyContent: 'space-around' }}
+        cancelText={alertData.cancel}
+        confirmText={alertData.confirm}
+        onCancelPressed={() => setShowAlert(false)}
+        onConfirmPressed={removeMember}
+      />
+      {
+        loading && (
+          <View style={styles.loading}>
+            <Loading color='#fff' size={10} />
+          </View>
+        )
+      }
     </View>
   )
 }

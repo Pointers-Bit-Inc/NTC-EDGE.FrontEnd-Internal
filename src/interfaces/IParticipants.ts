@@ -20,6 +20,7 @@ interface IParticipants {
   isOnline: boolean;
   lastOnline?: Date;
   isAdmin?: boolean;
+  muted?: boolean;
 }
 
 export default IParticipants;

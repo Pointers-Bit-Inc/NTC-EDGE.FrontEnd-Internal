@@ -40,6 +40,7 @@ import {
 } from 'src/reducers/meeting/actions';
 import IMeetings from 'src/interfaces/IMeetings';
 import IParticipants from 'src/interfaces/IParticipants';
+import Loading from '@components/atoms/loading';
 
 const { width, height } = Dimensions.get('window');
 
@@ -141,6 +142,15 @@ const styles = StyleSheet.create({
   content: {
     borderBottomColor: outline.default,
     borderBottomWidth: 1,
+  },
+  loading: {
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    position: 'absolute',
+    zIndex: 999,
+    width,
+    height,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 
@@ -176,6 +186,7 @@ const ChatList = ({ navigation }:any) => {
   const [showAlert, setShowAlert] = useState(false);
   const [selectedItem, setSelectedItem]:any = useState({});
   const [loading, setLoading] = useState(false);
+  const [updating, setUpdating] = useState(false);
   const [sendRequest, setSendRequest] = useState(0);
   const [pageIndex, setPageIndex] = useState(1);
   const [fetching, setFetching] = useState(false);
@@ -497,8 +508,10 @@ const onClose = (item:IMeetings, leave = false) => {
         }}
         onConfirmPressed={() => {
           setShowAlert(false);
+          setUpdating(true);
           setTimeout(() => 
             leaveChannel(selectedItem._id, (err, res) => {
+              setUpdating(false);
               if (res) {
                 dispatch(removeChannel(res));
               }
@@ -510,6 +523,13 @@ const onClose = (item:IMeetings, leave = false) => {
           );
         }} 
       />
+      {
+        updating && (
+          <View style={styles.loading}>
+            <Loading color='#fff' size={10} />
+          </View>
+        )
+      }
     </View>
   )
 }
