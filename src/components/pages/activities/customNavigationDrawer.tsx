@@ -18,10 +18,6 @@ const CustomSidebarMenu = (props: any) => {
     const { state } = props;
     const { routes , index } = state; //Not sure about the name of index property. Do check it out by logging the 'state' variable.
     const focusedRoute = routes[index];
-    useEffect(() => {
-        console.log(focusedRoute)
-    } , []);
-
 
     return (
         <>
@@ -82,7 +78,7 @@ const CustomSidebarMenu = (props: any) => {
 
                             </View>
 
-                        ) } style={ styles.item }  onPress={onPress}/>
+                        ) } style={ styles.item }   onPress={onPress}/>
                     </View>
 
                 })}

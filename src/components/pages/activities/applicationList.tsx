@@ -6,7 +6,7 @@ import Collapsible from "react-native-collapsible";
 import {checkFormatIso , formatDate} from "@pages/activities/script";
 import moment from "moment";
 import {useAlert} from "../../../hooks/useAlert";
-import * as Animatable from 'react-native-animatable'
+
 import DotVertical from "@assets/svg/dotsVertical";
 import ChevronUpIcon from "@assets/svg/chevron-up";
 import {RFValue} from "react-native-responsive-fontsize";
@@ -44,7 +44,7 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
 
 
 
-    return <Animatable.View   animation={'fadeIn'}   style={[styles.group26,  ]}>
+    return <View   style={[styles.group26,  ]}>
         <TouchableWithoutFeedback onPress={() => {
             props.onPress()
             chevronAnimate()
@@ -92,7 +92,7 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
             <View style={{height: 30, backgroundColor: "white"}}/>
         </Collapsible>
 
-    </Animatable.View>;
+    </View>;
 };
 
 

@@ -159,26 +159,30 @@ export default function QrCodeScan(props: any) {
                         <ActivityIndicator style={styles.icon2} color={'white'}/>
                     </View>
                 </View>}
-                <Response verified={isVerified}
-                          verifiedInfo={verifiedInfo}
-                          onPress={() => setIsVerified(false)}
-                          error={isError}
-                          onPress1={() => setIsError(false)}/>
+                    <Response verified={isVerified}
+                              verifiedInfo={verifiedInfo}
+                              onPress={() => setIsVerified(false)}
+                              error={isError}
+                              onPress1={() => {
+                                  setIsError(false)
+                              }}/>
+
+
+            </View>
                 <View style={styles.group6}>
 
                     <View style={styles.group3}>
                         <View style={styles.rect2}>
                             <TouchableOpacity onPress={decode} >
-                               <View style={{paddingHorizontal: 25, paddingVertical: 10,}}>
-                                   <UploadIcon style={styles.icon}/>
-                                   <Text style={styles.generateQrCode1}>Upload QR Code</Text>
-                               </View>
+                                <View style={{paddingHorizontal: 25, paddingVertical: 10,}}>
+                                    <UploadIcon style={styles.icon}/>
+                                    <Text style={styles.generateQrCode1}>Upload QR Code</Text>
+                                </View>
 
                             </TouchableOpacity>
                         </View>
                     </View>
                 </View>
-            </View>
             <AwesomeAlert
                 actionContainerStyle={{ flexDirection: 'row-reverse' }}
                 show={showAlert}

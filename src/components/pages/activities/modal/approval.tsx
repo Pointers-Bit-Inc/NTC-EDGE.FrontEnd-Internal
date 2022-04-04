@@ -34,7 +34,8 @@ const Approval = (props: any) => {
 
     const { springValue , _springHide , _springCollapse } = useAlert(props.visible , () => {
         setOnFocus(false);
-        return props.onDismissed(APPROVED);
+        props.onDismissed(APPROVED);
+
     });
 
 
@@ -115,11 +116,13 @@ const Approval = (props: any) => {
 
     const onCancelPress = (event , bool?: any) => {
         setAlertLoading(false);
+        console.log(event)
         setShowAlert(false);
         if (approvalIcon) {
-            props.onDismissed(event);
+
             setApprovalIcon(false);
             setShowClose(false)
+            props.onExit();
         } else {
             props.onModalDismissed();
             setApprovalIcon(false);
@@ -161,7 +164,7 @@ const Approval = (props: any) => {
                 type={ approvalIcon ? APPROVED : "" }
                 onDismissed={ () => onCancelPress(APPROVED , true) }
                 onLoading={ alertLoading }
-                onCancelPressed={ onCancelPress }
+                onCancelPressed={  () => onCancelPress('exit' , true) }
                 onConfirmPressed={ () => {
 
                     setAlertLoading(true);
@@ -174,13 +177,18 @@ const Approval = (props: any) => {
                                 setTitle("Application Approved");
                                 setMessage("Application has been approved.");
                                 setShowClose(true)
+                                console.log(4)
                             });
+                            console.log(6)
                             callback(true)
+                            console.log(7)
                         } else if (!response) {
+                            console.log(8)
                             props.onDismissed(APPROVED , () => {
                                 setShowAlert(false);
                                 setApprovalIcon(false);
                                 setShowClose(false)
+                                console.log(5)
                             })
                         } else {
                             props.onModalDismissed();

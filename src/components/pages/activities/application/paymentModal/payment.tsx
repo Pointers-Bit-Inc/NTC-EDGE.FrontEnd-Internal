@@ -67,30 +67,57 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
     }
     private setImage() {
         let _fileName = this.props?.proofOfPayment?.small?.split("/")?.[this.props?.proofOfPayment?.small?.split("/")?.length - 1]
+        
         this.setState({
-            ...this.state ,
-            source : {
-                ...this?.state?.source ,
-                uri : this?.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa"
-            },
+            onLoadStart:true,
+            fileName:_fileName,
+            extension:(
+                /(pdf|docx|doc)$/ig.test(_fileName.substr((
+                    _fileName.lastIndexOf('.')+1)))),
+        });
+        Image.prefetch(this.props?.proofOfPayment?.medium||"https://dummyimage.com/350x350/fff/aaa")
+        .then(()=>{
+            this.setState({onLoadStart:false});
+            Image.getSize(this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
+                this.setState({
+                    ...this.state,
+                    source:{
+                        ...this?.state?.source,
+                        uri:this?.props?.proofOfPayment?.medium||"https://dummyimage.com/350x350/fff/aaa"
+                    },
+                });
+                this.setState({
 
-            fileName : _fileName ,
-            extension: (/(pdf|docx|doc)$/ig.test(_fileName.substr((_fileName.lastIndexOf('.') + 1)))),
+                    _imageSize : {
+                        width : width || 300 ,
+                        height : height || 300
+                    }
+                });
+
+
+
+                this.setState({onLoadStart:false})
+            },error=>{
+                this.setState({
+                    ...this.state,
+                    source:{
+                        ...this?.state?.source,
+                        uri:"https://dummyimage.com/350x350/fff/aaa"
+                    },
+                });
+                this.setState({onLoadStart:true})
+            })
+        },error=>{
+            this.setState({
+                ...this.state,
+                source:{
+                    ...this?.state?.source,
+                    uri:"https://dummyimage.com/350x350/fff/aaa"
+                },
+            });
+            this.setState({onLoadStart:true})
         });
 
-        Image.getSize(this.props?.proofOfPayment?.medium || "https://dummyimage.com/350x350/fff/aaa" , (width , height) => {
-            this.setState({
-
-                _imageSize : {
-                    width : width || 300 ,
-                    height : height || 300
-                }
-            });
-
-            this.setState({onLoadStart: false})
-        }, error => {
-            this.setState({onLoadStart: true})
-        })
     }
     componentDidMount() {
         this.setImage()

@@ -5,11 +5,11 @@ import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
 import {Hoverable} from 'react-native-web-hooks';
 import {
-    formatDate ,
-    getRole ,
-    PaymentStatusText ,
-    statusColor ,
-    statusIcon ,
+    formatDate,getActivityStatus,
+    getRole,
+    PaymentStatusText,
+    statusColor,
+    statusIcon,
     StatusText
 } from "@pages/activities/script";
 
@@ -41,7 +41,7 @@ import PinToTopIcon from "@assets/svg/pintotop";
 import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
-
+import * as Animatable from 'react-native-animatable'
 const styles = StyleSheet.create({
 
     containerBlur : {
@@ -209,11 +209,17 @@ const RenderPinned = ({ assignedPersonnel , config }: any) => {
                 styles.application
             ] }
         >
-            { loading ? <></> : <EndorseIcon
+            <EndorseIcon
                 width={ fontValue(20) }
                 height={ fontValue(20) }
-            /> }
-            { loading ? <ActivityIndicator/>  :
+            /> 
+            { !personnel?.firstName ? <View style={{marginLeft: 3, marginRight: 5, width: "50%",  borderRadius: 14, backgroundColor: "#EAEDFF"}}><Text
+
+                                        size={ fontValue(12) }
+                                        numberOfLines={ 1 }
+                                    >
+                                        {` ` }
+                                    </Text></View>  :
               <Text
                   style={ { "marginLeft" : 3 , "marginRight" : 5 } }
                   color="#606A80"
@@ -235,22 +241,14 @@ const closeRow = (index) => {
     prevOpenedRow = row[index];
 };
 
+
+
 export function ActivityItem(props: any) {
 
     
     const status = [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status);
     const userActivity = props?.activity?.applicant?.user || props?.activity?.applicant;
-    const getStatus = getRole(props.currentUser , [EVALUATOR , DIRECTOR]) && status == FORAPPROVAL && (
-        !!props?.activity?.approvalHistory?.[0]?.userId || !!props?.activity?.approvalHistory?.userId) && (
-        props?.activity?.approvalHistory?.[0]?.status !== FOREVALUATION && props?.activity?.approvalHistory?.status !== FOREVALUATION) && (
-        props?.activity?.approvalHistory?.[0]?.status !== PENDING && props?.activity?.approvalHistory?.status !== PENDING) && (
-        props?.activity?.approvalHistory?.[0]?.status !== FORVERIFICATION && props?.activity?.approvalHistory?.status !== FORVERIFICATION) && (
-        props?.activity?.approvalHistory?.[0]?.status !== FORAPPROVAL && props?.activity?.approvalHistory?.status !== FORAPPROVAL || (
-            props?.activity?.assignedPersonnel?._id !== props.currentUser?._id)) ? APPROVED : getRole(props.currentUser , [ACCOUNTANT]) && !!props?.activity?.paymentMethod && (
-        !!props?.activity?.paymentHistory?.[0]?.status || !!props?.activity?.paymentHistory?.status) ? StatusText(props?.activity?.paymentHistory?.[0]?.status || props?.activity?.paymentHistory?.status) : getRole(props.currentUser , [ACCOUNTANT]) && (
-        props?.activity?.approvalHistory?.[0]?.status == FOREVALUATION || props?.activity?.approvalHistory?.status == FOREVALUATION) && (
-        props?.activity?.approvalHistory?.[1]?.status == FORAPPROVAL) ? DECLINED : getRole(props.currentUser , [CASHIER]) && !(props?.activity?.assignedPersonnel) && (props?.activity?.approvalHistory[0]?.status != DECLINED && props?.activity?.approvalHistory?.status != DECLINED )  || (
-        props?.activity?.paymentHistory?.[0]?.status == PENDING && props?.activity?.paymentHistory?.status == PENDING) ? FORVERIFICATION : getRole(props.currentUser , [CASHIER])&& !props?.activity?.paymentStatus ? PaymentStatusText(DECLINED) : status;
+    const getStatus = getActivityStatus(props,status);
 
     useEffect(() => {
         let unsubscribe = true;
@@ -304,7 +302,7 @@ export function ActivityItem(props: any) {
                                         borderRadius : 4
                                     } }/>
                                 </View>
-                                <View style={ [styles.containerBlur , { borderWidth : props.selected ? 4 : 0 , }] }>
+                                <Animatable.View   animation={'fadeIn'} style={ [styles.containerBlur , { borderWidth : props.selected ? 4 : 0 , }] }>
                                     <TouchableOpacity onPress={ () => {
                                         props.onPressUser()
                                     } }>
@@ -401,7 +399,7 @@ export function ActivityItem(props: any) {
                                         </View>
                                         }
                                     </TouchableOpacity>
-                                </View>
+                                </Animatable.View>
                                 { dimensions.width >= 768 &&
                                 <View style={ { paddingHorizontal : selectedMoreCircle ? 14 : 18 , } }>
                                     <Menu onClose={ () => {
@@ -441,19 +439,22 @@ export function ActivityItem(props: any) {
                                             <MenuOption value={ "Pin to top" }>
                                                 <View style={ styles.menuItem }>
                                                     <PinToTopIcon width={ 16.67 } height={ 16.67 }/>
-                                                    <Text style={ styles.menuItemText }>Pin to top</Text> </View>
+                                                    <Text style={ styles.menuItemText }>Pin to top</Text>
+                                                </View>
                                             </MenuOption>
                                             <MenuOption value={ "Archive" }>
                                                 <View style={ styles.menuItem }>
                                                     <BellMuteIcon width={ 16.67 } height={ 16.67 }/>
-                                                    <Text style={ styles.menuItemText }>Mute</Text> </View>
+                                                    <Text style={ styles.menuItemText }>Mute</Text>
+                                                </View>
                                             </MenuOption>
                                             <MenuOption
                                                 style={ { borderBottomWidth : 1 , borderBottomColor : "#E5E5E5" } }
                                                 value={ "Archive" }>
                                                 <View style={ styles.menuItem }>
                                                     <ArchiveIcon width={ 16.67 } height={ 16.67 }/>
-                                                    <Text style={ styles.menuItemText }>Archive</Text> </View>
+                                                    <Text style={ styles.menuItemText }>Archive</Text>
+                                                </View>
                                             </MenuOption>
 
                                             <MenuOption value={ "Archive" }>

@@ -29,8 +29,9 @@ const ModalTab = props => {
             name : 'Basic Info' ,
             active : true ,
             isShow : [CHECKER , ACCOUNTANT , CASHIER , DIRECTOR , EVALUATOR] ,
-            label : <View style={ [styles.tabItem , { gap : 5 }] }><BasicInfoWebIcon/> <Text
-                style={ styles.tabTextItem }>Basic Info</Text></View>
+            label : <View style={ [styles.tabItem , { gap : 5 }] }><BasicInfoWebIcon/>
+                <Text style={ styles.tabTextItem }>Basic Info</Text>
+            </View>
         } ,
         {
             id : 2 ,
@@ -91,7 +92,7 @@ const ModalTab = props => {
             const _tabs = [...tabs]
 
             _tabs[0].label =
-                <View style={ [styles.tabItem , { gap : 5 }] }><BasicInfoWebIcon/> <Text style={ [styles.tabTextItem] }>Basic
+                <View style={ [styles.tabItem , { gap : 5 }] }><BasicInfoWebIcon/><Text style={ [styles.tabTextItem] }>Basic
                     Info</Text></View>
             _tabs[1].label = <View style={ [styles.tabItem , { gap : 5 }] }><ApplicationDetailWebIcon/><Text
                 style={ [styles.tabTextItem] }>Application Details</Text></View>
@@ -101,7 +102,7 @@ const ModalTab = props => {
                 style={ [styles.tabTextItem] }> SOA & Payment</Text></View>
             if (params.activeTab == 0) {
                 _tabs.find(a => a.id == 1).label =
-                    <View style={ [styles.tabItem , { gap : 5 }] }><BasicInfoWebIcon fill={ "#2863D6" }/> <Text
+                    <View style={ [styles.tabItem , { gap : 5 }] }><BasicInfoWebIcon fill={ "#2863D6" }/><Text
                         style={ [styles.tabTextItem , styles.tabSelected] }>Basic Info</Text></View>
             }
             if (params.activeTab == 1) {
