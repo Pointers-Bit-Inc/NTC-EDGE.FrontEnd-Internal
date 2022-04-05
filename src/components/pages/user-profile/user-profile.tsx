@@ -478,10 +478,9 @@ const UserProfileScreen = ({ navigation }: any) => {
                 } }
             />
 
-            <ScrollView   keyboardShouldPersistTaps="always" style={ styles.scrollview } showsVerticalScrollIndicator={ false }>
+            <ScrollView keyboardShouldPersistTaps="handled" style={ styles.scrollview } showsVerticalScrollIndicator={ false }>
                 <View style={ [styles.row , { marginBottom : 20 }] }>
                     <View>
-
                         <ProfileImage
                             size={ width / 4 }
                             textSize={ 25 }
@@ -502,6 +501,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                     formElements={ userProfileForm }
                     onChange={ onUpdateForm }
                     onSubmit={ onPress }
+                    
                     // editable={editable}
                 />
                 <TouchableOpacity onPress={ () => navigation.navigate('ResetPassword') }>
