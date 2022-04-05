@@ -22,7 +22,9 @@ export default {
       "buildNumber": process.env.APP_VERSION ?? "1.0.4",
       "infoPlist": {
         "NSCameraUsageDescription": "This will be used for video call and live streaming.",
-        "NSMicrophoneUsageDescription": "This will be used for video call and live streaming."
+        "NSMicrophoneUsageDescription": "This will be used for video call and live streaming.",
+        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos",
+        "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to access your location"
       }
     },
     "androidStatusBar": {
