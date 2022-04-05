@@ -25,7 +25,6 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { useDispatch } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import AwesomeAlert from 'react-native-awesome-alerts';
-import IParticipants from 'src/interfaces/IParticipants';
 
 const styles = StyleSheet.create({
   container: {
@@ -191,11 +190,18 @@ const tagStyles = StyleSheet.create({
   },
 });
 
-const AddParticipants = ({ members = [], onClose = () => {}, onSubmit = () => {} }:any) => {
+const MessageMember = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   const {
     getParticipantList,
+    createChannel,
+    getChannelByParticipants,
   } = useSignalr();
+  const dispatch = useDispatch();
+  const inputRef:any = useRef(null);
+  const inputTagRef:any = useRef(null);
+  const groupNameRef:any = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [nextLoading, setNextLoading] = useState(false);
   const [participants, setParticipants]:any = useState([]);
   const [sendRequest, setSendRequest] = useState(0);
   const [contacts, setContacts]:any = useState([]);
@@ -205,6 +211,9 @@ const AddParticipants = ({ members = [], onClose = () => {}, onSubmit = () => {}
   const [fetching, setFetching] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [groupName, setGroupName] = useState('');
+  const [isGroup, setIsGroup] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   
   const onRequestData = () => setSendRequest(request => request + 1);
@@ -217,13 +226,7 @@ const AddParticipants = ({ members = [], onClose = () => {}, onSubmit = () => {}
 
     getParticipantList(payload, (err:any, res:any) => {
       if (res) {
-        let resultList = res.list;
-
-        if (resultList && participants) {
-          resultList = lodash.reject(resultList, (r:IParticipants) => lodash.find(members, (p:IParticipants) => p._id === r._id));
-        }
-
-        setContacts([...contacts, ...resultList]);
+        setContacts([...contacts, ...res.list]);
         setPageIndex(current => current + 1);
         setHasMore(res.hasMore);
       }
@@ -243,38 +246,85 @@ const AddParticipants = ({ members = [], onClose = () => {}, onSubmit = () => {}
     setHasError(false);
     const payload = searchValue ? { pageIndex: 1, keyword: searchValue } : { pageIndex: 1 };
 
-    getParticipantList(payload, (err:any, res:any) => {
-      if (!unmount) {
-        if (res) {
-          let resultList = res.list;
+    if (!lodash.size(participants) || searchValue || isGroup || isFocused) {
+      InteractionManager.runAfterInteractions(() => {
+        getParticipantList(payload, (err:any, res:any) => {
+          if (!unmount) {
+            if (res) {
+              let resultList = res.list;
 
-          if (resultList && participants) {
-            resultList = lodash.reject(resultList, (r:IParticipants) => lodash.find(participants, (p:IParticipants) => p._id === r._id));
-            resultList = lodash.reject(resultList, (r:IParticipants) => lodash.find(members, (p:IParticipants) => p._id === r._id));
+              if (resultList && participants) {
+                resultList = lodash.reject(resultList, r => lodash.find(participants, p => p._id === r._id));
+              }
+
+              setContacts(resultList);
+              setPageIndex(current => current + 1);
+              setHasMore(res.hasMore);
+            }
+            if (err) {
+              console.log('ERR', err);
+            }
+            setLoading(false);
           }
+        });
+      });
+    } else {
+      setLoading(false);
+    }
 
-          setContacts(resultList);
-          setPageIndex(current => current + 1);
-          setHasMore(res.hasMore);
+    return () => {
+      unmount = true;
+    }
+  }, [sendRequest, searchValue, isGroup, participants, isFocused]);
+
+  // useEffect(() => {
+  //   let unmount = false;
+  //   dispatch(setSelectedChannel({}));
+  //   if (participants) {
+  //     getChannelByParticipants({ participants }, (err:any, res:any) => {
+  //       if (!unmount) {
+  //         if (res) {
+  //           dispatch(setSelectedChannel(res));
+  //         }
+  //         if (err) {
+  //           console.log('ERROR', err);
+  //         }
+  //       }
+  //     });
+  //   }
+
+  //   return () => {
+  //     unmount = true;
+  //   }
+  // }, [participants]);
+
+  const onNext = (message:string) => {
+    if (participants) {
+      setNextLoading(true);
+      createChannel({ participants, name: groupName, message }, (err:any, res:any) => {
+        setNextLoading(false);
+        if (res) {
+          onSubmit(res);
         }
         if (err) {
-          console.log('ERR', err);
+          console.log('ERROR', err);
         }
-        setLoading(false);
-      }
-    });
-  
-    return () => {
-      setLoading(false);
-      unmount = true;
-    };
-  }, [sendRequest, searchValue]);
+      });
+    }
+  }
 
   const onBeforeClose = () => {
-    if (lodash.size(participants) > 1) {
-      setShowAlert(true);
+    if (isGroup) {
+      setGroupName('');
+      setIsGroup(false);
+      setParticipants([]);
+      inputRef.current?.focus();
     } else {
-      onClose();
+      if (lodash.size(participants) > 1) {
+        setShowAlert(true);
+      } else {
+        onClose();
+      }
     }
   }
 
@@ -284,29 +334,48 @@ const AddParticipants = ({ members = [], onClose = () => {}, onSubmit = () => {}
   }
 
   const onSelectParticipants = (selectedId:string) => {
-    const selected = lodash.find(contacts, (c:IParticipants) => c._id === selectedId);
-    setParticipants((p:any) => ([...p, selected]));
-    setSearchValue('');
+    const selected = lodash.find(contacts, c => c._id === selectedId);
+    setParticipants(p => ([...p, selected]));
+    if (!isGroup) {
+      inputTagRef?.current?.addTag(selected);
+      inputTagRef?.current?.blur();
+      setSearchValue('');
+    }
   }
 
   const onRemoveParticipants = (selectedId:string) => {
-    const result = lodash.reject(participants, (c:IParticipants) => c._id === selectedId);
+    const result = lodash.reject(participants, c => c._id === selectedId);
     setParticipants(result);
   }
 
   const onTapCheck = (selectedId:string) => {
     const isSelected = checkIfSelected(selectedId);
     if (isSelected) {
-      onRemoveParticipants(selectedId);
+      if (isGroup) onRemoveParticipants(selectedId);
     } else {
       onSelectParticipants(selectedId);
     }
   }
 
   const checkIfSelected = (contactId:string) => {
-    const selected = lodash.find(participants, (c:IParticipants) => c._id === contactId);
+    const selected = lodash.find(participants, c => c._id === contactId);
     return !!selected;
   }
+
+  const onChangeTags = (tags:any) => {
+    setParticipants(tags);
+  };
+
+  const renderTag = ({ tag, index, onPress, deleteTagOnPress, readonly }:any) => {
+    return (
+      <TouchableOpacity
+        key={`${tag?._id}-${index}`}
+        onPress={onPress}
+        style={tagStyles.tag}>
+        <Text style={tagStyles.textTag}>{tag?.firstName},</Text>
+      </TouchableOpacity>
+    );
+  };
 
   const headerComponent = () => (
     <>
@@ -374,63 +443,87 @@ const AddParticipants = ({ members = [], onClose = () => {}, onSubmit = () => {}
   }
 
   const renderContactItem = ({ item }:any) => {
+    if (isGroup) {
+      return (
+        <ContactItem
+          image={item?.profilePicture?.thumb}
+          data={item}
+          name={item.name}
+          onPress={() => onTapCheck(item._id)}
+          rightIcon={
+            <TouchableOpacity
+              onPress={() => onTapCheck(item._id)}
+            >
+              {
+                checkIfSelected(item._id) ? (
+                  <View style={styles.selected}>
+                    <CheckIcon
+                      type={'check1'}
+                      size={RFValue(16)}
+                      color="white"
+                    />
+                  </View>
+                ) : (
+                  <View style={styles.notSelected} />
+                )
+              }
+            </TouchableOpacity>
+          }
+          contact={item.email || ''}
+        />
+      );
+    }
     return (
       <ContactItem
         image={item?.profilePicture?.thumb}
         data={item}
         name={item.name}
+        isOnline={item.isOnline}
         onPress={() => onTapCheck(item._id)}
-        rightIcon={
-          <TouchableOpacity
-            onPress={() => onTapCheck(item._id)}
-          >
-            {
-              checkIfSelected(item._id) ? (
-                <View style={styles.selected}>
-                  <CheckIcon
-                    type={'check1'}
-                    size={RFValue(16)}
-                    color="white"
-                  />
-                </View>
-              ) : (
-                <View style={styles.notSelected} />
-              )
-            }
-          </TouchableOpacity>
-        }
         contact={item.email || ''}
       />
     )
   }
 
   const renderList = () => {
-    return (
-      <FlatList
-        data={contacts}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            tintColor={primaryColor} // ios
-            progressBackgroundColor={primaryColor} // android
-            colors={['white']} // android
-            refreshing={loading}
-            onRefresh={onRequestData}
-          />
-        }
-        renderItem={renderContactItem}
-        keyExtractor={(item) => item._id}
-        ItemSeparatorComponent={
-          () => <View style={styles.separator} />
-        }
-        ListHeaderComponent={headerComponent}
-        ListEmptyComponent={emptyComponent}
-        ListFooterComponent={ListFooterComponent}
-        onEndReached={() => fetchMoreParticipants()}
-        onEndReachedThreshold={0.5}
-        keyboardShouldPersistTaps={'handled'}
-      />
-    )
+    if (isGroup || !lodash.size(participants) || searchValue || isFocused) {
+      return (
+        <FlatList
+          data={contacts}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              tintColor={primaryColor} // ios
+              progressBackgroundColor={primaryColor} // android
+              colors={['white']} // android
+              refreshing={loading}
+              onRefresh={onRequestData}
+            />
+          }
+          renderItem={renderContactItem}
+          keyExtractor={(item) => item._id}
+          ItemSeparatorComponent={
+            () => <View style={styles.separator} />
+          }
+          ListHeaderComponent={isGroup ? headerComponent : undefined}
+          ListEmptyComponent={emptyComponent}
+          ListFooterComponent={ListFooterComponent}
+          onEndReached={() => fetchMoreParticipants()}
+          onEndReachedThreshold={0.5}
+          keyboardShouldPersistTaps={'handled'}
+        />
+      );
+    } else {
+      return (<ChatView onNext={(message:string) => onNext(message)} participants={participants} />);
+    }
+  }
+
+  const onGroup = () => {
+    setIsGroup(true);
+    setIsFocused(false);
+    setSearchValue('');
+    setSearchText('');
+    setContacts([]);
   }
 
   return (
@@ -452,41 +545,130 @@ const AddParticipants = ({ members = [], onClose = () => {}, onSubmit = () => {}
               size={16}
               style={{ fontFamily: Bold }}
             >
-              Select Contacts
+              New message
             </Text>
           </View>
           {
-            lodash.size(participants) > 0 && (
+            lodash.size(participants) > 1 && isGroup && (
               <View style={{ position: 'absolute', right: 0, zIndex: 999 }}>
                 <TouchableOpacity
-                  disabled={!lodash.size(participants)}
-                  onPress={() => onSubmit(participants)}
+                  disabled={!lodash.size(participants) || nextLoading}
+                  onPress={() => onNext("")}
                 >
-                  <Text
-                    color={text.info}
-                    size={14}
-                    style={{ fontFamily: Regular500 }}
-                  >
-                    Done
-                  </Text>
+                  {
+                    nextLoading ? (
+                      <ActivityIndicator color={text.default} size={'small'} />
+                    ) : (
+                      <Text
+                        color={text.default}
+                        size={14}
+                        style={{ fontFamily: Regular500 }}
+                      >
+                        Create
+                      </Text>
+                    )
+                  }
                 </TouchableOpacity>
               </View>
             )
           }
         </View>
-        <View style={{ paddingHorizontal: 15 }}>
-          <SearchField
-            inputStyle={[styles.input]}
-            iconStyle={styles.icon}
-            placeholder="Search"
-            outlineStyle={[styles.outline]}
-            placeholderTextColor="#6E7191"
-            value={searchText}
-            onChangeText={setSearchText}
-            onChangeTextDebounce={setSearchValue}
-            onSubmitEditing={(event:any) => setSearchText(event.nativeEvent.text)}
-          />
-        </View>
+        {
+          isGroup ? (
+            <View style={{ paddingHorizontal: 15 }}>
+              <InputField
+                ref={groupNameRef}
+                placeholder={'Group name'}
+                containerStyle={styles.groupName}
+                placeholderTextColor={'#C4C4C4'}
+                inputStyle={[styles.inputText, { backgroundColor: 'white' }]}
+                outlineStyle={[styles.outlineText, { backgroundColor: 'white' }]}
+                value={groupName}
+                onChangeText={setGroupName}
+                returnKeyType={'done'}
+              />
+              <SearchField
+                inputStyle={[styles.input]}
+                iconStyle={styles.icon}
+                placeholder="Search"
+                outlineStyle={[styles.outline]}
+                placeholderTextColor="#6E7191"
+                value={searchText}
+                onChangeText={setSearchText}
+                onChangeTextDebounce={setSearchValue}
+                onSubmitEditing={(event:any) => setSearchText(event.nativeEvent.text)}
+              />
+            </View>
+          ) : (
+            <View style={{ marginBottom: 5, marginTop: 20 }}>
+              <View style={{ flexDirection: 'row', alignContent: 'center', paddingHorizontal: 15, paddingTop: 10, marginBottom: 5 }}>
+                <Text
+                  color={text.default}
+                  size={14}
+                  style={{ fontFamily: Regular }}
+                >
+                  To:
+                </Text>
+                <View style={{ flex: 1, paddingLeft: 5, marginTop: Platform.OS === 'ios' ? 0 : -2 }}>
+                  <InputTags
+                    ref={inputTagRef}
+                    containerStyle={tagStyles.container}
+                    initialTags={participants}
+                    initialText={searchValue}
+                    inputStyle={tagStyles.input}
+                    onChangeTags={onChangeTags}
+                    renderTag={renderTag}
+                    onChangeTextDebounce={setSearchValue}
+                    onSubmitEditing={(event:any) => setSearchText(event.nativeEvent.text)}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                  />
+                </View>
+                {
+                  !searchValue && (
+                    <TouchableOpacity onPress={() => inputTagRef?.current?.focus()}>
+                      <View style={styles.plus}>
+                        <PlusIcon
+                          color="white"
+                          size={RFValue(12)}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  )
+                }
+              </View>
+              {
+                !lodash.size(participants) && (
+                  <View style={styles.newGroupContainer}>
+                    <View style={{ alignContent: 'center', flexDirection: 'row' }}>
+                      <NewGroupIcon
+                        width={RFValue(22)}
+                        height={RFValue(22)}
+                        color={header.default}
+                      />
+                      <Text
+                        color={header.default}
+                        size={14}
+                        style={{ fontFamily: Regular500, marginLeft: 5 }}
+                      >
+                        Create new group
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={onGroup}
+                    >
+                      <ArrowRightIcon
+                        type='chevron-right'
+                        color={'#606A80'}
+                        size={RFValue(22)}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )
+              }
+            </View>
+          )
+        }
       </View>
       {renderList()}
       <AwesomeAlert
@@ -516,4 +698,4 @@ const AddParticipants = ({ members = [], onClose = () => {}, onSubmit = () => {}
   )
 }
 
-export default AddParticipants
+export default MessageMember

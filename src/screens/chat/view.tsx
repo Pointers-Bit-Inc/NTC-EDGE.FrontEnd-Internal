@@ -151,7 +151,7 @@ const ChatView = ({ navigation, route }:any) => {
   const inputRef:any = useRef(null);
   const layout = useWindowDimensions();
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { _id, otherParticipants, participants } = useSelector(
+  const { _id, name, hasRoomName, isGroup, otherParticipants, participants } = useSelector(
     (state:RootStateOrAny) => {
       const { selectedChannel } = state.channel;
       selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
@@ -265,6 +265,15 @@ const ChatView = ({ navigation, route }:any) => {
     setShowAttachmentOption(false);
   }
 
+  const renderChannelName = () => {
+    return getChannelName({
+      otherParticipants,
+      hasRoomName,
+      name,
+      isGroup
+    });
+  }
+
   useEffect(() => {
     if (lodash.size(selectedFile)) {
       dispatch(addPendingMessage({
@@ -329,7 +338,7 @@ const ChatView = ({ navigation, route }:any) => {
               size={16}
               numberOfLines={1}
             >
-              {getChannelName(route.params)}
+              {renderChannelName()}
             </Text>
           </TouchableOpacity>
           {

@@ -17,9 +17,11 @@ import { outline, text } from '@styles/color'
 import AwesomeAlert from 'react-native-awesome-alerts'
 import useApi from 'src/services/api'
 import Loading from '@components/atoms/loading'
-import { updateChannel } from 'src/reducers/channel/actions'
+import { removeChannel, updateChannel } from 'src/reducers/channel/actions'
 import AddParticipants from '@components/pages/chat/add-participants'
 import { InputField } from '@components/molecules/form-fields'
+import useSignalr from 'src/hooks/useSignalr'
+import MessageMember from '@components/pages/chat/message'
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -169,9 +171,12 @@ const styles = StyleSheet.create({
 
 const ChatInfo = ({ navigation }) => {
   const dispatch = useDispatch();
+  const {
+    leaveChannel,
+  } = useSignalr();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const api = useApi(user.sessionToken);
-  const { _id, otherParticipants, participants, hasChannelName, channelName, isGroup } = useSelector(
+  const { _id, otherParticipants = [], participants = [], hasRoomName = false, name = '', isGroup = false } = useSelector(
     (state:RootStateOrAny) => {
       const { selectedChannel } = state.channel;
       selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id);
@@ -188,13 +193,15 @@ const ChatInfo = ({ navigation }) => {
     message: '',
     cancel: '',
     confirm: '',
+    type: '',
   });
   const [selectedParticipant, setSelectedParticipant] = useState<any>({});
-  const [groupName, setGroupName] = useState(channelName || '');
+  const [groupName, setGroupName] = useState(name || '');
   const [editName, setEditName] = useState(false);
   const modalRef = useRef<BottomModalRef>(null);
   const participantModal = useRef<BottomModalRef>(null);
   const optionModalRef = useRef<BottomModalRef>(null);
+  const newMessageModalRef = useRef<BottomModalRef>(null);
   const groupNameRef:any = useRef(null);
 
   useEffect(() => {
@@ -223,6 +230,26 @@ const ChatInfo = ({ navigation }) => {
       setLoading(false);
       Alert.alert('Alert', e?.message || 'Something went wrong.')
     });
+  }
+
+  const alertConfirm = () => {
+    if (alertData.type === 'remove') removeMember();
+    else if (alertData.type === 'delete') leaveChat();
+  }
+
+  const leaveChat = () => {
+    setShowAlert(false);
+    setLoading(true);
+    leaveChannel(_id, (err, res) => {
+      setLoading(false);
+      if (res) {
+        dispatch(removeChannel(res));
+        navigation.navigate('Chat');
+      }
+      if (err) {
+        Alert.alert('Alert', err?.message || 'Something went wrong.')
+      }
+    })
   }
 
   const removeMember = () => {
@@ -259,6 +286,28 @@ const ChatInfo = ({ navigation }) => {
     });
   }
 
+  const editRoomName = () => {
+    if (!groupName) {
+      setEditName(n => !n);
+      return;
+    }
+
+    setShowAlert(false);
+    setLoading(true);
+    api.post(`/rooms/${_id}/edit-name?roomname=${groupName}`)
+    .then((res) => {
+      setLoading(false);
+      setEditName(n => !n);
+      if(res.data) {
+        dispatch(updateChannel(res.data));
+      }
+    })
+    .catch(e => {
+      setLoading(false);
+      Alert.alert('Alert', e?.message || 'Something went wrong.')
+    });
+  }
+
   const onBack = () => navigation.goBack();
 
   const onInitiateCall = (isVideoEnable = false) => {
@@ -284,7 +333,12 @@ const ChatInfo = ({ navigation }) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => {
+          optionModalRef.current?.close();
+          setTimeout(() => {
+            newMessageModalRef.current?.open()
+          }, 300);
+        }}>
           <View style={[styles.option]}>
             <Text
               style={{ marginLeft: 15 }}
@@ -350,15 +404,27 @@ const ChatInfo = ({ navigation }) => {
       message: `Remove ${selectedParticipant.firstName} ${selectedParticipant.lastName} from ${renderChannelName()}?`,
       cancel: 'Cancel',
       confirm: 'Yes',
+      type: 'remove',
     });
     setTimeout(() => setShowAlert(true), 500);
+  }
+
+  const onDeleteChat = () => {
+    setAlertData({
+      title: 'Delete Chat',
+      message: 'Are you sure you want to permanently delete this conversation?',
+      cancel: 'Cancel',
+      confirm: 'Yes',
+      type: 'delete',
+    });
+    setShowAlert(true);
   }
 
   const renderChannelName = () => {
     return getChannelName({
       otherParticipants,
-      hasChannelName,
-      channelName,
+      hasRoomName,
+      name,
       isGroup
     });
   }
@@ -387,7 +453,9 @@ const ChatInfo = ({ navigation }) => {
             </View>
           ) : null
         }
-        onLongPress={() => showOption(item)}
+        onPress={() => {
+          if (isGroup && item._id != user._id) showOption(item);
+        }}
       />
     ))
   }
@@ -409,7 +477,7 @@ const ChatInfo = ({ navigation }) => {
             editName ? (
               <InputField
                 ref={groupNameRef}
-                placeholder={'Group name'}
+                placeholder={isGroup ? 'Group name' : 'Chat Name'}
                 containerStyle={styles.groupName}
                 placeholderTextColor={'#C4C4C4'}
                 inputStyle={[styles.inputText, { backgroundColor: 'white' }]}
@@ -441,11 +509,25 @@ const ChatInfo = ({ navigation }) => {
             )
           }
         </View>
-        <TouchableOpacity onPress={() => setEditName(n => !n)}>
-          <View style={{ paddingHorizontal: 5, paddingTop: 5 }}>
-            <NewPenIcon color={'#2863D6'} />
-          </View>
-        </TouchableOpacity>
+        {
+          editName ? (
+            <TouchableOpacity onPress={editRoomName}>
+              <Text
+                color={text.info}
+                size={14}
+                style={{ fontFamily: Regular500 }}
+              >
+                Save
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={() => setEditName(n => !n)}>
+              <View style={{ paddingHorizontal: 5, paddingTop: 5 }}>
+                <NewPenIcon color={'#2863D6'} />
+              </View>
+            </TouchableOpacity>
+          )
+        }
       </View>
       <ScrollView>
         <View style={styles.buttonContainer}>
@@ -538,16 +620,20 @@ const ChatInfo = ({ navigation }) => {
               </Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={{ marginVertical: 10 }}>
-              <Text
-                size={14}
-                color={'#CF0327'}
-              >
-                {isAdmin() ? 'Leave and Delete' : 'Leave Chat'}
-              </Text>
-            </View>
-          </TouchableOpacity>
+          {
+            isGroup && (
+              <TouchableOpacity onPress={onDeleteChat}>
+                <View style={{ marginVertical: 10 }}>
+                  <Text
+                    size={14}
+                    color={'#CF0327'}
+                  >
+                    Leave and Delete
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )
+          }
         </View>
       </ScrollView>
       <BottomModal
@@ -610,6 +696,24 @@ const ChatInfo = ({ navigation }) => {
           />
         </View>
       </BottomModal>
+      <BottomModal
+        ref={newMessageModalRef}
+        onModalHide={() => newMessageModalRef.current?.close()}
+        avoidKeyboard={false}
+        header={
+          <View style={styles.bar} />
+        }
+        containerStyle={{ maxHeight: null }}
+        onBackdropPress={() => {}}
+      >
+        <View style={{ height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
+          <MessageMember
+            member={selectedParticipant}
+            onClose={() => newMessageModalRef.current?.close()}
+            onSubmit={(res:any) => {}}
+          />
+        </View>
+      </BottomModal>
       <AwesomeAlert
         show={showAlert}
         showProgress={false}
@@ -631,7 +735,7 @@ const ChatInfo = ({ navigation }) => {
         cancelText={alertData.cancel}
         confirmText={alertData.confirm}
         onCancelPressed={() => setShowAlert(false)}
-        onConfirmPressed={removeMember}
+        onConfirmPressed={alertConfirm}
       />
       {
         loading && (

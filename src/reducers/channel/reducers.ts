@@ -68,7 +68,10 @@ export default function basket(state = initialState, action:any) {
 
         if (state.selectedChannel._id === action.payload._id) {
           newState = newState.setIn(['selectedChannel', 'participants'], action.payload.participants)
-          .setIn(['selectedChannel', 'participantsId'], action.payload.participantsId);
+          .setIn(['selectedChannel', 'participantsId'], action.payload.participantsId)
+          .setIn(['selectedChannel', 'name'], action.payload.name)
+          .setIn(['selectedChannel', 'hasRoomName'], action.payload.hasRoomName)
+          .setIn(['selectedChannel', 'isGroup'], action.payload.isGroup);
         }
       }
 
