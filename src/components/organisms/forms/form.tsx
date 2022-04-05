@@ -13,6 +13,7 @@ const FormField = ({
                        formElements,
                        onChange,
                        onSubmit,
+                       handleEvent,
                        ...otherProps
                    }: any) => {
     // const inputColor = color ? color : "#486c86";
@@ -53,12 +54,16 @@ const FormField = ({
                                    onChangeText={(text: string) => {
                                        onChange(id, text, 'input', element?.stateName)
                                    }}
+                                   onFocus={()=>{
+                                       handleEvent ? handleEvent(layoutRef.find((layout) => layout["id"] == id)?.layout) : null
+                                   }
+                                   }
                                    returnKeyType={mapRef?.[mapRef.length-1]?.id == mapRef?.[mapRef.findIndex(e => e?.id==id)]?.id ? "done" : "next"}
                                    ref={mapRef?.[mapRef.findIndex(e => e?.id==id)].ref}
                                    onSubmitEditing={(event: any) => {
-
                                        mapRef?.[mapRef.findIndex(e => e?.id==id) + 1]?.ref?.current?.focus()
                                        onChange(id, event.nativeEvent.text, 'input', element?.stateName)
+
                                    }}/>;
             case "select":
                 return <><InputField key={id}  {...styleProps} {...otherProps}
@@ -148,21 +153,25 @@ const FormField = ({
     }
 
     const mapRef: any = []
-
+     const [layoutRef, setLayoutRef] = useState([])
     for (let index = 0; index < formElements.length; index++) {
         if(formElements?.[index]?.type === "input" ) {
             mapRef.push({id: formElements?.[index]?.id, ref: useRef()})
         }
     }
-
     return (
         <>
 
             {formElements.map((element: any, key: number) => {
-                
+
                 return element.type != 'submit' && element.type && (
                     <Fragment key={element.id}>
-                        <View  key={element.id}>
+                        <View onLayout={(event) => {
+                            const layout = event.nativeEvent.layout;
+
+                            setLayoutRef([...layoutRef, {layout, id: element.id }])
+
+                        }}  key={element.id}>
                             {renderElements(
                                 element.id,
                                 element,

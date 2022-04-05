@@ -465,7 +465,7 @@ const UserProfileScreen = ({ navigation }: any) => {
         };
     } , [routeIsFocused]);
 
-
+     const scrollView = useRef()
     return (
         
         <View style={ styles.container }>
@@ -478,7 +478,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                 } }
             />
 
-            <ScrollView keyboardShouldPersistTaps="handled" style={ styles.scrollview } showsVerticalScrollIndicator={ false }>
+            <ScrollView ref={scrollView} keyboardShouldPersistTaps="handled" style={ styles.scrollview } showsVerticalScrollIndicator={ false }>
                 <View style={ [styles.row , { marginBottom : 20 }] }>
                     <View>
                         <ProfileImage
@@ -501,7 +501,14 @@ const UserProfileScreen = ({ navigation }: any) => {
                     formElements={ userProfileForm }
                     onChange={ onUpdateForm }
                     onSubmit={ onPress }
-                    
+                     handleEvent={(event)=>{
+                          console.log(event?.y)
+                         scrollView.current.scrollTo({
+                           x: 0,
+                           y:event?.y,
+                           animated: true,
+                       })
+                     }}
                     // editable={editable}
                 />
                 <TouchableOpacity onPress={ () => navigation.navigate('ResetPassword') }>
