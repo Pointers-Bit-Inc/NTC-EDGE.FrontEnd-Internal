@@ -80,7 +80,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
     }
 
     componentDidMount(){
-      
+
         this.setImage();
     }
 
@@ -105,7 +105,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
             </View>
 
             <View style={{alignItems:isMobile ? "center" : undefined}}>
-                <TouchableOpacity disabled={this.state.onLoadStart || this.state.extension  } ref={image=>{
+                <TouchableOpacity disabled={this.state.onLoadStart||this.state.extension} ref={image=>{
                     this.state.image=image
                 }}
                                   onPress={this._showImage}>
@@ -188,13 +188,17 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                         imageWidth={this.props?.rightLayoutComponent?.width}
                                         imageHeight={height*(
                                             this.state._imageSize?.height/width)}>
-                                 <Image style={{
-                                     width:this.state._imageSize.width,
-                                     height:height*(
-                                         this.state._imageSize.height/width)
-                                 }}
-                                        resizeMode={"contain"}
-                                        source={this?.state?.source}/>
+                                 <View style={{alignItems: "center"}}>
+                                     <Image style={{
+
+                                         width:this.state._imageSize.width/2,
+                                         height:height*(
+                                             this.state._imageSize.height/width)
+                                     }}
+                                            resizeMode={"contain"}
+                                            source={this?.state?.source}/>
+                                 </View>
+
                              </ImageZoom>)
                         }
                     </View>
