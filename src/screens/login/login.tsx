@@ -28,7 +28,7 @@ const Login = ({ navigation }: any) => {
             <StatusBar barStyle="dark-content"/>
 
             <ScrollView
-                keyboardShouldPersistTaps="always"
+                keyboardShouldPersistTaps="handled"
                 contentContainerStyle={ { flexGrow : 1 } }
                 showsVerticalScrollIndicator={ false }
             >

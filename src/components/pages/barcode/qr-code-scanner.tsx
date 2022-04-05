@@ -109,8 +109,8 @@ export default function QrCodeScan(props: any) {
                 if (!err) {
                     if(!r.uri) return setIsLoading(false)
                     const results = await BarCodeScanner.scanFromURLAsync(r?.uri)
-                    const query = `${BASE_URL}/qr/${results[0]?.data}`
-                    axios.get(query, { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
+                    const query = `${BASE_URL}/applications/scan-qr`
+                    axios.post(query, {qrCode: results[0]?.data}, { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
                         setIsLoading(false)
                         setIsVerified(true)
                         setVerifiedInfo(response.data)

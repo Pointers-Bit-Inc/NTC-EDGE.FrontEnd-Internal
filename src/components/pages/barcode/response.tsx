@@ -51,7 +51,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                             </View>
                         </View>
                     </View>
-                    <ScrollView style={{ paddingVertical: 10 }}>
+                    <ScrollView  style={{ paddingVertical: 10 }}>
                         <ProfileImage
                             style={{ borderRadius: 5, alignSelf: 'center' }}
                             size={130}
