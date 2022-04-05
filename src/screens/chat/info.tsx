@@ -202,6 +202,7 @@ const ChatInfo = ({ navigation }) => {
   const participantModal = useRef<BottomModalRef>(null);
   const optionModalRef = useRef<BottomModalRef>(null);
   const newMessageModalRef = useRef<BottomModalRef>(null);
+  const meetingModalRef = useRef<BottomModalRef>(null);
   const groupNameRef:any = useRef(null);
 
   useEffect(() => {
@@ -235,6 +236,7 @@ const ChatInfo = ({ navigation }) => {
   const alertConfirm = () => {
     if (alertData.type === 'remove') removeMember();
     else if (alertData.type === 'delete') leaveChat();
+    else if (alertData.type === 'clear') clearChat();
   }
 
   const leaveChat = () => {
@@ -308,6 +310,39 @@ const ChatInfo = ({ navigation }) => {
     });
   }
 
+  const muteChatRoom = (mute = false) => {
+    setShowAlert(false);
+    setLoading(true);
+    api.post(`/rooms/${_id}/mute-chat?muted=${mute}`)
+    .then((res) => {
+      setLoading(false);
+      setMuteChat(mute)
+      if(res.data) {
+        dispatch(updateChannel(res.data));
+      }
+    })
+    .catch(e => {
+      setLoading(false);
+      Alert.alert('Alert', e?.message || 'Something went wrong.')
+    });
+  }
+
+  const clearChat = () => {
+    setShowAlert(false);
+    setLoading(true);
+    api.post(`/rooms/${_id}/clear-chat`)
+    .then((res) => {
+      setLoading(false);
+      if(res.data) {
+        dispatch(updateChannel(res.data));
+      }
+    })
+    .catch(e => {
+      setLoading(false);
+      Alert.alert('Alert', e?.message || 'Something went wrong.')
+    });
+  }
+
   const onBack = () => navigation.goBack();
 
   const onInitiateCall = (isVideoEnable = false) => {
@@ -322,7 +357,12 @@ const ChatInfo = ({ navigation }) => {
   const options = () => {
     return (
       <>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => {
+          optionModalRef.current?.close();
+          setTimeout(() => {
+            meetingModalRef.current?.open();
+          }, 500);
+        }}>
           <View style={[styles.option]}>
             <Text
               style={{ marginLeft: 15 }}
@@ -337,7 +377,7 @@ const ChatInfo = ({ navigation }) => {
           optionModalRef.current?.close();
           setTimeout(() => {
             newMessageModalRef.current?.open()
-          }, 300);
+          }, 500);
         }}>
           <View style={[styles.option]}>
             <Text
@@ -416,6 +456,17 @@ const ChatInfo = ({ navigation }) => {
       cancel: 'Cancel',
       confirm: 'Yes',
       type: 'delete',
+    });
+    setShowAlert(true);
+  }
+
+  const onClearChat = () => {
+    setAlertData({
+      title: 'Clear Chat',
+      message: 'Are you sure you want to clear chat content?',
+      cancel: 'Cancel',
+      confirm: 'Yes',
+      type: 'clear',
     });
     setShowAlert(true);
   }
@@ -552,7 +603,7 @@ const ChatInfo = ({ navigation }) => {
           <Text size={14}>
             Mute Chat
           </Text>
-          <TouchableOpacity onPress={() => setMuteChat(m => !m)}>
+          <TouchableOpacity onPress={() => muteChatRoom(!muteChat)}>
             <ToggleIcon
               style={muteChat ? styles.toggleActive : styles.toggleDefault}
               size={RFValue(32)}
@@ -588,7 +639,7 @@ const ChatInfo = ({ navigation }) => {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
+            {/* <TouchableOpacity>
               <View style={styles.participantItem}>
                 <View style={styles.smallCircle}>
                   <LinkIcon
@@ -604,13 +655,13 @@ const ChatInfo = ({ navigation }) => {
                   Add Participants via link
                 </Text>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {renderParticipants()}
           </View>
         </View>
         {separator()}
         <View style={styles.footerContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onClearChat}>
             <View style={{ marginVertical: 10 }}>
               <Text
                 size={14}
@@ -644,7 +695,6 @@ const ChatInfo = ({ navigation }) => {
           <View style={styles.bar} />
         }
         containerStyle={{ maxHeight: null }}
-        backdropOpacity={0}
         onBackdropPress={() => {}}
       >
         <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
@@ -682,7 +732,6 @@ const ChatInfo = ({ navigation }) => {
           <View style={styles.bar} />
         }
         containerStyle={{ maxHeight: null }}
-        backdropOpacity={0}
         onBackdropPress={() => {}}
       >
         <View style={{ height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
@@ -711,6 +760,29 @@ const ChatInfo = ({ navigation }) => {
             member={selectedParticipant}
             onClose={() => newMessageModalRef.current?.close()}
             onSubmit={(res:any) => {}}
+          />
+        </View>
+      </BottomModal>
+      <BottomModal
+        ref={meetingModalRef}
+        onModalHide={() => meetingModalRef.current?.close()}
+        avoidKeyboard={false}
+        header={
+          <View style={styles.bar} />
+        }
+        containerStyle={{ maxHeight: null }}
+        onBackdropPress={() => {}}
+      >
+        <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
+          <CreateMeeting
+            participants={[selectedParticipant]}
+            onClose={() => meetingModalRef.current?.close()}
+            channelId={''}
+            isChannelExist={false}
+            onSubmit={(type, params) => {
+              meetingModalRef.current?.close();
+              setTimeout(() => navigation.navigate(type, params), 300);
+            }}
           />
         </View>
       </BottomModal>

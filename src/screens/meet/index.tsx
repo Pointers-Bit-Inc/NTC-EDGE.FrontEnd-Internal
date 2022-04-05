@@ -417,7 +417,6 @@ const Meet = ({ navigation }) => {
           <View style={styles.bar} />
         }
         containerStyle={{ maxHeight: null }}
-        backdropOpacity={0}
         onBackdropPress={() => {}}
       >
         <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
