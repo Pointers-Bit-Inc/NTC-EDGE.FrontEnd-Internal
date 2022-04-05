@@ -54,16 +54,13 @@ const FormField = ({
                                    onChangeText={(text: string) => {
                                        onChange(id, text, 'input', element?.stateName)
                                    }}
-                                   onFocus={()=>{
-                                       handleEvent ? handleEvent(layoutRef.find((layout) => layout["id"] == id)?.layout) : null
-                                   }
-                                   }
+
                                    returnKeyType={mapRef?.[mapRef.length-1]?.id == mapRef?.[mapRef.findIndex(e => e?.id==id)]?.id ? "done" : "next"}
                                    ref={mapRef?.[mapRef.findIndex(e => e?.id==id)].ref}
                                    onSubmitEditing={(event: any) => {
                                        mapRef?.[mapRef.findIndex(e => e?.id==id) + 1]?.ref?.current?.focus()
                                        onChange(id, event.nativeEvent.text, 'input', element?.stateName)
-
+                                       handleEvent ? handleEvent(layoutRef?.find((layout) => layout?.["id"] == id)?.layout) : null
                                    }}/>;
             case "select":
                 return <><InputField key={id}  {...styleProps} {...otherProps}

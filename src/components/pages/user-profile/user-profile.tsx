@@ -2,13 +2,13 @@ import React,{useEffect,useRef,useState} from 'react';
 import {RootStateOrAny , useDispatch , useSelector} from 'react-redux';
 import axios from 'axios';
 import {
-    ActivityIndicator ,
-    BackHandler ,
-    Dimensions ,
-    ScrollView ,
-    StatusBar ,
-    StyleSheet ,
-    TouchableOpacity ,
+    ActivityIndicator,
+    BackHandler,
+    Dimensions,Platform,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    TouchableOpacity,
     View
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -30,6 +30,7 @@ import {setUser} from '../../../reducers/user/actions';
 import {Bold} from '@styles/font';
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
+import useKeyboard from "../../../hooks/useKeyboard";
 
 const STATUSBAR_HEIGHT = StatusBar?.currentHeight;
 const { width , height } = Dimensions.get('window');
@@ -466,6 +467,7 @@ const UserProfileScreen = ({ navigation }: any) => {
     } , [routeIsFocused]);
 
      const scrollView = useRef()
+    const isKeyboardVisible = useKeyboard();
     return (
         
         <View style={ styles.container }>
@@ -478,7 +480,7 @@ const UserProfileScreen = ({ navigation }: any) => {
                 } }
             />
 
-            <ScrollView ref={scrollView} keyboardShouldPersistTaps="handled" style={ styles.scrollview } showsVerticalScrollIndicator={ false }>
+            <ScrollView ref={scrollView} keyboardShouldPersistTaps={Platform.OS == "ios" ?  "handled" : "always"} style={ styles.scrollview } showsVerticalScrollIndicator={ false }>
                 <View style={ [styles.row , { marginBottom : 20 }] }>
                     <View>
                         <ProfileImage
@@ -502,12 +504,16 @@ const UserProfileScreen = ({ navigation }: any) => {
                     onChange={ onUpdateForm }
                     onSubmit={ onPress }
                      handleEvent={(event)=>{
-                          console.log(event?.y)
-                         scrollView.current.scrollTo({
-                           x: 0,
-                           y:event?.y,
-                           animated: true,
-                       })
+                        if(isKeyboardVisible){
+                                    scrollView?.current?.scrollTo({
+                                        x: 0,
+                                        y:event?.y  ,
+                                        animated: true,
+                                    })
+
+                        }
+
+
                      }}
                     // editable={editable}
                 />
