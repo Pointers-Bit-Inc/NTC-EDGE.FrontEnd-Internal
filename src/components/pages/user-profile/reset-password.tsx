@@ -19,7 +19,7 @@ function ResetPassword({navigation}) {
                   oldPassword,
                   newPassword
               } ,config).then((response) =>{
-                  
+                  navigation.goBack()
               })
           }
     return (
