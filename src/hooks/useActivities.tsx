@@ -372,11 +372,16 @@ export function useActivities(){
     const [activitySizeComponent,onActivityLayoutComponent]=useComponentLayout();
 
     const [containerHeight,setContainerHeight]=useState(148);
+    const [isReady, setIsReady] = useState(false)
     useEffect(()=>{
 
         dispatch(setFilterRect(sizeComponent));
-        if(sizeComponent?.height&&searchSizeComponent?.height) setContainerHeight(sizeComponent?.height+searchSizeComponent?.height)
-    },[sizeComponent,searchSizeComponent,activitySizeComponent]);
+        if(sizeComponent?.height&&searchSizeComponent?.height){
+
+            setContainerHeight(sizeComponent?.height+searchSizeComponent?.height)
+            setIsReady(true);
+        }
+    },[sizeComponent,searchSizeComponent,activitySizeComponent, isReady]);
 
     const scrollY=useRef(new Animated.Value(0)).current;
     const offsetAnim=useRef(new Animated.Value(0)).current;
@@ -446,6 +451,7 @@ export function useActivities(){
         extrapolate:'clamp',
     });
     return {
+        isReady,
         onTouch, setOnTouch,
         setIsOpen,
         size,

@@ -145,7 +145,6 @@ export default function basket(state = initialState, action = {}) {
             return state
         }
         case UPDATE_APPLICATION_STATUS: {
-            console.log("UPDATE_APPLICATION_STATUS!!")
             const notPinned = [...state.notPinnedApplications];
             const pinned = [...state.pinnedApplications];
             const index = notPinned.findIndex((app: any) => {

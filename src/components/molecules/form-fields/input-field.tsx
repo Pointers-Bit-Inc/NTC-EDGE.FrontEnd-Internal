@@ -179,7 +179,8 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                 </View>
                 {
                     (clearable && isFocused && !!editable && !!otherProps.value) &&
-                    <TouchableOpacity onPress={() => {
+                    <TouchableOpacity  onPress={() => {
+
                         if(otherProps?.onChangeText){
                             onClose()
                             otherProps?.onChangeText('')
