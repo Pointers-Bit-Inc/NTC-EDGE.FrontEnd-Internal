@@ -190,7 +190,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                         imageWidth={this.props?.rightLayoutComponent?.width}
                                         imageHeight={height*(
                                             this.state._imageSize?.height/width)}>
-                                 <View style={{ alignItems: "center"}}>
+                                 <View style={{top: -60, alignItems: "center"}}>
                                      <Image style={{
 
                                          width:this.state._imageSize.width/2,
