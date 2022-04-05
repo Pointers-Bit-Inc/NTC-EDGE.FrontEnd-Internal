@@ -170,15 +170,17 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                          <PdfViewr width={this.props?.rightLayoutComponent?.width}
                                    height={this.props?.rightLayoutComponent?.height}
                                    requirement={this.props?.requirement}/> : (
-                             isMobile||this.props.dimensions?.width<768 ? <AnimatedImage
-                                                                            ref={imageModal=>(
-                                                                                this.state.imageModal=imageModal)}
-                                                                            source={this?.state?.source}
-                                                                            sourceMeasure={this.state?._sourceMeasure}
-                                                                            imageSize={this.state?._imageSize||{height:300,width:300}}
-                                                                            onClose={this._hideImageModal}
-                                                                            animationDuration={200}
-                                                                        /> :
+                             isMobile||this.props.dimensions?.width<768 ? <View style={{top: -60}}>
+                                                                            <AnimatedImage
+                                                                                ref={imageModal=>(
+                                                                                    this.state.imageModal=imageModal)}
+                                                                                source={this?.state?.source}
+                                                                                sourceMeasure={this.state?._sourceMeasure}
+                                                                                imageSize={this.state?._imageSize||{height:300,width:300}}
+                                                                                onClose={this._hideImageModal}
+                                                                                animationDuration={200}
+                                                                            />
+                             </View> :
                                  //height = height * (this.state._imageSize.height / width)
 
                              <ImageZoom onSwipeDown={this._hideImageModal} enableSwipeDown={true}
@@ -188,7 +190,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                         imageWidth={this.props?.rightLayoutComponent?.width}
                                         imageHeight={height*(
                                             this.state._imageSize?.height/width)}>
-                                 <View style={{alignItems: "center"}}>
+                                 <View style={{ alignItems: "center"}}>
                                      <Image style={{
 
                                          width:this.state._imageSize.width/2,
