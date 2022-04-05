@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React,{Fragment,useImperativeHandle,useRef,useState} from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {DropdownField, InputField} from "@molecules/form-fields";
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -53,7 +53,12 @@ const FormField = ({
                                    onChangeText={(text: string) => {
                                        onChange(id, text, 'input', element?.stateName)
                                    }}
-                                   onSubmitEditing={(event: any) => onChange(id, event.nativeEvent.text, 'input', element?.stateName)}/>;
+                                   returnKeyType={mapRef?.[mapRef.length-1]?.id == mapRef?.[mapRef.findIndex(e => e?.id==id)]?.id ? "done" : "next"}
+                                   ref={mapRef?.[mapRef.findIndex(e => e?.id==id)]}
+                                   onSubmitEditing={(event: any) => {
+                                       mapRef?.[mapRef.findIndex(e => e?.id==id) + 1]?.current?.focus()
+                                       onChange(id, event.nativeEvent.text, 'input', element?.stateName)
+                                   }}/>;
             case "select":
                 return <><InputField key={id}  {...styleProps} {...otherProps}
                                    onEndEditing={(e: any) => {
@@ -138,6 +143,14 @@ const FormField = ({
                         })
                     }/>
 
+        }
+    }
+
+    const mapRef: any = []
+
+    for (let index = 0; index < formElements.length; index++) {
+        if(formElements?.[index]?.type === "input" ) {
+            mapRef.push({id: formElements?.[index]?.id, ref: useRef()})
         }
     }
 

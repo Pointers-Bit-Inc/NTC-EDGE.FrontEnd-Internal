@@ -467,6 +467,7 @@ const UserProfileScreen = ({ navigation }: any) => {
 
 
     return (
+        
         <View style={ styles.container }>
             <NavBar
                 title='Profile'
