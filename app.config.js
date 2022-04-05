@@ -6,7 +6,6 @@ export default {
     "version": process.env.APP_VERSION ?? "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "backgroundColor": "#031A6E",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",
