@@ -9,7 +9,10 @@ import {isMobile} from "@pages/activities/isMobile";
 const { width , height } = Dimensions.get("screen");
 export const styles = StyleSheet.create({
     pictureContainer: {
-        width : width/1.2 , height : 200 , borderRadius : 5 , borderWidth : 4 ,
+        width : width/1.2 ,
+        height : 200 ,
+        borderRadius : 5 ,
+        borderWidth : 4 ,
         borderColor : "#fff"
     },
     containers:{
@@ -58,7 +61,6 @@ export const styles = StyleSheet.create({
     } ,
     group7 : {} ,
     rect2 : {
-        top: 60,
         zIndex : 3 ,
 
         backgroundColor : "rgba(0,0,0,0.5)"

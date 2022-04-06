@@ -3,7 +3,7 @@ import BasicInfo from "@pages/activities/application/basicInfo";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
-import React , {useState} from "react";
+import React,{useEffect,useState} from "react";
 import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../reducers/activity/initialstate";
 import {Animated , StyleSheet , TouchableOpacity} from "react-native";
 import TabBar from "@pages/activities/tabs/tabbar";
@@ -86,6 +86,7 @@ export const ModalTab = props => {
         assignedPersonnel = props?.details?.assignedPersonnel ,
         createdAt = props?.details?.createdAt ,
         proofOfPayment = props?.details?.proofOfPayment;
+
     return <ScrollableTabView
         onScroll={ (x) => _scrollX.setValue(x) }
         renderTabBar={ () => <TabBar
