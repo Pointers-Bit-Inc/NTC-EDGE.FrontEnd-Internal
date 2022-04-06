@@ -131,7 +131,7 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
                 paddingVertical : 10
             } }>
                 { this.props.proofOfPayment?.small &&
-                <TouchableOpacity ref={ image => (
+                <TouchableOpacity disabled={this.state.onLoadStart||this.state.extension}  ref={ image => (
                     this.state.image = image) }
                                   onPress={ this._showImage }>
                     <View style={ {
@@ -147,7 +147,7 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
                 </TouchableOpacity>
                 }
 
-                <TouchableOpacity disabled={this.state.onLoadStart} ref={ image => (
+                <TouchableOpacity disabled={this.state.onLoadStart ||this.state.extension} ref={ image => (
                     this.state.image = image) }
                                   onPress={ this._showImage }>
                     {

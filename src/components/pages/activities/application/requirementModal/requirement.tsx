@@ -89,7 +89,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
             <View style={[requirementStyles.cardDocument]}>
 
 
-                {<TouchableOpacity ref={image=>(
+                {<TouchableOpacity disabled={this.state.onLoadStart||this.state.extension} ref={image=>(
                     this.state.image=image)}
                                    onPress={this._showImage} style={{
                     alignItems:"center",
@@ -146,7 +146,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
 
             <Modal visible={this.state?.visible} transparent={true} onRequestClose={this._hideImageModal}>
 
-                <View style={[styles.container,isMobile||this.props.dimensions?.width<768 ? {} : {
+                <View style={[styles.container,isMobile||this.props.dimensions?.width<768 ? {top: -60} : {
                     alignItems:"flex-end",
                     top:this.props?.rightLayoutComponent?.top
                 }]}>
@@ -157,7 +157,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                     }}/>
 
                     <View style={[styles.rect2,{width:this.props?.rightLayoutComponent?.width}]}>
-                        <View style={{alignSelf:'flex-end',paddingHorizontal:15,paddingVertical:15}}>
+                        <View style={{alignSelf:'flex-end', zIndex: 1, paddingHorizontal:15,paddingVertical:15}}>
                             <TouchableOpacity onPress={this._hideImageModal}>
                                 <Text style={styles.close}>Close</Text>
                             </TouchableOpacity>
@@ -170,8 +170,8 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                          <PdfViewr width={this.props?.rightLayoutComponent?.width}
                                    height={this.props?.rightLayoutComponent?.height}
                                    requirement={this.props?.requirement}/> : (
-                             isMobile||this.props.dimensions?.width<768 ? <View style={{top: -60}}>
-                                                                            <AnimatedImage
+                             isMobile||this.props.dimensions?.width<768 ?<AnimatedImage
+
                                                                                 ref={imageModal=>(
                                                                                     this.state.imageModal=imageModal)}
                                                                                 source={this?.state?.source}
@@ -179,8 +179,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                                                                 imageSize={this.state?._imageSize||{height:300,width:300}}
                                                                                 onClose={this._hideImageModal}
                                                                                 animationDuration={200}
-                                                                            />
-                             </View> :
+                                                                            /> :
                                  //height = height * (this.state._imageSize.height / width)
 
                              <ImageZoom onSwipeDown={this._hideImageModal} enableSwipeDown={true}
@@ -195,7 +194,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
 
                                          width:this.state._imageSize.width/2,
                                          height:height*(
-                                             this.state._imageSize.height/width)
+                                             this.state._imageSize.height/width)-60
                                      }}
                                             resizeMode={"contain"}
                                             source={this?.state?.source}/>

@@ -58,6 +58,7 @@ export const styles = StyleSheet.create({
     } ,
     group7 : {} ,
     rect2 : {
+        top: 60,
         zIndex : 3 ,
 
         backgroundColor : "rgba(0,0,0,0.5)"
