@@ -29,7 +29,7 @@ function CustomAlert(props) {
                 }
             }
         >
-            <Animated.View style={[   { transform: [{ scale: !props.onLoading ? springValue :  1}] }]}>
+            <Animated.View style={[   { transform: [{ scale: springValue}] }]}>
                 <View style={styles.group}>
                     <View style={[styles.container___, styles.shadow]}>
                         <View style={styles.container__}>

@@ -49,7 +49,8 @@ export default function ActivitiesPage(props: any) {
 
     const dimensions = useWindowDimensions();
     const Filter = isMobile || dimensions?.width <= 768 ? FilterIcon : FilterPressIcon;
-    const {isReady,
+    const {
+        isReady,
         user ,
         setUpdateModal ,
         config ,

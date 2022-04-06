@@ -263,8 +263,8 @@ const Payment = (props: any) => {
                         </Text>
                     </View>
                     {
-                        props?.soa?.map(soa => (
-                            <View style={ { width : "100%" } }>
+                        props?.soa?.map((soa, index) => (
+                            <View key={index} style={ { width : "100%" } }>
                                 <View
                                     key={ soa._id }
                                     style={ paymentStyles.soaItem }
@@ -331,8 +331,8 @@ const Payment = (props: any) => {
             </View>
             <View style={ { overflow : "hidden" , zIndex : -1 , flexDirection : "row" , } }>
                 {
-                    !!sizeComponent && Array(Math?.round(sizeComponent?.width / 20))?.fill(0)?.map(() =>
-                        <BorderPaymentBottom style={ { marginTop : -2 } }/>)
+                    !!sizeComponent && Array(Math?.round(sizeComponent?.width / 20))?.fill(0)?.map((bottom, index) =>
+                        <BorderPaymentBottom key={index} style={ { marginTop : -2 } }/>)
                 }
             </View>
 
@@ -407,8 +407,11 @@ const Payment = (props: any) => {
         </View>
 
 
-        <PaymentModal updatedAt={ props?.updatedAt } paymentMethod={ props?.paymentMethod }
-                      applicant={ props?.applicant } totalFee={ props?.totalFee } visible={ visibleModal }
+        <PaymentModal updatedAt={ props?.updatedAt }
+                      paymentMethod={ props?.paymentMethod }
+                      applicant={ props?.applicant }
+                      totalFee={ props?.totalFee }
+                      visible={ visibleModal }
                       onDismissed={ onDismissed }/>
     </ScrollView>
 

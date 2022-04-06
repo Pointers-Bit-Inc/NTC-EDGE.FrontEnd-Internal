@@ -193,7 +193,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                      <Image style={{
 
                                          width:this.state._imageSize.width/2,
-                                         height:height*(
+                                         height:(
                                              this.state._imageSize.height/width)-60
                                      }}
                                             resizeMode={"contain"}
