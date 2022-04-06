@@ -7,6 +7,8 @@ import ProfileImage from "@components/atoms/image/profile";
 import dayjs from "dayjs";
 import {styles} from "@pages/barcode/styles";
 import {useAlert} from "../../../hooks/useAlert";
+import EvaluationStatus from "@assets/svg/evaluationstatus";
+import {fontValue} from "@pages/activities/fontValue";
 export function Response(props: { verifiedInfo: any, verified: boolean, onPress: () => void, error: boolean, onPress1: () => void }) {
     const getFullName = (user) => {
         return `${user?.firstName} ${user?.middleName} ${user?.lastName}`;
@@ -33,14 +35,17 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
             <View style={[styles.group32, { paddingHorizontal: 20 }]}>
                 <View style={styles.rect13}>
                     <View style={styles.group30}>
-                        <View style={styles.rect14}>
+                        <View style={[styles.rect14, {backgroundColor: props?.verifiedInfo?.status == "valid" ? "rgba(0,171,118,0.1)" : "rgba(247, 158, 27, 0.1)",}]}>
                             <View style={styles.group33}>
                                 <View style={{width: "33.33%"}}>
                                     <View style={styles.group12}>
-                                        <View style={styles.rect15}>
-                                            <CheckMarkIcon></CheckMarkIcon>
-                                        </View>
-                                        <Text style={styles.verified}>Verified</Text>
+
+                                           {props?.verifiedInfo?.status == "valid" ?
+                                             <CheckMarkIcon width={ fontValue(20) } height={ fontValue(20) }></CheckMarkIcon> : <View style={{paddingRight: 10}}>
+                                                <View style={{top: 2}}><EvaluationStatus width={ fontValue(17) } height={ fontValue(20) } ></EvaluationStatus></View>
+                                            </View> }
+                                      
+                                        <Text style={[styles.verified, {color: props?.verifiedInfo?.status == "valid" ? "rgba(0,171,118,1)" : "#F7771B",}]}>{props?.verifiedInfo?.status == "valid" ? "Verified" : "Unverified"}</Text>
                                     </View>
                                 </View>
 

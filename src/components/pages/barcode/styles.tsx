@@ -69,7 +69,7 @@ export const styles = StyleSheet.create({
     },
     rect14: {
         height: 50,
-        backgroundColor: "rgba(0,171,118,0.1)",
+
         borderTopLeftRadius: 14,
         borderTopRightRadius: 14
     },
@@ -80,8 +80,7 @@ export const styles = StyleSheet.create({
         flex: 1
     },
     group12: {
-        width: 78,
-        height: 16,
+        
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
@@ -91,11 +90,13 @@ export const styles = StyleSheet.create({
     rect15: {
         width: 15,
         height: 15,
+        alignSelf: "center",
+        padding: 5,
         justifyContent: "center"
     },
     verified: {
         fontWeight: "bold",
-        color: "rgba(0,171,118,1)",
+      fontSize: fontValue(18),
         textAlign: "center",
         letterSpacing: 0
     },
