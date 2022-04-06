@@ -334,6 +334,7 @@ const MessageMember = ({ members = [], onClose = () => {}, onSubmit = () => {} }
               <InputTags
                 ref={inputTagRef}
                 editable={false}
+                deleteTagOnPress={false}
                 containerStyle={tagStyles.container}
                 initialTags={participants}
                 initialText={searchValue}

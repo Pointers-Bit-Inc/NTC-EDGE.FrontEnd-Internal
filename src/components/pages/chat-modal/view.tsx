@@ -168,15 +168,17 @@ const ChatView: FC<Props> = ({
       return;
     }
     if (!channelId) {
-      setInputText('');
-      return onNext(inputText);
-    }
-    if (selectedMessage?._id) {
-      _editMessage(selectedMessage?._id, inputText);
-      dispatch(removeSelectedMessage(channelId))
-    } else {
       _sendMessage(channelId, inputText);
       setInputText('');
+      setTimeout(() => onNext(inputText), 500);
+    } else {
+      if (selectedMessage?._id) {
+        _editMessage(selectedMessage?._id, inputText);
+        dispatch(removeSelectedMessage(channelId))
+      } else {
+        _sendMessage(channelId, inputText);
+        setInputText('');
+      }
     }
   }, [channelId, inputText])
 
