@@ -43,7 +43,7 @@ import {
 } from 'src/reducers/channel/actions';
 import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
-import CreateMeeting from '@components/pages/chat/meeting';
+import CreateMeeting from '@components/pages/chat-modal/meeting';
 import IMeetings from 'src/interfaces/IMeetings';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import useAttachmentPicker from 'src/hooks/useAttachment';
@@ -164,7 +164,10 @@ const ChatView = ({ navigation, route }:any) => {
     meetingList = lodash.filter(meetingList, m => m.roomId === _id);
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
 })
-  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
+  const selectedMessage = useSelector((state:RootStateOrAny) => {
+    const { selectedMessage } = state.channel;
+    return selectedMessage[_id];
+  });
   const [inputText, setInputText] = useState('');
   const [index, setIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
@@ -200,10 +203,10 @@ const ChatView = ({ navigation, route }:any) => {
     if (!inputText) {
       return;
     }
-    if (selectedMessage._id) {
-      _editMessage(selectedMessage._id, inputText);
+    if (selectedMessage?._id) {
+      _editMessage(selectedMessage?._id, inputText);
       inputRef.current?.blur();
-      dispatch(removeSelectedMessage())
+      dispatch(removeSelectedMessage(channelId))
     } else {
       _sendMessage(channelId, inputText);
       inputRef.current?.blur();
@@ -297,7 +300,7 @@ const ChatView = ({ navigation, route }:any) => {
   useEffect(() => {
     if (rendered) {
       setInputText(selectedMessage?.message || '');
-      if (selectedMessage._id) {
+      if (selectedMessage?._id) {
         setTimeout(() => inputRef.current?.focus(), 500);
       } else {
         inputRef.current?.blur();

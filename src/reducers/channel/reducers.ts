@@ -38,7 +38,7 @@ export default function basket(state = initialState, action:any) {
     case SET_SELECTED_CHANNEL: {
       if (!action.isChannelExist) {
         return state.setIn(['selectedChannel'], action.payload)
-        .setIn(['normalizedMessages'], {});
+        .setIn(['channelMessages', action.payload._id, 'messages'], {});
       }
       return state.setIn(['selectedChannel'], action.payload);
     }
@@ -81,16 +81,17 @@ export default function basket(state = initialState, action:any) {
       return state.removeIn(['normalizedChannelList', action.payload]);
     }
     case SET_MESSAGES: {
-      return state.setIn(['normalizedMessages'], action.payload);
+      return state.setIn(['channelMessages', action.channelId, 'messages'], action.payload);
     }
     case ADD_TO_MESSAGES: {
-      return state.setIn(['normalizedMessages'], {...state.normalizedMessages, ...action.payload});
+      const messages = state.channelMessages[action.channelId]?.messages || {};
+      return state.setIn(['channelMessages', action.channelId, 'messages'], {...messages, ...action.payload});
     }
     case ADD_MESSAGES: {
       let newState = state;
 
       if (state.selectedChannel._id === action.payload.roomId) {
-        newState = newState.setIn(['normalizedMessages', action.payload._id], action.payload)
+        newState = newState.setIn(['channelMessages', action.channelId, 'messages', action.payload._id], action.payload)
         .setIn(['selectedChannel', 'lastMessage'], action.payload)
         .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
       }
@@ -104,7 +105,7 @@ export default function basket(state = initialState, action:any) {
       let newState = state;
 
       if (state.selectedChannel._id === action.payload.roomId) {
-        newState = newState.setIn(['normalizedMessages', action.payload._id], action.payload)
+        newState = newState.setIn(['channelMessages', action.channelId, 'messages', action.payload._id], action.payload)
         .setIn(['selectedChannel', 'lastMessage'], action.payload)
         .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
       }
@@ -117,10 +118,10 @@ export default function basket(state = initialState, action:any) {
       return newState;
     }
     case SET_SELECTED_MESSAGES: {
-      return state.setIn(['selectedMessage'], action.payload);
+      return state.setIn(['selectedMessage', action.channelId], action.payload);
     }
     case REMOVE_SELECTED_MESSAGES: {
-      return state.setIn(['selectedMessage'], {});
+      return state.setIn(['selectedMessage', action.channelId], {});
     }
     case SET_MEETINGS_CHANNEL: {
       return state.setIn(['meetingList'], action.payload);
@@ -142,23 +143,24 @@ export default function basket(state = initialState, action:any) {
     case RESET_CHANNEL: {
       return state.setIn(['selectedChannel'], {})
         .setIn(['agora'], {})
-        .setIn(['normalizedChannelList'], [])
-        .setIn(['normalizedMessages'], [])
+        .setIn(['normalizedChannelList'], {})
+        .setIn(['normalizedMessages'], {})
+        .setIn(['channelMessages'], {})
         .setIn(['selectedMessage'], {})
         .setIn(['meetingList'], [])
         .setIn(['searchValue'], '');
     }
     case ADD_PENDING_MESSAGE: {
-      return state.setIn(['pendingMessages'], {...state.pendingMessages, ...action.payload});
+      return state.setIn(['pendingMessages', action.channelId], {...state.pendingMessages[action.channelId], ...action.payload});
     }
     case SET_PENDING_MESSAGE_ERROR: {
-      return state.setIn(['pendingMessages', action.payload, 'error'], true);
+      return state.setIn(['pendingMessages', action.channelId, action.payload, 'error'], true);
     }
     case REMOVE_PENDING_MESSAGE: {
-      let newState = state.removeIn(['pendingMessages', action.messageId]);
+      let newState = state.removeIn(['pendingMessages', action.channelId, action.messageId]);
 
       if (action.message) {
-        newState = newState.setIn(['normalizedMessages', action.message._id], action.message)
+        newState = newState.setIn(['channelMessages', action.channelId, 'messages', action.message._id], action.message)
         .setIn(['selectedChannel', 'lastMessage'], action.message)
         .setIn(['selectedChannel', 'updatedAt'], action.message.updatedAt);
       }

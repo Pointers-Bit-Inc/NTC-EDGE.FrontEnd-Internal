@@ -22,9 +22,10 @@ import { Bold, Regular, Regular500 } from '@styles/font';
 import useSignalr from 'src/hooks/useSignalr';
 import { InputTags } from '@components/molecules/form-fields';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { useDispatch } from 'react-redux';
-import { setSelectedChannel } from 'src/reducers/channel/actions';
+import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import IRooms from 'src/interfaces/IRooms';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const styles = StyleSheet.create({
   container: {
@@ -190,7 +191,7 @@ const tagStyles = StyleSheet.create({
   },
 });
 
-const MessageMember = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
+const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   const {
     getParticipantList,
     createChannel,
@@ -215,7 +216,10 @@ const MessageMember = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   const [isGroup, setIsGroup] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [selectedChannel, setSelectedChannel] = useState<any>({});
   
+  const user = useSelector((state:RootStateOrAny) => state.user);
+
   const onRequestData = () => setSendRequest(request => request + 1);
 
   const fetchMoreParticipants = (isPressed = false) => {
@@ -277,26 +281,26 @@ const MessageMember = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     }
   }, [sendRequest, searchValue, isGroup, participants, isFocused]);
 
-  // useEffect(() => {
-  //   let unmount = false;
-  //   dispatch(setSelectedChannel({}));
-  //   if (participants) {
-  //     getChannelByParticipants({ participants }, (err:any, res:any) => {
-  //       if (!unmount) {
-  //         if (res) {
-  //           dispatch(setSelectedChannel(res));
-  //         }
-  //         if (err) {
-  //           console.log('ERROR', err);
-  //         }
-  //       }
-  //     });
-  //   }
+  useEffect(() => {
+    let unmount = false;
+    setSelectedChannel({})
+    if (participants) {
+      getChannelByParticipants({ participants }, (err:any, res:any) => {
+        if (!unmount) {
+          if (res) {
+            setSelectedChannel(res)
+          }
+          if (err) {
+            console.log('ERROR', err);
+          }
+        }
+      });
+    }
 
-  //   return () => {
-  //     unmount = true;
-  //   }
-  // }, [participants]);
+    return () => {
+      unmount = true;
+    }
+  }, [participants]);
 
   const onNext = (message:string) => {
     if (participants) {
@@ -514,7 +518,16 @@ const MessageMember = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
         />
       );
     } else {
-      return (<ChatView onNext={(message:string) => onNext(message)} participants={participants} />);
+      return (
+        <ChatView
+          channelId={selectedChannel?._id}
+          otherParticipants={lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id)}
+          isGroup={selectedChannel.isGroup}
+          lastMessage={selectedChannel.lastMessage}
+          onNext={(message:string) => onNext(message)}
+          participants={participants}
+        />
+      );
     }
   }
 
@@ -698,4 +711,4 @@ const MessageMember = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
   )
 }
 
-export default MessageMember
+export default NewChat

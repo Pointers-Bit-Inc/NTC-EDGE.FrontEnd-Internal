@@ -12,6 +12,7 @@ const InitialState = Record({
   normalizedMeetingList: {},
   searchValue: '',
   pendingMessages: {},
+  channelMessages: {}
 });
 
 export default InitialState;

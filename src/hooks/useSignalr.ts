@@ -44,11 +44,11 @@ const useSignalr = () => {
     if (data) {
       switch(type) {
         case 'create': {
-          dispatch(addMessages(data));
+          dispatch(addMessages(data.roomId, data));
           break;
         }
         case 'update': {
-          dispatch(updateMessages(data));
+          dispatch(updateMessages(data.roomId, data));
           break;
         }
       }
@@ -60,12 +60,12 @@ const useSignalr = () => {
       switch(type) {
         case 'create': {
           dispatch(addChannel(data));
-          if (data.lastMessage) dispatch(addMessages(data.lastMessage));
+          if (data.lastMessage) dispatch(addMessages(data._id, data.lastMessage));
           break;
         }
         case 'update': {
           dispatch(updateChannel(data));
-          if (data.lastMessage) dispatch(addMessages(data.lastMessage));
+          if (data.lastMessage) dispatch(addMessages(data._id, data.lastMessage));
           break;
         }
         case 'delete': dispatch(removeChannel(data._id)); break;
@@ -80,7 +80,7 @@ const useSignalr = () => {
           const { room } = data;
           const { lastMessage } = room;
           dispatch(updateChannel(room));
-          dispatch(addMessages(lastMessage));
+          dispatch(addMessages(room._id, lastMessage));
           dispatch(addMeeting(data));
           break;
         };
@@ -88,7 +88,7 @@ const useSignalr = () => {
           const { room = {} } = data;
           const { lastMessage } = room;
           if (lastMessage) dispatch(updateChannel(room));
-          if (lastMessage) dispatch(addMessages(lastMessage));
+          if (lastMessage) dispatch(addMessages(room._id, lastMessage));
           dispatch(updateMeeting(data));
           break;
         }

@@ -36,7 +36,7 @@ import {
 } from '@atoms/icon';
 import {Bold, Regular, Regular500} from "@styles/font";
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
-import NewChat from '@pages/chat/new';
+import NewChat from '@components/pages/chat-modal/new';
 import {fontValue} from "@pages/activities/fontValue";
 import MeetIcon from "@assets/svg/meetIcon";
 import hairlineWidth = StyleSheet.hairlineWidth;
@@ -620,16 +620,19 @@ const ChatList = ({ navigation }:any) => {
         })
     }
     const channelId = _id;
-    const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
+    const selectedMessage = useSelector((state:RootStateOrAny) => {
+        const { selectedMessage } = state.channel;
+        return selectedMessage[channelId];
+    });
     const onSendMessage = useCallback(() => {
         if (!inputText) {
             return;
         }
 
-        if (selectedMessage._id) {
-            _editMessage(selectedMessage._id, inputText);
+        if (selectedMessage?._id) {
+            _editMessage(selectedMessage?._id, inputText);
             inputRef.current?.blur();
-            dispatch(removeSelectedMessage())
+            dispatch(removeSelectedMessage(channelId))
         } else {
             _sendMessage(channelId, inputText);
             inputRef.current?.blur();
@@ -662,7 +665,7 @@ const ChatList = ({ navigation }:any) => {
     useEffect(() => {
         if (rendered) {
             setInputText(selectedMessage?.message || '');
-            if (selectedMessage._id) {
+            if (selectedMessage?._id) {
                 setTimeout(() => inputRef.current?.focus(), 500);
             } else {
                 inputRef.current?.blur();

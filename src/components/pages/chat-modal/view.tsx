@@ -11,7 +11,7 @@ import {
 import lodash from 'lodash';
 import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
 import useSignalR from 'src/hooks/useSignalr';
-import ChatList from '@screens/chat/chat-list';
+import ChatList from '@pages/chat-modal/chat-list';
 import {
   PlusIcon,
   CheckIcon,
@@ -27,6 +27,8 @@ import {
 import { RFValue } from 'react-native-responsive-fontsize';
 import useAttachmentPicker from 'src/hooks/useAttachment';
 import { AttachmentMenu } from '@components/molecules/menu';
+import IMessages from 'src/interfaces/IMessages';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const styles = StyleSheet.create({
   container: {
@@ -105,11 +107,22 @@ const styles = StyleSheet.create({
 });
 
 interface Props {
+  channelId: string,
+  isGroup: boolean,
+  lastMessage: IMessages,
+  otherParticipants: Array<IParticipants>,
   onNext: Function;
   participants: Array<any>;
 }
 
-const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
+const ChatView: FC<Props> = ({
+  channelId = '',
+  isGroup = false,
+  lastMessage = {},
+  otherParticipants = [],
+  onNext = () => {},
+  participants = [],
+}) => {
   const dispatch = useDispatch();
   const {
     editMessage,
@@ -121,20 +134,15 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
   } = useAttachmentPicker();
   const inputRef:any = useRef(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { _id } = useSelector(
-    (state:RootStateOrAny) => {
-      const { selectedChannel } = state.channel;
-      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
-      return selectedChannel;
-    }
-  );
-  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
+  const selectedMessage = useSelector((state:RootStateOrAny) => {
+    const { selectedMessage } = state.channel;
+    return selectedMessage[channelId];
+  });
   const [inputText, setInputText] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [showAttachmentOption, setShowAttachmentOption] = useState(false);
   const Height = useRef(new Animated.Value(0));
-  const channelId = _id;
   
   const _sendMessage = (channelId:string, inputText:string) => {
     dispatch(addPendingMessage({
@@ -163,9 +171,9 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
       setInputText('');
       return onNext(inputText);
     }
-    if (selectedMessage._id) {
-      _editMessage(selectedMessage._id, inputText);
-      dispatch(removeSelectedMessage())
+    if (selectedMessage?._id) {
+      _editMessage(selectedMessage?._id, inputText);
+      dispatch(removeSelectedMessage(channelId))
     } else {
       _sendMessage(channelId, inputText);
       setInputText('');
@@ -213,7 +221,7 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
   useEffect(() => {
     if (rendered) {
       setInputText(selectedMessage?.message || '');
-      if (selectedMessage._id) {
+      if (selectedMessage?._id) {
         setTimeout(() => inputRef.current?.focus(), 500);
       } else {
         inputRef.current?.blur();
@@ -226,7 +234,14 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
     <View style={styles.container}>
       <View style={{ flex: 1 }}>
         {
-          rendered && <ChatList />
+          rendered && (
+            <ChatList
+              channelId={channelId}
+              isGroup={isGroup}
+              lastMessage={lastMessage}
+              otherParticipants={otherParticipants}
+            />
+          )
         }
       </View>
       <Animated.View style={[styles.keyboardAvoiding, { marginBottom: Height.current }]}>

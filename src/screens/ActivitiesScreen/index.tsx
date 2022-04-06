@@ -115,11 +115,11 @@ const ActivitiesScreen = (props:any) => {
           if (data) {
             switch(type) {
               case 'create': {
-                dispatch(addMessages(data));
+                dispatch(addMessages(data.roomId, data));
                 break;
               }
               case 'update': {
-                dispatch(updateMessages(data));
+                dispatch(updateMessages(data.roomId, data));
                 break;
               }
             }
@@ -131,7 +131,7 @@ const ActivitiesScreen = (props:any) => {
             switch(type) {
               case 'create': {
                 dispatch(addChannel(data));
-                dispatch(addMessages(data.lastMessage));
+                dispatch(addMessages(data._id, data.lastMessage));
                 break;
               }
               case 'delete': dispatch(removeChannel(data._id)); break;
@@ -146,7 +146,7 @@ const ActivitiesScreen = (props:any) => {
                 const { room } = data;
                 const { lastMessage } = room;
                 dispatch(addChannel(room));
-                dispatch(addMessages(lastMessage));
+                dispatch(addMessages(room._id, lastMessage));
                 dispatch(addMeeting(data));
                 break;
               };
@@ -154,7 +154,7 @@ const ActivitiesScreen = (props:any) => {
                 const { room = {} } = data;
                 const { lastMessage } = room;
                 if (lastMessage) dispatch(addChannel(room));
-                if (lastMessage) dispatch(addMessages(lastMessage));
+                if (lastMessage) dispatch(addMessages(room._id, lastMessage));
                 dispatch(updateMeeting(data));
                 break;
               }

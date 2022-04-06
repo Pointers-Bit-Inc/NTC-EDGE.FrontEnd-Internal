@@ -76,44 +76,50 @@ export function removeChannel(payload:string) {
   };
 }
 
-export function setMessages(payload:IMessages) {
+export function setMessages(channelId:string, payload:IMessages) {
   return {
     type: SET_MESSAGES,
+    channelId,
     payload,
   };
 }
 
-export function addToMessages(payload:Array<IMessages>) {
+export function addToMessages(channelId:string, payload:Array<IMessages>) {
   return {
     type: ADD_TO_MESSAGES,
+    channelId,
     payload,
   };
 }
 
-export function addMessages(payload:IMessages) {
+export function addMessages(channelId:string, payload:IMessages) {
   return {
     type: ADD_MESSAGES,
+    channelId,
     payload,
   };
 }
 
-export function updateMessages(payload:Array<IMessages>) {
+export function updateMessages(channelId:string, payload:Array<IMessages>) {
   return {
     type: UPDATE_MESSAGES,
+    channelId,
     payload,
   };
 }
 
-export function setSelectedMessage(payload:IMessages) {
+export function setSelectedMessage(channelId:string, payload:IMessages) {
   return {
     type: SET_SELECTED_MESSAGES,
+    channelId,
     payload,
   };
 }
 
-export function removeSelectedMessage() {
+export function removeSelectedMessage(channelId:string) {
   return {
     type: REMOVE_SELECTED_MESSAGES,
+    channelId
   };
 }
 
@@ -144,21 +150,24 @@ export function addPendingMessage (payload:any) {
   const normalized = normalize([payload], new schema.Array(pendingMessageSchema));
   return {
     payload: normalized?.entities?.pendingMessage,
+    channelId: payload.channelId,
     type: ADD_PENDING_MESSAGE,
   };
 }
 
-export function setPendingMessageError (payload:any) {
+export function setPendingMessageError (channelId:string, payload:any) {
   return {
     payload,
+    channelId,
     type: SET_PENDING_MESSAGE_ERROR,
   };
 }
 
-export function removePendingMessage (messageId:string, message:any) {
+export function removePendingMessage (channelId:string, messageId:string, message:any) {
   return {
     messageId,
     message,
+    channelId,
     type: REMOVE_PENDING_MESSAGE,
   };
 }

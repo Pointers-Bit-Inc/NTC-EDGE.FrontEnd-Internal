@@ -12,16 +12,16 @@ import IParticipants from 'src/interfaces/IParticipants';
 import { getChannelName } from 'src/utils/formatting';
 import { ContactItem } from '@components/molecules/list-item'
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal'
-import CreateMeeting from '@components/pages/chat/meeting';
+import CreateMeeting from '@components/pages/chat-modal/meeting';
 import { outline, text } from '@styles/color'
 import AwesomeAlert from 'react-native-awesome-alerts'
 import useApi from 'src/services/api'
 import Loading from '@components/atoms/loading'
-import { removeChannel, updateChannel } from 'src/reducers/channel/actions'
-import AddParticipants from '@components/pages/chat/add-participants'
+import { addChannel, removeChannel, setSelectedChannel, updateChannel } from 'src/reducers/channel/actions'
+import AddParticipants from '@components/pages/chat-modal/add-participants'
 import { InputField } from '@components/molecules/form-fields'
 import useSignalr from 'src/hooks/useSignalr'
-import MessageMember from '@components/pages/chat/message'
+import MessageMember from '@components/pages/chat-modal/message'
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -757,9 +757,15 @@ const ChatInfo = ({ navigation }) => {
       >
         <View style={{ height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
           <MessageMember
-            member={selectedParticipant}
+            members={[selectedParticipant]}
             onClose={() => newMessageModalRef.current?.close()}
-            onSubmit={(res:any) => {}}
+            onSubmit={(res:any) => {
+              res.otherParticipants = lodash.reject(res.participants, (p:IParticipants) => p._id === user._id);
+              dispatch(setSelectedChannel(res));
+              dispatch(addChannel(res));
+              newMessageModalRef.current?.close();
+              setTimeout(() => navigation.navigate('ViewChat', res), 300);
+            }}
           />
         </View>
       </BottomModal>

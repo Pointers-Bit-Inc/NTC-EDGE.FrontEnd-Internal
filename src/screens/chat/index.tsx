@@ -27,7 +27,7 @@ import HomeMenuIcon from "@assets/svg/homemenu";
 import { NewChatIcon } from '@atoms/icon';
 import {Bold, Regular} from "@styles/font";
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
-import NewChat from '@pages/chat/new';
+import NewChat from '@components/pages/chat-modal/new';
 import {fontValue} from "@pages/activities/fontValue";
 import MeetIcon from "@assets/svg/meetIcon";
 import hairlineWidth = StyleSheet.hairlineWidth;
@@ -442,8 +442,9 @@ const onClose = (item:IMeetings, leave = false) => {
                   onPress={() => {
                     dispatch(setSelectedChannel(item));
                     dispatch(setMeetings([]));
-                    if (selectedMessage && selectedMessage.channelId !== item._id) {
-                      dispatch(removeSelectedMessage());
+                    const messageSelected = selectedMessage[item._id] || {}
+                    if (messageSelected && messageSelected.channelId !== item._id) {
+                      dispatch(removeSelectedMessage(messageSelected.channelId));
                     }
                     navigation.navigate('ViewChat', item)
                   }}
