@@ -1,4 +1,14 @@
-import {Dimensions,Image,ImageBackground,InteractionManager,Platform,ScrollView,StatusBar,View} from "react-native";
+import {
+    Dimensions,
+    Image,
+    ImageBackground,
+    InteractionManager,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StatusBar,
+    View
+} from "react-native";
 import Text from "@atoms/text";
 import LoginForm from "@organisms/forms/login";
 import Button from "@atoms/button";
@@ -8,6 +18,7 @@ import React,{useEffect} from "react";
 import {styles} from "@screens/login/styles";
 import {useAuth} from "../../hooks/useAuth";
 import {fontValue} from "@pages/activities/fontValue";
+import useKeyboard from "../../hooks/useKeyboard";
 
 const logo = require('@assets/ntc-edge-horizontal.png');
 const background = require('@assets/background.png');
@@ -16,7 +27,6 @@ const navigationBarHeight = height - Dimensions.get('window').height;
 const Login = ({ navigation }: any) => {
 
     const { loading , formValue , onChangeValue , onCheckValidation , isValid } = useAuth(navigation);
-
 
     return (
         <ImageBackground
@@ -32,7 +42,7 @@ const Login = ({ navigation }: any) => {
                 contentContainerStyle={ { flexGrow : 1 } }
                 showsVerticalScrollIndicator={ false }
             >
-
+               
                 <Image
                     resizeMode="contain"
                     source={ logo }
@@ -51,7 +61,7 @@ const Login = ({ navigation }: any) => {
                                 styles.loginButton ,
                                 {
 
-                                  
+
                                     backgroundColor : loading
                                                       ? button.info
                                                       : isValid

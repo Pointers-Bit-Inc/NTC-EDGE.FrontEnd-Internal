@@ -16,15 +16,15 @@ import {RootStateOrAny, useSelector} from "react-redux";
 import {BASE_URL} from "../../../services/config";
 import NavBar from "@molecules/navbar";
 import {CloseIcon} from "@atoms/icon";
+
 const finderWidth: number = 280;
 const finderHeight: number = 230;
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 const viewMinX = (width - finderWidth) / 2;
 const viewMinY = (height - finderHeight) / 2;
-
-
 export default function QrCodeScan(props: any) {
+
 
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [isVerified, setIsVerified] = useState(false)
@@ -50,8 +50,9 @@ export default function QrCodeScan(props: any) {
         })();
     }, []);
     const handleResponse = async (data: string) => {
-        const query = `${BASE_URL}/applications/scan-qr`
-        await axios.post(query, {qrCode: data}, {headers: {Authorization: "Bearer ".concat(user.sessionToken)}}).then((response) => {
+        const query = `${BASE_URL}/applications/scan-qr?qrCode=${data}`
+
+        await axios.post(query, {params: {qrCode: data}}, {headers: {Authorization: "Bearer ".concat(user.sessionToken)}}).then((response) => {
 
             setVerifiedInfo(response.data)
             setIsLoading(false)
@@ -69,13 +70,17 @@ export default function QrCodeScan(props: any) {
         try {
             setIsLoading(true)
             const {type, data, bounds: {origin} = {}} = scanningResult;
+
             if (!scanned && (origin ? 1: 0)) {
                 if(origin ? 1: 0){
-                    const {x, y}: any = origin;
-                    if (x >= viewMinX && y >= viewMinY && x <= (viewMinX + finderWidth / 2) && y <= (viewMinY + finderHeight / 2)) {
-                        handleResponse(data)
-                        return;
+
+                    for(let i=0; i< origin.length; i++){
+                        if (origin[i]?.x >= viewMinX && origin[i]?.y >= viewMinY && origin[i]?.x <= (viewMinX + finderWidth / 2) && origin[i]?.y <= (viewMinY + finderHeight / 2)){
+                            handleResponse(data)
+                            return;
+                        }
                     }
+
                 }
             }
             handleResponse(data);
@@ -109,7 +114,7 @@ export default function QrCodeScan(props: any) {
                 if (!err) {
                     if(!r.uri) return setIsLoading(false)
                     const results = await BarCodeScanner.scanFromURLAsync(r?.uri)
-                    const query = `${BASE_URL}/applications/scan-qr`
+                    const query = `${BASE_URL}/applications/scan-qr?qrCode=${results[0]?.data}`
                     axios.post(query, {qrCode: results[0]?.data}, { headers: { Authorization: "Bearer ".concat(user.sessionToken) } }).then((response) =>{
                         setIsLoading(false)
                         setIsVerified(true)
