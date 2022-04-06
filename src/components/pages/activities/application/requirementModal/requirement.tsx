@@ -90,7 +90,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
             <View style={[requirementStyles.cardDocument]}>
 
 
-                {<TouchableOpacity disabled={this.state.onLoadStart||this.state.extension} ref={image=>(
+                {<TouchableOpacity disabled={this.state.onLoadStart&&!this.state.extension} ref={image=>(
                     this.state.image=image)}
                                    onPress={this._showImage} style={{
                     alignItems:"center",
@@ -106,7 +106,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
             </View>
 
             <View style={{alignItems:isMobile ? "center" : undefined}}>
-                <TouchableOpacity disabled={this.state.onLoadStart||this.state.extension} ref={image=>{
+                <TouchableOpacity disabled={this.state.onLoadStart&&!this.state.extension} ref={image=>{
                     this.state.image=image
                 }}
                                   onPress={this._showImage}>
@@ -288,15 +288,14 @@ const Requirement=(props:any)=>{
 
                         <ScrollView style={{flex:1,}}>
                             {
-                                /*[{
+                                [{
                                     "original": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
                                     "thumb": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
                                     "small": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
                                     "medium": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
                                     "large": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
                                     "xlarge": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf"
-                                }]*/
-                                requirement?.links?.map((link:any,idx:number)=>{
+                                }]?.map((link:any,idx:number)=>{
                                     return <RequirementView dimensions={dimensions}
                                                             rightLayoutComponent={rightLayoutComponent} key={idx}
                                                             requirement={link}/>
