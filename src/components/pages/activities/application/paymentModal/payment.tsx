@@ -55,8 +55,9 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
                     pageY:pageY||0
                 }
             });
-            this._showImageModal();
+
         });
+        this._showImageModal();
     };
 
     componentDidUpdate(prevProps,prevState){
@@ -90,7 +91,7 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
                 })
             }}>
                 {this.props.proofOfPayment?.small&&
-                <TouchableOpacity disabled={this.state.onLoadStart||this.state.extension} ref={image=>(
+                <TouchableOpacity disabled={this.state.onLoadStart&&!this.state.extension} ref={image=>(
                     this.state.image=image)}
                                   onPress={this._showImage}>
                     <View style={{
@@ -122,7 +123,7 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
                 </TouchableOpacity>
                 }
                 <View style={{justifyContent:"center",alignItems:"center"}}>
-                    <TouchableOpacity disabled={this.state.onLoadStart||this.state.extension} ref={image=>(
+                    <TouchableOpacity disabled={this.state.onLoadStart&& !this.state.extension} ref={image=>(
                         this.state.image=image)}
                                       onPress={this._showImage}>
                         {
@@ -148,30 +149,35 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
 
 
             <Modal visible={this.state.visible} transparent onRequestClose={this._hideImageModal}>
-                <View style={styles.container}>
-                    <View style={styles.rect2}>
-                        <View style={{alignSelf:'flex-end',paddingHorizontal:15,paddingVertical:15}}>
-                            <TouchableOpacity onPress={this._hideImageModal}>
-                                <Text style={styles.close}>Close</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
 
-                    {(
-                         /(pdf|docx|doc)$/ig.test(this.state.fileName.substr((
-                             this.state.fileName.lastIndexOf('.')+1)))&&isMobile) ?
-                     <PdfViewr requirement={this.props?.proofOfPayment}/> : <View style={{top: -120}}>
-                         <AnimatedImage
+                <View style={styles.rect2}>
+                        <TouchableOpacity onPress={this._hideImageModal}>
+                            <Text style={styles.close}>Close</Text>
+                        </TouchableOpacity>
+                </View>
+                <View style={[styles.container, {backgroundColor: (
+                        /(pdf|docx|doc)$/ig.test(this.state.fileName.substr((
+                            this.state.fileName.lastIndexOf('.')+1)))&&isMobile) ? "rgba(0,0,0,0.5)" : undefined ,}]}>
 
-                             ref={imageModal=>(
-                                 this.state.imageModal=imageModal)}
-                             source={this.state.source}
-                             sourceMeasure={this.state._sourceMeasure}
-                             imageSize={this.state._imageSize}
-                             onClose={this._hideImageModal}
-                             animationDuration={200}
-                         />
-                     </View>}
+
+                          {(
+                               /(pdf|docx|doc)$/ig.test(this.state.fileName.substr((
+                                   this.state.fileName.lastIndexOf('.')+1)))&&isMobile) ?
+                           <View style={{width: "100%", height: "80%", top: 80}}>
+                               <PdfViewr  requirement={this.props?.proofOfPayment}/>
+                           </View>
+                           :
+                           <AnimatedImage
+
+                               ref={imageModal=>(
+                                   this.state.imageModal=imageModal)}
+                               source={this.state.source}
+                               sourceMeasure={this.state._sourceMeasure}
+                               imageSize={this.state._imageSize}
+                               onClose={this._hideImageModal}
+                               animationDuration={200}
+                           />}
+
 
                 </View>
             </Modal>
@@ -188,10 +194,12 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
                 /(pdf|docx|doc)$/ig.test(_fileName.substr((
                     _fileName.lastIndexOf('.')+1)))),
         });
-        Image.prefetch(this.props?.proofOfPayment?.medium||"https://dummyimage.com/350x350/fff/aaa")
+        Image.prefetch(this.props?.proofOfPayment?.medium)
         .then(()=>{
+
             this.setState({onLoadStart:false});
-            Image.getSize(this.props?.proofOfPayment?.medium||"https://dummyimage.com/350x350/fff/aaa",(width,height)=>{
+            Image.getSize(this.props?.proofOfPayment?.medium,(width,height)=>{
+                
                 this.setState({
                     ...this.state,
                     source:{
@@ -210,6 +218,7 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
 
                 this.setState({onLoadStart:false})
             },error=>{
+                console.log("exit image prefetch")
                 this.setState({
                     ...this.state,
                     source:{
@@ -428,7 +437,7 @@ const Payment=(props:any)=>{
                                         borderRadius:5
                                     }}
                                     horizontal={isMobile ? false : true}
-                                    data={props?.proofOfPayment}
+                                    data={props.proofOfPayment}
                                     keyExtractor={item=>item.id}
                                     renderItem={({item,index})=>(
                                         <ProofPaymentView proofOfPayment={item}/>

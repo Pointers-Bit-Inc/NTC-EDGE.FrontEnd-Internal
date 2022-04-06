@@ -57,13 +57,13 @@ export const styles = StyleSheet.create({
     container : {
         flex : 1 ,
 
-
     } ,
     group7 : {} ,
     rect2 : {
         zIndex : 3 ,
+        alignSelf:'flex-end',paddingHorizontal:15,paddingVertical:15,
+        position: "absolute"
 
-        backgroundColor : "rgba(0,0,0,0.5)"
     } ,
     close : {
          fontWeight: "bold",

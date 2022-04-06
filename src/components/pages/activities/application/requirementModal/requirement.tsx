@@ -1,5 +1,5 @@
 import React from "react";
-import {Dimensions,Image,Modal,ScrollView,Text,TouchableOpacity,useWindowDimensions,View} from "react-native";
+import {Dimensions,Image,Modal,Platform,ScrollView,Text,TouchableOpacity,useWindowDimensions,View} from "react-native";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles,styles} from "@pages/activities/application/requirementModal/styles";
 import AnimatedImage from 'react-native-animated-image-viewer';
@@ -20,6 +20,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
     state={
         onLoadStart:true,
         zoomed:false,
+        scale: false,
         count:1,
         onLoad:false,
         visible:false,
@@ -172,14 +173,14 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                    requirement={this.props?.requirement}/> : (
                              isMobile||this.props.dimensions?.width<768 ?<AnimatedImage
 
-                                                                                ref={imageModal=>(
-                                                                                    this.state.imageModal=imageModal)}
-                                                                                source={this?.state?.source}
-                                                                                sourceMeasure={this.state?._sourceMeasure}
-                                                                                imageSize={this.state?._imageSize||{height:300,width:300}}
-                                                                                onClose={this._hideImageModal}
-                                                                                animationDuration={200}
-                                                                            /> :
+                                                                            ref={imageModal=>(
+                                                                                this.state.imageModal=imageModal)}
+                                                                            source={this?.state?.source}
+                                                                            sourceMeasure={this.state?._sourceMeasure}
+                                                                            imageSize={this.state?._imageSize||{height:300,width:300}}
+                                                                            onClose={this._hideImageModal}
+                                                                            animationDuration={200}
+                                                                        /> :
                                  //height = height * (this.state._imageSize.height / width)
 
                              <ImageZoom onSwipeDown={this._hideImageModal} enableSwipeDown={true}
@@ -189,12 +190,16 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                         imageWidth={this.props?.rightLayoutComponent?.width}
                                         imageHeight={height*(
                                             this.state._imageSize?.height/width)}>
-                                 <View style={{top: -60, alignItems: "center"}}>
+                                 <View style={{...Platform.select({native:{top: -60}, default: {}}), alignItems: "center"}}>
                                      <Image style={{
-
-                                         width:this.state._imageSize.width/2,
-                                         height:(
-                                             this.state._imageSize.height/width)-60
+                                         /* transform:[
+                                              {
+                                                  scale: 0.5
+                                              }
+                                          ],*/
+                                         width: this.state._imageSize.width/1.5,
+                                         height:height*(
+                                             this.state._imageSize.height/width)
                                      }}
                                             resizeMode={"contain"}
                                             source={this?.state?.source}/>
@@ -221,10 +226,11 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                 /(pdf|docx|doc)$/ig.test(_fileName.substr((
                     _fileName.lastIndexOf('.')+1)))),
         });
-        Image.prefetch(this.props?.requirement?.medium||"https://dummyimage.com/350x350/fff/aaa")
+        Image.prefetch(this.props?.requirement?.medium)
         .then(()=>{
             this.setState({onLoadStart:false});
-            Image.getSize(this.props?.requirement?.medium||"https://dummyimage.com/350x350/fff/aaa",(width,height)=>{
+            Image.getSize(this.props?.requirement?.medium,(width,height)=>{
+                console.log("image height", width, height, Dimensions.get("screen") )
                 this.setState({
                     ...this.state,
                     source:{
@@ -234,7 +240,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                 });
                 this.setState({
                     _imageSize:{
-                        width:width||300,
+                        width: Dimensions.get("screen").height * width/height,
                         height:height||300
                     }
                 });
