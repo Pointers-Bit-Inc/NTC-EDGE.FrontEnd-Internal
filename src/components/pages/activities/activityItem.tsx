@@ -14,16 +14,9 @@ import {
 } from "@pages/activities/script";
 
 import {
-    ACCOUNTANT ,
     APPROVED ,
     CASHIER ,
     DECLINED ,
-    DIRECTOR ,
-    EVALUATOR ,
-    FORAPPROVAL ,
-    FOREVALUATION ,
-    FORVERIFICATION ,
-    PENDING
 } from "../../../reducers/activity/initialstate";
 import {outline} from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
@@ -184,11 +177,11 @@ const RenderApplication = ({ applicationType }: any) => {
             >
                 { isMobile ? applicationType : (
                                                    (
-                                                       applicationType).length > 30) ?
+                                                       applicationType).length > 25) ?
                                                (
                                                    (
                                                        (
-                                                           applicationType).substring(0 , 30 - 3)) + '...') :
+                                                           applicationType).substring(0 , 25 - 3)) + '...') :
                                                applicationType }
             </Text>
         </View>

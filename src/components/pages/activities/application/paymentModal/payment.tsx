@@ -84,8 +84,7 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
 
                     },
                     default:{
-                        paddingRight:30,
-                        paddingVertical:10
+
                     }
 
                 })
@@ -95,15 +94,6 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
                     this.state.image=image)}
                                   onPress={this._showImage}>
                     <View style={{
-                        ...Platform.select({
-                            native: {
-                                padding: 15,
-                               justifyContent: "flex-start"
-                            },
-                            default: {
-                                justifyContent:"center",
-                            }
-                        }),
 
                         alignItems:"center",
                         flex:1,
@@ -122,7 +112,7 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
                     </View>
                 </TouchableOpacity>
                 }
-                <View style={{justifyContent:"center",alignItems:"center"}}>
+                <View style={{justifyContent:"center",...Platform.select({native: {alignItems: "center"}, default: {alignItems: "flex-start"}})}}>
                     <TouchableOpacity disabled={this.state.onLoadStart&& !this.state.extension} ref={image=>(
                         this.state.image=image)}
                                       onPress={this._showImage}>
@@ -428,8 +418,9 @@ const Payment=(props:any)=>{
                                 })}}>
                                 <FlatList
                                     style={{
-                                       
 
+                                        padding:15,
+                                        paddingVertical:10,
                                         flex:1,
                                         borderColor:"#ECECEC",
                                         borderWidth:1,
