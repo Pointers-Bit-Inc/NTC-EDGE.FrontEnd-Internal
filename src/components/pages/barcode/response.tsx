@@ -2,13 +2,14 @@ import {ScrollView,Text,Animated,TouchableOpacity,View,Modal} from "react-native
 import CheckMarkIcon from "@assets/svg/checkmark";
 import CloseIcon from "@assets/svg/close";
 import ErrorIcon from "@assets/svg/erroricon";
-import React from "react";
+import React,{useEffect} from "react";
 import ProfileImage from "@components/atoms/image/profile";
 import dayjs from "dayjs";
 import {styles} from "@pages/barcode/styles";
 import {useAlert} from "../../../hooks/useAlert";
 import EvaluationStatus from "@assets/svg/evaluationstatus";
 import {fontValue} from "@pages/activities/fontValue";
+import moment from "moment";
 export function Response(props: { verifiedInfo: any, verified: boolean, onPress: () => void, error: boolean, onPress1: () => void }) {
     const getFullName = (user) => {
         return `${user?.firstName} ${user?.middleName} ${user?.lastName}`;
@@ -22,7 +23,12 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
         if (province) result += `, ${province}`;
         return result;
     }
-    console.log('props.verifiedInfo?.applicant', props.verifiedInfo);
+    const applicant =  props?.verifiedInfo?.application?.applicant;
+    const schedule =  props?.verifiedInfo?.application?.schedule;
+    const approvalHistory =  props?.verifiedInfo?.application?.approvalHistory;
+    useEffect(()=>{
+        console.log(approvalHistory[0] || approvalHistory )
+    }, [])
     return <>
         <Modal
             animationType="slide"
@@ -61,8 +67,8 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                             style={{ borderRadius: 5, alignSelf: 'center' }}
                             size={130}
                             textSize={50}
-                            image={props.verifiedInfo?.applicant?.user?.profilePicture?.small}
-                            name={`${props.verifiedInfo?.applicant?.user?.firstName} ${props.verifiedInfo?.applicant?.user?.lastName}`}
+                            image={applicant?.profilePicture?.small}
+                            name={`${applicant?.firstName} ${applicant?.lastName}`}
                         />
                         <View style={[{ paddingHorizontal: 10, paddingVertical: 15 }]}>
                             <View style={[styles.group17]}>
@@ -72,7 +78,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                                         <Text style={styles.name2}>{'Name: '}</Text>
                                     </View>
                                     <View style={{ flex: 0.9 }}>
-                                        <Text style={styles.name3}>{getFullName(props.verifiedInfo?.applicant?.user)}</Text>
+                                        <Text style={styles.name3}>{getFullName(applicant)}</Text>
                                     </View>
                                 </View>
                                 <View style={styles.group18}>
@@ -80,7 +86,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                                         <Text style={styles.address2}>{'Address: '}</Text>
                                     </View>
                                     <View style={{ flex: 0.9 }}>
-                                        <Text style={styles.address3}>{getFullAddress(props.verifiedInfo?.applicant)}</Text>
+                                        <Text style={styles.address3}>{getFullAddress(applicant?.address)}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -91,7 +97,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                                         <Text style={styles.name2}>{'Venue: '}</Text>
                                     </View>
                                     <View style={{ flex: 0.9 }}>
-                                        <Text style={styles.name3}>{props?.verifiedInfo?.examDetails?.venue}</Text>
+                                        <Text style={styles.name3}>{schedule?.venue}</Text>
                                     </View>
                                 </View>
                                 <View style={styles.group18}>
@@ -99,7 +105,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                                         <Text style={styles.address2}>{'Date: '}</Text>
                                     </View>
                                     <View style={{ flex: 0.9 }}>
-                                        <Text style={styles.address3}>{props?.verifiedInfo?.examDetails?.examDate}</Text>
+                                        <Text style={styles.address3}>{dayjs(schedule?.dateEnd).format('MM/DD/YY') }</Text>
                                     </View>
                                 </View>
                                 <View style={styles.group18}>
@@ -107,7 +113,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                                         <Text style={styles.address2}>{'Time: '}</Text>
                                     </View>
                                     <View style={{ flex: 0.9 }}>
-                                        <Text style={styles.address3}>{props?.verifiedInfo?.examDetails?.examTime}</Text>
+                                        <Text style={styles.address3}>{`${moment(schedule?.dateStart).format('hh:mm:ss a')} - ${moment(schedule?.dateEnd)?.format('hh:mm:ss a')}`}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -118,7 +124,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                                         <Text style={styles.name2}>{'O.R. No.: '}</Text>
                                     </View>
                                     <View style={{ flex: 0.9 }}>
-                                        <Text style={styles.name3}>{props?.verifiedInfo?.ORNumber}</Text>
+                                        <Text style={styles.name3}>{props?.verifiedInfo?.application?.ORNumber}</Text>
                                     </View>
                                 </View>
                                 <View style={styles.group18}>
@@ -126,7 +132,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                                         <Text style={styles.address2}>{'Amount: '}</Text>
                                     </View>
                                     <View style={{ flex: 0.9 }}>
-                                        <Text style={styles.address3}>PHP {parseFloat(props?.verifiedInfo?.totalFee || 0).toFixed(2)}</Text>
+                                        <Text style={styles.address3}>PHP {parseFloat(props?.verifiedInfo?.application?.totalFee || 0).toFixed(2)}</Text>
                                     </View>
                                 </View>
                                 <View style={styles.group18}>
@@ -134,7 +140,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                                         <Text style={styles.address2}>{'Date: '}</Text>
                                     </View>
                                     <View style={{ flex: 0.9 }}>
-                                        <Text style={styles.address3}>{props?.verifiedInfo?.approvalHistory?.status === 'Approved' ?  dayjs(props?.verifiedInfo?.approvalHistory?.time).format('MM/DD/YY') : null}</Text>
+                                        <Text style={styles.address3}>{(approvalHistory[0] || approvalHistory )?.status === 'Approved' ?  dayjs((approvalHistory?.[0] || approvalHistory )?.time).format('MM/DD/YY') : null}</Text>
                                     </View>
                                 </View>
                             </View>
