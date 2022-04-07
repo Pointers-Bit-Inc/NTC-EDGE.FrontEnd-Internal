@@ -487,7 +487,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
 
   const renderList = () => {
     if (isGroup || !lodash.size(participants) || searchValue || isFocused) {
-
+        
       return (
         <FlatList
           data={contacts}

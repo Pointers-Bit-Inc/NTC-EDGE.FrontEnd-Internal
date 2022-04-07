@@ -352,7 +352,6 @@ export default function ActivitiesPage(props: any) {
                                 index={ index }
 
                                 element={ (activity: any , i: number) => {
-
                                     return (
 
                                         <ActivityItem
