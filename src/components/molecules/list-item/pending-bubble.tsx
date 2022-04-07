@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     borderRadius: fontValue(12),
     width: fontValue(12),
     height: fontValue(12),
-    borderColor: outline.info,
+    borderColor: outline.error,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -97,7 +97,8 @@ interface Props {
   messageId?: string;
   messageType?: string;
   channelId?: string;
-  data?: any;
+  groupName?: string;
+  participants?: any;
   error?: boolean;
   maxWidth?: any;
   style?: any;
@@ -113,6 +114,8 @@ const PendingBubble:FC<Props> = ({
   messageId = '',
   messageType = 'text',
   channelId = '',
+  groupName = '',
+  participants = [],
   attachment = {},
   error = false,
   maxWidth = '60%',
@@ -146,10 +149,16 @@ const PendingBubble:FC<Props> = ({
       formData.append('file', file);
     }
 
-    formData.append('roomId', channelId);
     formData.append('message', message);
     
-    onSendMessage(formData, messageId, config);
+    if (!channelId) {
+      formData.append('name', groupName);
+      formData.append('participants', JSON.stringify(participants));
+    } else {
+      formData.append('roomId', channelId);
+    }
+
+    onSendMessage(formData, messageId, config, !channelId);
 
     return () => {
       controller.abort();
@@ -222,15 +231,23 @@ const PendingBubble:FC<Props> = ({
             )
           }
         </View>
-        <Progress.Circle
-          style={styles.progress}
-          size={fontValue(12)}
-          progress={progress}
-          thickness={1.5}
-          borderWidth={0}
-          color={outline.info}
-          unfilledColor={outline.default}
-        />
+        {
+          error ? (
+            <View
+              style={[styles.check]}
+            />
+          ) : (
+            <Progress.Circle
+              style={styles.progress}
+              size={fontValue(12)}
+              progress={progress}
+              thickness={1.5}
+              borderWidth={0}
+              color={outline.info}
+              unfilledColor={outline.default}
+            />
+          )
+        }
       </View>
     </TouchableOpacity>
   )

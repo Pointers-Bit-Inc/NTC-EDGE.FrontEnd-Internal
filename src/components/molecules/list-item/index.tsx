@@ -6,6 +6,7 @@ import PendingBubble from './pending-bubble';
 import GroupBubble from './group-bubble';
 import MeetingNotif from './meeting-notif';
 import ListFooter from './list-footer';
+import FileItem from './files';
 
 export {
   ChatItem,
@@ -16,4 +17,5 @@ export {
   GroupBubble,
   MeetingNotif,
   ListFooter,
+  FileItem,
 };

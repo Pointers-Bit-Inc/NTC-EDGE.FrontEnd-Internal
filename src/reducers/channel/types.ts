@@ -14,6 +14,11 @@ export default keyMirror({
   UPDATE_MESSAGES: null,
   REMOVE_MESSAGES: null,
 
+  SET_FILES: null,
+  ADD_TO_FILES: null,
+  ADD_FILES: null,
+  UPDATE_FILES: null,
+
   SET_SELECTED_MESSAGES: null,
   REMOVE_SELECTED_MESSAGES: null,
 

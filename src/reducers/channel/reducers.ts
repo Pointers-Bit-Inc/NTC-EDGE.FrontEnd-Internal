@@ -14,6 +14,11 @@ const {
   ADD_MESSAGES,
   UPDATE_MESSAGES,
 
+  SET_FILES,
+  ADD_TO_FILES,
+  ADD_FILES,
+  UPDATE_FILES,
+
   SET_SELECTED_MESSAGES,
   REMOVE_SELECTED_MESSAGES,
   ADD_MEETING_CHANNEL,
@@ -108,6 +113,46 @@ export default function basket(state = initialState, action:any) {
         newState = newState.setIn(['channelMessages', action.channelId, 'messages', action.payload._id], action.payload)
         .setIn(['selectedChannel', 'lastMessage'], action.payload)
         .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
+
+        if (action.payload.deleted) {
+          newState = newState.removeIn(['files', action.payload._id]);
+        }
+      }
+
+      if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
+          newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+          .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt);
+      }
+
+      return newState;
+    }
+    case SET_FILES: {
+      return state.setIn(['files'], action.payload);
+    }
+    case ADD_TO_FILES: {
+      return state.setIn(['files'], {...state.files, ...action.payload});
+    }
+    case ADD_FILES: {
+      let newState = state;
+
+      if (state.selectedChannel._id === action.payload.roomId) {
+        newState = newState.setIn(['files', action.payload._id], action.payload)
+        .setIn(['selectedChannel', 'lastMessage'], action.payload)
+        .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
+      }
+
+      newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+      .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+
+      return newState;
+    }
+    case UPDATE_FILES: {
+      let newState = state;
+
+      if (state.selectedChannel._id === action.payload.roomId) {
+        newState = newState.setIn(['files', action.payload._id], action.payload)
+        .setIn(['selectedChannel', 'lastMessage'], action.payload)
+        .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
       }
 
       if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
@@ -147,6 +192,7 @@ export default function basket(state = initialState, action:any) {
         .setIn(['normalizedMessages'], {})
         .setIn(['channelMessages'], {})
         .setIn(['selectedMessage'], {})
+        .setIn(['files'], {})
         .setIn(['meetingList'], [])
         .setIn(['searchValue'], '');
     }

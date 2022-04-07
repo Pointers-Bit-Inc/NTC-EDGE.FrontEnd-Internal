@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     borderColor: '#34C759',
     borderWidth: isMobile ? RFValue(2) : 2,
+    overflow: 'hidden',
   }
 });
 

@@ -7,6 +7,7 @@ const InitialState = Record({
   normalizedChannelList: {},
   messages: [],
   normalizedMessages: {},
+  files: {},
   selectedMessage: {},
   meetingList: [],
   normalizedMeetingList: {},

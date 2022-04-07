@@ -764,7 +764,7 @@ const ChatInfo = ({ navigation }) => {
               dispatch(setSelectedChannel(res));
               dispatch(addChannel(res));
               newMessageModalRef.current?.close();
-              setTimeout(() => navigation.navigate('ViewChat', res), 300);
+              setTimeout(() => navigation.navigate('ViewChat', res), 500);
             }}
           />
         </View>

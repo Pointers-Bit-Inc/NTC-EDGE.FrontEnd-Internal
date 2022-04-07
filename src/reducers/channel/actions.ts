@@ -18,6 +18,11 @@ const {
   ADD_MESSAGES,
   UPDATE_MESSAGES,
 
+  SET_FILES,
+  ADD_TO_FILES,
+  ADD_FILES,
+  UPDATE_FILES,
+
   SET_SELECTED_MESSAGES,
   REMOVE_SELECTED_MESSAGES,
   ADD_MEETING_CHANNEL,
@@ -150,7 +155,7 @@ export function addPendingMessage (payload:any) {
   const normalized = normalize([payload], new schema.Array(pendingMessageSchema));
   return {
     payload: normalized?.entities?.pendingMessage,
-    channelId: payload.channelId,
+    channelId: payload.channelId || 'temp',
     type: ADD_PENDING_MESSAGE,
   };
 }
@@ -158,7 +163,7 @@ export function addPendingMessage (payload:any) {
 export function setPendingMessageError (channelId:string, payload:any) {
   return {
     payload,
-    channelId,
+    channelId: channelId || 'temp',
     type: SET_PENDING_MESSAGE_ERROR,
   };
 }
@@ -167,7 +172,7 @@ export function removePendingMessage (channelId:string, messageId:string, messag
   return {
     messageId,
     message,
-    channelId,
+    channelId: channelId || 'temp',
     type: REMOVE_PENDING_MESSAGE,
   };
 }
@@ -175,6 +180,34 @@ export function removePendingMessage (channelId:string, messageId:string, messag
 export function resetPendingMessages () {
   return {
     type: RESET_PENDING_MESSAGES,
+  };
+}
+
+export function setFiles(payload:IMessages) {
+  return {
+    type: SET_FILES,
+    payload,
+  };
+}
+
+export function addToFiles(payload:Array<IMessages>) {
+  return {
+    type: ADD_TO_FILES,
+    payload,
+  };
+}
+
+export function addFiles(payload:IMessages) {
+  return {
+    type: ADD_FILES,
+    payload,
+  };
+}
+
+export function updateFiles(payload:Array<IMessages>) {
+  return {
+    type: UPDATE_FILES,
+    payload,
   };
 }
 

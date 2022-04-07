@@ -8,7 +8,7 @@ import useApi from 'src/services/api';
 import { normalize, schema } from 'normalizr';
 import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
 import { addMeeting, updateMeeting, setConnectionStatus } from 'src/reducers/meeting/actions';
-import { addMessages, updateMessages, addChannel, removeChannel, updateChannel } from 'src/reducers/channel/actions';
+import { addMessages, updateMessages, addChannel, removeChannel, updateChannel, addFiles } from 'src/reducers/channel/actions';
 
 const useSignalr = () => {
   const dispatch = useDispatch();
@@ -45,6 +45,7 @@ const useSignalr = () => {
       switch(type) {
         case 'create': {
           dispatch(addMessages(data.roomId, data));
+          if (data?.attachment !== null) dispatch(addFiles(data));
           break;
         }
         case 'update': {
@@ -61,6 +62,7 @@ const useSignalr = () => {
         case 'create': {
           dispatch(addChannel(data));
           if (data.lastMessage) dispatch(addMessages(data._id, data.lastMessage));
+          if (data?.lastMessage?.attachment !== null) dispatch(addFiles(data.lastMessage));
           break;
         }
         case 'update': {
@@ -96,12 +98,8 @@ const useSignalr = () => {
     }
   };
 
-  const createChannel = useCallback(({ participants, name, message }, callback = () => {}) => {
-    api.post('/rooms', {
-      participants,
-      name,
-      message,
-    })
+  const createChannel = useCallback((payload, callback = () => {}, config = {}) => {
+    api.post('/rooms', payload, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -215,8 +213,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getMessages = useCallback((channelId, pageIndex, callback = () => {}) => {
-    api.get(`/messages?roomId=${channelId}&pageIndex=${pageIndex}`)
+  const getMessages = useCallback((channelId, pageIndex, file = false, callback = () => {}) => {
+    api.get(`/messages?roomId=${channelId}&pageIndex=${pageIndex}&file=${file}`)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(messageSchema));

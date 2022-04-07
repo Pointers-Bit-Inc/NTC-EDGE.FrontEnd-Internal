@@ -224,18 +224,26 @@ const MessageMember = ({ members = [], onClose = () => {}, onSubmit = () => {} }
     }
   }, [participants]);
 
-  const onNext = (message:string) => {
-    if (participants) {
-      setNextLoading(true);
-      createChannel({ participants, name: groupName, message }, (err:any, res:any) => {
-        setNextLoading(false);
-        if (res) {
-          onSubmit(res);
-        }
-        if (err) {
-          console.log('ERROR', err);
-        }
-      });
+  const onNext = (message:string, channelData = null) => {
+    if (channelData) {
+      onSubmit(channelData);
+    } else {
+      if (participants) {
+        setNextLoading(true);
+        const formData = new FormData();
+        formData.append('name', groupName);
+        formData.append('message', message);
+        formData.append('participants', JSON.stringify(participants));
+        createChannel(formData, (err:any, res:any) => {
+          setNextLoading(false);
+          if (res) {
+            onSubmit(res);
+          }
+          if (err) {
+            console.log('ERROR', err);
+          }
+        });
+      }
     }
   }
 
@@ -354,8 +362,9 @@ const MessageMember = ({ members = [], onClose = () => {}, onSubmit = () => {} }
         channelId={selectedChannel?._id}
         otherParticipants={lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id)}
         isGroup={selectedChannel.isGroup}
+        groupName={groupName}
         lastMessage={selectedChannel.lastMessage}
-        onNext={(message:string) => onNext(message)}
+        onNext={(message:string, data:any) => onNext(message, data)}
         participants={participants}
       />
       <AwesomeAlert

@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 1 : 0,
   },
   circle: {
-    backgroundColor: button.primary,
+    backgroundColor: button.info,
     borderRadius: 28,
     width: 28,
     height: 28,
@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
 interface Props {
   channelId: string,
   isGroup: boolean,
+  groupName: string,
   lastMessage: IMessages,
   otherParticipants: Array<IParticipants>,
   onNext: Function;
@@ -122,6 +123,7 @@ const ChatView: FC<Props> = ({
   otherParticipants = [],
   onNext = () => {},
   participants = [],
+  groupName = '',
 }) => {
   const dispatch = useDispatch();
   const {
@@ -144,11 +146,23 @@ const ChatView: FC<Props> = ({
   const [showAttachmentOption, setShowAttachmentOption] = useState(false);
   const Height = useRef(new Animated.Value(0));
   
-  const _sendMessage = (channelId:string, inputText:string) => {
+  const _sendMessage = (channelId:string, inputText:string, groupName = '', participants:any = []) => {
     dispatch(addPendingMessage({
       channelId: channelId,
       message: inputText,
+      groupName,
+      participants,
       messageType: 'text',
+    }));
+  }
+
+  const _sendFile = (channelId:string, attachment:any, groupName = '', participants:any = []) => {
+    dispatch(addPendingMessage({
+      attachment,
+      channelId,
+      groupName,
+      participants,
+      messageType: 'file'
     }));
   }
 
@@ -167,18 +181,14 @@ const ChatView: FC<Props> = ({
     if (!inputText || lodash.size(participants) === 0) {
       return;
     }
-    if (!channelId) {
-      _sendMessage(channelId, inputText);
-      setInputText('');
-      setTimeout(() => onNext(inputText), 500);
+    if (selectedMessage?._id) {
+      _editMessage(selectedMessage._id, inputText);
+      inputRef.current?.blur();
+      dispatch(removeSelectedMessage(channelId))
     } else {
-      if (selectedMessage?._id) {
-        _editMessage(selectedMessage?._id, inputText);
-        dispatch(removeSelectedMessage(channelId))
-      } else {
-        _sendMessage(channelId, inputText);
-        setInputText('');
-      }
+      _sendMessage(channelId, inputText, groupName, participants);
+      inputRef.current?.blur();
+      setInputText('');
     }
   }, [channelId, inputText])
 
@@ -193,11 +203,12 @@ const ChatView: FC<Props> = ({
 
   useEffect(() => {
     if (lodash.size(selectedFile)) {
-      dispatch(addPendingMessage({
-        attachment: selectedFile,
+      _sendFile(
         channelId,
-        messageType: 'file'
-      }))
+        selectedFile,
+        groupName,
+        participants
+      );
     }
   }, [selectedFile]);
 
@@ -242,14 +253,15 @@ const ChatView: FC<Props> = ({
               isGroup={isGroup}
               lastMessage={lastMessage}
               otherParticipants={otherParticipants}
+              onNext={onNext}
             />
           )
         }
       </View>
       <Animated.View style={[styles.keyboardAvoiding, { marginBottom: Height.current }]}>
         <View style={{ marginTop: RFValue(-18) }}>
-          <TouchableOpacity disabled={true} onPress={onShowAttachmentOption}>
-            <View style={[styles.plus, { backgroundColor: '#D1D1D6' }]}>
+          <TouchableOpacity onPress={showAttachmentOption ? onHideAttachmentOption : onShowAttachmentOption}>
+            <View style={[styles.plus, showAttachmentOption && { transform: [{ rotateZ: '0.785398rad' }] }]}>
               <PlusIcon
                 color="white"
                 size={RFValue(12)}

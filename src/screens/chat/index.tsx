@@ -477,7 +477,7 @@ const onClose = (item:IMeetings, leave = false) => {
               dispatch(setSelectedChannel(res));
               dispatch(addChannel(res));
               modalRef.current?.close();
-              setTimeout(() => navigation.navigate('ViewChat', res), 300);
+              setTimeout(() => navigation.navigate('ViewChat', res), 500);
             }}
           />
         </View>

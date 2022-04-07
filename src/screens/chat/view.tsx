@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   circle: {
-    backgroundColor: button.primary,
+    backgroundColor: button.info,
     borderRadius: 28,
     width: 28,
     height: 28,
@@ -428,8 +428,8 @@ const ChatView = ({ navigation, route }:any) => {
           >
             <View style={styles.keyboardAvoiding}>
               <View style={{ marginTop: RFValue(-18) }}>
-                <TouchableOpacity disabled={true} onPress={onShowAttachmentOption}>
-                  <View style={[styles.plus, { backgroundColor: '#D1D1D6' }]}>
+                <TouchableOpacity onPress={showAttachmentOption ? onHideAttachmentOption : onShowAttachmentOption}>
+                  <View style={[styles.plus, showAttachmentOption && { transform: [{ rotateZ: '0.785398rad' }] }]}>
                     <PlusIcon
                       color="white"
                       size={RFValue(12)}

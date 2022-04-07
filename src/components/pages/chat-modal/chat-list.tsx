@@ -12,7 +12,9 @@ import {
   setSelectedMessage,
   setPendingMessageError,
   removePendingMessage,
-  addMessages
+  addMessages,
+  setSelectedChannel,
+  addChannel
 } from 'src/reducers/channel/actions';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import Text from '@atoms/text';
@@ -25,6 +27,7 @@ import { Regular, Regular500 } from '@styles/font';
 import IMessages from 'src/interfaces/IMessages';
 import IParticipants from 'src/interfaces/IParticipants';
 import NoConversationIcon from "@assets/svg/noConversations";
+import { useNavigation } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   button: {
@@ -84,24 +87,31 @@ interface Props {
   channelId: string;
   isGroup: boolean;
   lastMessage: IMessages | {};
-  otherParticipants: Array<IParticipants>
+  otherParticipants: Array<IParticipants>;
+  onNext: Function;
 }
 
-const List: FC<Props> = ({ channelId = '', isGroup = false, lastMessage = {}, otherParticipants = [] }) => {
+const List: FC<Props> = ({
+  channelId = '',
+  isGroup = false,
+  lastMessage = {},
+  otherParticipants = [],
+  onNext = () => {}
+}) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const messages = useSelector((state:RootStateOrAny) => {
     const { channelMessages, pendingMessages } = state.channel;
     const normalizedMessages = channelMessages[channelId]?.messages || {};
-    const channelPendingMessages = pendingMessages[channelId] || {};
+    const channelPendingMessages = pendingMessages[channelId || 'temp'] || {};
     const messagesList = lodash.keys(normalizedMessages).map((m:string) => {
       return normalizedMessages[m];
     });
     const pendingMessageList = lodash.keys(channelPendingMessages).map((m:string) => {
       return channelPendingMessages[m];
     });
-    console.log('PENDING MESSAGE LIST', pendingMessages);
     let delivered = false;
     let seen:any = [];
     const messageArray = lodash.orderBy(messagesList, 'createdAt', 'desc')
@@ -139,6 +149,7 @@ const List: FC<Props> = ({ channelId = '', isGroup = false, lastMessage = {}, ot
     unSendMessage,
     deleteMessage,
     seenMessage,
+    createChannel,
   } = useSignalr();
 
   const fetchMoreMessages = (isPressed = false) => {
@@ -160,16 +171,35 @@ const List: FC<Props> = ({ channelId = '', isGroup = false, lastMessage = {}, ot
     })
   }
 
-  const _sendMessage = (data:any, messageId:string, config: any) => {
-    sendMessage(data, (err:any, result:IMessages) => {
-      if (err) {
-        if (err?.message !== 'canceled') {
-          dispatch(setPendingMessageError(channelId, messageId));
+  const _sendMessage = (data:any, messageId:string, config: any, createNew = false) => {
+    if (createNew) {
+      createChannel(data, (err:any, res:any) => {
+        if (res) {
+          const { lastMessage } = res;
+          res.otherParticipants = lodash.reject(res.participants, (p:IParticipants) => p._id === user._id);
+          dispatch(removePendingMessage(channelId, messageId, lastMessage));
+          dispatch(setSelectedChannel(res));
+          dispatch(addChannel(res));
+          onNext(null, res);
         }
-      } else {
-        dispatch(removePendingMessage(channelId, messageId, result));
-      }
-    }, config);
+        if (err) {
+          console.log('ERROR', err, messageId);
+          if (err?.message !== 'canceled') {
+            dispatch(setPendingMessageError(channelId, messageId));
+          }
+        }
+      }, config);
+    } else {
+      sendMessage(data, (err:any, result:IMessages) => {
+        if (err) {
+          if (err?.message !== 'canceled') {
+            dispatch(setPendingMessageError(channelId, messageId));
+          }
+        } else {
+          dispatch(removePendingMessage(channelId, messageId, result));
+        }
+      }, config);
+    }
   }
 
   const _sendFile = (channelId:string, messageId:string, data:any, config:any) => {
@@ -197,7 +227,7 @@ const List: FC<Props> = ({ channelId = '', isGroup = false, lastMessage = {}, ot
     setHasError(false);
     let unmount = false;
     if (rendered && channelId) {
-      getMessages(channelId, 1, (err, res) => {
+      getMessages(channelId, 1, false, (err, res) => {
         if (!unmount) {
           setLoading(false);
           if (res) {
@@ -211,6 +241,8 @@ const List: FC<Props> = ({ channelId = '', isGroup = false, lastMessage = {}, ot
           }
         }
       })
+    } else {
+      setLoading(false);
     }
 
     return () => {
@@ -219,7 +251,7 @@ const List: FC<Props> = ({ channelId = '', isGroup = false, lastMessage = {}, ot
   }, [rendered, channelId]);
 
   useEffect(() => {
-    if (lastMessage && rendered) {
+    if (lodash.size(lastMessage) && rendered) {
       const hasSeen = lodash.find(lastMessage?.seen, s => s._id === user._id);
       if (!hasSeen) {
         seenMessage(lastMessage._id);
