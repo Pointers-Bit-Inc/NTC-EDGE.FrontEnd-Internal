@@ -6,7 +6,6 @@ export default {
     "version": process.env.APP_VERSION ?? "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "backgroundColor": "#031A6E",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",
@@ -22,7 +21,9 @@ export default {
       "buildNumber": process.env.APP_VERSION ?? "1.0.4",
       "infoPlist": {
         "NSCameraUsageDescription": "This will be used for video call and live streaming.",
-        "NSMicrophoneUsageDescription": "This will be used for video call and live streaming."
+        "NSMicrophoneUsageDescription": "This will be used for video call and live streaming.",
+        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos",
+        "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to access your location"
       }
     },
     "androidStatusBar": {
@@ -30,7 +31,6 @@ export default {
       "translucent": false
     },
     "android": {
-      "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

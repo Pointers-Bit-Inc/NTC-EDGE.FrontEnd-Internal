@@ -1,4 +1,4 @@
-const { SET_ACTIVITY, ON_CHECKED, SELECTED_CHANGE_STATUS, SET_VISIBLE , UPDATE_ACTIVITY_STATUS,ADD_ACTIVITY} = require('./types').default;
+const { SET_ACTIVITY, ON_CHECKED, SELECTED_CHANGE_STATUS, SET_VISIBLE , SET_RESET_FILTER_STATUS, UPDATE_ACTIVITY_STATUS,ADD_ACTIVITY} = require('./types').default;
 
 export function setActivity(payload) {
   return {
@@ -34,6 +34,13 @@ export function setVisible(payload) {
 
   return {
     type: SET_VISIBLE,
+    payload,
+  };
+}
+export function setResetFilterStatus(payload) {
+
+  return {
+    type: SET_RESET_FILTER_STATUS,
     payload,
   };
 }

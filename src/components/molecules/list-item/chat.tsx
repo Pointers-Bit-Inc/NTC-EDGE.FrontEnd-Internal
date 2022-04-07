@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React,{FC,useEffect} from 'react'
 import { View, StyleSheet, Image, TouchableOpacity, Platform } from 'react-native'
 import lodash from 'lodash';
 import Text from '@components/atoms/text'
@@ -7,6 +7,9 @@ import ProfileImage from '@components/atoms/image/profile';
 import { text, primaryColor } from 'src/styles/color';
 import { GroupIcon } from '@components/atoms/icon';
 import { Bold, Regular, Regular500 } from '@styles/font';
+import {Hoverable} from "react-native-web-hooks";
+import {isMobile} from "@pages/activities/isMobile";
+import {RootStateOrAny,useSelector} from "react-redux";
 
 const styles = StyleSheet.create({
   container: {
@@ -75,7 +78,8 @@ const ChatItem: FC<Props> = ({
   ...otherProps
 }) => {
   return (
-    <TouchableOpacity onPress={onPress} {...otherProps}>
+
+      <TouchableOpacity onPress={onPress} {...otherProps}>
       <View style={[styles.container, styles.horizontal]}>
         {
           !isGroup ? (
@@ -134,7 +138,7 @@ const ChatItem: FC<Props> = ({
         }
       </View>
     </TouchableOpacity>
-    
+
   )
 }
 

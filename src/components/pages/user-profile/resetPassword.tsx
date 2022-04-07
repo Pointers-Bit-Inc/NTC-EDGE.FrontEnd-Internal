@@ -244,7 +244,10 @@ const ResetPassword = ({navigation}: any) => {
                 title={alert?.title}
                 message={alert?.message}
                 confirmText='OK'
-                onConfirm={() => setShowAlert(false)}
+                onConfirm={() => {
+                    setShowAlert(false)
+                    navigation?.goBack()
+                }}
             />
             {/* <AwesomeAlert
                 actionContainerStyle={{ flexDirection: "row-reverse" }}

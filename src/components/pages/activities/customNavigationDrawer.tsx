@@ -18,10 +18,6 @@ const CustomSidebarMenu = (props: any) => {
     const { state } = props;
     const { routes , index } = state; //Not sure about the name of index property. Do check it out by logging the 'state' variable.
     const focusedRoute = routes[index];
-    useEffect(() => {
-        console.log(focusedRoute)
-    } , []);
-
 
     return (
         <>
@@ -39,7 +35,7 @@ const CustomSidebarMenu = (props: any) => {
                     } = props.descriptors[route.key].options;
                     const onPress = () => {
 
-                        if(((route.name == CHAT && !isMobile)  || (route.name == MEET && !isMobile) || (route.name == SCANQR && !isMobile)  ) ) return
+                        //if(((route.name == CHAT && !isMobile)  || (route.name == MEET && !isMobile) || (route.name == SCANQR && !isMobile)  ) ) return
 
                         const event = props.navigation.emit({
                             type: 'drawerItemPress',
@@ -82,7 +78,7 @@ const CustomSidebarMenu = (props: any) => {
 
                             </View>
 
-                        ) } style={ styles.item }  onPress={onPress}/>
+                        ) } style={ styles.item }   onPress={onPress}/>
                     </View>
 
                 })}

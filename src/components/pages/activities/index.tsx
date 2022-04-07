@@ -1,14 +1,14 @@
 import React , {useEffect} from "react";
 import {
-    Animated ,
-    Dimensions ,
-    FlatList ,
-    RefreshControl ,
-    ScrollView ,
-    StatusBar ,
-    Text ,
-    TouchableOpacity ,
-    useWindowDimensions ,
+    Animated,
+    Dimensions,
+    FlatList,Platform,Pressable,
+    RefreshControl,
+    ScrollView,
+    StatusBar,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
     View
 } from "react-native";
 
@@ -50,7 +50,7 @@ export default function ActivitiesPage(props: any) {
     const dimensions = useWindowDimensions();
     const Filter = isMobile || dimensions?.width <= 768 ? FilterIcon : FilterPressIcon;
     const {
-        size ,
+        isReady,
         user ,
         setUpdateModal ,
         config ,
@@ -137,8 +137,9 @@ export default function ActivitiesPage(props: any) {
             return dispatch(removeActiveMeeting(item._id));
         }
     };
+
     const listHeaderComponent = () => <>
-        { !searchVisible && !!pnApplications?.length &&
+        { !searchVisible && !!pnApplications?.length && containerHeight &&
         <View style={ [styles.pinnedActivityContainer , {
             marginBottom : 5 ,
             paddingBottom : 20 ,
@@ -151,12 +152,14 @@ export default function ActivitiesPage(props: any) {
                         Activity</Text>
                 </View>
             </View> }
-            { !searchVisible && (
-
-                <ScrollView style={ { maxHeight : 300 } }>
+           
+                <ScrollView nestedScrollEnabled={true}
+                            style={ { maxHeight : 300 } }>
                     {
                         pnApplications.map((item: any , index: number) => {
+
                             return item?.activity && item?.activity.map((act: any , i: number) => {
+
                                 return (
                                     act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <ActivityItem
                                     isOpen={ isOpen }
@@ -187,8 +190,6 @@ export default function ActivitiesPage(props: any) {
                     }
                 </ScrollView>
 
-            )
-            }
         </View> }
     </>;
 
@@ -201,8 +202,7 @@ export default function ActivitiesPage(props: any) {
                 <View onLayout={ onActivityLayoutComponent } style={ [styles.container , styles.shadow , {
 
                  
-                    flexBasis : (
-                                    isMobile || dimensions?.width < 768) ? "100%" : 466 ,
+                    flexBasis : (isMobile || dimensions?.width < 768) ? "100%" : 466 ,
                     flexGrow : 0 ,
                     flexShrink : 0
                 }] }>
@@ -293,6 +293,14 @@ export default function ActivitiesPage(props: any) {
                     } } searchVisible={ searchVisible }/>
 
                     <Animated.FlatList
+                        refreshControl={
+                            <RefreshControl
+                                progressViewOffset={refreshing ?  0 : containerHeight}
+                                refreshing={ refreshing }
+                                onRefresh={ onRefresh }
+                            />
+                        }
+                        nestedScrollEnabled={true}
                         onScroll={ Animated.event(
                             [{
                                 nativeEvent : {
@@ -303,35 +311,29 @@ export default function ActivitiesPage(props: any) {
                             }] ,
                             { useNativeDriver : true }
                         ) }
-
                         contentContainerStyle={ {
                             paddingTop : (
                                 !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && containerHeight * (
                                     lodash.size(meetingList) || 1)) || 0 , flexGrow : 1
                         } }
-                        ListEmptyComponent={ () => listEmpty(refreshing , searchTerm ,  (notPnApplications.length || 0) + pnApplications?.map((item: any , index: number) => item?.activity && item?.activity?.map((act: any , i: number) => act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id )?.length)}
+                        ListEmptyComponent={ () => listEmpty(refreshing , searchTerm ,  (notPnApplications.length) + pnApplications?.map((item: any , index: number) => item?.activity && item?.activity?.map((act: any , i: number) => (act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id )).length)}
                         ListHeaderComponent={ listHeaderComponent() }
-                        refreshControl={
 
-                            <RefreshControl
-                                refreshing={ refreshing }
-                                onRefresh={ onRefresh }
-                            />
-                        }
-                        style={ { flex : 1 , } }
+                        style={ { flex : 1 , display: isReady ? undefined: "none"  } }
 
                         data={ notPnApplications }
                         keyExtractor={ (item , index) => index.toString() }
                         ListFooterComponent={ bottomLoader }
                         onEndReached={ () => {
-                            if (!onEndReachedCalledDuringMomentum) {
+
+                            if (!onEndReachedCalledDuringMomentum || !isMobile) {
                                 handleLoad();
                                 setOnEndReachedCalledDuringMomentum(true);
                             }
 
                         } }
                         onScrollEndDrag={ onScrollEndDrag }
-                        onEndReachedThreshold={ 0.1 }
+                        onEndReachedThreshold={ 0.5 }
                         onMomentumScrollBegin={ () => {
                             onMomentumScrollBegin();
                             setOnEndReachedCalledDuringMomentum(false)

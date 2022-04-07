@@ -381,14 +381,14 @@ function ActivityModal(props: any) {
                         status = PAID
                     }
                     onChangeApplicationStatus(status , (err , appId) => {
-
+                        console.log(9)
                         if (!err) {
 
                             callback(true , (bool) => {
 
                             })
                         } else {
-
+                            console.log(0)
                             callback(false , (bool) => {
 
                             })
@@ -398,13 +398,19 @@ function ActivityModal(props: any) {
 
 
                 } }
-                onDismissed={ (event?: any , callback?: (bool) => {}) => {
+                onExit={()=>{
+                    onApproveDismissed()
+                    props.onDismissed(true);
 
+                }}
+                onDismissed={ (event?: any , callback?: (bool) => {}) => {
+                        console.log(1)
                     if (event == APPROVED) {
                         onApproveDismissed()
-                        props.onDismissed(true);
+                        console.log(2)
                     }
                     if (callback) {
+
                         callback(true)
                     }
                 } }
@@ -430,10 +436,15 @@ function ActivityModal(props: any) {
                 }
                 }
                 visible={ visible }
+                onExit={()=>{
+
+                    onEndorseDismissed()
+                    props.onDismissed(true);
+                }}
                 onDismissed={ () => {
 
                     onDismissed()
-                    props.onDismissed(true);
+
                 } }
             />
             <Endorsed
@@ -465,10 +476,14 @@ function ActivityModal(props: any) {
                     });
                 } }
                 visible={ endorseVisible }
-                onDismissed={ ()=>{
+                onExit={()=>{
 
                     onEndorseDismissed()
                     props.onDismissed(true);
+                }}
+                onDismissed={ ()=>{
+
+                    onEndorseDismissed()
                 } }
             />
         </NativeView>

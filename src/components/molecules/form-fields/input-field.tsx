@@ -1,19 +1,12 @@
-import React , {
-    useRef ,
-    useState ,
-    forwardRef ,
-    useImperativeHandle ,
-    ForwardRefRenderFunction , useEffect ,
-} from 'react';
-import {View , StyleSheet , TouchableOpacity , InteractionManager , Platform} from 'react-native';
-import { RFValue } from 'react-native-responsive-fontsize';
+import React,{forwardRef,ForwardRefRenderFunction,useImperativeHandle,useRef,useState,} from 'react';
+import {StyleSheet,TouchableOpacity,View} from 'react-native';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
-import {defaultColor , primaryColor, text} from '@styles/color';
- import inputStyles from "@styles/input-style"
- import {input} from "@styles/color"
+import {defaultColor,input,primaryColor,text} from '@styles/color';
+import inputStyles from "@styles/input-style"
 import CloseIcon from "@assets/svg/close";
 import {fontValue} from "@pages/activities/fontValue";
+
 const styles = StyleSheet.create({
     container: {
         paddingVertical: 10
@@ -179,7 +172,8 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                 </View>
                 {
                     (clearable && isFocused && !!editable && !!otherProps.value) &&
-                    <TouchableOpacity onPress={() => {
+                    <TouchableOpacity  onPress={() => {
+
                         if(otherProps?.onChangeText){
                             onClose()
                             otherProps?.onChangeText('')

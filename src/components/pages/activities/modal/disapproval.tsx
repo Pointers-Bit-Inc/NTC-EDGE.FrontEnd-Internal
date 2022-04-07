@@ -36,14 +36,13 @@ function Disapproval(props: any) {
     const [title , setTitle] = useState("Decline Application");
     const [message , setMessage] = useState("Are you sure you want to reject this application?");
     const onCancelPressed = () => {
-        console.log("Decline")
         setTitle("Decline Application");
         setMessage("Are you sure you want to reject this application?");
         setShowClose(false);
         setShowAlert(false);
         setAlertLoading(false);
         if (showClose) {
-            props.onDismissed()
+            props.onExit()
         }
     };
     const dimensions = useWindowDimensions();

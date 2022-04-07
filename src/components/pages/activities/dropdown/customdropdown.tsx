@@ -4,11 +4,9 @@
     import {useOrientation} from "../../../../hooks/useOrientation";
 
     import {Regular500} from "@styles/font";
-    import {RFValue} from "react-native-responsive-fontsize";
-    import useKeyboard from "../../../../hooks/useKeyboard";
     import {fontValue} from "@pages/activities/fontValue";
     import {isMobile} from "@pages/activities/isMobile";
-    import useIsKeyboardShown from "@react-navigation/bottom-tabs/lib/typescript/src/utils/useIsKeyboardShown";
+
 
 
     interface Props {
@@ -25,31 +23,31 @@
         const [dropdownWidth, setDropdownWidth] = useState(0);
         const [dropdownLeft, setDropdownLeft] = useState(0);
         const [selectedIndex, setSelectedIndex] = useState(null)
-        const isKeyboardVisible = useKeyboard();
         const toggleDropdown = (): void => {
             visible ? setVisible(false) : openDropdown();
         };
         useEffect(() => {
             let isCurrent = true
             const _selectedIndex = data?.findIndex((item) => item.value == value)
+
             if(isCurrent) setSelectedIndex(_selectedIndex)
-            if(_selectedIndex ){
+            if(_selectedIndex != null && _selectedIndex != undefined ){
                 const _selected = data[_selectedIndex]
-                if(isCurrent) setSelected(_selected)
-                if(_selected) onSelect(_selected)
+                if(isCurrent) setSelected(data[_selectedIndex])
+                if(data[_selectedIndex]) onSelect(data[_selectedIndex])
             }
 
               return () =>{
                   isCurrent = false
               }
-        }, [value, selectedIndex])
+        }, [data, value, selectedIndex])
 
         useEffect(()=>{
 
             DropdownButton?.current?.measure((_fx: number, _fy: number, _w: number, h: number, _px: number, py: number) => {
             setDropdownWidth(_w)
                 setDropdownLeft(_px)
-                setDropdownTop(isKeyboardVisible ? py + h + h : py + h );
+                setDropdownTop(py + h );
             });
         }, [visible, dropdownTop])
 
@@ -91,7 +89,7 @@
                         style={styles.overlay}
                         onPress={() => setVisible(false)}
                     >
-                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, {width: dropdownWidth,flex: 1, left: dropdownLeft, top: dropdownTop}]}>
+                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, { bottom: data?.length < 6  ? undefined : "15%", width: dropdownWidth,flex: 1, left: dropdownLeft, top: dropdownTop}]}>
                             {data?.length > 0 ? <FlatList
                                 style={styles.items}
                                 data={data}
@@ -163,7 +161,7 @@
         },
         dropdown: {
             marginTop: 5,
-            bottom: "15%",
+
             alignSelf: isMobile ? "center" : "flex-end",
             position: 'absolute',
 

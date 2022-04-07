@@ -186,33 +186,32 @@ interface FilterList {
 export const getFilter = ({
                               list ,
                               user ,
-                              selectedClone ,
-                              cashier ,
-                              director ,
-                              checker ,
-                              evaluator ,
-                              accountant
+                              selectedClone = [] ,
+                              cashier = null,
+                              director = null ,
+                              checker = null  ,
+                              evaluator = null ,
+                              accountant = null
                           }: FilterList) => list?.filter((item: any) => {
     let _approvalHistory = false;
-    if (item?.approvalHistory.length) {
-        _approvalHistory = item?.approvalHistory?.[0]?.userId == user?._id
-    }
+    _approvalHistory = (item?.approvalHistory?.[0]?.userId || item?.approvalHistory?.userId) == user?._id
+    
     const search =
         (
             selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true);
     if (cashier) {
         return (
-            item?.status == APPROVED || item?.status == DECLINED && (
-                item?.assignedPersonnel == user?._id || (
+            item?.status == APPROVED || item?.status == DECLINED || ( (
                     item?.assignedPersonnel?._id || item?.assignedPersonnel) === null || _approvalHistory) && search)
     } else if (director) {
+       
         return (
-            item?.status == FORAPPROVAL || item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) && (
-            item?.assignedPersonnel == user?._id || item?.assignedPersonnel === null || _approvalHistory) && search
+            item?.status == FORAPPROVAL || item?.status == FOREVALUATION || item?.status == PENDING || item?.status == APPROVED || item?.status == DECLINED) || (
+            (item?.assignedPersonnel?._id || item?.assignedPersonnel) == user?._id || (item?.assignedPersonnel?._id || item?.assignedPersonnel ) === null || _approvalHistory) && search
     } else if (checker || accountant) {
         return (
             (
-                item?.assignedPersonnel?._id || (
+                (
                     item?.assignedPersonnel?._id || item?.assignedPersonnel)) == user?._id || item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
     } else if (evaluator) {
         return item?.status.length > 0 || (
@@ -276,7 +275,21 @@ export function getStatusText(props: any , personnel: UserApplication | undefine
         props.approvalHistory?.[0]?.status == FOREVALUATION && props.approvalHistory?.status == FOREVALUATION) && props.approvalHistory[1].status == FORAPPROVAL ? DECLINED : getRole(props.user , [CASHIER]) && !(props?.assignedPersonnel) && (props?.approvalHistory[0]?.status != DECLINED && props?.approvalHistory?.status != DECLINED ) || (
         props?.paymentHistory?.[0]?.status == PENDING && props?.paymentHistory?.status == PENDING) ? FORVERIFICATION :  getRole(props.user , [CASHIER]) && !props.paymentStatus && props.status == DECLINED  ? PaymentStatusText(DECLINED) : getStatus(props , personnel);
 }
-
+export function getActivityStatus (props:any,status:string){
+    return getRole(props.currentUser,[EVALUATOR,DIRECTOR])&&status==FORAPPROVAL&&(
+        !!props?.activity?.approvalHistory?.[0]?.userId|| !!props?.activity?.approvalHistory?.userId)&&(
+        props?.activity?.approvalHistory?.[0]?.status!==FOREVALUATION&&props?.activity?.approvalHistory?.status!==FOREVALUATION)&&(
+        props?.activity?.approvalHistory?.[0]?.status!==PENDING&&props?.activity?.approvalHistory?.status!==PENDING)&&(
+        props?.activity?.approvalHistory?.[0]?.status!==FORVERIFICATION&&props?.activity?.approvalHistory?.status!==FORVERIFICATION)&&(
+        props?.activity?.approvalHistory?.[0]?.status!==FORAPPROVAL&&props?.activity?.approvalHistory?.status!==FORAPPROVAL||(
+            props?.activity?.assignedPersonnel?._id!==props.currentUser?._id)) ? APPROVED : getRole(props.currentUser,[ACCOUNTANT])&& !!props?.activity?.paymentMethod&&(
+        !!props?.activity?.paymentHistory?.[0]?.status|| !!props?.activity?.paymentHistory?.status) ? StatusText(props?.activity?.paymentHistory?.[0]?.status||props?.activity?.paymentHistory?.status) : getRole(props.currentUser,[ACCOUNTANT])&&(
+        props?.activity?.approvalHistory?.[0]?.status==FOREVALUATION||props?.activity?.approvalHistory?.status==FOREVALUATION)&&(
+        props?.activity?.approvalHistory?.[1]?.status==FORAPPROVAL) ? DECLINED : getRole(props.currentUser,[CASHIER])&& !(
+        props?.activity?.assignedPersonnel)&&(
+        props?.activity?.approvalHistory[0]?.status!=DECLINED&&props?.activity?.approvalHistory?.status!=DECLINED)||(
+        props?.activity?.paymentHistory?.[0]?.status==PENDING&&props?.activity?.paymentHistory?.status==PENDING) ? FORVERIFICATION : getRole(props.currentUser,[CASHIER])&& !props?.activity?.paymentStatus ? PaymentStatusText(DECLINED) : status;
+}
 export function getStatus(props: any , personnel?: { _id: string | undefined; updatedAt: string | undefined; createdAt: string | undefined; username: string | undefined; role: Role | undefined; email: string | undefined; firstName: string | undefined; lastName: string | undefined; password: string | undefined; contactNumber: string | undefined; __v: number | undefined; address: string | undefined; profilePicture: ProfilePicture | undefined; avatar: string | undefined } , wordCase?: string) {
 
     return (

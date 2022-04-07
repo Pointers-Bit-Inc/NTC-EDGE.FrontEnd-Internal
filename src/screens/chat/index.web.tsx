@@ -17,7 +17,18 @@ import {
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
-import { setSelectedChannel, setChannelList, addToChannelList, addChannel, updateChannel, removeChannel, setMeetings, removeSelectedMessage, setSearchValue as setSearchValueFN } from 'src/reducers/channel/actions';
+import {
+    setSelectedChannel,
+    setChannelList,
+    addToChannelList,
+    addChannel,
+    updateChannel,
+    removeChannel,
+    setMeetings,
+    removeSelectedMessage,
+    setSearchValue as setSearchValueFN,
+    addPendingMessage
+} from 'src/reducers/channel/actions';
 import {InputField , SearchField} from '@components/molecules/form-fields';
 import { primaryColor, outline, text, button } from '@styles/color';
 import useSignalr from 'src/hooks/useSignalr';
@@ -58,6 +69,7 @@ import {SceneMap , TabBar , TabView} from "react-native-tab-view";
 import FileList from "@screens/chat/file-list";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import NoConversationIcon from "@assets/svg/noConversations";
+import {isMobile} from "@pages/activities/isMobile";
 
 const { width, height } = Dimensions.get('window');
 
@@ -176,9 +188,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
     },
     headerNewChatIcon:{
-
+borderWidth: 1, borderColor: "#E5E5E5", marginHorizontal: 10,
           padding: 11,
-        backgroundColor: "#2863D6",
+
         borderRadius: 100
     },
     plus: {
@@ -371,6 +383,7 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
     return <View style={styles.container}>
         <StatusBar barStyle={ "light-content" }/>
         <View style={ styles.header }>
+
             <View style={ styles.headerContent }>
 
                 <View style={ styles.titleContainer }>
@@ -383,29 +396,39 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                     </Text>
                 </View>
                 <View style={ { width : 25 } }/>
-
+                <Hoverable>
+                    { isHovered => (
                 <TouchableOpacity >
 
-                    <View style={[styles.headerNewChatIcon, {borderWidth: 1, borderColor: "#E5E5E5", backgroundColor: "#F0F0F0", marginHorizontal: 10,}]}>
+                    <View style={[styles.headerNewChatIcon, {backgroundColor: isHovered ? "#2863D6" : "#F0F0F0" }]}>
                         <MeetIcon
+                            hover={isHovered}
                             width={ fontValue(20) }
                             height={ fontValue(20) }
                         />
                     </View>
 
-                </TouchableOpacity>
+                </TouchableOpacity>   ) }
+                </Hoverable>
+                <Hoverable>
+                    { isHovered => (
                 <TouchableOpacity onPress={() => modalRef.current?.open()} >
 
-                    <View style={styles.headerNewChatIcon}>
+                    <View style={[styles.headerNewChatIcon,  {backgroundColor: isHovered ? "#2863D6" : "#F0F0F0" }]}>
                         <NewChatIcon
+                            hover={isHovered}
                             width={ fontValue(20) }
                             height={ fontValue(20) }
                         />
                     </View>
 
                 </TouchableOpacity>
+                    ) }
+                </Hoverable>
             </View>
+
             <View>
+
                 {
                         !!lodash.size(meetingList) && (
                             <FlatList
@@ -476,9 +499,11 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                         <Swipeable
                             ref={ref => swipeableRef.current[item._id] = ref}
                             renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, item)}
-                        >    <Hoverable>
+                        >
+                            <Hoverable>
                             { isHovered => (
-                            <View style={{backgroundColor: isHovered ?  "#F0F0FF" : "transparent"}}>
+                            <View style={{backgroundColor: (selectedChannel?._id=== item?._id)&& !(
+                                isMobile) ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff"}}>
                                 <ChatItem
                                     image={getChannelImage(item)}
                                     imageSize={50}
@@ -494,7 +519,6 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                                         if(selectedChannel._id != item._id){
                                             dispatch(setSelectedChannel(item));
                                         }
-
                                         dispatch(setMeetings([]));
                                         props.onSubmit()
 
@@ -537,7 +561,8 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                         dispatch(setSelectedChannel(res));
                         dispatch(addChannel(res));
                         modalRef.current?.close();
-                        setTimeout(() => props.navigation.navigate('ViewChat', res), 300);
+                        props.onSubmit()
+                        //setTimeout(() => props.navigation.navigate('ViewChat', res), 300);
                     }}
                 />
             </View>
@@ -568,6 +593,7 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
 const Tab = createMaterialTopTabNavigator();
 
 const ChatList = ({ navigation }:any) => {
+    const dimensions = useWindowDimensions();
     const dispatch = useDispatch();
     const {
         sendMessage,
@@ -641,15 +667,11 @@ const ChatList = ({ navigation }:any) => {
     }, [channelId, inputText])
 
     const _sendMessage = (channelId:string, inputText:string) => {
-        sendMessage({
-            roomId: channelId,
+        dispatch(addPendingMessage({
+            channelId: channelId,
             message: inputText,
-        }, (err:any, result:any) => {
-
-            if (err) {
-                console.log('ERR', err);
-            }
-        })
+            messageType: 'text',
+        }));
     }
 
     useEffect(() => {
@@ -680,7 +702,9 @@ const ChatList = ({ navigation }:any) => {
     }, [chatSize])
     return (
         <View style={ { flexDirection : "row" , flex: 1} }>
-            <View style={ { flex : 0.4}}>
+            <View style={ { flexBasis : (isMobile || dimensions?.width < 768) ? "100%" : 461 ,
+                flexGrow : 0 ,
+                flexShrink : 0}}>
                 <Chat
                     user={user}
                     navigation={navigation}
@@ -691,7 +715,7 @@ const ChatList = ({ navigation }:any) => {
                         setShowLayout(true)
                     } }/>
             </View>
-              <View onLayout={ onChatLayout } style={ { backgroundColor: "#F8F8F8", flex : 0.6 ,} }>
+              <View onLayout={ onChatLayout } style={ { backgroundColor: "#F8F8F8", flex :1 ,} }>
                   {!(_id && showLayout) &&<View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
                       <View >
                           <NoConversationIcon />

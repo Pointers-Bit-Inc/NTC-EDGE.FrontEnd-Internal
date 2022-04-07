@@ -19,11 +19,11 @@ export const ApprovedButton = (props: { currentLoading: string, allButton: boole
             onPress={ props.onPress }
         >
             <View style={ [styles.rect22 , {
-                borderColor: (props.allButton || pressed) ? "transparent" :   isHovered && "#4DFBC5",
+                borderColor: (props.allButton || pressed) ? "transparent" : isHovered && "#4DFBC5",
                  borderWidth:  isHovered ? 4 :  undefined,
                 backgroundColor : (
                     props.allButton ? "#C4C4C4" : pressed ? "#097352" :  "rgba(0,171,118,1)") ,
-                height : undefined ,
+                maxHeight : undefined ,
                 paddingVertical : props.currentLoading === APPROVED ? fontValue(9) : isHovered ? fontValue(6.5)  : fontValue(10.5)
             }] }>
                 {

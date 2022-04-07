@@ -500,6 +500,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
 
   const renderList = () => {
     if (isGroup || !lodash.size(participants) || searchValue || isFocused) {
+
       return (
         <FlatList
           data={contacts}
@@ -548,7 +549,6 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     setSearchText('');
     setContacts([]);
   }
-
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
