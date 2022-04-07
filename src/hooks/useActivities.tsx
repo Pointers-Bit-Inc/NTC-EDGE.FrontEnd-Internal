@@ -193,6 +193,7 @@ export function useActivities(){
             if(count==0){
                 count=1;
                 if(count){
+
                     response?.data?.size ? setSize(response?.data?.size) : setSize(0);
                     response?.data?.total ? setTotal(response?.data?.total) : setTotal(0);
                     response?.data?.page ? setPage(response?.data?.page) : setPage(0);

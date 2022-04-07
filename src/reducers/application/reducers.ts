@@ -10,6 +10,7 @@ import {
     PENDING ,
     UNVERIFIED , VERIFIED
 } from "../activity/initialstate";
+import _ from "lodash";
 
 const {
     SET_PINNED_APPLICATION,
@@ -137,10 +138,10 @@ export default function basket(state = initialState, action = {}) {
                 }
             }
             state = state.set('notPinnedApplications' , [
-                ...state.notPinnedApplications.concat(...isNotPinned) ,
+                ..._.uniqBy(state.notPinnedApplications.concat(...isNotPinned), "_id") ,
             ]);
             state = state.set('pinnedApplications' , [
-                ...state.pinnedApplications.concat(isPinned) ,
+                ..._.uniqBy(state.pinnedApplications.concat(isPinned), "_id") ,
             ]);
             return state
         }
