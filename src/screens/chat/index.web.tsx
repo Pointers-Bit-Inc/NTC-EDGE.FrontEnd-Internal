@@ -561,6 +561,7 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                         dispatch(setSelectedChannel(res));
                         dispatch(addChannel(res));
                         modalRef.current?.close();
+                        props.onSubmit()
                         //setTimeout(() => props.navigation.navigate('ViewChat', res), 300);
                     }}
                 />

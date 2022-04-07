@@ -325,7 +325,8 @@ export default function ActivitiesPage(props: any) {
                         keyExtractor={ (item , index) => index.toString() }
                         ListFooterComponent={ bottomLoader }
                         onEndReached={ () => {
-                            if (!onEndReachedCalledDuringMomentum) {
+
+                            if (!onEndReachedCalledDuringMomentum || !isMobile) {
                                 handleLoad();
                                 setOnEndReachedCalledDuringMomentum(true);
                             }
