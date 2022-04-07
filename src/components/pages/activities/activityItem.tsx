@@ -262,13 +262,7 @@ export function ActivityItem(props: any) {
     };
 
     const dimensions = useWindowDimensions();
-    const [prefetchImage, setPrefetchImage] = useState(false)
-    Image.prefetch(userActivity?.profilePicture?.small)
-    .then(()=>{
-        setPrefetchImage(true)
-    }, error => {
-        setPrefetchImage(false)
-    })
+   
     return (
 
         <Hoverable>
@@ -319,7 +313,7 @@ export function ActivityItem(props: any) {
                                         }>
                                             <ProfileImage
                                                 size={ fontValue(45) }
-                                                image={ prefetchImage ? userActivity?.profilePicture?.small : null }
+                                                image={ userActivity?.profilePicture?.small }
                                                 name={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
                                             />
                                             <View style={ styles.content }>
