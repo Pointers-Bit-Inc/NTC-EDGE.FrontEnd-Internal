@@ -35,7 +35,7 @@ const CustomSidebarMenu = (props: any) => {
                     } = props.descriptors[route.key].options;
                     const onPress = () => {
 
-                        if(((route.name == CHAT && !isMobile)  || (route.name == MEET && !isMobile) || (route.name == SCANQR && !isMobile)  ) ) return
+                        //if(((route.name == CHAT && !isMobile)  || (route.name == MEET && !isMobile) || (route.name == SCANQR && !isMobile)  ) ) return
 
                         const event = props.navigation.emit({
                             type: 'drawerItemPress',

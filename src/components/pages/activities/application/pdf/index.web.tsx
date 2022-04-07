@@ -8,6 +8,7 @@ const PdfViewr = (props: { width: any, height: any, requirement: any }) => {
     const extension = props.requirement?.small.substring(props.requirement?.small.lastIndexOf('.') + 1 , props.requirement?.small.length) || props.requirement?.small;
 
     return extension != "pdf" ?
+           <View style={{flex:1, alignItems: "center", justifyContent: "center",  }}>
            <object
                { ...props }
                style={ { zIndex: 2, height : props?.height , width : props?.width } }
@@ -16,7 +17,9 @@ const PdfViewr = (props: { width: any, height: any, requirement: any }) => {
            >
                <Text>Could not load Doc. Make sure the source is correct and the browser is not on device
                    mode.</Text>
-           </object>:  <View style={{flex:1, alignItems: "center", justifyContent: "center",  }}>
+           </object>
+               <Text  style={{zIndex: -1,position: "absolute", textAlign: "center", color: "#fff", fontFamily: Bold, fontSize: 18}}>{"Loading..."}</Text>
+           </View>:<View style={{flex:1, alignItems: "center", justifyContent: "center",  }}>
                <object
                    { ...props }
                    style={ { height : props?.height , width : props?.width } }

@@ -27,7 +27,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
     const schedule =  props?.verifiedInfo?.application?.schedule;
     const approvalHistory =  props?.verifiedInfo?.application?.approvalHistory;
     useEffect(()=>{
-        console.log(approvalHistory[0] || approvalHistory )
+        console.log(approvalHistory?.[0] || approvalHistory )
     }, [])
     return <>
         <Modal
@@ -140,7 +140,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                                         <Text style={styles.address2}>{'Date: '}</Text>
                                     </View>
                                     <View style={{ flex: 0.9 }}>
-                                        <Text style={styles.address3}>{(approvalHistory[0] || approvalHistory )?.status === 'Approved' ?  dayjs((approvalHistory?.[0] || approvalHistory )?.time).format('MM/DD/YY') : null}</Text>
+                                        <Text style={styles.address3}>{(approvalHistory?.[0] || approvalHistory )?.status === 'Approved' ?  dayjs((approvalHistory?.[0] || approvalHistory )?.time).format('MM/DD/YY') : null}</Text>
                                     </View>
                                 </View>
                             </View>

@@ -59,7 +59,7 @@ const BasicInfo = (props: any) => {
                     style={ { borderRadius : 4 } }
 
                     textSize={ 22 }
-                    image={ applicant.profilePicture?.small || applicant?.profilePicture?.small }
+                    image={ applicant.profilePicture?.small }
                     name={ `${ applicant.firstName } ${ applicant.lastName }` }
                 />
 

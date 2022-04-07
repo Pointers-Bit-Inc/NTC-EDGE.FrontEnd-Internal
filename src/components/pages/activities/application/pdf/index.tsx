@@ -15,7 +15,9 @@ const PdfViewr=(props:{requirement:any,extension:any})=>{
                                            javaScriptEnabled={true}
                                            domStorageEnabled={true}
                                            source={{uri:'https://docs.google.com/gview?url='+props.requirement?.small+'&embedded=true'}}
-                                           style={requirementStyles.pdf}/></View>;
+                                           style={requirementStyles.pdf}/>
+               <Text style={{position: "absolute", textAlign: "center", color: "#fff", fontFamily: Bold, fontSize: 18}}>{"Loading..."}</Text>
+           </View>;
 };
 
 export default PdfViewr

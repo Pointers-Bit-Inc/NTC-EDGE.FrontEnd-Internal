@@ -252,7 +252,7 @@ export default function TabBar({ navigation, route }) {
                     const unfocused = "#606A80";
                     return ( <View  key={route.key} style={{ flex: 1 }}>
                             <TouchableOpacity
-                                disabled={((label == CHAT && !isMobile)  || (label == MEET && !isMobile) || (label == SCANQR && !isMobile)  ) }
+                                //disabled={((label == CHAT && !isMobile)  || (label == MEET && !isMobile) || (label == SCANQR && !isMobile)  ) }
                                 accessibilityRole="button"
                                 accessibilityState={isFocused ? {selected: true} : {}}
                                 accessibilityLabel={options.tabBarAccessibilityLabel}

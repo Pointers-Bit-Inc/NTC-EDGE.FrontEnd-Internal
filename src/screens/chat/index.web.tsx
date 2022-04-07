@@ -58,6 +58,7 @@ import {SceneMap , TabBar , TabView} from "react-native-tab-view";
 import FileList from "@screens/chat/file-list";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import NoConversationIcon from "@assets/svg/noConversations";
+import {isMobile} from "@pages/activities/isMobile";
 
 const { width, height } = Dimensions.get('window');
 
@@ -478,7 +479,8 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                             renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, item)}
                         >    <Hoverable>
                             { isHovered => (
-                            <View style={{backgroundColor: isHovered ?  "#F0F0FF" : "transparent"}}>
+                            <View style={{backgroundColor: (selectedChannel?._id=== item?._id)&& !(
+                                isMobile) ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff"}}>
                                 <ChatItem
                                     image={getChannelImage(item)}
                                     imageSize={50}
@@ -494,7 +496,6 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                                         if(selectedChannel._id != item._id){
                                             dispatch(setSelectedChannel(item));
                                         }
-
                                         dispatch(setMeetings([]));
                                         props.onSubmit()
 
