@@ -323,7 +323,7 @@ export function ActivityItem(props: any) {
                                         }>
                                             <ProfileImage
                                                 size={ fontValue(45) }
-                                                image={ userActivity?.profilePicture?.small.match(/[^/]+(jpg|png|gif)$/i) ?  userActivity?.profilePicture?.small :  userActivity?.profilePicture?.small + ".png"  }
+                                                image={ userActivity?.profilePicture?.small ? userActivity?.profilePicture?.small.match(/[^/]+(jpg|png|gif)$/i) ?  userActivity?.profilePicture?.small :  userActivity?.profilePicture?.small + ".png"  : null }
                                                 name={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
                                             />
                                             <View style={ styles.content }>
