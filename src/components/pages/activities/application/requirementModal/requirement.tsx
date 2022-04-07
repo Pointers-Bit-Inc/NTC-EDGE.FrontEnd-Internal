@@ -147,7 +147,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
 
             <Modal visible={this.state?.visible} transparent={true} onRequestClose={this._hideImageModal}>
 
-                <View style={[styles.container,isMobile||this.props.dimensions?.width<768 ? {top: -60} : {
+                <View style={[styles.container,isMobile||this.props.dimensions?.width<768 ? {} : {
                     alignItems:"flex-end",
                     top:this.props?.rightLayoutComponent?.top
                 }]}>
@@ -230,7 +230,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
         .then(()=>{
             this.setState({onLoadStart:false});
             Image.getSize(this.props?.requirement?.medium,(width,height)=>{
-                console.log("image height", width, height, Dimensions.get("screen") )
+
                 this.setState({
                     ...this.state,
                     source:{
@@ -240,8 +240,14 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                 });
                 this.setState({
                     _imageSize:{
-                        width: Dimensions.get("screen").height * width/height,
-                        height:(height/width)* Dimensions.get("screen").width
+                        width: Platform.select({
+                            native: width,
+                            web: Dimensions.get("screen").height * width/height,
+                        }),
+                        height:Platform.select({
+                            native:height,
+                            web:(height/width)*Dimensions.get("screen").width
+                        })
                     }
                 });
 

@@ -593,6 +593,7 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
 const Tab = createMaterialTopTabNavigator();
 
 const ChatList = ({ navigation }:any) => {
+    const dimensions = useWindowDimensions();
     const dispatch = useDispatch();
     const {
         sendMessage,
@@ -698,7 +699,9 @@ const ChatList = ({ navigation }:any) => {
     }, [chatSize])
     return (
         <View style={ { flexDirection : "row" , flex: 1} }>
-            <View style={ { flex : 0.4}}>
+            <View style={ { flexBasis : (isMobile || dimensions?.width < 768) ? "100%" : 461 ,
+                flexGrow : 0 ,
+                flexShrink : 0}}>
                 <Chat
                     user={user}
                     navigation={navigation}
@@ -709,7 +712,7 @@ const ChatList = ({ navigation }:any) => {
                         setShowLayout(true)
                     } }/>
             </View>
-              <View onLayout={ onChatLayout } style={ { backgroundColor: "#F8F8F8", flex : 0.6 ,} }>
+              <View onLayout={ onChatLayout } style={ { backgroundColor: "#F8F8F8", flex :1 ,} }>
                   {!(_id && showLayout) &&<View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
                       <View >
                           <NoConversationIcon />
