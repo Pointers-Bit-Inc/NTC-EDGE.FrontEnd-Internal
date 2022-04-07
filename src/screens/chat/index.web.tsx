@@ -17,7 +17,18 @@ import {
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
-import { setSelectedChannel, setChannelList, addToChannelList, addChannel, updateChannel, removeChannel, setMeetings, removeSelectedMessage, setSearchValue as setSearchValueFN } from 'src/reducers/channel/actions';
+import {
+    setSelectedChannel,
+    setChannelList,
+    addToChannelList,
+    addChannel,
+    updateChannel,
+    removeChannel,
+    setMeetings,
+    removeSelectedMessage,
+    setSearchValue as setSearchValueFN,
+    addPendingMessage
+} from 'src/reducers/channel/actions';
 import {InputField , SearchField} from '@components/molecules/form-fields';
 import { primaryColor, outline, text, button } from '@styles/color';
 import useSignalr from 'src/hooks/useSignalr';
@@ -550,7 +561,7 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                         dispatch(setSelectedChannel(res));
                         dispatch(addChannel(res));
                         modalRef.current?.close();
-                        setTimeout(() => props.navigation.navigate('ViewChat', res), 300);
+                        //setTimeout(() => props.navigation.navigate('ViewChat', res), 300);
                     }}
                 />
             </View>
@@ -651,15 +662,11 @@ const ChatList = ({ navigation }:any) => {
     }, [channelId, inputText])
 
     const _sendMessage = (channelId:string, inputText:string) => {
-        sendMessage({
-            roomId: channelId,
+        dispatch(addPendingMessage({
+            channelId: channelId,
             message: inputText,
-        }, (err:any, result:any) => {
-
-            if (err) {
-                console.log('ERR', err);
-            }
-        })
+            messageType: 'text',
+        }));
     }
 
     useEffect(() => {
