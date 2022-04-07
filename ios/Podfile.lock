@@ -294,7 +294,7 @@ PODS:
   - react-native-agora (3.5.3):
     - AgoraRtcEngine_iOS (= 3.5.2)
     - React
-  - react-native-blob-util (0.15.0):
+  - react-native-blob-util (0.14.1):
     - React-Core
   - react-native-camera (4.2.1):
     - React-Core
@@ -720,7 +720,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: df6abc9fafbecb8e5b7a5fbc5e6d4bd017d594d5
   React-jsinspector: 34e23860273a23695342f58eed3ffd3ba10c31e0
   react-native-agora: 35578ecf3a97bc500b0be25da8743dd93599b1e3
-  react-native-blob-util: a5d3561045ed98cfb2fb80cbbff600fae0e8edee
+  react-native-blob-util: 7ac01cd4a4ba81016864727a756ce2c1af995e35
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-onesignal: 7643517fe655b94cfda8e697ec16f9b9135648b8
   react-native-pager-view: b90963d848e777def6714ab7fd40d02fa797e930

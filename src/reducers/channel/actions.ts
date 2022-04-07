@@ -81,7 +81,7 @@ export function removeChannel(payload:string) {
   };
 }
 
-export function setMessages(channelId:string, payload:IMessages) {
+export function setMessages(channelId:string, payload:IMessages | {}) {
   return {
     type: SET_MESSAGES,
     channelId,
