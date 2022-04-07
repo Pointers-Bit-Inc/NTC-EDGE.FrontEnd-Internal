@@ -177,9 +177,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
     },
     headerNewChatIcon:{
-
+borderWidth: 1, borderColor: "#E5E5E5", marginHorizontal: 10,
           padding: 11,
-        backgroundColor: "#2863D6",
+
         borderRadius: 100
     },
     plus: {
@@ -372,6 +372,7 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
     return <View style={styles.container}>
         <StatusBar barStyle={ "light-content" }/>
         <View style={ styles.header }>
+
             <View style={ styles.headerContent }>
 
                 <View style={ styles.titleContainer }>
@@ -384,29 +385,39 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                     </Text>
                 </View>
                 <View style={ { width : 25 } }/>
-
+                <Hoverable>
+                    { isHovered => (
                 <TouchableOpacity >
 
-                    <View style={[styles.headerNewChatIcon, {borderWidth: 1, borderColor: "#E5E5E5", backgroundColor: "#F0F0F0", marginHorizontal: 10,}]}>
+                    <View style={[styles.headerNewChatIcon, {backgroundColor: isHovered ? "#2863D6" : "#F0F0F0" }]}>
                         <MeetIcon
+                            hover={isHovered}
                             width={ fontValue(20) }
                             height={ fontValue(20) }
                         />
                     </View>
 
-                </TouchableOpacity>
+                </TouchableOpacity>   ) }
+                </Hoverable>
+                <Hoverable>
+                    { isHovered => (
                 <TouchableOpacity onPress={() => modalRef.current?.open()} >
 
-                    <View style={styles.headerNewChatIcon}>
+                    <View style={[styles.headerNewChatIcon,  {backgroundColor: isHovered ? "#2863D6" : "#F0F0F0" }]}>
                         <NewChatIcon
+                            hover={isHovered}
                             width={ fontValue(20) }
                             height={ fontValue(20) }
                         />
                     </View>
 
                 </TouchableOpacity>
+                    ) }
+                </Hoverable>
             </View>
+
             <View>
+
                 {
                         !!lodash.size(meetingList) && (
                             <FlatList
@@ -477,7 +488,8 @@ function Chat(props: { user, navigation, onPress: () => any, onBackdropPress: ()
                         <Swipeable
                             ref={ref => swipeableRef.current[item._id] = ref}
                             renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, item)}
-                        >    <Hoverable>
+                        >
+                            <Hoverable>
                             { isHovered => (
                             <View style={{backgroundColor: (selectedChannel?._id=== item?._id)&& !(
                                 isMobile) ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff"}}>
