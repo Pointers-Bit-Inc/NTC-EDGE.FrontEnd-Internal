@@ -1,5 +1,5 @@
 import React , {useEffect , useState} from "react";
-import {ActivityIndicator , StyleSheet , TouchableOpacity , useWindowDimensions , View} from "react-native";
+import {ActivityIndicator,Image,StyleSheet,TouchableOpacity,useWindowDimensions,View} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
@@ -262,6 +262,13 @@ export function ActivityItem(props: any) {
     };
 
     const dimensions = useWindowDimensions();
+    const [prefetchImage, setPrefetchImage] = useState(false)
+    Image.prefetch(userActivity?.profilePicture?.small)
+    .then(()=>{
+        setPrefetchImage(true)
+    }, error => {
+        setPrefetchImage(false)
+    })
     return (
 
         <Hoverable>
@@ -312,7 +319,7 @@ export function ActivityItem(props: any) {
                                         }>
                                             <ProfileImage
                                                 size={ fontValue(45) }
-                                                image={ userActivity?.profilePicture?.small }
+                                                image={ prefetchImage ? userActivity?.profilePicture?.small : null }
                                                 name={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
                                             />
                                             <View style={ styles.content }>
