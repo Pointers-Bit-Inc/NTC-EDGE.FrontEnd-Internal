@@ -218,7 +218,7 @@ const useSignalr = () => {
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(messageSchema));
-      return callback(null, { hasMore, list: normalized?.entities?.messages });
+      return callback(null, { hasMore, list: normalized?.entities?.messages || {} });
     })
     .catch(err => {
       return callback(err);
