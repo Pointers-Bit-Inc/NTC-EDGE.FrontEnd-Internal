@@ -99,7 +99,7 @@ const useSignalr = () => {
   };
 
   const createChannel = useCallback((payload, callback = () => {}, config = {}) => {
-    api.post('/rooms', payload, config)
+    api.post('/rooms/new', payload, config)
     .then(res => {
       return callback(null, res.data);
     })
