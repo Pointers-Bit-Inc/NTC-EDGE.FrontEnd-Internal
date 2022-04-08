@@ -25,6 +25,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const styles = StyleSheet.create({
     container: {
