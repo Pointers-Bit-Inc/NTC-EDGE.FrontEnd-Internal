@@ -796,7 +796,7 @@ const ChatList=({navigation}:any)=>{
                                 params.goToPage(1 );
                             }
 
-                            function renderTab({onPress,onLayout,tab:{label}}){
+                            function renderTab({isTabActive, onPress,onLayout,tab:{label}}){
                                 return (
                                     <TouchableOpacity onPress={onPress}>
                                         <Hoverable>
@@ -805,7 +805,7 @@ const ChatList=({navigation}:any)=>{
                                                     backgroundColor:isHovered ? "#DFE5F1" : undefined,
                                                     paddingVertical:20
                                                 }}>
-                                                    <Text style={{color: "#565961",fontSize:20}}>{label}</Text>
+                                                    <Text style={{color: isTabActive ? "#565961" : "#808196",fontSize:20}}>{label}</Text>
                                                 </View>
                                             )}
                                         </Hoverable>
@@ -958,7 +958,7 @@ const ChatList=({navigation}:any)=>{
 
                 {_id && showLayout &&<TabView
                     swipeEnabled={false}
-                      renderTabBar={()=> <></>}
+                    renderTabBar={()=> <></>}
                     navigationState={{ index, routes }}
                     renderScene={renderScene}
                     onIndexChange={setIndex}
