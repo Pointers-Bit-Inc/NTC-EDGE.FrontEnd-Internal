@@ -26,8 +26,8 @@ const PaymentModal = (props: any) => {
     function Row({ column }) {
         return (
             <View style={styles.rowStyle}>
-                {column.map((data) => (
-                    <Cell data={data} />
+                {column.map((data, index) => (
+                    <Cell key={index} data={data} />
                 ))}
             </View>
         );
@@ -57,7 +57,7 @@ const PaymentModal = (props: any) => {
              <OnBackdropPress onPressOut={ props.onDismissed} />
              <View style={{
                  ...Platform.select({
-                     native: {  },
+                     native: {   },
                      default: {
                          width: rightLayoutComponent?.width,
                          top : rightLayoutComponent?.top,
@@ -91,10 +91,10 @@ const PaymentModal = (props: any) => {
 
                             <View style={[styles.group8, { height: isMobile ? undefined : rightLayoutComponent?.height- rightLayoutComponent?.top , alignItems: 'center'}]}>
 
-                                <View>
+                                <View style={{top: -60}}>
                                     <View style={{flexDirection: "row"}}>
                                         {
-                                            !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentTop  style={{marginBottom: -1}}/>)
+                                            !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map((top, index)=> <BorderPaymentTop key={index}  style={{marginBottom: -1}}/>)
                                         }
                                     </View>
                                     <View  onLayout={onLayoutComponent} style={{backgroundColor: "white"}}>
@@ -128,7 +128,7 @@ const PaymentModal = (props: any) => {
                                     </View>
                                     <View style={{ overflow: "hidden",flexDirection: "row", }}>
                                         {
-                                            !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map(()=> <BorderPaymentBottom style={{marginTop: -1}}/>)
+                                            !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map((bottom, index)=> <BorderPaymentBottom key={index} style={{marginTop: -1}}/>)
                                         }
                                     </View>
                                 </View>

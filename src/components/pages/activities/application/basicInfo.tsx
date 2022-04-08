@@ -1,12 +1,12 @@
-import React , {useEffect} from "react";
+import React,{useEffect,useState} from "react";
 import {
-    ActivityIndicator ,
-    Dimensions ,
-    Platform ,
-    ScrollView ,
-    StyleSheet ,
-    Text ,
-    useWindowDimensions ,
+    ActivityIndicator,
+    Dimensions,Image,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    useWindowDimensions,
     View
 } from "react-native";
 import {
@@ -50,6 +50,7 @@ const BasicInfo = (props: any) => {
     });
     const applicant = props.applicant?.user || props.applicant;
     const dimensions = useWindowDimensions();
+    
     return <ScrollView style={ { width : "100%" , backgroundColor : "#f8f8f8" , } }>
 
         <View style={{flexDirection:  isMobile || dimensions?.width <= 768  ? "column" : "row"}}>
@@ -59,7 +60,7 @@ const BasicInfo = (props: any) => {
                     style={ { borderRadius : 4 } }
 
                     textSize={ 22 }
-                    image={ applicant.profilePicture?.small || applicant?.profilePicture?.small }
+                    image={  applicant.profilePicture?.small.match(/[^/]+(jpg|png|gif)$/i) ?  applicant.profilePicture?.small :   applicant.profilePicture?.small+ ".png" }
                     name={ `${ applicant.firstName } ${ applicant.lastName }` }
                 />
 

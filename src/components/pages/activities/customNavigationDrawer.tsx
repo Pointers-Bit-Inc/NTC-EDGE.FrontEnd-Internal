@@ -35,7 +35,7 @@ const CustomSidebarMenu = (props: any) => {
                     } = props.descriptors[route.key].options;
                     const onPress = () => {
 
-                        if(((route.name == CHAT && !isMobile)  || (route.name == MEET && !isMobile) || (route.name == SCANQR && !isMobile)  ) ) return
+                        //if(((route.name == CHAT && !isMobile)  || (route.name == MEET && !isMobile) || (route.name == SCANQR && !isMobile)  ) ) return
 
                         const event = props.navigation.emit({
                             type: 'drawerItemPress',
@@ -53,19 +53,23 @@ const CustomSidebarMenu = (props: any) => {
                         }
                     };
 
+                    let tabIcon:any = null;
 
-
+                    switch(route.name) {
+                        case ACTIVITIES: tabIcon = <ActivitySidebar fill={focused? "#113196" : "#6E7191"}  height={ 25 } width={ 24 }/>; break;
+                        case CHAT: tabIcon = <ChatIcon focused={focused} fill={focused ? "#113196" : "#6E7191"} />; break;
+                        case MEET: tabIcon = <MeetIcon fill={focused ? "#113196" : "#6E7191"}/>; break;
+                        default: tabIcon = null;
+                    }
 
                     return route.name != SEARCH && <View>
-                        <DrawerItem key={route.key} label={""} activeBackgroundColor={"transparent"} focused={focused} label={ '' } icon={ () => (
+                        <DrawerItem key={route.key} label={""} activeBackgroundColor={"transparent"} focused={focused} icon={ () => (
                             <View style={{ width: "100%"}}>
                                 <View style={ [styles.itemContainer , { borderLeftColor : focused ? "#113196" : "transparent" , }] }>
                                     <View style={{alignItems : "center" ,
                                         justifyContent : "center" ,}} >
 
-                                        {route.name == ACTIVITIES ?
-                                            <ActivitySidebar fill={focused? "#113196" : "#6E7191"}  height={ 25 } width={ 24 }/>
-                                        : route.name == CHAT  ?  <ChatIcon focused={focused} fill={focused ? "#113196" : "#6E7191"} /> : route.name = MEET ? <MeetIcon fill={focused ? "#113196" : "#6E7191"}/> : <></> }
+                                        {tabIcon}
 
                                         <Text style={ [styles.label, {color: focused ? "#113196" : "#6E7191"  }] }>{  drawerLabel !== undefined
                                                                         ? drawerLabel

@@ -9,7 +9,18 @@ import {isMobile} from "@pages/activities/isMobile";
 const { width , height } = Dimensions.get("screen");
 export const styles = StyleSheet.create({
     pictureContainer: {
-        width : width/1.2 , height : 200 , borderRadius : 5 , borderWidth : 4 ,
+        ...Platform.select({
+            native: {
+                width : width/1.2 ,
+            },
+            default: {
+               width: 200,
+            }
+        }),
+
+        height : 200 ,
+        borderRadius : 5 ,
+        borderWidth : 4 ,
         borderColor : "#fff"
     },
     containers:{
@@ -54,13 +65,22 @@ export const styles = StyleSheet.create({
     container : {
         flex : 1 ,
 
-
     } ,
     group7 : {} ,
     rect2 : {
         zIndex : 3 ,
+        ...Platform.select({
+            native: {
 
-        backgroundColor : "rgba(0,0,0,0.5)"
+            },
+            default: {
+                top: -25,
+            }
+        }),
+
+        alignSelf:'flex-end',paddingHorizontal:15,paddingVertical:15,
+        position: "absolute"
+
     } ,
     close : {
          fontWeight: "bold",

@@ -1,5 +1,13 @@
-import React , {useEffect , useState} from "react";
-import {ActivityIndicator , StyleSheet , TouchableOpacity , useWindowDimensions , View} from "react-native";
+import React,{useEffect,useMemo,useState} from "react";
+import {
+    ActivityIndicator,
+    Image,
+    InteractionManager,
+    StyleSheet,
+    TouchableOpacity,
+    useWindowDimensions,
+    View
+} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
@@ -14,16 +22,9 @@ import {
 } from "@pages/activities/script";
 
 import {
-    ACCOUNTANT ,
     APPROVED ,
     CASHIER ,
     DECLINED ,
-    DIRECTOR ,
-    EVALUATOR ,
-    FORAPPROVAL ,
-    FOREVALUATION ,
-    FORVERIFICATION ,
-    PENDING
 } from "../../../reducers/activity/initialstate";
 import {outline} from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
@@ -42,6 +43,7 @@ import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 import * as Animatable from 'react-native-animatable'
+import axios from "axios";
 const styles = StyleSheet.create({
 
     containerBlur : {
@@ -184,11 +186,11 @@ const RenderApplication = ({ applicationType }: any) => {
             >
                 { isMobile ? applicationType : (
                                                    (
-                                                       applicationType).length > 30) ?
+                                                       applicationType).length > 25) ?
                                                (
                                                    (
                                                        (
-                                                           applicationType).substring(0 , 30 - 3)) + '...') :
+                                                           applicationType).substring(0 , 25 - 3)) + '...') :
                                                applicationType }
             </Text>
         </View>
@@ -269,6 +271,9 @@ export function ActivityItem(props: any) {
     };
 
     const dimensions = useWindowDimensions();
+    const [prefetchImage, setPrefetchImage] = useState(false)
+
+
     return (
 
         <Hoverable>
@@ -319,7 +324,7 @@ export function ActivityItem(props: any) {
                                         }>
                                             <ProfileImage
                                                 size={ fontValue(45) }
-                                                image={ userActivity?.profilePicture?.small }
+                                                image={ userActivity?.profilePicture?.small ? userActivity?.profilePicture?.small.match(/[^/]+(jpg|png|gif)$/i) ?  userActivity?.profilePicture?.small :  userActivity?.profilePicture?.small + ".png" : null }
                                                 name={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
                                             />
                                             <View style={ styles.content }>

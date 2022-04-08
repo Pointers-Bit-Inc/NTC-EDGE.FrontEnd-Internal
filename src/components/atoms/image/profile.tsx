@@ -40,7 +40,7 @@ const ProfileImage = ({
   const imageSize = isOnline ? isMobile ? RFValue(size - 5) : size - 5 : isMobile ? RFValue(size) : size
 
   const getBackgroundColor = useCallback(() => {
-    if (!backgroundColor) {
+      if (!backgroundColor) {
       return getColorFromName(name);
     }
     return backgroundColor;
@@ -64,17 +64,18 @@ const ProfileImage = ({
               height={imageSize}
               resizeMode={"cover"}
               source={{ uri: image }}
-              style={{
+              style={[{
                 height: imageSize,
                 width: imageSize,
                 borderRadius: imageSize
-              }}
+              },  style]}
             />
         </View>
-        
+
       </View>
     );
   }
+
   return (
     <View style={isOnline && [styles.onlineBorder, { borderRadius: size * 2 }, onlineStyle]}>
       <View

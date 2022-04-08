@@ -124,7 +124,6 @@ const Approval=(props:any)=>{
 
     const onCancelPress=(event,bool?:any)=>{
         setAlertLoading(false);
-        console.log(event);
         setShowAlert(false);
         if(approvalIcon){
 
@@ -185,18 +184,13 @@ const Approval=(props:any)=>{
                                 setTitle("Application Approved");
                                 setMessage("Application has been approved.");
                                 setShowClose(true);
-                                console.log(4)
                             });
-                            console.log(6);
                             callback(true);
-                            console.log(7)
                         } else if(!response){
-                            console.log(8);
                             props.onDismissed(APPROVED,()=>{
                                 setShowAlert(false);
                                 setApprovalIcon(false);
                                 setShowClose(false);
-                                console.log(5)
                             })
                         } else{
                             props.onModalDismissed();
@@ -221,7 +215,7 @@ const Approval=(props:any)=>{
 
                         width:isMobile||dimensions.width<=768 ? "100%" : "31.6%",  //474/1500
                         display:!showAlert ? undefined : "none"
-                    },{transform:[{scale:onFocus&&isTyping ? 1 : springValue}]}]}>
+                    },{transform:[{scale:springValue}]}]}>
                         <View style={styles.shadow}>
                             <View style={styles.rect}>
                                 <View style={{alignSelf:'flex-start'}}>

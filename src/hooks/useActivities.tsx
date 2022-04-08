@@ -82,16 +82,12 @@ export function useActivities(){
     }
 
     const ispinnedApplications=(applications:any)=>{
-        console.log("application count: ", applications.length)
         setTotalPages(Math.ceil(applications?.length/10));
-        console.log("application count: ", applications.length)
         const selectedClone=selectedChangeStatus?.filter((status:string)=>{
             return status!=DATE_ADDED
         });
-        console.log("application count: ",selectedClone)
 
         const list=getList(applications,selectedClone);
-        console.log("application count: ", list)
         const groups=list?.reduce((groups:any,activity:any)=>{
 
             if((
@@ -108,7 +104,6 @@ export function useActivities(){
             return groups;
         },{});
 
-        console.log("application count: ",groups)
         const groupArrays=Object.keys(groups).map((date)=>{
             return {
                 date,
@@ -117,7 +112,6 @@ export function useActivities(){
             };
         });
 
-        console.log("application count: ",groupArrays)
         let a=[],b=[];
         for(let i=0; i<groupArrays.length; i++){
             for(let j=0; j<groupArrays[i].activity.length; j++){
@@ -199,6 +193,7 @@ export function useActivities(){
             if(count==0){
                 count=1;
                 if(count){
+
                     response?.data?.size ? setSize(response?.data?.size) : setSize(0);
                     response?.data?.total ? setTotal(response?.data?.total) : setTotal(0);
                     response?.data?.page ? setPage(response?.data?.page) : setPage(0);

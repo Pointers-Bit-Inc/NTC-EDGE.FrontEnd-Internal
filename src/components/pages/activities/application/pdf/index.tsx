@@ -11,11 +11,12 @@ const PdfViewr=(props:{requirement:any,extension:any})=>{
 
     return extension=="pdf" ? <View style={{flex:1, alignItems: "center", justifyContent: "center",  }}><Pdf  cache={true} style={requirementStyles.pdf}
                                                                                                              source={{uri:props.requirement?.small,}}/><Text style={{position: "absolute", textAlign: "center", color: "#fff", fontFamily: Bold, fontSize: 18}}>{"Loading..."}</Text></View> :
-           <View style={{flex:1}}><WebView originWhitelist={['*']}
+         <WebView  style={{flex:1}} originWhitelist={['*']}
                                            javaScriptEnabled={true}
                                            domStorageEnabled={true}
                                            source={{uri:'https://docs.google.com/gview?url='+props.requirement?.small+'&embedded=true'}}
-                                           style={requirementStyles.pdf}/></View>;
+                                           style={requirementStyles.pdf}/>
+               ;
 };
 
 export default PdfViewr
