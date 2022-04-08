@@ -17,8 +17,10 @@ interface IParticipants {
   hasJoined: false;
   isFocused: false;
   profilePicture: IImage,
-  isOnline: Boolean;
+  isOnline: boolean;
   lastOnline?: Date;
+  isAdmin?: boolean;
+  muted?: boolean;
 }
 
 export default IParticipants;

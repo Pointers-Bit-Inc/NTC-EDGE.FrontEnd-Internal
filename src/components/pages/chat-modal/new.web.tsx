@@ -301,7 +301,12 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     const onNext = (message:string) => {
         if (participants) {
             setNextLoading(true);
-            createChannel({ participants, name: groupName, message }, (err:any, res:any) => {
+            const formData = new FormData();
+            formData.append('name', groupName);
+            formData.append('message', message);
+            formData.append('participants', JSON.stringify(participants));
+
+            createChannel(formData, (err:any, res:any) => {
                 setNextLoading(false);
                 if (res) {
                     onSubmit(res);

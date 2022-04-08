@@ -22,11 +22,11 @@ import { NewVideoIcon, PlusIcon } from '@atoms/icon';
 import { text, outline, primaryColor } from 'src/styles/color';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import { ListFooter } from '@components/molecules/list-item';
-import MeetingParticipants from '@components/pages/chat/meeting-participants';
+import MeetingParticipants from '@components/pages/chat-modal/meeting-participants';
 import HomeMenuIcon from "@assets/svg/homemenu";
 import { RFValue } from 'react-native-responsive-fontsize';
 import {Bold} from "@styles/font";
-import CreateMeeting from '@components/pages/chat/meeting';
+import CreateMeeting from '@components/pages/chat-modal/meeting';
 import IMeetings from 'src/interfaces/IMeetings';
 import IParticipants from 'src/interfaces/IParticipants';
 
@@ -417,7 +417,6 @@ const Meet = ({ navigation }) => {
           <View style={styles.bar} />
         }
         containerStyle={{ maxHeight: null }}
-        backdropOpacity={0}
         onBackdropPress={() => {}}
       >
         <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>

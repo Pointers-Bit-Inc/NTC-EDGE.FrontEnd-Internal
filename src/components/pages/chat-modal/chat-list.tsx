@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef, FC } from 'react'
 import { View, TouchableOpacity, StyleSheet, InteractionManager } from 'react-native';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -27,6 +27,7 @@ import { Regular, Regular500 } from '@styles/font';
 import IMessages from 'src/interfaces/IMessages';
 import IParticipants from 'src/interfaces/IParticipants';
 import NoConversationIcon from "@assets/svg/noConversations";
+import { useNavigation } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   button: {
@@ -82,14 +83,29 @@ const styles = StyleSheet.create({
   }
 })
 
-const List = () => {
+interface Props {
+  channelId: string;
+  isGroup: boolean;
+  lastMessage: IMessages | {};
+  otherParticipants: Array<IParticipants>;
+  onNext: Function;
+}
+
+const List: FC<Props> = ({
+  channelId = '',
+  isGroup = false,
+  lastMessage = {},
+  otherParticipants = [],
+  onNext = () => {}
+}) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const messages = useSelector((state:RootStateOrAny) => {
-    const { selectedChannel, channelMessages, pendingMessages } = state.channel;
-    const normalizedMessages = channelMessages[selectedChannel._id]?.messages || {};
-    const channelPendingMessages = pendingMessages[selectedChannel._id || 'temp'] || {};
+    const { channelMessages, pendingMessages } = state.channel;
+    const normalizedMessages = channelMessages[channelId]?.messages || {};
+    const channelPendingMessages = pendingMessages[channelId || 'temp'] || {};
     const messagesList = lodash.keys(normalizedMessages).map((m:string) => {
       return normalizedMessages[m];
     });
@@ -115,15 +131,6 @@ const List = () => {
 
     return lodash.concat(pendingMessagesArray, messageArray);
   });
-  const { _id, isGroup, lastMessage, otherParticipants } = useSelector(
-    (state:RootStateOrAny) => {
-      const { selectedChannel } = state.channel;
-
-      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id);
-      return selectedChannel;
-    }
-  );
-  const channelId = _id;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [showDeleteOption, setShowDeleteOption] = useState(false);
@@ -149,7 +156,7 @@ const List = () => {
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);
     setHasError(false);
-    getMessages(channelId, pageIndex, false, (err, res) => {
+    getMessages(channelId, pageIndex, (err, res) => {
       setLoading(false);
       if (res) {
         if (res.list) dispatch(addToMessages(channelId, res.list));
@@ -173,6 +180,7 @@ const List = () => {
           dispatch(removePendingMessage(channelId, messageId, lastMessage));
           dispatch(setSelectedChannel(res));
           dispatch(addChannel(res));
+          onNext(null, res);
         }
         if (err) {
           console.log('ERROR', err, messageId);
@@ -185,7 +193,7 @@ const List = () => {
       sendMessage(data, (err:any, result:IMessages) => {
         if (err) {
           if (err?.message !== 'canceled') {
-            dispatch(setPendingMessageError(channelId, messageId)); 
+            dispatch(setPendingMessageError(channelId, messageId));
           }
         } else {
           dispatch(removePendingMessage(channelId, messageId, result));
@@ -218,7 +226,7 @@ const List = () => {
     setHasMore(false);
     setHasError(false);
     let unmount = false;
-    if (rendered) {
+    if (rendered && channelId) {
       getMessages(channelId, 1, false, (err, res) => {
         if (!unmount) {
           setLoading(false);
@@ -233,6 +241,8 @@ const List = () => {
           }
         }
       })
+    } else {
+      setLoading(false);
     }
 
     return () => {
@@ -241,7 +251,7 @@ const List = () => {
   }, [rendered, channelId]);
 
   useEffect(() => {
-    if (lastMessage && rendered) {
+    if (lodash.size(lastMessage) && rendered) {
       const hasSeen = lodash.find(lastMessage?.seen, s => s._id === user._id);
       if (!hasSeen) {
         seenMessage(lastMessage._id);
@@ -385,15 +395,16 @@ const List = () => {
 
   return (
     <>
-      {!messages.length ? <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
-                          <View >
-                            <NoConversationIcon />
-                          </View>
-
-                          <Text style={{color: "#A0A3BD", paddingVertical: 30, fontSize: 24, fontFamily: Regular, fontWeight: "400"}}>No conversations yet</Text>
-      </View> :
-      <>
-        <ChatList
+      {
+        !messages.length ?
+          <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+            <View >
+              <NoConversationIcon />
+            </View>
+            <Text style={{color: "#A0A3BD", paddingVertical: 30, fontSize: 24, fontFamily: Regular, fontWeight: "400"}}>No conversations yet</Text>
+          </View> :
+        <>
+          <ChatList
             user={user}
             messages={messages}
             participants={otherParticipants}
@@ -407,19 +418,19 @@ const List = () => {
             onEndReachedThreshold={0.5}
             onSendMessage={_sendMessage}
             onSendFile={_sendFile}
-        />
-        <BottomModal
+          />
+          <BottomModal
             ref={modalRef}
             onModalHide={() => setShowDeleteOption(false)}
             header={
               <View style={styles.bar} />
             }
-        >
-          <View style={{ paddingBottom: 20 }}>
-            {showDeleteOption ? deletOptions() : options()}
-          </View>
-        </BottomModal>
-        <AwesomeAlert
+          >
+            <View style={{ paddingBottom: 20 }}>
+              {showDeleteOption ? deletOptions() : options()}
+            </View>
+          </BottomModal>
+          <AwesomeAlert
             show={showAlert}
             showProgress={false}
             contentContainerStyle={{ borderRadius: 15 }}
@@ -441,11 +452,9 @@ const List = () => {
             confirmText="Unsend"
             onCancelPressed={() => setShowAlert(false)}
             onConfirmPressed={unSendMessageForYou}
-        />
-
-      </> }
-
-
+          />
+        </>
+      }
     </>
   )
 }

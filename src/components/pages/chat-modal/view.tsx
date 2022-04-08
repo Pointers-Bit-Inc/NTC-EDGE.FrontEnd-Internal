@@ -11,7 +11,7 @@ import {
 import lodash from 'lodash';
 import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
 import useSignalR from 'src/hooks/useSignalr';
-import ChatList from '@screens/chat/chat-list';
+import ChatList from '@pages/chat-modal/chat-list';
 import {
   PlusIcon,
   CheckIcon,
@@ -27,6 +27,8 @@ import {
 import { RFValue } from 'react-native-responsive-fontsize';
 import useAttachmentPicker from 'src/hooks/useAttachment';
 import { AttachmentMenu } from '@components/molecules/menu';
+import IMessages from 'src/interfaces/IMessages';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const styles = StyleSheet.create({
   container: {
@@ -88,7 +90,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 1 : 0,
   },
   circle: {
-    backgroundColor: button.primary,
+    backgroundColor: button.info,
     borderRadius: 28,
     width: 28,
     height: 28,
@@ -105,11 +107,24 @@ const styles = StyleSheet.create({
 });
 
 interface Props {
+  channelId: string,
+  isGroup: boolean,
+  groupName: string,
+  lastMessage: IMessages,
+  otherParticipants: Array<IParticipants>,
   onNext: Function;
   participants: Array<any>;
 }
 
-const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
+const ChatView: FC<Props> = ({
+  channelId = '',
+  isGroup = false,
+  lastMessage = {},
+  otherParticipants = [],
+  onNext = () => {},
+  participants = [],
+  groupName = '',
+}) => {
   const dispatch = useDispatch();
   const {
     editMessage,
@@ -121,26 +136,33 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
   } = useAttachmentPicker();
   const inputRef:any = useRef(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { _id } = useSelector(
-    (state:RootStateOrAny) => {
-      const { selectedChannel } = state.channel;
-      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
-      return selectedChannel;
-    }
-  );
-  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
+  const selectedMessage = useSelector((state:RootStateOrAny) => {
+    const { selectedMessage } = state.channel;
+    return selectedMessage[channelId];
+  });
   const [inputText, setInputText] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [showAttachmentOption, setShowAttachmentOption] = useState(false);
   const Height = useRef(new Animated.Value(0));
-  const channelId = _id;
   
-  const _sendMessage = (channelId:string, inputText:string) => {
+  const _sendMessage = (channelId:string, inputText:string, groupName = '', participants:any = []) => {
     dispatch(addPendingMessage({
       channelId: channelId,
       message: inputText,
+      groupName,
+      participants,
       messageType: 'text',
+    }));
+  }
+
+  const _sendFile = (channelId:string, attachment:any, groupName = '', participants:any = []) => {
+    dispatch(addPendingMessage({
+      attachment,
+      channelId,
+      groupName,
+      participants,
+      messageType: 'file'
     }));
   }
 
@@ -159,15 +181,13 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
     if (!inputText || lodash.size(participants) === 0) {
       return;
     }
-    if (!channelId) {
-      setInputText('');
-      return onNext(inputText);
-    }
-    if (selectedMessage._id) {
+    if (selectedMessage?._id) {
       _editMessage(selectedMessage._id, inputText);
-      dispatch(removeSelectedMessage())
+      inputRef.current?.blur();
+      dispatch(removeSelectedMessage(channelId))
     } else {
-      _sendMessage(channelId, inputText);
+      _sendMessage(channelId, inputText, groupName, participants);
+      inputRef.current?.blur();
       setInputText('');
     }
   }, [channelId, inputText])
@@ -183,11 +203,12 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
 
   useEffect(() => {
     if (lodash.size(selectedFile)) {
-      dispatch(addPendingMessage({
-        attachment: selectedFile,
+      _sendFile(
         channelId,
-        messageType: 'file'
-      }))
+        selectedFile,
+        groupName,
+        participants
+      );
     }
   }, [selectedFile]);
 
@@ -213,7 +234,7 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
   useEffect(() => {
     if (rendered) {
       setInputText(selectedMessage?.message || '');
-      if (selectedMessage._id) {
+      if (selectedMessage?._id) {
         setTimeout(() => inputRef.current?.focus(), 500);
       } else {
         inputRef.current?.blur();
@@ -226,13 +247,21 @@ const ChatView: FC<Props> = ({ onNext = () => {}, participants = [] }) => {
     <View style={styles.container}>
       <View style={{ flex: 1 }}>
         {
-          rendered && <ChatList />
+          rendered && (
+            <ChatList
+              channelId={channelId}
+              isGroup={isGroup}
+              lastMessage={lastMessage}
+              otherParticipants={otherParticipants}
+              onNext={onNext}
+            />
+          )
         }
       </View>
       <Animated.View style={[styles.keyboardAvoiding, { marginBottom: Height.current }]}>
         <View style={{ marginTop: RFValue(-18) }}>
-          <TouchableOpacity disabled={true} onPress={onShowAttachmentOption}>
-            <View style={[styles.plus, { backgroundColor: '#D1D1D6' }]}>
+          <TouchableOpacity onPress={showAttachmentOption ? onHideAttachmentOption : onShowAttachmentOption}>
+            <View style={[styles.plus, showAttachmentOption && { transform: [{ rotateZ: '0.785398rad' }] }]}>
               <PlusIcon
                 color="white"
                 size={RFValue(12)}

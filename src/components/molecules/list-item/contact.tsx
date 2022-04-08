@@ -50,6 +50,8 @@ interface Props {
   data?: any,
   isGroup?: boolean,
   isOnline?: boolean,
+  imageSize?: any,
+  textSize?: any,
   [x: string]: any;
 }
 
@@ -62,6 +64,8 @@ const ContactItem: FC<Props> = ({
   data = {},
   isGroup = false,
   isOnline = false,
+  imageSize = 0,
+  textSize = 0,
   ...otherProps
 }) => {
   const getName = (data:any) => {
@@ -120,15 +124,15 @@ const ContactItem: FC<Props> = ({
             <ProfileImage
               image={image}
               name={name}
-              size={50}
-              textSize={14}
+              size={imageSize || 50}
+              textSize={textSize || 14}
               isOnline={isOnline}
             />
           ) : (
             <GroupImage
               participants={data.participants}
-              size={50}
-              textSize={14}
+              size={imageSize || 50}
+              textSize={textSize || 14}
             />
           )
         }

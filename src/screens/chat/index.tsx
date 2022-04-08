@@ -27,7 +27,7 @@ import HomeMenuIcon from "@assets/svg/homemenu";
 import { NewChatIcon } from '@atoms/icon';
 import {Bold, Regular} from "@styles/font";
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
-import NewChat from '@pages/chat/new';
+import NewChat from '@components/pages/chat-modal/new';
 import {fontValue} from "@pages/activities/fontValue";
 import MeetIcon from "@assets/svg/meetIcon";
 import hairlineWidth = StyleSheet.hairlineWidth;
@@ -40,6 +40,7 @@ import {
 } from 'src/reducers/meeting/actions';
 import IMeetings from 'src/interfaces/IMeetings';
 import IParticipants from 'src/interfaces/IParticipants';
+import Loading from '@components/atoms/loading';
 
 const { width, height } = Dimensions.get('window');
 
@@ -141,6 +142,15 @@ const styles = StyleSheet.create({
   content: {
     borderBottomColor: outline.default,
     borderBottomWidth: 1,
+  },
+  loading: {
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    position: 'absolute',
+    zIndex: 999,
+    width,
+    height,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 
@@ -176,6 +186,7 @@ const ChatList = ({ navigation }:any) => {
   const [showAlert, setShowAlert] = useState(false);
   const [selectedItem, setSelectedItem]:any = useState({});
   const [loading, setLoading] = useState(false);
+  const [updating, setUpdating] = useState(false);
   const [sendRequest, setSendRequest] = useState(0);
   const [pageIndex, setPageIndex] = useState(1);
   const [fetching, setFetching] = useState(false);
@@ -431,8 +442,9 @@ const onClose = (item:IMeetings, leave = false) => {
                   onPress={() => {
                     dispatch(setSelectedChannel(item));
                     dispatch(setMeetings([]));
-                    if (selectedMessage && selectedMessage.channelId !== item._id) {
-                      dispatch(removeSelectedMessage());
+                    const messageSelected = selectedMessage[item._id] || {}
+                    if (messageSelected && messageSelected.channelId !== item._id) {
+                      dispatch(removeSelectedMessage(messageSelected.channelId));
                     }
                     navigation.navigate('ViewChat', item)
                   }}
@@ -455,7 +467,6 @@ const onClose = (item:IMeetings, leave = false) => {
           <View style={styles.bar} />
         }
         containerStyle={{ maxHeight: null }}
-        backdropOpacity={0}
         onBackdropPress={() => {}}
       >
         <View style={{ height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
@@ -466,7 +477,7 @@ const onClose = (item:IMeetings, leave = false) => {
               dispatch(setSelectedChannel(res));
               dispatch(addChannel(res));
               modalRef.current?.close();
-              setTimeout(() => navigation.navigate('ViewChat', res), 300);
+              setTimeout(() => navigation.navigate('ViewChat', res), 500);
             }}
           />
         </View>
@@ -497,8 +508,10 @@ const onClose = (item:IMeetings, leave = false) => {
         }}
         onConfirmPressed={() => {
           setShowAlert(false);
+          setUpdating(true);
           setTimeout(() => 
             leaveChannel(selectedItem._id, (err, res) => {
+              setUpdating(false);
               if (res) {
                 dispatch(removeChannel(res));
               }
@@ -510,6 +523,13 @@ const onClose = (item:IMeetings, leave = false) => {
           );
         }} 
       />
+      {
+        updating && (
+          <View style={styles.loading}>
+            <Loading color='#fff' size={10} />
+          </View>
+        )
+      }
     </View>
   )
 }

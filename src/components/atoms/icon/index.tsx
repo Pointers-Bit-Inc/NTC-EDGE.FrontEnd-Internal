@@ -41,6 +41,10 @@ import NewCheckIcon from './new-check';
 import MinusIcon from './minus';
 import MediaIcon from './media';
 import AttachIcon from './attach';
+import NewPenIcon from './new-pen';
+import NewInfoIcon from './new-info';
+import NewPhoneIcon from './new-phone';
+import NewMeetIcon from './new-meet';
 
 export {
   ExclamationIcon,
@@ -86,4 +90,8 @@ export {
   MinusIcon,
   MediaIcon,
   AttachIcon,
+  NewPenIcon,
+  NewInfoIcon,
+  NewPhoneIcon,
+  NewMeetIcon,
 };

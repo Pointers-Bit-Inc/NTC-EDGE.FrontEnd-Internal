@@ -31,10 +31,19 @@ import useSignalr from 'src/hooks/useSignalr';
 //import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
-import {ArrowLeftIcon,CheckIcon,NewCallIcon,NewChatIcon,NewMessageIcon,NewVideoIcon,PlusIcon} from '@atoms/icon';
-import {Bold,Regular} from "@styles/font";
-import {BottomModalRef} from '@components/atoms/modal/bottom-modal';
-import NewChat from '@pages/chat/new';
+import HomeMenuIcon from "@assets/svg/homemenu";
+import {
+    ArrowLeftIcon ,
+    CheckIcon ,
+    NewCallIcon ,
+    NewChatIcon ,
+    NewMessageIcon ,
+    NewVideoIcon ,
+    PlusIcon
+} from '@atoms/icon';
+import {Bold, Regular, Regular500} from "@styles/font";
+import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
+import NewChat from '@components/pages/chat-modal/new';
 import {fontValue} from "@pages/activities/fontValue";
 import MeetIcon from "@assets/svg/meetIcon";
 import {getChannelImage,getChannelName,getTimeDifference,getTimeString} from "../../utils/formatting";
@@ -649,20 +658,23 @@ const ChatList=({navigation}:any)=>{
                 console.log('ERR',err);
             }
         })
-    };
-    const channelId=_id;
-    const {selectedMessage}=useSelector((state:RootStateOrAny)=>state.channel);
-    const onSendMessage=useCallback(()=>{
-        if(!inputText){
+    }
+    const channelId = _id;
+    const selectedMessage = useSelector((state:RootStateOrAny) => {
+        const { selectedMessage } = state.channel;
+        return selectedMessage[channelId];
+    });
+    const onSendMessage = useCallback(() => {
+        if (!inputText) {
             return;
         }
 
-        if(selectedMessage._id){
-            _editMessage(selectedMessage._id,inputText);
+        if (selectedMessage?._id) {
+            _editMessage(selectedMessage?._id, inputText);
             inputRef.current?.blur();
-            dispatch(removeSelectedMessage())
-        } else{
-            _sendMessage(channelId,inputText);
+            dispatch(removeSelectedMessage(channelId))
+        } else {
+            _sendMessage(channelId, inputText);
             inputRef.current?.blur();
             setInputText('');
         }
@@ -684,14 +696,14 @@ const ChatList=({navigation}:any)=>{
         return ()=>{
             dispatch(setSelectedChannel({}));
         }
-    },[]);
+    }, []);
 
-    useEffect(()=>{
-        if(rendered){
-            setInputText(selectedMessage?.message||'');
-            if(selectedMessage._id){
-                setTimeout(()=>inputRef.current?.focus(),500);
-            } else{
+    useEffect(() => {
+        if (rendered) {
+            setInputText(selectedMessage?.message || '');
+            if (selectedMessage?._id) {
+                setTimeout(() => inputRef.current?.focus(), 500);
+            } else {
                 inputRef.current?.blur();
             }
         }

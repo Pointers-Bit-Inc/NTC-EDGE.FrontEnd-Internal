@@ -28,6 +28,7 @@ import {
   NewMessageIcon,
   MediaIcon,
   AttachIcon,
+  NewInfoIcon,
 } from '@components/atoms/icon';
 import Text from '@components/atoms/text';
 import GroupImage from '@components/molecules/image/group';
@@ -42,7 +43,7 @@ import {
 } from 'src/reducers/channel/actions';
 import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
-import CreateMeeting from '@components/pages/chat/meeting';
+import CreateMeeting from '@components/pages/chat-modal/meeting';
 import IMeetings from 'src/interfaces/IMeetings';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import useAttachmentPicker from 'src/hooks/useAttachment';
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   circle: {
-    backgroundColor: button.primary,
+    backgroundColor: button.info,
     borderRadius: 28,
     width: 28,
     height: 28,
@@ -150,7 +151,7 @@ const ChatView = ({ navigation, route }:any) => {
   const inputRef:any = useRef(null);
   const layout = useWindowDimensions();
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { _id, otherParticipants, participants } = useSelector(
+  const { _id, name, hasRoomName, isGroup, otherParticipants, participants } = useSelector(
     (state:RootStateOrAny) => {
       const { selectedChannel } = state.channel;
       selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
@@ -163,7 +164,10 @@ const ChatView = ({ navigation, route }:any) => {
     meetingList = lodash.filter(meetingList, m => m.roomId === _id);
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
 })
-  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
+  const selectedMessage = useSelector((state:RootStateOrAny) => {
+    const { selectedMessage } = state.channel;
+    return selectedMessage[_id];
+  });
   const [inputText, setInputText] = useState('');
   const [index, setIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
@@ -199,10 +203,10 @@ const ChatView = ({ navigation, route }:any) => {
     if (!inputText) {
       return;
     }
-    if (selectedMessage._id) {
-      _editMessage(selectedMessage._id, inputText);
+    if (selectedMessage?._id) {
+      _editMessage(selectedMessage?._id, inputText);
       inputRef.current?.blur();
-      dispatch(removeSelectedMessage())
+      dispatch(removeSelectedMessage(channelId))
     } else {
       _sendMessage(channelId, inputText);
       inputRef.current?.blur();
@@ -264,6 +268,15 @@ const ChatView = ({ navigation, route }:any) => {
     setShowAttachmentOption(false);
   }
 
+  const renderChannelName = () => {
+    return getChannelName({
+      otherParticipants,
+      hasRoomName,
+      name,
+      isGroup
+    });
+  }
+
   useEffect(() => {
     if (lodash.size(selectedFile)) {
       dispatch(addPendingMessage({
@@ -287,7 +300,7 @@ const ChatView = ({ navigation, route }:any) => {
   useEffect(() => {
     if (rendered) {
       setInputText(selectedMessage?.message || '');
-      if (selectedMessage._id) {
+      if (selectedMessage?._id) {
         setTimeout(() => inputRef.current?.focus(), 500);
       } else {
         inputRef.current?.blur();
@@ -299,7 +312,6 @@ const ChatView = ({ navigation, route }:any) => {
     setIsVideoEnable(isVideoEnable);
     modalRef.current?.open();
   }
-    
 
   return (
     <View style={styles.container}>
@@ -323,13 +335,15 @@ const ChatView = ({ navigation, route }:any) => {
           />
         </View>
         <View style={styles.info}>
-          <Text
-            color={'black'}
-            size={16}
-            numberOfLines={1}
-          >
-            {getChannelName(route.params)}
-          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('ChatInfo')}>
+            <Text
+              color={'black'}
+              size={16}
+              numberOfLines={1}
+            >
+              {renderChannelName()}
+            </Text>
+          </TouchableOpacity>
           {
             !route?.params?.isGroup && !!otherParticipants[0]?.lastOnline && (
               <Text
@@ -343,6 +357,15 @@ const ChatView = ({ navigation, route }:any) => {
             )
           }
         </View>
+        <TouchableOpacity onPress={() => navigation.navigate('ChatInfo')}>
+          <View style={{ paddingRight: 5, marginTop: 6 }}>
+            <NewInfoIcon
+              color={button.info}
+              height={RFValue(18)}
+              width={RFValue(18)}
+            />
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => onInitiateCall(false)}>
           <View style={{ paddingRight: 5 }}>
             <NewCallIcon
@@ -405,8 +428,8 @@ const ChatView = ({ navigation, route }:any) => {
           >
             <View style={styles.keyboardAvoiding}>
               <View style={{ marginTop: RFValue(-18) }}>
-                <TouchableOpacity disabled={true} onPress={onShowAttachmentOption}>
-                  <View style={[styles.plus, { backgroundColor: '#D1D1D6' }]}>
+                <TouchableOpacity onPress={showAttachmentOption ? onHideAttachmentOption : onShowAttachmentOption}>
+                  <View style={[styles.plus, showAttachmentOption && { transform: [{ rotateZ: '0.785398rad' }] }]}>
                     <PlusIcon
                       color="white"
                       size={RFValue(12)}
@@ -471,7 +494,6 @@ const ChatView = ({ navigation, route }:any) => {
           <View style={styles.bar} />
         }
         containerStyle={{ maxHeight: null }}
-        backdropOpacity={0}
         onBackdropPress={() => {}}
       >
         <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>

@@ -270,7 +270,7 @@ const ChatBubble:FC<Props> = ({
             )
           }
           {
-            (!isSeen && isSender && !deleted && !system) && (
+            (!isSeen && isSender && !deleted && !system && !(unSend && isSender)) && (
               <View
                 style={[styles.check, delivered && { backgroundColor: text.info }]}
               >
