@@ -22,9 +22,10 @@ import { Bold, Regular, Regular500 } from '@styles/font';
 import useSignalr from 'src/hooks/useSignalr';
 import { InputTags } from '@components/molecules/form-fields';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { useDispatch } from 'react-redux';
+import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const styles = StyleSheet.create({
     container: {
@@ -215,6 +216,8 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     const [isGroup, setIsGroup] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
+    const { selectedChannel } = useSelector((state:RootStateOrAny) => state.channel);
+    const user = useSelector((state:RootStateOrAny) => state.user);
 
     const onRequestData = () => setSendRequest(request => request + 1);
 
@@ -298,23 +301,27 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
         }
     }, [participants]);
 
-    const onNext = (message:string) => {
-        if (participants) {
-            setNextLoading(true);
-            const formData = new FormData();
-            formData.append('name', groupName);
-            formData.append('message', message);
-            formData.append('participants', JSON.stringify(participants));
+    const onNext = (message:string, channelData = null) => {
+        if (channelData) {
+            onSubmit(channelData);
+        } else {
+            if (participants) {
+                setNextLoading(true);
+                const formData = new FormData();
+                formData.append('name', groupName);
+                formData.append('message', message);
+                formData.append('participants', JSON.stringify(participants));
 
-            createChannel(formData, (err:any, res:any) => {
-                setNextLoading(false);
-                if (res) {
-                    onSubmit(res);
-                }
-                if (err) {
-                    console.log('ERROR', err);
-                }
-            });
+                createChannel(formData, (err:any, res:any) => {
+                    setNextLoading(false);
+                    if (res) {
+                        onSubmit(res);
+                    }
+                    if (err) {
+                        console.log('ERROR', err);
+                    }
+                });
+            }
         }
     }
 
@@ -520,7 +527,17 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
                 />
             );
         } else {
-            return (<ChatView onNext={(message:string) => onNext(message)} participants={participants} />);
+            return (
+                <ChatView
+                  channelId={selectedChannel?._id}
+                  otherParticipants={lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id)}
+                  isGroup={selectedChannel.isGroup}
+                  groupName={groupName}
+                  lastMessage={selectedChannel.lastMessage}
+                  onNext={(message:string, data:any) => onNext(message, data)}
+                  participants={participants}
+                />
+              );
         }
     }
 
