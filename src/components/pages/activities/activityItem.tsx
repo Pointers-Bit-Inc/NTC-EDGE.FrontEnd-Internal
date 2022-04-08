@@ -1,4 +1,4 @@
-import React , {useEffect , useState} from "react";
+import React,{useEffect,useMemo,useState} from "react";
 import {
     ActivityIndicator,
     Image,
@@ -273,6 +273,7 @@ export function ActivityItem(props: any) {
     const dimensions = useWindowDimensions();
     const [prefetchImage, setPrefetchImage] = useState(false)
 
+
     return (
 
         <Hoverable>
@@ -323,7 +324,7 @@ export function ActivityItem(props: any) {
                                         }>
                                             <ProfileImage
                                                 size={ fontValue(45) }
-                                                image={ userActivity?.profilePicture?.small ? userActivity?.profilePicture?.small.match(/[^/]+(jpg|png|gif)$/i) ?  userActivity?.profilePicture?.small :  userActivity?.profilePicture?.small + ".png"  : null }
+                                                image={ userActivity?.profilePicture?.small ? userActivity?.profilePicture?.small.match(/[^/]+(jpg|png|gif)$/i) ?  userActivity?.profilePicture?.small :  userActivity?.profilePicture?.small + ".png" : null }
                                                 name={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
                                             />
                                             <View style={ styles.content }>

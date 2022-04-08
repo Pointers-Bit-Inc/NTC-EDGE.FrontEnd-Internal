@@ -50,15 +50,31 @@ import {useComponentLayout} from "../../hooks/useComponentLayout";
 import {setChatLayout} from "../../reducers/layout/actions";
 import {Hoverable} from "react-native-web-hooks";
 import GroupImage from "@molecules/image/group";
-import FileList from "@screens/chat/file-list";
+//import FileList from "@screens/chat/file-list";
+import FileList from '@components/organisms/chat/files';
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import NoConversationIcon from "@assets/svg/noConversations";
 import {isMobile} from "@pages/activities/isMobile";
+import {ViewPaged} from 'react-scroll-paged-view'
+import TabBar from 'react-underline-tabbar'
+import CreateChatIcon from "@assets/svg/createChat";
 import hairlineWidth=StyleSheet.hairlineWidth;
 
 const {width,height}=Dimensions.get('window');
 
 const styles=StyleSheet.create({
+    chatContainer:{
+        zIndex:1,
+        shadowColor:"rgba(0,0,0,0.1)",
+        shadowOffset:{
+            width:0,
+            height:4
+        },
+        elevation:30,
+        shadowOpacity:1,
+        shadowRadius:10,
+
+    },
     keyboardAvoiding:{
         paddingHorizontal:15,
         paddingVertical:10,
@@ -112,6 +128,7 @@ const styles=StyleSheet.create({
         backgroundColor:outline.default,
     },
     horizontal:{
+       
         flexDirection:'row',
         alignItems:'center',
     },
@@ -562,6 +579,7 @@ function Chat(props:{user,navigation,onNewChat?:()=>any,onPress:()=>any,onBackdr
 const Tab=createMaterialTopTabNavigator();
 
 const ChatList=({navigation}:any)=>{
+
     const dimensions=useWindowDimensions();
     const dispatch=useDispatch();
     const {
@@ -571,7 +589,16 @@ const ChatList=({navigation}:any)=>{
         leaveMeeting,
     }=useSignalR();
     const layout=useWindowDimensions();
-
+    const onClose=(item:IMeetings,leave=false)=>{
+        if(leave){
+            dispatch(removeActiveMeeting(item._id));
+            return leaveMeeting(item._id);
+        } else if(item.host._id===user._id){
+            return endMeeting(item._id);
+        } else{
+            return dispatch(removeActiveMeeting(item._id));
+        }
+    };
     const user=useSelector((state:RootStateOrAny)=>state.user);
     const inputRef:any=useRef(null);
     const [inputText,setInputText]=useState('');
@@ -664,26 +691,17 @@ const ChatList=({navigation}:any)=>{
 
     const [chatSize,onChatLayout]=useComponentLayout();
     useEffect(()=>{
-
         dispatch(setChatLayout(chatSize))
     },[chatSize]);
+    const [inputShown,setInputShown]=useState(true);
     return (
         <View style={{flexDirection:"row",flex:1}}>
-            <View style={{
-                zIndex:1,
-                shadowColor:"rgba(0,0,0,0.1)",
-                shadowOffset:{
-                    width:0,
-                    height:4
-                },
-                elevation:30,
-                shadowOpacity:1,
-                shadowRadius:10,
+            <View style={[styles.chatContainer,{
                 flexBasis:(
                               isMobile||dimensions?.width<768) ? "100%" : 466,
                 flexGrow:0,
                 flexShrink:0
-            }}>
+            }]}>
                 <Chat
                     user={user}
                     navigation={navigation}
@@ -698,7 +716,7 @@ const ChatList=({navigation}:any)=>{
                         setShowLayout(true)
                     }}/>
             </View>
-            <View onLayout={onChatLayout} style={{backgroundColor:"#F8F8F8",flex:1,}}>
+            <View onLayout={onChatLayout} style={{backgroundColor:"#F8F8F8",flex:1, }}>
                 {onNewChat ?
                  <NewChat
                      onClose={()=>{
@@ -722,72 +740,172 @@ const ChatList=({navigation}:any)=>{
                          <Text style={{color:"#A0A3BD",paddingVertical:30,fontSize:24,fontFamily:Regular,fontWeight:"400"}}>No
                              conversations yet</Text>
                      </View>}
-                {_id&&showLayout&&<View style={[styles.header,styles.horizontal]}>
-                    <TouchableOpacity onPress={()=>{
-                        {
-                            dispatch(setSelectedChannel([]));
+                {_id&&showLayout&&<View style={[styles.header,styles.horizontal, {height: "90%"}]}>
+                    <ViewPaged
+                        isMovingRender
+                        render
+                        vertical={false}
+                        renderPosition='top'
+                        renderHeader={(params)=>{
 
-                            dispatch(setMeetings([]));
-                            setShowLayout(false)
-                        }
-                    }}>
-                        <View style={{paddingRight:5}}>
-                            <ArrowLeftIcon
-                                type='chevron-left'
-                                color={'#111827'}
-                                size={RFValue(26)}
-                            />
-                        </View>
-                    </TouchableOpacity>
-                    <View>
-                        <GroupImage
-                            participants={otherParticipants}
-                            size={isGroup ? 45 : 30}
-                            textSize={isGroup ? 24 : 16}
-                            inline={true}
-                        />
-                    </View>
-                    <View style={styles.info}>
-                        <Text
-                            color={'black'}
-                            size={16}
-                            numberOfLines={1}
-                        >
-                            {getChannelName({otherParticipants,isGroup,hasRoomName,name})}
-                        </Text>
-                        {
-                            !isGroup&& !!otherParticipants[0]?.lastOnline&&(
-                                <Text
-                                    color={'#606A80'}
-                                    size={10}
-                                    numberOfLines={1}
-                                    style={{marginTop:-5}}
-                                >
-                                    {otherParticipants[0]?.isOnline ? 'Active now' : getTimeDifference(otherParticipants[0]?.lastOnline)}
-                                </Text>
+                            function renderTab({onPress,onLayout,tab:{label}}){
+                                return (
+
+                                    <TouchableOpacity onPress={onPress}>
+                                        <Hoverable>
+                                            {isHovered=>(
+                                                <View style={{
+                                                    backgroundColor:isHovered ? "#DFE5F1" : undefined,
+                                                    paddingVertical:20
+                                                }}>
+                                                    <Text style={{fontSize:20}}>{label}</Text>
+                                                </View>
+                                            )}
+                                        </Hoverable>
+
+                                    </TouchableOpacity>
+
+                                )
+                            }
+
+                            return (
+                                <View style={{
+                                    borderBottomWidth:hairlineWidth,
+                                    borderBottomColor:"#d2d2d2",
+                                      paddingHorizontal: 25,
+                                    flexDirection:"row",
+                                    alignItems:"center",
+                                    justifyContent:"center",
+                                    backgroundColor:"#fff"
+                                }}>
+                                    <TouchableOpacity onPress={()=>{
+                                        {
+                                            dispatch(setSelectedChannel([]));
+
+                                            dispatch(setMeetings([]));
+                                            setShowLayout(false)
+                                        }
+                                    }}>
+                                        <View style={{paddingRight:5}}>
+                                            <ArrowLeftIcon
+                                                type='chevron-left'
+                                                color={'#111827'}
+                                                size={fontValue(26)}
+                                            />
+                                        </View>
+                                    </TouchableOpacity>
+                                    <View>
+                                        <GroupImage
+                                            participants={otherParticipants}
+                                            size={isGroup ? 45 : 30}
+                                            textSize={isGroup ? 24 : 16}
+                                            inline={true}
+                                        />
+                                    </View>
+                                    <View style={styles.info}>
+                                        <Text
+                                            color={'black'}
+                                            size={16}
+                                            numberOfLines={1}
+                                        >
+                                            {getChannelName({otherParticipants,isGroup,hasRoomName,name})}
+                                        </Text>
+                                        {
+                                            !isGroup&& !!otherParticipants[0]?.lastOnline&&(
+                                                <Text
+                                                    color={'#606A80'}
+                                                    size={10}
+                                                    numberOfLines={1}
+                                                    style={{marginTop:-5}}
+                                                >
+                                                    {otherParticipants[0]?.isOnline ? 'Active now' : getTimeDifference(otherParticipants[0]?.lastOnline)}
+                                                </Text>
+                                            )
+                                        }
+                                    </View>
+                                    <View style={{flexDirection:"row"}}>
+                                        <View style={{paddingRight:85}}>
+                                            <TabBar
+                                                style={{
+                                                    borderBottomWidth:0,
+                                                    borderBottomColor:"transparent",
+                                                    width:"100%"
+                                                }}
+                                                renderTab={renderTab}
+                                                scrollViewStyle={{
+                                                    paddingLeft:60,
+                                                    flex:1,
+                                                    justifyContent:"flex-start",
+                                                    gap:35
+                                                }}
+                                                underlineStyle={{
+                                                    backgroundColor:"#2863D6",
+                                                    paddingHorizontal:25,
+                                                    height:7
+                                                }}
+                                                tabs={[{label:"Chat"},{label:'Files'}]}
+                                                {...params}
+                                                vertical={false}
+                                            />
+                                        </View>
+
+                                        <View style={{flexDirection:"row",alignItems:"center"}}>
+                                            <View style={{flexDirection:"row",paddingRight:42}}>
+                                                <TouchableOpacity onPress={()=>{
+                                                }}>
+                                                    <View style={{paddingRight:24}}>
+                                                        <NewCallIcon
+                                                            color={button.info}
+                                                            height={fontValue(24)}
+                                                            width={fontValue(24)}
+                                                        />
+                                                    </View>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity onPress={()=>{
+                                                }}>
+                                                    <View>
+                                                        <NewVideoIcon
+                                                            color={button.info}
+                                                            height={28}
+                                                            width={28}
+                                                        />
+                                                    </View>
+
+                                                </TouchableOpacity>
+                                            </View>
+                                            <TouchableOpacity onPress={()=>{
+                                            }}>
+                                                <View style={{flexDirection:"row",alignItems:"center"}}>
+                                                    <CreateChatIcon
+                                                        color={button.info}
+                                                        height={fontValue(21)}
+                                                        width={fontValue(22)}
+                                                    />
+                                                    <View style={{paddingLeft:5}}>
+                                                        <Text style={{
+                                                            fontSize:12,
+                                                            fontFamily:Bold
+                                                        }}>{otherParticipants.length}</Text>
+                                                    </View>
+
+                                                </View>
+
+                                            </TouchableOpacity>
+                                        </View>
+
+                                    </View>
+
+
+                                </View>
+
                             )
-                        }
-                    </View>
-                    <TouchableOpacity onPress={()=>{
-                    }}>
-                        <View style={{paddingRight:5}}>
-                            <NewCallIcon
-                                color={button.info}
-                                height={RFValue(24)}
-                                width={RFValue(24)}
-                            />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>{
-                    }}>
-                        <View style={{paddingLeft:5,paddingTop:5}}>
-                            <NewVideoIcon
-                                color={button.info}
-                                height={RFValue(28)}
-                                width={RFValue(28)}
-                            />
-                        </View>
-                    </TouchableOpacity>
+                        }}
+                    >
+                        <List/>
+                        <FileList/>
+                    </ViewPaged>
+
+
                 </View>}
                 {_id&&showLayout&&<View>
                     {
@@ -815,30 +933,8 @@ const ChatList=({navigation}:any)=>{
                         )
                     }
                 </View>}
-                {_id&&showLayout&&<Tab.Navigator screenOptions={({route})=>(
-                    {
-                        tabBarIndicatorContainerStyle:{borderBottomColor:'#DDDDDD',borderBottomWidth:1},
-                        tabBarLabelStyle:{textTransform:'none'},
-                        tabBarIndicatorStyle:{backgroundColor:outline.info,height:3},
-                        tabBarStyle:{backgroundColor:'white'},
-                        tabBarActiveTintColor:text.info,
-                        tabBarLabel:({tintColor,focused,item})=>{
-                            return focused
-                                   ? (
-                                       <Text
-                                           style={{color:text.info,fontSize:14,fontWeight:'bold',}}>{route.name}</Text>)
-                                   : (
-                                       <Text style={{
-                                           color:tintColor,
-                                           fontSize:14,
-                                           fontWeight:'normal'
-                                       }}>{route.name}</Text>)
-                        },
-                    })}>
-                    <Tab.Screen name="Chat" component={List}/>
-                    <Tab.Screen name="Files" component={FileList}/>
-                </Tab.Navigator>}
-                {_id&&showLayout&&<View style={styles.keyboardAvoiding}>
+
+                {_id&&showLayout&&inputShown&&<View style={styles.keyboardAvoiding}>
 
                     <View style={{marginTop:fontValue(-18)}}>
                         <TouchableOpacity disabled={true}>
@@ -867,7 +963,7 @@ const ChatList=({navigation}:any)=>{
 
                         />
                     </View>
-                    <View style={{marginTop:RFValue(-18),flexDirection:'row'}}>
+                    <View style={{marginTop:fontValue(-18),flexDirection:'row'}}>
                         <TouchableOpacity
                             onPress={onSendMessage}
                         >
