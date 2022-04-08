@@ -1,5 +1,13 @@
-import React , {useEffect , useState} from "react";
-import {ActivityIndicator,Image,StyleSheet,TouchableOpacity,useWindowDimensions,View} from "react-native";
+import React,{useEffect,useMemo,useState} from "react";
+import {
+    ActivityIndicator,
+    Image,
+    InteractionManager,
+    StyleSheet,
+    TouchableOpacity,
+    useWindowDimensions,
+    View
+} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
@@ -35,6 +43,7 @@ import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 import * as Animatable from 'react-native-animatable'
+import axios from "axios";
 const styles = StyleSheet.create({
 
     containerBlur : {
@@ -262,7 +271,9 @@ export function ActivityItem(props: any) {
     };
 
     const dimensions = useWindowDimensions();
-   
+    const [prefetchImage, setPrefetchImage] = useState(false)
+
+
     return (
 
         <Hoverable>
@@ -313,7 +324,7 @@ export function ActivityItem(props: any) {
                                         }>
                                             <ProfileImage
                                                 size={ fontValue(45) }
-                                                image={ userActivity?.profilePicture?.small }
+                                                image={ userActivity?.profilePicture?.small ? userActivity?.profilePicture?.small.match(/[^/]+(jpg|png|gif)$/i) ?  userActivity?.profilePicture?.small :  userActivity?.profilePicture?.small + ".png" : null }
                                                 name={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
                                             />
                                             <View style={ styles.content }>

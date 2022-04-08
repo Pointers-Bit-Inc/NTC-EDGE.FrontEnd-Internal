@@ -50,13 +50,7 @@ const BasicInfo = (props: any) => {
     });
     const applicant = props.applicant?.user || props.applicant;
     const dimensions = useWindowDimensions();
-    const [prefetchImage, setPrefetchImage] = useState(false)
-    Image.prefetch( applicant.profilePicture?.small)
-    .then(()=>{
-        setPrefetchImage(true)
-    }, error => {
-        setPrefetchImage(false)
-    })
+    
     return <ScrollView style={ { width : "100%" , backgroundColor : "#f8f8f8" , } }>
 
         <View style={{flexDirection:  isMobile || dimensions?.width <= 768  ? "column" : "row"}}>
@@ -66,7 +60,7 @@ const BasicInfo = (props: any) => {
                     style={ { borderRadius : 4 } }
 
                     textSize={ 22 }
-                    image={ prefetchImage ? applicant.profilePicture?.small : null }
+                    image={  applicant.profilePicture?.small.match(/[^/]+(jpg|png|gif)$/i) ?  applicant.profilePicture?.small :   applicant.profilePicture?.small+ ".png" }
                     name={ `${ applicant.firstName } ${ applicant.lastName }` }
                 />
 

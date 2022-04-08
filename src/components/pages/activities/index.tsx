@@ -312,6 +312,7 @@ export default function ActivitiesPage(props: any) {
                             { useNativeDriver : true }
                         ) }
                         contentContainerStyle={ {
+                            display: isReady ? undefined: "none",
                             paddingTop : (
                                 !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && containerHeight * (
                                     lodash.size(meetingList) || 1)) || 0 , flexGrow : 1
@@ -319,7 +320,7 @@ export default function ActivitiesPage(props: any) {
                         ListEmptyComponent={ () => listEmpty(refreshing , searchTerm ,  (notPnApplications.length) + pnApplications?.map((item: any , index: number) => item?.activity && item?.activity?.map((act: any , i: number) => (act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id )).length)}
                         ListHeaderComponent={ listHeaderComponent() }
 
-                        style={ { flex : 1 , display: isReady ? undefined: "none"  } }
+                        style={ { flex : 1 , } }
 
                         data={ notPnApplications }
                         keyExtractor={ (item , index) => index.toString() }
@@ -352,7 +353,6 @@ export default function ActivitiesPage(props: any) {
                                 index={ index }
 
                                 element={ (activity: any , i: number) => {
-
                                     return (
 
                                         <ActivityItem
