@@ -68,6 +68,7 @@ import {ViewPaged} from 'react-scroll-paged-view'
 import TabBar from 'react-underline-tabbar'
 import CreateChatIcon from "@assets/svg/createChat";
 import hairlineWidth=StyleSheet.hairlineWidth;
+import {SceneMap,TabView} from "react-native-tab-view";
 
 const {width,height}=Dimensions.get('window');
 
@@ -589,6 +590,13 @@ const Tab=createMaterialTopTabNavigator();
 
 const ChatList=({navigation}:any)=>{
 
+
+    const [index, setIndex] = React.useState(0);
+    const [routes] = React.useState([
+        { key: 'list', title: 'Chat' },
+        { key: 'fileList', title: 'Files' },
+    ]);
+    const initialLayout = { width: Dimensions.get('window').width };
     const dimensions=useWindowDimensions();
     const dispatch=useDispatch();
     const {
@@ -705,7 +713,25 @@ const ChatList=({navigation}:any)=>{
     useEffect(()=>{
         dispatch(setChatLayout(chatSize))
     },[chatSize]);
-    const [inputShown,setInputShown]=useState(true);
+    const [activeTab,setActiveTab]=useState(0);
+    const [activeRoute, setActiveRoute] = useState("list")
+    const renderScene = ({ route, jumpTo }) => {
+        const sceneIndex = index == 0 ? "list" : "fileList"
+        if(route.key != activeRoute&& sceneIndex  ){
+             jumpTo(activeRoute)
+         }
+
+        switch (route.key) {
+            case 'list':
+                return <List/>;
+            case 'fileList':
+                return <FileList />;
+            default:
+                return null;
+        }
+
+
+    };
     return (
         <View style={{flexDirection:"row",flex:1}}>
             <View style={[styles.chatContainer,{
@@ -752,17 +778,26 @@ const ChatList=({navigation}:any)=>{
                          <Text style={{color:"#A0A3BD",paddingVertical:30,fontSize:24,fontFamily:Regular,fontWeight:"400"}}>No
                              conversations yet</Text>
                      </View>}
-                {_id&&showLayout&&<View style={[styles.header,styles.horizontal, {height: "90%"}]}>
+                {_id&&showLayout&&<View style={[styles.header,styles.horizontal]}>
                     <ViewPaged
+
                         isMovingRender
                         render
                         vertical={false}
                         renderPosition='top'
                         renderHeader={(params)=>{
 
-                            function renderTab({onPress,onLayout,tab:{label}}){
-                                return (
+                            setActiveTab(params.activeTab)
+                            if(params.activeTab==0  ){
+                                 setActiveRoute("list")
+                                params.goToPage(0 );
+                            }else if(params.activeTab==1 ){
+                                setActiveRoute("fileList")
+                                params.goToPage(1 );
+                            }
 
+                            function renderTab({isTabActive, onPress,onLayout,tab:{label}}){
+                                return (
                                     <TouchableOpacity onPress={onPress}>
                                         <Hoverable>
                                             {isHovered=>(
@@ -770,18 +805,17 @@ const ChatList=({navigation}:any)=>{
                                                     backgroundColor:isHovered ? "#DFE5F1" : undefined,
                                                     paddingVertical:20
                                                 }}>
-                                                    <Text style={{fontSize:20}}>{label}</Text>
+                                                    <Text style={{color: isTabActive ? "#565961" : "#808196",fontSize:20}}>{label}</Text>
                                                 </View>
                                             )}
                                         </Hoverable>
-
                                     </TouchableOpacity>
-
                                 )
                             }
 
                             return (
                                 <View style={{
+
                                     borderBottomWidth:hairlineWidth,
                                     borderBottomColor:"#d2d2d2",
                                       paddingHorizontal: 25,
@@ -816,8 +850,9 @@ const ChatList=({navigation}:any)=>{
                                     </View>
                                     <View style={styles.info}>
                                         <Text
+                                            family={Bold}
                                             color={'black'}
-                                            size={16}
+                                            size={20}
                                             numberOfLines={1}
                                         >
                                             {getChannelName({otherParticipants,isGroup,hasRoomName,name})}
@@ -913,12 +948,23 @@ const ChatList=({navigation}:any)=>{
                             )
                         }}
                     >
-                        <List/>
-                        <FileList/>
+
+                        <></>
+                        <></>
                     </ViewPaged>
 
 
                 </View>}
+
+                {_id && showLayout &&<TabView
+                    swipeEnabled={false}
+                    renderTabBar={()=> <></>}
+                    navigationState={{ index, routes }}
+                    renderScene={renderScene}
+                    onIndexChange={setIndex}
+                    initialLayout={initialLayout}
+                    style={styles.container}
+                />}
                 {_id&&showLayout&&<View>
                     {
                         !!lodash.size(meetingList)&&(
@@ -946,7 +992,7 @@ const ChatList=({navigation}:any)=>{
                     }
                 </View>}
 
-                {_id&&showLayout&&inputShown&&<View style={styles.keyboardAvoiding}>
+                {_id&&showLayout&&activeTab == 0&&<View style={[styles.keyboardAvoiding]}>
 
                     <View style={{marginTop:fontValue(-18)}}>
                         <TouchableOpacity disabled={true}>
