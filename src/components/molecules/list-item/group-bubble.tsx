@@ -1,15 +1,16 @@
-import React, { FC, useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, Image, Platform, Dimensions } from 'react-native'
+import React,{FC,useState} from 'react'
+import {Dimensions,Image,Platform,StyleSheet,TouchableOpacity,View} from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
-import { CheckIcon, DeleteIcon, NewFileIcon, WriteIcon } from '@components/atoms/icon';
-import { getChatTimeString, getFileSize } from 'src/utils/formatting'
-import { primaryColor, bubble, text, outline } from '@styles/color'
+import {CheckIcon,NewFileIcon,WriteIcon} from '@components/atoms/icon';
+import {getChatTimeString,getFileSize} from 'src/utils/formatting'
+import {bubble,primaryColor,text} from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
-import { Regular500 } from '@styles/font';
-import { fontValue } from '@components/pages/activities/fontValue';
+import {Regular500} from '@styles/font';
+import {fontValue} from '@components/pages/activities/fontValue';
 import IAttachment from 'src/interfaces/IAttachment';
+import hairlineWidth=StyleSheet.hairlineWidth;
 
 const { width } = Dimensions.get('window');
 
@@ -65,12 +66,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 5,
   },
+
   flipX: {
     transform: [
       {
         scaleX: -1
       }
     ]
+  },
+  hrText:{
+    flex:1,
+    paddingVertical: 20,
+    alignSelf:'center',
+    width:"100%",
+    flexDirection:"row",
+    justifyContent:"center"
+  },
+  border:{
+    flex:1,
+    backgroundColor:"#2863D6",
+    width:"100%",
+    height:hairlineWidth,
+    alignSelf:"center"
+  },
+  hrContent:{
+    color:  "#2863D6",
+    paddingHorizontal:20,
+    textAlign:'center'
   },
   check: {
     borderRadius: fontValue(12),
@@ -167,14 +189,27 @@ const ChatBubble:FC<Props> = ({
     <>
       {
         (showDetails || showDate || system) && (
-          <View style={styles.seenTimeContainer}>
-            <Text
-              color={text.default}
-              size={12}
-            >
-              {getChatTimeString(createdAt)}
-            </Text>
-          </View>
+            Platform.select({
+              native:(
+                  <View style={styles.seenTimeContainer}>
+                    <Text
+                        color={text.default}
+                        size={12}
+                    >
+                      {getChatTimeString(createdAt)}
+                    </Text>
+                  </View>
+              ),
+              web:(
+                  <View style={styles.hrText}>
+                    <View style={styles.border}/>
+                    <View>
+                      <Text style={styles.hrContent}>{getChatTimeString(createdAt)}</Text>
+                    </View>
+                    <View style={styles.border}/>
+                  </View>
+              )
+            })
         )
       }
       <TouchableOpacity
