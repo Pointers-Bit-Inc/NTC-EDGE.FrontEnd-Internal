@@ -31,7 +31,7 @@ import useSignalr from 'src/hooks/useSignalr';
 //import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
-import HomeMenuIcon from "@assets/svg/homemenu";
+const profPic = require('@assets/newMessageProfilePicture.png');
 import {
     ArrowLeftIcon ,
     CheckIcon ,
@@ -222,7 +222,7 @@ const styles=StyleSheet.create({
     },
 });
 
-function Chat(props:{user,navigation,onNewChat?:()=>any,onPress:()=>any,onBackdropPress:()=>void,onSubmit:(res:any)=>void}){
+function Chat(props:{newChat: boolean,user,navigation,onNewChat?:()=>any,onPress:()=>any,onBackdropPress:()=>void,onSubmit:(res:any)=>void}){
     // useRequestCameraAndAudioPermission();
 
     const {
@@ -282,6 +282,7 @@ function Chat(props:{user,navigation,onNewChat?:()=>any,onPress:()=>any,onBackdr
             channel.lastMessage.hasSeen= !!lodash.find(channel.lastMessage.seen,s=>s._id===props.user._id);
             return channel;
         });
+        console.log(lodash.orderBy(channelList,'lastMessage.createdAt','desc'))
         return lodash.orderBy(channelList,'lastMessage.createdAt','desc');
     });
     const onRequestData=()=>setSendRequest(request=>request+1);
@@ -501,7 +502,7 @@ function Chat(props:{user,navigation,onNewChat?:()=>any,onPress:()=>any,onBackdr
                 </View>
             ) : (
                 <FlatList
-                    data={channelList}
+                    data={props.newChat ? [{image: profPic,name: "New Chat", hasRoomName: true, lastMessage: {hasSeen: true}}, ...channelList] : channelList }
                     showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
@@ -512,47 +513,48 @@ function Chat(props:{user,navigation,onNewChat?:()=>any,onPress:()=>any,onBackdr
                             onRefresh={onRequestData}
                         />
                     }
-                    renderItem={({item}:any)=>(
-                        <Swipeable
-                            ref={ref=>swipeableRef.current[item._id]=ref}
-                            renderRightActions={(progress,dragX)=>renderRightActions(progress,dragX,item)}
-                        >
-                            <Hoverable>
-                                {isHovered=>(
-                                    <View style={{
-                                        backgroundColor:(
-                                                            selectedChannel?._id===item?._id)&& !(
-                                            isMobile) ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff"
-                                    }}>
-                                        <ChatItem
-                                            image={getChannelImage(item)}
-                                            imageSize={50}
-                                            textSize={18}
-                                            name={getChannelName(item)}
-                                            user={props.user}
-                                            participants={item.otherParticipants}
-                                            message={item?.lastMessage}
-                                            isGroup={item.isGroup}
-                                            seen={item?.lastMessage?.hasSeen}
-                                            time={getTimeString(item?.lastMessage?.createdAt)}
-                                            onPress={()=>{
-                                                if(selectedChannel._id!=item._id){
-                                                    dispatch(setSelectedChannel(item));
-                                                }
-                                                dispatch(setMeetings([]));
-                                                props.onSubmit()
+                    renderItem={({item}:any)=>{
+                        console.log(item)
+                     return <Swipeable
+                         ref={ref=>swipeableRef.current[item._id]=ref}
+                         renderRightActions={(progress,dragX)=>renderRightActions(progress,dragX,item)}
+                     >
+                         <Hoverable>
+                             {isHovered=>(
+                                 <View style={{
+                                     backgroundColor:(
+                                                         selectedChannel?._id===item?._id)&& !(
+                                         isMobile) ? "#D4D3FF" : isHovered ? "#F0F0FF" : "#fff"
+                                 }}>
+                                     <ChatItem
+                                         image={getChannelImage(item)}
+                                         imageSize={50}
+                                         textSize={18}
+                                         name={getChannelName(item)}
+                                         user={props.user}
+                                         participants={item.otherParticipants}
+                                         message={item?.lastMessage}
+                                         isGroup={item.isGroup}
+                                         seen={item?.lastMessage?.hasSeen}
+                                         time={getTimeString(item?.lastMessage?.createdAt)}
+                                         onPress={()=>{
+                                             if(selectedChannel._id!=item._id){
+                                                 dispatch(setSelectedChannel(item));
+                                             }
+                                             dispatch(setMeetings([]));
+                                             props.onSubmit()
 
-                                                /*if (selectedMessage && selectedMessage.channelId !== item._id) {
-                                                    dispatch(removeSelectedMessage());
-                                                }*/
-                                                //props.navigation.navigate('ViewChat', item)
-                                            }}
-                                        />
-                                    </View>
-                                )}
-                            </Hoverable>
-                        </Swipeable>
-                    )}
+                                             /*if (selectedMessage && selectedMessage.channelId !== item._id) {
+                                                 dispatch(removeSelectedMessage());
+                                             }*/
+                                             //props.navigation.navigate('ViewChat', item)
+                                         }}
+                                     />
+                                 </View>
+                             )}
+                         </Hoverable>
+                     </Swipeable>
+                    }}
                     keyExtractor={(item:any)=>item._id}
                     ListEmptyComponent={emptyComponent}
                     ListFooterComponent={ListFooterComponent}
@@ -740,6 +742,7 @@ const ChatList=({navigation}:any)=>{
                 flexShrink:0
             }]}>
                 <Chat
+                    newChat={onNewChat}
                     user={user}
                     navigation={navigation}
                     onNewChat={()=>{
@@ -750,6 +753,7 @@ const ChatList=({navigation}:any)=>{
 
                     }}
                     onSubmit={(res:any)=>{
+                        setOnNewChat(false)
                         setShowLayout(true)
                     }}/>
             </View>
@@ -759,6 +763,7 @@ const ChatList=({navigation}:any)=>{
                      onClose={()=>{
                          setOnNewChat(false)
                      }}
+
                      onSubmit={(res:any)=>{
                          res.otherParticipants=lodash.reject(res.participants,p=>p._id===user._id);
 
