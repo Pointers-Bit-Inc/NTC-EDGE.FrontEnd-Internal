@@ -101,7 +101,6 @@ const styles=StyleSheet.create({
         backgroundColor:'white',
     },
     header:{
-        backgroundColor:'white',
         borderBottomWidth:hairlineWidth,
         borderBottomColor:"#EFEFEF"
     },
@@ -772,6 +771,7 @@ const ChatList=({navigation}:any)=>{
 
                              dispatch(setSelectedChannel(res));
                              dispatch(addChannel(res));
+                              
                              setOnNewChat(false)
                              setShowLayout(true)
                              //setTimeout(() => props.navigation.navigate('ViewChat', res), 300);
@@ -1001,7 +1001,7 @@ const ChatList=({navigation}:any)=>{
                     }
                 </View>}
 
-                {_id&&showLayout&&activeTab == 0&&<View style={[]}>
+                {_id&&showLayout&&activeTab == 0&&<View style={[{backgroundColor: "#e5e5e5"}]}>
 
 
                     <View style={styles.keyboardAvoiding}>
