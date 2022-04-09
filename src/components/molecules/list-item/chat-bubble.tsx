@@ -151,7 +151,7 @@ const ChatBubble:FC<Props> = ({
         (showDetails || showDate || system) && (
           <View style={styles.seenTimeContainer}>
             <Text
-              color={text.default}
+              color={'#808196'}
               size={12}
             >
               {getChatTimeString(createdAt)}
@@ -181,24 +181,31 @@ const ChatBubble:FC<Props> = ({
             <>
               {
                 (deleted || (unSend && isSender)) ? (
-                  <>
-                    <NewDeleteIcon
-                      height={fontValue(18)}
-                      width={fontValue(18)}
-                      color={'#979797'}
-                    />
-                    <Text
-                      style={{ marginLeft: 5 }}
-                      size={14}
-                      color={'#979797'}
+                  <View style={styles.bubbleContainer}>
+                    <View
+                      style={[
+                        styles.bubble,
+                        {
+                          backgroundColor: isSender ? bubble.primary : bubble.secondary
+                        },
+                        (deleted || (unSend && isSender) || system) && {
+                          backgroundColor: '#E5E5E5'
+                        },
+                      ]}
                     >
-                      {
-                        (unSend && isSender) ?
-                        'Unsent for you'
-                        : `${isSender ? 'You' : sender.firstName } deleted a message`
-                      }
-                    </Text>
-                  </>
+                      <Text
+                        style={{ marginLeft: 5 }}
+                        size={14}
+                        color={'#808196'}
+                      >
+                        {
+                          (unSend && isSender) ?
+                          'Unsent for you'
+                          : `${isSender ? 'You' : sender.firstName } deleted a message`
+                        }
+                      </Text>
+                    </View>
+                  </View>
                 ) : (
                   <Image
                     resizeMode={'cover'}
@@ -228,24 +235,17 @@ const ChatBubble:FC<Props> = ({
                 >
                   {
                     (deleted || (unSend && isSender)) ? (
-                      <>
-                        <NewDeleteIcon
-                          height={fontValue(18)}
-                          width={fontValue(18)}
-                          color={'#979797'}
-                        />
-                        <Text
-                          style={{ marginLeft: 5 }}
-                          size={14}
-                          color={'#979797'}
-                        >
-                          {
-                            (unSend && isSender) ?
-                            'Unsent for you'
-                            : `${isSender ? 'You' : sender.firstName } deleted a message`
-                          }
-                        </Text>
-                      </>
+                      <Text
+                        style={{ marginLeft: 5 }}
+                        size={14}
+                        color={'#808196'}
+                      >
+                        {
+                          (unSend && isSender) ?
+                          'Unsent for you'
+                          : `${isSender ? 'You' : sender.firstName } deleted a message`
+                        }
+                      </Text>
                     ) : !!attachment ? (
                       <View style={styles.file}>
                         <NewFileIcon
