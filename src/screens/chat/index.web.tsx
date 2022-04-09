@@ -433,7 +433,7 @@ function Chat(props:{user,navigation,onNewChat?:()=>any,onPress:()=>any,onBackdr
                             <View
                                 style={[styles.headerNewChatIcon,{backgroundColor:isHovered ? "#2863D6" : "#F0F0F0"}]}>
                                 <NewChatIcon
-                                    color={!isMobile ? isHovered : "white"}
+                                    color={!isMobile ? isHovered ? "white" : "#606A80" : "white"}
                                     width={fontValue(20)}
                                     height={fontValue(20)}
                                 />
