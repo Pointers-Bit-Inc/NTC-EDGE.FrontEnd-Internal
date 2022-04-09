@@ -433,7 +433,7 @@ function Chat(props:{user,navigation,onNewChat?:()=>any,onPress:()=>any,onBackdr
                             <View
                                 style={[styles.headerNewChatIcon,{backgroundColor:isHovered ? "#2863D6" : "#F0F0F0"}]}>
                                 <NewChatIcon
-                                    hover={isHovered}
+                                    color={!isMobile ? isHovered : "white"}
                                     width={fontValue(20)}
                                     height={fontValue(20)}
                                 />
@@ -735,8 +735,7 @@ const ChatList=({navigation}:any)=>{
     return (
         <View style={{flexDirection:"row",flex:1}}>
             <View style={[styles.chatContainer,{
-                flexBasis:(
-                              isMobile||dimensions?.width<768) ? "100%" : 466,
+                flexBasis:(isMobile||dimensions?.width<768) ? "100%" : 466,
                 flexGrow:0,
                 flexShrink:0
             }]}>
@@ -765,7 +764,8 @@ const ChatList=({navigation}:any)=>{
 
                          dispatch(setSelectedChannel(res));
                          dispatch(addChannel(res));
-
+                         setOnNewChat(false)
+                         setShowLayout(true)
                          //setTimeout(() => props.navigation.navigate('ViewChat', res), 300);
                      }}
                  /> :
@@ -992,26 +992,18 @@ const ChatList=({navigation}:any)=>{
                     }
                 </View>}
 
-                {_id&&showLayout&&activeTab == 0&&<View style={[styles.keyboardAvoiding]}>
+                {_id&&showLayout&&activeTab == 0&&<View style={[]}>
 
-                    <View style={{marginTop:fontValue(-18)}}>
-                        <TouchableOpacity disabled={true}>
-                            <View style={styles.plus}>
-                                <PlusIcon
-                                    color="white"
-                                    size={fontValue(12)}
-                                />
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{flex:1,paddingHorizontal:5}}>
+
+                    <View style={styles.keyboardAvoiding}>
                         <InputField
                             ref={inputRef}
                             placeholder={'Type a message'}
                             containerStyle={[styles.containerStyle,{borderColor:isFocused ? '#C1CADC' : 'white'}]}
                             placeholderTextColor={'#C4C4C4'}
                             inputStyle={[styles.input,{backgroundColor:'white'}]}
-                            outlineStyle={[styles.outline,{backgroundColor:'white'}]}
+                            outlineStyle={[styles.outline,{backgroundColor:'#F8F8F8'}]}
+                             
                             value={inputText}
                             onChangeText={setInputText}
                             onSubmitEditing={()=>inputText&&onSendMessage()}

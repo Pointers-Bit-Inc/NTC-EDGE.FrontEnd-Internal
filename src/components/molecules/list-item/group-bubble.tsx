@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   },
   border:{
     flex:1,
-    backgroundColor:"#2863D6",
+    backgroundColor:  "#D1D1D6",
     width:"100%",
     height:hairlineWidth,
     alignSelf:"center"
@@ -204,7 +204,7 @@ const ChatBubble:FC<Props> = ({
                   <View style={styles.hrText}>
                     <View style={styles.border}/>
                     <View>
-                      <Text style={styles.hrContent}>{getChatTimeString(createdAt)}</Text>
+                      <Text style={[styles.hrContent, {color:  "#808196",}]}>{getChatTimeString(createdAt)}</Text>
                     </View>
                     <View style={styles.border}/>
                   </View>

@@ -553,23 +553,6 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
             <StatusBar barStyle={'light-content'} />
             <View style={styles.header}>
                 <View style={[styles.horizontal, { paddingVertical: 5, marginHorizontal: 15 }]}>
-                    <View style={{ position: 'absolute', left: 0, zIndex: 999 }}>
-                        <TouchableOpacity onPress={onBeforeClose}>
-                            <CloseIcon
-                                type='close'
-                                size={RFValue(18)}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.titleContainer}>
-                        <Text
-                            color={header.default}
-                            size={16}
-                            style={{ fontFamily: Bold }}
-                        >
-                            New message
-                        </Text>
-                    </View>
                     {
                         lodash.size(participants) > 1 && isGroup && (
                             <View style={{ position: 'absolute', right: 0, zIndex: 999 }}>
