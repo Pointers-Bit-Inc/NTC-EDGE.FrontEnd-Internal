@@ -274,7 +274,7 @@ const FileList = () => {
               return reject(err);
             }
             onRemoveItem(data);
-            dispatch(updateMessages(res));
+            dispatch(updateMessages(data.roomId, res));
             return resolve(res);
           })
         })

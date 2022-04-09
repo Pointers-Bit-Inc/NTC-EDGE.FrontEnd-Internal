@@ -177,19 +177,43 @@ const ChatBubble:FC<Props> = ({
             )
           }
           {
-            checkIfImage(attachment?.uri) ? (
-              <Image
-                resizeMode={'cover'}
-                style={[
-                  styles.imageBubble,
-                  {
-                    backgroundColor: isSender ? bubble.primary : bubble.secondary
-                  }
-                ]}
-                borderRadius={10}
-                source={{ uri: attachment?.uri }}
-              />
-            ) : (
+            checkIfImage(attachment?.uri) ?
+            <>
+              {
+                (deleted || (unSend && isSender)) ? (
+                  <>
+                    <NewDeleteIcon
+                      height={fontValue(18)}
+                      width={fontValue(18)}
+                      color={'#979797'}
+                    />
+                    <Text
+                      style={{ marginLeft: 5 }}
+                      size={14}
+                      color={'#979797'}
+                    >
+                      {
+                        (unSend && isSender) ?
+                        'Unsent for you'
+                        : `${isSender ? 'You' : sender.firstName } deleted a message`
+                      }
+                    </Text>
+                  </>
+                ) : (
+                  <Image
+                    resizeMode={'cover'}
+                    style={[
+                      styles.imageBubble,
+                      {
+                        backgroundColor: isSender ? bubble.primary : bubble.secondary
+                      }
+                    ]}
+                    borderRadius={10}
+                    source={{ uri: attachment?.uri }}
+                  />
+                )
+              }
+            </> : (
               <View style={styles.bubbleContainer}>
                 <View
                   style={[
