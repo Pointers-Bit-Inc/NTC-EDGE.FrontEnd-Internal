@@ -69,6 +69,7 @@ import TabBar from 'react-underline-tabbar'
 import CreateChatIcon from "@assets/svg/createChat";
 import hairlineWidth=StyleSheet.hairlineWidth;
 import {SceneMap,TabView} from "react-native-tab-view";
+import EditIcon from "@assets/svg/editIcon";
 
 const {width,height}=Dimensions.get('window');
 
@@ -502,65 +503,66 @@ function Chat(props:{newChat: boolean,user,navigation,onNewChat?:()=>any,onPress
                 </View>
             ) : (
                 <FlatList
-                    data={props.newChat ? [{image: profPic,name: "New Chat", hasRoomName: true, lastMessage: {hasSeen: true}}, ...channelList] : channelList }
-                    showsVerticalScrollIndicator={false}
-                    refreshControl={
-                        <RefreshControl
-                            tintColor={primaryColor} // ios
-                            progressBackgroundColor={primaryColor} // android
-                            colors={['white']} // android
-                            refreshing={loading}
-                            onRefresh={onRequestData}
-                        />
-                    }
-                    renderItem={({item}:any)=>{
-                        console.log(item)
-                     return <Swipeable
-                         ref={ref=>swipeableRef.current[item._id]=ref}
-                         renderRightActions={(progress,dragX)=>renderRightActions(progress,dragX,item)}
-                     >
-                         <Hoverable>
-                             {isHovered=>(
-                                 <View style={{
-                                     backgroundColor:(
-                                                         selectedChannel?._id===item?._id)&& !(
-                                         isMobile) ? "#D4D3FF" : isHovered ? "#F0F0FF" : "#fff"
-                                 }}>
-                                     <ChatItem
-                                         image={getChannelImage(item)}
-                                         imageSize={50}
-                                         textSize={18}
-                                         name={getChannelName(item)}
-                                         user={props.user}
-                                         participants={item.otherParticipants}
-                                         message={item?.lastMessage}
-                                         isGroup={item.isGroup}
-                                         seen={item?.lastMessage?.hasSeen}
-                                         time={getTimeString(item?.lastMessage?.createdAt)}
-                                         onPress={()=>{
-                                             if(selectedChannel._id!=item._id){
-                                                 dispatch(setSelectedChannel(item));
-                                             }
-                                             dispatch(setMeetings([]));
-                                             props.onSubmit()
+                        data={props.newChat ? [{image: profPic,name: "New Chat", hasRoomName: true, lastMessage: {hasSeen: true}}, ...channelList] : channelList }
+                        showsVerticalScrollIndicator={false}
+                        refreshControl={
+                            <RefreshControl
+                                tintColor={primaryColor} // ios
+                                progressBackgroundColor={primaryColor} // android
+                                colors={['white']} // android
+                                refreshing={loading}
+                                onRefresh={onRequestData}
+                            />
+                        }
+                        renderItem={({item}:any)=>{
+                            return <Swipeable
+                                ref={ref=>swipeableRef.current[item._id]=ref}
+                                renderRightActions={(progress,dragX)=>renderRightActions(progress,dragX,item)}
+                            >
+                                <Hoverable>
+                                    {isHovered=>(
+                                        <View style={{
+                                            backgroundColor:(
+                                                                selectedChannel?._id===item?._id)&& !(
+                                                isMobile) ? "#D4D3FF" : isHovered ? "#F0F0FF" : "#fff"
+                                        }}>
+                                            <ChatItem
+                                                image={getChannelImage(item)}
+                                                imageSize={50}
+                                                textSize={18}
+                                                name={getChannelName(item)}
+                                                user={props.user}
+                                                participants={item.otherParticipants}
+                                                message={item?.lastMessage}
+                                                isGroup={item.isGroup}
+                                                seen={item?.lastMessage?.hasSeen}
+                                                time={getTimeString(item?.lastMessage?.createdAt)}
+                                                onPress={()=>{
+                                                    if(selectedChannel._id!=item._id){
+                                                        dispatch(setSelectedChannel(item));
+                                                    }
+                                                    dispatch(setMeetings([]));
+                                                    props.onSubmit()
 
-                                             /*if (selectedMessage && selectedMessage.channelId !== item._id) {
-                                                 dispatch(removeSelectedMessage());
-                                             }*/
-                                             //props.navigation.navigate('ViewChat', item)
-                                         }}
-                                     />
-                                 </View>
-                             )}
-                         </Hoverable>
-                     </Swipeable>
-                    }}
-                    keyExtractor={(item:any)=>item._id}
-                    ListEmptyComponent={emptyComponent}
-                    ListFooterComponent={ListFooterComponent}
-                    onEndReached={()=>fetchMoreChat()}
-                    onEndReachedThreshold={0.5}
-                />
+                                                    /*if (selectedMessage && selectedMessage.channelId !== item._id) {
+                                                        dispatch(removeSelectedMessage());
+                                                    }*/
+                                                    //props.navigation.navigate('ViewChat', item)
+                                                }}
+                                            />
+                                        </View>
+                                    )}
+                                </Hoverable>
+                            </Swipeable>
+                        }}
+                        keyExtractor={(item:any)=>item._id}
+                        ListEmptyComponent={emptyComponent}
+                        ListFooterComponent={ListFooterComponent}
+                        onEndReached={()=>fetchMoreChat()}
+                        onEndReachedThreshold={0.5}
+                    />
+
+
             )
         }
 
@@ -759,21 +761,23 @@ const ChatList=({navigation}:any)=>{
             </View>
             <View onLayout={onChatLayout} style={{backgroundColor:"#F8F8F8",flex:1, }}>
                 {onNewChat ?
-                 <NewChat
-                     onClose={()=>{
-                         setOnNewChat(false)
-                     }}
 
-                     onSubmit={(res:any)=>{
-                         res.otherParticipants=lodash.reject(res.participants,p=>p._id===user._id);
+                     <NewChat
+                         onClose={()=>{
+                             setOnNewChat(false)
+                         }}
 
-                         dispatch(setSelectedChannel(res));
-                         dispatch(addChannel(res));
-                         setOnNewChat(false)
-                         setShowLayout(true)
-                         //setTimeout(() => props.navigation.navigate('ViewChat', res), 300);
-                     }}
-                 /> :
+                         onSubmit={(res:any)=>{
+                             res.otherParticipants=lodash.reject(res.participants,p=>p._id===user._id);
+
+                             dispatch(setSelectedChannel(res));
+                             dispatch(addChannel(res));
+                             setOnNewChat(false)
+                             setShowLayout(true)
+                             //setTimeout(() => props.navigation.navigate('ViewChat', res), 300);
+                         }}
+                     />
+                  :
                  !(
                      _id&&showLayout)&&<View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
                          <View>

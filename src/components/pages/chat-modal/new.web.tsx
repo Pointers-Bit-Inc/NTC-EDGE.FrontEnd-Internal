@@ -26,6 +26,7 @@ import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import IParticipants from 'src/interfaces/IParticipants';
+import EditIcon from "@assets/svg/editIcon";
 
 const styles = StyleSheet.create({
     container: {
@@ -606,7 +607,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
                         </View>
                     ) : (
                         <View style={{ marginBottom: 5, marginTop: 20 }}>
-                            <View style={{ flexDirection: 'row', alignContent: 'center', paddingHorizontal: 15, paddingTop: 10, marginBottom: 5 }}>
+                            <View style={{ flexDirection: 'row', alignContent: 'center', paddingHorizontal: 20, paddingTop: 10, marginBottom: 5 }}>
                                 <Text
                                     color={text.default}
                                     size={14}
@@ -614,6 +615,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
                                 >
                                     To:
                                 </Text>
+                                
                                 <View style={{ flex: 1, paddingLeft: 5, marginTop: Platform.OS === 'ios' ? 0 : -2 }}>
                                     <InputTags
                                         ref={inputTagRef}
@@ -641,6 +643,14 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
                                         </TouchableOpacity>
                                     )
                                 }
+                                <View style={{paddingLeft: 32}}>
+                                    <View style={{ borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5, backgroundColor: "#F9F9F9", flexDirection: "row",justifyContent: "center",alignSelf: "center"}}>
+                                        <EditIcon style={{paddingRight: 12}}/>
+                                        <Text size={15}>Add group name</Text>
+                                    </View>
+                                </View>
+
+
                             </View>
                             {
                                 !lodash.size(participants) && (
