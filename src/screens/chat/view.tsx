@@ -16,8 +16,8 @@ import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
 import { MeetingNotif } from '@components/molecules/list-item';
 import useSignalR from 'src/hooks/useSignalr';
 import ChatList from '@screens/chat/chat-list';
-// import FileList from '@screens/chat/file-list';
-import FileList from '@components/organisms/chat/files';
+import FileList from '@screens/chat/file-list';
+// import FileList from '@components/organisms/chat/files';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import {
   ArrowLeftIcon,
