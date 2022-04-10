@@ -263,7 +263,7 @@ export default function ActivitiesPage(props: any) {
                                                         width: width
                                                     },
                                                     default: {
-                                                        width: "100%"
+                                                        width: 466
                                                     }})}}
                                             name={ getChannelName({
                                                 ...item ,

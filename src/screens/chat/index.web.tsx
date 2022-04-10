@@ -456,7 +456,7 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
                                                 width: width
                                             },
                                             default: {
-                                                width: "100%"
+                                                width: 466
                                             }})}}
                                     name={getChannelName({...item,otherParticipants:item?.participants})}
                                     time={item.createdAt}
