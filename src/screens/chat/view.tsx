@@ -146,6 +146,7 @@ const ChatView = ({ navigation, route }:any) => {
     selectedFile,
     pickDocument,
     pickImage,
+    takePicture,
   } = useAttachmentPicker();
   const modalRef = useRef<BottomModalRef>(null);
   const inputRef:any = useRef(null);
@@ -266,6 +267,12 @@ const ChatView = ({ navigation, route }:any) => {
 
   const onHideAttachmentOption = () => {
     setShowAttachmentOption(false);
+  }
+  
+  const onSelectAttachment = (type:string) => {
+    if (type === 'image') pickImage();
+    if (type === 'document') pickDocument();
+    if (type === 'camera') takePicture();
   }
 
   const renderChannelName = () => {
@@ -481,7 +488,7 @@ const ChatView = ({ navigation, route }:any) => {
               </View>
             </View>
             {
-              showAttachmentOption && <AttachmentMenu onPickImage={pickImage} onPickDocument={pickDocument} />
+              showAttachmentOption && <AttachmentMenu onPress={onSelectAttachment} />
             }
           </KeyboardAvoidingView>
         ) : null

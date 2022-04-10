@@ -142,6 +142,7 @@ const ChatBubble:FC<Props> = ({
 }) => {
   const [showDetails, setShowDetails] = useState(false);
   const deletedOrUnsend = deleted || (unSend && isSender);
+  const senderName = isSender ? 'You' : sender.firstName;
 
   const checkIfImage = (uri:any) => {
     if (uri && (uri.endsWith(".png") || uri.endsWith(".jpg"))) return true;
@@ -159,7 +160,7 @@ const ChatBubble:FC<Props> = ({
           {
             (unSend && isSender) ?
             'Unsent for you'
-            : `${isSender ? 'You' : sender.firstName } deleted a message`
+            : `${senderName} deleted a message`
           }
         </Text>
       )

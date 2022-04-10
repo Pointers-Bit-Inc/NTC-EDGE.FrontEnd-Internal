@@ -175,7 +175,8 @@ const ChatBubble:FC<Props> = ({
 }) => {
   const [showDetails, setShowDetails] = useState(false);
   const deletedOrUnsend = deleted || (unSend && isSender);
-  
+  const senderName = isSender ? 'You' : sender.firstName;
+
   const _getSenderName = () => {
     let result = '';
     if (sender.title) result += sender.title + ' ';
@@ -199,7 +200,7 @@ const ChatBubble:FC<Props> = ({
           {
             (unSend && isSender) ?
             'Unsent for you'
-            : `${isSender ? 'You' : sender.firstName } deleted a message`
+            : `${senderName} deleted a message`
           }
         </Text>
       )
