@@ -1072,7 +1072,7 @@ const ChatList=({navigation}:any)=>{
                         ref={inputRef}
                         placeholder={'Type a message'}
                         placeholderTextColor={'#C4C4C4'}
-                        containerStyle={{borderColor:"#D1D1D6",backgroundColor:"white"}}
+                        containerStyle={{backgroundColor:"white", }}
                         value={inputText}
                         onChangeText={setInputText}
                         onSubmitEditing={()=>inputText&&onSendMessage()}
