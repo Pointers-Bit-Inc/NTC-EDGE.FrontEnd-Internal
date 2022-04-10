@@ -63,6 +63,11 @@ import {TabView} from "react-native-tab-view";
 const profPic=require('@assets/newMessageProfilePicture.png');
 const draftProfPic=require('@assets/draftNewMessageProfilePicture.png');
 import hairlineWidth=StyleSheet.hairlineWidth;
+import AttachIcon from "@assets/svg/AttachIcon";
+import EmojiIcon from "@assets/svg/EmojiIcon";
+import GifIcon from "@assets/svg/GifIcon";
+import SendIcon from "@assets/svg/SendIcon";
+import useAttachmentPicker from "../../hooks/useAttachment";
 
 const {width,height}=Dimensions.get('window');
 
@@ -80,6 +85,7 @@ const styles=StyleSheet.create({
 
     },
     keyboardAvoiding:{
+
         paddingHorizontal:15,
         paddingVertical:10,
         paddingBottom:0,
@@ -527,8 +533,8 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
                                     {isHovered=>(
                                         <View style={{
                                             backgroundColor:(
-                                                                item?._id==undefined&&item.name=="New Chat" ? "#D4D3FF" :
-                                                                !item?._id==undefined&&selectedChannel?._id===item?._id)&& !(
+                                                (item.id == -1 ||item.id == -2  ) && item?._id==undefined&&item.name=="New Chat" ? "#D4D3FF" :
+                                                               !props.newChat && selectedChannel?._id===item?._id)&& !(
                                                 isMobile) ? "#D4D3FF" : isHovered ? "#F0F0FF" : "#fff"
                                         }}>
                                             <ChatItem
@@ -740,8 +746,31 @@ const ChatList=({navigation}:any)=>{
 
 
     };
-
+    const {
+        selectedFile,
+        pickImage,
+        pickDocument,
+    } = useAttachmentPicker();
     const [participants,setParticipants]:any=useState([]);
+    const _sendFile = (channelId:string, attachment:any, groupName = '', participants:any = []) => {
+        dispatch(addPendingMessage({
+            attachment,
+            channelId,
+            groupName,
+            participants,
+            messageType: 'file'
+        }));
+    }
+    useEffect(() => {
+        if (lodash.size(selectedFile)) {
+            _sendFile(
+                channelId,
+                selectedFile,
+                "",
+                participants
+            );
+        }
+    }, [selectedFile]);
     return (
         <View style={{flexDirection:"row",flex:1}}>
             <View style={[styles.chatContainer,{
@@ -1018,18 +1047,15 @@ const ChatList=({navigation}:any)=>{
                     }
                 </View>}
 
-                {_id&&showLayout&& !onNewChat&&activeTab==0&&<View style={[{backgroundColor:"#f8f8f8"}]}>
+                {_id&&showLayout&& !onNewChat&&activeTab==0&&<View style={[{borderTopWidth: 2, paddingHorizontal: 32,paddingTop: 42, borderTopColor: "#efefef", backgroundColor:"#f8f8f8"}]}>
 
 
-                    <View style={styles.keyboardAvoiding}>
+
                         <InputField
                             ref={inputRef}
                             placeholder={'Type a message'}
-                            containerStyle={[styles.containerStyle,{borderColor:isFocused ? '#C1CADC' : 'white'}]}
                             placeholderTextColor={'#C4C4C4'}
-                            inputStyle={[styles.input,{backgroundColor:'white'}]}
-                            outlineStyle={[styles.outline,{backgroundColor:'#F8F8F8'}]}
-
+                            containerStyle={{borderColor: "#D1D1D6", backgroundColor: "white"}}
                             value={inputText}
                             onChangeText={setInputText}
                             onSubmitEditing={()=>inputText&&onSendMessage()}
@@ -1038,15 +1064,25 @@ const ChatList=({navigation}:any)=>{
                             onBlur={()=>setIsFocused(false)}
 
                         />
-                    </View>
-                    <View style={{marginTop:fontValue(-18),flexDirection:'row'}}>
+
+                    <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 40}}>
+                        <View style={{gap: 25, flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                            <TouchableOpacity onPress={pickDocument}>
+                                <AttachIcon/>
+                            </TouchableOpacity>
+                            <EmojiIcon/>
+                             <TouchableOpacity onPress={pickImage}>
+                                 <GifIcon/>
+                             </TouchableOpacity>
+
+                        </View>
                         <TouchableOpacity
+                            disabled={!inputText}
                             onPress={onSendMessage}
                         >
                             {
                                 selectedMessage?._id ? (
-                                    <View
-                                        style={[styles.plus,{marginRight:0,marginLeft:10,backgroundColor:button.info}]}>
+                                    <View style={[styles.plus, { marginRight: 0, marginLeft: 10, backgroundColor: button.info }]}>
                                         <CheckIcon
                                             type='check1'
                                             size={14}
@@ -1054,18 +1090,15 @@ const ChatList=({navigation}:any)=>{
                                         />
                                     </View>
                                 ) : (
-                                    <View style={{marginLeft:10}}>
-                                        <NewMessageIcon
-                                            color={inputText ? button.info : '#D1D1D6'}
-                                            height={fontValue(30)}
-                                            width={fontValue(30)}
-                                        />
+                                    <View style={{ marginLeft: 10 }}>
+                                        <SendIcon/>
                                     </View>
                                 )
                             }
+
                         </TouchableOpacity>
                     </View>
-                </View>
+                    </View>
                 }
 
 

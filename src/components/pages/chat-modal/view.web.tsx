@@ -29,6 +29,10 @@ import useAttachmentPicker from 'src/hooks/useAttachment';
 import { AttachmentMenu } from '@components/molecules/menu';
 import IMessages from 'src/interfaces/IMessages';
 import IParticipants from 'src/interfaces/IParticipants';
+import AttachIcon from "@assets/svg/AttachIcon";
+import EmojiIcon from "@assets/svg/EmojiIcon";
+import GifIcon from "@assets/svg/GifIcon";
+import SendIcon from "@assets/svg/SendIcon";
 
 const styles = StyleSheet.create({
     container: {
@@ -258,63 +262,56 @@ const ChatView: FC<Props> = ({
                     )
                 }
             </View>
-            <Animated.View style={[styles.keyboardAvoiding, { marginBottom: Height.current }]}>
-                <View style={{ marginTop: RFValue(-18) }}>
-                    <TouchableOpacity onPress={showAttachmentOption ? onHideAttachmentOption : onShowAttachmentOption}>
-                        <View style={[styles.plus, showAttachmentOption && { transform: [{ rotateZ: '0.785398rad' }] }]}>
-                            <PlusIcon
-                                color="white"
-                                size={RFValue(12)}
-                            />
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View style={{ flex: 1, paddingHorizontal: 5 }}>
-                    <InputField
+            <View style={[{borderTopWidth: 2, paddingHorizontal: 32,paddingTop: 42, borderTopColor: "#efefef", backgroundColor:"#f8f8f8"}]}>
+                <InputField
                         ref={inputRef}
                         placeholder={'Type a message'}
-                        containerStyle={[styles.containerStyle, { borderColor: isFocused ? '#C1CADC' : 'white' }]}
                         placeholderTextColor={'#C4C4C4'}
-                        inputStyle={[styles.input, { backgroundColor: 'white' }]}
-                        outlineStyle={[styles.outline, { backgroundColor: 'white' }]}
+                        containerStyle={{borderColor: "#D1D1D6", backgroundColor: "white"}}
                         value={inputText}
                         onChangeText={setInputText}
-                        onSubmitEditing={() => inputText && onSendMessage()}
+                        onSubmitEditing={()=>inputText&&onSendMessage()}
                         returnKeyType={'send'}
-                        onFocus={() => { onHideAttachmentOption(); setIsFocused(true); }}
-                        onBlur={() => setIsFocused(false)}
+                        onFocus={()=>setIsFocused(true)}
+                        onBlur={()=>setIsFocused(false)}
+
                     />
+
+                    <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 40}}>
+                        <View style={{gap: 25, flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                            <TouchableOpacity onPress={pickDocument}>
+                                <AttachIcon/>
+                            </TouchableOpacity>
+                            <EmojiIcon/>
+                            <TouchableOpacity onPress={pickImage}>
+                                <GifIcon/>
+                            </TouchableOpacity>
+
+                        </View>
+                        <TouchableOpacity
+                            disabled={!inputText}
+                            onPress={onSendMessage}
+                        >
+                            {
+                                selectedMessage?._id ? (
+                                    <View style={[styles.plus, { marginRight: 0, marginLeft: 10, backgroundColor: button.info }]}>
+                                        <CheckIcon
+                                            type='check1'
+                                            size={14}
+                                            color={'white'}
+                                        />
+                                    </View>
+                                ) : (
+                                    <View style={{ marginLeft: 10 }}>
+                                        <SendIcon/>
+                                    </View>
+                                )
+                            }
+
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <View style={{ marginTop: RFValue(-18), flexDirection: 'row' }}>
-                    <TouchableOpacity
-                        disabled={!inputText}
-                        onPress={onSendMessage}
-                    >
-                        {
-                            selectedMessage?._id ? (
-                                <View style={[styles.plus, { marginRight: 0, marginLeft: 10, backgroundColor: button.info }]}>
-                                    <CheckIcon
-                                        type='check1'
-                                        size={14}
-                                        color={'white'}
-                                    />
-                                </View>
-                            ) : (
-                                <View style={{ marginLeft: 10 }}>
-                                    <NewMessageIcon
-                                        color={inputText ? button.info : '#D1D1D6'}
-                                        height={RFValue(30)}
-                                        width={RFValue(30)}
-                                    />
-                                </View>
-                            )
-                        }
-                    </TouchableOpacity>
-                </View>
-            </Animated.View>
-            {
-                showAttachmentOption && <AttachmentMenu onPickImage={pickImage} onPickDocument={pickDocument} />
-            }
+
         </View>
     )
 }

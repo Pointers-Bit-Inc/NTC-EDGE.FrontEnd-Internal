@@ -29,6 +29,7 @@ import EditIcon from "@assets/svg/editIcon";
 import {isMobile} from "@pages/activities/isMobile";
 import {fontValue} from "@pages/activities/fontValue";
 import {useComponentLayout} from "../../../hooks/useComponentLayout";
+import {Hoverable} from "react-native-web-hooks";
 
 const styles = StyleSheet.create({
     container: {
@@ -460,6 +461,7 @@ const NewChat = ({ participants, setParticipants, onClose = () => {}, onSubmit =
     const renderContactItem = ({ item }:any) => {
         if (isGroup) {
             return (
+
                 <ContactItem
                     image={item?.profilePicture?.thumb}
                     data={item}
@@ -489,14 +491,21 @@ const NewChat = ({ participants, setParticipants, onClose = () => {}, onSubmit =
             );
         }
         return (
-            <ContactItem
-                image={item?.profilePicture?.thumb}
-                data={item}
-                name={item.name}
-                isOnline={item.isOnline}
-                onPress={() => onTapCheck(item._id)}
-                contact={item.email || ''}
-            />
+            <Hoverable>
+                {isHovered=>(
+                    <View style={{backgroundColor: isHovered ? "#F0F0FF" : "white"}}>
+                        <ContactItem
+                            image={item?.profilePicture?.thumb}
+                            data={item}
+                            name={item.name}
+                            isOnline={item.isOnline}
+                            onPress={() => onTapCheck(item._id)}
+                            contact={item.email || ''}
+                        />
+                    </View>
+
+                )}
+            </Hoverable>
         )
     }
 
