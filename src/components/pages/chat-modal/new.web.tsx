@@ -194,7 +194,7 @@ const tagStyles = StyleSheet.create({
     },
 });
 
-const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
+const NewChat = ({ participants, setParticipants, onClose = () => {}, onSubmit = () => {} }:any) => {
     const {
         getParticipantList,
         createChannel,
@@ -206,7 +206,6 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     const groupNameRef:any = useRef(null);
     const [loading, setLoading] = useState(false);
     const [nextLoading, setNextLoading] = useState(false);
-    const [participants, setParticipants]:any = useState([]);
     const [sendRequest, setSendRequest] = useState(0);
     const [contacts, setContacts]:any = useState([]);
     const [searchText, setSearchText] = useState('');
