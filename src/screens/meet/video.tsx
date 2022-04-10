@@ -106,13 +106,13 @@ const Dial = ({ navigation, route }) => {
     return () => clearInterval(interval);
   }, [meeting.ended]);
 
-  useEffect(() => {
-    let timeRef:any = null
-    if (meeting.ended) {
-      timeRef = setTimeout(() => navigation.goBack(), 500);
-    }
-    return () => clearTimeout(timeRef);
-  }, [meeting.ended]);
+  // useEffect(() => {
+  //   let timeRef:any = null
+  //   if (meeting.ended) {
+  //     timeRef = setTimeout(() => navigation.goBack(), 500);
+  //   }
+  //   return () => clearTimeout(timeRef);
+  // }, [meeting.ended]);
 
   useEffect(() => {
     if (meeting.notification) {
@@ -169,11 +169,7 @@ const Dial = ({ navigation, route }) => {
 
   const onEndCall = (endCall) => {
     if (isHost || endCall) {
-      endMeeting(meeting._id, (err, res) => {
-        if (res) {
-          navigation.goBack();
-        }
-      })
+      endMeeting(meeting._id);
     } else {
       navigation.goBack();
     }
