@@ -31,9 +31,8 @@ import useSignalr from 'src/hooks/useSignalr';
 //import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
-import {ArrowLeftIcon,CheckIcon,NewCallIcon,NewChatIcon,NewMessageIcon,NewVideoIcon} from '@atoms/icon';
+import {ArrowLeftIcon,CheckIcon,NewCallIcon,NewChatIcon,NewVideoIcon} from '@atoms/icon';
 import {Bold,Regular} from "@styles/font";
-import {BottomModalRef} from '@components/atoms/modal/bottom-modal';
 import NewChat from '@components/pages/chat-modal/new';
 import {fontValue} from "@pages/activities/fontValue";
 import MeetIcon from "@assets/svg/meetIcon";
@@ -52,22 +51,21 @@ import {Hoverable} from "react-native-web-hooks";
 import GroupImage from "@molecules/image/group";
 //import FileList from "@screens/chat/file-list";
 import FileList from '@components/organisms/chat/files';
-import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import NoConversationIcon from "@assets/svg/noConversations";
 import {isMobile} from "@pages/activities/isMobile";
 import {ViewPaged} from 'react-scroll-paged-view'
 import TabBar from 'react-underline-tabbar'
 import CreateChatIcon from "@assets/svg/createChat";
 import {TabView} from "react-native-tab-view";
-
-const profPic=require('@assets/newMessageProfilePicture.png');
-const draftProfPic=require('@assets/draftNewMessageProfilePicture.png');
-import hairlineWidth=StyleSheet.hairlineWidth;
 import AttachIcon from "@assets/svg/AttachIcon";
 import EmojiIcon from "@assets/svg/EmojiIcon";
 import GifIcon from "@assets/svg/GifIcon";
 import SendIcon from "@assets/svg/SendIcon";
 import useAttachmentPicker from "../../hooks/useAttachment";
+
+const profPic=require('@assets/newMessageProfilePicture.png');
+const draftProfPic=require('@assets/draftNewMessageProfilePicture.png');
+import hairlineWidth=StyleSheet.hairlineWidth;
 
 const {width,height}=Dimensions.get('window');
 
@@ -453,7 +451,13 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
                             keyExtractor={(item:any)=>item._id}
                             renderItem={({item})=>(
                                 <MeetingNotif
-                                    style={{width}}
+                                    style={{...Platform.select({
+                                            native: {
+                                                width: width
+                                            },
+                                            default: {
+                                                width: "100%"
+                                            }})}}
                                     name={getChannelName({...item,otherParticipants:item?.participants})}
                                     time={item.createdAt}
                                     host={item.host}
@@ -484,7 +488,7 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
         <View style={styles.shadow}/>
         {
             loading ? (
-                <View style={{alignItems:'center'}}>
+                <View style={{alignItems:'center',paddingTop:10}}>
                     <ActivityIndicator size={'small'} color={text.default}/>
                     <Text
                         style={{marginTop:10}}
@@ -523,7 +527,7 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
                         />
                     }
                     renderItem={({item}:any)=>{
-                        return item!=0 && <View style={(
+                        return item!=0&&<View style={(
                             !props.newChat&& !item._id)&&{display:"none"}}>
                             <Swipeable
                                 ref={ref=>swipeableRef.current[item._id]=ref}
@@ -533,8 +537,9 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
                                     {isHovered=>(
                                         <View style={{
                                             backgroundColor:(
-                                                (item.id == -1 ||item.id == -2  ) && item?._id==undefined&&item.name=="New Chat" ? "#D4D3FF" :
-                                                               !props.newChat && selectedChannel?._id===item?._id)&& !(
+                                                                (
+                                                                    item.id== -1||item.id== -2)&&item?._id==undefined&&item.name=="New Chat" ? "#D4D3FF" :
+                                                                !props.newChat&&selectedChannel?._id===item?._id)&& !(
                                                 isMobile) ? "#D4D3FF" : isHovered ? "#F0F0FF" : "#fff"
                                         }}>
                                             <ChatItem
@@ -750,19 +755,19 @@ const ChatList=({navigation}:any)=>{
         selectedFile,
         pickImage,
         pickDocument,
-    } = useAttachmentPicker();
+    }=useAttachmentPicker();
     const [participants,setParticipants]:any=useState([]);
-    const _sendFile = (channelId:string, attachment:any, groupName = '', participants:any = []) => {
+    const _sendFile=(channelId:string,attachment:any,groupName='',participants:any=[])=>{
         dispatch(addPendingMessage({
             attachment,
             channelId,
             groupName,
             participants,
-            messageType: 'file'
+            messageType:'file'
         }));
-    }
-    useEffect(() => {
-        if (lodash.size(selectedFile)) {
+    };
+    useEffect(()=>{
+        if(lodash.size(selectedFile)){
             _sendFile(
                 channelId,
                 selectedFile,
@@ -770,7 +775,7 @@ const ChatList=({navigation}:any)=>{
                 participants
             );
         }
-    }, [selectedFile]);
+    },[selectedFile]);
     return (
         <View style={{flexDirection:"row",flex:1}}>
             <View style={[styles.chatContainer,{
@@ -815,7 +820,7 @@ const ChatList=({navigation}:any)=>{
                          dispatch(addChannel(res));
 
                          setOnNewChat(false);
-                         setShowLayout(true)
+                         setShowLayout(true);
                          setParticipants([])
                          //setTimeout(() => props.navigation.navigate('ViewChat', res), 300);
                      }}
@@ -1018,7 +1023,7 @@ const ChatList=({navigation}:any)=>{
                     renderScene={renderScene}
                     onIndexChange={setIndex}
                     initialLayout={initialLayout}
-                    style={[styles.container, {backgroundColor: "#f8f8f8"}]}
+                    style={[styles.container,{backgroundColor:"#f8f8f8"}]}
                 />}
                 {_id&&showLayout&& !onNewChat&&<View>
                     {
@@ -1033,7 +1038,14 @@ const ChatList=({navigation}:any)=>{
                                 keyExtractor={(item:any)=>item._id}
                                 renderItem={({item})=>(
                                     <MeetingNotif
-                                        style={{width}}
+                                        style={{...Platform.select({
+                                                native: {
+                                                    width: width
+                                                },
+                                                default: {
+                                                    width: "100%"
+                                                }
+                                        })}}
                                         name={getChannelName({...item,otherParticipants:item?.participants})}
                                         host={item.host}
                                         time={item.createdAt}
@@ -1047,33 +1059,38 @@ const ChatList=({navigation}:any)=>{
                     }
                 </View>}
 
-                {_id&&showLayout&& !onNewChat&&activeTab==0&&<View style={[{borderTopWidth: 2, paddingHorizontal: 32,paddingTop: 42, borderTopColor: "#efefef", backgroundColor:"#f8f8f8"}]}>
+                {_id&&showLayout&& !onNewChat&&activeTab==0&&<View style={[{
+                    borderTopWidth:2,
+                    paddingHorizontal:32,
+                    paddingTop:42,
+                    borderTopColor:"#efefef",
+                    backgroundColor:"#f8f8f8"
+                }]}>
 
 
+                    <InputField
+                        ref={inputRef}
+                        placeholder={'Type a message'}
+                        placeholderTextColor={'#C4C4C4'}
+                        containerStyle={{borderColor:"#D1D1D6",backgroundColor:"white"}}
+                        value={inputText}
+                        onChangeText={setInputText}
+                        onSubmitEditing={()=>inputText&&onSendMessage()}
+                        returnKeyType={'send'}
+                        onFocus={()=>setIsFocused(true)}
+                        onBlur={()=>setIsFocused(false)}
 
-                        <InputField
-                            ref={inputRef}
-                            placeholder={'Type a message'}
-                            placeholderTextColor={'#C4C4C4'}
-                            containerStyle={{borderColor: "#D1D1D6", backgroundColor: "white"}}
-                            value={inputText}
-                            onChangeText={setInputText}
-                            onSubmitEditing={()=>inputText&&onSendMessage()}
-                            returnKeyType={'send'}
-                            onFocus={()=>setIsFocused(true)}
-                            onBlur={()=>setIsFocused(false)}
+                    />
 
-                        />
-
-                    <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 40}}>
-                        <View style={{gap: 25, flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                    <View style={{flexDirection:"row",justifyContent:"space-between",paddingBottom:40}}>
+                        <View style={{gap:25,flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
                             <TouchableOpacity onPress={pickDocument}>
                                 <AttachIcon/>
                             </TouchableOpacity>
                             <EmojiIcon/>
-                             <TouchableOpacity onPress={pickImage}>
-                                 <GifIcon/>
-                             </TouchableOpacity>
+                            <TouchableOpacity onPress={pickImage}>
+                                <GifIcon/>
+                            </TouchableOpacity>
 
                         </View>
                         <TouchableOpacity
@@ -1082,7 +1099,8 @@ const ChatList=({navigation}:any)=>{
                         >
                             {
                                 selectedMessage?._id ? (
-                                    <View style={[styles.plus, { marginRight: 0, marginLeft: 10, backgroundColor: button.info }]}>
+                                    <View
+                                        style={[styles.plus,{marginRight:0,marginLeft:10,backgroundColor:button.info}]}>
                                         <CheckIcon
                                             type='check1'
                                             size={14}
@@ -1090,7 +1108,7 @@ const ChatList=({navigation}:any)=>{
                                         />
                                     </View>
                                 ) : (
-                                    <View style={{ marginLeft: 10 }}>
+                                    <View style={{marginLeft:10}}>
                                         <SendIcon/>
                                     </View>
                                 )
@@ -1098,7 +1116,7 @@ const ChatList=({navigation}:any)=>{
 
                         </TouchableOpacity>
                     </View>
-                    </View>
+                </View>
                 }
 
 
