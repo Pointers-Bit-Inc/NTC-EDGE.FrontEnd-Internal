@@ -761,6 +761,7 @@ const ChatList=({navigation}:any)=>{
 
                     }}
                     onSubmit={(res:any)=>{
+                        setParticipants([])
                         setOnNewChat(false)
                         setShowLayout(true)
                     }}/>
