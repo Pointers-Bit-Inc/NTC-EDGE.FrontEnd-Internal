@@ -105,8 +105,8 @@ export default class SideMenu extends React.Component{
                                         textSize={40}
                                         isOnline={item?.isOnline}
                                     />
-                                    <View>
-                                        <Text style={styles.text}>{item?.name}</Text>
+                                    <View style={{alignSelf: "center"}}>
+                                        <Text style={[styles.text, {paddingLeft: 10}]}>{item?.name}</Text>
                                     </View>
                                 </View>
 
