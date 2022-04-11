@@ -80,7 +80,7 @@ const MeetingNotif: FC<Props> = ({
           color={text.default}
           size={10}
         >
-          {getDateTimeString(time)}
+          {getDateTimeString(time, '')}
         </Text>
       </View>
       <View style={{ position: 'absolute', top: 10, right: 10 }}>

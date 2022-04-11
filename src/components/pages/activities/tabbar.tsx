@@ -106,6 +106,7 @@ export default function TabBar({ navigation, route }) {
         onChatUpdate,
         onRoomUpdate,
         onMeetingUpdate,
+        OnMeetingNotification,
         checkVersion,
       } = useSignalr();
       
@@ -170,10 +171,9 @@ export default function TabBar({ navigation, route }) {
       initialize();
       initSignalR();
       onConnection('OnChatUpdate', onChatUpdate);
-
       onConnection('OnRoomUpdate', onRoomUpdate);
-
       onConnection('OnMeetingUpdate', onMeetingUpdate);
+      onConnection('OnMeetingNotification', OnMeetingNotification);
   
       return () => destroySignalR();
     }, []);

@@ -45,6 +45,7 @@ import NewPenIcon from './new-pen';
 import NewInfoIcon from './new-info';
 import NewPhoneIcon from './new-phone';
 import NewMeetIcon from './new-meet';
+import NewCameraIcon from './new-camera';
 
 export {
   ExclamationIcon,
@@ -94,4 +95,5 @@ export {
   NewInfoIcon,
   NewPhoneIcon,
   NewMeetIcon,
+  NewCameraIcon,
 };

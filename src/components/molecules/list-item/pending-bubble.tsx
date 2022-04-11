@@ -173,7 +173,7 @@ const PendingBubble:FC<Props> = ({
       <View style={[styles.container, { maxWidth }, style]}>
         <View style={styles.bubbleContainer}>
           {
-            attachment?.mimeType === 'image' ? (
+            attachment?.mimeType === 'application/octet-stream' ? (
               <Image
                 resizeMode={'cover'}
                 style={[

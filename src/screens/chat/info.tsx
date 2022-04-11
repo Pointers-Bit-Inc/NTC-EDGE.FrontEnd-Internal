@@ -176,15 +176,16 @@ const ChatInfo = ({ navigation }) => {
   } = useSignalr();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const api = useApi(user.sessionToken);
-  const { _id, otherParticipants = [], participants = [], hasRoomName = false, name = '', isGroup = false } = useSelector(
+  const { _id, otherParticipants = [], participants = [], hasRoomName = false, name = '', isGroup = false, muted = false } = useSelector(
     (state:RootStateOrAny) => {
       const { selectedChannel } = state.channel;
       selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id);
+      selectedChannel.muted = !!lodash.find(selectedChannel.participants, (p:IParticipants) => p._id === user._id && p.muted);
       return selectedChannel;
     }
   );
   const [isVideoEnable, setIsVideoEnable] = useState(false);
-  const [muteChat, setMuteChat] = useState(false);
+  const [muteChat, setMuteChat] = useState(muted);
   const [showDeleteOption, setShowDeleteOption] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);

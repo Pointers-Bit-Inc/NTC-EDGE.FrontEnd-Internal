@@ -19,6 +19,7 @@ interface IParticipants {
   profilePicture: IImage,
   isOnline: boolean;
   lastOnline?: Date;
+  status: string;
   isAdmin?: boolean;
   muted?: boolean;
 }

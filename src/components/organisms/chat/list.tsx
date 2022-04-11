@@ -122,6 +122,7 @@ const ChatList: FC<Props> = ({
           isGroup ? (
             <GroupBubble
               message={item.message}
+              messageType={item.type}
               attachment={item.attachment}
               isSender={isSender}
               sender={item.sender}
@@ -142,6 +143,7 @@ const ChatList: FC<Props> = ({
           ) : (
             <ChatBubble
               message={item.message}
+              messageType={item.type}
               attachment={item.attachment}
               isSender={isSender}
               sender={item.sender}
