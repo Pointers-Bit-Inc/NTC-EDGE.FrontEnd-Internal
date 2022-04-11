@@ -16,7 +16,7 @@ import {button,header,outline,primaryColor,text} from '@styles/color';
 import Text from '@atoms/text';
 import {ContactItem,ListFooter} from '@components/molecules/list-item';
 import ChatView from "@components/pages/chat-modal/view"
-import {ArrowDownIcon,ArrowRightIcon,CloseIcon,NewGroupIcon,PlusIcon} from '@components/atoms/icon'
+import {ArrowDownIcon,ArrowRightIcon,NewGroupIcon,PlusIcon} from '@components/atoms/icon'
 import {InputField,InputTags} from '@components/molecules/form-fields'
 import {Bold,Regular,Regular500} from '@styles/font';
 import useSignalr from 'src/hooks/useSignalr';
@@ -29,6 +29,7 @@ import {isMobile} from "@pages/activities/isMobile";
 import {fontValue} from "@pages/activities/fontValue";
 import {useComponentLayout} from "../../../hooks/useComponentLayout";
 import {Hoverable} from "react-native-web-hooks";
+import CloseIcon from "@assets/svg/close";
 
 const {width,height}=Dimensions.get('window');
 const styles=StyleSheet.create({
@@ -454,7 +455,6 @@ const NewChat=({
         return (
             <Hoverable>
                 {isHovered=>{
-
                     return <View style={{backgroundColor:isHovered ? "#F0F0FF" : "white"}}>
                         <ContactItem
                             image={item?.profilePicture?.thumb}
@@ -487,6 +487,7 @@ const NewChat=({
                     left:inputTagsLayout?.y,
                     width:inputTagsLayout?.width,
                     height:376,
+                    maxWidth: 678,
                     zIndex:1,
                     position:"absolute"
                 }}>
@@ -536,7 +537,7 @@ const NewChat=({
             <View onLayout={onLayoutFormTags} style={styles.header}>
                 {
                     (
-                        <View style={{borderBottomColor:"#EFEFEF",borderBottomWidth:2}}>
+                        <View style={{paddingHorizontal:33, borderBottomColor:"#EFEFEF",borderBottomWidth:2}}>
                             <View>
                                 {isGroup&&<View style={{
                                     justifyContent:"space-between",
@@ -544,7 +545,7 @@ const NewChat=({
                                     borderBottomColor:"#2863D6",
                                     flexDirection:"row"
                                 }}>
-                                    <View style={{paddingHorizontal:33,flexDirection:'row',alignItems:'center'}}>
+                                    <View style={{flexDirection:'row',alignItems:'center'}}>
 
                                         <Text
                                             color={text.default}
@@ -593,8 +594,8 @@ const NewChat=({
 
                                     }
                                     {
-                                        lodash.size(participants)<1&& !isGroup&&
-                                        <View style={{alignSelf:"center",paddingRight:33}}>
+                                        lodash.size(participants)<1&& isGroup&&
+                                        <View style={{alignSelf:"center"}}>
                                             <TouchableOpacity onPress={()=>setGroupName("")}>
                                                 <CloseIcon/>
                                             </TouchableOpacity>
@@ -603,7 +604,6 @@ const NewChat=({
                                     }
                                 </View>}
                                 <View style={{
-                                    paddingHorizontal:33,
                                     paddingVertical:14,
                                     flexDirection:'row',
                                     justifyContent:'center'
@@ -636,7 +636,9 @@ const NewChat=({
                                             containerStyle={tagStyles.container}
                                             initialTags={participants}
                                             initialText={searchValue}
-                                            inputStyle={[tagStyles.input,{fontFamily:searchValue ? Bold : Regular}]}
+
+                                            inputStyle={[tagStyles.input,{fontFamily:searchValue ? Bold : Regular, backgroundColor:'white'}]}
+                                            outlineStyle={[styles.outlineText,{backgroundColor:'white'}]}
                                             onChangeTags={onChangeTags}
                                             renderTag={renderTag}
                                             onChangeTextDebounce={setSearchValue}
@@ -667,7 +669,7 @@ const NewChat=({
                                             )
                                         }
                                     </View>
-                                    <View style={{paddingLeft:32,alignSelf:"center"}}>
+                                    {!isGroup && <View style={{paddingLeft:32,alignSelf:"center"}}>
                                         <TouchableOpacity onPress={onGroup}>
                                             <View style={{
                                                 borderRadius:20,
@@ -680,7 +682,7 @@ const NewChat=({
                                                 <Text size={15}>Add group name</Text>
                                             </View>
                                         </TouchableOpacity>
-                                    </View>
+                                    </View>}
 
 
                                 </View>

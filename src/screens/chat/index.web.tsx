@@ -1003,8 +1003,9 @@ const ChatList=({navigation}:any)=>{
                                                         height={fontValue(21)}
                                                         width={fontValue(22)}
                                                     />
-                                                    <View style={{paddingLeft:5}}>
+                                                    <View style={{paddingLeft:2 }}>
                                                         <Text style={{
+                                                            color: button.info,
                                                             fontSize:12,
                                                             fontFamily:Bold
                                                         }}>{otherParticipants.length}</Text>
@@ -1149,7 +1150,7 @@ const ChatList=({navigation}:any)=>{
                     propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
                     style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
                 >
-                    <SideMenu close={toggleSideMenu}/>
+                    <SideMenu otherParticipants={otherParticipants} close={toggleSideMenu}/>
                 </Modal>
 
             </View>
