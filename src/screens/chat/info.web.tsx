@@ -1,5 +1,5 @@
 import React,{useRef,useState} from "react";
-import {Alert,FlatList,SafeAreaView,StyleSheet,TouchableOpacity,View} from "react-native";
+import {Alert,Dimensions,FlatList,SafeAreaView,StyleSheet,TouchableOpacity,View} from "react-native";
 import CloseIcon from "@assets/svg/close";
 import Text from '@components/atoms/text'
 import {Bold,Regular} from "@styles/font";
@@ -20,10 +20,12 @@ import {ContactItem} from "@molecules/list-item";
 import {ToggleIcon} from "@atoms/icon";
 import {RFValue} from "react-native-responsive-fontsize";
 
+const { height } = Dimensions.get('window');
+
 const styles=StyleSheet.create({
     safeAreaView:{
-        flex:1,
-        top:65,
+        flex:0.9,
+        
         backgroundColor:"#fff"
     },
 
@@ -143,9 +145,26 @@ export const InfoWeb=(props)=>{
         modalRef.current?.open();
     };
 
-    const separator=()=>(
-        <View style={{backgroundColor:'#F8F8F8',height:10}}/>
-    );
+    const onClearChat = () => {
+        setAlertData({
+            title: 'Clear Chat',
+            message: 'Are you sure you want to clear chat content?',
+            cancel: 'Cancel',
+            confirm: 'Yes',
+            type: 'clear',
+        });
+        setShowAlert(true);
+    }
+    const onDeleteChat = () => {
+        setAlertData({
+            title: 'Delete Chat',
+            message: 'Are you sure you want to permanently delete this conversation?',
+            cancel: 'Cancel',
+            confirm: 'Yes',
+            type: 'delete',
+        });
+        setShowAlert(true);
+    }
     const renderParticipants = () => {
         return participants.map((item:IParticipants) => (
             <ContactItem
@@ -274,8 +293,36 @@ export const InfoWeb=(props)=>{
 
                 {renderParticipants()}
             </View>
-        </View>
 
+
+        </View>
+        <View style={{borderTopWidth: 1, borderTopColor: "#E5E5E5", alignItems: "center", position: 'absolute', left: 0, right: 0, bottom: 0, padding: 20}}>
+
+            <TouchableOpacity onPress={onClearChat}>
+                <View style={{ marginVertical: 10 }}>
+                    <Text
+                        size={14}
+                        color={'#CF0327'}
+                    >
+                        Clear Chat Content
+                    </Text>
+                </View>
+            </TouchableOpacity>
+            {
+                isGroup && (
+                    <TouchableOpacity onPress={onDeleteChat}>
+                        <View style={{ marginVertical: 10 }}>
+                            <Text
+                                size={14}
+                                color={'#CF0327'}
+                            >
+                                Leave and Delete
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                )
+            }
+        </View>
     </SafeAreaView>
 };
 

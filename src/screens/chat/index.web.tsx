@@ -220,6 +220,7 @@ const styles=StyleSheet.create({
         paddingLeft:5,
     },
     sideMenuStyle:{
+        justifyContent: "flex-end",
         maxWidth:350,
         width:width*0.432,
         position:'absolute',margin:0,top:0,right:0,bottom:0
@@ -1138,24 +1139,24 @@ const ChatList=({navigation}:any)=>{
                     </View>
                 </View>
                 }
-                <Modal
-                    backdropOpacity={0}
-                    isVisible={isSideMenuVisible}
-                    onBackdropPress={toggleSideMenu} // Android back press
-                    onSwipeComplete={toggleSideMenu} // Swipe to discard
-                    animationIn="slideInRight" // Has others, we want slide in from the left
-                    animationOut="slideOutRight" // When discarding the drawer
-                    swipeDirection="right" // Discard the drawer with swipe to left
-                    useNativeDriver // Faster animation
-                    hideModalContentWhileAnimating // Better performance, try with/without
-                    propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
-                    style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
-                >
-                    <InfoWeb otherParticipants={participants} close={toggleSideMenu}/>
-                </Modal>
+
 
             </View>
-
+            <Modal
+                backdropOpacity={0}
+                isVisible={isSideMenuVisible}
+                onBackdropPress={toggleSideMenu} // Android back press
+                onSwipeComplete={toggleSideMenu} // Swipe to discard
+                animationIn="slideInRight" // Has others, we want slide in from the left
+                animationOut="slideOutRight" // When discarding the drawer
+                swipeDirection="right" // Discard the drawer with swipe to left
+                useNativeDriver // Faster animation
+                hideModalContentWhileAnimating // Better performance, try with/without
+                propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+                style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
+            >
+                <InfoWeb otherParticipants={participants} close={toggleSideMenu}/>
+            </Modal>
         </View>
 
 
