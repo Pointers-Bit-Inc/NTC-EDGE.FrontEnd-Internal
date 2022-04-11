@@ -2,7 +2,7 @@ import React , {useEffect} from "react";
 import {
     Animated,
     Dimensions,
-    FlatList,Platform,Pressable,
+    FlatList,Platform,Image,
     RefreshControl,
     ScrollView,
     StatusBar,
@@ -161,7 +161,7 @@ export default function ActivitiesPage(props: any) {
                         pnApplications.map((item: any , index: number) => {
 
                             return item?.activity && item?.activity.map((act: any , i: number) => {
-
+                                
                                 return (
                                     act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <ActivityItem
                                     isOpen={ isOpen }

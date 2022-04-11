@@ -63,7 +63,7 @@ import GifIcon from "@assets/svg/GifIcon";
 import SendIcon from "@assets/svg/SendIcon";
 import useAttachmentPicker from "../../hooks/useAttachment";
 import Modal from "react-native-modal";
-import SideMenu from "@screens/chat/sideMenu";
+import {InfoWeb} from "@screens/chat/info.web";
 
 const profPic=require('@assets/newMessageProfilePicture.png');
 const draftProfPic=require('@assets/draftNewMessageProfilePicture.png');
@@ -1150,7 +1150,7 @@ const ChatList=({navigation}:any)=>{
                     propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
                     style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
                 >
-                    <SideMenu otherParticipants={otherParticipants} close={toggleSideMenu}/>
+                    <InfoWeb otherParticipants={otherParticipants} close={toggleSideMenu}/>
                 </Modal>
 
             </View>

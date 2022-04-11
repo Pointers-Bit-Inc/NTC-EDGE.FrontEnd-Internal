@@ -271,10 +271,9 @@ export function ActivityItem(props: any) {
     };
 
     const dimensions = useWindowDimensions();
-    const [prefetchImage, setPrefetchImage] = useState(false)
 
 
-    return (
+     return (
 
         <Hoverable>
             { isHovered => (

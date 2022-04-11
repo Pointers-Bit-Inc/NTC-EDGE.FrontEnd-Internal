@@ -19,7 +19,7 @@ import {
 import moment from "moment";
 import axios from "axios";
 import {BASE_URL} from "../services/config";
-import {Alert,Animated,Platform} from "react-native";
+import {Alert,Animated,Image} from "react-native";
 import {
     handleInfiniteLoad,
     setApplications,
@@ -87,6 +87,9 @@ export function useActivities(){
             return status!=DATE_ADDED
         });
 
+
+        
+
         const list=getList(applications,selectedClone);
         const groups=list?.reduce((groups:any,activity:any)=>{
 
@@ -96,6 +99,9 @@ export function useActivities(){
 
 
             }
+
+
+
             if(!groups[formatDate(activity.createdAt)]){
                 groups[formatDate(activity.createdAt)]=[];
             }
