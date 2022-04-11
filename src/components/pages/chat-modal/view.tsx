@@ -133,6 +133,7 @@ const ChatView: FC<Props> = ({
     selectedFile,
     pickImage,
     pickDocument,
+    takePicture,
   } = useAttachmentPicker();
   const inputRef:any = useRef(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
@@ -199,6 +200,12 @@ const ChatView: FC<Props> = ({
 
   const onHideAttachmentOption = () => {
     setShowAttachmentOption(false);
+  }
+
+  const onSelectAttachment = (type:string) => {
+    if (type === 'image') pickImage();
+    if (type === 'document') pickDocument();
+    if (type === 'camera') takePicture();
   }
 
   useEffect(() => {
@@ -313,7 +320,7 @@ const ChatView: FC<Props> = ({
         </View>
       </Animated.View>
       {
-        showAttachmentOption && <AttachmentMenu onPickImage={pickImage} onPickDocument={pickDocument} />
+        showAttachmentOption && <AttachmentMenu onPress={onSelectAttachment} />
       }
     </View>
   )

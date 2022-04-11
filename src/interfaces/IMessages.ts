@@ -15,6 +15,7 @@ interface IMessages {
   hasSeen: boolean;
   delivered: boolean;
   message: string;
+  type: string;
   attachment: IAttachment;
   createdAt: Date;
   updatedAt: Date;

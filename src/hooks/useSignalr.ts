@@ -7,7 +7,7 @@ import { BASE_URL, API_VERSION } from 'src/services/config';
 import useApi from 'src/services/api';
 import { normalize, schema } from 'normalizr';
 import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
-import { addMeeting, updateMeeting, setConnectionStatus } from 'src/reducers/meeting/actions';
+import { addMeeting, updateMeeting, setConnectionStatus, setNotification } from 'src/reducers/meeting/actions';
 import { addMessages, updateMessages, addChannel, removeChannel, updateChannel, addFiles } from 'src/reducers/channel/actions';
 
 const useSignalr = () => {
@@ -92,6 +92,21 @@ const useSignalr = () => {
           if (lastMessage) dispatch(updateChannel(room));
           if (lastMessage) dispatch(addMessages(room._id, lastMessage));
           dispatch(updateMeeting(data));
+          break;
+        }
+        case 'notification': {
+          dispatch(setNotification(data));
+          break;
+        }
+      }
+    }
+  };
+
+  const OnMeetingNotification = (users:Array<string>, type:string, data:any) => {
+    if (data) {
+      switch(type) {
+        case 'notification': {
+          dispatch(setNotification(data));
           break;
         }
       }
@@ -255,8 +270,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const leaveMeeting = useCallback((id, callback = () => {}) => {
-    api.patch(`/meetings/${id}/leave`)
+  const leaveMeeting = useCallback((id, status, callback = () => {}) => {
+    api.patch(`/meetings/${id}/leave?status=${status}`)
     .then(res => {
       return callback(null, res.data);
     })
@@ -311,6 +326,7 @@ const useSignalr = () => {
     onChatUpdate,
     onRoomUpdate,
     onMeetingUpdate,
+    OnMeetingNotification,
     createChannel,
     getChannelByParticipants,
     leaveChannel,

@@ -171,7 +171,8 @@ const ChatList = ({ navigation }:any) => {
   });
   const meetingList = useSelector((state: RootStateOrAny) => {
     const { normalizeActiveMeetings } = state.meeting
-    const meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
+    let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
+    meetingList = lodash.reject(meetingList, (m:IMeetings) => lodash.find(m.participants, (p:IParticipants) => p._id === user._id && (p.status === 'busy' || p.muted)));
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
 })
     const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
@@ -270,7 +271,7 @@ const ChatList = ({ navigation }:any) => {
 const onClose = (item:IMeetings, leave = false) => {
     if (leave) {
       dispatch(removeActiveMeeting(item._id));
-      return leaveMeeting(item._id);
+      return leaveMeeting(item._id, 'busy');
     } else if (item.host._id === user._id) {
       return endMeeting(item._id);
     } else {

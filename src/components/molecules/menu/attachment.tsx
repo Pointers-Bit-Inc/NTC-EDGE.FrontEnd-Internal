@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native'
 import Text from '@components/atoms/text';
-import { AttachIcon, MediaIcon } from '@components/atoms/icon'
+import { AttachIcon, MediaIcon, NewCameraIcon } from '@components/atoms/icon'
 import { RFValue } from 'react-native-responsive-fontsize'
 
 const { height } = Dimensions.get('window');
@@ -26,10 +26,22 @@ const styles = StyleSheet.create({
   }
 })
 
-const AttachmentMenu = ({ onPickImage = () => {}, onPickDocument = () => {} }) => {
+const AttachmentMenu = ({ onPress = (type:string) => {} }) => {
   return (
     <View style={styles.fileButtonContainer}>
-      <TouchableOpacity onPress={onPickImage}>
+      <TouchableOpacity onPress={() => onPress('camera')}>
+        <View style={{ alignItems: 'center' }}>
+          <View style={styles.attachmentButton}>
+            <NewCameraIcon
+              color={'#606A80'}
+              height={RFValue(30)}
+              width={RFValue(30)}
+            />
+          </View>
+          <Text size={12} color={'#606A80'}>Camera</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => onPress('image')}>
         <View style={{ alignItems: 'center' }}>
           <View style={styles.attachmentButton}>
             <MediaIcon
@@ -41,7 +53,7 @@ const AttachmentMenu = ({ onPickImage = () => {}, onPickDocument = () => {} }) =
           <Text size={12} color={'#606A80'}>Media</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={onPickDocument}>
+      <TouchableOpacity onPress={() => onPress('document')}>
         <View style={{ alignItems: 'center' }}>
           <View style={styles.attachmentButton}>
             <AttachIcon
