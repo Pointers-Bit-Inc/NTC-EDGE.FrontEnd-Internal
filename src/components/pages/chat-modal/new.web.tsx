@@ -114,6 +114,7 @@ const styles=StyleSheet.create({
     },
     inputText:{
         fontSize:fontValue(16),
+        fontWeight: "400"
     },
     groupName:{
         borderWidth:1,
@@ -561,7 +562,7 @@ const NewChat=({
                                             placeholder={'Group name'}
                                             containerStyle={styles.groupName}
                                             placeholderTextColor={'#C4C4C4'}
-                                            inputStyle={[styles.inputText,{backgroundColor:'white'}]}
+                                            inputStyle={[styles.inputText,{backgroundColor:'white' }]}
                                             outlineStyle={[styles.outlineText,{backgroundColor:'white'}]}
                                             value={groupName}
                                             onChangeText={setGroupName}
@@ -596,7 +597,10 @@ const NewChat=({
                                     {
                                         lodash.size(participants)<1&& isGroup&&
                                         <View style={{alignSelf:"center"}}>
-                                            <TouchableOpacity onPress={()=>setGroupName("")}>
+                                            <TouchableOpacity onPress={()=>{
+                                                setIsGroup((isGroup) => !isGroup)
+                                                setGroupName("")
+                                            }}>
                                                 <CloseIcon/>
                                             </TouchableOpacity>
                                         </View>
