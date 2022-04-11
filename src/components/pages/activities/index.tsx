@@ -100,7 +100,6 @@ export default function ActivitiesPage(props: any) {
         const { normalizeActiveMeetings } = state.meeting;
         let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m]);
         meetingList = lodash.reject(meetingList, (m:IMeetings) => lodash.find(m.participants, (p:IParticipants) => p._id === user._id && (p.status === 'busy' || p.muted)));
-        console.log('MEETING LIST', meetingList);
         return lodash.orderBy(meetingList , 'updatedAt' , 'desc');
     });
     useEffect(() => {

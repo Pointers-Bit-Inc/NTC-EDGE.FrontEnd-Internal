@@ -126,6 +126,14 @@ const styles = StyleSheet.create({
   imageFile: {
     width: width * 0.3,
     height: width * 0.3,
+  },
+  notif: {
+    backgroundColor: '#C4C4C4',
+    alignSelf: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 2,
+    borderRadius: 15,
+    marginTop: 5,
   }
 })
 
@@ -246,6 +254,46 @@ const ChatBubble:FC<Props> = ({
       >
         {message}
       </Text>
+    )
+  }
+
+  if (messageType === 'leave' || messageType === 'removed' || messageType === 'added') {
+    return (
+      <>
+        {
+          (showDetails || showDate) && (
+              Platform.select({
+                native:(
+                    <View style={styles.seenTimeContainer}>
+                      <Text
+                          color={text.default}
+                          size={12}
+                      >
+                        {getChatTimeString(createdAt)}
+                      </Text>
+                    </View>
+                ),
+                web:(
+                    <View style={styles.hrText}>
+                      <View style={styles.border}/>
+                      <View>
+                        <Text style={[styles.hrContent, {color:  "#808196",}]}>{getChatTimeString(createdAt)}</Text>
+                      </View>
+                      <View style={styles.border}/>
+                    </View>
+                )
+              })
+          )
+        }
+        <View style={styles.notif}>
+          <Text
+            size={14}
+            color={'#fff'}
+          >
+            {`${(messageType === 'removed' || messageType === 'added') ? senderName : ''} ${message}`}
+          </Text>
+        </View>
+      </>
     )
   }
 
