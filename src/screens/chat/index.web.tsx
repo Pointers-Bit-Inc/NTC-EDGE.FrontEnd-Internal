@@ -31,18 +31,8 @@ import useSignalr from 'src/hooks/useSignalr';
 //import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
-const profPic = require('@assets/newMessageProfilePicture.png');
-import {
-    ArrowLeftIcon ,
-    CheckIcon ,
-    NewCallIcon ,
-    NewChatIcon ,
-    NewMessageIcon ,
-    NewVideoIcon ,
-    PlusIcon
-} from '@atoms/icon';
-import {Bold, Regular, Regular500} from "@styles/font";
-import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
+import {ArrowLeftIcon,CheckIcon,NewCallIcon,NewChatIcon,NewVideoIcon} from '@atoms/icon';
+import {Bold,Regular} from "@styles/font";
 import NewChat from '@components/pages/chat-modal/new';
 import {fontValue} from "@pages/activities/fontValue";
 import MeetIcon from "@assets/svg/meetIcon";
@@ -61,15 +51,21 @@ import {Hoverable} from "react-native-web-hooks";
 import GroupImage from "@molecules/image/group";
 //import FileList from "@screens/chat/file-list";
 import FileList from '@components/organisms/chat/files';
-import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import NoConversationIcon from "@assets/svg/noConversations";
 import {isMobile} from "@pages/activities/isMobile";
 import {ViewPaged} from 'react-scroll-paged-view'
 import TabBar from 'react-underline-tabbar'
 import CreateChatIcon from "@assets/svg/createChat";
+import {TabView} from "react-native-tab-view";
+import AttachIcon from "@assets/svg/AttachIcon";
+import EmojiIcon from "@assets/svg/EmojiIcon";
+import GifIcon from "@assets/svg/GifIcon";
+import SendIcon from "@assets/svg/SendIcon";
+import useAttachmentPicker from "../../hooks/useAttachment";
+
+const profPic=require('@assets/newMessageProfilePicture.png');
+const draftProfPic=require('@assets/draftNewMessageProfilePicture.png');
 import hairlineWidth=StyleSheet.hairlineWidth;
-import {SceneMap,TabView} from "react-native-tab-view";
-import EditIcon from "@assets/svg/editIcon";
 
 const {width,height}=Dimensions.get('window');
 
@@ -87,6 +83,7 @@ const styles=StyleSheet.create({
 
     },
     keyboardAvoiding:{
+
         paddingHorizontal:15,
         paddingVertical:10,
         paddingBottom:0,
@@ -101,7 +98,6 @@ const styles=StyleSheet.create({
         backgroundColor:'white',
     },
     header:{
-        backgroundColor:'white',
         borderBottomWidth:hairlineWidth,
         borderBottomColor:"#EFEFEF"
     },
@@ -139,7 +135,7 @@ const styles=StyleSheet.create({
         backgroundColor:outline.default,
     },
     horizontal:{
-       
+
         flexDirection:'row',
         alignItems:'center',
     },
@@ -223,20 +219,15 @@ const styles=StyleSheet.create({
     },
 });
 
-function Chat(props:{newChat: boolean,user,navigation,onNewChat?:()=>any,onPress:()=>any,onBackdropPress:()=>void,onSubmit:(res:any)=>void}){
-    // useRequestCameraAndAudioPermission();
+function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?:()=>any,onPress:()=>any,onBackdropPress:()=>void,onSubmit:(res:any)=>void}){
 
     const {
         getChatList,
-        leaveChannel,
         endMeeting,
         leaveMeeting,
     }=useSignalr();
     const swipeableRef:any=useRef({});
     const {selectedChannel}=useSelector((state:RootStateOrAny)=>state.channel);
-    const {chatLayout}=useSelector((state:RootStateOrAny)=>state.layout);
-
-    const modalRef=useRef<BottomModalRef>(null);
     const dispatch=useDispatch();
     const meetingList=useSelector((state:RootStateOrAny)=>{
         const {normalizeActiveMeetings}=state.meeting;
@@ -283,7 +274,7 @@ function Chat(props:{newChat: boolean,user,navigation,onNewChat?:()=>any,onPress
             channel.lastMessage.hasSeen= !!lodash.find(channel.lastMessage.seen,s=>s._id===props.user._id);
             return channel;
         });
-        console.log(lodash.orderBy(channelList,'lastMessage.createdAt','desc'))
+        console.log(lodash.orderBy(channelList,'lastMessage.createdAt','desc'));
         return lodash.orderBy(channelList,'lastMessage.createdAt','desc');
     });
     const onRequestData=()=>setSendRequest(request=>request+1);
@@ -433,9 +424,9 @@ function Chat(props:{newChat: boolean,user,navigation,onNewChat?:()=>any,onPress
                         }}>
 
                             <View
-                                style={[styles.headerNewChatIcon,{backgroundColor:isHovered ? "#2863D6" : "#F0F0F0"}]}>
+                                style={[styles.headerNewChatIcon,{backgroundColor:props.newChat ? "#2863D6" : isHovered  ? "#2863D6" : "#F0F0F0"}]}>
                                 <NewChatIcon
-                                    color={!isMobile ? isHovered ? "white" : "#606A80" : "white"}
+                                    color={!isMobile ? props.newChat ? "white" :  isHovered ? "white" : "#606A80" : "white"}
                                     width={fontValue(20)}
                                     height={fontValue(20)}
                                 />
@@ -460,7 +451,13 @@ function Chat(props:{newChat: boolean,user,navigation,onNewChat?:()=>any,onPress
                             keyExtractor={(item:any)=>item._id}
                             renderItem={({item})=>(
                                 <MeetingNotif
-                                    style={{width}}
+                                    style={{...Platform.select({
+                                            native: {
+                                                width: width
+                                            },
+                                            default: {
+                                                width: 466
+                                            }})}}
                                     name={getChannelName({...item,otherParticipants:item?.participants})}
                                     time={item.createdAt}
                                     host={item.host}
@@ -491,7 +488,7 @@ function Chat(props:{newChat: boolean,user,navigation,onNewChat?:()=>any,onPress
         <View style={styles.shadow}/>
         {
             loading ? (
-                <View style={{alignItems:'center'}}>
+                <View style={{alignItems:'center',paddingTop:10}}>
                     <ActivityIndicator size={'small'} color={text.default}/>
                     <Text
                         style={{marginTop:10}}
@@ -503,19 +500,36 @@ function Chat(props:{newChat: boolean,user,navigation,onNewChat?:()=>any,onPress
                 </View>
             ) : (
                 <FlatList
-                        data={props.newChat ? [{image: profPic,name: "New Chat", hasRoomName: true, lastMessage: {hasSeen: true}}, ...channelList] : channelList }
-                        showsVerticalScrollIndicator={false}
-                        refreshControl={
-                            <RefreshControl
-                                tintColor={primaryColor} // ios
-                                progressBackgroundColor={primaryColor} // android
-                                colors={['white']} // android
-                                refreshing={loading}
-                                onRefresh={onRequestData}
-                            />
-                        }
-                        renderItem={({item}:any)=>{
-                            return <Swipeable
+                    data={[
+                        {
+                            id:-1,
+                            image:profPic,
+                            name:"New Chat",
+                            hasRoomName:true,
+                            lastMessage:{hasSeen:true}
+                        },
+                        props.participants.filter(p=>p.firstName).map(p=>p.firstName).length&&{
+                            id:-2,
+                            image:draftProfPic,
+                            name:props.participants.filter(p=>p.firstName).map(p=>p.firstName).toString(),
+
+                            hasRoomName:true,
+                            lastMessage:{message:"Draft",hasSeen:true}
+                        },...channelList]}
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        <RefreshControl
+                            tintColor={primaryColor} // ios
+                            progressBackgroundColor={primaryColor} // android
+                            colors={['white']} // android
+                            refreshing={loading}
+                            onRefresh={onRequestData}
+                        />
+                    }
+                    renderItem={({item}:any)=>{
+                        return item!=0&&<View style={(
+                            !props.newChat&& !item._id)&&{display:"none"}}>
+                            <Swipeable
                                 ref={ref=>swipeableRef.current[item._id]=ref}
                                 renderRightActions={(progress,dragX)=>renderRightActions(progress,dragX,item)}
                             >
@@ -523,7 +537,9 @@ function Chat(props:{newChat: boolean,user,navigation,onNewChat?:()=>any,onPress
                                     {isHovered=>(
                                         <View style={{
                                             backgroundColor:(
-                                                                selectedChannel?._id===item?._id)&& !(
+                                                                (
+                                                                    item.id== -1||item.id== -2)&&item?._id==undefined&&item.name=="New Chat" ? "#D4D3FF" :
+                                                                !props.newChat&&selectedChannel?._id===item?._id)&& !(
                                                 isMobile) ? "#D4D3FF" : isHovered ? "#F0F0FF" : "#fff"
                                         }}>
                                             <ChatItem
@@ -554,13 +570,14 @@ function Chat(props:{newChat: boolean,user,navigation,onNewChat?:()=>any,onPress
                                     )}
                                 </Hoverable>
                             </Swipeable>
-                        }}
-                        keyExtractor={(item:any)=>item._id}
-                        ListEmptyComponent={emptyComponent}
-                        ListFooterComponent={ListFooterComponent}
-                        onEndReached={()=>fetchMoreChat()}
-                        onEndReachedThreshold={0.5}
-                    />
+                        </View>
+                    }}
+                    keyExtractor={(item:any)=>item._id}
+                    ListEmptyComponent={emptyComponent}
+                    ListFooterComponent={ListFooterComponent}
+                    onEndReached={()=>fetchMoreChat()}
+                    onEndReachedThreshold={0.5}
+                />
 
 
             )
@@ -590,17 +607,15 @@ function Chat(props:{newChat: boolean,user,navigation,onNewChat?:()=>any,onPress
     </View>;
 }
 
-const Tab=createMaterialTopTabNavigator();
-
 const ChatList=({navigation}:any)=>{
 
 
-    const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-        { key: 'list', title: 'Chat' },
-        { key: 'fileList', title: 'Files' },
+    const [index,setIndex]=React.useState(0);
+    const [routes]=React.useState([
+        {key:'list',title:'Chat'},
+        {key:'fileList',title:'Files'},
     ]);
-    const initialLayout = { width: Dimensions.get('window').width };
+    const initialLayout={width:Dimensions.get('window').width};
     const dimensions=useWindowDimensions();
     const dispatch=useDispatch();
     const {
@@ -627,7 +642,7 @@ const ChatList=({navigation}:any)=>{
     const [rendered,setRendered]=useState(false);
     const [showLayout,setShowLayout]=useState(false);
     const [onNewChat,setOnNewChat]=useState(false);
-    const {_id,otherParticipants,participants,isGroup,hasRoomName,name,}=useSelector(
+    const {_id,otherParticipants,isGroup,hasRoomName,name,}=useSelector(
         (state:RootStateOrAny)=>{
             const {selectedChannel}=state.channel;
             selectedChannel.otherParticipants=lodash.reject(selectedChannel.participants,p=>p._id===user._id);
@@ -662,23 +677,23 @@ const ChatList=({navigation}:any)=>{
                 console.log('ERR',err);
             }
         })
-    }
-    const channelId = _id;
-    const selectedMessage = useSelector((state:RootStateOrAny) => {
-        const { selectedMessage } = state.channel;
+    };
+    const channelId=_id;
+    const selectedMessage=useSelector((state:RootStateOrAny)=>{
+        const {selectedMessage}=state.channel;
         return selectedMessage[channelId];
     });
-    const onSendMessage = useCallback(() => {
-        if (!inputText) {
+    const onSendMessage=useCallback(()=>{
+        if(!inputText){
             return;
         }
 
-        if (selectedMessage?._id) {
-            _editMessage(selectedMessage?._id, inputText);
+        if(selectedMessage?._id){
+            _editMessage(selectedMessage?._id,inputText);
             inputRef.current?.blur();
             dispatch(removeSelectedMessage(channelId))
-        } else {
-            _sendMessage(channelId, inputText);
+        } else{
+            _sendMessage(channelId,inputText);
             inputRef.current?.blur();
             setInputText('');
         }
@@ -700,14 +715,14 @@ const ChatList=({navigation}:any)=>{
         return ()=>{
             dispatch(setSelectedChannel({}));
         }
-    }, []);
+    },[]);
 
-    useEffect(() => {
-        if (rendered) {
-            setInputText(selectedMessage?.message || '');
-            if (selectedMessage?._id) {
-                setTimeout(() => inputRef.current?.focus(), 500);
-            } else {
+    useEffect(()=>{
+        if(rendered){
+            setInputText(selectedMessage?.message||'');
+            if(selectedMessage?._id){
+                setTimeout(()=>inputRef.current?.focus(),500);
+            } else{
                 inputRef.current?.blur();
             }
         }
@@ -718,32 +733,59 @@ const ChatList=({navigation}:any)=>{
         dispatch(setChatLayout(chatSize))
     },[chatSize]);
     const [activeTab,setActiveTab]=useState(0);
-    const [activeRoute, setActiveRoute] = useState("list")
-    const renderScene = ({ route, jumpTo }) => {
-        const sceneIndex = index == 0 ? "list" : "fileList"
-        if(route.key != activeRoute&& sceneIndex  ){
-             jumpTo(activeRoute)
-         }
+    const [activeRoute,setActiveRoute]=useState("list");
+    const renderScene=({route,jumpTo})=>{
+        const sceneIndex=index==0 ? "list" : "fileList";
+        if(route.key!=activeRoute&&sceneIndex){
+            jumpTo(activeRoute)
+        }
 
-        switch (route.key) {
+        switch(route.key){
             case 'list':
                 return <List/>;
             case 'fileList':
-                return <FileList />;
+                return <FileList/>;
             default:
                 return null;
         }
 
 
     };
+    const {
+        selectedFile,
+        pickImage,
+        pickDocument,
+    }=useAttachmentPicker();
+    const [participants,setParticipants]:any=useState([]);
+    const _sendFile=(channelId:string,attachment:any,groupName='',participants:any=[])=>{
+        dispatch(addPendingMessage({
+            attachment,
+            channelId,
+            groupName,
+            participants,
+            messageType:'file'
+        }));
+    };
+    useEffect(()=>{
+        if(lodash.size(selectedFile)){
+            _sendFile(
+                channelId,
+                selectedFile,
+                "",
+                participants
+            );
+        }
+    },[selectedFile]);
     return (
         <View style={{flexDirection:"row",flex:1}}>
             <View style={[styles.chatContainer,{
-                flexBasis:(isMobile||dimensions?.width<768) ? "100%" : 466,
+                flexBasis:(
+                              isMobile||dimensions?.width<768) ? "100%" : 466,
                 flexGrow:0,
                 flexShrink:0
             }]}>
                 <Chat
+                    participants={participants}
                     newChat={onNewChat}
                     user={user}
                     navigation={navigation}
@@ -755,31 +797,37 @@ const ChatList=({navigation}:any)=>{
 
                     }}
                     onSubmit={(res:any)=>{
-                        setOnNewChat(false)
+                        setParticipants([]);
+                        setOnNewChat(false);
                         setShowLayout(true)
                     }}/>
             </View>
-            <View onLayout={onChatLayout} style={{backgroundColor:"#F8F8F8",flex:1, }}>
+            <View onLayout={onChatLayout} style={{backgroundColor:"#F8F8F8",flex:1,}}>
                 {onNewChat ?
 
-                     <NewChat
-                         onClose={()=>{
-                             setOnNewChat(false)
-                         }}
+                 <NewChat
+                     participants={participants}
+                     setParticipants={(event)=>setParticipants(event)}
+                     onClose={()=>{
+                         setOnNewChat(false)
+                     }}
 
-                         onSubmit={(res:any)=>{
-                             res.otherParticipants=lodash.reject(res.participants,p=>p._id===user._id);
+                     onSubmit={(res:any)=>{
 
-                             dispatch(setSelectedChannel(res));
-                             dispatch(addChannel(res));
-                             setOnNewChat(false)
-                             setShowLayout(true)
-                             //setTimeout(() => props.navigation.navigate('ViewChat', res), 300);
-                         }}
-                     />
-                  :
+                         res.otherParticipants=lodash.reject(res.participants,p=>p._id===user._id);
+
+                         dispatch(setSelectedChannel(res));
+                         dispatch(addChannel(res));
+
+                         setOnNewChat(false);
+                         setShowLayout(true);
+                         setParticipants([])
+                         //setTimeout(() => props.navigation.navigate('ViewChat', res), 300);
+                     }}
+                 />
+                           :
                  !(
-                     _id&&showLayout)&&<View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+                     _id&&showLayout&& !onNewChat)&&<View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
                          <View>
                              <NoConversationIcon/>
                          </View>
@@ -787,7 +835,7 @@ const ChatList=({navigation}:any)=>{
                          <Text style={{color:"#A0A3BD",paddingVertical:30,fontSize:24,fontFamily:Regular,fontWeight:"400"}}>No
                              conversations yet</Text>
                      </View>}
-                {_id&&showLayout&&<View style={[styles.header,styles.horizontal]}>
+                {_id&&showLayout&& !onNewChat&&<View style={[styles.header,styles.horizontal]}>
                     <ViewPaged
 
                         isMovingRender
@@ -796,16 +844,16 @@ const ChatList=({navigation}:any)=>{
                         renderPosition='top'
                         renderHeader={(params)=>{
 
-                            setActiveTab(params.activeTab)
-                            if(params.activeTab==0  ){
-                                 setActiveRoute("list")
-                                params.goToPage(0 );
-                            }else if(params.activeTab==1 ){
-                                setActiveRoute("fileList")
-                                params.goToPage(1 );
+                            setActiveTab(params.activeTab);
+                            if(params.activeTab==0){
+                                setActiveRoute("list");
+                                params.goToPage(0);
+                            } else if(params.activeTab==1){
+                                setActiveRoute("fileList");
+                                params.goToPage(1);
                             }
 
-                            function renderTab({isTabActive, onPress,onLayout,tab:{label}}){
+                            function renderTab({isTabActive,onPress,onLayout,tab:{label}}){
                                 return (
                                     <TouchableOpacity onPress={onPress}>
                                         <Hoverable>
@@ -814,7 +862,10 @@ const ChatList=({navigation}:any)=>{
                                                     backgroundColor:isHovered ? "#DFE5F1" : undefined,
                                                     paddingVertical:20
                                                 }}>
-                                                    <Text style={{color: isTabActive ? "#565961" : "#808196",fontSize:20}}>{label}</Text>
+                                                    <Text style={{
+                                                        color:isTabActive ? "#565961" : "#808196",
+                                                        fontSize:20
+                                                    }}>{label}</Text>
                                                 </View>
                                             )}
                                         </Hoverable>
@@ -827,7 +878,7 @@ const ChatList=({navigation}:any)=>{
 
                                     borderBottomWidth:hairlineWidth,
                                     borderBottomColor:"#d2d2d2",
-                                      paddingHorizontal: 25,
+                                    paddingHorizontal:25,
                                     flexDirection:"row",
                                     alignItems:"center",
                                     justifyContent:"center",
@@ -965,16 +1016,16 @@ const ChatList=({navigation}:any)=>{
 
                 </View>}
 
-                {_id && showLayout &&<TabView
+                {_id&&showLayout&& !onNewChat&&<TabView
                     swipeEnabled={false}
-                    renderTabBar={()=> <></>}
-                    navigationState={{ index, routes }}
+                    renderTabBar={()=><></>}
+                    navigationState={{index,routes}}
                     renderScene={renderScene}
                     onIndexChange={setIndex}
                     initialLayout={initialLayout}
-                    style={styles.container}
+                    style={[styles.container,{backgroundColor:"#f8f8f8"}]}
                 />}
-                {_id&&showLayout&&<View>
+                {_id&&showLayout&& !onNewChat&&<View>
                     {
                         !!lodash.size(meetingList)&&(
                             <FlatList
@@ -987,7 +1038,14 @@ const ChatList=({navigation}:any)=>{
                                 keyExtractor={(item:any)=>item._id}
                                 renderItem={({item})=>(
                                     <MeetingNotif
-                                        style={{width}}
+                                        style={{...Platform.select({
+                                                native: {
+                                                    width: width
+                                                },
+                                                default: {
+                                                    width: "100%"
+                                                }
+                                        })}}
                                         name={getChannelName({...item,otherParticipants:item?.participants})}
                                         host={item.host}
                                         time={item.createdAt}
@@ -1001,29 +1059,42 @@ const ChatList=({navigation}:any)=>{
                     }
                 </View>}
 
-                {_id&&showLayout&&activeTab == 0&&<View style={[]}>
+                {_id&&showLayout&& !onNewChat&&activeTab==0&&<View style={[{
+                    borderTopWidth:2,
+                    paddingHorizontal:32,
+                    paddingTop:42,
+                    borderTopColor:"#efefef",
+                    backgroundColor:"#f8f8f8"
+                }]}>
 
 
-                    <View style={styles.keyboardAvoiding}>
-                        <InputField
-                            ref={inputRef}
-                            placeholder={'Type a message'}
-                            containerStyle={[styles.containerStyle,{borderColor:isFocused ? '#C1CADC' : 'white'}]}
-                            placeholderTextColor={'#C4C4C4'}
-                            inputStyle={[styles.input,{backgroundColor:'white'}]}
-                            outlineStyle={[styles.outline,{backgroundColor:'#F8F8F8'}]}
-                             
-                            value={inputText}
-                            onChangeText={setInputText}
-                            onSubmitEditing={()=>inputText&&onSendMessage()}
-                            returnKeyType={'send'}
-                            onFocus={()=>setIsFocused(true)}
-                            onBlur={()=>setIsFocused(false)}
+                    <InputField
+                        ref={inputRef}
+                        placeholder={'Type a message'}
+                        placeholderTextColor={'#C4C4C4'}
+                        containerStyle={{backgroundColor:"white", }}
+                        value={inputText}
+                        onChangeText={setInputText}
+                        onSubmitEditing={()=>inputText&&onSendMessage()}
+                        returnKeyType={'send'}
+                        onFocus={()=>setIsFocused(true)}
+                        onBlur={()=>setIsFocused(false)}
 
-                        />
-                    </View>
-                    <View style={{marginTop:fontValue(-18),flexDirection:'row'}}>
+                    />
+
+                    <View style={{flexDirection:"row",justifyContent:"space-between",paddingBottom:40}}>
+                        <View style={{gap:25,flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
+                            <TouchableOpacity onPress={pickDocument}>
+                                <AttachIcon/>
+                            </TouchableOpacity>
+                            <EmojiIcon/>
+                            <TouchableOpacity onPress={pickImage}>
+                                <GifIcon/>
+                            </TouchableOpacity>
+
+                        </View>
                         <TouchableOpacity
+                            disabled={!inputText}
                             onPress={onSendMessage}
                         >
                             {
@@ -1038,14 +1109,11 @@ const ChatList=({navigation}:any)=>{
                                     </View>
                                 ) : (
                                     <View style={{marginLeft:10}}>
-                                        <NewMessageIcon
-                                            color={inputText ? button.info : '#D1D1D6'}
-                                            height={fontValue(30)}
-                                            width={fontValue(30)}
-                                        />
+                                        <SendIcon/>
                                     </View>
                                 )
                             }
+
                         </TouchableOpacity>
                     </View>
                 </View>

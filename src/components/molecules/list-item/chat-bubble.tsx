@@ -93,7 +93,27 @@ const styles = StyleSheet.create({
   imageFile: {
     width: width * 0.3,
     height: width * 0.3,
-  }
+  },
+  hrText:{
+    flex:1,
+    paddingVertical: 20,
+    alignSelf:'center',
+    width:"100%",
+    flexDirection:"row",
+    justifyContent:"center"
+  },
+  border:{
+    flex:1,
+    backgroundColor:  "#D1D1D6",
+    width:"100%",
+    height:1,
+    alignSelf:"center"
+  },
+  hrContent:{
+    color:  "#2863D6",
+    paddingHorizontal:20,
+    textAlign:'center'
+  },
 })
 
 interface Props {
@@ -214,14 +234,27 @@ const ChatBubble:FC<Props> = ({
     <>
       {
         (showDetails || showDate || system) && (
-          <View style={styles.seenTimeContainer}>
-            <Text
-              color={'#808196'}
-              size={12}
-            >
-              {getChatTimeString(createdAt)}
-            </Text>
-          </View>
+            Platform.select({
+              native:(
+                  <View style={styles.seenTimeContainer}>
+                    <Text
+                        color={text.default}
+                        size={12}
+                    >
+                      {getChatTimeString(createdAt)}
+                    </Text>
+                  </View>
+              ),
+              web:(
+                  <View style={styles.hrText}>
+                    <View style={styles.border}/>
+                    <View>
+                      <Text style={[styles.hrContent, {color:  "#808196",}]}>{getChatTimeString(createdAt)}</Text>
+                    </View>
+                    <View style={styles.border}/>
+                  </View>
+              )
+            })
         )
       }
       <TouchableOpacity

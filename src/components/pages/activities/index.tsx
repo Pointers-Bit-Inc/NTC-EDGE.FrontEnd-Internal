@@ -258,7 +258,13 @@ export default function ActivitiesPage(props: any) {
                                     keyExtractor={ (item: any) => item._id }
                                     renderItem={ ({ item }) => (
                                         <MeetingNotif
-                                            style={ { width } }
+                                            style={{...Platform.select({
+                                                    native: {
+                                                        width: width
+                                                    },
+                                                    default: {
+                                                        width: 466
+                                                    }})}}
                                             name={ getChannelName({
                                                 ...item ,
                                                 otherParticipants : item?.participants

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, FC } from 'react'
-import { View, TouchableOpacity, StyleSheet, InteractionManager } from 'react-native';
+import {View,TouchableOpacity,StyleSheet,InteractionManager,Platform} from 'react-native';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
@@ -23,7 +23,7 @@ import ChatList from '@components/organisms/chat/list';
 import { outline, text, button } from '@styles/color';
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { Regular, Regular500 } from '@styles/font';
+import {Bold,Regular,Regular500} from '@styles/font';
 import IMessages from 'src/interfaces/IMessages';
 import IParticipants from 'src/interfaces/IParticipants';
 import NoConversationIcon from "@assets/svg/noConversations";
@@ -399,9 +399,19 @@ const List: FC<Props> = ({
         !messages.length ?
           <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
             <View >
-              <NoConversationIcon />
+              <NoConversationIcon/>
             </View>
-            <Text style={{color: "#A0A3BD", paddingVertical: 30, fontSize: 24, fontFamily: Regular, fontWeight: "400"}}>No conversations yet</Text>
+            {
+              Platform.select({
+                   native: <Text style={{color:"#A0A3BD",fontSize:24,fontFamily:Regular,fontWeight:"400"}}>No
+                     conversations yet</Text>,
+                    web:  <View style={{paddingVertical:30}}>
+                      <Text style={{textAlign: "center", color:"#565961",fontSize:24,fontFamily:Bold,fontWeight:"bold"}}>You’re starting a new conversation</Text>
+                      <Text style={{textAlign: "center",color:"#A0A3BD",fontSize:20,fontFamily:Regular,fontWeight:"400"}}>Type your first message below</Text>
+                    </View>
+              })
+
+            }
           </View> :
         <>
           <ChatList

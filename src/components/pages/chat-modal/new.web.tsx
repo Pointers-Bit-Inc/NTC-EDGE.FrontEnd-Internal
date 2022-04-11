@@ -14,24 +14,27 @@ import lodash from 'lodash';
 import { outline, button, text } from '@styles/color';
 import Text from '@atoms/text';
 import { ContactItem, ListFooter, SelectedContact } from '@components/molecules/list-item';
-import ChatView from './view';
+import ChatView from "@components/pages/chat-modal/view"
 import { ArrowRightIcon, ArrowDownIcon, CheckIcon, CloseIcon, NewGroupIcon, PlusIcon } from '@components/atoms/icon'
 import { InputField, SearchField } from '@components/molecules/form-fields'
 import { primaryColor, header } from '@styles/color';
 import { Bold, Regular, Regular500 } from '@styles/font';
 import useSignalr from 'src/hooks/useSignalr';
 import { InputTags } from '@components/molecules/form-fields';
-import { RFValue } from 'react-native-responsive-fontsize';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import IParticipants from 'src/interfaces/IParticipants';
 import EditIcon from "@assets/svg/editIcon";
+import {isMobile} from "@pages/activities/isMobile";
+import {fontValue} from "@pages/activities/fontValue";
+import {useComponentLayout} from "../../../hooks/useComponentLayout";
+import {Hoverable} from "react-native-web-hooks";
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: '#E5E5E5',
     },
     header: {
         zIndex: 999,
@@ -47,7 +50,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     input: {
-        fontSize: RFValue(14),
+        fontSize: fontValue(14),
         fontFamily: Regular,
         color: 'black',
         flex: 1,
@@ -58,7 +61,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     icon: {
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         color: '#6E7191'
     },
     separator: {
@@ -68,18 +71,18 @@ const styles = StyleSheet.create({
         // backgroundColor: outline.default,
     },
     notSelected: {
-        height: RFValue(20),
-        width: RFValue(20),
-        borderRadius: RFValue(20),
+        height: fontValue(20),
+        width: fontValue(20),
+        borderRadius: fontValue(20),
         borderWidth: 1,
         borderColor: button.default,
         alignItems: 'center',
         justifyContent: 'center',
     },
     selected: {
-        height: RFValue(20),
-        width: RFValue(20),
-        borderRadius: RFValue(20),
+        height: fontValue(20),
+        width: fontValue(20),
+        borderRadius: fontValue(20),
         borderWidth: 1,
         borderColor: button.info,
         backgroundColor: button.info,
@@ -109,7 +112,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     inputText: {
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
     },
     groupName: {
         height: undefined,
@@ -123,9 +126,9 @@ const styles = StyleSheet.create({
     },
     plus: {
         backgroundColor: button.info,
-        borderRadius: RFValue(20),
-        width: RFValue(20),
-        height: RFValue(20),
+        borderRadius: fontValue(20),
+        width: fontValue(20),
+        height: fontValue(20),
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 5,
@@ -133,25 +136,25 @@ const styles = StyleSheet.create({
         paddingTop: Platform.OS === 'ios' ? 1 : 0,
     },
     cancelText: {
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         color: text.info,
         fontFamily: Regular500,
     },
     confirmText: {
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         color: text.error,
         fontFamily: Regular500,
     },
     title: {
         color: '#14142B',
         textAlign: 'center',
-        fontSize: RFValue(16),
+        fontSize: fontValue(16),
         fontFamily: Regular500,
     },
     message: {
         color: '#4E4B66',
         textAlign: 'center',
-        fontSize:RFValue(14),
+        fontSize:fontValue(14),
         marginHorizontal: 15,
         marginBottom: 15,
         fontFamily: Regular,
@@ -178,12 +181,12 @@ const tagStyles = StyleSheet.create({
     textTag: {
         color: header.default,
         fontFamily: Bold,
-        fontSize: RFValue(14),
+        fontSize: fontValue(14),
     },
     input: {
         backgroundColor: '#FFFFFF',
         color: header.default,
-        fontSize: RFValue(14),
+        fontSize: fontValue(14),
         fontFamily: Bold,
         paddingLeft: 0,
         paddingRight: 0,
@@ -192,7 +195,7 @@ const tagStyles = StyleSheet.create({
     },
 });
 
-const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
+const NewChat = ({ participants, setParticipants, onClose = () => {}, onSubmit = () => {} }:any) => {
     const {
         getParticipantList,
         createChannel,
@@ -204,7 +207,6 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     const groupNameRef:any = useRef(null);
     const [loading, setLoading] = useState(false);
     const [nextLoading, setNextLoading] = useState(false);
-    const [participants, setParticipants]:any = useState([]);
     const [sendRequest, setSendRequest] = useState(0);
     const [contacts, setContacts]:any = useState([]);
     const [searchText, setSearchText] = useState('');
@@ -217,6 +219,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     const [isGroup, setIsGroup] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
+    const [inputTagsLayout,onLayoutInputTags]=useComponentLayout();
     const { selectedChannel } = useSelector((state:RootStateOrAny) => state.channel);
     const user = useSelector((state:RootStateOrAny) => state.user);
 
@@ -406,7 +409,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
                 )}
                 keyExtractor={(item) => item._id}
                 ListFooterComponent={() => <View style={{ width: 20 }} />}
-                ItemSeparatorComponent={() => <View style={{ width: RFValue(5) }} />}
+                ItemSeparatorComponent={() => <View style={{ width: fontValue(5) }} />}
                 showsHorizontalScrollIndicator={false}
             />
             <View style={[styles.contactTitle, !!lodash.size(participants) && { paddingTop: 15 }]}>
@@ -458,6 +461,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     const renderContactItem = ({ item }:any) => {
         if (isGroup) {
             return (
+
                 <ContactItem
                     image={item?.profilePicture?.thumb}
                     data={item}
@@ -472,7 +476,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
                                     <View style={styles.selected}>
                                         <CheckIcon
                                             type={'check1'}
-                                            size={RFValue(16)}
+                                            size={fontValue(16)}
                                             color="white"
                                         />
                                     </View>
@@ -487,59 +491,58 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
             );
         }
         return (
-            <ContactItem
-                image={item?.profilePicture?.thumb}
-                data={item}
-                name={item.name}
-                isOnline={item.isOnline}
-                onPress={() => onTapCheck(item._id)}
-                contact={item.email || ''}
-            />
+            <Hoverable>
+                {isHovered=>(
+                    <View style={{backgroundColor: isHovered ? "#F0F0FF" : "white"}}>
+                        <ContactItem
+                            image={item?.profilePicture?.thumb}
+                            data={item}
+                            name={item.name}
+                            isOnline={item.isOnline}
+                            onPress={() => onTapCheck(item._id)}
+                            contact={item.email || ''}
+                        />
+                    </View>
+
+                )}
+            </Hoverable>
         )
     }
 
     const renderList = () => {
         if (isGroup || !lodash.size(participants) || searchValue || isFocused) {
+            return (
+                <View style={{ backgroundColor: "#fff",top: inputTagsLayout?.x * 1.8,  left: inputTagsLayout?.y , width: inputTagsLayout?.width, height: 376,  zIndex: 1, position: "absolute"}}>
+                    <FlatList
+                        data={contacts}
+                        showsVerticalScrollIndicator={false}
+                        refreshControl={
+                            <RefreshControl
+                                tintColor={primaryColor} // ios
+                                progressBackgroundColor={primaryColor} // android
+                                colors={['white']} // android
+                                refreshing={loading}
+                                onRefresh={onRequestData}
+                            />
+                        }
+                        renderItem={renderContactItem}
+                        keyExtractor={(item) => item._id}
+                        ItemSeparatorComponent={
+                            () => <View style={styles.separator} />
+                        }
+                        ListHeaderComponent={isGroup ? headerComponent : undefined}
+                        ListEmptyComponent={emptyComponent}
+                        ListFooterComponent={ListFooterComponent}
+                        onEndReached={() => fetchMoreParticipants()}
+                        onEndReachedThreshold={0.5}
+                        keyboardShouldPersistTaps={'handled'}
+                    />
+                   
+                </View>
 
-            return (
-                <FlatList
-                    data={contacts}
-                    showsVerticalScrollIndicator={false}
-                    refreshControl={
-                        <RefreshControl
-                            tintColor={primaryColor} // ios
-                            progressBackgroundColor={primaryColor} // android
-                            colors={['white']} // android
-                            refreshing={loading}
-                            onRefresh={onRequestData}
-                        />
-                    }
-                    renderItem={renderContactItem}
-                    keyExtractor={(item) => item._id}
-                    ItemSeparatorComponent={
-                        () => <View style={styles.separator} />
-                    }
-                    ListHeaderComponent={isGroup ? headerComponent : undefined}
-                    ListEmptyComponent={emptyComponent}
-                    ListFooterComponent={ListFooterComponent}
-                    onEndReached={() => fetchMoreParticipants()}
-                    onEndReachedThreshold={0.5}
-                    keyboardShouldPersistTaps={'handled'}
-                />
             );
-        } else {
-            return (
-                <ChatView
-                  channelId={selectedChannel?._id}
-                  otherParticipants={lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id)}
-                  isGroup={selectedChannel.isGroup}
-                  groupName={groupName}
-                  lastMessage={selectedChannel.lastMessage}
-                  onNext={(message:string, data:any) => onNext(message, data)}
-                  participants={participants}
-                />
-              );
         }
+
     }
 
     const onGroup = () => {
@@ -553,7 +556,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
         <View style={styles.container}>
             <StatusBar barStyle={'light-content'} />
             <View style={styles.header}>
-                <View style={[styles.horizontal, { paddingVertical: 5, marginHorizontal: 15 }]}>
+                <View style={[styles.horizontal, {  paddingVertical: 5, marginHorizontal: 15 }]}>
                     {
                         lodash.size(participants) > 1 && isGroup && (
                             <View style={{ position: 'absolute', right: 0, zIndex: 999 }}>
@@ -606,23 +609,29 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
                             />
                         </View>
                     ) : (
-                        <View style={{ marginBottom: 5, marginTop: 20 }}>
-                            <View style={{ flexDirection: 'row', alignContent: 'center', paddingHorizontal: 20, paddingTop: 10, marginBottom: 5 }}>
-                                <Text
-                                    color={text.default}
-                                    size={14}
-                                    style={{ fontFamily: Regular }}
-                                >
-                                    To:
-                                </Text>
-                                
-                                <View style={{ flex: 1, paddingLeft: 5, marginTop: Platform.OS === 'ios' ? 0 : -2 }}>
+                        <View style={{ borderBottomColor: "#EFEFEF", borderBottomWidth: 2}}>
+                            <View style={{  paddingHorizontal: 33, paddingVertical: 25,flexDirection: 'row', justifyContent: 'center'}}>
+                               <View style={{alignSelf: "center"}}>
+                                   <Text
+                                       color={text.default}
+                                       size={14}
+                                       style={{ fontFamily: Regular }}
+                                   >
+                                       To:
+                                   </Text>
+                               </View>
+
+
+                                <View onLayout={onLayoutInputTags} style={{ flexDirection: "row", justifyContent: "space-between", alignSelf: "center", flex: 1, paddingLeft: 5, marginTop: Platform.OS === 'ios' ? 0 : -2 }}>
+
                                     <InputTags
+                                        placeholder={"Enter Name"}
                                         ref={inputTagRef}
+                                        placeholderTextColor={'#C4C4C4'}
                                         containerStyle={tagStyles.container}
                                         initialTags={participants}
                                         initialText={searchValue}
-                                        inputStyle={tagStyles.input}
+                                        inputStyle={[tagStyles.input, {fontFamily: searchValue ? Bold : Regular }]}
                                         onChangeTags={onChangeTags}
                                         renderTag={renderTag}
                                         onChangeTextDebounce={setSearchValue}
@@ -630,35 +639,42 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
                                         onFocus={() => setIsFocused(true)}
                                         onBlur={() => setIsFocused(false)}
                                     />
-                                </View>
+
                                 {
                                     !searchValue && (
-                                        <TouchableOpacity onPress={() => inputTagRef?.current?.focus()}>
-                                            <View style={styles.plus}>
-                                                <PlusIcon
-                                                    color="white"
-                                                    size={RFValue(12)}
-                                                />
-                                            </View>
-                                        </TouchableOpacity>
+                                        <View style={{alignSelf: "center"}}>
+                                            <TouchableOpacity onPress={() => inputTagRef?.current?.focus()}>
+                                                <View style={styles.plus}>
+                                                    <PlusIcon
+                                                        color="white"
+                                                        size={fontValue(12)}
+                                                    />
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+
                                     )
                                 }
-                                <View style={{paddingLeft: 32}}>
-                                    <View style={{ borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5, backgroundColor: "#F9F9F9", flexDirection: "row",justifyContent: "center",alignSelf: "center"}}>
-                                        <EditIcon style={{paddingRight: 12}}/>
-                                        <Text size={15}>Add group name</Text>
-                                    </View>
+                                </View>
+                                <View style={{paddingLeft: 32, alignSelf: "center"}}>
+                                    <TouchableOpacity onPress={onGroup}>
+                                        <View style={{ borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5, backgroundColor: "#F9F9F9", flexDirection: "row"}}>
+                                            <EditIcon style={{paddingRight: 12}}/>
+                                            <Text size={15}>Add group name</Text>
+                                        </View>
+                                    </TouchableOpacity>
+
                                 </View>
 
 
                             </View>
                             {
-                                !lodash.size(participants) && (
+                                !lodash.size(participants) && isMobile&& (
                                     <View style={styles.newGroupContainer}>
                                         <View style={{ alignContent: 'center', flexDirection: 'row' }}>
                                             <NewGroupIcon
-                                                width={RFValue(22)}
-                                                height={RFValue(22)}
+                                                width={fontValue(22)}
+                                                height={fontValue(22)}
                                                 color={header.default}
                                             />
                                             <Text
@@ -675,7 +691,7 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
                                             <ArrowRightIcon
                                                 type='chevron-right'
                                                 color={'#606A80'}
-                                                size={RFValue(22)}
+                                                size={fontValue(22)}
                                             />
                                         </TouchableOpacity>
                                     </View>
@@ -685,7 +701,16 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
                     )
                 }
             </View>
-            {renderList()}
+                {renderList()}
+            <ChatView
+                channelId={selectedChannel?._id}
+                otherParticipants={lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id)}
+                isGroup={selectedChannel.isGroup}
+                groupName={groupName}
+                lastMessage={selectedChannel.lastMessage}
+                onNext={(message:string, data:any) => onNext(message, data)}
+                participants={participants}
+            />
             <AwesomeAlert
                 show={showAlert}
                 showProgress={false}
