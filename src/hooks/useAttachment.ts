@@ -41,7 +41,7 @@ const useAttachmentPicker = () => {
       let mimeType = result?.type || name?.split('.')?.[1];
       const file = {
         name,
-        mimeType,
+        mimeType: 'application/octet-stream',
         uri,
       };
 
@@ -63,7 +63,7 @@ const useAttachmentPicker = () => {
       let mimeType = result?.type || name?.split('.')?.[1];
       const file = {
         name,
-        mimeType,
+        mimeType: 'application/octet-stream',
         uri,
       };
 
