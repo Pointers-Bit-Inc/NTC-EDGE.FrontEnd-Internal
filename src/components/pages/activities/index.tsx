@@ -130,7 +130,7 @@ export default function ActivitiesPage(props: any) {
     const onClose = (item: IMeetings , leave = false) => {
         if (leave) {
             dispatch(removeActiveMeeting(item._id));
-            return leaveMeeting(item._id);
+            return leaveMeeting(item._id, 'busy');
         } else if (item.host._id === user._id) {
             return endMeeting(item._id);
         } else {

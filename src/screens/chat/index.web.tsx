@@ -268,7 +268,7 @@ function Chat(props:{newChat: boolean,user,navigation,onNewChat?:()=>any,onPress
     const onClose=(item:IMeetings,leave=false)=>{
         if(leave){
             dispatch(removeActiveMeeting(item._id));
-            return leaveMeeting(item._id);
+            return leaveMeeting(item._id, 'busy');
         } else if(item.host._id===props.user._id){
             return endMeeting(item._id);
         } else{
@@ -613,7 +613,7 @@ const ChatList=({navigation}:any)=>{
     const onClose=(item:IMeetings,leave=false)=>{
         if(leave){
             dispatch(removeActiveMeeting(item._id));
-            return leaveMeeting(item._id);
+            return leaveMeeting(item._id, 'busy');
         } else if(item.host._id===user._id){
             return endMeeting(item._id);
         } else{
