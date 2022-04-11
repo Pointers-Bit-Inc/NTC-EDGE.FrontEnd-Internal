@@ -203,7 +203,7 @@ export const InfoWeb=(props)=>{
             <TouchableOpacity onPress={()=>props.close()}>
                 <CloseIcon/>
             </TouchableOpacity>
-            <View>
+            <View style={{alignItems: "center"}}>
                 {
                     editName ? (
                         <InputField
