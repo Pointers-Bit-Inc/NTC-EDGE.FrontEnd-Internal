@@ -62,6 +62,8 @@ import EmojiIcon from "@assets/svg/EmojiIcon";
 import GifIcon from "@assets/svg/GifIcon";
 import SendIcon from "@assets/svg/SendIcon";
 import useAttachmentPicker from "../../hooks/useAttachment";
+import Modal from "react-native-modal";
+import SideMenu from "@screens/chat/sideMenu";
 
 const profPic=require('@assets/newMessageProfilePicture.png');
 const draftProfPic=require('@assets/draftNewMessageProfilePicture.png');
@@ -217,6 +219,11 @@ const styles=StyleSheet.create({
         justifyContent:'center',
         paddingLeft:5,
     },
+    sideMenuStyle:{
+        maxWidth:350,
+        width:width*0.432,
+        position:'absolute',margin:0,top:0,right:0,bottom:0
+    }
 });
 
 function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?:()=>any,onPress:()=>any,onBackdropPress:()=>void,onSubmit:(res:any)=>void}){
@@ -244,6 +251,7 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
     const [hasError,setHasError]=useState(false);
     const [showAlert,setShowAlert]=useState(false);
     const [selectedItem,setSelectedItem]:any=useState({});
+
     const onJoin=(item:IMeetings)=>{
         dispatch(setSelectedChannel(item.room));
         dispatch(setMeeting(item));
@@ -424,9 +432,9 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
                         }}>
 
                             <View
-                                style={[styles.headerNewChatIcon,{backgroundColor:props.newChat ? "#2863D6" : isHovered  ? "#2863D6" : "#F0F0F0"}]}>
+                                style={[styles.headerNewChatIcon,{backgroundColor:props.newChat ? "#2863D6" : isHovered ? "#2863D6" : "#F0F0F0"}]}>
                                 <NewChatIcon
-                                    color={!isMobile ? props.newChat ? "white" :  isHovered ? "white" : "#606A80" : "white"}
+                                    color={!isMobile ? props.newChat ? "white" : isHovered ? "white" : "#606A80" : "white"}
                                     width={fontValue(20)}
                                     height={fontValue(20)}
                                 />
@@ -451,13 +459,16 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
                             keyExtractor={(item:any)=>item._id}
                             renderItem={({item})=>(
                                 <MeetingNotif
-                                    style={{...Platform.select({
-                                            native: {
-                                                width: width
+                                    style={{
+                                        ...Platform.select({
+                                            native:{
+                                                width:width
                                             },
-                                            default: {
-                                                width: 466
-                                            }})}}
+                                            default:{
+                                                width:466
+                                            }
+                                        })
+                                    }}
                                     name={getChannelName({...item,otherParticipants:item?.participants})}
                                     time={item.createdAt}
                                     host={item.host}
@@ -512,7 +523,6 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
                             id:-2,
                             image:draftProfPic,
                             name:props.participants.filter(p=>p.firstName).map(p=>p.firstName).toString(),
-
                             hasRoomName:true,
                             lastMessage:{message:"Draft",hasSeen:true}
                         },...channelList]}
@@ -642,6 +652,9 @@ const ChatList=({navigation}:any)=>{
     const [rendered,setRendered]=useState(false);
     const [showLayout,setShowLayout]=useState(false);
     const [onNewChat,setOnNewChat]=useState(false);
+    const [isSideMenuVisible,setIsSideMenuVisible]=useState(false);
+    const toggleSideMenu=()=>setIsSideMenuVisible((isSideMenuVisible)=>!isSideMenuVisible);
+
     const {_id,otherParticipants,isGroup,hasRoomName,name,}=useSelector(
         (state:RootStateOrAny)=>{
             const {selectedChannel}=state.channel;
@@ -649,6 +662,7 @@ const ChatList=({navigation}:any)=>{
             return selectedChannel;
         }
     );
+
     const meetingList=useSelector((state:RootStateOrAny)=>{
         const {normalizeActiveMeetings}=state.meeting;
         let meetingList=lodash.keys(normalizeActiveMeetings).map(m=>normalizeActiveMeetings[m]);
@@ -981,6 +995,7 @@ const ChatList=({navigation}:any)=>{
                                                 </TouchableOpacity>
                                             </View>
                                             <TouchableOpacity onPress={()=>{
+                                                toggleSideMenu()
                                             }}>
                                                 <View style={{flexDirection:"row",alignItems:"center"}}>
                                                     <CreateChatIcon
@@ -994,6 +1009,7 @@ const ChatList=({navigation}:any)=>{
                                                             fontFamily:Bold
                                                         }}>{otherParticipants.length}</Text>
                                                     </View>
+
 
                                                 </View>
 
@@ -1038,14 +1054,16 @@ const ChatList=({navigation}:any)=>{
                                 keyExtractor={(item:any)=>item._id}
                                 renderItem={({item})=>(
                                     <MeetingNotif
-                                        style={{...Platform.select({
-                                                native: {
-                                                    width: width
+                                        style={{
+                                            ...Platform.select({
+                                                native:{
+                                                    width:width
                                                 },
-                                                default: {
-                                                    width: "100%"
+                                                default:{
+                                                    width:"100%"
                                                 }
-                                        })}}
+                                            })
+                                        }}
                                         name={getChannelName({...item,otherParticipants:item?.participants})}
                                         host={item.host}
                                         time={item.createdAt}
@@ -1072,7 +1090,7 @@ const ChatList=({navigation}:any)=>{
                         ref={inputRef}
                         placeholder={'Type a message'}
                         placeholderTextColor={'#C4C4C4'}
-                        containerStyle={{backgroundColor:"white", }}
+                        containerStyle={{backgroundColor:"white",}}
                         value={inputText}
                         onChangeText={setInputText}
                         onSubmitEditing={()=>inputText&&onSendMessage()}
@@ -1118,9 +1136,24 @@ const ChatList=({navigation}:any)=>{
                     </View>
                 </View>
                 }
-
+                <Modal
+                    backdropOpacity={0}
+                    isVisible={isSideMenuVisible}
+                    onBackdropPress={toggleSideMenu} // Android back press
+                    onSwipeComplete={toggleSideMenu} // Swipe to discard
+                    animationIn="slideInRight" // Has others, we want slide in from the left
+                    animationOut="slideOutRight" // When discarding the drawer
+                    swipeDirection="right" // Discard the drawer with swipe to left
+                    useNativeDriver // Faster animation
+                    hideModalContentWhileAnimating // Better performance, try with/without
+                    propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
+                    style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
+                >
+                    <SideMenu close={toggleSideMenu}/>
+                </Modal>
 
             </View>
+
         </View>
 
 
