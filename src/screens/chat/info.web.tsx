@@ -261,7 +261,7 @@ export const InfoWeb=(props)=>{
             </View>
             <View>
                 {
-                    isGroup && (
+                    (isGroup || lodash.size(participants)) && (
                         <Text
                             size={14}
                         >

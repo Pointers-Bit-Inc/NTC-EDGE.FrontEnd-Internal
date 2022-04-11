@@ -655,7 +655,7 @@ const ChatList=({navigation}:any)=>{
     const [isSideMenuVisible,setIsSideMenuVisible]=useState(false);
     const toggleSideMenu=()=>setIsSideMenuVisible((isSideMenuVisible)=>!isSideMenuVisible);
 
-    const {_id,otherParticipants,isGroup,hasRoomName,name,}=useSelector(
+    const {_id,otherParticipants , participants, isGroup,hasRoomName,name,}=useSelector(
         (state:RootStateOrAny)=>{
             const {selectedChannel}=state.channel;
             selectedChannel.otherParticipants=lodash.reject(selectedChannel.participants,p=>p._id===user._id);
@@ -770,7 +770,7 @@ const ChatList=({navigation}:any)=>{
         pickImage,
         pickDocument,
     }=useAttachmentPicker();
-    const [participants,setParticipants]:any=useState([]);
+
     const _sendFile=(channelId:string,attachment:any,groupName='',participants:any=[])=>{
         dispatch(addPendingMessage({
             attachment,
@@ -790,6 +790,7 @@ const ChatList=({navigation}:any)=>{
             );
         }
     },[selectedFile]);
+    const [participant,setParticipant]:any=useState([]);
     return (
         <View style={{flexDirection:"row",flex:1}}>
             <View style={[styles.chatContainer,{
@@ -799,7 +800,7 @@ const ChatList=({navigation}:any)=>{
                 flexShrink:0
             }]}>
                 <Chat
-                    participants={participants}
+                    participants={participant}
                     newChat={onNewChat}
                     user={user}
                     navigation={navigation}
@@ -811,7 +812,7 @@ const ChatList=({navigation}:any)=>{
 
                     }}
                     onSubmit={(res:any)=>{
-                        setParticipants([]);
+                        setParticipant([]);
                         setOnNewChat(false);
                         setShowLayout(true)
                     }}/>
@@ -820,8 +821,8 @@ const ChatList=({navigation}:any)=>{
                 {onNewChat ?
 
                  <NewChat
-                     participants={participants}
-                     setParticipants={(event)=>setParticipants(event)}
+                     participants={participant}
+                     setParticipants={(event)=>setParticipant(event)}
                      onClose={()=>{
                          setOnNewChat(false)
                      }}
@@ -835,7 +836,7 @@ const ChatList=({navigation}:any)=>{
 
                          setOnNewChat(false);
                          setShowLayout(true);
-                         setParticipants([])
+                         setParticipant([])
                          //setTimeout(() => props.navigation.navigate('ViewChat', res), 300);
                      }}
                  />
@@ -1008,7 +1009,7 @@ const ChatList=({navigation}:any)=>{
                                                             color: button.info,
                                                             fontSize:12,
                                                             fontFamily:Bold
-                                                        }}>{otherParticipants.length}</Text>
+                                                        }}>{participants.length}</Text>
                                                     </View>
 
 
@@ -1150,7 +1151,7 @@ const ChatList=({navigation}:any)=>{
                     propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
                     style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
                 >
-                    <InfoWeb otherParticipants={otherParticipants} close={toggleSideMenu}/>
+                    <InfoWeb otherParticipants={participants} close={toggleSideMenu}/>
                 </Modal>
 
             </View>
