@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
+import { openSettings, PERMISSIONS, requestMultiple } from 'react-native-permissions'
 
 const useAttachmentPicker = () => {
   const [selectedFile, setSelectedFile] = useState<DocumentPicker.DocumentResult | ImagePicker.ImagePickerResult | object>({});
@@ -50,24 +51,33 @@ const useAttachmentPicker = () => {
   };
 
   const takePicture = async () => {
-    let result = await ImagePicker.launchCameraAsync({
-      presentationStyle: 0,
-    });
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      let uri = result?.uri;
-      let split = uri?.split('/');
-      let name = split?.[split?.length - 1];
-      let mimeType = result?.type || name?.split('.')?.[1];
-      const file = {
-        name,
-        mimeType: 'application/octet-stream',
-        uri,
-      };
-
-      setSelectedFile(file)
+    try {
+      requestMultiple([PERMISSIONS.IOS.CAMERA, PERMISSIONS.ANDROID.CAMERA])
+      .then(async (status) => {
+        if (status[PERMISSIONS.IOS.CAMERA] === 'granted' || status[PERMISSIONS.ANDROID.CAMERA]) {
+          let result = await ImagePicker.launchCameraAsync({
+            presentationStyle: 0,
+          });
+      
+          if (!result.cancelled) {
+            let uri = result?.uri;
+            let split = uri?.split('/');
+            let name = split?.[split?.length - 1];
+            let mimeType = result?.type || name?.split('.')?.[1];
+            const file = {
+              name,
+              mimeType: 'application/octet-stream',
+              uri,
+            };
+      
+            setSelectedFile(file)
+          }
+        } else {
+          openSettings().catch(() => console.warn('cannot open settings'));
+        }
+      })
+    } catch (err) {
+      console.warn(err);
     }
   };
 
