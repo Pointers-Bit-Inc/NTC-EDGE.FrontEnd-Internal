@@ -963,8 +963,8 @@ const ChatList=({navigation}:any)=>{
                                                 }}
                                                 underlineStyle={{
                                                     backgroundColor:"#2863D6",
-                                                    paddingHorizontal:25,
-                                                    height:7
+                                                    paddingHorizontal:20,
+                                                    height:4
                                                 }}
                                                 tabs={[{label:"Chat"},{label:'Files'}]}
                                                 {...params}

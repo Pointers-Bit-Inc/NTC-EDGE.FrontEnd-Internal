@@ -1,5 +1,5 @@
 import React,{useRef,useState} from "react";
-import {Alert,Dimensions,FlatList,SafeAreaView,StyleSheet,TouchableOpacity,View} from "react-native";
+import {Alert,Dimensions,FlatList,SafeAreaView,ScrollView,StyleSheet,TouchableOpacity,View} from "react-native";
 import CloseIcon from "@assets/svg/close";
 import Text from '@components/atoms/text'
 import {Bold,Regular} from "@styles/font";
@@ -19,13 +19,14 @@ import lodash from 'lodash';
 import {ContactItem} from "@molecules/list-item";
 import {ToggleIcon} from "@atoms/icon";
 import {RFValue} from "react-native-responsive-fontsize";
+import AddParticipants from "@pages/chat-modal/add-participants";
 
-const { height } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 const styles=StyleSheet.create({
     safeAreaView:{
         flex:0.9,
-        
+
         backgroundColor:"#fff"
     },
 
@@ -59,7 +60,6 @@ const styles=StyleSheet.create({
         backgroundColor: 'white',
     },
 });
-
 export const InfoWeb=(props)=>{
     const dispatch=useDispatch();
     const {
@@ -165,6 +165,24 @@ export const InfoWeb=(props)=>{
         });
         setShowAlert(true);
     }
+    
+    const addMembers = (addedMembers:any) => {
+        setShowAlert(false);
+        setLoading(true);
+        api.post(`/rooms/${_id}/add-members`, {
+            participants: addedMembers
+        })
+        .then((res) => {
+            setLoading(false);
+            if(res.data) {
+                dispatch(updateChannel(res.data));
+            }
+        })
+        .catch(e => {
+            setLoading(false);
+            Alert.alert('Alert', e?.message || 'Something went wrong.')
+        });
+    }
     const renderParticipants = () => {
         return participants.map((item:IParticipants) => (
             <ContactItem
@@ -197,131 +215,160 @@ export const InfoWeb=(props)=>{
             />
         ))
     }
+    const [onAddParticipant, setOnAddParticipant] = useState(false)
     return <SafeAreaView style={styles.safeAreaView}>
+        <ScrollView>
+             <View style={styles.header}>
+                 <TouchableOpacity onPress={()=>props.close()}>
+                     <CloseIcon/>
+                 </TouchableOpacity>
+                 <View style={{alignItems: "center"}}>
+                     {
+                         editName ? (
+                             <InputField
+                                 ref={groupNameRef}
+                                 placeholder={isGroup ? 'Group name' : 'Chat Name'}
+                                 containerStyle={styles.groupName}
+                                 placeholderTextColor={'#C4C4C4'}
+                                 inputStyle={[styles.inputText,{backgroundColor:'white'}]}
+                                 outlineStyle={[styles.outlineText,{backgroundColor:'white'}]}
+                                 value={groupName}
+                                 onChangeText={setGroupName}
+                                 returnKeyType={'done'}
+                                 clearable={false}
+                                 onBlur={()=>setEditName(false)}
+                             />
+                         ) : (
+                             <View style={{width: "85%"}}>
+                                 <Text
+                                     numberOfLines={1}
+                                     style={styles.headerText}
+                                     size={16}
+                                 >
+                                     {renderChannelName()}
+                                 </Text>
+                             </View>
 
-        <View style={styles.header}>
-            <TouchableOpacity onPress={()=>props.close()}>
-                <CloseIcon/>
-            </TouchableOpacity>
-            <View style={{alignItems: "center"}}>
-                {
-                    editName ? (
-                        <InputField
-                            ref={groupNameRef}
-                            placeholder={isGroup ? 'Group name' : 'Chat Name'}
-                            containerStyle={styles.groupName}
-                            placeholderTextColor={'#C4C4C4'}
-                            inputStyle={[styles.inputText,{backgroundColor:'white'}]}
-                            outlineStyle={[styles.outlineText,{backgroundColor:'white'}]}
-                            value={groupName}
-                            onChangeText={setGroupName}
-                            returnKeyType={'done'}
-                            clearable={false}
-                            onBlur={()=>setEditName(false)}
-                        />
-                    ) : (
-                        <Text
-                            style={styles.headerText}
-                            size={16}
-                        >
-                            {renderChannelName()}
-                        </Text>
-                    )
-                }
-                {
-                    isGroup&&(
-                        <Text
-                            style={styles.subtitle}
-                            color={'#606A80'}
-                            size={10}
-                        >
-                            {`${lodash.size(participants)} participants`}
-                        </Text>
-                    )
-                }
-            </View>
+                         )
+                     }
+                     {
+                         isGroup&&(
+                             <Text
+                                 style={styles.subtitle}
+                                 color={'#606A80'}
+                                 size={10}
+                             >
+                                 {`${lodash.size(participants)} participants`}
+                             </Text>
+                         )
+                     }
+                 </View>
 
-            <View/>
-        </View>
-        <View style={{gap:25,paddingVertical:20,paddingHorizontal:20}}>
-            <View style={{flexDirection:"row",alignItems:"center"}}>
-                <CreateChatIcon
-                    color={"#212121"}
-                    height={fontValue(21)}
-                    width={fontValue(22)}
-                /><View style={{paddingLeft:10}}>
-                <Text style={{fontFamily:Regular,fontSize:15,fontWeight:'400',lineHeight:22.5}}>
-                    Add Participant
-                </Text>
-            </View>
+                 <View/>
+             </View>
+        {!onAddParticipant &&
+             <View style={{gap:25,paddingVertical:20,paddingHorizontal:20}}>
+                 <TouchableOpacity onPress={() => setOnAddParticipant(true)}>
+                 <View style={{flexDirection:"row",alignItems:"center"}}>
 
-            </View>
-            <View style={styles.muteChatContainer}>
-                <Text size={14}>
-                    Mute Chat
-                </Text>
-                <TouchableOpacity onPress={() => muteChatRoom(!muteChat)}>
-                    <ToggleIcon
-                        style={muteChat ? styles.toggleActive : styles.toggleDefault}
-                        size={(32)}
-                    />
-                </TouchableOpacity>
-            </View>
-            <View style={{paddingBottom:20,flexDirection:"row",alignItems:"center"}}>
-                <OptionIcon
-                    color={"#212121"}
-                    height={fontValue(21)}
-                    width={fontValue(22)}
-                /><View style={{paddingLeft:10}}>
-                <Text style={styles.text}>
-                    Meeting Options
-                </Text>
-            </View>
-            </View>
-            <View>
-                {
-                    (isGroup || lodash.size(participants)) && (
+                         <CreateChatIcon
+                             color={"#212121"}
+                             height={fontValue(21)}
+                             width={fontValue(22)}
+                         /><View style={{paddingLeft:10}}>
+                         <Text style={{fontFamily:Regular,fontSize:15,fontWeight:'400',lineHeight:22.5}}>
+                             Add Participant
+                         </Text>
+                     </View>
+                 </View>
+                 </TouchableOpacity>
+                 <View style={styles.muteChatContainer}>
+                     <Text size={14}>
+                         Mute Chat
+                     </Text>
+                     <TouchableOpacity onPress={() => muteChatRoom(!muteChat)}>
+                         <ToggleIcon
+                             style={muteChat ? styles.toggleActive : styles.toggleDefault}
+                             size={(32)}
+                         />
+                     </TouchableOpacity>
+                 </View>
+                 <View style={{paddingBottom:20,flexDirection:"row",alignItems:"center"}}>
+                     <OptionIcon
+                         color={"#212121"}
+                         height={fontValue(21)}
+                         width={fontValue(22)}
+                     /><View style={{paddingLeft:10}}>
+                     <Text style={styles.text}>
+                         Meeting Options
+                     </Text>
+                 </View>
+                 </View>
+                 <View>
+                     {
+                         (isGroup || lodash.size(participants)) && (
+                             <Text
+                                 size={14}
+                             >
+                                 {`Participants (${lodash.size(participants)})`}
+                             </Text>
+                         )
+                     }
+                 </View>
+                 <View>
+
+                         {renderParticipants()}
+
+
+                 </View>
+
+
+             </View>
+            }
+
+
+        
+
+        { onAddParticipant &&  <AddParticipants
+            members={participants}
+            onClose={() => participantModal.current?.close()}
+            onSubmit={(members:any) => {
+                participantModal.current?.close();
+                setTimeout(() => addMembers(members), 300);
+            }}
+        /> }
+
+
+
+        </ScrollView>
+        <View>
+            <View style={{borderTopWidth: 1, borderTopColor: "#E5E5E5", alignItems: "center", padding: 20}}>
+
+                <TouchableOpacity onPress={onClearChat}>
+                    <View style={{ marginVertical: 10 }}>
                         <Text
                             size={14}
+                            color={'#CF0327'}
                         >
-                            {`Participants (${lodash.size(participants)})`}
+                            Clear Chat Content
                         </Text>
+                    </View>
+                </TouchableOpacity>
+                {
+                    isGroup && (
+                        <TouchableOpacity onPress={onDeleteChat}>
+                            <View style={{ marginVertical: 10 }}>
+                                <Text
+                                    size={14}
+                                    color={'#CF0327'}
+                                >
+                                    Leave and Delete
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
                     )
                 }
             </View>
-            <View>
-
-                {renderParticipants()}
-            </View>
-
-
-        </View>
-        <View style={{borderTopWidth: 1, borderTopColor: "#E5E5E5", alignItems: "center", position: 'absolute', left: 0, right: 0, bottom: 0, padding: 20}}>
-
-            <TouchableOpacity onPress={onClearChat}>
-                <View style={{ marginVertical: 10 }}>
-                    <Text
-                        size={14}
-                        color={'#CF0327'}
-                    >
-                        Clear Chat Content
-                    </Text>
-                </View>
-            </TouchableOpacity>
-            {
-                isGroup && (
-                    <TouchableOpacity onPress={onDeleteChat}>
-                        <View style={{ marginVertical: 10 }}>
-                            <Text
-                                size={14}
-                                color={'#CF0327'}
-                            >
-                                Leave and Delete
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                )
-            }
         </View>
     </SafeAreaView>
 };
