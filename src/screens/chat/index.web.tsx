@@ -821,6 +821,7 @@ const ChatList=({navigation}:any)=>{
                     }}/>
             </View>
             <View onLayout={onChatLayout} style={{backgroundColor:"#F8F8F8",flex:1,}}>
+
                 {onNewChat ?
 
                  <NewChat

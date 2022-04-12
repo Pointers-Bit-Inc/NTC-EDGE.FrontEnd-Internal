@@ -8,7 +8,7 @@ import {
     RefreshControl,
     StatusBar,
     StyleSheet,
-    TouchableOpacity,
+    TouchableOpacity,TouchableWithoutFeedback,
     View
 } from 'react-native'
 import lodash from 'lodash';
@@ -533,8 +533,19 @@ const NewChat=({
         setContacts([]);
     };
     return (
+
         <View style={styles.container}>
+            {selected && <TouchableWithoutFeedback onPress={()=> setSelected((selected)=> !selected )}>
+                <View   style={{ zIndex: 1, width : "100%" ,
+                    height : "100%" ,
+                    alignItems : "center" ,
+                    justifyContent : "flex-end" ,
+                    position : "absolute" ,
+                    backgroundColor : "rgba(255, 255, 255, 0)"}}/>
+            </TouchableWithoutFeedback>}
+
             <StatusBar barStyle={'light-content'}/>
+
             <View onLayout={onLayoutFormTags} style={styles.header}>
                 {
                     (
