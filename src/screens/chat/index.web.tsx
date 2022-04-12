@@ -72,6 +72,7 @@ import hairlineWidth=StyleSheet.hairlineWidth;
 const {width,height}=Dimensions.get('window');
 
 const styles=StyleSheet.create({
+
     chatContainer:{
         zIndex:1,
         shadowColor:"rgba(0,0,0,0.1)",
