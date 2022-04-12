@@ -21,11 +21,11 @@ import { primaryColor, header } from '@styles/color';
 import { Bold, Regular, Regular500 } from '@styles/font';
 import useSignalr from 'src/hooks/useSignalr';
 import { InputTags } from '@components/molecules/form-fields';
-import { RFValue } from 'react-native-responsive-fontsize';
 import { useDispatch } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import IParticipants from 'src/interfaces/IParticipants';
+import {fontValue as RFValue} from "@pages/activities/fontValue";
 
 const styles = StyleSheet.create({
   container: {

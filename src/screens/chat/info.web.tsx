@@ -217,55 +217,57 @@ export const InfoWeb=(props)=>{
     }
     const [onAddParticipant, setOnAddParticipant] = useState(false)
     return <SafeAreaView style={styles.safeAreaView}>
+
+        {!onAddParticipant && <View style={styles.header}>
+            <TouchableOpacity onPress={()=>props.close()}>
+                <CloseIcon/>
+            </TouchableOpacity>
+            <View style={{alignItems: "center"}}>
+                {
+                    editName ? (
+                        <InputField
+                            ref={groupNameRef}
+                            placeholder={isGroup ? 'Group name' : 'Chat Name'}
+                            containerStyle={styles.groupName}
+                            placeholderTextColor={'#C4C4C4'}
+                            inputStyle={[styles.inputText,{backgroundColor:'white'}]}
+                            outlineStyle={[styles.outlineText,{backgroundColor:'white'}]}
+                            value={groupName}
+                            onChangeText={setGroupName}
+                            returnKeyType={'done'}
+                            clearable={false}
+                            onBlur={()=>setEditName(false)}
+                        />
+                    ) : (
+                        <View style={{width: "90%"}}>
+                            <Text
+                                numberOfLines={1}
+                                style={styles.headerText}
+                                size={16}
+                            >
+                                {renderChannelName()}
+                            </Text>
+                        </View>
+
+                    )
+                }
+                {
+                    isGroup&&(
+                        <Text
+                            style={styles.subtitle}
+                            color={'#606A80'}
+                            size={10}
+                        >
+                            {`${lodash.size(participants)} participants`}
+                        </Text>
+                    )
+                }
+            </View>
+
+            <View/>
+        </View> }
         <ScrollView>
-             <View style={styles.header}>
-                 <TouchableOpacity onPress={()=>props.close()}>
-                     <CloseIcon/>
-                 </TouchableOpacity>
-                 <View style={{alignItems: "center"}}>
-                     {
-                         editName ? (
-                             <InputField
-                                 ref={groupNameRef}
-                                 placeholder={isGroup ? 'Group name' : 'Chat Name'}
-                                 containerStyle={styles.groupName}
-                                 placeholderTextColor={'#C4C4C4'}
-                                 inputStyle={[styles.inputText,{backgroundColor:'white'}]}
-                                 outlineStyle={[styles.outlineText,{backgroundColor:'white'}]}
-                                 value={groupName}
-                                 onChangeText={setGroupName}
-                                 returnKeyType={'done'}
-                                 clearable={false}
-                                 onBlur={()=>setEditName(false)}
-                             />
-                         ) : (
-                             <View style={{width: "85%"}}>
-                                 <Text
-                                     numberOfLines={1}
-                                     style={styles.headerText}
-                                     size={16}
-                                 >
-                                     {renderChannelName()}
-                                 </Text>
-                             </View>
 
-                         )
-                     }
-                     {
-                         isGroup&&(
-                             <Text
-                                 style={styles.subtitle}
-                                 color={'#606A80'}
-                                 size={10}
-                             >
-                                 {`${lodash.size(participants)} participants`}
-                             </Text>
-                         )
-                     }
-                 </View>
-
-                 <View/>
-             </View>
         {!onAddParticipant &&
              <View style={{gap:25,paddingVertical:20,paddingHorizontal:20}}>
                  <TouchableOpacity onPress={() => setOnAddParticipant(true)}>
@@ -331,9 +333,9 @@ export const InfoWeb=(props)=>{
 
         { onAddParticipant &&  <AddParticipants
             members={participants}
-            onClose={() => participantModal.current?.close()}
+            onClose={() =>  setOnAddParticipant(false)}
             onSubmit={(members:any) => {
-                participantModal.current?.close();
+                setOnAddParticipant(false)
                 setTimeout(() => addMembers(members), 300);
             }}
         /> }
