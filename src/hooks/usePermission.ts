@@ -1,6 +1,6 @@
 import { requestMultiple, PERMISSIONS, openSettings } from 'react-native-permissions'
 
-export const requestCameraAndAudioPermission = async () => {
+export const requestCameraAndAudioPermission = async (callback = (err:any, success:any) => {}) => {
   try {
     await requestMultiple([
       PERMISSIONS.IOS.CAMERA,
@@ -19,12 +19,14 @@ export const requestCameraAndAudioPermission = async () => {
         )
       ) {
         console.log('You can now use mic & camera');
+        return callback(null, { success: true });
       } else {
         console.log('Permissions denied');
-        openSettings().catch(() => console.warn('cannot open settings'));
+        return callback({ error: true }, null);
       }
     });
   } catch (err) {
     console.warn(err);
+    return callback({ error: true }, null);
   }
 };

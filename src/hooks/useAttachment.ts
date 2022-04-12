@@ -2,6 +2,7 @@ import { useState } from 'react';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { openSettings, PERMISSIONS, requestMultiple } from 'react-native-permissions'
+import { Alert } from 'react-native';
 
 const useAttachmentPicker = () => {
   const [selectedFile, setSelectedFile] = useState<DocumentPicker.DocumentResult | ImagePicker.ImagePickerResult | object>({});
@@ -73,7 +74,10 @@ const useAttachmentPicker = () => {
             setSelectedFile(file)
           }
         } else {
-          openSettings().catch(() => console.warn('cannot open settings'));
+          Alert.alert(
+            "Unable to access camera",
+            "Please allow camera access from device settings.",
+          );
         }
       })
     } catch (err) {
