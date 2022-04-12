@@ -68,6 +68,7 @@ import {InfoWeb} from "@screens/chat/info.web";
 const profPic=require('@assets/newMessageProfilePicture.png');
 const draftProfPic=require('@assets/draftNewMessageProfilePicture.png');
 import hairlineWidth=StyleSheet.hairlineWidth;
+import {MenuProvider} from "react-native-popup-menu";
 
 const {width,height}=Dimensions.get('window');
 
@@ -1155,8 +1156,10 @@ const ChatList=({navigation}:any)=>{
                 hideModalContentWhileAnimating // Better performance, try with/without
                 propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
                 style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
-            >
+            >       <MenuProvider style={{flex: 1, justifyContent: "flex-end"}}>
                 <InfoWeb otherParticipants={participants} close={toggleSideMenu}/>
+            </MenuProvider>
+
             </Modal>
         </View>
 

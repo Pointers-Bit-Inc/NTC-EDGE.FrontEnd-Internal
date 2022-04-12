@@ -269,13 +269,13 @@ export const InfoWeb=(props)=>{
                                         <TouchableOpacity onPress={() => {}}>
                                             <DotHorizontalIcon/>
                                         </TouchableOpacity>
-                                   :
-                                     <Text
-                                         color='#606A80'
-                                         size={12}
-                                     >
-                                         Admin
-                                     </Text>
+                                                  :
+                                        <Text
+                                            color='#606A80'
+                                            size={12}
+                                        >
+                                            Admin
+                                        </Text>
                                     }
 
                                 </View>
@@ -427,7 +427,7 @@ export const InfoWeb=(props)=>{
                     )
                 }
             </View>}
-        <MenuProvider>
+
             <ScrollView>
 
                 {!onAddParticipant&&
@@ -504,7 +504,6 @@ export const InfoWeb=(props)=>{
 
 
             </ScrollView>
-        </MenuProvider>
 
             <View>
                 <View style={{borderTopWidth:1,borderTopColor:"#E5E5E5",alignItems:"center",padding:20}}>
