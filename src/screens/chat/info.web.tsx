@@ -2,7 +2,7 @@ import React,{useRef,useState} from "react";
 import {Alert,Dimensions,FlatList,SafeAreaView,ScrollView,StyleSheet,TouchableOpacity,View} from "react-native";
 import CloseIcon from "@assets/svg/close";
 import Text from '@components/atoms/text'
-import {Bold,Regular} from "@styles/font";
+import {Bold,Regular,Regular500} from "@styles/font";
 import CreateChatIcon from "@assets/svg/createChat";
 import {fontValue} from "@pages/activities/fontValue";
 import OptionIcon from "@assets/svg/optionIcon";
@@ -17,9 +17,10 @@ import IParticipants from "../../interfaces/IParticipants";
 import {BottomModalRef} from "@atoms/modal/bottom-modal";
 import lodash from 'lodash';
 import {ContactItem} from "@molecules/list-item";
-import {ToggleIcon} from "@atoms/icon";
+import {NewPenIcon,ToggleIcon} from "@atoms/icon";
 import {RFValue} from "react-native-responsive-fontsize";
 import AddParticipants from "@pages/chat-modal/add-participants";
+import {text} from "@styles/color";
 
 const { height, width } = Dimensions.get('window');
 
@@ -35,6 +36,8 @@ const styles=StyleSheet.create({
         flex:1
     },
     header:{
+
+        gap: 10,
         justifyContent:"space-between",
         flexDirection:"row",
         alignItems: "center",
@@ -44,6 +47,7 @@ const styles=StyleSheet.create({
         paddingHorizontal:20
     },
     headerText:{
+        width: "90%",
         fontSize:14,
         color:"#1F2022",
         textAlign:"center",
@@ -58,6 +62,14 @@ const styles=StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: 'white',
+    },
+    groupName: {
+        height: undefined,
+        borderWidth: 1,
+        borderColor: 'white',
+        marginBottom: -25,
+        marginTop: -5,
+        paddingHorizontal: 0
     },
 });
 export const InfoWeb=(props)=>{
@@ -183,6 +195,27 @@ export const InfoWeb=(props)=>{
             Alert.alert('Alert', e?.message || 'Something went wrong.')
         });
     }
+    const editRoomName = () => {
+        if (!groupName) {
+            setEditName(n => !n);
+            return;
+        }
+
+        setShowAlert(false);
+        setLoading(true);
+        api.post(`/rooms/${_id}/edit-name?roomname=${groupName}`)
+        .then((res) => {
+            setLoading(false);
+            setEditName(n => !n);
+            if(res.data) {
+                dispatch(updateChannel(res.data));
+            }
+        })
+        .catch(e => {
+            setLoading(false);
+            Alert.alert('Alert', e?.message || 'Something went wrong.')
+        });
+    }
     const renderParticipants = () => {
         return participants.map((item:IParticipants) => (
             <ContactItem
@@ -219,10 +252,13 @@ export const InfoWeb=(props)=>{
     return <SafeAreaView style={styles.safeAreaView}>
 
         {!onAddParticipant && <View style={styles.header}>
-            <TouchableOpacity onPress={()=>props.close()}>
-                <CloseIcon/>
-            </TouchableOpacity>
-            <View style={{alignItems: "center"}}>
+            <View>
+                <TouchableOpacity onPress={()=>props.close()}>
+                    <CloseIcon/>
+                </TouchableOpacity>
+            </View>
+
+            <View style={{  alignContent: 'center', flex: 1, paddingHorizontal: 10}}>
                 {
                     editName ? (
                         <InputField
@@ -239,7 +275,7 @@ export const InfoWeb=(props)=>{
                             onBlur={()=>setEditName(false)}
                         />
                     ) : (
-                        <View style={{width: "90%"}}>
+                        <View style={{alignItems: "center"}} >
                             <Text
                                 numberOfLines={1}
                                 style={styles.headerText}
@@ -253,18 +289,44 @@ export const InfoWeb=(props)=>{
                 }
                 {
                     isGroup&&(
-                        <Text
-                            style={styles.subtitle}
-                            color={'#606A80'}
-                            size={10}
-                        >
-                            {`${lodash.size(participants)} participants`}
-                        </Text>
+                        <View style={{alignItems: "center"}}>
+                            <Text
+                                style={styles.subtitle}
+                                color={'#606A80'}
+                                size={10}
+                            >
+                                {`${lodash.size(participants)} participants`}
+                            </Text>
+                        </View>
+
                     )
                 }
             </View>
+            {
+                editName ? (
+                    <View>
+                        <TouchableOpacity onPress={editRoomName}>
+                            <Text
+                                color={text.info}
+                                size={14}
+                                style={{ fontFamily: Regular500 }}
+                            >
+                                Save
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
 
-            <View/>
+                ) : (
+                    <View>
+                        <TouchableOpacity onPress={() => setEditName(n => !n)}>
+                            <View style={{ paddingHorizontal: 5, paddingTop: 5 }}>
+                                <NewPenIcon color={'#2863D6'} />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                )
+            }
         </View> }
         <ScrollView>
 

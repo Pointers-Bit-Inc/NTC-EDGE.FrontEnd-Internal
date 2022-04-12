@@ -571,7 +571,7 @@ const NewChat=({
                                     </View>
                                     {
                                         lodash.size(participants)>1&&isGroup&&(
-                                            <View style={{alignSelf:"center",paddingRight:33}}>
+                                            <View style={{alignSelf:"center"}}>
                                                 <TouchableOpacity
                                                     disabled={!lodash.size(participants)||nextLoading}
                                                     onPress={()=>onNext("")}
@@ -673,20 +673,24 @@ const NewChat=({
                                             )
                                         }
                                     </View>
-                                    {!isGroup && <View style={{paddingLeft:32,alignSelf:"center"}}>
+                                    {!isGroup && <Hoverable>
+                                        { isHovered => (
+                                            <View style={{paddingLeft:32,alignSelf:"center"}}>
                                         <TouchableOpacity onPress={onGroup}>
                                             <View style={{
                                                 borderRadius:20,
                                                 paddingHorizontal:12,
                                                 paddingVertical:5,
-                                                backgroundColor:"#F9F9F9",
+                                                backgroundColor:isHovered ? "#2863D6" : "#F9F9F9",
                                                 flexDirection:"row"
                                             }}>
-                                                <EditIcon style={{paddingRight:12}}/>
-                                                <Text size={15}>Add group name</Text>
+
+                                                <EditIcon color={isHovered ? "#fff" : "#212121"} style={{paddingRight:12}}/>
+                                                <Text color={isHovered ?  "#fff" : "#212121" } size={15}>Add group name</Text>
                                             </View>
                                         </TouchableOpacity>
-                                    </View>}
+                                    </View>) }
+                                    </Hoverable>}
 
 
                                 </View>
