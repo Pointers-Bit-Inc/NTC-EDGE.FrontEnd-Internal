@@ -1,7 +1,7 @@
 import * as React from "react";
 import Svg, { SvgProps, Path } from "react-native-svg";
 
-const CreateChatIcon = (props: SvgProps) => (
+const AddParticipantOutlineIcon = (props: SvgProps) => (
     <Svg
         width={21}
         height={22}
@@ -17,4 +17,4 @@ const CreateChatIcon = (props: SvgProps) => (
     </Svg>
 );
 
-export default CreateChatIcon;
+export default AddParticipantOutlineIcon;

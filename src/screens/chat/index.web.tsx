@@ -55,7 +55,7 @@ import NoConversationIcon from "@assets/svg/noConversations";
 import {isMobile} from "@pages/activities/isMobile";
 import {ViewPaged} from 'react-scroll-paged-view'
 import TabBar from 'react-underline-tabbar'
-import CreateChatIcon from "@assets/svg/createChat";
+import CreateChatIcon from "@assets/svg/addParticipantOutline";
 import {TabView} from "react-native-tab-view";
 import AttachIcon from "@assets/svg/AttachIcon";
 import EmojiIcon from "@assets/svg/EmojiIcon";
@@ -68,10 +68,12 @@ import {InfoWeb} from "@screens/chat/info.web";
 const profPic=require('@assets/newMessageProfilePicture.png');
 const draftProfPic=require('@assets/draftNewMessageProfilePicture.png');
 import hairlineWidth=StyleSheet.hairlineWidth;
+import {MenuProvider} from "react-native-popup-menu";
 
 const {width,height}=Dimensions.get('window');
 
 const styles=StyleSheet.create({
+
     chatContainer:{
         zIndex:1,
         shadowColor:"rgba(0,0,0,0.1)",
@@ -1001,13 +1003,13 @@ const ChatList=({navigation}:any)=>{
                                             }}>
                                                 <View style={{flexDirection:"row",alignItems:"center"}}>
                                                     <CreateChatIcon
-                                                        color={button.info}
+                                                        color={"#565961"}
                                                         height={fontValue(21)}
                                                         width={fontValue(22)}
                                                     />
                                                     <View style={{paddingLeft:2 }}>
                                                         <Text style={{
-                                                            color: button.info,
+                                                            color: "#565961",
                                                             fontSize:12,
                                                             fontFamily:Bold
                                                         }}>{participants.length}</Text>
@@ -1154,8 +1156,10 @@ const ChatList=({navigation}:any)=>{
                 hideModalContentWhileAnimating // Better performance, try with/without
                 propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
                 style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
-            >
+            >       <MenuProvider style={{flex: 1, justifyContent: "flex-end"}}>
                 <InfoWeb otherParticipants={participants} close={toggleSideMenu}/>
+            </MenuProvider>
+
             </Modal>
         </View>
 
