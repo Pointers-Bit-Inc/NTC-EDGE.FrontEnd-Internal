@@ -1,19 +1,25 @@
 import React,{useRef,useState} from "react";
-import {Alert,Dimensions,SafeAreaView,ScrollView,StyleSheet,TouchableOpacity,View} from "react-native";
+import {Alert,Dimensions,Platform,SafeAreaView,ScrollView,StyleSheet,TouchableOpacity,View} from "react-native";
 import CloseIcon from "@assets/svg/close";
 import Text from '@components/atoms/text'
 import {Bold,Regular,Regular500} from "@styles/font";
 import CreateChatIcon from "@assets/svg/createChat";
-import {fontValue} from "@pages/activities/fontValue";
+import {fontValue as RFValue} from "@pages/activities/fontValue";
 import OptionIcon from "@assets/svg/optionIcon";
 import {getChannelName} from "../../utils/formatting";
-import {removeSelectedMessage,setMessages,updateChannel} from "../../reducers/channel/actions";
+import {
+    addChannel,removeChannel,
+    removeSelectedMessage,
+    setMessages,
+    setSelectedChannel,
+    updateChannel
+} from "../../reducers/channel/actions";
 import {InputField} from "@molecules/form-fields";
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
 import useSignalr from "../../hooks/useSignalr";
 import useApi from "../../services/api";
 import IParticipants from "../../interfaces/IParticipants";
-import {BottomModalRef} from "@atoms/modal/bottom-modal";
+import BottomModal,{BottomModalRef} from "@atoms/modal/bottom-modal";
 import lodash from 'lodash';
 import {ContactItem} from "@molecules/list-item";
 import {NewPenIcon,ToggleIcon} from "@atoms/icon";
@@ -21,13 +27,10 @@ import AddParticipants from "@pages/chat-modal/add-participants";
 import {text} from "@styles/color";
 import {Hoverable} from "react-native-web-hooks";
 import DotHorizontalIcon from "@assets/svg/dotHorizontal";
-import {Menu,MenuOption,MenuOptions,MenuProvider,MenuTrigger} from "react-native-popup-menu";
-import MoreCircle from "@assets/svg/moreCircle";
-import UnseeIcon from "@assets/svg/unsee";
-import PinToTopIcon from "@assets/svg/pintotop";
-import BellMuteIcon from "@assets/svg/bellMute";
-import ArchiveIcon from "@assets/svg/archive";
-import DeleteIcon from "@assets/svg/delete";
+import {Menu,MenuOption,MenuOptions,MenuTrigger} from "react-native-popup-menu";
+import MessageMember from "@pages/chat-modal/message";
+import CreateMeeting from "@pages/chat-modal/meeting";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 const {height,width}=Dimensions.get('window');
 
@@ -37,7 +40,23 @@ const styles=StyleSheet.create({
 
         backgroundColor:"#fff"
     },
-
+    cancelText: {
+        fontSize: RFValue(16),
+        color: '#DC2626',
+        fontFamily: Regular500,
+    },
+    confirmText: {
+        fontSize: RFValue(16),
+        color: text.info,
+        fontFamily: Regular500,
+    },
+    outlineText: {
+        borderRadius: 10,
+    },
+    inputText: {
+        fontSize: RFValue(16),
+        textAlign: 'center',
+    },
     container:{
         margin:12,
         flex:1
@@ -124,8 +143,8 @@ export const InfoWeb=(props)=>{
         type:'',
     });
     const [selectedMoreCircle , setSelectedMoreCircle] = useState(false);
-    const onMoreCircle = () => {
-
+    const onMoreCircle = (item) => {
+        setSelectedParticipant(item)
         setSelectedMoreCircle(value => !value)
 
     };
@@ -246,6 +265,76 @@ export const InfoWeb=(props)=>{
             Alert.alert('Alert',e?.message||'Something went wrong.')
         });
     };
+    const isAdmin = () => {
+        const participant:IParticipants = lodash.find(participants, (p:IParticipants) => p._id === user._id);
+
+        return participant.isAdmin;
+    }
+    const removeMember = () => {
+        setShowAlert(false);
+        setLoading(true);
+        api.post(`/rooms/${_id}/remove-member?participantId=${selectedParticipant._id}`)
+        .then((res) => {
+            setLoading(false);
+            if(res.data) {
+                dispatch(updateChannel(res.data));
+            }
+        })
+        .catch(e => {
+            setLoading(false);
+            Alert.alert('Alert', e?.message || 'Something went wrong.')
+        });
+    }
+    const leaveChat = () => {
+        setShowAlert(false);
+        setLoading(true);
+        leaveChannel(_id, (err, res) => {
+            setLoading(false);
+            if (res) {
+                dispatch(removeChannel(res));
+                props.navigation.navigate('Chat');
+            }
+            if (err) {
+                Alert.alert('Alert', err?.message || 'Something went wrong.')
+            }
+        })
+    }
+
+    const alertConfirm = () => {
+        if (alertData.type === 'remove') removeMember();
+        else if (alertData.type === 'delete') leaveChat();
+        else if (alertData.type === 'clear') clearChat();
+    }
+    const addAdmin = () => {
+        optionModalRef.current?.close();
+        setLoading(true);
+        api.post(`/rooms/${_id}/add-admin?participantId=${selectedParticipant._id}`)
+        .then((res) => {
+            setLoading(false);
+            if(res.data) {
+                dispatch(updateChannel(res.data));
+            }
+        })
+        .catch(e => {
+            setLoading(false);
+            Alert.alert('Alert', e?.message || 'Something went wrong.')
+        });
+    }
+    const onRemoveConfirm = () => {
+        setSelectedMoreCircle(false)
+        setAlertData({
+            title: 'Remove Member',
+            message: `Remove ${selectedParticipant.firstName} ${selectedParticipant.lastName} from ${renderChannelName()}?`,
+            cancel: 'Cancel',
+            confirm: 'Yes',
+            type: 'remove',
+        });
+        setTimeout(() => setShowAlert(true), 500);
+    }
+    const showOption = (participant:IParticipants) => {
+        setSelectedParticipant(participant)
+    }
+          const [menuClose, setOnClose] = useState(false)
     const renderParticipants=()=>{
         return participants.map((item:IParticipants)=>(
             <ContactItem
@@ -282,11 +371,11 @@ export const InfoWeb=(props)=>{
 
                             )}
                         </Hoverable>
-                    ) : <Menu onClose={ () => {
+                    ) : <Menu opened={selectedMoreCircle}  onClose={ () => {
                         setSelectedMoreCircle(false)
                     } } onSelect={ value => setSelectedMoreCircle(true) }>
 
-                        <MenuTrigger onPress={ onMoreCircle } text={<DotHorizontalIcon/> }>
+                        <MenuTrigger onPress={ () => onMoreCircle(item) } text={<View style={{marginRight: -15}}><DotHorizontalIcon/></View> }>
 
                         </MenuTrigger>
 
@@ -301,48 +390,81 @@ export const InfoWeb=(props)=>{
                             shadowOpacity : 0.1 ,
                             shadowRadius : 15 ,
                         } }>
-                            <MenuOption value={ "Unread" }>
-                                <View style={ styles.menuItem }>
-                                    <UnseeIcon color={ "#000" }/>
-                                    <Text style={ styles.menuItemText }>Unread</Text>
-                                </View>
+                            <MenuOption value={`Call ${selectedParticipant.firstName} ${selectedParticipant.lastName}`}>
+                                <TouchableOpacity onPress={() => {
+                                    optionModalRef.current?.close();
+                                    setTimeout(() => {
+                                        meetingModalRef.current?.open();
+                                    }, 500);
+                                }}>
+                                    <View style={[styles.option]}>
+                                        <Text
+                                            style={{ marginLeft: 15 }}
+                                            color={'black'}
+                                            size={18}
+                                        >
+                                            Call {`${selectedParticipant.firstName} ${selectedParticipant.lastName}`}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
                             </MenuOption>
-                            <MenuOption value={ "Pin to top" }>
-                                <View style={ styles.menuItem }>
-                                    <PinToTopIcon width={ 16.67 } height={ 16.67 }/>
-                                    <Text style={ styles.menuItemText }>Pin to top</Text>
-                                </View>
+                            <MenuOption value= {`Message ${selectedParticipant.firstName} ${selectedParticipant.lastName}`}>
+                                <TouchableOpacity onPress={() => {
+                                    optionModalRef.current?.close();
+                                    setTimeout(() => {
+                                        newMessageModalRef.current?.open()
+                                    }, 500);
+                                }}>
+                                    <View style={[styles.option]}>
+                                        <Text
+                                            style={{ marginLeft: 15 }}
+                                            color={'black'}
+                                            size={18}
+                                        >
+                                            Message {`${selectedParticipant.firstName} ${selectedParticipant.lastName}`}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
                             </MenuOption>
-                            <MenuOption value={ "Archive" }>
-                                <View style={ styles.menuItem }>
-                                    <BellMuteIcon width={ 16.67 } height={ 16.67 }/>
-                                    <Text style={ styles.menuItemText }>Mute</Text>
-                                </View>
-                            </MenuOption>
-                            <MenuOption
-                                style={ { borderBottomWidth : 1 , borderBottomColor : "#E5E5E5" } }
-                                value={ "Archive" }>
-                                <View style={ styles.menuItem }>
-                                    <ArchiveIcon width={ 16.67 } height={ 16.67 }/>
-                                    <Text style={ styles.menuItemText }>Archive</Text>
-                                </View>
-                            </MenuOption>
+                            {
+                                isAdmin()&&(
+                                    <>
+                                        <MenuOption value={ "Add as admin" }>
+                                            <TouchableOpacity onPress={addAdmin}>
+                                                <View style={[styles.option]}>
+                                                    <Text
+                                                        style={{ marginLeft: 15 }}
+                                                        color={'black'}
+                                                        size={18}
+                                                    >
+                                                        Add as admin
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </MenuOption>
+                                        <MenuOption value={ "Remove from chat" }>
+                                            <TouchableOpacity onPress={onRemoveConfirm}>
+                                                <View style={[styles.option]}>
+                                                    <Text
+                                                        style={{ marginLeft: 15 }}
+                                                        color={text.error}
+                                                        size={18}
+                                                    >
+                                                        Remove from chat
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </MenuOption>
+                                    </>
+                                )
+                            }
 
-                            <MenuOption value={ "Archive" }>
-                                <View style={ styles.menuItem }>
-                                    <DeleteIcon width={ 16.67 } height={ 16.67 }/>
-                                    <Text
-                                        style={ [styles.menuItemText , { color : "#CF0327" }] }>Delete</Text>
-                                </View>
-                            </MenuOption>
                         </MenuOptions>
 
                     </Menu>
                 }
                 onPress={()=>{
-                    if(isGroup&&item._id!=user._id){
-                        //showOption(item);
-                    }
+                    if (isGroup && item._id != user._id) showOption(item);
                 }}
             />
         ))
@@ -437,8 +559,8 @@ export const InfoWeb=(props)=>{
 
                             <CreateChatIcon
                                 color={"#212121"}
-                                height={fontValue(21)}
-                                width={fontValue(22)}
+                                height={RFValue(21)}
+                                width={RFValue(22)}
                             /><View style={{paddingLeft:10}}>
                             <Text style={{fontFamily:Regular,fontSize:15,fontWeight:'400',lineHeight:22.5}}>
                                 Add Participant
@@ -461,8 +583,8 @@ export const InfoWeb=(props)=>{
                     {/*<View style={{paddingBottom:20,flexDirection:"row",alignItems:"center"}}>
                         <OptionIcon
                             color={"#212121"}
-                            height={fontValue(21)}
-                            width={fontValue(22)}
+                            height={RFValue(21)}
+                            width={RFValue(22)}
                         /><View style={{paddingLeft:10}}>
                         <Text style={styles.text}>
                             Meeting Options
@@ -534,7 +656,76 @@ export const InfoWeb=(props)=>{
                     }
                 </View>
             </View>
-
+        <BottomModal
+            ref={newMessageModalRef}
+            onModalHide={() => newMessageModalRef.current?.close()}
+            avoidKeyboard={false}
+            header={
+                <View style={styles.bar} />
+            }
+            containerStyle={{ maxHeight: null }}
+            onBackdropPress={() => {}}
+        >
+            <View style={{ height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
+                <MessageMember
+                    members={[selectedParticipant]}
+                    onClose={() => newMessageModalRef.current?.close()}
+                    onSubmit={(res:any) => {
+                        res.otherParticipants = lodash.reject(res.participants, (p:IParticipants) => p._id === user._id);
+                        dispatch(setSelectedChannel(res));
+                        dispatch(addChannel(res));
+                        newMessageModalRef.current?.close();
+                        setTimeout(() => navigation.navigate('ViewChat', res), 500);
+                    }}
+                />
+            </View>
+        </BottomModal>
+        <BottomModal
+            ref={meetingModalRef}
+            onModalHide={() => meetingModalRef.current?.close()}
+            avoidKeyboard={false}
+            header={
+                <View style={styles.bar} />
+            }
+            containerStyle={{ maxHeight: null }}
+            onBackdropPress={() => {}}
+        >
+            <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
+                <CreateMeeting
+                    participants={[selectedParticipant]}
+                    onClose={() => meetingModalRef.current?.close()}
+                    channelId={''}
+                    isChannelExist={false}
+                    onSubmit={(type, params) => {
+                        meetingModalRef.current?.close();
+                        setTimeout(() => navigation.navigate(type, params), 300);
+                    }}
+                />
+            </View>
+        </BottomModal>
+        <AwesomeAlert
+            show={showAlert}
+            showProgress={false}
+            contentContainerStyle={{ borderRadius: 15 }}
+            title={alertData.title}
+            titleStyle={styles.titleMessage}
+            message={alertData.message}
+            messageStyle={styles.message}
+            contentStyle={styles.content}
+            closeOnTouchOutside={false}
+            closeOnHardwareBackPress={false}
+            showCancelButton={true}
+            showConfirmButton={true}
+            cancelButtonColor={'white'}
+            confirmButtonColor={'white'}
+            cancelButtonTextStyle={styles.cancelText}
+            confirmButtonTextStyle={styles.confirmText}
+            actionContainerStyle={{ justifyContent: 'space-around' }}
+            cancelText={alertData.cancel}
+            confirmText={alertData.confirm}
+            onCancelPressed={() => setShowAlert(false)}
+            onConfirmPressed={alertConfirm}
+        />
         </SafeAreaView>
 
 
