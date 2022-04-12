@@ -3,7 +3,7 @@ import {Alert,Dimensions,Platform,SafeAreaView,ScrollView,StyleSheet,TouchableOp
 import CloseIcon from "@assets/svg/close";
 import Text from '@components/atoms/text'
 import {Bold,Regular,Regular500} from "@styles/font";
-import CreateChatIcon from "@assets/svg/createChat";
+import CreateChatIcon from "@assets/svg/addParticipantOutline";
 import {fontValue as RFValue} from "@pages/activities/fontValue";
 import {getChannelName} from "../../utils/formatting";
 import {
