@@ -19,7 +19,6 @@ import useSignalr from 'src/hooks/useSignalr';
 import Button from '@components/atoms/button';
 import lodash from 'lodash';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 
 const styles = StyleSheet.create({
   container: {
@@ -75,7 +74,6 @@ const styles = StyleSheet.create({
 
 const CreateMeeting = ({ navigation, route }:any) => {
   const dispatch = useDispatch();
-  useRequestCameraAndAudioPermission();
   const user = useSelector(state => state.user);
   const {
     participants = [],
