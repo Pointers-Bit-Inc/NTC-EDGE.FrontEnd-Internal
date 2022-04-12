@@ -41,7 +41,29 @@ const useAttachmentPicker = () => {
       let mimeType = result?.type || name?.split('.')?.[1];
       const file = {
         name,
-        mimeType,
+        mimeType: 'application/octet-stream',
+        uri,
+      };
+
+      setSelectedFile(file)
+    }
+  };
+
+  const takePicture = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      presentationStyle: 0,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      let uri = result?.uri;
+      let split = uri?.split('/');
+      let name = split?.[split?.length - 1];
+      let mimeType = result?.type || name?.split('.')?.[1];
+      const file = {
+        name,
+        mimeType: 'application/octet-stream',
         uri,
       };
 
@@ -53,6 +75,7 @@ const useAttachmentPicker = () => {
     selectedFile,
     pickDocument,
     pickImage,
+    takePicture,
   };
 }
 

@@ -7,11 +7,13 @@ const InitialState = Record({
   normalizedChannelList: {},
   messages: [],
   normalizedMessages: {},
+  files: {},
   selectedMessage: {},
   meetingList: [],
   normalizedMeetingList: {},
   searchValue: '',
   pendingMessages: {},
+  channelMessages: {}
 });
 
 export default InitialState;

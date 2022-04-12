@@ -93,11 +93,40 @@ const styles = StyleSheet.create({
   imageFile: {
     width: width * 0.3,
     height: width * 0.3,
+  },
+  hrText:{
+    flex:1,
+    paddingVertical: 20,
+    alignSelf:'center',
+    width:"100%",
+    flexDirection:"row",
+    justifyContent:"center"
+  },
+  border:{
+    flex:1,
+    backgroundColor:  "#D1D1D6",
+    width:"100%",
+    height:1,
+    alignSelf:"center"
+  },
+  hrContent:{
+    color:  "#2863D6",
+    paddingHorizontal:20,
+    textAlign:'center'
+  },
+  notif: {
+    backgroundColor: '#C4C4C4',
+    alignSelf: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 2,
+    borderRadius: 15,
+    marginTop: 5,
   }
 })
 
 interface Props {
   message?: string;
+  messageType?: string;
   attachment?: IAttachment;
   isSender?: boolean;
   sender?: any;
@@ -119,6 +148,7 @@ interface Props {
 
 const ChatBubble:FC<Props> = ({
   message,
+  messageType,
   attachment,
   isSender = false,
   sender = {},
@@ -139,24 +169,141 @@ const ChatBubble:FC<Props> = ({
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
+  const deletedOrUnsend = deleted || (unSend && isSender);
+  const senderName = isSender ? 'You' : sender.firstName;
 
   const checkIfImage = (uri:any) => {
     if (uri && (uri.endsWith(".png") || uri.endsWith(".jpg"))) return true;
     return false;
   };
 
+  const renderContent = () => {
+    if (deletedOrUnsend) {
+      return (
+        <Text
+          style={{ marginLeft: 5 }}
+          size={14}
+          color={'#979797'}
+        >
+          {
+            (unSend && isSender) ?
+            'Unsent for you'
+            : `${senderName} deleted a message`
+          }
+        </Text>
+      )
+    }
+    else if (!!attachment) {
+      return (
+        <View style={styles.file}>
+          <NewFileIcon
+            color={'#606A80'}
+          />
+          <View style={{ paddingHorizontal: 5, maxWidth: width * 0.3 }}>
+            <Text
+              size={12}
+              color={'#606A80'}
+            >
+              {attachment.name}
+            </Text>
+            <Text
+              size={10}
+              color={'#606A80'}
+              style={{ top: -2 }}
+            >
+              {getFileSize(attachment.size)}
+            </Text>
+          </View>
+          <View style={{ width: 10 }} />
+        </View>
+      )
+    }
+    if (messageType === 'callended') {
+      return (
+        <Text
+          size={14}
+          color={'#979797'}
+        >
+          {message}
+        </Text>
+      )
+    }
+    return (
+      <Text
+        size={14}
+        color={(isSender && !system) ? 'white' : 'black'}
+      >
+        {message}
+      </Text>
+    )
+  }
+
+  if (messageType === 'leave' || messageType === 'removed' || messageType === 'added') {
+    return (
+      <>
+        {
+          (showDetails || showDate) && (
+              Platform.select({
+                native:(
+                    <View style={styles.seenTimeContainer}>
+                      <Text
+                          color={text.default}
+                          size={12}
+                      >
+                        {getChatTimeString(createdAt)}
+                      </Text>
+                    </View>
+                ),
+                web:(
+                    <View style={styles.hrText}>
+                      <View style={styles.border}/>
+                      <View>
+                        <Text style={[styles.hrContent, {color:  "#808196",}]}>{getChatTimeString(createdAt)}</Text>
+                      </View>
+                      <View style={styles.border}/>
+                    </View>
+                )
+              })
+          )
+        }
+        <View style={styles.notif}>
+          <Text
+            size={14}
+            color={'#fff'}
+            style={{ textAlign: 'center' }}
+          >
+            {`${(messageType === 'removed' || messageType === 'added') ? senderName : ''} ${message}`}
+          </Text>
+        </View>
+      </>
+    )
+  }
+
   return (
     <>
       {
         (showDetails || showDate || system) && (
-          <View style={styles.seenTimeContainer}>
-            <Text
-              color={text.default}
-              size={12}
-            >
-              {getChatTimeString(createdAt)}
-            </Text>
-          </View>
+            Platform.select({
+              native:(
+                  <View style={styles.seenTimeContainer}>
+                    <Text
+                        color={text.default}
+                        size={12}
+                    >
+                      {getChatTimeString(createdAt)}
+                    </Text>
+                  </View>
+              ),
+              web:(
+                  <View style={styles.hrText}>
+                    <View style={styles.border}/>
+                    <View>
+                      <Text style={[styles.hrContent, {color:  "#808196",}]}>{getChatTimeString(createdAt)}</Text>
+                    </View>
+                    <View style={styles.border}/>
+                  </View>
+              )
+            })
         )
       }
       <TouchableOpacity
@@ -177,7 +324,7 @@ const ChatBubble:FC<Props> = ({
             )
           }
           {
-            checkIfImage(attachment?.uri) ? (
+            checkIfImage(attachment?.uri) && !deletedOrUnsend ? (
               <Image
                 resizeMode={'cover'}
                 style={[
@@ -197,67 +344,16 @@ const ChatBubble:FC<Props> = ({
                     {
                       backgroundColor: isSender ? bubble.primary : bubble.secondary
                     },
-                    (deleted || (unSend && isSender) || system) && {
+                    (deletedOrUnsend || system) && {
                       backgroundColor: '#E5E5E5'
                     },
                   ]}
                 >
-                  {
-                    (deleted || (unSend && isSender)) ? (
-                      <>
-                        <NewDeleteIcon
-                          height={fontValue(18)}
-                          width={fontValue(18)}
-                          color={'#979797'}
-                        />
-                        <Text
-                          style={{ marginLeft: 5 }}
-                          size={14}
-                          color={'#979797'}
-                        >
-                          {
-                            (unSend && isSender) ?
-                            'Unsent for you'
-                            : `${isSender ? 'You' : sender.firstName } deleted a message`
-                          }
-                        </Text>
-                      </>
-                    ) : !!attachment ? (
-                      <View style={styles.file}>
-                        <NewFileIcon
-                          color={'#606A80'}
-                        />
-                        <View style={{ paddingHorizontal: 5, maxWidth: width * 0.3 }}>
-                          <Text
-                            size={12}
-                            color={'#606A80'}
-                          >
-                            {attachment.name}
-                          </Text>
-                          <Text
-                            size={10}
-                            color={'#606A80'}
-                            style={{ top: -2 }}
-                          >
-                            {getFileSize(attachment.size)}
-                          </Text>
-                        </View>
-                        <View style={{ width: 10 }} />
-                      </View>
-                    ) : (
-                      <Text
-                        size={14}
-                        color={(isSender && !system) ? 'white' : 'black'}
-                      >
-                        {message}
-                      </Text>
-                    )
-                  }
+                  {renderContent()}
                 </View>
               </View>
             )
           }
-          
           {
             (edited && !isSender) && (
               <View style={{ alignSelf: 'center', marginLeft: 5 }}>
@@ -270,7 +366,7 @@ const ChatBubble:FC<Props> = ({
             )
           }
           {
-            (!isSeen && isSender && !deleted && !system) && (
+            (!isSeen && isSender && !deleted && !system && !(unSend && isSender)) && (
               <View
                 style={[styles.check, delivered && { backgroundColor: text.info }]}
               >

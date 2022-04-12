@@ -5,7 +5,6 @@ import {
   StyleSheet,
   StatusBar,
   TouchableOpacity,
-  Animated
 } from 'react-native'
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
 import lodash from 'lodash';
@@ -18,6 +17,7 @@ import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
 import { getChannelName, getTimerString } from 'src/utils/formatting'
 import useSignalr from 'src/hooks/useSignalr';
+import VideoNotification from '@components/molecules/video/notification';
 
 const styles = StyleSheet.create({
   container: {
@@ -67,11 +67,10 @@ const Dial = ({ navigation, route }) => {
       return meeting;
   });
   const { options, isHost = false, isVoiceCall } = route.params;
-  const { endMeeting, joinMeeting } = useSignalr();
+  const { endMeeting, joinMeeting, leaveMeeting } = useSignalr();
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
   const [timer, setTimer] = useState(0);
-  const [fadeAnim] = useState(new Animated.Value(1))
 
   useEffect(() => {
     let unmounted = false;
@@ -106,30 +105,20 @@ const Dial = ({ navigation, route }) => {
     return () => clearInterval(interval);
   }, [meeting.ended]);
 
-  useEffect(() => {
-    let timeRef:any = null
-    if (meeting.ended) {
-      timeRef = setTimeout(() => navigation.goBack(), 500);
-    }
-    return () => clearTimeout(timeRef);
-  }, [meeting.ended]);
-
-  useEffect(() => {
-    if (meeting.notification) {
-      Animated.timing(
-        fadeAnim,
-        {
-          toValue: 0,
-          duration: 5000,
-          useNativeDriver: true,
-        }
-      ).start(() => setNotification(''));
-    }
-  }, [meeting.notification]);
+  // useEffect(() => {
+  //   let timeRef:any = null
+  //   if (meeting.ended) {
+  //     timeRef = setTimeout(() => navigation.goBack(), 500);
+  //   }
+  //   return () => clearTimeout(timeRef);
+  // }, [meeting.ended]);
 
   const header = () => (
     <View style={styles.header}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+      <TouchableOpacity onPress={() => {
+        leaveMeeting(meeting._id, 'leave');
+        navigation.goBack();
+      }}>
         <ArrowLeftIcon
           color='white'
         />
@@ -169,12 +158,9 @@ const Dial = ({ navigation, route }) => {
 
   const onEndCall = (endCall) => {
     if (isHost || endCall) {
-      endMeeting(meeting._id, (err, res) => {
-        if (res) {
-          navigation.goBack();
-        }
-      })
+      endMeeting(meeting._id);
     } else {
+      leaveMeeting(meeting._id, 'leave');
       navigation.goBack();
     }
   }
@@ -192,21 +178,11 @@ const Dial = ({ navigation, route }) => {
         agora={agora}
         isVoiceCall={isVoiceCall}
         callEnded={meeting?.ended}
+        message={meeting?.notification}
+        setNotification={() => setNotification('')}
         onEndCall={onEndCall}
         isGroup={meeting?.isGroup}
       />
-      {
-        !!meeting?.notification && (
-          <Animated.View style={[styles.notif, { opacity: fadeAnim }]}>
-            <Text
-              color='white'
-              size={12}
-            >
-              {meeting?.notification}
-            </Text>
-          </Animated.View>
-        )
-      }
     </View>
   )
 }

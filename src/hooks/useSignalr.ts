@@ -7,8 +7,8 @@ import { BASE_URL, API_VERSION } from 'src/services/config';
 import useApi from 'src/services/api';
 import { normalize, schema } from 'normalizr';
 import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
-import { addMeeting, updateMeeting, setConnectionStatus } from 'src/reducers/meeting/actions';
-import { addMessages, updateMessages, addChannel, removeChannel, updateChannel } from 'src/reducers/channel/actions';
+import { addMeeting, updateMeeting, setConnectionStatus, setNotification } from 'src/reducers/meeting/actions';
+import { addMessages, updateMessages, addChannel, removeChannel, updateChannel, addFiles } from 'src/reducers/channel/actions';
 
 const useSignalr = () => {
   const dispatch = useDispatch();
@@ -44,11 +44,12 @@ const useSignalr = () => {
     if (data) {
       switch(type) {
         case 'create': {
-          dispatch(addMessages(data));
+          dispatch(addMessages(data.roomId, data));
+          if (data?.attachment !== null) dispatch(addFiles(data));
           break;
         }
         case 'update': {
-          dispatch(updateMessages(data));
+          dispatch(updateMessages(data.roomId, data));
           break;
         }
       }
@@ -60,12 +61,13 @@ const useSignalr = () => {
       switch(type) {
         case 'create': {
           dispatch(addChannel(data));
-          if (data.lastMessage) dispatch(addMessages(data.lastMessage));
+          if (data.lastMessage) dispatch(addMessages(data._id, data.lastMessage));
+          if (data?.lastMessage?.attachment !== null) dispatch(addFiles(data.lastMessage));
           break;
         }
         case 'update': {
           dispatch(updateChannel(data));
-          if (data.lastMessage) dispatch(addMessages(data.lastMessage));
+          if (data.lastMessage) dispatch(addMessages(data._id, data.lastMessage));
           break;
         }
         case 'delete': dispatch(removeChannel(data._id)); break;
@@ -80,7 +82,7 @@ const useSignalr = () => {
           const { room } = data;
           const { lastMessage } = room;
           dispatch(updateChannel(room));
-          dispatch(addMessages(lastMessage));
+          dispatch(addMessages(room._id, lastMessage));
           dispatch(addMeeting(data));
           break;
         };
@@ -88,22 +90,32 @@ const useSignalr = () => {
           const { room = {} } = data;
           const { lastMessage } = room;
           if (lastMessage) dispatch(updateChannel(room));
-          if (lastMessage) dispatch(addMessages(lastMessage));
+          if (lastMessage) dispatch(addMessages(room._id, lastMessage));
           dispatch(updateMeeting(data));
+          break;
+        }
+        case 'notification': {
+          dispatch(setNotification(data));
           break;
         }
       }
     }
   };
 
-  const createChannel = useCallback(({ participants, name, message }, callback = () => {}) => {
-    api.post('/rooms', {
-      participants,
-      name,
-      message,
-    })
+  const OnMeetingNotification = (users:Array<string>, type:string, data:any) => {
+    if (data) {
+      switch(type) {
+        case 'notification': {
+          dispatch(setNotification(data));
+          break;
+        }
+      }
+    }
+  };
+
+  const createChannel = useCallback((payload, callback = () => {}, config = {}) => {
+    api.post('/rooms/new', payload, config)
     .then(res => {
-      console.log('RESult', res);
       return callback(null, res.data);
     })
     .catch(err => {
@@ -216,12 +228,12 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getMessages = useCallback((channelId, pageIndex, callback = () => {}) => {
-    api.get(`/messages?roomId=${channelId}&pageIndex=${pageIndex}`)
+  const getMessages = useCallback((channelId, pageIndex, file = false, callback = () => {}) => {
+    api.get(`/messages?roomId=${channelId}&pageIndex=${pageIndex}&file=${file}`)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(messageSchema));
-      return callback(null, { hasMore, list: normalized?.entities?.messages });
+      return callback(null, { hasMore, list: normalized?.entities?.messages || {} });
     })
     .catch(err => {
       return callback(err);
@@ -258,8 +270,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const leaveMeeting = useCallback((id, callback = () => {}) => {
-    api.patch(`/meetings/${id}/leave`)
+  const leaveMeeting = useCallback((id, status, callback = () => {}) => {
+    api.patch(`/meetings/${id}/leave?status=${status}`)
     .then(res => {
       return callback(null, res.data);
     })
@@ -314,6 +326,7 @@ const useSignalr = () => {
     onChatUpdate,
     onRoomUpdate,
     onMeetingUpdate,
+    OnMeetingNotification,
     createChannel,
     getChannelByParticipants,
     leaveChannel,

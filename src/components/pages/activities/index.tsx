@@ -2,7 +2,7 @@ import React , {useEffect} from "react";
 import {
     Animated,
     Dimensions,
-    FlatList,Platform,Pressable,
+    FlatList,Platform,Image,
     RefreshControl,
     ScrollView,
     StatusBar,
@@ -41,6 +41,7 @@ import ActivityModalView from "@pages/activities/nativeView/activityModalView";
 import IMeetings from "src/interfaces/IMeetings";
 import FilterPressIcon from "@assets/svg/filterPress";
 import {useActivities} from "../../../hooks/useActivities";
+import IParticipants from "src/interfaces/IParticipants";
 
 const { width } = Dimensions.get('window');
 
@@ -97,7 +98,8 @@ export default function ActivitiesPage(props: any) {
 
     const meetingList = useSelector((state: RootStateOrAny) => {
         const { normalizeActiveMeetings } = state.meeting;
-        const meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m]);
+        let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m]);
+        meetingList = lodash.reject(meetingList, (m:IMeetings) => lodash.find(m.participants, (p:IParticipants) => p._id === user._id && (p.status === 'busy' || p.muted)));
         return lodash.orderBy(meetingList , 'updatedAt' , 'desc');
     });
     useEffect(() => {
@@ -130,7 +132,7 @@ export default function ActivitiesPage(props: any) {
     const onClose = (item: IMeetings , leave = false) => {
         if (leave) {
             dispatch(removeActiveMeeting(item._id));
-            return leaveMeeting(item._id);
+            return leaveMeeting(item._id, 'busy');
         } else if (item.host._id === user._id) {
             return endMeeting(item._id);
         } else {
@@ -159,7 +161,7 @@ export default function ActivitiesPage(props: any) {
                         pnApplications.map((item: any , index: number) => {
 
                             return item?.activity && item?.activity.map((act: any , i: number) => {
-
+                                
                                 return (
                                     act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <ActivityItem
                                     isOpen={ isOpen }
@@ -258,7 +260,13 @@ export default function ActivitiesPage(props: any) {
                                     keyExtractor={ (item: any) => item._id }
                                     renderItem={ ({ item }) => (
                                         <MeetingNotif
-                                            style={ { width } }
+                                            style={{...Platform.select({
+                                                    native: {
+                                                        width: width
+                                                    },
+                                                    default: {
+                                                        width: 466
+                                                    }})}}
                                             name={ getChannelName({
                                                 ...item ,
                                                 otherParticipants : item?.participants

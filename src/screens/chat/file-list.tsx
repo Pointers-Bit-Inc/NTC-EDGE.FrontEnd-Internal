@@ -1,8 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, FlatList, TouchableOpacity, InteractionManager, ActivityIndicator, Dimensions, Platform } from 'react-native'
 import Text from '@components/atoms/text'
-import { ArrowDownIcon, CheckIcon, DownloadIcon, MinusIcon, NewCheckIcon, NewFileIcon, TrashIcon } from '@components/atoms/icon';
+import { ArrowDownIcon, CheckIcon, DownloadIcon, FileIcon, MinusIcon, NewCheckIcon, NewFileIcon, TrashIcon } from '@components/atoms/icon';
 import lodash from 'lodash';
+import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
+import IMessages from 'src/interfaces/IMessages';
+import IParticipants from 'src/interfaces/IParticipants';
+import useSignalr from 'src/hooks/useSignalr';
+import {
+  addToFiles,
+  setFiles,
+  updateMessages
+} from 'src/reducers/channel/actions';
+import useDownload from 'src/hooks/useDownload';
+import { text } from '@styles/color';
+import { FileItem } from '@components/molecules/list-item';
+
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -43,6 +57,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 5,
+    maxWidth: width * 0.6,
+    paddingRight: 30,
   },
   shadow: {
     shadowColor: "#000",
@@ -73,35 +89,132 @@ const styles = StyleSheet.create({
   menuItem: {
     paddingVertical: 10,
     paddingHorizontal: 30
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  empty: {
+    flex: 1,
+    height: height / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 
-const mockData = [
-  {
-    _id: '1',
-    name: 'File.pdf',
-    size: '1.0 MB'
-  },
-  {
-    _id: '2',
-    name: 'File.pdf',
-    size: '1.0 MB'
-  },
-  {
-    _id: '3',
-    name: 'File.pdf',
-    size: '1.0 MB'
-  }
-]
-
 const FileList = () => {
-  const [data, setData] = useState(mockData);
-  const [selectedData, setSelectedData] = useState([]);
+  const dispatch = useDispatch();
+  const user = useSelector((state:RootStateOrAny) => state.user);
+  const messages:Array<IMessages> = useSelector((state:RootStateOrAny) => {
+    const { files } = state.channel;
+    const messagesList = lodash.keys(files).map((m:string) => {
+      return files[m];
+    });
+    let delivered = false;
+    let seen:any = [];
+    const messageArray = lodash.orderBy(messagesList, 'createdAt', 'desc')
+    .map((msg:IMessages) => {
+      if (!delivered && msg.delivered) {
+        delivered = true;
+      }
+      if (delivered) msg.delivered = true;
+
+      seen = lodash.unionBy(seen, msg.seen, 'id');
+      msg.seen = seen;
+      
+      return msg;
+    });
+
+    return messageArray;
+  });
+  const { _id, isGroup, lastMessage, otherParticipants } = useSelector(
+    (state:RootStateOrAny) => {
+      const { selectedChannel } = state.channel;
+
+      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id);
+      return selectedChannel;
+    }
+  );
+  const channelId = _id;
+  const [selectedData, setSelectedData]:any = useState([]);
+  const [progress, setProgress]:any = useState({});
+  const [downloaded, setDownloaded]:any = useState({});
+  const [error, setError]:any = useState({});
+  const [downloading, setDownloading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [groupAction, setGroupAction] = useState('');
   const [showPopUpMenu, setShowPopUpMenu] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [fetching, setFetching] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [rendered, setRendered] = useState(false);
+
+  const {
+    getMessages,
+    deleteMessage,
+  } = useSignalr();
+
+  const {
+    checkPermission,
+    downloadFile,
+  } = useDownload();
+
+  const fetchMoreMessages = (isPressed = false) => {
+    if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
+    setFetching(true);
+    setHasError(false);
+    getMessages(channelId, pageIndex, true, (err:any, res:any) => {
+      setLoading(false);
+      if (res) {
+        if (res.list) dispatch(addToFiles(res.list));
+        setPageIndex(current => current + 1);
+        setHasMore(res.hasMore);
+      }
+      if (err) {
+        setHasError(true);
+      }
+      setFetching(false);
+    })
+  }
 
   useEffect(() => {
-    if (lodash.size(selectedData) === lodash.size(data)) {
+    checkPermission();
+    InteractionManager.runAfterInteractions(() => {
+      setRendered(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    setPageIndex(1);
+    setHasMore(false);
+    setHasError(false);
+    let unmount = false;
+    if (rendered) {
+      getMessages(channelId, 1, true, (err:any, res:any) => {
+        if (!unmount) {
+          setLoading(false);
+          if (res) {
+            dispatch(setFiles(res.list));
+            setPageIndex(current => current + 1);
+            setHasMore(res.hasMore);
+          }
+          if (err) {
+            setHasError(true);
+          }
+        }
+      })
+    }
+
+    return () => {
+      unmount = true;
+    }
+  }, [rendered, channelId]);
+
+  useEffect(() => {
+    if (lodash.size(selectedData) > 0 && lodash.size(selectedData) === lodash.size(messages)) {
       setGroupAction('all');
     } else if (lodash.size(selectedData) > 0) {
       setGroupAction('remove');
@@ -114,12 +227,12 @@ const FileList = () => {
     if (groupAction === 'all' || groupAction === 'remove') {
       setSelectedData([]);
     } else {
-      setSelectedData(data);
+      setSelectedData(messages);
     }
   }
 
   const onSelectAll = () => {
-    setSelectedData(data);
+    setSelectedData(messages);
     setShowPopUpMenu(false);
   };
 
@@ -128,16 +241,16 @@ const FileList = () => {
     setShowPopUpMenu(false);
   }
 
-  const onSelectItem = (item) => {
-    setSelectedData(p => ([...p, item]));
+  const onSelectItem = (item:IMessages) => {
+    setSelectedData((p:IMessages) => ([...p, item]));
   };
 
-  const onRemoveItem = (item) => {
-    const result = lodash.reject(selectedData, d => d._id === item._id);
+  const onRemoveItem = (item:IMessages) => {
+    const result = lodash.reject(selectedData, (d:IMessages) => d._id === item._id);
     setSelectedData(result);
   };
 
-  const onPressItem = (item) => {
+  const onPressItem = (item:IMessages) => {
     const isSelected = checkIfSelected(item);
     if (isSelected) {
       onRemoveItem(item);
@@ -146,46 +259,102 @@ const FileList = () => {
     }
   }
 
-  const checkIfSelected = (item) => {
-    return !!lodash.find(selectedData, d => d._id === item._id);
+  const checkIfSelected = (item:IMessages) => {
+    return !!lodash.find(selectedData, (d:IMessages) => d._id === item._id);
   }
 
-  const _renderItem = ({ item }) => {
-    return (
-      <View style={styles.item}>
-        <TouchableOpacity onPress={() => onPressItem(item)}>
-          <View style={[styles.circle, checkIfSelected(item) && { backgroundColor: '#2863D6' }]}>
-            {
-              !!checkIfSelected(item) && (
-                <NewCheckIcon
-                  color={'white'}
-                />
-              )
+  const onDelete = async () => {
+    const promises:any = [];
+    setDeleting(true);
+    selectedData.map((data:IMessages) => {
+      promises.push(
+        new Promise(async (resolve, reject) => {
+          deleteMessage(data._id, (res:any, err:any) => {
+            if (err) {
+              return reject(err);
             }
-          </View>
-        </TouchableOpacity>
-        <View style={styles.file}>
-          <NewFileIcon
-            color={'#606A80'}
-          />
-          <View style={{ paddingHorizontal: 10 }}>
-            <Text
-              size={14}
-              color={'#606A80'}
-            >
-              {item.name}
-            </Text>
-            <Text
-              size={12}
-              color={'#606A80'}
-              style={{ top: -2 }}
-            >
-              {item.size}
-            </Text>
-          </View>
-          <View style={{ width: 30 }} />
-        </View>
-      </View>
+            onRemoveItem(data);
+            dispatch(updateMessages(data.roomId, res));
+            return resolve(res);
+          })
+        })
+      )
+    });
+    Promise.all(promises).then(function(values) {
+      setDeleting(false);
+      setGroupAction('');
+      setSelectedData([]);
+    })
+    .catch(() => {
+      setDeleting(false);
+    });
+  }
+
+  const onDownload = async () => {
+    
+    if (selectedData) {
+      const promises:any = [];
+      setDownloading(true);
+      setDownloaded({});
+      setProgress({});
+      setError({});
+      selectedData.map((data:IMessages) => {
+        promises.push(
+          new Promise(async (resolve, reject) => {
+            downloadFile(data.attachment)
+            .progress({ count: 10 }, (received, total) => {
+              console.log('RECEIVED TOTAL', received, total);
+              const progress = received / total;
+              setProgress((p:any) => ({...p, [data._id]: progress}));
+            })
+            .then((res) => {
+              setDownloaded((d:any) => ({ ...d, [data._id]: true }));
+              resolve(res);
+            })
+            .catch((err) => {
+              setError((err:any) => ({ ...err, [data._id]: true }));
+              reject(err);
+            })
+          })
+        )        
+      });
+
+      Promise.all(promises).then(function(values) {
+        setDownloading(false);
+      })
+      .catch((err = []) => {
+        setDownloading(false);
+      });
+    }
+  }
+
+  const emptyComponent = () => (
+    <View style={styles.empty}>
+      <FileIcon
+        size={36}
+        color={text.default}
+      />
+      <Text
+        color={text.default}
+        size={16}
+      >
+        No files yet
+      </Text>
+    </View>
+  );
+
+  const _renderItem = ({ item }:any) => {
+    return (
+      <FileItem
+        name={item?.attachment?.name}
+        size={item?.attachment?.size}
+        uri={item?.attachment?.uri}
+        selected={checkIfSelected(item)}
+        onPress={() => onPressItem(item)}
+        progress={progress[item._id] || 0}
+        downloaded={downloaded[item._id] || false}
+        error={error[item._id] || false}
+      />
     );
   }
 
@@ -218,7 +387,7 @@ const FileList = () => {
           />
         </TouchableOpacity>
         <View style={{ width: 10 }} />
-        <TouchableOpacity disabled={!groupAction}>
+        <TouchableOpacity disabled={!groupAction || downloading} onPress={onDownload}>
           <View style={styles.icon}>
             <DownloadIcon
               color={!!groupAction ? '#606A80' : '#979797'}
@@ -226,7 +395,7 @@ const FileList = () => {
             />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity disabled={!groupAction}>
+        <TouchableOpacity disabled={!groupAction || deleting} onPress={onDelete}>
           <View style={styles.icon}>
             <TrashIcon
               color={!!groupAction ? '#606A80' : '#979797'}
@@ -268,10 +437,24 @@ const FileList = () => {
     <View style={styles.container}>
       {_listHeader()}
       {_popUpMenu()}
-      <FlatList
-        data={data}
-        renderItem={_renderItem}
-      />
+      {
+        loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size={'small'} color={text.default} />
+            <Text color={text.default}>Fetching files...</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={messages}
+            renderItem={_renderItem}
+            keyExtractor={(item:any) => item._id}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={emptyComponent}
+            onEndReached={() => fetchMoreMessages()}
+            onEndReachedThreshold={0.5}
+          />
+        )
+      }
     </View>
   )
 }

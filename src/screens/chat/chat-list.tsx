@@ -12,7 +12,9 @@ import {
   setSelectedMessage,
   setPendingMessageError,
   removePendingMessage,
-  addMessages
+  addMessages,
+  setSelectedChannel,
+  addChannel
 } from 'src/reducers/channel/actions';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import Text from '@atoms/text';
@@ -85,12 +87,14 @@ const List = () => {
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const messages = useSelector((state:RootStateOrAny) => {
-    const { normalizedMessages, pendingMessages } = state.channel;
+    const { selectedChannel, channelMessages, pendingMessages } = state.channel;
+    const normalizedMessages = channelMessages[selectedChannel._id]?.messages || {};
+    const channelPendingMessages = pendingMessages[selectedChannel._id || 'temp'] || {};
     const messagesList = lodash.keys(normalizedMessages).map((m:string) => {
       return normalizedMessages[m];
     });
-    const pendingMessageList = lodash.keys(pendingMessages).map((m:string) => {
-      return pendingMessages[m];
+    const pendingMessageList = lodash.keys(channelPendingMessages).map((m:string) => {
+      return channelPendingMessages[m];
     });
     let delivered = false;
     let seen:any = [];
@@ -115,7 +119,7 @@ const List = () => {
     (state:RootStateOrAny) => {
       const { selectedChannel } = state.channel;
 
-      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
+      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id);
       return selectedChannel;
     }
   );
@@ -138,16 +142,17 @@ const List = () => {
     unSendMessage,
     deleteMessage,
     seenMessage,
+    createChannel,
   } = useSignalr();
 
   const fetchMoreMessages = (isPressed = false) => {
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);
     setHasError(false);
-    getMessages(channelId, pageIndex, (err, res) => {
+    getMessages(channelId, pageIndex, false, (err, res) => {
       setLoading(false);
       if (res) {
-        if (res.list) dispatch(addToMessages(res.list));
+        if (res.list) dispatch(addToMessages(channelId, res.list));
         setPageIndex(current => current + 1);
         setHasMore(res.hasMore);
       }
@@ -159,26 +164,44 @@ const List = () => {
     })
   }
 
-  const _sendMessage = (data:any, messageId:string, config: any) => {
-    sendMessage(data, (err:any, result:IMessages) => {
-      if (err) {
-        if (err?.message !== 'canceled') {
-          dispatch(setPendingMessageError(messageId));
+  const _sendMessage = (data:any, messageId:string, config: any, createNew = false) => {
+    if (createNew) {
+      createChannel(data, (err:any, res:any) => {
+        if (res) {
+          const { lastMessage } = res;
+          res.otherParticipants = lodash.reject(res.participants, (p:IParticipants) => p._id === user._id);
+          dispatch(removePendingMessage(channelId, messageId, lastMessage));
+          dispatch(setSelectedChannel(res));
+          dispatch(addChannel(res));
         }
-      } else {
-        dispatch(removePendingMessage(messageId, result));
-      }
-    }, config);
+        if (err) {
+          console.log('ERROR', err, messageId);
+          if (err?.message !== 'canceled') {
+            dispatch(setPendingMessageError(channelId, messageId));
+          }
+        }
+      }, config);
+    } else {
+      sendMessage(data, (err:any, result:IMessages) => {
+        if (err) {
+          if (err?.message !== 'canceled') {
+            dispatch(setPendingMessageError(channelId, messageId)); 
+          }
+        } else {
+          dispatch(removePendingMessage(channelId, messageId, result));
+        }
+      }, config);
+    }
   }
 
   const _sendFile = (channelId:string, messageId:string, data:any, config:any) => {
     sendFile(channelId, data, (err:any, result:any) => {
       if (err) {
         if (err?.message !== 'canceled') {
-          dispatch(setPendingMessageError(messageId));
+          dispatch(setPendingMessageError(channelId, messageId));
         }
       } else {
-        dispatch(removePendingMessage(messageId, result));
+        dispatch(removePendingMessage(channelId, messageId, result));
       }
     }, config);
   }
@@ -196,11 +219,11 @@ const List = () => {
     setHasError(false);
     let unmount = false;
     if (rendered) {
-      getMessages(channelId, 1, (err, res) => {
+      getMessages(channelId, 1, false, (err, res) => {
         if (!unmount) {
           setLoading(false);
           if (res) {
-            dispatch(setMessages(res.list));
+            dispatch(setMessages(channelId, res.list));
             setPageIndex(current => current + 1);
             setHasMore(res.hasMore);
           }
@@ -215,7 +238,7 @@ const List = () => {
     return () => {
       unmount = true;
     }
-  }, [rendered, _id]);
+  }, [rendered, channelId]);
 
   useEffect(() => {
     if (lastMessage && rendered) {
@@ -238,7 +261,7 @@ const List = () => {
           !lodash.size(message?.attachment) && (
             <TouchableOpacity
               onPress={() => {
-                dispatch(setSelectedMessage(message));
+                dispatch(setSelectedMessage(channelId, message));
                 modalRef.current?.close();
               }}
             >
@@ -262,7 +285,7 @@ const List = () => {
         <TouchableOpacity
           onPress={() => {
             if (message?.messageType === 'file') {
-              dispatch(removePendingMessage(message._id, null));
+              dispatch(removePendingMessage(channelId, message._id, null));
             } else {
               setShowDeleteOption(true)
             }

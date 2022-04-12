@@ -80,6 +80,8 @@ const ChatList: FC<Props> = ({
             messageId={item._id}
             message={item.message}
             messageType={item.messageType}
+            groupName={item.groupName}
+            participants={item.participants}
             attachment={item.attachment}
             error={item.error}
             onSendMessage={onSendMessage}
@@ -120,6 +122,7 @@ const ChatList: FC<Props> = ({
           isGroup ? (
             <GroupBubble
               message={item.message}
+              messageType={item.type}
               attachment={item.attachment}
               isSender={isSender}
               sender={item.sender}
@@ -140,6 +143,7 @@ const ChatList: FC<Props> = ({
           ) : (
             <ChatBubble
               message={item.message}
+              messageType={item.type}
               attachment={item.attachment}
               isSender={isSender}
               sender={item.sender}

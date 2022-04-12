@@ -22,6 +22,7 @@ import ProfileImage from '@components/atoms/image/profile';
 import Text from '@components/atoms/text';
 import { text } from '@styles/color';
 import VideoButtons from '@components/molecules/video/buttons'
+import VideoNotification from './notification';
 const { width, height } = Dimensions.get('window');
 
 const AgoraLocalView =
@@ -102,6 +103,7 @@ const styles = StyleSheet.create({
   videoList: {
     position: 'absolute',
     bottom: 100,
+    width,
   },
   name: {
     textAlign: 'center',
@@ -134,8 +136,10 @@ interface Props {
   header?: ReactNode;
   agora?: any;
   callEnded?: false;
+  message?: string;
   isVoiceCall?: false;
   onEndCall?: any;
+  setNotification?: any;
   isGroup?: false;
 }
 
@@ -158,8 +162,10 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   header,
   agora = {},
   callEnded = false,
+  message = '',
   isVoiceCall = false,
   onEndCall = () => {},
+  setNotification = (message:string) => {},
   isGroup = false,
 }, ref) => {
   const [selectedPeer, setSelectedPeer]:any = useState(null);
@@ -471,6 +477,14 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
           <>
             {fullVideo(!selectedPeer || selectedPeer === myId)}
             <View style={styles.videoList}>
+            {
+              !!message && (
+                <VideoNotification
+                  message={message}
+                  setNotification={() => setNotification('')}
+                />
+              )
+            }
               <FlatList
                 data={peerList}
                 bounces={false}

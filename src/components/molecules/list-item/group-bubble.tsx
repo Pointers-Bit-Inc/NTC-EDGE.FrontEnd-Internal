@@ -1,15 +1,16 @@
-import React, { FC, useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, Image, Platform, Dimensions } from 'react-native'
+import React,{FC,useState} from 'react'
+import {Dimensions,Image,Platform,StyleSheet,TouchableOpacity,View} from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
-import { CheckIcon, DeleteIcon, NewFileIcon, WriteIcon } from '@components/atoms/icon';
-import { getChatTimeString, getFileSize } from 'src/utils/formatting'
-import { primaryColor, bubble, text, outline } from '@styles/color'
+import {CheckIcon,NewFileIcon,WriteIcon} from '@components/atoms/icon';
+import {getChatTimeString,getFileSize} from 'src/utils/formatting'
+import {bubble,primaryColor,text} from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
-import { Regular500 } from '@styles/font';
-import { fontValue } from '@components/pages/activities/fontValue';
+import {Regular500} from '@styles/font';
+import {fontValue} from '@components/pages/activities/fontValue';
 import IAttachment from 'src/interfaces/IAttachment';
+import hairlineWidth=StyleSheet.hairlineWidth;
 
 const { width } = Dimensions.get('window');
 
@@ -65,12 +66,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 5,
   },
+
   flipX: {
     transform: [
       {
         scaleX: -1
       }
     ]
+  },
+  hrText:{
+    flex:1,
+    paddingVertical: 20,
+    alignSelf:'center',
+    width:"100%",
+    flexDirection:"row",
+    justifyContent:"center"
+  },
+  border:{
+    flex:1,
+    backgroundColor:  "#D1D1D6",
+    width:"100%",
+    height:hairlineWidth,
+    alignSelf:"center"
+  },
+  hrContent:{
+    color:  "#2863D6",
+    paddingHorizontal:20,
+    textAlign:'center'
   },
   check: {
     borderRadius: fontValue(12),
@@ -104,11 +126,20 @@ const styles = StyleSheet.create({
   imageFile: {
     width: width * 0.3,
     height: width * 0.3,
+  },
+  notif: {
+    backgroundColor: '#C4C4C4',
+    alignSelf: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 2,
+    borderRadius: 15,
+    marginTop: 5,
   }
 })
 
 interface Props {
   message?: string;
+  messageType?: string;
   attachment?: IAttachment;
   sender?: any;
   isSender?: boolean;
@@ -130,6 +161,7 @@ interface Props {
 
 const ChatBubble:FC<Props> = ({
   message,
+  messageType,
   attachment,
   sender = {},
   isSender = false,
@@ -150,6 +182,8 @@ const ChatBubble:FC<Props> = ({
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
+  const deletedOrUnsend = deleted || (unSend && isSender);
+  const senderName = isSender ? 'You' : sender.firstName;
 
   const _getSenderName = () => {
     let result = '';
@@ -163,18 +197,131 @@ const ChatBubble:FC<Props> = ({
     return false;
   };
 
+  const renderContent = () => {
+    if (deletedOrUnsend) {
+      return (
+        <Text
+          style={{ marginLeft: 5 }}
+          size={14}
+          color={'#979797'}
+        >
+          {
+            (unSend && isSender) ?
+            'Unsent for you'
+            : `${senderName} deleted a message`
+          }
+        </Text>
+      )
+    } else if (!!attachment) {
+      return (
+        <View style={styles.file}>
+          <NewFileIcon
+            color={'#606A80'}
+          />
+          <View style={{ paddingHorizontal: 5, maxWidth: width * 0.3 }}>
+            <Text
+              size={12}
+              color={'#606A80'}
+            >
+              {attachment.name}
+            </Text>
+            <Text
+              size={10}
+              color={'#606A80'}
+              style={{ top: -2 }}
+            >
+              {getFileSize(attachment.size)}
+            </Text>
+          </View>
+          <View style={{ width: 10 }} />
+        </View>
+      )
+    }
+    if (messageType === 'callended') {
+      return (
+        <Text
+          size={14}
+          color={'#979797'}
+        >
+          {message}
+        </Text>
+      )
+    }
+    return (
+      <Text
+        size={14}
+        color={(isSender && !system) ? 'white' : 'black'}
+      >
+        {message}
+      </Text>
+    )
+  }
+
+  if (messageType === 'leave' || messageType === 'removed' || messageType === 'added') {
+    return (
+      <>
+        {
+          (showDetails || showDate) && (
+              Platform.select({
+                native:(
+                    <View style={styles.seenTimeContainer}>
+                      <Text
+                          color={text.default}
+                          size={12}
+                      >
+                        {getChatTimeString(createdAt)}
+                      </Text>
+                    </View>
+                ),
+                web:(
+                    <View style={styles.hrText}>
+                      <View style={styles.border}/>
+                      <View>
+                        <Text style={[styles.hrContent, {color:  "#808196",}]}>{getChatTimeString(createdAt)}</Text>
+                      </View>
+                      <View style={styles.border}/>
+                    </View>
+                )
+              })
+          )
+        }
+        <View style={styles.notif}>
+          <Text
+            size={14}
+            color={'#fff'}
+          >
+            {`${(messageType === 'removed' || messageType === 'added') ? senderName : ''} ${message}`}
+          </Text>
+        </View>
+      </>
+    )
+  }
+
   return (
     <>
       {
         (showDetails || showDate || system) && (
-          <View style={styles.seenTimeContainer}>
-            <Text
-              color={text.default}
-              size={12}
-            >
-              {getChatTimeString(createdAt)}
-            </Text>
-          </View>
+            Platform.select({
+              native:(
+                  <View style={styles.seenTimeContainer}>
+                    <Text
+                        color={text.default}
+                        size={12}
+                    >
+                      {getChatTimeString(createdAt)}
+                    </Text>
+                  </View>
+              ),
+              web:(
+                  <View style={styles.hrText}>
+                    <View style={styles.border}/>
+                    <View>
+                      <Text style={[styles.hrContent, {color:  "#808196",}]}>{getChatTimeString(createdAt)}</Text>
+                    </View>
+                    <View style={styles.border}/>
+                  </View>
+              )
+            })
         )
       }
       <TouchableOpacity
@@ -217,7 +364,7 @@ const ChatBubble:FC<Props> = ({
               ) : null
             }
             {
-              checkIfImage(attachment?.uri) ? (
+              checkIfImage(attachment?.uri) && !deletedOrUnsend ? (
                 <Image
                   resizeMode={'cover'}
                   style={[
@@ -237,62 +384,12 @@ const ChatBubble:FC<Props> = ({
                       {
                         backgroundColor: isSender ? bubble.primary : bubble.secondary
                       },
-                      (deleted || (unSend && isSender) || system) && {
+                      (deletedOrUnsend || system) && {
                         backgroundColor: '#E5E5E5'
                       },
                     ]}
                   >
-                    {
-                      (deleted || (unSend && isSender)) ? (
-                        <>
-                          <NewDeleteIcon
-                            height={fontValue(18)}
-                            width={fontValue(18)}
-                            color={'#979797'}
-                          />
-                          <Text
-                            style={{ marginLeft: 5 }}
-                            size={14}
-                            color={'#979797'}
-                          >
-                            {
-                              (unSend && isSender) ?
-                              'Unsent for you'
-                              : `${isSender ? 'You' : sender.firstName } deleted a message`
-                            }
-                          </Text>
-                        </>
-                      ) : !!attachment ? (
-                        <View style={styles.file}>
-                          <NewFileIcon
-                            color={'#606A80'}
-                          />
-                          <View style={{ paddingHorizontal: 5, maxWidth: width * 0.3 }}>
-                            <Text
-                              size={12}
-                              color={'#606A80'}
-                            >
-                              {attachment.name}
-                            </Text>
-                            <Text
-                              size={10}
-                              color={'#606A80'}
-                              style={{ top: -2 }}
-                            >
-                              {getFileSize(attachment.size)}
-                            </Text>
-                          </View>
-                          <View style={{ width: 10 }} />
-                        </View>
-                      ) : (
-                        <Text
-                          size={14}
-                          color={(isSender && !system) ? 'white' : 'black'}
-                        >
-                          {message}
-                        </Text>
-                      )
-                    }
+                    {renderContent()}
                   </View>
                 </View>
               )

@@ -6,8 +6,8 @@ import { text, outline, button } from 'src/styles/color';
 import { getDateTimeString } from 'src/utils/formatting';
 import { Bold, Regular500 } from '@styles/font';
 import CloseIcon from '@assets/svg/close';
-import { RFValue } from 'react-native-responsive-fontsize';
 import { PhoneIcon } from '@components/atoms/icon';
+import {fontValue as RFValue} from "@pages/activities/fontValue";
 
 const styles = StyleSheet.create({
   container: {
@@ -80,7 +80,7 @@ const MeetingNotif: FC<Props> = ({
           color={text.default}
           size={10}
         >
-          {getDateTimeString(time)}
+          {getDateTimeString(time, '')}
         </Text>
       </View>
       <View style={{ position: 'absolute', top: 10, right: 10 }}>

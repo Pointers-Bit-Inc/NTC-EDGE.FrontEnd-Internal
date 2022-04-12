@@ -271,10 +271,9 @@ export function ActivityItem(props: any) {
     };
 
     const dimensions = useWindowDimensions();
-    const [prefetchImage, setPrefetchImage] = useState(false)
 
 
-    return (
+     return (
 
         <Hoverable>
             { isHovered => (
@@ -307,104 +306,107 @@ export function ActivityItem(props: any) {
                                         borderRadius : 4
                                     } }/>
                                 </View>
-                                <Animatable.View   animation={'fadeIn'} style={ [styles.containerBlur , { borderWidth : props.selected ? 4 : 0 , }] }>
-                                    <TouchableOpacity onPress={ () => {
-                                        props.onPressUser()
-                                    } }>
-                                        <View style={
-                                            {
-                                                borderRadius : fontValue(10) ,
-                                                flex : 1 ,
+                                <View   style={ [styles.containerBlur , { borderWidth : props.selected ? 4 : 0 , }] }>
+                                    <Animatable.View animation={'fadeIn'} >
+                                        <TouchableOpacity onPress={ () => {
+                                            props.onPressUser()
+                                        } }>
+                                            <View style={
+                                                {
+                                                    borderRadius : fontValue(10) ,
+                                                    flex : 1 ,
 
-                                                paddingHorizontal : fontValue(10) ,
-                                                paddingVertical : props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel ? undefined : fontValue(10) ,
-                                                flexDirection : "row" ,
-                                                alignItems : "center"
-                                            }
-                                        }>
-                                            <ProfileImage
-                                                size={ fontValue(45) }
-                                                image={ userActivity?.profilePicture?.small ? userActivity?.profilePicture?.small.match(/[^/]+(jpg|png|gif)$/i) ?  userActivity?.profilePicture?.small :  userActivity?.profilePicture?.small + ".png" : null }
-                                                name={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
-                                            />
-                                            <View style={ styles.content }>
-                                                <View style={ styles.section }>
-                                                    <View style={ styles.name }>
-                                                        <Text
-                                                            //style={{color: props?.activity?.dateRead ? "#565961" : "#000"}}
-                                                            style={ {
-                                                                fontFamily : Bold ,
-                                                                fontSize : fontValue(14 ,)
-                                                            } }
-                                                            numberOfLines={ 1 }
-                                                        >
-                                                            <Highlighter
-                                                                highlightStyle={ { backgroundColor : '#BFD6FF' } }
-                                                                searchWords={ [props?.searchQuery] }
-                                                                textToHighlight={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
-                                                            />
+                                                    paddingHorizontal : fontValue(10) ,
+                                                    paddingVertical : props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel ? undefined : fontValue(10) ,
+                                                    flexDirection : "row" ,
+                                                    alignItems : "center"
+                                                }
+                                            }>
+                                                <ProfileImage
+                                                    size={ fontValue(45) }
+                                                    image={ userActivity?.profilePicture?.thumb ? userActivity?.profilePicture?.thumb.match(/[^/]+(jpg|png|gif)$/i) ?  userActivity?.profilePicture?.thumb :  userActivity?.profilePicture?.thumb + ".png" : null }
+                                                    name={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
+                                                />
+                                                <View style={ styles.content }>
+                                                    <View style={ styles.section }>
+                                                        <View style={ styles.name }>
+                                                            <Text
+                                                                //style={{color: props?.activity?.dateRead ? "#565961" : "#000"}}
+                                                                style={ {
+                                                                    fontFamily : Bold ,
+                                                                    fontSize : fontValue(14 ,)
+                                                                } }
+                                                                numberOfLines={ 1 }
+                                                            >
+                                                                <Highlighter
+                                                                    highlightStyle={ { backgroundColor : '#BFD6FF' } }
+                                                                    searchWords={ [props?.searchQuery] }
+                                                                    textToHighlight={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
+                                                                />
 
-                                                        </Text>
-                                                    </View>
-                                                    <View style={ styles.date }>
+                                                            </Text>
+                                                        </View>
+                                                        <View style={ styles.date }>
 
-                                                        <Text
-                                                            style={
-                                                                {
-                                                                    color : "#606A80" ,
-                                                                    fontFamily : Regular ,
-                                                                    fontSize : fontValue(10)
+                                                            <Text
+                                                                style={
+                                                                    {
+                                                                        color : "#606A80" ,
+                                                                        fontFamily : Regular ,
+                                                                        fontSize : fontValue(10)
+                                                                    }
                                                                 }
-                                                            }
-                                                            numberOfLines={ 1 }
-                                                        >
-                                                            { formatDate(props.activity.createdAt) }
-                                                        </Text>
+                                                                numberOfLines={ 1 }
+                                                            >
+                                                                { formatDate(props.activity.createdAt) }
+                                                            </Text>
+                                                        </View>
                                                     </View>
+                                                    <View style={ styles.section }>
+                                                        <View style={ { flex : 1 , alignItems : 'flex-start' } }>
+                                                            <RenderApplication
+                                                                applicationType={ props?.activity?.applicationType || props?.activity?.service?.name }/>
+                                                        </View>
+
+                                                        <RenderStatus
+                                                            status={ getStatus }
+                                                        />
+                                                    </View>
+
                                                 </View>
+
+                                            </View>
+                                            { props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel &&
+                                            <View style={ {
+                                                padding : fontValue(10) ,
+                                                borderTopColor : "#EFEFEF" ,
+                                                borderTopWidth : 1
+                                            } }>
                                                 <View style={ styles.section }>
                                                     <View style={ { flex : 1 , alignItems : 'flex-start' } }>
-                                                        <RenderApplication
-                                                            applicationType={ props?.activity?.applicationType || props?.activity?.service?.name }/>
+                                                        <RenderPinned config={ props.config }
+                                                                      assignedPersonnel={
+                                                                          !!props?.activity.paymentMethod && (
+                                                                              props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) ?
+                                                                          (
+                                                                              props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) : (
+                                                                              props?.activity?.paymentStatus == APPROVED || props?.activity?.paymentStatus == DECLINED ?
+                                                                              (
+                                                                                  props?.activity?.paymentHistory?.[0]?.userId) :
+                                                                              (
+                                                                                  (props?.activity?.approvalHistory?.[0]?.userId) ?
+                                                                                  props?.activity?.approvalHistory?.[0]?.userId : (
+                                                                                                                                      props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) ? props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel :
+                                                                                                                                  (props?.activity?.assignedPersonnel?._id || props?.assignedPersonnel)))
+                                                                      }/>
                                                     </View>
-
-                                                    <RenderStatus
-                                                        status={ getStatus }
-                                                    />
-                                                </View>
-
-                                            </View>
-
-                                        </View>
-                                        { props?.activity?.assignedPersonnel?.id || props?.activity?.assignedPersonnel &&
-                                        <View style={ {
-                                            padding : fontValue(10) ,
-                                            borderTopColor : "#EFEFEF" ,
-                                            borderTopWidth : 1
-                                        } }>
-                                            <View style={ styles.section }>
-                                                <View style={ { flex : 1 , alignItems : 'flex-start' } }>
-                                                    <RenderPinned config={ props.config }
-                                                                  assignedPersonnel={
-                                                                      !!props?.activity.paymentMethod && (
-                                                                          props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) ?
-                                                                      (
-                                                                          props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) : (
-                                                                          props?.activity?.paymentStatus == APPROVED || props?.activity?.paymentStatus == DECLINED ?
-                                                                          (
-                                                                              props?.activity?.paymentHistory?.[0]?.userId) :
-                                                                          (
-                                                                              (props?.activity?.approvalHistory?.[0]?.userId) ?
-                                                                              props?.activity?.approvalHistory?.[0]?.userId : (
-                                                                                  props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) ? props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel :
-                                                                              (props?.activity?.assignedPersonnel?._id || props?.assignedPersonnel)))
-                                                                  }/>
                                                 </View>
                                             </View>
-                                        </View>
-                                        }
-                                    </TouchableOpacity>
-                                </Animatable.View>
+                                            }
+                                        </TouchableOpacity>
+                                    </Animatable.View>
+
+                                </View>
                                 { dimensions.width >= 768 &&
                                 <View style={ { paddingHorizontal : selectedMoreCircle ? 14 : 18 , } }>
                                     <Menu onClose={ () => {

@@ -1,8 +1,6 @@
 import {Dimensions , Platform , StyleSheet} from "react-native";
 import {Bold , Regular , Regular500} from "@styles/font";
-import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
-import {isMobile} from "@pages/activities/isMobile";
 
 
 
