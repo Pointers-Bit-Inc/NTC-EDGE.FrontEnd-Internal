@@ -353,7 +353,7 @@ export const InfoWeb=(props)=>{
     const isAdmin=()=>{
         const participant:IParticipants=lodash.find(participants,(p:IParticipants)=>p._id===user._id);
 
-        return participant.isAdmin;
+        return participant?.isAdmin;
     };
     const removeMember=()=>{
         setShowAlert(false);
@@ -734,7 +734,14 @@ export const InfoWeb=(props)=>{
         <AwesomeAlert
             show={showAlert}
             showProgress={false}
-            contentContainerStyle={{borderRadius:15}}
+            contentContainerStyle={{shadowColor: "rgba(0,0,0,1)",
+                    shadowOffset: {
+                        height: 0,
+                        width: 0
+                    },
+                    elevation: 60,
+                    shadowOpacity: 0.25,
+                    shadowRadius: 20}}
             title={alertData.title}
             titleStyle={styles.titleMessage}
             message={alertData.message}
