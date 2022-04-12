@@ -20,7 +20,6 @@ import {
   getTimeString,
 } from 'src/utils/formatting';
 import useSignalr from 'src/hooks/useSignalr';
-import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
 import HomeMenuIcon from "@assets/svg/homemenu";

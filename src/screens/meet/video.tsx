@@ -17,7 +17,7 @@ import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
 import { getChannelName, getTimerString } from 'src/utils/formatting'
 import useSignalr from 'src/hooks/useSignalr';
-import VideoNotification from '@components/molecules/video/notification';
+import { requestCameraAndAudioPermission } from 'src/hooks/usePermission';
 
 const styles = StyleSheet.create({
   container: {
@@ -74,19 +74,29 @@ const Dial = ({ navigation, route }) => {
 
   useEffect(() => {
     let unmounted = false;
-    
-    joinMeeting(meeting._id, (err:any, result:any) => {
-      if (!unmounted) {
-        if (result) {
-          setLoading(false);
-          if (result) {
-            dispatch(updateMeetingParticipants(result.meeting));
-            setAgora(result?.agora);
+
+    requestCameraAndAudioPermission((err, result) => {
+      if (err) {
+        Alert.alert(
+          "Unable to access camera",
+          "Please allow camera access from device settings.",
+        );
+        navigation.goBack();
+      } else {
+        joinMeeting(meeting._id, (err:any, result:any) => {
+          if (!unmounted) {
+            if (result) {
+              setLoading(false);
+              if (result) {
+                dispatch(updateMeetingParticipants(result.meeting));
+                setAgora(result?.agora);
+              }
+            } else {
+              setLoading(false);
+              Alert.alert('Something went wrong.');
+            }
           }
-        } else {
-          setLoading(false);
-          Alert.alert('Something went wrong.');
-        }
+        });
       }
     });
   

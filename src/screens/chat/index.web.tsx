@@ -28,7 +28,6 @@ import {
 import {InputField,SearchField} from '@components/molecules/form-fields';
 import {button,outline,primaryColor,text} from '@styles/color';
 import useSignalr from 'src/hooks/useSignalr';
-//import { useRequestCameraAndAudioPermission } from 'src/hooks/useAgora';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
 import {ArrowLeftIcon,CheckIcon,NewCallIcon,NewChatIcon,NewVideoIcon} from '@atoms/icon';
@@ -821,6 +820,7 @@ const ChatList=({navigation}:any)=>{
                     }}/>
             </View>
             <View onLayout={onChatLayout} style={{backgroundColor:"#F8F8F8",flex:1,}}>
+
                 {onNewChat ?
 
                  <NewChat
