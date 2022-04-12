@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingHorizontal: 10,
     marginBottom: 5,
+    marginTop: 10,
   },
 
   flipX: {
@@ -289,6 +290,7 @@ const ChatBubble:FC<Props> = ({
           <Text
             size={14}
             color={'#fff'}
+            style={{ textAlign: 'center' }}
           >
             {`${(messageType === 'removed' || messageType === 'added') ? senderName : ''} ${message}`}
           </Text>
