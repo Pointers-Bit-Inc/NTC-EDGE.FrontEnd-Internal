@@ -203,10 +203,13 @@ export function useActivities(){
                     response?.data?.size ? setSize(response?.data?.size) : setSize(0);
                     response?.data?.total ? setTotal(response?.data?.total) : setTotal(0);
                     response?.data?.page ? setPage(response?.data?.page) : setPage(0);
+
+
+
                     dispatch(setApplications({data:response?.data,user:user}))
-                    /*if(!notPinnedApplications.length) {
+                    if(!notPinnedApplications.length) {
                         handleLoad()
-                    }*/
+                    }
                 }
             }
             if(isCurrent) setRefreshing(false);
