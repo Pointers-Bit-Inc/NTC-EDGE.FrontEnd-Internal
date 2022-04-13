@@ -31,6 +31,8 @@ import {Menu,MenuOption,MenuOptions,MenuTrigger} from "react-native-popup-menu";
 import MessageMember from "@pages/chat-modal/message";
 import CreateMeeting from "@pages/chat-modal/meeting";
 import AwesomeAlert from "react-native-awesome-alerts";
+import {APPROVED} from "../../reducers/activity/initialstate";
+import CustomAlert from "@pages/activities/alert/alert";
 
 const {height,width}=Dimensions.get('window');
 
@@ -200,7 +202,7 @@ function MenuBar(props:{opened:boolean,onClose:()=>void,onSelect:(value)=>void,o
     </Menu>;
 }
 
-export const InfoWeb=(props)=>{
+const Info=(props)=>{
     const dispatch=useDispatch();
     const {
         leaveChannel,
@@ -353,7 +355,7 @@ export const InfoWeb=(props)=>{
     const isAdmin=()=>{
         const participant:IParticipants=lodash.find(participants,(p:IParticipants)=>p._id===user._id);
 
-        return participant.isAdmin;
+        return participant?.isAdmin;
     };
     const removeMember=()=>{
         setShowAlert(false);
@@ -731,32 +733,12 @@ export const InfoWeb=(props)=>{
                 />
             </View>
         </BottomModal>
-        <AwesomeAlert
-            show={showAlert}
-            showProgress={false}
-            contentContainerStyle={{borderRadius:15}}
-            title={alertData.title}
-            titleStyle={styles.titleMessage}
-            message={alertData.message}
-            messageStyle={styles.message}
-            contentStyle={styles.content}
-            closeOnTouchOutside={false}
-            closeOnHardwareBackPress={false}
-            showCancelButton={true}
-            showConfirmButton={true}
-            cancelButtonColor={'white'}
-            confirmButtonColor={'white'}
-            cancelButtonTextStyle={styles.cancelText}
-            confirmButtonTextStyle={styles.confirmText}
-            actionContainerStyle={{justifyContent:'space-around'}}
-            cancelText={alertData.cancel}
-            confirmText={alertData.confirm}
-            onCancelPressed={()=>setShowAlert(false)}
-            onConfirmPressed={alertConfirm}
-        />
+       
+       
     </SafeAreaView>
 
 
 };
 
 
+export default Info

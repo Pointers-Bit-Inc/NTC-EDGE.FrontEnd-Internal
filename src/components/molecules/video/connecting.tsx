@@ -1,9 +1,11 @@
-import React from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { View, StyleSheet, TouchableOpacity, Animated } from 'react-native'
 import Text from '@components/atoms/text'
 import GroupImage from '../image/group'
 import Loading from '@components/atoms/loading'
 import { useNavigation } from '@react-navigation/native'
+import { RFValue } from 'react-native-responsive-fontsize'
+import { button } from '@styles/color'
 
 const styles = StyleSheet.create({
   container: {
@@ -16,11 +18,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     paddingVertical: 10,
     borderRadius: 10,
+    overflow: 'hidden',
   }
 })
 
 const ConnectingVideo = ({ participants = [], callEnded = false }) => {
   const navigation = useNavigation();
+  const widthAnimation = useRef(new Animated.Value(0)).current;
+  const [enable, setEnable] = useState(false);
+
+  useEffect(() => {
+    if (callEnded) {
+      widthAnimation.setValue(1);
+      Animated.timing(
+        widthAnimation,
+        {
+          toValue: 200,
+          duration: 3000,
+          useNativeDriver: true,
+        }
+      ).start(() => setEnable(true));
+    }
+  }, [callEnded]);
 
   return (
     <View style={styles.container}>
@@ -70,8 +89,21 @@ const ConnectingVideo = ({ participants = [], callEnded = false }) => {
       {
         callEnded && (
           <View style={{ position: 'absolute', bottom: 80 }}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <View style={styles.close}>
+            <TouchableOpacity disabled={!enable} onPress={() => navigation.goBack()}>
+              <View style={[styles.close, enable && { backgroundColor: button.info }]}>
+                <Animated.View style={[{
+                  position: 'absolute',
+                  height: 100,
+                  width: 1,
+                  backgroundColor: button.info,
+                  zIndex: -1,
+                }, {
+                  transform: [
+                    {
+                      scaleX: widthAnimation
+                    },
+                  ],
+                }]} />
                 <Text
                   color={'white'}
                   size={18}

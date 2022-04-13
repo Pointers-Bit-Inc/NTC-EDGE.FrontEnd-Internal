@@ -176,7 +176,7 @@ const ChatInfo = ({ navigation }) => {
   } = useSignalr();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const api = useApi(user.sessionToken);
-  const { _id, otherParticipants = [], participants = [], hasRoomName = false, name = '', isGroup = false, muted = false } = useSelector(
+  const { _id, otherParticipants = [], participants = [], hasRoomName = false, name = '', isGroup = false, muted = false, author = {} } = useSelector(
     (state:RootStateOrAny) => {
       const { selectedChannel } = state.channel;
       selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id);
@@ -216,6 +216,10 @@ const ChatInfo = ({ navigation }) => {
     const participant:IParticipants = lodash.find(participants, (p:IParticipants) => p._id === user._id);
     
     return participant.isAdmin;
+  }
+
+  const isHost = (item:any = {}) => {
+    return item?._id === author._id;
   }
 
   const addAdmin = () => {
@@ -502,7 +506,7 @@ const ChatInfo = ({ navigation }) => {
                 color='#606A80'
                 size={12}
               >
-                Admin
+                {isHost(item) ? 'Host' : 'Admin'}
               </Text>
             </View>
           ) : null
@@ -664,7 +668,7 @@ const ChatInfo = ({ navigation }) => {
         </View>
         {separator()}
         <View style={styles.footerContainer}>
-          <TouchableOpacity onPress={onClearChat}>
+          {/* <TouchableOpacity onPress={onClearChat}>
             <View style={{ marginVertical: 10 }}>
               <Text
                 size={14}
@@ -673,7 +677,7 @@ const ChatInfo = ({ navigation }) => {
                 Clear Chat Content
               </Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           {
             isGroup && (
               <TouchableOpacity onPress={onDeleteChat}>
@@ -682,7 +686,7 @@ const ChatInfo = ({ navigation }) => {
                     size={14}
                     color={'#CF0327'}
                   >
-                    Leave and Delete
+                    {isHost(user) ? 'Leave and Delete' : 'Leave Chat'}
                   </Text>
                 </View>
               </TouchableOpacity>

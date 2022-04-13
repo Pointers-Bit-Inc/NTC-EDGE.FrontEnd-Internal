@@ -3,7 +3,7 @@ import {
     ActivityIndicator,
     Dimensions,
     FlatList,
-    InteractionManager,
+    InteractionManager,Modal,
     Platform,
     RefreshControl,
     StatusBar,
@@ -533,251 +533,251 @@ const NewChat=({
         setContacts([]);
     };
     return (
+             <View style={styles.container}>
+                 {selected && <TouchableWithoutFeedback onPress={()=> setSelected((selected)=> !selected )}>
+                     <View   style={{ zIndex: 1, width : "100%" ,
+                         height : "100%" ,
+                         alignItems : "center" ,
+                         justifyContent : "flex-end" ,
+                         position : "absolute" ,
+                         backgroundColor : "rgba(255, 255, 255, 0)"}}/>
+                 </TouchableWithoutFeedback>}
 
-        <View style={styles.container}>
-            {selected && <TouchableWithoutFeedback onPress={()=> setSelected((selected)=> !selected )}>
-                <View   style={{ zIndex: 1, width : "100%" ,
-                    height : "100%" ,
-                    alignItems : "center" ,
-                    justifyContent : "flex-end" ,
-                    position : "absolute" ,
-                    backgroundColor : "rgba(255, 255, 255, 0)"}}/>
-            </TouchableWithoutFeedback>}
+                 <StatusBar barStyle={'light-content'}/>
 
-            <StatusBar barStyle={'light-content'}/>
+                 <View onLayout={onLayoutFormTags} style={styles.header}>
+                     {
+                         (
+                             <View style={{paddingHorizontal:33, borderBottomColor:"#EFEFEF",borderBottomWidth:2}}>
+                                 <View>
+                                     {isGroup&&<View style={{
+                                         justifyContent:"space-between",
+                                         borderBottomWidth:2,
+                                         borderBottomColor:"#2863D6",
+                                         flexDirection:"row"
+                                     }}>
+                                         <View style={{flexDirection:'row',alignItems:'center'}}>
 
-            <View onLayout={onLayoutFormTags} style={styles.header}>
-                {
-                    (
-                        <View style={{paddingHorizontal:33, borderBottomColor:"#EFEFEF",borderBottomWidth:2}}>
-                            <View>
-                                {isGroup&&<View style={{
-                                    justifyContent:"space-between",
-                                    borderBottomWidth:2,
-                                    borderBottomColor:"#2863D6",
-                                    flexDirection:"row"
-                                }}>
-                                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                                             <Text
+                                                 color={text.default}
+                                                 size={14}
+                                                 style={{fontFamily:Regular}}
+                                             >
+                                                 Group name:
+                                             </Text>
+                                             <InputField
+                                                 clearable={false}
+                                                 style={{marginBottom:-20}}
+                                                 ref={groupNameRef}
+                                                 placeholder={'Group name'}
+                                                 containerStyle={styles.groupName}
+                                                 placeholderTextColor={'#C4C4C4'}
+                                                 inputStyle={[styles.inputText,{backgroundColor:'white' }]}
+                                                 outlineStyle={[styles.outlineText,{backgroundColor:'white'}]}
+                                                 value={groupName}
+                                                 onChangeText={setGroupName}
+                                                 returnKeyType={'done'}
+                                             />
+                                         </View>
+                                         {
+                                             lodash.size(participants)>1&&isGroup&&(
+                                                 <View style={{alignSelf:"center"}}>
+                                                     <TouchableOpacity
+                                                         disabled={!lodash.size(participants)||nextLoading}
+                                                         onPress={()=>onNext("")}
+                                                     >
+                                                         {
+                                                             nextLoading ? (
+                                                                 <ActivityIndicator color={text.default} size={'small'}/>
+                                                             ) : (
+                                                                 <Text
+                                                                     color={text.default}
+                                                                     size={14}
+                                                                     style={{fontFamily:Regular500}}
+                                                                 >
+                                                                     Create
+                                                                 </Text>
+                                                             )
+                                                         }
+                                                     </TouchableOpacity>
+                                                 </View>
+                                             )
 
-                                        <Text
-                                            color={text.default}
-                                            size={14}
-                                            style={{fontFamily:Regular}}
-                                        >
-                                            Group name:
-                                        </Text>
-                                        <InputField
-                                            clearable={false}
-                                            style={{marginBottom:-20}}
-                                            ref={groupNameRef}
-                                            placeholder={'Group name'}
-                                            containerStyle={styles.groupName}
-                                            placeholderTextColor={'#C4C4C4'}
-                                            inputStyle={[styles.inputText,{backgroundColor:'white' }]}
-                                            outlineStyle={[styles.outlineText,{backgroundColor:'white'}]}
-                                            value={groupName}
-                                            onChangeText={setGroupName}
-                                            returnKeyType={'done'}
-                                        />
-                                    </View>
-                                    {
-                                        lodash.size(participants)>1&&isGroup&&(
-                                            <View style={{alignSelf:"center"}}>
-                                                <TouchableOpacity
-                                                    disabled={!lodash.size(participants)||nextLoading}
-                                                    onPress={()=>onNext("")}
-                                                >
-                                                    {
-                                                        nextLoading ? (
-                                                            <ActivityIndicator color={text.default} size={'small'}/>
-                                                        ) : (
-                                                            <Text
-                                                                color={text.default}
-                                                                size={14}
-                                                                style={{fontFamily:Regular500}}
-                                                            >
-                                                                Create
-                                                            </Text>
-                                                        )
-                                                    }
-                                                </TouchableOpacity>
-                                            </View>
-                                        )
+                                         }
+                                         {
+                                             lodash.size(participants)<1&& isGroup&&
+                                             <View style={{alignSelf:"center"}}>
+                                                 <TouchableOpacity onPress={()=>{
+                                                     setIsGroup((isGroup) => !isGroup)
+                                                     setGroupName("")
+                                                 }}>
+                                                     <CloseIcon/>
+                                                 </TouchableOpacity>
+                                             </View>
 
-                                    }
-                                    {
-                                        lodash.size(participants)<1&& isGroup&&
-                                        <View style={{alignSelf:"center"}}>
-                                            <TouchableOpacity onPress={()=>{
-                                                setIsGroup((isGroup) => !isGroup)
-                                                setGroupName("")
-                                            }}>
-                                                <CloseIcon/>
-                                            </TouchableOpacity>
-                                        </View>
-
-                                    }
-                                </View>}
-                                <View style={{
-                                    paddingVertical:14,
-                                    flexDirection:'row',
-                                    justifyContent:'center'
-                                }}>
-                                    <View style={{alignSelf:"center"}}>
-                                        <Text
-                                            color={text.default}
-                                            size={14}
-                                            style={{fontFamily:Regular}}
-                                        >
-                                            To:
-                                        </Text>
-                                    </View>
-
-
-                                    <View onLayout={onLayoutInputTags} style={{
-                                        flexDirection:"row",
-                                        justifyContent:"space-between",
-                                        alignSelf:"center",
-                                        flex:1,
-                                        paddingLeft:5,
-                                        marginTop:Platform.OS==='ios' ? 0 : -2
-                                    }}>
-
-                                        <InputTags
-
-                                            placeholder={"Enter Name"}
-                                            ref={inputTagRef}
-                                            placeholderTextColor={'#C4C4C4'}
-                                            containerStyle={tagStyles.container}
-                                            initialTags={participants}
-                                            initialText={searchValue}
-
-                                            inputStyle={[tagStyles.input,{fontFamily:searchValue ? Bold : Regular, backgroundColor:'white'}]}
-                                            outlineStyle={[styles.outlineText,{backgroundColor:'white'}]}
-                                            onChangeTags={onChangeTags}
-                                            renderTag={renderTag}
-                                            onChangeTextDebounce={setSearchValue}
-                                            onSubmitEditing={(event:any)=>setSearchText(event.nativeEvent.text)}
-                                            onFocus={()=>{
-                                                setSelected(true);
-                                                setIsFocused(true)
-                                            }}
-                                            onBlur={()=>{
-
-                                                setIsFocused(false)
-                                            }}
-                                        />
-
-                                        {
-                                            !searchValue&&(
-                                                <View style={{alignSelf:"center"}}>
-                                                    <TouchableOpacity onPress={()=>inputTagRef?.current?.focus()}>
-                                                        <View style={styles.plus}>
-                                                            <PlusIcon
-                                                                color="white"
-                                                                size={fontValue(12)}
-                                                            />
-                                                        </View>
-                                                    </TouchableOpacity>
-                                                </View>
-
-                                            )
-                                        }
-                                    </View>
-                                    {!isGroup && <Hoverable>
-                                        { isHovered => (
-                                            <View style={{paddingLeft:32,alignSelf:"center"}}>
-                                        <TouchableOpacity onPress={onGroup}>
-                                            <View style={{
-                                                borderRadius:20,
-                                                paddingHorizontal:12,
-                                                paddingVertical:5,
-                                                backgroundColor:isHovered ? "#2863D6" : "#F9F9F9",
-                                                flexDirection:"row"
-                                            }}>
-
-                                                <EditIcon color={isHovered ? "#fff" : "#212121"} style={{paddingRight:12}}/>
-                                                <Text color={isHovered ?  "#fff" : "#212121" } size={15}>Add group name</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>) }
-                                    </Hoverable>}
+                                         }
+                                     </View>}
+                                     <View style={{
+                                         paddingVertical:14,
+                                         flexDirection:'row',
+                                         justifyContent:'center'
+                                     }}>
+                                         <View style={{alignSelf:"center"}}>
+                                             <Text
+                                                 color={text.default}
+                                                 size={14}
+                                                 style={{fontFamily:Regular}}
+                                             >
+                                                 To:
+                                             </Text>
+                                         </View>
 
 
-                                </View>
-                                {
-                                    !lodash.size(participants)&&isMobile&&(
-                                        <View style={styles.newGroupContainer}>
-                                            <View style={{alignContent:'center',flexDirection:'row'}}>
-                                                <NewGroupIcon
-                                                    width={fontValue(22)}
-                                                    height={fontValue(22)}
-                                                    color={header.default}
-                                                />
-                                                <Text
-                                                    color={header.default}
-                                                    size={14}
-                                                    style={{fontFamily:Regular500,marginLeft:5}}
-                                                >
-                                                    Create new group
-                                                </Text>
-                                            </View>
-                                            <TouchableOpacity
-                                                onPress={onGroup}
-                                            >
-                                                <ArrowRightIcon
-                                                    type='chevron-right'
-                                                    color={'#606A80'}
-                                                    size={fontValue(22)}
-                                                />
-                                            </TouchableOpacity>
-                                        </View>
-                                    )
-                                }
-                            </View>
-                        </View>
+                                         <View onLayout={onLayoutInputTags} style={{
+                                             flexDirection:"row",
+                                             justifyContent:"space-between",
+                                             alignSelf:"center",
+                                             flex:1,
+                                             paddingLeft:5,
+                                             marginTop:Platform.OS==='ios' ? 0 : -2
+                                         }}>
 
-                    )
-                }
-            </View>
+                                             <InputTags
 
-            {renderList()}
+                                                 placeholder={"Enter Name"}
+                                                 ref={inputTagRef}
+                                                 placeholderTextColor={'#C4C4C4'}
+                                                 containerStyle={tagStyles.container}
+                                                 initialTags={participants}
+                                                 initialText={searchValue}
 
-            <ChatView
-                channelId={selectedChannel?._id}
-                otherParticipants={lodash.reject(selectedChannel.participants,(p:IParticipants)=>p._id===user._id)}
-                isGroup={selectedChannel.isGroup}
-                groupName={groupName}
-                lastMessage={selectedChannel.lastMessage}
-                onNext={(message:string,data:any)=>onNext(message,data)}
-                participants={participants}
-            />
+                                                 inputStyle={[tagStyles.input,{fontFamily:searchValue ? Bold : Regular, backgroundColor:'white'}]}
+                                                 outlineStyle={[styles.outlineText,{backgroundColor:'white'}]}
+                                                 onChangeTags={onChangeTags}
+                                                 renderTag={renderTag}
+                                                 onChangeTextDebounce={setSearchValue}
+                                                 onSubmitEditing={(event:any)=>setSearchText(event.nativeEvent.text)}
+                                                 onFocus={()=>{
+                                                     setSelected(true);
+                                                     setIsFocused(true)
+                                                 }}
+                                                 onBlur={()=>{
+
+                                                     setIsFocused(false)
+                                                 }}
+                                             />
+
+                                             {
+                                                 !searchValue&&(
+                                                     <View style={{alignSelf:"center"}}>
+                                                         <TouchableOpacity onPress={()=>inputTagRef?.current?.focus()}>
+                                                             <View style={styles.plus}>
+                                                                 <PlusIcon
+                                                                     color="white"
+                                                                     size={fontValue(12)}
+                                                                 />
+                                                             </View>
+                                                         </TouchableOpacity>
+                                                     </View>
+
+                                                 )
+                                             }
+                                         </View>
+                                         {!isGroup && <Hoverable>
+                                             { isHovered => (
+                                                 <View style={{paddingLeft:32,alignSelf:"center"}}>
+                                                     <TouchableOpacity onPress={onGroup}>
+                                                         <View style={{
+                                                             borderRadius:20,
+                                                             paddingHorizontal:12,
+                                                             paddingVertical:5,
+                                                             backgroundColor:isHovered ? "#2863D6" : "#F9F9F9",
+                                                             flexDirection:"row"
+                                                         }}>
+
+                                                             <EditIcon color={isHovered ? "#fff" : "#212121"} style={{paddingRight:12}}/>
+                                                             <Text color={isHovered ?  "#fff" : "#212121" } size={15}>Add group name</Text>
+                                                         </View>
+                                                     </TouchableOpacity>
+                                                 </View>) }
+                                         </Hoverable>}
 
 
-            <AwesomeAlert
-                show={showAlert}
-                showProgress={false}
-                contentContainerStyle={{borderRadius:15}}
-                title={'Discard group?'}
-                titleStyle={styles.title}
-                message={"Are you sure you would like to discard this group? your changes won't be saved"}
-                messageStyle={styles.message}
-                contentStyle={styles.content}
-                closeOnTouchOutside={false}
-                closeOnHardwareBackPress={false}
-                showCancelButton={true}
-                showConfirmButton={true}
-                cancelButtonColor={'white'}
-                confirmButtonColor={'white'}
-                cancelButtonTextStyle={styles.cancelText}
-                confirmButtonTextStyle={styles.confirmText}
-                actionContainerStyle={{justifyContent:'space-around'}}
-                cancelText="Cancel"
-                confirmText="Discard"
-                onCancelPressed={()=>setShowAlert(false)}
-                onConfirmPressed={onConfirmPressed}
-            />
-        </View>
+                                     </View>
+                                     {
+                                         !lodash.size(participants)&&isMobile&&(
+                                             <View style={styles.newGroupContainer}>
+                                                 <View style={{alignContent:'center',flexDirection:'row'}}>
+                                                     <NewGroupIcon
+                                                         width={fontValue(22)}
+                                                         height={fontValue(22)}
+                                                         color={header.default}
+                                                     />
+                                                     <Text
+                                                         color={header.default}
+                                                         size={14}
+                                                         style={{fontFamily:Regular500,marginLeft:5}}
+                                                     >
+                                                         Create new group
+                                                     </Text>
+                                                 </View>
+                                                 <TouchableOpacity
+                                                     onPress={onGroup}
+                                                 >
+                                                     <ArrowRightIcon
+                                                         type='chevron-right'
+                                                         color={'#606A80'}
+                                                         size={fontValue(22)}
+                                                     />
+                                                 </TouchableOpacity>
+                                             </View>
+                                         )
+                                     }
+                                 </View>
+                             </View>
+
+                         )
+                     }
+                 </View>
+
+                 {renderList()}
+
+                 <ChatView
+                     channelId={selectedChannel?._id}
+                     otherParticipants={lodash.reject(selectedChannel.participants,(p:IParticipants)=>p._id===user._id)}
+                     isGroup={selectedChannel.isGroup}
+                     groupName={groupName}
+                     lastMessage={selectedChannel.lastMessage}
+                     onNext={(message:string,data:any)=>onNext(message,data)}
+                     participants={participants}
+                 />
+
+
+                 <AwesomeAlert
+                     show={showAlert}
+                     showProgress={false}
+                     contentContainerStyle={{borderRadius:15}}
+                     title={'Discard group?'}
+                     titleStyle={styles.title}
+                     message={"Are you sure you would like to discard this group? your changes won't be saved"}
+                     messageStyle={styles.message}
+                     contentStyle={styles.content}
+                     closeOnTouchOutside={false}
+                     closeOnHardwareBackPress={false}
+                     showCancelButton={true}
+                     showConfirmButton={true}
+                     cancelButtonColor={'white'}
+                     confirmButtonColor={'white'}
+                     cancelButtonTextStyle={styles.cancelText}
+                     confirmButtonTextStyle={styles.confirmText}
+                     actionContainerStyle={{justifyContent:'space-around'}}
+                     cancelText="Cancel"
+                     confirmText="Discard"
+                     onCancelPressed={()=>setShowAlert(false)}
+                     onConfirmPressed={onConfirmPressed}
+                 />
+             </View>
+
     )
 };
 

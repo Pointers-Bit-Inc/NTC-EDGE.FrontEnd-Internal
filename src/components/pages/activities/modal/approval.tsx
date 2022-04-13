@@ -201,7 +201,8 @@ const Approval=(props:any)=>{
 
                     })
 
-                }} show={showAlert} title={title}
+                }}
+                show={showAlert} title={title}
                 message={message}/>
             <KeyboardAvoidingView
                 behavior={Platform.OS==="ios" ? "padding" : "height"}
