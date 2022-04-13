@@ -1,5 +1,27 @@
 PODS:
-  - AgoraRtcEngine_iOS (3.5.2)
+  - AgoraRtcEngine_Special_iOS (3.6.2.70):
+    - AgoraRtcEngine_Special_iOS/AINS (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/AV1Dec (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/ContentInspect (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/FullAudioFormat (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/JND (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/ReplayKit (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/ROIEnc (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/RtcBasic (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/SuperResolution (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/VideoPreprocess (= 3.6.2.70)
+    - AgoraRtcEngine_Special_iOS/VirtualBackground (= 3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/AINS (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/AV1Dec (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/ContentInspect (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/FullAudioFormat (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/JND (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/ReplayKit (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/ROIEnc (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/RtcBasic (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/SuperResolution (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/VideoPreprocess (3.6.2.70)
+  - AgoraRtcEngine_Special_iOS/VirtualBackground (3.6.2.70)
   - boost-for-react-native (1.63.0)
   - DoubleConversion (1.1.6)
   - EXApplication (4.0.2):
@@ -291,9 +313,9 @@ PODS:
     - React-jsi (= 0.64.3)
     - React-perflogger (= 0.64.3)
   - React-jsinspector (0.64.3)
-  - react-native-agora (3.5.3):
-    - AgoraRtcEngine_iOS (= 3.5.2)
-    - React
+  - react-native-agora (3.6.2):
+    - AgoraRtcEngine_Special_iOS (= 3.6.2.70)
+    - React-Core
   - react-native-blob-util (0.14.1):
     - React-Core
   - react-native-camera (4.2.1):
@@ -519,7 +541,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - AgoraRtcEngine_iOS
+    - AgoraRtcEngine_Special_iOS
     - boost-for-react-native
     - OneSignalXCFramework
     - ZXingObjC
@@ -675,7 +697,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AgoraRtcEngine_iOS: 3d13806d67e401298558c9a6fb09340a4299afa2
+  AgoraRtcEngine_Special_iOS: 929a1cacc8e396fb7f4e7d329c7c38f56465b8c4
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   EXApplication: 54fe5bd6268d697771645e8f1aef8b806a65247a
@@ -719,7 +741,7 @@ SPEC CHECKSUMS:
   React-jsi: a8b09c29521c798f1783348b37b511ba7b3dbeb3
   React-jsiexecutor: df6abc9fafbecb8e5b7a5fbc5e6d4bd017d594d5
   React-jsinspector: 34e23860273a23695342f58eed3ffd3ba10c31e0
-  react-native-agora: 35578ecf3a97bc500b0be25da8743dd93599b1e3
+  react-native-agora: c6db7769dbdc62fed8412435808e25ce6230f355
   react-native-blob-util: 7ac01cd4a4ba81016864727a756ce2c1af995e35
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-onesignal: 7643517fe655b94cfda8e697ec16f9b9135648b8
