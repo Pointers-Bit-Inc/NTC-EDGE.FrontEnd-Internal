@@ -533,7 +533,6 @@ const NewChat=({
         setContacts([]);
     };
     return (
-         <Modal visible={true}>
              <View style={styles.container}>
                  {selected && <TouchableWithoutFeedback onPress={()=> setSelected((selected)=> !selected )}>
                      <View   style={{ zIndex: 1, width : "100%" ,
@@ -778,7 +777,6 @@ const NewChat=({
                      onConfirmPressed={onConfirmPressed}
                  />
              </View>
-         </Modal>
 
     )
 };

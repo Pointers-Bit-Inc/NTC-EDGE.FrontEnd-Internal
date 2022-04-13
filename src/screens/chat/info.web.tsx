@@ -31,6 +31,8 @@ import {Menu,MenuOption,MenuOptions,MenuTrigger} from "react-native-popup-menu";
 import MessageMember from "@pages/chat-modal/message";
 import CreateMeeting from "@pages/chat-modal/meeting";
 import AwesomeAlert from "react-native-awesome-alerts";
+import {APPROVED} from "../../reducers/activity/initialstate";
+import CustomAlert from "@pages/activities/alert/alert";
 
 const {height,width}=Dimensions.get('window');
 
@@ -731,36 +733,8 @@ const Info=(props)=>{
                 />
             </View>
         </BottomModal>
-        <AwesomeAlert
-            show={showAlert}
-            showProgress={false}
-            contentContainerStyle={{shadowColor: "rgba(0,0,0,1)",
-                    shadowOffset: {
-                        height: 0,
-                        width: 0
-                    },
-                    elevation: 60,
-                    shadowOpacity: 0.25,
-                    shadowRadius: 20}}
-            title={alertData.title}
-            titleStyle={styles.titleMessage}
-            message={alertData.message}
-            messageStyle={styles.message}
-            contentStyle={styles.content}
-            closeOnTouchOutside={false}
-            closeOnHardwareBackPress={false}
-            showCancelButton={true}
-            showConfirmButton={true}
-            cancelButtonColor={'white'}
-            confirmButtonColor={'white'}
-            cancelButtonTextStyle={styles.cancelText}
-            confirmButtonTextStyle={styles.confirmText}
-            actionContainerStyle={{justifyContent:'space-around'}}
-            cancelText={alertData.cancel}
-            confirmText={alertData.confirm}
-            onCancelPressed={()=>setShowAlert(false)}
-            onConfirmPressed={alertConfirm}
-        />
+       
+       
     </SafeAreaView>
 
 
