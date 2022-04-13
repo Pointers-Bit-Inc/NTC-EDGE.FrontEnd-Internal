@@ -92,6 +92,7 @@ const ModalTab = props => {
                 if (isShow && tab.id === 1) {
 
                     return <BasicInfo
+                        service={ service }
                         tabLabel={ { label : tab.name } } label={ tab.name }
                         paymentMethod={ paymentMethod }
                         assignedPersonnel={ assignedPersonnel }

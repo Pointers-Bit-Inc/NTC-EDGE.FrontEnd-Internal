@@ -186,14 +186,36 @@ export function useActivities(){
         }
     };
     let count=0;
+
     const fnApplications=(isCurrent:boolean,callback:(err:any)=>void)=>{
              
         setRefreshing(true);
         axios.get(BASE_URL+`/applications`,{...config,params:query()}).then((response)=>{
 
+            const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
+            const isNotPinned = []
+            const isPinned = []
+            for (let i = 0; i < response?.data?.docs?.length; i++) {
+
+                if ((
+                        (response?.data?.docs[i]?.assignedPersonnel?._id || response?.data.docs[i]?.assignedPersonnel ) == user?._id) &&
+                    !(
+                        cashier ?
+                        (
+                            !response?.data?.docs?.[i]?.paymentMethod?.length || response?.data?.docs?.[i]?.paymentStatus == PAID || response?.data?.docs?.[i]?.paymentStatus == APPROVED || response?.data?.docs?.[i]?.paymentStatus == DECLINED) : (
+                            response?.data?.docs?.[i]?.status == DECLINED || response?.data?.docs?.[i]?.status == APPROVED))) {
+
+                    isPinned.push(response?.data?.docs[i])
+                } else {
+
+                    isNotPinned.push(response?.data?.docs[i])
+                }
+            }
+
+
             if(response?.data?.message) Alert.alert(response.data.message);
             if(isCurrent) setRefreshing(false);
-            if(response?.data?.docs?.length) callback(true);
+
 
 
             if(count==0){
@@ -207,9 +229,14 @@ export function useActivities(){
 
 
                     dispatch(setApplications({data:response?.data,user:user}))
-                    if(!notPinnedApplications.length) {
-                        handleLoad()
+
+                    if(!isNotPinned.length) {
+                        setTimeout(()=>{
+                            handleLoad(response?.data?.page)
+                        }, 3000)
                     }
+
+
                 }
             }
             if(isCurrent) setRefreshing(false);
@@ -296,14 +323,14 @@ export function useActivities(){
     };
 
 
-    const handleLoad=useCallback(()=>{
+    const handleLoad=useCallback((page_)=>{
 
         let _page:string;
         setInfiniteLoad(true);
         if((
-            page*size)<total){
+            page*size)<total || page_ ){
             _page="?page="+(
-                page+1);
+                (page_ || page)+1);
 
             axios.get(BASE_URL+`/applications${_page}`,{...config,params:query()}).then((response)=>{
 

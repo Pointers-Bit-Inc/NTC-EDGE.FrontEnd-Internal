@@ -26,11 +26,9 @@ import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
+ import Row from "@pages/activities/application/Row"
+import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous";
 
-const Row = (props: { label: string, applicant: any }) => <View style={ styles.group2 }>
-    <Text style={ styles.detail }>{ props.label }</Text>
-    <Text style={ styles.detailInput }>{ props.applicant }</Text>
-</View>;
 
 
 
@@ -136,10 +134,14 @@ const BasicInfo = (props: any) => {
                                     </View>
                                     <Row label={ "Full Name:" }
                                          applicant={ applicant?.firstName + " " + applicant?.middleName?.charAt() + "." + " " + applicant?.lastName }/>
+                                    <Row label={ "Suffix:" }
+                                         applicant={ applicant?.suffix }/>
                                     <Row label={ "Date of Birth:" }
                                          applicant={ moment(applicant.dateOfBirth).format('LL') }/>
                                     <Row label={ "Gender:" } applicant={ applicant?.gender || applicant?.sex  }/>
                                     <Row label={ "Nationality:" } applicant={ applicant?.nationality }/>
+                                    <Row label={ "Weight:" } applicant={ applicant?.weight }/>
+                                    <Row label={ "Height:" } applicant={ applicant?.height }/>
                                 </View>
                                 <View style={ styles.divider }/>
                                 <View style={ styles.group3 }>
@@ -174,6 +176,7 @@ const BasicInfo = (props: any) => {
                             </View>
 
                         </View>
+                        <RenderServiceMiscellaneous service={props?.service}/>
                     </View>
                 </View>
 

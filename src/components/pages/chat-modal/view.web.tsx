@@ -204,8 +204,8 @@ const ChatView: FC<Props> = ({
     const onHideAttachmentOption = () => {
         setShowAttachmentOption(false);
     }
-
     useEffect(() => {
+       console.log("sending files")
         if (lodash.size(selectedFile)) {
             _sendFile(
                 channelId,
@@ -214,6 +214,7 @@ const ChatView: FC<Props> = ({
                 participants
             );
         }
+
     }, [selectedFile]);
 
     useEffect(() => {
