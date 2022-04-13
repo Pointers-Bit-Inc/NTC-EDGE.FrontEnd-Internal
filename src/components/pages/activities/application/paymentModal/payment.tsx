@@ -181,8 +181,8 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
             onLoadStart:true,
             fileName:_fileName,
             extension:(
-                /(pdf|docx|doc)$/ig.test(_fileName.substr((
-                    _fileName.lastIndexOf('.')+1)))),
+                /(pdf|docx|doc)$/ig.test(_fileName?.substr((
+                    _fileName?.lastIndexOf('.')+1)))),
         });
         Image.prefetch(this.props?.proofOfPayment?.medium)
         .then(()=>{

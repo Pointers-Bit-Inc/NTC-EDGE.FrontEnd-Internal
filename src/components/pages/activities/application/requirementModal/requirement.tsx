@@ -16,6 +16,7 @@ const {width,height}=Dimensions.get("screen");
 
 class RequirementView extends React.Component<{requirement:any,rightLayoutComponent:any,dimensions:any}>{
 
+    
 
     state={
         onLoadStart:true,
@@ -24,7 +25,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
         count:1,
         onLoad:false,
         visible:false,
-        source:{uri:this.props?.requirement?.medium||"https://dummyimage.com/350x350/fff/aaa",},
+        source:{uri:this.props?.requirement?.original||"https://dummyimage.com/350x350/fff/aaa",},
         _imageSize:{
             width:0,
             height:0
@@ -73,7 +74,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
 
     componentDidUpdate(prevProps,prevState){
 
-        if(prevProps?.requirement?.medium!=this.props?.requirement?.medium){
+        if(prevProps?.requirement?.original!=this.props?.requirement?.original){
 
             this.setImage();
 
@@ -223,19 +224,19 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
             onLoadStart:true,
             fileName:_fileName,
             extension:(
-                /(pdf|docx|doc)$/ig.test(_fileName.substr((
-                    _fileName.lastIndexOf('.')+1)))),
+                /(pdf|docx|doc)$/ig.test(_fileName?.substr((
+                    _fileName?.lastIndexOf('.')+1)))),
         });
-        Image.prefetch(this.props?.requirement?.medium)
+        Image.prefetch(this.props?.requirement?.original)
         .then(()=>{
             this.setState({onLoadStart:false});
-            Image.getSize(this.props?.requirement?.medium,(width,height)=>{
+            Image.getSize(this.props?.requirement?.original,(width,height)=>{
 
                 this.setState({
                     ...this.state,
                     source:{
                         ...this?.state?.source,
-                        uri:this?.props?.requirement?.medium||"https://dummyimage.com/350x350/fff/aaa"
+                        uri:this?.props?.requirement?.original||"https://dummyimage.com/350x350/fff/aaa"
                     },
                 });
                 this.setState({
@@ -282,6 +283,7 @@ const Requirement=(props:any)=>{
     const dimensions=useWindowDimensions();
     return <ScrollView style={{backgroundColor:"#f8f8f8",width:"100%"}}>
         {props?.requirements?.map((requirement:any,index:number)=>{
+
             return <View key={index} style={{padding:10}}>
                 <Card>
                     <View style={[{paddingHorizontal:isMobile ? 20 : 40}]}>
