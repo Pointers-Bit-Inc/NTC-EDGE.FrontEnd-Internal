@@ -44,7 +44,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
         <Modal
             animationType="slide"
             transparent={true}
-            visible={props.verified || !!props?.verifiedInfo}
+            visible={props.verified }
             onRequestClose={()=>{
                 props.onPress()
             }}
