@@ -68,6 +68,8 @@ const profPic=require('@assets/newMessageProfilePicture.png');
 const draftProfPic=require('@assets/draftNewMessageProfilePicture.png');
 import hairlineWidth=StyleSheet.hairlineWidth;
 import {MenuProvider} from "react-native-popup-menu";
+import axios from "axios";
+import {BASE_URL,BASE_URL_NODE} from "../../services/config";
 
 const {width,height}=Dimensions.get('window');
 
@@ -784,29 +786,57 @@ const ChatList=({navigation}:any)=>{
         }));
     };
     useEffect(()=>{
-        selectedFile
+        
         if(selectedFile){
-            const fd=new FormData();
-            fetch(selectedFile?.uri).then((res) => {
-                return res.blob()
-            }).then((blob) => {
-                console.log(selectedFile)
-                new File([blob], selectedFile?.name, selectedFile.mimeType)
-                fd.append('profilePicture',file,(
-                    up?.file?.name+"."+mimeType||up?.file?.mimeType));
-                if(lodash.size(selectedFile)){
-                    _sendFile(
-                        channelId,
-                        blob,
-                        name||"",
-                        participants
+            let uri = selectedFile?.uri;
+            let split = uri?.split('/');
+            let name = split?.[split?.length - 1];
+            let mime=uri?.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+            let mimeResult:any=null;
+            if(mime&&mime.length){
+                mimeResult=mime[1];
+            }
+            let mimeType=mimeResult?.split("/")?.[1];
 
-                    )
-                }
+
+
+
+            fetch(uri)
+            .then(res=>{
+
+                return res?.blob()
             })
+            .then(blob=>{
+
+                const fd=new FormData();
+                const _file= new File([blob],(
+                    name+"."+mimeType));
+
+                fd.append('file',_file,(
+                    name+"."+mimeType));
+                const API_URL=`${BASE_URL}/messages/${_id}/upload-file`;
+
+                fetch(API_URL,{
+                    method:'POST',body:fd,headers:{
+                        'Authorization':`Bearer ${user?.sessionToken}`,
+                    }
+                })
+                .then(res=>{
+
+                    return res?.json()
+                })
+
+            })
+            if(lodash.size(selectedFile)){
+                _sendFile(
+                    channelId,
+                    selectedFile,
+                    name||"",
+                    participants
+                )
+            }
+
         }
-
-
 
     },[selectedFile]);
     const [participant,setParticipant]:any=useState([]);

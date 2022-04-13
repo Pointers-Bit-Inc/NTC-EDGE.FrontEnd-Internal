@@ -42,6 +42,7 @@ interface Props {
   showOption?: any;
   onSendMessage?: any;
   onSendFile?: any;
+  onPreview?: any;
   [x: string]: any;
 }
 
@@ -56,6 +57,7 @@ const ChatList: FC<Props> = ({
   showOption = () => {},
   onSendMessage = () => {},
   onSendFile = () => {},
+  onPreview = () => {},
   ...otherProps
 }) => {
   const emptyComponent = () => (
@@ -87,6 +89,7 @@ const ChatList: FC<Props> = ({
             onSendMessage={onSendMessage}
             onSendFile={onSendFile}
             onLongPress={() => showOption(item)}
+            onPreview={() => onPreview(item)}
           />
         </View>
       )
@@ -139,6 +142,7 @@ const ChatList: FC<Props> = ({
               edited={item.edited}
               system={item.system}
               delivered={item.delivered}
+              onPreview={() => onPreview(item)}
             />
           ) : (
             <ChatBubble
@@ -160,6 +164,7 @@ const ChatList: FC<Props> = ({
               edited={item.edited}
               system={item.system}
               delivered={item.delivered}
+              onPreview={() => onPreview(item)}
             />
           )
         }

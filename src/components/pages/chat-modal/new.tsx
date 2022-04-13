@@ -326,12 +326,20 @@ const NewChat = ({ onClose = () => {}, onSubmit = () => {} }:any) => {
     }
   }
 
+  const resetGroup = () => {
+    setGroupName('');
+    setIsGroup(false);
+    setParticipants([]);
+    inputRef.current?.focus();
+  }
+
   const onBeforeClose = () => {
     if (isGroup) {
-      setGroupName('');
-      setIsGroup(false);
-      setParticipants([]);
-      inputRef.current?.focus();
+      if (lodash.size(participants) > 1) {
+        setShowAlert(true);
+      } else {
+        resetGroup();
+      }
     } else {
       if (lodash.size(participants) > 1) {
         setShowAlert(true);
