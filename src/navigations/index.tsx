@@ -36,7 +36,7 @@ import Login from "@screens/login/login";
 type RootStackParamList = {
     App: undefined;
     AppIntro: undefined;
-    LoginNative: undefined;
+    Login: undefined;
     ForgotPassword: undefined;
     HomeScreen: undefined;
     QrCodeScreen: undefined;
@@ -55,6 +55,7 @@ type RootStackParamList = {
     NewChat: undefined;
     InitiateVideoCall: undefined;
     JoinVideoCall: undefined;
+    SearchActivities: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

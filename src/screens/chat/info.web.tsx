@@ -200,7 +200,7 @@ function MenuBar(props:{opened:boolean,onClose:()=>void,onSelect:(value)=>void,o
     </Menu>;
 }
 
-export const InfoWeb=(props)=>{
+const Info=(props)=>{
     const dispatch=useDispatch();
     const {
         leaveChannel,
@@ -767,3 +767,4 @@ export const InfoWeb=(props)=>{
 };
 
 
+export default Info
