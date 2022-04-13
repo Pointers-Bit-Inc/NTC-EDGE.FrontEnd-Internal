@@ -157,6 +157,7 @@ interface Props {
   edited?: boolean;
   system?: boolean;
   delivered?: boolean;
+  onPreview?: any;
   [x: string]: any;
 }
 
@@ -180,6 +181,7 @@ const ChatBubble:FC<Props> = ({
   edited = false,
   system = false,
   delivered = false,
+  onPreview = () => {},
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -327,7 +329,7 @@ const ChatBubble:FC<Props> = ({
         )
       }
       <TouchableOpacity
-        onPress={() => setShowDetails(!showDetails)}
+        onPress={() => !!attachment ? onPreview() : setShowDetails(!showDetails)}
         onLongPress={(isSender && !(deleted || unSend || system)) ? onLongPress : null}
         {...otherProps}
       >

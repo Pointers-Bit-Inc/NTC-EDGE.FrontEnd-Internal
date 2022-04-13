@@ -106,6 +106,7 @@ interface Props {
   onLongPress?: any;
   onSendMessage?: any;
   onSendFile?: any;
+  onPreview?: any;
   [x: string]: any;
 }
 
@@ -124,6 +125,7 @@ const PendingBubble:FC<Props> = ({
   onLongPress,
   onSendMessage = () => {},
   onSendFile = () => {},
+  onPreview = () => {},
   ...otherProps
 }) => {
   const [progress, setProgress] = useState(0);
@@ -167,6 +169,7 @@ const PendingBubble:FC<Props> = ({
 
   return (
     <TouchableOpacity
+      onPress={onPreview}
       onLongPress={onLongPress}
       {...otherProps}
     >

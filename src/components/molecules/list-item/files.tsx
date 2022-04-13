@@ -79,6 +79,7 @@ const FileItem = ({
   progress = 0,
   error = false,
   downloaded = false,
+  onPreview = () => {},
 }) => {
 
   return (
@@ -94,51 +95,53 @@ const FileItem = ({
           }
         </View>
       </TouchableOpacity>
-      <View style={styles.file}>
-        <NewFileIcon
-          color={'#606A80'}
-        />
-        <View style={{ paddingHorizontal: 10 }}>
-          <Text
-            size={14}
+      <TouchableOpacity onPress={onPreview}>
+        <View style={styles.file}>
+          <NewFileIcon
             color={'#606A80'}
-          >
-            {name}
-          </Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          />
+          <View style={{ paddingHorizontal: 10 }}>
             <Text
-              size={12}
+              size={14}
               color={'#606A80'}
-              style={{ top: -2 }}
             >
-              {getFileSize(size)}
+              {name}
             </Text>
-            {
-              downloaded ? (
-                <View
-                  style={styles.check}
-                >
-                  <CheckIcon
-                    type='check1'
-                    size={8}
-                    color={'white'}
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text
+                size={12}
+                color={'#606A80'}
+                style={{ top: -2 }}
+              >
+                {getFileSize(size)}
+              </Text>
+              {
+                downloaded ? (
+                  <View
+                    style={styles.check}
+                  >
+                    <CheckIcon
+                      type='check1'
+                      size={8}
+                      color={'white'}
+                    />
+                  </View>
+                ) : (
+                  <Progress.Pie
+                    style={styles.progress}
+                    size={fontValue(12)}
+                    progress={progress}
+                    borderWidth={0}
+                    color={outline.info}
+                    unfilledColor={outline.default}
                   />
-                </View>
-              ) : (
-                <Progress.Pie
-                  style={styles.progress}
-                  size={fontValue(12)}
-                  progress={progress}
-                  borderWidth={0}
-                  color={outline.info}
-                  unfilledColor={outline.default}
-                />
-              )
-            }
+                )
+              }
+            </View>
           </View>
+          <View style={{ width: 30 }} />
         </View>
-        <View style={{ width: 30 }} />
-      </View>
+      </TouchableOpacity>
     </View>
   )
 }

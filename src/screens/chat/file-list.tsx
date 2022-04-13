@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, FlatList, TouchableOpacity, InteractionManager, ActivityIndicator, Dimensions, Platform } from 'react-native'
+import { View, StyleSheet, FlatList, TouchableOpacity, InteractionManager, ActivityIndicator, Dimensions, Image } from 'react-native'
+import Modal from 'react-native-modal';
 import Text from '@components/atoms/text'
-import { ArrowDownIcon, CheckIcon, DownloadIcon, FileIcon, MinusIcon, NewCheckIcon, NewFileIcon, TrashIcon } from '@components/atoms/icon';
+import { ArrowDownIcon, CheckIcon, CloseIcon, DownloadIcon, FileIcon, MinusIcon, NewCheckIcon, NewFileIcon, TrashIcon } from '@components/atoms/icon';
 import lodash from 'lodash';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import IMessages from 'src/interfaces/IMessages';
@@ -15,6 +16,8 @@ import {
 import useDownload from 'src/hooks/useDownload';
 import { text } from '@styles/color';
 import { FileItem } from '@components/molecules/list-item';
+import IAttachment from 'src/interfaces/IAttachment';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const { width, height } = Dimensions.get('window');
 
@@ -150,6 +153,7 @@ const FileList = () => {
   const [hasMore, setHasMore] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [rendered, setRendered] = useState(false);
+  const [preview, setPreview] = useState<any>({})
 
   const {
     getMessages,
@@ -354,6 +358,7 @@ const FileList = () => {
         progress={progress[item._id] || 0}
         downloaded={downloaded[item._id] || false}
         error={error[item._id] || false}
+        onPreview={() => setPreview(item)}
       />
     );
   }
@@ -433,6 +438,11 @@ const FileList = () => {
     return null;
   }
 
+  const checkIfImage = (uri:any) => {
+    if (uri && (uri.endsWith(".png") || uri.endsWith(".jpg"))) return true;
+    return false;
+  };
+
   return (
     <View style={styles.container}>
       {_listHeader()}
@@ -455,6 +465,48 @@ const FileList = () => {
           />
         )
       }
+      <Modal
+        isVisible={!!preview?.attachment}
+        statusBarTranslucent={true}
+        onBackdropPress={() => setPreview({})}
+        onSwipeComplete={() => setPreview({})}
+        style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 15 }}
+      >
+        <View style={{ position: 'absolute', top: 10, left: 0 }}>
+          <TouchableOpacity onPress={() => setPreview({})}>
+            <CloseIcon
+              type={'md-close'}
+              color={'#fff'}
+              height={RFValue(10)}
+              width={RFValue(10)}
+            />
+          </TouchableOpacity>
+        </View>
+        {
+          !!preview?.attachment && checkIfImage(preview?.attachment?.uri) ? (
+            <Image
+              resizeMode={'contain'}
+              source={{ uri: preview?.attachment?.uri }}
+              style={{ width: width * 0.9, height: height * 0.8 }}
+            />
+          ) : (
+            <View style={{ alignItems: 'center' }}>
+              <NewFileIcon
+                color={'#fff'}
+                width={60}
+                height={60}
+              />
+              <Text
+                style={{ textAlign: 'center', marginTop: 15 }}
+                color={'white'}
+                size={18}
+              >
+                {preview?.attachment?.name}
+              </Text>
+            </View>
+          )
+        }
+      </Modal>
     </View>
   )
 }
