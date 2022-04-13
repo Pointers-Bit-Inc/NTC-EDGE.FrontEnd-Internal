@@ -1,6 +1,10 @@
+import { Platform } from 'react-native';
 import { requestMultiple, PERMISSIONS, openSettings } from 'react-native-permissions'
 
 export const requestCameraAndAudioPermission = async (callback = (err:any, success:any) => {}) => {
+  if (Platform.OS !== 'android') {
+    return callback(null, { success: true });
+  }
   try {
     await requestMultiple([
       PERMISSIONS.IOS.CAMERA,

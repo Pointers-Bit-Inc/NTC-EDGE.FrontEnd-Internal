@@ -5,6 +5,8 @@ import IUser from 'src/interfaces/IUser';
 const useOneSignal = (user:IUser) => {
   const initialize = () => {
     OneSignal.setAppId(Constants.manifest?.extra?.oneSignalAppId);
+    OneSignal.provideUserConsent(true);
+    OneSignal.promptForPushNotificationsWithUserResponse(() => {});
     OneSignal.setExternalUserId(user._id);
     // OneSignal.setNotificationWillShowInForegroundHandler(e => e.complete());
     if (user.email) OneSignal.setEmail(user.email);

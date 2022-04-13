@@ -513,7 +513,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               onMute={toggleIsMute}
               onVideoEnable={toggleIsVideoEnable}
               onMore={() => {}}
-              onEndCall={() => onEndCall(lodash.size(peerIds) === 1)}
+              onEndCall={() => onEndCall(lodash.size(peerIds) <= 2)}
               isSpeakerEnabled={isSpeakerEnable}
               isMute={isMute}
               isVideoEnabled={isVideoEnable}
