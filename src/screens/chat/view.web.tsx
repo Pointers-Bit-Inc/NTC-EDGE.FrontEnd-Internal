@@ -278,6 +278,7 @@ const ChatView = ({ navigation, route }:any) => {
   }
 
   useEffect(() => {
+    console.log("sending files")
     if (lodash.size(selectedFile)) {
       dispatch(addPendingMessage({
         attachment: selectedFile,
@@ -487,7 +488,7 @@ const ChatView = ({ navigation, route }:any) => {
               </View>
             </View>
             {
-              showAttachmentOption && <AttachmentMenu onPickImage={pickImage} onPickDocument={pickDocument} />
+              showAttachmentOption && <AttachmentMenu onPress={pickImage} onPickDocument={pickDocument} />
             }
           </KeyboardAvoidingView>
         ) : null

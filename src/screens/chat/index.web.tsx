@@ -774,6 +774,7 @@ const ChatList=({navigation}:any)=>{
     }=useAttachmentPicker();
 
     const _sendFile=(channelId:string,attachment:any,groupName='',participants:any=[])=>{
+
         dispatch(addPendingMessage({
             attachment,
             channelId,
@@ -783,14 +784,30 @@ const ChatList=({navigation}:any)=>{
         }));
     };
     useEffect(()=>{
-        if(lodash.size(selectedFile)){
-            _sendFile(
-                channelId,
-                selectedFile,
-                "",
-                participants
-            );
+        selectedFile
+        if(selectedFile){
+            const fd=new FormData();
+            fetch(selectedFile?.uri).then((res) => {
+                return res.blob()
+            }).then((blob) => {
+                console.log(selectedFile)
+                new File([blob], selectedFile?.name, selectedFile.mimeType)
+                fd.append('profilePicture',file,(
+                    up?.file?.name+"."+mimeType||up?.file?.mimeType));
+                if(lodash.size(selectedFile)){
+                    _sendFile(
+                        channelId,
+                        blob,
+                        name||"",
+                        participants
+
+                    )
+                }
+            })
         }
+
+
+
     },[selectedFile]);
     const [participant,setParticipant]:any=useState([]);
     return (

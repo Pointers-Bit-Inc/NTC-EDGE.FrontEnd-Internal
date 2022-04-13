@@ -63,17 +63,7 @@ const styles=StyleSheet.create({
         margin:12,
         flex:1
     },
-    header:{
 
-        gap:10,
-        justifyContent:"space-between",
-        flexDirection:"row",
-        alignItems:"center",
-        borderBottomWidth:2,
-        borderBottomColor:"#efefef",
-        paddingVertical:20,
-        paddingHorizontal:20
-    },
     headerText:{
         width:"90%",
         fontSize:14,
@@ -116,13 +106,24 @@ const styles=StyleSheet.create({
     toggleActive:{
         color:'#610BEF',
     },
+    header:{
+
+        gap:10,
+        justifyContent:"space-between",
+        flexDirection:"row",
+        alignItems:"center",
+        borderBottomWidth:2,
+        borderBottomColor:"#efefef",
+        paddingVertical:20,
+        paddingHorizontal:20
+    },
 });
 
 function MenuBar(props:{opened:boolean,onClose:()=>void,onSelect:(value)=>void,onPress:()=>void,selectedParticipant:any,onPress1:()=>void,onPress2:()=>void,admin:undefined|boolean,onPress3:()=>void,onPress4:()=>void}){
     return <Menu  onBackdropPress={props.onClose} opened={props.opened} onClose={props.onClose} onSelect={props.onSelect}>
 
         <MenuTrigger onPress={props.onPress}
-                     text={<View style={{marginRight:-15}}><DotHorizontalIcon/></View>}>
+                     text={<View><DotHorizontalIcon/></View>}>
 
         </MenuTrigger>
 
@@ -438,7 +439,7 @@ const Info=(props)=>{
                     item.isAdmin ? (
                         <Hoverable>
                             {isHovered=>(
-                                <View style={{marginRight:-15}}>
+                                <View>
 
                                     {
                                         isHovered ?
@@ -733,8 +734,19 @@ const Info=(props)=>{
                 />
             </View>
         </BottomModal>
-       
-       
+        <CustomAlert
+            type={ ""}
+            showClose={false}
+            cancelText={alertData.cancel}
+            onDismissed={()=>setShowAlert(false)}
+            onLoading={loading}
+            onCancelPressed={()=>setShowAlert(false)}
+            onConfirmPressed={alertConfirm}
+            show={showAlert}
+            confirmButton={alertData.confirm}
+            title={alertData.title}
+            message={alertData.message}/>
+        
     </SafeAreaView>
 
 

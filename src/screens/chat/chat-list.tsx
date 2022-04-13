@@ -184,6 +184,7 @@ const List = () => {
     } else {
       sendMessage(data, (err:any, result:IMessages) => {
         if (err) {
+
           if (err?.message !== 'canceled') {
             dispatch(setPendingMessageError(channelId, messageId)); 
           }
@@ -196,7 +197,9 @@ const List = () => {
 
   const _sendFile = (channelId:string, messageId:string, data:any, config:any) => {
     sendFile(channelId, data, (err:any, result:any) => {
+
       if (err) {
+
         if (err?.message !== 'canceled') {
           dispatch(setPendingMessageError(channelId, messageId));
         }

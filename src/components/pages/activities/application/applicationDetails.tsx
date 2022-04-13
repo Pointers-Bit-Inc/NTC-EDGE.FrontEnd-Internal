@@ -1,11 +1,15 @@
 import React from "react";
-import {Dimensions , ScrollView , StyleSheet , Text , View} from "react-native";
+import {Dimensions,FlatList,ScrollView,StyleSheet,Text,View} from "react-native";
 import {Bold , Regular500} from "@styles/font";
 import {RFValue} from "react-native-responsive-fontsize";
 import Loader from "@pages/activities/bottomLoad";
 import {fontValue} from "@pages/activities/fontValue";
-
+import {transformText} from "../../../../utils/ntc";
+import {input} from "@styles/color";
+import Row from "@pages/activities/application/Row"
+import moment from "moment";
 const { width , height } = Dimensions.get("screen");
+
 const ApplicationDetails = (props: any) => {
 
     return <ScrollView style={ { paddingTop : 20 , width : "100%" , backgroundColor : "#f8f8f8" , } }>
@@ -30,12 +34,18 @@ const ApplicationDetails = (props: any) => {
 
 
                 </View>
+
             </View>
 
     </ScrollView> 
 
 };
 const styles = StyleSheet.create({
+    subChildSeparator: {
+        height: 1,
+        backgroundColor: input.background.default,
+        marginVertical: 10,
+    },
     container : {
 
         flex : 1 ,
@@ -91,6 +101,7 @@ const styles = StyleSheet.create({
         paddingBottom : 10 ,
         //backgroundColor: "#E6E6E6",
         marginTop : 15
-    }
+    } ,
+
 });
 export default ApplicationDetails

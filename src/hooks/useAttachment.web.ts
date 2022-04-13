@@ -2,6 +2,7 @@ import { useState } from 'react';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { Alert } from 'react-native';
+import {isMobile} from "@pages/activities/isMobile";
 
 const useAttachmentPicker = () => {
   const [selectedFile, setSelectedFile] = useState<DocumentPicker.DocumentResult | ImagePicker.ImagePickerResult | object>({});
@@ -39,12 +40,14 @@ const useAttachmentPicker = () => {
       let uri = result?.uri;
       let split = uri?.split('/');
       let name = split?.[split?.length - 1];
-      let mimeType = result?.type || name?.split('.')?.[1];
+
+
       const file = {
         name,
         mimeType: 'application/octet-stream',
-        uri,
+        uri
       };
+
 
       setSelectedFile(file)
     }
