@@ -39,19 +39,17 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
     const schedule =  props?.verifiedInfo?.application?.schedule;
     const education =  props?.verifiedInfo?.application?.education;
     const approvalHistory =  props?.verifiedInfo?.application?.approvalHistory;
-    useEffect(()=>{
-        console.log(approvalHistory?.[0] || approvalHistory )
-    }, [])
+    
     return <>
         <Modal
             animationType="slide"
             transparent={true}
-            visible={props.verified}
+            visible={props.verified || !!props?.verifiedInfo}
             onRequestClose={()=>{
                 props.onPress()
             }}
         >
-            <View style={[styles.group32,{paddingHorizontal:20}]}>
+            {<View style={[styles.group32,{paddingHorizontal:20}]}>
                 <View style={styles.rect13}>
                     <View style={styles.group30}>
                         <View
@@ -80,45 +78,45 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                         </View>
                     </View>
                     <ScrollView style={{paddingVertical:10}}>
-                        <ProfileImage
+                        {(applicant?.firstName ||applicant?.lastName) && <ProfileImage
                             style={{borderRadius:5,alignSelf:'center'}}
                             size={130}
                             textSize={50}
                             image={applicant?.profilePicture?.small}
                             name={`${applicant?.firstName} ${applicant?.lastName}`}
-                        />
+                        />}
                         <View style={[{paddingHorizontal:10,paddingVertical:15}]}>
-                            <View style={[styles.group17]}>
+                            {applicant && <View style={[styles.group17]}>
                                 <Text style={styles.examDetails}>BASIC INFO</Text>
-                                <Row input={getFullName(applicant)} label={'Name: '}/>
+                                <Row input={(applicant?.firstName || applicant?.middleName || applicant?.lastName) &&  getFullName(applicant)} label={'Name: '}/>
                                 <Row input={getFullAddress(applicant?.address)} label={'Address: '}/>
-                            </View>
-                            <View style={styles.group17}>
-                                <Text style={styles.examDetails}>EXAM DETAILS</Text>
+                            </View>}
+                            {schedule && <View style={styles.group17}>
+                               <Text style={styles.examDetails}>EXAM DETAILS</Text>
                                 <Row input={schedule?.venue} label={"Venue: "}/>
-                                <Row input={dayjs(schedule?.dateEnd).format('MM/DD/YY')} label={"Date: "}/>
-                                <Row input={`${moment(schedule?.dateStart).format('hh:mm:ss a')} - ${moment(schedule?.dateEnd)?.format('hh:mm:ss a')}`} label={"Time: "}/>
-                            </View>
-                            <View style={styles.group17}>
+                                <Row input={schedule?.dateEnd && dayjs(schedule?.dateEnd).format('MM/DD/YY')} label={"Date: "}/>
+                                <Row input={schedule?.dateStart && `${moment(schedule?.dateStart).format('hh:mm:ss a')} - ${moment(schedule?.dateEnd)?.format('hh:mm:ss a')}`} label={"Time: "}/>
+                            </View>}
+                            {(approvalHistory || props?.verifiedInfo?.application?.ORNumber || props?.verifiedInfo?.application?.totalFee) &&  <View style={styles.group17}>
                                 <Text style={styles.examDetails}>PAYMENT DETAILS</Text>
-                                <Row input={props?.verifiedInfo?.application?.ORNumber} label={"O.R. No.: "}/>
-                                <Row input={`PHP ${parseFloat(props?.verifiedInfo?.application?.totalFee||0).toFixed(2)}`} label={'Amount: '}/>
+                                <Row input={props?.verifiedInfo?.application?.ORNumber && props?.verifiedInfo?.application?.ORNumber} label={"O.R. No.: "}/>
+                                <Row input={props?.verifiedInfo?.application?.totalFee && `PHP ${parseFloat(props?.verifiedInfo?.application?.totalFee||0).toFixed(2)}`} label={'Amount: '}/>
                                 <Row input={(
                                                 approvalHistory?.[0]||approvalHistory)?.status==='Approved' ? dayjs((
                                     approvalHistory?.[0]||approvalHistory)?.time).format('MM/DD/YY') : null} label={'Date: '}/>
 
-                            </View>
-                            <View style={styles.group17}>
+                            </View>}
+                            {education && <View style={styles.group17}>
                                 <Text style={styles.examDetails}>EDUCATION</Text>
                                 <Row input={education?.schoolAttended} label={"School Attended: "}/>
                                 <Row input={education?.courseTaken} label={'Course: '}/>
                                 <Row input={education?.yearGraduated} label={'Year Graduated: '}/>
 
-                            </View>
+                            </View> }
                         </View>
                     </ScrollView>
                 </View>
-            </View>
+            </View> }
         </Modal>
         <Modal
             animationType="slide"
