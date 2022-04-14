@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { View, TouchableOpacity, StyleSheet, InteractionManager, Image, Dimensions } from 'react-native';
 import Modal from 'react-native-modal';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
@@ -90,8 +90,12 @@ const List = () => {
   const dispatch = useDispatch();
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const messages = useSelector((state:RootStateOrAny) => {
-    const { selectedChannel, channelMessages, pendingMessages } = state.channel;
+  const { selectedChannel, channelMessages, pendingMessages } = useSelector((state:RootStateOrAny) => state.channel);
+  const { _id, isGroup, lastMessage, otherParticipants } = useMemo( () => {
+    selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id);
+    return selectedChannel;
+  }, [selectedChannel]);
+  const messages = useMemo(() => {
     const normalizedMessages = channelMessages[selectedChannel._id]?.messages || {};
     const channelPendingMessages = pendingMessages[selectedChannel._id || 'temp'] || {};
     const messagesList = lodash.keys(normalizedMessages).map((m:string) => {
@@ -118,15 +122,7 @@ const List = () => {
     const pendingMessagesArray = lodash.orderBy(pendingMessageList, 'createdAt', 'desc');
 
     return lodash.concat(pendingMessagesArray, messageArray);
-  });
-  const { _id, isGroup, lastMessage, otherParticipants } = useSelector(
-    (state:RootStateOrAny) => {
-      const { selectedChannel } = state.channel;
-
-      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id);
-      return selectedChannel;
-    }
-  );
+  }, [selectedChannel, channelMessages, pendingMessages]);
   const channelId = _id;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -429,14 +425,14 @@ const List = () => {
           onSwipeComplete={() => setPreview({})}
           style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 15 }}
         >
-          <View style={{ position: 'absolute', top: 10, left: 0 }}>
+          <View style={{ position: 'absolute', top: 10, right: 0 }}>
             <TouchableOpacity onPress={() => setPreview({})}>
-              <CloseIcon
-                type={'md-close'}
-                color={'#fff'}
-                height={RFValue(10)}
-                width={RFValue(10)}
-              />
+              <Text
+                color={'white'}
+                size={16}
+              >
+                Close
+              </Text>
             </TouchableOpacity>
           </View>
           {

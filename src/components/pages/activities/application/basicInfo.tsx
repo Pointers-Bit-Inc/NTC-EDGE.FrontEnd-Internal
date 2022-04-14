@@ -39,9 +39,7 @@ const BasicInfo = (props: any) => {
         } else if (props?.paymentStatus == APPROVED || props?.paymentStatus == DECLINED) {
             personnel = props?.paymentHistory?.[0]?.personnel || props?.paymentHistory?.personnel;
         } else {
-            personnel = (props?.assignedPersonnel?._id ? props?.assignedPersonnel : null) ||
-                props?.approvalHistory?.[0]?.personnel ||
-                props?.approvalHistory?.personnel;
+            personnel =  props?.approvalHistory?.[0]?.personnel || props?.approvalHistory?.personnel;
                 
         }
     }

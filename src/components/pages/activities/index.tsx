@@ -1,4 +1,4 @@
-import React , {useEffect} from "react";
+import React , {useEffect, useMemo} from "react";
 import {
     Animated,
     Dimensions,
@@ -95,13 +95,13 @@ export default function ActivitiesPage(props: any) {
         opacity
     } = useActivities();
 
-
-    const meetingList = useSelector((state: RootStateOrAny) => {
-        const { normalizeActiveMeetings } = state.meeting;
+    const { normalizeActiveMeetings } = useSelector((state: RootStateOrAny) => state.meeting);
+    const meetingList = useMemo(() => {
         let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m]);
         meetingList = lodash.reject(meetingList, (m:IMeetings) => lodash.find(m.participants, (p:IParticipants) => p._id === user._id && (p.status === 'busy' || p.muted)));
         return lodash.orderBy(meetingList , 'updatedAt' , 'desc');
-    });
+    }, [normalizeActiveMeetings]);
+
     useEffect(() => {
 
         let unMount = false;

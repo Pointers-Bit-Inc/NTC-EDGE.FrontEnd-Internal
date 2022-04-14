@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import {
   View,
   StyleSheet,
@@ -148,8 +148,8 @@ const Meet = ({ navigation }) => {
   const dispatch = useDispatch();
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const meetingList = useSelector((state:RootStateOrAny) => {
-    const { normalizedMeetingList } = state.meeting
+  const { normalizedMeetingList } = useSelector((state:RootStateOrAny) => state.meeting);
+  const meetingList = useMemo(() => {
     const meetingList = lodash.keys(normalizedMeetingList).map(m => {
       const meeting = normalizedMeetingList[m];
       const { room } = meeting;
@@ -158,7 +158,7 @@ const Meet = ({ navigation }) => {
       return meeting;
     });
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
-  });
+  }, [normalizedMeetingList]);
   const {
     getMeetingList,
   } = useSignalr();

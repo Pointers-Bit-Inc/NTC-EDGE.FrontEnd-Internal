@@ -472,14 +472,14 @@ const FileList = () => {
         onSwipeComplete={() => setPreview({})}
         style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 15 }}
       >
-        <View style={{ position: 'absolute', top: 10, left: 0 }}>
+        <View style={{ position: 'absolute', top: 10, right: 0 }}>
           <TouchableOpacity onPress={() => setPreview({})}>
-            <CloseIcon
-              type={'md-close'}
-              color={'#fff'}
-              height={RFValue(10)}
-              width={RFValue(10)}
-            />
+            <Text
+              color={'white'}
+              size={16}
+            >
+              Close
+            </Text>
           </TouchableOpacity>
         </View>
         {
