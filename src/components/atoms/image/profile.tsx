@@ -4,7 +4,7 @@ import Text from '../text';
 import { getInitial, getColorFromName } from 'src/utils/formatting';
 import { primaryColor } from '@styles/color';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { Bold } from '@styles/font';
+import { Bold, Regular } from '@styles/font';
 import {isMobile} from "@pages/activities/isMobile";
 
 const styles = StyleSheet.create({
@@ -60,6 +60,15 @@ const ProfileImage = ({
             },
             style
           ]}>
+            <View style={{ position: 'absolute' }}>
+              <Text
+                size={imageSize / 2.3}
+                color={'white'}
+                style={{ fontFamily: Regular, marginRight: -1, marginTop: 1 }}
+              >
+                {others || getInitial(name)}
+              </Text>
+            </View>
             <Image
               width={imageSize}
               height={imageSize}

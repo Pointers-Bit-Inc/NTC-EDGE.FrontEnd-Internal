@@ -21,7 +21,6 @@ import CustomText from "@atoms/text";
 import {
     APPROVED , DECLINED , FORAPPROVAL , PENDING
 } from "../../../../reducers/activity/initialstate";
-import {useAssignPersonnel} from "../../../../hooks/useAssignPersonnel";
 import moment from "moment";
 import {Bold , Regular , Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
@@ -33,19 +32,19 @@ import RenderServiceMiscellaneous from "@pages/activities/application/renderServ
 
 
 const BasicInfo = (props: any) => {
-    const {
-        personnel ,
-        loading
-    } = useAssignPersonnel( !!props.paymentMethod && (props.assignedPersonnel?._id || props.assignedPersonnel ) ?
-                            (props.assignedPersonnel?._id || props.assignedPersonnel ) : (props.paymentStatus == APPROVED || props.paymentStatus == DECLINED ?
-                                                                                          (props?.paymentHistory?.[0]?.userId ||  props?.paymentHistory?.userId ) :
-                                                                                          (props?.approvalHistory?.[0]?.userId || props?.approvalHistory?.userId ?
-                                                                                           props?.approvalHistory?.[0]?.userId || props?.approvalHistory?.userId :
-                                                                                           (props?.approvalHistory?.[0]?.userId || props?.approvalHistory?.userId))) , {
-        headers : {
-            Authorization : "Bearer ".concat(props.user.sessionToken)
+    let personnel:any = null
+    if (props) {
+        if (!!props?.paymentMethod && props?.assignedPersonnel?._id) {
+            personnel = props?.assignedPersonnel
+        } else if (props?.paymentStatus == APPROVED || props?.paymentStatus == DECLINED) {
+            personnel = props?.paymentHistory?.[0]?.personnel || props?.paymentHistory?.personnel;
+        } else {
+            personnel = (props?.assignedPersonnel?._id ? props?.assignedPersonnel : null) ||
+                props?.approvalHistory?.[0]?.personnel ||
+                props?.approvalHistory?.personnel;
+                
         }
-    });
+    }
     const applicant = props.applicant?.user || props.applicant;
     const dimensions = useWindowDimensions();
     
@@ -86,17 +85,15 @@ const BasicInfo = (props: any) => {
 
                                         <View
                                             style={ { flexDirection : "row" , justifyContent : "center" , alignItems : "center" } }>
-                                            {loading && <ActivityIndicator/> }
-                                            {!loading ?
+                                            {
                                              statusIcon(
                                                  getStatusText(props , personnel)
                                                  ,
                                                  styles.icon2 ,
                                                  1
-                                             ) : <></>
+                                             )
                                             }
-                                            {!loading ?
-                                             <CustomText
+                                            <CustomText
                                                  style={ [
                                                      styles.role ,
                                                      statusColor(
@@ -112,7 +109,7 @@ const BasicInfo = (props: any) => {
                                                  {
                                                      getStatusText(props , personnel)?.toUpperCase()
                                                  }
-                                             </CustomText> : <></>}
+                                            </CustomText>
                                         </View>
 
 
@@ -172,7 +169,7 @@ const BasicInfo = (props: any) => {
 
                                 </View>
                                 <View style={ styles.divider }/>
-                                <RenderServiceMiscellaneous service={props?.service}/>
+                                <RenderServiceMiscellaneous exclude={['_id', 'name', 'applicationType', 'serviceCode']} service={props?.service}/>
                             </View>
 
                         </View>
