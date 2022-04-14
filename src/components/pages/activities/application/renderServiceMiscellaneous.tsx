@@ -51,7 +51,7 @@ const RenderServiceMiscellaneous = (props) => {
 
     let _renderParent = ({item}: any) => {
 
-        if (!(props.include.indexOf(item) != -1)) {
+        if (!(props.exclude.indexOf(item) != -1)) {
 
             let parentItem = item;
             let parentLabel = transformText(item);
