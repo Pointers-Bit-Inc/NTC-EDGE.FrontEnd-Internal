@@ -5,7 +5,7 @@ import * as FileSystem from 'expo-file-system';
 import Text from '@components/atoms/text'
 import { getFileSize } from 'src/utils/formatting';
 import * as Progress from 'react-native-progress';
-import { fontValue } from '@components/pages/activities/fontValue';
+import { fontValue as RFValue } from '@components/pages/activities/fontValue';
 import { outline, text } from '@styles/color';
 
 const { width } = Dimensions.get('window');
@@ -49,9 +49,9 @@ const styles = StyleSheet.create({
   },
   check: {
     top: -2,
-    borderRadius: fontValue(12),
-    width: fontValue(12),
-    height: fontValue(12),
+    borderRadius: RFValue(12),
+    width: RFValue(12),
+    height: RFValue(12),
     borderColor: text.info,
     borderWidth: 1,
     alignItems: 'center',
@@ -129,7 +129,7 @@ const FileItem = ({
                 ) : (
                   <Progress.Pie
                     style={styles.progress}
-                    size={fontValue(12)}
+                    size={RFValue(12)}
                     progress={progress}
                     borderWidth={0}
                     color={outline.info}

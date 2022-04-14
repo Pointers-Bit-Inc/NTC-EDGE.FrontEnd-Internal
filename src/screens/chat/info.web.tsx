@@ -134,9 +134,12 @@ function MenuBar(props:{opened:boolean,onClose:()=>void,onSelect:(value)=>void,o
                 width:0,
                 height:0
             },
+
             elevation:45,
             shadowOpacity:0.1,
             shadowRadius:15,
+           marginLeft: -30,
+            marginTop: 20
         }}>
             <MenuOption value={`Call ${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}>
                 <TouchableOpacity onPress={props.onPress1}>

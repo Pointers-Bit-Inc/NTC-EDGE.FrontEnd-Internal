@@ -151,9 +151,11 @@ const PendingBubble:FC<Props> = ({
           return res?.blob()
         }).then(blob=>{
           const fd=new FormData();
+
           var mime = attachment?.uri.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)
+          var attachmentMime = mime[1]?.split("/")?.[1]
           if (mime && mime.length) {
-            file=new File([blob],attachment?.name + "." + mime[1]?.split("/")?.[1]);
+            file=new File([blob],attachment?.name +  (attachmentMime < 4 ? "." + attachmentMime: '') );
           }
         })
       })
