@@ -14,6 +14,7 @@ export default {
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
+    "jsEngine": "hermes",
     "ios": {
       "supportsTablet": false,
       "usesIcloudStorage": true,
