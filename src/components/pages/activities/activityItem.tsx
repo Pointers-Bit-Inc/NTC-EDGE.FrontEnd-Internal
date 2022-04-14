@@ -30,7 +30,6 @@ import {outline} from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
 
 import EndorseIcon from "@assets/svg/endorse";
-import {useAssignPersonnel} from "../../../hooks/useAssignPersonnel";
 import {Bold , Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {ActivitySwipeable} from "@pages/activities/nativeView/activitySwipeable";
@@ -198,9 +197,7 @@ const RenderApplication = ({ applicationType }: any) => {
 };
 
 
-const RenderPinned = ({ assignedPersonnel , config }: any) => {
-
-    const { personnel , loading } = useAssignPersonnel(assignedPersonnel , config);
+const RenderPinned = ({ personnel , config }: any) => {
     return (
         <View
             style={ [
@@ -272,6 +269,19 @@ export function ActivityItem(props: any) {
 
     const dimensions = useWindowDimensions();
 
+    let personnel:any = null
+    if (props?.activity) {
+        if (!!props?.activity.paymentMethod && props?.activity.assignedPersonnel?._id) {
+            personnel = props?.activity.assignedPersonnel
+        } else if (props?.activity.paymentStatus == APPROVED || props?.activity.paymentStatus == DECLINED) {
+            personnel = props?.activity?.paymentHistory?.[0]?.personnel || props?.activity?.paymentHistory?.personnel;
+        } else {
+            personnel = (props?.activity?.assignedPersonnel?._id ? props?.activity?.assignedPersonnel : null) ||
+                props?.activity?.approvalHistory?.[0]?.personnel ||
+                props?.activity?.approvalHistory?.personnel;
+                
+        }
+    }
 
      return (
 
@@ -384,21 +394,7 @@ export function ActivityItem(props: any) {
                                             } }>
                                                 <View style={ styles.section }>
                                                     <View style={ { flex : 1 , alignItems : 'flex-start' } }>
-                                                        <RenderPinned config={ props.config }
-                                                                      assignedPersonnel={
-                                                                          !!props?.activity.paymentMethod && (
-                                                                              props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) ?
-                                                                          (
-                                                                              props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) : (
-                                                                              props?.activity?.paymentStatus == APPROVED || props?.activity?.paymentStatus == DECLINED ?
-                                                                              (
-                                                                                  props?.activity?.paymentHistory?.[0]?.userId) :
-                                                                              (
-                                                                                  (props?.activity?.approvalHistory?.[0]?.userId) ?
-                                                                                  props?.activity?.approvalHistory?.[0]?.userId : (
-                                                                                                                                      props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel) ? props?.activity.assignedPersonnel?._id || props?.activity?.assignedPersonnel :
-                                                                                                                                  (props?.activity?.assignedPersonnel?._id || props?.assignedPersonnel)))
-                                                                      }/>
+                                                        <RenderPinned config={ props.config } personnel={personnel} />
                                                     </View>
                                                 </View>
                                             </View>
