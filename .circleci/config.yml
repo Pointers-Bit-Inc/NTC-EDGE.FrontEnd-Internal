@@ -456,9 +456,9 @@ workflows:
             branches:
               only:
                 - master
-      - Publish App:
-          requires:
-            - Build for Production
+      # - Publish App:
+      #    requires:
+      #      - Build for Production
       # - Build IOS Archive:
       #     api_url: << pipeline.parameters.prod_url >>
       #     context: ntc-edge
@@ -478,22 +478,22 @@ workflows:
       - Request Build APK:
           type: approval
           requires:
-            - Publish App
+            - Build for Production
 
       - Request Build AAB:
           type: approval
           requires:
-            - Publish App
+            - Build for Production
 
       - Request Build IOS:
           type: approval
           requires:
-            - Publish App
+            - Build for Production
 
       - Request Build WEB:
           type: approval
           requires:
-            - Publish App
+            - Build for Production
 
       - Build APK Android:
           api_url: << pipeline.parameters.prod_url >>
