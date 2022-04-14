@@ -176,7 +176,7 @@ const ChatBubble:FC<Props> = ({
   const senderName = isSender ? 'You' : sender.firstName;
 
   const checkIfImage = (uri:any) => {
-    if (uri && (uri.endsWith(".png") || uri.endsWith(".jpg"))) return true;
+    if (uri && (uri.endsWith(".png") || uri.endsWith(".jpg") || uri.endsWith(".jpeg"))) return true;
     return false;
   };
 
