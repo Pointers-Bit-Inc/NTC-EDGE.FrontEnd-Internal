@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, FC } from 'react'
+import React, { useState, useEffect, useCallback, useRef, FC, useMemo } from 'react'
 import {View,TouchableOpacity,StyleSheet,InteractionManager,Platform, Dimensions, Image} from 'react-native';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -106,8 +106,8 @@ const List: FC<Props> = ({
   const navigation = useNavigation();
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const messages = useSelector((state:RootStateOrAny) => {
-    const { channelMessages, pendingMessages } = state.channel;
+  const { channelMessages, pendingMessages } = useSelector((state:RootStateOrAny) => state.channel);
+  const messages = useMemo(() => {
     const normalizedMessages = channelMessages[channelId]?.messages || {};
     const channelPendingMessages = pendingMessages[channelId || 'temp'] || {};
     const messagesList = lodash.keys(normalizedMessages).map((m:string) => {
@@ -134,7 +134,7 @@ const List: FC<Props> = ({
     const pendingMessagesArray = lodash.orderBy(pendingMessageList, 'createdAt', 'desc');
 
     return lodash.concat(pendingMessagesArray, messageArray);
-  });
+  }, [channelMessages, pendingMessages]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [showDeleteOption, setShowDeleteOption] = useState(false);
