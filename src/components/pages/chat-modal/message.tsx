@@ -16,10 +16,10 @@ import { header } from '@styles/color';
 import { Bold, Regular, Regular500 } from '@styles/font';
 import useSignalr from 'src/hooks/useSignalr';
 import { InputTags } from '@components/molecules/form-fields';
-import { RFValue } from 'react-native-responsive-fontsize';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import IParticipants from 'src/interfaces/IParticipants';
 import { RootStateOrAny, useSelector } from 'react-redux';
+import {fontValue as RFValue} from "@pages/activities/fontValue";
 
 const styles = StyleSheet.create({
   container: {
@@ -181,7 +181,7 @@ const tagStyles = StyleSheet.create({
     paddingLeft: 0,
     paddingRight: 0,
     paddingTop: 1,
-    marginTop: Platform.OS === 'ios' ? 0 : -2
+    marginTop: Platform.OS === 'ios'|| Platform.OS === 'web'  ? 0 : -2
   },
 });
 
@@ -338,7 +338,7 @@ const MessageMember = ({ members = [], onClose = () => {}, onSubmit = () => {} }
             >
               To:
             </Text>
-            <View style={{ flex: 1, paddingLeft: 5, marginTop: Platform.OS === 'ios' ? 0 : -2 }}>
+            <View style={{ flex: 1, paddingLeft: 5, marginTop: Platform.OS === 'ios' || Platform.OS === 'web' ? 0 : -2 }}>
               <InputTags
                 ref={inputTagRef}
                 editable={false}
