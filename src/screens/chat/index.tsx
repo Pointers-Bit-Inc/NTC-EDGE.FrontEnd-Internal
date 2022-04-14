@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     backgroundColor: primaryColor,
     paddingTop: Platform.OS === 'android' ? 41.5 : 41,
+    paddingBottom: 17,
   },
   titleContainer: {
     flex: 1,

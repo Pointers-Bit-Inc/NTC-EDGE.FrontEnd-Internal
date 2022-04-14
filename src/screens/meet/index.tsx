@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingHorizontal: 30,
     paddingTop: 39,
-    paddingBottom: 12,
+    paddingBottom: 14,
     backgroundColor: primaryColor
   },
   titleContainer: {
