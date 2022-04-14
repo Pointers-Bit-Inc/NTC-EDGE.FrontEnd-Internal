@@ -453,13 +453,17 @@ const Info=(props)=>{
                                         }} onSelect={value=>setSelectedMoreCircle(true)} onPress={()=>onMoreCircle(item)}
                                                  selectedParticipant={selectedParticipant} onPress1={()=>{
                                             optionModalRef.current?.close();
+                                            setSelectedMoreCircle(false);
                                             setTimeout(()=>{
                                                 meetingModalRef.current?.open();
                                             },500);
                                         }} onPress2={()=>{
                                             optionModalRef.current?.close();
+                                            setSelectedMoreCircle(false);
                                             setTimeout(()=>{
+
                                                 setNewMessageModal(true)
+
                                             },500);
                                         }} admin={isAdmin()} onPress3={addAdmin} onPress4={onRemoveConfirm}/>
                                                   :
@@ -481,11 +485,13 @@ const Info=(props)=>{
                                  selectedParticipant={selectedParticipant} onPress1={()=>{
                         optionModalRef.current?.close();
                         setTimeout(()=>{
+                            setSelectedMoreCircle(false);
                             meetingModalRef.current?.open();
                         },500);
                     }} onPress2={()=>{
                         optionModalRef.current?.close();
                         setTimeout(()=>{
+                            setSelectedMoreCircle(false);
                             setNewMessageModal(true)
                         },500);
                     }} admin={isAdmin()} onPress3={addAdmin} onPress4={onRemoveConfirm}/>
