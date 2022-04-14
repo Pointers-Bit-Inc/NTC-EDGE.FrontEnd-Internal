@@ -215,7 +215,7 @@ const ChatInfo = ({ navigation }) => {
   const isAdmin = () => {
     const participant:IParticipants = lodash.find(participants, (p:IParticipants) => p._id === user._id);
     
-    return participant.isAdmin;
+    return participant?.isAdmin;
   }
 
   const isHost = (item:any = {}) => {
