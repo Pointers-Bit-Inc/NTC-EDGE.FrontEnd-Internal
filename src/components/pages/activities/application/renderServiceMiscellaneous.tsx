@@ -6,6 +6,7 @@ import React from "react";
 import {input} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular500} from "@styles/font";
+import {CASHIER} from "../../../../reducers/activity/initialstate";
 const styles = StyleSheet.create({
     subChildSeparator: {
         height: 1,
@@ -50,12 +51,7 @@ const RenderServiceMiscellaneous = (props) => {
 
     let _renderParent = ({item}: any) => {
 
-        if (
-            item !== '_id' &&
-            item !== 'name' &&
-            item !== 'applicationType' &&
-            item !== 'serviceCode'
-        ) {
+        if (!(props.include.indexOf(item) != -1)) {
 
             let parentItem = item;
             let parentLabel = transformText(item);

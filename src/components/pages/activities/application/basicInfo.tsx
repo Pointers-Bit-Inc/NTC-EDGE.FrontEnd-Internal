@@ -172,7 +172,7 @@ const BasicInfo = (props: any) => {
 
                                 </View>
                                 <View style={ styles.divider }/>
-                                <RenderServiceMiscellaneous service={props?.service}/>
+                                <RenderServiceMiscellaneous include={['_id', 'name', 'applicationType', 'serviceCode']} service={props?.service}/>
                             </View>
 
                         </View>
