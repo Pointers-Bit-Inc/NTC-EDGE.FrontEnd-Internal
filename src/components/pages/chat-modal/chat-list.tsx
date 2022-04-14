@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef, FC } from 'react'
-import {View,TouchableOpacity,StyleSheet,InteractionManager,Platform} from 'react-native';
+import {View,TouchableOpacity,StyleSheet,InteractionManager,Platform, Dimensions, Image} from 'react-native';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
 import useSignalr from 'src/hooks/useSignalr';
 import { ListFooter } from '@components/molecules/list-item';
-import { NewEditIcon } from '@components/atoms/icon';
+import { CloseIcon, NewEditIcon, NewFileIcon } from '@components/atoms/icon';
 import {
   setMessages,
   addToMessages,
@@ -16,6 +16,7 @@ import {
   setSelectedChannel,
   addChannel
 } from 'src/reducers/channel/actions';
+import Modal from 'react-native-modal';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import Text from '@atoms/text';
 import Button from '@components/atoms/button';
@@ -28,6 +29,9 @@ import IMessages from 'src/interfaces/IMessages';
 import IParticipants from 'src/interfaces/IParticipants';
 import NoConversationIcon from "@assets/svg/noConversations";
 import { useNavigation } from '@react-navigation/native';
+import IAttachment from 'src/interfaces/IAttachment';
+
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   button: {
@@ -141,6 +145,7 @@ const List: FC<Props> = ({
   const [hasMore, setHasMore] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [rendered, setRendered] = useState(false);
+  const [preview, setPreview] = useState<any>({})
 
   const {
     sendMessage,
@@ -393,6 +398,11 @@ const List: FC<Props> = ({
     [message]
   );
 
+  const checkIfImage = (uri:any) => {
+    if (uri && (uri.endsWith(".png") || uri.endsWith(".jpg"))) return true;
+    return false;
+  };
+
   return (
     <>
       {
@@ -428,7 +438,50 @@ const List: FC<Props> = ({
             onEndReachedThreshold={0.5}
             onSendMessage={_sendMessage}
             onSendFile={_sendFile}
+            onPreview={(item:IAttachment) => setPreview(item)}
           />
+          <Modal
+            isVisible={!!preview?.attachment}
+            statusBarTranslucent={true}
+            onBackdropPress={() => setPreview({})}
+            onSwipeComplete={() => setPreview({})}
+            style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 15 }}
+          >
+            <View style={{ position: 'absolute', top: 10, left: 0 }}>
+              <TouchableOpacity onPress={() => setPreview({})}>
+                <CloseIcon
+                  type={'md-close'}
+                  color={'#fff'}
+                  height={RFValue(10)}
+                  width={RFValue(10)}
+                />
+              </TouchableOpacity>
+            </View>
+            {
+              !!preview?.attachment && checkIfImage(preview?.attachment?.uri) ? (
+                <Image
+                  resizeMode={'contain'}
+                  source={{ uri: preview?.attachment?.uri }}
+                  style={{ width: width * 0.9, height: height * 0.8 }}
+                />
+              ) : (
+                <View style={{ alignItems: 'center' }}>
+                  <NewFileIcon
+                    color={'#fff'}
+                    width={60}
+                    height={60}
+                  />
+                  <Text
+                    style={{ textAlign: 'center', marginTop: 15 }}
+                    color={'white'}
+                    size={18}
+                  >
+                    {preview?.attachment?.name}
+                  </Text>
+                </View>
+              )
+            }
+          </Modal>
           <BottomModal
             ref={modalRef}
             onModalHide={() => setShowDeleteOption(false)}
