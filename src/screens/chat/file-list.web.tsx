@@ -13,10 +13,8 @@ import {
   setFiles,
   updateMessages
 } from 'src/reducers/channel/actions';
-import useDownload from 'src/hooks/useDownload';
 import { text } from '@styles/color';
 import { FileItem } from '@components/molecules/list-item';
-import IAttachment from 'src/interfaces/IAttachment';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 const { width, height } = Dimensions.get('window');
@@ -160,10 +158,7 @@ const FileList = () => {
     deleteMessage,
   } = useSignalr();
 
-  const {
-    checkPermission,
-    downloadFile,
-  } = useDownload();
+
 
   const fetchMoreMessages = (isPressed = false) => {
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
@@ -184,7 +179,7 @@ const FileList = () => {
   }
 
   useEffect(() => {
-    checkPermission();
+
     InteractionManager.runAfterInteractions(() => {
       setRendered(true);
     });
@@ -296,40 +291,7 @@ const FileList = () => {
 
   const onDownload = async () => {
     
-    if (selectedData) {
-      const promises:any = [];
-      setDownloading(true);
-      setDownloaded({});
-      setProgress({});
-      setError({});
-      selectedData.map((data:IMessages) => {
-        promises.push(
-          new Promise(async (resolve, reject) => {
-            downloadFile(data.attachment)
-            .progress({ count: 10 }, (received, total) => {
-              console.log('RECEIVED TOTAL', received, total);
-              const progress = received / total;
-              setProgress((p:any) => ({...p, [data._id]: progress}));
-            })
-            .then((res) => {
-              setDownloaded((d:any) => ({ ...d, [data._id]: true }));
-              resolve(res);
-            })
-            .catch((err) => {
-              setError((err:any) => ({ ...err, [data._id]: true }));
-              reject(err);
-            })
-          })
-        )        
-      });
-
-      Promise.all(promises).then(function(values) {
-        setDownloading(false);
-      })
-      .catch((err = []) => {
-        setDownloading(false);
-      });
-    }
+  
   }
 
   const emptyComponent = () => (
@@ -472,14 +434,14 @@ const FileList = () => {
         onSwipeComplete={() => setPreview({})}
         style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 15 }}
       >
-        <View style={{ position: 'absolute', top: 10, right: 0 }}>
+        <View style={{ position: 'absolute', top: 10, left: 0 }}>
           <TouchableOpacity onPress={() => setPreview({})}>
-            <Text
-              color={'white'}
-              size={16}
-            >
-              Close
-            </Text>
+            <CloseIcon
+              type={'md-close'}
+              color={'#fff'}
+              height={RFValue(10)}
+              width={RFValue(10)}
+            />
           </TouchableOpacity>
         </View>
         {

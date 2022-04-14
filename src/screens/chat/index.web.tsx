@@ -48,8 +48,8 @@ import {useComponentLayout} from "../../hooks/useComponentLayout";
 import {setChatLayout} from "../../reducers/layout/actions";
 import {Hoverable} from "react-native-web-hooks";
 import GroupImage from "@molecules/image/group";
-//import FileList from "@screens/chat/file-list";
-import FileList from '@components/organisms/chat/files';
+import FileList from "@screens/chat/file-list";
+//import FileList from '@components/organisms/chat/files';
 import NoConversationIcon from "@assets/svg/noConversations";
 import {isMobile} from "@pages/activities/isMobile";
 import {ViewPaged} from 'react-scroll-paged-view'
@@ -63,13 +63,11 @@ import SendIcon from "@assets/svg/SendIcon";
 import useAttachmentPicker from "../../hooks/useAttachment";
 import Modal from "react-native-modal";
 import Info from "@screens/chat/info";
+import {MenuProvider} from "react-native-popup-menu";
 
 const profPic=require('@assets/newMessageProfilePicture.png');
 const draftProfPic=require('@assets/draftNewMessageProfilePicture.png');
 import hairlineWidth=StyleSheet.hairlineWidth;
-import {MenuProvider} from "react-native-popup-menu";
-import axios from "axios";
-import {BASE_URL,BASE_URL_NODE} from "../../services/config";
 
 const {width,height}=Dimensions.get('window');
 
@@ -776,7 +774,6 @@ const ChatList=({navigation}:any)=>{
     }=useAttachmentPicker();
 
     const _sendFile=(channelId:string,attachment:any,groupName='',participants:any=[])=>{
-
         dispatch(addPendingMessage({
             attachment,
             channelId,
@@ -786,58 +783,14 @@ const ChatList=({navigation}:any)=>{
         }));
     };
     useEffect(()=>{
-        
-        if(selectedFile){
-            let uri = selectedFile?.uri;
-            let split = uri?.split('/');
-            let name = split?.[split?.length - 1];
-            let mime=uri?.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
-            let mimeResult:any=null;
-            if(mime&&mime.length){
-                mimeResult=mime[1];
-            }
-            let mimeType=mimeResult?.split("/")?.[1];
-
-
-
-
-            fetch(uri)
-            .then(res=>{
-
-                return res?.blob()
-            })
-            .then(blob=>{
-
-                const fd=new FormData();
-                const _file= new File([blob],(
-                    name+"."+mimeType));
-
-                fd.append('file',_file,(
-                    name+"."+mimeType));
-                const API_URL=`${BASE_URL}/messages/${_id}/upload-file`;
-
-                fetch(API_URL,{
-                    method:'POST',body:fd,headers:{
-                        'Authorization':`Bearer ${user?.sessionToken}`,
-                    }
-                })
-                .then(res=>{
-
-                    return res?.json()
-                })
-
-            })
-            if(lodash.size(selectedFile)){
-                _sendFile(
-                    channelId,
-                    selectedFile,
-                    name||"",
-                    participants
-                )
-            }
-
+        if(lodash.size(selectedFile)){
+            _sendFile(
+                channelId,
+                selectedFile,
+                name||"",
+                participants
+            )
         }
-
     },[selectedFile]);
     const [participant,setParticipant]:any=useState([]);
     return (
@@ -1203,7 +1156,8 @@ const ChatList=({navigation}:any)=>{
                 hideModalContentWhileAnimating // Better performance, try with/without
                 propagateSwipe // Allows swipe events to propagate to children components (eg a ScrollView inside a modal)
                 style={styles.sideMenuStyle} // Needs to contain the width, 75% of screen width in our case
-            >       <MenuProvider style={{flex: 1, justifyContent: "flex-end"}}>
+            >
+                <MenuProvider style={{flex: 1, justifyContent: "flex-end"}}>
                 <Info otherParticipants={participants} close={toggleSideMenu}/>
             </MenuProvider>
 
