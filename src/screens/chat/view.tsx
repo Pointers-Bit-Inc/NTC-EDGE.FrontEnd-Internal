@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react'
+import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react'
 import {
   StyleSheet,
   View,
@@ -159,16 +159,16 @@ const ChatView = ({ navigation, route }:any) => {
       return selectedChannel;
     }
   );
-  const meetingList = useSelector((state: RootStateOrAny) => {
-    const { normalizeActiveMeetings } = state.meeting
-    let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
-    meetingList = lodash.filter(meetingList, m => m.roomId === _id);
-    return lodash.orderBy(meetingList, 'updatedAt', 'desc');
-})
+  const { normalizeActiveMeetings } = useSelector((state: RootStateOrAny) => state.meeting)
   const selectedMessage = useSelector((state:RootStateOrAny) => {
     const { selectedMessage } = state.channel;
     return selectedMessage[_id];
   });
+  const meetingList = useMemo(() => {
+    let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
+    meetingList = lodash.filter(meetingList, m => m.roomId === _id);
+    return lodash.orderBy(meetingList, 'updatedAt', 'desc');
+  }, [normalizeActiveMeetings]);
   const [inputText, setInputText] = useState('');
   const [index, setIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);

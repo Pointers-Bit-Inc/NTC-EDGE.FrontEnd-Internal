@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import {
   StyleSheet ,
   View ,
@@ -159,23 +159,25 @@ const ChatList = ({ navigation }:any) => {
   const dispatch = useDispatch();
   const swipeableRef:any = useRef({});
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const channelList = useSelector((state:RootStateOrAny) => {
-    const { normalizedChannelList } = state.channel
-    const channelList = lodash.keys(normalizedChannelList).map(ch => {
+  const { normalizedChannelList } = useSelector((state:RootStateOrAny) => state.channel);
+  const { normalizeActiveMeetings } = useSelector((state: RootStateOrAny) => state.meeting);
+  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
+  const channelList = useMemo(() => {
+    const channelList = lodash.keys(normalizedChannelList).map((ch:any) => {
       const channel = normalizedChannelList[ch];
       channel.otherParticipants = lodash.reject(channel.participants, (p:IParticipants) => p._id === user._id);
       channel.lastMessage.hasSeen = !!lodash.find(channel.lastMessage.seen, (s:IParticipants) => s._id === user._id);
       return channel;
     });
     return lodash.orderBy(channelList, 'lastMessage.createdAt', 'desc');
-  });
-  const meetingList = useSelector((state: RootStateOrAny) => {
-    const { normalizeActiveMeetings } = state.meeting
+  }, [normalizedChannelList]);
+
+  const meetingList = useMemo(() => {
     let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
     meetingList = lodash.reject(meetingList, (m:IMeetings) => lodash.find(m.participants, (p:IParticipants) => p._id === user._id && (p.status === 'busy' || p.muted)));
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
-})
-    const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
+  }, [normalizeActiveMeetings]);
+
   const {
     getChatList,
     leaveChannel,
