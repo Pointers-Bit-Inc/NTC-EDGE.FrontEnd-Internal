@@ -1,10 +1,10 @@
-import React, { FC, useEffect, useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, Platform, Dimensions, Image } from 'react-native'
+import React,{FC,useEffect,useState} from 'react'
+import {Dimensions,Image,Platform,StyleSheet,TouchableOpacity,View} from 'react-native'
 import Text from '@components/atoms/text'
-import { NewFileIcon } from '@components/atoms/icon'
-import { bubble, outline } from '@styles/color'
-import { fontValue } from '@components/pages/activities/fontValue';
-import { getFileSize } from 'src/utils/formatting';
+import {NewFileIcon} from '@components/atoms/icon'
+import {bubble,outline} from '@styles/color'
+import {fontValue} from '@components/pages/activities/fontValue';
+import {getFileSize} from 'src/utils/formatting';
 import * as Progress from 'react-native-progress';
 
 const { width } = Dimensions.get('window');
@@ -130,39 +130,49 @@ const PendingBubble:FC<Props> = ({
 }) => {
   const [progress, setProgress] = useState(0);
 
-  useEffect(() => {
-    const formData = new FormData();
-    const controller = new AbortController();
-    const config = {
-      signal: controller.signal,
-      onUploadProgress ({ loaded, total }:any) {
-        const percentComplete = loaded / total;
+  useEffect(async()=>{
+    const formData=new FormData();
+    const controller=new AbortController();
+    const config={
+      signal:controller.signal,
+      onUploadProgress({loaded,total}:any){
+        const percentComplete=loaded/total;
         setProgress(percentComplete);
       },
     };
-    
-    if (messageType === 'file') {
-      let file:any = {
-        name: attachment?.name,
-        type: attachment?.mimeType,
-        uri: attachment?.uri,
+    if(messageType==='file'){
+      let file:any={
+        name:attachment?.name,
+        type:attachment?.mimeType,
+        uri:attachment?.uri,
       };
+      Platform.select({
+        web:await fetch(attachment?.uri).then(res=>{
+          return res?.blob()
+        }).then(blob=>{
+          const fd=new FormData();
+          var mime = attachment?.uri.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)
+          if (mime && mime.length) {
+            file=new File([blob],attachment?.name + "." + mime[1]?.split("/")?.[1]);
+          }
+        })
+      })
 
-      formData.append('file', file);
+      formData.append('file',file);
     }
 
-    formData.append('message', message);
-    
-    if (!channelId) {
-      formData.append('name', groupName);
-      formData.append('participants', JSON.stringify(participants));
-    } else {
-      formData.append('roomId', channelId);
+    formData.append('message',message);
+
+    if(!channelId){
+      formData.append('name',groupName);
+      formData.append('participants',JSON.stringify(participants));
+    } else{
+      formData.append('roomId',channelId);
     }
 
-    onSendMessage(formData, messageId, config, !channelId);
+    onSendMessage(formData,messageId,config,!channelId);
 
-    return () => {
+    return ()=>{
       controller.abort();
     }
   }, [messageId]);
