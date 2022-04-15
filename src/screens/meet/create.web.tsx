@@ -73,12 +73,158 @@ const styles = StyleSheet.create({
 })
 
 const CreateMeeting = ({ navigation, route }:any) => {
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
+  const {
+    participants = [],
+    isChannelExist = false,
+    isVideoEnable = true,
+    isVoiceCall = false,
+    isMute = false,
+    channelId,
+  } = route.params;
+  const { createMeeting } = useSignalr();
+  const [loading, setLoading] = useState(false);
+  const [meetingName, setMeetingName] = useState('');
+  const [videoOn, setVideoOn] = useState(isVideoEnable);
+  const [micOn, setMicOn] = useState(!isMute);
+  const onBack = () => navigation.goBack();
+  const onStartMeeting = () => {
+    setLoading(true);
+    if (isChannelExist) {
+      createMeeting({ roomId: channelId, isVoiceCall, participants, name: meetingName }, (error, data) => {
+        setLoading(false);
+        if (!error) {
+          const { room } = data;
+          data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
+          room.otherParticipants =  data.otherParticipants;
+          dispatch(setSelectedChannel(data.room, isChannelExist));
+          dispatch(setMeeting(data));
+          navigation.replace('JoinVideoCall', {
+            isHost: true,
+            isVoiceCall,
+            options: {
+              isMute: !micOn,
+              isVideoEnable: videoOn,
+            }
+          });
+        }
+      });
+    } else {
+      createMeeting({ participants, name: meetingName }, (error, data) => {
+        setLoading(false);
+        if (!error) {
+          const { room } = data;
+          data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
+          room.otherParticipants =  data.otherParticipants;
+          dispatch(setSelectedChannel(data.room));
+          dispatch(setMeeting(data));
+          navigation.replace('VideoCall', {
+            isHost: true,
+            options: {
+              isMute: !micOn,
+              isVideoEnable: videoOn,
+            }
+          });
+        }
+      });
+    }
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'dark-content'} />
-     
-    </SafeAreaView>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle={'dark-content'} />
+        <View style={styles.header}>
+          <View style={[styles.horizontal, { paddingVertical: 5 }]}>
+            <TouchableOpacity onPress={onBack}>
+              <ArrowLeftIcon
+                  size={24}
+              />
+            </TouchableOpacity>
+            <View style={styles.titleContainer}>
+              <Text
+                  color={text.default}
+                  weight={'600'}
+                  size={16}
+              >
+                Create Meeting
+              </Text>
+            </View>
+          </View>
+          <InputField
+              containerStyle={{ backgroundColor: '#EEEEEE', borderWidth: 0 }}
+              inputStyle={[InputStyles.text, styles.input]}
+              iconStyle={styles.icon}
+              placeholder="Meeting name"
+              outlineStyle={[InputStyles.outlineStyle, styles.outline]}
+              placeholderTextColor="#979797"
+              value={meetingName}
+              onChangeText={setMeetingName}
+              onSubmitEditing={(event:any) => setMeetingName(event.nativeEvent.text)}
+          />
+          <View style={{ paddingTop: 20, paddingBottom: 60 }}>
+            <View style={styles.section}>
+              <Text
+                  color='#687287'
+                  size={18}
+              >
+                Video {videoOn ? 'On' : 'Off'}
+              </Text>
+              <TouchableOpacity
+                  onPress={() => setVideoOn(!videoOn)}
+              >
+                <ToggleIcon
+                    style={
+                      videoOn ?
+                      styles.toggleActive :
+                      styles.toggleDefault
+                    }
+                    size={28}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.section}>
+              <Text
+                  color='#687287'
+                  size={18}
+              >
+                Mic {micOn ? 'On' : 'Off'}
+              </Text>
+              <TouchableOpacity
+                  onPress={() => setMicOn(!micOn)}
+              >
+                <ToggleIcon
+                    style={
+                      micOn ?
+                      styles.toggleActive :
+                      styles.toggleDefault
+                    }
+                    size={28}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <Button
+              style={styles.button}
+              disabled={loading}
+              onPress={onStartMeeting}
+          >
+            {
+              loading ? (
+                  <ActivityIndicator color={'white'} size={24} />
+              ) : (
+                  <Text
+                      size={18}
+                      weight='bold'
+                      color='white'
+                  >
+                    Start Meeting
+                  </Text>
+              )
+            }
+          </Button>
+        </View>
+      </SafeAreaView>
   )
 }
 

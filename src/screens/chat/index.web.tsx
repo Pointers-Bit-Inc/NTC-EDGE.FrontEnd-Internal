@@ -284,7 +284,6 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
             channel.lastMessage.hasSeen= !!lodash.find(channel.lastMessage.seen,s=>s._id===props.user._id);
             return channel;
         });
-        console.log(lodash.orderBy(channelList,'lastMessage.createdAt','desc'));
         return lodash.orderBy(channelList,'lastMessage.createdAt','desc');
     });
     const onRequestData=()=>setSendRequest(request=>request+1);
