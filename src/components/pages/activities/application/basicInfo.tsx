@@ -55,7 +55,7 @@ const BasicInfo = (props: any) => {
                     style={ { borderRadius : 4 } }
 
                     textSize={ 22 }
-                    image={  applicant.profilePicture?.small.match(/[^/]+(jpg|png|gif)$/i) ?  applicant.profilePicture?.small :   applicant.profilePicture?.small+ ".png" }
+                    image={  applicant.profilePicture?.small.match(/[^/]+(jpeg|jpg|png|gif)$/i) ?  applicant.profilePicture?.small :   applicant.profilePicture?.small+ ".png" }
                     name={ `${ applicant.firstName } ${ applicant.lastName }` }
                 />
 
@@ -153,20 +153,31 @@ const BasicInfo = (props: any) => {
 
                                 </View>
                                 <View style={ styles.divider }/>
-                                <View style={ styles.group3 }>
+                                {applicant?.education && <View style={ styles.group3 }>
                                     <View style={ styles.group }>
                                         <View style={ styles.rect }>
-                                            <Text style={ styles.header }>Additional Details</Text>
+                                            <Text style={ styles.header }>Educational Background</Text>
                                         </View>
                                     </View>
                                     <Row label={ "School Attended:" } applicant={ applicant?.education?.schoolAttended }/>
                                     <Row label={ "Course Taken:" } applicant={ applicant?.education?.courseTaken }/>
                                     <Row label={ "Year Graduated:" } applicant={ applicant?.education?.yearGraduated }/>
+
+
+                                </View>}
+                                {applicant?.education &&<View style={ styles.divider }/>}
+                                {applicant?.contact && <View style={ styles.group3 }>
+                                    <View style={ styles.group }>
+                                        <View style={ styles.rect }>
+                                            <Text style={ styles.header }>Contact Details</Text>
+                                        </View>
+                                    </View>
                                     <Row label={ "Contact Number:" } applicant={ applicant?.contact?.contactNumber }/>
                                     <Row label={ "Email:" } applicant={ applicant?.contact?.email }/>
 
-                                </View>
-                                <View style={ styles.divider }/>
+
+                                </View>}
+                                {applicant?.contact && <View style={ styles.divider }/>}
                                 <RenderServiceMiscellaneous exclude={['_id', 'name', 'applicationType', 'serviceCode']} service={props?.service}/>
                             </View>
 
