@@ -184,6 +184,7 @@ const ModalTab=props=>{
                     return <BasicInfo
                         tabLabel={{label:tab.name}} label={tab.name}
                         paymentMethod={paymentMethod}
+                        service={ service }
                         assignedPersonnel={assignedPersonnel}
                         approvalHistory={approvalHistory}
                         status={props.details.status}
