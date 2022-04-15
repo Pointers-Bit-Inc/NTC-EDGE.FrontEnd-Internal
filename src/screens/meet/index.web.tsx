@@ -485,9 +485,9 @@ const Meet = ({ navigation }) => {
         </View>
         </View>
         <View style={{flex: 1}}>
-          <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-           
+          <View style={{flex: 1, justifyContent:"center",alignItems:"center"}}>
               <NoConversationIcon/>
+              <View style={{zIndex: -1, borderRadius: 15,  position: "absolute", backgroundColor: "#E3ECFA", width: 200, height: 200}}></View>
           </View>
         </View>
       </View>

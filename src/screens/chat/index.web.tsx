@@ -68,6 +68,7 @@ import {MenuProvider} from "react-native-popup-menu";
 const profPic=require('@assets/newMessageProfilePicture.png');
 const draftProfPic=require('@assets/draftNewMessageProfilePicture.png');
 import hairlineWidth=StyleSheet.hairlineWidth;
+import {MEET} from "../../reducers/activity/initialstate";
 
 const {width,height}=Dimensions.get('window');
 
@@ -413,7 +414,7 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
                 <View style={{width:25}}/>
                 <Hoverable>
                     {isHovered=>(
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => props.navigation.navigate(MEET)}>
 
                             <View
                                 style={[styles.headerNewChatIcon,{backgroundColor:isHovered ? "#2863D6" : "#F0F0F0"}]}>
