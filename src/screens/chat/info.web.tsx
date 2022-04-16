@@ -1,5 +1,5 @@
 import React,{useRef,useState} from "react";
-import {Alert,Dimensions,Platform,SafeAreaView,ScrollView,StyleSheet,TouchableOpacity,View} from "react-native";
+import {Alert,Dimensions,Modal,Platform,SafeAreaView,ScrollView,StyleSheet,TouchableOpacity,View} from "react-native";
 import CloseIcon from "@assets/svg/close";
 import Text from '@components/atoms/text'
 import {Bold,Regular,Regular500} from "@styles/font";
@@ -33,6 +33,7 @@ import CreateMeeting from "@pages/chat-modal/meeting";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {APPROVED} from "../../reducers/activity/initialstate";
 import CustomAlert from "@pages/activities/alert/alert";
+import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 
 const {height,width}=Dimensions.get('window');
 
@@ -134,9 +135,12 @@ function MenuBar(props:{opened:boolean,onClose:()=>void,onSelect:(value)=>void,o
                 width:0,
                 height:0
             },
+
             elevation:45,
             shadowOpacity:0.1,
             shadowRadius:15,
+            marginLeft: -30,
+            marginTop: 20
         }}>
             <MenuOption value={`Call ${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}>
                 <TouchableOpacity onPress={props.onPress1}>
@@ -242,7 +246,8 @@ const Info=(props)=>{
     const modalRef=useRef<BottomModalRef>(null);
     const participantModal=useRef<BottomModalRef>(null);
     const optionModalRef=useRef<BottomModalRef>(null);
-    const newMessageModalRef=useRef<BottomModalRef>(null);
+      const  newMessageModalRef =useRef(null);
+    const [newMessageModal, setNewMessageModal]=useState(false);
     const meetingModalRef=useRef<BottomModalRef>(null);
     const groupNameRef:any=useRef(null);
     const renderChannelName=()=>{
@@ -448,13 +453,17 @@ const Info=(props)=>{
                                         }} onSelect={value=>setSelectedMoreCircle(true)} onPress={()=>onMoreCircle(item)}
                                                  selectedParticipant={selectedParticipant} onPress1={()=>{
                                             optionModalRef.current?.close();
+                                            setSelectedMoreCircle(false);
                                             setTimeout(()=>{
                                                 meetingModalRef.current?.open();
                                             },500);
                                         }} onPress2={()=>{
                                             optionModalRef.current?.close();
+                                            setSelectedMoreCircle(false);
                                             setTimeout(()=>{
-                                                newMessageModalRef.current?.open()
+
+                                                setNewMessageModal(true)
+
                                             },500);
                                         }} admin={isAdmin()} onPress3={addAdmin} onPress4={onRemoveConfirm}/>
                                                   :
@@ -476,12 +485,14 @@ const Info=(props)=>{
                                  selectedParticipant={selectedParticipant} onPress1={()=>{
                         optionModalRef.current?.close();
                         setTimeout(()=>{
+                            setSelectedMoreCircle(false);
                             meetingModalRef.current?.open();
                         },500);
                     }} onPress2={()=>{
                         optionModalRef.current?.close();
                         setTimeout(()=>{
-                            newMessageModalRef.current?.open()
+                            setSelectedMoreCircle(false);
+                            setNewMessageModal(true)
                         },500);
                     }} admin={isAdmin()} onPress3={addAdmin} onPress4={onRemoveConfirm}/>
                 }
@@ -678,34 +689,51 @@ const Info=(props)=>{
                 }
             </View>
         </View>
-        <BottomModal
+        <Modal
+
             ref={newMessageModalRef}
-            onModalHide={()=>newMessageModalRef.current?.close()}
-            avoidKeyboard={false}
-            header={
-                <View style={styles.bar}/>
-            }
-            containerStyle={{maxHeight:null}}
-            onBackdropPress={()=>{
-            }}
+            visible={newMessageModal}
+             style={{   }}
+               transparent={true}
         >
-            <View style={{
-                height:height*(
-                    Platform.OS==='ios' ? 0.94 : 0.98)
-            }}>
-                <MessageMember
-                    members={[selectedParticipant]}
-                    onClose={()=>newMessageModalRef.current?.close()}
-                    onSubmit={(res:any)=>{
-                        res.otherParticipants=lodash.reject(res.participants,(p:IParticipants)=>p._id===user._id);
-                        dispatch(setSelectedChannel(res));
-                        dispatch(addChannel(res));
-                        newMessageModalRef.current?.close();
-                        setTimeout(()=>navigation.navigate('ViewChat',res),500);
-                    }}
-                />
-            </View>
-        </BottomModal>
+                <View style={{
+                    flex: 1,
+
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}>
+                    <OnBackdropPress styles={{backgroundColor : "rgba(0,0,0,0.4)"}} onPressOut={() => setNewMessageModal(false)}/>
+                    <View style={{flex: 0.90,
+                        borderRadius: 20,
+                        width: "90%",
+                        backgroundColor: 'white',
+                        shadowColor: "#000",
+                        shadowOffset: {
+                            width: 0,
+                            height: 2
+                        },
+                        padding: 20,
+                        shadowOpacity: 0.25,
+                        shadowRadius: 4,
+                        elevation: 5}}>
+
+                        <MessageMember
+
+                            members={[selectedParticipant]}
+                            onClose={()=>setNewMessageModal(false)}
+                            onSubmit={(res:any)=>{
+                                res.otherParticipants=lodash.reject(res.participants,(p:IParticipants)=>p._id===user._id);
+                                dispatch(setSelectedChannel(res));
+                                dispatch(addChannel(res));
+                                setNewMessageModal(false)
+                                setTimeout(()=> props?.navigation.navigate('ViewChat',res),500);
+                            }}
+                        />
+                    </View>
+
+                </View>
+
+        </Modal>
         <BottomModal
             ref={meetingModalRef}
             onModalHide={()=>meetingModalRef.current?.close()}

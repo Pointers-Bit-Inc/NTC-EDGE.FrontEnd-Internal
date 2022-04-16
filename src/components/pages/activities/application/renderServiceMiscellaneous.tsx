@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     group3 : {
         paddingRight : fontValue(10) ,
         paddingLeft : fontValue(10),
-        paddingBottom: fontValue(10)
+        paddingBottom: fontValue(20)
     } ,
 })
 const RenderServiceMiscellaneous = (props) => {

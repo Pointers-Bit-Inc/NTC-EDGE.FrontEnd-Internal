@@ -68,6 +68,7 @@ import {MenuProvider} from "react-native-popup-menu";
 const profPic=require('@assets/newMessageProfilePicture.png');
 const draftProfPic=require('@assets/draftNewMessageProfilePicture.png');
 import hairlineWidth=StyleSheet.hairlineWidth;
+import {MEET} from "../../reducers/activity/initialstate";
 
 const {width,height}=Dimensions.get('window');
 
@@ -284,7 +285,6 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
             channel.lastMessage.hasSeen= !!lodash.find(channel.lastMessage.seen,s=>s._id===props.user._id);
             return channel;
         });
-        console.log(lodash.orderBy(channelList,'lastMessage.createdAt','desc'));
         return lodash.orderBy(channelList,'lastMessage.createdAt','desc');
     });
     const onRequestData=()=>setSendRequest(request=>request+1);
@@ -414,7 +414,7 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
                 <View style={{width:25}}/>
                 <Hoverable>
                     {isHovered=>(
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => props.navigation.navigate(MEET)}>
 
                             <View
                                 style={[styles.headerNewChatIcon,{backgroundColor:isHovered ? "#2863D6" : "#F0F0F0"}]}>

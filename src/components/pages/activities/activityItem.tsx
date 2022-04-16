@@ -432,6 +432,7 @@ export function ActivityItem(props: any) {
                                             elevation : 45 ,
                                             shadowOpacity : 0.1 ,
                                             shadowRadius : 15 ,
+                                            marginLeft: -170
                                         } }>
                                             <MenuOption value={ "Unread" }>
                                                 <View style={ styles.menuItem }>

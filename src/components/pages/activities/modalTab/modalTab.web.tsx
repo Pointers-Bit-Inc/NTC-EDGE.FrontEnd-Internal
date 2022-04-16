@@ -59,6 +59,7 @@ const ModalTab=props=>{
         },
     ]);
     const {
+        schedule,
         applicant,
         selectedTypes,
         applicationType,
@@ -184,6 +185,8 @@ const ModalTab=props=>{
                     return <BasicInfo
                         tabLabel={{label:tab.name}} label={tab.name}
                         paymentMethod={paymentMethod}
+                        service={ service }
+                        schedule={ schedule }
                         assignedPersonnel={assignedPersonnel}
                         approvalHistory={approvalHistory}
                         status={props.details.status}

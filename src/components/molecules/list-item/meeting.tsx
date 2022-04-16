@@ -7,7 +7,7 @@ import { VideoIcon } from '@components/atoms/icon'
 import { text, outline, button, primaryColor } from 'src/styles/color';
 import { getDateTimeString, getDayMonthString, getTimeString } from 'src/utils/formatting';
 import { Regular, Regular500 } from '@styles/font'
-import { RFValue } from 'react-native-responsive-fontsize'
+import {fontValue as RFValue} from "@pages/activities/fontValue";
 
 const styles = StyleSheet.create({
   container: {

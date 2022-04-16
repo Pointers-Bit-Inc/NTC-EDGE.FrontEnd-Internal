@@ -15,7 +15,7 @@ import {
 } from 'src/reducers/channel/actions';
 import { text } from '@styles/color';
 import { FileItem } from '@components/molecules/list-item';
-import { RFValue } from 'react-native-responsive-fontsize';
+import {fontValue as RFValue} from "@pages/activities/fontValue";
 
 const { width, height } = Dimensions.get('window');
 

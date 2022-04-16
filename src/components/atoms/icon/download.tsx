@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import Svg, { SvgProps, Path } from "react-native-svg";
-import { RFValue } from 'react-native-responsive-fontsize';
+import {fontValue as RFValue} from "@pages/activities/fontValue";
 
 const DownloadIcon: FC = (props: SvgProps) => (
   <Svg

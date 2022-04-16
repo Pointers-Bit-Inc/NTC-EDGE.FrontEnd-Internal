@@ -10,6 +10,7 @@ export default function useApplicant(props) {
         updatedAt = props?.updatedAt ,
         approvalHistory = props?.approvalHistory ,
         assignedPersonnel = props?.assignedPersonnel,
+        schedule = props?.schedule,
         createdAt = props?.createdAt ,
         proofOfPayment = props?.proofOfPayment;
     return {applicant,
@@ -24,5 +25,6 @@ export default function useApplicant(props) {
         approvalHistory ,
         assignedPersonnel,
         createdAt,
+        schedule,
         proofOfPayment}
 }
