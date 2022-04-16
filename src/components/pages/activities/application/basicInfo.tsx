@@ -188,7 +188,7 @@ const BasicInfo = (props: any) => {
                                     <Row label={ "Start Time:" } applicant={ moment(props?.schedule.dateStart).format('LT') }/>
                                     <Row label={ "End Time:" } applicant={moment(props?.schedule.dateEnd).format('LT') }/>
                                     <Row label={ "Venue:" } applicant={ props?.schedule.venue }/>
-                                    <Row label={ "Seat No:" } applicant={ props?.schedule.seatNo }/>
+                                    <Row label={ "Seat No:" } applicant={ props?.schedule.seatNumber }/>
 
 
                                 </View>}
