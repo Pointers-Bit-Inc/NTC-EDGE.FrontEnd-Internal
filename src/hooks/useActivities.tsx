@@ -102,11 +102,11 @@ export function useActivities(){
 
 
 
-            if(!groups[formatDate(activity.createdAt)]){
-                groups[formatDate(activity.createdAt)]=[];
+            if(!groups[activity.createdAt]){
+                groups[activity.createdAt]=[];
             }
 
-            groups[formatDate(activity.createdAt)].push(activity);
+            groups[activity?.createdAt].push(activity);
             return groups;
         },{});
 

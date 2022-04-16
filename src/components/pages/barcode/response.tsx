@@ -95,7 +95,7 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                                <Text style={styles.examDetails}>EXAM DETAILS</Text>
                                 <Row input={schedule?.venue} label={"Venue: "}/>
                                 <Row input={schedule?.seatNumber} label={"Seat No.: "}/>
-                                <Row input={schedule?.dateEnd && dayjs(schedule?.dateEnd).format('MM/DD/YY')} label={"Date: "}/>
+                                <Row input={schedule?.dateEnd && dayjs(schedule?.dateStart).format('MM/DD/YY')} label={"Date: "}/>
                                 <Row input={schedule?.dateStart && `${moment(schedule?.dateStart).format('hh:mm:ss a')} - ${moment(schedule?.dateEnd)?.format('hh:mm:ss a')}`} label={"Time: "}/>
                             </View>}
                             {(approvalHistory || props?.verifiedInfo?.application?.ORNumber || props?.verifiedInfo?.application?.totalFee) &&  <View style={styles.group17}>
