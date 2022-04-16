@@ -35,7 +35,8 @@ const ApplicationList = (props: { onPress: () => void, item: any, numbers: { par
 
 
     const readableToHuman = () =>{
-        let date = moment(props.item.date);
+
+        let date = moment(props.item.date, "MM/DD/YY");
         if (moment().diff(date, 'days') >= 1 ) {
             return date.fromNow();
         }
