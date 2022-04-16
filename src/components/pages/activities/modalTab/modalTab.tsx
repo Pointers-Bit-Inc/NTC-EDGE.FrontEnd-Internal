@@ -54,6 +54,7 @@ const ModalTab = props => {
 
 
     const {
+        schedule,
         applicant ,
         selectedTypes ,
         applicationType ,
@@ -92,6 +93,7 @@ const ModalTab = props => {
                 if (isShow && tab.id === 1) {
 
                     return <BasicInfo
+                        schedule={ schedule }
                         service={ service }
                         tabLabel={ { label : tab.name } } label={ tab.name }
                         paymentMethod={ paymentMethod }
