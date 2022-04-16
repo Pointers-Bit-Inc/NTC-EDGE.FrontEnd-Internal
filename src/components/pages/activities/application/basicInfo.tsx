@@ -192,7 +192,7 @@ const BasicInfo = (props: any) => {
 
 
                                 </View>}
-                                {applicant?.schedule && <View style={ styles.divider }/>}
+                                {props?.schedule && <View style={ styles.divider }/>}
                                 <RenderServiceMiscellaneous exclude={['_id', 'name', 'applicationType', 'serviceCode']} service={props?.service}/>
                             </View>
 
