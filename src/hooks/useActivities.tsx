@@ -111,9 +111,10 @@ export function useActivities(){
         },{});
 
         const groupArrays=Object.keys(groups).map((date)=>{
+
             return {
                 date,
-                readableHuman:moment([date]).fromNow(),
+                readableHuman:moment([date], 'MM/DD/YYYY').fromNow(),
                 activity:groups[date],
             };
         });
