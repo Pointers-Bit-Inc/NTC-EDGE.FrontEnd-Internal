@@ -177,6 +177,21 @@ const BasicInfo = (props: any) => {
 
 
                                 </View>}
+                                {applicant?.schedule && <View style={ styles.divider }/>}
+                                {applicant?.schedule && <View style={ styles.group3 }>
+                                    <View style={ styles.group }>
+                                        <View style={ styles.rect }>
+                                            <Text style={ styles.header }>SCHEDULE</Text>
+                                        </View>
+                                    </View>
+                                    <Row label={ "Date:" } applicant={ moment(applicant?.schedule.dateStart).format('ddd DD MMMM YYYY') }/>
+                                    <Row label={ "Start Time:" } applicant={ moment(applicant?.schedule.dateStart).format('LT') }/>
+                                    <Row label={ "End Time:" } applicant={moment(applicant?.schedule.dateEnd).format('LT') }/>
+                                    <Row label={ "Venue:" } applicant={ applicant?.schedule.venue }/>
+                                    <Row label={ "Seat No:" } applicant={ applicant?.schedule.seatNo }/>
+
+
+                                </View>}
                                 {applicant?.contact && <View style={ styles.divider }/>}
                                 <RenderServiceMiscellaneous exclude={['_id', 'name', 'applicationType', 'serviceCode']} service={props?.service}/>
                             </View>
