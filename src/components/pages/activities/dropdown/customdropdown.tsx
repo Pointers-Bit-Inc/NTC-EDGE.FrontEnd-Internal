@@ -1,15 +1,14 @@
-    import React , {FC , ReactElement , useEffect , useRef , useState} from 'react';
-    import {FlatList , Modal , StyleSheet , Text , TouchableOpacity , View ,} from 'react-native';
-    import CaretDownIcon from "@assets/svg/caret-down";
-    import {useOrientation} from "../../../../hooks/useOrientation";
+import React,{FC,ReactElement,useEffect,useRef,useState} from 'react';
+import {FlatList,Modal,StyleSheet,Text,TouchableOpacity,View,} from 'react-native';
+import CaretDownIcon from "@assets/svg/caret-down";
+import {useOrientation} from "../../../../hooks/useOrientation";
 
-    import {Regular500} from "@styles/font";
-    import {fontValue} from "@pages/activities/fontValue";
-    import {isMobile} from "@pages/activities/isMobile";
+import {Regular500} from "@styles/font";
+import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 
-
-    interface Props {
+interface Props {
         label: string;
         data: any;
         onSelect: (item: any) => void;
@@ -44,10 +43,10 @@
 
         useEffect(()=>{
 
-            DropdownButton?.current?.measure((_fx: number, _fy: number, _w: number, h: number, _px: number, py: number) => {
-            setDropdownWidth(_w)
-                setDropdownLeft(_px)
-                setDropdownTop(py + h );
+            DropdownButton?.current?.measure((_fx:number,_fy:number,_w:number,h:number,_px:number,py:number)=>{
+                setDropdownWidth(_w);
+                setDropdownLeft(_px);
+                setDropdownTop(py+h);
             });
         }, [visible, dropdownTop])
 

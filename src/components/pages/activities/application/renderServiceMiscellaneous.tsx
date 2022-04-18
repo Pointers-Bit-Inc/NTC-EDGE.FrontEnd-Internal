@@ -60,7 +60,7 @@ const RenderServiceMiscellaneous = (props) => {
                     let childItem = item;
                     let childLabel = transformText(item);
                     let childValue = values?.[childItem];
-                    childValue = Date.parse(childValue) > 0 ? moment(childValue)?.format('LL') : childValue;
+                    childValue = Date.parse(childValue) > 0 ? (moment(childValue)?.isValid() ? moment(childValue)?.format('LL') : "") : childValue;
                     return <Row label={ `${childLabel}:` } applicant={ childValue }/>
                 };
                 return (
@@ -76,14 +76,12 @@ const RenderServiceMiscellaneous = (props) => {
                 let childItem = item;
                 let childLabel = transformText(item);
                 let childValue = service?.[parentItem]?.[childItem];
-                childValue = Date.parse(childValue) > 0 ? moment(childValue)?.format('LL') : childValue;
+                childValue = Date.parse(childValue) > 0 ?(moment(childValue)?.isValid() ? moment(childValue)?.format('LL') : "") : childValue;
                 if (typeof(childValue) === 'object') return _renderGrandChild(childValue);
                 else return <Row label={ `${childLabel}:` } applicant={ childValue }/>
             };
             return (
                 <View style={styles.group3}>
-
-
                         <View style={ styles.rect }>
                             <Text style={ styles.file }>{parentLabel?.toUpperCase()}</Text>
                         </View>
