@@ -155,7 +155,7 @@ const PendingBubble:FC<Props> = ({
           var mime = attachment?.uri.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)
           var attachmentMime = mime[1]?.split("/")?.[1]
           if (mime && mime.length) {
-            file=new File([blob],attachment?.name +  (attachmentMime < 4 ? "." + attachmentMime: '') );
+            file=new File([blob],attachment?.name +  (attachmentMime.length < 5 ? "." + attachmentMime: '') );
           }
         })
       })

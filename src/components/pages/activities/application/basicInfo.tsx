@@ -132,7 +132,7 @@ const BasicInfo = (props: any) => {
                                     <Row label={ "Suffix:" }
                                          applicant={ applicant?.suffix }/>
                                     <Row label={ "Date of Birth:" }
-                                         applicant={ moment(applicant.dateOfBirth).format('LL') }/>
+                                         applicant={ moment(applicant.dateOfBirth)?.isValid() ?  moment(applicant.dateOfBirth).format('LL') : applicant.dateOfBirth  }/>
                                     <Row label={ "Gender:" } applicant={ applicant?.gender || applicant?.sex  }/>
                                     <Row label={ "Nationality:" } applicant={ applicant?.nationality }/>
                                     <Row label={ "Weight:" } applicant={ applicant?.weight }/>
@@ -184,9 +184,9 @@ const BasicInfo = (props: any) => {
                                             <Text style={ styles.header }>SCHEDULE</Text>
                                         </View>
                                     </View>
-                                    <Row label={ "Date:" } applicant={ moment(props?.schedule.dateStart).format('ddd DD MMMM YYYY') }/>
-                                    <Row label={ "Start Time:" } applicant={ moment(props?.schedule.dateStart).format('LT') }/>
-                                    <Row label={ "End Time:" } applicant={moment(props?.schedule.dateEnd).format('LT') }/>
+                                    <Row label={ "Date:" } applicant={ moment(props?.schedule.dateStart).isValid() ?  moment(props?.schedule.dateStart).format('ddd DD MMMM YYYY') : props?.schedule.dateStart }/>
+                                    <Row label={ "Start Time:" } applicant={ moment(props?.schedule.dateStart)?.isValid() ? moment(props?.schedule.dateStart).format('LT') :  props?.schedule.dateStart }/>
+                                    <Row label={ "End Time:" } applicant={moment(props?.schedule.dateEnd)?.isValid() ? moment(props?.schedule.dateEnd).format('LT') : props?.schedule.dateEnd }/>
                                     <Row label={ "Venue:" } applicant={ props?.schedule.venue }/>
                                     <Row label={ "Seat No:" } applicant={ props?.schedule.seatNumber }/>
 
