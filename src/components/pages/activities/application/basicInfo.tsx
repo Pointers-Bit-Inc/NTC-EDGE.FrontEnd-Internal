@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import {ScrollView,StyleSheet,Text,useWindowDimensions,View} from "react-native";
 import {excludeStatus,getStatusText,statusColor,statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
@@ -26,7 +26,9 @@ const BasicInfo=(props:any)=>{
     }
     const applicant=props?.applicant?.user||props?.applicant;
     const dimensions=useWindowDimensions();
-
+          useEffect(()=>{
+              console.log( `date of birth ${applicant?.dateOfBirth?.year && applicant?.dateOfBirth?.month && applicant?.dateOfBirth?.day}` )
+          }, [])
     return <ScrollView style={{width:"100%",backgroundColor:"#f8f8f8",}}>
 
         <View style={{flexDirection:isMobile||dimensions?.width<=768 ? "column" : "row"}}>
