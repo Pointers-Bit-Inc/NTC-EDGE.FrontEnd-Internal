@@ -60,7 +60,7 @@ const RenderServiceMiscellaneous = (props) => {
                     let childItem = item;
                     let childLabel = transformText(item);
                     let childValue = values?.[childItem];
-                    childValue = Date.parse(childValue) > 0 ? (moment(childValue)?.isValid() ? moment(childValue)?.format('LL') : childValue) : childValue;
+                    childValue = Date.parse(childValue) > 0 ? (moment(childValue)?.isValid() ? moment(childValue)?.format('LL') : "") : childValue;
                     return <Row label={ `${childLabel}:` } applicant={ childValue }/>
                 };
                 return (
