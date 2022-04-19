@@ -24,7 +24,7 @@ const BasicInfo=(props:any)=>{
 
         }
     }
-    const applicant=props.applicant?.user||props.applicant;
+    const applicant=props?.applicant?.user||props?.applicant;
     const dimensions=useWindowDimensions();
 
     return <ScrollView style={{width:"100%",backgroundColor:"#f8f8f8",}}>
@@ -125,7 +125,7 @@ const BasicInfo=(props:any)=>{
                                 <Row label={"Suffix:"}
                                      applicant={applicant?.suffix}/>
                                 <Row label={"Date of Birth:"}
-                                     applicant={moment(applicant?.dateOfBirth?.year+"-"+applicant?.dateOfBirth?.month+"-"+applicant?.dateOfBirth?.day)?.isValid() ? moment(applicant?.dateOfBirth?.year+"-"+applicant?.dateOfBirth?.month+"-"+applicant?.dateOfBirth?.day)?.format('LL') : ""}/>
+                                     applicant={ applicant?.dateOfBirth?.year && applicant?.dateOfBirth?.month && applicant?.dateOfBirth?.day ? moment(applicant?.dateOfBirth?.year+"-"+applicant?.dateOfBirth?.month+"-"+applicant?.dateOfBirth?.day)?.isValid() ? moment(applicant?.dateOfBirth?.year+"-"+applicant?.dateOfBirth?.month+"-"+applicant?.dateOfBirth?.day)?.format('LL') : "" : ""}/>
                                 <Row label={"Gender:"} applicant={applicant?.gender||applicant?.sex}/>
                                 <Row label={"Nationality:"} applicant={applicant?.nationality}/>
                                 <Row label={"Weight:"} applicant={applicant?.weight}/>
