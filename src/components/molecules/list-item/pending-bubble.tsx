@@ -146,8 +146,9 @@ const PendingBubble:FC<Props> = ({
         type:attachment?.mimeType,
         uri:attachment?.uri,
       };
-      Platform.select({
-        web:await fetch(attachment?.uri).then(res=>{
+      
+      if (Platform.OS === 'web') {
+        await fetch(attachment?.uri).then(res=>{
           return res?.blob()
         }).then(blob=>{
           const fd=new FormData();
@@ -158,7 +159,7 @@ const PendingBubble:FC<Props> = ({
             file=new File([blob],attachment?.name +  (attachmentMime.length < 5 ? "." + attachmentMime: '') );
           }
         })
-      })
+      }
 
       formData.append('file',file);
     }

@@ -60,7 +60,7 @@ export default function basket(state = initialState, action:any) {
       let newState = state;
       const channel = state.normalizedChannelList[action.payload._id];
 
-      if(channel.updatedAt > action.payload.updatedAt) {
+      if(channel && channel.updatedAt > action.payload.updatedAt) {
         return newState;
       }
 
@@ -78,6 +78,8 @@ export default function basket(state = initialState, action:any) {
           .setIn(['selectedChannel', 'hasRoomName'], action.payload.hasRoomName)
           .setIn(['selectedChannel', 'isGroup'], action.payload.isGroup);
         }
+      } else {
+        newState = newState.setIn(['normalizedChannelList', action.payload._id], action.payload);
       }
 
       return newState;
