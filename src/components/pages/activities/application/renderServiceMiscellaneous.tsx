@@ -84,8 +84,10 @@ const RenderServiceMiscellaneous = (props) => {
                 else return <Row label={ `${childLabel}:` } applicant={ childValue }/>
             };
             return (
-                <View style={styles.tableContainer}>
-                    
+                <View style={styles.group3}>
+                    <View style={ styles.rect }>
+                        <Text style={ styles.file }>{parentLabel?.toUpperCase()}</Text>
+                    </View>
                     <FlatList
                         data={Object.keys(service[item])}
                         renderItem={_renderChild}
