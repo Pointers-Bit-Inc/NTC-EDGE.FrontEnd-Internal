@@ -50,19 +50,20 @@ const RenderServiceMiscellaneous = (props) => {
     let service = props?.service || {};
 
     let _renderParent = ({item}: any) => {
-
-        if (!(props.exclude.indexOf(item) != -1)) {
-
+        if (
+            item !== '_id' &&
+            item !== 'name' &&
+            item !== 'applicationType' &&
+            item !== 'serviceCode'
+        ) {
             let parentItem = item;
             let parentLabel = transformText(item);
             let _renderGrandChild = (values: any) => {
-               
                 let _renderGGChild = ({item}: any) => {
                     let childItem = item;
                     let childLabel = transformText(item);
                     let childValue = values?.[childItem];
-                    childValue = Date.parse(childValue) > 0  ? (moment(childValue)?.isValid() ? moment(childValue)?.format('LL') : !(typeof childValue == "object") ? childValue : "") : !(typeof childValue == "object") ? childValue : "";
-                    if (typeof(childValue) === 'object') return _renderGrandChild(childValue);
+                    childValue = Date.parse(childValue) > 0 ? moment(childValue)?.format('LL') : childValue;
                     return <Row label={ `${childLabel}:` } applicant={ childValue }/>
                 };
                 return (
@@ -78,30 +79,25 @@ const RenderServiceMiscellaneous = (props) => {
                 let childItem = item;
                 let childLabel = transformText(item);
                 let childValue = service?.[parentItem]?.[childItem];
-                childValue = Date.parse(childValue) > 0 ?(moment(childValue)?.isValid() ? moment(childValue)?.format('LL') :  !(typeof childValue == "object") ? childValue : ""  ) : !(typeof childValue == "object") ? childValue : "";
+                childValue = Date.parse(childValue) > 0 ? moment(childValue)?.format('LL') : childValue;
                 if (typeof(childValue) === 'object') return _renderGrandChild(childValue);
                 else return <Row label={ `${childLabel}:` } applicant={ childValue }/>
             };
-
-            console.log(Object.keys(service[item]))
             return (
-                <View style={styles.group3}>
-                        <View style={ styles.rect }>
-                            <Text style={ styles.file }>{parentLabel?.toUpperCase()}</Text>
-                        </View>
-                        <FlatList
-                            data={Object.keys(service[item])}
-                            renderItem={_renderChild}
-                            keyExtractor={(item, index) => `${index}`}
-                            scrollEnabled={false}
-                            ItemSeparatorComponent={(item) => {
-                                return (
-                                    <View style={service?.[parentItem]?.length > 0 && styles?.subChildSeparator} />
-                                )
-                            }}
-                        />
+                <View style={styles.tableContainer}>
+                    
+                    <FlatList
+                        data={Object.keys(service[item])}
+                        renderItem={_renderChild}
+                        keyExtractor={(item, index) => `${index}`}
+                        scrollEnabled={false}
+                        ItemSeparatorComponent={(item) => {
+                            return (
+                                <View style={service?.[parentItem]?.length > 0 && styles?.subChildSeparator} />
+                            )
+                        }}
+                    />
                 </View>
-
             )
         }
     };
