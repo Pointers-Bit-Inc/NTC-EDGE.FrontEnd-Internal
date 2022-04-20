@@ -56,11 +56,13 @@ const RenderServiceMiscellaneous = (props) => {
             let parentItem = item;
             let parentLabel = transformText(item);
             let _renderGrandChild = (values: any) => {
+               
                 let _renderGGChild = ({item}: any) => {
                     let childItem = item;
                     let childLabel = transformText(item);
                     let childValue = values?.[childItem];
-                    childValue = Date.parse(childValue) > 0  ? (moment(childValue)?.isValid() ? moment(childValue)?.format('LL') : childValue) : childValue;
+                    childValue = Date.parse(childValue) > 0  ? (moment(childValue)?.isValid() ? moment(childValue)?.format('LL') : !(typeof childValue == "object") ? childValue : "") : !(typeof childValue == "object") ? childValue : "";
+                    if (typeof(childValue) === 'object') return _renderGrandChild(childValue);
                     return <Row label={ `${childLabel}:` } applicant={ childValue }/>
                 };
                 return (
@@ -76,10 +78,12 @@ const RenderServiceMiscellaneous = (props) => {
                 let childItem = item;
                 let childLabel = transformText(item);
                 let childValue = service?.[parentItem]?.[childItem];
-                childValue = Date.parse(childValue) > 0 ?(moment(childValue)?.isValid() ? moment(childValue)?.format('LL') :  childValue  ) : childValue;
+                childValue = Date.parse(childValue) > 0 ?(moment(childValue)?.isValid() ? moment(childValue)?.format('LL') :  !(typeof childValue == "object") ? childValue : ""  ) : !(typeof childValue == "object") ? childValue : "";
                 if (typeof(childValue) === 'object') return _renderGrandChild(childValue);
                 else return <Row label={ `${childLabel}:` } applicant={ childValue }/>
             };
+
+            console.log(Object.keys(service[item]))
             return (
                 <View style={styles.group3}>
                         <View style={ styles.rect }>
