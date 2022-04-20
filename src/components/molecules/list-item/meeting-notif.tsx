@@ -83,7 +83,7 @@ const MeetingNotif: FC<Props> = ({
           {getDateTimeString(time, '')}
         </Text>
       </View>
-      <View style={{ position: 'absolute', top: 10, right: 10 }}>
+      {/* <View style={{ position: 'absolute', top: 10, right: 10 }}>
         <TouchableOpacity onPress={onClose}>
           <CloseIcon
             color={'#565961'}
@@ -91,7 +91,7 @@ const MeetingNotif: FC<Props> = ({
             width={RFValue(10)}
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
       <Button
         style={styles.joinButton}
         onPress={onJoin}

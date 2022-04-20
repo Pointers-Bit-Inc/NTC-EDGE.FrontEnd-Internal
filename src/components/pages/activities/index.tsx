@@ -130,10 +130,10 @@ export default function ActivitiesPage(props: any) {
     };
 
     const onClose = (item: IMeetings , leave = false) => {
-        if (leave) {
+        if (leave && item.isGroup) {
             dispatch(removeActiveMeeting(item._id));
             return leaveMeeting(item._id, 'busy');
-        } else if (item.host._id === user._id) {
+        } else if (item.host._id === user._id || !item.isGroup) {
             return endMeeting(item._id);
         } else {
             return dispatch(removeActiveMeeting(item._id));
