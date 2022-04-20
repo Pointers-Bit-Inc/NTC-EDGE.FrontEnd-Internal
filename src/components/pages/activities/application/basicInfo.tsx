@@ -127,7 +127,7 @@ const BasicInfo=(props:any)=>{
                                 <Row label={"Suffix:"}
                                      applicant={applicant?.suffix}/>
                                 <Row label={"Date of Birth:"}
-                                     applicant={ applicant?.dateOfBirth?.year && applicant?.dateOfBirth?.month && applicant?.dateOfBirth?.day ? moment(applicant?.dateOfBirth?.year+"-"+applicant?.dateOfBirth?.month+"-"+applicant?.dateOfBirth?.day)?.isValid() ? moment(applicant?.dateOfBirth?.year+"-"+applicant?.dateOfBirth?.month+"-"+applicant?.dateOfBirth?.day)?.format('LL') : "" : ""}/>
+                                     applicant={ (applicant?.dateOfBirth?.year && applicant?.dateOfBirth?.month && applicant?.dateOfBirth?.day) ? moment(applicant?.dateOfBirth?.year+"-"+applicant?.dateOfBirth?.month+"-"+applicant?.dateOfBirth?.day)?.isValid() ? moment(applicant?.dateOfBirth?.year+"-"+applicant?.dateOfBirth?.month+"-"+applicant?.dateOfBirth?.day)?.format('LL') : "" : ""}/>
                                 <Row label={"Gender:"} applicant={applicant?.gender||applicant?.sex}/>
                                 <Row label={"Nationality:"} applicant={applicant?.nationality}/>
                                 <Row label={"Weight:"} applicant={applicant?.weight}/>
