@@ -9,7 +9,7 @@ import {Bold,Regular,Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import Row from "@pages/activities/application/Row"
-import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous";
+import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous2";
 
 
 const BasicInfo=(props:any)=>{
@@ -26,9 +26,7 @@ const BasicInfo=(props:any)=>{
     }
     const applicant=props?.applicant?.user||props?.applicant;
     const dimensions=useWindowDimensions();
-          useEffect(()=>{
-              console.log( `date of birth ${applicant?.dateOfBirth?.year && applicant?.dateOfBirth?.month && applicant?.dateOfBirth?.day}` )
-          }, [])
+
     return <ScrollView style={{width:"100%",backgroundColor:"#f8f8f8",}}>
 
         <View style={{flexDirection:isMobile||dimensions?.width<=768 ? "column" : "row"}}>

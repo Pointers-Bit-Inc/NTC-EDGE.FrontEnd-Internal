@@ -31,6 +31,7 @@ const styles=StyleSheet.create({
         padding:10
     },
     rect:{
+        marginTop: 10,
         padding:10,
         paddingVertical:5,
         backgroundColor:"#EFF0F6"
@@ -43,7 +44,7 @@ const styles=StyleSheet.create({
     group3:{
         paddingRight:fontValue(10),
         paddingLeft:fontValue(10),
-        paddingBottom:fontValue(20)
+        paddingVertical:fontValue(20)
     },
 });
 let title='';
@@ -83,7 +84,6 @@ const RenderServiceMiscellaneous=(props)=>{
                             }
                             f(e[i],p+i);
                         }
-
                         break;
                     default:
                         result[p]=e;
@@ -117,7 +117,8 @@ const RenderServiceMiscellaneous=(props)=>{
 
        
 
-        return <View style={styles.group3}>
+        return <View>
+
             <Title nextValue={nextValue } index={index}/>
             <Row label={prevValue ? `${transformText(prevValue)}:` : ""} applicant={value}/>
         </View>
@@ -126,6 +127,7 @@ const RenderServiceMiscellaneous=(props)=>{
     };
     return (
         <FlatList
+            style={styles.group3}
             data={Object.entries(flatten(service))}
             renderItem={_renderParent}
             keyExtractor={(item,index)=>`${index}`}
