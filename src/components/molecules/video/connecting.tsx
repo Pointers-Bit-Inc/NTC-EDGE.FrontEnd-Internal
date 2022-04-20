@@ -56,6 +56,7 @@ const ConnectingVideo = ({ participants = [], callEnded = false }) => {
         style={{
           alignItems: 'flex-end',
           flexDirection: 'row',
+          marginTop: 5,
         }}
       >
         {
