@@ -365,6 +365,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
       </View>
     )
   }
+
   const renderItem = ({ item }) => {
     const findParticipant = lodash.find(meetingParticipants, p => p.uid === item);
     if (findParticipant) {
@@ -469,11 +470,12 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     }
     return null;
   }
-  return (
-    <View style={styles.container}>
-      {(joinSucceed && !callEnded) ? header : null}
-      {
-        (joinSucceed && !callEnded) ? (
+
+  const renderVideoElement = () => {
+    if (joinSucceed && !callEnded) {
+      console.log('isGroup || (!isGroup && lodash.size(peerIds) > 1)', isGroup, lodash.size(peerIds));
+      if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
+        return (
           <>
             {fullVideo(!selectedPeer || selectedPeer === myId)}
             <View style={styles.videoList}>
@@ -498,13 +500,32 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               />
             </View>
           </>
-        ) : (
-          <ConnectingVideo
-            participants={participants}
-            callEnded={callEnded}
-          />
         )
       }
+    }
+
+    return (
+      <ConnectingVideo
+        participants={participants}
+        callEnded={callEnded}
+      />
+    );
+  }
+
+  const renderHeader = () => {
+    if (joinSucceed && !callEnded) {
+      if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
+        return header;
+      }
+    }
+
+    return null;
+  }
+
+  return (
+    <View style={styles.container}>
+      {renderHeader()}
+      {renderVideoElement()}
       {
         !callEnded && (
           <View style={styles.footer}>
