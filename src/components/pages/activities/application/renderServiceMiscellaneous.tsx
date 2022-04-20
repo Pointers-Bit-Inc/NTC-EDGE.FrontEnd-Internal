@@ -47,11 +47,11 @@ const styles = StyleSheet.create({
     } ,
 })
 const RenderServiceMiscellaneous = (props) => {
-    let service = props?.service || {};
+    let service = {...props?.service} || {};
     let _renderParent = ({item}: any) => {
 
         console.log('\n\n_renderParent', item);
-        console.log('Object.keys(service[item])', Object.keys(service[item]))    ;
+        console.log('Object.keys(service[item])', service[item])    ;
 
         if (!(props.exclude.indexOf(item) != -1)) {
 
