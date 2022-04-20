@@ -48,22 +48,26 @@ const styles = StyleSheet.create({
 })
 const RenderServiceMiscellaneous = (props) => {
     let service = props?.service || {};
-
     let _renderParent = ({item}: any) => {
-        if (
-            item !== '_id' &&
-            item !== 'name' &&
-            item !== 'applicationType' &&
-            item !== 'serviceCode'
-        ) {
+
+        console.log('\n\n_renderParent', item);
+        console.log('Object.keys(service[item])', Object.keys(service[item]))    ;
+
+        if (!(props.exclude.indexOf(item) != -1)) {
+
             let parentItem = item;
             let parentLabel = transformText(item);
             let _renderGrandChild = (values: any) => {
+                console.log('_renderGrandChild', values);
+
                 let _renderGGChild = ({item}: any) => {
+                    console.log('_renderGGChild', item);
+
                     let childItem = item;
                     let childLabel = transformText(item);
                     let childValue = values?.[childItem];
-                    childValue = Date.parse(childValue) > 0 ? moment(childValue)?.format('LL') : childValue;
+                    childValue = Date.parse(childValue) > 0  ? (moment(childValue)?.isValid() ? moment(childValue)?.format('LL') : !(typeof childValue == "object") ? childValue : "") : !(typeof childValue == "object") ? childValue : "";
+                    if (typeof(childValue) === 'object') return _renderGrandChild(childValue);
                     return <Row label={ `${childLabel}:` } applicant={ childValue }/>
                 };
                 return (
@@ -76,30 +80,33 @@ const RenderServiceMiscellaneous = (props) => {
                 )
             }
             let _renderChild = ({item}: any) => {
+                console.log('_renderChild', item)     ;
                 let childItem = item;
                 let childLabel = transformText(item);
                 let childValue = service?.[parentItem]?.[childItem];
-                childValue = Date.parse(childValue) > 0 ? moment(childValue)?.format('LL') : childValue;
+                childValue = Date.parse(childValue) > 0 ?(moment(childValue)?.isValid() ? moment(childValue)?.format('LL') :  !(typeof childValue == "object") ? childValue : ""  ) : !(typeof childValue == "object") ? childValue : "";
+
                 if (typeof(childValue) === 'object') return _renderGrandChild(childValue);
                 else return <Row label={ `${childLabel}:` } applicant={ childValue }/>
             };
             return (
                 <View style={styles.group3}>
-                    <View style={ styles.rect }>
-                        <Text style={ styles.file }>{parentLabel?.toUpperCase()}</Text>
-                    </View>
-                    <FlatList
-                        data={Object.keys(service[item])}
-                        renderItem={_renderChild}
-                        keyExtractor={(item, index) => `${index}`}
-                        scrollEnabled={false}
-                        ItemSeparatorComponent={(item) => {
-                            return (
-                                <View style={service?.[parentItem]?.length > 0 && styles?.subChildSeparator} />
-                            )
-                        }}
-                    />
+                        <View style={ styles.rect }>
+                            <Text style={ styles.file }>{parentLabel?.toUpperCase()}</Text>
+                        </View>
+                        <FlatList
+                            data={Object.keys(service[item])}
+                            renderItem={_renderChild}
+                            keyExtractor={(item, index) => `${index}`}
+                            scrollEnabled={false}
+                            ItemSeparatorComponent={(item) => {
+                                return (
+                                    <View style={service?.[parentItem]?.length > 0 && styles?.subChildSeparator} />
+                                )
+                            }}
+                        />
                 </View>
+
             )
         }
     };
