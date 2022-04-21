@@ -72,6 +72,10 @@ const App = ({ navigation }:any) => {
     }
   }, [fontsLoaded]);
 
+  if (Platform.OS == 'web') {
+    return null;
+  }
+
   return (
     <View style={{ flex: 1  }}>
       <Image

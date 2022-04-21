@@ -410,7 +410,7 @@ jobs:
 workflows:
   Development Build and Deploy:
     jobs:
-      - Build for Testing:
+      - Build for Development:
           type: approval
           filters:
             branches:
@@ -418,35 +418,50 @@ workflows:
                 - develop
       - Publish App:
           requires:
-            - Build for Testing
-      # - Build IOS Archive:
-      #     api_url: << pipeline.parameters.test_url >>
-      #     context: ntc-edge
-      #     requires:
-      #       - Publish App
-      # - Build Android APK:
-      #     api_url: << pipeline.parameters.test_url >>
-      #     context: ntc-edge
-      #     requires:
-      #       - Publish App
-      # - Build Android AAB:
-      #     api_url: << pipeline.parameters.test_url >>
-      #     context: ntc-edge
-      #     requires:
-      #       - Publish App
-      - Build App:
+            - Build for Development
+
+      - Request Build APK:
+          type: approval
+          requires:
+            - Publish App
+
+      - Request Build AAB:
+          type: approval
+          requires:
+            - Publish App
+
+      - Request Build IOS:
+          type: approval
+          requires:
+            - Publish App
+
+      - Build APK Android:
           api_url: << pipeline.parameters.test_url >>
           context: ntc-edge
           requires:
-            - Build for Testing
+            - Request Build APK
+
+      - Build AAB Android:
+          api_url: << pipeline.parameters.test_url >>
+          context: ntc-edge
+          requires:
+            - Request Build AAB
+
+      - Build IOS:
+          api_url: << pipeline.parameters.test_url >>
+          context: ntc-edge
+          requires:
+            - Request Build IOS
+
       - Ready for Submission:
           type: approval
           requires:
-            - Build App
+            - Build IOS
+
       - Submit to Appstore:
           context: ntc-edge
           requires:
-            - Ready for Submission
+            - Ready for Submission  
 
   Production Build and Deploy:
     jobs:
@@ -459,21 +474,6 @@ workflows:
       - Publish App:
           requires:
             - Build for Production
-      # - Build IOS Archive:
-      #     api_url: << pipeline.parameters.prod_url >>
-      #     context: ntc-edge
-      #     requires:
-      #       - Publish App
-      # - Build Android APK:
-      #     api_url: << pipeline.parameters.prod_url >>
-      #     context: ntc-edge
-      #     requires:
-      #       - Publish App
-      # - Build Android AAB:
-      #     api_url: << pipeline.parameters.prod_url >>
-      #     context: ntc-edge
-      #     requires:
-      #       - Publish App
 
       - Request Build APK:
           type: approval

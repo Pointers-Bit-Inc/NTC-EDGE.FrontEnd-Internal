@@ -268,10 +268,10 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
         });
     };
     const onClose=(item:IMeetings,leave=false)=>{
-        if(leave){
+        if(leave && item.isGroup){
             dispatch(removeActiveMeeting(item._id));
             return leaveMeeting(item._id, 'busy');
-        } else if(item.host._id===props.user._id){
+        } else if(item.host._id===props.user._id || !item.isGroup){
             return endMeeting(item._id);
         } else{
             return dispatch(removeActiveMeeting(item._id));
@@ -638,10 +638,10 @@ const ChatList=({navigation}:any)=>{
     }=useSignalR();
     const layout=useWindowDimensions();
     const onClose=(item:IMeetings,leave=false)=>{
-        if(leave){
+        if(leave && item.isGroup){
             dispatch(removeActiveMeeting(item._id));
             return leaveMeeting(item._id, 'busy');
-        } else if(item.host._id===user._id){
+        } else if(item.host._id===user._id || !item.isGroup){
             return endMeeting(item._id);
         } else{
             return dispatch(removeActiveMeeting(item._id));
@@ -1073,7 +1073,7 @@ const ChatList=({navigation}:any)=>{
                                         host={item.host}
                                         time={item.createdAt}
                                         onJoin={()=>onJoin(item)}
-                                        onClose={()=>onClose(item)}
+                                        onClose={(leave:boolean)=>onClose(item, leave)}
                                         closeText={'Cancel'}
                                     />
                                 )}

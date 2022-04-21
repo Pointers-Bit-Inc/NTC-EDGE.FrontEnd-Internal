@@ -250,10 +250,10 @@ const ChatView = ({ navigation, route }:any) => {
   }
 
   const onClose = (item:IMeetings, leave = false) => {
-    if (leave) {
+    if (leave && item.isGroup) {
       dispatch(removeActiveMeeting(item._id));
       return leaveMeeting(item._id, 'busy');
-    } else if (item.host._id === user._id) {
+    } else if (item.host._id === user._id || !item.isGroup) {
       return endMeeting(item._id);
     } else {
       return dispatch(removeActiveMeeting(item._id));
@@ -410,7 +410,7 @@ const ChatView = ({ navigation, route }:any) => {
                   host={item.host}
                   time={item.createdAt}
                   onJoin={() => onJoin(item)}
-                  onClose={() => onClose(item)}
+                  onClose={(leave:boolean) => onClose(item, leave)}
                   closeText={'Cancel'}
                 />
               )}

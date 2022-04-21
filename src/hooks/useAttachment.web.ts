@@ -40,14 +40,17 @@ const useAttachmentPicker = () => {
       let uri = result?.uri;
       let split = uri?.split('/');
       let name = split?.[split?.length - 1];
-
-
+      let mime=uri?.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+      let mimeResult:any=null;
+      if(mime&&mime.length){
+        mimeResult=mime[1];
+      }
+      let mimeType=mimeResult?.split("/")?.[1];
       const file = {
         name,
         mimeType: 'application/octet-stream',
-        uri
+        uri,
       };
-
 
       setSelectedFile(file)
     }

@@ -11,7 +11,7 @@ export default {
       "resizeMode": "cover",
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "enabled": false,
     },
     "assetBundlePatterns": ["**/*"],
     "jsEngine": "hermes",
