@@ -15,9 +15,9 @@ const firebaseConfig = {
 }
 
 const agoraTestConfig = {
-  channelName: 'ntcedge',
-  appId: '90bcc0f561a0427187789a4b0aed441a',
-  token: '00690bcc0f561a0427187789a4b0aed441aIADbdwt6zaDdYuXRkLoNNsRcGry8cx68u/2YA7cBfChSbPamhlwAAAAAEADiSs2f48m5YQEAAQDjyblh',
+  channelName: '123',
+  appId: '2a5adc280d084e008d7619f9b0a2c0c6',
+  token: '0062a5adc280d084e008d7619f9b0a2c0c6IACAC/dhfdi1E3QgoCGgSymaDLDOu1pEvsFe8dK7lKuQNdJjSIgAAAAAIgCKbcvBgQ5mYgQAAQCADmZiAgCADmZiAwCADmZiBACADmZi',
 }
 
 export {

@@ -30,6 +30,7 @@ import IParticipants from 'src/interfaces/IParticipants';
 import NoConversationIcon from "@assets/svg/noConversations";
 import { useNavigation } from '@react-navigation/native';
 import IAttachment from 'src/interfaces/IAttachment';
+import {NoContent} from "@screens/meet/index.web";
 
 const { width, height } = Dimensions.get('window');
 
@@ -409,7 +410,7 @@ const List: FC<Props> = ({
         !messages.length ?
           <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
             <View >
-              <NoConversationIcon/>
+              <NoContent/>
             </View>
             {
               Platform.select({

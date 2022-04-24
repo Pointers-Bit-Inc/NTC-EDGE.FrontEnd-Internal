@@ -8,8 +8,18 @@ import React, {
   ForwardRefRenderFunction,
 } from 'react'
 import { View, StyleSheet, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import lodash from 'lodash';
+import { useInitializeAgora } from 'src/hooks/useAgora';
+import { MicIcon, CameraIcon } from '@components/atoms/icon';
 
+import ConnectingVideo from '@components/molecules/video/connecting'
+import ProfileImage from '@components/atoms/image/profile';
+import Text from '@components/atoms/text';
+import { text } from '@styles/color';
+import VideoButtons from '@components/molecules/video/buttons'
+import VideoNotification from './notification';
 const { width, height } = Dimensions.get('window');
+
 
 
   // const videoStateMessage = state => {
@@ -80,6 +90,7 @@ const styles = StyleSheet.create({
   videoList: {
     position: 'absolute',
     bottom: 100,
+    width,
   },
   name: {
     textAlign: 'center',
@@ -112,8 +123,10 @@ interface Props {
   header?: ReactNode;
   agora?: any;
   callEnded?: false;
+  message?: string;
   isVoiceCall?: false;
   onEndCall?: any;
+  setNotification?: any;
   isGroup?: false;
 }
 
@@ -136,12 +149,369 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   header,
   agora = {},
   callEnded = false,
+  message = '',
   isVoiceCall = false,
   onEndCall = () => {},
+  setNotification = (message:string) => {},
   isGroup = false,
 }, ref) => {
+  const [selectedPeer, setSelectedPeer]:any = useState(null);
+  const [peerList, setPeerList]:any = useState([]);
+  const {
+    initAgora,
+    destroyAgoraEngine,
+    joinChannel,
+    isInit,
+    myId,
+    peerIds,
+    peerVideoState,
+    peerAudioState,
+    channelName,
+    joinSucceed,
+    isMute,
+    isSpeakerEnable,
+    isVideoEnable,
+    activeSpeaker,
+    toggleIsMute,
+    toggleIsSpeakerEnable,
+    toggleIsVideoEnable,
+    switchCamera,
+  } = useInitializeAgora({
+    ...agora,
+    options: {
+      ...options,
+      isVideoEnable: isVoiceCall ? !isVoiceCall : options?.isVideoEnable,
+    },
+  })
+
+  useImperativeHandle(ref, () => ({
+    joinSucceed,
+    isMute,
+    isSpeakerEnable,
+    isVideoEnable,
+    toggleIsMute,
+    toggleIsSpeakerEnable,
+    toggleIsVideoEnable,
+  }));
+
+  useEffect(() => {
+    if (!loading && agora.appId) {
+      initAgora();
+      return () => destroyAgoraEngine();
+    }
+  }, [loading, agora.appId]);
+
+  useEffect(() => {
+    if (isInit) {
+      joinChannel();
+    }
+  }, [isInit, joinChannel]);
+
+  useEffect(() => {
+    if (meetingParticipants) {
+      if (lodash.size(peerIds) === 2) {
+        const filterPeer = lodash.reject(peerIds, p => p === myId);
+        setSelectedPeer(filterPeer[0]);
+        setPeerList([myId]);
+      } else {
+        const findFocus = lodash.find(meetingParticipants, p => {
+          if (p.isFocused) {
+            const findPeer = lodash.find(peerIds, pd => pd === p.uid)
+            return !!findPeer;
+          }
+          return false
+        });
+        if (findFocus) {
+          const filterPeer = lodash.reject(peerIds, p => p === findFocus.uid);
+          setSelectedPeer(findFocus.uid);
+          setPeerList(filterPeer);
+        } else {
+          const filterPeer = lodash.reject(peerIds, p => p === myId);
+          setSelectedPeer(myId);
+          setPeerList(filterPeer);
+        }
+      }
+    }
+  }, [meetingParticipants, peerIds])
+
+  useEffect(() => {
+    const filterPeer = lodash.reject(peerIds, p => p === selectedPeer);
+    setPeerList(filterPeer);
+  }, [selectedPeer])
+
+  useEffect(() => {
+    if (isGroup) {
+      if (activeSpeaker) {
+        setSelectedPeer(activeSpeaker);
+      } else {
+        setSelectedPeer(myId);
+      }
+    }
+  }, [activeSpeaker]);
+
+  const separator = () => (
+    <View style={{ width: 15 }} />
+  );
+  
+  const fullVideo = (isFocused) => {
+    const findParticipant = lodash.find(meetingParticipants, p => p.uid === selectedPeer);
+    if (isFocused) {
+      return (
+        <View style={styles.fullVideo}>
+          {
+            isVideoEnable ? (
+            <View/>
+            ) : (
+              <ProfileImage
+                size={80}
+                textSize={24}
+                image={user?.profilePicture?.thumb}
+                name={`${user.firstName} ${user.lastName}`}
+              />
+            )
+          }
+          {
+          isVideoEnable ? null : (
+            <Text
+              style={styles.name}
+              numberOfLines={1}
+              size={16}
+              color={'white'}
+            >
+              {findParticipant?.title || ''} {findParticipant?.firstName}
+            </Text>
+          )
+        }
+          {
+            isMute ? (
+              <MicIcon
+                style={[styles.mic, { top: 120, left: 20 }]}
+                size={24}
+                type='muted'
+                color={text.error}
+              />
+            ) : null
+          }
+          <View style={{ position:'absolute', top: 115, right: 20 }}>
+            <TouchableOpacity onPress={switchCamera}>
+              <CameraIcon
+                size={28}
+                type='switch'
+                color={'white'}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
+    return (
+      <View style={styles.fullVideo}>
+        {
+          true ? (
+              <View/>
+          ) : (
+            <ProfileImage
+              image={findParticipant?.profilePicture?.thumb}
+              name={`${findParticipant?.firstName} ${findParticipant?.lastName}`}
+              size={80}
+              textSize={24}
+            />
+          )
+        }
+        {
+          false? null : (
+            <Text
+              style={styles.name}
+              numberOfLines={1}
+              size={16}
+              color={'white'}
+            >
+              {findParticipant?.title || ''} {findParticipant?.firstName}
+            </Text>
+          )
+        }
+        {
+          peerAudioState[selectedPeer] === 0 ? (
+            <MicIcon
+              style={[styles.mic, { top: 120, left: 20 }]}
+              size={16}
+              type='muted'
+              color={text.error}
+            />
+          ) : null
+        }
+      </View>
+    )
+  }
+
+  const renderItem = ({ item }) => {
+    const findParticipant = lodash.find(meetingParticipants, p => p.uid === item);
+    if (findParticipant) {
+      if (item === myId) {
+        return (
+          <TouchableWithoutFeedback onPress={() => setSelectedPeer(item)}>
+            <View style={styles.smallVideo}>
+              {
+                isVideoEnable ? (
+                  <View></View>
+                ) : (
+                  <ProfileImage
+                    image={findParticipant?.profilePicture?.thumb}
+                    name={`${findParticipant.firstName} ${findParticipant.lastName}`}
+                    size={50}
+                    textSize={16}
+                  />
+                )
+              }
+              <Text
+                style={
+                  isVideoEnable ?
+                  styles.floatingName : styles.name
+                }
+                numberOfLines={1}
+                size={12}
+                color={'white'}
+              >
+                {findParticipant?.title || ''} {findParticipant.firstName}
+              </Text>
+              {
+                isMute ? (
+                  <MicIcon
+                    style={styles.mic}
+                    size={16}
+                    type='muted'
+                    color={text.error}
+                  />
+                ) : null
+              }
+              <View style={{ position:'absolute', top: 0, right: 5 }}>
+                <TouchableOpacity onPress={switchCamera}>
+                  <CameraIcon
+                    size={22}
+                    type='switch'
+                    color={'white'}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        );
+      }
+      return (
+        <TouchableWithoutFeedback onPress={() => setSelectedPeer(item)}>
+          <View style={styles.smallVideo}>
+            {
+             true ? (
+                <View></View>
+              ) : (
+                <ProfileImage
+                  image={findParticipant?.profilePicture?.thumb}
+                  name={`${findParticipant.firstName} ${findParticipant.lastName}`}
+                  size={50}
+                  textSize={16}
+                />
+              )
+            }
+            <Text
+              style={
+                true ?
+                styles.floatingName : styles.name
+              }
+              numberOfLines={1}
+              size={12}
+              color={'white'}
+            >
+              {findParticipant?.title || ''} {findParticipant.firstName}
+            </Text>
+            {
+              peerAudioState[item] === 0 ? (
+                <MicIcon
+                  style={styles.mic}
+                  size={16}
+                  type='muted'
+                  color={text.error}
+                />
+              ) : null
+            }
+          </View>
+        </TouchableWithoutFeedback>
+      );
+    }
+    return null;
+  }
+
+  const renderVideoElement = () => {
+    if (joinSucceed && !callEnded) {
+      console.log('isGroup || (!isGroup && lodash.size(peerIds) > 1)', isGroup, lodash.size(peerIds));
+      if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
+        return (
+          <>
+            {fullVideo(!selectedPeer || selectedPeer === myId)}
+            <View style={styles.videoList}>
+            {
+              !!message && (
+                <VideoNotification
+                  message={message}
+                  setNotification={() => setNotification('')}
+                />
+              )
+            }
+              <FlatList
+                data={peerList}
+                bounces={false}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                renderItem={renderItem}
+                ItemSeparatorComponent={separator}
+                ListHeaderComponent={separator}
+                ListFooterComponent={separator}
+                keyExtractor={item => `${item}`}
+              />
+            </View>
+          </>
+        )
+      }
+    }
+
+    return (
+      <ConnectingVideo
+        participants={participants}
+        callEnded={callEnded}
+      />
+    );
+  }
+
+  const renderHeader = () => {
+    if (joinSucceed && !callEnded) {
+      if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
+        return header;
+      }
+    }
+
+    return null;
+  }
+
   return (
-   <View/>
+    <View style={styles.container}>
+      {renderHeader()}
+      {renderVideoElement()}
+      {
+        !callEnded && (
+          <View style={styles.footer}>
+            <VideoButtons
+              onSpeakerEnable={toggleIsSpeakerEnable}
+              onMute={toggleIsMute}
+              onVideoEnable={toggleIsVideoEnable}
+              onMore={() => {}}
+              onEndCall={() => onEndCall(joinSucceed && lodash.size(peerIds) <= 2)}
+              isSpeakerEnabled={isSpeakerEnable}
+              isMute={isMute}
+              isVideoEnabled={isVideoEnable}
+            />
+          </View>
+        )
+      }
+    </View>
   );
 }
 

@@ -50,7 +50,6 @@ import {Hoverable} from "react-native-web-hooks";
 import GroupImage from "@molecules/image/group";
 import FileList from "@screens/chat/file-list";
 //import FileList from '@components/organisms/chat/files';
-import NoConversationIcon from "@assets/svg/noConversations";
 import {isMobile} from "@pages/activities/isMobile";
 import {ViewPaged} from 'react-scroll-paged-view'
 import TabBar from 'react-underline-tabbar'
@@ -69,6 +68,8 @@ const profPic=require('@assets/newMessageProfilePicture.png');
 const draftProfPic=require('@assets/draftNewMessageProfilePicture.png');
 import hairlineWidth=StyleSheet.hairlineWidth;
 import {MEET} from "../../reducers/activity/initialstate";
+import {NoContent} from "@screens/meet/index.web";
+import {configs} from "@typescript-eslint/eslint-plugin";
 
 const {width,height}=Dimensions.get('window');
 
@@ -411,6 +412,7 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
                         Chat
                     </Text>
                 </View>
+
                 <View style={{width:25}}/>
                 <Hoverable>
                     {isHovered=>(
@@ -801,6 +803,7 @@ const ChatList=({navigation}:any)=>{
                 flexGrow:0,
                 flexShrink:0
             }]}>
+              
                 <Chat
                     participants={participant}
                     newChat={onNewChat}
@@ -847,7 +850,7 @@ const ChatList=({navigation}:any)=>{
                  !(
                      _id&&showLayout&& !onNewChat)&&<View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
                          <View>
-                             <NoConversationIcon/>
+                            <NoContent/>
                          </View>
 
                          <Text style={{color:"#A0A3BD",paddingVertical:30,fontSize:24,fontFamily:Regular,fontWeight:"400"}}>No

@@ -6,6 +6,7 @@ import {input} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular500} from "@styles/font";
 import moment from "moment";
+import _ from "lodash";
 
 const styles=StyleSheet.create({
     subChildSeparator:{
@@ -31,10 +32,11 @@ const styles=StyleSheet.create({
         padding:10
     },
     rect:{
-        marginTop: 10,
+        marginTop:10,
         padding:10,
         paddingVertical:5,
-        backgroundColor:"#EFF0F6"
+        backgroundColor:"#EFF0F6",
+        
     },
     file:{
         fontSize:fontValue(12),
@@ -51,10 +53,7 @@ let title='';
 
 function Title(props:{nextValue,index,}){
 
-    if(!(
-        (
-            title===transformText(props.nextValue))||(
-            title===transformText(props.index)))){
+    if(!((title===transformText(props.nextValue))||(title===transformText(props.index)))){
 
         title=transformText(
             props.nextValue||props.index);
@@ -66,21 +65,17 @@ function Title(props:{nextValue,index,}){
 }
 
 const RenderServiceMiscellaneous=(props)=>{
-    let service={...props?.service}||{};
+    let service={...props.service   }||{};
     const flatten=(obj)=>{
-        for(let i=0; i<props.exclude.length; i++){
-            delete obj[props.exclude[i]];
-        }
-       
         var result={};
         (
             function f(e,p){
                 switch(typeof e){
                     case "object":
-                        p=p?p+"." : "";
+                        p=p ? p+"." : "";
                         for(var i in e){
                             if(e[i]?.hasOwnProperty('year')){
-                                e[i] = moment(e[i])?.format('LL')
+                                e[i]=moment(e[i])?.format('LL')
                             }
                             f(e[i],p+i);
                         }
@@ -90,9 +85,6 @@ const RenderServiceMiscellaneous=(props)=>{
                         break;
                 }
             })(obj);
-
-        
-
         return result;
     };
     let _renderParent=(item:any)=>{
@@ -107,20 +99,18 @@ const RenderServiceMiscellaneous=(props)=>{
             index=keys?.split(".")?.reverse()?.[findIndex];
             prevValue=keys?.split?.(".")?.reverse()?.[findIndex-1];
             nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1]
+            console.log(index)
         } else{
             prevValue=keys?.split(".")?.[keys.split(".").length-1];
-            index=keys?.split(".")?.[keys.split(".").length]
-            nextValue=keys?.split?.(".")?.[keys.split(".").length-2]
+            index=keys?.split(".")?.[keys.split(".").length];
+            nextValue=keys?.split?.(".")?.[keys.split(".").length-2] ||  keys?.split?.(".")?.[0]
         }
 
 
-
-       
-
         return <View>
-
-            <Title nextValue={nextValue } index={index}/>
+            <Title nextValue={nextValue} index={index}/>
             <Row label={prevValue ? `${transformText(prevValue)}:` : ""} applicant={value}/>
+            {/*<View style={{borderTopWidth: 1, borderTopColor:"#EFF0F6", marginTop: 5}}/>*/}
         </View>
 
 
@@ -128,7 +118,7 @@ const RenderServiceMiscellaneous=(props)=>{
     return (
         <FlatList
             style={styles.group3}
-            data={Object.entries(flatten(service))}
+            data={Object.entries(flatten(_.omit(service, props.exclude)))}
             renderItem={_renderParent}
             keyExtractor={(item,index)=>`${index}`}
             scrollEnabled={false}

@@ -17,7 +17,7 @@ import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
 import { getChannelName, getTimerString } from 'src/utils/formatting'
 import useSignalr from 'src/hooks/useSignalr';
-//import { requestCameraAndAudioPermission } from 'src/hooks/usePermission';
+import { requestCameraAndAudioPermission } from 'src/hooks/usePermission';
 
 const styles = StyleSheet.create({
   container: {
@@ -75,8 +75,8 @@ const Dial = ({ navigation, route }) => {
   useEffect(() => {
     let unmounted = false;
 
+    joinMeeting(meeting._id, (err:any, result:any) => {
 
-        joinMeeting(meeting._id, (err:any, result:any) => {
           if (!unmounted) {
             if (result) {
               setLoading(false);
@@ -168,6 +168,8 @@ const Dial = ({ navigation, route }) => {
   return (
       <View style={styles.container}>
         <StatusBar barStyle={'light-content'} />
+
+
         <VideoLayout
             loading={loading}
             header={header()}

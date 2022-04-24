@@ -26,7 +26,6 @@ const BasicInfo=(props:any)=>{
     }
     const applicant=props?.applicant?.user||props?.applicant;
     const dimensions=useWindowDimensions();
-
     return <ScrollView style={{width:"100%",backgroundColor:"#f8f8f8",}}>
 
         <View style={{flexDirection:isMobile||dimensions?.width<=768 ? "column" : "row"}}>
@@ -114,14 +113,14 @@ const BasicInfo=(props:any)=>{
 
                                 </View>
                             </View>
-                            <View style={styles.group3}>
+                             <View style={styles.group3}>
                                 <View style={styles.group}>
                                     <View style={styles.rect}>
                                         <Text style={styles.header}>Basic Information</Text>
                                     </View>
                                 </View>
                                 <Row label={"Full Name:"}
-                                     applicant={applicant?.firstName+" "+applicant?.middleName?.charAt()+"."+" "+applicant?.lastName}/>
+                                     applicant={applicant?.firstName  && applicant?.lastName ? applicant?.firstName+(applicant?.middleName ? " "+applicant?.middleName?.charAt()+"." : "")+" "+applicant?.lastName : ""}/>
                                 <Row label={"Suffix:"}
                                      applicant={applicant?.suffix}/>
                                 <Row label={"Date of Birth:"}
