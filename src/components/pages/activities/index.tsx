@@ -43,7 +43,7 @@ import FilterPressIcon from "@assets/svg/filterPress";
 import {useActivities} from "../../../hooks/useActivities";
 import IParticipants from "src/interfaces/IParticipants";
 
-const { width } = Dimensions.get('window');
+
 
 
 export default function ActivitiesPage(props: any) {
@@ -255,14 +255,14 @@ export default function ActivitiesPage(props: any) {
                                     bounces={ false }
                                     horizontal
                                     showsHorizontalScrollIndicator={ false }
-                                    snapToInterval={ width }
+                                    snapToInterval={ dimensions.width }
                                     decelerationRate={ 0 }
                                     keyExtractor={ (item: any) => item._id }
                                     renderItem={ ({ item }) => (
                                         <MeetingNotif
                                             style={{...Platform.select({
                                                     native: {
-                                                        width: width
+                                                        width: dimensions.width
                                                     },
                                                     default: {
                                                         width: 466
