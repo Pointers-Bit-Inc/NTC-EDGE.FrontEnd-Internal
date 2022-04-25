@@ -1,11 +1,11 @@
-import React, {
+import React,{
   useEffect,
   useState,
   ReactNode,
   FC,
   useImperativeHandle,
   forwardRef,
-  ForwardRefRenderFunction,
+  ForwardRefRenderFunction,useRef,
 } from 'react'
 import { View, StyleSheet, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import lodash from 'lodash';
@@ -22,6 +22,7 @@ const { width, height } = Dimensions.get('window');
 import AgoraRTC from 'agora-rtc-sdk';
 import VideoOutlineIcon from "@assets/svg/videoOutline";
 import AddParticipantOutlineIcon from "@assets/svg/addParticipantOutline";
+import {useNavigation} from "@react-navigation/native";
 
 
   // const videoStateMessage = state => {
@@ -181,90 +182,127 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     toggleIsSpeakerEnable,
     toggleIsVideoEnable,
   }));
+  const [isVideoMuted, setVideoMute] = useState(false);
+  const [isAudioMuted, setAudioMute] = useState(false);
+  const [activeSpeaker, setActiveSpeaker] = useState(0);
+  const [availableCamera, setAvailableCamera] = useState([]);
+  const [availableMicrophone, setAvailableMicrophone] = useState([]);
+  const [myId, setMyId] = useState<number>(0);
+  const client = useRef(AgoraRTC)
+  const localStream = useRef()
+  const initAgora = async()=>{
 
-  const initAgora = () => {
-    let client = AgoraRTC.createClient({
-      mode: "rtc",
-      codec: "vp8",
+    client.current=AgoraRTC.createClient({
+      mode:"rtc",
+      codec:"vp8",
     });
 
-    client.init(agora.appId);
-    client.join(
+    client.current.init(agora.appId);
+    client.current.join(
         agora.token,
         agora.channelName,
         agora.uid,
-        (uid) => {
-          let localStream = AgoraRTC.createStream({
-            audio: true,
-            video: true,
+        (uid)=>{
+          setVideoMute(true)
+          setAudioMute(true)
+          localStream.current=AgoraRTC.createStream({
+            audio:!isVideoMuted,
+            video:!isAudioMuted,
           });
-          // Initialize the local stream
-          localStream.init(()=>{
-            // Play the local stream
 
-            localStream.play("me");
+          // Initialize the local stream
+          localStream.current.init(async()=>{
+            // Play the local stream
+            localStream.current.play("me");
             // Publish the local stream
-            client.publish(localStream, (error) => {
+            client.current.publish(localStream.current,(error)=>{
               console.error(error)
             });
-          }, (error) => {
-            console.error(error)
+            const audios = await client.current.getCameras;
+            console.log("get audiod", audios)
+          },(error)=>{
+            setVideoMute(false)
+            setAudioMute(false)
           });
         },
-        (error) => {
-          console.error(error)
+        (error)=>{
+          setVideoMute(false)
+          setAudioMute(false)
         })
 
-    client.on('stream-added', (evt) => {
+    client.current.on('stream-added',(evt)=>{
       console.log('stream-added')
-      client.subscribe(evt.stream, handleError)
+      client.current.subscribe(evt.stream,handleError)
     })
 
-    client.on('stream-subscribed', (evt) => {
+    client.current.on('stream-subscribed',(evt)=>{
       console.log('stream-subscribed')
-      const stream = evt.stream
-      const streamId = String(stream.getId())
+      const stream=evt.stream
+      const streamId=String(stream.getId())
       setStreams({
         ...streams,
-        [streamId]: {
-          stream: stream,
-          added: false,
-          removed: false,
+        [streamId]:{
+          stream:stream,
+          added:false,
+          removed:false,
         },
       })
     })
 
-    client.on('stream-removed', (evt) => {
+    client.current.on('stream-removed',(evt)=>{
       console.log('stream-removed')
-      const stream = evt.stream
-      const streamId = String(stream.getId())
+      const stream=evt.stream
+      const streamId=String(stream.getId())
 
-      setStreams(strs => {
-        strs[streamId].removed = true
-        return { ...strs }
+      setStreams(strs=>{
+        strs[streamId].removed=true
+        return {...strs}
       })
     })
+    client.current.enableAudioVolumeIndicator();
+    client.current.on("volume-indicator",(evt)=>{
+      evt.attr.forEach(function(volume,index){
+        if(options.uid==volume.uid&&volume.level>5){
+          setActiveSpeaker(myId)
 
-    client.on('stream-unpublished', (evt) => {
+        } else if(options.uid==volume.uid&&volume.level<5){
+          setActiveSpeaker(0)
+
+        }
+      });
+    })
+    client.current.on('stream-unpublished',(evt)=>{
       console.log('stream-unpublished')
     })
 
 
-    client.on("peer-leave", function(evt){
+    client.current.on("peer-leave",function(evt){
       console.log('peer-leave')
-      const stream = evt.stream
-      const streamId = String(stream.getId())
+      const stream=evt.stream
+      const streamId=String(stream.getId())
 
-      setStreams(strs => {
-        strs[streamId].removed = true
-        return { ...strs }
+      setStreams(strs=>{
+        strs[streamId].removed=true
+        return {...strs}
       })
     });
+    getCameraDevices()
   }
-
+  function getCameraDevices() {
+    console.log("Checking for Camera Devices.....")
+    client.current.getCameras (function(cameras) {
+     
+      setAvailableCamera(cameras); // store cameras array
+    });
+  }
   useEffect(() => {
+
     if (!loading && agora.appId) {
       initAgora();
+    }
+    return () => {
+      client.current =  null
+      localStream.current = null
     }
   }, [loading, agora.appId]);
 
@@ -274,93 +312,149 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   const handleError = (error) => {
     console.error(error)
   }
+  const navigation = useNavigation();
 
+  useEffect(async()=>{
+    if(!Object.keys(streams).find((streamId)=>!streams[streamId].added||streams[streamId].removed)) return
 
-  useEffect(() => {
-    if(!Object.keys(streams).find((streamId) => !streams[streamId].added || streams[streamId].removed)) return
-
-    setStreams(strs => {
-      Object.keys(strs).forEach((streamId) => {
-        if (!strs[streamId].added) {
-          strs[streamId].added = true
+    setStreams(strs=>{
+      Object.keys(strs).forEach((streamId)=>{
+        if(!strs[streamId].added){
+          strs[streamId].added=true
           strs[streamId].stream.play(streamId)
-        } else if (strs[streamId].removed) {
+        } else if(strs[streamId].removed){
           strs[streamId].stream.close()
           delete strs[streamId]
         }
       })
-      return { ... strs }
+      return {...strs}
     })
   }, [streams])
 
 
 
   return (
-    <View style={styles.container}>
+        <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+          <View>
+            <View style={styles.container}>
 
-      <View style={[styles.video, {position: "absolute", zIndex: 2, flex: 1, justifyContent: "flex-end"}]}>
-        <View style={{position: "absolute",  backgroundColor: "rgba(96, 106, 128, 0.5)",  width: 643, height: 80}}>
-          <View style={{flex: 1, flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}>
-            <View style={{flexDirection: "row", gap: (width * 0.43) * 0.11, justifyContent: "center", }}>
-              <View style={{alignItems: "center"}}>
-                <View style={{paddingBottom: 15}}>
-                  <VideoIcon
-                      size={25}
-                      type={ 'video'}
-                      color={'white'}
-                  />
+              <View style={[styles.video, {position: "absolute", zIndex: 2, flex: 1, justifyContent: "flex-end"}]}>
+                <View style={{position: "absolute",  backgroundColor: "rgba(96, 106, 128, 0.5)",  width: 643, height: 80}}>
+                  <View style={{flex: 1, flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}>
+                    <View style={{flexDirection: "row", gap: (width * 0.43) * 0.11, justifyContent: "center", }}>
+                      <View style={{alignItems: "center"}}>
+                       <TouchableOpacity onPress={()=>{
+                         if (!isVideoMuted) {
+
+                           localStream.current.unmuteVideo();
+
+                           setVideoMute(mute => !mute);
+                         } else {
+
+                           localStream.current.muteVideo();
+                           setVideoMute(mute => !mute);
+                         }
+                       }}>
+                         <View style={{paddingBottom: 15}}>
+                           <VideoIcon
+                               size={25}
+                               type={ 'video'}
+                               color={'white'}
+                           />
+                         </View>
+                       </TouchableOpacity>
+
+
+                        <Text color={"white"}>Video {isVideoMuted ? "On" : "Off"}</Text>
+                      </View>
+                      <View style={{alignItems: "center"}}>
+                        <TouchableOpacity onPress={async()=>{
+                          if(!isAudioMuted){
+                            setAudioMute(mute => !mute);
+
+                             localStream.current.unmuteAudio();
+                          } else{
+                            setAudioMute(mute => !mute);
+                            localStream.current.muteAudio();
+                          }
+                        }}>
+                          <View style={{paddingBottom: 15}}>
+                            <MicIcon
+                                size={25}
+                                type={!isAudioMuted ? 'muted' : 'mic'}
+                                color={!isAudioMuted ? 'white' : 'white'}
+                            />
+                          </View>
+                        </TouchableOpacity>
+
+
+                        <Text color={"white"}>Mic {isAudioMuted ? "On" : "Off"}</Text>
+                      </View>
+                      <View style={{alignItems: "center"}}>
+                        <View style={{paddingBottom: 15}}>
+                          <SpeakerIcon
+                              size={25}
+                              type={''}
+                              color={'white'}
+                          />
+                        </View>
+
+                        <Text color={"white"}>Speaker On</Text>
+                      </View>
+
+                    </View>
+                    <View style={{alignItems: "center"}}>
+                      <View style={{paddingBottom: 15}}>
+                        <AddParticipantOutlineIcon color={"white"}/>
+                      </View>
+
+                      <Text color={"white"}>Speaker On</Text>
+                    </View>
+
+                  </View>
+
                 </View>
-
-                <Text color={"white"}>Video On</Text>
               </View>
-              <View style={{alignItems: "center"}}>
-                <View style={{paddingBottom: 15}}>
-                  <MicIcon
-                      size={25}
-                      type={'mic'}
-                      color={'white'}
-                  />
-                </View>
-
-                <Text color={"white"}>Mic On</Text>
-              </View>
-              <View style={{alignItems: "center"}}>
-                <View style={{paddingBottom: 15}}>
-                  <SpeakerIcon
-                      size={25}
-                      type={''}
-                      color={'white'}
-                  />
-                </View>
-
-                <Text color={"white"}>Speaker On</Text>
+              <View nativeID={"me"} style={styles.video}>
+                <ConnectingVideo
+                    participants={participants}
+                    callEnded={callEnded}
+                />
               </View>
 
-            </View>
-            <View style={{alignItems: "center"}}>
-              <View style={{paddingBottom: 15}}>
-               <AddParticipantOutlineIcon color={"white"}/>
-              </View>
 
-              <Text color={"white"}>Speaker On</Text>
+
+              {
+                Object.keys(streams).map((streamId) => {
+                  return <ParticipantVideo id={streamId} key={streamId} />
+                })
+              }
             </View>
 
           </View>
 
+            <View style={{paddingTop: 50, width: width * 0.43,  justifyContent: "space-between", flexDirection: "row", alignItems: "center"}}>
+              <TouchableOpacity onPress={()=>{
+                client.current.leave();
+                localStream.current.disableAudio();
+                localStream.current.disableVideo()
+                localStream.current.muteVideo()
+                localStream.current.close()
+                client.current.unpublish(localStream.current);
+                navigation.goBack()
+              }}>
+                <View style={{paddingVertical: 16, alignItems: "center",  paddingHorizontal: 24, width: (width * 0.43) * 0.48, borderRadius: 12, borderWidth: 1, borderColor: "white"}}>
+                  <Text color={"#fff"}>Cancel</Text>
+                </View>
+              </TouchableOpacity>
+
+              <View style={{paddingVertical: 16, alignItems: "center",paddingHorizontal: 24, width: (width * 0.43)  * 0.48,  borderRadius: 12, backgroundColor: "#2863D6"}}>
+                <Text color={"#fff"}>Start Meeting</Text>
+              </View>
+          </View>
+
         </View>
-      </View>
-        <View nativeID={"me"} style={styles.video}>
-          <ConnectingVideo
-              participants={participants}
-              callEnded={callEnded}
-          />
-        </View>
-        {
-          Object.keys(streams).map((streamId) => {
-            return <ParticipantVideo id={streamId} key={streamId} />
-          })
-        }
-      </View>
+
 
   );
 }
