@@ -211,8 +211,6 @@ const VideoLayout:ForwardRefRenderFunction<VideoLayoutRef,Props>=({
                     client.current.publish(localStream.current,(error)=>{
                         console.error(error)
                     });
-                    const audios=await client.current.getCameras;
-                    console.log("get audiod",audios)
                 },(error)=>{
                     setVideoMute(false);
                     setAudioMute(false)
@@ -240,6 +238,7 @@ const VideoLayout:ForwardRefRenderFunction<VideoLayoutRef,Props>=({
                     removed:false,
                 },
             })
+            stream.setAudioVolume(100);
         });
 
         client.current.on('stream-removed',(evt)=>{
@@ -286,7 +285,6 @@ const VideoLayout:ForwardRefRenderFunction<VideoLayoutRef,Props>=({
     function getCameraDevices(){
         console.log("Checking for Camera Devices.....");
         client.current.getCameras(function(cameras){
-            console.log(cameras);
             setAvailableCamera(cameras); // store cameras array
         });
     }
@@ -384,7 +382,6 @@ const VideoLayout:ForwardRefRenderFunction<VideoLayoutRef,Props>=({
                                                     localStream.current.unmuteVideo();
                                                     setVideoMute(mute=>!mute);
                                                 } else{
-
                                                     localStream.current.muteVideo();
                                                     setVideoMute(mute=>!mute);
                                                 }
@@ -458,7 +455,7 @@ const VideoLayout:ForwardRefRenderFunction<VideoLayoutRef,Props>=({
                                         <View style={{paddingBottom:15}}>
                                             <SpeakerIcon
                                                 size={25}
-                                                type={''}
+                                                type={availableMicrophone.length ? '' : 'speaker-off'}
                                                 color={'white'}
                                             />
                                         </View>
@@ -508,6 +505,7 @@ const VideoLayout:ForwardRefRenderFunction<VideoLayoutRef,Props>=({
                     localStream.current.disableAudio();
                     localStream.current.disableVideo();
                     localStream.current.muteVideo();
+                    localStream.current.stop();
                     localStream.current.close();
                     client.current.unpublish(localStream.current);
                     navigation.goBack()
