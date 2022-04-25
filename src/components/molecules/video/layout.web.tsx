@@ -141,7 +141,7 @@ export type VideoLayoutRef={
 function ParticipantVideo({id}){
     return (
         <View>
-            <View nativeID={id}></View>
+            <View nativeID={id} style={{width: 400, height: 400}}></View>
         </View>
     )
 }
