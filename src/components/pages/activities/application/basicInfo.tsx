@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React,{useEffect,useRef} from "react";
 import {ScrollView,StyleSheet,Text,useWindowDimensions,View} from "react-native";
 import {excludeStatus,getStatusText,statusColor,statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
@@ -24,9 +24,18 @@ const BasicInfo=(props:any)=>{
 
         }
     }
+    const scrollRef = useRef();
+
+
     const applicant=props?.applicant?.user||props?.applicant;
+    useEffect(()=>{
+        scrollRef?.current?.scrollTo({
+            y: 0,
+            animated: true,
+        });
+    }, [applicant?._id])
     const dimensions=useWindowDimensions();
-    return <ScrollView style={{width:"100%",backgroundColor:"#f8f8f8",}}>
+    return <ScrollView ref={scrollRef} style={{width:"100%",backgroundColor:"#f8f8f8",}}>
 
         <View style={{flexDirection:isMobile||dimensions?.width<=768 ? "column" : "row"}}>
             <View style={isMobile||dimensions?.width<=768 ? {padding:10,alignSelf:"center"} : {
