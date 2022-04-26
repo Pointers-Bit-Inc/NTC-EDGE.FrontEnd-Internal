@@ -96,16 +96,18 @@ const RootNavigator = () => {
                                 <View  style={{paddingRight: 32}}>
                                     <HelpTopBar height={ 26 } width={ 26 }></HelpTopBar>
                                 </View>
+                                <View style={{paddingRight: 32}}>
+                                    <TouchableOpacity onPress={()=> navigation.navigate("Settings")}>
+                                        <ProfileImage
+                                            style={ {
+                                                borderRadius : 26 , } }
+                                            size={28 }
+                                            image={ user?.profilePicture?.small }
+                                            name={ `${ user?.firstName } ${ user?.lastName }` }
+                                        />
+                                    </TouchableOpacity>
+                                </View>
 
-                                <TouchableOpacity onPress={()=> navigation.navigate("Settings")}>
-                                    <ProfileImage
-                                        style={ {
-                                            borderRadius : 26 , } }
-                                        size={28 }
-                                        image={ user?.profilePicture?.small }
-                                        name={ `${ user?.firstName } ${ user?.lastName }` }
-                                    />
-                                </TouchableOpacity>
 
                             </View>
                         },
@@ -114,7 +116,7 @@ const RootNavigator = () => {
                                 <EdgeLogo width={ 127 } height={ 29 }/>
                             </View>
                         ) ,
-                        headerShown : isMobile ? false : true ,
+                        headerShown : (isMobile && !Platform?.isPad) ? false : true ,
                         headerStyle : {
 
                             backgroundColor : primaryColor ,
