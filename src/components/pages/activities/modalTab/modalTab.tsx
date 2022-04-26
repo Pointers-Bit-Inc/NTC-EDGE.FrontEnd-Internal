@@ -3,7 +3,7 @@ import BasicInfo from "@pages/activities/application/basicInfo";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
-import React , {useState} from "react";
+import React,{useEffect,useState} from "react";
 import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
 import {Animated} from "react-native";
 import TabBar from "@pages/activities/tabs/tabbar";
@@ -69,21 +69,32 @@ const ModalTab = props => {
         createdAt ,
         proofOfPayment
     } = useApplicant(props.details)
+    const [initialPage,setInitialPage]=useState(true);
+    useEffect(()=>{
+        setInitialPage(true)
+    },[props.details._id]);
     return <ScrollableTabView
+
         onScroll={ (x) => _scrollX.setValue(x) }
-        renderTabBar={ () => <TabBar
-            renderTab={ (tab , page , isTabActive , onPressHandler , onTabLayout) => (
-                <Tab
-                    key={ page }
-                    tab={ tab }
-                    page={ page }
-                    isTabActive={ isTabActive }
-                    onPressHandler={ onPressHandler }
-                    onTabLayout={ onTabLayout }
-                    styles={ interpolators[page] }
-                />
-            ) }
-            tabBarStyle={ { paddingTop : 10 , borderTopColor : '#d2d2d2' , borderTopWidth : 1 } }/> }
+        renderTabBar={ (props) => {
+            if(initialPage){
+                props.goToPage(0);
+                setInitialPage(false)
+            }
+            return <TabBar
+                renderTab={ (tab , page , isTabActive , onPressHandler , onTabLayout) => (
+                    <Tab
+                        key={ page }
+                        tab={ tab }
+                        page={ page }
+                        isTabActive={ isTabActive }
+                        onPressHandler={ onPressHandler }
+                        onTabLayout={ onTabLayout }
+                        styles={ interpolators[page] }
+                    />
+                ) }
+                tabBarStyle={ { paddingTop : 10 , borderTopColor : '#d2d2d2' , borderTopWidth : 1 } }/>
+        } }
 
     >
         {
