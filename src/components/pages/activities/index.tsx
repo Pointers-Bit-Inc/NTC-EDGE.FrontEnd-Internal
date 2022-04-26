@@ -414,7 +414,7 @@ export default function ActivitiesPage(props: any) {
                 }
 
                 { (
-                    !lodash.isEmpty(applicationItem)) && Platform?.isPad && isLandscapeSync() && <View style={{flex: 1}}>
+                    !lodash.isEmpty(applicationItem)) &&  isLandscapeSync() && <View style={{flex: 1}}>
                     <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
                         onMoreModalDismissed(applicationItem?.isOpen)
                     } }/>
@@ -440,7 +440,7 @@ export default function ActivitiesPage(props: any) {
                                    } }/></View> }
 
                 { (
-                    !lodash.isEmpty(applicationItem)) && Platform?.isPad && !isLandscapeSync() && <View style={{flex: 1}}>
+                    !lodash.isEmpty(applicationItem)) &&  !isLandscapeSync() && <View style={{flex: 1}}>
                     <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
                         onMoreModalDismissed(applicationItem?.isOpen)
                     } }/>

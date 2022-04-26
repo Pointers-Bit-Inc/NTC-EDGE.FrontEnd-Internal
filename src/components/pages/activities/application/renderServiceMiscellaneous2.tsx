@@ -98,8 +98,7 @@ const RenderServiceMiscellaneous=(props)=>{
         if(findIndex!= -1){
             index=keys?.split(".")?.reverse()?.[findIndex];
             prevValue=keys?.split?.(".")?.reverse()?.[findIndex-1];
-            nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1]
-            console.log(index)
+            nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1] 
         } else{
             prevValue=keys?.split(".")?.[keys.split(".").length-1];
             index=keys?.split(".")?.[keys.split(".").length];
