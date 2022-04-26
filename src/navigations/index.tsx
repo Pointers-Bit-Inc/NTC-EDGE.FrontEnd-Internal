@@ -26,12 +26,14 @@ import {primaryColor} from "@styles/color";
 import EdgeLogo from "@assets/svg/edge";
 import SettingTopBar from "@assets/svg/settingTopBar";
 import HelpTopBar from "@assets/svg/helpTopbar";
-import {RootStateOrAny ,  useSelector} from "react-redux";
+import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
 import {fontValue} from "@pages/activities/fontValue";
 import ProfileImage from "@atoms/image/profile";
-import {createRef , useRef} from "react";
+import {createRef,useCallback,useEffect,useRef} from "react";
 import {isMobile} from "@pages/activities/isMobile";
 import Login from "@screens/login/login";
+import {useComponentLayout} from "../hooks/useComponentLayout";
+import {setFilterRect,setTopBarNav} from "../reducers/application/actions";
 
 type RootStackParamList = {
     App: undefined;
@@ -85,15 +87,21 @@ const RootNavigator = () => {
                     {
                         title : null ,
                         headerRight : () => {
+
                             const navigation = useNavigation();
-                            return <View style={ { paddingRight : 32 , gap : 32 , flexDirection : "row" } }>
-                                <SettingTopBar height={ 26 } width={ 26 }></SettingTopBar>
-                                <HelpTopBar height={ 26 } width={ 26 }></HelpTopBar>
+                            return <View  style={ { flexDirection : "row" } }>
+                                <View style={{paddingRight: 32}}>
+                                    <SettingTopBar height={ 26 } width={ 26 } ></SettingTopBar>
+                                </View>
+                                <View  style={{paddingRight: 32}}>
+                                    <HelpTopBar height={ 26 } width={ 26 }></HelpTopBar>
+                                </View>
+
                                 <TouchableOpacity onPress={()=> navigation.navigate("Settings")}>
                                     <ProfileImage
                                         style={ {
                                             borderRadius : 26 , } }
-                                        size={ fontValue(28) }
+                                        size={28 }
                                         image={ user?.profilePicture?.small }
                                         name={ `${ user?.firstName } ${ user?.lastName }` }
                                     />

@@ -11,5 +11,6 @@ export default keyMirror({
   SET_TAB_BAR_HEIGHT: null,
   SET_APPLICATION_ITEM: null,
   SET_FILTER_RECT: null,
-  SET_RIGHT_LAYOUT_COMPONENT: null
+  SET_RIGHT_LAYOUT_COMPONENT: null,
+  SET_TOPBARNAV: null
 });

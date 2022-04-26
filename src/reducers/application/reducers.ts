@@ -22,7 +22,8 @@ const {
     READ_UNREAD_APPLICATIONS,
     SET_FILTER_RECT,
     SET_APPLICATION_ITEM,
-    SET_RIGHT_LAYOUT_COMPONENT
+    SET_RIGHT_LAYOUT_COMPONENT,
+    SET_TOPBARNAV
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -39,6 +40,11 @@ export default function basket(state = initialState, action = {}) {
         case SET_FILTER_RECT: {
 
             state = state.set('filterRect' , action.payload);
+            return state
+        }
+        case SET_TOPBARNAV: {
+
+            state = state.set('topBarNav' , action.payload);
             return state
         }
         case SET_APPLICATION_ITEM: {

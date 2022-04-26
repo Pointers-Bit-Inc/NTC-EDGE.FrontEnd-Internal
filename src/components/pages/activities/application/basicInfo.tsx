@@ -38,12 +38,12 @@ const BasicInfo=(props:any)=>{
                     style={{borderRadius:4}}
 
                     textSize={22}
-                    image={applicant.profilePicture?.small.match(/[^/]+(jpeg|jpg|png|gif)$/i) ? applicant.profilePicture?.small : applicant.profilePicture?.small+".png"}
-                    name={`${applicant.firstName} ${applicant.lastName}`}
+                    image={applicant?.profilePicture?.small.match(/[^/]+(jpeg|jpg|png|gif)$/i) ? applicant?.profilePicture?.small : applicant?.profilePicture?.small+".png"}
+                    name={`${applicant?.firstName} ${applicant?.lastName}`}
                 />
 
                 {(
-                    dimensions?.width>=768)&&<View style={{paddingVertical:20}}>
+                    !isMobile && dimensions?.width>=768)&&<View style={{paddingVertical:20}}>
                     <View style={{flex:1,justifyContent:"center",alignItems:"center",backgroundColor:"#EFF0F6"}}>
                         <Text style={{
                             fontWeight:"bold",

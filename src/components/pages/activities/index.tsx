@@ -42,6 +42,7 @@ import IMeetings from "src/interfaces/IMeetings";
 import FilterPressIcon from "@assets/svg/filterPress";
 import {useActivities} from "../../../hooks/useActivities";
 import IParticipants from "src/interfaces/IParticipants";
+import {isLandscape,isLandscapeSync,isTablet} from "react-native-device-info";
 
 
 
@@ -49,7 +50,7 @@ import IParticipants from "src/interfaces/IParticipants";
 export default function ActivitiesPage(props: any) {
 
     const dimensions = useWindowDimensions();
-    const Filter = isMobile || dimensions?.width <= 768 ? FilterIcon : FilterPressIcon;
+    const Filter = (isMobile && !Platform?.isPad) || dimensions?.width <= 768 ? FilterIcon : FilterPressIcon;
     const {
         isReady,
         user ,
@@ -202,18 +203,16 @@ export default function ActivitiesPage(props: any) {
 
             <View style={ { backgroundColor : "#F8F8F8" , flex : 1 , flexDirection : "row" } }>
                 <View onLayout={ onActivityLayoutComponent } style={ [styles.container , styles.shadow , {
-
-                 
-                    flexBasis : (isMobile || dimensions?.width < 768) ? "100%" : 466 ,
+                    flexBasis : ((isMobile  && !Platform.isPad) || dimensions?.width < 768 || (Platform?.isPad && !isLandscapeSync()) ) ? "100%" : 466 ,
                     flexGrow : 0 ,
                     flexShrink : 0
                 }] }>
 
 
                     <View onLayout={ onLayoutComponent }
-                          style={ [styles.group , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { position : "absolute" , }] }>
+                          style={ [styles.group , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { position : "absolute"}] }>
                         <Animated.View style={ [styles.rect , styles.horizontal , {
-                            backgroundColor : isMobile || dimensions?.width < 768 ? "#041B6E" : "#fff" ,
+                            backgroundColor : ((isMobile  && !Platform?.isPad)) ? "#041B6E" : "#fff" ,
 
                         } , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && {
                             ...{ opacity } ,
@@ -221,13 +220,13 @@ export default function ActivitiesPage(props: any) {
                         }] }>
 
                             { (
-                                isMobile || dimensions?.width < 768) &&
+                                (isMobile && !Platform?.isPad) || dimensions?.width < 768) &&
                             <TouchableOpacity onPress={ () => props.navigation.navigate('Settings')/*openDrawer()*/ }>
                                 <HomeMenuIcon height={ fontValue(24) } width={ fontValue(24) }/>
                             </TouchableOpacity> }
 
                             <Text
-                                style={ [styles.activity , { color : isMobile || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor , }] }>{ isMobile || dimensions?.width < 768 ? `Activity` : `Feed` }</Text>
+                                style={ [styles.activity , { color : (isMobile && !Platform?.isPad) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor , }] }>{ (isMobile && !Platform?.isPad) || dimensions?.width < 768 ? `Activity` : `Feed` }</Text>
                             <View style={ { flex : 1 } }/>
                             <TouchableOpacity onPress={ () => {
                                 dispatch(setVisible(true))
@@ -239,7 +238,7 @@ export default function ActivitiesPage(props: any) {
 
                             </TouchableOpacity>
                             { (
-                                !isMobile && dimensions?.width > 768) &&
+                                !(isMobile && !Platform?.isPad) && dimensions?.width > 768) &&
                             <TouchableOpacity onPress={ onRefresh }>
                                 <RefreshWeb style={ { paddingLeft : 15 } } width={ fontValue(26) }
                                             height={ fontValue(24) } fill={ "#fff" }/>
@@ -335,7 +334,7 @@ export default function ActivitiesPage(props: any) {
                         ListFooterComponent={ bottomLoader }
                         onEndReached={ () => {
 
-                            if (!onEndReachedCalledDuringMomentum || !isMobile) {
+                            if (!onEndReachedCalledDuringMomentum || !(isMobile && !Platform?.isPad)) {
                                 handleLoad();
                                 setOnEndReachedCalledDuringMomentum(true);
                             }
@@ -403,7 +402,7 @@ export default function ActivitiesPage(props: any) {
                 </View>
                 {
                     !(
-                        isMobile) && lodash.isEmpty(applicationItem) && dimensions?.width > 768 &&
+                        (isMobile && !Platform?.isPad)) && lodash.isEmpty(applicationItem) && dimensions?.width > 768 &&
                     <View style={ [{ flex : 1 , justifyContent : "center" , alignItems : "center" }] }>
 
                         <NoActivity/>
@@ -415,7 +414,7 @@ export default function ActivitiesPage(props: any) {
                 }
 
                 { (
-                    !lodash.isEmpty(applicationItem)) && <ActivityModalView>
+                    !lodash.isEmpty(applicationItem)) && Platform?.isPad && isLandscapeSync() && <View style={{flex: 1}}>
                     <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
                         onMoreModalDismissed(applicationItem?.isOpen)
                     } }/>
@@ -438,7 +437,33 @@ export default function ActivitiesPage(props: any) {
                                            onRefresh()
                                        }
                                        onDismissed()
-                                   } }/></ActivityModalView> }
+                                   } }/></View> }
+
+                { (
+                    !lodash.isEmpty(applicationItem)) && Platform?.isPad && !isLandscapeSync() && <View style={{flex: 1}}>
+                    <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
+                        onMoreModalDismissed(applicationItem?.isOpen)
+                    } }/>
+                    <ActivityModal updateModal={ updateModalFn }
+                                   readFn={ unReadReadApplicationFn }
+                                   details={ applicationItem }
+                                   onChangeAssignedId={ (event) => {
+
+                                       dispatch(setApplicationItem(event))
+
+                                   } }
+                                   visible={ modalVisible }
+                                   onDismissed={ (event: boolean , _id: number) => {
+                                       setUpdateModal(false);
+                                       dispatch(setApplicationItem({}));
+                                       if (event && _id) {
+                                           //  dispatch(deleteApplications(_id))
+                                       }
+                                       if (event) {
+                                           onRefresh()
+                                       }
+                                       onDismissed()
+                                   } }/></View> }
             </View>
 
         </>

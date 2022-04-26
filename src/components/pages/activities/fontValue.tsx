@@ -1,7 +1,8 @@
 import {RFValue} from "react-native-responsive-fontsize";
 import {Platform} from "react-native";
+import {isMobile} from "@pages/activities/isMobile";
 
 export const fontValue = (number) => {
 
-    return  Platform.OS === "ios" || Platform.OS === "android" ? RFValue(number) : number;
+    return  (isMobile && !Platform?.isPad)  ? RFValue(number) : number;
 }

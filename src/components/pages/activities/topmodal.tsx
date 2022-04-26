@@ -1,4 +1,4 @@
-import React , {useRef} from "react";
+import React,{useEffect,useRef} from "react";
 import {
     Dimensions ,
     Modal ,
@@ -30,7 +30,7 @@ import StatusBar from "@atoms/status-bar";
 const window = Dimensions.get("window");
 
 function TopModal(props: any) {
-    const { filterRect } = useSelector((state: RootStateOrAny) => state.application);
+    const { filterRect, topBarNav } = useSelector((state: RootStateOrAny) => state.application);
     const { visible , statusCode } = useSelector((state: RootStateOrAny) => state.activity);
     const dispatch = useDispatch();
     const user = useSelector((state: RootStateOrAny) => state.user);
@@ -65,8 +65,8 @@ function TopModal(props: any) {
         }
     };
 
-
     const inputRef = useRef();
+
     return (
         <Modal
 
@@ -93,7 +93,7 @@ function TopModal(props: any) {
 
                     <View style={ styles.container }>
 
-                        { isMobile && <View style={ styles. header1 }>
+                        { isMobile  && <View style={ styles.header1 }>
                             <View style={ { width : 25 } }>
 
                             </View>
@@ -111,8 +111,8 @@ function TopModal(props: any) {
                         </View> }
                         <View style={ !isMobile ? {
                             width : filterRect?.width ,
-                            left : filterRect?.left ,
-                            top : filterRect?.top + filterRect?.height
+                            left : filterRect?.left || 108,
+                            top : !isNaN(filterRect?.top + filterRect?.height) ? filterRect?.top + filterRect?.height : topBarNav?.height
                         } : {} }>
                             <View style={ styles.rect2_1 }>
                                 <Text style={ styles.sort1 }>Sort By</Text>
