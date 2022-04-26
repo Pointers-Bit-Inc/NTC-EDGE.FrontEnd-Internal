@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { View, Image, StyleSheet } from 'react-native'
+import {View,Image,StyleSheet,Platform} from 'react-native'
 import Text from '../text';
 import { getInitial, getColorFromName } from 'src/utils/formatting';
 import { primaryColor } from '@styles/color';
@@ -15,14 +15,14 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: isMobile ? RFValue(2) : 2,
+    borderWidth: (isMobile && !Platform?.isPad) ? RFValue(2) : 2,
     borderColor: 'white',
     overflow: 'hidden'
   },
   onlineBorder: {
     backgroundColor: 'black',
     borderColor: '#34C759',
-    borderWidth: isMobile ? RFValue(2) : 2,
+    borderWidth: (isMobile && !Platform?.isPad) ? RFValue(2) : 2,
     overflow: 'hidden',
   }
 });
@@ -38,7 +38,7 @@ const ProfileImage = ({
   style = {},
   onlineStyle = {},
 }) => {
-  const imageSize = isOnline ? isMobile ? RFValue(size - 5) : size - 5 : isMobile ? RFValue(size) : size
+  const imageSize = isOnline ? (isMobile && !Platform?.isPad) ? RFValue(size - 5) : size - 5 : (isMobile && !Platform?.isPad) ? RFValue(size) : size
 
   const getBackgroundColor = useCallback(() => {
       if (!backgroundColor) {
