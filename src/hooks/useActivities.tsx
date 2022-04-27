@@ -21,7 +21,7 @@ import axios from "axios";
 import {BASE_URL} from "../services/config";
 import {Alert,Animated,Image} from "react-native";
 import {
-    handleInfiniteLoad,
+    handleInfiniteLoad,setactivitySizeComponent,
     setApplications,
     setFilterRect,
     setNotPinnedApplication,
@@ -407,6 +407,7 @@ export function useActivities(){
     useEffect(()=>{
 
         dispatch(setFilterRect(sizeComponent));
+        dispatch(setactivitySizeComponent(activitySizeComponent));
         if(sizeComponent?.height&&searchSizeComponent?.height){
 
             setContainerHeight(sizeComponent?.height+searchSizeComponent?.height)
@@ -508,6 +509,7 @@ export function useActivities(){
         moreModalVisible,
         setMoreModalVisible,
         onDismissed,
+        activitySizeComponent,
         onEndReachedCalledDuringMomentum,
         setOnEndReachedCalledDuringMomentum,
         bottomLoader,

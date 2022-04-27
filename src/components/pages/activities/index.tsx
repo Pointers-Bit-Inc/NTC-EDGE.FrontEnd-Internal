@@ -93,7 +93,8 @@ export default function ActivitiesPage(props: any) {
         onMomentumScrollEnd ,
         onScrollEndDrag ,
         headerTranslate ,
-        opacity
+        opacity,
+        activitySizeComponent
     } = useActivities();
 
     const { normalizeActiveMeetings } = useSelector((state: RootStateOrAny) => state.meeting);
@@ -254,14 +255,14 @@ export default function ActivitiesPage(props: any) {
                                     bounces={ false }
                                     horizontal
                                     showsHorizontalScrollIndicator={ false }
-                                    snapToInterval={ dimensions.width }
+                                    snapToInterval={activitySizeComponent?.width || dimensions?.width}
                                     decelerationRate={ 0 }
                                     keyExtractor={ (item: any) => item._id }
                                     renderItem={ ({ item }) => (
                                         <MeetingNotif
                                             style={{...Platform.select({
                                                     native: {
-                                                        width: dimensions.width
+                                                        width: activitySizeComponent?.width || dimensions?.width
                                                     },
                                                     default: {
                                                         width: 466
@@ -413,34 +414,10 @@ export default function ActivitiesPage(props: any) {
                     </View>
                 }
 
-                { (
-                    !lodash.isEmpty(applicationItem)) &&  isLandscapeSync() && <View style={{flex: 1}}>
-                    <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
-                        onMoreModalDismissed(applicationItem?.isOpen)
-                    } }/>
-                    <ActivityModal updateModal={ updateModalFn }
-                                   readFn={ unReadReadApplicationFn }
-                                   details={ applicationItem }
-                                   onChangeAssignedId={ (event) => {
-
-                                       dispatch(setApplicationItem(event))
-
-                                   } }
-                                   visible={ modalVisible }
-                                   onDismissed={ (event: boolean , _id: number) => {
-                                       setUpdateModal(false);
-                                       dispatch(setApplicationItem({}));
-                                       if (event && _id) {
-                                           //  dispatch(deleteApplications(_id))
-                                       }
-                                       if (event) {
-                                           onRefresh()
-                                       }
-                                       onDismissed()
-                                   } }/></View> }
+                
 
                 { (
-                    !lodash.isEmpty(applicationItem)) &&  !isLandscapeSync() && <View style={{flex: 1}}>
+                    !lodash.isEmpty(applicationItem)) && <View style={{flex: 1}}>
                     <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
                         onMoreModalDismissed(applicationItem?.isOpen)
                     } }/>

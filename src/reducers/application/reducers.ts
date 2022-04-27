@@ -23,7 +23,8 @@ const {
     SET_FILTER_RECT,
     SET_APPLICATION_ITEM,
     SET_RIGHT_LAYOUT_COMPONENT,
-    SET_TOPBARNAV
+    SET_TOPBARNAV,
+    SET_ACTIVITY_SIZE
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -35,6 +36,10 @@ export default function basket(state = initialState, action = {}) {
         case SET_RIGHT_LAYOUT_COMPONENT: {
             console.log("rightLayoutComponent", action.payload )
             state = state.set('rightLayoutComponent' , action.payload);
+            return state
+        }
+        case SET_ACTIVITY_SIZE: {
+            state = state.set('activitySizeComponent' , action.payload);
             return state
         }
         case SET_FILTER_RECT: {
