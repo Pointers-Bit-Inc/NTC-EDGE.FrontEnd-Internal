@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {NavigationContainer , useNavigation} from '@react-navigation/native';
+import {useEffect} from 'react';
+import {NavigationContainer,useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import ForgotPassword from './forgot-password';
 import Dial from '@screens/meet/video';
@@ -21,19 +22,17 @@ import ChatInfo from '@screens/chat/info';
 import NewChat from '@screens/chat/new-chat';
 import Search from "@pages/activities/search";
 import TabBar from "@pages/activities/tabbar";
-import {Image , Platform , TouchableOpacity , View} from "react-native";
+import {Platform,TouchableOpacity,View} from "react-native";
 import {primaryColor} from "@styles/color";
 import EdgeLogo from "@assets/svg/edge";
 import SettingTopBar from "@assets/svg/settingTopBar";
 import HelpTopBar from "@assets/svg/helpTopbar";
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
-import {fontValue} from "@pages/activities/fontValue";
 import ProfileImage from "@atoms/image/profile";
-import {createRef,useCallback,useEffect,useRef} from "react";
 import {isMobile} from "@pages/activities/isMobile";
 import Login from "@screens/login/login";
 import {useComponentLayout} from "../hooks/useComponentLayout";
-import {setFilterRect,setTopBarNav} from "../reducers/application/actions";
+import {setTopBarNav} from "../reducers/application/actions";
 
 type RootStackParamList = {
     App: undefined;
@@ -87,9 +86,13 @@ const RootNavigator = () => {
                     {
                         title : null ,
                         headerRight : () => {
-
+                            const dispatch=useDispatch();
+                            const [activitySizeComponent,onActivityLayoutComponent]=useComponentLayout();
+                            useEffect(()=>{
+                                dispatch(setTopBarNav(activitySizeComponent))
+                            }, [activitySizeComponent?.width])
                             const navigation = useNavigation();
-                            return <View  style={ { flexDirection : "row" } }>
+                            return <View  onLayout={onActivityLayoutComponent}  style={ { flexDirection : "row" } }>
                                 <View style={{paddingRight: 32}}>
                                     <SettingTopBar height={ 26 } width={ 26 } ></SettingTopBar>
                                 </View>

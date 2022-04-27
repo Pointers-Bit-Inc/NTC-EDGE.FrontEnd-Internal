@@ -166,7 +166,6 @@ const Approval=(props:any)=>{
             </View>
 
             <CustomAlert
-
                 showClose={showClose}
                 type={approvalIcon ? APPROVED : ""}
                 onDismissed={()=>onCancelPress(APPROVED,true)}

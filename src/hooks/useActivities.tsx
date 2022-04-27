@@ -400,7 +400,7 @@ export function useActivities(){
     };
     const [sizeComponent,onLayoutComponent]=useComponentLayout();
     const [searchSizeComponent,onSearchLayoutComponent]=useComponentLayout();
-    const [activitySizeComponent,onActivityLayoutComponent]=useComponentLayout();
+        const [activitySizeComponent,onActivityLayoutComponent]=useComponentLayout();
 
     const [containerHeight,setContainerHeight]=useState(148);
     const [isReady, setIsReady] = useState(false)
