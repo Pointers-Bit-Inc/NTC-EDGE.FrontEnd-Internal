@@ -57,6 +57,7 @@ import ActivitiesNavigator from "../../../navigations/activities";
 import {getFocusedRouteNameFromRoute} from "@react-navigation/native";
 import {setVisible} from "../../../reducers/activity/actions";
 import useOneSignal from 'src/hooks/useOneSignal';
+import {isTablet} from "react-native-device-info";
 
 const { width } = Dimensions.get('window');
 
@@ -307,7 +308,7 @@ export default function TabBar({ navigation, route }) {
     const dimensions = useWindowDimensions();
     return (
             <>
-                {dimensions.width <= 768    ?  <Tab.Navigator    tabBar={(props) => <ActivityTab  {...props} />}>
+                {(isMobile && !(Platform?.isPad || isTablet()))  ?  <Tab.Navigator    tabBar={(props) => <ActivityTab  {...props} />}>
                     <Tab.Screen options={({ route }) => ({
                         headerShown: false,
                     })}  name={ACTIVITIES} component={ActivitiesNavigator}/>

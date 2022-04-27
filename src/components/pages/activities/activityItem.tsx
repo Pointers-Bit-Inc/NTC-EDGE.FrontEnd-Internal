@@ -430,10 +430,9 @@ export function ActivityItem(props: any) {
                                                 width : 0 ,
                                                 height : 0
                                             } ,
-                                            elevation : 45 ,
-                                            shadowOpacity : 0.1 ,
-                                            shadowRadius : 15 ,
-                                            marginLeft: -170
+                                            elevation : 45,
+                                            shadowOpacity : 0.1,
+                                            shadowRadius : 15,
                                         } }>
                                             <MenuOption value={ "Unread" }>
                                                 <View style={ styles.menuItem }>
