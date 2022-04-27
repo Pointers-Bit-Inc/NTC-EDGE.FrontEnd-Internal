@@ -43,10 +43,11 @@ import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 import * as Animatable from 'react-native-animatable'
 import axios from "axios";
+import {isTablet} from "react-native-device-info";
 const styles = StyleSheet.create({
 
     containerBlur : {
-        borderColor : !(isMobile && !Platform?.isPad) ? "#AAB6DF" : "transparent" ,
+        borderColor : !(isMobile && !(Platform?.isPad || isTablet())) ? "#AAB6DF" : "transparent" ,
         borderRadius : 10 ,
         backgroundColor : "#fff" ,
         shadowColor : "rgba(0,0,0,1)" ,
@@ -183,7 +184,7 @@ const RenderApplication = ({ applicationType }: any) => {
                 size={ fontValue(10) }
                 numberOfLines={ 1 }
             >
-                { (isMobile && !Platform?.isPad) ? applicationType : (
+                { (isMobile && !(Platform?.isPad || isTablet())) ? applicationType : (
                                                    (
                                                        applicationType).length > 25) ?
                                                (
@@ -290,7 +291,7 @@ export function ActivityItem(props: any) {
 
                 <View style={ {
                     backgroundColor : props.selected && !(
-                        (isMobile && !Platform?.isPad)) ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff"
+                        (isMobile && !(Platform?.isPad || isTablet()))) ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff"
                 } }>
                     <ActivitySwipeable
                         ref={ ref => row[props.index] = ref }

@@ -6,6 +6,7 @@ import { primaryColor } from '@styles/color';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold, Regular } from '@styles/font';
 import {isMobile} from "@pages/activities/isMobile";
+import {isTablet} from "react-native-device-info";
 
 const styles = StyleSheet.create({
   image: {
@@ -15,14 +16,14 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: (isMobile && !Platform?.isPad) ? RFValue(2) : 2,
+    borderWidth: (isMobile && !(Platform?.isPad || isTablet())) ? RFValue(2) : 2,
     borderColor: 'white',
     overflow: 'hidden'
   },
   onlineBorder: {
     backgroundColor: 'black',
     borderColor: '#34C759',
-    borderWidth: (isMobile && !Platform?.isPad) ? RFValue(2) : 2,
+    borderWidth: (isMobile && !(Platform?.isPad || isTablet())) ? RFValue(2) : 2,
     overflow: 'hidden',
   }
 });
@@ -38,7 +39,7 @@ const ProfileImage = ({
   style = {},
   onlineStyle = {},
 }) => {
-  const imageSize = isOnline ? (isMobile && !Platform?.isPad) ? RFValue(size - 5) : size - 5 : (isMobile && !Platform?.isPad) ? RFValue(size) : size
+  const imageSize = isOnline ? (isMobile && !(Platform?.isPad || isTablet())) ? RFValue(size - 5) : size - 5 : (isMobile && !Platform?.isPad) ? RFValue(size) : size
 
   const getBackgroundColor = useCallback(() => {
       if (!backgroundColor) {

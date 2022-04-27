@@ -50,7 +50,7 @@ import {isLandscape,isLandscapeSync,isTablet} from "react-native-device-info";
 export default function ActivitiesPage(props: any) {
 
     const dimensions = useWindowDimensions();
-    const Filter = (isMobile && !Platform?.isPad) || dimensions?.width <= 768 ? FilterIcon : FilterPressIcon;
+    const Filter = (isMobile && !(Platform?.isPad || isTablet())) || dimensions?.width <= 768 ? FilterIcon : FilterPressIcon;
     const {
         isReady,
         user ,
@@ -204,7 +204,7 @@ export default function ActivitiesPage(props: any) {
 
             <View style={ { backgroundColor : "#F8F8F8" , flex : 1 , flexDirection : "row" } }>
                 <View onLayout={ onActivityLayoutComponent } style={ [styles.container , styles.shadow , {
-                    flexBasis : ((isMobile  && !Platform.isPad) || dimensions?.width < 768 || (Platform?.isPad && !isLandscapeSync()) ) ? "100%" : 466 ,
+                    flexBasis : ((isMobile  && !(Platform?.isPad || isTablet())) || dimensions?.width < 768 || ((Platform?.isPad || isTablet()) && !isLandscapeSync()) ) ? "100%" : 466 ,
                     flexGrow : 0 ,
                     flexShrink : 0
                 }] }>
@@ -213,7 +213,7 @@ export default function ActivitiesPage(props: any) {
                     <View onLayout={ onLayoutComponent }
                           style={ [styles.group , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { position : "absolute"}] }>
                         <Animated.View style={ [styles.rect , styles.horizontal , {
-                            backgroundColor : ((isMobile  && !Platform?.isPad)) ? "#041B6E" : "#fff" ,
+                            backgroundColor : ((isMobile  && !(Platform?.isPad || isTablet()))) ? "#041B6E" : "#fff" ,
 
                         } , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && {
                             ...{ opacity } ,
@@ -221,13 +221,13 @@ export default function ActivitiesPage(props: any) {
                         }] }>
 
                             { (
-                                (isMobile && !Platform?.isPad) || dimensions?.width < 768) &&
+                                (isMobile && !(Platform?.isPad || isTablet())) || dimensions?.width < 768) &&
                             <TouchableOpacity onPress={ () => props.navigation.navigate('Settings')/*openDrawer()*/ }>
                                 <HomeMenuIcon height={ fontValue(24) } width={ fontValue(24) }/>
                             </TouchableOpacity> }
 
                             <Text
-                                style={ [styles.activity , { color : (isMobile && !Platform?.isPad) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor , }] }>{ (isMobile && !Platform?.isPad) || dimensions?.width < 768 ? `Activity` : `Feed` }</Text>
+                                style={ [styles.activity , { color : (isMobile && !(Platform?.isPad || isTablet())) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor , }] }>{ (isMobile && !(Platform?.isPad || isTablet())) || dimensions?.width < 768 ? `Activity` : `Feed` }</Text>
                             <View style={ { flex : 1 } }/>
                             <TouchableOpacity onPress={ () => {
                                 dispatch(setVisible(true))
@@ -239,7 +239,7 @@ export default function ActivitiesPage(props: any) {
 
                             </TouchableOpacity>
                             { (
-                                !(isMobile && !Platform?.isPad) && dimensions?.width > 768) &&
+                                !(isMobile && !(Platform?.isPad || isTablet())) && dimensions?.width > 768) &&
                             <TouchableOpacity onPress={ onRefresh }>
                                 <RefreshWeb style={ { paddingLeft : 15 } } width={ fontValue(26) }
                                             height={ fontValue(24) } fill={ "#fff" }/>
@@ -255,7 +255,7 @@ export default function ActivitiesPage(props: any) {
                                     bounces={ false }
                                     horizontal
                                     showsHorizontalScrollIndicator={ false }
-                                    snapToInterval={activitySizeComponent?.width || dimensions?.width}
+                                    snapToInterval={  activitySizeComponent?.width || dimensions?.width }
                                     decelerationRate={ 0 }
                                     keyExtractor={ (item: any) => item._id }
                                     renderItem={ ({ item }) => (
@@ -335,7 +335,7 @@ export default function ActivitiesPage(props: any) {
                         ListFooterComponent={ bottomLoader }
                         onEndReached={ () => {
 
-                            if (!onEndReachedCalledDuringMomentum || !(isMobile && !Platform?.isPad)) {
+                            if (!onEndReachedCalledDuringMomentum || !(isMobile && !(Platform?.isPad || isTablet()))) {
                                 handleLoad();
                                 setOnEndReachedCalledDuringMomentum(true);
                             }
@@ -403,7 +403,7 @@ export default function ActivitiesPage(props: any) {
                 </View>
                 {
                     !(
-                        (isMobile && !Platform?.isPad)) && lodash.isEmpty(applicationItem) && dimensions?.width > 768 &&
+                        (isMobile && !(Platform?.isPad || isTablet()))) && lodash.isEmpty(applicationItem) && dimensions?.width > 768 &&
                     <View style={ [{ flex : 1 , justifyContent : "center" , alignItems : "center" }] }>
 
                         <NoActivity/>
