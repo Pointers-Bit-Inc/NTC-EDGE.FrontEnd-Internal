@@ -116,6 +116,7 @@ const RenderServiceMiscellaneous=(props)=>{
     };
     return (
         <FlatList
+            showsVerticalScrollIndicator={false}
             style={styles.group3}
             data={Object.entries(flatten(_.omit(service, props.exclude)))}
             renderItem={_renderParent}

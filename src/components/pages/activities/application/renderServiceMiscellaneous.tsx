@@ -72,6 +72,7 @@ const RenderServiceMiscellaneous = (props) => {
                 };
                 return (
                     <FlatList
+                        showsVerticalScrollIndicator={false}
                         data={Object.keys(values)}
                         renderItem={_renderGGChild}
                         keyExtractor={(item, index) => `${index}`}
@@ -95,6 +96,7 @@ const RenderServiceMiscellaneous = (props) => {
                             <Text style={ styles.file }>{parentLabel?.toUpperCase()}</Text>
                         </View>
                         <FlatList
+                            showsVerticalScrollIndicator={false}
                             data={Object.keys(service[item])}
                             renderItem={_renderChild}
                             keyExtractor={(item, index) => `${index}`}
@@ -112,6 +114,7 @@ const RenderServiceMiscellaneous = (props) => {
     };
     return (
         <FlatList
+            showsVerticalScrollIndicator={false}
             data={Object.keys(service)}
             renderItem={_renderParent}
             keyExtractor={(item, index) => `${index}`}

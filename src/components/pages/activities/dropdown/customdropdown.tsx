@@ -90,6 +90,7 @@ interface Props {
                     >
                         {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, { bottom: data?.length < 6  ? undefined : "15%", width: dropdownWidth,flex: 1, left: dropdownLeft, top: dropdownTop}]}>
                             {data?.length > 0 ? <FlatList
+                                showsVerticalScrollIndicator={false}
                                 style={styles.items}
                                 data={data}
                                 initialScrollIndex={selectedIndex || 0 || null}

@@ -417,6 +417,7 @@ const Payment=(props:any)=>{
                                     }
                                 })}}>
                                 <FlatList
+                                    showsVerticalScrollIndicator={false}
                                     style={{
 
                                         padding:15,
@@ -427,6 +428,8 @@ const Payment=(props:any)=>{
                                         backgroundColor:"#FBFBFB",
                                         borderRadius:5
                                     }}
+                                    showsHorizontalScrollIndicator={!isMobile}
+                                    showsVerticalScrollIndicator={isMobile}
                                     horizontal={isMobile ? false : true}
                                     data={props.proofOfPayment}
                                     keyExtractor={item=>item.id}
