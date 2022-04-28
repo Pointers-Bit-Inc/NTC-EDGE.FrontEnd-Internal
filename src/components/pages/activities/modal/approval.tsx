@@ -28,6 +28,7 @@ import {Bold} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
+import {isTablet} from "react-native-device-info";
 
 const {width,height}=Dimensions.get('window');
 
@@ -152,7 +153,7 @@ const Approval=(props:any)=>{
             transparent={true}
             visible={props.visible}
             onRequestClose={_springHide}>
-            <View style={showAlert&&isMobile ? {
+            <View style={showAlert&&(isMobile&& !(Platform?.isPad||isTablet())) ? {
                 zIndex:1,
                 flex:1,
                 width:"100%",
@@ -208,12 +209,9 @@ const Approval=(props:any)=>{
                 style={[styles.container,{marginHorizontal:10,alignItems:"center",}]}
             >
                 <OnBackdropPress onPressOut={_springHide}/>
-
                 {
-
                     <Animated.View style={[styles.group,{
-
-                        width:isMobile||dimensions.width<=768 ? "100%" : "31.6%",  //474/1500
+                        width:((isMobile&& !(Platform?.isPad||isTablet())))||dimensions.width<=768 ? "100%" : "31.6%",  //474/1500
                         display:!showAlert ? undefined : "none"
                     },{transform:[{scale:springValue}]}]}>
                         <View style={styles.shadow}>
@@ -284,13 +282,9 @@ const Approval=(props:any)=>{
 
     )
 };
-
 const styles=StyleSheet.create({
     shadow:{
-
-
         borderRadius:12,
-
         shadowColor:"rgba(0,0,0,1)",
         shadowOffset:{
             height:0,
@@ -299,7 +293,6 @@ const styles=StyleSheet.create({
         elevation:60,
         shadowOpacity:0.25,
         shadowRadius:20,
-
     },
     element:{
         backgroundColor:"rgba(255,255,255,1)",

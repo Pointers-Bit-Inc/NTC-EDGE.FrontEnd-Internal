@@ -157,7 +157,8 @@ export default function ActivitiesPage(props:any){
                 </View>
             </View>}
 
-            <ScrollView nestedScrollEnabled={true}
+            <ScrollView showsVerticalScrollIndicator={false}
+                        nestedScrollEnabled={true}
                         style={{maxHeight:300}}>
                 {
                     pnApplications.map((item:any,index:number)=>{
@@ -218,10 +219,7 @@ export default function ActivitiesPage(props:any){
                     <View onLayout={onLayoutComponent}
                           style={[styles.group,!modalVisible&& !moreModalVisible&& !visible&& !refreshing&& !lodash.size(meetingList)&&{position:"absolute"}]}>
                         <Animated.View style={[styles.rect,styles.horizontal,{
-                            backgroundColor:(
-                                                (
-                                                    isMobile&& !(
-                                                        Platform?.isPad||isTablet()))) ? "#041B6E" : "#fff",
+                            backgroundColor:((isMobile&& !(Platform?.isPad||isTablet()))) ? "#041B6E" : "#fff",
 
                         },!modalVisible&& !moreModalVisible&& !visible&& !refreshing&& !lodash.size(meetingList)&&{
                             ...{opacity},
