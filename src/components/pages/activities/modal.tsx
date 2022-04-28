@@ -32,7 +32,7 @@ import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import {useComponentLayout} from "../../../hooks/useComponentLayout";
 import ModalTab from "@pages/activities/modalTab/modalTab";
-import {isLandscapeSync} from "react-native-device-info";
+import {isLandscapeSync,isTablet} from "react-native-device-info";
 
 function ActivityModal(props:any){
     const dispatch=useDispatch();
@@ -203,7 +203,7 @@ function ActivityModal(props:any){
                 setChange(false)
             }}>
 
-            <View style={isMobile&&(
+            <View style={(isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync()))&&(
                 approveVisible||visible||endorseVisible||showAlert) ? {
                 position:"absolute",
                 zIndex:2,
@@ -306,7 +306,7 @@ function ActivityModal(props:any){
                                     <ApprovedButton
                                         user={user}
                                         currentLoading={currentLoading}
-                                        allButton={allButton}
+                                        allButton={false}
                                         onPress={()=>{
 
                                             if(cashier){

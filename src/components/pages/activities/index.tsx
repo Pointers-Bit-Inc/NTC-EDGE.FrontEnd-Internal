@@ -199,6 +199,7 @@ export default function ActivitiesPage(props:any){
     </>;
 
 
+
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
@@ -327,6 +328,7 @@ export default function ActivitiesPage(props:any){
                                 onRefresh={onRefresh}
                             />
                         }
+                        showsVerticalScrollIndicator={false}
                         nestedScrollEnabled={true}
                         onScroll={Animated.event(
                             [{

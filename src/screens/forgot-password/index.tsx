@@ -12,6 +12,7 @@ import Ellipsis from '@atoms/ellipsis';
 import styles from './styles';
 import api from "../../services/api";
 import NavBar from "@molecules/navbar";
+import {isMobile} from "@pages/activities/isMobile";
 
 const errorResponse = {
     account: 'Enter a valid email address',
@@ -66,11 +67,11 @@ const ForgotPassword = ({ navigation }:any) => {
 
     return (
         <View style={styles.container}>
-            <NavBar
+            {isMobile && <NavBar
                 title=''
                 rightIcon={<Text size={16} color='#fff'>Close</Text>}
                 onRight={() => navigation.navigate('Login')}
-            />
+            />}
             <KeyboardAvoidingView
                 behavior={Platform.select({ ios: 'padding', android: undefined })}
                 keyboardVerticalOffset={Platform.select({ ios: 75, android: undefined })}

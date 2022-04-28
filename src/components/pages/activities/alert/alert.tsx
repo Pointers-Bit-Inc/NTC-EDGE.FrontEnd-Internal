@@ -42,7 +42,7 @@ function CustomAlert(props) {
 
                                 }
                                 {
-                                    props?.type == FOREVALUATION && <View>
+                                    props?.type == FOREVALUATION && <View style={{paddingBottom: 10}}>
                                         <EndorseToIcon height_={fontValue(60)} width_={fontValue(60)} color={"#2863D6"}></EndorseToIcon>
                                     </View>
                                 }
