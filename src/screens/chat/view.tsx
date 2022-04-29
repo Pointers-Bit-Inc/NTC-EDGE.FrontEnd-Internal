@@ -239,14 +239,14 @@ const ChatView = ({ navigation, route }:any) => {
   const onJoin = (item:IMeetings) => {
     dispatch(setSelectedChannel(item.room));
     dispatch(setMeeting(item));
-    navigation.navigate('Dial', {
-      isHost: item.host._id === user._id,
-      isVoiceCall: item.isVoiceCall,
-      options: {
-        isMute: false,
-        isVideoEnable: true,
-      }
-    });
+    // navigation.navigate('Dial', {
+    //   isHost: item.host._id === user._id,
+    //   isVoiceCall: item.isVoiceCall,
+    //   options: {
+    //     isMute: false,
+    //     isVideoEnable: true,
+    //   }
+    // });
   }
 
   const onClose = (item:IMeetings, leave = false) => {
@@ -514,7 +514,7 @@ const ChatView = ({ navigation, route }:any) => {
             onClose={() => modalRef.current?.close()}
             onSubmit={(type, params) => {
               modalRef.current?.close();
-              setTimeout(() => navigation.navigate(type, params), 300);
+              // setTimeout(() => navigation.navigate(type, params), 300);
             }}
           />
         </View>

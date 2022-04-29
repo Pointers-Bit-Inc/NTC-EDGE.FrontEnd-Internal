@@ -176,6 +176,8 @@ const FloatingVideo = (props) => {
       interval = setInterval(() => {
         setTimer(timer => timer + 1);
       }, 1000);
+    } else {
+      setIsFullscreen(true);
     }
     return () => clearInterval(interval);
   }, [meeting.ended]);
