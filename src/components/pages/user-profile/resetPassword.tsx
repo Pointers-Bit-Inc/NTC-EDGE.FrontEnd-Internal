@@ -239,16 +239,7 @@ const ResetPassword = ({navigation}: any) => {
 
     return (
         <View style={styles.container}>
-            <Alert
-                visible={showAlert}
-                title={alert?.title}
-                message={alert?.message}
-                confirmText='OK'
-                onConfirm={() => {
-                    setShowAlert(false)
-                    navigation?.goBack()
-                }}
-            />
+
             {/* <AwesomeAlert
                 actionContainerStyle={{ flexDirection: "row-reverse" }}
                 show={showAlert}
@@ -323,6 +314,16 @@ const ResetPassword = ({navigation}: any) => {
                     }
                 </Button>
             </KeyboardAvoidingView>
+            <Alert
+                visible={showAlert}
+                title={alert?.title}
+                message={alert?.message}
+                confirmText='OK'
+                onConfirm={() => {
+                    setShowAlert(false)
+                    navigation?.goBack()
+                }}
+            />
         </View>
     )
 }

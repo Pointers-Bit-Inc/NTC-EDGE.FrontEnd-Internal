@@ -33,6 +33,9 @@ const ForgotPassword = ({ navigation }:any) => {
         api(null, '')
             .post(`/reset-password-request`, {email: account?.value})
             .then((res: any) => {
+                console.log({ account: account.value,
+                    accountType: 'email',
+                    token: res?.data?.otpId,})
                 setLoading(false);
                 if (res?.data?.success) {
                     Alert.alert(res.data.message);

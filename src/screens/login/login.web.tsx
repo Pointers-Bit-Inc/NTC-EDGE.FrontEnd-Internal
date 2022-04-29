@@ -19,7 +19,7 @@ import Button from "@atoms/button";
 import {button , text} from "@styles/color";
 import Ellipsis from "@atoms/ellipsis";
 import {Regular500} from "@styles/font";
-import ForgotPassword from "@screens/forgot-password";
+import ForgotPassword from "./../../navigations/forgot-password";
 import CloseIcon from "@assets/svg/close";
 
 const background = require('@assets/webbackground.png');
