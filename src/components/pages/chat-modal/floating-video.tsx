@@ -139,7 +139,7 @@ const FloatingVideo = (props) => {
 
   useEffect(() => {
     let unmounted = false;
-    
+
     requestCameraAndAudioPermission((err, result) => {
       if (err) {
         Alert.alert(
@@ -300,7 +300,7 @@ const FloatingVideo = (props) => {
         style={[styles.container, !isFullscreen && styles.position, style]}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}>
-        <Animated.View
+        <View
           style={[
             styles.remote,
             isFullscreen ? styles.maximize : styles.minimize
@@ -335,7 +335,7 @@ const FloatingVideo = (props) => {
             isGroup={meeting?.isGroup}
             isMaximize={isFullscreen}
           />
-        </Animated.View>
+        </View>
       </AnimatedPressable>
     </PanGestureHandler>
   )

@@ -57,7 +57,6 @@ import ActivitiesNavigator from "../../../navigations/activities";
 import {getFocusedRouteNameFromRoute} from "@react-navigation/native";
 import {setVisible} from "../../../reducers/activity/actions";
 import useOneSignal from 'src/hooks/useOneSignal';
-import FloatingVideo from '../chat-modal/floating-video';
 
 const { width } = Dimensions.get('window');
 
@@ -338,11 +337,6 @@ export default function TabBar({ navigation, route }) {
                     <Drawer.Screen   options={{ drawerLabel: MEET,   headerShown: false }}  name={MEET}  component={MeetScreen} />
 
                 </Drawer.Navigator> }
-                {
-                  !!lodash.size(currentMeeting) && (
-                    <FloatingVideo />
-                  )
-                }
                 <AwesomeAlert
                     show={showAlert}
                     showProgress={false}
@@ -363,9 +357,5 @@ export default function TabBar({ navigation, route }) {
                     onConfirmPressed={onPressAlert}
                 />
             </>
-
-
-
-
     );
 }

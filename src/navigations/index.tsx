@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {NavigationContainer , useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import lodash from 'lodash';
 import ForgotPassword from './forgot-password';
 import Dial from '@screens/meet/video';
 import VideoCall from '@screens/meet/video';
@@ -32,6 +33,7 @@ import ProfileImage from "@atoms/image/profile";
 import {createRef , useRef} from "react";
 import {isMobile} from "@pages/activities/isMobile";
 import Login from "@screens/login/login";
+import FloatingVideo from '@components/pages/chat-modal/floating-video';
 
 type RootStackParamList = {
     App: undefined;
@@ -63,6 +65,8 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
     const user = useSelector((state: RootStateOrAny) => state.user) || {};
+    const { meeting } = useSelector((state:RootStateOrAny) => state.meeting);
+
     return (
         <NavigationContainer>
 
@@ -128,6 +132,11 @@ const RootNavigator = () => {
                 <Stack.Screen name="JoinVideoCall" component={ JoinVideoCall }/>
                 <Stack.Screen name="SearchActivities" component={ Search }/>
             </Stack.Navigator>
+            {
+                lodash.size(meeting) > 0 && (
+                    <FloatingVideo />
+                )
+            }
         </NavigationContainer>
 
     );
