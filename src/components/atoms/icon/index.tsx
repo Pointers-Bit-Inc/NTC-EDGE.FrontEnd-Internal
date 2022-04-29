@@ -46,6 +46,8 @@ import NewInfoIcon from './new-info';
 import NewPhoneIcon from './new-phone';
 import NewMeetIcon from './new-meet';
 import NewCameraIcon from './new-camera';
+import MessageIcon from './message';
+import ParticipantsIcon from './participants';
 
 export {
   ExclamationIcon,
@@ -96,4 +98,6 @@ export {
   NewPhoneIcon,
   NewMeetIcon,
   NewCameraIcon,
+  MessageIcon,
+  ParticipantsIcon,
 };

@@ -61,7 +61,7 @@ export function updateMeeting(payload:IMeetings) {
   };
 }
 
-export function setMeeting(payload:IMeetings) {
+export function setMeeting(payload:IMeetings|null) {
   return {
     type: SET_MEETING,
     payload,

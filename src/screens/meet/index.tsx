@@ -179,14 +179,14 @@ const Meet = ({ navigation }) => {
   const onJoin = (item:IMeetings) => {
     dispatch(setSelectedChannel(item.room));
     dispatch(setMeeting(item));
-    navigation.navigate('Dial', {
-      isHost: item.host._id === user._id,
-      isVoiceCall: item.isVoiceCall,
-      options: {
-        isMute: false,
-        isVideoEnable: true,
-      }
-    });
+    // navigation.navigate('Dial', {
+    //   isHost: item.host._id === user._id,
+    //   isVoiceCall: item.isVoiceCall,
+    //   options: {
+    //     isMute: false,
+    //     isVideoEnable: true,
+    //   }
+    // });
   }
 
   const onRequestData = () => setSendRequest(request => request + 1);
@@ -436,7 +436,7 @@ const Meet = ({ navigation }) => {
                     participants: [],
                   })
                   setIsNext(false);
-                  setTimeout(() => navigation.navigate(type, params), 300);
+                  // setTimeout(() => navigation.navigate(type, params), 300);
                 }}
               />
             ) : (

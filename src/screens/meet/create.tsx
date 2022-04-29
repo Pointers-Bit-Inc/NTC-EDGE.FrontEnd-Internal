@@ -100,14 +100,14 @@ const CreateMeeting = ({ navigation, route }:any) => {
           room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room, isChannelExist));
           dispatch(setMeeting(data));
-          navigation.replace('JoinVideoCall', {
-            isHost: true,
-            isVoiceCall,
-            options: {
-              isMute: !micOn,
-              isVideoEnable: videoOn,
-            }
-          });
+          // navigation.replace('JoinVideoCall', {
+          //   isHost: true,
+          //   isVoiceCall,
+          //   options: {
+          //     isMute: !micOn,
+          //     isVideoEnable: videoOn,
+          //   }
+          // });
         }
       });
     } else {
@@ -119,13 +119,13 @@ const CreateMeeting = ({ navigation, route }:any) => {
           room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room));
           dispatch(setMeeting(data));
-          navigation.replace('VideoCall', {
-            isHost: true,
-            options: {
-              isMute: !micOn,
-              isVideoEnable: videoOn,
-            }
-          });
+          // navigation.replace('VideoCall', {
+          //   isHost: true,
+          //   options: {
+          //     isMute: !micOn,
+          //     isVideoEnable: videoOn,
+          //   }
+          // });
         }
       });
     }

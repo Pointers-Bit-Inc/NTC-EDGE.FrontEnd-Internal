@@ -119,14 +119,14 @@ export default function ActivitiesPage(props: any) {
     const onJoin = (item: IMeetings) => {
         dispatch(setSelectedChannel(item.room));
         dispatch(setMeeting(item));
-        props.navigation.navigate('Dial' , {
-            isHost : item.host._id === user._id ,
-            isVoiceCall : item.isVoiceCall ,
-            options : {
-                isMute : false ,
-                isVideoEnable : true ,
-            }
-        });
+        // props.navigation.navigate('Dial' , {
+        //     isHost : item.host._id === user._id ,
+        //     isVoiceCall : item.isVoiceCall ,
+        //     options : {
+        //         isMute : false ,
+        //         isVideoEnable : true ,
+        //     }
+        // });
     };
 
     const onClose = (item: IMeetings , leave = false) => {

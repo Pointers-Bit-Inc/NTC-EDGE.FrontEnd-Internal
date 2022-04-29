@@ -127,7 +127,6 @@ const RootNavigator = () => {
                 <Stack.Screen name="InitiateVideoCall" component={ InitiateVideoCall }/>
                 <Stack.Screen name="JoinVideoCall" component={ JoinVideoCall }/>
                 <Stack.Screen name="SearchActivities" component={ Search }/>
-
             </Stack.Navigator>
         </NavigationContainer>
 

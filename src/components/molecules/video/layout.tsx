@@ -135,12 +135,13 @@ interface Props {
   options: any;
   header?: ReactNode;
   agora?: any;
-  callEnded?: false;
+  callEnded?: boolean;
   message?: string;
-  isVoiceCall?: false;
+  isVoiceCall?: boolean;
   onEndCall?: any;
   setNotification?: any;
-  isGroup?: false;
+  isGroup?: boolean;
+  isMaximize?: boolean;
 }
 
 export type VideoLayoutRef =  {
@@ -167,6 +168,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   onEndCall = () => {},
   setNotification = (message:string) => {},
   isGroup = false,
+  isMaximize = true,
 }, ref) => {
   const [selectedPeer, setSelectedPeer]:any = useState(null);
   const [peerList, setPeerList]:any = useState([]);
@@ -280,8 +282,8 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               />
             ) : (
               <ProfileImage
-                size={80}
-                textSize={24}
+                size={isMaximize ? 80 : 50}
+                textSize={isMaximize ? 16 : 24}
                 image={user?.profilePicture?.thumb}
                 name={`${user.firstName} ${user.lastName}`}
               />
@@ -292,7 +294,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             <Text
               style={styles.name}
               numberOfLines={1}
-              size={16}
+              size={isMaximize ? 16 : 12}
               color={'white'}
             >
               {findParticipant?.title || ''} {findParticipant?.firstName}
@@ -302,22 +304,26 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
           {
             isMute ? (
               <MicIcon
-                style={[styles.mic, { top: 120, left: 20 }]}
-                size={24}
+                style={[styles.mic, { top: 85, left: 20 }]}
+                size={16}
                 type='muted'
                 color={text.error}
               />
             ) : null
           }
-          <View style={{ position:'absolute', top: 115, right: 20 }}>
-            <TouchableOpacity onPress={switchCamera}>
-              <CameraIcon
-                size={28}
-                type='switch'
-                color={'white'}
-              />
-            </TouchableOpacity>
-          </View>
+          {
+            (isMaximize && isVideoEnable) && (
+              <View style={{ position:'absolute', top: 80, right: 20 }}>
+                <TouchableOpacity onPress={switchCamera}>
+                  <CameraIcon
+                    size={20}
+                    type='switch'
+                    color={'white'}
+                  />
+                </TouchableOpacity>
+              </View>
+            )
+          }
         </View>
       );
     }
@@ -335,8 +341,8 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             <ProfileImage
               image={findParticipant?.profilePicture?.thumb}
               name={`${findParticipant?.firstName} ${findParticipant?.lastName}`}
-              size={80}
-              textSize={24}
+              size={isMaximize ? 80 : 50}
+              textSize={isMaximize ? 16 : 24}
             />
           )
         }
@@ -345,7 +351,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             <Text
               style={styles.name}
               numberOfLines={1}
-              size={16}
+              size={isMaximize ? 16 : 12}
               color={'white'}
             >
               {findParticipant?.title || ''} {findParticipant?.firstName}
@@ -410,15 +416,19 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                   />
                 ) : null
               }
-              <View style={{ position:'absolute', top: 0, right: 5 }}>
-                <TouchableOpacity onPress={switchCamera}>
-                  <CameraIcon
-                    size={22}
-                    type='switch'
-                    color={'white'}
-                  />
-                </TouchableOpacity>
-              </View>
+              {
+                isVideoEnable && (
+                  <View style={{ position:'absolute', top: 0, right: 5 }}>
+                    <TouchableOpacity onPress={switchCamera}>
+                      <CameraIcon
+                        size={22}
+                        type='switch'
+                        color={'white'}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )
+              }
             </View>
           </TouchableWithoutFeedback>
         );
@@ -473,7 +483,6 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 
   const renderVideoElement = () => {
     if (joinSucceed && !callEnded) {
-      console.log('isGroup || (!isGroup && lodash.size(peerIds) > 1)', isGroup, lodash.size(peerIds));
       if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
         return (
           <>
@@ -487,17 +496,21 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                 />
               )
             }
-              <FlatList
-                data={peerList}
-                bounces={false}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                renderItem={renderItem}
-                ItemSeparatorComponent={separator}
-                ListHeaderComponent={separator}
-                ListFooterComponent={separator}
-                keyExtractor={item => `${item}`}
-              />
+            {
+              isMaximize && (
+                <FlatList
+                  data={peerList}
+                  bounces={false}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  renderItem={renderItem}
+                  ItemSeparatorComponent={separator}
+                  ListHeaderComponent={separator}
+                  ListFooterComponent={separator}
+                  keyExtractor={item => `${item}`}
+                />
+              )
+            }
             </View>
           </>
         )
@@ -527,7 +540,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
       {renderHeader()}
       {renderVideoElement()}
       {
-        !callEnded && (
+        isMaximize && !callEnded && (
           <View style={styles.footer}>
             <VideoButtons
               onSpeakerEnable={toggleIsSpeakerEnable}

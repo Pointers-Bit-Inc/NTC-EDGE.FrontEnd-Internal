@@ -24,7 +24,10 @@ export default function Meeting(state = initialState, action:any = {}) {
       return state.setIn(['connectionStatus'], action.payload);
     }
     case SET_NOTIFICATION: {
-      return state.setIn(['meeting', 'notification'], action.payload);
+      if (state.meeting?._id && state.meeting._id === action.payload.meetingId) {
+        return state.setIn(['meeting', 'notification'], action.payload.message);
+      }
+      return state;
     }
     case SET_MEETINGS: {
       return state.setIn(['normalizedMeetingList'], action.payload);
