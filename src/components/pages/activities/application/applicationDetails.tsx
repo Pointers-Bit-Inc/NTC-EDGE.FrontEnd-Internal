@@ -1,5 +1,16 @@
 import React,{useState} from "react";
-import {Dimensions,Modal,Pressable,ScrollView,StyleSheet,Text,useWindowDimensions,View} from "react-native";
+import {
+    Dimensions,
+    Modal,
+    Platform,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
+    View
+} from "react-native";
 import {Bold,Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {input,primaryColor} from "@styles/color";
@@ -8,6 +19,8 @@ import {isMobile} from "@pages/activities/isMobile";
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {RFValue} from "react-native-responsive-fontsize";
 import {RootStateOrAny,useSelector} from "react-redux";
+import FileOutlineIcon from "@assets/svg/fileOutline";
+import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
 
 const { width , height } = Dimensions.get("screen");
 
@@ -35,12 +48,20 @@ const ApplicationDetails = (props: any) => {
                     <Text style={ styles.applicationType }>{ props?.applicantType ||  props?.service?.name   }</Text>
                     <Text style={ [styles.service, {fontFamily: Regular500}] }>{  props?.service?.applicationType?.label || props?.service?.name }</Text>
                     <Text style={ [styles.service, {fontFamily: Regular500}] }>{  props?.service?.applicationType?.element  || props?.service?.radioType?.label }</Text>
+                    <View style={{paddingVertical: 10}}>
+                        <Pressable  onPress={() => setModalVisible(true)}>
+                            <View style={{flexDirection: "row"}}>
+                                <View style={{paddingRight:fontValue(10)}}>
+                                    <FileOutlineIcon height={fontValue(20)} width={fontValue(16)}/>
+                                </View>
+                                <Text
+                                    style={requirementStyles.text}>{  outputLabel(props?.applicantType ||  props?.service?.name) }</Text>
+                            </View>
 
-                    <Pressable
-                        onPress={() => setModalVisible(true)}
-                    >
-                        <Text style={ {fontFamily: Regular500,  color: primaryColor}}>{  outputLabel(props?.applicantType ||  props?.service?.name) }</Text>
-                    </Pressable>
+                        </Pressable>
+                    </View>
+
+
 
                     { props?.service?.radioType?.selected && <Text style={ [styles.service, {fontFamily: Regular500}] }>{ `\u2022${ props?.service?.radioType?.selected }` }</Text>}
                     { props?.selectedType?.map((type: any , idx: number) => {
@@ -75,11 +96,12 @@ const ApplicationDetails = (props: any) => {
             }} onPressOut={() => setModalVisible(!modalVisible)}/>
 
                 <View style={{zIndex: 1, flexDirection: "row", justifyContent: "flex-end", }}>
-                    <View style={{padding: 20}}>
+                    <View style={{padding: 20,  backgroundColor: "rgba(0,0,0,0.7)"}}>
+
                         <Pressable
                             onPress={() => setModalVisible(false)}
                         >
-                            <Text style={ {fontFamily: Regular500, fontSize: RFValue(14),  color: "#fff"}}>Close</Text>
+                            <Text style={ {fontFamily: Regular500, fontSize: RFValue(14 * (!isMobile ? 0.7 : 1)),   color:  "#fff"}}>Close</Text>
                         </Pressable>
                     </View>
 
