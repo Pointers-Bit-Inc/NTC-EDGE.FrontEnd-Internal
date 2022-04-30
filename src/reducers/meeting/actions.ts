@@ -13,6 +13,7 @@ const {
   RESET_MEETING,
   CONNECTION_STATUS,
   SET_NOTIFICATION,
+  SET_OPTIONS,
 } = require('./types').default;
 
 interface NormalizedMeeting {
@@ -92,5 +93,12 @@ export function removeActiveMeeting(payload:string) {
 export function resetMeeting() {
   return {
     type: RESET_MEETING
+  }
+}
+
+export function setOptions(payload:any) {
+  return {
+    type: SET_OPTIONS,
+    payload,
   }
 }

@@ -35,7 +35,8 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
 import {
   removeActiveMeeting ,
-  setMeeting ,
+  setMeeting, 
+  setOptions,
 } from 'src/reducers/meeting/actions';
 import IMeetings from 'src/interfaces/IMeetings';
 import IParticipants from 'src/interfaces/IParticipants';
@@ -259,15 +260,13 @@ const ChatList = ({ navigation }:any) => {
 
   const onJoin = (item:IMeetings) => {
       dispatch(setSelectedChannel(item.room));
+      dispatch(setOptions({
+        isHost: item.host._id === user._id,
+        isVoiceCall: item.isVoiceCall,
+        isMute: false,
+        isVideoEnable: true,
+      }));
       dispatch(setMeeting(item));
-      // navigation.navigate('Dial', {
-      //     isHost: item.host._id === user._id,
-      //     isVoiceCall: item.isVoiceCall,
-      //     options: {
-      //         isMute: false,
-      //         isVideoEnable: true,
-      //     }
-      // });
   }
 
 const onClose = (item:IMeetings, leave = false) => {

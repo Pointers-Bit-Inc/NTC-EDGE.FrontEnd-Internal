@@ -24,7 +24,7 @@ import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ApplicationList from "@pages/activities/applicationList";
 import {getChannelName} from 'src/utils/formatting';
 import lodash from 'lodash';
-import {removeActiveMeeting , setActiveMeetings , setMeeting ,} from 'src/reducers/meeting/actions';
+import {removeActiveMeeting , setActiveMeetings , setMeeting, setOptions ,} from 'src/reducers/meeting/actions';
 import {setSelectedChannel} from 'src/reducers/channel/actions';
 import {MeetingNotif} from '@components/molecules/list-item';
 import listEmpty from "@pages/activities/listEmpty";
@@ -118,15 +118,13 @@ export default function ActivitiesPage(props: any) {
     } , []);
     const onJoin = (item: IMeetings) => {
         dispatch(setSelectedChannel(item.room));
+        dispatch(setOptions({
+            isHost: item.host._id === user._id,
+            isVoiceCall: item.isVoiceCall,
+            isMute: false,
+            isVideoEnable: true,
+        }));
         dispatch(setMeeting(item));
-        // props.navigation.navigate('Dial' , {
-        //     isHost : item.host._id === user._id ,
-        //     isVoiceCall : item.isVoiceCall ,
-        //     options : {
-        //         isMute : false ,
-        //         isVideoEnable : true ,
-        //     }
-        // });
     };
 
     const onClose = (item: IMeetings , leave = false) => {

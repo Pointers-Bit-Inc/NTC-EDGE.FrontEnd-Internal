@@ -41,7 +41,7 @@ import {
   resetPendingMessages,
   setSelectedChannel,
 } from 'src/reducers/channel/actions';
-import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
+import { removeActiveMeeting, setMeeting, setOptions } from 'src/reducers/meeting/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
 import CreateMeeting from '@components/pages/chat-modal/meeting';
 import IMeetings from 'src/interfaces/IMeetings';
@@ -238,15 +238,13 @@ const ChatView = ({ navigation, route }:any) => {
 
   const onJoin = (item:IMeetings) => {
     dispatch(setSelectedChannel(item.room));
+    dispatch(setOptions({
+      isHost: item.host._id === user._id,
+      isVoiceCall: item.isVoiceCall,
+      isMute: false,
+      isVideoEnable: true,
+    }));
     dispatch(setMeeting(item));
-    // navigation.navigate('Dial', {
-    //   isHost: item.host._id === user._id,
-    //   isVoiceCall: item.isVoiceCall,
-    //   options: {
-    //     isMute: false,
-    //     isVideoEnable: true,
-    //   }
-    // });
   }
 
   const onClose = (item:IMeetings, leave = false) => {
@@ -418,16 +416,15 @@ const ChatView = ({ navigation, route }:any) => {
           )
         }
       </View>
-      <View style={{ flex: 1 }}>
-        <TabView
-          lazy
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          initialLayout={{ width: layout.width }}
-          renderTabBar={renderTabBar}
-        />
-      </View>
+      <TabView
+        lazy
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+        renderTabBar={renderTabBar}
+        style={{ flex: 1 }}
+      />
       {
         index === 0 ? (
           <KeyboardAvoidingView
@@ -514,6 +511,11 @@ const ChatView = ({ navigation, route }:any) => {
             onClose={() => modalRef.current?.close()}
             onSubmit={(type, params) => {
               modalRef.current?.close();
+              dispatch(setOptions({
+                ...params.options,
+                isHost: params.isHost,
+                isVoiceCall: params.isVoiceCall,
+              }));
               // setTimeout(() => navigation.navigate(type, params), 300);
             }}
           />

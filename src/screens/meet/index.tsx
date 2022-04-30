@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import lodash from 'lodash';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
-import { setMeeting, setMeetings, addToMeetings } from 'src/reducers/meeting/actions';
+import { setMeeting, setMeetings, addToMeetings, setOptions } from 'src/reducers/meeting/actions';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import useSignalr from 'src/hooks/useSignalr';
 import Meeting from '@components/molecules/list-item/meeting';
@@ -178,15 +178,13 @@ const Meet = ({ navigation }) => {
 
   const onJoin = (item:IMeetings) => {
     dispatch(setSelectedChannel(item.room));
+    dispatch(setOptions({
+      isHost: item.host._id === user._id,
+      isVoiceCall: item.isVoiceCall,
+      isMute: false,
+      isVideoEnable: true,
+    }));
     dispatch(setMeeting(item));
-    // navigation.navigate('Dial', {
-    //   isHost: item.host._id === user._id,
-    //   isVoiceCall: item.isVoiceCall,
-    //   options: {
-    //     isMute: false,
-    //     isVideoEnable: true,
-    //   }
-    // });
   }
 
   const onRequestData = () => setSendRequest(request => request + 1);
@@ -436,6 +434,11 @@ const Meet = ({ navigation }) => {
                     participants: [],
                   })
                   setIsNext(false);
+                  dispatch(setOptions({
+                    ...params.options,
+                    isHost: params.isHost,
+                    isVoiceCall: params.isVoiceCall,
+                  }));
                   // setTimeout(() => navigation.navigate(type, params), 300);
                 }}
               />

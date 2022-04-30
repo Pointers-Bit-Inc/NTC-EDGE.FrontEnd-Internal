@@ -8,6 +8,12 @@ const InitialState = Record({
   meetingId: null,
   meetingParticipants: [],
   meeting: {},
+  options: {
+    isHost: false,
+    isVoiceCall: false,
+    isMute: false,
+    isVideoEnable: true,
+  },
   connectionStatus: "",
 });
 

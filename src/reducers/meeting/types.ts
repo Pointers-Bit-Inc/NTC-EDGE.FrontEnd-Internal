@@ -19,4 +19,5 @@ export default keyMirror({
   RESET_MEETING: null,
   CONNECTION_STATUS: null,
   SET_NOTIFICATION: null,
+  SET_OPTIONS: null,
 });

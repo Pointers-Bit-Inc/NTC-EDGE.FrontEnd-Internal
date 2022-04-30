@@ -12,6 +12,7 @@ const {
   RESET_MEETING,
   CONNECTION_STATUS,
   SET_NOTIFICATION,
+  SET_OPTIONS,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -116,6 +117,8 @@ export default function Meeting(state = initialState, action:any = {}) {
       return state.setIn(['normalizedMeetingList'], {})
         .setIn(['activeMeetings'], [])
         .setIn(['meeting'], {});
+    }case SET_OPTIONS: {
+      return state.setIn(['options'], action.payload);
     }
     default:
       return state;

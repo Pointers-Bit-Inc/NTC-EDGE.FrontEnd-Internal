@@ -9,7 +9,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
-import { setMeeting } from 'src/reducers/meeting/actions';
+import { setMeeting, setOptions } from 'src/reducers/meeting/actions';
 import { button, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
@@ -99,15 +99,13 @@ const CreateMeeting = ({ navigation, route }:any) => {
           data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
           room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room, isChannelExist));
+          dispatch(setOptions({
+            isHost: true,
+            isVoiceCall,
+            isMute: !micOn,
+            isVideoEnable: videoOn,
+          }));
           dispatch(setMeeting(data));
-          // navigation.replace('JoinVideoCall', {
-          //   isHost: true,
-          //   isVoiceCall,
-          //   options: {
-          //     isMute: !micOn,
-          //     isVideoEnable: videoOn,
-          //   }
-          // });
         }
       });
     } else {
@@ -118,14 +116,13 @@ const CreateMeeting = ({ navigation, route }:any) => {
           data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
           room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room));
+          dispatch(setOptions({
+            isHost: true,
+            isVoiceCall: false,
+            isMute: !micOn,
+            isVideoEnable: videoOn,
+          }));
           dispatch(setMeeting(data));
-          // navigation.replace('VideoCall', {
-          //   isHost: true,
-          //   options: {
-          //     isMute: !micOn,
-          //     isVideoEnable: videoOn,
-          //   }
-          // });
         }
       });
     }

@@ -15,6 +15,7 @@ import { ArrowDownIcon, MessageIcon, ParticipantsIcon } from '@components/atoms/
 import {
   setMeeting,
   setNotification,
+  setOptions,
   updateMeetingParticipants,
 } from 'src/reducers/meeting/actions';
 import { setSelectedChannel, setMeetings, removeSelectedMessage } from 'src/reducers/channel/actions';
@@ -95,24 +96,22 @@ const styles = StyleSheet.create({
   }
 });
 
-const FloatingVideo = (props) => {
+const FloatingVideo = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
-  const meeting = useSelector((state:RootStateOrAny) => {
-    const { meeting } = state.meeting;
+  const { meeting, options } = useSelector((state:RootStateOrAny) => {
+    const { meeting, options } = state.meeting;
     meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
-      return meeting;
+    return { meeting, options };
   });
   const {
-    options = {
-      isMute: false,
-      isVideoEnable: true,
-    },
+    isMute = false,
+    isVideoEnable = true,
     isHost = false,
     isVoiceCall = false
-  } = props;
+  } = options;
   const { endMeeting, joinMeeting, leaveMeeting } = useSignalr();
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
@@ -167,6 +166,12 @@ const FloatingVideo = (props) => {
   
     return () => {
       unmounted = true;
+      dispatch(setOptions({
+        isHost: false,
+        isVoiceCall: false,
+        isMute: false,
+        isVideoEnable: true,
+      }));
     }
   }, []);
 
@@ -324,7 +329,7 @@ const FloatingVideo = (props) => {
           <VideoLayout
             loading={loading}
             header={isFullscreen ? header() : null}
-            options={options}
+            options={{ isMute, isVideoEnable }}
             user={user}
             participants={meeting.otherParticipants}
             meetingParticipants={meeting.participants}

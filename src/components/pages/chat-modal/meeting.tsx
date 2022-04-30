@@ -102,7 +102,6 @@ const CreateMeeting = ({
           data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
           room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room, isChannelExist));
-          dispatch(setMeeting(data));
           onSubmit('JoinVideoCall', {
             isHost: true,
             isVoiceCall,
@@ -111,6 +110,7 @@ const CreateMeeting = ({
               isVideoEnable: videoOn,
             }
           });
+          dispatch(setMeeting(data));
         }
       });
     } else {
@@ -121,7 +121,6 @@ const CreateMeeting = ({
           data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
           room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room));
-          dispatch(setMeeting(data));
           onSubmit('VideoCall', {
             isHost: true,
             options: {
@@ -129,6 +128,7 @@ const CreateMeeting = ({
               isVideoEnable: videoOn,
             }
           });
+          dispatch(setMeeting(data));
         }
       });
     }
