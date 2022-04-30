@@ -212,8 +212,10 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   useEffect(() => {
     if (!loading && agora.appId) {
       initAgora();
-      return () => destroyAgoraEngine();
     }
+    return () => {
+      destroyAgoraEngine()
+    };
   }, [loading, agora.appId]);
 
   useEffect(() => {

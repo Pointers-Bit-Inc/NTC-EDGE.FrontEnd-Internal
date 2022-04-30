@@ -13,6 +13,8 @@ import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import lodash from 'lodash';
 import { ArrowDownIcon, MessageIcon, ParticipantsIcon } from '@components/atoms/icon'
 import {
+  resetCurrentMeeting,
+  setFullScreen,
   setMeeting,
   setNotification,
   setOptions,
@@ -101,10 +103,15 @@ const FloatingVideo = () => {
   const navigation = useNavigation();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
-  const { meeting, options } = useSelector((state:RootStateOrAny) => {
-    const { meeting, options } = state.meeting;
+  const { meeting, options, meetingId, isFullScreen } = useSelector((state:RootStateOrAny) => {
+    const { meeting, options, isFullScreen } = state.meeting;
     meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
-    return { meeting, options };
+    return {
+      meeting,
+      options,
+      meetingId: meeting?._id,
+      isFullScreen,
+    };
   });
   const {
     isMute = false,
@@ -124,45 +131,46 @@ const FloatingVideo = () => {
   const currentX = useSharedValue(0);
   const currentY = useSharedValue(0);
   const scale = useSharedValue(1);
-  const [isFullscreen, setIsFullscreen] = useState(true);
 
   useEffect(() => {
-    if (isFullscreen) {
+    if (isFullScreen) {
       translateX.value = 0;
       translateY.value = 0;
     } else {
       translateX.value = currentX.value;
       translateY.value = currentY.value;
     }
-  }, [isFullscreen]);
+  }, [isFullScreen]);
 
   useEffect(() => {
     let unmounted = false;
 
-    requestCameraAndAudioPermission((err, result) => {
-      if (err) {
-        Alert.alert(
-          "Unable to access camera",
-          "Please allow camera access from device settings.",
-        );
-        dispatch(setMeeting(null));
-      } else {
-        joinMeeting(meeting._id, (err:any, result:any) => {
-          if (!unmounted) {
-            if (result) {
-              setLoading(false);
+    if (meetingId) {
+      requestCameraAndAudioPermission((err, result) => {
+        if (err) {
+          Alert.alert(
+            "Unable to access camera",
+            "Please allow camera access from device settings.",
+          );
+          dispatch(resetCurrentMeeting());
+        } else {
+          joinMeeting(meeting._id, (err:any, result:any) => {
+            if (!unmounted) {
               if (result) {
-                dispatch(updateMeetingParticipants(result.meeting));
-                setAgora(result?.agora);
+                setLoading(false);
+                if (result) {
+                  dispatch(updateMeetingParticipants(result.meeting));
+                  setAgora(result?.agora);
+                }
+              } else {
+                setLoading(false);
+                Alert.alert('Something went wrong.');
               }
-            } else {
-              setLoading(false);
-              Alert.alert('Something went wrong.');
             }
-          }
-        });
-      }
-    });
+          });
+        }
+      });
+    }
   
     return () => {
       unmounted = true;
@@ -173,7 +181,7 @@ const FloatingVideo = () => {
         isVideoEnable: true,
       }));
     }
-  }, []);
+  }, [meetingId]);
 
   useEffect(() => {
     let interval:any = null;
@@ -182,7 +190,7 @@ const FloatingVideo = () => {
         setTimer(timer => timer + 1);
       }, 1000);
     } else {
-      setIsFullscreen(true);
+      dispatch(setFullScreen(true));
     }
     return () => clearInterval(interval);
   }, [meeting.ended]);
@@ -223,20 +231,20 @@ const FloatingVideo = () => {
   });
 
   const onTouchStart = () => {
-    if (isFullscreen) return;
+    if (isFullScreen) return;
     if (scale.value !== 1.1) {
       scale.value = withSpring(1.1);
     }
   };
 
   const onTouchEnd = () => {
-    if (isFullscreen) return;
+    if (isFullScreen) return;
     if (scale.value !== 1) {
       scale.value = withSpring(1);
     }
   };
 
-  const onFullScreen = () => setIsFullscreen(current => !current);
+  const onFullScreen = () => dispatch(setFullScreen(!isFullScreen));
 
   const onMessages = () => {
     if (meeting?._id) {
@@ -297,24 +305,24 @@ const FloatingVideo = () => {
       endMeeting(meeting._id);
     } else {
       leaveMeeting(meeting._id, 'leave');
-      dispatch(setMeeting(null));
+      dispatch(resetCurrentMeeting());
     }
   }
 
   return (
-    <PanGestureHandler enabled={!isFullscreen} onGestureEvent={onGestureEvent}>
+    <PanGestureHandler enabled={!isFullScreen} onGestureEvent={onGestureEvent}>
       <AnimatedPressable
-        style={[styles.container, !isFullscreen && styles.position, style]}
+        style={[styles.container, !isFullScreen && styles.position, style]}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}>
         <View
           style={[
             styles.remote,
-            isFullscreen ? styles.maximize : styles.minimize
+            isFullScreen ? styles.maximize : styles.minimize
           ]}
         >
           {
-            !isFullscreen && (
+            !isFullScreen && (
               <View style={{ position: 'absolute', top: 5, right: 5, zIndex: 999 }}>
                 <TouchableOpacity onPress={onFullScreen}>
                 <Feather
@@ -328,7 +336,7 @@ const FloatingVideo = () => {
           }
           <VideoLayout
             loading={loading}
-            header={isFullscreen ? header() : null}
+            header={isFullScreen ? header() : null}
             options={{ isMute, isVideoEnable }}
             user={user}
             participants={meeting.otherParticipants}
@@ -340,7 +348,7 @@ const FloatingVideo = () => {
             setNotification={() => setNotification('')}
             onEndCall={onEndCall}
             isGroup={meeting?.isGroup}
-            isMaximize={isFullscreen}
+            isMaximize={isFullScreen}
           />
         </View>
       </AnimatedPressable>

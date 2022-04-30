@@ -7,13 +7,14 @@ const InitialState = Record({
   normalizeActiveMeetings: {},
   meetingId: null,
   meetingParticipants: [],
-  meeting: {},
+  meeting: null,
   options: {
     isHost: false,
     isVoiceCall: false,
     isMute: false,
     isVideoEnable: true,
   },
+  isFullScreen: true,
   connectionStatus: "",
 });
 

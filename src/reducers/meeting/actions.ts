@@ -14,6 +14,8 @@ const {
   CONNECTION_STATUS,
   SET_NOTIFICATION,
   SET_OPTIONS,
+  SET_FULLSCREEN,
+  RESET_CURRENT_MEETING,
 } = require('./types').default;
 
 interface NormalizedMeeting {
@@ -100,5 +102,18 @@ export function setOptions(payload:any) {
   return {
     type: SET_OPTIONS,
     payload,
+  }
+}
+
+export function setFullScreen(payload:boolean = true) {
+  return {
+    type: SET_FULLSCREEN,
+    payload
+  }
+}
+
+export function resetCurrentMeeting() {
+  return {
+    type: RESET_CURRENT_MEETING,
   }
 }

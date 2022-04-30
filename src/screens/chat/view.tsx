@@ -41,7 +41,7 @@ import {
   resetPendingMessages,
   setSelectedChannel,
 } from 'src/reducers/channel/actions';
-import { removeActiveMeeting, setMeeting, setOptions } from 'src/reducers/meeting/actions';
+import { removeActiveMeeting, resetCurrentMeeting, setMeeting, setOptions } from 'src/reducers/meeting/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
 import CreateMeeting from '@components/pages/chat-modal/meeting';
 import IMeetings from 'src/interfaces/IMeetings';
@@ -159,16 +159,19 @@ const ChatView = ({ navigation, route }:any) => {
       return selectedChannel;
     }
   );
-  const { normalizeActiveMeetings } = useSelector((state: RootStateOrAny) => state.meeting)
+  const { normalizeActiveMeetings, meeting } = useSelector((state: RootStateOrAny) => state.meeting)
   const selectedMessage = useSelector((state:RootStateOrAny) => {
     const { selectedMessage } = state.channel;
     return selectedMessage[_id];
   });
   const meetingList = useMemo(() => {
+    if (meeting?._id) {
+      return [];
+    }
     let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
     meetingList = lodash.filter(meetingList, m => m.roomId === _id);
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
-  }, [normalizeActiveMeetings]);
+  }, [normalizeActiveMeetings, meeting]);
   const [inputText, setInputText] = useState('');
   const [index, setIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
@@ -238,13 +241,16 @@ const ChatView = ({ navigation, route }:any) => {
 
   const onJoin = (item:IMeetings) => {
     dispatch(setSelectedChannel(item.room));
-    dispatch(setOptions({
-      isHost: item.host._id === user._id,
-      isVoiceCall: item.isVoiceCall,
-      isMute: false,
-      isVideoEnable: true,
-    }));
-    dispatch(setMeeting(item));
+    dispatch(resetCurrentMeeting());
+    setTimeout(() => {
+      dispatch(setOptions({
+        isHost: item.host._id === user._id,
+        isVoiceCall: item.isVoiceCall,
+        isMute: false,
+        isVideoEnable: true,
+      }));
+      dispatch(setMeeting(item));
+    }, 100);
   }
 
   const onClose = (item:IMeetings, leave = false) => {
@@ -509,14 +515,14 @@ const ChatView = ({ navigation, route }:any) => {
             isChannelExist={true}
             channelId={channelId}
             onClose={() => modalRef.current?.close()}
-            onSubmit={(type, params) => {
+            onSubmit={(params, data) => {
               modalRef.current?.close();
               dispatch(setOptions({
                 ...params.options,
                 isHost: params.isHost,
                 isVoiceCall: params.isVoiceCall,
               }));
-              // setTimeout(() => navigation.navigate(type, params), 300);
+              setTimeout(() => dispatch(setMeeting(data)), 300);
             }}
           />
         </View>

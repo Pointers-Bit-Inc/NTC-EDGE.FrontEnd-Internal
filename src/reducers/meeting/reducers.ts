@@ -13,6 +13,8 @@ const {
   CONNECTION_STATUS,
   SET_NOTIFICATION,
   SET_OPTIONS,
+  SET_FULLSCREEN,
+  RESET_CURRENT_MEETING,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -116,9 +118,23 @@ export default function Meeting(state = initialState, action:any = {}) {
     case RESET_MEETING: {
       return state.setIn(['normalizedMeetingList'], {})
         .setIn(['activeMeetings'], [])
-        .setIn(['meeting'], {});
-    }case SET_OPTIONS: {
+        .setIn(['meeting'], null);
+    }
+    case SET_OPTIONS: {
       return state.setIn(['options'], action.payload);
+    }
+    case SET_FULLSCREEN: {
+      return state.setIn(['isFullScreen'], action.payload);
+    }
+    case RESET_CURRENT_MEETING: {
+      return state.setIn(['meeting'], null)
+        .setIn(['isFullScreen'], true)
+        .setIn(['options'], {
+          isHost: false,
+          isVoiceCall: false,
+          isMute: false,
+          isVideoEnable: true,
+        });
     }
     default:
       return state;

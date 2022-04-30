@@ -512,9 +512,9 @@ const ChatView = ({ navigation, route }:any) => {
             isChannelExist={true}
             channelId={channelId}
             onClose={() => modalRef.current?.close()}
-            onSubmit={(type, params) => {
+            onSubmit={(params) => {
               modalRef.current?.close();
-              setTimeout(() => navigation.navigate(type, params), 300);
+              setTimeout(() => navigation.navigate('VideoCall', params), 300);
             }}
           />
         </View>

@@ -540,7 +540,7 @@ const Meet = ({ navigation }) => {
                             onClose={()=>setIsNext(false)}
                             channelId={currentMeeting.channelId}
                             isChannelExist={currentMeeting.isChannelExist}
-                            onSubmit={(type,params)=>{
+                            onSubmit={(params)=>{
 
                               modalRef.current?.close();
                               setParticipants([]);
@@ -550,7 +550,7 @@ const Meet = ({ navigation }) => {
                                 participants:[],
                               })
                               setIsNext(false);
-                              setTimeout(()=>navigation.navigate(type,params),300);
+                              setTimeout(()=>navigation.navigate('VideoCall',params),300);
                             }}
                         /></View>
 

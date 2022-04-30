@@ -35,6 +35,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
 import {
   removeActiveMeeting ,
+  resetCurrentMeeting,
   setMeeting, 
   setOptions,
 } from 'src/reducers/meeting/actions';
@@ -161,7 +162,7 @@ const ChatList = ({ navigation }:any) => {
   const swipeableRef:any = useRef({});
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { normalizedChannelList } = useSelector((state:RootStateOrAny) => state.channel);
-  const { normalizeActiveMeetings } = useSelector((state: RootStateOrAny) => state.meeting);
+  const { normalizeActiveMeetings, meeting } = useSelector((state: RootStateOrAny) => state.meeting);
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
   const channelList = useMemo(() => {
     const channelList = lodash.keys(normalizedChannelList).map((ch:any) => {
@@ -174,10 +175,13 @@ const ChatList = ({ navigation }:any) => {
   }, [normalizedChannelList]);
 
   const meetingList = useMemo(() => {
+    if (meeting?._id) {
+      return [];
+    }
     let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
     meetingList = lodash.reject(meetingList, (m:IMeetings) => lodash.find(m.participants, (p:IParticipants) => p._id === user._id && (p.status === 'busy' || p.muted)));
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
-  }, [normalizeActiveMeetings]);
+  }, [normalizeActiveMeetings, meeting]);
 
   const {
     getChatList,
@@ -260,13 +264,16 @@ const ChatList = ({ navigation }:any) => {
 
   const onJoin = (item:IMeetings) => {
       dispatch(setSelectedChannel(item.room));
-      dispatch(setOptions({
-        isHost: item.host._id === user._id,
-        isVoiceCall: item.isVoiceCall,
-        isMute: false,
-        isVideoEnable: true,
-      }));
-      dispatch(setMeeting(item));
+      dispatch(resetCurrentMeeting());
+      setTimeout(() => {
+        dispatch(setOptions({
+          isHost: item.host._id === user._id,
+          isVoiceCall: item.isVoiceCall,
+          isMute: false,
+          isVideoEnable: true,
+        }));
+        dispatch(setMeeting(item));
+      }, 100);
   }
 
 const onClose = (item:IMeetings, leave = false) => {
