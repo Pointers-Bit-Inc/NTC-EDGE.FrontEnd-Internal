@@ -67,6 +67,7 @@ const ModalTab = props => {
         approvalHistory ,
         assignedPersonnel ,
         createdAt ,
+        documents,
         proofOfPayment
     } = useApplicant(props.details)
     const [initialPage,setInitialPage]=useState(true);
@@ -123,6 +124,7 @@ const ModalTab = props => {
                     return <ApplicationDetails
                         tabLabel={ { label : tab.name } } label={ tab.name }
                         service={ service }
+                        documents={documents}
                         selectedType={ selectedTypes }
                         applicantType={ applicationType }
                         key={ index }/>

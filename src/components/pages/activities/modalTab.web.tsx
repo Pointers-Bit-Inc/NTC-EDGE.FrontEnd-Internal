@@ -45,6 +45,9 @@ export const ModalTab = props => {
             isShow: [CASHIER, ACCOUNTANT]
         },
     ]);
+
+
+
     const applicant = props?.details?.applicant,
         selectedTypes = props?.details?.selectedTypes,
         applicationType = props?.details?.applicationType,
@@ -57,7 +60,8 @@ export const ModalTab = props => {
         approvalHistory = props?.details?.approvalHistory,
         assignedPersonnel = props?.details?.assignedPersonnel,
         createdAt = props?.details?.createdAt,
-        proofOfPayment = props?.details?.proofOfPayment;
+        proofOfPayment = props?.details?.proofOfPayment,
+        documents = props?.details?.document;
     return <Tab.Navigator>
         {
             tabs.map((tab, index) => {
@@ -89,6 +93,7 @@ export const ModalTab = props => {
                         options={{tabBarLabel: tab.name}}
                     >
                         {() => <ApplicationDetails
+                            documents={documents}
                             service={service}
                             selectedType={selectedTypes}
                             applicantType={applicationType}

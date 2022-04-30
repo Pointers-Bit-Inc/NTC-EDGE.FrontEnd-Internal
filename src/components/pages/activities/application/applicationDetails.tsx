@@ -1,19 +1,32 @@
-import React from "react";
-import {Dimensions,FlatList,ScrollView,StyleSheet,Text,View} from "react-native";
-import {Bold , Regular500} from "@styles/font";
-import {RFValue} from "react-native-responsive-fontsize";
-import Loader from "@pages/activities/bottomLoad";
+import React,{useState} from "react";
+import {Dimensions,Modal,Pressable,ScrollView,StyleSheet,Text,useWindowDimensions,View} from "react-native";
+import {Bold,Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
-import {transformText} from "../../../../utils/ntc";
-import {input} from "@styles/color";
-import Row from "@pages/activities/application/Row"
-import moment from "moment";
+import {input,primaryColor} from "@styles/color";
+import PdfViewr from "@pages/activities/application/application_pdf/pdfViewr";
+import {isMobile} from "@pages/activities/isMobile";
+import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
+import {RFValue} from "react-native-responsive-fontsize";
+import {RootStateOrAny,useSelector} from "react-redux";
+
 const { width , height } = Dimensions.get("screen");
 
+let outputLabel = (applicationType: string) => {
+    applicationType = applicationType?.toLowerCase();
+    if (applicationType?.match('admission slip') || service?.serviceCode === 'service-1') return 'Admission Slip';
+    else if (applicationType?.match('certificate')) return 'Certificate';
+    else if (applicationType?.match('license')) return 'License';
+    else if (applicationType?.match('permit')) return 'Permit';
+    return '';
+};
 const ApplicationDetails = (props: any) => {
 
+    const dimensions=useWindowDimensions();
+    const {rightLayoutComponent}=useSelector((state:RootStateOrAny)=>state.application);
+    const [modalVisible, setModalVisible] = useState(false);
     return <ScrollView style={ { paddingTop : 20 , width : "100%" , backgroundColor : "#f8f8f8" , } }>
-
+        {/*<PdfViewrWeb height={height}
+                  width={width} requirement={props?.documents}/>*/}
             <View style={ [styles.container , { marginVertical : 12 }] }>
                 <View style={ styles.group2 }>
                     <View style={ styles.rect }>
@@ -22,6 +35,13 @@ const ApplicationDetails = (props: any) => {
                     <Text style={ styles.applicationType }>{ props?.applicantType ||  props?.service?.name   }</Text>
                     <Text style={ [styles.service, {fontFamily: Regular500}] }>{  props?.service?.applicationType?.label || props?.service?.name }</Text>
                     <Text style={ [styles.service, {fontFamily: Regular500}] }>{  props?.service?.applicationType?.element  || props?.service?.radioType?.label }</Text>
+
+                    <Pressable
+                        onPress={() => setModalVisible(true)}
+                    >
+                        <Text style={ {fontFamily: Regular500,  color: primaryColor}}>{  outputLabel(props?.applicantType ||  props?.service?.name) }</Text>
+                    </Pressable>
+
                     { props?.service?.radioType?.selected && <Text style={ [styles.service, {fontFamily: Regular500}] }>{ `\u2022${ props?.service?.radioType?.selected }` }</Text>}
                     { props?.selectedType?.map((type: any , idx: number) => {
                         return <Text key={ idx } style={ styles.text }>
@@ -32,12 +52,48 @@ const ApplicationDetails = (props: any) => {
                     })
                     }
 
-
                 </View>
 
             </View>
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+                setModalVisible(!modalVisible);
+            }}
+        >
+            <View style={[{flex: 1},isMobile||dimensions?.width<768 ? {} : {
+                alignItems:"flex-end",
+                top: rightLayoutComponent?.top
+            }]}>
+            <OnBackdropPress styles={{}}  onPressOut={() => setModalVisible(!modalVisible)}/>
+            <OnBackdropPress styles={isMobile|| dimensions?.width<768 ? {} : {
+                alignSelf: "flex-end",
+                width:rightLayoutComponent?.width||undefined,
+                backgroundColor:"rgba(0, 0, 0, 0.5)"
+            }} onPressOut={() => setModalVisible(!modalVisible)}/>
 
-    </ScrollView> 
+                <View style={{zIndex: 1, flexDirection: "row", justifyContent: "flex-end", }}>
+                    <View style={{padding: 20}}>
+                        <Pressable
+                            onPress={() => setModalVisible(false)}
+                        >
+                            <Text style={ {fontFamily: Regular500, fontSize: RFValue(14),  color: "#fff"}}>Close</Text>
+                        </Pressable>
+                    </View>
+
+                </View>
+            <View style={{flex: 1, position: "absolute"}}>
+                <ScrollView>
+                    <PdfViewr width={rightLayoutComponent?.width}
+                              height={rightLayoutComponent?.height} requirement={props?.documents}/>
+                </ScrollView>
+
+            </View>
+            </View>
+        </Modal>
+    </ScrollView>
 
 };
 const styles = StyleSheet.create({

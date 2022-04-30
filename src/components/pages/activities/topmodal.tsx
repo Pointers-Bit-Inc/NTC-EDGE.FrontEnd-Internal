@@ -84,7 +84,6 @@ function TopModal(props: any) {
             } }>
 
             <SafeAreaView ref={ inputRef } style={ visible ? {
-
                 position : "absolute" ,
                 zIndex : 2 ,
                 top : 0 ,
