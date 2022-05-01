@@ -19,6 +19,7 @@ import InitiateVideoCall from '@screens/meet/create';
 import ChatList from '@screens/chat';
 import ViewChat from '@screens/chat/view';
 import ChatInfo from '@screens/chat/info';
+import MeetingParticipants from '@screens/chat/participants';
 import NewChat from '@screens/chat/new-chat';
 import Search from "@pages/activities/search";
 import TabBar from "@pages/activities/tabbar";
@@ -54,6 +55,7 @@ type RootStackParamList = {
     ChatList: undefined;
     ViewChat: undefined;
     ChatInfo: undefined;
+    MeetingParticipants: undefined;
     NewChat: undefined;
     InitiateVideoCall: undefined;
     JoinVideoCall: undefined;
@@ -127,6 +129,7 @@ const RootNavigator = () => {
                 <Stack.Screen name="ChatList" component={ ChatList }/>
                 <Stack.Screen name="ViewChat" component={ ViewChat }/>
                 <Stack.Screen name="ChatInfo" component={ ChatInfo }/>
+                <Stack.Screen name="MeetingParticipants" component={ MeetingParticipants }/>
                 <Stack.Screen name="NewChat" component={ NewChat }/>
                 <Stack.Screen name="InitiateVideoCall" component={ InitiateVideoCall }/>
                 <Stack.Screen name="JoinVideoCall" component={ JoinVideoCall }/>

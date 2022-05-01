@@ -259,6 +259,19 @@ const FloatingVideo = () => {
     }
   }
 
+  const onAddParticipants = () => {
+    if (meeting?._id) {
+      dispatch(setSelectedChannel(meeting.room));
+      dispatch(setMeetings([]));
+      const messageSelected = selectedMessage[meeting.room._id] || {}
+      if (messageSelected && messageSelected.channelId !== meeting.room._id) {
+        dispatch(removeSelectedMessage(messageSelected.channelId));
+      }
+      onFullScreen();
+      navigation.navigate('MeetingParticipants');
+    }
+  }
+
   const header = () => (
     <View style={styles.header}>
       <TouchableOpacity onPress={() => {
@@ -292,7 +305,7 @@ const FloatingVideo = () => {
         </View>
       </TouchableOpacity>
       <View style={{ width: 5 }} />
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onAddParticipants}>
         <View style={styles.icon}>
           <ParticipantsIcon />
         </View>
