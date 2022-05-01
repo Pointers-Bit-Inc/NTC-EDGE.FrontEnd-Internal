@@ -3,6 +3,7 @@ import {Text , View} from "react-native";
 import WebView from "react-native-webview";
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
 import {Bold} from "@styles/font";
+import {ActivityIndicator} from "@ant-design/react-native";
 
 const PdfViewr = (props: { width: any, height: any, requirement: any }) => {
     const extension = props.requirement?.small.substring(props.requirement?.small.lastIndexOf('.') + 1 , props.requirement?.small.length) || props.requirement?.small;
@@ -17,7 +18,7 @@ const PdfViewr = (props: { width: any, height: any, requirement: any }) => {
                <Text>Could not load Doc. Make sure the source is correct and the browser is not on device
                    mode.</Text>
            </object>
-               <Text  style={{zIndex: -1,position: "absolute", textAlign: "center", color: "#fff", fontFamily: Bold, fontSize: 18}}>{"Loading..."}</Text>
+               <Text  style={{zIndex: -1,position: "absolute", textAlign: "center", color: "#fff", fontFamily: Bold, fontSize: 18}}><ActivityIndicator/></Text>
            </View>;
 };
 
