@@ -106,13 +106,11 @@ const styles = StyleSheet.create({
   },
   option: {
     flexDirection: 'row',
-    alignItems: 'center',
     padding: 20,
     paddingHorizontal: 0,
     marginHorizontal: 20,
     borderBottomColor: outline.default,
     borderBottomWidth: 1,
-    justifyContent: 'center',
   },
   cancelText: {
     fontSize: RFValue(16),
@@ -187,8 +185,8 @@ const Participants = ({ navigation }) => {
   );
   const { inTheMeeting = [], othersInvited = [] } = useSelector((state:RootStateOrAny) => {
     const { meeting = {} } = state.meeting;
-    const inTheMeeting = lodash.filter(meeting.participants, (p:IParticipants) => p.status === 'joined');
-    const othersInvited = lodash.filter(meeting.participants, (p:IParticipants) => p.status !== 'joined');
+    const inTheMeeting = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status === 'joined');
+    const othersInvited = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status !== 'joined');
     return {
       inTheMeeting,
       othersInvited,
@@ -250,23 +248,6 @@ const Participants = ({ navigation }) => {
 
   const alertConfirm = () => {
     if (alertData.type === 'remove') removeMember();
-    else if (alertData.type === 'delete') leaveChat();
-    else if (alertData.type === 'clear') clearChat();
-  }
-
-  const leaveChat = () => {
-    setShowAlert(false);
-    setLoading(true);
-    leaveChannel(_id, (err, res) => {
-      setLoading(false);
-      if (res) {
-        dispatch(removeChannel(res));
-        navigation.navigate('Chat');
-      }
-      if (err) {
-        Alert.alert('Alert', err?.message || 'Something went wrong.')
-      }
-    })
   }
 
   const removeMember = () => {
@@ -303,69 +284,7 @@ const Participants = ({ navigation }) => {
     });
   }
 
-  const editRoomName = () => {
-    if (!groupName) {
-      setEditName(n => !n);
-      return;
-    }
-
-    setShowAlert(false);
-    setLoading(true);
-    api.post(`/rooms/${_id}/edit-name?roomname=${groupName}`)
-    .then((res) => {
-      setLoading(false);
-      setEditName(n => !n);
-      if(res.data) {
-        dispatch(updateChannel(res.data));
-      }
-    })
-    .catch(e => {
-      setLoading(false);
-      Alert.alert('Alert', e?.message || 'Something went wrong.')
-    });
-  }
-
-  const muteChatRoom = (mute = false) => {
-    setShowAlert(false);
-    setLoading(true);
-    api.post(`/rooms/${_id}/mute-chat?muted=${mute}`)
-    .then((res) => {
-      setLoading(false);
-      setMuteChat(mute)
-      if(res.data) {
-        dispatch(updateChannel(res.data));
-      }
-    })
-    .catch(e => {
-      setLoading(false);
-      Alert.alert('Alert', e?.message || 'Something went wrong.')
-    });
-  }
-
-  const clearChat = () => {
-    setShowAlert(false);
-    setLoading(true);
-    api.post(`/rooms/${_id}/clear-chat`)
-    .then((res) => {
-      setLoading(false);
-      if(res.data) {
-        dispatch(setMessages(res.data._id, {}));
-        dispatch(removeSelectedMessage(res.data._id));
-        dispatch(updateChannel(res.data));
-      }
-    })
-    .catch(e => {
-      setLoading(false);
-      Alert.alert('Alert', e?.message || 'Something went wrong.')
-    });
-  }
-
   const onBack = () => navigation.goBack();
-
-  const onInitiateCall = (isVideoEnable = false) => {
-    setIsVideoEnable(isVideoEnable);
-    modalRef.current?.open();
-  }
 
   const separator = () => (
     <View style={{ backgroundColor: '#E5E5E5', height: 1 }} />
@@ -375,10 +294,10 @@ const Participants = ({ navigation }) => {
     return (
       <>
         <TouchableOpacity onPress={() => {
-          optionModalRef.current?.close();
-          setTimeout(() => {
-            meetingModalRef.current?.open();
-          }, 500);
+          // optionModalRef.current?.close();
+          // setTimeout(() => {
+          //   meetingModalRef.current?.open();
+          // }, 500);
         }}>
           <View style={[styles.option]}>
             <Text
@@ -386,15 +305,15 @@ const Participants = ({ navigation }) => {
               color={'black'}
               size={18}
             >
-              Call {`${selectedParticipant.firstName} ${selectedParticipant.lastName}`}
+              Mute participant
             </Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {
-          optionModalRef.current?.close();
-          setTimeout(() => {
-            newMessageModalRef.current?.open()
-          }, 500);
+          // optionModalRef.current?.close();
+          // setTimeout(() => {
+          //   newMessageModalRef.current?.open()
+          // }, 500);
         }}>
           <View style={[styles.option]}>
             <Text
@@ -402,7 +321,7 @@ const Participants = ({ navigation }) => {
               color={'black'}
               size={18}
             >
-              Message {`${selectedParticipant.firstName} ${selectedParticipant.lastName}`}
+              Remove from meeting
             </Text>
           </View>
         </TouchableOpacity>
@@ -413,7 +332,7 @@ const Participants = ({ navigation }) => {
               color={'black'}
               size={18}
             >
-              Cancel
+              Pin for me
             </Text>
           </View>
         </TouchableOpacity>
@@ -424,49 +343,6 @@ const Participants = ({ navigation }) => {
   const showOption = (participant:IParticipants) => {
     setSelectedParticipant(participant)
     optionModalRef.current?.open();
-  }
-
-  const onRemoveConfirm = () => {
-    optionModalRef.current?.close();
-    setAlertData({
-      title: 'Remove Member',
-      message: `Remove ${selectedParticipant.firstName} ${selectedParticipant.lastName} from ${renderChannelName()}?`,
-      cancel: 'Cancel',
-      confirm: 'Yes',
-      type: 'remove',
-    });
-    setTimeout(() => setShowAlert(true), 500);
-  }
-
-  const onDeleteChat = () => {
-    setAlertData({
-      title: 'Delete Chat',
-      message: 'Are you sure you want to permanently delete this conversation?',
-      cancel: 'Cancel',
-      confirm: 'Yes',
-      type: 'delete',
-    });
-    setShowAlert(true);
-  }
-
-  const onClearChat = () => {
-    setAlertData({
-      title: 'Clear Chat',
-      message: 'Are you sure you want to clear chat content?',
-      cancel: 'Cancel',
-      confirm: 'Yes',
-      type: 'clear',
-    });
-    setShowAlert(true);
-  }
-
-  const renderChannelName = () => {
-    return getChannelName({
-      otherParticipants,
-      hasRoomName,
-      name,
-      isGroup
-    });
   }
 
   const renderParticipants = (participants = [], type = '') => {
@@ -599,6 +475,13 @@ const Participants = ({ navigation }) => {
         }
       >
         <View style={{ paddingBottom: 15 }}>
+          <Text
+            style={{ textAlign: 'center' }}
+            color='#808196'
+            size={14}
+          >
+            {`${selectedParticipant.firstName} ${selectedParticipant.lastName}`}
+          </Text>
           {options()}
         </View>
       </BottomModal>
