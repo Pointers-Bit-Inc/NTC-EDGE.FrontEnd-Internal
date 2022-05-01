@@ -1,9 +1,8 @@
 import React from "react";
-import {Text , View} from "react-native";
+import {ActivityIndicator,Text,View} from "react-native";
 import WebView from "react-native-webview";
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
 import {Bold} from "@styles/font";
-import {ActivityIndicator} from "@ant-design/react-native";
 
 const PdfViewr = (props: { width: any, height: any, requirement: any }) => {
     const extension = props.requirement?.small.substring(props.requirement?.small.lastIndexOf('.') + 1 , props.requirement?.small.length) || props.requirement?.small;

@@ -1,10 +1,9 @@
 import Pdf from "react-native-pdf";
-import {View,Text} from "react-native";
+import {View,Text,ActivityIndicator} from "react-native";
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
 import React from "react";
 import WebView from "react-native-webview";
 import {Bold} from "@styles/font";
-import {ActivityIndicator} from "@ant-design/react-native";
 
 
 const PdfViewr=(props:{requirement:any,extension:any})=>{

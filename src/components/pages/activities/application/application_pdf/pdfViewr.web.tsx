@@ -1,7 +1,6 @@
-import {Text,View} from "react-native";
+import {ActivityIndicator,Text,View} from "react-native";
 import {Bold} from "@styles/font";
 import React from "react";
-import {ActivityIndicator} from "@ant-design/react-native";
 
 const PdfViewr=(props:{width:any,height:any,requirement:any})=>{
     const extension=props?.requirement?.substring(props?.requirement.lastIndexOf('.')+1,props?.requirement.length)||props?.requirement;
