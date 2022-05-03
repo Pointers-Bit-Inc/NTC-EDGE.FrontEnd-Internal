@@ -6,22 +6,25 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  StatusBar
+  StatusBar,
+  Alert
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import lodash from 'lodash';
 import { button, text, header } from '@styles/color';
 import Text from '@atoms/text';
-import InputStyles from 'src/styles/input-style';
+import useApi from 'src/services/api'
 import { ContactItem, ListFooter, SelectedContact } from '@components/molecules/list-item';
-import { CloseIcon, ArrowDownIcon, CheckIcon } from '@components/atoms/icon'
+import { CloseIcon, ArrowDownIcon, CheckIcon, BackIcon } from '@components/atoms/icon'
 import { SearchField } from '@components/molecules/form-fields'
 import { primaryColor } from '@styles/color';
+import { updateChannel } from 'src/reducers/channel/actions'
 import useSignalr from 'src/hooks/useSignalr';
 import axios from 'axios';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold, Regular, Regular500 } from '@styles/font';
 import IParticipants from 'src/interfaces/IParticipants';
+import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 
 const styles = StyleSheet.create({
   container: {
@@ -42,7 +45,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    fontSize: RFValue(16),
+    fontSize: RFValue(14),
     fontFamily: Regular,
     color: 'black',
     flex: 1,
@@ -95,12 +98,15 @@ const styles = StyleSheet.create({
 });
 
 const Participants = ({ navigation }:any) => {
+  const dispatch = useDispatch();
   const {
     getParticipantList,
   } = useSignalr();
-  const [loading, setLoading] = useState(false);
+  const user = useSelector((state:RootStateOrAny) => state.user);
+  const api = useApi(user.sessionToken);
+  const [loading, setLoading] = useState(true);
   const [nextLoading, setNextLoading] = useState(false);
-  const [participants, setParticipants]:any = useState([]);
+  const [selectedParticipants, setSelectedParticipants]:any = useState([]);
   const [sendRequest, setSendRequest] = useState(0);
   const [contacts, setContacts]:any = useState([]);
   const [searchText, setSearchText] = useState('');
@@ -109,6 +115,8 @@ const Participants = ({ navigation }:any) => {
   const [fetching, setFetching] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [hasError, setHasError] = useState(false);
+
+  const { participants = [], roomId = '', _id } = useSelector((state:RootStateOrAny) => state.meeting?.meeting ?? {});
 
   const onRequestData = () => setSendRequest(request => request + 1);
 
@@ -120,7 +128,13 @@ const Participants = ({ navigation }:any) => {
 
     getParticipantList(payload, (err:any, res:any) => {
       if (res) {
-        setContacts([...contacts, ...res.list]);
+        let resultList = res.list;
+
+        if (resultList && selectedParticipants) {
+          resultList = lodash.reject(resultList, (r:IParticipants) => lodash.find(participants, (p:IParticipants) => p._id === r._id));
+        }
+
+        setContacts([...contacts, ...resultList]);
         setPageIndex(current => current + 1);
         setHasMore(res.hasMore);
       }
@@ -142,7 +156,14 @@ const Participants = ({ navigation }:any) => {
 
     getParticipantList(payload, (err:any, res:any) => {
       if (res) {
-        setContacts(res.list);
+        let resultList = res.list;
+
+        if (resultList && selectedParticipants) {
+          resultList = lodash.reject(resultList, (r:IParticipants) => lodash.find(selectedParticipants, (p:IParticipants) => p._id === r._id));
+          resultList = lodash.reject(resultList, (r:IParticipants) => lodash.find(participants, (p:IParticipants) => p._id === r._id));
+        }
+
+        setContacts(resultList);
         setPageIndex(current => current + 1);
         setHasMore(res.hasMore);
       }
@@ -159,16 +180,34 @@ const Participants = ({ navigation }:any) => {
   }, [sendRequest, searchValue]);
 
   const onBack = () => navigation.goBack();
-  const onNext = () => navigation.replace('CreateMeeting', { participants });
+
+  const addMembers = () => {
+    setNextLoading(true);
+    api.post(`/rooms/${roomId}/add-members`, {
+      participants: selectedParticipants,
+      meetingId: _id,
+    })
+    .then((res) => {
+      setNextLoading(false);
+      if(res.data) {
+        dispatch(updateChannel(res.data));
+        navigation.goBack();
+      }
+    })
+    .catch(e => {
+      setLoading(false);
+      Alert.alert('Alert', e?.message || 'Something went wrong.')
+    });
+  }
 
   const onSelectParticipants = (selectedId:string) => {
     const selected = lodash.find(contacts, (c:IParticipants) => c._id === selectedId);
-    setParticipants(p => ([...p, selected]));
+    setSelectedParticipants(p => ([...p, selected]));
   }
 
   const onRemoveParticipants = (selectedId:string) => {
-    const result = lodash.reject(participants, (c:IParticipants) => c._id === selectedId);
-    setParticipants(result);
+    const result = lodash.reject(selectedParticipants, (c:IParticipants) => c._id === selectedId);
+    setSelectedParticipants(result);
   }
 
   const onTapCheck = (selectedId:string) => {
@@ -181,28 +220,30 @@ const Participants = ({ navigation }:any) => {
   }
 
   const checkIfSelected = (contactId:string) => {
-    const selected = lodash.find(participants, (c:IParticipants) => c._id === contactId);
+    const selected = lodash.find(selectedParticipants, (c:IParticipants) => c._id === contactId);
     return !!selected;
   }
 
   const headerComponent = () => (
     <View>
       <FlatList
-        style={[styles.outlineBorder, !lodash.size(participants) && { borderBottomWidth: 0 }]}
+        style={[styles.outlineBorder, !lodash.size(selectedParticipants) && { borderBottomWidth: 0 }]}
         horizontal
         showsHorizontalScrollIndicator={false}
-        data={participants}
+        data={selectedParticipants}
         renderItem={({ item }) => (
           <SelectedContact
             image={item?.profilePicture?.thumb}
             name={item.name}
+            isGroup={item.isGroup}
+            data={item}
             onPress={() => onRemoveParticipants(item._id)}
           />
         )}
         keyExtractor={(item) => item._id}
         ListFooterComponent={() => <View style={{ width: 20 }} />}
       />
-      <View style={[styles.contactTitle, !!lodash.size(participants) && { paddingTop: 15 }]}>
+      <View style={[styles.contactTitle, !!lodash.size(selectedParticipants) && { paddingTop: 15 }]}>
         <ArrowDownIcon
           style={{ marginTop: 2, marginRight: 3 }}
           color={text.default}
@@ -255,27 +296,24 @@ const Participants = ({ navigation }:any) => {
         <View style={[styles.horizontal, { paddingVertical: 5 }]}>
           <View style={{ position: 'absolute', left: 0, zIndex: 999 }}>
             <TouchableOpacity onPress={onBack}>
-              <CloseIcon
-                type='close'
-                size={RFValue(18)}
-              />
+              <BackIcon />
             </TouchableOpacity>
           </View>
           <View style={styles.titleContainer}>
             <Text
               color={header.default}
-              size={16}
-              style={{ fontFamily: Bold }}
+              size={14}
+              style={{ fontFamily: Regular500 }}
             >
-              New Meeting
+              Add participants
             </Text>
           </View>
           {
-            !!lodash.size(participants) && (
+            !!lodash.size(selectedParticipants) && (
               <View style={{ position: 'absolute', right: 0, zIndex: 999 }}>
                 <TouchableOpacity
-                  disabled={!lodash.size(participants) || nextLoading}
-                  onPress={onNext}
+                  disabled={!lodash.size(selectedParticipants) || nextLoading}
+                  onPress={addMembers}
                 >
                   {
                     nextLoading ? (
@@ -283,10 +321,10 @@ const Participants = ({ navigation }:any) => {
                     ) : (
                       <Text
                         color={text.info}
-                        size={14}
+                        size={16}
                         style={{ fontFamily: Regular500 }}
                       >
-                        Next
+                        Done
                       </Text>
                     )
                   }
@@ -296,10 +334,10 @@ const Participants = ({ navigation }:any) => {
           }
         </View>
         <SearchField
-          inputStyle={[InputStyles.text, styles.input]}
+          inputStyle={[styles.input]}
           iconStyle={styles.icon}
           placeholder="Search"
-          outlineStyle={[InputStyles.outlineStyle, styles.outline]}
+          outlineStyle={[styles.outline]}
           placeholderTextColor="#6E7191"
           value={searchText}
           onChangeText={setSearchText}
@@ -322,9 +360,11 @@ const Participants = ({ navigation }:any) => {
         renderItem={({ item }) => (
           <ContactItem
             image={item?.profilePicture?.thumb}
+            data={item}
+            isGroup={item.isGroup}
             name={item.name}
+            isOnline={item.isOnline}
             onPress={() => onTapCheck(item._id)}
-            disabled={true}
             rightIcon={
               <TouchableOpacity
                 onPress={() => onTapCheck(item._id)}

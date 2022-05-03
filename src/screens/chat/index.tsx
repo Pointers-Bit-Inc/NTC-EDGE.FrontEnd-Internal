@@ -168,7 +168,9 @@ const ChatList = ({ navigation }:any) => {
     const channelList = lodash.keys(normalizedChannelList).map((ch:any) => {
       const channel = normalizedChannelList[ch];
       channel.otherParticipants = lodash.reject(channel.participants, (p:IParticipants) => p._id === user._id);
-      channel.lastMessage.hasSeen = !!lodash.find(channel.lastMessage.seen, (s:IParticipants) => s._id === user._id);
+      if (channel.lastMessage) {
+        channel.lastMessage.hasSeen = !!lodash.find(channel?.lastMessage?.seen || [], (s:IParticipants) => s._id === user._id);
+      }
       return channel;
     });
     return lodash.orderBy(channelList, 'lastMessage.createdAt', 'desc');

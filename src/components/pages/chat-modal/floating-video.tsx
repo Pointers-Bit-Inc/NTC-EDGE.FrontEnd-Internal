@@ -57,6 +57,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#606A80',
     overflow: 'hidden',
   },
+  border: {
+    borderWidth: 1,
+    borderColor: '#BFBEFC',
+  },
+  shadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
   maximize: {
     height: dimensions.height,
     width: dimensions.width,
@@ -267,8 +281,8 @@ const FloatingVideo = () => {
       if (messageSelected && messageSelected.channelId !== meeting.room._id) {
         dispatch(removeSelectedMessage(messageSelected.channelId));
       }
-      onFullScreen();
       navigation.navigate('MeetingParticipants');
+      onFullScreen();
     }
   }
 
@@ -325,13 +339,14 @@ const FloatingVideo = () => {
   return (
     <PanGestureHandler enabled={!isFullScreen} onGestureEvent={onGestureEvent}>
       <AnimatedPressable
-        style={[styles.container, !isFullScreen && styles.position, style]}
+        style={[styles.container, styles.shadow, !isFullScreen && styles.position, style]}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}>
         <View
           style={[
             styles.remote,
-            isFullScreen ? styles.maximize : styles.minimize
+            isFullScreen ? styles.maximize : styles.minimize,
+            !isFullScreen && styles.border,
           ]}
         >
           {

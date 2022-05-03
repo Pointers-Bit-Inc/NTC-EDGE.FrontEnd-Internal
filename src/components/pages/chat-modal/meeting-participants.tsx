@@ -304,10 +304,10 @@ const MeetingParticipants = ({
           }
         </View>
         <SearchField
-          inputStyle={[InputStyles.text, styles.input]}
+          inputStyle={[styles.input]}
           iconStyle={styles.icon}
           placeholder="Search"
-          outlineStyle={[InputStyles.outlineStyle, styles.outline]}
+          outlineStyle={[styles.outline]}
           placeholderTextColor="#6E7191"
           value={searchText}
           onChangeText={setSearchText}

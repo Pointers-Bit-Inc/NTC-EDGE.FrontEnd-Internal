@@ -2,9 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Alert, Dimensions, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Text from '@components/atoms/text'
 import { Regular, Regular500 } from '@styles/font'
-import { ArrowLeftIcon, NewMeetIcon, NewPenIcon, NewPhoneIcon, ToggleIcon } from '@components/atoms/icon'
+import { AddPeopleIcon, ArrowLeftIcon, CloseIcon, MicOffIcon, MicOnIcon, NewMeetIcon, NewPenIcon, NewPhoneIcon, PinParticipantIcon, ToggleIcon } from '@components/atoms/icon'
 import { RFValue } from 'react-native-responsive-fontsize'
-import AddParticipantsIcon from '@components/atoms/icon/new-add-participants'
 import LinkIcon from '@components/atoms/icon/link'
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux'
 import lodash from 'lodash';
@@ -17,12 +16,13 @@ import { outline, text } from '@styles/color'
 import AwesomeAlert from 'react-native-awesome-alerts'
 import useApi from 'src/services/api'
 import Loading from '@components/atoms/loading'
-import { addChannel, removeChannel, removeSelectedMessage, setMessages, setSelectedChannel, updateChannel } from 'src/reducers/channel/actions'
-import { setMeeting, setOptions } from 'src/reducers/meeting/actions'
+import { updateChannel } from 'src/reducers/channel/actions'
+import { setFullScreen, setMeeting, setOptions } from 'src/reducers/meeting/actions'
 import AddParticipants from '@components/pages/chat-modal/add-participants'
 import { InputField } from '@components/molecules/form-fields'
 import useSignalr from 'src/hooks/useSignalr'
 import MessageMember from '@components/pages/chat-modal/message'
+import RemoveParticipantIcon from '@components/atoms/icon/remove-participant'
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     borderBottomColor: outline.default,
     borderBottomWidth: 1,
+    alignItems: 'center',
   },
   cancelText: {
     fontSize: RFValue(16),
@@ -175,26 +176,18 @@ const Participants = ({ navigation }) => {
   } = useSignalr();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const api = useApi(user.sessionToken);
-  const { _id, otherParticipants = [], participants = [], hasRoomName = false, name = '', isGroup = false, muted = false, author = {} } = useSelector(
-    (state:RootStateOrAny) => {
-      const { selectedChannel } = state.channel;
-      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id);
-      selectedChannel.muted = !!lodash.find(selectedChannel.participants, (p:IParticipants) => p._id === user._id && p.muted);
-      return selectedChannel;
-    }
-  );
-  const { inTheMeeting = [], othersInvited = [] } = useSelector((state:RootStateOrAny) => {
+  const { inTheMeeting = [], othersInvited = [], roomId = '', participants = [], meetingId = '' } = useSelector((state:RootStateOrAny) => {
     const { meeting = {} } = state.meeting;
     const inTheMeeting = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status === 'joined');
     const othersInvited = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status !== 'joined');
     return {
+      roomId: meeting?.roomId,
+      meetingId: meeting?._id,
       inTheMeeting,
       othersInvited,
+      participants: meeting?.participants,
     }
   });
-  const [isVideoEnable, setIsVideoEnable] = useState(false);
-  const [muteChat, setMuteChat] = useState(muted);
-  const [showDeleteOption, setShowDeleteOption] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);
   const [alertData, setAlertData] = useState({
@@ -205,46 +198,7 @@ const Participants = ({ navigation }) => {
     type: '',
   });
   const [selectedParticipant, setSelectedParticipant] = useState<any>({});
-  const [groupName, setGroupName] = useState(name || '');
-  const [editName, setEditName] = useState(false);
-  const modalRef = useRef<BottomModalRef>(null);
-  const participantModal = useRef<BottomModalRef>(null);
   const optionModalRef = useRef<BottomModalRef>(null);
-  const newMessageModalRef = useRef<BottomModalRef>(null);
-  const meetingModalRef = useRef<BottomModalRef>(null);
-  const groupNameRef:any = useRef(null);
-
-  useEffect(() => {
-    if (editName) {
-      groupNameRef.current?.focus();
-    }
-  }, [editName]);
-
-  const isAdmin = () => {
-    const participant:IParticipants = lodash.find(participants, (p:IParticipants) => p._id === user._id);
-    
-    return participant?.isAdmin;
-  }
-
-  const isHost = (item:any = {}) => {
-    return item?._id === author._id;
-  }
-
-  const addAdmin = () => {
-    optionModalRef.current?.close();
-    setLoading(true);
-    api.post(`/rooms/${_id}/add-admin?participantId=${selectedParticipant._id}`)
-    .then((res) => {
-      setLoading(false);
-      if(res.data) {
-        dispatch(updateChannel(res.data));
-      }
-    })
-    .catch(e => {
-      setLoading(false);
-      Alert.alert('Alert', e?.message || 'Something went wrong.')
-    });
-  }
 
   const alertConfirm = () => {
     if (alertData.type === 'remove') removeMember();
@@ -253,7 +207,7 @@ const Participants = ({ navigation }) => {
   const removeMember = () => {
     setShowAlert(false);
     setLoading(true);
-    api.post(`/rooms/${_id}/remove-member?participantId=${selectedParticipant._id}`)
+    api.post(`/rooms/${roomId}/remove-member?participantId=${selectedParticipant._id}&meetingId=${meetingId}`)
     .then((res) => {
       setLoading(false);
       if(res.data) {
@@ -266,25 +220,21 @@ const Participants = ({ navigation }) => {
     });
   }
 
-  const addMembers = (addedMembers:any) => {
-    setShowAlert(false);
-    setLoading(true);
-    api.post(`/rooms/${_id}/add-members`, {
-      participants: addedMembers
-    })
-    .then((res) => {
-      setLoading(false);
-      if(res.data) {
-        dispatch(updateChannel(res.data));
-      }
-    })
-    .catch(e => {
-      setLoading(false);
-      Alert.alert('Alert', e?.message || 'Something went wrong.')
+  const onRemoveConfirm = () => {
+    optionModalRef.current?.close();
+    setAlertData({
+      title: 'Remove Participant',
+      message: `Remove ${selectedParticipant.firstName} ${selectedParticipant.lastName} from the meeting?`,
+      cancel: 'Cancel',
+      confirm: 'Yes',
+      type: 'remove',
     });
+    setTimeout(() => setShowAlert(true), 500);
   }
-
-  const onBack = () => navigation.goBack();
+  const onBack = () => {
+    dispatch(setFullScreen(true));
+    navigation.goBack();
+  };
 
   const separator = () => (
     <View style={{ backgroundColor: '#E5E5E5', height: 1 }} />
@@ -300,6 +250,7 @@ const Participants = ({ navigation }) => {
           // }, 500);
         }}>
           <View style={[styles.option]}>
+            <MicOffIcon />
             <Text
               style={{ marginLeft: 15 }}
               color={'black'}
@@ -309,13 +260,9 @@ const Participants = ({ navigation }) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {
-          // optionModalRef.current?.close();
-          // setTimeout(() => {
-          //   newMessageModalRef.current?.open()
-          // }, 500);
-        }}>
+        <TouchableOpacity onPress={onRemoveConfirm}>
           <View style={[styles.option]}>
+            <RemoveParticipantIcon />
             <Text
               style={{ marginLeft: 15 }}
               color={'black'}
@@ -327,6 +274,7 @@ const Participants = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity onPress={() => optionModalRef.current?.close()}>
           <View style={[styles.option, { borderBottomWidth: 0 }]}>
+            <PinParticipantIcon />
             <Text
               style={{ marginLeft: 15 }}
               color={'black'}
@@ -358,20 +306,17 @@ const Participants = ({ navigation }) => {
         isOnline={item.isOnline}
         contact={item.email || ''}
         rightIcon={
-          item.isAdmin ? (
-            <View style={{ marginRight: -15 }}>
-              <Text
-                color='#606A80'
-                size={12}
-              >
-                {isHost(item) ? 'Host' : 'Admin'}
-              </Text>
-            </View>
-          ) : null
+          <View style={{ marginRight: -15 }}>
+            {
+              item.muted ? (
+                <MicOffIcon />
+              ) : (
+                <MicOnIcon color={'#2863D6'} />
+              )
+            }
+          </View>
         }
-        onPress={() => {
-          if (isGroup && item._id != user._id) showOption(item);
-        }}
+        onPress={() => showOption(item)}
       />
     ))
   }
@@ -381,10 +326,9 @@ const Participants = ({ navigation }) => {
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack}>
           <View style={{ paddingRight: 5 }}>
-            <ArrowLeftIcon
-              type='chevron-left'
-              color={'#111827'}
-              size={RFValue(26)}
+            <CloseIcon
+              type='close'
+              size={RFValue(18)}
             />
           </View>
         </TouchableOpacity>
@@ -393,19 +337,15 @@ const Participants = ({ navigation }) => {
             style={styles.title}
             size={14}
           >
-            Meeting participants
+            Meeting participants ({lodash.size(participants)})
           </Text>
         </View>
       </View>
       <ScrollView>
         <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
-          <TouchableOpacity onPress={() => participantModal.current?.open()}>
+          <TouchableOpacity onPress={() => navigation.navigate('Participants')}>
             <View style={styles.participantItem}>
-              <AddParticipantsIcon
-                color={'#000'}
-                height={RFValue(14)}
-                width={RFValue(14)}
-              />
+              <AddPeopleIcon />
               <Text
                 style={{ marginLeft: 10 }}
                 size={16}
@@ -437,39 +377,8 @@ const Participants = ({ navigation }) => {
         </View>
       </ScrollView>
       <BottomModal
-        ref={modalRef}
-        onModalHide={() => modalRef.current?.close()}
-        avoidKeyboard={false}
-        header={
-          <View style={styles.bar} />
-        }
-        containerStyle={{ maxHeight: null }}
-        onBackdropPress={() => {}}
-      >
-        <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
-          <CreateMeeting
-            barStyle={'dark-content'}
-            participants={participants}
-            isVideoEnable={isVideoEnable}
-            isVoiceCall={!isVideoEnable}
-            isChannelExist={true}
-            channelId={_id}
-            onClose={() => modalRef.current?.close()}
-            onSubmit={(params, data) => {
-              modalRef.current?.close();
-              dispatch(setOptions({
-                ...params.options,
-                isHost: params.isHost,
-                isVoiceCall: params.isVoiceCall,
-              }));
-              setTimeout(() => dispatch(setMeeting(data)), 300);
-            }}
-          />
-        </View>
-      </BottomModal>
-      <BottomModal
         ref={optionModalRef}
-        onModalHide={() => setShowDeleteOption(false)}
+        onModalHide={() => optionModalRef.current?.close()}
         header={
           <View style={styles.bar} />
         }
@@ -483,79 +392,6 @@ const Participants = ({ navigation }) => {
             {`${selectedParticipant.firstName} ${selectedParticipant.lastName}`}
           </Text>
           {options()}
-        </View>
-      </BottomModal>
-      <BottomModal
-        ref={participantModal}
-        onModalHide={() => participantModal.current?.close()}
-        avoidKeyboard={false}
-        header={
-          <View style={styles.bar} />
-        }
-        containerStyle={{ maxHeight: null }}
-        onBackdropPress={() => {}}
-      >
-        <View style={{ height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
-          <AddParticipants
-            members={participants}
-            onClose={() => participantModal.current?.close()}
-            onSubmit={(members:any) => {
-              participantModal.current?.close();
-              setTimeout(() => addMembers(members), 300);
-            }}
-          />
-        </View>
-      </BottomModal>
-      <BottomModal
-        ref={newMessageModalRef}
-        onModalHide={() => newMessageModalRef.current?.close()}
-        avoidKeyboard={false}
-        header={
-          <View style={styles.bar} />
-        }
-        containerStyle={{ maxHeight: null }}
-        onBackdropPress={() => {}}
-      >
-        <View style={{ height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
-          <MessageMember
-            members={[selectedParticipant]}
-            onClose={() => newMessageModalRef.current?.close()}
-            onSubmit={(res:any) => {
-              res.otherParticipants = lodash.reject(res.participants, (p:IParticipants) => p._id === user._id);
-              dispatch(setSelectedChannel(res));
-              dispatch(addChannel(res));
-              newMessageModalRef.current?.close();
-              setTimeout(() => navigation.navigate('ViewChat', res), 500);
-            }}
-          />
-        </View>
-      </BottomModal>
-      <BottomModal
-        ref={meetingModalRef}
-        onModalHide={() => meetingModalRef.current?.close()}
-        avoidKeyboard={false}
-        header={
-          <View style={styles.bar} />
-        }
-        containerStyle={{ maxHeight: null }}
-        onBackdropPress={() => {}}
-      >
-        <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
-          <CreateMeeting
-            participants={[selectedParticipant]}
-            onClose={() => meetingModalRef.current?.close()}
-            channelId={''}
-            isChannelExist={false}
-            onSubmit={(params, data) => {
-              meetingModalRef.current?.close();
-              dispatch(setOptions({
-                ...params.options,
-                isHost: params.isHost,
-                isVoiceCall: params.isVoiceCall,
-              }));
-              setTimeout(() => dispatch(setMeeting(data)), 300);
-            }}
-          />
         </View>
       </BottomModal>
       <AwesomeAlert

@@ -187,7 +187,6 @@ const ChatInfo = ({ navigation }) => {
   );
   const [isVideoEnable, setIsVideoEnable] = useState(false);
   const [muteChat, setMuteChat] = useState(muted);
-  const [showDeleteOption, setShowDeleteOption] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);
   const [alertData, setAlertData] = useState({
@@ -728,7 +727,7 @@ const ChatInfo = ({ navigation }) => {
       </BottomModal>
       <BottomModal
         ref={optionModalRef}
-        onModalHide={() => setShowDeleteOption(false)}
+        onModalHide={() => optionModalRef.current?.close()}
         header={
           <View style={styles.bar} />
         }
