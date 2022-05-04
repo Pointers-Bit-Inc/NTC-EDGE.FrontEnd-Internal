@@ -489,31 +489,31 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
         return (
           <>
             {fullVideo(!selectedPeer || selectedPeer === myId)}
-            <View style={styles.videoList}>
-            {
-              !!message && (
-                <VideoNotification
-                  message={message}
-                  setNotification={() => setNotification('')}
-                />
-              )
-            }
             {
               isMaximize && (
-                <FlatList
-                  data={peerList}
-                  bounces={false}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  renderItem={renderItem}
-                  ItemSeparatorComponent={separator}
-                  ListHeaderComponent={separator}
-                  ListFooterComponent={separator}
-                  keyExtractor={item => `${item}`}
-                />
+                <View style={styles.videoList}>
+                  {
+                    !!message && (
+                      <VideoNotification
+                        message={message}
+                        setNotification={() => setNotification('')}
+                      />
+                    )
+                  }
+                  <FlatList
+                    data={peerList}
+                    bounces={false}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    renderItem={renderItem}
+                    ItemSeparatorComponent={separator}
+                    ListHeaderComponent={separator}
+                    ListFooterComponent={separator}
+                    keyExtractor={item => `${item}`}
+                  />
+                </View>
               )
             }
-            </View>
           </>
         )
       }

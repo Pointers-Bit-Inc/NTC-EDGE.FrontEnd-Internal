@@ -191,7 +191,6 @@ const AddParticipants = ({ navigation }:any) => {
     setNextLoading(true);
     api.post(`/rooms/${roomId}/add-members`, {
       participants: selectedParticipants,
-      meetingId: _id,
     })
     .then((res) => {
       setNextLoading(false);

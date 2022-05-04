@@ -219,7 +219,7 @@ const Participants = ({ navigation }) => {
   const removeMember = () => {
     setShowAlert(false);
     setLoading(true);
-    api.post(`/rooms/${roomId}/remove-member?participantId=${selectedParticipant._id}&meetingId=${meetingId}`)
+    api.post(`/rooms/${roomId}/remove-member?participantId=${selectedParticipant._id}`)
     .then((res) => {
       setLoading(false);
       if(res.data) {

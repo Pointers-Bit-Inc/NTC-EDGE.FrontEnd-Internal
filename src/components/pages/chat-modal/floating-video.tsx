@@ -37,8 +37,8 @@ const dimensions = {
   height: Dimensions.get('window').height,
 };
 
-const VideoWidth = dimensions.width * 0.4;
-const VideoHeight = dimensions.width * 0.26;
+const VideoWidth = dimensions.width * 0.5;
+const VideoHeight = dimensions.width * 0.32;
 const defaultPositionY = dimensions.height * 0.82 - VideoHeight;
 const defaultPositionX = -(dimensions.width - VideoWidth - 25);
 const defaultSnapX = [0, defaultPositionX];
