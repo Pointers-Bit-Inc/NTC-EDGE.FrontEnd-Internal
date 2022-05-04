@@ -57,7 +57,7 @@ export default function Meeting(state = initialState, action:any = {}) {
       return state.setIn(['normalizedMeetingList'], action.payload);
     }
     case ADD_TO_MEETINGS: {
-      return state.setIn(['normalizedMeetingList'], {...state.list, ...action.payload});
+      return state.setIn(['normalizedMeetingList'], {...state.normalizedMeetingList, ...action.payload});
     }
     case ADD_MEETING: {
       let newState = state.setIn(['normalizedMeetingList', action.payload._id], action.payload);

@@ -173,7 +173,7 @@ const ChatList = ({ navigation }:any) => {
       }
       return channel;
     });
-    return lodash.orderBy(channelList, 'lastMessage.createdAt', 'desc');
+    return lodash.orderBy(channelList, 'updatedAt', 'desc');
   }, [normalizedChannelList]);
 
   const meetingList = useMemo(() => {
