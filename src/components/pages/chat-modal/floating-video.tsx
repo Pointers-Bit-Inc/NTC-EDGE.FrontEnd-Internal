@@ -18,6 +18,7 @@ import {
   setMeeting,
   setNotification,
   setOptions,
+  setPinnedParticipant,
   updateMeetingParticipants,
 } from 'src/reducers/meeting/actions';
 import { setSelectedChannel, setMeetings, removeSelectedMessage } from 'src/reducers/channel/actions';
@@ -29,6 +30,7 @@ import { requestCameraAndAudioPermission } from 'src/hooks/usePermission';
 import { Feather } from '@expo/vector-icons';
 import { Bold } from '@styles/font';
 import { useNavigation } from '@react-navigation/native';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -39,7 +41,7 @@ const dimensions = {
 
 const VideoWidth = dimensions.width * 0.5;
 const VideoHeight = dimensions.width * 0.32;
-const defaultPositionY = dimensions.height * 0.82 - VideoHeight;
+const defaultPositionY = dimensions.height * 0.83 - VideoHeight;
 const defaultPositionX = -(dimensions.width - VideoWidth - 25);
 const defaultSnapX = [0, defaultPositionX];
 const defaultSnapY = [0, defaultPositionY];
@@ -117,14 +119,15 @@ const FloatingVideo = () => {
   const navigation = useNavigation();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
-  const { meeting, options, meetingId, isFullScreen } = useSelector((state:RootStateOrAny) => {
-    const { meeting, options, isFullScreen } = state.meeting;
+  const { meeting, options, meetingId, isFullScreen, pinnedParticipant } = useSelector((state:RootStateOrAny) => {
+    const { meeting, options, isFullScreen, pinnedParticipant } = state.meeting;
     meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
     return {
       meeting,
       options,
       meetingId: meeting?._id,
       isFullScreen,
+      pinnedParticipant,
     };
   });
   const {
@@ -336,6 +339,10 @@ const FloatingVideo = () => {
     }
   }
 
+  const onSetPinnedParticipant = (participant:IParticipants) => {
+    dispatch(setPinnedParticipant(participant));
+  }
+
   return (
     <PanGestureHandler enabled={!isFullScreen} onGestureEvent={onGestureEvent}>
       <AnimatedPressable
@@ -373,10 +380,12 @@ const FloatingVideo = () => {
             isVoiceCall={isVoiceCall}
             callEnded={meeting?.ended}
             message={meeting?.notification}
-            setNotification={() => setNotification('')}
+            setNotification={() => dispatch(setNotification(null))}
             onEndCall={onEndCall}
             isGroup={meeting?.isGroup}
             isMaximize={isFullScreen}
+            pinnedParticipant={pinnedParticipant}
+            setPinnedParticipant={onSetPinnedParticipant}
           />
         </View>
       </AnimatedPressable>

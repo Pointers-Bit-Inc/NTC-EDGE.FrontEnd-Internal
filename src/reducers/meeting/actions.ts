@@ -17,6 +17,7 @@ const {
   SET_FULLSCREEN,
   RESET_CURRENT_MEETING,
   REMOVE_MEETING_FROM_LIST,
+  SET_PINNED_PARTICIPANT,
 } = require('./types').default;
 
 interface NormalizedMeeting {
@@ -30,7 +31,7 @@ export function setConnectionStatus(payload:string) {
   };
 }
 
-export function setNotification(payload:string) {
+export function setNotification(payload:any) {
   return {
     type: SET_NOTIFICATION,
     payload,
@@ -123,5 +124,12 @@ export function removeMeetingFromList(payload:string) {
   return {
     type: REMOVE_MEETING_FROM_LIST,
     payload
+  }
+}
+
+export function setPinnedParticipant(payload:IParticipants|null) {
+  return {
+    type: SET_PINNED_PARTICIPANT,
+    payload,
   }
 }

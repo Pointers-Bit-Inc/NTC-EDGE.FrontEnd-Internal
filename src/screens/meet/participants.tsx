@@ -17,7 +17,7 @@ import AwesomeAlert from 'react-native-awesome-alerts'
 import useApi from 'src/services/api'
 import Loading from '@components/atoms/loading'
 import { updateChannel } from 'src/reducers/channel/actions'
-import { setFullScreen, setMeeting, setOptions } from 'src/reducers/meeting/actions'
+import { setFullScreen, setMeeting, setOptions, setPinnedParticipant } from 'src/reducers/meeting/actions'
 import AddParticipants from '@components/pages/chat-modal/add-participants'
 import { InputField } from '@components/molecules/form-fields'
 import useSignalr from 'src/hooks/useSignalr'
@@ -261,7 +261,7 @@ const Participants = ({ navigation }) => {
               {
                 listType === 'inTheMeeting' && (
                   <TouchableOpacity onPress={() => {
-                    // optionModalRef.current?.close();
+                    optionModalRef.current?.close();
                     // setTimeout(() => {
                     //   meetingModalRef.current?.open();
                     // }, 500);
@@ -296,7 +296,10 @@ const Participants = ({ navigation }) => {
         }
         {
           listType === 'inTheMeeting' && (
-            <TouchableOpacity onPress={() => optionModalRef.current?.close()}>
+            <TouchableOpacity onPress={() => {
+              optionModalRef.current?.close();
+              dispatch(setPinnedParticipant(selectedParticipant));
+            }}>
               <View style={[styles.option, { borderBottomWidth: 0 }]}>
                 <PinParticipantIcon />
                 <Text

@@ -23,6 +23,7 @@ import Text from '@components/atoms/text';
 import { text } from '@styles/color';
 import VideoButtons from '@components/molecules/video/buttons'
 import VideoNotification from './notification';
+import IParticipants from 'src/interfaces/IParticipants';
 const { width, height } = Dimensions.get('window');
 
 const AgoraLocalView =
@@ -142,6 +143,8 @@ interface Props {
   setNotification?: any;
   isGroup?: boolean;
   isMaximize?: boolean;
+  pinnedParticipant?: any;
+  setPinnedParticipant?: any;
 }
 
 export type VideoLayoutRef =  {
@@ -166,9 +169,11 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   message = '',
   isVoiceCall = false,
   onEndCall = () => {},
-  setNotification = (message:string) => {},
+  setNotification = () => {},
   isGroup = false,
   isMaximize = true,
+  pinnedParticipant = null,
+  setPinnedParticipant = () => {},
 }, ref) => {
   const [selectedPeer, setSelectedPeer]:any = useState(null);
   const [peerList, setPeerList]:any = useState([]);
@@ -226,9 +231,13 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 
   useEffect(() => {
     if (meetingParticipants) {
+      const isPinnedInTheMeeting = lodash.find(peerIds, p => p === pinnedParticipant?.uid);
       if (lodash.size(peerIds) === 2) {
         const filterPeer = lodash.reject(peerIds, p => p === myId);
-        setSelectedPeer(filterPeer[0]);
+        if (!isPinnedInTheMeeting) {
+          setPinnedParticipant(null);
+          setSelectedPeer(filterPeer[0]);
+        }
         setPeerList([myId]);
       } else {
         const findFocus = lodash.find(meetingParticipants, p => {
@@ -240,16 +249,22 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
         });
         if (findFocus) {
           const filterPeer = lodash.reject(peerIds, p => p === findFocus.uid);
-          setSelectedPeer(findFocus.uid);
+          if (!isPinnedInTheMeeting) {
+            setPinnedParticipant(null);
+            setSelectedPeer(findFocus.uid);
+          }
           setPeerList(filterPeer);
         } else {
           const filterPeer = lodash.reject(peerIds, p => p === myId);
-          setSelectedPeer(myId);
+          if (!isPinnedInTheMeeting) {
+            setPinnedParticipant(null);
+            setSelectedPeer(myId);
+          }
           setPeerList(filterPeer);
         }
       }
     }
-  }, [meetingParticipants, peerIds])
+  }, [meetingParticipants, peerIds, pinnedParticipant])
 
   useEffect(() => {
     const filterPeer = lodash.reject(peerIds, p => p === selectedPeer);
@@ -257,14 +272,28 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   }, [selectedPeer])
 
   useEffect(() => {
-    if (isGroup) {
+    if (isGroup && !pinnedParticipant) {
       if (activeSpeaker) {
         setSelectedPeer(activeSpeaker);
       } else {
         setSelectedPeer(myId);
       }
     }
-  }, [activeSpeaker]);
+  }, [activeSpeaker, pinnedParticipant]);
+
+  useEffect(() => {
+    if (pinnedParticipant?.uid) {
+      setSelectedPeer(pinnedParticipant.uid);
+    }
+  }, [pinnedParticipant]);
+
+  const onSetPinnedParticipant = (participant:IParticipants) => {
+    if (pinnedParticipant?.uid && pinnedParticipant._id === participant._id) {
+      setPinnedParticipant(null);
+    } else {
+      setPinnedParticipant(participant);
+    }
+  }
 
   const separator = () => (
     <View style={{ width: 15 }} />
@@ -379,7 +408,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     if (findParticipant) {
       if (item === myId) {
         return (
-          <TouchableWithoutFeedback onPress={() => setSelectedPeer(item)}>
+          <TouchableWithoutFeedback onPress={() => onSetPinnedParticipant(findParticipant)}>
             <View style={styles.smallVideo}>
               {
                 isVideoEnable ? (
@@ -436,7 +465,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
         );
       }
       return (
-        <TouchableWithoutFeedback onPress={() => setSelectedPeer(item)}>
+        <TouchableWithoutFeedback onPress={() => onSetPinnedParticipant(findParticipant)}>
           <View style={styles.smallVideo}>
             {
               peerVideoState[item] === VideoRemoteState.Decoding ? (
@@ -496,7 +525,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                     !!message && (
                       <VideoNotification
                         message={message}
-                        setNotification={() => setNotification('')}
+                        setNotification={setNotification}
                       />
                     )
                   }

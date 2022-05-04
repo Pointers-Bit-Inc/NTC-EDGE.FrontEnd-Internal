@@ -16,6 +16,7 @@ const {
   SET_FULLSCREEN,
   RESET_CURRENT_MEETING,
   REMOVE_MEETING_FROM_LIST,
+  SET_PINNED_PARTICIPANT,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -29,6 +30,9 @@ export default function Meeting(state = initialState, action:any = {}) {
     }
     case SET_NOTIFICATION: {
       let newState = state;
+      if (!action.payload) {
+        return state.setIn(['meeting', 'notification'], null);
+      }
       if (state.meeting?._id) {
         if (state.meeting._id === action.payload.meetingId) {
           newState = state.setIn(['meeting', 'notification'], action.payload.message);
@@ -88,6 +92,7 @@ export default function Meeting(state = initialState, action:any = {}) {
 
         if (state.meeting?._id === action.payload._id) {
           newState = newState.setIn(['meeting'], action.payload)
+            .setIn(['pinnedParticipant'], null);
         }
   
         if (action.payload.ended) {
@@ -99,7 +104,8 @@ export default function Meeting(state = initialState, action:any = {}) {
         let newState = state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
 
         if (state.meeting?._id === action.payload._id) {
-          newState = newState.setIn(['meeting'], action.payload);
+          newState = newState.setIn(['meeting'], action.payload)
+            .setIn(['pinnedParticipant'], null);
         }
   
         if (action.payload.ended) {
@@ -113,6 +119,7 @@ export default function Meeting(state = initialState, action:any = {}) {
     }
     case SET_MEETING: {
       return state.setIn(['meeting'], action.payload)
+        .setIn(['pinnedParticipant'], null);
     }
     case UPDATE_MEETING_PARTICIPANTS: {
       const meeting = state.normalizedMeetingList[action.payload._id];
@@ -140,7 +147,8 @@ export default function Meeting(state = initialState, action:any = {}) {
     case RESET_MEETING: {
       return state.setIn(['normalizedMeetingList'], {})
         .setIn(['activeMeetings'], [])
-        .setIn(['meeting'], null);
+        .setIn(['meeting'], null)
+        .setIn(['pinnedParticipant'], null);
     }
     case SET_OPTIONS: {
       return state.setIn(['options'], action.payload);
@@ -150,6 +158,7 @@ export default function Meeting(state = initialState, action:any = {}) {
     }
     case RESET_CURRENT_MEETING: {
       return state.setIn(['meeting'], null)
+        .setIn(['pinnedParticipant'], null)
         .setIn(['isFullScreen'], true)
         .setIn(['options'], {
           isHost: false,
@@ -165,6 +174,9 @@ export default function Meeting(state = initialState, action:any = {}) {
         newState = newState.removeIn(['normalizedMeetingList', action.payload]);
       }
       return newState;
+    }
+    case SET_PINNED_PARTICIPANT: {
+      return state.setIn(['pinnedParticipant'], action.payload);
     }
     default:
       return state;
