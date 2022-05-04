@@ -129,7 +129,7 @@ const BasicInfo=(props:any)=>{
                                     </View>
                                 </View>
                                 <Row label={"Full Name:"}
-                                     applicant={applicant?.firstName  && applicant?.lastName ? applicant?.firstName+(applicant?.middleName ? " "+applicant?.middleName?.charAt()+"." : "")+" "+applicant?.lastName : ""}/>
+                                     applicant={applicant?.firstName  && applicant?.lastName ? applicant?.firstName+(applicant?.middleName ? " "+applicant?.middleName?.charAt()+"." : "")+" "+applicant?.lastName : applicant?.applicantName ? applicant?.applicantName : ""}/>
                                 <Row label={"Suffix:"}
                                      applicant={applicant?.suffix}/>
                                 <Row label={"Date of Birth:"}

@@ -26,14 +26,13 @@ const { width , height } = Dimensions.get("screen");
 
 let outputLabel = (applicationType: string) => {
     applicationType = applicationType?.toLowerCase();
-    if (applicationType?.match('admission slip') || service?.serviceCode === 'service-1') return 'Admission Slip';
+    if (applicationType?.match('admission slip')) return 'Admission Slip';
     else if (applicationType?.match('certificate')) return 'Certificate';
     else if (applicationType?.match('license')) return 'License';
     else if (applicationType?.match('permit')) return 'Permit';
     return '';
 };
 const ApplicationDetails = (props: any) => {
-
     const dimensions=useWindowDimensions();
     const {rightLayoutComponent}=useSelector((state:RootStateOrAny)=>state.application);
     const [modalVisible, setModalVisible] = useState(false);
@@ -48,19 +47,20 @@ const ApplicationDetails = (props: any) => {
                     <Text style={ styles.applicationType }>{ props?.applicantType ||  props?.service?.name   }</Text>
                     <Text style={ [styles.service, {fontFamily: Regular500}] }>{  props?.service?.applicationType?.label || props?.service?.name }</Text>
                     <Text style={ [styles.service, {fontFamily: Regular500}] }>{  props?.service?.applicationType?.element  || props?.service?.radioType?.label }</Text>
-                    <View style={{paddingVertical: 10}}>
-                        <Pressable  onPress={() => setModalVisible(true)}>
-                            <View style={{flexDirection: "row"}}>
-                                <View style={{paddingRight:fontValue(10)}}>
-                                    <FileOutlineIcon height={fontValue(20)} width={fontValue(16)}/>
+                    {
+                        props?.documents &&   <View style={{paddingVertical:10}}>
+                            <Pressable onPress={()=>setModalVisible(true)}>
+                                <View style={{flexDirection:"row"}}>
+                                    <View style={{paddingRight:fontValue(10)}}>
+                                        <FileOutlineIcon height={fontValue(20)} width={fontValue(16)}/>
+                                    </View>
+                                    <Text
+                                        style={requirementStyles.text}>{outputLabel(props?.applicantType||props?.service?.name)}</Text>
                                 </View>
-                                <Text
-                                    style={requirementStyles.text}>{  outputLabel(props?.applicantType ||  props?.service?.name) }</Text>
-                            </View>
 
-                        </Pressable>
-                    </View>
-
+                            </Pressable>
+                        </View>
+                    }
 
 
                     { props?.service?.radioType?.selected && <Text style={ [styles.service, {fontFamily: Regular500}] }>{ `\u2022${ props?.service?.radioType?.selected }` }</Text>}
@@ -106,6 +106,7 @@ const ApplicationDetails = (props: any) => {
                     </View>
 
                 </View>
+
             <View style={{flex: 1, position: "absolute"}}>
                 <ScrollView>
                     <PdfViewr width={rightLayoutComponent?.width}
