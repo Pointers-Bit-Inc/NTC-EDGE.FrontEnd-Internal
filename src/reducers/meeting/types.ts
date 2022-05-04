@@ -22,4 +22,6 @@ export default keyMirror({
   SET_OPTIONS: null,
   SET_FULLSCREEN: null,
   RESET_CURRENT_MEETING: null,
+  REMOVE_MEETING_FROM_LIST: null,
+  SET_PINNED_PARTICIPANT: null,
 });

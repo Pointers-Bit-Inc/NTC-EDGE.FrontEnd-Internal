@@ -15,6 +15,7 @@ const {
   SET_OPTIONS,
   SET_FULLSCREEN,
   RESET_CURRENT_MEETING,
+  REMOVE_MEETING_FROM_LIST,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -27,10 +28,30 @@ export default function Meeting(state = initialState, action:any = {}) {
       return state.setIn(['connectionStatus'], action.payload);
     }
     case SET_NOTIFICATION: {
-      if (state.meeting?._id && state.meeting._id === action.payload.meetingId) {
-        return state.setIn(['meeting', 'notification'], action.payload.message);
+      let newState = state;
+      if (state.meeting?._id) {
+        if (state.meeting._id === action.payload.meetingId) {
+          newState = state.setIn(['meeting', 'notification'], action.payload.message);
+          if (action.payload.status === 'joined' || action.payload.status === 'busy' || action.payload.status === 'leave') {
+            newState = newState.setIn(['meeting', 'participants'], action.payload.participants);
+          }
+  
+          return newState;
+        } else {
+          if (action.payload.meetingId) {
+            if (action.payload.status === 'joined' || action.payload.status === 'busy' || action.payload.status === 'leave') {
+              if (state.normalizedMeetingList[action.payload.meetingId]) {
+                newState = newState.setIn(['normalizedMeetingList', action.payload.meetingId, 'participants'], action.payload.participants);
+              }
+              if (state.normalizeActiveMeetings[action.payload.meetingId]) {
+                newState = newState.setIn(['normalizeActiveMeetings', action.payload.meetingId, 'participants'], action.payload.participants);
+              }
+            }
+          }
+        }
       }
-      return state;
+      
+      return newState;
     }
     case SET_MEETINGS: {
       return state.setIn(['normalizedMeetingList'], action.payload);
@@ -51,9 +72,14 @@ export default function Meeting(state = initialState, action:any = {}) {
       if (!action?.payload?.room?.lastMessage) {
         const meeting = state.normalizedMeetingList[action.payload._id];
         if (!meeting) {
-          return state;
+          let newState = state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
+
+          if (!action.payload.ended) {
+            newState = newState.setIn(['normalizeActiveMeetings', action.payload._id], action.payload);
+          }
+
+          return newState;
         }
-        const leavingParticipant = lodash.find(meeting.participants, (p:IParticipants) => !lodash.find(action.payload.participants, (pt:IParticipants) => pt._id === p._id));
         const participants = action.payload.participants;
         const participantsId = action.payload.participantsId;
 
@@ -61,13 +87,7 @@ export default function Meeting(state = initialState, action:any = {}) {
         .setIn(['normalizedMeetingList', action.payload._id, 'participantsId'], participantsId);
 
         if (state.meeting?._id === action.payload._id) {
-          newState = newState.setIn(['meeting', 'participants'], participants)
-          .setIn(['meeting', 'participantsId'], participantsId);
-
-          if (leavingParticipant) {
-            const message = `${leavingParticipant.title || ''} ${leavingParticipant.firstName} is currently busy`;
-            newState = newState.setIn(['meeting', 'notification'], message);
-          }
+          newState = newState.setIn(['meeting'], action.payload)
         }
   
         if (action.payload.ended) {
@@ -84,6 +104,8 @@ export default function Meeting(state = initialState, action:any = {}) {
   
         if (action.payload.ended) {
           newState = newState.removeIn(['normalizeActiveMeetings', action.payload._id]);
+        } else {
+          newState = newState.setIn(['normalizeActiveMeetings', action.payload._id], action.payload);
         }
   
         return newState;
@@ -135,6 +157,14 @@ export default function Meeting(state = initialState, action:any = {}) {
           isMute: false,
           isVideoEnable: true,
         });
+    }
+    case REMOVE_MEETING_FROM_LIST: {
+      let newState = state;
+      if (action.payload) {
+        newState = newState.removeIn(['normalizeActiveMeetings', action.payload]);
+        newState = newState.removeIn(['normalizedMeetingList', action.payload]);
+      }
+      return newState;
     }
     default:
       return state;

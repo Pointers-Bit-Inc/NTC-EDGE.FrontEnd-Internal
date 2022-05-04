@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Meeting from '@screens/meet';
-import Participants from '@screens/meet/participants';
+import Participants from '@screens/meet/add-participants';
 import CreateMeeting from '@screens/meet/create';
 import VideoCall from '@screens/meet/video';
 

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Platform } from "react-native";
+import { Alert, Platform } from "react-native";
 import DeviceInfo from 'react-native-device-info';
 import { HubConnectionBuilder, HubConnection, LogLevel, HttpTransportType } from "@microsoft/signalr";
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
@@ -7,7 +7,7 @@ import { BASE_URL, API_VERSION } from 'src/services/config';
 import useApi from 'src/services/api';
 import { normalize, schema } from 'normalizr';
 import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
-import { addMeeting, updateMeeting, setConnectionStatus, setNotification } from 'src/reducers/meeting/actions';
+import { addMeeting, updateMeeting, setConnectionStatus, setNotification, setMeeting, removeMeetingFromList } from 'src/reducers/meeting/actions';
 import { addMessages, updateMessages, addChannel, removeChannel, updateChannel, addFiles } from 'src/reducers/channel/actions';
 
 const useSignalr = () => {
@@ -71,6 +71,11 @@ const useSignalr = () => {
           break;
         }
         case 'delete': dispatch(removeChannel(data._id)); break;
+        case 'remove': {
+          dispatch(removeChannel(data._id));
+          Alert.alert('Alert', 'You have been removed from the chat.');
+          break;
+        }
       }
     }
   };
@@ -96,6 +101,13 @@ const useSignalr = () => {
         }
         case 'notification': {
           dispatch(setNotification(data));
+          break;
+        }
+        case 'remove': {
+          dispatch(removeChannel(data.roomId));
+          dispatch(setMeeting(null));
+          dispatch(removeMeetingFromList(data._id));
+          Alert.alert('Alert', 'You have been removed from the meeting.');
           break;
         }
       }
@@ -293,7 +305,7 @@ const useSignalr = () => {
   }, []);
 
   const getActiveMeetingList = useCallback((callback = () => {}) => {
-    api.get(`/users/${user._id}/meetings?status=${"active"}`)
+    api.get(`/users/${user._id}/meetings?status=active`)
     .then(res => {
       const normalized = normalize(res.data, new schema.Array(meetingSchema));
       return callback(null, normalized?.entities?.meetings);

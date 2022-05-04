@@ -12,14 +12,14 @@ import UserProfile from "@pages/user-profile";
 import Settings from '@pages/settings';
 
 import Meeting from '@screens/meet';
-import Participants from '@screens/meet/participants';
+import Participants from '@screens/meet/add-participants';
 import CreateMeeting from '@screens/meet/create';
 import InitiateVideoCall from '@screens/meet/create';
 
 import ChatList from '@screens/chat';
 import ViewChat from '@screens/chat/view';
 import ChatInfo from '@screens/chat/info';
-import MeetingParticipants from '@screens/chat/participants';
+import MeetingParticipants from '@screens/meet/participants';
 import NewChat from '@screens/chat/new-chat';
 import Search from "@pages/activities/search";
 import TabBar from "@pages/activities/tabbar";

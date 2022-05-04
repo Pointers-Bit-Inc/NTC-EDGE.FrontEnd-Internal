@@ -289,6 +289,12 @@ const ChatView = ({ navigation, route }:any) => {
   }
 
   useEffect(() => {
+    if (!_id) {
+      navigation.goBack();
+    }
+  }, [_id]);
+
+  useEffect(() => {
     if (lodash.size(selectedFile)) {
       dispatch(addPendingMessage({
         attachment: selectedFile,
