@@ -15,7 +15,7 @@ export default {
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": false,
+      "supportsTablet": true,
       "usesIcloudStorage": true,
       "bundleIdentifier": "com.ntcedge.portal",
       "buildNumber": process.env.APP_VERSION ?? "1.0.4",
