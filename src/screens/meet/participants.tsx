@@ -17,7 +17,7 @@ import AwesomeAlert from 'react-native-awesome-alerts'
 import useApi from 'src/services/api'
 import Loading from '@components/atoms/loading'
 import { updateChannel } from 'src/reducers/channel/actions'
-import { setFullScreen, setMeeting, setOptions, setPinnedParticipant } from 'src/reducers/meeting/actions'
+import { setFullScreen, setMeeting, setOptions, setPinnedParticipant, setToggle } from 'src/reducers/meeting/actions'
 import AddParticipants from '@components/pages/chat-modal/add-participants'
 import { InputField } from '@components/molecules/form-fields'
 import useSignalr from 'src/hooks/useSignalr'
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
 const Participants = ({ navigation }) => {
   const dispatch = useDispatch();
   const {
-    leaveChannel,
+    muteParticipant,
   } = useSignalr();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const api = useApi(user.sessionToken);
@@ -262,9 +262,17 @@ const Participants = ({ navigation }) => {
                 listType === 'inTheMeeting' && (
                   <TouchableOpacity onPress={() => {
                     optionModalRef.current?.close();
-                    // setTimeout(() => {
-                    //   meetingModalRef.current?.open();
-                    // }, 500);
+                    dispatch(setToggle({
+                      uid: selectedParticipant.uid,
+                      muted: !selectedParticipant.muted,
+                    }));
+                    setLoading(true);
+                    muteParticipant(meetingId, {
+                      participantId: selectedParticipant._id,
+                      muted: !selectedParticipant.muted,
+                    }, () => {
+                      setLoading(false);
+                    });
                   }}>
                     <View style={[styles.option]}>
                       <MicOffIcon />
@@ -273,7 +281,7 @@ const Participants = ({ navigation }) => {
                         color={'black'}
                         size={18}
                       >
-                        Mute participant
+                        {selectedParticipant.muted ? 'Unmute' : 'Mute'} participant
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -349,10 +357,10 @@ const Participants = ({ navigation }) => {
         }}
         rightIcon={
           type === 'inTheMeeting' && 
-          <View style={{ marginRight: -15 }}>
+          <View style={{ marginRight: item.muted ? -18 : -15 }}>
             {
               item.muted ? (
-                <MicOffIcon />
+                <MicOffIcon color={text.error} />
               ) : (
                 <MicOnIcon color={'#2863D6'} />
               )

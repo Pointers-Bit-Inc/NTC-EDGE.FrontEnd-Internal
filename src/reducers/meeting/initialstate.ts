@@ -17,6 +17,7 @@ const InitialState = Record({
   isFullScreen: true,
   connectionStatus: "",
   pinnedParticipant: null,
+  toggleMute: null,
 });
 
 export default InitialState;

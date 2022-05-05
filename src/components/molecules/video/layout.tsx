@@ -10,7 +10,7 @@ import React, {
 import { View, StyleSheet, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import lodash from 'lodash';
 import { useInitializeAgora } from 'src/hooks/useAgora';
-import { MicIcon, CameraIcon } from '@components/atoms/icon';
+import { MicIcon, CameraIcon, MicOffIcon } from '@components/atoms/icon';
 import {
   RtcLocalView,
   RtcRemoteView,
@@ -24,6 +24,7 @@ import { text } from '@styles/color';
 import VideoButtons from '@components/molecules/video/buttons'
 import VideoNotification from './notification';
 import IParticipants from 'src/interfaces/IParticipants';
+import { RFValue } from 'react-native-responsive-fontsize';
 const { width, height } = Dimensions.get('window');
 
 const AgoraLocalView =
@@ -117,8 +118,8 @@ const styles = StyleSheet.create({
   },
   mic: {
     position: 'absolute',
-    top: 5,
-    left: 5,
+    top: 4,
+    left: 4,
   },
   footer: {
     width: '100%',
@@ -134,12 +135,13 @@ interface Props {
   meetingParticipants?: [];
   user: any;
   options: any;
-  header?: ReactNode;
+  header?: any;
   agora?: any;
   callEnded?: boolean;
   message?: string;
   isVoiceCall?: boolean;
   onEndCall?: any;
+  onMute?: any;
   setNotification?: any;
   isGroup?: boolean;
   isMaximize?: boolean;
@@ -163,12 +165,13 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   meetingParticipants = [],
   user = {},
   options = {},
-  header,
+  header = () => {},
   agora = {},
   callEnded = false,
   message = '',
   isVoiceCall = false,
   onEndCall = () => {},
+  onMute = () => {},
   setNotification = () => {},
   isGroup = false,
   isMaximize = true,
@@ -193,6 +196,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     isVideoEnable,
     activeSpeaker,
     toggleIsMute,
+    toggleRemoteAudio,
     toggleIsSpeakerEnable,
     toggleIsVideoEnable,
     switchCamera,
@@ -210,6 +214,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     isSpeakerEnable,
     isVideoEnable,
     toggleIsMute,
+    toggleRemoteAudio,
     toggleIsSpeakerEnable,
     toggleIsVideoEnable,
   }));
@@ -231,31 +236,31 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 
   useEffect(() => {
     if (meetingParticipants) {
-      const isPinnedInTheMeeting = lodash.find(peerIds, p => p === pinnedParticipant?.uid);
-      if (lodash.size(peerIds) === 2) {
-        const filterPeer = lodash.reject(peerIds, p => p === myId);
-        if (!isPinnedInTheMeeting) {
-          setPinnedParticipant(null);
-          setSelectedPeer(filterPeer[0]);
-        }
+      const isPinnedInTheMeeting = lodash.find(peerIds, (p:number) => p === pinnedParticipant?.uid);
+      let filterPeer = lodash.reject(peerIds, (p:number) => p === myId);
+
+      if (!!isPinnedInTheMeeting) {
+        filterPeer = lodash.reject(peerIds, (p:number) => p === pinnedParticipant.uid);
+      }
+
+      if (lodash.size(peerIds) === 2 && !isPinnedInTheMeeting) {
+        setPinnedParticipant(null);
+        setSelectedPeer(filterPeer[0]);
         setPeerList([myId]);
       } else {
-        const findFocus = lodash.find(meetingParticipants, p => {
+        const findFocus = lodash.find(meetingParticipants, (p:IParticipants) => {
           if (p.isFocused) {
-            const findPeer = lodash.find(peerIds, pd => pd === p.uid)
+            const findPeer = lodash.find(peerIds, (pd:number) => pd === p.uid)
             return !!findPeer;
           }
           return false
         });
-        if (findFocus) {
-          const filterPeer = lodash.reject(peerIds, p => p === findFocus.uid);
-          if (!isPinnedInTheMeeting) {
-            setPinnedParticipant(null);
-            setSelectedPeer(findFocus.uid);
-          }
+        if (findFocus && !isPinnedInTheMeeting) {
+          filterPeer = lodash.reject(peerIds, (p:number) => p === findFocus.uid);
+          setPinnedParticipant(null);
+          setSelectedPeer(findFocus.uid);
           setPeerList(filterPeer);
         } else {
-          const filterPeer = lodash.reject(peerIds, p => p === myId);
           if (!isPinnedInTheMeeting) {
             setPinnedParticipant(null);
             setSelectedPeer(myId);
@@ -263,6 +268,8 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
           setPeerList(filterPeer);
         }
       }
+      
+      checkToggleMute();
     }
   }, [meetingParticipants, peerIds, pinnedParticipant])
 
@@ -287,12 +294,25 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     }
   }, [pinnedParticipant]);
 
+  const checkToggleMute = () => {
+    const userParticipantDetails:IParticipants = lodash.find(meetingParticipants, (p:IParticipants) => p._id === user?._id);
+    if (userParticipantDetails) {
+      if (!!userParticipantDetails.muted !== isMute) {
+        toggleIsMute();
+      }
+    }
+  }
+
   const onSetPinnedParticipant = (participant:IParticipants) => {
     if (pinnedParticipant?.uid && pinnedParticipant._id === participant._id) {
       setPinnedParticipant(null);
     } else {
       setPinnedParticipant(participant);
     }
+  }
+
+  const onToggleMute = () => {
+    onMute(!isMute);
   }
 
   const separator = () => (
@@ -321,38 +341,43 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             )
           }
           {
-          isVideoEnable ? null : (
-            <Text
-              style={styles.name}
-              numberOfLines={1}
-              size={isMaximize ? 16 : 12}
-              color={'white'}
-            >
-              {findParticipant?.title || ''} {findParticipant?.firstName}
-            </Text>
-          )
-        }
-          {
-            isMute ? (
-              <MicIcon
-                style={[styles.mic, { top: 85, left: 20 }]}
-                size={16}
-                type='muted'
-                color={text.error}
-              />
-            ) : null
+            isVideoEnable ? null : (
+              <Text
+                style={styles.name}
+                numberOfLines={1}
+                size={isMaximize ? 16 : 12}
+                color={'white'}
+              >
+                {findParticipant?.title || ''} {findParticipant?.firstName}
+              </Text>
+            )
           }
           {
-            (isMaximize && isVideoEnable) && (
-              <View style={{ position:'absolute', top: 80, right: 20 }}>
-                <TouchableOpacity onPress={switchCamera}>
-                  <CameraIcon
-                    size={20}
-                    type='switch'
-                    color={'white'}
-                  />
-                </TouchableOpacity>
-              </View>
+            isMaximize && (
+              <>
+                {
+                  isMute ? (
+                    <View style={[styles.mic, { top: 85, left: 18 }]}>
+                      <MicOffIcon
+                        color={text.error}
+                      />
+                    </View>
+                  ) : null
+                }
+                {
+                  isVideoEnable && (
+                    <View style={{ position:'absolute', top: 85, right: 20 }}>
+                      <TouchableOpacity onPress={switchCamera}>
+                        <CameraIcon
+                          size={20}
+                          type='switch'
+                          color={'white'}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  )
+                }
+              </>
             )
           }
         </View>
@@ -390,13 +415,12 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
           )
         }
         {
-          peerAudioState[selectedPeer] === 0 ? (
-            <MicIcon
-              style={[styles.mic, { top: 120, left: 20 }]}
-              size={16}
-              type='muted'
-              color={text.error}
-            />
+          isMaximize && peerAudioState[selectedPeer] === 0 ? (
+            <View style={[styles.mic, { top: 85, left: 18 }]}>
+              <MicOffIcon
+                color={text.error}
+              />
+            </View>
           ) : null
         }
       </View>
@@ -439,12 +463,13 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               </Text>
               {
                 isMute ? (
-                  <MicIcon
-                    style={styles.mic}
-                    size={16}
-                    type='muted'
-                    color={text.error}
-                  />
+                  <View style={styles.mic}>
+                    <MicOffIcon
+                      color={text.error}
+                      width={RFValue(16)}
+                      height={RFValue(16)}
+                    />
+                  </View>
                 ) : null
               }
               {
@@ -497,12 +522,13 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             </Text>
             {
               peerAudioState[item] === 0 ? (
-                <MicIcon
-                  style={styles.mic}
-                  size={16}
-                  type='muted'
-                  color={text.error}
-                />
+                <View style={styles.mic}>
+                  <MicOffIcon
+                    color={text.error}
+                    width={RFValue(16)}
+                    height={RFValue(16)}
+                  />
+                </View>
               ) : null
             }
           </View>
@@ -559,7 +585,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   const renderHeader = () => {
     if (joinSucceed && !callEnded) {
       if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
-        return header;
+        return header();
       }
     }
 
@@ -575,7 +601,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
           <View style={styles.footer}>
             <VideoButtons
               onSpeakerEnable={toggleIsSpeakerEnable}
-              onMute={toggleIsMute}
+              onMute={onToggleMute}
               onVideoEnable={toggleIsVideoEnable}
               onMore={() => {}}
               onEndCall={() => onEndCall(joinSucceed && lodash.size(peerIds) <= 2)}

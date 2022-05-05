@@ -292,6 +292,16 @@ const useSignalr = () => {
     });
   }, []);
 
+  const muteParticipant = useCallback((id, payload, callback = () => {}) => {
+    api.patch(`/meetings/${id}/mute`, payload)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
   const getMeetingList = useCallback((payload, callback = () => {}) => {
     api.get(`meetings?pageIndex=${payload.pageIndex || 1}`)
     .then(res => {
@@ -355,6 +365,7 @@ const useSignalr = () => {
     endMeeting,
     leaveMeeting,
     joinMeeting,
+    muteParticipant,
     getMeetingList,
     getActiveMeetingList,
     checkVersion,

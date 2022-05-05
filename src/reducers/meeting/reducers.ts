@@ -17,6 +17,7 @@ const {
   RESET_CURRENT_MEETING,
   REMOVE_MEETING_FROM_LIST,
   SET_PINNED_PARTICIPANT,
+  TOGGLE_MUTE,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -92,7 +93,6 @@ export default function Meeting(state = initialState, action:any = {}) {
 
         if (state.meeting?._id === action.payload._id) {
           newState = newState.setIn(['meeting'], action.payload)
-            .setIn(['pinnedParticipant'], null);
         }
   
         if (action.payload.ended) {
@@ -105,7 +105,6 @@ export default function Meeting(state = initialState, action:any = {}) {
 
         if (state.meeting?._id === action.payload._id) {
           newState = newState.setIn(['meeting'], action.payload)
-            .setIn(['pinnedParticipant'], null);
         }
   
         if (action.payload.ended) {
@@ -177,6 +176,9 @@ export default function Meeting(state = initialState, action:any = {}) {
     }
     case SET_PINNED_PARTICIPANT: {
       return state.setIn(['pinnedParticipant'], action.payload);
+    }
+    case TOGGLE_MUTE: {
+      return state.setIn(['toggleMute'], action.payload);
     }
     default:
       return state;

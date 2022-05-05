@@ -1,5 +1,5 @@
 import { View, Dimensions, Pressable, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import Animated, {
   useAnimatedGestureHandler,
@@ -19,6 +19,7 @@ import {
   setNotification,
   setOptions,
   setPinnedParticipant,
+  setToggle,
   updateMeetingParticipants,
 } from 'src/reducers/meeting/actions';
 import { setSelectedChannel, setMeetings, removeSelectedMessage } from 'src/reducers/channel/actions';
@@ -117,10 +118,11 @@ const styles = StyleSheet.create({
 const FloatingVideo = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const videoRef = useRef<any>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
-  const { meeting, options, meetingId, isFullScreen, pinnedParticipant } = useSelector((state:RootStateOrAny) => {
-    const { meeting, options, isFullScreen, pinnedParticipant } = state.meeting;
+  const { meeting, options, meetingId, isFullScreen, pinnedParticipant, toggleMute } = useSelector((state:RootStateOrAny) => {
+    const { meeting, options, isFullScreen, pinnedParticipant, toggleMute } = state.meeting;
     meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
     return {
       meeting,
@@ -128,6 +130,7 @@ const FloatingVideo = () => {
       meetingId: meeting?._id,
       isFullScreen,
       pinnedParticipant,
+      toggleMute,
     };
   });
   const {
@@ -136,7 +139,12 @@ const FloatingVideo = () => {
     isHost = false,
     isVoiceCall = false
   } = options;
-  const { endMeeting, joinMeeting, leaveMeeting } = useSignalr();
+  const {
+    endMeeting,
+    joinMeeting,
+    leaveMeeting,
+    muteParticipant,
+  } = useSignalr();
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
   const [timer, setTimer] = useState(0);
@@ -207,10 +215,17 @@ const FloatingVideo = () => {
         setTimer(timer => timer + 1);
       }, 1000);
     } else {
+      dispatch(setToggle(null));
       dispatch(setFullScreen(true));
     }
     return () => clearInterval(interval);
   }, [meeting.ended]);
+
+  useEffect(() => {
+    if (toggleMute) {
+      setToggle(null);
+    }
+  }, [toggleMute]);
 
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: (_, context:any) => {
@@ -289,46 +304,50 @@ const FloatingVideo = () => {
     }
   }
 
-  const header = () => (
-    <View style={styles.header}>
-      <TouchableOpacity onPress={() => {
-        // leaveMeeting(meeting._id, 'leave');
-        onFullScreen()
-      }}>
-        <ArrowDownIcon
-          color={'white'}
-          size={20}
-        />
-      </TouchableOpacity>
-      <View style={styles.channelName}>
-        <Text
-          color={'white'}
-          size={12}
-          numberOfLines={1}
-          style={{ fontFamily: Bold }}
-        >
-          {getChannelName({ otherParticipants: meeting?.otherParticipants, isGroup: meeting?.isGroup, hasRoomName: meeting.hasRoomName, name: meeting.name })}
-        </Text>
-        <Text
-          color='white'
-          size={12}
-        >
-          {getTimerString(timer)}
-        </Text>
+  const header = () => {
+    if (!isFullScreen) return;
+
+    return (
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => {
+          // leaveMeeting(meeting._id, 'leave');
+          onFullScreen()
+        }}>
+          <ArrowDownIcon
+            color={'white'}
+            size={20}
+          />
+        </TouchableOpacity>
+        <View style={styles.channelName}>
+          <Text
+            color={'white'}
+            size={12}
+            numberOfLines={1}
+            style={{ fontFamily: Bold }}
+          >
+            {getChannelName({ otherParticipants: meeting?.otherParticipants, isGroup: meeting?.isGroup, hasRoomName: meeting.hasRoomName, name: meeting.name })}
+          </Text>
+          <Text
+            color='white'
+            size={12}
+          >
+            {getTimerString(timer)}
+          </Text>
+        </View>
+        <TouchableOpacity onPress={onMessages}>
+          <View style={styles.icon}>
+            <MessageIcon />
+          </View>
+        </TouchableOpacity>
+        <View style={{ width: 5 }} />
+        <TouchableOpacity onPress={onAddParticipants}>
+          <View style={styles.icon}>
+            <ParticipantsIcon />
+          </View>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={onMessages}>
-        <View style={styles.icon}>
-          <MessageIcon />
-        </View>
-      </TouchableOpacity>
-      <View style={{ width: 5 }} />
-      <TouchableOpacity onPress={onAddParticipants}>
-        <View style={styles.icon}>
-          <ParticipantsIcon />
-        </View>
-      </TouchableOpacity>
-    </View>
-  )
+    );
+  }
 
   const onEndCall = (endCall = false) => {
     if (isHost || endCall) {
@@ -337,6 +356,10 @@ const FloatingVideo = () => {
       leaveMeeting(meeting._id, 'leave');
       dispatch(resetCurrentMeeting());
     }
+  }
+
+  const onMute = (muted:boolean) => {
+    muteParticipant(meetingId, { muted });
   }
 
   const onSetPinnedParticipant = (participant:IParticipants) => {
@@ -370,8 +393,9 @@ const FloatingVideo = () => {
             )
           }
           <VideoLayout
+            ref={videoRef}
             loading={loading}
-            header={isFullScreen ? header() : null}
+            header={header}
             options={{ isMute, isVideoEnable }}
             user={user}
             participants={meeting.otherParticipants}
@@ -382,6 +406,7 @@ const FloatingVideo = () => {
             message={meeting?.notification}
             setNotification={() => dispatch(setNotification(null))}
             onEndCall={onEndCall}
+            onMute={onMute}
             isGroup={meeting?.isGroup}
             isMaximize={isFullScreen}
             pinnedParticipant={pinnedParticipant}
