@@ -73,7 +73,8 @@ const ModalTab=props=>{
         assignedPersonnel,
         createdAt,
         proofOfPayment,
-        documents
+        documents,
+        remarks
     }=useApplicant(props.details);
     const [initialPage,setInitialPage]=useState(true);
     useEffect(()=>{
@@ -195,6 +196,7 @@ const ModalTab=props=>{
                         paymentStatus={props?.details?.paymentStatus}
                         detailsStatus={props?.details?.status}
                         user={user}
+                        remarks={remarks}
                         createdAt={createdAt}
                         applicant={applicant}
                         key={index}/>

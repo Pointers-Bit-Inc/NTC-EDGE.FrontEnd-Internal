@@ -122,6 +122,19 @@ export const statusColor = (status: string) => {
         return { color : "#F79E1B" , fontFamily : Regular500 }
     }
 };
+export const remarkColor = (status: string) => {
+
+    if (status == FOREVALUATION) {
+        return "#F79E1B"
+    } else if (status == VERIFIED || status == APPROVED || status == PAID || status == VERIFICATION) {
+
+        return "#00AB76"
+    } else if (status == DECLINED || status == DECLINE || status == UNVERIFIED) {
+        return "#CF0327"
+    } else {
+        return  "#F79E1B"
+    }
+};
 export const statusIcon = (status: string , icon: any = styles.icon3 , item: any = 0) => {
 
     if (status == FOREVALUATION) {
