@@ -1,8 +1,16 @@
-import React from 'react';
+import React,{useState} from 'react';
 
 import {isMobile} from "@pages/activities/isMobile";
 import {useAuth} from "../../hooks/useAuth";
-import {ImageBackground , StatusBar , TouchableOpacity , View} from "react-native";
+import {
+    ImageBackground,
+    Modal,
+    StatusBar,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    useWindowDimensions,
+    View
+} from "react-native";
 import EdgeBlue from "@assets/svg/edgeBlue";
 import {styles} from "@screens/login/styles";
 import Text from "@atoms/text";
@@ -11,11 +19,14 @@ import Button from "@atoms/button";
 import {button , text} from "@styles/color";
 import Ellipsis from "@atoms/ellipsis";
 import {Regular500} from "@styles/font";
+import ForgotPassword from "./../../navigations/forgot-password";
+import CloseIcon from "@assets/svg/close";
 
 const background = require('@assets/webbackground.png');
 const Login = ({ navigation }: any) => {
+    const {width, height} = useWindowDimensions();
     const { loading , formValue , onChangeValue , onCheckValidation , isValid } = useAuth(navigation);
-
+    const [forgotPasswordModal, setForgotPasswordModal]= useState(false)
 
 
     return (<ImageBackground
@@ -72,7 +83,7 @@ const Login = ({ navigation }: any) => {
                     </View>
                     { !isMobile && <View style={ [{ paddingTop : 15 , justifyContent : 'flex-start' }] }>
                         <TouchableOpacity onPress={ () => {
-                            onChangeValue('forgotPassword')
+                            setForgotPasswordModal(true)
                         } }>
                             <Text
                                 style={ [{ fontSize : 18 , fontFamily : Regular500 , color : text.info }] }
@@ -96,7 +107,28 @@ const Login = ({ navigation }: any) => {
                 <Text style={ styles.footer }>Send Feedback</Text>
                 <Text style={ styles.footer }>Help Center</Text>
             </View>
+        <Modal transparent={true} visible={forgotPasswordModal}>
 
+            <View style={{  flex: 1, justifyContent: "center", alignItems: "center",}}>
+                <TouchableWithoutFeedback onPress={ () => {setForgotPasswordModal(false)} }>
+                    <View style={ [{
+                        width : "100%" ,
+                        height : "100%" ,
+                        alignItems : "center" ,
+                        justifyContent : "flex-end" ,
+                        position : "absolute" ,
+                        backgroundColor : "rgba(0,0,0, 0.5)"
+                    }] }/>
+                </TouchableWithoutFeedback>;
+                <View style={{padding: 20,  backgroundColor: "#fff", borderColor: "#E5E5E5", borderRadius: 10, width: width * 0.28, flex:  0.77}}>
+                    <TouchableOpacity onPress={() => setForgotPasswordModal(false)} >
+                        <View style={{paddingRight: 20,alignItems: "flex-end"}}><CloseIcon/></View>
+                    </TouchableOpacity>
+
+                    <ForgotPassword/>
+                </View>
+            </View>
+        </Modal>
         </ImageBackground>)
 };
 

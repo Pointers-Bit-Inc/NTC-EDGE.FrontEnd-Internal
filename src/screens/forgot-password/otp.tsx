@@ -13,6 +13,7 @@ import Left from "@atoms/icon/left";
 import api from 'src/services/api';
 import {Bold} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
+import {isMobile} from "@pages/activities/isMobile";
 
 const timerLimit = 90;
 const errorResponse = 'Invalid verification code. Please try again';
@@ -135,13 +136,13 @@ const OneTimePin = ({ navigation , route }: any) => {
 
     return (
         <View style={ styles.container }>
-            <NavBar
+            {isMobile && <NavBar
                 title={ 'Forgot Password' }
                 rightIcon={ <Text size={ 16 } color='#fff'>Close</Text> }
                 onRight={ () => navigation.navigate('Login') }
                 leftIcon={ <Left color='#fff' size={ 17 }/> }
                 onLeft={ () => navigation.pop() }
-            />
+            />}
 
             <KeyboardAvoidingView
                 behavior={ Platform.select({ ios : 'padding' , android : undefined }) }

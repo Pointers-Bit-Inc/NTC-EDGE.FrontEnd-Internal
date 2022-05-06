@@ -24,6 +24,7 @@ import CloseIcon from "@assets/svg/close";
 import hairlineWidth = StyleSheet.hairlineWidth;
 import button from "@pages/activities/modal/styles";
 import ConfirmRightArrow from "@assets/svg/confirmArrow";
+import {isLandscapeSync,isTablet} from "react-native-device-info";
 
 const { height , width } = Dimensions.get('window');
 
@@ -46,6 +47,14 @@ function Disapproval(props: any) {
         }
     };
     const dimensions = useWindowDimensions();
+    useEffect(()=>{
+        if(showAlert || props.visible){
+            //TODO: add state
+            props.onExit()
+            props.onDismissed()
+        }
+
+    }, [isLandscapeSync()])
     return (
 
         <Modal
@@ -98,7 +107,7 @@ function Disapproval(props: any) {
 
             <KeyboardAvoidingView
                 behavior={ Platform.OS === "ios" ? "padding" : "height" }
-                style={ [styles.container, {paddingRight: dimensions.width <= 768 ? undefined : 64,}] }
+                style={ [styles.container, {paddingRight:((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync()))) || dimensions.width <= 768 ? undefined : 64,}] }
             >
                 <OnBackdropPress onPressOut={ props.onDismissed }/>
                 <View style={ styles.rectFiller }>
@@ -106,7 +115,7 @@ function Disapproval(props: any) {
                 </View>
                 <View style={ [styles.rect , {
 
-                    width: dimensions.width <= 768 ? "100%" : "32%",
+                    width: ((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync()))) || dimensions.width <= 768 ? "100%" : "32%",
                     display : !showAlert ? undefined : "none"
                 }] }>
 

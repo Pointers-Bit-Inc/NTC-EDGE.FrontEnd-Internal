@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React,{useEffect,useRef} from "react";
 import {ScrollView,StyleSheet,Text,useWindowDimensions,View} from "react-native";
 import {excludeStatus,getStatusText,statusColor,statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
@@ -24,9 +24,18 @@ const BasicInfo=(props:any)=>{
 
         }
     }
+    const scrollRef = useRef();
+
+
     const applicant=props?.applicant?.user||props?.applicant;
+    useEffect(()=>{
+        scrollRef?.current?.scrollTo({
+            y: 0,
+            animated: true,
+        });
+    }, [applicant?._id])
     const dimensions=useWindowDimensions();
-    return <ScrollView style={{width:"100%",backgroundColor:"#f8f8f8",}}>
+    return <ScrollView ref={scrollRef} style={{width:"100%",backgroundColor:"#f8f8f8",}}>
 
         <View style={{flexDirection:isMobile||dimensions?.width<=768 ? "column" : "row"}}>
             <View style={isMobile||dimensions?.width<=768 ? {padding:10,alignSelf:"center"} : {
@@ -38,12 +47,12 @@ const BasicInfo=(props:any)=>{
                     style={{borderRadius:4}}
 
                     textSize={22}
-                    image={applicant.profilePicture?.small.match(/[^/]+(jpeg|jpg|png|gif)$/i) ? applicant.profilePicture?.small : applicant.profilePicture?.small+".png"}
-                    name={`${applicant.firstName} ${applicant.lastName}`}
+                    image={applicant?.profilePicture?.small.match(/[^/]+(jpeg|jpg|png|gif)$/i) ? applicant?.profilePicture?.small : applicant?.profilePicture?.small+".png"}
+                    name={`${applicant?.firstName} ${applicant?.lastName}`}
                 />
 
                 {(
-                    dimensions?.width>=768)&&<View style={{paddingVertical:20}}>
+                    !isMobile && dimensions?.width>=768)&&<View style={{paddingVertical:20}}>
                     <View style={{flex:1,justifyContent:"center",alignItems:"center",backgroundColor:"#EFF0F6"}}>
                         <Text style={{
                             fontWeight:"bold",
@@ -120,7 +129,7 @@ const BasicInfo=(props:any)=>{
                                     </View>
                                 </View>
                                 <Row label={"Full Name:"}
-                                     applicant={applicant?.firstName  && applicant?.lastName ? applicant?.firstName+(applicant?.middleName ? " "+applicant?.middleName?.charAt()+"." : "")+" "+applicant?.lastName : ""}/>
+                                     applicant={applicant?.firstName  && applicant?.lastName ? applicant?.firstName+(applicant?.middleName ? " "+applicant?.middleName?.charAt()+"." : "")+" "+applicant?.lastName : applicant?.applicantName ? applicant?.applicantName : ""}/>
                                 <Row label={"Suffix:"}
                                      applicant={applicant?.suffix}/>
                                 <Row label={"Date of Birth:"}

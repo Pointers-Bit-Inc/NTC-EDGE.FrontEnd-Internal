@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from "react";
+import React,{useEffect,useRef,useState} from "react";
 import {
     Alert,
     Animated,
@@ -28,6 +28,7 @@ import {Bold} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
+import {isLandscapeSync,isTablet} from "react-native-device-info";
 
 const {width,height}=Dimensions.get('window');
 
@@ -49,8 +50,12 @@ const Approval=(props:any)=>{
     const [showAlert,setShowAlert]=useState(false);
     const [validateRemarks,setValidateRemarks]=useState<{error:boolean}>({error:false});
     const [loading,setLoading]=useState(false);
-
+    const approveInputField = useRef()
     useEffect(()=>{
+        approveInputField?.current?.focus()
+    }, [_springHide])
+    useEffect(()=>{
+
         setLoading(true);
         const userEvaluator=getRole(user,[EVALUATOR]);
         const userDirector=getRole(user,[DIRECTOR]);
@@ -144,6 +149,15 @@ const Approval=(props:any)=>{
     const [isTyping,setIsTyping]=useState(true);
     const [onFocus,setOnFocus]=useState(false);
     const dimensions=useWindowDimensions();
+    useEffect(()=>{
+        if(showAlert || props.visible){
+            //TODO: add state
+            props.onModalDismissed();
+            props.onExit();
+            _springHide()
+        }
+        
+    }, [isLandscapeSync()])
     return (
 
         <Modal
@@ -152,7 +166,7 @@ const Approval=(props:any)=>{
             transparent={true}
             visible={props.visible}
             onRequestClose={_springHide}>
-            <View style={showAlert&&isMobile ? {
+            <View style={showAlert&&(isMobile&& !(Platform?.isPad||isTablet())) ? {
                 zIndex:1,
                 flex:1,
                 width:"100%",
@@ -166,7 +180,6 @@ const Approval=(props:any)=>{
             </View>
 
             <CustomAlert
-
                 showClose={showClose}
                 type={approvalIcon ? APPROVED : ""}
                 onDismissed={()=>onCancelPress(APPROVED,true)}
@@ -209,12 +222,9 @@ const Approval=(props:any)=>{
                 style={[styles.container,{marginHorizontal:10,alignItems:"center",}]}
             >
                 <OnBackdropPress onPressOut={_springHide}/>
-
                 {
-
                     <Animated.View style={[styles.group,{
-
-                        width:isMobile||dimensions.width<=768 ? "100%" : "31.6%",  //474/1500
+                        width:((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync())))||dimensions.width<=768 ? "100%" : "31.6%",  //474/1500
                         display:!showAlert ? undefined : "none"
                     },{transform:[{scale:springValue}]}]}>
                         <View style={styles.shadow}>
@@ -232,6 +242,7 @@ const Approval=(props:any)=>{
 
                                     {getRole(user,[DIRECTOR,EVALUATOR,ACCOUNTANT])&&
                                     <InputField
+                                        ref={approveInputField}
                                         inputStyle={{
                                             [Platform.OS=="android" ? "padding" : "height"]:(
                                                                                                 height<720&&isKeyboardVisible) ? 70 : height*0.15,
@@ -285,13 +296,9 @@ const Approval=(props:any)=>{
 
     )
 };
-
 const styles=StyleSheet.create({
     shadow:{
-
-
         borderRadius:12,
-
         shadowColor:"rgba(0,0,0,1)",
         shadowOffset:{
             height:0,
@@ -300,7 +307,6 @@ const styles=StyleSheet.create({
         elevation:60,
         shadowOpacity:0.25,
         shadowRadius:20,
-
     },
     element:{
         backgroundColor:"rgba(255,255,255,1)",

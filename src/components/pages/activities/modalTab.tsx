@@ -85,7 +85,8 @@ export const ModalTab = props => {
         approvalHistory = props?.details?.approvalHistory ,
         assignedPersonnel = props?.details?.assignedPersonnel ,
         createdAt = props?.details?.createdAt ,
-        proofOfPayment = props?.details?.proofOfPayment;
+        proofOfPayment = props?.details?.proofOfPayment,
+        documents = props?.details?.document;
 
     return <ScrollableTabView
         onScroll={ (x) => _scrollX.setValue(x) }
@@ -128,6 +129,7 @@ export const ModalTab = props => {
                     return <ApplicationDetails
                         tabLabel={ { label : tab.name } } label={ tab.name }
                         service={ service }
+                        documents={documents}
                         selectedType={ selectedTypes }
                         applicantType={ applicationType }
                         key={ index }/>

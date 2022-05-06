@@ -7,6 +7,7 @@ import {fontValue} from "@pages/activities/fontValue";
 import {Regular500} from "@styles/font";
 import moment from "moment";
 import _ from "lodash";
+import hairlineWidth=StyleSheet.hairlineWidth;
 
 const styles=StyleSheet.create({
     subChildSeparator:{
@@ -50,7 +51,7 @@ const styles=StyleSheet.create({
     },
 });
 let title='';
-
+ let no = null;
 function Title(props:{nextValue,index,}){
 
     if(!((title===transformText(props.nextValue))||(title===transformText(props.index)))){
@@ -62,6 +63,16 @@ function Title(props:{nextValue,index,}){
         </View>
     }
     return <></>
+}
+
+
+function Separator({index}){
+    if(no != index && index != undefined ){
+        no = index
+        return no != 0 ? <View style={{marginTop: 10, borderTopWidth: hairlineWidth, borderColor: "#EFF0F6" }}/> : <></>;
+    }
+    return <></>
+
 }
 
 const RenderServiceMiscellaneous=(props)=>{
@@ -95,21 +106,29 @@ const RenderServiceMiscellaneous=(props)=>{
         }).findIndex((name)=>{
             return !isNaN(parseInt(name))
         });
+
+
+
+
         if(findIndex!= -1){
             index=keys?.split(".")?.reverse()?.[findIndex];
             prevValue=keys?.split?.(".")?.reverse()?.[findIndex-1];
             nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1]
-            console.log(index)
+            console.log(prevValue, index, nextValue)
         } else{
             prevValue=keys?.split(".")?.[keys.split(".").length-1];
             index=keys?.split(".")?.[keys.split(".").length];
             nextValue=keys?.split?.(".")?.[keys.split(".").length-2] ||  keys?.split?.(".")?.[0]
+
         }
 
 
         return <View>
             <Title nextValue={nextValue} index={index}/>
+            <Separator index={index}/>
             <Row label={prevValue ? `${transformText(prevValue)}:` : ""} applicant={value}/>
+
+
             {/*<View style={{borderTopWidth: 1, borderTopColor:"#EFF0F6", marginTop: 5}}/>*/}
         </View>
 
@@ -117,6 +136,7 @@ const RenderServiceMiscellaneous=(props)=>{
     };
     return (
         <FlatList
+            showsVerticalScrollIndicator={false}
             style={styles.group3}
             data={Object.entries(flatten(_.omit(service, props.exclude)))}
             renderItem={_renderParent}

@@ -39,9 +39,6 @@ const PaymentModal = (props: any) => {
     ];
     const [sizeComponent, onLayoutComponent] = useComponentLayout()
     const [amountOfBorder, setAmountOfBorder] = useState()
-    useEffect(()=>{
-
-    }, [sizeComponent])
     return <Modal
         supportedOrientations={['portrait', 'landscape']}
         animationType="slide"
@@ -59,8 +56,6 @@ const PaymentModal = (props: any) => {
                      default: {
                          width: rightLayoutComponent?.width,
                          top : rightLayoutComponent?.top,
-
-
                      }
                  }),
 

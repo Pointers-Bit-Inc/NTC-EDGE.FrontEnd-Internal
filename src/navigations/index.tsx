@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {NavigationContainer , useNavigation} from '@react-navigation/native';
+import {useEffect} from 'react';
+import {NavigationContainer,useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import lodash from 'lodash';
 import ForgotPassword from './forgot-password';
@@ -23,18 +24,18 @@ import MeetingParticipants from '@screens/meet/participants';
 import NewChat from '@screens/chat/new-chat';
 import Search from "@pages/activities/search";
 import TabBar from "@pages/activities/tabbar";
-import {Image , Platform , TouchableOpacity , View} from "react-native";
+import {Platform,TouchableOpacity,View} from "react-native";
 import {primaryColor} from "@styles/color";
 import EdgeLogo from "@assets/svg/edge";
 import SettingTopBar from "@assets/svg/settingTopBar";
 import HelpTopBar from "@assets/svg/helpTopbar";
-import {RootStateOrAny ,  useSelector} from "react-redux";
-import {fontValue} from "@pages/activities/fontValue";
+import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
 import ProfileImage from "@atoms/image/profile";
-import {createRef , useRef} from "react";
 import {isMobile} from "@pages/activities/isMobile";
 import Login from "@screens/login/login";
 import FloatingVideo from '@components/pages/chat-modal/floating-video';
+import {useComponentLayout} from "../hooks/useComponentLayout";
+import {setTopBarNav} from "../reducers/application/actions";
 
 type RootStackParamList = {
     App: undefined;
@@ -91,19 +92,31 @@ const RootNavigator = () => {
                     {
                         title : null ,
                         headerRight : () => {
+                            const dispatch=useDispatch();
+                            const [activitySizeComponent,onActivityLayoutComponent]=useComponentLayout();
+                            useEffect(()=>{
+                                dispatch(setTopBarNav(activitySizeComponent))
+                            }, [activitySizeComponent?.width])
                             const navigation = useNavigation();
-                            return <View style={ { paddingRight : 32 , gap : 32 , flexDirection : "row" } }>
-                                <SettingTopBar height={ 26 } width={ 26 }></SettingTopBar>
-                                <HelpTopBar height={ 26 } width={ 26 }></HelpTopBar>
-                                <TouchableOpacity onPress={()=> navigation.navigate("Settings")}>
-                                    <ProfileImage
-                                        style={ {
-                                            borderRadius : 26 , } }
-                                        size={ fontValue(28) }
-                                        image={ user?.profilePicture?.small }
-                                        name={ `${ user?.firstName } ${ user?.lastName }` }
-                                    />
-                                </TouchableOpacity>
+                            return <View  onLayout={onActivityLayoutComponent}  style={ { flexDirection : "row" } }>
+                                <View style={{paddingRight: 32}}>
+                                    <SettingTopBar height={ 26 } width={ 26 } ></SettingTopBar>
+                                </View>
+                                <View  style={{paddingRight: 32}}>
+                                    <HelpTopBar height={ 26 } width={ 26 }></HelpTopBar>
+                                </View>
+                                <View style={{paddingRight: 32}}>
+                                    <TouchableOpacity onPress={()=> navigation.navigate("Settings")}>
+                                        <ProfileImage
+                                            style={ {
+                                                borderRadius : 26 , } }
+                                            size={28 }
+                                            image={ user?.profilePicture?.small }
+                                            name={ `${ user?.firstName } ${ user?.lastName }` }
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+
 
                             </View>
                         },
@@ -112,7 +125,7 @@ const RootNavigator = () => {
                                 <EdgeLogo width={ 127 } height={ 29 }/>
                             </View>
                         ) ,
-                        headerShown : isMobile ? false : true ,
+                        headerShown : (isMobile && !Platform?.isPad) ? false : true ,
                         headerStyle : {
 
                             backgroundColor : primaryColor ,

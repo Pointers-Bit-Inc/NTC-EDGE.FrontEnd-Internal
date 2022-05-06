@@ -2,7 +2,7 @@ import React,{useEffect,useMemo,useState} from "react";
 import {
     ActivityIndicator,
     Image,
-    InteractionManager,
+    InteractionManager,Platform,
     StyleSheet,
     TouchableOpacity,
     useWindowDimensions,
@@ -43,10 +43,11 @@ import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 import * as Animatable from 'react-native-animatable'
 import axios from "axios";
+import {isTablet} from "react-native-device-info";
 const styles = StyleSheet.create({
 
     containerBlur : {
-        borderColor : !isMobile ? "#AAB6DF" : "transparent" ,
+        borderColor : !(isMobile && !(Platform?.isPad || isTablet())) ? "#AAB6DF" : "transparent" ,
         borderRadius : 10 ,
         backgroundColor : "#fff" ,
         shadowColor : "rgba(0,0,0,1)" ,
@@ -183,7 +184,7 @@ const RenderApplication = ({ applicationType }: any) => {
                 size={ fontValue(10) }
                 numberOfLines={ 1 }
             >
-                { isMobile ? applicationType : (
+                { (isMobile && !(Platform?.isPad || isTablet())) ? applicationType : (
                                                    (
                                                        applicationType).length > 25) ?
                                                (
@@ -290,7 +291,7 @@ export function ActivityItem(props: any) {
 
                 <View style={ {
                     backgroundColor : props.selected && !(
-                        isMobile) ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff"
+                        (isMobile && !(Platform?.isPad || isTablet()))) ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff"
                 } }>
                     <ActivitySwipeable
                         ref={ ref => row[props.index] = ref }
@@ -351,7 +352,7 @@ export function ActivityItem(props: any) {
                                                                 <Highlighter
                                                                     highlightStyle={ { backgroundColor : '#BFD6FF' } }
                                                                     searchWords={ [props?.searchQuery] }
-                                                                    textToHighlight={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
+                                                                    textToHighlight={ userActivity?.firstName ? `${ userActivity?.firstName } ${ userActivity?.lastName }` : userActivity?.applicantName }
                                                                 />
 
                                                             </Text>
@@ -429,10 +430,9 @@ export function ActivityItem(props: any) {
                                                 width : 0 ,
                                                 height : 0
                                             } ,
-                                            elevation : 45 ,
-                                            shadowOpacity : 0.1 ,
-                                            shadowRadius : 15 ,
-                                            marginLeft: -170
+                                            elevation : 45,
+                                            shadowOpacity : 0.1,
+                                            shadowRadius : 15,
                                         } }>
                                             <MenuOption value={ "Unread" }>
                                                 <View style={ styles.menuItem }>

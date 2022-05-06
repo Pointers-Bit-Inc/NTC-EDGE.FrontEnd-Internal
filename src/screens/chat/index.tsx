@@ -338,7 +338,7 @@ const onClose = (item:IMeetings, leave = false) => {
       </TouchableOpacity>
     );
   };
-
+  const { activitySizeComponent } = useSelector((state: RootStateOrAny) => state.application);
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />

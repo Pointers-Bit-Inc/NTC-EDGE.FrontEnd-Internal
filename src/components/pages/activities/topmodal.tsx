@@ -1,4 +1,4 @@
-import React , {useRef} from "react";
+import React,{useEffect,useRef} from "react";
 import {
     Dimensions ,
     Modal ,
@@ -7,7 +7,8 @@ import {
     Text ,
     TouchableOpacity ,
     TouchableWithoutFeedback ,
-    View
+    View,
+    StatusBar as bar
 } from "react-native";
 import {Ionicons ,} from '@expo/vector-icons'
 
@@ -25,13 +26,16 @@ import {Bold , Regular , Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import CloseIcon from "@assets/svg/close";
-import StatusBar from "@atoms/status-bar";
+import Constants from 'expo-constants';
+import {isTablet} from "react-native-device-info";
 
 const window = Dimensions.get("window");
 
 function TopModal(props: any) {
-    const { filterRect } = useSelector((state: RootStateOrAny) => state.application);
+    
+    const { filterRect, topBarNav } = useSelector((state: RootStateOrAny) => state.application);
     const { visible , statusCode } = useSelector((state: RootStateOrAny) => state.activity);
+    const { drawerLayout } = useSelector((state: RootStateOrAny) => state.layout);
     const dispatch = useDispatch();
     const user = useSelector((state: RootStateOrAny) => state.user);
     const renderIcon = (item) => {
@@ -65,8 +69,8 @@ function TopModal(props: any) {
         }
     };
 
-
     const inputRef = useRef();
+
     return (
         <Modal
 
@@ -80,7 +84,6 @@ function TopModal(props: any) {
             } }>
 
             <SafeAreaView ref={ inputRef } style={ visible ? {
-
                 position : "absolute" ,
                 zIndex : 2 ,
                 top : 0 ,
@@ -93,7 +96,7 @@ function TopModal(props: any) {
 
                     <View style={ styles.container }>
 
-                        { isMobile && <View style={ styles. header1 }>
+                        {  (isMobile && !(Platform?.isPad || isTablet()))  && <View style={ styles.header1 }>
                             <View style={ { width : 25 } }>
 
                             </View>
@@ -109,10 +112,10 @@ function TopModal(props: any) {
 
 
                         </View> }
-                        <View style={ !isMobile ? {
+                        <View style={ !(isMobile && !(Platform?.isPad || isTablet())) ? {
                             width : filterRect?.width ,
-                            left : filterRect?.left ,
-                            top : filterRect?.top + filterRect?.height
+                            left : filterRect?.left || (drawerLayout?.width || 0),
+                            top : !isNaN(filterRect?.top + filterRect?.height) ? filterRect?.top + filterRect?.height :  ((topBarNav?.height || 0) + (filterRect?.height || 0) + (Constants?.statusBarHeight || 0))
                         } : {} }>
                             <View style={ styles.rect2_1 }>
                                 <Text style={ styles.sort1 }>Sort By</Text>

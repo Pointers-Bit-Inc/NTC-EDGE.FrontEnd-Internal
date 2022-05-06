@@ -490,12 +490,14 @@ const UserProfileScreen=({navigation}:any)=>{
                 }}
             />
 
-            <ScrollView ref={scrollView} keyboardShouldPersistTaps={Platform.OS=="ios" ? "handled" : "always"}
-                        style={styles.scrollview} showsVerticalScrollIndicator={false}>
+            <ScrollView ref={scrollView}
+                        keyboardShouldPersistTaps={Platform.OS=="ios" ? "handled" : "always"}
+                        style={styles.scrollview}
+                        showsVerticalScrollIndicator={false}>
                 <View style={[styles.row,{marginBottom:20}]}>
                     <View>
                         <ProfileImage
-                            size={width/4}
+                            size={isMobile ? width/4 : width * 0.1}
                             textSize={25}
                             image={photo}
                             name={`${user.firstName} ${user.lastName}`}
@@ -528,7 +530,10 @@ const UserProfileScreen=({navigation}:any)=>{
                 <TouchableOpacity onPress={()=>navigation.navigate('ResetPassword')}>
                     <Text style={styles.changePassword}>Change Password</Text>
                 </TouchableOpacity>
-                <View style={{height:width/3}}/>
+                {Platform.select({
+                    web: <View style={{height:width* 0.02}}/>,
+                    native: <View style={{height:width/3}}/>
+                })}
             </ScrollView>
 
             <Button

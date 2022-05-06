@@ -1,8 +1,8 @@
-import React , {useEffect, useMemo} from "react";
+import React,{useEffect,useMemo} from "react";
 import {
     Animated,
-    Dimensions,
-    FlatList,Platform,Image,
+    FlatList,
+    Platform,
     RefreshControl,
     ScrollView,
     StatusBar,
@@ -13,7 +13,7 @@ import {
 } from "react-native";
 
 import {SEARCH} from "../../../reducers/activity/initialstate";
-import {RootStateOrAny , useSelector} from "react-redux";
+import {RootStateOrAny,useSelector} from "react-redux";
 import {setApplicationItem} from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
 import FilterIcon from "@assets/svg/filterIcon";
@@ -37,63 +37,64 @@ import {fontValue} from "@pages/activities/fontValue";
 import RefreshWeb from "@assets/svg/refreshWeb";
 import {primaryColor} from "@styles/color";
 import {isMobile} from "@pages/activities/isMobile";
-import ActivityModalView from "@pages/activities/nativeView/activityModalView";
 import IMeetings from "src/interfaces/IMeetings";
 import FilterPressIcon from "@assets/svg/filterPress";
 import {useActivities} from "../../../hooks/useActivities";
 import IParticipants from "src/interfaces/IParticipants";
+import {isLandscapeSync,isTablet} from "react-native-device-info";
 
 
+export default function ActivitiesPage(props:any){
 
-
-export default function ActivitiesPage(props: any) {
-
-    const dimensions = useWindowDimensions();
-    const Filter = isMobile || dimensions?.width <= 768 ? FilterIcon : FilterPressIcon;
+    const dimensions=useWindowDimensions();
+    const Filter=(
+                     isMobile&& !(
+                         Platform?.isPad||isTablet()))||dimensions?.width<=768 ? FilterIcon : FilterPressIcon;
     const {
         isReady,
-        user ,
-        setUpdateModal ,
-        config ,
-        visible ,
-        applicationItem ,
-        dispatch ,
-        getActiveMeetingList ,
-        endMeeting ,
-        leaveMeeting ,
-        searchTerm ,
-        refreshing ,
-        onRefresh ,
-        numberCollapsed ,
-        searchVisible ,
-        pnApplications ,
-        notPnApplications ,
-        userPress ,
-        modalVisible ,
-        setModalVisible ,
-        moreModalVisible ,
-        setMoreModalVisible ,
-        onDismissed ,
-        onEndReachedCalledDuringMomentum ,
-        setOnEndReachedCalledDuringMomentum ,
-        bottomLoader ,
-        handleLoad ,
-        unReadReadApplicationFn ,
-        updateModalFn ,
-        isOpen ,
-        onMoreModalDismissed ,
-        sizeComponent ,
-        onLayoutComponent ,
-        onSearchLayoutComponent ,
-        onActivityLayoutComponent ,
-        containerHeight ,
-        scrollY ,
-        onMomentumScrollBegin ,
-        onMomentumScrollEnd ,
-        onScrollEndDrag ,
-        headerTranslate ,
-        opacity
-    } = useActivities();
+        user,
+        setUpdateModal,
+        config,
+        visible,
+        applicationItem,
+        dispatch,
+        getActiveMeetingList,
+        endMeeting,
+        leaveMeeting,
+        searchTerm,
+        refreshing,
+        onRefresh,
+        numberCollapsed,
+        searchVisible,
+        pnApplications,
+        notPnApplications,
+        userPress,
+        modalVisible,
+        setModalVisible,
+        moreModalVisible,
+        setMoreModalVisible,
+        onDismissed,
+        onEndReachedCalledDuringMomentum,
+        setOnEndReachedCalledDuringMomentum,
+        bottomLoader,
+        handleLoad,
+        unReadReadApplicationFn,
+        updateModalFn,
+        isOpen,
+        onMoreModalDismissed,
+        sizeComponent,
+        onLayoutComponent,
+        onSearchLayoutComponent,
+        onActivityLayoutComponent,
+        containerHeight,
+        scrollY,
+        onMomentumScrollBegin,
+        onMomentumScrollEnd,
+        onScrollEndDrag,
+        headerTranslate,
+        opacity,
+        activitySizeComponent
+    }=useActivities();
 
     const { normalizeActiveMeetings, meeting } = useSelector((state: RootStateOrAny) => state.meeting);
     const meetingList = useMemo(() => {
@@ -105,21 +106,21 @@ export default function ActivitiesPage(props: any) {
         return lodash.orderBy(meetingList , 'updatedAt' , 'desc');
     }, [normalizeActiveMeetings, meeting]);
 
-    useEffect(() => {
+    useEffect(()=>{
 
-        let unMount = false;
-        getActiveMeetingList((err , result) => {
-            if (!unMount) {
-                if (result) {
+        let unMount=false;
+        getActiveMeetingList((err,result)=>{
+            if(!unMount){
+                if(result){
                     dispatch(setActiveMeetings(result));
                 }
             }
         });
-        return () => {
-            unMount = true;
+        return ()=>{
+            unMount=true;
         }
-    } , []);
-    const onJoin = (item: IMeetings) => {
+    },[]);
+    const onJoin=(item:IMeetings)=>{
         dispatch(setSelectedChannel(item.room));
         dispatch(resetCurrentMeeting());
         setTimeout(() => {
@@ -133,316 +134,341 @@ export default function ActivitiesPage(props: any) {
         }, 100);
     };
 
-    const onClose = (item: IMeetings , leave = false) => {
-        if (leave && item.isGroup) {
+    const onClose=(item:IMeetings,leave=false)=>{
+        if(leave&&item.isGroup){
             dispatch(removeActiveMeeting(item._id));
-            return leaveMeeting(item._id, 'busy');
-        } else if (item.host._id === user._id || !item.isGroup) {
+            return leaveMeeting(item._id,'busy');
+        } else if(item.host._id===user._id|| !item.isGroup){
             return endMeeting(item._id);
-        } else {
+        } else{
             return dispatch(removeActiveMeeting(item._id));
         }
     };
 
-    const listHeaderComponent = () => <>
-        { !searchVisible && !!pnApplications?.length && containerHeight &&
-        <View style={ [styles.pinnedActivityContainer , {
-            marginBottom : 5 ,
-            paddingBottom : 20 ,
-            backgroundColor : "#fff"
-        }] }>
-            { !!pnApplications?.length &&
-            <View style={ [styles.pinnedgroup , { height : undefined }] }>
-                <View style={ [styles.pinnedcontainer , { paddingVertical : 10 }] }>
-                    <Text style={ [styles.pinnedActivity , { fontFamily : Regular500 , }] }>Pinned
+    const listHeaderComponent=()=><>
+        {!searchVisible&& !!pnApplications?.length&&containerHeight&&
+        <View style={[styles.pinnedActivityContainer,{
+            marginBottom:5,
+            paddingBottom:20,
+            backgroundColor:"#fff"
+        }]}>
+            {!!pnApplications?.length&&
+            <View style={[styles.pinnedgroup,{height:undefined}]}>
+                <View style={[styles.pinnedcontainer,{paddingVertical:10}]}>
+                    <Text style={[styles.pinnedActivity,{fontFamily:Regular500,}]}>Pinned
                         Activity</Text>
                 </View>
-            </View> }
-           
-                <ScrollView nestedScrollEnabled={true}
-                            style={ { maxHeight : 300 } }>
-                    {
-                        pnApplications.map((item: any , index: number) => {
+            </View>}
 
-                            return item?.activity && item?.activity.map((act: any , i: number) => {
-                                
-                                return (
-                                    act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id && <ActivityItem
-                                    isOpen={ isOpen }
-                                    config={ config }
-                                    key={ i }
-                                    selected={ applicationItem?._id == act?._id }
-                                    currentUser={ user }
-                                    role={ user?.role?.key }
-                                    searchQuery={ searchTerm }
-                                    activity={ act }
-                                    isPinned={ true }
-                                    onPressUser={ (event: any) => {
+            <ScrollView showsVerticalScrollIndicator={false}
+                        nestedScrollEnabled={true}
+                        style={{maxHeight:300}}>
+                {
+                    pnApplications.map((item:any,index:number)=>{
 
-                                        /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
-                                        })*/
-                                        dispatch(setApplicationItem({ ...act , isOpen : `pin${ i }${ index }` }));
-                                        //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
-                                        if (event?.icon == 'more') {
-                                            setMoreModalVisible(true)
-                                        } else {
-                                            setModalVisible(true)
-                                        }
+                        return item?.activity&&item?.activity.map((act:any,i:number)=>{
 
-                                    } } index={ `pin${ i }${ index }` }
-                                    swiper={ (index: number , progress: any , dragX: any , onPressUser: any) => renderSwiper(index , progress , dragX , onPressUser , act , unReadReadApplicationFn) }/>
-                            })
+                            return (
+                                act?.assignedPersonnel?._id||act?.assignedPersonnel)==user?._id&&<ActivityItem
+                                isOpen={isOpen}
+                                config={config}
+                                key={i}
+                                selected={applicationItem?._id==act?._id}
+                                currentUser={user}
+                                role={user?.role?.key}
+                                searchQuery={searchTerm}
+                                activity={act}
+                                isPinned={true}
+                                onPressUser={(event:any)=>{
+
+                                    /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
+                                    })*/
+                                    dispatch(setApplicationItem({...act,isOpen:`pin${i}${index}`}));
+                                    //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
+                                    if(event?.icon=='more'){
+                                        setMoreModalVisible(true)
+                                    } else{
+                                        setModalVisible(true)
+                                    }
+
+                                }} index={`pin${i}${index}`}
+                                swiper={(index:number,progress:any,dragX:any,onPressUser:any)=>renderSwiper(index,progress,dragX,onPressUser,act,unReadReadApplicationFn)}/>
                         })
-                    }
-                </ScrollView>
+                    })
+                }
+            </ScrollView>
 
-        </View> }
+        </View>}
     </>;
+
 
 
     return (
         <>
-            <StatusBar barStyle={ 'light-content' }/>
+            <StatusBar barStyle={'light-content'}/>
 
-            <View style={ { backgroundColor : "#F8F8F8" , flex : 1 , flexDirection : "row" } }>
-                <View onLayout={ onActivityLayoutComponent } style={ [styles.container , styles.shadow , {
+            <View style={{backgroundColor:"#F8F8F8",flex:1,flexDirection:"row"}}>
+                <View onLayout={onActivityLayoutComponent} style={[styles.container,styles.shadow,{
+                    flexBasis:(
+                                  (
+                                      isMobile&& !(
+                                          Platform?.isPad||isTablet()))||dimensions?.width<768||(
+                                      (
+                                          Platform?.isPad||isTablet())&& !isLandscapeSync())) ? "100%" : 466,
+                    flexGrow:0,
+                    flexShrink:0
+                }]}>
 
-                 
-                    flexBasis : (isMobile || dimensions?.width < 768) ? "100%" : 466 ,
-                    flexGrow : 0 ,
-                    flexShrink : 0
-                }] }>
 
+                    <View onLayout={onLayoutComponent}
+                          style={[styles.group,!modalVisible&& !moreModalVisible&& !visible&& !refreshing&& !lodash.size(meetingList)&&{position:"absolute"}]}>
+                        <Animated.View style={[styles.rect,styles.horizontal,{
+                            backgroundColor:((isMobile&& !(Platform?.isPad||isTablet()))) ? "#041B6E" : "#fff",
 
-                    <View onLayout={ onLayoutComponent }
-                          style={ [styles.group , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && { position : "absolute" , }] }>
-                        <Animated.View style={ [styles.rect , styles.horizontal , {
-                            backgroundColor : isMobile || dimensions?.width < 768 ? "#041B6E" : "#fff" ,
+                        },!modalVisible&& !moreModalVisible&& !visible&& !refreshing&& !lodash.size(meetingList)&&{
+                            ...{opacity},
+                            transform:[{translateY:headerTranslate}]
+                        }]}>
 
-                        } , !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && {
-                            ...{ opacity } ,
-                            transform : [{ translateY : headerTranslate }]
-                        }] }>
-
-                            { (
-                                isMobile || dimensions?.width < 768) &&
-                            <TouchableOpacity onPress={ () => props.navigation.navigate('Settings')/*openDrawer()*/ }>
-                                <HomeMenuIcon height={ fontValue(24) } width={ fontValue(24) }/>
-                            </TouchableOpacity> }
+                            {(
+                                (
+                                    isMobile&& !(
+                                        Platform?.isPad||isTablet()))||dimensions?.width<768)&&
+                            <TouchableOpacity onPress={()=>props.navigation.navigate('Settings')/*openDrawer()*/}>
+                                <HomeMenuIcon height={fontValue(24)} width={fontValue(24)}/>
+                            </TouchableOpacity>}
 
                             <Text
-                                style={ [styles.activity , { color : isMobile || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor , }] }>{ isMobile || dimensions?.width < 768 ? `Activity` : `Feed` }</Text>
-                            <View style={ { flex : 1 } }/>
-                            <TouchableOpacity onPress={ () => {
+                                style={[styles.activity,{
+                                    color:(
+                                              isMobile&& !(
+                                                  Platform?.isPad||isTablet()))||dimensions?.width<768 ? "rgba(255,255,255,1)" : primaryColor,
+                                }]}>{(
+                                         isMobile&& !(
+                                             Platform?.isPad||isTablet()))||dimensions?.width<768 ? `Activity` : `Feed`}</Text>
+                            <View style={{flex:1}}/>
+                            <TouchableOpacity onPress={()=>{
                                 dispatch(setVisible(true))
                             }
 
                             }>
 
-                                <Filter pressed={ visible } width={ fontValue(32) } height={ fontValue(32) }/>
+                                <Filter pressed={visible} width={fontValue(32)} height={fontValue(32)}/>
 
                             </TouchableOpacity>
-                            { (
-                                !isMobile && dimensions?.width > 768) &&
-                            <TouchableOpacity onPress={ onRefresh }>
-                                <RefreshWeb style={ { paddingLeft : 15 } } width={ fontValue(26) }
-                                            height={ fontValue(24) } fill={ "#fff" }/>
+                            {(
+                                !(
+                                    isMobile&& !(
+                                        Platform?.isPad||isTablet()))&&dimensions?.width>768)&&
+                            <TouchableOpacity onPress={onRefresh}>
+                                <RefreshWeb style={{paddingLeft:15}} width={fontValue(26)}
+                                            height={fontValue(24)} fill={"#fff"}/>
                             </TouchableOpacity>
                             }
                         </Animated.View>
                     </View>
                     <View>
                         {
-                            !!lodash.size(meetingList) && (
+                            !!lodash.size(meetingList)&&(
                                 <FlatList
-                                    data={ meetingList }
-                                    bounces={ false }
+                                    data={meetingList}
+                                    bounces={false}
                                     horizontal
-                                    showsHorizontalScrollIndicator={ false }
-                                    snapToInterval={ dimensions.width }
-                                    decelerationRate={ 0 }
-                                    keyExtractor={ (item: any) => item._id }
-                                    renderItem={ ({ item }) => (
+                                    showsHorizontalScrollIndicator={false}
+                                    snapToInterval={activitySizeComponent?.width||dimensions?.width}
+                                    decelerationRate={0}
+                                    keyExtractor={(item:any)=>item._id}
+                                    renderItem={({item})=>(
                                         <MeetingNotif
-                                            style={{...Platform.select({
-                                                    native: {
-                                                        width: dimensions.width
+                                            style={{
+                                                ...Platform.select({
+                                                    native:{
+                                                        width:activitySizeComponent?.width||dimensions?.width
                                                     },
-                                                    default: {
-                                                        width: 466
-                                                    }})}}
-                                            name={ getChannelName({
-                                                ...item ,
-                                                otherParticipants : item?.participants
-                                            }) }
-                                            time={ item.createdAt }
-                                            host={ item.host }
-                                            onJoin={ () => onJoin(item) }
-                                            onClose={ (leave: any) => onClose(item , leave) }
-                                            closeText={ 'Cancel' }
+                                                    default:{
+                                                        width:466
+                                                    }
+                                                })
+                                            }}
+                                            name={getChannelName({
+                                                ...item,
+                                                otherParticipants:item?.participants
+                                            })}
+                                            time={item.createdAt}
+                                            host={item.host}
+                                            onJoin={()=>onJoin(item)}
+                                            onClose={(leave:any)=>onClose(item,leave)}
+                                            closeText={'Cancel'}
                                         />
-                                    ) }
+                                    )}
                                 />
                             )
                         }
 
                     </View>
-                    <FakeSearchBar onSearchLayoutComponent={ onSearchLayoutComponent }
-                                   animated={ !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && {
-                                       ...{ opacity } ,
-                                       top : sizeComponent?.height || 80 * (
-                                           1 + lodash.size(meetingList)) ,
-                                       elevation : 10 ,
-                                       zIndex : 10 ,
-                                       position : "absolute" ,
-                                       transform : [{ translateY : headerTranslate }]
-                                   } } onPress={ () => {
+                    <FakeSearchBar onSearchLayoutComponent={onSearchLayoutComponent}
+                                   animated={!modalVisible&& !moreModalVisible&& !visible&& !refreshing&& !lodash.size(meetingList)&&{
+                                       ...{opacity},
+                                       top:sizeComponent?.height||80*(
+                                           1+lodash.size(meetingList)),
+                                       elevation:10,
+                                       zIndex:10,
+                                       position:"absolute",
+                                       transform:[{translateY:headerTranslate}]
+                                   }} onPress={()=>{
 
                         //setSearchVisible(true)
                         dispatch(setApplicationItem({}));
 
                         props.navigation.navigate(SEARCH);
-                    } } searchVisible={ searchVisible }/>
+                    }} searchVisible={searchVisible}/>
 
                     <Animated.FlatList
                         refreshControl={
                             <RefreshControl
-                                progressViewOffset={refreshing ?  0 : containerHeight}
-                                refreshing={ refreshing }
-                                onRefresh={ onRefresh }
+                                progressViewOffset={refreshing ? 0 : containerHeight}
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
                             />
                         }
+                        showsVerticalScrollIndicator={false}
                         nestedScrollEnabled={true}
-                        onScroll={ Animated.event(
+                        onScroll={Animated.event(
                             [{
-                                nativeEvent : {
-                                    contentOffset : {
-                                        y : scrollY
+                                nativeEvent:{
+                                    contentOffset:{
+                                        y:scrollY
                                     }
                                 }
-                            }] ,
-                            { useNativeDriver : true }
-                        ) }
-                        contentContainerStyle={ {
-                            display: isReady ? undefined: "none",
-                            paddingTop : (
-                                !modalVisible && !moreModalVisible && !visible && !refreshing && !lodash.size(meetingList) && containerHeight * (
-                                    lodash.size(meetingList) || 1)) || 0 , flexGrow : 1
-                        } }
-                        ListEmptyComponent={ () => listEmpty(refreshing , searchTerm ,  (notPnApplications.length) + pnApplications?.map((item: any , index: number) => item?.activity && item?.activity?.map((act: any , i: number) => (act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id )).length)}
-                        ListHeaderComponent={ listHeaderComponent() }
+                            }],
+                            {useNativeDriver:true}
+                        )}
+                        contentContainerStyle={{
+                            display:isReady ? undefined : "none",
+                            paddingTop:(
+                                !modalVisible&& !moreModalVisible&& !visible&& !refreshing&& !lodash.size(meetingList)&&containerHeight*(
+                                    lodash.size(meetingList)||1))||0,flexGrow:1
+                        }}
+                        ListEmptyComponent={()=>listEmpty(refreshing,searchTerm,(
+                            notPnApplications.length)+pnApplications?.map((item:any,index:number)=>item?.activity&&item?.activity?.map((act:any,i:number)=>(
+                            act?.assignedPersonnel?._id||act?.assignedPersonnel)==user?._id)).length)}
+                        ListHeaderComponent={listHeaderComponent()}
 
-                        style={ { flex : 1 , } }
+                        style={{flex:1,}}
 
-                        data={ notPnApplications }
-                        keyExtractor={ (item , index) => index.toString() }
-                        ListFooterComponent={ bottomLoader }
-                        onEndReached={ () => {
+                        data={notPnApplications}
+                        keyExtractor={(item,index)=>index.toString()}
+                        ListFooterComponent={bottomLoader}
+                        onEndReached={()=>{
 
-                            if (!onEndReachedCalledDuringMomentum || !isMobile) {
+                            if(!onEndReachedCalledDuringMomentum|| !(
+                                isMobile&& !(
+                                    Platform?.isPad||isTablet()))){
                                 handleLoad();
                                 setOnEndReachedCalledDuringMomentum(true);
                             }
 
-                        } }
-                        onScrollEndDrag={ onScrollEndDrag }
-                        onEndReachedThreshold={ 0.5 }
-                        onMomentumScrollBegin={ () => {
+                        }}
+                        onScrollEndDrag={onScrollEndDrag}
+                        onEndReachedThreshold={0.5}
+                        onMomentumScrollBegin={()=>{
                             onMomentumScrollBegin();
                             setOnEndReachedCalledDuringMomentum(false)
-                        } }
-                        onMomentumScrollEnd={ onMomentumScrollEnd }
-                        scrollEventThrottle={ 1 }
-                        renderItem={ ({ item , index }) => (
+                        }}
+                        onMomentumScrollEnd={onMomentumScrollEnd}
+                        scrollEventThrottle={1}
+                        renderItem={({item,index})=>(
                             <ApplicationList
-                                key={ index }
-                                onPress={ () => {
+                                key={index}
+                                onPress={()=>{
                                     userPress(index)
 
-                                } }
-                                item={ item }
-                                numbers={ numberCollapsed }
-                                index={ index }
+                                }}
+                                item={item}
+                                numbers={numberCollapsed}
+                                index={index}
 
-                                element={ (activity: any , i: number) => {
+                                element={(activity:any,i:number)=>{
                                     return (
 
                                         <ActivityItem
-                                            isOpen={ isOpen }
-                                            config={ config }
+                                            isOpen={isOpen}
+                                            config={config}
                                             /*
                                             isPinned={true}*/
-                                            searchQuery={ searchTerm }
-                                            key={ i }
-                                            selected={ applicationItem?._id == activity?._id }
-                                            parentIndex={ index }
-                                            role={ user?.role?.key }
-                                            activity={ activity }
-                                            currentUser={ user }
-                                            onPressUser={ (event: any) => {
-
+                                            searchQuery={searchTerm}
+                                            key={i}
+                                            selected={applicationItem?._id==activity?._id}
+                                            parentIndex={index}
+                                            role={user?.role?.key}
+                                            activity={activity}
+                                            currentUser={user}
+                                            onPressUser={(event:any)=>{
                                                 dispatch(setApplicationItem({
-                                                    ...activity ,
-                                                    isOpen : `${ index }${ i }`
+                                                    ...activity,
+                                                    isOpen:`${index}${i}`
                                                 }));
                                                 //setDetails({ ...activity , isOpen : `${ index }${ i }` });
                                                 /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
                                                 })*/
-                                                if (event?.icon == 'more') {
+                                                if(event?.icon=='more'){
                                                     setMoreModalVisible(true)
-                                                } else {
+                                                } else{
                                                     setModalVisible(true)
                                                 }
 
-                                            } } index={ `${ index }${ i }` }
-                                            swiper={ (index: number , progress: any , dragX: any , onPressUser: any) => renderSwiper(index , progress , dragX , onPressUser , activity , unReadReadApplicationFn) }/>
+                                            }} index={`${index}${i}`}
+                                            swiper={(index:number,progress:any,dragX:any,onPressUser:any)=>renderSwiper(index,progress,dragX,onPressUser,activity,unReadReadApplicationFn)}/>
                                     )
-                                } }/>
-                        ) }
+                                }}/>
+                        )}
                     />
                     {/*    right view jkadtong muslide
-                view*/ }
+                view*/}
 
 
                 </View>
                 {
                     !(
-                        isMobile) && lodash.isEmpty(applicationItem) && dimensions?.width > 768 &&
-                    <View style={ [{ flex : 1 , justifyContent : "center" , alignItems : "center" }] }>
+                        (
+                            isMobile&& !(
+                                Platform?.isPad||isTablet())))&&lodash.isEmpty(applicationItem)&&dimensions?.width>768&&
+                    <View style={[{flex:1,justifyContent:"center",alignItems:"center"}]}>
 
                         <NoActivity/>
-                        <Text style={ { color : "#A0A3BD" , fontSize : fontValue(24) } }>No activity
+                        <Text style={{color:"#A0A3BD",fontSize:fontValue(24)}}>No activity
                             selected</Text>
 
 
                     </View>
                 }
 
-                { (
-                    !lodash.isEmpty(applicationItem)) && <ActivityModalView>
-                    <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
+
+                {(
+                    !lodash.isEmpty(applicationItem))&&<View style={{flex:1}}>
+                    <ItemMoreModal details={applicationItem} visible={moreModalVisible} onDismissed={()=>{
                         onMoreModalDismissed(applicationItem?.isOpen)
-                    } }/>
-                    <ActivityModal updateModal={ updateModalFn }
-                                   readFn={ unReadReadApplicationFn }
-                                   details={ applicationItem }
-                                   onChangeAssignedId={ (event) => {
+                    }}/>
+                    <ActivityModal updateModal={updateModalFn}
+                                   readFn={unReadReadApplicationFn}
+                                   details={applicationItem}
+                                   onChangeAssignedId={(event)=>{
 
                                        dispatch(setApplicationItem(event))
 
-                                   } }
-                                   visible={ modalVisible }
-                                   onDismissed={ (event: boolean , _id: number) => {
+                                   }}
+                                   visible={modalVisible}
+                                   onDismissed={(event:boolean,_id:number)=>{
                                        setUpdateModal(false);
                                        dispatch(setApplicationItem({}));
-                                       if (event && _id) {
+                                       if(event&&_id){
                                            //  dispatch(deleteApplications(_id))
                                        }
-                                       if (event) {
+                                       if(event){
                                            onRefresh()
                                        }
                                        onDismissed()
-                                   } }/></ActivityModalView> }
+                                   }}/></View>}
             </View>
 
         </>

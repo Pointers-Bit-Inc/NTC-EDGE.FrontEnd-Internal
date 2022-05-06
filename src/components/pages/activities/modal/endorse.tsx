@@ -29,6 +29,7 @@ import {isMobile} from "@pages/activities/isMobile";
 import hairlineWidth = StyleSheet.hairlineWidth;
 import button from "@pages/activities/modal/styles";
 import ConfirmRightArrow from "@assets/svg/confirmArrow";
+import {isLandscapeSync,isTablet} from "react-native-device-info";
 
 const { height , width } = Dimensions.get('window');
 
@@ -117,6 +118,15 @@ const Endorsed = (props: any) => {
 
     const orientation = useOrientation();
     const dimensions = useWindowDimensions();
+
+    useEffect(()=>{
+        if(showAlert || props.visible){
+            //TODO: add state
+            props.onExit()
+            props.onModalDismissed()
+        }
+
+    }, [isLandscapeSync()])
     return (
         <Modal
             supportedOrientations={ ['portrait' , 'landscape'] }
@@ -181,7 +191,7 @@ const Endorsed = (props: any) => {
             >
 
 
-                  <View style={{flex: 1,  paddingHorizontal: !isMobile ? 64 : 0, alignItems: "flex-end", justifyContent: "flex-end"}}>
+                  <View style={{flex: 1,  paddingHorizontal: !((isMobile&& !(Platform?.isPad||isTablet()))) ? 64 : 0, alignItems: "flex-end", justifyContent: "flex-end"}}>
                       <TouchableWithoutFeedback onPressOut={ props.onDismissed}>
                           <View style={   {
 
@@ -193,7 +203,7 @@ const Endorsed = (props: any) => {
                               position : 'absolute' ,
                           } }/>
                       </TouchableWithoutFeedback>
-                      <View style={ [styles.rect , styles.shadow, { width:  dimensions.width <= 768 ? "100%" : "32.6%", height : isMobile ? orientation == "LANDSCAPE"  ? "100%" : "80%" : "80%" , }] }>
+                      <View style={ [styles.rect , styles.shadow, { width:  ((isMobile&& !(Platform?.isPad||isTablet()))) || dimensions.width <= 768 ? "100%" : "32.6%", height : ((isMobile&& !(Platform?.isPad||isTablet()))) ? orientation == "LANDSCAPE"  ? "100%" : "80%" : "65%" , }] }>
 
                           <View >
                               <View style={ styles.iconColumn }>

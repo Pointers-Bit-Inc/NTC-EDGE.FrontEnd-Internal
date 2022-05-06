@@ -12,7 +12,8 @@ export default function useApplicant(props) {
         assignedPersonnel = props?.assignedPersonnel,
         schedule = props?.schedule,
         createdAt = props?.createdAt ,
-        proofOfPayment = props?.proofOfPayment;
+        proofOfPayment = props?.proofOfPayment,
+        documents = props?.document
     return {applicant,
         selectedTypes,
         applicationType,
@@ -26,5 +27,6 @@ export default function useApplicant(props) {
         assignedPersonnel,
         createdAt,
         schedule,
+        documents,
         proofOfPayment}
 }

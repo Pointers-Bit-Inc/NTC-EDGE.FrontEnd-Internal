@@ -151,6 +151,7 @@ export function SearchActivity(props: {onBlur: any ,  isHandleLoad:any, isRecent
                             </View>
                             }
                             <FlatList
+                                showsVerticalScrollIndicator={false}
                                 style={{flex: 1}}
                                 data={props.applications}
                                 keyExtractor={(item, index) => index.toString()}

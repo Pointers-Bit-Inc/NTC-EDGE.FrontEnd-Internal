@@ -9,7 +9,9 @@ const {
     SET_TAB_BAR_HEIGHT,
     SET_APPLICATION_ITEM,
     SET_FILTER_RECT,
-    SET_RIGHT_LAYOUT_COMPONENT
+    SET_RIGHT_LAYOUT_COMPONENT,
+    SET_TOPBARNAV,
+    SET_ACTIVITY_SIZE
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -22,6 +24,20 @@ export function setPinnedApplication(payload) {
 export function updateApplicationStatus(payload) {
     return {
         type: UPDATE_APPLICATION_STATUS,
+        payload,
+    };
+}
+
+export function setTopBarNav(payload) {
+    return {
+        type: SET_TOPBARNAV,
+        payload,
+    };
+}
+
+export function setactivitySizeComponent(payload) {
+    return {
+        type: SET_ACTIVITY_SIZE,
         payload,
     };
 }
