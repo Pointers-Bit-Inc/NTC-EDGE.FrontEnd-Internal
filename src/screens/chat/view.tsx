@@ -287,12 +287,11 @@ const ChatView = ({ navigation, route }:any) => {
       isGroup
     });
   }
-
   useEffect(() => {
-    if (!_id) {
+    if (!lodash.size(otherParticipants)) {
       navigation.goBack();
     }
-  }, [_id]);
+  }, [otherParticipants]);
 
   useEffect(() => {
     if (lodash.size(selectedFile)) {
