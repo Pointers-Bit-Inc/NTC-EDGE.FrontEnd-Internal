@@ -48,7 +48,7 @@ const BasicInfo=(props:any)=>{
 
                     textSize={22}
                     image={applicant?.profilePicture?.small.match(/[^/]+(jpeg|jpg|png|gif)$/i) ? applicant?.profilePicture?.small : applicant?.profilePicture?.small+".png"}
-                    name={`${applicant?.firstName} ${applicant?.lastName}`}
+                    name={applicant?.firstName  && applicant?.lastName ? applicant?.firstName+(applicant?.middleName ? " "+applicant?.middleName?.charAt()+"." : "")+" "+applicant?.lastName : applicant?.applicantName ? applicant?.applicantName : ""}
                 />
 
                 {(
