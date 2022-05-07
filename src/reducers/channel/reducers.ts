@@ -32,6 +32,8 @@ const {
   ADD_PENDING_MESSAGE,
   SET_PENDING_MESSAGE_ERROR,
   REMOVE_PENDING_MESSAGE,
+
+  UPDATE_PARTICIPANTS,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -219,6 +221,20 @@ export default function basket(state = initialState, action:any) {
     }
     case RESET_PENDING_MESSAGES: {
       return state.setIn(['pendingMessages'], {});
+    }
+    case UPDATE_PARTICIPANTS: {
+      let newState = state;
+
+      if (action.payload?.participants) {
+        if (state.normalizedChannelList[action.payload._id]) {
+          newState = newState.setIn(['normalizedChannelList', action.payload._id, 'participants'], action.payload.participants)
+          if (state.selectedChannel?._id === action.payload._id) {
+            newState = newState.setIn(['selectedChannel', 'participants'], action.payload.participants);
+          }
+        }
+      }
+
+      return newState;
     }
     default:
       return state;

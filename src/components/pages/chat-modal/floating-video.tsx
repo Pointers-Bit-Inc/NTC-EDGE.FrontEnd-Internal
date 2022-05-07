@@ -32,6 +32,7 @@ import { Feather } from '@expo/vector-icons';
 import { Bold } from '@styles/font';
 import { useNavigation } from '@react-navigation/native';
 import IParticipants from 'src/interfaces/IParticipants';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -112,6 +113,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
     paddingVertical: 3,
     paddingHorizontal: 15,
+  },
+  indicator: {
+    width: RFValue(6),
+    height: RFValue(6),
+    borderRadius: RFValue(6),
+    backgroundColor: '#FF3939',
+    position: 'absolute',
+    right: RFValue(5),
+    top: RFValue(1),
   }
 });
 
@@ -120,8 +130,8 @@ const FloatingVideo = () => {
   const navigation = useNavigation();
   const videoRef = useRef<any>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
-  const { meeting, options, meetingId, isFullScreen, pinnedParticipant, toggleMute } = useSelector((state:RootStateOrAny) => {
+  const { selectedMessage, normalizedChannelList } = useSelector((state:RootStateOrAny) => state.channel);
+  const { meeting, options, meetingId, isFullScreen, pinnedParticipant, toggleMute, roomId } = useSelector((state:RootStateOrAny) => {
     const { meeting, options, isFullScreen, pinnedParticipant, toggleMute } = state.meeting;
     meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
     return {
@@ -131,6 +141,7 @@ const FloatingVideo = () => {
       isFullScreen,
       pinnedParticipant,
       toggleMute,
+      roomId: meeting?.roomId,
     };
   });
   const {
@@ -148,6 +159,7 @@ const FloatingVideo = () => {
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
   const [timer, setTimer] = useState(0);
+  const [hasNewMessage, setHasNewMessage] = useState(false);
 
   const snapPointsX = useSharedValue(defaultSnapX);
   const snapPointsY = useSharedValue(defaultSnapY);
@@ -226,6 +238,15 @@ const FloatingVideo = () => {
       setToggle(null);
     }
   }, [toggleMute]);
+
+  useEffect(() => {
+    if (normalizedChannelList && normalizedChannelList[roomId]) {
+      const { lastMessage = {} } = normalizedChannelList[roomId];
+      const { seen = [] } = lastMessage;
+      const hasSeen = !!lodash.find(seen, s => s._id === user._id);
+      setHasNewMessage(hasSeen);
+    }
+  }, [normalizedChannelList, roomId]);
 
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: (_, context:any) => {
@@ -337,6 +358,9 @@ const FloatingVideo = () => {
         <TouchableOpacity onPress={onMessages}>
           <View style={styles.icon}>
             <MessageIcon />
+            {
+              hasNewMessage && <View style={styles.indicator} />
+            }
           </View>
         </TouchableOpacity>
         <View style={{ width: 5 }} />

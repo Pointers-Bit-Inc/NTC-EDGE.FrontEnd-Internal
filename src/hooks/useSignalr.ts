@@ -8,7 +8,7 @@ import useApi from 'src/services/api';
 import { normalize, schema } from 'normalizr';
 import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
 import { addMeeting, updateMeeting, setConnectionStatus, setNotification, setMeeting, removeMeetingFromList } from 'src/reducers/meeting/actions';
-import { addMessages, updateMessages, addChannel, removeChannel, updateChannel, addFiles } from 'src/reducers/channel/actions';
+import { addMessages, updateMessages, addChannel, removeChannel, updateChannel, addFiles, updateParticipants } from 'src/reducers/channel/actions';
 
 const useSignalr = () => {
   const dispatch = useDispatch();
@@ -68,6 +68,10 @@ const useSignalr = () => {
         case 'update': {
           dispatch(updateChannel(data));
           if (data.lastMessage) dispatch(addMessages(data._id, data.lastMessage));
+          break;
+        }
+        case 'updateParticipants': {
+          dispatch(updateParticipants(data));
           break;
         }
         case 'delete': dispatch(removeChannel(data._id)); break;
