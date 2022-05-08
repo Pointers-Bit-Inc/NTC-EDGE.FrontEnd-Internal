@@ -98,6 +98,14 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
   return (
     <View style={[styles.container]}>
       <InputField
+          onKeyPress={(event ) => {
+            if(Platform?.OS === "web"){
+              event?.preventDefault();
+              if(event?.nativeEvent?.key == "Tab"){
+                passwordRef?.current?.focus()
+              }
+            }
+          }}
           ref={inputRef}
         label={'Email address'}
         placeholder="Email address"
