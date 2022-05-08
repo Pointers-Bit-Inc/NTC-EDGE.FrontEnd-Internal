@@ -91,7 +91,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
             <View style={[requirementStyles.cardDocument]}>
 
 
-                {<TouchableOpacity disabled={this.state.onLoadStart&&!this.state.extension} ref={image=>(
+                {<TouchableOpacity disabled={!this?.state?._imageSize?.height && this.state.onLoadStart&&!this.state.extension} ref={image=>(
                     this.state.image=image)}
                                    onPress={this._showImage} style={{
                     alignItems:"center",
@@ -107,7 +107,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
             </View>
 
             <View style={{alignItems:isMobile ? "center" : undefined}}>
-                <TouchableOpacity disabled={this.state.onLoadStart&&!this.state.extension} ref={image=>{
+                <TouchableOpacity disabled={!this?.state?._imageSize?.height && this.state.onLoadStart&&!this.state.extension} ref={image=>{
                     this.state.image=image
                 }}
                                   onPress={this._showImage}>

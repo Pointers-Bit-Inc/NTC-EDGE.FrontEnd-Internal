@@ -90,7 +90,7 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
                 })
             }}>
                 {this.props.proofOfPayment?.small&&
-                <TouchableOpacity disabled={this.state.onLoadStart&&!this.state.extension} ref={image=>(
+                <TouchableOpacity disabled={!this?.state?._imageSize?.height &&this.state.onLoadStart&&!this.state.extension} ref={image=>(
                     this.state.image=image)}
                                   onPress={this._showImage}>
                     <View style={{
@@ -113,7 +113,7 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
                 </TouchableOpacity>
                 }
                 <View style={{justifyContent:"center",...Platform.select({native: {alignItems: "center"}, default: {alignItems: "flex-start"}})}}>
-                    <TouchableOpacity disabled={this.state.onLoadStart&& !this.state.extension} ref={image=>(
+                    <TouchableOpacity disabled={!this?.state?._imageSize?.height &&this.state.onLoadStart&& !this.state.extension} ref={image=>(
                         this.state.image=image)}
                                       onPress={this._showImage}>
                         {
