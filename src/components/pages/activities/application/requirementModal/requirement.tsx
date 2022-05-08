@@ -226,7 +226,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                  </View>
 
                              </ImageZoom>)
-                        : <View style={{flex: 1, justifyContent: "center", alignSelf: "center"}}>
+                        : <View style={{flex: 1, width: this.props?.rightLayoutComponent?.width, justifyContent: "center", alignSelf: "center"}}>
                              <ActivityIndicator color={"#fff"} />
                          </View>}
                     </View>
