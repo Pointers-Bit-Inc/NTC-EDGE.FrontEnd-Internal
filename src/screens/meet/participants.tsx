@@ -275,7 +275,13 @@ const Participants = ({ navigation }) => {
                     });
                   }}>
                     <View style={[styles.option]}>
-                      <MicOffIcon />
+                      {
+                        !selectedParticipant.muted ? (
+                          <MicOffIcon />
+                        ) : (
+                          <MicOnIcon />
+                        )
+                      }
                       <Text
                         style={{ marginLeft: 15 }}
                         color={'black'}
@@ -360,7 +366,7 @@ const Participants = ({ navigation }) => {
           <View style={{ marginRight: item.muted ? -18 : -15 }}>
             {
               item.muted ? (
-                <MicOffIcon color={text.error} />
+                <MicOffIcon color={'#212121'} />
               ) : (
                 <MicOnIcon color={'#2863D6'} />
               )
