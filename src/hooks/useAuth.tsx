@@ -123,6 +123,9 @@ export function useAuth(navigation) {
             case 'forgotPassword': {
                 return navigation.navigate('ForgotPassword');
             }
+            case 'login': {
+                return onLogin(value)
+            }
             default:
                 return setFormValue({
                     ...formValue ,
