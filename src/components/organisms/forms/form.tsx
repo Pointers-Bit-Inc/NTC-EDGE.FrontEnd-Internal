@@ -1,5 +1,5 @@
 import React,{Fragment,useRef,useState} from 'react';
-import {Image,StyleSheet,TouchableOpacity,View} from 'react-native';
+import {Image,Platform,StyleSheet,TouchableOpacity,View} from 'react-native';
 import {DropdownField,InputField} from "@molecules/form-fields";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Button from "@atoms/button";
@@ -53,7 +53,14 @@ const FormField=({
                                    onChangeText={(text:string)=>{
                                        onChange(id,text,'input',element?.stateName)
                                    }}
-
+                                   onKeyPress={(event ) => {
+                                       if(Platform?.OS === "web"){
+                                           event?.preventDefault();
+                                           if(event?.nativeEvent?.key == "Tab"){
+                                               mapRef?.[mapRef?.findIndex(e=>e?.id==id)+1]?.ref?.current?.focus();
+                                           }
+                                       }
+                                   }}
                                    returnKeyType={mapRef?.[mapRef.length-1]?.id==mapRef?.[mapRef.findIndex(e=>e?.id==id)]?.id ? "done" : "next"}
                                    ref={mapRef?.[mapRef.findIndex(e=>e?.id==id)].ref}
                                    onSubmitEditing={(event:any)=>{
