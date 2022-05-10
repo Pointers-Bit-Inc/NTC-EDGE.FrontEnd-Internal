@@ -99,11 +99,9 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
     <View style={[styles.container]}>
       <InputField
           onKeyPress={(event ) => {
-            if(Platform?.OS === "web"){
+            if(Platform?.OS === "web" && event?.nativeEvent?.key == "Tab"){
               event?.preventDefault();
-              if(event?.nativeEvent?.key == "Tab"){
                 passwordRef?.current?.focus()
-              }
             }
           }}
           ref={inputRef}
