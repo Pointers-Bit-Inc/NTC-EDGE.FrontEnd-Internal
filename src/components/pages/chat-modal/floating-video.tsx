@@ -38,7 +38,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const dimensions = {
   width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height,
+  height: Dimensions.get('window').height + (Platform.OS === 'ios' ? 0 : 30),
 };
 
 const VideoWidth = dimensions.width * 0.5;
