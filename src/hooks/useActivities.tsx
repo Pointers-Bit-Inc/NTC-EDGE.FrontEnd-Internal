@@ -44,6 +44,7 @@ function convertStatusText(convertedStatus:any[],item:any){
 }
 
 export function useActivities(){
+    const scrollViewRef = useRef()
     const [total,setTotal]=useState(0);
     const [page,setPage]=useState(0);
     const [size,setSize]=useState(0);
@@ -528,6 +529,7 @@ export function useActivities(){
         onMomentumScrollEnd,
         onScrollEndDrag,
         headerTranslate,
-        opacity
+        opacity,
+        scrollViewRef
     };
 }

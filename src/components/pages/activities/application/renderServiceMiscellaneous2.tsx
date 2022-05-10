@@ -113,13 +113,11 @@ const RenderServiceMiscellaneous=(props)=>{
         if(findIndex!= -1){
             index=keys?.split(".")?.reverse()?.[findIndex];
             prevValue=keys?.split?.(".")?.reverse()?.[findIndex-1];
-            nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1]
-            console.log(prevValue, index, nextValue)
+            nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1];
         } else{
-            prevValue=keys?.split(".")?.[keys.split(".").length-1];
-            index=keys?.split(".")?.[keys.split(".").length];
-            nextValue=keys?.split?.(".")?.[keys.split(".").length-2] ||  keys?.split?.(".")?.[0]
-
+            prevValue=keys?.split(".")?.[keys.split(".")?.length-1];
+            index=keys?.split(".")?.[keys.split(".")?.length];
+            nextValue=keys?.split?.(".")?.[keys.split(".")?.length-2] || keys?.split?.(".")?.[0];
         }
 
 
