@@ -336,7 +336,7 @@ export function ActivityItem(props: any) {
                                                 <ProfileImage
                                                     size={ fontValue(45) }
                                                     image={ userActivity?.profilePicture?.thumb ? userActivity?.profilePicture?.thumb.match(/[^/]+(jpg|png|gif)$/i) ?  userActivity?.profilePicture?.thumb :  userActivity?.profilePicture?.thumb + ".png" : null }
-                                                    name={ `${ userActivity?.firstName } ${ userActivity?.lastName }` }
+                                                    name={ userActivity?.firstName ? `${ userActivity?.firstName } ${ userActivity?.lastName }` : (userActivity?.applicantName ? userActivity?.applicantName : "") }
                                                 />
                                                 <View style={ styles.content }>
                                                     <View style={ styles.section }>
@@ -352,7 +352,7 @@ export function ActivityItem(props: any) {
                                                                 <Highlighter
                                                                     highlightStyle={ { backgroundColor : '#BFD6FF' } }
                                                                     searchWords={ [props?.searchQuery] }
-                                                                    textToHighlight={ userActivity?.firstName ? `${ userActivity?.firstName } ${ userActivity?.lastName }` : userActivity?.applicantName }
+                                                                    textToHighlight={ userActivity?.firstName ? `${ userActivity?.firstName } ${ userActivity?.lastName }` : (userActivity?.applicantName ? userActivity?.applicantName : "") }
                                                                 />
 
                                                             </Text>

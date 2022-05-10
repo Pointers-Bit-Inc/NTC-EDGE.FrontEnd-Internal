@@ -13,7 +13,6 @@ import {
 import Loader from "@pages/activities/bottomLoad";
 import {Regular500} from "@styles/font";
 import FadeBackground from "@assets/svg/fade-background";
-import {RFValue} from "react-native-responsive-fontsize";
 import {fontValue} from "@pages/activities/fontValue";
 const { width , height } = Dimensions.get('window');
 

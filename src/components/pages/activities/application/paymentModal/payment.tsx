@@ -1,5 +1,5 @@
 import React,{useState} from "react";
-import {FlatList,Image,Modal,Platform,ScrollView,TouchableOpacity,View} from "react-native";
+import {ActivityIndicator,FlatList,Image,Modal,Platform,ScrollView,TouchableOpacity,View} from "react-native";
 import PaymentModal from "@pages/activities/application/paymentModal/index";
 import Text from "@atoms/text";
 import {styles as paymentStyles} from "@pages/activities/application/paymentModal/styles"
@@ -23,6 +23,7 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
 
     state={
         onLoadStart:true,
+        onLoad: false,
         onError:false,
         visible:false,
         source:{uri:this.props?.proofOfPayment?.medium||"https://dummyimage.com/350x350/fff/aaa"},
@@ -46,18 +47,26 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
     _hideImageModal=()=>this.setState({visible:false});
     _requestClose=()=>this.state.imageModal?.close();
     _showImage=()=>{
-        this.state.image?.measure((x,y,width,height,pageX,pageY)=>{
-            this.setState({
-                _sourceMeasure:{
-                    width:width||0,
-                    height:height||0,
-                    pageX:pageX||0,
-                    pageY:pageY||0
-                }
-            });
+        new Promise((resolve, reject) => {
+            this.setState({onLoad:true, visible: true})
+            setTimeout(() => {
+                resolve('');
+            }, 1000);
+        }).then(()=>{
+            this.setState({onLoad:false})
+            this.state.image?.measure((x,y,width,height,pageX,pageY)=>{
+                this.setState({
+                    _sourceMeasure:{
+                        width:width||0,
+                        height:height||0,
+                        pageX:pageX||0,
+                        pageY:pageY||0
+                    },
+                    onLoad: false
+                });
 
-        });
-        this._showImageModal();
+            });
+        })
     };
 
     componentDidUpdate(prevProps,prevState){
@@ -76,7 +85,7 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
 
     render(){
         return <>
-            {this.props.proofOfPayment?.small&&
+            {this.props.proofOfPayment?.original&&
 
             <View style={{
                 ...Platform.select({
@@ -89,8 +98,8 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
 
                 })
             }}>
-                {this.props.proofOfPayment?.small&&
-                <TouchableOpacity disabled={this.state.onLoadStart&&!this.state.extension} ref={image=>(
+                {this.props.proofOfPayment?.original&&
+                <TouchableOpacity disabled={!this?.state?._imageSize?.height &&this.state.onLoadStart&&!this.state.extension} ref={image=>(
                     this.state.image=image)}
                                   onPress={this._showImage}>
                     <View style={{
@@ -108,12 +117,12 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
                             color={"#606A80"}
                             size={12}
                             style={{
-                                        width:240}}>{this.props?.proofOfPayment?.small?.split("/")?.[this.props?.proofOfPayment?.small?.split("/")?.length-1]}</Text>
+                                        width:240}}>{this.props?.proofOfPayment?.original?.split("/")?.[this.props?.proofOfPayment?.original?.split("/")?.length-1]}</Text>
                     </View>
                 </TouchableOpacity>
                 }
                 <View style={{justifyContent:"center",...Platform.select({native: {alignItems: "center"}, default: {alignItems: "flex-start"}})}}>
-                    <TouchableOpacity disabled={this.state.onLoadStart&& !this.state.extension} ref={image=>(
+                    <TouchableOpacity disabled={!this?.state?._imageSize?.height &&this.state.onLoadStart&& !this.state.extension} ref={image=>(
                         this.state.image=image)}
                                       onPress={this._showImage}>
                         {
@@ -125,7 +134,7 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
 
                                 style={[styles.pictureContainer]}
                                 source={{
-                                    uri:this.props?.proofOfPayment?.small,
+                                    uri:this.props?.proofOfPayment?.original,
                                 }}
                             />
                         }
@@ -150,7 +159,7 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
                             this.state.fileName.lastIndexOf('.')+1)))&&isMobile) ? "rgba(0,0,0,0.5)" : undefined ,}]}>
 
 
-                          {(
+                          {!this.state.onLoad ? (
                                /(pdf|docx|doc)$/ig.test(this.state.fileName.substr((
                                    this.state.fileName.lastIndexOf('.')+1)))&&isMobile) ?
                            <View style={{width: "100%", height: "80%", top: 80}}>
@@ -166,7 +175,9 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
                                imageSize={this.state._imageSize}
                                onClose={this._hideImageModal}
                                animationDuration={200}
-                           />}
+                           /> : <View style={{flex: 1, justifyContent: "center", alignSelf: "center"}}>
+                              <ActivityIndicator color={"#fff"} />
+                              </View>}
 
 
                 </View>
@@ -175,7 +186,7 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
     }
 
     private setImage(){
-        let _fileName=this.props?.proofOfPayment?.small?.split("/")?.[this.props?.proofOfPayment?.small?.split("/")?.length-1];
+        let _fileName=this.props?.proofOfPayment?.original?.split("/")?.[this.props?.proofOfPayment?.original?.split("/")?.length-1];
 
         this.setState({
             onLoadStart:true,

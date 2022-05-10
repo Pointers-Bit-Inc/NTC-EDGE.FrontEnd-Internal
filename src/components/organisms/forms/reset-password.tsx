@@ -220,7 +220,7 @@ const PasswordForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         error={form?.confirmPassword?.error}
         value={form?.confirmPassword?.value}
         onChangeText={(value: string) => onChangeValue('confirmPassword', value)}
-        onSubmitEditing={(event:any) => onChangeValue('confirmPassword', event.nativeEvent.text)}
+        onSubmitEditing={(event:any) => onChangeValue('resetPassword', event.nativeEvent.text)}
         showPassword={() => onChangeValue('showPassword', !form?.showPassword?.value)}
       />
       {/* <View style={[styles.horizontal, { marginTop: 20 }]}>

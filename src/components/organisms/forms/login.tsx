@@ -98,6 +98,14 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
   return (
     <View style={[styles.container]}>
       <InputField
+          onKeyPress={(event ) => {
+            if(Platform?.OS === "web"){
+              event?.preventDefault();
+              if(event?.nativeEvent?.key == "Tab"){
+                passwordRef?.current?.focus()
+              }
+            }
+          }}
           ref={inputRef}
         label={'Email address'}
         placeholder="Email address"
@@ -134,7 +142,7 @@ const LoginForm : FC<Props> = ({ form = {}, onChangeValue = () => {} }) => {
         value={form?.password?.value}
         showPassword={() => onChangeValue('showPassword')}
         onChangeText={(value: string) => onChangeValue('password', value)}
-        onSubmitEditing={(event:any) => onChangeValue('password', event.nativeEvent.text)}
+        onSubmitEditing={(event:any) => onChangeValue('login', {email: inputRef?.current?.value, password: event?.nativeEvent?.text})}
       />
       {isMobile && <View style={[styles.horizontal, { justifyContent: 'flex-start' }]}>
         <TouchableOpacity onPress={() => onChangeValue('forgotPassword')}>

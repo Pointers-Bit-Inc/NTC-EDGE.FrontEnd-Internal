@@ -156,6 +156,9 @@ const ResetPassword = ({navigation}: any) => {
                     }
                 });
             }
+            case "resetPassword":{
+                onCheckValidation()
+            }
             default:
                 return setFormValue({
                     ...formValue,
@@ -277,8 +280,9 @@ const ResetPassword = ({navigation}: any) => {
                     </Text>
                 </TouchableOpacity>
             </View> */}
-            <ScrollView style={styles.content}>
+            <ScrollView  keyboardShouldPersistTaps={Platform.OS=="ios" ? "handled" : "always"} style={styles.content}>
                 <PasswordField
+
                     label={'Old password'}
                     placeholder="Old password"
                     textContentType="oneTimeCode"

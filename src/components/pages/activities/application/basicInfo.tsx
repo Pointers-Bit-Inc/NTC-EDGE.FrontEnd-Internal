@@ -1,6 +1,6 @@
 import React,{useEffect,useRef} from "react";
 import {ScrollView,StyleSheet,Text,useWindowDimensions,View} from "react-native";
-import {excludeStatus,getStatusText,statusColor,statusIcon} from "@pages/activities/script";
+import {excludeStatus,getStatusText,remarkColor,statusColor,statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
 import {APPROVED,DECLINED} from "../../../../reducers/activity/initialstate";
@@ -48,7 +48,7 @@ const BasicInfo=(props:any)=>{
 
                     textSize={22}
                     image={applicant?.profilePicture?.small.match(/[^/]+(jpeg|jpg|png|gif)$/i) ? applicant?.profilePicture?.small : applicant?.profilePicture?.small+".png"}
-                    name={`${applicant?.firstName} ${applicant?.lastName}`}
+                    name={applicant?.firstName  && applicant?.lastName ? applicant?.firstName+(applicant?.middleName ? " "+applicant?.middleName?.charAt()+"." : "")+" "+applicant?.lastName : applicant?.applicantName ? applicant?.applicantName : ""}
                 />
 
                 {(
@@ -78,49 +78,65 @@ const BasicInfo=(props:any)=>{
                                         <Text style={styles.header}>Status</Text>
                                     </View>
                                 </View>
+                                  <View style={{paddingVertical: 15}}>
+                                      <View style={[styles.status, {paddingBottom: !!props.remarks ?  7.5 : 0}]}>
 
-                                <View style={styles.status}>
-
-                                    <View
-                                        style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
-                                        {
-                                            statusIcon(
-                                                getStatusText(props,personnel)
-                                                ,
-                                                styles.icon2,
-                                                1
-                                            )
-                                        }
-                                        <CustomText
-                                            style={[
-                                                styles.role,
-                                                statusColor(
-                                                    getStatusText(props,personnel)
-                                                ),
-                                                {
-                                                    fontSize:fontValue(16),
-                                                    fontFamily:Bold,
-                                                }
-                                            ]}
-                                            numberOfLines={1}
-                                        >
-                                            {
-                                                getStatusText(props,personnel)?.toUpperCase()
-                                            }
-                                        </CustomText>
-                                    </View>
+                                          <View
+                                              style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
+                                              {
+                                                  statusIcon(
+                                                      getStatusText(props,personnel)
+                                                      ,
+                                                      styles.icon2,
+                                                      1
+                                                  )
+                                              }
+                                              <CustomText
+                                                  style={[
+                                                      styles.role,
+                                                      statusColor(
+                                                          getStatusText(props,personnel)
+                                                      ),
+                                                      {
+                                                          fontSize:fontValue(16),
+                                                          fontFamily:Bold,
+                                                      }
+                                                  ]}
+                                                  numberOfLines={1}
+                                              >
+                                                  {
+                                                      getStatusText(props,personnel)?.toUpperCase()
+                                                  }
+                                              </CustomText>
+                                          </View>
 
 
-                                    {personnel!=undefined&&
-                                    (
-                                        getStatusText(props,personnel)==APPROVED ? getStatusText(props,personnel) : !excludeStatus(props,personnel))&&
-                                    <CustomText style={{fontSize:fontValue(12),flex:1,color:"#37405B"}}>
-                                        {(
-                                            personnel!==undefined ? `by ${personnel?.firstName} ${personnel?.lastName}` : ``)}
+                                          {personnel!=undefined&&
+                                          (
+                                              getStatusText(props,personnel)==APPROVED ? getStatusText(props,personnel) : !excludeStatus(props,personnel))&&
+                                          <CustomText style={{fontSize:fontValue(12),flex:1,color:"#37405B"}}>
+                                              {(
+                                                  personnel!==undefined ? `by ${personnel?.firstName} ${personnel?.lastName}` : ``)}
 
-                                    </CustomText>}
+                                          </CustomText>}
 
-                                </View>
+                                      </View>
+                                      {
+                                          !!props.remarks &&
+                                          <View style={styles.group3}>
+                                              <View style={[styles?.remarksContainer, {borderColor:  remarkColor(
+                                                      getStatusText(props,personnel)
+                                                  ) }]}>
+                                                  <Text style={styles?.remarksTitle}>{getStatusText(props,personnel)===DECLINED  ? 'NOD/' : ''}Remarks</Text>
+                                                  <Text style={[styles?.remarksContent, statusColor(
+                                                      getStatusText(props,personnel)
+                                                  )  ]}>{props?.remarks}</Text>
+                                              </View>
+                                          </View>
+
+                                      }
+                                  </View>
+
                             </View>
                              <View style={styles.group3}>
                                 <View style={styles.group}>
@@ -215,6 +231,26 @@ const BasicInfo=(props:any)=>{
 
 };
 const styles=StyleSheet.create({
+    remarksContainer: {
+        borderWidth: 2,
+        borderRadius: 10,
+        marginTop: 7.5,
+        marginBottom: 15
+    },
+    remarksTitle: {
+        fontSize: fontValue(14),
+        fontFamily: Bold,
+        backgroundColor: '#fff',
+        alignSelf: 'flex-start',
+        paddingHorizontal: 10,
+        marginTop: -10,
+        marginLeft: 15,
+    },
+    remarksContent: {
+        fontSize: fontValue(15),
+        textAlign: 'justify',
+        margin: 15,
+    },
     elevation:{
         marginVertical:20,
         borderRadius:5,
@@ -298,7 +334,6 @@ const styles=StyleSheet.create({
         flexWrap:"wrap",
         justifyContent:"center",
         alignItems:"center",
-        paddingVertical:15,
         paddingLeft:10
     }
 });

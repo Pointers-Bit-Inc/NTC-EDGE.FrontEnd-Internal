@@ -1,5 +1,16 @@
 import React from "react";
-import {Dimensions,Image,Modal,Platform,ScrollView,Text,TouchableOpacity,useWindowDimensions,View} from "react-native";
+import {
+    ActivityIndicator,
+    Dimensions,
+    Image,
+    Modal,
+    Platform,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
+    View
+} from "react-native";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles,styles} from "@pages/activities/application/requirementModal/styles";
 import AnimatedImage from 'react-native-animated-image-viewer';
@@ -54,21 +65,28 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
         }
     };
     _showImage=()=>{
+        new Promise((resolve, reject) => {
+            this.setState({onLoad:true, visible: true})
+            setTimeout(() => {
+                resolve('');
+            }, 1000);
+        }).then(()=>{
+            this.setState({onLoad:false})
+            this.state?.image?.measure((x,y,width,height,pageX,pageY)=>{
+                this.setState({
+                    _sourceMeasure:{
+                        width:parseInt(width,10),
+                        height:parseInt(height, 10),
+                        pageX:parseInt(pageX, 10),
+                        pageY:parseInt(pageY, 10)
+                    },
 
-        this.state.image?.measure((x,y,width,height,pageX,pageY)=>{
+                });
 
-            this.setState({
-                _sourceMeasure:{
-                    width:width||0,
-                    height:height||0,
-                    pageX:pageX||0,
-                    pageY:pageY||0
-                }
             });
-
-
         });
-        this._showImageModal();
+
+
 
     };
 
@@ -91,7 +109,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
             <View style={[requirementStyles.cardDocument]}>
 
 
-                {<TouchableOpacity disabled={this.state.onLoadStart&&!this.state.extension} ref={image=>(
+                {<TouchableOpacity disabled={!this?.state?._imageSize?.height && this.state.onLoadStart&&!this.state.extension} ref={image=>(
                     this.state.image=image)}
                                    onPress={this._showImage} style={{
                     alignItems:"center",
@@ -107,7 +125,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
             </View>
 
             <View style={{alignItems:isMobile ? "center" : undefined}}>
-                <TouchableOpacity disabled={this.state.onLoadStart&&!this.state.extension} ref={image=>{
+                <TouchableOpacity disabled={!this?.state?._imageSize?.height && !this?.state?._imageSize?.width && this.state.onLoadStart&&!this.state.extension} ref={image=>{
                     this.state.image=image
                 }}
                                   onPress={this._showImage}>
@@ -167,7 +185,8 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                     </View>
 
                     <View style={{flex:1,backgroundColor:"rgba(0, 0, 0, 0.5)"}}>
-                        {this.state.extension ?
+
+                        {!this.state.onLoad ? this.state.extension ?
 
                          <PdfViewr width={this.props?.rightLayoutComponent?.width}
                                    height={this.props?.rightLayoutComponent?.height}
@@ -207,7 +226,9 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                  </View>
 
                              </ImageZoom>)
-                        }
+                        : <View style={{flex: 1, width: this.props?.rightLayoutComponent?.width, justifyContent: "center", alignSelf: "center"}}>
+                             <ActivityIndicator color={"#fff"} />
+                         </View>}
                     </View>
 
 
