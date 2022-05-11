@@ -85,7 +85,7 @@ const RenderServiceMiscellaneous = (props) => {
                 let childItem = item;
                 let childLabel = transformText(item);
                 let childValue = service?.[parentItem]?.[childItem];
-                childValue = Date.parse(childValue) > 0 ?(moment(childValue)?.isValid() ? moment(childValue)?.format('LL') :  !(typeof childValue == "object") ? childValue : ""  ) : !(typeof childValue == "object") ? childValue : "";
+                childValue = moment(childValue)?.isValid() ? moment(childValue)?.format('LL') : childValue;
 
                 if (typeof(childValue) === 'object') return _renderGrandChild(childValue);
                 else return <Row label={ `${childLabel}:` } applicant={ childValue }/>
