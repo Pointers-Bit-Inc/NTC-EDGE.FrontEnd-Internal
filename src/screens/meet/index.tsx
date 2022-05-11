@@ -18,7 +18,7 @@ import useSignalr from 'src/hooks/useSignalr';
 import Meeting from '@components/molecules/list-item/meeting';
 import Text from '@components/atoms/text'
 import { getChannelName } from 'src/utils/formatting';
-import { NewVideoIcon, PlusIcon } from '@atoms/icon';
+import { AddMeetingIcon, NewVideoIcon, PlusIcon } from '@atoms/icon';
 import { text, outline, primaryColor } from 'src/styles/color';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import { ListFooter } from '@components/molecules/list-item';
@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     paddingHorizontal: 30,
-    paddingTop: 39,
-    paddingBottom: 14,
+    paddingTop: 41,
+    paddingBottom: 17,
     backgroundColor: primaryColor
   },
   titleContainer: {
@@ -347,7 +347,10 @@ const Meet = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
+        <TouchableOpacity
+          style={{ paddingTop: 1 }}
+          onPress={() => navigation.navigate('Settings')}
+        >
           <HomeMenuIcon/>
         </TouchableOpacity>
         <View style={styles.titleContainer}>
@@ -362,17 +365,7 @@ const Meet = ({ navigation }) => {
         <TouchableOpacity
           onPress={() => modalRef.current?.open()}
         >
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <NewVideoIcon
-              width={RFValue(34)}
-              height={RFValue(34)}
-            />
-            <PlusIcon
-              color='white'
-              size={RFValue(8)}
-              style={{ position: 'absolute', left: RFValue(Platform.OS === 'ios' ? 10 : 10) }}
-            />
-          </View>
+          <AddMeetingIcon />
         </TouchableOpacity>
       </View>
       {

@@ -383,10 +383,10 @@ const ChatView = ({ navigation, route }:any) => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onInitiateCall(false)}>
-          <View style={{ paddingRight: 5 }}>
+          <View style={{ paddingRight: 2, marginTop: 4 }}>
             <NewCallIcon
               color={button.info}
-              height={RFValue(24)}
+              height={RFValue(20)}
               width={RFValue(24)}
             />
           </View>
@@ -395,8 +395,8 @@ const ChatView = ({ navigation, route }:any) => {
           <View style={{ paddingLeft: 5, paddingTop: 5 }}>
             <NewVideoIcon
               color={button.info}
-              height={RFValue(28)}
-              width={RFValue(28)}
+              height={RFValue(16)}
+              width={RFValue(20)}
             />
           </View>
         </TouchableOpacity>

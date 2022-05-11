@@ -70,6 +70,18 @@ const RootNavigator = () => {
     const user = useSelector((state: RootStateOrAny) => state.user) || {};
     const { meeting } = useSelector((state:RootStateOrAny) => state.meeting);
 
+    const renderFloatingVideo = () => {
+        if (Platform?.OS === 'web') {
+            return null
+        }
+
+        if (lodash.size(meeting) > 0) {
+            return <FloatingVideo />;
+        }
+
+        return null;
+    }
+
     return (
         <NavigationContainer>
 
@@ -148,11 +160,7 @@ const RootNavigator = () => {
                 <Stack.Screen name="JoinVideoCall" component={ JoinVideoCall }/>
                 <Stack.Screen name="SearchActivities" component={ Search }/>
             </Stack.Navigator>
-            {
-                lodash.size(meeting) > 0 && (
-                    <FloatingVideo />
-                )
-            }
+            {renderFloatingVideo()}
         </NavigationContainer>
 
     );

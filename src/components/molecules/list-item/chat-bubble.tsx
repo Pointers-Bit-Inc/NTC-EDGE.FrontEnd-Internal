@@ -145,6 +145,7 @@ interface Props {
   system?: boolean;
   delivered?: boolean;
   onPreview?: any;
+  meeting?: any;
   [x: string]: any;
 }
 
@@ -169,6 +170,7 @@ const ChatBubble:FC<Props> = ({
   system = false,
   delivered = false,
   onPreview = () => {},
+  meeting = null,
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);

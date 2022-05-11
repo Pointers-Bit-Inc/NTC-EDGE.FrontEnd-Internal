@@ -54,6 +54,7 @@ import AddPeopleIcon from './add-people';
 import MicOffIcon from './mic-off';
 import MicOnIcon from './mic-on';
 import PinParticipantIcon from './pin-participant';
+import AddMeetingIcon from './add-meeting';
 
 export {
   ExclamationIcon,
@@ -112,4 +113,5 @@ export {
   MicOffIcon,
   MicOnIcon,
   PinParticipantIcon,
+  AddMeetingIcon,
 };
