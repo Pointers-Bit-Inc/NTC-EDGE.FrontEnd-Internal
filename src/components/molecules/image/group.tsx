@@ -1,10 +1,11 @@
 import React, { FC } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, ScrollView } from 'react-native'
 import lodash from 'lodash';
 import ProfileImage from '@components/atoms/image/profile';
 import { primaryColor } from '@styles/color';
 import {isMobile} from "@pages/activities/isMobile";
 import {fontValue} from "@pages/activities/fontValue";
+import IParticipants from 'src/interfaces/IParticipants';
 
 const styles = StyleSheet.create({
   image: {
@@ -36,13 +37,15 @@ interface Props {
   textSize?: number;
   backgroundColor?: string;
   inline?: boolean;
+  sizeOfParticipants?: number;
 }
 
 const GroupImage: FC<Props> = ({
   participants = [],
   size = 35,
   textSize = 14,
-  inline = false
+  inline = false,
+  sizeOfParticipants = 2,
 }) => {
   const imageSize = size / 1.4;
   if (lodash.size(participants) === 1) {
@@ -58,9 +61,33 @@ const GroupImage: FC<Props> = ({
   }
 
   if (inline) {
+    const filteredParticipants = lodash.take(participants, sizeOfParticipants);
+
     return (
-      <View style={{ width: fontValue((imageSize * 2) - 10), height: fontValue(imageSize) }}>
-        <View style={styles.topPosition}>
+      <View style={{ height: fontValue(imageSize), marginLeft: imageSize * 0.35 }}>
+        <View
+          style={{
+            flexDirection: 'row'
+          }}
+        >
+          {
+            filteredParticipants?.map((p:IParticipants, index:number) => (
+              <View
+                key={p._id}
+                style={{ marginLeft: -(imageSize * 0.35), zIndex: 999 - index }}
+              >
+                <ProfileImage
+                  style={styles.border}
+                  image={p?.profilePicture?.thumb}
+                  name={`${p?.firstName} ${p?.lastName}`}
+                  size={imageSize}
+                  textSize={textSize/2}
+                />
+              </View>
+            ))
+          }
+        </View>
+        {/* <View style={styles.topPosition}>
           <ProfileImage
             style={styles.border}
             image={participants[0]?.profilePicture?.thumb}
@@ -77,7 +104,7 @@ const GroupImage: FC<Props> = ({
             size={imageSize}
             textSize={textSize/2}
           />
-        </View>
+        </View> */}
       </View>
     )
   }

@@ -1,5 +1,6 @@
 import lodash from 'lodash';
 import dayjs from 'dayjs';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const getInitial = (value:any) => {
   return value.match(/(\b\S)?/g).join("").match(/(^\S|\S$)?/g).join("").toUpperCase()
@@ -12,12 +13,12 @@ const getChannelName = (channel:any) => {
   if (!channel.isGroup) {
     const result = channel.otherParticipants;
     if (result && result[0]) {
-      const data = result[0];
-      return `${data.firstName} ${data.lastName}`;
+      const data:IParticipants = result[0];
+      return `${data.title ? `${data.title} ` : ''}${data.firstName} ${data.lastName} ${data.suffix ?? ''}`;
     }
   }
   if (!channel.hasRoomName) {
-    return channel?.otherParticipants?.map(p => p.firstName)?.toString();
+    return channel?.otherParticipants?.map((p:IParticipants) => `${p.title ? `${p.title} ` : ''}${p.lastName}${p.suffix ? ` ${p.suffix}` : ''}`)?.toString();
   }
   return channel.name;
 }

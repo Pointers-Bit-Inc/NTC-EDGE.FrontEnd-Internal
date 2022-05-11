@@ -250,7 +250,7 @@ const ChatBubble:FC<Props> = ({
                 native:(
                     <View style={styles.seenTimeContainer}>
                       <Text
-                          color={text.default}
+                          color={'#64748B'}
                           size={12}
                       >
                         {getChatTimeString(createdAt)}
@@ -261,7 +261,7 @@ const ChatBubble:FC<Props> = ({
                     <View style={styles.hrText}>
                       <View style={styles.border}/>
                       <View>
-                        <Text style={[styles.hrContent, {color:  "#808196",}]}>{getChatTimeString(createdAt)}</Text>
+                        <Text style={[styles.hrContent, {color:  "#64748B",}]}>{getChatTimeString(createdAt)}</Text>
                       </View>
                       <View style={styles.border}/>
                     </View>

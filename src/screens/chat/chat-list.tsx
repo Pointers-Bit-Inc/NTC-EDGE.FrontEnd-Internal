@@ -18,6 +18,7 @@ import {
   addChannel
 } from 'src/reducers/channel/actions';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
+import { getChannelName } from 'src/utils/formatting';
 import Text from '@atoms/text';
 import Button from '@components/atoms/button';
 import ChatList from '@components/organisms/chat/list';
@@ -30,6 +31,7 @@ import IParticipants from 'src/interfaces/IParticipants';
 import NoConversationIcon from "@assets/svg/noConversations";
 import IAttachment from 'src/interfaces/IAttachment';
 import {NoContent} from "@screens/meet/index.web";
+import GroupImage from '@components/molecules/image/group';
 
 const { width, height } = Dimensions.get('window');
 
@@ -92,7 +94,7 @@ const List = () => {
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { selectedChannel, channelMessages, pendingMessages } = useSelector((state:RootStateOrAny) => state.channel);
-  const { _id, isGroup, lastMessage, otherParticipants } = useMemo( () => {
+  const { _id, isGroup, lastMessage, otherParticipants = [], participants = [], hasRoomName, name, author = {} } = useMemo( () => {
     selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id);
     return selectedChannel;
   }, [selectedChannel]);
@@ -361,16 +363,20 @@ const List = () => {
   }
 
   const ListFooterComponent = () => {
-    return (
-      <ListFooter
-        hasError={hasError}
-        fetching={fetching}
-        loadingText="Loading more chat..."
-        errorText="Unable to load chats"
-        refreshText="Refresh"
-        onRefresh={() => fetchMoreMessages(true)}
-      />
-    );
+    if (hasMore) {
+      return (
+        <ListFooter
+          hasError={hasError}
+          fetching={fetching}
+          loadingText="Loading more chat..."
+          errorText="Unable to load chats"
+          refreshText="Refresh"
+          onRefresh={() => fetchMoreMessages(true)}
+        />
+      );
+    }
+
+    return chatHeaderInfo();
   }
 
   const unSendMessageEveryone = useCallback(
@@ -392,6 +398,77 @@ const List = () => {
     if (uri && (uri.endsWith(".png") || uri.endsWith(".jpg") || uri.endsWith(".jpeg"))) return true;
     return false;
   };
+
+  const renderChannelName = () => {
+    return getChannelName({
+      otherParticipants,
+      hasRoomName,
+      name,
+      isGroup
+    });
+  }
+
+  const getPosition = (data:IParticipants) => {
+    let result = '';
+
+    if (data.designation) result += data.designation;
+    if (data.designation && data.position) result += ' - ';
+    if (data.position) result += data.position;
+
+    return result;
+  }
+
+  const chatHeaderInfo = () => {
+    return (
+      <View style={{ alignItems: 'center', marginBottom: 30, padding: 30 }}>
+        <View style={{ alignSelf: 'center', marginBottom: 5 }}>
+          <GroupImage
+            participants={otherParticipants}
+            size={isGroup ? 60 : 45}
+            textSize={isGroup ? 28 : 20}
+            inline={true}
+            sizeOfParticipants={5}
+          />
+        </View>
+        <Text
+          style={{ fontFamily: Regular500, textAlign: 'center', marginBottom: 2 }}
+          color={'black'}
+          size={18}
+        >
+          {renderChannelName()}
+        </Text>
+        {
+          lodash.size(otherParticipants) > 1 ? (
+            <Text
+              style={{ fontFamily: Regular500, textAlign: 'center' }}
+              color={'black'}
+              size={10}
+              numberOfLines={1}
+            >
+              {author?.name} created this group
+            </Text>
+          ) : getPosition(otherParticipants[0]) !== '' && (
+            <Text
+              style={{ fontFamily: Regular500, textAlign: 'center' }}
+              color={'black'}
+              size={10}
+              numberOfLines={1}
+            >
+              {getPosition(otherParticipants[0])}
+            </Text>
+          )
+        }
+        <Text
+          style={{ fontFamily: Regular500, textAlign: 'center' }}
+          color={'black'}
+          size={10}
+          numberOfLines={1}
+        >
+          Participants ({lodash.size(participants)})
+        </Text>
+      </View>
+    )
+  }
 
   return (
     <>
