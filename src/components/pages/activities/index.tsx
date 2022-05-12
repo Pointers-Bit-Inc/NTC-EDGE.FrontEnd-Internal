@@ -93,7 +93,8 @@ export default function ActivitiesPage(props:any){
         onScrollEndDrag,
         headerTranslate,
         opacity,
-        activitySizeComponent
+        activitySizeComponent,
+        scrollViewRef
     }=useActivities();
 
     const {normalizeActiveMeetings}=useSelector((state:RootStateOrAny)=>state.meeting);
@@ -159,38 +160,47 @@ export default function ActivitiesPage(props:any){
 
             <ScrollView showsVerticalScrollIndicator={false}
                         nestedScrollEnabled={true}
+
                         style={{maxHeight:300}}>
                 {
                     pnApplications.map((item:any,index:number)=>{
+                        return item?.activity && <FlatList
 
-                        return item?.activity&&item?.activity.map((act:any,i:number)=>{
+                            listKey={(item, index) => `_key${index.toString()}`}
+                            showsVerticalScrollIndicator={false}
+                            style={styles.items}
+                            data={item?.activity}
 
-                            return (
-                                act?.assignedPersonnel?._id||act?.assignedPersonnel)==user?._id&&<ActivityItem
-                                isOpen={isOpen}
-                                config={config}
-                                key={i}
-                                selected={applicationItem?._id==act?._id}
-                                currentUser={user}
-                                role={user?.role?.key}
-                                searchQuery={searchTerm}
-                                activity={act}
-                                isPinned={true}
-                                onPressUser={(event:any)=>{
+                            renderItem={(act, i) => {
+                                return (
+                                    act?.item?.assignedPersonnel?._id||act?.item?.assignedPersonnel)==user?._id&&<ActivityItem
+                                    isOpen={isOpen}
+                                    config={config}
+                                    key={i}
+                                    selected={applicationItem?._id==act?.item?._id}
+                                    currentUser={user}
+                                    role={user?.role?.key}
+                                    searchQuery={searchTerm}
+                                    activity={act?.item}
+                                    isPinned={true}
+                                    onPressUser={(event:any)=>{
 
-                                    /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
-                                    })*/
-                                    dispatch(setApplicationItem({...act,isOpen:`pin${i}${index}`}));
-                                    //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
-                                    if(event?.icon=='more'){
-                                        setMoreModalVisible(true)
-                                    } else{
-                                        setModalVisible(true)
-                                    }
+                                        /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
+                                        })*/
+                                        dispatch(setApplicationItem({...act?.item,isOpen:`pin${i}${index}`}));
+                                        //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
+                                        if(event?.icon=='more'){
+                                            setMoreModalVisible(true)
+                                        } else{
+                                            setModalVisible(true)
+                                        }
 
-                                }} index={`pin${i}${index}`}
-                                swiper={(index:number,progress:any,dragX:any,onPressUser:any)=>renderSwiper(index,progress,dragX,onPressUser,act,unReadReadApplicationFn)}/>
-                        })
+                                    }} index={`pin${i}${index}`}
+                                    swiper={(index:number,progress:any,dragX:any,onPressUser:any)=>renderSwiper(index,progress,dragX,onPressUser,act?.item,unReadReadApplicationFn)}/>
+                            }
+                            }
+                            keyExtractor={(item, index) => `_key${index.toString()}`}
+                        />
                     })
                 }
             </ScrollView>

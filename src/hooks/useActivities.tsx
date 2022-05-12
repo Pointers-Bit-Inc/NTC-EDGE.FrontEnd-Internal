@@ -1,4 +1,4 @@
-import React,{useCallback,useEffect,useMemo,useRef,useState} from "react";
+import React,{createRef,useCallback,useEffect,useMemo,useRef,useState} from "react";
 import {useUserRole} from "./useUserRole";
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
 import useSignalr from "./useSignalr";
@@ -19,7 +19,7 @@ import {
 import moment from "moment";
 import axios from "axios";
 import {BASE_URL} from "../services/config";
-import {Alert,Animated,Image} from "react-native";
+import {Alert,Animated,FlatList,Image} from "react-native";
 import {
     handleInfiniteLoad,setactivitySizeComponent,
     setApplications,
@@ -44,7 +44,7 @@ function convertStatusText(convertedStatus:any[],item:any){
 }
 
 export function useActivities(){
-    const scrollViewRef = useRef()
+    const scrollViewRef = createRef()
     const [total,setTotal]=useState(0);
     const [page,setPage]=useState(0);
     const [size,setSize]=useState(0);
