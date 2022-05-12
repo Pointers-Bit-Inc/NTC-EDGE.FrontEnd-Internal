@@ -5,7 +5,7 @@ const { Record } = require('immutable');
 
 const InitialState = Record({
   pinnedApplications: [],
-  selectedYPos: 0,
+  selectedYPos: {yPos: 0, type: 0},
   notPinnedApplications:[],
   applications: [],
   tabBarHeight: 0,

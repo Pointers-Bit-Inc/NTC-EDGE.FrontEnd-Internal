@@ -94,7 +94,8 @@ export default function ActivitiesPage(props:any){
         headerTranslate,
         opacity,
         activitySizeComponent,
-        scrollViewRef, yPos, setYPos
+        scrollViewRef, yPos, setYPos,
+        flatListViewRef
     }=useActivities(props);
 
     const { normalizeActiveMeetings, meeting } = useSelector((state: RootStateOrAny) => state.meeting);
@@ -184,7 +185,7 @@ export default function ActivitiesPage(props:any){
                     pnApplications.map((item:any,index:number)=>{
                         return item?.activity && <FlatList
                             scrollEventThrottle={16}
-
+                            
                             listKey={(item, index) => `_key${index.toString()}`}
                             showsVerticalScrollIndicator={false}
                             style={styles.items}
@@ -203,7 +204,7 @@ export default function ActivitiesPage(props:any){
                                     activity={act?.item}
                                     isPinned={true}
                                     onPressUser={(event:any)=>{
-                                       dispatch(setSelectedYPos(yPos))
+                                       dispatch(setSelectedYPos({yPos, type: 1}))
                                         /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                         })*/
                                         dispatch(setApplicationItem({...act?.item,isOpen:`pin${i}${index}`}));
@@ -360,14 +361,16 @@ export default function ActivitiesPage(props:any){
                         showsVerticalScrollIndicator={false}
                         nestedScrollEnabled={true}
                         onScroll={Animated.event(
-                            [{
-                                nativeEvent:{
-                                    contentOffset:{
-                                        y:scrollY
-                                    }
-                                }
-                            }],
-                            {useNativeDriver:true}
+                            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                            { listener: (event) => {
+                                    new Promise((resolve, reject) => {
+                                        setTimeout(() => {
+                                            resolve(event?.nativeEvent?.contentOffset?.y)
+                                        }, 1000);
+                                    }).then((data)=>{
+                                        setYPos(data)
+                                    })
+                                } }
                         )}
                         contentContainerStyle={{
                             display:isReady ? undefined : "none",
@@ -381,7 +384,7 @@ export default function ActivitiesPage(props:any){
                         ListHeaderComponent={listHeaderComponent()}
 
                         style={{flex:1,}}
-
+                        ref={flatListViewRef}
                         data={notPnApplications}
                         keyExtractor={(item,index)=>index.toString()}
                         ListFooterComponent={bottomLoader}
@@ -430,6 +433,7 @@ export default function ActivitiesPage(props:any){
                                             activity={activity}
                                             currentUser={user}
                                             onPressUser={(event:any)=>{
+                                                dispatch(setSelectedYPos({yPos,   type: 0}))
                                                 dispatch(setApplicationItem({
                                                     ...activity,
                                                     isOpen:`${index}${i}`
