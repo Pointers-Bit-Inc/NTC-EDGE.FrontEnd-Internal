@@ -45,6 +45,7 @@ function convertStatusText(convertedStatus:any[],item:any){
 
 export function useActivities(props){
     const scrollViewRef = useRef()
+    const flatListViewRef = useRef()
     const [yPos, setYPos] = useState(0)
     const [total,setTotal]=useState(0);
     const [page,setPage]=useState(0);
@@ -70,7 +71,14 @@ export function useActivities(props){
     });
     React.useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
-            scrollViewRef?.current?.scrollTo({ y: selectedYPos, animated: true });
+            if(selectedYPos?.yPos){
+                if(selectedYPos.type){
+                    scrollViewRef?.current?.scrollTo({ y: selectedYPos?.yPos, animated: true });
+                }else{
+
+                    flatListViewRef?.current?.scrollToOffset({ offset: selectedYPos?.yPos, animated: true });
+                }
+            }
         });
         return unsubscribe;
     }, [props.navigation, selectedYPos]);
@@ -539,6 +547,7 @@ export function useActivities(props){
         headerTranslate,
         opacity,
         scrollViewRef,
-        yPos, setYPos
+        yPos, setYPos,
+        flatListViewRef
     };
 }

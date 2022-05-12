@@ -100,6 +100,7 @@ interface Props {
                                                              averageItemLength ,
                                                          }) => {
                                     flatListRef.current?.scrollToOffset({
+                                        
                                         offset : index * averageItemLength ,
                                         animated : false ,
                                     });
