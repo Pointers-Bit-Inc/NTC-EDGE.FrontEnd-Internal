@@ -167,17 +167,20 @@ export default function ActivitiesPage(props:any){
             </TouchableOpacity>*/}
             <ScrollView showsVerticalScrollIndicator={false}
                         nestedScrollEnabled={true}
-                        onScroll={(event) => {
-                            
-                            new Promise((resolve, reject) => {
-                                setTimeout(() => {
-                                    resolve(event?.nativeEvent?.contentOffset?.y)
-                                }, 1000);
-                            }).then((data)=>{
-                                setYPos(data)
-                            });
-                           
-                        }}
+                        onScroll={Animated.event(
+                            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                            {
+                                useNativeDriver: true,
+                                listener: (event) => {
+                                    new Promise((resolve, reject) => {
+                                        setTimeout(() => {
+                                            resolve(event?.nativeEvent?.contentOffset?.y)
+                                        }, 1000);
+                                    }).then((data)=>{
+                                        setYPos(data)
+                                    })
+                                } }
+                        )}
                         scrollEventThrottle={16}
                         ref={scrollViewRef}
                         style={{maxHeight:300}}>
