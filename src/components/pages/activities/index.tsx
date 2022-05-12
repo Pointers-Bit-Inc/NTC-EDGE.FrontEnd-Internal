@@ -14,7 +14,7 @@ import {
 
 import {SEARCH} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny,useSelector} from "react-redux";
-import {setApplicationItem} from "../../../reducers/application/actions";
+import {setApplicationItem, setSelectedYPos} from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
 import FilterIcon from "@assets/svg/filterIcon";
 import {ActivityItem} from "@pages/activities/activityItem";
@@ -94,8 +94,8 @@ export default function ActivitiesPage(props:any){
         headerTranslate,
         opacity,
         activitySizeComponent,
-        scrollViewRef
-    }=useActivities();
+        scrollViewRef, yPos, setYPos
+    }=useActivities(props);
 
     const {normalizeActiveMeetings}=useSelector((state:RootStateOrAny)=>state.meeting);
     const meetingList=useMemo(()=>{
@@ -142,7 +142,6 @@ export default function ActivitiesPage(props:any){
             return dispatch(removeActiveMeeting(item._id));
         }
     };
-
     const listHeaderComponent=()=><>
         {!searchVisible&& !!pnApplications?.length&&containerHeight&&
         <View style={[styles.pinnedActivityContainer,{
@@ -157,14 +156,31 @@ export default function ActivitiesPage(props:any){
                         Activity</Text>
                 </View>
             </View>}
-
+           {/* <TouchableOpacity onPress={()=>{
+            scrollViewRef?.current?.scrollTo({ y: yPos, animated: true });
+            }}>
+                <Text>test</Text>
+            </TouchableOpacity>*/}
             <ScrollView showsVerticalScrollIndicator={false}
                         nestedScrollEnabled={true}
-
+                        onScroll={(event) => {
+                            
+                            new Promise((resolve, reject) => {
+                                setTimeout(() => {
+                                    resolve(event?.nativeEvent?.contentOffset?.y)
+                                }, 1000);
+                            }).then((data)=>{
+                                setYPos(data)
+                            });
+                           
+                        }}
+                        scrollEventThrottle={16}
+                        ref={scrollViewRef}
                         style={{maxHeight:300}}>
                 {
                     pnApplications.map((item:any,index:number)=>{
                         return item?.activity && <FlatList
+                            scrollEventThrottle={16}
 
                             listKey={(item, index) => `_key${index.toString()}`}
                             showsVerticalScrollIndicator={false}
@@ -184,7 +200,7 @@ export default function ActivitiesPage(props:any){
                                     activity={act?.item}
                                     isPinned={true}
                                     onPressUser={(event:any)=>{
-
+                                       dispatch(setSelectedYPos(yPos))
                                         /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                         })*/
                                         dispatch(setApplicationItem({...act?.item,isOpen:`pin${i}${index}`}));

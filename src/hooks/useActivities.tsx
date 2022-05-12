@@ -43,8 +43,9 @@ function convertStatusText(convertedStatus:any[],item:any){
     return _uniqByStatus.length ? _uniqByStatus.toString() : [item].toString()
 }
 
-export function useActivities(){
-    const scrollViewRef = createRef()
+export function useActivities(props){
+    const scrollViewRef = useRef()
+    const [yPos, setYPos] = useState(0)
     const [total,setTotal]=useState(0);
     const [page,setPage]=useState(0);
     const [size,setSize]=useState(0);
@@ -63,9 +64,16 @@ export function useActivities(){
         pinnedApplications,
         notPinnedApplications,
         applicationItem,
+        selectedYPos
     }=useSelector((state:RootStateOrAny)=>{
         return state.application
     });
+    React.useEffect(() => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            scrollViewRef?.current?.scrollTo({ y: selectedYPos, animated: true });
+        });
+        return unsubscribe;
+    }, [props.navigation, selectedYPos]);
     const dispatch=useDispatch();
     const {getActiveMeetingList,endMeeting,leaveMeeting}=useSignalr();
 
@@ -530,6 +538,7 @@ export function useActivities(){
         onScrollEndDrag,
         headerTranslate,
         opacity,
-        scrollViewRef
+        scrollViewRef,
+        yPos, setYPos
     };
 }
