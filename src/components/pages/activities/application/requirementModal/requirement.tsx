@@ -246,7 +246,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                 /(pdf|docx|doc)$/ig.test(_fileName?.substr((
                     _fileName?.lastIndexOf('.')+1)))),
         });
-        /*Image.prefetch(this.props?.requirement?.original)
+        Image.prefetch(this.props?.requirement?.original)
         .then(()=>{
             this.setState({onLoadStart:false});
             Image.getSize(this.props?.requirement?.original,(width,height)=>{
@@ -290,7 +290,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                 },
             });
             this.setState({onLoadStart:true})
-        });*/
+        });
 
     }
 }
