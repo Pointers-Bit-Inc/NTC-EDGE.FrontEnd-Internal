@@ -72,7 +72,7 @@ export function useActivities(props){
     });
     React.useEffect(() => {
         if(!isMobile) {
-           props.navigation.addListener('focus', () => {
+           props?.navigation?.addListener('focus', () => {
                 if(selectedYPos?.yPos != undefined ){
                     if(selectedYPos.type){
                         scrollViewRef?.current?.scrollTo({ y: selectedYPos?.yPos, animated: true });
