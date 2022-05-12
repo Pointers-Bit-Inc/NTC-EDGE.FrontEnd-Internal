@@ -204,7 +204,7 @@ export default function ActivitiesPage(props:any){
                                     activity={act?.item}
                                     isPinned={true}
                                     onPressUser={(event:any)=>{
-                                       dispatch(setSelectedYPos({yPos, type: 1}))
+
                                         /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                         })*/
                                         dispatch(setApplicationItem({...act?.item,isOpen:`pin${i}${index}`}));
@@ -214,7 +214,7 @@ export default function ActivitiesPage(props:any){
                                         } else{
                                             setModalVisible(true)
                                         }
-
+                                        dispatch(setSelectedYPos({yPos, type: 1}))
                                     }} index={`pin${i}${index}`}
                                     swiper={(index:number,progress:any,dragX:any,onPressUser:any)=>renderSwiper(index,progress,dragX,onPressUser,act?.item,unReadReadApplicationFn)}/>
                             }
@@ -362,7 +362,9 @@ export default function ActivitiesPage(props:any){
                         nestedScrollEnabled={true}
                         onScroll={Animated.event(
                             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                            { listener: (event) => {
+                            {
+                                useNativeDriver: true,
+                                listener: (event) => {
                                     new Promise((resolve, reject) => {
                                         setTimeout(() => {
                                             resolve(event?.nativeEvent?.contentOffset?.y)
