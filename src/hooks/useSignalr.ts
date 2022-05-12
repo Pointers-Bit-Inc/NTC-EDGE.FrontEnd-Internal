@@ -103,7 +103,7 @@ const useSignalr = () => {
           dispatch(updateMeeting(data));
           break;
         }
-        case 'notification': {
+        case 'meetingnotification': {
           dispatch(setNotification(data));
           break;
         }
@@ -121,7 +121,7 @@ const useSignalr = () => {
   const OnMeetingNotification = (users:Array<string>, type:string, data:any) => {
     if (data) {
       switch(type) {
-        case 'notification': {
+        case 'meetingnotification': {
           dispatch(setNotification(data));
           break;
         }
