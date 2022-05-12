@@ -198,6 +198,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                                                             imageSize={this.state?._imageSize||{height:300,width:300}}
                                                                             onClose={this._hideImageModal}
                                                                             animationDuration={200}
+
                                                                         /> :
                                  //height = height * (this.state._imageSize.height / width)
                              <ImageZoom onSwipeDown={this._hideImageModal} enableSwipeDown={true}
@@ -245,7 +246,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                 /(pdf|docx|doc)$/ig.test(_fileName?.substr((
                     _fileName?.lastIndexOf('.')+1)))),
         });
-        Image.prefetch(this.props?.requirement?.original)
+        /*Image.prefetch(this.props?.requirement?.original)
         .then(()=>{
             this.setState({onLoadStart:false});
             Image.getSize(this.props?.requirement?.original,(width,height)=>{
@@ -289,7 +290,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                 },
             });
             this.setState({onLoadStart:true})
-        });
+        });*/
 
     }
 }
