@@ -71,17 +71,23 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                 resolve('');
             }, 1000);
         }).then(()=>{
+
             this.setState({onLoad:false})
             this.state?.image?.measure((x,y,width,height,pageX,pageY)=>{
-                this.setState({
-                    _sourceMeasure:{
-                        width:parseInt(width,10),
-                        height:parseInt(height, 10),
-                        pageX:parseInt(pageX, 10),
-                        pageY:parseInt(pageY, 10)
-                    },
+                if(width && height){
+                    this.setState({
+                        _sourceMeasure:{
+                            width:parseInt(width,10),
+                            height:parseInt(height, 10),
+                            pageX:parseInt(pageX, 10),
+                            pageY:parseInt(pageY, 10)
+                        },
 
-                });
+                    });
+                }else{
+                    this.setState({visible:false})
+                }
+
 
             });
         });
