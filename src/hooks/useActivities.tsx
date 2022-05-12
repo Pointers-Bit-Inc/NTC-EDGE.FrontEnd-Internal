@@ -30,6 +30,7 @@ import {
 import Loader from "@pages/activities/bottomLoad";
 import {useComponentLayout} from "./useComponentLayout";
 import lodash from 'lodash';
+import {isMobile} from "@pages/activities/isMobile";
 
 function convertStatusText(convertedStatus:any[],item:any){
     let _converted:never[]=[]
@@ -70,18 +71,20 @@ export function useActivities(props){
         return state.application
     });
     React.useEffect(() => {
-        const unsubscribe = props.navigation.addListener('focus', () => {
-            console.log(selectedYPos)
-            if(selectedYPos?.yPos != undefined ){
-                if(selectedYPos.type){
-                    scrollViewRef?.current?.scrollTo({ y: selectedYPos?.yPos, animated: true });
-                }else{
-                    flatListViewRef?.current?.scrollToOffset({ offset: selectedYPos?.yPos, animated: true });
+        if(!isMobile) {
+           props.navigation.addListener('focus', () => {
+                if(selectedYPos?.yPos != undefined ){
+                    if(selectedYPos.type){
+                        scrollViewRef?.current?.scrollTo({ y: selectedYPos?.yPos, animated: true });
+                    }else{
+                        flatListViewRef?.current?.scrollToOffset({ offset: selectedYPos?.yPos, animated: true });
+                    }
                 }
-            }
-        });
-        return unsubscribe;
-    }, [props.navigation, selectedYPos]);
+            });
+        }
+
+
+    }, [props?.navigation, selectedYPos]);
     const dispatch=useDispatch();
     const {getActiveMeetingList,endMeeting,leaveMeeting}=useSignalr();
 
