@@ -5,11 +5,12 @@ import Requirement from "@pages/activities/application/requirementModal/requirem
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React,{useEffect,useState} from "react";
 import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
-import {Animated} from "react-native";
+import {Animated,Platform} from "react-native";
 import TabBar from "@pages/activities/tabs/tabbar";
 import ScrollableTabView from "@pages/activities/tabs";
 import Tab from "@pages/activities/tabs/Tab";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
+import {isMobile} from "@pages/activities/isMobile";
 
 
 const ModalTab = props => {
@@ -79,8 +80,8 @@ const ModalTab = props => {
 
         onScroll={ (x) => _scrollX.setValue(x) }
         renderTabBar={ (props) => {
-            if(initialPage){
-                props.goToPage(0);
+            if(initialPage && Platform?.isPad ){
+                props?.goToPage(0);
                 setInitialPage(false)
             }
             return <TabBar

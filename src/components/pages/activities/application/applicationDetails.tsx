@@ -109,7 +109,6 @@ const ApplicationDetails = (props: any) => {
 
             <View style={{flex: 1, position: "absolute"}}>
 
-                <ScrollView>
                     <OnBackdropPress styles={isMobile|| dimensions?.width<768 ? { backgroundColor:"rgba(0, 0, 0, 0.5)"} : {
                         alignSelf: "flex-end",
                         width:rightLayoutComponent?.width||"100%",
@@ -117,7 +116,7 @@ const ApplicationDetails = (props: any) => {
                     }} onPressOut={() => setModalVisible(!modalVisible)}/>
                     <PdfViewr width={rightLayoutComponent?.width}
                               height={rightLayoutComponent?.height} requirement={props?.documents}/>
-                </ScrollView>
+
 
             </View>
             </View>

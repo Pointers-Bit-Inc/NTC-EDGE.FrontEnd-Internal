@@ -198,6 +198,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                                                             imageSize={this.state?._imageSize||{height:300,width:300}}
                                                                             onClose={this._hideImageModal}
                                                                             animationDuration={200}
+
                                                                         /> :
                                  //height = height * (this.state._imageSize.height / width)
                              <ImageZoom onSwipeDown={this._hideImageModal} enableSwipeDown={true}
@@ -249,13 +250,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
         .then(()=>{
             this.setState({onLoadStart:false});
             Image.getSize(this.props?.requirement?.original,(width,height)=>{
-                this.setState({
-                    ...this.state,
-                    source:{
-                        ...this?.state?.source,
-                        uri:this?.props?.requirement?.original||"https://dummyimage.com/350x350/fff/aaa"
-                    },
-                });
+                
                 this.setState({
                     _imageSize:{
                         width: Platform.select({
