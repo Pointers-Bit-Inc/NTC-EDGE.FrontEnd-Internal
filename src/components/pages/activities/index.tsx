@@ -168,14 +168,15 @@ export default function ActivitiesPage(props:any){
             <ScrollView showsVerticalScrollIndicator={false}
                         nestedScrollEnabled={true}
                         onScroll={(event) => {
-
-                            new Promise((resolve, reject) => {
-                                setTimeout(() => {
-                                    resolve(event?.nativeEvent?.contentOffset?.y)
-                                }, 1000);
-                            }).then((data)=>{
-                                setYPos(data)
-                            });
+                            if(!isMobile){
+                                new Promise((resolve, reject) => {
+                                    setTimeout(() => {
+                                        resolve(event?.nativeEvent?.contentOffset?.y)
+                                    }, 1000);
+                                }).then((data)=>{
+                                    setYPos(data)
+                                });
+                            }
 
                         }}
                         scrollEventThrottle={16}
