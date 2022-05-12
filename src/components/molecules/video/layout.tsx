@@ -227,12 +227,18 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
       destroyAgoraEngine()
     };
   }, [loading, agora.appId]);
-
+  
   useEffect(() => {
     if (isInit) {
       joinChannel();
     }
   }, [isInit, joinChannel]);
+
+  useEffect(() => {
+    if (callEnded) {
+      destroyAgoraEngine();
+    }
+  }, [callEnded]);
 
   useEffect(() => {
     if (meetingParticipants) {
