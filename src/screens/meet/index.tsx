@@ -12,13 +12,13 @@ import {
 } from 'react-native'
 import lodash from 'lodash';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
-import { setMeeting, setMeetings, addToMeetings } from 'src/reducers/meeting/actions';
+import { setMeeting, setMeetings, addToMeetings, setOptions, resetCurrentMeeting } from 'src/reducers/meeting/actions';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import useSignalr from 'src/hooks/useSignalr';
 import Meeting from '@components/molecules/list-item/meeting';
 import Text from '@components/atoms/text'
 import { getChannelName } from 'src/utils/formatting';
-import { NewVideoIcon, PlusIcon } from '@atoms/icon';
+import { AddMeetingIcon, NewVideoIcon, PlusIcon } from '@atoms/icon';
 import { text, outline, primaryColor } from 'src/styles/color';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import { ListFooter } from '@components/molecules/list-item';
@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     paddingHorizontal: 30,
-    paddingTop: 39,
-    paddingBottom: 14,
+    paddingTop: 41,
+    paddingBottom: 17,
     backgroundColor: primaryColor
   },
   titleContainer: {
@@ -178,15 +178,16 @@ const Meet = ({ navigation }) => {
 
   const onJoin = (item:IMeetings) => {
     dispatch(setSelectedChannel(item.room));
-    dispatch(setMeeting(item));
-    navigation.navigate('Dial', {
-      isHost: item.host._id === user._id,
-      isVoiceCall: item.isVoiceCall,
-      options: {
+    dispatch(resetCurrentMeeting());
+    setTimeout(() => {
+      dispatch(setOptions({
+        isHost: item.host._id === user._id,
+        isVoiceCall: item.isVoiceCall,
         isMute: false,
         isVideoEnable: true,
-      }
-    });
+      }));
+      dispatch(setMeeting(item));
+    }, 100);
   }
 
   const onRequestData = () => setSendRequest(request => request + 1);
@@ -346,7 +347,10 @@ const Meet = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
+        <TouchableOpacity
+          style={{ paddingTop: 1 }}
+          onPress={() => navigation.navigate('Settings')}
+        >
           <HomeMenuIcon/>
         </TouchableOpacity>
         <View style={styles.titleContainer}>
@@ -361,17 +365,7 @@ const Meet = ({ navigation }) => {
         <TouchableOpacity
           onPress={() => modalRef.current?.open()}
         >
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <NewVideoIcon
-              width={RFValue(34)}
-              height={RFValue(34)}
-            />
-            <PlusIcon
-              color='white'
-              size={RFValue(8)}
-              style={{ position: 'absolute', left: RFValue(Platform.OS === 'ios' ? 10 : 10) }}
-            />
-          </View>
+          <AddMeetingIcon />
         </TouchableOpacity>
       </View>
       {
@@ -427,7 +421,7 @@ const Meet = ({ navigation }) => {
                 onClose={() => setIsNext(false)}
                 channelId={currentMeeting.channelId}
                 isChannelExist={currentMeeting.isChannelExist}
-                onSubmit={(type, params) => {
+                onSubmit={(params, data) => {
                   modalRef.current?.close();
                   setParticipants([]);
                   setCurrentMeeting({
@@ -436,7 +430,12 @@ const Meet = ({ navigation }) => {
                     participants: [],
                   })
                   setIsNext(false);
-                  setTimeout(() => navigation.navigate(type, params), 300);
+                  dispatch(setOptions({
+                    ...params.options,
+                    isHost: params.isHost,
+                    isVoiceCall: params.isVoiceCall,
+                  }));
+                  setTimeout(() => dispatch(setMeeting(data)), 300);
                 }}
               />
             ) : (

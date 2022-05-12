@@ -18,6 +18,7 @@ import AwesomeAlert from 'react-native-awesome-alerts'
 import useApi from 'src/services/api'
 import Loading from '@components/atoms/loading'
 import { addChannel, removeChannel, removeSelectedMessage, setMessages, setSelectedChannel, updateChannel } from 'src/reducers/channel/actions'
+import { setMeeting, setOptions } from 'src/reducers/meeting/actions'
 import AddParticipants from '@components/pages/chat-modal/add-participants'
 import { InputField } from '@components/molecules/form-fields'
 import useSignalr from 'src/hooks/useSignalr'
@@ -186,7 +187,6 @@ const ChatInfo = ({ navigation }) => {
   );
   const [isVideoEnable, setIsVideoEnable] = useState(false);
   const [muteChat, setMuteChat] = useState(muted);
-  const [showDeleteOption, setShowDeleteOption] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);
   const [alertData, setAlertData] = useState({
@@ -713,16 +713,21 @@ const ChatInfo = ({ navigation }) => {
             isChannelExist={true}
             channelId={_id}
             onClose={() => modalRef.current?.close()}
-            onSubmit={(type:any, params:any) => {
+            onSubmit={(params, data) => {
               modalRef.current?.close();
-              setTimeout(() => navigation.navigate(type, params), 300);
+              dispatch(setOptions({
+                ...params.options,
+                isHost: params.isHost,
+                isVoiceCall: params.isVoiceCall,
+              }));
+              setTimeout(() => dispatch(setMeeting(data)), 300);
             }}
           />
         </View>
       </BottomModal>
       <BottomModal
         ref={optionModalRef}
-        onModalHide={() => setShowDeleteOption(false)}
+        onModalHide={() => optionModalRef.current?.close()}
         header={
           <View style={styles.bar} />
         }
@@ -792,9 +797,14 @@ const ChatInfo = ({ navigation }) => {
             onClose={() => meetingModalRef.current?.close()}
             channelId={''}
             isChannelExist={false}
-            onSubmit={(type, params) => {
+            onSubmit={(params, data) => {
               meetingModalRef.current?.close();
-              setTimeout(() => navigation.navigate(type, params), 300);
+              dispatch(setOptions({
+                ...params.options,
+                isHost: params.isHost,
+                isVoiceCall: params.isVoiceCall,
+              }));
+              setTimeout(() => dispatch(setMeeting(data)), 300);
             }}
           />
         </View>

@@ -12,6 +12,12 @@ const {
   RESET_MEETING,
   CONNECTION_STATUS,
   SET_NOTIFICATION,
+  SET_OPTIONS,
+  SET_FULLSCREEN,
+  RESET_CURRENT_MEETING,
+  REMOVE_MEETING_FROM_LIST,
+  SET_PINNED_PARTICIPANT,
+  TOGGLE_MUTE,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -24,13 +30,39 @@ export default function Meeting(state = initialState, action:any = {}) {
       return state.setIn(['connectionStatus'], action.payload);
     }
     case SET_NOTIFICATION: {
-      return state.setIn(['meeting', 'notification'], action.payload);
+      let newState = state;
+      if (!action.payload) {
+        return state.setIn(['meeting', 'notification'], null);
+      }
+      if (state.meeting?._id) {
+        if (state.meeting._id === action.payload.meetingId) {
+          newState = state.setIn(['meeting', 'notification'], action.payload.message);
+          if (action.payload.status === 'joined' || action.payload.status === 'busy' || action.payload.status === 'leave') {
+            newState = newState.setIn(['meeting', 'participants'], action.payload.participants);
+          }
+  
+          return newState;
+        } else {
+          if (action.payload.meetingId) {
+            if (action.payload.status === 'joined' || action.payload.status === 'busy' || action.payload.status === 'leave') {
+              if (state.normalizedMeetingList[action.payload.meetingId]) {
+                newState = newState.setIn(['normalizedMeetingList', action.payload.meetingId, 'participants'], action.payload.participants);
+              }
+              if (state.normalizeActiveMeetings[action.payload.meetingId]) {
+                newState = newState.setIn(['normalizeActiveMeetings', action.payload.meetingId, 'participants'], action.payload.participants);
+              }
+            }
+          }
+        }
+      }
+      
+      return newState;
     }
     case SET_MEETINGS: {
       return state.setIn(['normalizedMeetingList'], action.payload);
     }
     case ADD_TO_MEETINGS: {
-      return state.setIn(['normalizedMeetingList'], {...state.list, ...action.payload});
+      return state.setIn(['normalizedMeetingList'], {...state.normalizedMeetingList, ...action.payload});
     }
     case ADD_MEETING: {
       let newState = state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
@@ -45,9 +77,14 @@ export default function Meeting(state = initialState, action:any = {}) {
       if (!action?.payload?.room?.lastMessage) {
         const meeting = state.normalizedMeetingList[action.payload._id];
         if (!meeting) {
-          return state;
+          let newState = state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
+
+          if (!action.payload.ended) {
+            newState = newState.setIn(['normalizeActiveMeetings', action.payload._id], action.payload);
+          }
+
+          return newState;
         }
-        const leavingParticipant = lodash.find(meeting.participants, (p:IParticipants) => !lodash.find(action.payload.participants, (pt:IParticipants) => pt._id === p._id));
         const participants = action.payload.participants;
         const participantsId = action.payload.participantsId;
 
@@ -55,13 +92,7 @@ export default function Meeting(state = initialState, action:any = {}) {
         .setIn(['normalizedMeetingList', action.payload._id, 'participantsId'], participantsId);
 
         if (state.meeting?._id === action.payload._id) {
-          newState = newState.setIn(['meeting', 'participants'], participants)
-          .setIn(['meeting', 'participantsId'], participantsId);
-
-          if (leavingParticipant) {
-            const message = `${leavingParticipant.title || ''} ${leavingParticipant.firstName} is currently busy`;
-            newState = newState.setIn(['meeting', 'notification'], message);
-          }
+          newState = newState.setIn(['meeting'], action.payload)
         }
   
         if (action.payload.ended) {
@@ -73,11 +104,13 @@ export default function Meeting(state = initialState, action:any = {}) {
         let newState = state.setIn(['normalizedMeetingList', action.payload._id], action.payload);
 
         if (state.meeting?._id === action.payload._id) {
-          newState = newState.setIn(['meeting'], action.payload);
+          newState = newState.setIn(['meeting'], action.payload)
         }
   
         if (action.payload.ended) {
           newState = newState.removeIn(['normalizeActiveMeetings', action.payload._id]);
+        } else {
+          newState = newState.setIn(['normalizeActiveMeetings', action.payload._id], action.payload);
         }
   
         return newState;
@@ -85,6 +118,7 @@ export default function Meeting(state = initialState, action:any = {}) {
     }
     case SET_MEETING: {
       return state.setIn(['meeting'], action.payload)
+        .setIn(['pinnedParticipant'], null);
     }
     case UPDATE_MEETING_PARTICIPANTS: {
       const meeting = state.normalizedMeetingList[action.payload._id];
@@ -112,7 +146,39 @@ export default function Meeting(state = initialState, action:any = {}) {
     case RESET_MEETING: {
       return state.setIn(['normalizedMeetingList'], {})
         .setIn(['activeMeetings'], [])
-        .setIn(['meeting'], {});
+        .setIn(['meeting'], null)
+        .setIn(['pinnedParticipant'], null);
+    }
+    case SET_OPTIONS: {
+      return state.setIn(['options'], action.payload);
+    }
+    case SET_FULLSCREEN: {
+      return state.setIn(['isFullScreen'], action.payload);
+    }
+    case RESET_CURRENT_MEETING: {
+      return state.setIn(['meeting'], null)
+        .setIn(['pinnedParticipant'], null)
+        .setIn(['isFullScreen'], true)
+        .setIn(['options'], {
+          isHost: false,
+          isVoiceCall: false,
+          isMute: false,
+          isVideoEnable: true,
+        });
+    }
+    case REMOVE_MEETING_FROM_LIST: {
+      let newState = state;
+      if (action.payload) {
+        newState = newState.removeIn(['normalizeActiveMeetings', action.payload]);
+        newState = newState.removeIn(['normalizedMeetingList', action.payload]);
+      }
+      return newState;
+    }
+    case SET_PINNED_PARTICIPANT: {
+      return state.setIn(['pinnedParticipant'], action.payload);
+    }
+    case TOGGLE_MUTE: {
+      return state.setIn(['toggleMute'], action.payload);
     }
     default:
       return state;

@@ -755,9 +755,9 @@ const Info=(props)=>{
                     onClose={()=>meetingModalRef.current?.close()}
                     channelId={''}
                     isChannelExist={false}
-                    onSubmit={(type,params)=>{
+                    onSubmit={(params)=>{
                         meetingModalRef.current?.close();
-                        setTimeout(()=>navigation.navigate(type,params),300);
+                        setTimeout(()=>navigation.navigate('VideoCall',params),300);
                     }}
                 />
             </View>

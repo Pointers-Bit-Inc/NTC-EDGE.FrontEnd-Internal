@@ -371,8 +371,6 @@ const ChatView = ({ navigation, route }:any) => {
           <View style={{ paddingRight: 5 }}>
             <NewCallIcon
               color={button.info}
-              height={RFValue(24)}
-              width={RFValue(24)}
             />
           </View>
         </TouchableOpacity>
@@ -380,8 +378,8 @@ const ChatView = ({ navigation, route }:any) => {
           <View style={{ paddingLeft: 5, paddingTop: 5 }}>
             <NewVideoIcon
               color={button.info}
-              height={RFValue(28)}
-              width={RFValue(28)}
+              height={RFValue(16)}
+              width={RFValue(20)}
             />
           </View>
         </TouchableOpacity>
@@ -512,9 +510,9 @@ const ChatView = ({ navigation, route }:any) => {
             isChannelExist={true}
             channelId={channelId}
             onClose={() => modalRef.current?.close()}
-            onSubmit={(type, params) => {
+            onSubmit={(params) => {
               modalRef.current?.close();
-              setTimeout(() => navigation.navigate(type, params), 300);
+              setTimeout(() => navigation.navigate('VideoCall', params), 300);
             }}
           />
         </View>

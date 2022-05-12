@@ -24,7 +24,7 @@ import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ApplicationList from "@pages/activities/applicationList";
 import {getChannelName} from 'src/utils/formatting';
 import lodash from 'lodash';
-import {removeActiveMeeting,setActiveMeetings,setMeeting,} from 'src/reducers/meeting/actions';
+import {removeActiveMeeting , resetCurrentMeeting, setActiveMeetings , setMeeting, setOptions ,} from 'src/reducers/meeting/actions';
 import {setSelectedChannel} from 'src/reducers/channel/actions';
 import {MeetingNotif} from '@components/molecules/list-item';
 import listEmpty from "@pages/activities/listEmpty";
@@ -98,13 +98,15 @@ export default function ActivitiesPage(props:any){
         flatListViewRef
     }=useActivities(props);
 
-    const {normalizeActiveMeetings}=useSelector((state:RootStateOrAny)=>state.meeting);
-    const meetingList=useMemo(()=>{
-        let meetingList=lodash.keys(normalizeActiveMeetings).map(m=>normalizeActiveMeetings[m]);
-        meetingList=lodash.reject(meetingList,(m:IMeetings)=>lodash.find(m.participants,(p:IParticipants)=>p._id===user._id&&(
-            p.status==='busy'||p.muted)));
-        return lodash.orderBy(meetingList,'updatedAt','desc');
-    },[normalizeActiveMeetings]);
+    const { normalizeActiveMeetings, meeting } = useSelector((state: RootStateOrAny) => state.meeting);
+    const meetingList = useMemo(() => {
+        if (meeting?._id) {
+            return [];
+        }
+        let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m]);
+        meetingList = lodash.reject(meetingList, (m:IMeetings) => lodash.find(m.participants, (p:IParticipants) => p._id === user._id && (p.status === 'busy' || p.muted)));
+        return lodash.orderBy(meetingList , 'updatedAt' , 'desc');
+    }, [normalizeActiveMeetings, meeting]);
 
     useEffect(()=>{
 
@@ -122,15 +124,16 @@ export default function ActivitiesPage(props:any){
     },[]);
     const onJoin=(item:IMeetings)=>{
         dispatch(setSelectedChannel(item.room));
-        dispatch(setMeeting(item));
-        props.navigation.navigate('Dial',{
-            isHost:item.host._id===user._id,
-            isVoiceCall:item.isVoiceCall,
-            options:{
-                isMute:false,
-                isVideoEnable:true,
-            }
-        });
+        dispatch(resetCurrentMeeting());
+        setTimeout(() => {
+            dispatch(setOptions({
+                isHost: item.host._id === user._id,
+                isVoiceCall: item.isVoiceCall,
+                isMute: false,
+                isVideoEnable: true,
+            }));
+            dispatch(setMeeting(item));
+        }, 100);
     };
 
     const onClose=(item:IMeetings,leave=false)=>{

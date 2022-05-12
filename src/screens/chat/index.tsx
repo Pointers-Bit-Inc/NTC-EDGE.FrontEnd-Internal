@@ -35,7 +35,9 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
 import {
   removeActiveMeeting ,
-  setMeeting ,
+  resetCurrentMeeting,
+  setMeeting, 
+  setOptions,
 } from 'src/reducers/meeting/actions';
 import IMeetings from 'src/interfaces/IMeetings';
 import IParticipants from 'src/interfaces/IParticipants';
@@ -160,23 +162,28 @@ const ChatList = ({ navigation }:any) => {
   const swipeableRef:any = useRef({});
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { normalizedChannelList } = useSelector((state:RootStateOrAny) => state.channel);
-  const { normalizeActiveMeetings } = useSelector((state: RootStateOrAny) => state.meeting);
+  const { normalizeActiveMeetings, meeting } = useSelector((state: RootStateOrAny) => state.meeting);
   const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
   const channelList = useMemo(() => {
     const channelList = lodash.keys(normalizedChannelList).map((ch:any) => {
       const channel = normalizedChannelList[ch];
       channel.otherParticipants = lodash.reject(channel.participants, (p:IParticipants) => p._id === user._id);
-      channel.lastMessage.hasSeen = !!lodash.find(channel.lastMessage.seen, (s:IParticipants) => s._id === user._id);
+      if (channel.lastMessage) {
+        channel.lastMessage.hasSeen = !!lodash.find(channel?.lastMessage?.seen || [], (s:IParticipants) => s._id === user._id);
+      }
       return channel;
     });
-    return lodash.orderBy(channelList, 'lastMessage.createdAt', 'desc');
+    return lodash.orderBy(channelList, 'lastMessage.updatedAt', 'desc');
   }, [normalizedChannelList]);
 
   const meetingList = useMemo(() => {
+    if (meeting?._id) {
+      return [];
+    }
     let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
     meetingList = lodash.reject(meetingList, (m:IMeetings) => lodash.find(m.participants, (p:IParticipants) => p._id === user._id && (p.status === 'busy' || p.muted)));
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
-  }, [normalizeActiveMeetings]);
+  }, [normalizeActiveMeetings, meeting]);
 
   const {
     getChatList,
@@ -259,15 +266,16 @@ const ChatList = ({ navigation }:any) => {
 
   const onJoin = (item:IMeetings) => {
       dispatch(setSelectedChannel(item.room));
-      dispatch(setMeeting(item));
-      navigation.navigate('Dial', {
+      dispatch(resetCurrentMeeting());
+      setTimeout(() => {
+        dispatch(setOptions({
           isHost: item.host._id === user._id,
           isVoiceCall: item.isVoiceCall,
-          options: {
-              isMute: false,
-              isVideoEnable: true,
-          }
-      });
+          isMute: false,
+          isVideoEnable: true,
+        }));
+        dispatch(setMeeting(item));
+      }, 100);
   }
 
 const onClose = (item:IMeetings, leave = false) => {

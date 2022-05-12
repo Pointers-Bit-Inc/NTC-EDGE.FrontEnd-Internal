@@ -40,8 +40,9 @@ export const useInitializeAgora = ({
   const [isInit, setIsInit] = useState(false);
   const [joinSucceed, setJoinSucceed] = useState(false);
   const [peerIds, setPeerIds] = useState<number[]>([]);
-  const [peerVideoState, setPeerVideState] = useState({});
-  const [peerAudioState, setPeerAudioState] = useState({});
+  const [peerVideoState, setPeerVideState] = useState<any>({});
+  const [peerAudioState, setPeerAudioState] = useState<any>({});
+  const [updatedAudioState, setUpdatedAudioState] = useState<any>({});
   const [myId, setMyId] = useState<number>(0);
   const [isMute, setIsMute] = useState(options?.isMute);
   const [isSpeakerEnable, setIsSpeakerEnable] = useState(true);
@@ -95,8 +96,7 @@ export const useInitializeAgora = ({
     });
 
     rtcEngine.current?.addListener('RemoteAudioStateChanged', (uid, state) => {
-      setPeerAudioState({
-        ...peerAudioState,
+      setUpdatedAudioState({
         [uid]: state,
       });
     });
@@ -136,6 +136,10 @@ export const useInitializeAgora = ({
     setIsMute(!isMute);
   }, [isMute]);
 
+  const toggleRemoteAudio = useCallback(async (uid, muted) => {
+    await rtcEngine.current?.muteRemoteAudioStream(uid, muted)
+  }, []);
+
   const toggleIsSpeakerEnable = useCallback(async () => {
     await rtcEngine.current?.setEnableSpeakerphone(!isSpeakerEnable);
     setIsSpeakerEnable(!isSpeakerEnable);
@@ -153,6 +157,19 @@ export const useInitializeAgora = ({
   const destroyAgoraEngine = useCallback(async () => {
     await rtcEngine.current?.destroy();
   }, []);
+
+  const onPeerAudioStateUpdate = useCallback(() => {
+    setPeerAudioState({
+      ...peerAudioState,
+      ...updatedAudioState
+    });
+  }, [peerAudioState, updatedAudioState])
+
+  useEffect(() => {
+    if (!!_.size(updatedAudioState)) {
+      onPeerAudioStateUpdate();
+    }
+  }, [updatedAudioState]);
 
   // useEffect(() => {
   //   if (appId) {
@@ -180,6 +197,7 @@ export const useInitializeAgora = ({
     joinChannel,
     leaveChannel,
     toggleIsMute,
+    toggleRemoteAudio,
     toggleIsSpeakerEnable,
     toggleIsVideoEnable,
     switchCamera,

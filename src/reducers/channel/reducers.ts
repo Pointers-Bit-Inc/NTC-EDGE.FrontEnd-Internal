@@ -32,6 +32,8 @@ const {
   ADD_PENDING_MESSAGE,
   SET_PENDING_MESSAGE_ERROR,
   REMOVE_PENDING_MESSAGE,
+
+  UPDATE_PARTICIPANTS,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -41,10 +43,6 @@ const initialState = new InitialState();
 export default function basket(state = initialState, action:any) {
   switch (action.type) {
     case SET_SELECTED_CHANNEL: {
-      if (!action.isChannelExist) {
-        return state.setIn(['selectedChannel'], action.payload)
-        .setIn(['channelMessages', action.payload._id, 'messages'], {});
-      }
       return state.setIn(['selectedChannel'], action.payload);
     }
     case SET_CHANNEL_LIST: {
@@ -85,7 +83,13 @@ export default function basket(state = initialState, action:any) {
       return newState;
     }
     case REMOVE_CHANNEL: {
-      return state.removeIn(['normalizedChannelList', action.payload]);
+      let newState = state.removeIn(['normalizedChannelList', action.payload]);
+
+      if (state.selectedChannel?._id === action.payload) {
+        newState = newState.setIn(['selectedChannel'], {});
+      }
+
+      return newState;
     }
     case SET_MESSAGES: {
       return state.setIn(['channelMessages', action.channelId, 'messages'], action.payload);
@@ -217,6 +221,20 @@ export default function basket(state = initialState, action:any) {
     }
     case RESET_PENDING_MESSAGES: {
       return state.setIn(['pendingMessages'], {});
+    }
+    case UPDATE_PARTICIPANTS: {
+      let newState = state;
+
+      if (action.payload?.participants) {
+        if (state.normalizedChannelList[action.payload._id]) {
+          newState = newState.setIn(['normalizedChannelList', action.payload._id, 'participants'], action.payload.participants)
+          if (state.selectedChannel?._id === action.payload._id) {
+            newState = newState.setIn(['selectedChannel', 'participants'], action.payload.participants);
+          }
+        }
+      }
+
+      return newState;
     }
     default:
       return state;

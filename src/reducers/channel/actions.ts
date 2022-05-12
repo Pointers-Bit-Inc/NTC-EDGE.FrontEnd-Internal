@@ -36,6 +36,8 @@ const {
   ADD_PENDING_MESSAGE,
   REMOVE_PENDING_MESSAGE,
   SET_PENDING_MESSAGE_ERROR,
+
+  UPDATE_PARTICIPANTS,
 } = require('./types').default;
 
 export function setSelectedChannel(payload:IRooms | {}, isChannelExist = false) {
@@ -208,6 +210,13 @@ export function updateFiles(payload:Array<IMessages>) {
   return {
     type: UPDATE_FILES,
     payload,
+  };
+}
+
+export function updateParticipants(payload:IRooms) {
+  return {
+    type: UPDATE_PARTICIPANTS,
+    payload
   };
 }
 

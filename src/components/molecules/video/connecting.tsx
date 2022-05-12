@@ -6,6 +6,8 @@ import Loading from '@components/atoms/loading'
 import { useNavigation } from '@react-navigation/native'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { button } from '@styles/color'
+import { useDispatch } from 'react-redux'
+import { setMeeting } from 'src/reducers/meeting/actions'
 
 const styles = StyleSheet.create({
   container: {
@@ -23,6 +25,7 @@ const styles = StyleSheet.create({
 })
 
 const ConnectingVideo = ({ participants = [], callEnded = false }) => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const widthAnimation = useRef(new Animated.Value(0)).current;
   const [enable, setEnable] = useState(false);
@@ -90,7 +93,7 @@ const ConnectingVideo = ({ participants = [], callEnded = false }) => {
       {
         callEnded && (
           <View style={{ position: 'absolute', bottom: 80 }}>
-            <TouchableOpacity disabled={!enable} onPress={() => navigation.goBack()}>
+            <TouchableOpacity disabled={!enable} onPress={() => { dispatch(setMeeting(null)) }}>
               <View style={[styles.close, enable && { backgroundColor: button.info }]}>
                 <Animated.View style={[{
                   position: 'absolute',

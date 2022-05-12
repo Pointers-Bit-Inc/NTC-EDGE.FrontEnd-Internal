@@ -18,7 +18,7 @@ import useSignalr from 'src/hooks/useSignalr';
 import Meeting from '@components/molecules/list-item/meeting';
 import Text from '@components/atoms/text'
 import { getChannelName } from 'src/utils/formatting';
-import {NewVideoIcon,PlusIcon,VideoIcon} from '@atoms/icon';
+import {AddMeetingIcon, NewVideoIcon,PlusIcon,VideoIcon} from '@atoms/icon';
 import { text, outline, primaryColor } from 'src/styles/color';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import { ListFooter } from '@components/molecules/list-item';
@@ -443,15 +443,8 @@ const Meet = ({ navigation }) => {
                     onPress={()=>modalRef.current?.open()}
                 >
                   <View style={{flexDirection:'row',alignItems:'center'}}>
-                    <NewVideoIcon
-                        color={"#113196"}
-                        width={RFValue(34)}
-                        height={RFValue(34)}
-                    />
-                    <PlusIcon
-                        color={'#113196'}
-                        size={RFValue(8)}
-                        style={{position:'absolute',left:RFValue(Platform.OS==='ios' ? 10 : 10)}}
+                    <AddMeetingIcon
+                      color={"#113196"}
                     />
                   </View>
                 </TouchableOpacity>
@@ -540,7 +533,7 @@ const Meet = ({ navigation }) => {
                             onClose={()=>setIsNext(false)}
                             channelId={currentMeeting.channelId}
                             isChannelExist={currentMeeting.isChannelExist}
-                            onSubmit={(type,params)=>{
+                            onSubmit={(params)=>{
 
                               modalRef.current?.close();
                               setParticipants([]);
@@ -550,7 +543,7 @@ const Meet = ({ navigation }) => {
                                 participants:[],
                               })
                               setIsNext(false);
-                              setTimeout(()=>navigation.navigate(type,params),300);
+                              setTimeout(()=>navigation.navigate('VideoCall',params),300);
                             }}
                         /></View>
 

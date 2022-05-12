@@ -283,7 +283,9 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
         const channelList=lodash.keys(normalizedChannelList).map(ch=>{
             const channel=normalizedChannelList[ch];
             channel.otherParticipants=lodash.reject(channel.participants,p=>p._id===props.user._id);
-            channel.lastMessage.hasSeen= !!lodash.find(channel.lastMessage.seen,s=>s._id===props.user._id);
+            if (channel.lastMessage) {
+                channel.lastMessage.hasSeen= !!lodash.find(channel.lastMessage.seen || [],s=>s._id===props.user._id);
+            }
             return channel;
         });
         return lodash.orderBy(channelList,'lastMessage.createdAt','desc');
@@ -984,8 +986,6 @@ const ChatList=({navigation}:any)=>{
                                                     <View style={{paddingRight:24}}>
                                                         <NewCallIcon
                                                             color={button.info}
-                                                            height={fontValue(24)}
-                                                            width={fontValue(24)}
                                                         />
                                                     </View>
                                                 </TouchableOpacity>
