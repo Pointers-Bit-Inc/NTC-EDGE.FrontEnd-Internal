@@ -71,11 +71,11 @@ export function useActivities(props){
     });
     React.useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
-            if(selectedYPos?.yPos){
+            console.log(selectedYPos)
+            if(selectedYPos?.yPos != undefined ){
                 if(selectedYPos.type){
                     scrollViewRef?.current?.scrollTo({ y: selectedYPos?.yPos, animated: true });
                 }else{
-
                     flatListViewRef?.current?.scrollToOffset({ offset: selectedYPos?.yPos, animated: true });
                 }
             }
