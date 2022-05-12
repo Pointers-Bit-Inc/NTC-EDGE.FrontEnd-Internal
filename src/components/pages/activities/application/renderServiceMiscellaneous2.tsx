@@ -37,7 +37,7 @@ const styles=StyleSheet.create({
         padding:10,
         paddingVertical:5,
         backgroundColor:"#EFF0F6",
-        
+
     },
     file:{
         fontSize:fontValue(12),
@@ -51,10 +51,14 @@ const styles=StyleSheet.create({
     },
 });
 let title='';
- let no = null;
+let no=null;
+
 function Title(props:{nextValue,index,}){
 
-    if(!((title===transformText(props.nextValue))||(title===transformText(props.index)))){
+    if(!(
+        (
+            title===transformText(props.nextValue))||(
+            title===transformText(props.index)))){
 
         title=transformText(
             props.nextValue||props.index);
@@ -65,18 +69,17 @@ function Title(props:{nextValue,index,}){
     return <></>
 }
 
-
 function Separator({index}){
-    if(no != index && index != undefined ){
-        no = index
-        return no != 0 ? <View style={{marginTop: 10, borderTopWidth: hairlineWidth, borderColor: "#EFF0F6" }}/> : <></>;
+    if(no!=index&&index!=undefined){
+        no=index;
+        return no!=0 ? <View style={{marginTop:10,borderTopWidth: 1,borderColor:"#EFF0F6"}}/> : <></>;
     }
     return <></>
 
 }
 
 const RenderServiceMiscellaneous=(props)=>{
-    let service={...props.service   }||{};
+    let service={...props.service}||{};
     const flatten=(obj)=>{
         var result={};
         (
@@ -108,18 +111,14 @@ const RenderServiceMiscellaneous=(props)=>{
         });
 
 
-
-
         if(findIndex!= -1){
             index=keys?.split(".")?.reverse()?.[findIndex];
             prevValue=keys?.split?.(".")?.reverse()?.[findIndex-1];
-            nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1]
-            console.log(prevValue, index, nextValue)
+            nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1];
         } else{
-            prevValue=keys?.split(".")?.[keys.split(".").length-1];
-            index=keys?.split(".")?.[keys.split(".").length];
-            nextValue=keys?.split?.(".")?.[keys.split(".").length-2] ||  keys?.split?.(".")?.[0]
-
+            prevValue=keys?.split(".")?.[keys.split(".")?.length-1];
+            index=keys?.split(".")?.[keys.split(".")?.length];
+            nextValue=keys?.split?.(".")?.[keys.split(".")?.length-2]||keys?.split?.(".")?.[0];
         }
 
 
@@ -127,9 +126,6 @@ const RenderServiceMiscellaneous=(props)=>{
             <Title nextValue={nextValue} index={index}/>
             <Separator index={index}/>
             <Row label={prevValue ? `${transformText(prevValue)}:` : ""} applicant={value}/>
-
-
-            {/*<View style={{borderTopWidth: 1, borderTopColor:"#EFF0F6", marginTop: 5}}/>*/}
         </View>
 
 
@@ -138,7 +134,7 @@ const RenderServiceMiscellaneous=(props)=>{
         <FlatList
             showsVerticalScrollIndicator={false}
             style={styles.group3}
-            data={Object.entries(flatten(_.omit(service, props.exclude)))}
+            data={Object.entries(flatten(_.omit(service,props.exclude)))}
             renderItem={_renderParent}
             keyExtractor={(item,index)=>`${index}`}
             scrollEnabled={false}

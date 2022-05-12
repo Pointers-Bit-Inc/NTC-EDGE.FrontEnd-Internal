@@ -187,12 +187,10 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                     <View style={{flex:1,backgroundColor:"rgba(0, 0, 0, 0.5)"}}>
 
                         {!this.state.onLoad ? this.state.extension ?
-
                          <PdfViewr width={this.props?.rightLayoutComponent?.width}
                                    height={this.props?.rightLayoutComponent?.height}
                                    requirement={this.props?.requirement}/> : (
                              isMobile||this.props.dimensions?.width<768 ?<AnimatedImage
-
                                                                             ref={imageModal=>(
                                                                                 this.state.imageModal=imageModal)}
                                                                             source={this?.state?.source}
@@ -202,7 +200,6 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                                                             animationDuration={200}
                                                                         /> :
                                  //height = height * (this.state._imageSize.height / width)
-
                              <ImageZoom onSwipeDown={this._hideImageModal} enableSwipeDown={true}
                                         cropWidth={this.props?.rightLayoutComponent?.width}
                                         enableDoubleClickZoom={true}
@@ -252,7 +249,6 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
         .then(()=>{
             this.setState({onLoadStart:false});
             Image.getSize(this.props?.requirement?.original,(width,height)=>{
-
                 this.setState({
                     ...this.state,
                     source:{

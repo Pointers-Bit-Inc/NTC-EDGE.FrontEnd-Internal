@@ -24,7 +24,8 @@ const {
     SET_APPLICATION_ITEM,
     SET_RIGHT_LAYOUT_COMPONENT,
     SET_TOPBARNAV,
-    SET_ACTIVITY_SIZE
+    SET_ACTIVITY_SIZE,
+    SET_SELECTED_YPOS
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -33,6 +34,11 @@ export default function basket(state = initialState, action = {}) {
 
 
     switch (action.type) {
+        case SET_SELECTED_YPOS: {
+             console.log(action.payload)
+            state = state.set('selectedYPos' , action.payload);
+            return state
+        }
         case SET_RIGHT_LAYOUT_COMPONENT: {
             console.log("rightLayoutComponent", action.payload )
             state = state.set('rightLayoutComponent' , action.payload);

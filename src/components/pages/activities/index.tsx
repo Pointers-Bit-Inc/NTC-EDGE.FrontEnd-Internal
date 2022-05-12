@@ -14,7 +14,7 @@ import {
 
 import {SEARCH} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny,useSelector} from "react-redux";
-import {setApplicationItem} from "../../../reducers/application/actions";
+import {setApplicationItem, setSelectedYPos} from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
 import FilterIcon from "@assets/svg/filterIcon";
 import {ActivityItem} from "@pages/activities/activityItem";
@@ -93,8 +93,9 @@ export default function ActivitiesPage(props:any){
         onScrollEndDrag,
         headerTranslate,
         opacity,
-        activitySizeComponent
-    }=useActivities();
+        activitySizeComponent,
+        scrollViewRef, yPos, setYPos
+    }=useActivities(props);
 
     const { normalizeActiveMeetings, meeting } = useSelector((state: RootStateOrAny) => state.meeting);
     const meetingList = useMemo(() => {
@@ -144,7 +145,6 @@ export default function ActivitiesPage(props:any){
             return dispatch(removeActiveMeeting(item._id));
         }
     };
-
     const listHeaderComponent=()=><>
         {!searchVisible&& !!pnApplications?.length&&containerHeight&&
         <View style={[styles.pinnedActivityContainer,{
@@ -159,41 +159,67 @@ export default function ActivitiesPage(props:any){
                         Activity</Text>
                 </View>
             </View>}
-
+           {/* <TouchableOpacity onPress={()=>{
+            scrollViewRef?.current?.scrollTo({ y: yPos, animated: true });
+            }}>
+                <Text>test</Text>
+            </TouchableOpacity>*/}
             <ScrollView showsVerticalScrollIndicator={false}
                         nestedScrollEnabled={true}
+                        onScroll={(event) => {
+                            
+                            new Promise((resolve, reject) => {
+                                setTimeout(() => {
+                                    resolve(event?.nativeEvent?.contentOffset?.y)
+                                }, 1000);
+                            }).then((data)=>{
+                                setYPos(data)
+                            });
+                           
+                        }}
+                        scrollEventThrottle={16}
+                        ref={scrollViewRef}
                         style={{maxHeight:300}}>
                 {
                     pnApplications.map((item:any,index:number)=>{
+                        return item?.activity && <FlatList
+                            scrollEventThrottle={16}
 
-                        return item?.activity&&item?.activity.map((act:any,i:number)=>{
+                            listKey={(item, index) => `_key${index.toString()}`}
+                            showsVerticalScrollIndicator={false}
+                            style={styles.items}
+                            data={item?.activity}
 
-                            return (
-                                act?.assignedPersonnel?._id||act?.assignedPersonnel)==user?._id&&<ActivityItem
-                                isOpen={isOpen}
-                                config={config}
-                                key={i}
-                                selected={applicationItem?._id==act?._id}
-                                currentUser={user}
-                                role={user?.role?.key}
-                                searchQuery={searchTerm}
-                                activity={act}
-                                isPinned={true}
-                                onPressUser={(event:any)=>{
+                            renderItem={(act, i) => {
+                                return (
+                                    act?.item?.assignedPersonnel?._id||act?.item?.assignedPersonnel)==user?._id&&<ActivityItem
+                                    isOpen={isOpen}
+                                    config={config}
+                                    key={i}
+                                    selected={applicationItem?._id==act?.item?._id}
+                                    currentUser={user}
+                                    role={user?.role?.key}
+                                    searchQuery={searchTerm}
+                                    activity={act?.item}
+                                    isPinned={true}
+                                    onPressUser={(event:any)=>{
+                                       dispatch(setSelectedYPos(yPos))
+                                        /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
+                                        })*/
+                                        dispatch(setApplicationItem({...act?.item,isOpen:`pin${i}${index}`}));
+                                        //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
+                                        if(event?.icon=='more'){
+                                            setMoreModalVisible(true)
+                                        } else{
+                                            setModalVisible(true)
+                                        }
 
-                                    /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
-                                    })*/
-                                    dispatch(setApplicationItem({...act,isOpen:`pin${i}${index}`}));
-                                    //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
-                                    if(event?.icon=='more'){
-                                        setMoreModalVisible(true)
-                                    } else{
-                                        setModalVisible(true)
-                                    }
-
-                                }} index={`pin${i}${index}`}
-                                swiper={(index:number,progress:any,dragX:any,onPressUser:any)=>renderSwiper(index,progress,dragX,onPressUser,act,unReadReadApplicationFn)}/>
-                        })
+                                    }} index={`pin${i}${index}`}
+                                    swiper={(index:number,progress:any,dragX:any,onPressUser:any)=>renderSwiper(index,progress,dragX,onPressUser,act?.item,unReadReadApplicationFn)}/>
+                            }
+                            }
+                            keyExtractor={(item, index) => `_key${index.toString()}`}
+                        />
                     })
                 }
             </ScrollView>

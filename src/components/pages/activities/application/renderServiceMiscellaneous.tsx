@@ -49,20 +49,11 @@ const styles = StyleSheet.create({
 const RenderServiceMiscellaneous = (props) => {
     let service = {...props?.service} || {};
     let _renderParent = ({item}: any) => {
-
-        console.log('\n\n_renderParent', item);
-        console.log('Object.keys(service[item])', service[item])    ;
-
         if (!(props.exclude.indexOf(item) != -1)) {
-
             let parentItem = item;
             let parentLabel = transformText(item);
             let _renderGrandChild = (values: any) => {
-                console.log('_renderGrandChild', values);
-
                 let _renderGGChild = ({item}: any) => {
-                    console.log('_renderGGChild', item);
-
                     let childItem = item;
                     let childLabel = transformText(item);
                     let childValue = values?.[childItem];
@@ -85,7 +76,7 @@ const RenderServiceMiscellaneous = (props) => {
                 let childItem = item;
                 let childLabel = transformText(item);
                 let childValue = service?.[parentItem]?.[childItem];
-                childValue = Date.parse(childValue) > 0 ?(moment(childValue)?.isValid() ? moment(childValue)?.format('LL') :  !(typeof childValue == "object") ? childValue : ""  ) : !(typeof childValue == "object") ? childValue : "";
+                childValue = moment(childValue)?.isValid() ? moment(childValue)?.format('LL') : childValue;
 
                 if (typeof(childValue) === 'object') return _renderGrandChild(childValue);
                 else return <Row label={ `${childLabel}:` } applicant={ childValue }/>

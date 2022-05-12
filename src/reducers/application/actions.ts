@@ -11,7 +11,8 @@ const {
     SET_FILTER_RECT,
     SET_RIGHT_LAYOUT_COMPONENT,
     SET_TOPBARNAV,
-    SET_ACTIVITY_SIZE
+    SET_ACTIVITY_SIZE,
+    SET_SELECTED_YPOS
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -98,6 +99,13 @@ export function setRightLayoutComponent(payload) {
 export function setApplicationItem(payload) {
     return {
         type: SET_APPLICATION_ITEM,
+        payload,
+    };
+}
+
+export function setSelectedYPos(payload) {
+    return {
+        type: SET_SELECTED_YPOS,
         payload,
     };
 }
