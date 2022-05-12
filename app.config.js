@@ -17,7 +17,7 @@ export default {
     "ios": {
       "supportsTablet": true,
       "usesIcloudStorage": true,
-      "bundleIdentifier": "com.ntcedge.portal",
+      "bundleIdentifier": "portalapp.ntcedge.com",
       "buildNumber": process.env.APP_VERSION ?? "1.0.4",
       "infoPlist": {
         "NSCameraUsageDescription": "This will be used for video call and live streaming.",
@@ -35,7 +35,7 @@ export default {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.ntcedge.portal",
+      "package": "portalapp.ntcedge.com",
       "versionCode": 1
     },
     "web": {
