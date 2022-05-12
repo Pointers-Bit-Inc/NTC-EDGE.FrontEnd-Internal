@@ -3,12 +3,15 @@ import { View, StyleSheet, TouchableOpacity, Platform, Dimensions, Image } from 
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
 import { CheckIcon, DeleteIcon, NewFileIcon, WriteIcon } from '@components/atoms/icon'
-import { getChatTimeString, getFileSize } from 'src/utils/formatting'
-import { primaryColor, bubble, text, outline } from '@styles/color'
+import { getChatTimeString, getDateTimeString, getFileSize, getTimerString } from 'src/utils/formatting'
+import { primaryColor, bubble, text, outline, button } from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
 import { fontValue } from '@components/pages/activities/fontValue';
 import IAttachment from 'src/interfaces/IAttachment';
+import dayjs from 'dayjs';
+import IParticipants from 'src/interfaces/IParticipants';
+import { Regular500 } from '@styles/font';
 
 const { width } = Dimensions.get('window');
 
@@ -122,6 +125,16 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 15,
     marginTop: 5,
+  },
+  callAgainBtn: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    alignContent: 'center',
+    justifyContent: 'center',
+    backgroundColor: button.info,
+    borderRadius: 5,
+    marginTop: 10,
+    marginBottom: 5,
   }
 })
 
@@ -146,6 +159,8 @@ interface Props {
   delivered?: boolean;
   onPreview?: any;
   meeting?: any;
+  onCallAgain?: any;
+  user?: any;
   [x: string]: any;
 }
 
@@ -171,6 +186,8 @@ const ChatBubble:FC<Props> = ({
   delivered = false,
   onPreview = () => {},
   meeting = null,
+  onCallAgain = () => {},
+  user = {},
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -224,13 +241,72 @@ const ChatBubble:FC<Props> = ({
       )
     }
     if (messageType === 'callended') {
+      let joinedParticipants = [];
+      let timeDiff = null;
+      let missedCall = false;
+      let isGroupMeeting = false;
+      let title = 'Call ended';
+
+      if (meeting) {
+        joinedParticipants = lodash.filter(meeting.participants, (p:IParticipants) => p.hasJoined);
+        isGroupMeeting = lodash.size(meeting.participants) > 2
+        const timeStart = dayjs(meeting?.createdAt);
+        const timeEnded = dayjs(meeting?.endedAt);
+        timeDiff = timeEnded.diff(timeStart);
+        timeDiff = getTimerString(timeDiff/1000);
+
+        if (!isGroupMeeting) {
+          missedCall = lodash.size(joinedParticipants) < 2;
+        }
+      }
+
+      if (missedCall) {
+        if (isSender) {
+          const recipient = lodash.find(meeting.participants, (p:IParticipants) => p._id !== user._id)
+          if (recipient) {
+            title = `${recipient.firstName} missed your call`
+          }
+        } else {
+          title = 'You missed a call'
+        }
+      }
+
       return (
-        <Text
-          size={14}
-          color={'#979797'}
-        >
-          {message}
-        </Text>
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+            <Text
+              size={14}
+            >
+              {title}
+            </Text>
+            {
+              !!timeDiff && !missedCall && (
+                <Text
+                  size={14}
+                >
+                  {timeDiff}
+                </Text>
+              )
+            }
+          </View>
+          <Text
+              color={text.default}
+              size={12}
+          >
+            {getChatTimeString(createdAt)}
+          </Text>
+          <TouchableOpacity onPress={() => onCallAgain(!meeting?.isVoiceCall)}>
+            <View style={styles.callAgainBtn}>
+              <Text
+                style={{ textAlign: 'center', fontFamily: Regular500 }}
+                color={'white'}
+                size={12}
+              >
+                CALL AGAIN
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       )
     }
     return (

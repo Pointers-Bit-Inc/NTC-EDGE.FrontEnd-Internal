@@ -64,7 +64,7 @@ const button = {
 
 const bubble = {
   primary: '#2563EB',
-  secondary: '#E5E5E5',
+  secondary: '#F0F0F0',
 };
 
 const header = {

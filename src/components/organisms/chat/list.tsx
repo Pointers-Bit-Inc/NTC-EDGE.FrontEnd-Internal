@@ -43,6 +43,7 @@ interface Props {
   onSendMessage?: any;
   onSendFile?: any;
   onPreview?: any;
+  onCallAgain?: any;
   [x: string]: any;
 }
 
@@ -58,6 +59,7 @@ const ChatList: FC<Props> = ({
   onSendMessage = () => {},
   onSendFile = () => {},
   onPreview = () => {},
+  onCallAgain = () => {},
   ...otherProps
 }) => {
   const emptyComponent = () => (
@@ -119,6 +121,8 @@ const ChatList: FC<Props> = ({
     const showSeen = lastMessage?._id === item._id ||
       latestSeenSize === 0 ||
       seenByOthersCount > 0 && seenByOthersCount < lodash.size(participants);
+    const specialMessage = item.type === 'newmeeting';
+    
     return (
       <View style={[styles.bubbleContainer, { alignItems: isSender ? 'flex-end' : 'flex-start' }]}>
         {
@@ -143,6 +147,9 @@ const ChatList: FC<Props> = ({
               system={item.system}
               delivered={item.delivered}
               onPreview={() => onPreview(item)}
+              meeting={item.meeting}
+              onCallAgain={onCallAgain}
+              user={user}
             />
           ) : (
             <ChatBubble
@@ -165,6 +172,9 @@ const ChatList: FC<Props> = ({
               system={item.system}
               delivered={item.delivered}
               onPreview={() => onPreview(item)}
+              meeting={item.meeting}
+              onCallAgain={onCallAgain}
+              user={user}
             />
           )
         }

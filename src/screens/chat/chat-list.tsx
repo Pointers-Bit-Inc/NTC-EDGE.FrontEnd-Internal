@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { View, TouchableOpacity, StyleSheet, InteractionManager, Image, Dimensions } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, InteractionManager, Image, Dimensions, Platform } from 'react-native';
 import Modal from 'react-native-modal';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -32,6 +32,8 @@ import NoConversationIcon from "@assets/svg/noConversations";
 import IAttachment from 'src/interfaces/IAttachment';
 import {NoContent} from "@screens/meet/index.web";
 import GroupImage from '@components/molecules/image/group';
+import CreateMeeting from '@components/pages/chat-modal/meeting';
+import { setMeeting, setOptions } from 'src/reducers/meeting/actions';
 
 const { width, height } = Dimensions.get('window');
 
@@ -92,6 +94,7 @@ const styles = StyleSheet.create({
 const List = () => {
   const dispatch = useDispatch();
   const modalRef = useRef<BottomModalRef>(null);
+  const meetingModalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { selectedChannel, channelMessages, pendingMessages } = useSelector((state:RootStateOrAny) => state.channel);
   const { _id, isGroup, lastMessage, otherParticipants = [], participants = [], hasRoomName, name, author = {} } = useMemo( () => {
@@ -137,6 +140,7 @@ const List = () => {
   const [hasMore, setHasMore] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [rendered, setRendered] = useState(false);
+  const [isVideoEnable, setIsVideoEnable] = useState(false);
   const [preview, setPreview] = useState<any>({})
 
   const {
@@ -393,6 +397,11 @@ const List = () => {
     },
     [message]
   );
+
+  const onCallAgain = (videoEnabled:boolean) => {
+    setIsVideoEnable(videoEnabled);
+    meetingModalRef.current?.open();
+  }
   
   const checkIfImage = (uri:any) => {
     if (uri && (uri.endsWith(".png") || uri.endsWith(".jpg") || uri.endsWith(".jpeg"))) return true;
@@ -427,7 +436,8 @@ const List = () => {
             size={isGroup ? 60 : 45}
             textSize={isGroup ? 28 : 20}
             inline={true}
-            sizeOfParticipants={5}
+            showOthers={true}
+            sizeOfParticipants={3}
           />
         </View>
         <Text
@@ -495,6 +505,7 @@ const List = () => {
             onSendMessage={_sendMessage}
             onSendFile={_sendFile}
             onPreview={(item:IAttachment) => setPreview(item)}
+            onCallAgain={onCallAgain}
         />
         <Modal
           isVisible={!!preview?.attachment}
@@ -547,6 +558,37 @@ const List = () => {
         >
           <View style={{ paddingBottom: 20 }}>
             {showDeleteOption ? deletOptions() : options()}
+          </View>
+        </BottomModal>
+        <BottomModal
+          ref={meetingModalRef}
+          onModalHide={() => meetingModalRef.current?.close()}
+          avoidKeyboard={false}
+          header={
+            <View style={styles.bar} />
+          }
+          containerStyle={{ maxHeight: null }}
+          onBackdropPress={() => {}}
+        >
+          <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
+            <CreateMeeting
+              barStyle={'dark-content'}
+              participants={participants}
+              isVideoEnable={isVideoEnable}
+              isVoiceCall={!isVideoEnable}
+              isChannelExist={true}
+              channelId={channelId}
+              onClose={() => meetingModalRef.current?.close()}
+              onSubmit={(params, data) => {
+                meetingModalRef.current?.close();
+                dispatch(setOptions({
+                  ...params.options,
+                  isHost: params.isHost,
+                  isVoiceCall: params.isVoiceCall,
+                }));
+                setTimeout(() => dispatch(setMeeting(data)), 300);
+              }}
+            />
           </View>
         </BottomModal>
         <AwesomeAlert

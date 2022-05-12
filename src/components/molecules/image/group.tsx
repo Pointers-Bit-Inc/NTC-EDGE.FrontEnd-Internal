@@ -38,6 +38,7 @@ interface Props {
   backgroundColor?: string;
   inline?: boolean;
   sizeOfParticipants?: number;
+  showOthers?: boolean;
 }
 
 const GroupImage: FC<Props> = ({
@@ -46,6 +47,7 @@ const GroupImage: FC<Props> = ({
   textSize = 14,
   inline = false,
   sizeOfParticipants = 2,
+  showOthers = false,
 }) => {
   const imageSize = size / 1.4;
   if (lodash.size(participants) === 1) {
@@ -62,6 +64,7 @@ const GroupImage: FC<Props> = ({
 
   if (inline) {
     const filteredParticipants = lodash.take(participants, sizeOfParticipants);
+    const others = lodash.size(participants) - lodash.size(filteredParticipants);
 
     return (
       <View style={{ height: fontValue(imageSize), marginLeft: imageSize * 0.35 }}>
@@ -85,6 +88,23 @@ const GroupImage: FC<Props> = ({
                 />
               </View>
             ))
+          }
+          {
+            others > 0 && showOthers && (
+              <View
+                key={'others'}
+                style={{ marginLeft: -(imageSize * 0.35), zIndex: 999 - lodash.size(filteredParticipants) }}
+              >
+                <ProfileImage
+                  style={{ marginHorizontal: 1, }}
+                  key={'others'}
+                  image={''}
+                  others={`+${others}`}
+                  size={imageSize}
+                  textSize={textSize/2}
+                />
+              </View>
+            )
           }
         </View>
         {/* <View style={styles.topPosition}>

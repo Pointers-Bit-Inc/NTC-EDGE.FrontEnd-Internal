@@ -136,12 +136,14 @@ const getOtherParticipants = (participants = [], user:any) => {
 }
 
 const getTimerString = (time:number) => {
-  var mins = ~~((time % 3600) / 60);
-    var secs = ~~time % 60;
-    var format = "";
-    format += (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "");
-    format += "" + secs;
-    return format;
+  const hrs = ~~(time / 60 / 60);
+  const mins = ~~((time % 3600) / 60);
+  const secs = ~~(time % 60);
+  let format = "";
+  format += (hrs < 10 ? "0" : "") + hrs + ":";
+  format += (mins < 10 ? "0" : "") + mins + ":";
+  format += (secs < 10 ? "0" : "") + secs;
+  return format;
 }
 
 const getDayMonthString = (time:number) => {
