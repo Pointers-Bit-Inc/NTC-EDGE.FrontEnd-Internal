@@ -73,16 +73,19 @@ export function useActivities(props){
     React.useEffect(() => {
         if(!isMobile) {
            props?.navigation?.addListener('focus', () => {
-                if(selectedYPos?.yPos != undefined || (selectedYPos?.yPos  && selectedYPos.type == 1)  ){
+               console.log(selectedYPos)
+                if(selectedYPos?.yPos != undefined  ){
                     if(selectedYPos.type){
-                        scrollViewRef?.current?.scrollTo({ y: selectedYPos?.yPos, animated: true });
+                        scrollViewRef?.current?.scrollTo({ y: selectedYPos.type ? selectedYPos?.yPos : 0, animated: true });
                     }else{
-                        flatListViewRef?.current?.scrollToOffset({ offset: selectedYPos?.yPos, animated: true });
+                        flatListViewRef?.current?.scrollToOffset({ offset: selectedYPos.type ? 0 :selectedYPos?.yPos + 30, animated: true });
                     }
                 }
             });
         }
+        return {
 
+        }
 
     }, [props?.navigation, selectedYPos]);
     const dispatch=useDispatch();

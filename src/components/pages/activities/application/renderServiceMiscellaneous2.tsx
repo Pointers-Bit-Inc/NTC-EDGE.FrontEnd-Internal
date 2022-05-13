@@ -87,11 +87,11 @@ const RenderServiceMiscellaneous=(props)=>{
                 switch(typeof e){
                     case "object":
                         p=p ? p+"." : "";
-                        _.forIn(e, function(value,i){
+                        _.forIn(e, async function(value,i){
                             if(e[i]?.hasOwnProperty('year')){
                                 e[i]=moment(e[i])?.format('LL')
                             }
-                             f(e[i],p+i);
+                            await f(e[i],p+i);
                         });
                         break;
                     default:
@@ -105,11 +105,11 @@ const RenderServiceMiscellaneous=(props)=>{
     let _renderParent=(item:any)=>{
         const [keys,value]=item.item;
         var index,prevValue,nextValue,findIndex;
-            findIndex=keys.split(".").reverse()?.map((key,index)=>{
-                return key
-            }).findIndex((name)=>{
-                return !isNaN(parseInt(name))
-            });
+        findIndex=keys.split(".").reverse()?.map((key,index)=>{
+            return key
+        }).findIndex((name)=>{
+            return !isNaN(parseInt(name))
+        });
 
         if(findIndex!= -1){
             index=keys?.split?.(".")?.reverse()?.[findIndex];
@@ -120,11 +120,11 @@ const RenderServiceMiscellaneous=(props)=>{
             index=keys?.split?.(".")?.[keys.split(".")?.length];
             nextValue=keys?.split?.(".")?.[keys.split(".")?.length-2]||keys?.split?.(".")?.[0];
         }
-        return <View>
+        return (<View>
             <Title nextValue={nextValue} index={index}/>
             <Separator index={index}/>
             <Row label={prevValue ? `${transformText(prevValue)}:` : ""} applicant={value}/>
-        </View>
+        </View>)
 
 
     };
