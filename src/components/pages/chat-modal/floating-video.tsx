@@ -33,6 +33,7 @@ import { Bold } from '@styles/font';
 import { useNavigation } from '@react-navigation/native';
 import IParticipants from 'src/interfaces/IParticipants';
 import { RFValue } from 'react-native-responsive-fontsize';
+import useTimer from 'src/hooks/useTimer';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -156,9 +157,12 @@ const FloatingVideo = () => {
     leaveMeeting,
     muteParticipant,
   } = useSignalr();
+  const {
+    timer,
+    setStarted
+  } = useTimer();
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
-  const [timer, setTimer] = useState(0);
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
   const snapPointsX = useSharedValue(defaultSnapX);
@@ -198,6 +202,7 @@ const FloatingVideo = () => {
                 if (result) {
                   dispatch(updateMeetingParticipants(result.meeting));
                   setAgora(result?.agora);
+                  setStarted(true);
                 }
               } else {
                 setLoading(false);
@@ -223,9 +228,7 @@ const FloatingVideo = () => {
   useEffect(() => {
     let interval:any = null;
     if (!meeting.ended) {
-      interval = setInterval(() => {
-        setTimer(timer => timer + 1);
-      }, 1000);
+      setStarted(false);
     } else {
       dispatch(setToggle(null));
       dispatch(setFullScreen(true));
@@ -235,7 +238,7 @@ const FloatingVideo = () => {
 
   useEffect(() => {
     if (toggleMute) {
-      setToggle(null);
+      dispatch(setToggle(null));
     }
   }, [toggleMute]);
 
@@ -358,9 +361,6 @@ const FloatingVideo = () => {
         <TouchableOpacity onPress={onMessages}>
           <View style={styles.icon}>
             <MessageIcon />
-            {
-              hasNewMessage && <View style={styles.indicator} />
-            }
           </View>
         </TouchableOpacity>
         <View style={{ width: 5 }} />
