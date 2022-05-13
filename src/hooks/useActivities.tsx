@@ -76,6 +76,7 @@ export function useActivities(props){
                console.log(selectedYPos)
                 if(selectedYPos?.yPos != undefined  ){
                     if(selectedYPos.type){
+                        flatListViewRef?.current?.scrollToOffset({ offset:  0 , animated: true });
                         scrollViewRef?.current?.scrollTo({ y: selectedYPos.type ? selectedYPos?.yPos : 0, animated: true });
                     }else{
                         flatListViewRef?.current?.scrollToOffset({ offset: selectedYPos.type ? 0 :selectedYPos?.yPos + 30, animated: true });
