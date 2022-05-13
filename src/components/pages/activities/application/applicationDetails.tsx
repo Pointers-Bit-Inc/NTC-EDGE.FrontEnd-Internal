@@ -21,6 +21,7 @@ import {RFValue} from "react-native-responsive-fontsize";
 import {RootStateOrAny,useSelector} from "react-redux";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
+import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous2";
 
 const { width , height } = Dimensions.get("screen");
 
@@ -36,7 +37,7 @@ const ApplicationDetails = (props: any) => {
     const dimensions=useWindowDimensions();
     const {rightLayoutComponent}=useSelector((state:RootStateOrAny)=>state.application);
     const [modalVisible, setModalVisible] = useState(false);
-    return <ScrollView style={ { paddingTop : 20 , width : "100%" , backgroundColor : "#f8f8f8" , } }>
+    return <ScrollView contentContainerStyle={{ flex: 1 }} style={ { paddingTop : 20 , width : "100%" , backgroundColor : "#f8f8f8" , } }>
         {/*<PdfViewrWeb height={height}
                   width={width} requirement={props?.documents}/>*/}
             <View style={ [styles.container , { marginVertical : 12 }] }>
@@ -76,6 +77,7 @@ const ApplicationDetails = (props: any) => {
                 </View>
 
             </View>
+
         <Modal
             animationType="slide"
             transparent={true}

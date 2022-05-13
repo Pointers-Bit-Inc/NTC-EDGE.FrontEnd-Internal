@@ -456,10 +456,6 @@ export default function ActivitiesPage(props:any){
                                 }}/>
                         )}
                     />
-                    {/*    right view jkadtong muslide
-                view*/}
-
-
                 </View>
                 {
                     !(

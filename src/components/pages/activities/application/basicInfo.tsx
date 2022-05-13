@@ -1,5 +1,5 @@
 import React,{useEffect,useRef} from "react";
-import {ScrollView,StyleSheet,Text,useWindowDimensions,View} from "react-native";
+import {Platform,ScrollView,StyleSheet,Text,useWindowDimensions,View} from "react-native";
 import {excludeStatus,getStatusText,remarkColor,statusColor,statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
@@ -29,13 +29,16 @@ const BasicInfo=(props:any)=>{
 
     const applicant=props?.applicant?.user||props?.applicant;
     useEffect(()=>{
-        scrollRef?.current?.scrollTo({
-            y: 0,
-            animated: true,
-        });
+        if(Platform.isPad || Platform.OS == "web"){
+            scrollRef?.current?.scrollTo({
+                y: 0,
+                animated: true,
+            });
+        }
+        
     }, [applicant?._id])
     const dimensions=useWindowDimensions();
-    return <ScrollView ref={scrollRef} style={{width:"100%",backgroundColor:"#f8f8f8",}}>
+    return <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef} style={{width:"100%",backgroundColor:"#f8f8f8",}}>
 
         <View style={{flexDirection:isMobile||dimensions?.width<=768 ? "column" : "row"}}>
             <View style={isMobile||dimensions?.width<=768 ? {padding:10,alignSelf:"center"} : {
@@ -215,7 +218,7 @@ const BasicInfo=(props:any)=>{
 
                             </View>}
                             {props?.schedule&&<View style={styles.divider}/>}
-                            <RenderServiceMiscellaneous exclude={['_id','name','applicationType','serviceCode']}
+                            <RenderServiceMiscellaneous  exclude={['_id','name','applicationType','serviceCode']}
                                                         service={props?.service}/>
                         </View>
 

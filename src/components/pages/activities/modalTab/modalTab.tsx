@@ -5,15 +5,15 @@ import Requirement from "@pages/activities/application/requirementModal/requirem
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React,{useEffect,useState} from "react";
 import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
-import {Animated,Platform} from "react-native";
+import {Alert,Animated,InteractionManager,Platform} from "react-native";
 import TabBar from "@pages/activities/tabs/tabbar";
 import ScrollableTabView from "@pages/activities/tabs";
 import Tab from "@pages/activities/tabs/Tab";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
 import {isMobile} from "@pages/activities/isMobile";
 
-
 const ModalTab = props => {
+
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [_scrollX , set_scrollX] = useState(new Animated.Value(0));
     // 6 is a quantity of tabs
@@ -77,8 +77,7 @@ const ModalTab = props => {
         setInitialPage(true)
     },[props.details._id]);
     return <ScrollableTabView
-
-        onScroll={ (x) => _scrollX.setValue(x) }
+        onScroll={ (x) => _scrollX?.setValue(x) }
         renderTabBar={ (props) => {
             if(initialPage && Platform?.isPad ){
                 props?.goToPage(0);
@@ -105,11 +104,11 @@ const ModalTab = props => {
             tabs.map((tab , index) => {
                 const isShow = tab.isShow.indexOf(user?.role?.key) !== -1;
                 if (isShow && tab.id === 1) {
-
                     return <BasicInfo
                         schedule={ schedule }
                         service={ service }
-                        tabLabel={ { label : tab.name } } label={ tab.name }
+                        tabLabel={ { label : tab.name } }
+                        label={ tab.name }
                         paymentMethod={ paymentMethod }
                         assignedPersonnel={ assignedPersonnel }
                         approvalHistory={ approvalHistory }
@@ -123,19 +122,22 @@ const ModalTab = props => {
                         applicant={ applicant }
                         key={ index }/>
                 } else if (isShow && tab.id === 2) {
-
                     return <ApplicationDetails
-                        tabLabel={ { label : tab.name } } label={ tab.name }
+                        tabLabel={ { label : tab.name } }
+                        label={ tab.name }
                         service={ service }
                         documents={documents}
                         selectedType={ selectedTypes }
                         applicantType={ applicationType }
                         key={ index }/>
                 } else if (isShow && tab.id === 3) {
-                    return <Requirement tabLabel={ { label : tab.name } } label={ tab.name }
-                                        requirements={ requirements } key={ index }/>
+                    return <Requirement tabLabel={ { label : tab.name } }
+                                        label={ tab.name }
+                                        requirements={ requirements }
+                                        key={ index }/>
                 } else if (isShow && tab.id === 4) {
-                    return <Payment tabLabel={ { label : tab.name } } label={ tab.name }
+                    return <Payment tabLabel={ { label : tab.name } }
+                                    label={ tab.name }
                                     proofOfPayment={ proofOfPayment }
                                     updatedAt={ updatedAt }
                                     paymentMethod={ paymentMethod }

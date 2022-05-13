@@ -82,46 +82,44 @@ const RenderServiceMiscellaneous=(props)=>{
     let service={...props.service}||{};
     const flatten=(obj)=>{
         var result={};
-        (
-            function f(e,p){
+         (
+            async function f(e,p=undefined){
                 switch(typeof e){
                     case "object":
                         p=p ? p+"." : "";
-                        for(var i in e){
+                        _.forIn(e, function(value,i){
                             if(e[i]?.hasOwnProperty('year')){
                                 e[i]=moment(e[i])?.format('LL')
                             }
-                            f(e[i],p+i);
-                        }
+                             f(e[i],p+i);
+                        });
                         break;
                     default:
-                        result[p]=e;
+                        result[p]=moment(e)?.isValid()&&Date.parse(e)>0 ? moment(e)?.format('LL') : e;
                         break;
                 }
             })(obj);
+         
         return result;
     };
     let _renderParent=(item:any)=>{
         const [keys,value]=item.item;
-        var index,prevValue,nextValue;
-        var findIndex=keys.split(".").reverse()?.map((key,index)=>{
-            return key
-        }).findIndex((name)=>{
-            return !isNaN(parseInt(name))
-        });
-
+        var index,prevValue,nextValue,findIndex;
+            findIndex=keys.split(".").reverse()?.map((key,index)=>{
+                return key
+            }).findIndex((name)=>{
+                return !isNaN(parseInt(name))
+            });
 
         if(findIndex!= -1){
-            index=keys?.split(".")?.reverse()?.[findIndex];
+            index=keys?.split?.(".")?.reverse()?.[findIndex];
             prevValue=keys?.split?.(".")?.reverse()?.[findIndex-1];
             nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1];
         } else{
-            prevValue=keys?.split(".")?.[keys.split(".")?.length-1];
-            index=keys?.split(".")?.[keys.split(".")?.length];
+            prevValue=keys?.split?.(".")?.[keys.split(".")?.length-1];
+            index=keys?.split?.(".")?.[keys.split(".")?.length];
             nextValue=keys?.split?.(".")?.[keys.split(".")?.length-2]||keys?.split?.(".")?.[0];
         }
-
-
         return <View>
             <Title nextValue={nextValue} index={index}/>
             <Separator index={index}/>
@@ -130,6 +128,9 @@ const RenderServiceMiscellaneous=(props)=>{
 
 
     };
+
+    
+
     return (
         <FlatList
             showsVerticalScrollIndicator={false}

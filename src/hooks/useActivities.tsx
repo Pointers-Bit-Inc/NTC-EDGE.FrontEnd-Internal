@@ -19,7 +19,7 @@ import {
 import moment from "moment";
 import axios from "axios";
 import {BASE_URL} from "../services/config";
-import {Alert,Animated,FlatList,Image} from "react-native";
+import {Alert,Animated,FlatList,Image,TouchableOpacity,View} from "react-native";
 import {
     handleInfiniteLoad,setactivitySizeComponent,
     setApplications,
@@ -339,7 +339,7 @@ export function useActivities(props){
     const [infiniteLoad,setInfiniteLoad]=useState(false);
     const [onEndReachedCalledDuringMomentum,setOnEndReachedCalledDuringMomentum]=useState(false);
     const bottomLoader=()=>{
-        return infiniteLoad ? <Loader/> : null
+        return infiniteLoad ? <Loader/> : <View style={{height: 3}}></View>
     };
 
 
