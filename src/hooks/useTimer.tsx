@@ -13,7 +13,10 @@ const useTimer = () => {
       }, 1000);
     }
 
-    return () => clearInterval(interval);
+    return () => {
+      setTimer(0);
+      clearInterval(interval);
+    }
   }, [started]);
 
   return {

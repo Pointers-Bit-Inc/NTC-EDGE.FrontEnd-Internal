@@ -164,7 +164,7 @@ const FloatingVideo = () => {
   } = useTimer();
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
-  const [isMaximized, setIsMaximized] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(true);
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
   const snapPointsX = useSharedValue(defaultSnapX);
