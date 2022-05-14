@@ -238,8 +238,8 @@ const FloatingVideo = () => {
     if (!meeting.ended) {
       setStarted(false);
     } else {
+      setIsMaximized(true);
       dispatch(setToggle(null));
-      dispatch(setFullScreen(true));
     }
     return () => clearInterval(interval);
   }, [meeting.ended]);
@@ -308,7 +308,7 @@ const FloatingVideo = () => {
     }
   };
 
-  const onFullScreen = () => dispatch(setFullScreen(!isMaximized));
+  const onFullScreen = () => setIsMaximized(current => !current);
 
   const onMessages = () => {
     if (meeting?._id) {
