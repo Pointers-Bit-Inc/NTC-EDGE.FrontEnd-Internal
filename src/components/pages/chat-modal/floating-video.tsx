@@ -11,6 +11,7 @@ import { snapPoint } from 'react-native-redash';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import lodash from 'lodash';
+import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 import { ArrowDownIcon, MessageIcon, ParticipantsIcon } from '@components/atoms/icon'
 import {
   resetCurrentMeeting,
@@ -163,6 +164,7 @@ const FloatingVideo = () => {
   } = useTimer();
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
+  const [isMaximized, setIsMaximized] = useState(true);
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
   const snapPointsX = useSharedValue(defaultSnapX);
@@ -174,19 +176,24 @@ const FloatingVideo = () => {
   const scale = useSharedValue(1);
 
   useEffect(() => {
-    if (isFullScreen) {
+    if (isMaximized) {
       translateX.value = 0;
       translateY.value = 0;
     } else {
       translateX.value = currentX.value;
       translateY.value = currentY.value;
     }
+  }, [isMaximized])
+
+  useEffect(() => {
+    setIsMaximized(isFullScreen);
   }, [isFullScreen]);
 
   useEffect(() => {
     let unmounted = false;
 
     if (meetingId) {
+      activateKeepAwake();
       requestCameraAndAudioPermission((err, result) => {
         if (err) {
           Alert.alert(
@@ -216,6 +223,7 @@ const FloatingVideo = () => {
   
     return () => {
       unmounted = true;
+      deactivateKeepAwake(); 
       dispatch(setOptions({
         isHost: false,
         isVoiceCall: false,
@@ -230,8 +238,8 @@ const FloatingVideo = () => {
     if (!meeting.ended) {
       setStarted(false);
     } else {
+      setIsMaximized(true);
       dispatch(setToggle(null));
-      dispatch(setFullScreen(true));
     }
     return () => clearInterval(interval);
   }, [meeting.ended]);
@@ -287,20 +295,20 @@ const FloatingVideo = () => {
   });
 
   const onTouchStart = () => {
-    if (isFullScreen) return;
+    if (isMaximized) return;
     if (scale.value !== 1.1) {
       scale.value = withSpring(1.1);
     }
   };
 
   const onTouchEnd = () => {
-    if (isFullScreen) return;
+    if (isMaximized) return;
     if (scale.value !== 1) {
       scale.value = withSpring(1);
     }
   };
 
-  const onFullScreen = () => dispatch(setFullScreen(!isFullScreen));
+  const onFullScreen = () => setIsMaximized(current => !current);
 
   const onMessages = () => {
     if (meeting?._id) {
@@ -329,7 +337,7 @@ const FloatingVideo = () => {
   }
 
   const header = () => {
-    if (!isFullScreen) return;
+    if (!isMaximized) return;
 
     return (
       <View style={styles.header}>
@@ -391,20 +399,20 @@ const FloatingVideo = () => {
   }
 
   return (
-    <PanGestureHandler enabled={!isFullScreen} onGestureEvent={onGestureEvent}>
+    <PanGestureHandler enabled={!isMaximized} onGestureEvent={onGestureEvent}>
       <AnimatedPressable
-        style={[styles.container, styles.shadow, !isFullScreen && styles.position, style]}
+        style={[styles.container, styles.shadow, !isMaximized && styles.position, style]}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}>
         <View
           style={[
             styles.remote,
-            isFullScreen ? styles.maximize : styles.minimize,
-            !isFullScreen && styles.border,
+            isMaximized ? styles.maximize : styles.minimize,
+            !isMaximized && styles.border,
           ]}
         >
           {
-            !isFullScreen && (
+            !isMaximized && (
               <View style={{ position: 'absolute', top: 5, right: 5, zIndex: 999 }}>
                 <TouchableOpacity onPress={onFullScreen}>
                 <Feather
@@ -432,7 +440,7 @@ const FloatingVideo = () => {
             onEndCall={onEndCall}
             onMute={onMute}
             isGroup={meeting?.isGroup}
-            isMaximize={isFullScreen}
+            isMaximize={isMaximized}
             pinnedParticipant={pinnedParticipant}
             setPinnedParticipant={onSetPinnedParticipant}
           />
