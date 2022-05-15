@@ -12,7 +12,7 @@ import {
     View
 } from "react-native";
 
-import {SEARCH} from "../../../reducers/activity/initialstate";
+import {SEARCH,SEARCHMOBILE} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny,useSelector} from "react-redux";
 import {setApplicationItem, setSelectedYPos} from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
@@ -348,7 +348,7 @@ export default function ActivitiesPage(props:any){
                         //setSearchVisible(true)
                         dispatch(setApplicationItem({}));
 
-                        props.navigation.navigate(SEARCH);
+                        props.navigation.navigate(isMobile ? SEARCHMOBILE : SEARCH);
                     }} searchVisible={searchVisible}/>
 
                     <Animated.FlatList

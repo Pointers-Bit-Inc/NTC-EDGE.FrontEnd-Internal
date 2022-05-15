@@ -27,7 +27,10 @@ export const DATE_ADDED = "Date Added",
     MEET = "Meet",
     SCANQR = "QR",
     MORE = "More",
-SEARCH = "Search";
+    DASHBOARD = "Dashboard",
+    SEARCH = "Search",
+
+    SEARCHMOBILE = "SearchActivities";
 
 const InitialState = Record({
   visible: false,

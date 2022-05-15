@@ -73,7 +73,6 @@ export function useActivities(props){
     React.useEffect(() => {
         if(!isMobile) {
            props?.navigation?.addListener('focus', () => {
-               console.log(selectedYPos)
                 if(selectedYPos?.yPos != undefined  ){
                     if(selectedYPos.type){
                         flatListViewRef?.current?.scrollToOffset({ offset:  0 , animated: true });

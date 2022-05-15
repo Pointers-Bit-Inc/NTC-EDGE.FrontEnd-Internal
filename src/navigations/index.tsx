@@ -61,6 +61,7 @@ type RootStackParamList = {
     InitiateVideoCall: undefined;
     JoinVideoCall: undefined;
     SearchActivities: undefined;
+    Dashboard: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -146,6 +147,7 @@ const RootNavigator = () => {
                 }/>
                 <Stack.Screen name="UserProfileScreen" component={ UserProfile }/>
                 <Stack.Screen name="Settings" component={ Settings }/>
+
                 <Stack.Screen name="Dial" component={ Dial }/>
                 <Stack.Screen name="Meeting" component={ Meeting }/>
                 <Stack.Screen name="Participants" component={ Participants }/>

@@ -7,7 +7,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import QrCodeScanner from "@pages/barcode/view";
 import MeetScreen from '@screens/meet';
 import ChatScreen from '@screens/chat';
-import {Entypo} from "@expo/vector-icons";
+import {Ionicons} from "@expo/vector-icons";
 import ActivityTabbar from "@assets/svg/activitytabbar";
 import ChatIcon from "@assets/svg/chattabbar";
 import MeetIcon from "@assets/svg/meettabbar";
@@ -16,7 +16,7 @@ import MoreTabBarIcon from "@assets/svg/moretabbar";
 import {
     ACTIVITIES,
     CHAT,
-    CHECKER,
+    CHECKER,DASHBOARD,
     DIRECTOR,
     EVALUATOR,
     MEET,
@@ -43,6 +43,7 @@ import IMeetings from 'src/interfaces/IMeetings';
 import IParticipants from 'src/interfaces/IParticipants';
 import IRooms from 'src/interfaces/IRooms';
 import ActivitiesNavigator from "../../../navigations/activities";
+import DashboardNavigator from "../../../navigations/dashboard";
 import {getFocusedRouteNameFromRoute} from "@react-navigation/native";
 import useOneSignal from 'src/hooks/useOneSignal';
 import {isTablet} from "react-native-device-info";
@@ -282,7 +283,7 @@ export default function TabBar({navigation,route}){
                                                            fill={isFocused ? focused : unfocused}/>)
 
                                        :
-                                       <Entypo name="book"></Entypo>}
+                                       <Ionicons color={isFocused ? focused : unfocused} size={fontValue(28)}  name="apps"></Ionicons>}
 
                                     <Text style={[{
                                         fontSize:fontValue(14),
@@ -316,6 +317,7 @@ export default function TabBar({navigation,route}){
                  <Tab.Screen options={{headerShown:false}} name={MEET} component={MeetScreen}/>
                  {getRole(user,[CHECKER,EVALUATOR,DIRECTOR])&&
                  <Tab.Screen options={{headerShown:false}} name={SCANQR} component={QrCodeScanner}/>}
+                 {/*<Tab.Screen options={{headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/>*/}
              </Tab.Navigator> : <Drawer.Navigator
 
                  screenOptions={{
