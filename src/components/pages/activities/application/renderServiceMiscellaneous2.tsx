@@ -86,13 +86,15 @@ const RenderServiceMiscellaneous=(props)=>{
             async function f(e,p=undefined){
                 switch(typeof e){
                     case "object":
-                        p=p ? p+"." : "";
-                        _.forIn(e, async function(value,i){
-                            if(e[i]?.hasOwnProperty('year')){
-                                e[i]=moment(e[i])?.format('LL')
-                            }
-                            await f(e[i],p+i);
-                        });
+                        if(!!Object.values(e).join("")){
+                            p=p ? p+"." : "";
+                            _.forIn(e, async function(value,i){
+                                if(e[i]?.hasOwnProperty('year')){
+                                    e[i]=moment(e[i])?.format('LL')
+                                }
+                                await f(e[i],p+i);
+                            });
+                        }
                         break;
                     default:
                         let date = new RegExp(/^\d{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])$/)

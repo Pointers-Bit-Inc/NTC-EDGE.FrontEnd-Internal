@@ -158,22 +158,28 @@ const BasicInfo=(props:any)=>{
                                 <Row label={"Weight:"} applicant={applicant?.weight}/>
                                 <Row label={"Height:"} applicant={applicant?.height}/>
                             </View>
-                            <View style={styles.divider}/>
-                            <View style={styles.group3}>
-                                <View style={styles.group}>
-                                    <View style={styles.rect}>
-                                        <Text style={styles.header}>Address</Text>
-                                    </View>
-                                </View>
-                                <Row label={"Unit/Rm/Bldg./Street:"}
-                                     applicant={applicant?.address?.unit||applicant?.unit}/>
-                                <Row label={"Barangay:"} applicant={applicant?.address?.barangay||applicant?.barangay}/>
-                                <Row label={"Province:"} applicant={applicant?.address?.province||applicant?.province}/>
-                                <Row label={"City/Municipality:"}
-                                     applicant={applicant?.address?.city||applicant?.city}/>
-                                <Row label={"Zip Code:"} applicant={applicant?.address?.zipCode||applicant?.zipCode}/>
+                            {!!Object.values({...applicant?.address}).join("") &&
+                                <>
+                                    <View style={styles.divider}/>
+                                    <View style={styles.group3}>
+                                        <View style={styles.group}>
+                                            <View style={styles.rect}>
+                                                <Text style={styles.header}>Address</Text>
+                                            </View>
+                                        </View>
+                                        <Row label={"Unit/Rm/Bldg./Street:"}
+                                             applicant={applicant?.address?.unit||applicant?.unit}/>
+                                        <Row label={"Barangay:"} applicant={applicant?.address?.barangay||applicant?.barangay}/>
+                                        <Row label={"Province:"} applicant={applicant?.address?.province||applicant?.province}/>
+                                        <Row label={"City/Municipality:"}
+                                             applicant={applicant?.address?.city||applicant?.city}/>
+                                        <Row label={"Zip Code:"} applicant={applicant?.address?.zipCode||applicant?.zipCode}/>
 
-                            </View>
+                                    </View>
+                                </>
+
+                            }
+
                             <View style={styles.divider}/>
                             {applicant?.education&&<View style={styles.group3}>
                                 <View style={styles.group}>

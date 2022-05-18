@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
         justifyContent : "flex-start" ,
         alignItems : "center" ,
         marginTop : 8 ,
+        flexWrap: "wrap",
         paddingHorizontal : 10  ,
         fontSize: fontValue(12)
     } ,
@@ -24,6 +25,7 @@ const styles = StyleSheet.create({
         fontFamily : Regular500 ,
         color : "#121212" ,
         flex : 1 ,
+
         textAlign : "left"
     } ,
 })
