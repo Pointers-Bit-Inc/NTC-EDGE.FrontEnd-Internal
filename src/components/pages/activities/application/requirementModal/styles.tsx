@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
     } ,
     container : {
         flex : 1 ,
-
+        backgroundColor:"rgba(0, 0, 0, 0.5)"
     } ,
     group7 : {} ,
     rect2 : {
@@ -75,8 +75,7 @@ export const styles = StyleSheet.create({
                 top: -25,
             }
         }),
-
-        alignSelf:'flex-end',paddingHorizontal:15,paddingVertical:15,
+        alignSelf:'flex-end',
         position: "absolute"
 
     } ,

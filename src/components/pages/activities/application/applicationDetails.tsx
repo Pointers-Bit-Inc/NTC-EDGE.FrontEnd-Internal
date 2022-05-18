@@ -87,7 +87,7 @@ const ApplicationDetails = (props: any) => {
                 setModalVisible(!modalVisible);
             }}
         >
-            <View  style={{flex: 1, backgroundColor:"rgba(0, 0, 0, 0.5)"}}>
+            <SafeAreaView  style={{flex: 1, backgroundColor:"rgba(0, 0, 0, 0.5)"}}>
                 <View style={[{flex: 1,  },isMobile||dimensions?.width<768 ? {} : {
                     alignItems:"flex-end",
                     top: rightLayoutComponent?.top
@@ -100,7 +100,7 @@ const ApplicationDetails = (props: any) => {
                     }} onPressOut={() => setModalVisible(!modalVisible)}/>
 
                     <View style={{zIndex: 2, flexDirection: "row", justifyContent: "flex-end", }}>
-                        <View style={{marginTop: Constants?.statusBarHeight,padding: 20,  backgroundColor: "rgba(0,0,0,0.7)"}}>
+                        <View style={{padding: 20,  backgroundColor: "rgba(0,0,0,0.7)"}}>
 
                             <Pressable
                                 onPress={() => setModalVisible(false)}
@@ -111,7 +111,7 @@ const ApplicationDetails = (props: any) => {
 
                     </View>
 
-                    <View style={{flex: 1, marginTop: -Constants.statusBarHeight, position: "absolute"}}>
+                    <View style={{flex: 1, marginTop: -Constants?.statusBarHeight*2,  position: "absolute"}}>
 
                         <ScrollView >
                             <OnBackdropPress styles={isMobile|| dimensions?.width<768 ? { backgroundColor:"rgba(0, 0, 0, 0)"} : {
@@ -125,7 +125,7 @@ const ApplicationDetails = (props: any) => {
 
                     </View>
                 </View>
-            </View>
+            </SafeAreaView>
 
         </Modal>
     </ScrollView>

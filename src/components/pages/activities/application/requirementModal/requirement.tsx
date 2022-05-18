@@ -4,7 +4,7 @@ import {
     Dimensions,
     Image,
     Modal,
-    Platform,
+    Platform,Pressable,SafeAreaView,
     ScrollView,
     Text,
     TouchableOpacity,
@@ -22,6 +22,9 @@ import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {Card} from "@pages/activities/application/requirementModal/card";
 import PdfViewr from "@pages/activities/application/pdf/index";
 import FileIcon from "@assets/svg/file";
+import Constants from "expo-constants";
+import {Regular500} from "@styles/font";
+import {RFValue} from "react-native-responsive-fontsize";
 
 const {width,height}=Dimensions.get("screen");
 
@@ -171,25 +174,29 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
 
             <Modal visible={this.state?.visible} transparent={true} onRequestClose={this._hideImageModal}>
 
-                <View style={[styles.container,isMobile||this.props.dimensions?.width<768 ? {} : {
+                <SafeAreaView style={[styles.container,isMobile||this.props.dimensions?.width<768 ? {} : {
                     alignItems:"flex-end",
                     top:this.props?.rightLayoutComponent?.top
                 }]}>
                     <OnBackdropPress styles={{}} onPressOut={this._hideImageModal}/>
-                    <OnBackdropPress styles={isMobile||this.props.dimensions?.width<768 ? {} : {
+                    <OnBackdropPress styles={isMobile||this.props.dimensions?.width<768 ? {backgroundColor: "rgba(0,0,0,0)"} : {
                         width:this.props?.rightLayoutComponent?.width||undefined,
                         backgroundColor:"rgba(0, 0, 0, 0.5)"
                     }}/>
 
                     <View style={[styles.rect2,{width:this.props?.rightLayoutComponent?.width}]}>
-                        <View style={{alignSelf:'flex-end', zIndex: 1, paddingHorizontal:15,paddingVertical:15}}>
-                            <TouchableOpacity onPress={this._hideImageModal}>
-                                <Text style={styles.close}>Close</Text>
-                            </TouchableOpacity>
+                        <View style={{alignSelf:'flex-end', zIndex: 1, }}>
+                            <View style={{ backgroundColor: "rgba(0,0,0,0.7)",padding: 20 }}>
+                                    <TouchableOpacity onPress={this._hideImageModal}>
+                                        <Text style={styles.close}>Close</Text>
+                                    </TouchableOpacity>
+
+                            </View>
+
                         </View>
                     </View>
 
-                    <View style={{flex:1,backgroundColor:"rgba(0, 0, 0, 0.5)"}}>
+                    <View style={{flex:1, marginTop: -Constants?.statusBarHeight, }}>
 
                         {!this.state.onLoad ? this.state.extension ?
                          <PdfViewr width={this.props?.rightLayoutComponent?.width}
@@ -235,7 +242,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                     </View>
 
 
-                </View>
+                </SafeAreaView>
             </Modal>
         </>;
     }
