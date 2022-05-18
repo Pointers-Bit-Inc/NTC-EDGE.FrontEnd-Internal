@@ -6,7 +6,7 @@ type RootStackParamList = {
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const ActivitiesNavigator = ({ navigation, route }) => {
+const DashboardNavigator = ({ navigation, route }) => {
 
     return (
         <Stack.Navigator
@@ -21,4 +21,4 @@ const ActivitiesNavigator = ({ navigation, route }) => {
     );
 };
 
-export default ActivitiesNavigator;
+export default DashboardNavigator;

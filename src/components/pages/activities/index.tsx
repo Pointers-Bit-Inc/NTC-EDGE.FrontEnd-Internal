@@ -14,7 +14,7 @@ import {
 
 import {SEARCH,SEARCHMOBILE} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny,useSelector} from "react-redux";
-import {setApplicationItem, setSelectedYPos} from "../../../reducers/application/actions";
+import {setApplicationItem,setSelectedYPos} from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
 import FilterIcon from "@assets/svg/filterIcon";
 import {ActivityItem} from "@pages/activities/activityItem";
@@ -24,7 +24,13 @@ import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ApplicationList from "@pages/activities/applicationList";
 import {getChannelName} from 'src/utils/formatting';
 import lodash from 'lodash';
-import {removeActiveMeeting , resetCurrentMeeting, setActiveMeetings , setMeeting, setOptions ,} from 'src/reducers/meeting/actions';
+import {
+    removeActiveMeeting,
+    resetCurrentMeeting,
+    setActiveMeetings,
+    setMeeting,
+    setOptions,
+} from 'src/reducers/meeting/actions';
 import {setSelectedChannel} from 'src/reducers/channel/actions';
 import {MeetingNotif} from '@components/molecules/list-item';
 import listEmpty from "@pages/activities/listEmpty";
@@ -94,7 +100,7 @@ export default function ActivitiesPage(props:any){
         headerTranslate,
         opacity,
         activitySizeComponent,
-        scrollViewRef, yPos, setYPos,
+        scrollViewRef,yPos,setYPos,
         flatListViewRef
     }=useActivities(props);
 
@@ -186,7 +192,7 @@ export default function ActivitiesPage(props:any){
                     pnApplications.map((item:any,index:number)=>{
                         return item?.activity && <FlatList
                             scrollEventThrottle={16}
-                            
+                            key={index}
                             listKey={(item, index) => `_key${index.toString()}`}
                             showsVerticalScrollIndicator={false}
                             style={styles.items}
@@ -385,7 +391,7 @@ export default function ActivitiesPage(props:any){
                             notPnApplications.length)+pnApplications?.map((item:any,index:number)=>item?.activity&&item?.activity?.map((act:any,i:number)=>(
                             act?.assignedPersonnel?._id||act?.assignedPersonnel)==user?._id)).length)}
                         ListHeaderComponent={listHeaderComponent()}
-
+                      
                         style={{flex:1,}}
                         ref={flatListViewRef}
                         data={notPnApplications}

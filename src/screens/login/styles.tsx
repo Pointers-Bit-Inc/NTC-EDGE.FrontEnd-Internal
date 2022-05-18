@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
         justifyContent : "center" ,
         alignItems : "center" ,
         backgroundColor : "#fff",
-
+         //flexWrap: "wrap"
     },
     footer: {
         lineHeight: 24,
