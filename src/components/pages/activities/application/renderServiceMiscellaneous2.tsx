@@ -95,7 +95,7 @@ const RenderServiceMiscellaneous=(props)=>{
                         });
                         break;
                     default:
-                        let date = new RegExp(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/)
+                        let date = new RegExp(/^\d{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])$/)
                         result[p]= date.test(e) == true && Date.parse(e)>0 ? moment(e)?.format('LL') : e ;
                         break;
                 }
