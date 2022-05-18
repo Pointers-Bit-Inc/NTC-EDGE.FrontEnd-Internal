@@ -3,7 +3,7 @@ import {
     Dimensions,
     Modal,
     Platform,
-    Pressable,
+    Pressable,SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
@@ -22,6 +22,7 @@ import {RootStateOrAny,useSelector} from "react-redux";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
 import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous2";
+import Constants from "expo-constants";
 
 const { width , height } = Dimensions.get("screen");
 
@@ -86,43 +87,46 @@ const ApplicationDetails = (props: any) => {
                 setModalVisible(!modalVisible);
             }}
         >
-            <View style={[{flex: 1},isMobile||dimensions?.width<768 ? {} : {
-                alignItems:"flex-end",
-                top: rightLayoutComponent?.top
-            }]}>
-            <OnBackdropPress styles={{}}  onPressOut={() => setModalVisible(!modalVisible)}/>
-            <OnBackdropPress styles={isMobile|| dimensions?.width<768 ? {} : {
-                alignSelf: "flex-end",
-                width:rightLayoutComponent?.width||undefined,
-                backgroundColor:"rgba(0, 0, 0, 0.5)"
-            }} onPressOut={() => setModalVisible(!modalVisible)}/>
+            <View  style={{flex: 1, backgroundColor:"rgba(0, 0, 0, 0.5)"}}>
+                <View style={[{flex: 1,  },isMobile||dimensions?.width<768 ? {} : {
+                    alignItems:"flex-end",
+                    top: rightLayoutComponent?.top
+                }]}>
+                    <OnBackdropPress styles={{}}  onPressOut={() => setModalVisible(!modalVisible)}/>
+                    <OnBackdropPress styles={isMobile|| dimensions?.width<768 ? {} : {
+                        alignSelf: "flex-end",
+                        width:rightLayoutComponent?.width||undefined,
+                        backgroundColor:"rgba(0, 0, 0, 0)"
+                    }} onPressOut={() => setModalVisible(!modalVisible)}/>
 
-                <View style={{zIndex: 2, flexDirection: "row", justifyContent: "flex-end", }}>
-                    <View style={{padding: 20,  backgroundColor: "rgba(0,0,0,0.7)"}}>
+                    <View style={{zIndex: 2, flexDirection: "row", justifyContent: "flex-end", }}>
+                        <View style={{marginTop: Constants?.statusBarHeight,padding: 20,  backgroundColor: "rgba(0,0,0,0.7)"}}>
 
-                        <Pressable
-                            onPress={() => setModalVisible(false)}
-                        >
-                            <Text style={ {fontFamily: Regular500, fontSize: RFValue(14 * (!isMobile ? 0.7 : 1)),   color:  "#fff"}}>Close</Text>
-                        </Pressable>
+                            <Pressable
+                                onPress={() => setModalVisible(false)}
+                            >
+                                <Text style={ {fontFamily: Regular500, fontSize: RFValue(14 * (!isMobile ? 0.7 : 1)),   color:  "#fff"}}>Close</Text>
+                            </Pressable>
+                        </View>
+
                     </View>
 
+                    <View style={{flex: 1, marginTop: -Constants.statusBarHeight, position: "absolute"}}>
+
+                        <ScrollView >
+                            <OnBackdropPress styles={isMobile|| dimensions?.width<768 ? { backgroundColor:"rgba(0, 0, 0, 0)"} : {
+                                alignSelf: "flex-end",
+                                width:rightLayoutComponent?.width||"100%",
+                                backgroundColor:"rgba(0, 0, 0, 0)"
+                            }} onPressOut={() => setModalVisible(!modalVisible)}/>
+                            <PdfViewr width={rightLayoutComponent?.width}
+                                      height={rightLayoutComponent?.height} requirement={props?.documents}/>
+                        </ScrollView>
+
+                    </View>
                 </View>
-
-            <View style={{flex: 1, position: "absolute"}}>
-
-                <ScrollView>
-                    <OnBackdropPress styles={isMobile|| dimensions?.width<768 ? { backgroundColor:"rgba(0, 0, 0, 0.5)"} : {
-                        alignSelf: "flex-end",
-                        width:rightLayoutComponent?.width||"100%",
-                        backgroundColor:"rgba(0, 0, 0, 0.5)"
-                    }} onPressOut={() => setModalVisible(!modalVisible)}/>
-                    <PdfViewr width={rightLayoutComponent?.width}
-                              height={rightLayoutComponent?.height} requirement={props?.documents}/>
-                </ScrollView>
-
             </View>
-            </View>
+
         </Modal>
     </ScrollView>
 
