@@ -84,11 +84,12 @@ export function useActivities(props){
                 }
             });
         }
+
         return {
 
         }
 
-    }, [props?.navigation, selectedYPos]);
+    }, [props?.navigation, selectedYPos, page]);
     const dispatch=useDispatch();
     const {getActiveMeetingList,endMeeting,leaveMeeting}=useSignalr();
 
@@ -212,7 +213,7 @@ export function useActivities(props){
     let count=0;
 
     const fnApplications=(isCurrent:boolean,callback:(err:any)=>void)=>{
-        console.log("fnApplications")
+
         setRefreshing(true);
         axios.get(BASE_URL+`/applications`,{...config,params:query()}).then((response)=>{
 

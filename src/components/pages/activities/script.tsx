@@ -286,22 +286,11 @@ export function getStatusText(props: any , personnel: UserApplication | undefine
             props?.assignedPersonnel?._id !== props.currentUser?._id)) ? StatusText(APPROVED) : getRole(props.user , [ACCOUNTANT]) && !!props.paymentMethod && (
         !!props?.paymentHistory?.[0]?.status && !!props?.paymentHistory?.status) ? StatusText(props.paymentHistory?.[0]?.status || props.paymentHistory?.status) : getRole(props.user , [ACCOUNTANT]) && (
         props.approvalHistory?.[0]?.status == FOREVALUATION && props.approvalHistory?.status == FOREVALUATION) && props.approvalHistory[1].status == FORAPPROVAL ? DECLINED : getRole(props.user , [CASHIER]) && !(props?.assignedPersonnel) && (props?.approvalHistory[0]?.status != DECLINED && props?.approvalHistory?.status != DECLINED ) || (
-        props?.paymentHistory?.[0]?.status == PENDING && props?.paymentHistory?.status == PENDING) ? FORVERIFICATION :  getRole(props.user , [CASHIER]) && !props.paymentStatus && props.status == DECLINED  ? PaymentStatusText(DECLINED) : getStatus(props , personnel);
+        props?.paymentHistory?.[0]?.status == PENDING && props?.paymentHistory?.status == PENDING) ?  (getRole(props.user , [CASHIER]) ? PaymentStatusText(props?.paymentHistory?.status) : StatusText(props?.activity?.status))   :  getRole(props.user , [CASHIER]) && !props.paymentStatus && props.status == DECLINED  ? PaymentStatusText(DECLINED) : getStatus(props , personnel);
 }
 export function getActivityStatus (props:any,status:string){
-    return getRole(props.currentUser,[EVALUATOR,DIRECTOR])&&status==FORAPPROVAL&&(
-        !!props?.activity?.approvalHistory?.[0]?.userId|| !!props?.activity?.approvalHistory?.userId)&&(
-        props?.activity?.approvalHistory?.[0]?.status!==FOREVALUATION&&props?.activity?.approvalHistory?.status!==FOREVALUATION)&&(
-        props?.activity?.approvalHistory?.[0]?.status!==PENDING&&props?.activity?.approvalHistory?.status!==PENDING)&&(
-        props?.activity?.approvalHistory?.[0]?.status!==FORVERIFICATION&&props?.activity?.approvalHistory?.status!==FORVERIFICATION)&&(
-        props?.activity?.approvalHistory?.[0]?.status!==FORAPPROVAL&&props?.activity?.approvalHistory?.status!==FORAPPROVAL||(
-            props?.activity?.assignedPersonnel?._id!==props.currentUser?._id)) ? APPROVED : getRole(props.currentUser,[ACCOUNTANT])&& !!props?.activity?.paymentMethod&&(
-        !!props?.activity?.paymentHistory?.[0]?.status|| !!props?.activity?.paymentHistory?.status) ? StatusText(props?.activity?.paymentHistory?.[0]?.status||props?.activity?.paymentHistory?.status) : getRole(props.currentUser,[ACCOUNTANT])&&(
-        props?.activity?.approvalHistory?.[0]?.status==FOREVALUATION||props?.activity?.approvalHistory?.status==FOREVALUATION)&&(
-        props?.activity?.approvalHistory?.[1]?.status==FORAPPROVAL) ? DECLINED : getRole(props.currentUser,[CASHIER])&& !(
-        props?.activity?.assignedPersonnel)&&(
-        props?.activity?.approvalHistory[0]?.status!=DECLINED&&props?.activity?.approvalHistory?.status!=DECLINED)||(
-        props?.activity?.paymentHistory?.[0]?.status==PENDING&&props?.activity?.paymentHistory?.status==PENDING) ? FORVERIFICATION : getRole(props.currentUser,[CASHIER])&& !props?.activity?.paymentStatus ? PaymentStatusText(DECLINED) : status;
+
+    return [CASHIER].indexOf(props?.role)!= -1 ? PaymentStatusText(props?.activity?.paymentStatus || FORVERIFICATION) : StatusText(props?.activity?.status || FORAPPROVAL)
 }
 export function getStatus(props: any , personnel?: { _id: string | undefined; updatedAt: string | undefined; createdAt: string | undefined; username: string | undefined; role: Role | undefined; email: string | undefined; firstName: string | undefined; lastName: string | undefined; password: string | undefined; contactNumber: string | undefined; __v: number | undefined; address: string | undefined; profilePicture: ProfilePicture | undefined; avatar: string | undefined } , wordCase?: string) {
 
