@@ -342,7 +342,7 @@ export function useActivities(props){
     const [infiniteLoad,setInfiniteLoad]=useState(false);
     const [onEndReachedCalledDuringMomentum,setOnEndReachedCalledDuringMomentum]=useState(false);
     const bottomLoader=()=>{
-        return infiniteLoad ? <Loader/> : <View style={{height: 3}}></View>
+        return infiniteLoad ? <Loader/> : <View style={{height: 15}}></View>
     };
 
 
