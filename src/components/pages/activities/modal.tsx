@@ -224,9 +224,11 @@ function ActivityModal(props:any){
                     setShowAlert(false);
                     setApprovalIcon(false);
                     setShowClose(false)
+                    props.onDismissed(true);
                 }}
                 onLoading={alertLoading}
                 onCancelPressed={()=>{
+
                     setShowAlert(false);
                     if(approvalIcon){
                         setApprovalIcon(false);
@@ -320,7 +322,7 @@ function ActivityModal(props:any){
 
                                     <DeclineButton
                                         currentLoading={currentLoading}
-                                        allButton={allButton}
+                                        allButton={false}
                                         onPress={()=>{
                                             setVisible(true)
                                         }}/>
@@ -429,7 +431,7 @@ function ActivityModal(props:any){
                 }
                 visible={visible}
                 onExit={()=>{
-                    onEndorseDismissed();
+                    onDismissed();
                     props.onDismissed(true);
                 }}
                 onDismissed={()=>{

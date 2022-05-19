@@ -107,18 +107,13 @@ export default function basket(state = initialState, action = {}) {
             return state;
         }
         case SET_APPLICATIONS: {
-            const cashier = [CASHIER].indexOf(action.payload?.user?.role?.key) != -1;
             const isNotPinned = []
             const isPinned = []
             for (let i = 0; i < action.payload?.data?.docs?.length; i++) {
 
                 if ((
-                    (action.payload?.data.docs[i]?.assignedPersonnel?._id || action.payload?.data.docs[i]?.assignedPersonnel ) == action.payload?.user?._id) &&
-                    !(
-                        cashier ?
-                        (
-                            !action.payload?.data?.docs[i]?.paymentMethod?.length || action.payload?.data?.docs[i].paymentStatus == PAID || action.payload?.data?.docs[i].paymentStatus == APPROVED || action.payload?.data?.docs[i].paymentStatus == DECLINED) : (
-                             action.payload?.data?.docs[i].status == DECLINED || action.payload?.data?.docs[i].status == APPROVED))) {
+                    (action.payload?.data.docs[i]?.assignedPersonnel?._id || action.payload?.data.docs[i]?.assignedPersonnel ) == action.payload?.user?._id)
+                    ) {
 
                     isPinned.push(action.payload?.data?.docs[i])
                 } else {
@@ -133,22 +128,11 @@ export default function basket(state = initialState, action = {}) {
             return state
         }
         case HANDLE_LOAD: {
+
             const isNotPinned = []
             const isPinned = []
-            const cashier = [CASHIER].indexOf(action.payload?.user?.role?.key) != -1;
             for (let i = 0; i < action.payload?.data.length; i++) {
-                
-                if ((action.payload?.data[i]?.assignedPersonnel?._id || action.payload?.data[i]?.assignedPersonnel ) === action.payload?.user?._id &&
-                    !(
-                        cashier ? (
-                                    !action.payload?.data[i]?.paymentMethod?.length
-                                    || action.payload?.data[i].paymentStatus == PENDING
-                                    || action.payload?.data[i].paymentStatus == APPROVED
-                                    || action.payload?.data[i].paymentStatus == PAID
-                                    || action.payload?.data[i].paymentStatus == DECLINED)
-                                : (
-                            action.payload?.data[i].status == DECLINED || action.payload?.data[i].status == APPROVED
-                          ))) {
+                if ((action.payload?.data[i]?.assignedPersonnel?._id || action.payload?.data[i]?.assignedPersonnel ) === action.payload?.user?._id ) {
                     isPinned.push(action.payload?.data[i])
                 } else {
                     isNotPinned.push(action.payload?.data[i])
