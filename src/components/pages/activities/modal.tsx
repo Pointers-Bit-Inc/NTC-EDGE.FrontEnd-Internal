@@ -322,7 +322,7 @@ function ActivityModal(props:any){
 
                                     <DeclineButton
                                         currentLoading={currentLoading}
-                                        allButton={false}
+                                        allButton={allButton}
                                         onPress={()=>{
                                             setVisible(true)
                                         }}/>

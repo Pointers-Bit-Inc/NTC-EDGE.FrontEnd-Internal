@@ -31,6 +31,7 @@ import Loader from "@pages/activities/bottomLoad";
 import {useComponentLayout} from "./useComponentLayout";
 import lodash from 'lodash';
 import {isMobile} from "@pages/activities/isMobile";
+import {ListFooter} from "@molecules/list-item";
 
 function convertStatusText(convertedStatus:any[],item:any){
     let _converted:never[]=[]
@@ -211,7 +212,7 @@ export function useActivities(props){
     let count=0;
 
     const fnApplications=(isCurrent:boolean,callback:(err:any)=>void)=>{
-             
+        console.log("fnApplications")
         setRefreshing(true);
         axios.get(BASE_URL+`/applications`,{...config,params:query()}).then((response)=>{
 
@@ -342,12 +343,18 @@ export function useActivities(props){
     const [infiniteLoad,setInfiniteLoad]=useState(false);
     const [onEndReachedCalledDuringMomentum,setOnEndReachedCalledDuringMomentum]=useState(false);
     const bottomLoader=()=>{
-        return infiniteLoad ? <Loader/> : <View style={{height: 15}}></View>
+        return infiniteLoad ? <Loader/> : <ListFooter
+            hasError={!infiniteLoad}
+            fetching={ infiniteLoad}
+            loadingText="Loading more users..."
+            errorText="Unable to load users"
+            refreshText="Refresh"
+            onRefresh={() => handleLoad()}
+        />
     };
 
-
     const handleLoad=useCallback((page_)=>{
-
+           console.log("handleLoad")
         let _page:string;
         setInfiniteLoad(true);
         if((

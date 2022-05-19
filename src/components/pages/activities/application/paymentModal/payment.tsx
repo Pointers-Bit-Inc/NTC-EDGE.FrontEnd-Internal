@@ -1,5 +1,15 @@
 import React,{useState} from "react";
-import {ActivityIndicator,FlatList,Image,Modal,Platform,ScrollView,TouchableOpacity,View} from "react-native";
+import {
+    ActivityIndicator,
+    FlatList,
+    Image,
+    Modal,
+    Platform,
+    SafeAreaView,
+    ScrollView,
+    TouchableOpacity,
+    View
+} from "react-native";
 import PaymentModal from "@pages/activities/application/paymentModal/index";
 import Text from "@atoms/text";
 import {styles as paymentStyles} from "@pages/activities/application/paymentModal/styles"
@@ -55,16 +65,17 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
         }).then(()=>{
             this.setState({onLoad:false})
             this.state.image?.measure((x,y,width,height,pageX,pageY)=>{
-                this.setState({
-                    _sourceMeasure:{
-                        width:width||0,
-                        height:height||0,
-                        pageX:pageX||0,
-                        pageY:pageY||0
-                    },
-                    onLoad: false
-                });
-
+                if(width && height ){
+                    this.setState({
+                        _sourceMeasure:{
+                            width:width||0,
+                            height:height||0,
+                            pageX:pageX||0,
+                            pageY:pageY||0
+                        },
+                        onLoad:false
+                    });
+                }
             });
         })
     };
@@ -148,39 +159,47 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
 
 
             <Modal visible={this.state.visible} transparent onRequestClose={this._hideImageModal}>
+                <SafeAreaView style={{flex: 1}}>
 
-                <View style={styles.rect2}>
-                        <TouchableOpacity onPress={this._hideImageModal}>
-                            <Text style={styles.close}>Close</Text>
-                        </TouchableOpacity>
-                </View>
-                <View style={[styles.container, {backgroundColor: (
-                        /(pdf|docx|doc)$/ig.test(this.state.fileName.substr((
-                            this.state.fileName.lastIndexOf('.')+1)))&&isMobile) ? "rgba(0,0,0,0.5)" : undefined ,}]}>
+                    <View style={[styles.container, {backgroundColor: (
+                                                                          /(pdf|docx|doc)$/ig.test(this.state.fileName.substr((
+                                                                              this.state.fileName.lastIndexOf('.')+1)))&&isMobile) ? "rgba(0,0,0,0.5)" : undefined ,}]}>
+                        <View style={styles.rect2}>
+                            <View style={{alignSelf:'flex-end', zIndex: 1, }}>
+                                <View style={{ backgroundColor: "rgba(0,0,0,0.7)",padding: 20 }}>
+                                    <TouchableOpacity onPress={this._hideImageModal}>
+                                        <Text style={styles.close}>Close</Text>
+                                    </TouchableOpacity>
+
+                                </View>
+
+                            </View>
+                        </View>
+
+                        {!this.state.onLoad ? (
+                                                  /(pdf|docx|doc)$/ig.test(this.state.fileName.substr((
+                                                      this.state.fileName.lastIndexOf('.')+1)))&&isMobile) ?
+                                              <View style={{width: "100%", height: "80%", top: 80}}>
+                                                  <PdfViewr  requirement={this.props?.proofOfPayment}/>
+                                              </View>
+                                                                                                           :
+                                              <AnimatedImage
+
+                                                  ref={imageModal=>(
+                                                      this.state.imageModal=imageModal)}
+                                                  source={this.state.source}
+                                                  sourceMeasure={this.state._sourceMeasure}
+                                                  imageSize={this.state._imageSize}
+                                                  onClose={this._hideImageModal}
+                                                  animationDuration={200}
+                                              /> : <View style={{flex: 1, justifyContent: "center", alignSelf: "center"}}>
+                             <ActivityIndicator color={"#fff"} />
+                         </View>}
 
 
-                          {!this.state.onLoad ? (
-                               /(pdf|docx|doc)$/ig.test(this.state.fileName.substr((
-                                   this.state.fileName.lastIndexOf('.')+1)))&&isMobile) ?
-                           <View style={{width: "100%", height: "80%", top: 80}}>
-                               <PdfViewr  requirement={this.props?.proofOfPayment}/>
-                           </View>
-                           :
-                           <AnimatedImage
+                    </View>
+                </SafeAreaView>
 
-                               ref={imageModal=>(
-                                   this.state.imageModal=imageModal)}
-                               source={this.state.source}
-                               sourceMeasure={this.state._sourceMeasure}
-                               imageSize={this.state._imageSize}
-                               onClose={this._hideImageModal}
-                               animationDuration={200}
-                           /> : <View style={{flex: 1, justifyContent: "center", alignSelf: "center"}}>
-                              <ActivityIndicator color={"#fff"} />
-                              </View>}
-
-
-                </View>
             </Modal>
         </>;
     }
