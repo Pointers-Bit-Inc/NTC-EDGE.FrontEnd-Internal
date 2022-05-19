@@ -89,7 +89,7 @@ export function useActivities(props){
 
         }
 
-    }, [props?.navigation, selectedYPos, page]);
+    }, [props?.navigation, selectedYPos]);
     const dispatch=useDispatch();
     const {getActiveMeetingList,endMeeting,leaveMeeting}=useSignalr();
 
@@ -189,7 +189,7 @@ export function useActivities(props){
             ...(
                 searchTerm&&{keyword:searchTerm}),
             ...(
-                {sort:checkDateAdded.length ? "asc" : "desc"}),
+                {pageSize: 10, sort:checkDateAdded.length ? "asc" : "desc"}),
             ...(
                 selectedClone.length>0&&{
                     [cashier ? "paymentStatus" : 'status']:selectedClone.map((item:any)=>{

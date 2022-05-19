@@ -2,7 +2,7 @@ import {Animated} from "react-native";
 import {useEffect , useRef , useState} from "react";
 
 export  function useAlert(show:boolean,dismissed?:any) {
-    const springValue = useRef(new Animated.Value(0.3)).current;
+    const springValue = useRef(new Animated.Value(0.1)).current;
 
     const [showSelf, setShowSelf] = useState(false)
     const _toggleAlert = (fromConstructor?: boolean) => {

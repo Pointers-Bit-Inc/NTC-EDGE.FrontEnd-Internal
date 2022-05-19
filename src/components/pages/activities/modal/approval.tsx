@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from "react";
 import {
+    ActivityIndicator,
     Alert,
     Animated,
     Dimensions,
@@ -54,7 +55,8 @@ const Approval=(props:any)=>{
     useEffect(()=>{
         approveInputField?.current?.focus()
     }, [_springHide])
-    useEffect(()=>{
+
+    useEffect(async()=>{
 
         setLoading(true);
         const userEvaluator=getRole(user,[EVALUATOR]);
@@ -62,18 +64,19 @@ const Approval=(props:any)=>{
         const userAccountantRole=getRole(user,[ACCOUNTANT]);
         const userCashier=getRole(user,[CASHIER]);
         let isCurrent=true;
-        let role = ""
+        let role=""
 
         if(userEvaluator||userDirector){ //if evaluator  and director
-           role = "accountant"
+            role="accountant"
         } else if(userAccountantRole){   // if accountant
-           role = "cashier"
+            role="cashier"
         }
 
-        axios.get(BASE_URL+'/users',
+        await axios.get(BASE_URL+'/users',
             {
                 params:{
-                ...(role.length > 0 && {role: role})
+                    ...(
+                        role.length>0&&{role:role})
                 },
                 headers:{
                     Authorization:"Bearer ".concat(user?.sessionToken)
@@ -113,22 +116,21 @@ const Approval=(props:any)=>{
         }
     },[]);
 
-
     const onConfirmation=()=>{
-
-        if(loading&&getRole(user,[EVALUATOR,DIRECTOR])){
-            Alert.alert('Alert',"No accountant has been found")
-        } else{
-
+        new Promise((resolve, reject) => {
+            if(!loading){
+                resolve("");
+            }
+        }).then(()=>{
             props.onChangeRemarks(remarks,cashier);
             setMessage("Are you sure you want to approve this application?");
             setShowAlert(true)
-        }
-
+        })
     };
 
     const onCancelPress=(event,bool?:any)=>{
         setAlertLoading(false);
+
         setShowAlert(false);
         if(approvalIcon){
 
@@ -176,122 +178,130 @@ const Approval=(props:any)=>{
                 position:'absolute',
                 backgroundColor:'rgba(52,52,52,0.5)',
             } : {}}>
-
+                <OnBackdropPress onPressOut={_springHide}/>
             </View>
+            {loading && <View style={{flex: 1,alignItems:'center',
+                justifyContent:'center',}}>
+                <ActivityIndicator  color={"#fff"}/>
+            </View>}
+            {!loading && <>
+                <CustomAlert
+                    showClose={showClose}
+                    type={approvalIcon ? APPROVED : ""}
+                    onDismissed={()=>onCancelPress(APPROVED,true)}
+                    onLoading={alertLoading}
+                    onCancelPressed={()=>onCancelPress('exit',true)}
+                    onConfirmPressed={()=>{
 
-            <CustomAlert
-                showClose={showClose}
-                type={approvalIcon ? APPROVED : ""}
-                onDismissed={()=>onCancelPress(APPROVED,true)}
-                onLoading={alertLoading}
-                onCancelPressed={()=>onCancelPress('exit',true)}
-                onConfirmPressed={()=>{
+                        setAlertLoading(true);
+                        props.confirm({cashier:cashier,remarks:remarks},(response,callback)=>{
 
-                    setAlertLoading(true);
-                    props.confirm({cashier:cashier,remarks:remarks},(response,callback)=>{
+                            setAlertLoading(false);
+                            if(response){
+                                props.onDismissed(null,(bool)=>{
+                                 
+                                    setApprovalIcon(true);
+                                    setTitle("Application Approved");
+                                    setMessage("Application has been approved.");
+                                    setShowClose(true);
+                                });
+                                callback(true);
 
-                        setAlertLoading(false);
-                        if(response){
-                            props.onDismissed(null,(bool)=>{
-                                setApprovalIcon(true);
-                                setTitle("Application Approved");
-                                setMessage("Application has been approved.");
-                                setShowClose(true);
-                            });
-                            callback(true);
-                        } else if(!response){
-                            props.onDismissed(APPROVED,()=>{
+                            } else if(!response){
+                                props.onDismissed(APPROVED,()=>{
+                                    setShowAlert(false);
+                                    setApprovalIcon(false);
+                                    setShowClose(false);
+                                })
+                            } else{
+                                props.onModalDismissed();
                                 setShowAlert(false);
                                 setApprovalIcon(false);
-                                setShowClose(false);
-                            })
-                        } else{
-                            props.onModalDismissed();
-                            setShowAlert(false);
-                            setApprovalIcon(false);
-                            setShowClose(false)
-                        }
+                                setShowClose(false)
+                            }
 
-                    })
+                        })
 
-                }}
-                show={showAlert} title={title}
-                message={message}/>
-            <KeyboardAvoidingView
-                behavior={Platform.OS==="ios" ? "padding" : "height"}
-                style={[styles.container,{marginHorizontal:10,alignItems:"center",}]}
-            >
-                <OnBackdropPress onPressOut={_springHide}/>
-                {
-                    <Animated.View style={[styles.group,{
-                        width:((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync())))||dimensions.width<=768 ? "100%" : "31.6%",  //474/1500
-                        display:!showAlert ? undefined : "none"
-                    },{transform:[{scale:springValue}]}]}>
-                        <View style={styles.shadow}>
-                            <View style={styles.rect}>
-                                <View style={{alignSelf:'flex-start'}}>
-                                    <TouchableOpacity onPress={_springHide}>
-                                        <Ionicons name="md-close" style={{fontSize:fontValue(25)}}/>
-                                    </TouchableOpacity>
-                                </View>
-                                <ApplicationApproved style={styles.icon}/>
-                                <Text style={styles.applicationApproved}>
-                                    {getRole(user,[CASHIER]) ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED'}
-                                </Text>
-                                <View style={styles.group2}>
-
-                                    {getRole(user,[DIRECTOR,EVALUATOR,ACCOUNTANT])&&
-                                    <InputField
-                                        ref={approveInputField}
-                                        inputStyle={{
-                                            [Platform.OS=="android" ? "padding" : "height"]:(
-                                                                                                height<720&&isKeyboardVisible) ? 70 : height*0.15,
-                                            fontWeight:"400",
-                                            fontSize:fontValue(14)
-                                        }}
-                                        onBlur={()=>setOnFocus(false)}
-                                        onFocus={()=>setOnFocus(true)}
-                                        containerStyle={{
-                                            height:undefined,
-                                            borderColor:"#D1D1D6",
-                                            borderWidth:1,
-                                            backgroundColor:undefined,
-                                        }}
-                                        clearable={false}
-                                        outlineStyle={{
-                                            borderColor:"rgba(202,210,225,1)",
-                                            paddingTop:5,
-                                            height:(
-                                                       height<720&&isKeyboardVisible) ? 70 : height*0.15
-                                        }}
-                                        placeholder={'Remarks'}
-                                        multiline={true}
-                                        value={remarks}
-                                        error={validateRemarks.error}
-                                        errorColor={errorColor}
-                                        onEndEditing={()=>{
-                                            setIsTyping(false)
-                                        }}
-                                        onChangeText={(text:string)=>{
-                                            setIsTyping(true);
-
-                                            setRemarks(text)
-                                        }
-                                        }
-                                    />}
-                                    <View style={{marginTop:5}}>
-                                        <TouchableOpacity onPress={onConfirmation}>
-                                            <View style={styles.confirmButton}>
-                                                <Text style={styles.confirm}>Confirm</Text>
-                                            </View>
+                    }}
+                    show={showAlert} title={title}
+                    message={message}/>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS==="ios" ? "padding" : "height"}
+                    style={[styles.container,{marginHorizontal:10,alignItems:"center",}]}
+                >
+                    <OnBackdropPress onPressOut={_springHide}/>
+                    {
+                        <Animated.View style={[styles.group,{
+                            width:((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync())))||dimensions.width<=768 ? "100%" : "31.6%",  //474/1500
+                            display:!showAlert ? undefined : "none"
+                        },{transform:[{scale:springValue}]}]}>
+                            <View style={styles.shadow}>
+                                <View style={styles.rect}>
+                                    <View style={{alignSelf:'flex-start'}}>
+                                        <TouchableOpacity onPress={_springHide}>
+                                            <Ionicons name="md-close" style={{fontSize:fontValue(25)}}/>
                                         </TouchableOpacity>
+                                    </View>
+                                    <ApplicationApproved style={styles.icon}/>
+                                    <Text style={styles.applicationApproved}>
+                                        {getRole(user,[CASHIER]) ? 'PAYMENT CONFIRMED' : 'APPLICATION APPROVED'}
+                                    </Text>
+                                    <View style={styles.group2}>
+
+                                        { getRole(user,[DIRECTOR,EVALUATOR,ACCOUNTANT])&&
+                                        <InputField
+                                            ref={approveInputField}
+                                            inputStyle={{
+                                                [Platform.OS=="android" ? "padding" : "height"]:(
+                                                                                                    height<720&&isKeyboardVisible) ? 70 : height*0.15,
+                                                fontWeight:"400",
+                                                fontSize:fontValue(14)
+                                            }}
+                                            onBlur={()=>setOnFocus(false)}
+                                            onFocus={()=>setOnFocus(true)}
+                                            containerStyle={{
+                                                height:undefined,
+                                                borderColor:"#D1D1D6",
+                                                borderWidth:1,
+                                                backgroundColor:undefined,
+                                            }}
+                                            clearable={false}
+                                            outlineStyle={{
+                                                borderColor:"rgba(202,210,225,1)",
+                                                paddingTop:5,
+                                                height:(
+                                                           height<720&&isKeyboardVisible) ? 70 : height*0.15
+                                            }}
+                                            placeholder={'Remarks'}
+                                            multiline={true}
+                                            value={remarks}
+                                            error={validateRemarks.error}
+                                            errorColor={errorColor}
+                                            onEndEditing={()=>{
+                                                setIsTyping(false)
+                                            }}
+                                            onChangeText={(text:string)=>{
+                                                setIsTyping(true);
+
+                                                setRemarks(text)
+                                            }
+                                            }
+                                        />}
+                                        <View style={{marginTop:5}}>
+                                            <TouchableOpacity onPress={onConfirmation}>
+                                                <View style={styles.confirmButton}>
+                                                    <Text style={styles.confirm}>Confirm</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
                                     </View>
                                 </View>
                             </View>
-                        </View>
 
-                    </Animated.View>}
-            </KeyboardAvoidingView>
+                        </Animated.View>}
+                </KeyboardAvoidingView>
+            </> }
+
         </Modal>
 
     )
