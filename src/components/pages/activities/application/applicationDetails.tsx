@@ -87,7 +87,7 @@ const ApplicationDetails = (props: any) => {
                 setModalVisible(!modalVisible);
             }}
         >
-            <SafeAreaView  style={{flex: 1, backgroundColor:"rgba(0, 0, 0, 0.5)"}}>
+            <SafeAreaView  style={{flex: 1,}}>
                 <View style={[{flex: 1,  },isMobile||dimensions?.width<768 ? {} : {
                     alignItems:"flex-end",
                     top: rightLayoutComponent?.top
@@ -117,7 +117,7 @@ const ApplicationDetails = (props: any) => {
                             <OnBackdropPress styles={isMobile|| dimensions?.width<768 ? { backgroundColor:"rgba(0, 0, 0, 0)"} : {
                                 alignSelf: "flex-end",
                                 width:rightLayoutComponent?.width||"100%",
-                                backgroundColor:"rgba(0, 0, 0, 0)"
+                                backgroundColor:"rgba(0, 0, 0, 0.5)"
                             }} onPressOut={() => setModalVisible(!modalVisible)}/>
                             <PdfViewr width={rightLayoutComponent?.width}
                                       height={rightLayoutComponent?.height} requirement={props?.documents}/>
