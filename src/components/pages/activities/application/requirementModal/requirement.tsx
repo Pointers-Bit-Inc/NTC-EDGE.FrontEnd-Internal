@@ -178,15 +178,15 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                     alignItems:"flex-end",
                     top:this.props?.rightLayoutComponent?.top
                 }]}>
-                    <OnBackdropPress styles={{}} onPressOut={this._hideImageModal}/>
+                    <OnBackdropPress styles={isMobile||this.props.dimensions?.width<768 ? {backgroundColor: "rgba(0,0,0,0)"} :{}} onPressOut={this._hideImageModal}/>
                     <OnBackdropPress styles={isMobile||this.props.dimensions?.width<768 ? {backgroundColor: "rgba(0,0,0,0)"} : {
                         width:this.props?.rightLayoutComponent?.width||undefined,
                         backgroundColor:"rgba(0, 0, 0, 0.5)"
                     }}/>
 
-                    <View style={[styles.rect2,{width:this.props?.rightLayoutComponent?.width}]}>
+                    <View style={[styles.rect2,{ width:this.props?.rightLayoutComponent?.width}]}>
                         <View style={{alignSelf:'flex-end', zIndex: 1, }}>
-                            <View style={{ backgroundColor: "rgba(0,0,0,0.7)",padding: 20 }}>
+                            <View style={{ backgroundColor: "rgba(0,0,0,0.7)",padding: 20 ,}}>
                                     <TouchableOpacity onPress={this._hideImageModal}>
                                         <Text style={styles.close}>Close</Text>
                                     </TouchableOpacity>
