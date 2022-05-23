@@ -106,6 +106,17 @@ const styles=StyleSheet.create({
         borderBottomWidth:hairlineWidth,
         borderBottomColor:"#EFEFEF"
     },
+    headerContent:{
+        justifyContent:"center",
+        flexDirection:'row',
+        alignItems:'center',
+        backgroundColor:"#fff",
+        paddingTop:15,
+        paddingHorizontal:26
+    },
+    titleContainer:{
+        flex:1,
+    },
     input:{
         fontSize:fontValue(14),
         fontFamily:Regular,
@@ -122,17 +133,7 @@ const styles=StyleSheet.create({
         color:text.default,
         fontSize:fontValue(18),
     },
-    headerContent:{
-        justifyContent:"center",
-        flexDirection:'row',
-        alignItems:'center',
-        backgroundColor:"#fff",
-        paddingTop:15,
-        paddingHorizontal:26
-    },
-    titleContainer:{
-        flex:1,
-    },
+
     separator:{
         height:StyleSheet.hairlineWidth,
         width:width-70,

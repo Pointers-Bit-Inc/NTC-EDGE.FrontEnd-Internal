@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import UserScreen from "@pages/user/index";
+import UserScreen from "@pages/users";
 type RootStackParamList = {
     UserScreen: undefined;
 };

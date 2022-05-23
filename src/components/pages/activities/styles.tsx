@@ -525,5 +525,36 @@ export const styles = StyleSheet.create({
     group4StackStack: {
         width: 292,
         height: 80
-    }
+    },
+    header:{
+        borderBottomWidth:hairlineWidth,
+        borderBottomColor:"#EFEFEF",
+        paddingBottom: 26,
+    },
+    headerContent:{
+        justifyContent:"center",
+        flexDirection:'row',
+        alignItems:'center',
+        backgroundColor:"#fff",
+        paddingTop:15,
+         paddingBottom: 13.5,
+        paddingHorizontal:26
+    },
+    titleContainer:{
+        flex:1
+    },
+    search:{
+        fontSize: Platform.isPad ? 24 :16,
+        paddingLeft:fontValue(35 ),
+        borderRadius:10,
+        padding:fontValue(10*0.70),
+        backgroundColor:"#F0F0F0"
+    },
+    searchIcon:{
+        justifyContent:"center",
+        alignItems:"center",
+        height:"100%",
+        marginLeft:15,
+        position:"absolute",
+    },
 });
