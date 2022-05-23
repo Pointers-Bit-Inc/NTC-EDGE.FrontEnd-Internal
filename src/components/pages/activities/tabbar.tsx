@@ -17,12 +17,12 @@ import {
     ACTIVITIES,
     CHAT,
     CHECKER,DASHBOARD,
-    DIRECTOR,
-    EVALUATOR,
+    DIRECTOR,EMPLOYEES,
+    EVALUATOR,GROUP,
     MEET,
-    MORE,
+    MORE,REPORT,ROLEANDPERMISSION,
     SCANQR,
-    SEARCH,
+    SEARCH,SETTINGS,USERS,
 } from "../../../reducers/activity/initialstate";
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
 import {setTabBarHeight} from "../../../reducers/application/actions";
@@ -44,6 +44,7 @@ import IParticipants from 'src/interfaces/IParticipants';
 import IRooms from 'src/interfaces/IRooms';
 import ActivitiesNavigator from "../../../navigations/activities";
 import DashboardNavigator from "../../../navigations/dashboard";
+import ReportNavigator from "../../../navigations/reports";
 import {getFocusedRouteNameFromRoute} from "@react-navigation/native";
 import useOneSignal from 'src/hooks/useOneSignal';
 import {isTablet} from "react-native-device-info";
@@ -338,6 +339,13 @@ export default function TabBar({navigation,route}){
                                 component={ActivitiesNavigator}/>
                  <Drawer.Screen options={{drawerLabel:CHAT,headerShown:false}} name={CHAT} component={ChatScreen}/>
                  <Drawer.Screen options={{drawerLabel:MEET,headerShown:false}} name={MEET} component={MeetScreen}/>
+                 <Drawer.Screen options={{drawerLabel:DASHBOARD,headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/>
+                 <Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/>
+                 <Drawer.Screen options={{drawerLabel:ROLEANDPERMISSION,headerShown:false}} name={ROLEANDPERMISSION} component={MeetScreen}/>
+                 <Drawer.Screen options={{drawerLabel:GROUP,headerShown:false}} name={GROUP} component={MeetScreen}/>
+                 <Drawer.Screen options={{drawerLabel:EMPLOYEES,headerShown:false}} name={EMPLOYEES} component={MeetScreen}/>
+                 <Drawer.Screen options={{drawerLabel:USERS,headerShown:false}} name={USERS} component={MeetScreen}/>
+                 <Drawer.Screen options={{drawerLabel:SETTINGS,headerShown:false}} name={SETTINGS} component={MeetScreen}/>
 
              </Drawer.Navigator>}
             <AwesomeAlert

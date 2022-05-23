@@ -7,11 +7,27 @@ import {Regular} from "@styles/font";
 import {CommonActions,DrawerActions} from "@react-navigation/native";
 import ChatIcon from "@assets/svg/chattabbar";
 import MeetIcon from "@assets/svg/meettabbar";
-import {ACTIVITIES,CHAT,MEET,SEARCH} from "../../../reducers/activity/initialstate";
+import {
+    ACTIVITIES,
+    CHAT,
+    DASHBOARD,EMPLOYEES,
+    GROUP,
+    MEET,
+    REPORT,
+    ROLEANDPERMISSION,
+    SEARCH,SETTINGS,USERS
+} from "../../../reducers/activity/initialstate";
 import {fontValue} from "@pages/activities/fontValue";
 import {useComponentLayout} from "../../../hooks/useComponentLayout";
 import {useDispatch} from "react-redux";
 import {setDrawerLayout} from "../../../reducers/layout/actions";
+import DashboardIcon from "@assets/svg/DashboardIcon";
+import ReportIcon from "@assets/svg/ReportsIcon";
+import RoleAndPermissionIcon from "@assets/svg/roleandpermission";
+import GroupIcon from "@assets/svg/group";
+import EmployeeIcon from "@assets/svg/employeeIcon";
+import UserIcon from "@assets/svg/userIcon";
+import SettingIcon from "@assets/svg/SettingIcon";
 
 const CustomSidebarMenu=(props:any)=>{
     const dispatch=useDispatch();
@@ -67,6 +83,27 @@ const CustomSidebarMenu=(props:any)=>{
                             break;
                         case MEET:
                             tabIcon=<MeetIcon fill={focused ? "#113196" : "#6E7191"}/>;
+                            break;
+                        case DASHBOARD:
+                            tabIcon=<DashboardIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;
+                            break;
+                        case REPORT:
+                            tabIcon=<ReportIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;
+                            break;
+                        case ROLEANDPERMISSION:
+                            tabIcon=<RoleAndPermissionIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;
+                            break;
+                        case GROUP:
+                            tabIcon=<GroupIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;
+                            break;
+                        case EMPLOYEES:
+                            tabIcon=<EmployeeIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;
+                            break;
+                        case USERS:
+                            tabIcon=<UserIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;
+                            break;
+                        case SETTINGS:
+                            tabIcon=<SettingIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;
                             break;
                         default:
                             tabIcon=null;

@@ -28,6 +28,12 @@ export const DATE_ADDED = "Date Added",
     SCANQR = "QR",
     MORE = "More",
     DASHBOARD = "Dashboard",
+    REPORT="Reports",
+    ROLEANDPERMISSION="Roles & Permission",
+    GROUP="Group",
+    EMPLOYEES="Employee",
+    USERS="Users",
+    SETTINGS="Settings",
     SEARCH = "Search",
 
     SEARCHMOBILE = "SearchActivities";
