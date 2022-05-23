@@ -71,7 +71,7 @@ export function useActivities(props){
     }=useSelector((state:RootStateOrAny)=>{
         return state.application
     });
-    React.useEffect(() => {
+   /* React.useEffect(() => {
         if(!isMobile) {
            props?.navigation?.addListener('focus', () => {
                 if(selectedYPos?.yPos != undefined  ){
@@ -89,7 +89,7 @@ export function useActivities(props){
 
         }
 
-    }, [props?.navigation, selectedYPos]);
+    }, [props?.navigation, selectedYPos]);*/
     const dispatch=useDispatch();
     const {getActiveMeetingList,endMeeting,leaveMeeting}=useSignalr();
 
