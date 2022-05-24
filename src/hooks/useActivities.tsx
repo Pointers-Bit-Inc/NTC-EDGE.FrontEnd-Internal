@@ -232,7 +232,7 @@ export function useActivities(props){
                         notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
                         notPinned?.data?.page ? setPage(notPinned?.data?.page) : setPage(0);
 
-                        dispatch(setApplications({data:[...pinned?.data?.docs, ...notPinned?.data?.docs],user:user}))
+                        dispatch(setApplications({data:[...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],user:user}))
 
 
                     }
