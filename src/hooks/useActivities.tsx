@@ -93,6 +93,8 @@ export function useActivities(props){
     const dispatch=useDispatch();
     const {getActiveMeetingList,endMeeting,leaveMeeting}=useSignalr();
 
+
+
     function getList(list:any,selectedClone){
         return getFilter({
             list:list,
@@ -173,7 +175,7 @@ export function useActivities(props){
     const checkDateAdded=selectedChangeStatus?.filter((status:string)=>{
         return status==DATE_ADDED
     });
-    const query=()=>{
+    const query=(pinned)=>{
 
         const convertedStatus = notPnApplications.map((item)=>{
             return item.activity.map((i)=>{
@@ -189,7 +191,7 @@ export function useActivities(props){
             ...(
                 searchTerm&&{keyword:searchTerm}),
             ...(
-                {pageSize: 10, sort:checkDateAdded.length ? "asc" : "desc"}),
+                {pageSize: pinned ? 100 :10, sort:checkDateAdded.length ? "asc" : "desc"}),
             ...(
                 selectedClone.length>0&&{
                     [cashier ? "paymentStatus" : 'status']:selectedClone.map((item:any)=>{
@@ -212,26 +214,27 @@ export function useActivities(props){
     };
     let count=0;
 
-    const fnApplications=(isCurrent:boolean,callback:(err:any)=>void)=>{
-
+    function fnApplications(url:string, pinned){
+        let isCurrent=true;
         setRefreshing(true);
-        axios.get(BASE_URL+`/applications`,{...config,params:query()}).then((response)=>{
+        axios.get(url,{...config,params:query(pinned)}).then((response)=>{
 
-            const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
-            const isNotPinned = []
-            const isPinned = []
-            for (let i = 0; i < response?.data?.docs?.length; i++) {
+            const cashier=[CASHIER].indexOf(user?.role?.key)!= -1;
+            const isNotPinned=[]
+            const isPinned=[]
+            for(let i=0; i<response?.data?.docs?.length; i++){
 
-                if ((
-                        (response?.data?.docs[i]?.assignedPersonnel?._id || response?.data.docs[i]?.assignedPersonnel ) == user?._id) &&
+                if((
+                        (
+                            response?.data?.docs[i]?.assignedPersonnel?._id||response?.data.docs[i]?.assignedPersonnel)==user?._id)&&
                     !(
                         cashier ?
                         (
-                            !response?.data?.docs?.[i]?.paymentMethod?.length || response?.data?.docs?.[i]?.paymentStatus == PAID || response?.data?.docs?.[i]?.paymentStatus == APPROVED || response?.data?.docs?.[i]?.paymentStatus == DECLINED) : (
-                            response?.data?.docs?.[i]?.status == DECLINED || response?.data?.docs?.[i]?.status == APPROVED))) {
+                            !response?.data?.docs?.[i]?.paymentMethod?.length||response?.data?.docs?.[i]?.paymentStatus==PAID||response?.data?.docs?.[i]?.paymentStatus==APPROVED||response?.data?.docs?.[i]?.paymentStatus==DECLINED) : (
+                            response?.data?.docs?.[i]?.status==DECLINED||response?.data?.docs?.[i]?.status==APPROVED))){
 
                     isPinned.push(response?.data?.docs[i])
-                } else {
+                } else{
 
                     isNotPinned.push(response?.data?.docs[i])
                 }
@@ -240,7 +243,6 @@ export function useActivities(props){
 
             if(response?.data?.message) Alert.alert(response.data.message);
             if(isCurrent) setRefreshing(false);
-
 
 
             if(count==0){
@@ -252,13 +254,12 @@ export function useActivities(props){
                     response?.data?.page ? setPage(response?.data?.page) : setPage(0);
 
 
-
                     dispatch(setApplications({data:response?.data,user:user}))
 
-                    if(!isNotPinned.length) {
+                    if(!isNotPinned.length){
                         setTimeout(()=>{
                             handleLoad(response?.data?.page)
-                        }, 3000)
+                        },3000)
                     }
 
 
@@ -269,19 +270,16 @@ export function useActivities(props){
             setRefreshing(false);
             Alert.alert('Alert',err?.message||'Something went wrong.');
 
-            callback(false);
             console.warn(err)
         })
-    };
-    
-    useEffect(()=>{
-        let isCurrent=true;
 
-        fnApplications(isCurrent,()=>{
-        });
         return ()=>{
             isCurrent=false
         }
+    }
+    
+    useEffect(()=>{
+        return fnApplications(BASE_URL+ `/users/${user._id}/assigned-applications`, 1) || fnApplications(BASE_URL+ `/users/${user._id}/unassigned-applications`, 0) ;
     },[countRefresh,searchTerm,selectedChangeStatus.length]);
 
 
@@ -355,15 +353,14 @@ export function useActivities(props){
     };
 
     const handleLoad=useCallback((page_)=>{
-           console.log("handleLoad")
         let _page:string;
         setInfiniteLoad(true);
         if((
             page*size)<total || page_ ){
             _page="?page="+(
                 (page_ || page)+1);
-
-            axios.get(BASE_URL+`/applications${_page}`,{...config,params:query()}).then((response)=>{
+               //013021
+            axios.get(BASE_URL+ `/users/${user._id}/unassigned-applications${_page}`,{...config,params:query(0)}).then((response)=>{
 
                 if(response?.data?.message) Alert.alert(response.data.message);
                 response?.data?.size ? setSize(response?.data?.size) : setSize(0);
@@ -371,7 +368,6 @@ export function useActivities(props){
                 response?.data?.page ? setPage(response?.data?.page) : setPage(0);
                 if(response?.data?.docs.length==0){
                     setInfiniteLoad(false);
-
                 } else{
                     dispatch(handleInfiniteLoad({
                         data:getList(response.data.docs,selectedChangeStatus),
@@ -389,7 +385,7 @@ export function useActivities(props){
             _page="?page="+(
                 page+1);
 
-            axios.get(BASE_URL+`/applications${_page}`,{...config,params:query()}).then((response)=>{
+            axios.get(BASE_URL+ `/users/${user._id}/unassigned-applications${_page}`,{...config,params:query(0)}).then((response)=>{
 
                 if(response?.data?.message) Alert.alert(response.data.message);
                 if(response?.data?.size) setSize(response?.data?.size);

@@ -76,6 +76,7 @@ export default function ReportPage(props:any){
                         <Text weight={"400"} size={14}>File name</Text>
                         <Text weight={"400"} size={14}>Date uploaded</Text>
                         <Text weight={"400"} size={14}>Uploaded by</Text>
+                        <View style={{width: 24}}/>
                     </View>
 
                 </View>
