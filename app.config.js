@@ -20,10 +20,10 @@ export default {
       "bundleIdentifier": "portalapp.ntcedge.com",
       "buildNumber": process.env.APP_VERSION ?? "1.0.4",
       "infoPlist": {
-        "NSCameraUsageDescription": "This will be used for video call and live streaming.",
-        "NSMicrophoneUsageDescription": "This will be used for video call and live streaming.",
-        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos",
-        "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to access your location"
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera. This lets you take pictures and recording videos.",
+        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone. This lets you make voice, video calls and more.",
+        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos to upload photos from your library. This also lets you save photos to your library.",
+        "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to access your location for notification purposes."
       }
     },
     "androidStatusBar": {
@@ -51,7 +51,7 @@ export default {
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos"
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos to upload photos from your library. This also lets you save photos to your library."
         }
       ]
     ],
