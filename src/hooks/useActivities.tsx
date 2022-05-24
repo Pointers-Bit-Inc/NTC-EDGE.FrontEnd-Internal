@@ -214,59 +214,34 @@ export function useActivities(props){
     };
     let count=0;
 
-    function fnApplications(url:string, pinned){
+    function fnApplications(endpoint){
         let isCurrent=true;
         setRefreshing(true);
-        axios.get(url,{...config,params:query(pinned)}).then((response)=>{
-
-            const cashier=[CASHIER].indexOf(user?.role?.key)!= -1;
-            const isNotPinned=[]
-            const isPinned=[]
-            for(let i=0; i<response?.data?.docs?.length; i++){
-
-                if((
-                        (
-                            response?.data?.docs[i]?.assignedPersonnel?._id||response?.data.docs[i]?.assignedPersonnel)==user?._id)&&
-                    !(
-                        cashier ?
-                        (
-                            !response?.data?.docs?.[i]?.paymentMethod?.length||response?.data?.docs?.[i]?.paymentStatus==PAID||response?.data?.docs?.[i]?.paymentStatus==APPROVED||response?.data?.docs?.[i]?.paymentStatus==DECLINED) : (
-                            response?.data?.docs?.[i]?.status==DECLINED||response?.data?.docs?.[i]?.status==APPROVED))){
-
-                    isPinned.push(response?.data?.docs[i])
-                } else{
-
-                    isNotPinned.push(response?.data?.docs[i])
-                }
-            }
+        axios.all(endpoint.map((ep) => axios.get(ep.url,{...config,params:query(ep.pinned)}))).then(
+            axios.spread((pinned, notPinned) => {
+                if(pinned?.data?.message) Alert.alert(pinned.data.message);
+                if(notPinned?.data?.message) Alert.alert(notPinned.data.message);
+                if(isCurrent) setRefreshing(false);
 
 
-            if(response?.data?.message) Alert.alert(response.data.message);
-            if(isCurrent) setRefreshing(false);
+                if(count==0){
+                    count=1;
+                    if(count){
+
+                        notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
+                        notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
+                        notPinned?.data?.page ? setPage(notPinned?.data?.page) : setPage(0);
+
+                        dispatch(setApplications({data:[...pinned?.data?.docs, ...notPinned?.data?.docs],user:user}))
 
 
-            if(count==0){
-                count=1;
-                if(count){
-
-                    response?.data?.size ? setSize(response?.data?.size) : setSize(0);
-                    response?.data?.total ? setTotal(response?.data?.total) : setTotal(0);
-                    response?.data?.page ? setPage(response?.data?.page) : setPage(0);
-
-
-                    dispatch(setApplications({data:response?.data,user:user}))
-
-                    if(!isNotPinned.length){
-                        setTimeout(()=>{
-                            handleLoad(response?.data?.page)
-                        },3000)
                     }
-
-
                 }
-            }
-            if(isCurrent) setRefreshing(false);
-        }).catch((err)=>{
+                if(isCurrent) setRefreshing(false);
+
+            })
+
+        ).catch((err)=>{
             setRefreshing(false);
             Alert.alert('Alert',err?.message||'Something went wrong.');
 
@@ -279,7 +254,7 @@ export function useActivities(props){
     }
     
     useEffect(()=>{
-        return fnApplications(BASE_URL+ `/users/${user._id}/assigned-applications`, 1) || fnApplications(BASE_URL+ `/users/${user._id}/unassigned-applications`, 0) ;
+        return fnApplications([{url: BASE_URL+ `/users/${user._id}/assigned-applications`, pinned: 1}, {url: BASE_URL+ `/users/${user._id}/unassigned-applications`, pinned: 0}])
     },[countRefresh,searchTerm,selectedChangeStatus.length]);
 
 
