@@ -52,7 +52,7 @@ const InitialState = Record({
     {
       id: 2,
       checked: false,
-      status: FOREVALUATION,
+      status: FORAPPROVAL,
       iconBrand: 'evil',
       iconName: 'redo',
       isShow: [CHECKER, DIRECTOR, EVALUATOR]
