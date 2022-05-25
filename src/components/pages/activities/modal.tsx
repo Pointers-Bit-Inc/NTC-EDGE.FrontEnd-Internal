@@ -35,6 +35,7 @@ import ModalTab from "@pages/activities/modalTab/modalTab";
 import {isLandscapeSync,isTablet} from "react-native-device-info";
 
 function ActivityModal(props:any){
+
     const dispatch=useDispatch();
     const dimensions=useWindowDimensions();
     const NativeView=((isMobile && !Platform?.isPad)|| dimensions?.width < 768 || Platform?.isPad && !isLandscapeSync())? Modal : View;
@@ -100,7 +101,9 @@ function ActivityModal(props:any){
                 remarks:remarks ? remarks : undefined,
             };
         }
-
+        if(props?.details?.service?.serviceCode === "service-22"){
+            delete params.assignedPersonnel
+        }
         console.log(url,params,assignId);
         if(applicationId){
             await api.patch(url,params)
@@ -320,16 +323,16 @@ function ActivityModal(props:any){
 
                                         }}/>
 
-                                    <DeclineButton
+                                    { <DeclineButton
                                         currentLoading={currentLoading}
                                         allButton={allButton}
                                         onPress={()=>{
                                             setVisible(true)
-                                        }}/>
+                                        }}/>}
 
                                 </View>}
 
-                                {getRole(user,[EVALUATOR])&&
+                                {getRole(user,[EVALUATOR]) && props?.details?.service?.serviceCode !== "service-22" &&
                                 <EndorsedButton
                                     currentLoading={currentLoading}
                                     allButton={allButton}

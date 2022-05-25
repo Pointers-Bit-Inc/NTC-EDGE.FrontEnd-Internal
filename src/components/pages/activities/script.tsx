@@ -49,6 +49,8 @@ export const PaymentStatusText = (status: string) => {
             return UNVERIFIED;
         case APPROVED:
             return VERIFIED;
+        case undefined:
+            return FORVERIFICATION;
         default:
             return status
     }

@@ -135,7 +135,7 @@ const ModalTab = props => {
                                         label={ tab.name }
                                         requirements={ requirements }
                                         key={ index }/>
-                } else if (isShow && tab.id === 4) {
+                } else if (isShow && tab.id === 4  && service?.serviceCode !== "service-22" ) {
                     return <Payment tabLabel={ { label : tab.name } }
                                     label={ tab.name }
                                     proofOfPayment={ proofOfPayment }
