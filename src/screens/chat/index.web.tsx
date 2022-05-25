@@ -37,7 +37,12 @@ import {fontValue} from "@pages/activities/fontValue";
 import MeetIcon from "@assets/svg/meetIcon";
 import {getChannelImage,getChannelName,getTimeDifference,getTimeString} from "../../utils/formatting";
 import IMeetings from "../../interfaces/IMeetings";
-import {removeActiveMeeting,setMeeting} from "../../reducers/meeting/actions";
+import {
+    removeActiveMeeting ,
+    resetCurrentMeeting,
+    setMeeting, 
+    setOptions,
+} from 'src/reducers/meeting/actions';
 import {ChatItem,ListFooter,MeetingNotif} from "@molecules/list-item";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import NewDeleteIcon from "@atoms/icon/new-delete";
@@ -259,15 +264,16 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
 
     const onJoin=(item:IMeetings)=>{
         dispatch(setSelectedChannel(item.room));
-        dispatch(setMeeting(item));
-        props.navigation.navigate('Dial',{
-            isHost:item.host._id===props.user._id,
-            isVoiceCall:item.isVoiceCall,
-            options:{
-                isMute:false,
-                isVideoEnable:true,
-            }
-        });
+        dispatch(resetCurrentMeeting());
+        setTimeout(() => {
+            dispatch(setOptions({
+            isHost: item.host._id === props.user._id,
+            isVoiceCall: item.isVoiceCall,
+            isMute: false,
+            isVideoEnable: true,
+            }));
+            dispatch(setMeeting(item));
+        }, 100);
     };
     const onClose=(item:IMeetings,leave=false)=>{
         if(leave && item.isGroup){

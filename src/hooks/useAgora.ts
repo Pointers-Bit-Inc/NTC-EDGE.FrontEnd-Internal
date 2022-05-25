@@ -40,7 +40,7 @@ export const useInitializeAgora = ({
   const [isInit, setIsInit] = useState(false);
   const [joinSucceed, setJoinSucceed] = useState(false);
   const [peerIds, setPeerIds] = useState<number[]>([]);
-  const [peerVideoState, setPeerVideState] = useState<any>({});
+  const [peerVideoState, setPeerVideoState] = useState<any>({});
   const [peerAudioState, setPeerAudioState] = useState<any>({});
   const [updatedAudioState, setUpdatedAudioState] = useState<any>({});
   const [myId, setMyId] = useState<number>(0);
@@ -48,9 +48,11 @@ export const useInitializeAgora = ({
   const [isSpeakerEnable, setIsSpeakerEnable] = useState(true);
   const [isVideoEnable, setIsVideoEnable] = useState(options?.isVideoEnable);
   const [activeSpeaker, setActiveSpeaker] = useState(0);
+  let tracks:any = null;
+  let ready:boolean = false;
   const rtcEngine = useRef<RtcEngine|null>(null);
 
-  const initAgora = useCallback(async () => {
+  const initAgora = async () => {
     rtcEngine.current = await RtcEngine.create(appId);
     await rtcEngine.current?.enableVideo();
     await rtcEngine.current?.enableAudio();
@@ -58,6 +60,18 @@ export const useInitializeAgora = ({
     await rtcEngine.current?.muteLocalAudioStream(options?.isMute);
     await rtcEngine.current?.muteLocalVideoStream(!options?.isVideoEnable);
     await rtcEngine.current?.setEnableSpeakerphone(true);
+    await rtcEngine.current?.setVideoEncoderConfiguration({
+      bitrate: 1710,
+      frameRate: 30,
+      minFrameRate: 15,
+      minBitrate: 500,
+      degradationPrefer: 2,
+      dimensions: {
+        height: 720,
+        width: 1280,
+      },
+      mirrorMode: 2,
+    })
 
     rtcEngine.current?.addListener('UserJoined', (uid) => {
       setPeerIds(peerIdsLocal => {
@@ -89,7 +103,7 @@ export const useInitializeAgora = ({
     );
 
     rtcEngine.current?.addListener('RemoteVideoStateChanged', (uid, state) => {
-      setPeerVideState({
+      setPeerVideoState({
         ...peerVideoState,
         [uid]: state,
       });
@@ -118,7 +132,7 @@ export const useInitializeAgora = ({
     });
 
     setIsInit(true);
-  }, [appId, token, channelName, uid]);
+  };
 
   const joinChannel = useCallback(async () => {
     await rtcEngine.current?.joinChannel(token, channelName, null, uid);
@@ -201,5 +215,7 @@ export const useInitializeAgora = ({
     toggleIsSpeakerEnable,
     toggleIsVideoEnable,
     switchCamera,
+    tracks,
+    ready,
   };
 };

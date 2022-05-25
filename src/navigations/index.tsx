@@ -72,9 +72,9 @@ const RootNavigator = () => {
     const { meeting } = useSelector((state:RootStateOrAny) => state.meeting);
 
     const renderFloatingVideo = () => {
-        if (Platform?.OS === 'web') {
-            return null
-        }
+        // if (Platform?.OS === 'web') {
+        //     return null
+        // }
 
         if (lodash.size(meeting) > 0) {
             return <FloatingVideo />;

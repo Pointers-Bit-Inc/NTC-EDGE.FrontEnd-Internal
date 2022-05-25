@@ -27,12 +27,12 @@ import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
 import { getChannelName, getTimerString } from 'src/utils/formatting'
 import useSignalr from 'src/hooks/useSignalr';
+import { requestCameraAndAudioPermission } from 'src/hooks/usePermission';
 import { Feather } from '@expo/vector-icons';
 import { Bold } from '@styles/font';
 import { useNavigation } from '@react-navigation/native';
 import IParticipants from 'src/interfaces/IParticipants';
 import { RFValue } from 'react-native-responsive-fontsize';
-import useTimer from 'src/hooks/useTimer';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -132,7 +132,7 @@ const FloatingVideo = () => {
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { selectedMessage, normalizedChannelList } = useSelector((state:RootStateOrAny) => state.channel);
   const { meeting, options, meetingId, isFullScreen, pinnedParticipant, toggleMute, roomId } = useSelector((state:RootStateOrAny) => {
-    const { meeting, options = {}, isFullScreen, pinnedParticipant, toggleMute } = state.meeting;
+    const { meeting, options, isFullScreen, pinnedParticipant, toggleMute } = state.meeting;
     meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
     return {
       meeting,
@@ -156,13 +156,9 @@ const FloatingVideo = () => {
     leaveMeeting,
     muteParticipant,
   } = useSignalr();
-  const {
-    timer,
-    setStarted
-  } = useTimer();
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
-  const [isMaximized, setIsMaximized] = useState(true);
+  const [timer, setTimer] = useState(0);
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
   const snapPointsX = useSharedValue(defaultSnapX);
@@ -174,65 +170,72 @@ const FloatingVideo = () => {
   const scale = useSharedValue(1);
 
   useEffect(() => {
-    if (isMaximized) {
+    if (isFullScreen) {
       translateX.value = 0;
       translateY.value = 0;
     } else {
       translateX.value = currentX.value;
       translateY.value = currentY.value;
     }
-  }, [isMaximized])
-
-  useEffect(() => {
-    setIsMaximized(isFullScreen);
   }, [isFullScreen]);
 
-  useEffect(() => {
-    let unmounted = false;
+  // useEffect(() => {
+  //   let unmounted = false;
 
-    if (meetingId) {
-      joinMeeting(meeting._id, (err:any, result:any) => {
-        if (!unmounted) {
-          if (result) {
-            setLoading(false);
-            if (result) {
-              dispatch(updateMeetingParticipants(result.meeting));
-              setAgora(result?.agora);
-              setStarted(true);
-            }
-          } else {
-            setLoading(false);
-            Alert.alert('Something went wrong.');
-          }
-        }
-      });
-    }
+  //   if (meetingId) {
+  //     requestCameraAndAudioPermission((err, result) => {
+  //       if (err) {
+  //         Alert.alert(
+  //           "Unable to access camera",
+  //           "Please allow camera access from device settings.",
+  //         );
+  //         dispatch(resetCurrentMeeting());
+  //       } else {
+  //         joinMeeting(meeting._id, (err:any, result:any) => {
+  //           if (!unmounted) {
+  //             if (result) {
+  //               setLoading(false);
+  //               if (result) {
+  //                 dispatch(updateMeetingParticipants(result.meeting));
+  //                 setAgora(result?.agora);
+  //               }
+  //             } else {
+  //               setLoading(false);
+  //               Alert.alert('Something went wrong.');
+  //             }
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
   
-    return () => {
-      unmounted = true;
-      dispatch(setOptions({
-        isHost: false,
-        isVoiceCall: false,
-        isMute: false,
-        isVideoEnable: true,
-      }));
-    }
-  }, [meetingId]);
+  //   return () => {
+  //     unmounted = true;
+  //     dispatch(setOptions({
+  //       isHost: false,
+  //       isVoiceCall: false,
+  //       isMute: false,
+  //       isVideoEnable: true,
+  //     }));
+  //   }
+  // }, [meetingId]);
 
   useEffect(() => {
     let interval:any = null;
     if (!meeting.ended) {
-      setStarted(false);
+      interval = setInterval(() => {
+        setTimer(timer => timer + 1);
+      }, 1000);
     } else {
-      setIsMaximized(true);
       dispatch(setToggle(null));
+      dispatch(setFullScreen(true));
     }
     return () => clearInterval(interval);
   }, [meeting.ended]);
 
   useEffect(() => {
     if (toggleMute) {
-      dispatch(setToggle(null));
+      setToggle(null);
     }
   }, [toggleMute]);
 
@@ -281,20 +284,20 @@ const FloatingVideo = () => {
   });
 
   const onTouchStart = () => {
-    if (isMaximized) return;
+    if (isFullScreen) return;
     if (scale.value !== 1.1) {
       scale.value = withSpring(1.1);
     }
   };
 
   const onTouchEnd = () => {
-    if (isMaximized) return;
+    if (isFullScreen) return;
     if (scale.value !== 1) {
       scale.value = withSpring(1);
     }
   };
 
-  const onFullScreen = () => setIsMaximized(current => !current);
+  const onFullScreen = () => dispatch(setFullScreen(!isFullScreen));
 
   const onMessages = () => {
     if (meeting?._id) {
@@ -323,7 +326,7 @@ const FloatingVideo = () => {
   }
 
   const header = () => {
-    if (!isMaximized) return;
+    if (!isFullScreen) return;
 
     return (
       <View style={styles.header}>
@@ -355,6 +358,9 @@ const FloatingVideo = () => {
         <TouchableOpacity onPress={onMessages}>
           <View style={styles.icon}>
             <MessageIcon />
+            {
+              hasNewMessage && <View style={styles.indicator} />
+            }
           </View>
         </TouchableOpacity>
         <View style={{ width: 5 }} />
@@ -385,20 +391,20 @@ const FloatingVideo = () => {
   }
 
   return (
-    <PanGestureHandler enabled={!isMaximized} onGestureEvent={onGestureEvent}>
+    <PanGestureHandler enabled={!isFullScreen} onGestureEvent={onGestureEvent}>
       <AnimatedPressable
-        style={[styles.container, styles.shadow, !isMaximized && styles.position, style]}
+        style={[styles.container, styles.shadow, !isFullScreen && styles.position, style]}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}>
         <View
           style={[
             styles.remote,
-            isMaximized ? styles.maximize : styles.minimize,
-            !isMaximized && styles.border,
+            isFullScreen ? styles.maximize : styles.minimize,
+            !isFullScreen && styles.border,
           ]}
         >
           {
-            !isMaximized && (
+            !isFullScreen && (
               <View style={{ position: 'absolute', top: 5, right: 5, zIndex: 999 }}>
                 <TouchableOpacity onPress={onFullScreen}>
                 <Feather
@@ -426,7 +432,7 @@ const FloatingVideo = () => {
             onEndCall={onEndCall}
             onMute={onMute}
             isGroup={meeting?.isGroup}
-            isMaximize={isMaximized}
+            isMaximize={isFullScreen}
             pinnedParticipant={pinnedParticipant}
             setPinnedParticipant={onSetPinnedParticipant}
           />

@@ -332,7 +332,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               <AgoraLocalView
                 style={styles.video}
                 channelId={channelName}
-                renderMode={VideoRenderMode.Hidden}
+                renderMode={VideoRenderMode.Fit}
               />
             ) : (
               <ProfileImage
@@ -394,7 +394,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               style={styles.video}
               channelId={channelName}
               uid={selectedPeer}
-              renderMode={VideoRenderMode.Hidden}
+              renderMode={VideoRenderMode.Fit}
             />
           ) : (
             <ProfileImage
@@ -442,7 +442,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                   <AgoraLocalView
                     style={styles.video}
                     channelId={channelName}
-                    renderMode={VideoRenderMode.Hidden}
+                    renderMode={VideoRenderMode.Fit}
                   />
                 ) : (
                   <ProfileImage
@@ -501,7 +501,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                   style={styles.video}
                   channelId={channelName}
                   uid={item}
-                  renderMode={VideoRenderMode.Hidden}
+                  renderMode={VideoRenderMode.Fit}
                 />
               ) : (
                 <ProfileImage

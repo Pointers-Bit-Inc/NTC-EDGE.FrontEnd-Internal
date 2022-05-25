@@ -34,6 +34,7 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import {APPROVED} from "../../reducers/activity/initialstate";
 import CustomAlert from "@pages/activities/alert/alert";
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
+import { setMeeting, setOptions } from 'src/reducers/meeting/actions'
 
 const {height,width}=Dimensions.get('window');
 
@@ -755,9 +756,14 @@ const Info=(props)=>{
                     onClose={()=>meetingModalRef.current?.close()}
                     channelId={''}
                     isChannelExist={false}
-                    onSubmit={(params)=>{
-                        meetingModalRef.current?.close();
-                        setTimeout(()=>navigation.navigate('VideoCall',params),300);
+                    onSubmit={(params, data) => {
+                        modalRef.current?.close();
+                        dispatch(setOptions({
+                          ...params.options,
+                          isHost: params.isHost,
+                          isVoiceCall: params.isVoiceCall,
+                        }));
+                        setTimeout(() => dispatch(setMeeting(data)), 300);
                     }}
                 />
             </View>
