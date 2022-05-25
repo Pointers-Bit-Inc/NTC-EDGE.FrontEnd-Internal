@@ -121,12 +121,8 @@ export default function basket(state = initialState, action = {}) {
                     isNotPinned.push(action.payload?.data?.[i])
                 }
             }
-            if(isNotPinned.length){
                 state = state.set('notPinnedApplications' , isNotPinned);
-            }
-            if(isPinned.length){
                 state = state.set('pinnedApplications' ,  isPinned );
-            }
 
 
             return state

@@ -231,7 +231,7 @@ export function useActivities(props){
                         notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
                         notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
                         notPinned?.data?.page ? setPage(notPinned?.data?.page) : setPage(0);
-
+                        dispatch(setApplications({data:[],user:user}))
                         dispatch(setApplications({data:[...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],user:user}))
 
 
