@@ -132,7 +132,8 @@ const DataTable=(props)=>{
             const {data}=await axios.get(props.url,{
                 ...config,params:{
                     page:1,pageSize:size,...(
-                        value&&{keyword:value}),
+                        value&&{keyword:value}),...(
+                        props.role&&{role:props.role}),
                 }
             })
             setPage(data?.page)
