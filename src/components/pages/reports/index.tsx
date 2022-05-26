@@ -36,7 +36,7 @@ import {DownloadIcon} from "@atoms/icon";
 export default function ReportPage(props:any){
 
     const dimensions=useWindowDimensions();
-    const [value,setValue]=useState();
+        const [value,setValue]=useState();
     const [alert,setAlert]=useState();
     const [showAlert,setShowAlert]=useState();
     const [base64Value,setBase64Value]=useState();
