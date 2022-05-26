@@ -97,28 +97,7 @@ export default function EmployeePage(props:any){
     const [size,setSize]=useState(12);
     const [total,setTotal]=useState(10);
     const [docs,setDocs]=useState([]);
-    const [term,setTerm]=useState();
-    const [results,setResult]=useState([]);
 
-    useEffect(()=>{
-        const searchWiki=async()=>{
-            const {data}=await axios.get('https://en.wikipedia.org/w/api.php',{
-                params:{
-                    srsearch:term,
-                },
-            });
-
-            setDocs(data.query.search);
-        };
-        const timerId=setTimeout(()=>{
-            searchWiki();
-            // make a request after 1 second since there's no typing
-        },1000);
-
-        return ()=>{
-            clearTimeout(timerId);
-        };
-    },[term]);
     const user = useSelector((state: RootStateOrAny) => state.user);
     const config = {
         headers: {
