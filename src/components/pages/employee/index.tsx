@@ -1,5 +1,14 @@
 import {styles} from "@pages/activities/styles";
-import {FlatList,StyleSheet,Text,TextInput,TouchableOpacity,useWindowDimensions,View} from "react-native";
+import {
+    ActivityIndicator,
+    FlatList,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    useWindowDimensions,
+    View
+} from "react-native";
 
 import React,{useCallback,useEffect,useMemo,useState} from "react";
 import {Bold,Regular500} from "@styles/font";
@@ -97,6 +106,7 @@ export default function EmployeePage(props:any){
     const [size,setSize]=useState(12);
     const [total,setTotal]=useState(10);
     const [docs,setDocs]=useState([]);
+    const [loading,setLoading]=useState([]);
 
     const user = useSelector((state: RootStateOrAny) => state.user);
     const config = {
@@ -108,6 +118,7 @@ export default function EmployeePage(props:any){
 
 
     const fetch = useCallback((_page?:number,text?:string)=>{
+        setLoading(true)
         const search=async()=>{
             const {data}=await axios.get(BASE_URL+'/users',{
                 ...config,params:{
@@ -115,6 +126,7 @@ export default function EmployeePage(props:any){
                         text&&{keyword:text}),
                 }
             })
+            setLoading(false)
             setPage(data?.page)
             setSize(data?.size)
             setTotal(data?.total)
@@ -152,6 +164,7 @@ export default function EmployeePage(props:any){
 
     }, [value]);
      useEffect(()=>{
+         setLoading(true)
          fetch()
      }, [])
      
@@ -250,6 +263,8 @@ export default function EmployeePage(props:any){
 
                 </View>
                 <View style={style.shadow}>
+
+
                     <View style={style.headerTable}>
 
                         <View style={style.headerTextContainer}>
@@ -260,6 +275,7 @@ export default function EmployeePage(props:any){
                         </View>
                     </View>
                     <View style={{marginHorizontal:45,backgroundColor:"#fff",}}>
+
                         <View style={{paddingLeft:24,}}>
                             <View style={style.rowStyle}>
                                 <View style={style.cellStyle}>
@@ -280,7 +296,9 @@ export default function EmployeePage(props:any){
                     </View>
 
                     <View style={style.flatlist}>
-
+                        {loading && <View style={{ height: "90%", justifyContent: "center", alignSelf: "center", position: "absolute"}}>
+                            <ActivityIndicator />
+                        </View>}
                         <FlatList
                             contentContainerStyle={style.contentContainer}
                             data={docs}
