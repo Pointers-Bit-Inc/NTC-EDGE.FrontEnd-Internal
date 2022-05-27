@@ -547,7 +547,7 @@ export const styles = StyleSheet.create({
         fontSize: Platform.isPad ? 24 :16,
         paddingLeft:fontValue(35 ),
         borderRadius:10,
-        padding:fontValue(10*0.70),
+        padding:12,
         backgroundColor:"#F0F0F0"
     },
     searchIcon:{

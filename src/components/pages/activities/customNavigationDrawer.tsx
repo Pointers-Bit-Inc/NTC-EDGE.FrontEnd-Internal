@@ -76,7 +76,7 @@ const CustomSidebarMenu=(props:any)=>{
 
                     switch(route.name){
                         case ACTIVITIES:
-                            tabIcon=<ActivitySidebar fill={focused ? "#113196" : "#6E7191"} height={25} width={24}/>;
+                            tabIcon=<ActivitySidebar focused={focused} fill={focused ? "#113196" : "#6E7191"} height={25} width={24}/>;
                             break;
                         case CHAT:
                             tabIcon=<ChatIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;

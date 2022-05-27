@@ -109,22 +109,22 @@ export default function basket(state = initialState, action = {}) {
         case SET_APPLICATIONS: {
             const isNotPinned = []
             const isPinned = []
-            for (let i = 0; i < action.payload?.data?.docs?.length; i++) {
+            for (let i = 0; i < action.payload?.data?.length; i++) {
 
                 if ((
-                    (action.payload?.data.docs[i]?.assignedPersonnel?._id || action.payload?.data.docs[i]?.assignedPersonnel ) == action.payload?.user?._id)
+                    (action.payload?.data?.[i]?.assignedPersonnel?._id || action.payload?.data?.[i]?.assignedPersonnel ) == action.payload?.user?._id)
                     ) {
 
-                    isPinned.push(action.payload?.data?.docs[i])
+                    isPinned.push(action.payload?.data?.[i])
                 } else {
 
-                    isNotPinned.push(action.payload?.data?.docs[i])
+                    isNotPinned.push(action.payload?.data?.[i])
                 }
             }
+                state = state.set('notPinnedApplications' , isNotPinned);
+                state = state.set('pinnedApplications' ,  isPinned );
 
-               //TODO no content if isNotPinned is empty
-            state = state.set('notPinnedApplications' , isNotPinned);
-            state = state.set('pinnedApplications' , isPinned);
+
             return state
         }
         case HANDLE_LOAD: {

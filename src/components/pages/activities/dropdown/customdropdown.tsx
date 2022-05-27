@@ -3,7 +3,7 @@ import {FlatList,Modal,StyleSheet,Text,TouchableOpacity,View,} from 'react-nativ
 import CaretDownIcon from "@assets/svg/caret-down";
 import {useOrientation} from "../../../../hooks/useOrientation";
 
-import {Regular500} from "@styles/font";
+import {Regular,Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 
@@ -153,7 +153,7 @@ interface Props {
         buttonText: {
             flex: 1,
             color: "#6E7191",
-             fontFamily: Regular500  ,
+             fontFamily: Regular  ,
             paddingHorizontal: 20,
             textAlign: 'left',
         },
