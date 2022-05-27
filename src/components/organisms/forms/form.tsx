@@ -6,6 +6,7 @@ import Button from "@atoms/button";
 import Text from "@atoms/text";
 import {Ionicons} from "@expo/vector-icons";
 import {outline,text} from "@styles/color";
+import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 
 const FormField=({
                      color,
@@ -54,12 +55,12 @@ const FormField=({
                                        onChange(id,text,'input',element?.stateName)
                                    }}
                                    onKeyPress={(event ) => {
-                                       if(Platform?.OS === "web"){
-                                           event?.preventDefault();
-                                           if(event?.nativeEvent?.key == "Tab"){
+
+
+                                           if(event?.nativeEvent?.key == "Tab" && Platform?.OS === "web"){
+                                               event?.preventDefault();
                                                mapRef?.[mapRef?.findIndex(e=>e?.id==id)+1]?.ref?.current?.focus();
                                            }
-                                       }
                                    }}
                                    returnKeyType={mapRef?.[mapRef.length-1]?.id==mapRef?.[mapRef.findIndex(e=>e?.id==id)]?.id ? "done" : "next"}
                                    ref={mapRef?.[mapRef.findIndex(e=>e?.id==id)].ref}
@@ -69,15 +70,14 @@ const FormField=({
                                        handleEvent ? handleEvent(layoutRef?.find((layout)=>layout?.["id"]==id)?.layout) : null
                                    }}/>;
             case "select":
-                return <><InputField key={id}  {...styleProps} {...otherProps}
-                                     onEndEditing={(e:any)=>{
-                                         onChange(id,e.nativeEvent.text,'input')
-                                     }
-                                     }
-                                     onChangeText={(text:string)=>onChange(id,text,'input')}
-                                     onSubmitEditing={(event:any)=>onChange(id,event.nativeEvent.text,'input')}/>
-
-                </>;
+                return <View style={{paddingBottom: 22}}>
+                    <CustomDropdown key={id}
+                                    label="Select Item"
+                                    data={ element.data }
+                                    onSelect={ ({ value }) => {
+                                        if (value) onChange(id,value,'role')
+                                    } }/>
+                </View>;
 
             case 'password':
                 return <InputField  {...styleProps} {...otherProps}
