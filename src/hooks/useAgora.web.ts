@@ -50,7 +50,6 @@ export const useInitializeAgora = ({
   const [peerIds, setPeerIds] = useState<number[]>([]);
   const [peerVideoState, setPeerVideoState] = useState<any>({});
   const [peerAudioState, setPeerAudioState] = useState<any>({});
-  const [updatedAudioState, setUpdatedAudioState] = useState<any>({});
   const [myId, setMyId] = useState<number>(uid);
   const [isMute, setIsMute] = useState(options?.isMute);
   const [isSpeakerEnable, setIsSpeakerEnable] = useState(true);
@@ -58,11 +57,10 @@ export const useInitializeAgora = ({
   const [activeSpeaker, setActiveSpeaker] = useState(0);
   const client = useClient();
   const { ready, tracks }:any = useMicrophoneAndCameraTracks();
-  const cameraList = useCamera();
-  const microphoneList = useMicrophone();
+  // const cameraList = useCamera();
+  // const microphoneList = useMicrophone();
 
   const initAgora = async () => {
-    console.log('cameraList, microphoneList', cameraList, microphoneList);
     client.on("user-published", async (user, mediaType) => {
       await client.subscribe(user, mediaType);
       if (mediaType === "video") {
@@ -73,17 +71,17 @@ export const useInitializeAgora = ({
       }
       if (mediaType === "audio") {
         user.audioTrack?.play();
-        setUpdatedAudioState({
+        setPeerAudioState({
           ...peerAudioState,
           [user.uid]: user.audioTrack,
         });
       }
     });
 
-    client.on("user-unpublished", (user, type) => {
+    client.on("user-unpublished", async (user, type) => {
       if (type === "audio") {
         user.audioTrack?.stop();
-        setUpdatedAudioState((audioState:any) => {
+        setPeerAudioState((audioState:any) => {
           delete audioState[user.uid];
           return audioState;
         });
@@ -106,10 +104,10 @@ export const useInitializeAgora = ({
           setActiveSpeaker(highestVolume.uid);
         }
       }
-  });
+    });
     
     client.on("user-left", (user) => {
-      setUpdatedAudioState((audioState:any) => {
+      setPeerAudioState((audioState:any) => {
         delete audioState[user.uid];
         return audioState;
       });
@@ -124,7 +122,7 @@ export const useInitializeAgora = ({
 
     client.on("user-joined", (user) => {
       if (user.audioTrack) {
-        setUpdatedAudioState({
+        setPeerAudioState({
           ...peerAudioState,
           [user.uid]: user.audioTrack,
         });
@@ -145,12 +143,25 @@ export const useInitializeAgora = ({
       });
     });
 
+    client.on("user-info-updated", (uid, msg) => {
+      if (msg === 'mute-audio') {
+        setPeerAudioState((audioState:any) => {
+          delete audioState[uid];
+          return audioState;
+        });
+      } else if (msg === 'unmute-audio') {
+        setPeerAudioState({
+          ...peerAudioState,
+          [uid]: true,
+        });
+      }
+    })
+
     setIsInit(true);
   };
 
   const joinChannel = async () => {
     await client.join(appId, channelName, token, uid);
-    console.log('ENABLE TRACKS', isMute, isVideoEnable);
     if (tracks) {
       if (!isMute && isVideoEnable) {
         await client.publish(tracks);
@@ -183,11 +194,10 @@ export const useInitializeAgora = ({
     if (!isInit) {
       return;
     }
-    console.log('TOGGLE IS MUTE');
     if (isMute) {
-      await client.publish(tracks[0]);
+      await tracks[0].setEnabled(true);
     } else {
-      await client.unpublish(tracks[0]);
+      await tracks[0].setEnabled(false);
     }
     setIsMute(!isMute);
   };
@@ -217,19 +227,6 @@ export const useInitializeAgora = ({
   const destroyAgoraEngine = async () => {
     leaveChannel();
   };
-
-  const onPeerAudioStateUpdate = () => {
-    setPeerAudioState({
-      ...peerAudioState,
-      ...updatedAudioState
-    });
-  };
-
-  useEffect(() => {
-    if (!!_.size(updatedAudioState)) {
-      onPeerAudioStateUpdate();
-    }
-  }, [updatedAudioState]);
 
   return {
     isInit,

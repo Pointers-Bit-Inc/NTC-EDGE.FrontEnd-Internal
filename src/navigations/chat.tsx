@@ -5,7 +5,6 @@ import ViewChat from '@screens/chat/view';
 import ChatInfo from '@screens/chat/info';
 import NewChat from '@screens/chat/new-chat';
 import InitiateVideoCall from '@screens/meet/create';
-import JoinVideoCall from '@screens/meet/video';
 
 type RootStackParamList = {
   ChatList: undefined;
@@ -13,7 +12,6 @@ type RootStackParamList = {
   ChatInfo: undefined;
   NewChat: undefined;
   InitiateVideoCall: undefined;
-  JoinVideoCall: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -31,7 +29,6 @@ const RegistrationNavigator = () => {
       <Stack.Screen name="ChatInfo" component={ChatInfo} />
       <Stack.Screen name="NewChat" component={NewChat} />
       <Stack.Screen name="InitiateVideoCall" component={InitiateVideoCall} />
-      <Stack.Screen name="JoinVideoCall" component={JoinVideoCall} />
     </Stack.Navigator>
   );
 };

@@ -298,7 +298,6 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   );
   
   const fullVideo = (isFocused) => {
-    console.log('FULL VIDEO', isFocused, myId, selectedPeer, !!peerVideoState[selectedPeer], peerVideoState[selectedPeer]);
     const findParticipant = lodash.find(meetingParticipants, p => p.uid === selectedPeer);
     if (isFocused) {
       return (

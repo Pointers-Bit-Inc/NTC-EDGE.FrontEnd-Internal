@@ -42,7 +42,6 @@ export const useInitializeAgora = ({
   const [peerIds, setPeerIds] = useState<number[]>([]);
   const [peerVideoState, setPeerVideoState] = useState<any>({});
   const [peerAudioState, setPeerAudioState] = useState<any>({});
-  const [updatedAudioState, setUpdatedAudioState] = useState<any>({});
   const [myId, setMyId] = useState<number>(0);
   const [isMute, setIsMute] = useState(options?.isMute);
   const [isSpeakerEnable, setIsSpeakerEnable] = useState(true);
@@ -110,7 +109,7 @@ export const useInitializeAgora = ({
     });
 
     rtcEngine.current?.addListener('RemoteAudioStateChanged', (uid, state) => {
-      setUpdatedAudioState({
+      setPeerAudioState({
         [uid]: state,
       });
     });
@@ -171,28 +170,6 @@ export const useInitializeAgora = ({
   const destroyAgoraEngine = useCallback(async () => {
     await rtcEngine.current?.destroy();
   }, []);
-
-  const onPeerAudioStateUpdate = useCallback(() => {
-    setPeerAudioState({
-      ...peerAudioState,
-      ...updatedAudioState
-    });
-  }, [peerAudioState, updatedAudioState])
-
-  useEffect(() => {
-    if (!!_.size(updatedAudioState)) {
-      onPeerAudioStateUpdate();
-    }
-  }, [updatedAudioState]);
-
-  // useEffect(() => {
-  //   if (appId) {
-  //     initAgora();
-  //   }
-  //   return () => {
-  //     destroyAgoraEngine();
-  //   };
-  // }, [destroyAgoraEngine, initAgora, appId]);
 
   return {
     isInit,

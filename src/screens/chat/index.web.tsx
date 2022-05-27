@@ -685,15 +685,16 @@ const ChatList=({navigation}:any)=>{
 
     const onJoin=(item:IMeetings)=>{
         dispatch(setSelectedChannel(item.room));
+        dispatch(resetCurrentMeeting());
+        setTimeout(() => {
+        dispatch(setOptions({
+            isHost: item.host._id === user._id,
+            isVoiceCall: item.isVoiceCall,
+            isMute: false,
+            isVideoEnable: true,
+        }));
         dispatch(setMeeting(item));
-        navigation.navigate('Dial',{
-            isHost:item.host._id===user._id,
-            isVoiceCall:item.isVoiceCall,
-            options:{
-                isMute:false,
-                isVideoEnable:true,
-            }
-        });
+        }, 100);
     };
     const _editMessage=(messageId:string,message:string)=>{
         editMessage({

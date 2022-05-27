@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const Dial = ({ navigation, route }) => {
+const VideoCall = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const meeting = useSelector((state:RootStateOrAny) => {
@@ -197,4 +197,4 @@ const Dial = ({ navigation, route }) => {
   )
 }
 
-export default Dial
+export default VideoCall

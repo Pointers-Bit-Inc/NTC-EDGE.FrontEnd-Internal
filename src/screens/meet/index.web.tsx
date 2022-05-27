@@ -37,6 +37,7 @@ import ApIcon from "@assets/svg/webitem/ap";
 import JsIcon from "@assets/svg/webitem/js";
 import VideoOutlineIcon from "@assets/svg/videoOutline";
 import CalendarAddOutline from "@assets/svg/calendarAddOutline";
+import { BASE_URL } from 'src/services/config';
 
 const { width, height } = Dimensions.get('window');
 
@@ -264,6 +265,13 @@ const Meet = ({ navigation }) => {
     }, 100);
   }
 
+  const onVideoCall = () => {
+    const url = `${window.location.origin}/VideoCall`;
+    const behaviour = '_blank';
+    const options = 'toolbar=no, titlebar=no, location=no, directories=no, status=no, menubar=no, copyhistory=yes';
+    window.open(url, behaviour, options);
+  } 
+
   const onRequestData = () => setSendRequest(request => request + 1);
 
   const fetchMoreMeeting = (isPressed = false) => {
@@ -441,7 +449,7 @@ const Meet = ({ navigation }) => {
 
                 </View>
                 <TouchableOpacity
-                    onPress={()=>modalRef.current?.open()}
+                    onPress={onVideoCall}
                 >
                   <View style={{flexDirection:'row',alignItems:'center'}}>
                     <AddMeetingIcon

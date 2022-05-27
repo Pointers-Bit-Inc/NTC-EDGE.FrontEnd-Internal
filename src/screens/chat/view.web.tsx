@@ -179,7 +179,7 @@ const ChatView = ({ navigation, route }:any) => {
     { key: 'files', title: 'Files' },
   ]);
   const channelId = _id;
-
+  console.log('CHAT VIEW PARAMS', route.params);
   const _sendMessage = (channelId:string, inputText:string) => {
     dispatch(addPendingMessage({
       channelId: channelId,
