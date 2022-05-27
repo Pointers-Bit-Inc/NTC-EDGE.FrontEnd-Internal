@@ -406,6 +406,7 @@ const DataTable=(props)=>{
 
         axios.post(BASE_URL+`/users`,updatedUser,config).then((response)=>{
             cleanForm()
+            setDocs(docs => [response.data, ...docs])
 
         }).catch((err)=>{
             var _err = err
