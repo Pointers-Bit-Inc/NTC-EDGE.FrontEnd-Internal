@@ -1,5 +1,5 @@
 import {
-    ActivityIndicator,
+    ActivityIndicator,Alert,
     FlatList,
     Modal,
     ScrollView,
@@ -408,13 +408,27 @@ const DataTable=(props)=>{
             cleanForm()
 
         }).catch((err)=>{
+            var _err = err
+            if(err.response.data.error == 'The email address already exists. Please select another email address.'){
+                _err={
+                    response:{
+                        data:{
+                            errors:{
+                                Email:[err.response.data.error]
+                            }
+                        }
+                    }
+                }
+            }
             let newArr=[...userProfileForm];
+
+
             userProfileForm.map(e=>{
-                for(const error in err?.response?.data?.errors){
+                for(const error in _err?.response?.data?.errors){
                     if(e.stateName.toLowerCase()==error.toLowerCase()){
                         let index=newArr?.findIndex(app=>app?.id==e?.id);
                         newArr[index]['error']=true;
-                        newArr[index]['description']=err?.response?.data?.errors?.[error]?.[0];
+                        newArr[index]['description']=_err?.response?.data?.errors?.[error]?.[0];
                         newArr[index]['hasValidation']=true;
                     }
                 }
