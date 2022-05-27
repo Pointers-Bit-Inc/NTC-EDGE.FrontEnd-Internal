@@ -5,7 +5,7 @@ export default function UsersPage(props:any){
     return <DataTable addTitle={'Create User'}  filter={[
         {
             value: "user",
-            text: 'User'
+            label: 'User'
         },
     ]} addButtonTitle={'Add User'} title={'Users'} url={BASE_URL+'/users'} role={'user'}/>;
 }

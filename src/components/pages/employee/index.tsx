@@ -7,21 +7,21 @@ export default function EmployeePage(props:any){
     return <DataTable addTitle={'Create Employee'} filter={[
         {
             value: "admin",
-            text: 'Administrator'
+            label: 'Administrator'
         },
         {
             value: "evaluator",
-            text: 'Evaluator'
+            label: 'Evaluator'
         },
         {
             value: "director",
-            text: 'Director'
+            label: 'Director'
         },{
             value: "accountant",
-            text: 'Accountant'
+            label: 'Accountant'
         },{
             value: "cashier",
-            text: 'Cashier'
+            label: 'Cashier'
         },
     ]} addButtonTitle={'Add Employee'} title={'Employees'} url={BASE_URL+'/employees'}/>;
 }

@@ -217,13 +217,13 @@ const DataTable=(props)=>{
                             />
                         </View>
 
-                        <View>
-                            <Text style={[style.tableHeader,{color:"#000000"}]}><Highlighter
+                        <View style={{flex: 1}}>
+                            <Text numberOfLines={1} style={[style.tableHeader,{color:"#000000"}]}><Highlighter
                                 highlightStyle={{backgroundColor:'#BFD6FF'}}
                                 searchWords={[value]}
                                 textToHighlight={`${item.firstName} ${item.lastName}`}
                             /></Text>
-                            <Text style={[style.tableHeader,{fontSize:10,color:"#2863D6"}]}><Highlighter
+                            <Text numberOfLines={1} style={[style.tableHeader,{fontSize:10,color:"#2863D6"}]}><Highlighter
                                 highlightStyle={{backgroundColor:'#BFD6FF'}}
                                 searchWords={[value]}
                                 textToHighlight={item.email}
@@ -245,7 +245,20 @@ const DataTable=(props)=>{
 
     };
 
+    const cleanForm = () => {
+        let newArr=[...userProfileForm];
+        userProfileForm.map((e, index)=>{
+            if(e.type != "select"){
+                newArr[index].value = ''
+            }
 
+            newArr[index].error=false;
+            newArr[index].description =false
+            newArr[index].hasValidation=false;
+
+        })
+        setUserProfileForm(newArr);
+    }
     const originalForm=[
         {
             stateName:'firstName',
@@ -257,7 +270,8 @@ const DataTable=(props)=>{
             placeholder:'First Name',
             value:'',
             error:false,
-
+            description:false,
+            hasValidation: true
         },
         {
             stateName:'middleName',
@@ -269,6 +283,8 @@ const DataTable=(props)=>{
             placeholder:'Middle Name',
             value:'',
             error:false,
+            description:false,
+            hasValidation: true
         },
         {
             stateName:'lastName',
@@ -280,6 +296,8 @@ const DataTable=(props)=>{
             placeholder:'Last Name',
             value:'',
             error:false,
+            description:false,
+            hasValidation: true
         },
         {
             stateName:'email',
@@ -291,6 +309,8 @@ const DataTable=(props)=>{
             placeholder:'Email',
             value:'',
             error:false,
+            description:false,
+            hasValidation: true
         },
         {
             stateName:'suffix',
@@ -302,37 +322,22 @@ const DataTable=(props)=>{
             placeholder:'Suffix',
             value:'',
             error:false,
+            description:false,
+            hasValidation: true
         },
         {
             stateName:'role',
             id:6,
             key:6,
             required:true,
-            data: [
-                {
-                    value: "admin",
-                    label: 'Administrator'
-                },
-                {
-                    value: "evaluator",
-                    label: 'Evaluator'
-                },
-                {
-                    value: "director",
-                    label: 'Director'
-                },{
-                    value: "accountant",
-                    label: 'Accountant'
-                },{
-                    value: "cashier",
-                    label: 'Cashier'
-                },
-            ],
+            data: props.filter,
             label:'Role',
             type:'select',
             placeholder:'Role',
             value:'admin',
             error:false,
+            description:false,
+            hasValidation: true
         },
         {
             stateName:'address',
@@ -344,6 +349,8 @@ const DataTable=(props)=>{
             placeholder:'Address',
             value:'',
             error:false,
+            description:false,
+            hasValidation: true
         },
         {
             stateName:'contactNumber',
@@ -355,7 +362,8 @@ const DataTable=(props)=>{
             placeholder:'Contact Number',
             value:'',
             error:false,
-            autofill:false
+            description:false,
+            hasValidation: true
         },
         {
             stateName:'password',
@@ -367,7 +375,8 @@ const DataTable=(props)=>{
             placeholder:'Password',
             value:'',
             secureTextEntry:true,
-            error:false,
+            description:false,
+            hasValidation: true
         },
         {
             stateName:'profilePicture',
@@ -378,10 +387,11 @@ const DataTable=(props)=>{
     ];
     const [userProfileForm,setUserProfileForm]=useState(originalForm);
     const onUpdateForm=(id:number,text:any,element?:string,_key?:string)=>{
-        console.log(id,text,element,_key);
         let index=userProfileForm?.findIndex(app=>app?.id==id);
         let newArr=[...userProfileForm];
         newArr[index]['value']=text;
+        newArr[index]['hasValidation']= false;
+        newArr[index]['error']= false;
         if(_key=='password') newArr[index]['error']= !validatePassword(text)?.isValid;
         else if(_key==='email') newArr[index]['error']= !validateEmail(text);
         else if(_key==='contactNumber') newArr[index]['error']= !validatePhone(text);
@@ -395,6 +405,22 @@ const DataTable=(props)=>{
         });
 
         axios.post(BASE_URL+`/users`,updatedUser,config).then((response)=>{
+            cleanForm()
+
+        }).catch((err)=>{
+            let newArr=[...userProfileForm];
+            userProfileForm.map(e=>{
+                for(const error in err?.response?.data?.errors){
+                    if(e.stateName.toLowerCase()==error.toLowerCase()){
+                        let index=newArr?.findIndex(app=>app?.id==e?.id);
+                        newArr[index]['error']=true;
+                        newArr[index]['description']=err?.response?.data?.errors?.[error]?.[0];
+                        newArr[index]['hasValidation']=true;
+                    }
+                }
+            })
+            setUserProfileForm(newArr);
+
 
         });
     };
@@ -454,7 +480,7 @@ const DataTable=(props)=>{
                                                     props.filter.map((option)=>{
                                                         return <MenuOption value={option?.value}>
                                                             <View>
-                                                                <Text>{option?.text}</Text>
+                                                                <Text>{option?.label}</Text>
                                                             </View>
                                                         </MenuOption>
                                                     })
@@ -550,6 +576,7 @@ const DataTable=(props)=>{
                                     {props.addTitle}
                                 </Text>
                                 <TouchableOpacity onPress={()=> {
+                                    cleanForm()
                                     setModalClose(false)
                                 }}>
                                     <CloseIcon/>
