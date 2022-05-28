@@ -31,14 +31,18 @@ const Pagination = (props: { size: number, page: number; fetch: (arg0: number) =
     const pageNumbers=(count,current)=>{
         var shownPages=3;
         var result=[];
+        console.log(current,  count)
         if(current>count-shownPages){
+            if(count-3 >= 1 && current != count ){
+                result.push(count-3)
+            }
             if(count-2 >= 1){
                 result.push(count-2)
             }
             if(count-1 >= 1) {
                 result.push(count-1)
             }
-            if(count >= 1) {
+            if(current == count) {
                 result.push(count);
             }
 
