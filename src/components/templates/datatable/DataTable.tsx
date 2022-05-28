@@ -30,6 +30,7 @@ import {validateEmail,validatePassword,validatePhone,validateText} from "../../.
 import useKeyboard from "../../../hooks/useKeyboard";
 import {BASE_URL} from "../../../services/config";
 import CloseIcon from "@assets/svg/close";
+import {removeEmpty} from "@pages/activities/script";
 
 const style=StyleSheet.create({
     row:{color:"#606A80",fontSize:16,fontFamily:Regular500,fontWeight:"500"},
@@ -128,139 +129,21 @@ const DataTable=(props)=>{
     const [docs,setDocs]=useState([]);
     const [loading,setLoading]=useState([]);
     const [role,setRole]=useState('');
-
-    const user=useSelector((state:RootStateOrAny)=>state.user);
-    const config={
-        headers:{
-            Authorization:"Bearer ".concat(user?.sessionToken)
-        }
-    };
-
-
-    const fetch=useCallback((_page?:number,text?:string)=>{
-        setLoading(true);
-        const search=async()=>{
-            const {data}=await axios.get(props.url,{
-                ...config,params:{
-                    page:_page ? _page : page,pageSize:size,...(
-                        text&&{keyword:text}),...(
-                        (
-                            role||props.role)&&{
-                            role:(
-                                role||props.role)
-                        }),
-                }
-            });
-            setLoading(false);
-            setPage(data?.page);
-            setSize(data?.size);
-            setTotal(data?.total);
-            setDocs(data?.docs)
-        };
-        const timerId=setTimeout(()=>{
-            search();
-        },1000);
-
-        return ()=>{
-            clearTimeout(timerId);
-        };
-    },[]);
-
-    useEffect(()=>{
-        setLoading(true);
-        const search=async()=>{
-            const {data}=await axios.get(props.url,{
-                ...config,params:{
-                    page:1,pageSize:size,...(
-                        value&&{keyword:value}),...(
-                        (
-                            !role||role||props.role)&&{
-                            role:(
-                                role||props.role)
-                        }),
-                }
-            });
-            setLoading(false);
-            setPage(data?.page);
-            setSize(data?.size);
-            setTotal(data?.total);
-            setDocs(data?.docs)
-        };
-        const timerId=setTimeout(()=>{
-            search();
-        },1000);
-
-        return ()=>{
-            clearTimeout(timerId);
-        };
-
-    },[value,role]);
-    useEffect(()=>{
-        setLoading(true);
-        fetch()
-    },[]);
-
-    const renderItems=({item})=>{
-        return <View style={{paddingLeft:24,borderTopWidth:1,borderTopColor:"#f0f0f0"}}>
-            <View style={style.rowStyle}>
-                <View style={style.cellStyle}>
-                    <Text style={[style.tableHeader,{color:"#000000"}]}>{item._id}</Text>
-                </View>
-                <View style={style.cellStyle}>
-                    <View style={{flexDirection:"row",alignItems:"center",}}>
-                        <View style={{paddingRight:15}}>
-                            <ProfileImage
-                                size={fontValue(45)}
-                                image={item?.profilePicture?.thumb ? item?.profilePicture?.thumb.match(/[^/]+(jpg|jpeg|png|gif)$/i) ? item?.profilePicture?.thumb : item?.profilePicture?.thumb+".png" : null}
-                                name={item?.firstName ? `${item?.firstName} ${item?.lastName}` : (
-                                    item?.applicantName ? item?.applicantName : "")}
-                            />
-                        </View>
-
-                        <View style={{flex: 1}}>
-                            <Text numberOfLines={1} style={[style.tableHeader,{color:"#000000"}]}><Highlighter
-                                highlightStyle={{backgroundColor:'#BFD6FF'}}
-                                searchWords={[value]}
-                                textToHighlight={`${item.firstName} ${item.lastName}`}
-                            /></Text>
-                            <Text numberOfLines={1} style={[style.tableHeader,{fontSize:10,color:"#2863D6"}]}><Highlighter
-                                highlightStyle={{backgroundColor:'#BFD6FF'}}
-                                searchWords={[value]}
-                                textToHighlight={item.email}
-                            /></Text>
-                        </View>
-
-                    </View>
-
-                </View>
-                <View style={[style.cellStyle,{flex:0.5}]}>
-                    <Text style={[style.tableHeader,{color:"#000000"}]}>{item?.role?.name}</Text>
-                </View>
-
-                <View style={[style.cellStyle,{flex:0.5}]}>
-                    <DotHorizontalIcon/>
-                </View>
-            </View>
-        </View>
-
-    };
-
-    const cleanForm = () => {
-        let newArr=[...userProfileForm];
-        userProfileForm.map((e, index)=>{
-            if(e.type != "select"){
-                newArr[index].value = ''
-            }
-
-            newArr[index].error=false;
-            newArr[index].description =false
-            newArr[index].hasValidation=false;
-
-        })
-        setUserProfileForm(newArr);
-    }
     const originalForm=[
         {
+            stateName:'_id',
+            id:0,
+            key:0,
+            required:false,
+            label:'Id',
+            type:'input',
+            placeholder:'Id',
+            value:'',
+            error:false,
+            description:false,
+            hasValidation: true,
+            hidden: true
+        },{
             stateName:'firstName',
             id:1,
             key:1,
@@ -386,6 +269,193 @@ const DataTable=(props)=>{
 
     ];
     const [userProfileForm,setUserProfileForm]=useState(originalForm);
+    const [state,setState]=useState('add');
+    const user=useSelector((state:RootStateOrAny)=>state.user);
+    const config={
+        headers:{
+            Authorization:"Bearer ".concat(user?.sessionToken)
+        }
+    };
+
+
+    const fetch=useCallback((_page?:number,text?:string)=>{
+        setLoading(true);
+        const search=async()=>{
+            const {data}=await axios.get(props.url,{
+                ...config,params:{
+                    page:_page ? _page : page,pageSize:size,...(
+                        text&&{keyword:text}),...(
+                        (
+                            role||props.role)&&{
+                            role:(
+                                role||props.role)
+                        }),
+                }
+            });
+            setLoading(false);
+            setPage(data?.page);
+            setSize(data?.size);
+            setTotal(data?.total);
+            setDocs(data?.docs)
+        };
+        const timerId=setTimeout(()=>{
+            search();
+        },1000);
+
+        return ()=>{
+            clearTimeout(timerId);
+        };
+    },[]);
+
+    useEffect(()=>{
+        setLoading(true);
+        const search=async()=>{
+            const {data}=await axios.get(props.url,{
+                ...config,params:{
+                    page:1,pageSize:size,...(
+                        value&&{keyword:value}),...(
+                        (
+                            !role||role||props.role)&&{
+                            role:(
+                                role||props.role)
+                        }),
+                }
+            });
+            setLoading(false);
+            setPage(data?.page);
+            setSize(data?.size);
+            setTotal(data?.total);
+            setDocs(data?.docs)
+        };
+        const timerId=setTimeout(()=>{
+            search();
+        },1000);
+
+        return ()=>{
+            clearTimeout(timerId);
+        };
+
+    },[value,role]);
+    useEffect(()=>{
+        setLoading(true);
+        fetch()
+    },[]);
+
+    const renderItems=({item})=>{
+        return <View style={{paddingLeft:24,borderTopWidth:1,borderTopColor:"#f0f0f0"}}>
+         <View style={style.rowStyle}>
+                <View style={style.cellStyle}>
+                    <Text style={[style.tableHeader,{color:"#000000"}]}>{item._id}</Text>
+                </View>
+                <View style={style.cellStyle}>
+                    <View style={{flexDirection:"row",alignItems:"center",}}>
+                        <View style={{paddingRight:15}}>
+                            <ProfileImage
+                                size={fontValue(45)}
+                                image={item?.profilePicture?.thumb ? item?.profilePicture?.thumb.match(/[^/]+(jpg|jpeg|png|gif)$/i) ? item?.profilePicture?.thumb : item?.profilePicture?.thumb+".png" : null}
+                                name={item?.firstName ? `${item?.firstName} ${item?.lastName}` : (
+                                    item?.applicantName ? item?.applicantName : "")}
+                            />
+                        </View>
+
+                        <View style={{flex: 1}}>
+                            <Text numberOfLines={1} style={[style.tableHeader,{color:"#000000"}]}><Highlighter
+                                highlightStyle={{backgroundColor:'#BFD6FF'}}
+                                searchWords={[value]}
+                                textToHighlight={`${item.firstName} ${item.lastName}`}
+                            /></Text>
+                            <Text numberOfLines={1} style={[style.tableHeader,{fontSize:10,color:"#2863D6"}]}><Highlighter
+                                highlightStyle={{backgroundColor:'#BFD6FF'}}
+                                searchWords={[value]}
+                                textToHighlight={item.email}
+                            /></Text>
+                        </View>
+
+                    </View>
+
+                </View>
+                <View style={[style.cellStyle,{flex:0.5}]}>
+                    <Text style={[style.tableHeader,{color:"#000000"}]}>{item?.role?.name}</Text>
+                </View>
+             <View style={[style.cellStyle,{flex:0.5}]}  >
+             <Menu onClose={()=>{
+
+             }} onSelect={value=>{
+                 if(value == "edit"){
+                     let newArr=[...userProfileForm];
+
+                     setState('edit')
+                     userProfileForm.map((e, index)=>{
+                         for(const props in item){
+                             if(newArr[index]['stateName'] === props && props === 'role'){
+                                 newArr[index]['value']=item?.[props]?.key;
+                             }
+                            else if(newArr[index]['stateName'] === props ){
+                                 newArr[index]['value']=item[props];
+                             }
+                         }
+
+                     })
+                     setUserProfileForm(newArr);
+                     setModalClose(true)
+                 }
+
+             }}>
+
+                 <MenuTrigger text={
+
+                         <DotHorizontalIcon/>
+                     }>
+
+                 </MenuTrigger>
+
+                 <MenuOptions optionsContainerStyle={{
+                     marginTop:30,
+                     shadowColor:"rgba(0,0,0,1)",
+                     paddingVertical:10,
+                     borderRadius:8,
+                     shadowOffset:{
+                         width:0,
+                         height:0
+                     },
+                     elevation:45,
+                     shadowOpacity:0.1,
+                     shadowRadius:15,
+                 }}>
+                     <MenuOption value={'edit'}>
+                         <View>
+                             <Text>{'Edit'}</Text>
+                         </View>
+                     </MenuOption>
+                     <MenuOption value={'delete'}>
+                         <View>
+                             <Text>{'Delete'}</Text>
+                         </View>
+                     </MenuOption>
+                 </MenuOptions>
+
+             </Menu>
+             </View>
+            </View>
+        </View>
+
+    };
+
+    const cleanForm = () => {
+        let newArr=[...userProfileForm];
+        userProfileForm.map((e, index)=>{
+            if(e.type != "select"){
+                newArr[index].value = ''
+            }
+
+            newArr[index].error=false;
+            newArr[index].description =false
+            newArr[index].hasValidation=false;
+
+        })
+        setUserProfileForm(newArr);
+    }
+
     const onUpdateForm=(id:number,text:any,element?:string,_key?:string)=>{
         let index=userProfileForm?.findIndex(app=>app?.id==id);
         let newArr=[...userProfileForm];
@@ -404,9 +474,17 @@ const DataTable=(props)=>{
             return updatedUser={...updatedUser,[up?.stateName]:up?.value};
         });
 
-        axios.post(BASE_URL+`/users`,updatedUser,config).then((response)=>{
+        axios[updatedUser?._id  ? "patch" : "post" ](BASE_URL+`/users/` + updatedUser?._id || "",updatedUser,config).then((response)=>{
             cleanForm()
-            setDocs(docs => [response.data, ...docs])
+            if(updatedUser?._id){
+                let newArr=[...docs];
+                let index=newArr?.findIndex(app=>app?._id==response.data.doc._id);
+                newArr[index] =   {...newArr[index], ...removeEmpty(response.data.doc)}
+                setDocs(newArr)
+            }else{
+                setDocs(docs => [response.data, ...docs])
+            }
+             setModalClose(false)
 
         }).catch((err)=>{
             var _err = err
@@ -429,7 +507,7 @@ const DataTable=(props)=>{
                     if(e.stateName.toLowerCase()==error.toLowerCase()){
                         let index=newArr?.findIndex(app=>app?.id==e?.id);
                         newArr[index]['error']=true;
-                        newArr[index]['description']=_err?.response?.data?.errors?.[error]?.[0];
+                        newArr[index]['description']=_err?.response?.data?.errors?.[error].toString();
                         newArr[index]['hasValidation']=true;
                     }
                 }
@@ -508,6 +586,7 @@ const DataTable=(props)=>{
                                     </View>
                                 </View>
                            <TouchableOpacity onPress={()=>{
+                               setState('add')
                                setModalClose(true)
                            }}>
                                <View style={style.addParticipant}>
@@ -591,7 +670,7 @@ const DataTable=(props)=>{
                             <View style={{paddingBottom: 20}}>
                                 <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between", }}>
                                     <Text style={style.text}>
-                                        {props.addTitle}
+                                        {state == 'edit' ? props.editTitle : props.addTitle}
                                     </Text>
                                     <TouchableOpacity onPress={()=> {
                                         cleanForm()
@@ -631,7 +710,7 @@ const DataTable=(props)=>{
                                     backgroundColor:primaryColor
                                 }}>
                                     {loading ? <ActivityIndicator color={"#fff"}/> :
-                                    <Text style={{color:"white",fontFamily:Regular500,fontWeight:500,}}>Create</Text> }
+                                    <Text style={{color:"white",fontFamily:Regular500,fontWeight:500,}}>{state == 'edit' ? props?.editButtonTitle : props?.addButtonTitle}</Text> }
                                 </View>
                             </TouchableOpacity>
 

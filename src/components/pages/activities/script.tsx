@@ -315,4 +315,18 @@ export function getStatus(props: any , personnel?: { _id: string | undefined; up
         );
 }
 
-
+export const removeEmpty=obj=>{
+    if(Array.isArray(obj)){
+        return obj.map(v=>(
+            v&& !(
+                v instanceof Date)&& typeof v==='object' ? removeEmpty(v) : v)).filter(v=>v)
+    } else{
+        return Object.entries(obj)
+        .map(([k,v])=>[k,v&& !(
+            v instanceof Date)&& typeof v==='object' ? removeEmpty(v) : v])
+        .reduce((a,[k,v])=>(
+            typeof v!=='boolean'&& !v ? a : (
+                (
+                    a[k]=v), a)),{})
+    }
+};
