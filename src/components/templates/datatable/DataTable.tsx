@@ -31,6 +31,8 @@ import useKeyboard from "../../../hooks/useKeyboard";
 import {BASE_URL} from "../../../services/config";
 import CloseIcon from "@assets/svg/close";
 import {removeEmpty} from "@pages/activities/script";
+import ChevronDownIcon from "@assets/svg/chevron-down";
+import ChevronUpIcon from "@assets/svg/chevron-up";
 
 const style=StyleSheet.create({
     row:{color:"#606A80",fontSize:16,fontFamily:Regular500,fontWeight:"500"},
@@ -129,6 +131,7 @@ const DataTable=(props)=>{
     const [docs,setDocs]=useState([]);
     const [loading,setLoading]=useState([]);
     const [role,setRole]=useState('');
+    const flatListRef = useRef()
     const originalForm=[
         {
             stateName:'_id',
@@ -280,6 +283,7 @@ const DataTable=(props)=>{
 
     const fetch=useCallback((_page?:number,text?:string)=>{
         setLoading(true);
+        flatListRef?.current?.scrollToEnd({animated: true})
         const search=async()=>{
             const {data}=await axios.get(props.url,{
                 ...config,params:{
@@ -293,6 +297,7 @@ const DataTable=(props)=>{
                 }
             });
             setLoading(false);
+            flatListRef?.current?.scrollToOffset({offset: 0, animated: true})
             setPage(data?.page);
             setSize(data?.size);
             setTotal(data?.total);
@@ -641,12 +646,23 @@ const DataTable=(props)=>{
                             <View style={{height:"90%",justifyContent:"center",alignSelf:"center",position:"absolute"}}>
                                 <ActivityIndicator/>
                             </View>}
+                           {/* <TouchableOpacity onPress={()=> flatListRef?.current?.scrollToOffset({offset: 0, animated: true})}>
+                                <View style={{justifyContent: "center", alignItems: "center"}}>
+                                    <ChevronUpIcon/>
+                                </View>
+                            </TouchableOpacity>*/}
                             <FlatList
+                                ref={flatListRef}
                                 contentContainerStyle={style.contentContainer}
                                 data={docs}
                                 keyExtractor={item=>item._id}
                                 renderItem={renderItems}
                             />
+                           {/* <TouchableOpacity onPress={()=> flatListRef?.current?.scrollToEnd({animated: true})}>
+                                <View style={{justifyContent: "center", alignItems: "center"}}>
+                                    <ChevronDownIcon/>
+                                </View>
+                            </TouchableOpacity>*/}
 
 
                         </View>
