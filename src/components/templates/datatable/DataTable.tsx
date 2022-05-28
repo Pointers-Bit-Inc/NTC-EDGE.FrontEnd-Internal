@@ -584,54 +584,60 @@ const DataTable=(props)=>{
                 }}>
                 <View style={style.modal}>
 
-                    <View style={{padding:20,height:"85%",borderRadius:8,width:355,backgroundColor:"#fff"}}>
-                        <View style={{paddingBottom: 20}}>
-                            <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between", }}>
-                                <Text style={style.text}>
-                                    {props.addTitle}
-                                </Text>
-                                <TouchableOpacity onPress={()=> {
-                                    cleanForm()
-                                    setModalClose(false)
+                    <View style={{backgroundColor:"#fff", padding: 20, borderRadius:8, }}>
+                        <View style={{ width:dimensions.width * 0.5,}}>
+
+
+                            <View style={{paddingBottom: 20}}>
+                                <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between", }}>
+                                    <Text style={style.text}>
+                                        {props.addTitle}
+                                    </Text>
+                                    <TouchableOpacity onPress={()=> {
+                                        cleanForm()
+                                        setModalClose(false)
+                                    }}>
+                                        <CloseIcon/>
+                                    </TouchableOpacity>
+
+                                </View>
+                            </View>
+
+
+                            <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}}>
+                                <FormField
+                                    formElements={userProfileForm}
+                                    onChange={onUpdateForm}
+                                    onSubmit={onPress}
+                                    handleEvent={(event)=>{
+                                        if(isKeyboardVisible){
+                                            scrollView?.current?.scrollTo({
+                                                x:0,
+                                                y:event?.y,
+                                                animated:true,
+                                            })
+                                        }
+                                    }}
+                                />
+
+
+                            </ScrollView>
+                            <TouchableOpacity onPress={loading ? null :onPress}>
+                                <View style={{
+                                    borderRadius:8,
+                                    padding:12,
+                                    justifyContent:"center",
+                                    alignItems:"center",
+                                    backgroundColor:primaryColor
                                 }}>
-                                    <CloseIcon/>
-                                </TouchableOpacity>
+                                    {loading ? <ActivityIndicator color={"#fff"}/> :
+                                    <Text style={{color:"white",fontFamily:Regular500,fontWeight:500,}}>Create</Text> }
+                                </View>
+                            </TouchableOpacity>
 
-                            </View>
                         </View>
-
-
-                        <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}}>
-                            <FormField
-                                formElements={userProfileForm}
-                                onChange={onUpdateForm}
-                                onSubmit={onPress}
-                                handleEvent={(event)=>{
-                                    if(isKeyboardVisible){
-                                        scrollView?.current?.scrollTo({
-                                            x:0,
-                                            y:event?.y,
-                                            animated:true,
-                                        })
-                                    }
-                                }}
-                            />
-
-
-                        </ScrollView>
-                        <TouchableOpacity onPress={onPress}>
-                            <View style={{
-                                borderRadius:8,
-                                padding:12,
-                                justifyContent:"center",
-                                alignItems:"center",
-                                backgroundColor:primaryColor
-                            }}>
-                                <Text style={{color:"white",fontFamily:Regular500,fontWeight:500,}}>Create</Text>
-                            </View>
-                        </TouchableOpacity>
-
                     </View>
+
                 </View>
             </Modal>
         </>
