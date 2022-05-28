@@ -6,6 +6,8 @@ import {
   StatusBar,
   TouchableOpacity,
   useWindowDimensions,
+  Dimensions,
+  ScrollView,
 } from 'react-native'
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
 import lodash from 'lodash';
@@ -133,6 +135,25 @@ const styles = StyleSheet.create({
   },
 });
 
+const gridStyles = StyleSheet.create({
+  scrollContainer: {
+    flex: 1,
+  },
+  container: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  box: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
+    borderColor: 'white',
+    borderWidth: 1,
+  }
+})
+
 const useMicrophoneAndCameraTracks = createMicrophoneAndCameraTracks({
   encoderConfig: 'high_quality',
 }, {
@@ -163,12 +184,90 @@ const VideoCall = ({ navigation, route }) => {
   });
   const { height, width } = useWindowDimensions();
   const { ready, tracks }:any = useMicrophoneAndCameraTracks();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [showParticipants, setShowParticipants] = useState(false);
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [micEnabled, setMicEnabled] = useState(true);
   const [speakerEnabled, setSpeakerEnabled] = useState(true);
   const [inputText, setInputText] = useState('');
+  const [grid, setGrid] = useState(true);
+  const [boxDimension, setBoxDimension] = useState({
+    width: 0,
+    height: 0,
+  });
+  const [participants, setParticipants] = useState([]);
+
+  useEffect(() => {
+    const participantSize = lodash.size(participants);
+    let numberOfColumns = 2, numberOfRow = 2;
+
+    switch(true) {
+      case participantSize <= 4:
+        numberOfColumns = 2;
+        break;
+      case participantSize > 4 && participantSize <= 9:
+        numberOfColumns = 3;
+        break;
+      case participantSize > 9 && participantSize <= 16:
+        numberOfColumns = 4;
+        break;
+      case participantSize > 16 && participantSize <= 25:
+        numberOfColumns = 5;
+        break;
+      case participantSize > 25 && participantSize <= 36:
+        numberOfColumns = 6;
+        break;
+      default:
+        numberOfColumns = 7;
+        break;
+    }
+
+    switch(true) {
+      case width <= 768 && numberOfColumns > 1:
+        numberOfColumns = 1;
+        break;
+      case width > 768 && width <= 992 && numberOfColumns > 2:
+        numberOfColumns = 2;
+        break;
+      case width > 992 && width <= 1200 && numberOfColumns > 3:
+        numberOfColumns = 3;
+        break;
+      case width > 1200 && width <= 1400 && numberOfColumns > 4:
+        numberOfColumns = 4;
+        break;
+    }
+
+    if (participantSize < 50) {
+      if (numberOfColumns === 1) {
+        numberOfRow = 2;
+      } else if (numberOfColumns === 2) {
+        if (participantSize === 2) {
+          numberOfRow = 1  
+        } else {
+          numberOfRow = 2;
+        }
+      } else if (numberOfColumns === 3) {
+        if (participantSize <= 6) {
+          numberOfRow = 2;
+        } else {
+          numberOfRow = 3;
+        }
+      } else {
+        numberOfRow = numberOfColumns - 1;
+      }
+    } else {
+      numberOfRow = 7;
+    }
+    console.log('numberOfRow numberOfRow', numberOfRow);
+    
+    const boxWidth = width / numberOfColumns -8;
+    const boxHeight = (height - 100) / numberOfRow;
+
+    setBoxDimension({
+      width: boxWidth,
+      height: boxHeight,
+    });
+  }, [width, height, participants]);
 
   if (!fontsLoaded) {
     return null;
@@ -271,6 +370,41 @@ const VideoCall = ({ navigation, route }) => {
     );
   }
 
+  if (grid) {
+    return (
+      <View style={{ flex: 1 }}>
+        <ScrollView style={gridStyles.scrollContainer}>
+          <View style={gridStyles.container}>
+            {
+              participants.map(p => (
+                <View
+                  key={p}
+                  style={[
+                    gridStyles.box,
+                    { width: boxDimension.width, height: boxDimension.height }
+                  ]}
+                >
+                  <Text>Participant {p}</Text>
+                </View>
+              ))
+            }
+          </View>
+        </ScrollView>
+        <View style={{ height: 100, width: '100%', backgroundColor: 'black' }}>
+          <TouchableOpacity onPress={() => setParticipants((prev) => {
+              const size = lodash.size(prev) + 1;
+              return ([
+                ...prev,
+                size
+              ])
+            })}>
+            <Text color='white'>INCREMENT</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', flex: 1 }}>
@@ -355,7 +489,7 @@ const VideoCall = ({ navigation, route }) => {
             </View>
             <View style={{ flex: 0.1 }} />
             <View style={{ flex: 1 }}>
-              <TouchableOpacity>
+              <TouchableOpacity disabled={loading}>
                 <View style={[styles.button, styles.startButton, loading && { backgroundColor: '#565961', borderColor: '#565961' }]}>
                   <Text
                     color={loading ? '#808196' : 'white'}
