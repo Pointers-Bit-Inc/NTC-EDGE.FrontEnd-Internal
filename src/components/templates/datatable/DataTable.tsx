@@ -33,6 +33,9 @@ import CloseIcon from "@assets/svg/close";
 import {removeEmpty} from "@pages/activities/script";
 import ChevronDownIcon from "@assets/svg/chevron-down";
 import ChevronUpIcon from "@assets/svg/chevron-up";
+import {ToastType} from "@atoms/toast/ToastProvider";
+import {useToast} from "../../../hooks/useToast";
+import {Toast} from "@atoms/toast/Toast";
 
 const style=StyleSheet.create({
     row:{color:"#606A80",fontSize:16,fontFamily:Regular500,fontWeight:"500"},
@@ -132,6 +135,7 @@ const DataTable=(props)=>{
     const [loading,setLoading]=useState([]);
     const [role,setRole]=useState('');
     const flatListRef = useRef()
+    const [alert, setAlert] = useState()
     const originalForm=[
         {
             stateName:'_id',
@@ -274,6 +278,7 @@ const DataTable=(props)=>{
     const [userProfileForm,setUserProfileForm]=useState(originalForm);
     const [state,setState]=useState('add');
     const user=useSelector((state:RootStateOrAny)=>state.user);
+    const { showToast } = useToast();
     const config={
         headers:{
             Authorization:"Bearer ".concat(user?.sessionToken)
@@ -285,7 +290,7 @@ const DataTable=(props)=>{
         setLoading(true);
         flatListRef?.current?.scrollToEnd({animated: true})
         const search=async()=>{
-            const {data}=await axios.get(props.url,{
+            const response=await axios.get(props.url,{
                 ...config,params:{
                     page:_page ? _page : page,pageSize:size,...(
                         text&&{keyword:text}),...(
@@ -295,13 +300,24 @@ const DataTable=(props)=>{
                                 role||props.role)
                         }),
                 }
+            }).catch((error) => {
+                let _err = ''
+                for(const err in error?.response?.data?.errors){
+
+                      _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
+
+                    }
+                showToast(ToastType.Error, _err)
             });
             setLoading(false);
             flatListRef?.current?.scrollToOffset({offset: 0, animated: true})
-            setPage(data?.page);
-            setSize(data?.size);
-            setTotal(data?.total);
-            setDocs(data?.docs)
+             if(response) {
+                 setPage(response?.data?.page);
+                 setSize(response?.data?.size);
+                 setTotal(response?.data?.total);
+                 setDocs(response?.data?.docs)
+             }
+
         };
         const timerId=setTimeout(()=>{
             search();
@@ -481,6 +497,7 @@ const DataTable=(props)=>{
 
         axios[updatedUser?._id  ? "patch" : "post" ](BASE_URL+`/users/` + updatedUser?._id || "",updatedUser,config).then((response)=>{
             cleanForm()
+            showToast(ToastType.Success,updatedUser?._id ? "Successfully updated!" :"Successfully created!")
             if(updatedUser?._id){
                 let newArr=[...docs];
                 let index=newArr?.findIndex(app=>app?._id==response.data.doc._id);
@@ -517,6 +534,11 @@ const DataTable=(props)=>{
                     }
                 }
             })
+
+            if(_err?.response?.data?.title){
+                showToast(ToastType.Error, _err?.response?.data?.title)
+            }
+
             setUserProfileForm(newArr);
 
 
@@ -717,6 +739,7 @@ const DataTable=(props)=>{
 
 
                             </ScrollView>
+                            <Toast/>
                             <TouchableOpacity onPress={loading ? null :onPress}>
                                 <View style={{
                                     borderRadius:8,
