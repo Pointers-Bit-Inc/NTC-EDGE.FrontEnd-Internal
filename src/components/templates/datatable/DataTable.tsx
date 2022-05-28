@@ -585,7 +585,7 @@ const DataTable=(props)=>{
                 <View style={style.modal}>
 
                     <View style={{backgroundColor:"#fff", padding: 20, borderRadius:8, }}>
-                        <View style={{ width:dimensions.width * 0.5,}}>
+                        <View style={{ height: dimensions.height * 0.90, width:dimensions.width * 0.5,}}>
 
 
                             <View style={{paddingBottom: 20}}>
