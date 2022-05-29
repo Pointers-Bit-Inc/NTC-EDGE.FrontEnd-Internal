@@ -31,7 +31,6 @@ const Pagination = (props: { size: number, page: number; fetch: (arg0: number) =
     const pageNumbers=(count,current)=>{
         var shownPages=3;
         var result=[];
-        console.log(current,  count)
         if(current>count-shownPages){
             if(count-3 >= 1 && current != count ){
                 result.push(count-3)
@@ -69,8 +68,8 @@ const Pagination = (props: { size: number, page: number; fetch: (arg0: number) =
 
         {pageNumbers(Math.floor(props.size < props.total ? (props.total/props.size) : 1),props.page).map(number=>{
             return <TouchableOpacity onPress={() => {
-
-                props.fetch(number)
+                let pageNum = pageNumbers(Math.floor(props.size < props.total ? (props.total/props.size) : 1),props.page)
+                props.fetch(number == '...' ? pageNum?.[pageNum?.findIndex(x => x == '...') - 1] + 1 : number)
             }}>
                 <View style={[style.paginationText, {backgroundColor:props.page == number ? "#041B6E" : "rgba(0,0,0,0)",}]}>
                     <Text style={[style.paginateText, { color:props.page == number ? "#fff" :  "#041B6E" ,}]}>{number}</Text>
