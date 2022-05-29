@@ -3,6 +3,7 @@ import ChevronLeft from "@assets/svg/chevron-left";
 import {Regular500} from "@styles/font";
 import ChevronRight from "@assets/svg/chevron-right";
 import React from "react";
+
 const style=StyleSheet.create({
     pagination:{
         paddingHorizontal:45,
@@ -27,7 +28,7 @@ const style=StyleSheet.create({
         fontFamily:Regular500
     }
 })
-const Pagination = (props: { size: number, page: number; fetch: (arg0: number) => void; total: number; }) => {
+const Pagination = (props: { size: number, page: number; fetch: (page: number) => void; total: number; }) => {
     const pageNumbers=(count,current)=>{
         var shownPages=3;
         var result=[];

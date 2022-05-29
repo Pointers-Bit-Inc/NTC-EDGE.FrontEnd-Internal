@@ -219,16 +219,12 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
 
             this.setState({onLoadStart:false});
             Image.getSize(this.props?.proofOfPayment?.medium,(width,height)=>{
-                
+
                 this.setState({
-                    ...this.state,
                     source:{
                         ...this?.state?.source,
                         uri:this?.props?.proofOfPayment?.medium||"https://dummyimage.com/350x350/fff/aaa"
                     },
-                });
-                this.setState({
-
                     _imageSize:{
                         width:width||300,
                         height:height||300

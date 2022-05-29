@@ -252,6 +252,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
 
         let _fileName=this.props?.requirement?.small?.split("/")?.[this.props?.requirement?.small?.split("/")?.length-1];
         this.setState({
+
             onLoadStart:true,
             fileName:_fileName,
             extension:(
@@ -264,6 +265,10 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
             Image.getSize(this.props?.requirement?.original,(width,height)=>{
                 
                 this.setState({
+                    source : {
+                        ...this?.state?.source ,
+                        uri : this?.props?.requirement?.original || "https://dummyimage.com/350x350/fff/aaa"
+                    },
                     _imageSize:{
                         width: Platform.select({
                             native: width,
@@ -282,7 +287,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                     ...this.state,
                     source:{
                         ...this?.state?.source,
-                        uri:"https://dummyimage.com/350x350/fff/aaa"
+                        uri: this?.props?.requirement?.original ||"https://dummyimage.com/350x350/fff/aaa"
                     },
                 });
                 this.setState({onLoadStart:true})
@@ -292,7 +297,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                 ...this.state,
                 source:{
                     ...this?.state?.source,
-                    uri:"https://dummyimage.com/350x350/fff/aaa"
+                    uri:this?.props?.requirement?.original ||"https://dummyimage.com/350x350/fff/aaa"
                 },
             });
             this.setState({onLoadStart:true})

@@ -1,5 +1,5 @@
 import {
-    ActivityIndicator,Alert,
+    ActivityIndicator,
     FlatList,
     Modal,
     ScrollView,
@@ -31,14 +31,17 @@ import useKeyboard from "../../../hooks/useKeyboard";
 import {BASE_URL} from "../../../services/config";
 import CloseIcon from "@assets/svg/close";
 import {removeEmpty} from "@pages/activities/script";
-import ChevronDownIcon from "@assets/svg/chevron-down";
-import ChevronUpIcon from "@assets/svg/chevron-up";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import {useToast} from "../../../hooks/useToast";
 import {Toast} from "@atoms/toast/Toast";
 
 const style=StyleSheet.create({
-    row:{color:"#606A80",fontSize:16,fontFamily:Regular500,fontWeight:"500"},
+    row:{
+        color:"#606A80",
+        fontSize:16,
+        fontFamily:Regular500,
+        fontWeight:"500"
+    },
     rowStyle:{
         flexDirection:"row",
         alignItems:"center",
@@ -134,8 +137,8 @@ const DataTable=(props)=>{
     const [docs,setDocs]=useState([]);
     const [loading,setLoading]=useState([]);
     const [role,setRole]=useState('');
-    const flatListRef = useRef()
-    const [alert, setAlert] = useState()
+    const flatListRef=useRef();
+    const [alert,setAlert]=useState();
     const originalForm=[
         {
             stateName:'_id',
@@ -148,8 +151,8 @@ const DataTable=(props)=>{
             value:'',
             error:false,
             description:false,
-            hasValidation: true,
-            hidden: true
+            hasValidation:true,
+            hidden:true
         },{
             stateName:'firstName',
             id:1,
@@ -161,7 +164,7 @@ const DataTable=(props)=>{
             value:'',
             error:false,
             description:false,
-            hasValidation: true
+            hasValidation:true
         },
         {
             stateName:'middleName',
@@ -174,7 +177,7 @@ const DataTable=(props)=>{
             value:'',
             error:false,
             description:false,
-            hasValidation: true
+            hasValidation:true
         },
         {
             stateName:'lastName',
@@ -187,7 +190,7 @@ const DataTable=(props)=>{
             value:'',
             error:false,
             description:false,
-            hasValidation: true
+            hasValidation:true
         },
         {
             stateName:'email',
@@ -200,7 +203,7 @@ const DataTable=(props)=>{
             value:'',
             error:false,
             description:false,
-            hasValidation: true
+            hasValidation:true
         },
         {
             stateName:'suffix',
@@ -213,21 +216,21 @@ const DataTable=(props)=>{
             value:'',
             error:false,
             description:false,
-            hasValidation: true
+            hasValidation:true
         },
         {
             stateName:'role',
             id:6,
             key:6,
             required:true,
-            data: props.filter,
+            data:props.filter,
             label:'Role',
             type:'select',
             placeholder:'Role',
             value:'admin',
             error:false,
             description:false,
-            hasValidation: true
+            hasValidation:true
         },
         {
             stateName:'address',
@@ -240,7 +243,7 @@ const DataTable=(props)=>{
             value:'',
             error:false,
             description:false,
-            hasValidation: true
+            hasValidation:true
         },
         {
             stateName:'contactNumber',
@@ -253,7 +256,7 @@ const DataTable=(props)=>{
             value:'',
             error:false,
             description:false,
-            hasValidation: true
+            hasValidation:true
         },
         {
             stateName:'password',
@@ -266,7 +269,7 @@ const DataTable=(props)=>{
             value:'',
             secureTextEntry:true,
             description:false,
-            hasValidation: true
+            hasValidation:true
         },
         {
             stateName:'profilePicture',
@@ -278,7 +281,7 @@ const DataTable=(props)=>{
     const [userProfileForm,setUserProfileForm]=useState(originalForm);
     const [state,setState]=useState('add');
     const user=useSelector((state:RootStateOrAny)=>state.user);
-    const { showToast } = useToast();
+    const {showToast}=useToast();
     const config={
         headers:{
             Authorization:"Bearer ".concat(user?.sessionToken)
@@ -288,7 +291,7 @@ const DataTable=(props)=>{
 
     const fetch=useCallback((_page?:number,text?:string)=>{
         setLoading(true);
-        flatListRef?.current?.scrollToEnd({animated: true})
+        flatListRef?.current?.scrollToEnd({animated:true});
         const search=async()=>{
             const response=await axios.get(props.url,{
                 ...config,params:{
@@ -300,23 +303,23 @@ const DataTable=(props)=>{
                                 role||props.role)
                         }),
                 }
-            }).catch((error) => {
-                let _err = ''
+            }).catch((error)=>{
+                let _err='';
                 for(const err in error?.response?.data?.errors){
 
-                      _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
+                    _err+=error?.response?.data?.errors?.[err]?.toString()+"\n";
 
-                    }
-                showToast(ToastType.Error, _err)
+                }
+                showToast(ToastType.Error,_err)
             });
             setLoading(false);
-            flatListRef?.current?.scrollToOffset({offset: 0, animated: true})
-             if(response) {
-                 setPage(response?.data?.page);
-                 setSize(response?.data?.size);
-                 setTotal(response?.data?.total);
-                 setDocs(response?.data?.docs)
-             }
+            flatListRef?.current?.scrollToOffset({offset:0,animated:true});
+            if(response){
+                setPage(response?.data?.page);
+                setSize(response?.data?.size);
+                setTotal(response?.data?.total);
+                setDocs(response?.data?.docs)
+            }
 
         };
         const timerId=setTimeout(()=>{
@@ -364,7 +367,7 @@ const DataTable=(props)=>{
 
     const renderItems=({item})=>{
         return <View style={{paddingLeft:24,borderTopWidth:1,borderTopColor:"#f0f0f0"}}>
-         <View style={style.rowStyle}>
+            <View style={style.rowStyle}>
                 <View style={style.cellStyle}>
                     <Text style={[style.tableHeader,{color:"#000000"}]}>{item._id}</Text>
                 </View>
@@ -379,13 +382,14 @@ const DataTable=(props)=>{
                             />
                         </View>
 
-                        <View style={{flex: 1}}>
+                        <View style={{flex:1}}>
                             <Text numberOfLines={1} style={[style.tableHeader,{color:"#000000"}]}><Highlighter
                                 highlightStyle={{backgroundColor:'#BFD6FF'}}
                                 searchWords={[value]}
                                 textToHighlight={`${item.firstName} ${item.lastName}`}
                             /></Text>
-                            <Text numberOfLines={1} style={[style.tableHeader,{fontSize:10,color:"#2863D6"}]}><Highlighter
+                            <Text numberOfLines={1}
+                                  style={[style.tableHeader,{fontSize:10,color:"#2863D6"}]}><Highlighter
                                 highlightStyle={{backgroundColor:'#BFD6FF'}}
                                 searchWords={[value]}
                                 textToHighlight={item.email}
@@ -398,104 +402,103 @@ const DataTable=(props)=>{
                 <View style={[style.cellStyle,{flex:0.5}]}>
                     <Text style={[style.tableHeader,{color:"#000000"}]}>{item?.role?.name}</Text>
                 </View>
-             <View style={[style.cellStyle,{flex:0.5}]}  >
-             <Menu onClose={()=>{
+                <View style={[style.cellStyle,{flex:0.5}]}>
+                    <Menu onClose={()=>{
 
-             }} onSelect={value=>{
-                 if(value == "edit"){
-                     let newArr=[...userProfileForm];
+                    }} onSelect={value=>{
+                        if(value=="edit"){
+                            let newArr=[...userProfileForm];
 
-                     setState('edit')
-                     userProfileForm.map((e, index)=>{
-                         for(const props in item){
-                             if(newArr[index]['stateName'] === props && props === 'role'){
-                                 newArr[index]['value']=item?.[props]?.key;
-                             }
-                            else if(newArr[index]['stateName'] === props ){
-                                 newArr[index]['value']=item[props];
-                             }
-                         }
+                            setState('edit');
+                            userProfileForm.map((e,index)=>{
+                                for(const props in item){
+                                    if(newArr[index]['stateName']===props&&props==='role'){
+                                        newArr[index]['value']=item?.[props]?.key;
+                                    } else if(newArr[index]['stateName']===props){
+                                        newArr[index]['value']=item[props];
+                                    }
+                                }
 
-                     })
-                     setUserProfileForm(newArr);
-                     setModalClose(true)
-                 } else if(value == "delete"){
-                    axios.delete(BASE_URL + `/users/${item._id}` ).then((response)=>{
-                        showToast(ToastType.Success,"Successfully deleted!")
-                    }).catch((error)=>{
-                        console.log(error.response)
-                        let _err = ''
-                        for(const err in error?.response?.data?.errors){
+                            });
+                            setUserProfileForm(newArr);
+                            setModalClose(true)
+                        } else if(value=="delete"){
+                            axios.delete(BASE_URL+`/users/${item._id}`).then((response)=>{
+                                showToast(ToastType.Success,"Successfully deleted!")
+                            }).catch((error)=>{
+                                console.log(error.response);
+                                let _err='';
+                                for(const err in error?.response?.data?.errors){
 
-                            _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
+                                    _err+=error?.response?.data?.errors?.[err]?.toString()+"\n";
 
+                                }
+                                showToast(ToastType.Error,error?.response?.data.trim()||error?.response?.statusText)
+                            })
                         }
-                        showToast(ToastType.Error, error?.response?.data.trim() || error?.response?.statusText)
-                    })
-                 }
 
-             }}>
+                    }}>
 
-                 <MenuTrigger text={
+                        <MenuTrigger text={
 
-                         <DotHorizontalIcon/>
-                     }>
+                            <DotHorizontalIcon/>
+                        }>
 
-                 </MenuTrigger>
+                        </MenuTrigger>
 
-                 <MenuOptions optionsContainerStyle={{
-                     marginTop:30,
-                     shadowColor:"rgba(0,0,0,1)",
-                     paddingVertical:10,
-                     borderRadius:8,
-                     shadowOffset:{
-                         width:0,
-                         height:0
-                     },
-                     elevation:45,
-                     shadowOpacity:0.1,
-                     shadowRadius:15,
-                 }}>
-                     <MenuOption value={'edit'}>
-                         <View>
-                             <Text>{'Edit'}</Text>
-                         </View>
-                     </MenuOption>
-                     <MenuOption value={'delete'}>
-                         <View>
-                             <Text>{'Delete'}</Text>
-                         </View>
-                     </MenuOption>
-                 </MenuOptions>
+                        <MenuOptions optionsContainerStyle={{
+                            marginTop:30,
+                            shadowColor:"rgba(0,0,0,1)",
+                            paddingVertical:10,
+                            borderRadius:8,
+                            shadowOffset:{
+                                width:0,
+                                height:0
+                            },
+                            elevation:45,
+                            shadowOpacity:0.1,
+                            shadowRadius:15,
+                        }}>
+                            <MenuOption value={'edit'}>
+                                <View>
+                                    <Text>{'Edit'}</Text>
+                                </View>
+                            </MenuOption>
+                            <MenuOption value={'delete'}>
+                                <View>
+                                    <Text>{'Delete'}</Text>
+                                </View>
+                            </MenuOption>
+                        </MenuOptions>
 
-             </Menu>
-             </View>
+                    </Menu>
+                </View>
             </View>
         </View>
 
     };
 
-    const cleanForm = () => {
+    const cleanForm=()=>{
         let newArr=[...userProfileForm];
-        userProfileForm.map((e, index)=>{
-            if(e.type != "select"){
-                newArr[index].value = ''
+        userProfileForm.map((e,index)=>{
+            if(e.type!="select"){
+                newArr[index].value=''
             }
 
             newArr[index].error=false;
-            newArr[index].description =false
+            newArr[index].description=false;
             newArr[index].hasValidation=false;
 
-        })
+        });
         setUserProfileForm(newArr);
-    }
+    };
 
     const onUpdateForm=(id:number,text:any,element?:string,_key?:string)=>{
         let index=userProfileForm?.findIndex(app=>app?.id==id);
         let newArr=[...userProfileForm];
         newArr[index]['value']=text;
-        newArr[index]['hasValidation']= false;
-        newArr[index]['error']= false;
+        newArr[index]['hasValidation']=false;
+        newArr[index]['error']=false;
         if(_key=='password') newArr[index]['error']= !validatePassword(text)?.isValid;
         else if(_key==='email') newArr[index]['error']= !validateEmail(text);
         else if(_key==='contactNumber') newArr[index]['error']= !validatePhone(text);
@@ -508,22 +511,22 @@ const DataTable=(props)=>{
             return updatedUser={...updatedUser,[up?.stateName]:up?.value};
         });
 
-        axios[updatedUser?._id  ? "patch" : "post" ](BASE_URL+`/users/` + updatedUser?._id || "",updatedUser,config).then((response)=>{
-            cleanForm()
-            showToast(ToastType.Success,updatedUser?._id ? "Successfully updated!" :"Successfully created!")
+        axios[updatedUser?._id ? "patch" : "post"](BASE_URL+`/users/`+updatedUser?._id||"",updatedUser,config).then((response)=>{
+            cleanForm();
+            showToast(ToastType.Success,updatedUser?._id ? "Successfully updated!" : "Successfully created!");
             if(updatedUser?._id){
                 let newArr=[...docs];
                 let index=newArr?.findIndex(app=>app?._id==response.data.doc._id);
-                newArr[index] =   {...newArr[index], ...removeEmpty(response.data.doc)}
+                newArr[index]={...newArr[index],...removeEmpty(response.data.doc)};
                 setDocs(newArr)
-            }else{
-                setDocs(docs => [response.data, ...docs])
+            } else{
+                setDocs(docs=>[response.data,...docs])
             }
-             setModalClose(false)
+            setModalClose(false)
 
         }).catch((err)=>{
-            var _err = err
-            if(err.response.data.error == 'The email address already exists. Please select another email address.'){
+            var _err=err;
+            if(err.response.data.error=='The email address already exists. Please select another email address.'){
                 _err={
                     response:{
                         data:{
@@ -546,10 +549,10 @@ const DataTable=(props)=>{
                         newArr[index]['hasValidation']=true;
                     }
                 }
-            })
+            });
 
             if(_err?.response?.data?.title){
-                showToast(ToastType.Error, _err?.response?.data?.title)
+                showToast(ToastType.Error,_err?.response?.data?.title)
             }
 
             setUserProfileForm(newArr);
@@ -561,7 +564,7 @@ const DataTable=(props)=>{
 
     const scrollView=useRef();
     const isKeyboardVisible=useKeyboard();
-    const [modalClose, setModalClose] = useState(false)
+    const [modalClose,setModalClose]=useState(false);
     return (
         <>
             <View style={style.container}>
@@ -625,18 +628,18 @@ const DataTable=(props)=>{
 
                                     </View>
                                 </View>
-                           <TouchableOpacity onPress={()=>{
-                               setState('add')
-                               setModalClose(true)
-                           }}>
-                               <View style={style.addParticipant}>
-                                   <View style={{paddingRight:10}}>
-                                       <AddParticipantOutlineIcon color={"#fff"}/>
-                                   </View>
+                                <TouchableOpacity onPress={()=>{
+                                    setState('add');
+                                    setModalClose(true)
+                                }}>
+                                    <View style={style.addParticipant}>
+                                        <View style={{paddingRight:10}}>
+                                            <AddParticipantOutlineIcon color={"#fff"}/>
+                                        </View>
 
-                                   <Text style={{color:"#fff"}}>{props.addButtonTitle}</Text>
-                               </View>
-                           </TouchableOpacity>
+                                        <Text style={{color:"#fff"}}>{props.addButtonTitle}</Text>
+                                    </View>
+                                </TouchableOpacity>
 
                             </View>
 
@@ -681,7 +684,7 @@ const DataTable=(props)=>{
                             <View style={{height:"90%",justifyContent:"center",alignSelf:"center",position:"absolute"}}>
                                 <ActivityIndicator/>
                             </View>}
-                           {/* <TouchableOpacity onPress={()=> flatListRef?.current?.scrollToOffset({offset: 0, animated: true})}>
+                            {/* <TouchableOpacity onPress={()=> flatListRef?.current?.scrollToOffset({offset: 0, animated: true})}>
                                 <View style={{justifyContent: "center", alignItems: "center"}}>
                                     <ChevronUpIcon/>
                                 </View>
@@ -693,7 +696,7 @@ const DataTable=(props)=>{
                                 keyExtractor={item=>item._id}
                                 renderItem={renderItems}
                             />
-                           {/* <TouchableOpacity onPress={()=> flatListRef?.current?.scrollToEnd({animated: true})}>
+                            {/* <TouchableOpacity onPress={()=> flatListRef?.current?.scrollToEnd({animated: true})}>
                                 <View style={{justifyContent: "center", alignItems: "center"}}>
                                     <ChevronDownIcon/>
                                 </View>
@@ -708,23 +711,23 @@ const DataTable=(props)=>{
             <Modal
                 animationType={"fade"}
                 transparent={true}
-                visible={ modalClose}
+                visible={modalClose}
                 onRequestClose={()=>{
                     console.log("Modal has been closed.")
                 }}>
                 <View style={style.modal}>
 
-                    <View style={{backgroundColor:"#fff", padding: 20, borderRadius:8, }}>
-                        <View style={{ height: dimensions.height * 0.90, width:dimensions.width * 0.5,}}>
+                    <View style={{backgroundColor:"#fff",padding:20,borderRadius:8,}}>
+                        <View style={{height:dimensions.height*0.90,width:dimensions.width*0.5,}}>
 
 
-                            <View style={{paddingBottom: 20}}>
-                                <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between", }}>
+                            <View style={{paddingBottom:20}}>
+                                <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between",}}>
                                     <Text style={style.text}>
-                                        {state == 'edit' ? props.editTitle : props.addTitle}
+                                        {state=='edit' ? props.editTitle : props.addTitle}
                                     </Text>
-                                    <TouchableOpacity onPress={()=> {
-                                        cleanForm()
+                                    <TouchableOpacity onPress={()=>{
+                                        cleanForm();
                                         setModalClose(false)
                                     }}>
                                         <CloseIcon/>
@@ -753,7 +756,7 @@ const DataTable=(props)=>{
 
                             </ScrollView>
                             <Toast/>
-                            <TouchableOpacity onPress={loading ? null :onPress}>
+                            <TouchableOpacity onPress={loading ? null : onPress}>
                                 <View style={{
                                     borderRadius:8,
                                     padding:12,
@@ -762,7 +765,11 @@ const DataTable=(props)=>{
                                     backgroundColor:primaryColor
                                 }}>
                                     {loading ? <ActivityIndicator color={"#fff"}/> :
-                                    <Text style={{color:"white",fontFamily:Regular500,fontWeight:500,}}>{state == 'edit' ? props?.editButtonTitle : props?.addButtonTitle}</Text> }
+                                     <Text style={{
+                                         color:"white",
+                                         fontFamily:Regular500,
+                                         fontWeight:500,
+                                     }}>{state=='edit' ? props?.editButtonTitle : props?.addButtonTitle}</Text>}
                                 </View>
                             </TouchableOpacity>
 
