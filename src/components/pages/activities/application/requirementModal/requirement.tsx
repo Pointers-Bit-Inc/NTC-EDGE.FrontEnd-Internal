@@ -304,7 +304,7 @@ const Requirement=(props:any)=>{
                         <FlatList
                             style={{flex:1,}}
                             data={requirement?.links}
-                            keyExtractor={item=>item._id}
+                            keyExtractor={(item, index)=> index}
                             renderItem={({item}) => {
                                 return <RequirementView dimensions={dimensions}
                                                         rightLayoutComponent={rightLayoutComponent}
