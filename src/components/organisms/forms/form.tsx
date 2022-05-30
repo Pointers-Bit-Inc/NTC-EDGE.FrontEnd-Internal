@@ -5,8 +5,9 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Button from "@atoms/button";
 import Text from "@atoms/text";
 import {Ionicons} from "@expo/vector-icons";
-import {outline,text} from "@styles/color";
+import {input,outline,text} from "@styles/color";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
+import inputStyles from "@styles/input-style";
 
 const FormField=({
                      color,
@@ -46,7 +47,7 @@ const FormField=({
             case "text":
                 return <Text key={id} {...styleProps} {...otherProps} >{otherProps.label}</Text>;
             case "input":
-                return <InputField key={id}  {...styleProps} {...otherProps}
+                return !element.hidden && <InputField key={id}  {...styleProps} {...otherProps}
                                    onEndEditing={(e:any)=>{
                                        onChange(id,e.nativeEvent.text,'input')
                                    }
@@ -72,11 +73,26 @@ const FormField=({
             case "select":
                 return <View style={{paddingBottom: 22}}>
                     <CustomDropdown key={id}
+                                    value={element?.value}
                                     label="Select Item"
                                     data={ element.data }
                                     onSelect={ ({ value }) => {
                                         if (value) onChange(id,value,'role')
                                     } }/>
+                    {
+                        element?.hasValidation && (!!element?.error || !!element?.description) && (
+                            <View>
+                                <Text
+                                    style={[
+                                        inputStyles?.validationText,
+                                        !!element?.error && { color: input.text?.errorColor },
+                                    ]}
+                                >
+                                    {element?.description}
+                                </Text>
+                            </View>
+                        )
+                    }
                 </View>;
 
             case 'password':

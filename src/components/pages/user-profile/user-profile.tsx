@@ -32,6 +32,7 @@ import {Bold} from '@styles/font';
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import useKeyboard from "../../../hooks/useKeyboard";
+import {removeEmpty} from "@pages/activities/script";
 
 const STATUSBAR_HEIGHT=StatusBar?.currentHeight;
 const {width,height}=Dimensions.get('window');
@@ -372,21 +373,7 @@ const UserProfileScreen=({navigation}:any)=>{
             return true;
         }
     };
-    const removeEmpty=obj=>{
-        if(Array.isArray(obj)){
-            return obj.map(v=>(
-                v&& !(
-                    v instanceof Date)&& typeof v==='object' ? removeEmpty(v) : v)).filter(v=>v)
-        } else{
-            return Object.entries(obj)
-            .map(([k,v])=>[k,v&& !(
-                v instanceof Date)&& typeof v==='object' ? removeEmpty(v) : v])
-            .reduce((a,[k,v])=>(
-                typeof v!=='boolean'&& !v ? a : (
-                    (
-                        a[k]=v), a)),{})
-        }
-    };
+
 
     function updateUserProfile(dp:boolean,formData:{}){
         console.log("outside isValid");
