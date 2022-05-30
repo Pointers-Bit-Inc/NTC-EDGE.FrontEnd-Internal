@@ -59,7 +59,9 @@ export default ({
   const onLogout =  useCallback(() => {
     setVisible(false)
     useLogout(user, dispatch);
-    navigation.dispatch(StackActions.replace('Login'));
+    setTimeout(()=>{
+      navigation.dispatch(StackActions.replace('Login'));
+    },500);
   }, []);
   const renderRow = ({item}: any) => {
     return (
