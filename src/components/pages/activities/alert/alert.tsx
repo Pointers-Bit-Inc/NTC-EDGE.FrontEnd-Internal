@@ -29,69 +29,75 @@ function CustomAlert(props) {
                 }
             }
         >
-            <Animated.View style={[   { transform: [{ scale: springValue}] }]}>
-                <View style={styles.group}>
-                    <View style={[styles.container___, styles.shadow]}>
-                        <View style={styles.container__}>
 
-                            <View style={[styles.container_, {padding: "5%", paddingHorizontal: 48,}]}>
-                                {
-                                    props?.type == DECLINED && <View>
-                                        <CloseModal></CloseModal>
-                                    </View>
+               <Animated.View style={[   { transform: [{ scale: springValue}] }]}>
+                   <View style={styles.group}>
+                       <View style={[styles.container___, styles.shadow]}>
+                           <View style={styles.container__}>
 
-                                }
-                                {
-                                    props?.type == FOREVALUATION && <View style={{paddingBottom: 10}}>
-                                        <EndorseToIcon height_={fontValue(60)} width_={fontValue(60)} color={"#2863D6"}></EndorseToIcon>
-                                    </View>
-                                }
-                                {
-                                    props?.type == APPROVED && <View>
-                                        <ApplicationApproved/>
-                                    </View>
-                                }
-                                <Text style={[styles.title, alertStyle.titleStyle]}>{props?.title}</Text>
-                                <Text style={styles.description_}>
-                                    {props?.message ? props?.message : "Are you sure you want to approve this application?"}
+                               <View style={[styles.container_, {padding: "5%", paddingHorizontal: 48,}]}>
+                                   {
+                                       props?.type == DECLINED && <View>
+                                           <CloseModal></CloseModal>
+                                       </View>
 
-                                </Text>
+                                   }
+                                   {
+                                       props?.type == FOREVALUATION && <View style={{paddingBottom: 10}}>
+                                           <EndorseToIcon height_={fontValue(60)} width_={fontValue(60)} color={"#2863D6"}></EndorseToIcon>
+                                       </View>
+                                   }
+                                   {
+                                       props?.type == APPROVED && <View>
+                                           <ApplicationApproved/>
+                                       </View>
+                                   }
+                                   <Text style={[styles.title, alertStyle.titleStyle]}>{props?.title}</Text>
+                                   <Text style={styles.description_}>
+                                       {props?.message ? props?.message : "Are you sure you want to approve this application?"}
 
-                            </View>
+                                   </Text>
+
+                               </View>
 
 
-                        </View>
-                        <View style={[styles.action, {alignItems: "flex-end", paddingVertical: 15}]}>
-                            {
+                           </View>
+                           <View style={[styles.action, {alignItems: "flex-end", paddingVertical: 15}]}>
+                               {
 
-                                props?.showClose == false && <>
-                                    {props.onLoading ?  <ActivityIndicator style={{alignSelf: "center"}}
-                                                                          color={"rgba(40,99,214,1)"}/> :
+                                   props?.showClose == false && <>
+                                       {props.onLoading ?  <ActivityIndicator style={{alignSelf: "center"}}
+                                                                              color={"rgba(40,99,214,1)"}/> :
                                         <TouchableOpacity onPress={props.onConfirmPressed}>
 
                                             <Text
                                                 style={[alertStyle.confirmButtonTextStyle]}>{props?.confirmButton || 'Yes'}</Text>
 
                                         </TouchableOpacity>
-                                    }
-                                    <TouchableOpacity onPress={props.onCancelPressed}>
-                                        <Text style={[alertStyle.cancelButtonTextStyle]}>Close</Text>
-                                    </TouchableOpacity>
+                                       }
+                                       <TouchableOpacity onPress={() => {
+                                           _springHide()
+                                           props.onCancelPressed
+                                       }}>
+                                           <Text style={[alertStyle.cancelButtonTextStyle]}>Close</Text>
+                                       </TouchableOpacity>
 
-                                </>
+                                   </>
 
-                            }
+                               }
 
-                            {props?.showClose == true &&
-                            <TouchableOpacity onPress={_springHide}>
-                                <Text style={[alertStyle.confirmButtonTextStyle]}>Close</Text>
-                            </TouchableOpacity>
-                            }
+                               {props?.showClose == true &&
+                               <TouchableOpacity onPress={_springHide}>
+                                   <Text style={[alertStyle.confirmButtonTextStyle]}>Close</Text>
+                               </TouchableOpacity>
+                               }
 
-                        </View>
-                    </View>
-                </View>
-            </Animated.View>
+                           </View>
+                       </View>
+                   </View>
+               </Animated.View>
+
+
 
         </Modal>
 
@@ -100,7 +106,7 @@ function CustomAlert(props) {
 
 const styles = StyleSheet.create({
     group: {
-
+        flex: 1,
         alignSelf: "center"
     },
     shadow: {shadowColor: "rgba(0,0,0,1)",
@@ -122,11 +128,12 @@ const styles = StyleSheet.create({
     },
     container__: {
 
-         
+
         //paddingVertical: 15
      
     },
     container_: {
+
         width: "100%",
         alignItems: "center",
     },

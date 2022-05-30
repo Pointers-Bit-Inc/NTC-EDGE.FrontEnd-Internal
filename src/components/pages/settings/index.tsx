@@ -2,8 +2,6 @@ import React, { useCallback, useState } from 'react';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import { Image, View } from 'react-native';
 import Text from '@atoms/text';
-import BellIcon from "@assets/svg/bell";
-import DonutIcon from "@assets/svg/donut";
 import LogoutIcon from "@assets/svg/logout";
 import { ArrowRightIcon, CloseIcon, ExclamationIcon, RightIcon } from '@atoms/icon';
 import Alert from '@atoms/alert';
@@ -12,22 +10,11 @@ import NavBar from '@molecules/navbar';
 import {disabledColor , text} from '@styles/color';
 import styles from './styles';
 import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import {resetUser , setUser} from 'src/reducers/user/actions'
-import { resetMeeting } from 'src/reducers/meeting/actions';
-import { resetChannel } from 'src/reducers/channel/actions';
-import {RFValue} from "react-native-responsive-fontsize";
-import Api from "../../../services/api";
 import {StackActions} from "@react-navigation/native";
 import {fontValue} from "@pages/activities/fontValue";
-import {
-  setApplicationItem,
-  setApplications,
-  setNotPinnedApplication,
-  setPinnedApplication
-} from "../../../reducers/application/actions";
-// import OneSignal from 'react-native-onesignal';
-import useOneSignal from 'src/hooks/useOneSignal';
-import {setResetFilterStatus} from "../../../reducers/activity/actions";
+import useLogout from "../../../hooks/useLogout";
+
+
 
 export default ({
   navigation
@@ -37,7 +24,7 @@ export default ({
   const profilePicture = user?.profilePicture?.small;
   const photo = profilePicture ? {uri: profilePicture} : require('@assets/avatar.png');
   const [visible, setVisible] = useState(false);
-  const { destroy } = useOneSignal(user);
+
   const settings = [
     /*{
       label: 'Notifications',
@@ -68,21 +55,11 @@ export default ({
     onPress: () => setVisible(true),
   };
 
+
   const onLogout =  useCallback(() => {
-    const api = Api(user.sessionToken);
     setVisible(false)
-    setTimeout(() => {
-      dispatch(setApplications([]))
-      dispatch(setPinnedApplication([]))
-      dispatch(setNotPinnedApplication([]))
-      dispatch(setApplicationItem({}))
-      dispatch(setResetFilterStatus([]))
-      dispatch(resetUser());
-      dispatch(resetMeeting());
-      dispatch(resetChannel());
-      destroy();
-      navigation.dispatch(StackActions.replace('Login'));
-    }, 500);
+    useLogout(user, dispatch);
+    navigation.dispatch(StackActions.replace('Login'));
   }, []);
   const renderRow = ({item}: any) => {
     return (
