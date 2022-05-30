@@ -75,6 +75,7 @@ export const Toast: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: {
+       
         alignSelf: "center",
         position: "absolute",
         marginHorizontal: 20,

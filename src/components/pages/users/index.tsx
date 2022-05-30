@@ -7,5 +7,8 @@ export default function UsersPage(props:any){
             value: "user",
             label: 'User'
         },
-    ]} addButtonTitle={'Add User'} title={'Users'} url={BASE_URL+'/users'} role={'user'}/>;
+    ]}
+                      editTitle={'Edit User'}
+                      editButtonTitle={'Edit User'}
+                      addButtonTitle={'Add User'} title={'Users'} url={BASE_URL+'/users'} role={'user'}/>;
 }
