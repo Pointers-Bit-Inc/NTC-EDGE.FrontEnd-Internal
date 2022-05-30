@@ -193,7 +193,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                                 !!error && { color: input.text?.errorColor },
                             ]}
                         >
-                            {description}
+                            {description || error}
                         </Text>
                     </View>
                 )
