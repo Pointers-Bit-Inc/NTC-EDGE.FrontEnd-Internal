@@ -21,7 +21,7 @@ import axios from "axios";
 import {BASE_URL} from "../services/config";
 import {Alert,Animated,FlatList,Image,TouchableOpacity,View} from "react-native";
 import {
-    handleInfiniteLoad,setactivitySizeComponent,
+    handleInfiniteLoad,setactivitySizeComponent,setApplicationItem,
     setApplications,
     setFilterRect,
     setNotPinnedApplication,
@@ -32,6 +32,13 @@ import {useComponentLayout} from "./useComponentLayout";
 import lodash from 'lodash';
 import {isMobile} from "@pages/activities/isMobile";
 import {ListFooter} from "@molecules/list-item";
+import Api from "../services/api";
+import {setResetFilterStatus} from "../reducers/activity/actions";
+import {resetUser} from "../reducers/user/actions";
+import {resetMeeting} from "../reducers/meeting/actions";
+import {resetChannel} from "../reducers/channel/actions";
+import {StackActions} from "@react-navigation/native";
+import useOneSignal from "./useOneSignal";
 
 function convertStatusText(convertedStatus:any[],item:any){
     let _converted:never[]=[]
@@ -53,6 +60,7 @@ export function useActivities(props){
     const [page,setPage]=useState(0);
     const [size,setSize]=useState(0);
     const {user,cashier,director,evaluator,checker,accountant}=useUserRole();
+    const { destroy } = useOneSignal(user);
     const [updateModal,setUpdateModal]=useState(false);
       const [onTouch, setOnTouch] = useState(true)
     const config={
@@ -244,8 +252,22 @@ export function useActivities(props){
         ).catch((err)=>{
             setRefreshing(false);
             Alert.alert('Alert',err?.message||'Something went wrong.');
-
-            console.warn(err)
+             
+           if(err.request.status == "401"){
+               const api = Api(user.sessionToken);
+               setTimeout(() => {
+                   dispatch(setApplications([]))
+                   dispatch(setPinnedApplication([]))
+                   dispatch(setNotPinnedApplication([]))
+                   dispatch(setApplicationItem({}))
+                   dispatch(setResetFilterStatus([]))
+                   dispatch(resetUser());
+                   dispatch(resetMeeting());
+                   dispatch(resetChannel());
+                   destroy();
+                   props.navigation.dispatch(StackActions.replace('Login'));
+               }, 500);
+           }
         })
 
         return ()=>{
