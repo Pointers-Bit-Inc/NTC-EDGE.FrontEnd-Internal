@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, Animated } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Animated, Platform } from 'react-native'
 import Text from '@components/atoms/text'
 import GroupImage from '../image/group'
 import Loading from '@components/atoms/loading'
@@ -97,10 +97,16 @@ const ConnectingVideo = ({ participants = [], callEnded = false }) => {
               <View style={[styles.close, enable && { backgroundColor: button.info }]}>
                 <Animated.View style={[{
                   position: 'absolute',
-                  height: 100,
+                  height: 150,
                   width: 1,
                   backgroundColor: button.info,
                   zIndex: -1,
+                  ...Platform.select({
+                    'web': {
+                      marginTop: -50,
+                      marginLeft: -50
+                    }
+                  })
                 }, {
                   transform: [
                     {

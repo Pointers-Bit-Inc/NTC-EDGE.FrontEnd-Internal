@@ -42,13 +42,13 @@ export const useInitializeAgora = ({
   const [peerIds, setPeerIds] = useState<number[]>([]);
   const [peerVideoState, setPeerVideoState] = useState<any>({});
   const [peerAudioState, setPeerAudioState] = useState<any>({});
+  const [volumeIndicator, setVolumIndicator] = useState<any>({});
   const [myId, setMyId] = useState<number>(0);
   const [isMute, setIsMute] = useState(options?.isMute);
   const [isSpeakerEnable, setIsSpeakerEnable] = useState(true);
   const [isVideoEnable, setIsVideoEnable] = useState(options?.isVideoEnable);
   const [activeSpeaker, setActiveSpeaker] = useState(0);
   let tracks:any = null;
-  let ready:boolean = false;
   const rtcEngine = useRef<RtcEngine|null>(null);
 
   const initAgora = async () => {
@@ -193,6 +193,6 @@ export const useInitializeAgora = ({
     toggleIsVideoEnable,
     switchCamera,
     tracks,
-    ready,
+    volumeIndicator,
   };
 };

@@ -1,21 +1,10 @@
 import { View, Dimensions, Pressable, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-
-import Animated, {
-  useAnimatedGestureHandler,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
-import { snapPoint } from 'react-native-redash';
-import { PanGestureHandler } from 'react-native-gesture-handler';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import lodash from 'lodash';
 import { ArrowDownIcon, MessageIcon, ParticipantsIcon } from '@components/atoms/icon'
 import {
   resetCurrentMeeting,
-  setFullScreen,
-  setMeeting,
   setNotification,
   setOptions,
   setPinnedParticipant,
@@ -27,14 +16,11 @@ import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
 import { getChannelName, getTimerString } from 'src/utils/formatting'
 import useSignalr from 'src/hooks/useSignalr';
-import { Feather } from '@expo/vector-icons';
 import { Bold } from '@styles/font';
 import { useNavigation } from '@react-navigation/native';
 import IParticipants from 'src/interfaces/IParticipants';
 import { RFValue } from 'react-native-responsive-fontsize';
 import useTimer from 'src/hooks/useTimer';
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const dimensions = {
   width: Dimensions.get('window').width,
@@ -43,15 +29,11 @@ const dimensions = {
 
 const VideoWidth = dimensions.width * 0.15;
 const VideoHeight = dimensions.width * 0.1;
-const defaultPositionY = dimensions.height * 0.83 - VideoHeight;
-const defaultPositionX = -(dimensions.width - VideoWidth - 25);
-const defaultSnapX = [0, defaultPositionX];
-const defaultSnapY = [0, defaultPositionY];
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    zIndex: 99,
+    backgroundColor: '#484B51',
+    flex: 1,
   },
   position: {
     top: Platform.OS === 'android' ? 30 : 35,
@@ -125,7 +107,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const FloatingVideo = () => {
+const FloatingVideo = ({ tracks }:any) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const videoRef = useRef<any>(null);
@@ -164,28 +146,6 @@ const FloatingVideo = () => {
   const [agora, setAgora] = useState({});
   const [isMaximized, setIsMaximized] = useState(true);
   const [hasNewMessage, setHasNewMessage] = useState(false);
-
-  const snapPointsX = useSharedValue(defaultSnapX);
-  const snapPointsY = useSharedValue(defaultSnapY);
-  const translateX = useSharedValue(0);
-  const translateY = useSharedValue(0);
-  const currentX = useSharedValue(0);
-  const currentY = useSharedValue(0);
-  const scale = useSharedValue(1);
-
-  useEffect(() => {
-    if (isMaximized) {
-      translateX.value = 0;
-      translateY.value = 0;
-    } else {
-      translateX.value = currentX.value;
-      translateY.value = currentY.value;
-    }
-  }, [isMaximized])
-
-  useEffect(() => {
-    setIsMaximized(isFullScreen);
-  }, [isFullScreen]);
 
   useEffect(() => {
     let unmounted = false;
@@ -244,55 +204,6 @@ const FloatingVideo = () => {
       setHasNewMessage(hasSeen);
     }
   }, [normalizedChannelList, roomId]);
-
-  const onGestureEvent = useAnimatedGestureHandler({
-    onStart: (_, context:any) => {
-      context.translateX = translateX.value;
-      context.translateY = translateY.value;
-      if (scale.value !== 1.1) {
-        scale.value = withSpring(1.1);
-      }
-    },
-    onActive: ({ translationX, translationY }, context) => {
-      translateX.value = translationX + context.translateX;
-      translateY.value = translationY + context.translateY;
-    },
-    onEnd: ({ translationY, translationX, velocityX, velocityY }) => {
-      const snapPointX = snapPoint(translationX, velocityX, snapPointsX.value);
-      const snapPointY = snapPoint(translationY, velocityY, snapPointsY.value);
-      translateX.value = withSpring(snapPointX);
-      translateY.value = withSpring(snapPointY);
-      currentX.value = withSpring(snapPointX);
-      currentY.value = withSpring(snapPointY);
-      if (scale.value !== 1) {
-        scale.value = withSpring(1);
-      }
-    },
-  });
-
-  const style = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { translateX: translateX.value },
-        { translateY: translateY.value },
-        { scale: scale.value },
-      ],
-    };
-  });
-
-  const onTouchStart = () => {
-    if (isMaximized) return;
-    if (scale.value !== 1.1) {
-      scale.value = withSpring(1.1);
-    }
-  };
-
-  const onTouchEnd = () => {
-    if (isMaximized) return;
-    if (scale.value !== 1) {
-      scale.value = withSpring(1);
-    }
-  };
 
   const onFullScreen = () => setIsMaximized(current => !current);
 
@@ -385,54 +296,28 @@ const FloatingVideo = () => {
   }
 
   return (
-    <PanGestureHandler enabled={!isMaximized} onGestureEvent={onGestureEvent}>
-      <AnimatedPressable
-        style={[styles.container, styles.shadow, !isMaximized && styles.position, style]}
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}>
-        <View
-          style={[
-            styles.remote,
-            isMaximized ? styles.maximize : styles.minimize,
-            !isMaximized && styles.border,
-          ]}
-        >
-          {
-            !isMaximized && (
-              <View style={{ position: 'absolute', top: 5, right: 5, zIndex: 999 }}>
-                <TouchableOpacity onPress={onFullScreen}>
-                <Feather
-                  name="maximize-2"
-                  size={12}
-                  color={'white'}
-                />
-                </TouchableOpacity>
-              </View>
-            )
-          }
-          <VideoLayout
-            ref={videoRef}
-            loading={loading}
-            header={header}
-            options={{ isMute, isVideoEnable }}
-            user={user}
-            participants={meeting.otherParticipants}
-            meetingParticipants={meeting.participants}
-            agora={agora}
-            isVoiceCall={isVoiceCall}
-            callEnded={meeting?.ended}
-            message={meeting?.notification}
-            setNotification={() => dispatch(setNotification(null))}
-            onEndCall={onEndCall}
-            onMute={onMute}
-            isGroup={meeting?.isGroup}
-            isMaximize={isMaximized}
-            pinnedParticipant={pinnedParticipant}
-            setPinnedParticipant={onSetPinnedParticipant}
-          />
-        </View>
-      </AnimatedPressable>
-    </PanGestureHandler>
+    <View style={styles.container} >
+      <VideoLayout
+        ref={videoRef}
+        loading={loading}
+        header={header}
+        options={{ isMute, isVideoEnable, tracks }}
+        user={user}
+        participants={meeting.otherParticipants}
+        meetingParticipants={meeting.participants}
+        agora={agora}
+        isVoiceCall={isVoiceCall}
+        callEnded={meeting?.ended}
+        message={meeting?.notification}
+        setNotification={() => dispatch(setNotification(null))}
+        onEndCall={onEndCall}
+        onMute={onMute}
+        isGroup={meeting?.isGroup}
+        isMaximize={isMaximized}
+        pinnedParticipant={pinnedParticipant}
+        setPinnedParticipant={onSetPinnedParticipant}
+      />
+    </View>
   )
 }
 

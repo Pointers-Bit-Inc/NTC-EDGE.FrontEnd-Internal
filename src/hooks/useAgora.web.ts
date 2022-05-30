@@ -3,26 +3,14 @@ import React, { useEffect, useState, useRef, useCallback, FC } from 'react';
 import _ from 'lodash';
 import {
   createClient,
-  createMicrophoneAndCameraTracks,
   ClientConfig,
-  IAgoraRTCRemoteUser,
-  ICameraVideoTrack,
-  IMicrophoneAudioTrack,
 } from "agora-rtc-react";
-import useCamera from './useCamera';
-import useMicrophone from './useMicrophone';
 
 const config: ClientConfig = { 
   mode: "rtc", codec: "h264",
 };
 
 const useClient = createClient(config);
-const useMicrophoneAndCameraTracks = createMicrophoneAndCameraTracks({
-  encoderConfig: 'high_quality',
-}, {
-  optimizationMode: 'detail',
-  encoderConfig: '720p_2',
-});
 
 interface Props {
   appId: string;
@@ -50,13 +38,14 @@ export const useInitializeAgora = ({
   const [peerIds, setPeerIds] = useState<number[]>([]);
   const [peerVideoState, setPeerVideoState] = useState<any>({});
   const [peerAudioState, setPeerAudioState] = useState<any>({});
+  const [volumeIndicator, setVolumIndicator] = useState<any>({});
   const [myId, setMyId] = useState<number>(uid);
   const [isMute, setIsMute] = useState(options?.isMute);
   const [isSpeakerEnable, setIsSpeakerEnable] = useState(true);
   const [isVideoEnable, setIsVideoEnable] = useState(options?.isVideoEnable);
   const [activeSpeaker, setActiveSpeaker] = useState(0);
   const client = useClient();
-  const { ready, tracks }:any = useMicrophoneAndCameraTracks();
+  const { tracks }:any = options;
   // const cameraList = useCamera();
   // const microphoneList = useMicrophone();
 
@@ -93,17 +82,14 @@ export const useInitializeAgora = ({
         });
       }
     });
-
-    client.on("volume-indicator", (result) => {
-      const sortedVolumes = _.sortBy(result, ['volume']).reverse();
-      if (sortedVolumes && sortedVolumes[0]) {
-        const highestVolume = sortedVolumes[0];
-        if (highestVolume && highestVolume.uid === 0) {
-          setActiveSpeaker(uid);
-        } else {
-          setActiveSpeaker(highestVolume.uid);
-        }
-      }
+    client.enableAudioVolumeIndicator();
+    client.on("volume-indicator", (volumes) => {
+      volumes.forEach((volume, index) => {
+        setVolumIndicator({
+          ...volumeIndicator,
+          [volume.uid]: Math.floor(volume.level),
+        });
+      });
     });
     
     client.on("user-left", (user) => {
@@ -167,8 +153,10 @@ export const useInitializeAgora = ({
         await client.publish(tracks);
       } else if (!isMute && !isVideoEnable) {
         await client.publish(tracks[0]);
+        await client.unpublish(tracks[1]);
       } else if (isMute && isVideoEnable) {
         await client.publish(tracks[1]);
+        await client.unpublish(tracks[0]);
       }
     }
     setMyId(uid);
@@ -250,6 +238,6 @@ export const useInitializeAgora = ({
     toggleIsVideoEnable,
     switchCamera,
     tracks,
-    ready
+    volumeIndicator,
   };
 };

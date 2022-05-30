@@ -2,28 +2,22 @@ import React, { useEffect, useState } from 'react'
 import {
   Alert,
   View,
-  StyleSheet,
-  StatusBar,
   TouchableOpacity,
   useWindowDimensions,
-  Dimensions,
-  ScrollView,
+  FlatList,
 } from 'react-native'
+import StyleSheet from 'react-native-media-query';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
 import lodash from 'lodash';
-import { AddParticipantsIcon, ArrowLeftIcon, MicOffIcon, MicOnIcon, SpeakerIcon, SpeakerOffIcon, SpeakerOnIcon, VideoOffIcon, VideoOnIcon } from '@components/atoms/icon'
-import {
-  setNotification,
-  updateMeetingParticipants,
-} from 'src/reducers/meeting/actions';
+import { AddParticipantsIcon, ArrowDownIcon, ArrowLeftIcon, MicOffIcon, MicOnIcon, SpeakerIcon, SpeakerOffIcon, SpeakerOnIcon, VideoOffIcon, VideoOnIcon } from '@components/atoms/icon'
+import { setSelectedChannel } from 'src/reducers/channel/actions';
+import { resetCurrentMeeting, setMeeting, setOptions, updateMeetingParticipants } from 'src/reducers/meeting/actions';
 import Text from '@components/atoms/text'
-import VideoLayout from '@components/molecules/video/layout'
-import { getChannelName, getTimerString } from 'src/utils/formatting'
+import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 import useSignalr from 'src/hooks/useSignalr';
-import { requestCameraAndAudioPermission } from 'src/hooks/usePermission';
 import { AgoraVideoPlayer, createMicrophoneAndCameraTracks } from 'agora-rtc-react';
 import { button, text } from '@styles/color';
-import { Regular, Regular500 } from '@styles/font';
+import { Bold, Regular, Regular500 } from '@styles/font';
 
 import {
   useFonts,
@@ -47,10 +41,18 @@ import {
   Poppins_900Black_Italic,
 } from '@expo-google-fonts/poppins';
 import { InputField } from '@components/molecules/form-fields';
-import { RFValue } from 'react-native-responsive-fontsize';
 import { fontValue } from '@components/pages/activities/fontValue';
+import Loading from '@components/atoms/loading';
+import AddParticipants from '@components/pages/chat-modal/participants';
+import GroupImage from '@components/molecules/image/group';
+import IParticipants from 'src/interfaces/IParticipants';
+import FloatingVideo from '@components/pages/chat-modal/floating-video';
+import useCamera from 'src/hooks/useCamera';
+import useMicrophone from 'src/hooks/useMicrophone';
+import ProfileImage from '@components/atoms/image/profile';
+import usePlayback from 'src/hooks/usePlayback';
 
-const styles = StyleSheet.create({
+const { ids, styles } = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#484B51',
@@ -61,6 +63,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
+  },
+  participantsBox: {
+    backgroundColor: 'white',
+    '@media (min-width: 800px)': {
+      width: 400,
+    },
+    '@media (max-width: 800px)': {
+      width: '100%',
+    },
   },
   videoContainer: {
     backgroundColor: 'black',
@@ -80,18 +91,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  controlsContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+  },
   controls: {
-    paddingHorizontal: 30,
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 50,
   },
   videoControls: {
-    flex: 1,
+    flexShrink: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingHorizontal: 15,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -133,26 +146,35 @@ const styles = StyleSheet.create({
     color: 'white',
     backgroundColor: '#565961'
   },
-});
-
-const gridStyles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
+    backgroundColor: '#565961'
   },
-  container: {
+  videoGroupContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  box: {
+  videoBox: {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'black',
-    borderColor: 'white',
+    borderColor: '#565961',
     borderWidth: 1,
+    margin: 2,
+  },
+  name: {
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  disabledVideo: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#606A80',
   }
-})
+});
 
 const useMicrophoneAndCameraTracks = createMicrophoneAndCameraTracks({
   encoderConfig: 'high_quality',
@@ -161,7 +183,20 @@ const useMicrophoneAndCameraTracks = createMicrophoneAndCameraTracks({
   encoderConfig: '720p_2',
 });
 
-const VideoCall = ({ navigation, route }) => {
+const getUrlVars = () => {
+  var vars:any = {}, hash:any;
+  var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+  for(var i = 0; i < hashes.length; i++)
+  {
+    hash = hashes[i].split('=');
+    vars[hash[0]] = hash[1];
+  }
+
+  return vars;
+}
+
+const VideoCall = () => {
+  const dispatch = useDispatch();
   let [fontsLoaded] = useFonts({
     Poppins_100Thin,
     Poppins_100Thin_Italic,
@@ -182,95 +217,156 @@ const VideoCall = ({ navigation, route }) => {
     Poppins_900Black,
     Poppins_900Black_Italic,
   });
-  const { height, width } = useWindowDimensions();
+  const { channelId, meetingId, isVoiceCall } = getUrlVars();
+  const user = useSelector((state:RootStateOrAny) => state.user);
+  const { meeting } = useSelector((state:RootStateOrAny) => state.meeting);
+  const {
+    createMeeting,
+    initSignalR,
+    onConnection,
+    onChatUpdate,
+    onRoomUpdate,
+    onMeetingUpdate,
+    OnMeetingNotification,
+    destroySignalR,
+  } = useSignalr();
+  const { width } = useWindowDimensions();
+  const cameraList = useCamera();
+  const microphoneList = useMicrophone();
+  const playbackList = usePlayback();
   const { ready, tracks }:any = useMicrophoneAndCameraTracks();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [showParticipants, setShowParticipants] = useState(false);
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [micEnabled, setMicEnabled] = useState(true);
   const [speakerEnabled, setSpeakerEnabled] = useState(true);
-  const [inputText, setInputText] = useState('');
-  const [grid, setGrid] = useState(true);
-  const [boxDimension, setBoxDimension] = useState({
-    width: 0,
-    height: 0,
+  const [readyToStart, setReadyToStart] = useState(false);
+  const [meetingName, setMeetingName] = useState('');
+  const [currentMeeting, setCurrentMeeting] = useState({
+    channelId: '',
+    isChannelExist: false,
+    participants: [],
   });
-  const [participants, setParticipants] = useState([]);
+  const [selectedContacts, setSelectedContacts] = useState([]);
+
+  const onStartMeeting = () => {
+    setLoading(true);
+    if (currentMeeting.isChannelExist) {
+      createMeeting({ roomId: currentMeeting.channelId, isVoiceCall, participants: currentMeeting.participants, name: meetingName }, (error, data) => {
+        setLoading(false);
+        if (!error) {
+          const { room } = data;
+          data.otherParticipants = lodash.reject(data.participants, (p:IParticipants) => p._id === user._id);
+          room.otherParticipants =  data.otherParticipants;
+          dispatch(setSelectedChannel(data.room, currentMeeting.isChannelExist));
+          dispatch(resetCurrentMeeting());
+          dispatch(setOptions({
+            isHost: true,
+            isVoiceCall,
+            isMute: !micEnabled,
+            isVideoEnable: videoEnabled,
+          }));
+          dispatch(setMeeting(data))
+        } else {
+          setLoading(false);
+          Alert.alert('Something went wrong.');
+        }
+      });
+    } else {
+      createMeeting({ participants: currentMeeting.participants, name: meetingName }, (error, data) => {
+        setLoading(false);
+        if (!error) {
+          const { room } = data;
+          data.otherParticipants = lodash.reject(data.participants, (p:IParticipants) => p._id === user._id);
+          room.otherParticipants =  data.otherParticipants;
+          dispatch(setSelectedChannel(data.room));
+          dispatch(resetCurrentMeeting());
+          dispatch(setOptions({
+            isHost: true,
+            isVoiceCall,
+            isMute: !micEnabled,
+            isVideoEnable: videoEnabled,
+          }));
+          dispatch(setMeeting(data))
+        } else {
+          setLoading(false);
+          Alert.alert('Something went wrong.');
+        }
+      });
+    }
+  };
+
+  const checkSelectedItems = (selectedItem:any) => {
+    if (lodash.size(selectedItem) === 1 && selectedItem[0].isGroup) {
+      setCurrentMeeting({
+        channelId: selectedItem[0]._id,
+        isChannelExist: true,
+        participants: selectedItem[0].participants,
+      })
+    } else {
+      const tempParticipants:any = [];
+      lodash.map(selectedItem, (item:any) => {
+        if (item.isGroup) {
+          lodash.map(item.participants, (p:IParticipants) => {
+            const isExists = lodash.find(tempParticipants, (temp:IParticipants) => temp._id === p._id);
+            if (!isExists) {
+              tempParticipants.push(p);
+            }
+          })
+        } else {
+          const isExists = lodash.find(tempParticipants, (temp:IParticipants) => temp._id === item._id);
+          if (!isExists) {
+            tempParticipants.push(item);
+          }
+        }
+      });
+
+      setCurrentMeeting({
+        channelId: '',
+        isChannelExist: false,
+        participants: tempParticipants,
+      })
+    }
+  }
 
   useEffect(() => {
-    const participantSize = lodash.size(participants);
-    let numberOfColumns = 2, numberOfRow = 2;
-
-    switch(true) {
-      case participantSize <= 4:
-        numberOfColumns = 2;
-        break;
-      case participantSize > 4 && participantSize <= 9:
-        numberOfColumns = 3;
-        break;
-      case participantSize > 9 && participantSize <= 16:
-        numberOfColumns = 4;
-        break;
-      case participantSize > 16 && participantSize <= 25:
-        numberOfColumns = 5;
-        break;
-      case participantSize > 25 && participantSize <= 36:
-        numberOfColumns = 6;
-        break;
-      default:
-        numberOfColumns = 7;
-        break;
+    initSignalR();
+    onConnection('OnChatUpdate',onChatUpdate);
+    onConnection('OnRoomUpdate',onRoomUpdate);
+    onConnection('OnMeetingUpdate',onMeetingUpdate);
+    onConnection('OnMeetingNotification',OnMeetingNotification);
+    return () => {
+      destroySignalR();
     }
+  }, []);
 
-    switch(true) {
-      case width <= 768 && numberOfColumns > 1:
-        numberOfColumns = 1;
-        break;
-      case width > 768 && width <= 992 && numberOfColumns > 2:
-        numberOfColumns = 2;
-        break;
-      case width > 992 && width <= 1200 && numberOfColumns > 3:
-        numberOfColumns = 3;
-        break;
-      case width > 1200 && width <= 1400 && numberOfColumns > 4:
-        numberOfColumns = 4;
-        break;
-    }
-
-    if (participantSize < 50) {
-      if (numberOfColumns === 1) {
-        numberOfRow = 2;
-      } else if (numberOfColumns === 2) {
-        if (participantSize === 2) {
-          numberOfRow = 1  
-        } else {
-          numberOfRow = 2;
-        }
-      } else if (numberOfColumns === 3) {
-        if (participantSize <= 6) {
-          numberOfRow = 2;
-        } else {
-          numberOfRow = 3;
-        }
-      } else {
-        numberOfRow = numberOfColumns - 1;
-      }
-    } else {
-      numberOfRow = 7;
-    }
-    console.log('numberOfRow numberOfRow', numberOfRow);
-    
-    const boxWidth = width / numberOfColumns -8;
-    const boxHeight = (height - 100) / numberOfRow;
-
-    setBoxDimension({
-      width: boxWidth,
-      height: boxHeight,
-    });
-  }, [width, height, participants]);
+  useEffect(() => {
+    setReadyToStart(!(loading || selectedContacts.length === 0 || !ready));
+  }, [loading, selectedContacts, ready]);
 
   if (!fontsLoaded) {
     return null;
+  }
+
+  const renderMenu = (list:any = [], onSelect:any = () => {}) => {
+    return (
+      <Menu style={{ marginLeft: -10 }}>
+        <MenuTrigger
+          text={<ArrowDownIcon color={"white"}/>}
+        />
+        <MenuOptions>
+          <FlatList
+            data={list}
+            renderItem={({ item, index})=>
+              <MenuOption
+                onSelect={() => onSelect(item)}
+                text={item.label}
+              />
+            }
+          />
+        </MenuOptions>
+      </Menu>
+    )
   }
 
   const controls = () => {
@@ -278,78 +374,96 @@ const VideoCall = ({ navigation, route }) => {
       <View style={styles.optionsContainer}>
         <View style={styles.videoControls}>
           <TouchableOpacity onPress={() => setVideoEnabled(!videoEnabled)}>
-            <View
-              style={styles.controls}
-            >
-              {
-                videoEnabled ? (
-                  <VideoOnIcon />
-                ) : (
-                  <VideoOffIcon
-                    width={25}
-                    height={25}
-                  />
-                )
-              }
-              <Text
-                style={{ fontFamily: Regular }}
-                size={12}
-                color={'white'}
+            <View style={styles.controlsContainer}>
+              <View
+                style={styles.controls}
               >
-                Video {videoEnabled ? 'on' : 'off'}
-              </Text>
+                {
+                  videoEnabled ? (
+                    <VideoOnIcon />
+                  ) : (
+                    <VideoOffIcon
+                      width={25}
+                      height={25}
+                    />
+                  )
+                }
+                <Text
+                  style={{ fontFamily: Regular }}
+                  size={12}
+                  color={'white'}
+                >
+                  Video {videoEnabled ? 'on' : 'off'}
+                </Text>
+              </View>
+              {renderMenu(
+                cameraList,
+                (item:any) => tracks[1].setDevice(item.deviceId)
+              )}
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setMicEnabled(!micEnabled)}>
-            <View
-              style={styles.controls}
-            >
-              {
-                micEnabled ? (
-                  <MicOnIcon
-                    width={25}
-                    height={25}
-                    color={'white'}
-                  />
-                ) : (
-                  <MicOffIcon
-                    width={25}
-                    height={25}
-                    color={'white'}
-                  />
-                )
-              }
-              <Text
-                style={{ fontFamily: Regular }}
-                size={12}
-                color={'white'}
+            <View style={styles.controlsContainer}>
+              <View
+                style={styles.controls}
               >
-                Mic {micEnabled ? 'on' : 'off'}
-              </Text>
+                {
+                  micEnabled ? (
+                    <MicOnIcon
+                      width={25}
+                      height={25}
+                      color={'white'}
+                    />
+                  ) : (
+                    <MicOffIcon
+                      width={25}
+                      height={25}
+                      color={'white'}
+                    />
+                  )
+                }
+                <Text
+                  style={{ fontFamily: Regular }}
+                  size={12}
+                  color={'white'}
+                >
+                  Mic {micEnabled ? 'on' : 'off'}
+                </Text>
+              </View>
+              {renderMenu(
+                microphoneList,
+                (item:any) => tracks[0].setDevice(item.deviceId)
+              )}
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setSpeakerEnabled(!speakerEnabled)}>
-            <View
-              style={styles.controls}
-            >
-              {
-                speakerEnabled ? (
-                  <SpeakerOnIcon />
-                ) : (
-                  <SpeakerOffIcon />
-                )
-              }
-              <Text
-                style={{ fontFamily: Regular }}
-                size={12}
-                color={'white'}
+            <View style={styles.controlsContainer}>
+              <View
+                style={styles.controls}
               >
-                Speaker {speakerEnabled ? 'on' : 'off'}
-              </Text>
+                {
+                  speakerEnabled ? (
+                    <SpeakerOnIcon />
+                  ) : (
+                    <SpeakerOffIcon />
+                  )
+                }
+                <Text
+                  style={{ fontFamily: Regular }}
+                  size={12}
+                  color={'white'}
+                >
+                  Speaker {speakerEnabled ? 'on' : 'off'}
+                </Text>
+              </View>
+              {renderMenu(
+                playbackList,
+                (item:any) => console.log('PLAYBACK', item)
+              )}
             </View>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => setShowParticipants(!showParticipants)}>
+        <TouchableOpacity onPress={() => setShowParticipants(true)}>
           <View
             style={styles.controls}
           >
@@ -370,38 +484,33 @@ const VideoCall = ({ navigation, route }) => {
     );
   }
 
-  if (grid) {
+  const connecting = () => {
     return (
-      <View style={{ flex: 1 }}>
-        <ScrollView style={gridStyles.scrollContainer}>
-          <View style={gridStyles.container}>
-            {
-              participants.map(p => (
-                <View
-                  key={p}
-                  style={[
-                    gridStyles.box,
-                    { width: boxDimension.width, height: boxDimension.height }
-                  ]}
-                >
-                  <Text>Participant {p}</Text>
-                </View>
-              ))
-            }
-          </View>
-        </ScrollView>
-        <View style={{ height: 100, width: '100%', backgroundColor: 'black' }}>
-          <TouchableOpacity onPress={() => setParticipants((prev) => {
-              const size = lodash.size(prev) + 1;
-              return ([
-                ...prev,
-                size
-              ])
-            })}>
-            <Text color='white'>INCREMENT</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
+        <Text
+          size={20}
+          color='white'
+          style={{ fontFamily: Bold }}
+        >
+          Connecting
+        </Text>
+        <Loading
+          size={10}
+          space={4}
+          numberOfDots={4}
+          color={'#2A61CC'}
+          speed={3000}
+          style={{ marginLeft: 4 }}
+        />
       </View>
+    )
+  }
+
+  if (meeting) {
+    return (
+      <FloatingVideo
+        tracks={tracks}
+      />
     )
   }
 
@@ -409,19 +518,21 @@ const VideoCall = ({ navigation, route }) => {
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <View style={styles.main}>
-          <View style={{ paddingVertical: 10 }}>
-            <InputField
-              placeholder={'Meeting name'}
-              containerStyle={[styles.containerStyle, { width: width * 0.35, minWidth: 320, }]}
-              placeholderTextColor={'white'}
-              inputStyle={[styles.input]}
-              outlineStyle={[styles.outline]}
-              value={inputText}
-              onChangeText={setInputText}
-              onSubmitEditing={() => {}}
-              returnKeyType={'send'}
-            />
-          </View>
+          {
+            loading ? connecting() : (
+              <InputField
+                placeholder={'Meeting name'}
+                containerStyle={[styles.containerStyle, { width: width * 0.35, minWidth: 320, marginVertical: 10 }]}
+                placeholderTextColor={'white'}
+                inputStyle={[styles.input]}
+                outlineStyle={[styles.outline]}
+                value={meetingName}
+                onChangeText={setMeetingName}
+                onSubmitEditing={(event:any) => setMeetingName(event.nativeEvent.text)}
+                returnKeyType={'Done'}
+              />
+            )
+          }
           <View style={
             [
               styles.videoContainer,
@@ -435,9 +546,11 @@ const VideoCall = ({ navigation, route }) => {
             {
               !micEnabled && (
                 <View
-                  style={{ position: 'absolute', top: 5, left: 5, zIndex: 1 }}
+                  style={{ position: 'absolute', top: 10, left: 10, zIndex: 1 }}
                 >
                   <MicOffIcon
+                    width={16}
+                    height={16}
                     color={text.error}
                   />
                 </View>
@@ -447,7 +560,7 @@ const VideoCall = ({ navigation, route }) => {
               ready && tracks && (
                 <>
                   {
-                    videoEnabled && (
+                    videoEnabled ? (
                       <AgoraVideoPlayer
                         style={{
                           width: '100%',
@@ -459,6 +572,23 @@ const VideoCall = ({ navigation, route }) => {
                           fit: 'contain',
                         }}
                       />
+                    ) : (
+                      <View style={styles.disabledVideo}>
+                        <ProfileImage
+                          image={user?.profilePicture?.thumb}
+                          name={`${user.firstName} ${user.lastName}`}
+                          size={50}
+                          textSize={16}
+                        />
+                        <Text
+                          style={styles.name}
+                          numberOfLines={1}
+                          size={12}
+                          color={'white'}
+                        >
+                          {user?.title || ''} {user.firstName}
+                        </Text>
+                      </View>
                     )
                   }
                   {controls()}
@@ -475,7 +605,7 @@ const VideoCall = ({ navigation, route }) => {
               }
             ]}>
             <View style={{ flex: 1 }}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => window.close()}>
                 <View style={[styles.button, styles.cancelButton]}>
                   <Text
                     color='white'
@@ -489,10 +619,10 @@ const VideoCall = ({ navigation, route }) => {
             </View>
             <View style={{ flex: 0.1 }} />
             <View style={{ flex: 1 }}>
-              <TouchableOpacity disabled={loading}>
-                <View style={[styles.button, styles.startButton, loading && { backgroundColor: '#565961', borderColor: '#565961' }]}>
+              <TouchableOpacity disabled={!readyToStart} onPress={onStartMeeting}>
+                <View style={[styles.button, styles.startButton, !readyToStart && { backgroundColor: '#565961', borderColor: '#565961' }]}>
                   <Text
-                    color={loading ? '#808196' : 'white'}
+                    color={!readyToStart ? '#808196' : 'white'}
                     size={18}
                     style={{ fontFamily: Regular500 }}
                   >
@@ -505,7 +635,15 @@ const VideoCall = ({ navigation, route }) => {
         </View>
         {
           showParticipants && (
-            <View style={{ flex: 0.25, backgroundColor: 'white' }}>
+            <View style={styles.participantsBox} dataSet={{ media: ids.participantsBox }}>
+              <AddParticipants
+                meetingPartticipants={selectedContacts}
+                onClose={() => setShowParticipants(false)}
+                onSubmit={(selectedItem:any) => {
+                  setSelectedContacts(selectedItem);
+                  checkSelectedItems(selectedItem);
+                }}
+              />
             </View>
           )
         }

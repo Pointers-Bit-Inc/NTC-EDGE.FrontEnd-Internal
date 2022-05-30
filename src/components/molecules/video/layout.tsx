@@ -229,7 +229,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     if (isInit) {
       joinChannel();
     }
-  }, [isInit, joinChannel]);
+  }, [isInit]);
 
   useEffect(() => {
     if (callEnded) {

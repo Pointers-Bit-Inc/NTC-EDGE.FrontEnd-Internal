@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const FloatingVideo = () => {
+const FloatingVideo = ({ tracks }:any) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const videoRef = useRef<any>(null);

@@ -448,7 +448,7 @@ const Meet = ({ navigation }) => {
                   </Text>
 
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     onPress={onVideoCall}
                 >
                   <View style={{flexDirection:'row',alignItems:'center'}}>
@@ -456,18 +456,20 @@ const Meet = ({ navigation }) => {
                       color={"#113196"}
                     />
                   </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
               <View  style={{paddingHorizontal: 24,paddingVertical: 46}}>
                 <View style={{paddingBottom: 24}}>
                   <Text color={"#606A80"} size={16}>Get started</Text>
                 </View>
-                <View style={{paddingLeft: 17, alignItems: "center", flexDirection: "row", borderRadius: 10, borderWidth: 1,borderColor: "#E5E5E5", backgroundColor: "#fff", width: 303, height: 50}}>
-                  <View style={{paddingRight: 12}}>
-                    <VideoOutlineIcon/>
+                <TouchableOpacity onPress={onVideoCall}>
+                  <View style={{paddingLeft: 17, alignItems: "center", flexDirection: "row", borderRadius: 10, borderWidth: 1,borderColor: "#E5E5E5", backgroundColor: "#fff", width: 303, height: 50}}>
+                    <View style={{paddingRight: 12}}>
+                      <VideoOutlineIcon/>
+                    </View>
+                    <Text size={20} color={"#606A80"}>Meet Now</Text>
                   </View>
-                   <Text size={20} color={"#606A80"}>Meet Now</Text>
-                </View>
+                </TouchableOpacity>
                 <View style={{paddingTop: 23}}>
                   <View style={{paddingLeft: 17, alignItems: "center", flexDirection: "row", borderRadius: 10, borderWidth: 1,borderColor: "#E5E5E5", backgroundColor: "#fff", width: 303, height: 50}}>
                     <View style={{paddingRight: 12}}>
