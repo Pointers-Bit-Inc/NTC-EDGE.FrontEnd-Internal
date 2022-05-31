@@ -9,7 +9,7 @@ import {
 import StyleSheet from 'react-native-media-query';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
 import lodash from 'lodash';
-import { AddParticipantsIcon, ArrowDownIcon, ArrowLeftIcon, MicOffIcon, MicOnIcon, SpeakerIcon, SpeakerOffIcon, SpeakerOnIcon, VideoOffIcon, VideoOnIcon } from '@components/atoms/icon'
+import { AddParticipantsIcon, ArrowDownIcon, ArrowLeftIcon, MenuIcon, MicOffIcon, MicOnIcon, SpeakerIcon, SpeakerOffIcon, SpeakerOnIcon, VideoOffIcon, VideoOnIcon } from '@components/atoms/icon'
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import { getChannelName } from 'src/utils/formatting';
 import { resetCurrentMeeting, setMeeting, setOptions, updateMeetingParticipants } from 'src/reducers/meeting/actions';
@@ -96,7 +96,7 @@ const { ids, styles } = StyleSheet.create({
   },
   controlsContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
   },
   controls: {
     justifyContent: 'space-between',
@@ -445,9 +445,9 @@ const VideoCall = () => {
   const renderMenu = (list:any = [], onSelect:any = () => {}) => {
     return (
       <Menu style={{ marginLeft: -10 }}>
-        <MenuTrigger
-          text={<ArrowDownIcon color={"white"}/>}
-        />
+        <MenuTrigger>
+          <ArrowDownIcon size={18} color={"white"}/>
+        </MenuTrigger>
         <MenuOptions>
           <FlatList
             data={list}
@@ -502,10 +502,10 @@ const VideoCall = () => {
 
   const controls = () => {
     return (
-      <View style={styles.optionsContainer}>
-        <View style={styles.videoControls}>
+      <View style={[styles.optionsContainer, width < 1000 && { paddingHorizontal: 10 }]}>
+        <View style={[styles.videoControls, (meetingId || roomId) && { justifyContent: 'center', flex: 1 }]}>
           <TouchableOpacity onPress={() => setVideoEnabled(!videoEnabled)}>
-            <View style={styles.controlsContainer}>
+            <View style={[styles.controlsContainer, width < 1000 && { paddingHorizontal: 10 }]}>
               <View
                 style={styles.controls}
               >
@@ -534,7 +534,7 @@ const VideoCall = () => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setMicEnabled(!micEnabled)}>
-            <View style={styles.controlsContainer}>
+            <View style={[styles.controlsContainer, width < 1000 && { paddingHorizontal: 10 }]}>
               <View
                 style={styles.controls}
               >
@@ -568,7 +568,7 @@ const VideoCall = () => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setSpeakerEnabled(!speakerEnabled)}>
-            <View style={styles.controlsContainer}>
+            <View style={[styles.controlsContainer, width < 1000 && { paddingHorizontal: 10 }]}>
               <View
                 style={styles.controls}
               >
@@ -594,23 +594,35 @@ const VideoCall = () => {
             </View>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => setShowParticipants(true)}>
-          <View
-            style={styles.controls}
-          >
-            <AddParticipantsIcon
-              height={25}
-              width={25}
-            />
-            <Text
-              style={{ fontFamily: Regular }}
-              size={12}
-              color={'white'}
-            >
-              Add participants
-            </Text>
-          </View>
-        </TouchableOpacity>
+        {
+          !(meetingId || roomId) && (
+            <TouchableOpacity onPress={() => setShowParticipants(true)}>
+              <View
+                style={styles.controls}
+              >
+                {
+                  width < 1400 ? (
+                    <MenuIcon type='more' color='white' size={fontValue(30)} />
+                  ) : (
+                    <>
+                      <AddParticipantsIcon
+                        height={25}
+                        width={25}
+                      />
+                      <Text
+                        style={{ fontFamily: Regular }}
+                        size={12}
+                        color={'white'}
+                      >
+                        Add participants
+                      </Text>
+                    </>
+                  )
+                }
+              </View>
+            </TouchableOpacity>
+          ) 
+        }
       </View>
     );
   }
