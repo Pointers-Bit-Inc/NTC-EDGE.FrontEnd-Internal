@@ -51,6 +51,7 @@ import useCamera from 'src/hooks/useCamera';
 import useMicrophone from 'src/hooks/useMicrophone';
 import ProfileImage from '@components/atoms/image/profile';
 import usePlayback from 'src/hooks/usePlayback';
+import IMeetings from 'src/interfaces/IMeetings';
 
 const { ids, styles } = StyleSheet.create({
   container: {
@@ -222,6 +223,7 @@ const VideoCall = () => {
   const { meeting } = useSelector((state:RootStateOrAny) => state.meeting);
   const {
     createMeeting,
+    getMeeting,
     initSignalR,
     onConnection,
     onChatUpdate,
@@ -241,7 +243,10 @@ const VideoCall = () => {
   const [micEnabled, setMicEnabled] = useState(true);
   const [speakerEnabled, setSpeakerEnabled] = useState(true);
   const [readyToStart, setReadyToStart] = useState(false);
+  const [meetingEnded, setMeetingEnded] = useState(false);
+  const [actionType, setActionType] = useState('create');
   const [meetingName, setMeetingName] = useState('');
+  const [tempMeeting, setTempMeeting] = useState<any>({});
   const [currentMeeting, setCurrentMeeting] = useState({
     channelId: '',
     isChannelExist: false,
@@ -296,6 +301,36 @@ const VideoCall = () => {
     }
   };
 
+  const onJoinMeeting = () => {
+    if (!!lodash.size(tempMeeting)) {
+      setLoading(true);
+      getMeeting(meetingId, (err, data) => {
+        setLoading(false);
+        if (err) {
+          Alert.alert('Something went wrong');
+        } else {
+          if (data) {
+            const { room } = tempMeeting;
+            tempMeeting.otherParticipants = lodash.reject(tempMeeting.participants, (p:IParticipants) => p._id === user._id);
+            room.otherParticipants =  tempMeeting.otherParticipants;
+            dispatch(setSelectedChannel(tempMeeting.room));
+            dispatch(resetCurrentMeeting());
+            dispatch(setOptions({
+              isHost: tempMeeting?.host?._id === user._id,
+              isVoiceCall: tempMeeting?.isVoiceCall,
+              isMute: !micEnabled,
+              isVideoEnable: videoEnabled,
+            }));
+            dispatch(setMeeting(tempMeeting))
+          } else {
+            Alert.alert('Something went wrong');
+          }
+        }
+      })
+      
+    }
+  }
+
   const checkSelectedItems = (selectedItem:any) => {
     if (lodash.size(selectedItem) === 1 && selectedItem[0].isGroup) {
       setCurrentMeeting({
@@ -341,13 +376,52 @@ const VideoCall = () => {
   }, []);
 
   useEffect(() => {
-    setReadyToStart(!(loading || selectedContacts.length === 0 || !ready));
-  }, [loading, selectedContacts, ready]);
+    if (meetingId) {
+      setActionType('join');
+      setLoading(true);
+      getMeeting(meetingId, (err, data) => {
+        setLoading(false);
+        if (err) {
+          Alert.alert('Something went wrong');
+        } else {
+          if (data) {
+            const { room } = data;
+            data.otherParticipants = lodash.reject(data.participants, (p:IParticipants) => p._id === user._id);
+            room.otherParticipants =  data.otherParticipants;
+            setTempMeeting(data);
+          } else {
+            Alert.alert('Something went wrong');
+          }
+        }
+      })
+    }
+  }, [meetingId]);
+
+  useEffect(() => {
+    if (!meeting && meetingEnded && actionType === 'join') {
+      const url = `${window.location.origin}/VideoCall`;
+      const behaviour = '_self';
+      const options = 'toolbar=no, titlebar=no, location=no, directories=no, status=no, menubar=no, copyhistory=yes';
+      window.open(url, behaviour, options);
+    } else {
+      if (meeting?.ended) {
+        setMeetingEnded(true);
+      }
+    }
+  }, [meeting, meetingEnded]);
+
+  useEffect(() => {
+    if (actionType === 'create') {
+      setReadyToStart(!(loading || selectedContacts.length === 0 || !ready));
+    } else {
+      setReadyToStart(!(loading || !ready || !lodash.size(tempMeeting)));
+    }
+  }, [loading, selectedContacts, ready, tempMeeting]);
 
   if (!fontsLoaded) {
     return null;
   }
-
+  console.log('tempMeeting tempMeeting', tempMeeting);
   const renderMenu = (list:any = [], onSelect:any = () => {}) => {
     return (
       <Menu style={{ marginLeft: -10 }}>
@@ -520,17 +594,34 @@ const VideoCall = () => {
         <View style={styles.main}>
           {
             loading ? connecting() : (
-              <InputField
-                placeholder={'Meeting name'}
-                containerStyle={[styles.containerStyle, { width: width * 0.35, minWidth: 320, marginVertical: 10 }]}
-                placeholderTextColor={'white'}
-                inputStyle={[styles.input]}
-                outlineStyle={[styles.outline]}
-                value={meetingName}
-                onChangeText={setMeetingName}
-                onSubmitEditing={(event:any) => setMeetingName(event.nativeEvent.text)}
-                returnKeyType={'Done'}
-              />
+              <>
+                <InputField
+                  placeholder={'Meeting name'}
+                  containerStyle={[styles.containerStyle, { width: width * 0.35, minWidth: 320, marginVertical: 10 }]}
+                  placeholderTextColor={'white'}
+                  inputStyle={[styles.input]}
+                  outlineStyle={[styles.outline]}
+                  value={meetingName}
+                  onChangeText={setMeetingName}
+                  onSubmitEditing={(event:any) => setMeetingName(event.nativeEvent.text)}
+                  returnKeyType={'Done'}
+                />
+                {
+                  !!lodash.size(tempMeeting) && (
+                    <View style={{ alignSelf: 'center', marginBottom: 30 }}>
+                      <GroupImage
+                        participants={tempMeeting?.participants}
+                        size={tempMeeting.isGroup ? 60 : 45}
+                        textSize={tempMeeting?.isGroup ? 28 : 20}
+                        inline={true}
+                        showOthers={true}
+                        othersColor={'white'}
+                        sizeOfParticipants={8}
+                      />
+                    </View>
+                  )
+                }
+              </>
             )
           }
           <View style={
@@ -619,14 +710,17 @@ const VideoCall = () => {
             </View>
             <View style={{ flex: 0.1 }} />
             <View style={{ flex: 1 }}>
-              <TouchableOpacity disabled={!readyToStart} onPress={onStartMeeting}>
+              <TouchableOpacity
+                disabled={!readyToStart}
+                onPress={actionType === 'create' ? onStartMeeting : onJoinMeeting}
+              >
                 <View style={[styles.button, styles.startButton, !readyToStart && { backgroundColor: '#565961', borderColor: '#565961' }]}>
                   <Text
                     color={!readyToStart ? '#808196' : 'white'}
                     size={18}
                     style={{ fontFamily: Regular500 }}
                   >
-                    Start meeting
+                    {actionType === 'create' ? 'Start meeting' : 'Join meeting'}
                   </Text>
                 </View>
               </TouchableOpacity>

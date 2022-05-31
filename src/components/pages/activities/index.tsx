@@ -129,6 +129,12 @@ export default function ActivitiesPage(props:any){
         }
     },[]);
     const onJoin=(item:IMeetings)=>{
+        if (Platform.OS === 'web') {
+            const url = `${window.location.origin}/VideoCall?meetingId=${item._id}`;
+            const behaviour = '_blank';
+            const options = 'toolbar=no, titlebar=no, location=no, directories=no, status=no, menubar=no, copyhistory=yes';
+            return window.open(url, behaviour, options);
+        }
         dispatch(setSelectedChannel(item.room));
         dispatch(resetCurrentMeeting());
         setTimeout(() => {

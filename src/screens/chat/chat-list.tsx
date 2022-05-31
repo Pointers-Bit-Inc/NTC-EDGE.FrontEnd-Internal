@@ -437,7 +437,7 @@ const List = () => {
             textSize={isGroup ? 28 : 20}
             inline={true}
             showOthers={true}
-            sizeOfParticipants={3}
+            sizeOfParticipants={5}
           />
         </View>
         <Text

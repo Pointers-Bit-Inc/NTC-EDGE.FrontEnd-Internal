@@ -148,6 +148,15 @@ const FloatingVideo = ({ tracks }:any) => {
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
   useEffect(() => {
+    if (!meeting.ended) {
+      setStarted(false);
+    } else {
+      setIsMaximized(true);
+      dispatch(setToggle(null));
+    }
+  }, [meeting]);
+
+  useEffect(() => {
     let unmounted = false;
 
     if (meetingId) {
@@ -178,17 +187,6 @@ const FloatingVideo = ({ tracks }:any) => {
       }));
     }
   }, [meetingId]);
-
-  useEffect(() => {
-    let interval:any = null;
-    if (!meeting.ended) {
-      setStarted(false);
-    } else {
-      setIsMaximized(true);
-      dispatch(setToggle(null));
-    }
-    return () => clearInterval(interval);
-  }, [meeting.ended]);
 
   useEffect(() => {
     if (toggleMute) {

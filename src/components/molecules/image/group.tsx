@@ -2,10 +2,12 @@ import React, { FC } from 'react'
 import { View, StyleSheet, ScrollView } from 'react-native'
 import lodash from 'lodash';
 import ProfileImage from '@components/atoms/image/profile';
-import { primaryColor } from '@styles/color';
+import { primaryColor, text } from '@styles/color';
 import {isMobile} from "@pages/activities/isMobile";
 import {fontValue} from "@pages/activities/fontValue";
 import IParticipants from 'src/interfaces/IParticipants';
+import Text from '@components/atoms/text';
+import { Regular, Regular500 } from '@styles/font';
 
 const styles = StyleSheet.create({
   image: {
@@ -39,6 +41,7 @@ interface Props {
   inline?: boolean;
   sizeOfParticipants?: number;
   showOthers?: boolean;
+  othersColor?: string;
 }
 
 const GroupImage: FC<Props> = ({
@@ -48,6 +51,7 @@ const GroupImage: FC<Props> = ({
   inline = false,
   sizeOfParticipants = 2,
   showOthers = false,
+  othersColor = 'black'
 }) => {
   const imageSize = size / 1.4;
   if (lodash.size(participants) === 1) {
@@ -67,7 +71,7 @@ const GroupImage: FC<Props> = ({
     const others = lodash.size(participants) - lodash.size(filteredParticipants);
 
     return (
-      <View style={{ height: fontValue(imageSize), marginLeft: imageSize * 0.35 }}>
+      <View style={{ height: fontValue(imageSize), marginLeft: imageSize * 0.3 }}>
         <View
           style={{
             flexDirection: 'row'
@@ -77,7 +81,7 @@ const GroupImage: FC<Props> = ({
             filteredParticipants?.map((p:IParticipants, index:number) => (
               <View
                 key={p._id}
-                style={{ marginLeft: -(imageSize * 0.35), zIndex: 999 - index }}
+                style={{ marginLeft: -(imageSize * 0.3), zIndex: 999 - index }}
               >
                 <ProfileImage
                   style={styles.border}
@@ -93,38 +97,29 @@ const GroupImage: FC<Props> = ({
             others > 0 && showOthers && (
               <View
                 key={'others'}
-                style={{ marginLeft: -(imageSize * 0.35), zIndex: 999 - lodash.size(filteredParticipants) }}
+                style={{ zIndex: 999 - lodash.size(filteredParticipants) }}
               >
-                <ProfileImage
-                  style={{ marginHorizontal: 1, }}
-                  key={'others'}
-                  image={''}
-                  others={`+${others}`}
-                  size={imageSize}
-                  textSize={textSize/2}
-                />
+                <View
+                  style={{
+                    height: imageSize,
+                    width: imageSize,
+                    marginLeft: -imageSize * 0.1,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Text
+                    size={textSize/1.2}
+                    color={othersColor}
+                    style={{ fontFamily: Regular500 }}
+                  >
+                    +{others}
+                  </Text>
+                </View>
               </View>
             )
           }
         </View>
-        {/* <View style={styles.topPosition}>
-          <ProfileImage
-            style={styles.border}
-            image={participants[0]?.profilePicture?.thumb}
-            name={`${participants[0]?.firstName} ${participants[0]?.lastName}`}
-            size={imageSize}
-            textSize={textSize/2}
-          />
-        </View>
-        <View style={styles.bottomPosition}>
-          <ProfileImage
-            style={styles.border}
-            image={participants[1]?.profilePicture?.thumb}
-            name={`${participants[1]?.firstName} ${participants[1]?.lastName}`}
-            size={imageSize}
-            textSize={textSize/2}
-          />
-        </View> */}
       </View>
     )
   }

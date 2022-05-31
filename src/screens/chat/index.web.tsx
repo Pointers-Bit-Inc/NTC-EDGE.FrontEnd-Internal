@@ -263,17 +263,10 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
     const [selectedItem,setSelectedItem]:any=useState({});
 
     const onJoin=(item:IMeetings)=>{
-        dispatch(setSelectedChannel(item.room));
-        dispatch(resetCurrentMeeting());
-        setTimeout(() => {
-            dispatch(setOptions({
-            isHost: item.host._id === props.user._id,
-            isVoiceCall: item.isVoiceCall,
-            isMute: false,
-            isVideoEnable: true,
-            }));
-            dispatch(setMeeting(item));
-        }, 100);
+        const url = `${window.location.origin}/VideoCall?meetingId=${item._id}`;
+        const behaviour = '_blank';
+        const options = 'toolbar=no, titlebar=no, location=no, directories=no, status=no, menubar=no, copyhistory=yes';
+        window.open(url, behaviour, options);
     };
     const onClose=(item:IMeetings,leave=false)=>{
         if(leave && item.isGroup){
@@ -684,17 +677,10 @@ const ChatList=({navigation}:any)=>{
     });
 
     const onJoin=(item:IMeetings)=>{
-        dispatch(setSelectedChannel(item.room));
-        dispatch(resetCurrentMeeting());
-        setTimeout(() => {
-        dispatch(setOptions({
-            isHost: item.host._id === user._id,
-            isVoiceCall: item.isVoiceCall,
-            isMute: false,
-            isVideoEnable: true,
-        }));
-        dispatch(setMeeting(item));
-        }, 100);
+        const url = `${window.location.origin}/VideoCall?meetingId=${item._id}`;
+        const behaviour = '_blank';
+        const options = 'toolbar=no, titlebar=no, location=no, directories=no, status=no, menubar=no, copyhistory=yes';
+        window.open(url, behaviour, options);
     };
     const _editMessage=(messageId:string,message:string)=>{
         editMessage({
