@@ -140,6 +140,16 @@ const useSignalr = () => {
     });
   }, []);
 
+  const getChannel = useCallback((id, callback = () => {}, config = {}) => {
+    api.get(`/rooms/${id}`, config)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
   const getChannelByParticipants = useCallback(({ participants }, callback = () => {}, config = {}) => {
     api.post('/rooms/get-room', {
       participants,
@@ -364,6 +374,7 @@ const useSignalr = () => {
     onMeetingUpdate,
     OnMeetingNotification,
     createChannel,
+    getChannel,
     getChannelByParticipants,
     leaveChannel,
     getChatList,

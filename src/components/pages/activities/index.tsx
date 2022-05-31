@@ -48,6 +48,7 @@ import FilterPressIcon from "@assets/svg/filterPress";
 import {useActivities} from "../../../hooks/useActivities";
 import IParticipants from "src/interfaces/IParticipants";
 import {isLandscapeSync,isTablet} from "react-native-device-info";
+import { openUrl } from "src/utils/web-actions";
 
 
 export default function ActivitiesPage(props:any){
@@ -130,10 +131,7 @@ export default function ActivitiesPage(props:any){
     },[]);
     const onJoin=(item:IMeetings)=>{
         if (Platform.OS === 'web') {
-            const url = `${window.location.origin}/VideoCall?meetingId=${item._id}`;
-            const behaviour = '_blank';
-            const options = 'toolbar=no, titlebar=no, location=no, directories=no, status=no, menubar=no, copyhistory=yes';
-            return window.open(url, behaviour, options);
+            return openUrl( `/VideoCall?meetingId=${item._id}`);
         }
         dispatch(setSelectedChannel(item.room));
         dispatch(resetCurrentMeeting());

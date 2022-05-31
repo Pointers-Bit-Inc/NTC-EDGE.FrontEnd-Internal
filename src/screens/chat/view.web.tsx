@@ -49,6 +49,7 @@ import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import useAttachmentPicker from 'src/hooks/useAttachment';
 import { Regular, Regular500 } from '@styles/font';
 import { AttachmentMenu } from '@components/molecules/menu';
+import { openUrl } from 'src/utils/web-actions';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -236,10 +237,7 @@ const ChatView = ({ navigation, route }:any) => {
   );
 
   const onJoin = (item:IMeetings) => {
-    const url = `${window.location.origin}/VideoCall?meetingId=${item._id}`;
-    const behaviour = '_blank';
-    const options = 'toolbar=no, titlebar=no, location=no, directories=no, status=no, menubar=no, copyhistory=yes';
-    window.open(url, behaviour, options);
+    openUrl(`/VideoCall?meetingId=${item._id}`);
   }
 
   const onClose = (item:IMeetings, leave = false) => {

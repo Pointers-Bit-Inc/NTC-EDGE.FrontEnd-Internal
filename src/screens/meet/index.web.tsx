@@ -38,6 +38,7 @@ import JsIcon from "@assets/svg/webitem/js";
 import VideoOutlineIcon from "@assets/svg/videoOutline";
 import CalendarAddOutline from "@assets/svg/calendarAddOutline";
 import { BASE_URL } from 'src/services/config';
+import { openUrl } from 'src/utils/web-actions';
 
 const { width, height } = Dimensions.get('window');
 
@@ -252,17 +253,11 @@ const Meet = ({ navigation }) => {
   });
 
   const onJoin = (item:IMeetings) => {
-    const url = `${window.location.origin}/VideoCall?meetingId=${item._id}`;
-    const behaviour = '_blank';
-    const options = 'toolbar=no, titlebar=no, location=no, directories=no, status=no, menubar=no, copyhistory=yes';
-    window.open(url, behaviour, options);
+    openUrl(`/VideoCall?meetingId=${item._id}`);
   }
 
   const onVideoCall = () => {
-    const url = `${window.location.origin}/VideoCall`;
-    const behaviour = '_blank';
-    const options = 'toolbar=no, titlebar=no, location=no, directories=no, status=no, menubar=no, copyhistory=yes';
-    window.open(url, behaviour, options);
+    openUrl('/VideoCall');
   } 
 
   const onRequestData = () => setSendRequest(request => request + 1);

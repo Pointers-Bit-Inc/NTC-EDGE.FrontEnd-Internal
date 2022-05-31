@@ -20,6 +20,7 @@ import Button from '@components/atoms/button';
 import lodash from 'lodash';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold, Regular500 } from '@styles/font';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const styles = StyleSheet.create({
   container: {
@@ -114,7 +115,8 @@ const CreateMeeting = ({
         }
       });
     } else {
-      createMeeting({ participants, name: meetingName }, (error, data) => {
+      const filteredParticipants = lodash.reject(participants, (p:IParticipants) => p._id === user._id);
+      createMeeting({ participants: filteredParticipants, name: meetingName }, (error, data) => {
         setLoading(false);
         if (!error) {
           const { room } = data;

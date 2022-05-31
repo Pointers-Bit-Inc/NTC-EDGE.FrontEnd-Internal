@@ -34,6 +34,7 @@ import {NoContent} from "@screens/meet/index.web";
 import GroupImage from '@components/molecules/image/group';
 import CreateMeeting from '@components/pages/chat-modal/meeting';
 import { setMeeting, setOptions } from 'src/reducers/meeting/actions';
+import { openUrl } from 'src/utils/web-actions';
 
 const { width, height } = Dimensions.get('window');
 
@@ -399,8 +400,12 @@ const List = () => {
   );
 
   const onCallAgain = (videoEnabled:boolean) => {
-    setIsVideoEnable(videoEnabled);
-    meetingModalRef.current?.open();
+    if (Platform.OS === 'web') {
+      openUrl(`/VideoCall?roomId=${channelId}&isVoiceCall=${!videoEnabled}`);
+    } else {
+      setIsVideoEnable(videoEnabled);
+      meetingModalRef.current?.open();
+    }
   }
   
   const checkIfImage = (uri:any) => {

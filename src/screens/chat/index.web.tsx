@@ -75,6 +75,7 @@ import hairlineWidth=StyleSheet.hairlineWidth;
 import {MEET} from "../../reducers/activity/initialstate";
 import {NoContent} from "@screens/meet/index.web";
 import {configs} from "@typescript-eslint/eslint-plugin";
+import { openUrl } from 'src/utils/web-actions';
 
 const {width,height}=Dimensions.get('window');
 
@@ -263,10 +264,7 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
     const [selectedItem,setSelectedItem]:any=useState({});
 
     const onJoin=(item:IMeetings)=>{
-        const url = `${window.location.origin}/VideoCall?meetingId=${item._id}`;
-        const behaviour = '_blank';
-        const options = 'toolbar=no, titlebar=no, location=no, directories=no, status=no, menubar=no, copyhistory=yes';
-        window.open(url, behaviour, options);
+        openUrl(`/VideoCall?meetingId=${item._id}`);
     };
     const onClose=(item:IMeetings,leave=false)=>{
         if(leave && item.isGroup){
@@ -677,11 +675,13 @@ const ChatList=({navigation}:any)=>{
     });
 
     const onJoin=(item:IMeetings)=>{
-        const url = `${window.location.origin}/VideoCall?meetingId=${item._id}`;
-        const behaviour = '_blank';
-        const options = 'toolbar=no, titlebar=no, location=no, directories=no, status=no, menubar=no, copyhistory=yes';
-        window.open(url, behaviour, options);
+        openUrl(`/VideoCall?meetingId=${item._id}`);
     };
+
+    const onVideoCall = (isVoiceCall:boolean) => {
+        openUrl(`/VideoCall?roomId=${_id}&isVoiceCall=${isVoiceCall}`);
+    }
+
     const _editMessage=(messageId:string,message:string)=>{
         editMessage({
             messageId,
@@ -976,6 +976,7 @@ const ChatList=({navigation}:any)=>{
                                         <View style={{flexDirection:"row",alignItems:"center"}}>
                                             <View style={{flexDirection:"row",paddingRight:42}}>
                                                 <TouchableOpacity onPress={()=>{
+                                                    onVideoCall(false);
                                                 }}>
                                                     <View style={{paddingRight:24}}>
                                                         <NewCallIcon
@@ -984,6 +985,7 @@ const ChatList=({navigation}:any)=>{
                                                     </View>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity onPress={()=>{
+                                                    onVideoCall(false);
                                                 }}>
                                                     <View>
                                                         <NewVideoIcon

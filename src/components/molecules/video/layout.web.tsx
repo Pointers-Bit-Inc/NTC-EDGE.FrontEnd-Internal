@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: '#1F2022',
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 5,
     overflow: 'hidden',
     backgroundColor: '#606A80',

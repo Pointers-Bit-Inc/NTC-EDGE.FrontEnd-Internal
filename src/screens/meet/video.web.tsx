@@ -11,6 +11,7 @@ import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
 import lodash from 'lodash';
 import { AddParticipantsIcon, ArrowDownIcon, ArrowLeftIcon, MicOffIcon, MicOnIcon, SpeakerIcon, SpeakerOffIcon, SpeakerOnIcon, VideoOffIcon, VideoOnIcon } from '@components/atoms/icon'
 import { setSelectedChannel } from 'src/reducers/channel/actions';
+import { getChannelName } from 'src/utils/formatting';
 import { resetCurrentMeeting, setMeeting, setOptions, updateMeetingParticipants } from 'src/reducers/meeting/actions';
 import Text from '@components/atoms/text'
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
@@ -52,6 +53,7 @@ import useMicrophone from 'src/hooks/useMicrophone';
 import ProfileImage from '@components/atoms/image/profile';
 import usePlayback from 'src/hooks/usePlayback';
 import IMeetings from 'src/interfaces/IMeetings';
+import { openUrl } from 'src/utils/web-actions';
 
 const { ids, styles } = StyleSheet.create({
   container: {
@@ -190,7 +192,7 @@ const getUrlVars = () => {
   for(var i = 0; i < hashes.length; i++)
   {
     hash = hashes[i].split('=');
-    vars[hash[0]] = hash[1];
+    vars[hash[0]] = hash[1] === 'false' ? false : hash[1] === 'true' ? true : hash[1];
   }
 
   return vars;
@@ -218,10 +220,11 @@ const VideoCall = () => {
     Poppins_900Black,
     Poppins_900Black_Italic,
   });
-  const { channelId, meetingId, isVoiceCall } = getUrlVars();
+  const { roomId, meetingId, isVoiceCall } = getUrlVars();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { meeting } = useSelector((state:RootStateOrAny) => state.meeting);
   const {
+    getChannel,
     createMeeting,
     getMeeting,
     initSignalR,
@@ -239,7 +242,7 @@ const VideoCall = () => {
   const { ready, tracks }:any = useMicrophoneAndCameraTracks();
   const [loading, setLoading] = useState(false);
   const [showParticipants, setShowParticipants] = useState(false);
-  const [videoEnabled, setVideoEnabled] = useState(true);
+  const [videoEnabled, setVideoEnabled] = useState(!isVoiceCall);
   const [micEnabled, setMicEnabled] = useState(true);
   const [speakerEnabled, setSpeakerEnabled] = useState(true);
   const [readyToStart, setReadyToStart] = useState(false);
@@ -248,16 +251,16 @@ const VideoCall = () => {
   const [meetingName, setMeetingName] = useState('');
   const [tempMeeting, setTempMeeting] = useState<any>({});
   const [currentMeeting, setCurrentMeeting] = useState({
-    channelId: '',
+    roomId: '',
     isChannelExist: false,
     participants: [],
   });
-  const [selectedContacts, setSelectedContacts] = useState([]);
+  const [selectedContacts, setSelectedContacts] = useState<any>([]);
 
   const onStartMeeting = () => {
     setLoading(true);
     if (currentMeeting.isChannelExist) {
-      createMeeting({ roomId: currentMeeting.channelId, isVoiceCall, participants: currentMeeting.participants, name: meetingName }, (error, data) => {
+      createMeeting({ roomId: currentMeeting.roomId, isVoiceCall, participants: currentMeeting.participants, name: meetingName }, (error, data) => {
         setLoading(false);
         if (!error) {
           const { room } = data;
@@ -278,7 +281,8 @@ const VideoCall = () => {
         }
       });
     } else {
-      createMeeting({ participants: currentMeeting.participants, name: meetingName }, (error, data) => {
+      const filteredParticipants = lodash.reject(currentMeeting.participants, (p:IParticipants) => p._id === user._id);
+      createMeeting({ participants: filteredParticipants, name: meetingName }, (error, data) => {
         setLoading(false);
         if (!error) {
           const { room } = data;
@@ -310,18 +314,18 @@ const VideoCall = () => {
           Alert.alert('Something went wrong');
         } else {
           if (data) {
-            const { room } = tempMeeting;
-            tempMeeting.otherParticipants = lodash.reject(tempMeeting.participants, (p:IParticipants) => p._id === user._id);
-            room.otherParticipants =  tempMeeting.otherParticipants;
-            dispatch(setSelectedChannel(tempMeeting.room));
+            const { room } = data;
+            data.otherParticipants = lodash.reject(data.participants, (p:IParticipants) => p._id === user._id);
+            room.otherParticipants =  data.otherParticipants;
+            dispatch(setSelectedChannel(data.room));
             dispatch(resetCurrentMeeting());
             dispatch(setOptions({
-              isHost: tempMeeting?.host?._id === user._id,
-              isVoiceCall: tempMeeting?.isVoiceCall,
+              isHost: data?.host?._id === user._id,
+              isVoiceCall: data?.isVoiceCall,
               isMute: !micEnabled,
               isVideoEnable: videoEnabled,
             }));
-            dispatch(setMeeting(tempMeeting))
+            dispatch(setMeeting(data))
           } else {
             Alert.alert('Something went wrong');
           }
@@ -334,7 +338,7 @@ const VideoCall = () => {
   const checkSelectedItems = (selectedItem:any) => {
     if (lodash.size(selectedItem) === 1 && selectedItem[0].isGroup) {
       setCurrentMeeting({
-        channelId: selectedItem[0]._id,
+        roomId: selectedItem[0]._id,
         isChannelExist: true,
         participants: selectedItem[0].participants,
       })
@@ -357,7 +361,7 @@ const VideoCall = () => {
       });
 
       setCurrentMeeting({
-        channelId: '',
+        roomId: '',
         isChannelExist: false,
         participants: tempParticipants,
       })
@@ -398,11 +402,27 @@ const VideoCall = () => {
   }, [meetingId]);
 
   useEffect(() => {
+    if (roomId) {
+      setLoading(true);
+      getChannel(roomId, (err, data) => {
+        setLoading(false);
+        if (err) {
+          Alert.alert('Something went wrong');
+        } else {
+          if (data) {
+            setSelectedContacts([data]);
+            checkSelectedItems([data]);
+          } else {
+            Alert.alert('Something went wrong');
+          }
+        }
+      })
+    }
+  }, [roomId]);
+
+  useEffect(() => {
     if (!meeting && meetingEnded && actionType === 'join') {
-      const url = `${window.location.origin}/VideoCall`;
-      const behaviour = '_self';
-      const options = 'toolbar=no, titlebar=no, location=no, directories=no, status=no, menubar=no, copyhistory=yes';
-      window.open(url, behaviour, options);
+      openUrl('/VideoCall', '_self');
     } else {
       if (meeting?.ended) {
         setMeetingEnded(true);
@@ -421,7 +441,7 @@ const VideoCall = () => {
   if (!fontsLoaded) {
     return null;
   }
-  console.log('tempMeeting tempMeeting', tempMeeting);
+
   const renderMenu = (list:any = [], onSelect:any = () => {}) => {
     return (
       <Menu style={{ marginLeft: -10 }}>
@@ -441,6 +461,43 @@ const VideoCall = () => {
         </MenuOptions>
       </Menu>
     )
+  }
+
+  const renderParticipants = () => {
+    if (actionType === 'create') {
+      if (!!currentMeeting?.participants) {
+        return (
+          <View style={{ alignSelf: 'center', marginBottom: 30 }}>
+            <GroupImage
+              participants={currentMeeting?.participants}
+              size={60}
+              textSize={28}
+              inline={true}
+              showOthers={true}
+              othersColor={'white'}
+              sizeOfParticipants={8}
+            />
+          </View>
+        );
+      }
+    } else {
+      if (!!lodash.size(tempMeeting)) {
+        return (
+          <View style={{ alignSelf: 'center', marginBottom: 30 }}>
+            <GroupImage
+              participants={tempMeeting?.participants}
+              size={tempMeeting.isGroup ? 60 : 45}
+              textSize={tempMeeting?.isGroup ? 28 : 20}
+              inline={true}
+              showOthers={true}
+              othersColor={'white'}
+              sizeOfParticipants={8}
+            />
+          </View>
+        );
+      }
+      return null;
+    }
   }
 
   const controls = () => {
@@ -601,26 +658,13 @@ const VideoCall = () => {
                   placeholderTextColor={'white'}
                   inputStyle={[styles.input]}
                   outlineStyle={[styles.outline]}
-                  value={meetingName}
+                  value={actionType === 'create' ? meetingName : getChannelName({...tempMeeting, otherParticipants: tempMeeting?.participants})}
                   onChangeText={setMeetingName}
                   onSubmitEditing={(event:any) => setMeetingName(event.nativeEvent.text)}
+                  disabled={actionType !== 'create'}
                   returnKeyType={'Done'}
                 />
-                {
-                  !!lodash.size(tempMeeting) && (
-                    <View style={{ alignSelf: 'center', marginBottom: 30 }}>
-                      <GroupImage
-                        participants={tempMeeting?.participants}
-                        size={tempMeeting.isGroup ? 60 : 45}
-                        textSize={tempMeeting?.isGroup ? 28 : 20}
-                        inline={true}
-                        showOthers={true}
-                        othersColor={'white'}
-                        sizeOfParticipants={8}
-                      />
-                    </View>
-                  )
-                }
+                {renderParticipants()}
               </>
             )
           }
