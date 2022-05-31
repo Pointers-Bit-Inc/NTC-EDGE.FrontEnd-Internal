@@ -314,6 +314,7 @@ const DataTable=(props)=>{
             });
             setLoading(false);
             flatListRef?.current?.scrollToOffset({offset:0,animated:true});
+
             if(response){
                 setPage(response?.data?.page);
                 setSize(response?.data?.size);
@@ -510,7 +511,7 @@ const DataTable=(props)=>{
         userProfileForm?.forEach(async(up:any)=>{
             return updatedUser={...updatedUser,[up?.stateName]:up?.value};
         });
-
+        setLoading(true);
         axios[updatedUser?._id ? "patch" : "post"](BASE_URL+`/users/`+updatedUser?._id||"",updatedUser,config).then((response)=>{
             cleanForm();
             showToast(ToastType.Success,updatedUser?._id ? "Successfully updated!" : "Successfully created!");
@@ -523,9 +524,13 @@ const DataTable=(props)=>{
                 setDocs(docs=>[response.data,...docs])
             }
             setModalClose(false)
-
+            setLoading(false);
         }).catch((err)=>{
+            setLoading(false);
             var _err=err;
+            if(_err?.response?.data?.message){
+                showToast(ToastType.Error,_err?.response?.data?.message)
+            }
             if(err.response.data.error=='The email address already exists. Please select another email address.'){
                 _err={
                     response:{

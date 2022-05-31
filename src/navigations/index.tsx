@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {useEffect} from 'react';
-import {NavigationContainer,useNavigation} from '@react-navigation/native';
+import {useEffect,useState} from 'react';
+import {NavigationContainer,StackActions,useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import lodash from 'lodash';
 import ForgotPassword from './forgot-password';
@@ -21,7 +21,7 @@ import MeetingParticipants from '@screens/meet/participants';
 import NewChat from '@screens/chat/new-chat';
 import Search from "@pages/activities/search";
 import TabBar from "@pages/activities/tabbar";
-import {Platform,TouchableOpacity,View} from "react-native";
+import {Platform,Text,TouchableOpacity,View} from "react-native";
 import {primaryColor} from "@styles/color";
 import EdgeLogo from "@assets/svg/edge";
 import SettingTopBar from "@assets/svg/settingTopBar";
@@ -33,6 +33,15 @@ import Login from "@screens/login/login";
 import FloatingVideo from '@components/pages/chat-modal/floating-video';
 import {useComponentLayout} from "../hooks/useComponentLayout";
 import {setTopBarNav} from "../reducers/application/actions";
+import axios from "axios";
+import {BASE_URL} from "../services/config";
+import {ToastType} from "@atoms/toast/ToastProvider";
+import {Menu,MenuOption,MenuOptions,MenuTrigger} from "react-native-popup-menu";
+import DotHorizontalIcon from "@assets/svg/dotHorizontal";
+import ProfileMenu from "@molecules/headerRightMenu";
+import useLogout from "../hooks/useLogout";
+import Alert from "@atoms/alert";
+import CustomAlert from "@pages/activities/alert/alert";
 
 type RootStackParamList = {
     App: undefined;
@@ -88,10 +97,13 @@ const linking = {
     },
   };
 
+
 const RootNavigator = () => {
     const user = useSelector((state: RootStateOrAny) => state.user) || {};
+    const dispatch=useDispatch();
+    const [visible, setVisible] = useState(false);
     const { meeting } = useSelector((state:RootStateOrAny) => state.meeting);
-
+    const onLogout = useLogout(user, dispatch)
     const renderFloatingVideo = () => {
         if (Platform?.OS === 'web') {
             return null
@@ -132,23 +144,44 @@ const RootNavigator = () => {
                                 dispatch(setTopBarNav(activitySizeComponent))
                             }, [activitySizeComponent?.width])
                             const navigation = useNavigation();
-                            return <View  onLayout={onActivityLayoutComponent}  style={ { flexDirection : "row" } }>
-                                <View style={{paddingRight: 32}}>
-                                    <SettingTopBar height={ 26 } width={ 26 } ></SettingTopBar>
+                            return <View onLayout={onActivityLayoutComponent} style={{flexDirection:"row"}}>
+                                <View style={{paddingRight:32}}>
+                                    <SettingTopBar height={26} width={26}></SettingTopBar>
                                 </View>
-                                <View  style={{paddingRight: 32}}>
-                                    <HelpTopBar height={ 26 } width={ 26 }></HelpTopBar>
+                                <View style={{paddingRight:32}}>
+                                    <HelpTopBar height={26} width={26}></HelpTopBar>
                                 </View>
-                                <View style={{paddingRight: 32}}>
-                                    <TouchableOpacity onPress={()=> navigation.navigate("Settings")}>
-                                        <ProfileImage
-                                            style={ {
-                                                borderRadius : 26 , } }
-                                            size={28 }
-                                            image={ user?.profilePicture?.small }
-                                            name={ `${ user?.firstName } ${ user?.lastName }` }
-                                        />
-                                    </TouchableOpacity>
+                                <View style={{paddingRight:32}}>
+
+                                    <ProfileMenu onClose={()=>{
+
+                                    }} onSelect={value=>{
+                                        if(value=="editProfile"){
+                                            navigation.navigate('UserProfileScreen')
+                                        } else if(value=="logout"){
+                                             setVisible(true)
+                                        }
+                                    }} user={user}/>
+                                    <CustomAlert
+                                        showClose={false}
+                                        show={visible}
+                                        title='Log out'
+                                        message='Are you sure you want to log out?'
+                                        confirmText='OK'
+                                        cancelText='Cancel'
+                                        onConfirmPressed={() => {
+                                            setVisible(false)
+                                            onLogout()
+                                            navigation.dispatch(StackActions.replace('Login'));
+                                        }}
+                                        onDismissed={()=>{
+                                            setVisible(false)
+                                        }}
+                                        onCancelPressed={() => {
+
+                                            setVisible(false)
+                                        }}
+                                    />
                                 </View>
 
 
@@ -180,6 +213,7 @@ const RootNavigator = () => {
                 <Stack.Screen name="SearchActivities" component={ Search }/>
             </Stack.Navigator>
             {renderFloatingVideo()}
+            {visible && <View style={{position: "absolute", width: "100%", height: "100%",backgroundColor: "rgba(0,0,0,0.5)"}}/>}
         </NavigationContainer>
 
     );

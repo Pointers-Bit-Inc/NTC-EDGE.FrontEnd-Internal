@@ -51,11 +51,14 @@ export function useAuth(navigation) {
             .catch(e => {
                 setLoading(false);
                 if (e) {
+
+                    
                     setFormValue({
                         ...formValue ,
                         email : {
                             ...formValue.email ,
-                            error : 'Authentication failed'
+                            hasValidation: true,
+                            error : e?.response?.data?.message ||'Authentication failed'
                         }
                     });
                 }
@@ -67,6 +70,8 @@ export function useAuth(navigation) {
             value : '' ,
             isValid : false ,
             error : '' ,
+            hasValidation: false,
+           description: ''
         } ,
         password : {
             value : '' ,

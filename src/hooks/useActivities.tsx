@@ -39,6 +39,7 @@ import {resetMeeting} from "../reducers/meeting/actions";
 import {resetChannel} from "../reducers/channel/actions";
 import {StackActions} from "@react-navigation/native";
 import useOneSignal from "./useOneSignal";
+import useLogout from "./useLogout";
 
 function convertStatusText(convertedStatus:any[],item:any){
     let _converted:never[]=[]
@@ -254,19 +255,10 @@ export function useActivities(props){
             Alert.alert('Alert',err?.message||'Something went wrong.');
              
            if(err.request.status == "401"){
-               const api = Api(user.sessionToken);
-               setTimeout(() => {
-                   dispatch(setApplications([]))
-                   dispatch(setPinnedApplication([]))
-                   dispatch(setNotPinnedApplication([]))
-                   dispatch(setApplicationItem({}))
-                   dispatch(setResetFilterStatus([]))
-                   dispatch(resetUser());
-                   dispatch(resetMeeting());
-                   dispatch(resetChannel());
-                   destroy();
+               useLogout(user, dispatch);
+               setTimeout(()=>{
                    props.navigation.dispatch(StackActions.replace('Login'));
-               }, 500);
+               },500);
            }
         })
 
