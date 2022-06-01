@@ -34,6 +34,9 @@ import {removeEmpty} from "@pages/activities/script";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import {useToast} from "../../../hooks/useToast";
 import {Toast} from "@atoms/toast/Toast";
+import EmployeeIcon from "@assets/svg/employeeIcon";
+import {EMPLOYEES, USERS} from "../../../reducers/activity/initialstate";
+import UserIcon from "@assets/svg/userIcon";
 
 const style=StyleSheet.create({
     row:{
@@ -51,9 +54,23 @@ const style=StyleSheet.create({
         flex:1,
         margin:10,
     },
-    tableHeader:{fontSize:16,fontFamily:Regular500,fontWeight:"500",color:"#606A80"},
-    container:{backgroundColor:"#F8F8F8",flex:1,flexDirection:"row"},
-    title:{backgroundColor:"#fff",paddingHorizontal:46,paddingTop:22,paddingBottom:22,},
+    tableHeader:{
+        fontSize:16,
+        fontFamily:Regular500,
+        fontWeight:"500",
+        color:"#606A80"
+    },
+    container:{
+        backgroundColor:"#F8F8F8",
+        flex:1,
+        flexDirection:"row"
+    },
+    title:{
+        backgroundColor:"#fff",
+        paddingHorizontal:46,
+        paddingTop:22,
+        paddingBottom:22,
+    },
     text:{
         color:"#113196",
         fontWeight:"600",
@@ -69,7 +86,9 @@ const style=StyleSheet.create({
         flexDirection:"row",
         flex:1
     },
-    rightrow:{flexDirection:"row"},
+    rightrow:{
+        flexDirection:"row"
+    },
     filter:{
         borderRadius:8,
         paddingHorizontal:22,
@@ -100,7 +119,10 @@ const style=StyleSheet.create({
         marginHorizontal:45,
         backgroundColor:"#fff",
     },
-    headerTextContainer:{paddingVertical:16,paddingHorizontal:23},
+    headerTextContainer:{
+        paddingVertical:16,
+        paddingHorizontal:23
+    },
     flatlist:{
         marginBottom:5,
         borderBottomRightRadius:8,
@@ -109,8 +131,16 @@ const style=StyleSheet.create({
         flex:1,
         backgroundColor:"#fff",
     },
-    textTable:{fontFamily:Bold,color:"#606A80",fontSize:20,fontWeight:"600"},
-    contentContainer:{borderBottomColor:"#F0F0F0",borderBottomWidth:1},
+    textTable:{
+        fontFamily:Bold,
+        color:"#606A80",
+        fontSize:20,
+        fontWeight:"600"
+    },
+    contentContainer:{
+        borderBottomColor:"#F0F0F0",
+        borderBottomWidth:1
+    },
     pagination:{
         paddingHorizontal:45,
         paddingVertical:15,
@@ -120,12 +150,9 @@ const style=StyleSheet.create({
     },
     modal:{
         flex:1,
-
         justifyContent:'center',
         alignItems:'center',
         backgroundColor:"rgba(0,0,0,0.5)",
-
-
     },
 });
 const DataTable=(props)=>{
@@ -272,6 +299,7 @@ const DataTable=(props)=>{
             hasValidation:true
         },
         {
+
             stateName:'profilePicture',
             id:11,
             file:{},
@@ -430,9 +458,7 @@ const DataTable=(props)=>{
                                 console.log(error.response);
                                 let _err='';
                                 for(const err in error?.response?.data?.errors){
-
                                     _err+=error?.response?.data?.errors?.[err]?.toString()+"\n";
-
                                 }
                                 showToast(ToastType.Error,error?.response?.data.trim()||error?.response?.statusText)
                             })
@@ -570,6 +596,24 @@ const DataTable=(props)=>{
     const scrollView=useRef();
     const isKeyboardVisible=useKeyboard();
     const [modalClose,setModalClose]=useState(false);
+
+    const DrawerIcon = () => {
+        let Icon:any=null;
+        switch (props.name) {
+            case EMPLOYEES:
+                Icon = <EmployeeIcon width={5 * 30} height={5 * 31} color={ "rgba(128, 129, 150,1)"}/>
+                break;
+            case USERS:
+                Icon = <UserIcon width={5 * 30} height={5 * 31} color={ "rgba(128, 129, 150,1)"}/>
+                break;
+            default:
+                Icon = <UserIcon width={5 * 30} height={5 * 31} color={ "rgba(128, 129, 150,1)"}/>
+                break;
+
+        }
+        return Icon
+    }
+
     return (
         <>
             <View style={style.container}>
@@ -686,10 +730,16 @@ const DataTable=(props)=>{
 
                         <View style={style.flatlist}>
                             {loading&&
-                            <View style={{height:"90%",justifyContent:"center",alignSelf:"center",position:"absolute"}}>
-                                <ActivityIndicator/>
+                            <View style={{zIndex: 2, height:"90%",justifyContent:"center",alignSelf:"center",position:"absolute"}}>
+                                {!docs.length && <View>
+                                    <DrawerIcon/>
+                                </View>}
+                                <View style={{padding: 20}}>
+                                    <ActivityIndicator color={"#808196"}/>
+                                </View>
+
                             </View>}
-                            {/* <TouchableOpacity onPress={()=> flatListRef?.current?.scrollToOffset({offset: 0, animated: true})}>
+                            {/*<TouchableOpacity onPress={()=> flatListRef?.current?.scrollToOffset({offset: 0, animated: true})}>
                                 <View style={{justifyContent: "center", alignItems: "center"}}>
                                     <ChevronUpIcon/>
                                 </View>
@@ -701,7 +751,7 @@ const DataTable=(props)=>{
                                 keyExtractor={item=>item._id}
                                 renderItem={renderItems}
                             />
-                            {/* <TouchableOpacity onPress={()=> flatListRef?.current?.scrollToEnd({animated: true})}>
+                            {/*<TouchableOpacity onPress={()=> flatListRef?.current?.scrollToEnd({animated: true})}>
                                 <View style={{justifyContent: "center", alignItems: "center"}}>
                                     <ChevronDownIcon/>
                                 </View>

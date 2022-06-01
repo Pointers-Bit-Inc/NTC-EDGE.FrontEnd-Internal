@@ -185,7 +185,7 @@ const FormField=({
             {formElements.map((element:any,key:number)=>{
 
                 return element.type!='submit'&&element.type&&(
-                    <Fragment key={element.id}>
+                    <Fragment key={element.id + key}>
                         <View onLayout={(event)=>{
                             const layout=event.nativeEvent.layout;
 

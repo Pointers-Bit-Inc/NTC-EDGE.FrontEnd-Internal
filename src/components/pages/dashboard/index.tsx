@@ -20,6 +20,8 @@ import {
   const  Dashboard = () => {
       const dimensions=useWindowDimensions();
       const [value,setValue]=useState();
+      const [text, onChangeText] = React.useState("");
+      const [txt, setText] = React.useState("");
         return (
             <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
                 <LeftSideWeb>
@@ -43,9 +45,8 @@ import {
                                         <SearchIcon/>
                                     </View>
                                 </View>
+
                             </View>
-
-
                         </View>
                     </View>
                 </LeftSideWeb>

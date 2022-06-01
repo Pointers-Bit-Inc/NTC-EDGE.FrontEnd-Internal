@@ -1,10 +1,12 @@
 import React from "react";
 import DataTable from "@templates/datatable/DataTable";
 import {BASE_URL} from "../../../services/config";
+import {EMPLOYEES} from "../../../reducers/activity/initialstate";
 
 
 export default function EmployeePage(props:any){
     return <DataTable
+        name={EMPLOYEES}
         editTitle={'Edit Employee'}
         editButtonTitle={'Edit Employee'}
         addTitle={'Create Employee'}
