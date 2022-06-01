@@ -396,7 +396,7 @@ export default function ActivitiesPage(props:any){
                         ref={flatListViewRef}
                         data={notPnApplications}
                         keyExtractor={(item,index)=>index.toString()}
-                        ListFooterComponent={bottomLoader}
+                        ListFooterComponent={refreshing ? <View/> :bottomLoader}
                         onEndReached={()=>{
 
                             if(!onEndReachedCalledDuringMomentum|| !(

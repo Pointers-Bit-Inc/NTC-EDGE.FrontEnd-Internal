@@ -331,11 +331,11 @@ export function useActivities(props){
     const [infiniteLoad,setInfiniteLoad]=useState(false);
     const [onEndReachedCalledDuringMomentum,setOnEndReachedCalledDuringMomentum]=useState(false);
     const bottomLoader=()=>{
-        return infiniteLoad ? <Loader/> : <ListFooter
+        return infiniteLoad ? <Loader/> :  <ListFooter
             hasError={!infiniteLoad}
             fetching={ infiniteLoad}
-            loadingText="Loading more users..."
-            errorText="Unable to load users"
+            loadingText="Loading more activities..."
+            errorText="Unable to load activities"
             refreshText="Refresh"
             onRefresh={() => handleLoad()}
         />
