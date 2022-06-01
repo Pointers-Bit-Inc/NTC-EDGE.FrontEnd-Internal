@@ -276,8 +276,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const joinMeeting = useCallback((meetingId, callback = () => {}, config = {}) => {
-    api.get(`/meetings/${meetingId}/join`, config)
+  const joinMeeting = useCallback(({ meetingId, muted = false }, callback = () => {}, config = {}) => {
+    api.get(`/meetings/${meetingId}/join?muted=${muted}`, config)
     .then(res => {
       return callback(null, res.data);
     })

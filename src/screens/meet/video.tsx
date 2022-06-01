@@ -83,7 +83,7 @@ const VideoCall = ({ navigation, route }) => {
         );
         navigation.goBack();
       } else {
-        joinMeeting(meeting._id, (err:any, result:any) => {
+        joinMeeting({ meetingId: meeting._id, muted: options?.isMute }, (err:any, result:any) => {
           if (!unmounted) {
             if (result) {
               setLoading(false);

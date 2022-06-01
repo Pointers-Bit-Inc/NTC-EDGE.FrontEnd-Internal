@@ -480,7 +480,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             {findParticipant?.title || ''} {findParticipant.firstName}
           </Text>
           {
-            !peerAudioState[item] ? (
+            findParticipant.muted ? (
               <View style={styles.mic}>
                 <MicOffIcon
                   color={text.error}

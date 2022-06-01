@@ -134,8 +134,11 @@ export const useInitializeAgora = ({
   };
 
   const joinChannel = useCallback(async () => {
-    await rtcEngine.current?.joinChannel(token, channelName, null, uid);
-  }, [channelName, token, uid]);
+    await rtcEngine.current?.joinChannel(token, channelName, null, uid, {
+      publishLocalAudio: !isMute,
+      publishLocalVideo: isVideoEnable,
+    });
+  }, [channelName, token, uid, isMute, isVideoEnable]);
 
   const leaveChannel = useCallback(async () => {
     await rtcEngine.current?.leaveChannel();

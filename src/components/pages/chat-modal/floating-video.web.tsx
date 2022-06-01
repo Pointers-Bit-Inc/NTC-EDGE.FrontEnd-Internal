@@ -160,7 +160,7 @@ const FloatingVideo = ({ tracks }:any) => {
     let unmounted = false;
 
     if (meetingId) {
-      joinMeeting(meeting._id, (err:any, result:any) => {
+      joinMeeting({ meetingId: meeting._id, muted: isMute }, (err:any, result:any) => {
         if (!unmounted) {
           if (result) {
             setLoading(false);
