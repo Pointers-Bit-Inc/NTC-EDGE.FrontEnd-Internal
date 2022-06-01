@@ -1,17 +1,13 @@
 import {styles} from "@pages/activities/styles";
 import {isMobile} from "@pages/activities/isMobile";
-import {Platform, Text, TextInput, TouchableOpacity, useWindowDimensions, View} from "react-native";
-import {isLandscapeSync,isTablet} from "react-native-device-info";
+import {Platform, Text, TextInput, useWindowDimensions, View} from "react-native";
+import {isTablet} from "react-native-device-info";
 import NoActivity from "@assets/svg/noActivity";
 import {fontValue} from "@pages/activities/fontValue";
 import React, {useState} from "react";
 import LeftSideWeb from "@atoms/left-side-web";
 import Header from "@molecules/header";
-import UploadIcon from "@assets/svg/uploadReport";
 import SearchIcon from "@assets/svg/search";
-import FilterPressIcon from "@assets/svg/filterPress";
-import RefreshWeb from "@assets/svg/refreshWeb";
-
 
 export default function GroupPage(props:any){
     const dimensions=useWindowDimensions();
