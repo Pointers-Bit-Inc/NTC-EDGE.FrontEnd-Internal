@@ -6,7 +6,7 @@ import * as React from "react";
 function ProfileMenu(props:{onClose:()=>void,onSelect:(value)=>void,user:any}){
     return <Menu onClose={props.onClose} onSelect={props.onSelect}>
 
-        <MenuTrigger text={
+        <MenuTrigger>
 
             <ProfileImage
                 style={{
@@ -16,7 +16,7 @@ function ProfileMenu(props:{onClose:()=>void,onSelect:(value)=>void,user:any}){
                 image={props.user?.profilePicture?.small}
                 name={`${props.user?.firstName} ${props.user?.lastName}`}
             />
-        }>
+
 
         </MenuTrigger>
 
