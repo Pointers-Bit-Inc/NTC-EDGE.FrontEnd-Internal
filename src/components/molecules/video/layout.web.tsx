@@ -385,15 +385,15 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     onMute(!isMute);
   }
 
-  const renderVideoItem = (item) => {
+  const renderVideoItem = (item:any, style:any = null, pinned = false) => {
     const findParticipant = lodash.find(meetingParticipants, p => p.uid === item);
     if (!findParticipant) return null
-    if (item === myId) {
+    if (item === myId && !pinned) {
       return (
         <TouchableWithoutFeedback key={item} onPress={() => onSetPinnedParticipant(findParticipant)}>
           <View style={[
             styles.videoBox,
-            { width: boxDimension.width, height: boxDimension.height },
+            style || { width: boxDimension.width, height: boxDimension.height },
             volumeIndicator[item] && { borderColor: '#2863D6' }
           ]}>
             {
@@ -445,11 +445,11 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
       <TouchableWithoutFeedback key={item} onPress={() => onSetPinnedParticipant(findParticipant)}>
         <View style={[
           styles.videoBox,
-          { width: boxDimension.width, height: boxDimension.height },
+          style || { width: boxDimension.width, height: boxDimension.height },
           !!volumeIndicator[item] && { borderColor: '#2863D6' }
         ]}>
           {
-            !!peerVideoState[item] ? (
+            (!!peerVideoState[item] && !pinned) ? (
               <AgoraVideoPlayer
                 key={item}
                 style={videoStyle}
@@ -470,7 +470,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
           }
           <Text
             style={
-              !!peerVideoState[item] ?
+              (!!peerVideoState[item] && !pinned) ?
               styles.floatingName : styles.name
             }
             numberOfLines={1}
@@ -498,11 +498,14 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   const renderVideoElement = () => {
     if (joinSucceed && tracks && !callEnded) {
       if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
+        if (pinnedParticipant) {
+          return renderFullView();
+        }
         return (
           <ScrollView style={styles.scrollContainer}>
             <View style={styles.videoGroupContainer}>
               {
-                peerIds.map(renderVideoItem)
+                peerIds.map(p => renderVideoItem(p))
               }
             </View>
           </ScrollView>
@@ -515,6 +518,39 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
         callEnded={callEnded}
       />
     );
+  }
+
+  const renderFullView = () => {
+    return (
+      <View style={{ flexDirection: 'row', flex: 1 }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 2,
+          }}
+        >
+          {renderVideoItem(pinnedParticipant.uid, { width: '100%', height: '100%' })}
+        </View>
+        <View
+          style={{
+            width: 300,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <FlatList
+            data={peerIds}
+            renderItem={({ item }) => renderVideoItem(
+              item,
+              { width: 280, height: 200, marginBottom: 10 },
+              pinnedParticipant?.uid === item
+            )}
+          />
+        </View>
+      </View>
+    )
   }
 
   return (

@@ -465,7 +465,7 @@ const VideoCall = () => {
 
   const renderParticipants = () => {
     if (actionType === 'create') {
-      if (!!currentMeeting?.participants) {
+      if (currentMeeting?.participants?.length > 0) {
         return (
           <View style={{ alignSelf: 'center', marginBottom: 30 }}>
             <GroupImage
@@ -480,6 +480,7 @@ const VideoCall = () => {
           </View>
         );
       }
+      return null;
     } else {
       if (!!lodash.size(tempMeeting)) {
         return (
