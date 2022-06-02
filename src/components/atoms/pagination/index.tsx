@@ -12,7 +12,7 @@ const style=StyleSheet.create({
         alignItems:"center",
         justifyContent:"flex-end"
     },
-    paginationText:{
+    paginationContainer:{
         marginHorizontal:6,
         alignItems:"center",
         justifyContent:"center",
@@ -62,21 +62,18 @@ const Pagination = (props: { size: number, page: number; fetch: (page: number) =
             if(props.page-1 > 0){
                 props.fetch(props.page-1 )
             }
-
         }}>
             <ChevronLeft/>
         </TouchableOpacity>
-
-        {pageNumbers(Math.floor(props.size < props.total ? (props.total/props.size) : 1),props.page).map(number=>{
-            return <TouchableOpacity onPress={() => {
+        {pageNumbers(Math.floor(props.size < props.total ? (props.total/props.size) : 1),props.page).map((number, index)=>{
+            return <TouchableOpacity key={index} onPress={() => {
                 let pageNum = pageNumbers(Math.floor(props.size < props.total ? (props.total/props.size) : 1),props.page)
                 props.fetch(number == '...' ? pageNum?.[pageNum?.findIndex(x => x == '...') - 1] + 1 : number)
             }}>
-                <View style={[style.paginationText, {backgroundColor:props.page == number ? "#041B6E" : "rgba(0,0,0,0)",}]}>
+                <View style={[style.paginationContainer, {backgroundColor:props.page == number ? "#041B6E" : "rgba(0,0,0,0)",}]}>
                     <Text style={[style.paginateText, { color:props.page == number ? "#fff" :  "#041B6E" ,}]}>{number}</Text>
                 </View>
             </TouchableOpacity>
-
         })}
         <TouchableOpacity onPress={()=>{
             if(props.page+1 > 0){
@@ -85,7 +82,6 @@ const Pagination = (props: { size: number, page: number; fetch: (page: number) =
         }}>
             <ChevronRight/>
         </TouchableOpacity>
-
     </View>
 }
 

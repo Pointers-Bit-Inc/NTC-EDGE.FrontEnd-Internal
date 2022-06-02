@@ -11,7 +11,7 @@ const  Header =({title}) => {
             <View style={styles.titleContainer}>
                 <Text
                     color={"#113196"}
-                    size={20}
+                    size={24}
                     style={{fontFamily:Bold,marginBottom:Platform.OS==="ios" ? 0 : -5}}
                 >
                     {title}

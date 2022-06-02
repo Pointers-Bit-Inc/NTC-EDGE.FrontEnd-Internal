@@ -407,16 +407,14 @@ export function ActivityItem(props:any){
                                         setSelectedMoreCircle(false)
                                     }} onSelect={value=>setSelectedMoreCircle(true)}>
 
-                                        <MenuTrigger onPress={onMoreCircle} text={
+                                        <MenuTrigger onPress={onMoreCircle}>
                                             <View style={[styles.moreCircle,selectedMoreCircle&&{
                                                 borderColor:'rgba(116, 115, 189, 0.3)',
                                                 borderWidth:4,
                                             }]}>
                                                 <MoreCircle selected={selectedMoreCircle}/>
-                                            </View>}>
-
+                                            </View>
                                         </MenuTrigger>
-
                                         <MenuOptions optionsContainerStyle={{
                                             marginTop:50,
 
