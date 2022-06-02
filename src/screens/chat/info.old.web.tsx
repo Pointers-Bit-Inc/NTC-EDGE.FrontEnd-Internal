@@ -38,33 +38,35 @@ import { setMeeting, setOptions } from 'src/reducers/meeting/actions'
 
 const {height,width}=Dimensions.get('window');
 
-const styles = StyleSheet.create({
-    safeAreaView: {
+const styles=StyleSheet.create({
+    safeAreaView:{
         flex:0.9,
+
         backgroundColor:"#fff"
     },
-    cancelText: {
+    cancelText:{
         fontSize:RFValue(16),
         color:'#DC2626',
         fontFamily:Regular500,
     },
-    confirmText: {
+    confirmText:{
         fontSize:RFValue(16),
         color:text.info,
         fontFamily:Regular500,
     },
-    outlineText: {
+    outlineText:{
         borderRadius:10,
     },
-    inputText: {
+    inputText:{
         fontSize:RFValue(16),
         textAlign:'center',
     },
-    container: {
+    container:{
         margin:12,
         flex:1
     },
-    headerText: {
+
+    headerText:{
         width:"90%",
         fontSize:14,
         color:"#1F2022",
@@ -72,16 +74,16 @@ const styles = StyleSheet.create({
         fontWeight:"bold",
         fontFamily:Bold
     },
-    text: {
+    text:{
         fontFamily:Regular,fontSize:15,fontWeight:'400',lineHeight:22.5
     },
-    muteChatContainer: {
+    muteChatContainer:{
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'space-between',
         backgroundColor:'white',
     },
-    groupName: {
+    groupName:{
         height:undefined,
         borderWidth:1,
         borderColor:'white',
@@ -89,24 +91,25 @@ const styles = StyleSheet.create({
         marginTop:-5,
         paddingHorizontal:0
     },
-    menuItemText: {
+    menuItemText:{
         fontSize:14,
         paddingVertical:3,
         paddingHorizontal:10,
     },
-    menuItem: {
+    menuItem:{
         flexDirection:"row",
         paddingHorizontal:10,
         alignItems:"center"
     },
-    toggleDefault: {
+    toggleDefault:{
         transform:[{scaleX:-1}],
         color:'#A0A3BD',
     },
-    toggleActive: {
+    toggleActive:{
         color:'#610BEF',
     },
-    header: {
+    header:{
+
         gap:10,
         justifyContent:"space-between",
         flexDirection:"row",
@@ -116,63 +119,47 @@ const styles = StyleSheet.create({
         paddingVertical:20,
         paddingHorizontal:20
     },
-    optionContainer: {
-        shadowColor: "rgba(0,0,0,1)",
-        borderRadius: 8,
-        shadowOffset: {
-            width:0,
-            height:0
-        },
-        elevation: 45,
-        shadowOpacity: 0.1,
-        shadowRadius: 15,
-        marginLeft: -30,
-        marginTop: 20
-    }
 });
 
-interface MenuBarInterface {
-    opened: boolean;
-    onClose: () => void;
-    onSelect: (value:any) => void;
-    onPress: () => void;
-    selectedParticipant: any;
-    onPress1: () => void;
-    onPress2: () => void;
-    admin: undefined | boolean;
-    onPress3: () => void;
-    onPress4: () => void;
-}
+function MenuBar(props:{opened:boolean,onClose:()=>void,onSelect:(value)=>void,onPress:()=>void,selectedParticipant:any,onPress1:()=>void,onPress2:()=>void,admin:undefined|boolean,onPress3:()=>void,onPress4:()=>void}){
+    return <Menu  onBackdropPress={props.onClose} opened={props.opened} onClose={props.onClose} onSelect={props.onSelect}>
 
-const MenuBar = (props:MenuBarInterface) => {
-    return (
-        <Menu 
-            onBackdropPress={props.onClose}
-            opened={props.opened}
-            onClose={props.onClose}
-            onSelect={props.onSelect}
-        >
-            <MenuTrigger onPress={props.onPress}>
-                <DotHorizontalIcon/>
-            </MenuTrigger>
-            <MenuOptions optionsContainerStyle={styles.optionContainer}>
-                <MenuOption value={`Call ${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}>
-                    <TouchableOpacity onPress={props.onPress1}>
-                        <View style={[styles.option]}>
-                            <Text
-                                style={{marginLeft:15}}
-                                color={"black"}
-                                size={18}
-                            >
-                                Call {`${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                </MenuOption>
-                <MenuOption
-                    value={`Message ${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}
-                >
-                    <TouchableOpacity onPress={props.onPress2}>
+        <MenuTrigger onPress={props.onPress}
+                     text={<View><DotHorizontalIcon/></View>}>
+
+        </MenuTrigger>
+
+        <MenuOptions optionsContainerStyle={{
+            shadowColor:"rgba(0,0,0,1)",
+            borderRadius:8,
+            shadowOffset:{
+                width:0,
+                height:0
+            },
+
+            elevation:45,
+            shadowOpacity:0.1,
+            shadowRadius:15,
+            marginLeft: -30,
+            marginTop: 20
+        }}>
+            <MenuOption value={`Call ${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}>
+                <TouchableOpacity onPress={props.onPress1}>
+                    <View style={[styles.option]}>
+                        <Text
+                            style={{marginLeft:15}}
+                            color={"black"}
+                            size={18}
+                        >
+                            Call {`${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+            </MenuOption>
+            <MenuOption
+                value={`Message ${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}>
+                <TouchableOpacity onPress={props.onPress2}>
+                    <View style={[styles.option]}>
                         <Text
                             style={{marginLeft:15}}
                             color={"black"}
@@ -180,13 +167,15 @@ const MenuBar = (props:MenuBarInterface) => {
                         >
                             Message {`${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}
                         </Text>
-                    </TouchableOpacity>
-                </MenuOption>
-                {
-                    props.admin && (
-                        <>
-                            <MenuOption value={"Add as admin"}>
-                                <TouchableOpacity onPress={props.onPress3}>
+                    </View>
+                </TouchableOpacity>
+            </MenuOption>
+            {
+                props.admin&&(
+                    <>
+                        <MenuOption value={"Add as admin"}>
+                            <TouchableOpacity onPress={props.onPress3}>
+                                <View style={[styles.option]}>
                                     <Text
                                         style={{marginLeft:15}}
                                         color={"black"}
@@ -194,10 +183,12 @@ const MenuBar = (props:MenuBarInterface) => {
                                     >
                                         Add as admin
                                     </Text>
-                                </TouchableOpacity>
-                            </MenuOption>
-                            <MenuOption value={"Remove from chat"}>
-                                <TouchableOpacity onPress={props.onPress4}>
+                                </View>
+                            </TouchableOpacity>
+                        </MenuOption>
+                        <MenuOption value={"Remove from chat"}>
+                            <TouchableOpacity onPress={props.onPress4}>
+                                <View style={[styles.option]}>
                                     <Text
                                         style={{marginLeft:15}}
                                         color={text.error}
@@ -205,24 +196,26 @@ const MenuBar = (props:MenuBarInterface) => {
                                     >
                                         Remove from chat
                                     </Text>
-                                </TouchableOpacity>
-                            </MenuOption>
-                        </>
-                    )
-                }
-            </MenuOptions>
-        </Menu>
-    );
+                                </View>
+                            </TouchableOpacity>
+                        </MenuOption>
+                    </>
+                )
+            }
+
+        </MenuOptions>
+
+    </Menu>;
 }
 
-const Info = (props) => {
-    const dispatch = useDispatch();
+const Info=(props)=>{
+    const dispatch=useDispatch();
     const {
         leaveChannel,
-    } = useSignalr();
-    const user = useSelector((state:RootStateOrAny)=>state.user);
-    const api = useApi(user.sessionToken);
-    const { _id, otherParticipants=[], participants=[], hasRoomName=false, name='', isGroup=false, muted=false } = useSelector(
+    }=useSignalr();
+    const user=useSelector((state:RootStateOrAny)=>state.user);
+    const api=useApi(user.sessionToken);
+    const {_id,otherParticipants=[],participants=[],hasRoomName=false,name='',isGroup=false,muted=false}=useSelector(
         (state:RootStateOrAny)=>{
             const {selectedChannel}=state.channel;
             selectedChannel.otherParticipants=lodash.reject(selectedChannel.participants,(p:IParticipants)=>p._id===user._id);
@@ -368,6 +361,7 @@ const Info = (props) => {
     };
     const isAdmin=()=>{
         const participant:IParticipants=lodash.find(participants,(p:IParticipants)=>p._id===user._id);
+
         return participant?.isAdmin;
     };
     const removeMember=()=>{

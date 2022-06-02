@@ -7,10 +7,11 @@ import React, {
   forwardRef,
   ForwardRefRenderFunction,
 } from 'react'
-import { View, StyleSheet, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithoutFeedback, useWindowDimensions, ScrollView } from 'react-native'
+import { View, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithoutFeedback, useWindowDimensions, ScrollView } from 'react-native'
+import StyleSheet from 'react-native-media-query';
 import lodash from 'lodash';
 import { useInitializeAgora } from 'src/hooks/useAgora';
-import { MicIcon, CameraIcon, MicOffIcon } from '@components/atoms/icon';
+import { MicIcon, CameraIcon, MicOffIcon, MessageIcon, ParticipantsIcon } from '@components/atoms/icon';
 
 import {
   AgoraVideoPlayer,
@@ -26,6 +27,7 @@ import VideoButtons from '@components/molecules/video/buttons'
 import VideoNotification from './notification';
 import IParticipants from 'src/interfaces/IParticipants';
 import { fontValue } from '@components/pages/activities/fontValue';
+import Info from '@screens/chat/info';
 const { width } = Dimensions.get('window');
 
 const videoStyle = {
@@ -34,7 +36,7 @@ const videoStyle = {
   backgroundColor: 'grey',
 }
 
-const styles = StyleSheet.create({
+const { styles, ids } = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -58,6 +60,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 2,
   },
   smallVideo: {
     backgroundColor: '#606A80',
@@ -71,9 +74,9 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.1)',
   },
   videoList: {
-    position: 'absolute',
-    bottom: 100,
-    width,
+    width: 300,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   name: {
     textAlign: 'center',
@@ -91,13 +94,16 @@ const styles = StyleSheet.create({
   },
   footer: {
     width: '100%',
-    paddingTop: 10,
-    position: 'absolute',
-    bottom: 30,
+    height: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  icon: {
+    paddingHorizontal: 10
   },
   scrollContainer: {
     flex: 1,
-    backgroundColor: '#565961'
   },
   videoGroupContainer: {
     flexDirection: 'row',
@@ -114,6 +120,18 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: '#606A80',
     margin: 2,
+  },
+  sideContent: {
+    backgroundColor: 'white',
+    overflow: 'hidden',
+    '@media (min-width: 800px)': {
+      width: 400,
+    },
+    '@media (max-width: 800px)': {
+      width: '100%',
+    },
+    borderRadius: 5,
+    margin: 10,
   }
 })
 interface Props {
@@ -169,6 +187,15 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   const { tracks } = options;
   const [selectedPeer, setSelectedPeer]:any = useState(null);
   const [peerList, setPeerList]:any = useState([]);
+  const [showSideContent, setShowSideContent] = useState(false);
+  const [layout, setLayout] = useState({
+    height: 0,
+    left: 0,
+    top: 0,
+    width: 0,
+    x: 0,
+    y: 0,
+  });
   const [boxDimension, setBoxDimension] = useState({
     width: 0,
     height: 0,
@@ -226,6 +253,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 
   useEffect(() => {
     if (callEnded) {
+      setShowSideContent(false);
       destroyAgoraEngine();
     }
   }, [callEnded]);
@@ -291,6 +319,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   }, [pinnedParticipant]);
 
   useEffect(() => {
+    const { width, height } = layout;
     const participantSize = lodash.size(peerIds);
     let numberOfColumns = 2, numberOfRow = 2;
 
@@ -356,13 +385,13 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     }
     
     const boxWidth = width / numberOfColumns -(6 * numberOfColumns);
-    const boxHeight = (height - (6 * numberOfRow)) / numberOfRow;
+    const boxHeight = ((height - (6 * numberOfRow)) / numberOfRow);
 
     setBoxDimension({
       width: boxWidth,
       height: boxHeight,
     });
-  }, [width, height, peerIds]);
+  }, [layout, peerIds]);
 
   const checkToggleMute = () => {
     const userParticipantDetails:IParticipants = lodash.find(meetingParticipants, (p:IParticipants) => p._id === user?._id);
@@ -384,6 +413,8 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   const onToggleMute = () => {
     onMute(!isMute);
   }
+
+  const onLayout = ({ nativeEvent }:any) => setLayout(nativeEvent.layout);
 
   const renderVideoItem = (item:any, style:any = null, pinned = false) => {
     const findParticipant = lodash.find(meetingParticipants, p => p.uid === item);
@@ -523,28 +554,20 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   const renderFullView = () => {
     return (
       <View style={{ flexDirection: 'row', flex: 1 }}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 2,
-          }}
-        >
-          {renderVideoItem(pinnedParticipant.uid, { width: '100%', height: '100%' })}
+        <View style={styles.fullVideo}>
+          {
+            renderVideoItem(
+              pinnedParticipant.uid,
+              { width: '100%', height: '100%' }
+            )
+          }
         </View>
-        <View
-          style={{
-            width: 300,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <View style={styles.videoList}>
           <FlatList
             data={peerIds}
             renderItem={({ item }) => renderVideoItem(
               item,
-              { width: 280, height: 200, marginBottom: 10 },
+              { width: 280, height: 180, marginBottom: 10 },
               pinnedParticipant?.uid === item
             )}
           />
@@ -555,7 +578,23 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 
   return (
     <View style={styles.container}>
-      {renderVideoElement()}
+      <View style={{ flexDirection: 'row', flex: 1 }}>
+        <View style={{ flex: 1, height: height - 70, padding: 10 }}>
+          <View
+            style={{ width: '100%', height: '100%' }}
+            onLayout={onLayout}
+          >
+            {renderVideoElement()}
+          </View>
+        </View>
+        {
+          showSideContent && (
+            <View style={styles.sideContent} dataSet={{ media: ids.sideContent }}>
+              <Info otherParticipants={participants} close={() => {}}/>
+            </View>
+          )
+        }
+      </View>
       {
         isMaximize && !callEnded && (
           <View style={styles.footer}>
@@ -569,6 +608,24 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               isMute={isMute}
               isVideoEnabled={isVideoEnable}
             />
+            <View style={{ position: 'absolute', right: 30, bottom: 15 }}>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={() => setShowSideContent(!showSideContent)}
+                >
+                  <View style={styles.icon}>
+                    <MessageIcon width={26} height={26} />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setShowSideContent(!showSideContent)}
+                >
+                  <View style={styles.icon}>
+                    <ParticipantsIcon width={26} height={26} />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         )
       }

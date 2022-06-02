@@ -981,6 +981,8 @@ const ChatList=({navigation}:any)=>{
                                                     <View style={{paddingRight:24}}>
                                                         <NewCallIcon
                                                             color={button.info}
+                                                            height={28}
+                                                            width={28}
                                                         />
                                                     </View>
                                                 </TouchableOpacity>
