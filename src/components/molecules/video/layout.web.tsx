@@ -11,7 +11,7 @@ import { View, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithou
 import StyleSheet from 'react-native-media-query';
 import lodash from 'lodash';
 import { useInitializeAgora } from 'src/hooks/useAgora';
-import { MicIcon, CameraIcon, MicOffIcon, MessageIcon, ParticipantsIcon } from '@components/atoms/icon';
+import { MicIcon, CameraIcon, MicOffIcon, MessageIcon, ParticipantsIcon, CloseIcon, ArrowDownIcon, MenuIcon } from '@components/atoms/icon';
 
 import {
   AgoraVideoPlayer,
@@ -28,6 +28,10 @@ import VideoNotification from './notification';
 import IParticipants from 'src/interfaces/IParticipants';
 import { fontValue } from '@components/pages/activities/fontValue';
 import Info from '@screens/chat/info';
+import ChatView from '@components/pages/chat-modal/view';
+import { RootStateOrAny, useSelector } from 'react-redux';
+import { Bold } from '@styles/font';
+import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 const { width } = Dimensions.get('window');
 
 const videoStyle = {
@@ -132,6 +136,13 @@ const { styles, ids } = StyleSheet.create({
     },
     borderRadius: 5,
     margin: 10,
+  },
+  titleContainer: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 15,
+    marginHorizontal: 15,
   }
 })
 interface Props {
@@ -185,9 +196,16 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 }, ref) => {
   const { height, width } = useWindowDimensions();
   const { tracks } = options;
+  const { _id, name, hasRoomName, otherParticipants, lastMessage } = useSelector(
+    (state:RootStateOrAny) => {
+      const { selectedChannel } = state.channel;
+      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
+      return selectedChannel;
+    }
+  );
   const [selectedPeer, setSelectedPeer]:any = useState(null);
   const [peerList, setPeerList]:any = useState([]);
-  const [showSideContent, setShowSideContent] = useState(false);
+  const [sideContent, setSideContent] = useState('');
   const [layout, setLayout] = useState({
     height: 0,
     left: 0,
@@ -253,7 +271,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 
   useEffect(() => {
     if (callEnded) {
-      setShowSideContent(false);
+      setSideContent('');
       destroyAgoraEngine();
     }
   }, [callEnded]);
@@ -412,6 +430,10 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 
   const onToggleMute = () => {
     onMute(!isMute);
+  }
+
+  const onSetSideContent = (content = '') => {
+    setSideContent(content);
   }
 
   const onLayout = ({ nativeEvent }:any) => setLayout(nativeEvent.layout);
@@ -576,6 +598,70 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     )
   }
 
+  const renderMenu = (list:any = [], onSelect:any = () => {}) => {
+    return (
+      <Menu style={{ marginLeft: -10 }}>
+        <MenuTrigger>
+          <MenuIcon type='more' color='white' size={fontValue(30)} />
+        </MenuTrigger>
+        <MenuOptions>
+          <FlatList
+            data={list}
+            renderItem={({ item, index})=>
+              <MenuOption
+                onSelect={() => onSelect(item)}
+                text={item}
+              />
+            }
+          />
+        </MenuOptions>
+      </Menu>
+    )
+  }
+
+  const renderSideContent = () => {
+    if (sideContent === 'messages') {
+      return (
+        <>
+          <View style={styles.titleContainer}>
+            <View style={{ position: 'absolute', left: 0, zIndex: 999 }}>
+              <TouchableOpacity onPress={() => onSetSideContent('')}>
+                <CloseIcon
+                  type='close'
+                  size={fontValue(18)}
+                />
+              </TouchableOpacity>
+            </View>
+            <Text
+              color={'black'}
+              size={16}
+              style={{ fontFamily: Bold }}
+            >
+              Messages
+            </Text>
+          </View>
+          <ChatView
+            channelId={_id}
+            otherParticipants={otherParticipants}
+            isGroup={isGroup}
+            groupName={name}
+            lastMessage={lastMessage}
+            onNext={(message:string, data:any) => {}}
+            participants={participants}
+          />
+        </>
+      );
+    } else if (sideContent === 'participants') {
+      return (
+        <Info
+          otherParticipants={participants}
+          close={() => onSetSideContent('')}
+        />
+      )
+    }
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', flex: 1 }}>
@@ -588,9 +674,9 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
           </View>
         </View>
         {
-          showSideContent && (
+          !!sideContent && (
             <View style={styles.sideContent} dataSet={{ media: ids.sideContent }}>
-              <Info otherParticipants={participants} close={() => {}}/>
+              {renderSideContent()}
             </View>
           )
         }
@@ -609,22 +695,26 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               isVideoEnabled={isVideoEnable}
             />
             <View style={{ position: 'absolute', right: 30, bottom: 15 }}>
-              <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity
-                  onPress={() => setShowSideContent(!showSideContent)}
-                >
-                  <View style={styles.icon}>
-                    <MessageIcon width={26} height={26} />
+              {
+                width < 768 ? renderMenu(['Messages', 'Participants'], (item:string = '') => onSetSideContent(item?.toLowerCase())) : (
+                  <View style={{ flexDirection: 'row' }}>
+                    <TouchableOpacity
+                      onPress={() => onSetSideContent('messages')}
+                    >
+                      <View style={styles.icon}>
+                        <MessageIcon width={26} height={26} />
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => onSetSideContent('participants')}
+                    >
+                      <View style={styles.icon}>
+                        <ParticipantsIcon width={26} height={26} />
+                      </View>
+                    </TouchableOpacity>
                   </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => setShowSideContent(!showSideContent)}
-                >
-                  <View style={styles.icon}>
-                    <ParticipantsIcon width={26} height={26} />
-                  </View>
-                </TouchableOpacity>
-              </View>
+                )
+              }
             </View>
           </View>
         )

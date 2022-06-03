@@ -1,6 +1,5 @@
 import React,{useRef,useState} from "react";
 import {Alert,Dimensions,Modal,Platform,SafeAreaView,ScrollView,StyleSheet,TouchableOpacity,View} from "react-native";
-import CloseIcon from "@assets/svg/close";
 import Text from '@components/atoms/text'
 import {Bold,Regular,Regular500} from "@styles/font";
 import CreateChatIcon from "@assets/svg/addParticipantOutline";
@@ -22,7 +21,7 @@ import IParticipants from "../../interfaces/IParticipants";
 import BottomModal,{BottomModalRef} from "@atoms/modal/bottom-modal";
 import lodash from 'lodash';
 import {ContactItem} from "@molecules/list-item";
-import {NewPenIcon,ToggleIcon} from "@atoms/icon";
+import {CloseIcon, NewPenIcon,ToggleIcon} from "@atoms/icon";
 import AddParticipants from "@pages/chat-modal/add-participants";
 import {text} from "@styles/color";
 import {Hoverable} from "react-native-web-hooks";
@@ -215,7 +214,7 @@ const MenuBar = (props:MenuBarInterface) => {
     );
 }
 
-const Info = (props) => {
+const Info = (props:any) => {
     const dispatch = useDispatch();
     const {
         leaveChannel,
@@ -515,7 +514,10 @@ const Info = (props) => {
         {!onAddParticipant&&<View style={styles.header}>
             <View>
                 <TouchableOpacity onPress={()=>props.close()}>
-                    <CloseIcon/>
+                    <CloseIcon
+                        type='close'
+                        size={RFValue(18)}
+                    />
                 </TouchableOpacity>
             </View>
 
@@ -655,14 +657,20 @@ const Info = (props) => {
             }
 
 
-            {onAddParticipant&&<AddParticipants
-                members={participants}
-                onClose={()=>setOnAddParticipant(false)}
-                onSubmit={(members:any)=>{
-                    setOnAddParticipant(false);
-                    setTimeout(()=>addMembers(members),300);
-                }}
-            />}
+            {
+                onAddParticipant && (
+                    <View style={{ paddingTop: 15 }}>
+                        <AddParticipants
+                            members={participants}
+                            onClose={()=>setOnAddParticipant(false)}
+                            onSubmit={(members:any)=>{
+                                setOnAddParticipant(false);
+                                setTimeout(()=>addMembers(members),300);
+                            }}
+                        />
+                    </View>
+                )
+            }
 
 
         </ScrollView>
