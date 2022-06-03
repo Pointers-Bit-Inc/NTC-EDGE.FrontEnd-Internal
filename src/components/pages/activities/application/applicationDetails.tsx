@@ -21,10 +21,8 @@ import {RFValue} from "react-native-responsive-fontsize";
 import {RootStateOrAny,useSelector} from "react-redux";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
-import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous2";
 import Constants from "expo-constants";
-
-const { width , height } = Dimensions.get("screen");
+import PdfDownload from "./download/pdfDownload";
 
 let outputLabel = (applicationType: string) => {
     applicationType = applicationType?.toLowerCase();
@@ -32,8 +30,10 @@ let outputLabel = (applicationType: string) => {
     else if (applicationType?.match('certificate')) return 'Certificate';
     else if (applicationType?.match('license')) return 'License';
     else if (applicationType?.match('permit')) return 'Permit';
-    return '';
+    return applicationType;
 };
+
+
 const ApplicationDetails = (props: any) => {
     const dimensions=useWindowDimensions();
     const {rightLayoutComponent}=useSelector((state:RootStateOrAny)=>state.application);
@@ -50,17 +50,18 @@ const ApplicationDetails = (props: any) => {
                     <Text style={ [styles.service, {fontFamily: Regular500}] }>{  props?.service?.applicationType?.label || props?.service?.name }</Text>
                     <Text style={ [styles.service, {fontFamily: Regular500}] }>{  props?.service?.applicationType?.element  || props?.service?.radioType?.label }</Text>
                     {
-                        props?.documents &&   <View style={{paddingVertical:10}}>
-                            <Pressable onPress={()=>setModalVisible(true)}>
-                                <View style={{flexDirection:"row"}}>
-                                    <View style={{paddingRight:fontValue(10)}}>
+                        props?.documents &&   <View style={{paddingVertical: 10}}>
+                            <Pressable onPress={() => setModalVisible(true)}>
+                                <View style={{flexDirection: "row"}}>
+                                    <View style={{paddingRight: fontValue(10)}}>
                                         <FileOutlineIcon height={fontValue(20)} width={fontValue(16)}/>
                                     </View>
                                     <Text
-                                        style={requirementStyles.text}>{outputLabel(props?.applicantType||props?.service?.name)}</Text>
+                                        style={requirementStyles.text}>{outputLabel(props?.applicantType || props?.service?.name)}</Text>
                                 </View>
 
                             </Pressable>
+                            <PdfDownload url={ props?.documents}/>
                         </View>
                     }
 
