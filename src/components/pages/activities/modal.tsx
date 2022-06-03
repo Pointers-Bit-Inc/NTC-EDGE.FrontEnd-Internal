@@ -33,6 +33,7 @@ import {isMobile} from "@pages/activities/isMobile";
 import {useComponentLayout} from "../../../hooks/useComponentLayout";
 import ModalTab from "@pages/activities/modalTab/modalTab";
 import {isLandscapeSync,isTablet} from "react-native-device-info";
+import {Toast} from "@atoms/toast/Toast";
 
 function ActivityModal(props:any){
 
@@ -482,6 +483,7 @@ function ActivityModal(props:any){
                     onEndorseDismissed()
                 }}
             />
+            <Toast/>
         </NativeView>
     );
 }
