@@ -160,7 +160,7 @@ const ModalTab=props=>{
                         renderTab={renderTab}
                         scrollViewStyle={{paddingLeft:60,flex:1,justifyContent:"flex-start",gap:35}}
                         underlineStyle={{backgroundColor:"#2863D6",paddingHorizontal:25,height:7}}
-                        tabs={tabs.filter((tab,index)=>tab.isShow.indexOf(user?.role?.key)!== -1)}
+                        tabs={tabs.filter((tab,index)=> !(service?.serviceCode == "service-22" && tab?.id===4) && tab.isShow.indexOf(user?.role?.key)!== -1)}
                         {...params}
                         vertical={false}
                     />
