@@ -21,7 +21,7 @@ import {BASE_URL} from "../../../../services/config";
 import {ACCOUNTANT,APPROVED,CASHIER,DIRECTOR,EVALUATOR,} from "../../../../reducers/activity/initialstate";
 import {RootStateOrAny,useSelector} from "react-redux";
 import useKeyboard from 'src/hooks/useKeyboard';
-import {errorColor,primaryColor} from "@styles/color";
+import {disabledColor, errorColor, primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import {useAlert} from "../../../../hooks/useAlert";
 import {getRole} from "@pages/activities/script";
@@ -70,6 +70,8 @@ const Approval=(props:any)=>{
             role="accountant"
         } else if(userAccountantRole){   // if accountant
             role="cashier"
+        }else if(userCashier){
+            role="cashier"
         }
 
         await axios.get(BASE_URL+'/users',
@@ -82,7 +84,7 @@ const Approval=(props:any)=>{
                     Authorization:"Bearer ".concat(user?.sessionToken)
                 }
             }).then((response)=>{
-
+            console.log(response?.data?.docs)
             setLoading(false);
             const filterResponse=[...response?.data?.docs||response?.data].filter((item:any)=>{
                 //evaluator and director -> accountant -> cashier -> null
@@ -91,7 +93,7 @@ const Approval=(props:any)=>{
                 } else if(userAccountantRole){   // if accountant
                     return getRole(item,[CASHIER]) //get cashier
                 } else if(userCashier){ //if cashier
-                    return false
+                    return getRole(item,[CASHIER])
                 }
             });
             const res=filterResponse.map((item:any)=>{
@@ -117,6 +119,9 @@ const Approval=(props:any)=>{
     },[]);
 
     const onConfirmation=()=>{
+
+        if(!(remarks) && getRole(user,[CASHIER])) return
+
         new Promise((resolve, reject) => {
             if(!loading){
                 resolve("");
@@ -201,7 +206,7 @@ const Approval=(props:any)=>{
 
                                 props.onDismissed(null,(bool)=>{
 
-                                    setShowClose(false);
+                                    setShowClose(true);
                                     setApprovalIcon(true);
                                     setTitle("Application Approved");
                                     setMessage("Application has been approved.");
@@ -251,7 +256,7 @@ const Approval=(props:any)=>{
                                     </Text>
                                     <View style={styles.group2}>
 
-                                        { getRole(user,[DIRECTOR,EVALUATOR,ACCOUNTANT])&&
+                                        { getRole(user,[CASHIER, DIRECTOR,EVALUATOR,ACCOUNTANT])&&
                                         <InputField
                                             ref={approveInputField}
                                             inputStyle={{
@@ -275,7 +280,7 @@ const Approval=(props:any)=>{
                                                 height:(
                                                            height<720&&isKeyboardVisible) ? 70 : height*0.15
                                             }}
-                                            placeholder={'Remarks'}
+                                            placeholder= {getRole(user,[CASHIER]) ? 'OR Number' : 'Remarks'}
                                             multiline={true}
                                             value={remarks}
                                             error={validateRemarks.error}
@@ -291,8 +296,8 @@ const Approval=(props:any)=>{
                                             }
                                         />}
                                         <View style={{marginTop:5}}>
-                                            <TouchableOpacity onPress={onConfirmation}>
-                                                <View style={styles.confirmButton}>
+                                            <TouchableOpacity disabled={!(remarks) && getRole(user,[CASHIER])} onPress={onConfirmation}>
+                                                <View style={[styles.confirmButton, {backgroundColor:!(remarks) && getRole(user,[CASHIER]) ? disabledColor :primaryColor,}]}>
                                                     <Text style={styles.confirm}>Confirm</Text>
                                                 </View>
                                             </TouchableOpacity>
@@ -363,7 +368,7 @@ const styles=StyleSheet.create({
         fontSize:fontValue(18),
     },
     confirmButton:{
-        backgroundColor:primaryColor,
+
         borderRadius:12,
 
         paddingVertical:16,

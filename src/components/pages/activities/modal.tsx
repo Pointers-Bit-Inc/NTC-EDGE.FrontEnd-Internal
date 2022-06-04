@@ -229,7 +229,7 @@ function ActivityModal(props:any){
                     setShowAlert(false);
                     setApprovalIcon(false);
                     setShowClose(false)
-                        props.onDismissed(true);
+                    props.onDismissed(true);
 
                 }}
                 onLoading={alertLoading}
@@ -317,11 +317,8 @@ function ActivityModal(props:any){
                                         allButton={allButton}
                                         onPress={()=>{
 
-                                            if(cashier){
-                                                onShowConfirmation(APPROVED)
-                                            } else{
                                                 setApproveVisible(true)
-                                            }
+
 
 
                                         }}/>
