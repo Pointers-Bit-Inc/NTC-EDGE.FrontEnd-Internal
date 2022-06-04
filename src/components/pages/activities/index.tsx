@@ -343,7 +343,7 @@ export default function ActivitiesPage(props:any){
                     <FakeSearchBar onSearchLayoutComponent={onSearchLayoutComponent}
                                    animated={!modalVisible&& !moreModalVisible&& !visible&& !refreshing&& !lodash.size(meetingList)&&{
                                        ...{opacity},
-                                       top:sizeComponent?.height||80*(
+                                       top:sizeComponent?.height||(isMobile ?80 : 57 )*(
                                            1+lodash.size(meetingList)),
                                        elevation:10,
                                        zIndex:10,
