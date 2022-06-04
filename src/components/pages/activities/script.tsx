@@ -215,9 +215,7 @@ export const getFilter = ({
         (
             selectedClone?.length ? selectedClone.indexOf(cashier ? PaymentStatusText(item.paymentStatus) : StatusText(item.status)) != -1 : true);
     if (cashier) {
-        return (
-            item?.status == APPROVED || item?.status == DECLINED || ( (
-                    item?.assignedPersonnel?._id || item?.assignedPersonnel) === null || _approvalHistory) && search)
+        return search
     } else if (director) {
        
         return (
@@ -279,8 +277,8 @@ export const excludeStatus = (props: any , personnel: UserApplication) => getSta
     getStatusText(props , personnel) == FOREVALUATION;
 
 export function getStatusText(props: any , personnel: UserApplication | undefined) {
-                                  console.log(props?.status)
-    return (props?.service.serviceCode == 'service-22' && props?.status == FORAPPROVAL)  ? APPROVED :  getRole(props.user , [EVALUATOR , DIRECTOR]) && getStatus(props , personnel) == FORAPPROVAL && (
+
+    return (props?.service.serviceCode == 'service-22'  && props?.status == FORAPPROVAL)  ? APPROVED :  getRole(props.user , [EVALUATOR , DIRECTOR]) && getStatus(props , personnel) == FORAPPROVAL && (
         !!props?.approvalHistory?.[0]?.userId || !!props?.approvalHistory?.userId) && (
         props?.approvalHistory?.[0]?.status !== FOREVALUATION && props?.approvalHistory?.status !== FOREVALUATION) && (
         props?.approvalHistory?.[0]?.status !== PENDING && props?.approvalHistory?.status !== PENDING) && (
@@ -288,11 +286,11 @@ export function getStatusText(props: any , personnel: UserApplication | undefine
             props?.assignedPersonnel?._id !== props.currentUser?._id)) ? StatusText(APPROVED) : getRole(props.user , [ACCOUNTANT]) && !!props.paymentMethod && (
         !!props?.paymentHistory?.[0]?.status && !!props?.paymentHistory?.status) ? StatusText(props.paymentHistory?.[0]?.status || props.paymentHistory?.status) : getRole(props.user , [ACCOUNTANT]) && (
         props.approvalHistory?.[0]?.status == FOREVALUATION && props.approvalHistory?.status == FOREVALUATION) && props.approvalHistory[1].status == FORAPPROVAL ? DECLINED : getRole(props.user , [CASHIER]) && !(props?.assignedPersonnel) && (props?.approvalHistory[0]?.status != DECLINED && props?.approvalHistory?.status != DECLINED ) || (
-        props?.paymentHistory?.[0]?.status == PENDING && props?.paymentHistory?.status == PENDING) ?  (getRole(props.user , [CASHIER]) ? PaymentStatusText(props?.paymentHistory?.status) : StatusText(props?.status))   :  getRole(props.user , [CASHIER]) && !props.paymentStatus && props.status == DECLINED  ? PaymentStatusText(DECLINED) : getStatus(props , personnel);
+        props?.paymentHistory?.[0]?.status == PENDING && props?.paymentHistory?.status == PENDING) ?  (getRole(props.user , [CASHIER]) ? PaymentStatusText(props?.paymentHistory?.status) : StatusText(props?.status))   :  getRole(props.user , [CASHIER]) && !props.paymentStatus && props.status == DECLINED  ? PaymentStatusText(DECLINED) : (getStatus(props , personnel) ? getStatus(props, personnel) : getRole(props.user , [CASHIER]) ? PaymentStatusText(props?.paymentStatus || (props?.service?.serviceCode == 'service-22' && props?.status != PENDING  ? APPROVED : FORVERIFICATION)) : StatusText((props?.service?.serviceCode == 'service-22' && props?.status == FORAPPROVAL ? APPROVED : props?.status) || (props?.service?.serviceCode == 'service-22' ? APPROVED : FORAPPROVAL)));
 }
 export function getActivityStatus (props:any,status:string){
 
-    return [CASHIER].indexOf(props?.role)!= -1 ? PaymentStatusText(props?.activity?.paymentStatus || (props?.activity?.service?.serviceCode == 'service-22' ? APPROVED : FORVERIFICATION)) : StatusText((props?.activity?.service?.serviceCode == 'service-22' && props?.activity?.status == FORAPPROVAL ? APPROVED : props?.activity?.status) || (props?.activity?.service?.serviceCode == 'service-22' ? APPROVED : FORAPPROVAL))
+    return [CASHIER].indexOf(props?.role)!= -1 ? PaymentStatusText(props?.activity?.paymentStatus || (props?.activity?.service?.serviceCode == 'service-22' && props?.activity?.status != PENDING ? APPROVED : FORVERIFICATION)) : StatusText((props?.activity?.service?.serviceCode == 'service-22' && props?.activity?.status == FORAPPROVAL ? APPROVED : props?.activity?.status) || (props?.activity?.service?.serviceCode == 'service-22' ? APPROVED : FORAPPROVAL))
 }
 export function getStatus(props: any , personnel?: { _id: string | undefined; updatedAt: string | undefined; createdAt: string | undefined; username: string | undefined; role: Role | undefined; email: string | undefined; firstName: string | undefined; lastName: string | undefined; password: string | undefined; contactNumber: string | undefined; __v: number | undefined; address: string | undefined; profilePicture: ProfilePicture | undefined; avatar: string | undefined } , wordCase?: string) {
 

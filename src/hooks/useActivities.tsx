@@ -355,8 +355,12 @@ export function useActivities(props){
                 response?.data?.size ? setSize(response?.data?.size) : setSize(0);
                 response?.data?.total ? setTotal(response?.data?.total) : setTotal(0);
                 response?.data?.page ? setPage(response?.data?.page) : setPage(0);
-                if(response?.data?.docs.length==0){
+
+
+
+                if(response?.data?.docs.length == 0){
                     setInfiniteLoad(false);
+
                 } else{
                     dispatch(handleInfiniteLoad({
                         data:getList(response.data.docs,selectedChangeStatus),

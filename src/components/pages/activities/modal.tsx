@@ -369,7 +369,7 @@ function ActivityModal(props:any){
                 }}
                 visible={approveVisible}
                 confirm={(event:any,callback:(res,callback)=>{})=>{
-
+                    console.log("event")
                     let status="";
                     if(getRole(user,[DIRECTOR,EVALUATOR])){
                         status=FORAPPROVAL
@@ -379,9 +379,9 @@ function ActivityModal(props:any){
                         status=PAID
                     }
                     onChangeApplicationStatus(status,(err,appId)=>{
-                        console.log(9);
-                        if(!err){
 
+                        if(!err){
+                            console.log(9, "onChangeApplicationStatus");
                             callback(true,(bool)=>{
 
                             })
@@ -402,13 +402,12 @@ function ActivityModal(props:any){
 
                 }}
                 onDismissed={(event?:any,callback?:(bool)=>{})=>{
-                    console.log(1);
+
                     if(event==APPROVED){
-                        onApproveDismissed();
-                        console.log(2)
+                       onApproveDismissed();
+
                     }
                     if(callback){
-
                         callback(true)
                     }
                 }}

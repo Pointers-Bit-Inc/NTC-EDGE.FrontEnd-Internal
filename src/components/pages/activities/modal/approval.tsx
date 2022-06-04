@@ -198,13 +198,16 @@ const Approval=(props:any)=>{
 
                             setAlertLoading(false);
                             if(response){
+
                                 props.onDismissed(null,(bool)=>{
-                                 
+
+                                    setShowClose(false);
                                     setApprovalIcon(true);
                                     setTitle("Application Approved");
                                     setMessage("Application has been approved.");
-                                    setShowClose(true);
+
                                 });
+
                                 callback(true);
 
                             } else if(!response){

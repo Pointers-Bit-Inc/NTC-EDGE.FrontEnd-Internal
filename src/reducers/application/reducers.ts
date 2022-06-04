@@ -117,7 +117,6 @@ export default function basket(state = initialState, action = {}) {
 
                     isPinned.push(action.payload?.data?.[i])
                 } else {
-
                     isNotPinned.push(action.payload?.data?.[i])
                 }
             }
@@ -138,6 +137,9 @@ export default function basket(state = initialState, action = {}) {
                     isNotPinned.push(action.payload?.data[i])
                 }
             }
+
+
+
             state = state.set('notPinnedApplications' , [
                 ..._.uniqBy(state.notPinnedApplications.concat(...isNotPinned), "_id") ,
             ]);
