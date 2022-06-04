@@ -192,6 +192,7 @@ function ActivityModal(props:any){
     useEffect(()=>{
         dispatch(setRightLayoutComponent(activityModalScreenComponent))
     },[activityModalScreenComponent]);
+
     return (
 
         <NativeView
@@ -228,7 +229,8 @@ function ActivityModal(props:any){
                     setShowAlert(false);
                     setApprovalIcon(false);
                     setShowClose(false)
-                    props.onDismissed(true);
+                        props.onDismissed(true);
+
                 }}
                 onLoading={alertLoading}
                 onCancelPressed={()=>{
@@ -312,7 +314,7 @@ function ActivityModal(props:any){
                                     <ApprovedButton
                                         user={user}
                                         currentLoading={currentLoading}
-                                        allButton={allButton}
+                                        allButton={false}
                                         onPress={()=>{
 
                                             if(cashier){

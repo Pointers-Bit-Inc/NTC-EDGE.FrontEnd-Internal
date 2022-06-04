@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {ActivityIndicator, Animated, Dimensions, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import Modal from "react-native-modal";
 import {alertStyle} from "@pages/activities/alert/styles";
@@ -14,9 +14,10 @@ import {fontValue} from "@pages/activities/fontValue";
 const {width} = Dimensions.get('window');
 
 function CustomAlert(props) {
+    const {springValue, _springHide} = useAlert(props.show,  props.onDismissed, props.onCancelPressed);
 
-    const {springValue, _springHide} = useAlert(props.show, props.onDismissed);
-    
+
+
     return (
         <Modal
             useNativeDriver={true}
@@ -76,8 +77,9 @@ function CustomAlert(props) {
                                         </TouchableOpacity>
                                        }
                                        <TouchableOpacity onPress={() => {
-                                           _springHide()
-                                           props.onCancelPressed
+                                           _springHide(false)
+
+
                                        }}>
                                            <Text style={[alertStyle.cancelButtonTextStyle]}>Close</Text>
                                        </TouchableOpacity>
@@ -87,7 +89,9 @@ function CustomAlert(props) {
                                }
 
                                {props?.showClose == true &&
-                               <TouchableOpacity onPress={_springHide}>
+                               <TouchableOpacity onPress={() => {
+                                   _springHide(true)
+                               }}>
                                    <Text style={[alertStyle.confirmButtonTextStyle]}>Close</Text>
                                </TouchableOpacity>
                                }

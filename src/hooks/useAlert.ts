@@ -1,7 +1,7 @@
 import {Animated} from "react-native";
 import {useEffect , useRef , useState} from "react";
 
-export  function useAlert(show:boolean,dismissed?:any) {
+export  function useAlert(show:boolean,dismissed?:any, canceled?:any) {
     const springValue = useRef(new Animated.Value(0.1)).current;
 
     const [showSelf, setShowSelf] = useState(false)
@@ -26,7 +26,7 @@ export  function useAlert(show:boolean,dismissed?:any) {
         }
     }, [show, springValue, ])
 
-    const _springHide = () => {
+    const _springHide = (flag = true) => {
         Animated.spring(springValue, {
             toValue: 0,
             tension: 10,
@@ -35,9 +35,14 @@ export  function useAlert(show:boolean,dismissed?:any) {
 
         setTimeout(() => {
            _toggleAlert(false);
-            dismissed()
+            if(flag){
+                dismissed()
+            }else{
+              canceled()
+            }
         }, 70);
     };
+
     const _springCollapse = () => {
         Animated.spring(springValue, {
             toValue: 0,
