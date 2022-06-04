@@ -84,7 +84,6 @@ const Approval=(props:any)=>{
                     Authorization:"Bearer ".concat(user?.sessionToken)
                 }
             }).then((response)=>{
-            console.log(response?.data?.docs)
             setLoading(false);
             const filterResponse=[...response?.data?.docs||response?.data].filter((item:any)=>{
                 //evaluator and director -> accountant -> cashier -> null

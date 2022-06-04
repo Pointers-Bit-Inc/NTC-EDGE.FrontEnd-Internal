@@ -367,20 +367,16 @@ export default function ActivitiesPage(props:any){
                         }
                         showsVerticalScrollIndicator={false}
                         nestedScrollEnabled={true}
-                        onScroll={!isMobile ? Animated.event(
-                            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                            {
-                                useNativeDriver: true,
-                                listener: (event) => {
-                                    new Promise((resolve, reject) => {
-                                        setTimeout(() => {
-                                            resolve(event?.nativeEvent?.contentOffset?.y)
-                                        }, 1000);
-                                    }).then((data)=>{
-                                        setYPos(data)
-                                    })
-                                } }
-                        ): () => {}}
+                        onScroll={ Animated.event(
+                            [{
+                                nativeEvent : {
+                                    contentOffset : {
+                                        y : scrollY
+                                    }
+                                }
+                            }] ,
+                            { useNativeDriver : true }
+                        ) }
                         contentContainerStyle={{
                             display:isReady ? undefined : "none",
                             paddingTop:(
