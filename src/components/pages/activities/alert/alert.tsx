@@ -106,7 +106,6 @@ function CustomAlert(props) {
 
 const styles = StyleSheet.create({
     group: {
-        flex: 1,
         alignSelf: "center"
     },
     shadow: {shadowColor: "rgba(0,0,0,1)",
