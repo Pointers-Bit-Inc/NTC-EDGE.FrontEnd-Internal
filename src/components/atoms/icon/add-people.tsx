@@ -1,11 +1,11 @@
 import React, { FC } from 'react'
 import Svg, { SvgProps, Path } from "react-native-svg";
-import { RFValue } from 'react-native-responsive-fontsize';
+import { fontValue } from '@components/pages/activities/fontValue';
 
 const AddParticipantsIcon: FC = (props: SvgProps) => (
   <Svg
-    width={RFValue(21)}
-    height={RFValue(21)}
+    width={fontValue(21)}
+    height={fontValue(21)}
     viewBox="0 0 21 21"
     fill="none"
     {...props}

@@ -32,6 +32,7 @@ import ChatView from '@components/pages/chat-modal/view';
 import { RootStateOrAny, useSelector } from 'react-redux';
 import { Bold } from '@styles/font';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
+import MeetingParticipants from '@screens/meet/participants';
 const { width } = Dimensions.get('window');
 
 const videoStyle = {
@@ -79,8 +80,6 @@ const { styles, ids } = StyleSheet.create({
   },
   videoList: {
     width: 300,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   name: {
     textAlign: 'center',
@@ -128,21 +127,23 @@ const { styles, ids } = StyleSheet.create({
   sideContent: {
     backgroundColor: 'white',
     overflow: 'hidden',
+    borderRadius: 5,
+    margin: 10,
     '@media (min-width: 800px)': {
       width: 400,
     },
     '@media (max-width: 800px)': {
       width: '100%',
+      margin: 0,
+      marginLeft: -20
     },
-    borderRadius: 5,
-    margin: 10,
   },
   titleContainer: {
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 15,
-    marginHorizontal: 15,
+    paddingTop: 30,
+    marginHorizontal: 10,
   }
 })
 interface Props {
@@ -575,7 +576,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 
   const renderFullView = () => {
     return (
-      <View style={{ flexDirection: 'row', flex: 1 }}>
+      <View style={{ flexDirection: width < 1000 ? 'column' : 'row', flex: 1 }}>
         <View style={styles.fullVideo}>
           {
             renderVideoItem(
@@ -584,8 +585,9 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             )
           }
         </View>
-        <View style={styles.videoList}>
+        <View style={[styles.videoList, width < 1000 && { width: layout.width }]}>
           <FlatList
+            horizontal={width < 1000 ? true : false}
             data={peerIds}
             renderItem={({ item }) => renderVideoItem(
               item,
@@ -653,9 +655,8 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
       );
     } else if (sideContent === 'participants') {
       return (
-        <Info
-          otherParticipants={participants}
-          close={() => onSetSideContent('')}
+        <MeetingParticipants
+          onClose={() => onSetSideContent('')}
         />
       )
     }

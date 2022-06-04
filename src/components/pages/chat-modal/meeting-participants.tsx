@@ -20,8 +20,8 @@ import { SearchField } from '@components/molecules/form-fields'
 import { primaryColor } from '@styles/color';
 import useSignalr from 'src/hooks/useSignalr';
 import axios from 'axios';
-import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold, Regular, Regular500 } from '@styles/font';
+import { fontValue } from '../activities/fontValue';
 
 const styles = StyleSheet.create({
   container: {
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    fontSize: RFValue(14),
+    fontSize: fontValue(14),
     fontFamily: Regular,
     color: 'black',
     flex: 1,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   icon: {
-    fontSize: RFValue(16),
+    fontSize: fontValue(16),
     color: '#6E7191'
   },
   separator: {
@@ -63,18 +63,18 @@ const styles = StyleSheet.create({
     // backgroundColor: outline.default,
   },
   notSelected: {
-    height: RFValue(20),
-    width: RFValue(20),
-    borderRadius: RFValue(20),
+    height: fontValue(20),
+    width: fontValue(20),
+    borderRadius: fontValue(20),
     borderWidth: 1,
     borderColor: button.default,
     alignItems: 'center',
     justifyContent: 'center',
   },
   selected: {
-    height: RFValue(20),
-    width: RFValue(20),
-    borderRadius: RFValue(20),
+    height: fontValue(20),
+    width: fontValue(20),
+    borderRadius: fontValue(20),
     borderWidth: 1,
     borderColor: button.info,
     backgroundColor: button.info,
@@ -265,7 +265,7 @@ const MeetingParticipants = ({
             <TouchableOpacity onPress={onBack}>
               <CloseIcon
                 type='close'
-                size={RFValue(18)}
+                size={fontValue(18)}
               />
             </TouchableOpacity>
           </View>
@@ -344,7 +344,7 @@ const MeetingParticipants = ({
                     <View style={styles.selected}>
                       <CheckIcon
                         type={'check1'}
-                        size={RFValue(16)}
+                        size={fontValue(16)}
                         color="white"
                       />
                     </View>

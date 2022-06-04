@@ -4,8 +4,8 @@ import { fontValue } from '@components/pages/activities/fontValue';
 
 const MicOffIcon: FC = (props: SvgProps) => (
   <Svg
-    width={fontValue(26)}
-    height={fontValue(26)}
+    width={fontValue(22)}
+    height={fontValue(22)}
     viewBox="0 0 26 26"
     fill="none"
     {...props}
