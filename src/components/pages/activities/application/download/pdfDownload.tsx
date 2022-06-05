@@ -1,16 +1,39 @@
 import React, {useEffect, useState} from "react";
-import {Pressable, View, Text, InteractionManager, Platform} from "react-native";
+import {Pressable, View, Text, InteractionManager, Platform, PermissionsAndroid, Alert} from "react-native";
 import {fontValue} from "@pages/activities/fontValue";
 import {DownloadIcon} from "@atoms/icon";
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
 import {useToast} from "../../../../../hooks/useToast";
 import {ToastType} from "@atoms/toast/ToastProvider";
-import useDownload from "../../../../../hooks/useDownload";
-import IMessages from "../../../../../interfaces/IMessages";
 import RNFetchBlob from "react-native-blob-util";
 
 const PdfDownloadWeb = (props: { url: string; }) => {
     const {showToast}=useToast();
+    const checkPermission = async () => {
+
+        if (Platform.OS === 'ios') {
+            onDownload();
+        } else {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        buttonNegative: undefined, buttonNeutral: undefined, buttonPositive: "",
+                        title: 'Storage Permission Required',
+                        message:
+                            'Application needs access to your storage to download File'
+                    }
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    onDownload();
+                } else {
+                    Alert.alert('Error','Storage Permission Not Granted');
+                }
+            } catch (err) {
+                console.log("++++"+err);
+            }
+        }
+    };
 
 
     const onDownload = async () => {
@@ -33,8 +56,6 @@ const PdfDownloadWeb = (props: { url: string; }) => {
             },
             android: configfb,
         });
-
-        console.log('The file saved to 23233', configfb, dirs);
 
         RNFetchBlob.config(configOptions)
             .fetch('GET', props.url, {})
@@ -61,7 +82,7 @@ const PdfDownloadWeb = (props: { url: string; }) => {
             });
     }
     return <Pressable onPress={() => {
-        onDownload()
+        checkPermission()
     }
     }>
         <View style={{flexDirection: "row"}}>

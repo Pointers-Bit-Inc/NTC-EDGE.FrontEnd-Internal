@@ -394,14 +394,12 @@ export default function ActivitiesPage(props:any){
                         keyExtractor={(item,index)=>index.toString()}
                         ListFooterComponent={refreshing ? <View/> :bottomLoader}
                         onEndReached={()=>{
-
                             if(!onEndReachedCalledDuringMomentum|| !(
                                 isMobile&& !(
-                                    Platform?.isPad||isTablet()))){
+                                    Platform?.isPad||isTablet()))) {
                                 handleLoad();
                                 setOnEndReachedCalledDuringMomentum(true);
                             }
-
                         }}
                         onScrollEndDrag={onScrollEndDrag}
                         onEndReachedThreshold={0.5}
