@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const FloatingVideo = () => {
+const FloatingVideo = ({ tracks }:any) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const videoRef = useRef<any>(null);
@@ -202,7 +202,7 @@ const FloatingVideo = () => {
           );
           dispatch(resetCurrentMeeting());
         } else {
-          joinMeeting(meeting._id, (err:any, result:any) => {
+          joinMeeting({ meetingId: meeting._id, muted: isMute }, (err:any, result:any) => {
             if (!unmounted) {
               if (result) {
                 setLoading(false);

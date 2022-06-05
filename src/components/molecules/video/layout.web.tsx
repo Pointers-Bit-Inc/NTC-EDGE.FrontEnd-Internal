@@ -1,546 +1,727 @@
-import React,{forwardRef,ForwardRefRenderFunction,ReactNode,useEffect,useImperativeHandle,useRef,useState,} from 'react'
-import {Dimensions,FlatList,StyleSheet,TouchableOpacity,View} from 'react-native'
-import {MicIcon,SpeakerIcon,VideoIcon} from '@components/atoms/icon';
+import React, {
+  useEffect,
+  useState,
+  ReactNode,
+  FC,
+  useImperativeHandle,
+  forwardRef,
+  ForwardRefRenderFunction,
+} from 'react'
+import { View, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithoutFeedback, useWindowDimensions, ScrollView } from 'react-native'
+import StyleSheet from 'react-native-media-query';
+import lodash from 'lodash';
+import { useInitializeAgora } from 'src/hooks/useAgora';
+import { MicIcon, CameraIcon, MicOffIcon, MessageIcon, ParticipantsIcon, CloseIcon, ArrowDownIcon, MenuIcon } from '@components/atoms/icon';
+
+import {
+  AgoraVideoPlayer,
+  IMicrophoneAudioTrack,
+  ICameraVideoTrack
+} from "agora-rtc-react";
 
 import ConnectingVideo from '@components/molecules/video/connecting'
+import ProfileImage from '@components/atoms/image/profile';
 import Text from '@components/atoms/text';
-import AgoraRTC from 'agora-rtc-sdk';
-import AddParticipantOutlineIcon from "@assets/svg/addParticipantOutline";
-import {useNavigation} from "@react-navigation/native";
-import {Menu,MenuOption,MenuOptions,MenuTrigger} from "react-native-popup-menu";
-import ChevronUpIcon from "@assets/svg/chevron-up";
+import { text } from '@styles/color';
+import VideoButtons from '@components/molecules/video/buttons'
+import VideoNotification from './notification';
+import IParticipants from 'src/interfaces/IParticipants';
+import { fontValue } from '@components/pages/activities/fontValue';
+import Info from '@screens/chat/info';
+import ChatView from '@components/pages/chat-modal/view';
+import { RootStateOrAny, useSelector } from 'react-redux';
+import { Bold } from '@styles/font';
+import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
+import MeetingParticipants from '@screens/meet/participants';
+const { width } = Dimensions.get('window');
 
-const {width,height}=Dimensions.get('window');
-
-
-// const videoStateMessage = state => {
-//   switch (state) {
-//     case VideoRemoteState.Stopped:
-//       return 'Video is disabled';
-
-//     case VideoRemoteState.Frozen:
-//       return 'Connection Issue, Please Wait...';
-
-//     case VideoRemoteState.Failed:
-//       return 'Network Error';
-//   }
-// };
-
-// const videoStateIcon = state => {
-//   switch (state) {
-//     case VideoRemoteState.Stopped:
-//       return <Icon3 name={'videocam-off'} size={40} color={'white'} />;
-
-//     case VideoRemoteState.Frozen:
-//       return (
-//         <Icon4 name={'network-strength-1-alert'} size={40} color={'red'} />
-//       );
-
-//     case VideoRemoteState.Failed:
-//       return <Icon4 name={'network-strength-off'} size={40} color={'red'} />;
-//   }
-// };
-
-
-const styles=StyleSheet.create({
-    container:{
-        flex:1,
-        justifyContent:"center",
-        alignItems:"center",
-        backgroundColor:"#565961"
-    },
-    layoutTwoVideo:{
-        flex:1,
-        backgroundColor:'black',
-    },
-    horizontal:{
-        flexDirection:'row',
-        flex:1,
-    },
-    vertical:{
-        flexDirection:'column',
-    },
-    video:{
-        borderColor:"#1F2022",
-        borderWidth:2,
-        zIndex:1,
-        borderRadius:10,
-        overflow:"hidden",
-        width:623,
-        height:419,
-    },
-    fullVideo:{
-        flex:1,
-        justifyContent:'center',
-        alignItems:'center',
-    },
-    smallVideo:{
-        backgroundColor:'#606A80',
-        width:width*0.30,
-        height:width*0.37,
-        borderRadius:5,
-        justifyContent:'center',
-        alignItems:'center',
-        overflow:'hidden',
-        borderWidth:1,
-        borderColor:'rgba(0,0,0,0.1)',
-    },
-    videoList:{
-        position:'absolute',
-        bottom:100,
-        width,
-    },
-    name:{
-        textAlign:'center',
-        marginTop:5,
-    },
-    floatingName:{
-        position:'absolute',
-        bottom:5,
-        left:10,
-    },
-    mic:{
-        position:'absolute',
-        top:5,
-        left:5,
-    },
-    footer:{
-        width:'100%',
-        paddingTop:10,
-        position:'absolute',
-        bottom:30,
-    },
-});
-
-interface Props{
-    loading?:boolean;
-    participants?:[];
-    meetingParticipants?:[];
-    user:any;
-    options:any;
-    header?:ReactNode;
-    agora?:any;
-    callEnded?:false;
-    message?:string;
-    isVoiceCall?:false;
-    onEndCall?:any;
-    setNotification?:any;
-    isGroup?:false;
+const videoStyle = {
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'grey',
 }
 
-export type VideoLayoutRef={
-    joinSucceed:boolean;
-    isMute:boolean;
-    isSpeakerEnable:boolean;
-    isVideoEnable:boolean;
-    toggleIsMute:()=>void;
-    toggleIsSpeakerEnable:()=>void;
-    toggleIsVideoEnable:()=>void;
+const { styles, ids } = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  layoutTwoVideo: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  horizontal: {
+    flexDirection: 'row',
+    flex: 1,
+  },
+  vertical: {
+    flexDirection: 'column',
+  },
+  video: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'grey',
+  },
+  fullVideo: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 2,
+  },
+  smallVideo: {
+    backgroundColor: '#606A80',
+    width: width * 0.30,
+    height: width * 0.37,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.1)',
+  },
+  videoList: {
+    width: 300,
+  },
+  name: {
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  floatingName: {
+    position: 'absolute',
+    bottom: 5,
+    left: 10,
+  },
+  mic: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+  },
+  footer: {
+    width: '100%',
+    height: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  icon: {
+    paddingHorizontal: 10
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  videoGroupContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  videoBox: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#1F2022',
+    borderWidth: 2,
+    borderRadius: 5,
+    overflow: 'hidden',
+    backgroundColor: '#606A80',
+    margin: 2,
+  },
+  sideContent: {
+    backgroundColor: 'white',
+    overflow: 'hidden',
+    borderRadius: 5,
+    margin: 10,
+    '@media (min-width: 800px)': {
+      width: 400,
+    },
+    '@media (max-width: 800px)': {
+      width: '100%',
+      margin: 0,
+      marginLeft: -20
+    },
+  },
+  titleContainer: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 30,
+    marginHorizontal: 10,
+  }
+})
+interface Props {
+  loading?: boolean;
+  participants?: [];
+  meetingParticipants?: [];
+  user: any;
+  options: any;
+  header?: any;
+  agora?: any;
+  callEnded?: boolean;
+  message?: string;
+  isVoiceCall?: boolean;
+  onEndCall?: any;
+  onMute?: any;
+  setNotification?: any;
+  isGroup?: boolean;
+  isMaximize?: boolean;
+  pinnedParticipant?: any;
+  setPinnedParticipant?: any;
 }
 
-function ParticipantVideo({id}){
-    return (
-        <View>
-            <View nativeID={id} style={{width: 400, height: 400}}></View>
-        </View>
-    )
+export type VideoLayoutRef =  {
+  joinSucceed: boolean;
+  isMute: boolean;
+  isSpeakerEnable: boolean;
+  isVideoEnable: boolean;
+  toggleIsMute: () => void;
+  toggleIsSpeakerEnable: () => void;
+  toggleIsVideoEnable: () => void;
 }
 
-const VideoLayout:ForwardRefRenderFunction<VideoLayoutRef,Props>=({
-                                                                      loading=false,
-                                                                      participants=[],
-                                                                      meetingParticipants=[],
-                                                                      user={},
-                                                                      options={},
-                                                                      header,
-                                                                      agora={},
-                                                                      callEnded=false,
-                                                                      message='',
-                                                                      isVoiceCall=false,
-                                                                      onEndCall=()=>{
-                                                                      },
-                                                                      setNotification=(message:string)=>{
-                                                                      },
-                                                                      isGroup=false,
-                                                                  },ref)=>{
-    useImperativeHandle(ref,()=>(
-        {
-            joinSucceed,
-            isMute,
-            isSpeakerEnable,
-            isVideoEnable,
-            toggleIsMute,
-            toggleIsSpeakerEnable,
-            toggleIsVideoEnable,
-        }));
-    const [isVideoMuted,setVideoMute]=useState(false);
-    const [isAudioMuted,setAudioMute]=useState(false);
-    const [activeSpeaker,setActiveSpeaker]=useState(0);
-    const [availableCamera,setAvailableCamera]=useState([]);
-    const [availableMicrophone,setAvailableMicrophone]=useState([]);
-    const [microphone,setMicrophone]=useState(0);
-    const [camera,setCamera]=useState(0);
-    const [myId,setMyId]=useState<number>(0);
-    const client=useRef(AgoraRTC);
-    const localStream=useRef();
-    const initAgora=async()=>{
-
-        client.current=AgoraRTC.createClient({
-            mode:"rtc",
-            codec:"vp8",
-        });
-
-        client.current.init(agora.appId);
-        client.current.join(
-            agora.token,
-            agora.channelName,
-            agora.uid,
-            (uid)=>{
-                setVideoMute(true);
-                setAudioMute(true);
-                localStream.current=AgoraRTC.createStream({
-                    audio:!isVideoMuted,
-                    video:!isAudioMuted,
-                });
-
-                // Initialize the local stream
-                localStream.current.init(async()=>{
-                    // Play the local stream
-                    localStream.current.play("me");
-                    // Publish the local stream
-                    client.current.publish(localStream.current,(error)=>{
-                        console.error(error)
-                    });
-                },(error)=>{
-                    setVideoMute(false);
-                    setAudioMute(false)
-                });
-            },
-            (error)=>{
-                setVideoMute(false);
-                setAudioMute(false)
-            });
-
-        client.current.on('stream-added',(evt)=>{
-            console.log('stream-added');
-            client.current.subscribe(evt.stream,handleError)
-        });
-
-        client.current.on('stream-subscribed',(evt)=>{
-            console.log('stream-subscribed');
-            const stream=evt.stream;
-            const streamId=String(stream.getId());
-            setStreams({
-                ...streams,
-                [streamId]:{
-                    stream:stream,
-                    added:false,
-                    removed:false,
-                },
-            })
-            stream.setAudioVolume(100);
-        });
-
-        client.current.on('stream-removed',(evt)=>{
-            console.log('stream-removed');
-            const stream=evt.stream;
-            const streamId=String(stream.getId());
-
-            setStreams(strs=>{
-                strs[streamId].removed=true;
-                return {...strs}
-            })
-        });
-        client.current.enableAudioVolumeIndicator();
-        client.current.on("volume-indicator",(evt)=>{
-            evt.attr.forEach(function(volume,index){
-                if(options.uid==volume.uid&&volume.level>5){
-                    setActiveSpeaker(myId)
-
-                } else if(options.uid==volume.uid&&volume.level<5){
-                    setActiveSpeaker(0)
-
-                }
-            });
-        });
-        client.current.on('stream-unpublished',(evt)=>{
-            console.log('stream-unpublished')
-        });
-
-
-        client.current.on("peer-leave",function(evt){
-            console.log('peer-leave');
-            const stream=evt.stream;
-            const streamId=String(stream.getId());
-
-            setStreams(strs=>{
-                strs[streamId].removed=true;
-                return {...strs}
-            })
-        });
-        getCameraDevices()
-        getMicDevices()
-    };
-
-    function getCameraDevices(){
-        console.log("Checking for Camera Devices.....");
-        client.current.getCameras(function(cameras){
-            setAvailableCamera(cameras); // store cameras array
-        });
+const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
+  loading = false,
+  participants = [],
+  meetingParticipants = [],
+  user = {},
+  options = {},
+  header = () => {},
+  agora = {},
+  callEnded = false,
+  message = '',
+  isVoiceCall = false,
+  onEndCall = () => {},
+  onMute = () => {},
+  setNotification = () => {},
+  isGroup = false,
+  isMaximize = true,
+  pinnedParticipant = null,
+  setPinnedParticipant = () => {},
+}, ref) => {
+  const { height, width } = useWindowDimensions();
+  const { tracks } = options;
+  const { _id, name, hasRoomName, otherParticipants, lastMessage } = useSelector(
+    (state:RootStateOrAny) => {
+      const { selectedChannel } = state.channel;
+      selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
+      return selectedChannel;
     }
-    function getMicDevices() {
-        console.log("Checking for Mic Devices.....")
-        client.current.getRecordingDevices(function(mics) {
-            setAvailableMicrophone(mics); // store mics array
+  );
+  const [selectedPeer, setSelectedPeer]:any = useState(null);
+  const [peerList, setPeerList]:any = useState([]);
+  const [sideContent, setSideContent] = useState('');
+  const [layout, setLayout] = useState({
+    height: 0,
+    left: 0,
+    top: 0,
+    width: 0,
+    x: 0,
+    y: 0,
+  });
+  const [boxDimension, setBoxDimension] = useState({
+    width: 0,
+    height: 0,
+  });
+  const {
+    initAgora,
+    destroyAgoraEngine,
+    joinChannel,
+    isInit,
+    myId,
+    peerIds,
+    peerVideoState,
+    peerAudioState,
+    channelName,
+    joinSucceed,
+    isMute,
+    isSpeakerEnable,
+    isVideoEnable,
+    activeSpeaker,
+    toggleIsMute,
+    toggleRemoteAudio,
+    toggleIsSpeakerEnable,
+    toggleIsVideoEnable,
+    volumeIndicator,
+  } = useInitializeAgora({
+    ...agora,
+    options: {
+      ...options,
+      isVideoEnable: isVoiceCall ? !isVoiceCall : options?.isVideoEnable,
+    },
+  })
+
+  useImperativeHandle(ref, () => ({
+    joinSucceed,
+    isMute,
+    isSpeakerEnable,
+    isVideoEnable,
+    toggleIsMute,
+    toggleRemoteAudio,
+    toggleIsSpeakerEnable,
+    toggleIsVideoEnable,
+  }));
+
+  useEffect(() => {
+    if (!loading && agora.appId && tracks) {
+      initAgora();
+    }
+  }, [loading, agora.appId, tracks]);
+  
+  useEffect(() => {
+    if (isInit) {
+      joinChannel();
+    }
+  }, [isInit]);
+
+  useEffect(() => {
+    if (callEnded) {
+      setSideContent('');
+      destroyAgoraEngine();
+    }
+  }, [callEnded]);
+
+  useEffect(() => {
+    if (meetingParticipants) {
+      const isPinnedInTheMeeting = lodash.find(peerIds, (p:number) => p === pinnedParticipant?.uid);
+      let filterPeer = lodash.reject(peerIds, (p:number) => p === myId);
+
+      if (!!isPinnedInTheMeeting) {
+        filterPeer = lodash.reject(peerIds, (p:number) => p === pinnedParticipant.uid);
+      }
+
+      if (lodash.size(peerIds) === 2 && !isPinnedInTheMeeting) {
+        setPinnedParticipant(null);
+        setSelectedPeer(filterPeer[0]);
+        setPeerList([myId]);
+      } else {
+        const findFocus = lodash.find(meetingParticipants, (p:IParticipants) => {
+          if (p.isFocused) {
+            const findPeer = lodash.find(peerIds, (pd:number) => pd === p.uid)
+            return !!findPeer;
+          }
+          return false
         });
+        if (findFocus && !isPinnedInTheMeeting) {
+          filterPeer = lodash.reject(peerIds, (p:number) => p === findFocus.uid);
+          setPinnedParticipant(null);
+          setSelectedPeer(findFocus.uid);
+          setPeerList(filterPeer);
+        } else {
+          if (!isPinnedInTheMeeting) {
+            setPinnedParticipant(null);
+            setSelectedPeer(myId);
+          }
+          setPeerList(filterPeer);
+        }
+      }
+      
+      checkToggleMute();
+    }
+  }, [meetingParticipants, peerIds, pinnedParticipant])
+
+  useEffect(() => {
+    const filterPeer = lodash.reject(peerIds, p => p === selectedPeer);
+    setPeerList(filterPeer);
+  }, [selectedPeer])
+
+  useEffect(() => {
+    if (isGroup && !pinnedParticipant) {
+      if (activeSpeaker) {
+        setSelectedPeer(activeSpeaker);
+      } else {
+        setSelectedPeer(myId);
+      }
+    }
+  }, [activeSpeaker, pinnedParticipant]);
+
+  useEffect(() => {
+    if (pinnedParticipant?.uid) {
+      setSelectedPeer(pinnedParticipant.uid);
+    }
+  }, [pinnedParticipant]);
+
+  useEffect(() => {
+    const { width, height } = layout;
+    const participantSize = lodash.size(peerIds);
+    let numberOfColumns = 2, numberOfRow = 2;
+
+    switch(true) {
+      case participantSize === 1:
+        numberOfColumns = 1;
+        break;
+      case participantSize <= 4:
+        numberOfColumns = 2;
+        break;
+      case participantSize > 4 && participantSize <= 9:
+        numberOfColumns = 3;
+        break;
+      case participantSize > 9 && participantSize <= 16:
+        numberOfColumns = 4;
+        break;
+      case participantSize > 16 && participantSize <= 25:
+        numberOfColumns = 5;
+        break;
+      case participantSize > 25 && participantSize <= 36:
+        numberOfColumns = 6;
+        break;
+      default:
+        numberOfColumns = 7;
+        break;
     }
 
-    useEffect(()=>{
+    switch(true) {
+      case width <= 768 && numberOfColumns > 1:
+        numberOfColumns = 1;
+        break;
+      case width > 768 && width <= 992 && numberOfColumns > 2:
+        numberOfColumns = 2;
+        break;
+      case width > 992 && width <= 1200 && numberOfColumns > 3:
+        numberOfColumns = 3;
+        break;
+      case width > 1200 && width <= 1400 && numberOfColumns > 4:
+        numberOfColumns = 4;
+        break;
+    }
 
-        if(!loading&&agora.appId){
-            initAgora();
-        }
-        return ()=>{
-            client.current=null;
-            localStream.current=null
-        }
-    },[loading,agora.appId]);
+    if (numberOfColumns === 1) {
+      if (participantSize === 1) {
+        numberOfRow = 1;
+      } else {
+        numberOfRow = 2;
+      }
+    } else if (numberOfColumns === 2) {
+      if (participantSize === 2) {
+        numberOfRow = 1  
+      } else {
+        numberOfRow = 2;
+      }
+    } else if (numberOfColumns === 3) {
+      if (participantSize <= 6) {
+        numberOfRow = 2;
+      } else {
+        numberOfRow = 3;
+      }
+    } else {
+      numberOfRow = numberOfColumns;
+    }
+    
+    const boxWidth = width / numberOfColumns -(6 * numberOfColumns);
+    const boxHeight = ((height - (6 * numberOfRow)) / numberOfRow);
 
+    setBoxDimension({
+      width: boxWidth,
+      height: boxHeight,
+    });
+  }, [layout, peerIds]);
 
-    const [streams,setStreams]=useState({});
+  const checkToggleMute = () => {
+    const userParticipantDetails:IParticipants = lodash.find(meetingParticipants, (p:IParticipants) => p._id === user?._id);
+    if (userParticipantDetails) {
+      if (!!userParticipantDetails.muted !== isMute) {
+        toggleIsMute();
+      }
+    }
+  }
 
-    const handleError=(error)=>{
-        console.error(error)
-    };
-    const navigation=useNavigation();
+  const onSetPinnedParticipant = (participant:IParticipants) => {
+    if (pinnedParticipant?.uid && pinnedParticipant._id === participant._id) {
+      setPinnedParticipant(null);
+    } else {
+      setPinnedParticipant(participant);
+    }
+  }
 
-    useEffect(async()=>{
-        if(!Object.keys(streams).find((streamId)=>!streams[streamId].added||streams[streamId].removed)) return;
+  const onToggleMute = () => {
+    onMute(!isMute);
+  }
 
-        setStreams(strs=>{
-            Object.keys(strs).forEach((streamId)=>{
-                if(!strs[streamId].added){
-                    strs[streamId].added=true;
-                    strs[streamId].stream.play(streamId)
-                } else if(strs[streamId].removed){
-                    strs[streamId].stream.close();
-                    delete strs[streamId]
-                }
-            });
-            return {...strs}
-        })
-    },[streams]);
+  const onSetSideContent = (content = '') => {
+    setSideContent(content);
+  }
 
-    function changeStreamSource(deviceIndex,deviceType){
-        console.log('Switching stream sources for: '+deviceType);
-        var deviceId;
-        var existingStream=false;
+  const onLayout = ({ nativeEvent }:any) => setLayout(nativeEvent.layout);
 
-        if(deviceType==="video"){
-            deviceId=availableCamera[deviceIndex].deviceId
-        }
-
-        if(deviceType==="audio"){
-            deviceId=availableMicrophone[deviceIndex].deviceId;
-        }
-
-        localStream.current.switchDevice(deviceType,deviceId,function(){
-            console.log('successfully switched to new device with id: '+JSON.stringify(deviceId));
-            // set the active device ids
-            if(deviceType==="audio"){
-                setMicrophone(deviceId);
-            } else if(deviceType==="video"){
-               setCamera(deviceId);
-            } else{
-                console.log("unable to determine deviceType: "+deviceType);
+  const renderVideoItem = (item:any, style:any = null, pinned = false) => {
+    const findParticipant = lodash.find(meetingParticipants, p => p.uid === item);
+    if (!findParticipant) return null
+    if (item === myId && !pinned) {
+      return (
+        <TouchableWithoutFeedback key={item} onPress={() => onSetPinnedParticipant(findParticipant)}>
+          <View style={[
+            styles.videoBox,
+            style || { width: boxDimension.width, height: boxDimension.height },
+            volumeIndicator[item] && { borderColor: '#2863D6' }
+          ]}>
+            {
+              isVideoEnable ? (
+                <AgoraVideoPlayer
+                  style={videoStyle}
+                  videoTrack={tracks[1]}
+                  config={{
+                    mirror: false,
+                    fit: 'contain',
+                  }}
+                />
+              ) : (
+                <ProfileImage
+                  image={findParticipant?.profilePicture?.thumb}
+                  name={`${findParticipant.firstName} ${findParticipant.lastName}`}
+                  size={50}
+                  textSize={16}
+                />
+              )
             }
-        },function(){
-            console.log('failed to switch to new device with id: '+JSON.stringify(deviceId));
-        });
+            <Text
+              style={
+                isVideoEnable ?
+                styles.floatingName : styles.name
+              }
+              numberOfLines={1}
+              size={12}
+              color={'white'}
+            >
+              {findParticipant?.title || ''} {findParticipant.firstName}
+            </Text>
+            {
+              isMute ? (
+                <View style={styles.mic}>
+                  <MicOffIcon
+                    color={text.error}
+                    width={fontValue(16)}
+                    height={fontValue(16)}
+                  />
+                </View>
+              ) : null
+            }
+          </View>
+        </TouchableWithoutFeedback>
+      );
     }
-
     return (
-        <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-            <View>
-                <View style={styles.container}>
-
-                    <View style={[styles.video,{position:"absolute",zIndex:2,flex:1,justifyContent:"flex-end"}]}>
-                        <View
-                            style={{position:"absolute",backgroundColor:"rgba(96, 106, 128, 0.5)",width:643,height:80}}>
-                            <View
-                                style={{flex:1,flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
-                                <View style={{
-                                    flexDirection:"row",
-                                    gap:(
-                                        width*0.43)*0.11,
-                                    justifyContent:"center",
-                                }}>
-                                    <View style={{flexDirection:"row",}}>
-                                        <View style={{alignItems:"center"}}>
-                                            <TouchableOpacity onPress={()=>{
-                                                if(!isVideoMuted){
-                                                    localStream.current.unmuteVideo();
-                                                    setVideoMute(mute=>!mute);
-                                                } else{
-                                                    localStream.current.muteVideo();
-                                                    setVideoMute(mute=>!mute);
-                                                }
-                                            }}>
-                                                <View style={{paddingBottom:15}}>
-                                                    <VideoIcon
-                                                        size={25}
-                                                        type={'video'}
-                                                        color={'white'}
-                                                    />
-                                                </View>
-                                            </TouchableOpacity>
-
-                                            <Text color={"white"}>Video {isVideoMuted ? "On" : "Off"}</Text>
-                                        </View>
-                                        <Menu>
-                                            <MenuTrigger text={<ChevronUpIcon color={"white"}/>}/>
-                                            <MenuOptions>
-                                                <FlatList
-                                                    data={availableCamera}
-                                                    renderItem={({item,index})=>
-                                                        <MenuOption
-                                                            onSelect={()=>changeStreamSource(index,"video")}
-                                                            text={item.label}
-                                                        />
-                                                    }/>
-
-                                            </MenuOptions>
-                                        </Menu>
-
-                                    </View>
-                                    <View  style={{flexDirection:"row",}} >
-                                        <View style={{alignItems:"center"}}>
-                                            <TouchableOpacity onPress={async()=>{
-                                                if(!isAudioMuted){
-                                                    setAudioMute(mute=>!mute);
-
-                                                    localStream.current.unmuteAudio();
-                                                } else{
-                                                    setAudioMute(mute=>!mute);
-                                                    localStream.current.muteAudio();
-                                                }
-                                            }}>
-                                                <View style={{paddingBottom:15}}>
-                                                    <MicIcon
-                                                        size={25}
-                                                        type={!isAudioMuted ? 'muted' : 'mic'}
-                                                        color={'white'}
-                                                    />
-                                                </View>
-                                            </TouchableOpacity>
-                                            <Text color={"white"}>Mic {isAudioMuted ? "On" : "Off"}</Text>
-                                        </View>
-                                        <Menu>
-                                            <MenuTrigger text={<ChevronUpIcon color={"white"}/>}/>
-                                            <MenuOptions>
-                                                <FlatList
-                                                    data={availableMicrophone}
-                                                    renderItem={({item,index})=>
-                                                        <MenuOption
-                                                            onSelect={()=>changeStreamSource(index,"audio")}
-                                                            text={item.label}
-                                                        />
-                                                    }/>
-
-                                            </MenuOptions>
-                                        </Menu>
-                                    </View>
-
-                                    <View style={{alignItems:"center"}}>
-                                        <View style={{paddingBottom:15}}>
-                                            <SpeakerIcon
-                                                size={25}
-                                                type={availableMicrophone.length ? '' : 'speaker-off'}
-                                                color={'white'}
-                                            />
-                                        </View>
-
-                                        <Text color={"white"}>Speaker On</Text>
-                                    </View>
-
-                                </View>
-                                <View style={{alignItems:"center"}}>
-                                    <View style={{paddingBottom:15}}>
-                                        <AddParticipantOutlineIcon color={"white"}/>
-                                    </View>
-
-                                    <Text color={"white"}>Speaker On</Text>
-                                </View>
-
-                            </View>
-
-                        </View>
-                    </View>
-                    <View nativeID={"me"} style={styles.video}>
-                        <ConnectingVideo
-                            participants={participants}
-                            callEnded={callEnded}
-                        />
-                    </View>
-
-
-                    {
-                        Object.keys(streams).map((streamId)=>{
-                            return <ParticipantVideo id={streamId} key={streamId}/>
-                        })
-                    }
-                </View>
-
-            </View>
-
-            <View style={{
-                paddingTop:50,
-                width:width*0.43,
-                justifyContent:"space-between",
-                flexDirection:"row",
-                alignItems:"center"
-            }}>
-                <TouchableOpacity onPress={()=>{
-                    client.current.leave();
-                    localStream.current.disableAudio();
-                    localStream.current.disableVideo();
-                    localStream.current.muteVideo();
-                    localStream.current.stop();
-                    localStream.current.close();
-                    client.current.unpublish(localStream.current);
-                    navigation.goBack()
-                }}>
-                    <View style={{
-                        paddingVertical:16,
-                        alignItems:"center",
-                        paddingHorizontal:24,
-                        width:(
-                            width*0.43)*0.48,
-                        borderRadius:12,
-                        borderWidth:1,
-                        borderColor:"white"
-                    }}>
-                        <Text color={"#fff"}>Cancel</Text>
-                    </View>
-                </TouchableOpacity>
-
-                <View style={{
-                    paddingVertical:16,
-                    alignItems:"center",
-                    paddingHorizontal:24,
-                    width:(
-                        width*0.43)*0.48,
-                    borderRadius:12,
-                    backgroundColor:"#2863D6"
-                }}>
-                    <Text color={"#fff"}>Start Meeting</Text>
-                </View>
-            </View>
-
+      <TouchableWithoutFeedback key={item} onPress={() => onSetPinnedParticipant(findParticipant)}>
+        <View style={[
+          styles.videoBox,
+          style || { width: boxDimension.width, height: boxDimension.height },
+          !!volumeIndicator[item] && { borderColor: '#2863D6' }
+        ]}>
+          {
+            (!!peerVideoState[item] && !pinned) ? (
+              <AgoraVideoPlayer
+                key={item}
+                style={videoStyle}
+                videoTrack={peerVideoState[item]} 
+                config={{
+                  mirror: false,
+                  fit: 'contain',
+                }}
+              />
+            ) : (
+              <ProfileImage
+                image={findParticipant?.profilePicture?.thumb}
+                name={`${findParticipant.firstName} ${findParticipant.lastName}`}
+                size={50}
+                textSize={16}
+              />
+            )
+          }
+          <Text
+            style={
+              (!!peerVideoState[item] && !pinned) ?
+              styles.floatingName : styles.name
+            }
+            numberOfLines={1}
+            size={12}
+            color={'white'}
+          >
+            {findParticipant?.title || ''} {findParticipant.firstName}
+          </Text>
+          {
+            findParticipant.muted ? (
+              <View style={styles.mic}>
+                <MicOffIcon
+                  color={text.error}
+                  width={fontValue(16)}
+                  height={fontValue(16)}
+                />
+              </View>
+            ) : null
+          }
         </View>
-
-
+      </TouchableWithoutFeedback>
     );
-};
+  }
+
+  const renderVideoElement = () => {
+    if (joinSucceed && tracks && !callEnded) {
+      if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
+        if (pinnedParticipant) {
+          return renderFullView();
+        }
+        return (
+          <ScrollView style={styles.scrollContainer}>
+            <View style={styles.videoGroupContainer}>
+              {
+                peerIds.map(p => renderVideoItem(p))
+              }
+            </View>
+          </ScrollView>
+        );
+      }
+    }
+    return (
+      <ConnectingVideo
+        participants={participants}
+        callEnded={callEnded}
+      />
+    );
+  }
+
+  const renderFullView = () => {
+    return (
+      <View style={{ flexDirection: width < 1000 ? 'column' : 'row', flex: 1 }}>
+        <View style={styles.fullVideo}>
+          {
+            renderVideoItem(
+              pinnedParticipant.uid,
+              { width: '100%', height: '100%' }
+            )
+          }
+        </View>
+        <View style={[styles.videoList, width < 1000 && { width: layout.width }]}>
+          <FlatList
+            horizontal={width < 1000 ? true : false}
+            data={peerIds}
+            renderItem={({ item }) => renderVideoItem(
+              item,
+              { width: 280, height: 180, marginBottom: 10 },
+              pinnedParticipant?.uid === item
+            )}
+          />
+        </View>
+      </View>
+    )
+  }
+
+  const renderMenu = (list:any = [], onSelect:any = () => {}) => {
+    return (
+      <Menu style={{ marginLeft: -10 }}>
+        <MenuTrigger>
+          <MenuIcon type='more' color='white' size={fontValue(30)} />
+        </MenuTrigger>
+        <MenuOptions>
+          <FlatList
+            data={list}
+            renderItem={({ item, index})=>
+              <MenuOption
+                onSelect={() => onSelect(item)}
+                text={item}
+              />
+            }
+          />
+        </MenuOptions>
+      </Menu>
+    )
+  }
+
+  const renderSideContent = () => {
+    if (sideContent === 'messages') {
+      return (
+        <>
+          <View style={styles.titleContainer}>
+            <View style={{ position: 'absolute', left: 0, zIndex: 999 }}>
+              <TouchableOpacity onPress={() => onSetSideContent('')}>
+                <CloseIcon
+                  type='close'
+                  size={fontValue(18)}
+                />
+              </TouchableOpacity>
+            </View>
+            <Text
+              color={'black'}
+              size={16}
+              style={{ fontFamily: Bold }}
+            >
+              Messages
+            </Text>
+          </View>
+          <ChatView
+            channelId={_id}
+            otherParticipants={otherParticipants}
+            isGroup={isGroup}
+            groupName={name}
+            lastMessage={lastMessage}
+            onNext={(message:string, data:any) => {}}
+            participants={participants}
+          />
+        </>
+      );
+    } else if (sideContent === 'participants') {
+      return (
+        <MeetingParticipants
+          onClose={() => onSetSideContent('')}
+        />
+      )
+    }
+    return null;
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={{ flexDirection: 'row', flex: 1 }}>
+        <View style={{ flex: 1, height: height - 70, padding: 10 }}>
+          <View
+            style={{ width: '100%', height: '100%' }}
+            onLayout={onLayout}
+          >
+            {renderVideoElement()}
+          </View>
+        </View>
+        {
+          !!sideContent && (
+            <View style={styles.sideContent} dataSet={{ media: ids.sideContent }}>
+              {renderSideContent()}
+            </View>
+          )
+        }
+      </View>
+      {
+        isMaximize && !callEnded && (
+          <View style={styles.footer}>
+            <VideoButtons
+              onSpeakerEnable={toggleIsSpeakerEnable}
+              onMute={onToggleMute}
+              onVideoEnable={toggleIsVideoEnable}
+              onMore={() => {}}
+              onEndCall={() => onEndCall(joinSucceed && lodash.size(peerIds) <= 2)}
+              isSpeakerEnabled={isSpeakerEnable}
+              isMute={isMute}
+              isVideoEnabled={isVideoEnable}
+            />
+            <View style={{ position: 'absolute', right: 30, bottom: 15 }}>
+              {
+                width < 768 ? renderMenu(['Messages', 'Participants'], (item:string = '') => onSetSideContent(item?.toLowerCase())) : (
+                  <View style={{ flexDirection: 'row' }}>
+                    <TouchableOpacity
+                      onPress={() => onSetSideContent('messages')}
+                    >
+                      <View style={styles.icon}>
+                        <MessageIcon width={26} height={26} />
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => onSetSideContent('participants')}
+                    >
+                      <View style={styles.icon}>
+                        <ParticipantsIcon width={26} height={26} />
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )
+              }
+            </View>
+          </View>
+        )
+      }
+    </View>
+  );
+}
 
 export default forwardRef(VideoLayout)

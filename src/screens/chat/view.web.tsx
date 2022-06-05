@@ -41,7 +41,7 @@ import {
   resetPendingMessages,
   setSelectedChannel,
 } from 'src/reducers/channel/actions';
-import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
+import { removeActiveMeeting, resetCurrentMeeting, setMeeting, setOptions } from 'src/reducers/meeting/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
 import CreateMeeting from '@components/pages/chat-modal/meeting';
 import IMeetings from 'src/interfaces/IMeetings';
@@ -49,6 +49,7 @@ import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import useAttachmentPicker from 'src/hooks/useAttachment';
 import { Regular, Regular500 } from '@styles/font';
 import { AttachmentMenu } from '@components/molecules/menu';
+import { openUrl } from 'src/utils/web-actions';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -179,7 +180,7 @@ const ChatView = ({ navigation, route }:any) => {
     { key: 'files', title: 'Files' },
   ]);
   const channelId = _id;
-
+  console.log('CHAT VIEW PARAMS', route.params);
   const _sendMessage = (channelId:string, inputText:string) => {
     dispatch(addPendingMessage({
       channelId: channelId,
@@ -236,16 +237,7 @@ const ChatView = ({ navigation, route }:any) => {
   );
 
   const onJoin = (item:IMeetings) => {
-    dispatch(setSelectedChannel(item.room));
-    dispatch(setMeeting(item));
-    navigation.navigate('Dial', {
-      isHost: item.host._id === user._id,
-      isVoiceCall: item.isVoiceCall,
-      options: {
-        isMute: false,
-        isVideoEnable: true,
-      }
-    });
+    openUrl(`/VideoCall?meetingId=${item._id}`);
   }
 
   const onClose = (item:IMeetings, leave = false) => {
@@ -510,9 +502,14 @@ const ChatView = ({ navigation, route }:any) => {
             isChannelExist={true}
             channelId={channelId}
             onClose={() => modalRef.current?.close()}
-            onSubmit={(params) => {
+            onSubmit={(params, data) => {
               modalRef.current?.close();
-              setTimeout(() => navigation.navigate('VideoCall', params), 300);
+              dispatch(setOptions({
+                ...params.options,
+                isHost: params.isHost,
+                isVoiceCall: params.isVoiceCall,
+              }));
+              setTimeout(() => dispatch(setMeeting(data)), 300);
             }}
           />
         </View>

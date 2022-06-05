@@ -1,11 +1,11 @@
 import React, { FC } from 'react'
 import Svg, { SvgProps, Path } from "react-native-svg";
-import { RFValue } from 'react-native-responsive-fontsize';
+import { fontValue } from '@components/pages/activities/fontValue';
 
 const MicOnIcon: FC = (props: SvgProps) => (
   <Svg
-    width={RFValue(14)}
-    height={RFValue(22)}
+    width={fontValue(14)}
+    height={fontValue(22)}
     viewBox="0 0 14 22"
     fill="none"
     {...props}

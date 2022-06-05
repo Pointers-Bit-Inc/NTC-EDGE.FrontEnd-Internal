@@ -397,11 +397,11 @@ const onClose = (item:IMeetings, leave = false) => {
         </View>
         <SearchField
           containerStyle={{ paddingHorizontal: 20, paddingVertical: 20, paddingBottom: 10 }}
-          inputStyle={[InputStyles.text, styles.input]}
+          inputStyle={[styles.input]}
           iconStyle={styles.icon}
           placeholder="Search"
           placeholderTextColor="#6E7191"
-          outlineStyle={[InputStyles.outlineStyle, styles.outline]}
+          outlineStyle={[styles.outline]}
           value={searchText}
           onChangeText={setSearchText}
           onChangeTextDebounce={setSearchValue}

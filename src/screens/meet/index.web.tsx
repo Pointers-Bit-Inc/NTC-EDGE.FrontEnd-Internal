@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import lodash from 'lodash';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
-import { setMeeting, setMeetings, addToMeetings } from 'src/reducers/meeting/actions';
+import { setMeeting, setMeetings, addToMeetings, resetCurrentMeeting, setOptions } from 'src/reducers/meeting/actions';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import useSignalr from 'src/hooks/useSignalr';
 import Meeting from '@components/molecules/list-item/meeting';
@@ -37,6 +37,8 @@ import ApIcon from "@assets/svg/webitem/ap";
 import JsIcon from "@assets/svg/webitem/js";
 import VideoOutlineIcon from "@assets/svg/videoOutline";
 import CalendarAddOutline from "@assets/svg/calendarAddOutline";
+import { BASE_URL } from 'src/services/config';
+import { openUrl } from 'src/utils/web-actions';
 
 const { width, height } = Dimensions.get('window');
 
@@ -251,17 +253,12 @@ const Meet = ({ navigation }) => {
   });
 
   const onJoin = (item:IMeetings) => {
-    dispatch(setSelectedChannel(item.room));
-    dispatch(setMeeting(item));
-    navigation.navigate('Dial', {
-      isHost: item.host._id === user._id,
-      isVoiceCall: item.isVoiceCall,
-      options: {
-        isMute: false,
-        isVideoEnable: true,
-      }
-    });
+    openUrl(`/VideoCall?meetingId=${item._id}`);
   }
+
+  const onVideoCall = () => {
+    openUrl('/VideoCall');
+  } 
 
   const onRequestData = () => setSendRequest(request => request + 1);
 
@@ -439,26 +436,28 @@ const Meet = ({ navigation }) => {
                   </Text>
 
                 </View>
-                <TouchableOpacity
-                    onPress={()=>modalRef.current?.open()}
+                {/* <TouchableOpacity
+                    onPress={onVideoCall}
                 >
                   <View style={{flexDirection:'row',alignItems:'center'}}>
                     <AddMeetingIcon
                       color={"#113196"}
                     />
                   </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
               <View  style={{paddingHorizontal: 24,paddingVertical: 46}}>
                 <View style={{paddingBottom: 24}}>
                   <Text color={"#606A80"} size={16}>Get started</Text>
                 </View>
-                <View style={{paddingLeft: 17, alignItems: "center", flexDirection: "row", borderRadius: 10, borderWidth: 1,borderColor: "#E5E5E5", backgroundColor: "#fff", width: 303, height: 50}}>
-                  <View style={{paddingRight: 12}}>
-                    <VideoOutlineIcon/>
+                <TouchableOpacity onPress={onVideoCall}>
+                  <View style={{paddingLeft: 17, alignItems: "center", flexDirection: "row", borderRadius: 10, borderWidth: 1,borderColor: "#E5E5E5", backgroundColor: "#fff", width: 303, height: 50}}>
+                    <View style={{paddingRight: 12}}>
+                      <VideoOutlineIcon/>
+                    </View>
+                    <Text size={20} color={"#606A80"}>Meet Now</Text>
                   </View>
-                   <Text size={20} color={"#606A80"}>Meet Now</Text>
-                </View>
+                </TouchableOpacity>
                 <View style={{paddingTop: 23}}>
                   <View style={{paddingLeft: 17, alignItems: "center", flexDirection: "row", borderRadius: 10, borderWidth: 1,borderColor: "#E5E5E5", backgroundColor: "#fff", width: 303, height: 50}}>
                     <View style={{paddingRight: 12}}>
@@ -533,17 +532,21 @@ const Meet = ({ navigation }) => {
                             onClose={()=>setIsNext(false)}
                             channelId={currentMeeting.channelId}
                             isChannelExist={currentMeeting.isChannelExist}
-                            onSubmit={(params)=>{
-
+                            onSubmit={(params, data)=>{
                               modalRef.current?.close();
                               setParticipants([]);
                               setCurrentMeeting({
-                                channelId:'',
-                                isChannelExist:false,
-                                participants:[],
+                                channelId: '',
+                                isChannelExist: false,
+                                participants: [],
                               })
                               setIsNext(false);
-                              setTimeout(()=>navigation.navigate('VideoCall',params),300);
+                              dispatch(setOptions({
+                                ...params.options,
+                                isHost: params.isHost,
+                                isVoiceCall: params.isVoiceCall,
+                              }));
+                              setTimeout(() => dispatch(setMeeting(data)), 300);
                             }}
                         /></View>
 

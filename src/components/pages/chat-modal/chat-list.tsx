@@ -162,7 +162,7 @@ const List: FC<Props> = ({
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);
     setHasError(false);
-    getMessages(channelId, pageIndex, (err, res) => {
+    getMessages(channelId, pageIndex, false, (err, res) => {
       setLoading(false);
       if (res) {
         if (res.list) dispatch(addToMessages(channelId, res.list));

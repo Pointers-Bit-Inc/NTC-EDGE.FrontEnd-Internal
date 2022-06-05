@@ -140,10 +140,20 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getChannelByParticipants = useCallback(({ participants }, callback = () => {}) => {
+  const getChannel = useCallback((id, callback = () => {}, config = {}) => {
+    api.get(`/rooms/${id}`, config)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
+  const getChannelByParticipants = useCallback(({ participants }, callback = () => {}, config = {}) => {
     api.post('/rooms/get-room', {
       participants,
-    })
+    }, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -152,8 +162,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const leaveChannel = useCallback((channelId, callback = () => {}) => {
-    api.delete(`/rooms/${channelId}/delete`)
+  const leaveChannel = useCallback((channelId, callback = () => {}, config = {}) => {
+    api.delete(`/rooms/${channelId}/delete`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -162,8 +172,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getChatList = useCallback((payload, callback = () => {}) => {
-    api.get(`rooms?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`)
+  const getChatList = useCallback((payload, callback = () => {}, config = {}) => {
+    api.get(`rooms?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`, config)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(roomSchema));
@@ -174,8 +184,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getParticipantList = useCallback((payload, callback = () => {}) => {
-    api.get(`users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}&loadRooms=${payload.loadRooms || false}`)
+  const getParticipantList = useCallback((payload, callback = () => {}, config = {}) => {
+    api.get(`users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}&loadRooms=${payload.loadRooms || false}`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -204,8 +214,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const editMessage = useCallback((payload, callback = () => {}) => {
-    api.patch(`/messages/${payload.messageId}`, payload)
+  const editMessage = useCallback((payload, callback = () => {}, config = {}) => {
+    api.patch(`/messages/${payload.messageId}`, payload, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -214,8 +224,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const unSendMessage = useCallback((messageId, callback = () => {}) => {
-    api.patch(`/messages/${messageId}/unsend`)
+  const unSendMessage = useCallback((messageId, callback = () => {}, config = {}) => {
+    api.patch(`/messages/${messageId}/unsend`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -224,8 +234,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const deleteMessage = useCallback((messageId, callback = () => {}) => {
-    api.delete(`/messages/${messageId}/delete`)
+  const deleteMessage = useCallback((messageId, callback = () => {}, config = {}) => {
+    api.delete(`/messages/${messageId}/delete`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -234,8 +244,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const seenMessage = useCallback((id, callback = () => {}) => {
-    api.patch(`/messages/${id}/seen`)
+  const seenMessage = useCallback((id, callback = () => {}, config = {}) => {
+    api.patch(`/messages/${id}/seen`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -244,8 +254,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getMessages = useCallback((channelId, pageIndex, file = false, callback = () => {}) => {
-    api.get(`/messages?roomId=${channelId}&pageIndex=${pageIndex}&file=${file}`)
+  const getMessages = useCallback((channelId, pageIndex, file = false, callback = () => {}, config = {}) => {
+    api.get(`/messages?roomId=${channelId}&pageIndex=${pageIndex}&file=${file}`, config)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(messageSchema));
@@ -256,8 +266,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const createMeeting = useCallback((payload, callback = () => {}) => {
-    api.post('/meetings', payload)
+  const createMeeting = useCallback((payload, callback = () => {}, config = {}) => {
+    api.post('/meetings', payload, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -266,8 +276,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const joinMeeting = useCallback((meetingId, callback = () => {}) => {
-    api.get(`/meetings/${meetingId}/join`)
+  const joinMeeting = useCallback(({ meetingId, muted = false }, callback = () => {}, config = {}) => {
+    api.get(`/meetings/${meetingId}/join?muted=${muted}`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -276,8 +286,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const endMeeting = useCallback((id, callback = () => {}) => {
-    api.patch(`/meetings/${id}/end`)
+  const getMeeting = useCallback((id, callback = () => {}, config = {}) => {
+    api.get(`/meetings/${id}`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -286,8 +296,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const leaveMeeting = useCallback((id, status, callback = () => {}) => {
-    api.patch(`/meetings/${id}/leave?status=${status}`)
+  const endMeeting = useCallback((id, callback = () => {}, config = {}) => {
+    api.patch(`/meetings/${id}/end`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -296,8 +306,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const muteParticipant = useCallback((id, payload, callback = () => {}) => {
-    api.patch(`/meetings/${id}/mute`, payload)
+  const leaveMeeting = useCallback((id, status, callback = () => {}, config = {}) => {
+    api.patch(`/meetings/${id}/leave?status=${status}`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -306,8 +316,18 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getMeetingList = useCallback((payload, callback = () => {}) => {
-    api.get(`meetings?pageIndex=${payload.pageIndex || 1}`)
+  const muteParticipant = useCallback((id, payload, callback = () => {}, config = {}) => {
+    api.patch(`/meetings/${id}/mute`, payload, config)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
+  const getMeetingList = useCallback((payload, callback = () => {}, config = {}) => {
+    api.get(`meetings?pageIndex=${payload.pageIndex || 1}`, config)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(meetingSchema));
@@ -318,8 +338,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getActiveMeetingList = useCallback((callback = () => {}) => {
-    api.get(`/users/${user._id}/meetings?status=active`)
+  const getActiveMeetingList = useCallback((callback = () => {}, config = {}) => {
+    api.get(`/users/${user._id}/meetings?status=active`, config)
     .then(res => {
       const normalized = normalize(res.data, new schema.Array(meetingSchema));
       return callback(null, normalized?.entities?.meetings);
@@ -329,11 +349,11 @@ const useSignalr = () => {
     });
   }, [])
 
-  const checkVersion = useCallback((callback = () => {}) => {
+  const checkVersion = useCallback((callback = () => {}, config = {}) => {
     const version = API_VERSION;
     const os = Platform.OS;
     if (os) {
-      api.post('/check-version', { os, version })
+      api.post('/check-version', { os, version }, config)
       .then(res => {
         return callback(null, res.data);
       })
@@ -354,6 +374,7 @@ const useSignalr = () => {
     onMeetingUpdate,
     OnMeetingNotification,
     createChannel,
+    getChannel,
     getChannelByParticipants,
     leaveChannel,
     getChatList,
@@ -366,6 +387,7 @@ const useSignalr = () => {
     seenMessage,
     getMessages,
     createMeeting,
+    getMeeting,
     endMeeting,
     leaveMeeting,
     joinMeeting,

@@ -27,6 +27,7 @@
     "@react-navigation/native-stack": "^6.1.0",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "agora": "^0.0.2",
+    "agora-rtc-react": "^1.1.1",
     "agora-rtc-sdk": "^3.6.10",
     "axios": "^0.24.0",
     "dayjs": "^1.10.7",

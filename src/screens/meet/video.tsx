@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const Dial = ({ navigation, route }) => {
+const VideoCall = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const meeting = useSelector((state:RootStateOrAny) => {
@@ -83,7 +83,7 @@ const Dial = ({ navigation, route }) => {
         );
         navigation.goBack();
       } else {
-        joinMeeting(meeting._id, (err:any, result:any) => {
+        joinMeeting({ meetingId: meeting._id, muted: options?.isMute }, (err:any, result:any) => {
           if (!unmounted) {
             if (result) {
               setLoading(false);
@@ -197,4 +197,4 @@ const Dial = ({ navigation, route }) => {
   )
 }
 
-export default Dial
+export default VideoCall

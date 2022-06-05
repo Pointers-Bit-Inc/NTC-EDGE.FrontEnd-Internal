@@ -15,7 +15,7 @@ import { button, text, header } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
 import { ContactItem, ListFooter, SelectedContact } from '@components/molecules/list-item';
-import { CloseIcon, ArrowDownIcon, CheckIcon } from '@components/atoms/icon'
+import { CloseIcon, ArrowDownIcon, CheckIcon, ArrowRightIcon } from '@components/atoms/icon'
 import { SearchField } from '@components/molecules/form-fields'
 import { primaryColor } from '@styles/color';
 import useSignalr from 'src/hooks/useSignalr';
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingBottom: 10,
     borderBottomColor: '#E5E5E5',
-    borderBottomWidth: 1,
+    borderBottomWidth: 0,
   }
 });
 
@@ -103,7 +103,6 @@ const MeetingParticipants = ({
     getParticipantList,
   } = useSignalr();
   const [loading, setLoading] = useState(false);
-  const [nextLoading, setNextLoading] = useState(false);
   const [participants, setParticipants]:any = useState(meetingPartticipants);
   const [sendRequest, setSendRequest] = useState(0);
   const [contacts, setContacts]:any = useState([]);
@@ -164,8 +163,11 @@ const MeetingParticipants = ({
     };
   }, [sendRequest, searchValue]);
 
+  useEffect(() => {
+    onSubmit(participants);
+  }, [participants]);
+
   const onBack = onClose;
-  const onNext = () => onSubmit(participants);
 
   const onSelectParticipants = (selectedId:string) => {
     const selected = lodash.find(contacts, c => c._id === selectedId);
@@ -211,11 +213,6 @@ const MeetingParticipants = ({
         ListFooterComponent={() => <View style={{ width: 20 }} />}
       />
       <View style={[styles.contactTitle, !!lodash.size(participants) && { paddingTop: 15 }]}>
-        <ArrowDownIcon
-          style={{ marginTop: 2, marginRight: 3 }}
-          color={text.default}
-          size={24}
-        />
         <Text
           size={14}
           color={text.default}
@@ -260,48 +257,17 @@ const MeetingParticipants = ({
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
-        <View style={[styles.horizontal, { paddingVertical: 5 }]}>
+        <View style={[styles.horizontal, { paddingVertical: 30 }]}>
           <View style={{ position: 'absolute', left: 0, zIndex: 999 }}>
             <TouchableOpacity onPress={onBack}>
-              <CloseIcon
-                type='close'
-                size={fontValue(18)}
+              <ArrowRightIcon
+                type='chevron-right'
+                style={{ marginTop: 2, marginRight: 3 }}
+                color={text.default}
+                size={24}
               />
             </TouchableOpacity>
           </View>
-          <View style={styles.titleContainer}>
-            <Text
-              color={header.default}
-              size={16}
-              style={{ fontFamily: Bold }}
-            >
-              New meeting
-            </Text>
-          </View>
-          {
-            !!lodash.size(participants) && (
-              <View style={{ position: 'absolute', right: 0, zIndex: 999 }}>
-                <TouchableOpacity
-                  disabled={!lodash.size(participants) || nextLoading}
-                  onPress={onNext}
-                >
-                  {
-                    nextLoading ? (
-                      <ActivityIndicator color={text.default} size={'small'} />
-                    ) : (
-                      <Text
-                        color={text.info}
-                        size={14}
-                        style={{ fontFamily: Regular500 }}
-                      >
-                        Next
-                      </Text>
-                    )
-                  }
-                </TouchableOpacity>
-              </View>
-            )
-          }
         </View>
         <SearchField
           inputStyle={[styles.input]}
