@@ -21,12 +21,13 @@ const useSignalr = () => {
     signalr.current = new HubConnectionBuilder()
         .withUrl(`${BASE_URL}/chathub`, {
           transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling,
+          timeout: 1000 * 30,
           accessTokenFactory: () => user.sessionToken
         })
         .withAutomaticReconnect()
         .build();
-    signalr.current.serverTimeoutInMilliseconds = 1000 * 60 * 3;
-    signalr.current.keepAliveIntervalInMilliseconds = 1000 * 60 * 1;
+    signalr.current.serverTimeoutInMilliseconds = 1000 * 60;
+    signalr.current.keepAliveIntervalInMilliseconds = 1000 * 60;
     signalr.current.onclose(() => setConnectionStatus('disconnected'));
     signalr.current.onreconnected(() => setConnectionStatus('connected'));
     signalr.current.onreconnecting(() => setConnectionStatus('reconnecting'));
