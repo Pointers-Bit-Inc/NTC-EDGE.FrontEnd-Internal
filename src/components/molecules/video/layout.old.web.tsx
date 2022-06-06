@@ -11,12 +11,15 @@ import { View, StyleSheet, FlatList, Dimensions, Platform, TouchableOpacity, Tou
 import lodash from 'lodash';
 import { useInitializeAgora } from 'src/hooks/useAgora';
 import { MicIcon, CameraIcon, MicOffIcon } from '@components/atoms/icon';
+// import {
+//   VideoRenderMode,
+//   VideoRemoteState,
+// } from 'react-native-agora';
+
 import {
-  RtcLocalView,
-  RtcRemoteView,
-  VideoRenderMode,
-  VideoRemoteState,
-} from 'react-native-agora';
+  AgoraVideoPlayer,
+} from "agora-rtc-react";
+
 import ConnectingVideo from '@components/molecules/video/connecting'
 import ProfileImage from '@components/atoms/image/profile';
 import Text from '@components/atoms/text';
@@ -27,44 +30,15 @@ import IParticipants from 'src/interfaces/IParticipants';
 import { RFValue } from 'react-native-responsive-fontsize';
 const { width, height } = Dimensions.get('window');
 
-const AgoraLocalView =
-  Platform.OS === 'android'
-    ? RtcLocalView.TextureView
-    : RtcLocalView.SurfaceView;
+const AgoraLocalView = AgoraVideoPlayer;
 
-const AgoraRemoteView =
-  Platform.OS === 'android'
-    ? RtcRemoteView.TextureView
-    : RtcRemoteView.SurfaceView;
+const AgoraRemoteView = AgoraVideoPlayer;
 
-  // const videoStateMessage = state => {
-  //   switch (state) {
-  //     case VideoRemoteState.Stopped:
-  //       return 'Video is disabled';
-  
-  //     case VideoRemoteState.Frozen:
-  //       return 'Connection Issue, Please Wait...';
-  
-  //     case VideoRemoteState.Failed:
-  //       return 'Network Error';
-  //   }
-  // };
-  
-  // const videoStateIcon = state => {
-  //   switch (state) {
-  //     case VideoRemoteState.Stopped:
-  //       return <Icon3 name={'videocam-off'} size={40} color={'white'} />;
-  
-  //     case VideoRemoteState.Frozen:
-  //       return (
-  //         <Icon4 name={'network-strength-1-alert'} size={40} color={'red'} />
-  //       );
-  
-  //     case VideoRemoteState.Failed:
-  //       return <Icon4 name={'network-strength-off'} size={40} color={'red'} />;
-  //   }
-  // };
-
+const videoStyle = {
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'grey',
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -128,7 +102,6 @@ const styles = StyleSheet.create({
     bottom: 30,
   },
 })
-
 interface Props {
   loading?: boolean;
   participants?: [];
@@ -200,6 +173,8 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     toggleIsSpeakerEnable,
     toggleIsVideoEnable,
     switchCamera,
+    tracks,
+    ready,
   } = useInitializeAgora({
     ...agora,
     options: {
@@ -220,10 +195,10 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   }));
 
   useEffect(() => {
-    if (!loading && agora.appId) {
+    if (!loading && agora.appId && ready && tracks) {
       initAgora();
     }
-  }, [loading, agora.appId]);
+  }, [loading, agora.appId, ready, tracks]);
   
   useEffect(() => {
     if (isInit) {
@@ -330,9 +305,12 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
           {
             isVideoEnable ? (
               <AgoraLocalView
-                style={styles.video}
-                channelId={channelName}
-                renderMode={VideoRenderMode.Fit}
+                style={videoStyle}
+                videoTrack={tracks[1]}
+                config={{
+                  mirror: false,
+                  fit: 'contain',
+                }}
               />
             ) : (
               <ProfileImage
@@ -389,12 +367,14 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     return (
       <View style={styles.fullVideo}>
         {
-          peerVideoState[selectedPeer] === VideoRemoteState.Decoding ? (
+          !!peerVideoState[selectedPeer] ? (
             <AgoraRemoteView
-              style={styles.video}
-              channelId={channelName}
-              uid={selectedPeer}
-              renderMode={VideoRenderMode.Fit}
+              style={videoStyle}
+              videoTrack={peerVideoState[selectedPeer]}
+              config={{
+                mirror: false,
+                fit: 'contain',
+              }}
             />
           ) : (
             <ProfileImage
@@ -406,7 +386,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
           )
         }
         {
-          peerVideoState[selectedPeer] === VideoRemoteState.Decoding ? null : (
+          !!peerVideoState[selectedPeer] ? null : (
             <Text
               style={styles.name}
               numberOfLines={1}
@@ -418,7 +398,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
           )
         }
         {
-          isMaximize && peerAudioState[selectedPeer] === 0 ? (
+          isMaximize && !peerAudioState[selectedPeer] ? (
             <View style={[styles.mic, { top: 85, left: 18 }]}>
               <MicOffIcon
                 color={text.error}
@@ -440,9 +420,12 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               {
                 isVideoEnable ? (
                   <AgoraLocalView
-                    style={styles.video}
-                    channelId={channelName}
-                    renderMode={VideoRenderMode.Fit}
+                    style={videoStyle}
+                    videoTrack={tracks[1]}
+                    config={{
+                      mirror: false,
+                      fit: 'contain',
+                    }}
                   />
                 ) : (
                   <ProfileImage
@@ -496,12 +479,15 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
         <TouchableWithoutFeedback onPress={() => onSetPinnedParticipant(findParticipant)}>
           <View style={styles.smallVideo}>
             {
-              peerVideoState[item] === VideoRemoteState.Decoding ? (
+              !!peerVideoState[item] ? (
                 <AgoraRemoteView
-                  style={styles.video}
-                  channelId={channelName}
-                  uid={item}
-                  renderMode={VideoRenderMode.Fit}
+                  key={item}
+                  style={videoStyle}
+                  videoTrack={peerVideoState[item]} 
+                  config={{
+                    mirror: false,
+                    fit: 'contain',
+                  }}
                 />
               ) : (
                 <ProfileImage
@@ -514,7 +500,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             }
             <Text
               style={
-                peerVideoState[item] === VideoRemoteState.Decoding ?
+                !!peerVideoState[item] ?
                 styles.floatingName : styles.name
               }
               numberOfLines={1}
@@ -524,7 +510,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               {findParticipant?.title || ''} {findParticipant.firstName}
             </Text>
             {
-              peerAudioState[item] === 0 ? (
+              !peerAudioState[item] ? (
                 <View style={styles.mic}>
                   <MicOffIcon
                     color={text.error}
@@ -542,7 +528,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   }
 
   const renderVideoElement = () => {
-    if (joinSucceed && !callEnded) {
+    if (joinSucceed && tracks && !callEnded) {
       if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
         return (
           <>
@@ -586,13 +572,13 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   }
 
   const renderHeader = () => {
-    if (joinSucceed && !callEnded) {
+    if (joinSucceed && tracks && !callEnded) {
       if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
         return header();
       }
     }
 
-    return null;
+    return () => {};
   }
 
   return (

@@ -4,9 +4,6 @@ import {NavigationContainer, StackActions, useNavigation} from '@react-navigatio
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import lodash from 'lodash';
 import ForgotPassword from './forgot-password';
-import Dial from '@screens/meet/video';
-import VideoCall from '@screens/meet/video';
-import JoinVideoCall from '@screens/meet/video';
 import App from '@screens/app';
 import AppIntro from '@screens/intro';
 import UserProfile from "@pages/user-profile";
@@ -15,7 +12,7 @@ import Settings from '@pages/settings';
 import Meeting from '@screens/meet';
 import Participants from '@screens/meet/add-participants';
 import CreateMeeting from '@screens/meet/create';
-import InitiateVideoCall from '@screens/meet/create';
+import VideoCall from '@screens/meet/video';
 
 import ChatList from '@screens/chat';
 import ViewChat from '@screens/chat/view';
@@ -62,21 +59,47 @@ type RootStackParamList = {
     Settings: undefined;
     DrawerNavigation: undefined;
     Dial: undefined;
+    VideoCall: undefined;
     Meeting: undefined;
     Participants: undefined;
     CreateMeeting: undefined;
-    VideoCall: undefined;
     ChatList: undefined;
     ViewChat: undefined;
     ChatInfo: undefined;
     MeetingParticipants: undefined;
     NewChat: undefined;
-    InitiateVideoCall: undefined;
-    JoinVideoCall: undefined;
     SearchActivities: undefined;
     Dashboard: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const linking = {
+    prefix: '/',
+    config: {
+        screens: {
+            App: '',
+            AppIntro: 'Intro',
+            Login: 'Login',
+            ForgotPassword: 'Forgot-Password',
+            HomeScreen: 'Home',
+            QrCodeScreen: 'Scanner',
+            UserProfileScreen: 'Profile',
+            Settings: 'Settings',
+            Dial: 'Dial',
+            Meeting: 'Meeting',
+            Participants: 'Participants',
+            CreateMeeting: 'Create-Meeting',
+            VideoCall: 'VideoCall',
+            ChatList: 'Chat-List',
+            ViewChat: 'Chat/:id',
+            ChatInfo: 'Chat-Info',
+            MeetingParticipants: 'Meeting-Participants',
+            NewChat: 'New-Chat',
+            SearchActivities: 'Search-Activities',
+            Dashboard: 'Dashboard',
+        }
+    },
+  };
 
 
 const RootNavigator = () => {
@@ -101,14 +124,14 @@ const RootNavigator = () => {
         }
 
         if (lodash.size(meeting) > 0) {
-            return <FloatingVideo/>;
+            return <FloatingVideo />;
         }
 
         return null;
     }
 
     return (
-        <NavigationContainer>
+        <NavigationContainer linking={linking}>
 
             <Stack.Navigator
 
@@ -193,22 +216,18 @@ const RootNavigator = () => {
                         }
                     }
                 }/>
-                <Stack.Screen name="UserProfileScreen" component={UserProfile}/>
-                <Stack.Screen name="Settings" component={Settings}/>
-
-                <Stack.Screen name="Dial" component={Dial}/>
-                <Stack.Screen name="Meeting" component={Meeting}/>
-                <Stack.Screen name="Participants" component={Participants}/>
-                <Stack.Screen name="CreateMeeting" component={CreateMeeting}/>
-                <Stack.Screen name="VideoCall" component={VideoCall}/>
-                <Stack.Screen name="ChatList" component={ChatList}/>
-                <Stack.Screen name="ViewChat" component={ViewChat}/>
-                <Stack.Screen name="ChatInfo" component={ChatInfo}/>
-                <Stack.Screen name="MeetingParticipants" component={MeetingParticipants}/>
-                <Stack.Screen name="NewChat" component={NewChat}/>
-                <Stack.Screen name="InitiateVideoCall" component={InitiateVideoCall}/>
-                <Stack.Screen name="JoinVideoCall" component={JoinVideoCall}/>
-                <Stack.Screen name="SearchActivities" component={Search}/>
+                <Stack.Screen name="UserProfileScreen" component={ UserProfile }/>
+                <Stack.Screen name="Settings" component={ Settings }/>
+                <Stack.Screen name="Meeting" component={ Meeting }/>
+                <Stack.Screen name="VideoCall" component={ VideoCall }/>
+                <Stack.Screen name="Participants" component={ Participants }/>
+                <Stack.Screen name="CreateMeeting" component={ CreateMeeting }/>
+                <Stack.Screen name="ChatList" component={ ChatList }/>
+                <Stack.Screen name="ViewChat" component={ ViewChat }/>
+                <Stack.Screen name="ChatInfo" component={ ChatInfo }/>
+                <Stack.Screen name="MeetingParticipants" component={ MeetingParticipants }/>
+                <Stack.Screen name="NewChat" component={ NewChat }/>
+                <Stack.Screen name="SearchActivities" component={ Search }/>
             </Stack.Navigator>
             {renderFloatingVideo()}
             {visible && <View

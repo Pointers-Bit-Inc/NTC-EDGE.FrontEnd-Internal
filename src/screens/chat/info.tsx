@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const ChatInfo = ({ navigation }) => {
+const ChatInfo = ({ navigation }:any) => {
   const dispatch = useDispatch();
   const {
     leaveChannel,

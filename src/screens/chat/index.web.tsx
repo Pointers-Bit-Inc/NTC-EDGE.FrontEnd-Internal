@@ -37,7 +37,12 @@ import {fontValue} from "@pages/activities/fontValue";
 import MeetIcon from "@assets/svg/meetIcon";
 import {getChannelImage,getChannelName,getTimeDifference,getTimeString} from "../../utils/formatting";
 import IMeetings from "../../interfaces/IMeetings";
-import {removeActiveMeeting,setMeeting} from "../../reducers/meeting/actions";
+import {
+    removeActiveMeeting ,
+    resetCurrentMeeting,
+    setMeeting, 
+    setOptions,
+} from 'src/reducers/meeting/actions';
 import {ChatItem,ListFooter,MeetingNotif} from "@molecules/list-item";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import NewDeleteIcon from "@atoms/icon/new-delete";
@@ -70,6 +75,7 @@ import hairlineWidth=StyleSheet.hairlineWidth;
 import {MEET} from "../../reducers/activity/initialstate";
 import {NoContent} from "@screens/meet/index.web";
 import {configs} from "@typescript-eslint/eslint-plugin";
+import { openUrl } from 'src/utils/web-actions';
 
 const {width,height}=Dimensions.get('window');
 
@@ -258,16 +264,7 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
     const [selectedItem,setSelectedItem]:any=useState({});
 
     const onJoin=(item:IMeetings)=>{
-        dispatch(setSelectedChannel(item.room));
-        dispatch(setMeeting(item));
-        props.navigation.navigate('Dial',{
-            isHost:item.host._id===props.user._id,
-            isVoiceCall:item.isVoiceCall,
-            options:{
-                isMute:false,
-                isVideoEnable:true,
-            }
-        });
+        openUrl(`/VideoCall?meetingId=${item._id}`);
     };
     const onClose=(item:IMeetings,leave=false)=>{
         if(leave && item.isGroup){
@@ -678,17 +675,13 @@ const ChatList=({navigation}:any)=>{
     });
 
     const onJoin=(item:IMeetings)=>{
-        dispatch(setSelectedChannel(item.room));
-        dispatch(setMeeting(item));
-        navigation.navigate('Dial',{
-            isHost:item.host._id===user._id,
-            isVoiceCall:item.isVoiceCall,
-            options:{
-                isMute:false,
-                isVideoEnable:true,
-            }
-        });
+        openUrl(`/VideoCall?meetingId=${item._id}`);
     };
+
+    const onVideoCall = (isVoiceCall:boolean) => {
+        openUrl(`/VideoCall?roomId=${_id}&isVoiceCall=${isVoiceCall}`);
+    }
+
     const _editMessage=(messageId:string,message:string)=>{
         editMessage({
             messageId,
@@ -983,14 +976,18 @@ const ChatList=({navigation}:any)=>{
                                         <View style={{flexDirection:"row",alignItems:"center"}}>
                                             <View style={{flexDirection:"row",paddingRight:42}}>
                                                 <TouchableOpacity onPress={()=>{
+                                                    onVideoCall(false);
                                                 }}>
                                                     <View style={{paddingRight:24}}>
                                                         <NewCallIcon
                                                             color={button.info}
+                                                            height={28}
+                                                            width={28}
                                                         />
                                                     </View>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity onPress={()=>{
+                                                    onVideoCall(false);
                                                 }}>
                                                     <View>
                                                         <NewVideoIcon

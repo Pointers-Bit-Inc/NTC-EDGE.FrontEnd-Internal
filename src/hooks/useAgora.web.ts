@@ -1,9 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useRef, useCallback, FC } from 'react';
-import {Dimensions,Platform} from 'react-native';
 import _ from 'lodash';
-import AgoraRTC from 'agora-rtc-sdk';
+import {
+  createClient,
+  ClientConfig,
+} from "agora-rtc-react";
 
+const config: ClientConfig = { 
+  mode: "rtc", codec: "h264",
+};
+
+const useClient = createClient(config);
 
 interface Props {
   appId: string;
@@ -18,7 +25,7 @@ interface Option {
   isVideoEnabled: boolean;
   isSpeakerPhoneEnabled: boolean;
 }
-const { height, width } = Dimensions.get('window');
+
 export const useInitializeAgora = ({
   appId,
   token,
@@ -29,148 +36,185 @@ export const useInitializeAgora = ({
   const [isInit, setIsInit] = useState(false);
   const [joinSucceed, setJoinSucceed] = useState(false);
   const [peerIds, setPeerIds] = useState<number[]>([]);
-  const [peerVideoState, setPeerVideState] = useState({});
-  const [peerAudioState, setPeerAudioState] = useState({});
-  const [myId, setMyId] = useState<number>(0);
+  const [peerVideoState, setPeerVideoState] = useState<any>({});
+  const [peerAudioState, setPeerAudioState] = useState<any>({});
+  const [volumeIndicator, setVolumIndicator] = useState<any>({});
+  const [myId, setMyId] = useState<number>(uid);
   const [isMute, setIsMute] = useState(options?.isMute);
   const [isSpeakerEnable, setIsSpeakerEnable] = useState(true);
   const [isVideoEnable, setIsVideoEnable] = useState(options?.isVideoEnable);
   const [activeSpeaker, setActiveSpeaker] = useState(0);
-  const rtcEngine = useRef(null);
+  const client = useClient();
+  const { tracks }:any = options;
+  // const cameraList = useCamera();
+  // const microphoneList = useMicrophone();
 
-  const initAgora = useCallback(async () => {
-    let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+  const initAgora = async () => {
+    client.on("user-published", async (user, mediaType) => {
+      await client.subscribe(user, mediaType);
+      if (mediaType === "video") {
+        setPeerVideoState({
+          ...peerVideoState,
+          [user.uid]: user.videoTrack,
+        });
+      }
+      if (mediaType === "audio") {
+        user.audioTrack?.play();
+        setPeerAudioState({
+          ...peerAudioState,
+          [user.uid]: user.audioTrack,
+        });
+      }
+    });
 
-    client.init(appId);
-    var localStream=AgoraRTC.createStream({audio:options?.isMute,video:options?.isVideoEnable,screen:false});
-    localStream.init();
-    const localStreamContainer=document.createElement("div");
-    localStreamContainer.id="local" +uid;
-    localStreamContainer.style.width= width + "px";
-    localStreamContainer.style.height= height + "px";
-    localStreamContainer.style.position="absolute";
-    document.body.append(localStreamContainer);
-    localStream.play(localStreamContainer.id);
-    client.join(token,channelName,uid,(uid)=>{
-      setMyId(uid);
+    client.on("user-unpublished", async (user, type) => {
+      if (type === "audio") {
+        user.audioTrack?.stop();
+        setPeerAudioState((audioState:any) => {
+          delete audioState[user.uid];
+          return audioState;
+        });
+      }
+      if (type === "video") {
+        setPeerVideoState((videoState:any) => {
+          delete videoState[user.uid];
+          return videoState;
+        });
+      }
+    });
+    client.enableAudioVolumeIndicator();
+    client.on("volume-indicator", (volumes) => {
+      volumes.forEach((volume, index) => {
+        setVolumIndicator({
+          ...volumeIndicator,
+          [volume.uid]: Math.floor(volume.level),
+        });
+      });
+    });
+    
+    client.on("user-left", (user) => {
+      setPeerAudioState((audioState:any) => {
+        delete audioState[user.uid];
+        return audioState;
+      });
+      setPeerVideoState((videoState:any) => {
+        delete videoState[user.uid];
+        return videoState;
+      });
       setPeerIds(peerIdsLocal => {
-        if (peerIdsLocal.indexOf(uid) === -1) {
-          return [...peerIdsLocal, uid];
+        return peerIdsLocal.filter(id => id !== user.uid);
+      });
+    });
+
+    client.on("user-joined", (user) => {
+      if (user.audioTrack) {
+        setPeerAudioState({
+          ...peerAudioState,
+          [user.uid]: user.audioTrack,
+        });
+      }
+
+      if (user.videoTrack) {
+        setPeerVideoState({
+          ...peerVideoState,
+          [user.uid]: user.videoTrack,
+        });
+      }
+
+      setPeerIds((peerIdsLocal:any) => {
+        if (peerIdsLocal.indexOf(user.uid) === -1) {
+          return [...peerIdsLocal, user.uid];
         }
         return peerIdsLocal;
       });
-
-      client.publish(localStream);
     });
-    client.on('error', (evt) => {
-      console.log('Error', evt);
+
+    client.on("user-info-updated", (uid, msg) => {
+      if (msg === 'mute-audio') {
+        setPeerAudioState((audioState:any) => {
+          delete audioState[uid];
+          return audioState;
+        });
+      } else if (msg === 'unmute-audio') {
+        setPeerAudioState({
+          ...peerAudioState,
+          [uid]: true,
+        });
+      }
     })
-    client.on('stream-added',(evt)=>{
-      client.subscribe(evt.stream)
-    });
-    client.on('stream-subscribed',(evt)=>{
-      let stream=evt.stream;
-      let streamId=stream.getId();
-      addVideoStream(streamId);
-      stream.play(streamId)
-    });
-    client.on('stream-removed',(evt)=>{
-      let stream=evt.stream;
-      let streamId=stream.getId();
-      stream.close();
-      removeVideoStream(streamId)
-    });
-    client.on("peer-leave",function(evt){
-      let stream=evt.stream;
-      let streamId=stream.getId();
-      setPeerIds(peerIdsLocal => {
-        return peerIdsLocal.filter(id => id !== uid);
-      });
-      stream.close();
-      removeVideoStream(streamId);
-    });
-    client.on('volume-indicator', (evt) => {
-      evt.attr.forEach(function(volume, index){
-        const sortedVolumes = _.sortBy(volume, ['volume']).reverse();
-        if (sortedVolumes && sortedVolumes[0]) {
-          const highestVolume = sortedVolumes[0];
-          if (highestVolume && highestVolume.uid === 0) {
-            setActiveSpeaker(myId);
-          } else {
-            setActiveSpeaker(highestVolume.uid);
-          }
-        }
-      });
-
-    })
-
-
-
-
 
     setIsInit(true);
-  }, [appId, token, channelName, uid]);
-  function addVideoStream(elementId){
-    let streamDiv=document.createElement("div");
-    streamDiv.id=elementId;
-    streamDiv.style.width= width + "px";
-    streamDiv.style.height= height + "px";
-    streamDiv.style.position="absolute";
-    streamDiv.style.transform="rotateY(180deg)";
-    const remoteContainer=document.createElement("div");
-    remoteContainer.id= "remote" + uid;
-    remoteContainer.style.width= width + "px";
-    remoteContainer.style.height= height + "px";
-    remoteContainer.style.position="absolute";
-    remoteContainer.appendChild(streamDiv)
-  }
+  };
 
-  function removeVideoStream(elementId){
-    let rem=document.getElementById(elementId);
-    if(rem) rem.parentNode?.removeChild(rem)
-  }
-  const joinChannel = useCallback(async () => {
-    await rtcEngine.current?.joinChannel(token, channelName, null, uid);
-  }, [channelName, token, uid]);
+  const joinChannel = async () => {
+    await client.join(appId, channelName, token, uid);
+    if (tracks) {
+      if (!isMute && isVideoEnable) {
+        await client.publish(tracks);
+      } else if (!isMute && !isVideoEnable) {
+        await client.publish(tracks[0]);
+        await client.unpublish(tracks[1]);
+      } else if (isMute && isVideoEnable) {
+        await client.publish(tracks[1]);
+        await client.unpublish(tracks[0]);
+      }
+    }
+    setMyId(uid);
+    setJoinSucceed(true);
+    const hasAlreadyJoined = _.find(peerIds, (id:number) => id === uid);
+    if (!hasAlreadyJoined) {
+      setPeerIds(peerIdsLocal => {
+        return [...peerIdsLocal, uid];
+      });
+    }
+  };
 
-  const leaveChannel = useCallback(async () => {
-    await rtcEngine.current?.leaveChannel();
+  const leaveChannel = async () => {
+    await client.leave();
+    client.removeAllListeners();
+    setIsInit(false);
+    setJoinSucceed(false);
     setPeerIds([]);
     setMyId(0);
-    setJoinSucceed(false);
-  }, []);
+  };
 
-  const toggleIsMute = useCallback(async () => {
-    await rtcEngine.current?.muteLocalAudioStream(!isMute);
+  const toggleIsMute = async () => {
+    if (!isInit) {
+      return;
+    }
+    if (isMute) {
+      await tracks[0].setEnabled(true);
+    } else {
+      await tracks[0].setEnabled(false);
+    }
     setIsMute(!isMute);
-  }, [isMute]);
+  };
 
-  const toggleIsSpeakerEnable = useCallback(async () => {
-    await rtcEngine.current?.setEnableSpeakerphone(!isSpeakerEnable);
+  const toggleRemoteAudio = async (uid, muted) => {
+    // await tracks[0].setEnabled(isMute);
+    setIsMute(!isMute);
+  };
+
+  const toggleIsSpeakerEnable = async () => {
     setIsSpeakerEnable(!isSpeakerEnable);
-  }, [isSpeakerEnable]);
+  };
 
-  const toggleIsVideoEnable = useCallback(async () => {
-    await rtcEngine.current?.muteLocalVideoStream(isVideoEnable);
+  const toggleIsVideoEnable = async () => {
+    if (isVideoEnable) {
+      await client.unpublish(tracks[1]);
+    } else {
+      await client.publish(tracks[1]);
+    }
     setIsVideoEnable(!isVideoEnable);
-  }, [isVideoEnable]);
+  };
 
-  const switchCamera = useCallback(async () => {
-    await rtcEngine.current?.switchCamera();
-  }, []);
+  const switchCamera = async () => {
+    // await rtcEngine.current?.switchCamera();
+  };
 
-  const destroyAgoraEngine = useCallback(async () => {
-    await rtcEngine.current?.destroy();
-  }, []);
-
-  // useEffect(() => {
-  //   if (appId) {
-  //     initAgora();
-  //   }
-  //   return () => {
-  //     destroyAgoraEngine();
-  //   };
-  // }, [destroyAgoraEngine, initAgora, appId]);
+  const destroyAgoraEngine = async () => {
+    leaveChannel();
+  };
 
   return {
     isInit,
@@ -189,8 +233,11 @@ export const useInitializeAgora = ({
     joinChannel,
     leaveChannel,
     toggleIsMute,
+    toggleRemoteAudio,
     toggleIsSpeakerEnable,
     toggleIsVideoEnable,
     switchCamera,
+    tracks,
+    volumeIndicator,
   };
 };

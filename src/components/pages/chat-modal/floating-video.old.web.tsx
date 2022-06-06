@@ -1,10 +1,21 @@
 import { View, Dimensions, Pressable, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
+
+import Animated, {
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
+import { snapPoint } from 'react-native-redash';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import lodash from 'lodash';
 import { ArrowDownIcon, MessageIcon, ParticipantsIcon } from '@components/atoms/icon'
 import {
   resetCurrentMeeting,
+  setFullScreen,
+  setMeeting,
   setNotification,
   setOptions,
   setPinnedParticipant,
@@ -16,24 +27,31 @@ import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
 import { getChannelName, getTimerString } from 'src/utils/formatting'
 import useSignalr from 'src/hooks/useSignalr';
+import { requestCameraAndAudioPermission } from 'src/hooks/usePermission';
+import { Feather } from '@expo/vector-icons';
 import { Bold } from '@styles/font';
 import { useNavigation } from '@react-navigation/native';
 import IParticipants from 'src/interfaces/IParticipants';
 import { RFValue } from 'react-native-responsive-fontsize';
-import useTimer from 'src/hooks/useTimer';
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const dimensions = {
   width: Dimensions.get('window').width,
   height: Dimensions.get('window').height + (Platform.OS === 'ios' ? 0 : 30),
 };
 
-const VideoWidth = dimensions.width * 0.15;
-const VideoHeight = dimensions.width * 0.1;
+const VideoWidth = dimensions.width * 0.5;
+const VideoHeight = dimensions.width * 0.32;
+const defaultPositionY = dimensions.height * 0.83 - VideoHeight;
+const defaultPositionX = -(dimensions.width - VideoWidth - 25);
+const defaultSnapX = [0, defaultPositionX];
+const defaultSnapY = [0, defaultPositionY];
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#484B51',
-    flex: 1,
+    position: 'absolute',
+    zIndex: 99,
   },
   position: {
     top: Platform.OS === 'android' ? 30 : 35,
@@ -107,14 +125,14 @@ const styles = StyleSheet.create({
   }
 });
 
-const FloatingVideo = ({ tracks }:any) => {
+const FloatingVideo = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const videoRef = useRef<any>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { selectedMessage, normalizedChannelList } = useSelector((state:RootStateOrAny) => state.channel);
   const { meeting, options, meetingId, isFullScreen, pinnedParticipant, toggleMute, roomId } = useSelector((state:RootStateOrAny) => {
-    const { meeting, options = {}, isFullScreen, pinnedParticipant, toggleMute } = state.meeting;
+    const { meeting, options, isFullScreen, pinnedParticipant, toggleMute } = state.meeting;
     meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
     return {
       meeting,
@@ -138,59 +156,86 @@ const FloatingVideo = ({ tracks }:any) => {
     leaveMeeting,
     muteParticipant,
   } = useSignalr();
-  const {
-    timer,
-    setStarted
-  } = useTimer();
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
-  const [isMaximized, setIsMaximized] = useState(true);
+  const [timer, setTimer] = useState(0);
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
+  const snapPointsX = useSharedValue(defaultSnapX);
+  const snapPointsY = useSharedValue(defaultSnapY);
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const currentX = useSharedValue(0);
+  const currentY = useSharedValue(0);
+  const scale = useSharedValue(1);
+
   useEffect(() => {
-    if (!meeting.ended) {
-      setStarted(false);
+    if (isFullScreen) {
+      translateX.value = 0;
+      translateY.value = 0;
     } else {
-      setIsMaximized(true);
-      dispatch(setToggle(null));
+      translateX.value = currentX.value;
+      translateY.value = currentY.value;
     }
-  }, [meeting]);
+  }, [isFullScreen]);
+
+  // useEffect(() => {
+  //   let unmounted = false;
+
+  //   if (meetingId) {
+  //     requestCameraAndAudioPermission((err, result) => {
+  //       if (err) {
+  //         Alert.alert(
+  //           "Unable to access camera",
+  //           "Please allow camera access from device settings.",
+  //         );
+  //         dispatch(resetCurrentMeeting());
+  //       } else {
+  //         joinMeeting(meeting._id, (err:any, result:any) => {
+  //           if (!unmounted) {
+  //             if (result) {
+  //               setLoading(false);
+  //               if (result) {
+  //                 dispatch(updateMeetingParticipants(result.meeting));
+  //                 setAgora(result?.agora);
+  //               }
+  //             } else {
+  //               setLoading(false);
+  //               Alert.alert('Something went wrong.');
+  //             }
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
+  
+  //   return () => {
+  //     unmounted = true;
+  //     dispatch(setOptions({
+  //       isHost: false,
+  //       isVoiceCall: false,
+  //       isMute: false,
+  //       isVideoEnable: true,
+  //     }));
+  //   }
+  // }, [meetingId]);
 
   useEffect(() => {
-    let unmounted = false;
-
-    if (meetingId) {
-      joinMeeting({ meetingId: meeting._id, muted: isMute }, (err:any, result:any) => {
-        if (!unmounted) {
-          if (result) {
-            setLoading(false);
-            if (result) {
-              dispatch(updateMeetingParticipants(result.meeting));
-              setAgora(result?.agora);
-              setStarted(true);
-            }
-          } else {
-            setLoading(false);
-            Alert.alert('Something went wrong.');
-          }
-        }
-      });
+    let interval:any = null;
+    if (!meeting.ended) {
+      interval = setInterval(() => {
+        setTimer(timer => timer + 1);
+      }, 1000);
+    } else {
+      dispatch(setToggle(null));
+      dispatch(setFullScreen(true));
     }
-  
-    return () => {
-      unmounted = true;
-      dispatch(setOptions({
-        isHost: false,
-        isVoiceCall: false,
-        isMute: false,
-        isVideoEnable: true,
-      }));
-    }
-  }, [meetingId]);
+    return () => clearInterval(interval);
+  }, [meeting.ended]);
 
   useEffect(() => {
     if (toggleMute) {
-      dispatch(setToggle(null));
+      setToggle(null);
     }
   }, [toggleMute]);
 
@@ -203,7 +248,56 @@ const FloatingVideo = ({ tracks }:any) => {
     }
   }, [normalizedChannelList, roomId]);
 
-  const onFullScreen = () => setIsMaximized(current => !current);
+  const onGestureEvent = useAnimatedGestureHandler({
+    onStart: (_, context:any) => {
+      context.translateX = translateX.value;
+      context.translateY = translateY.value;
+      if (scale.value !== 1.1) {
+        scale.value = withSpring(1.1);
+      }
+    },
+    onActive: ({ translationX, translationY }, context) => {
+      translateX.value = translationX + context.translateX;
+      translateY.value = translationY + context.translateY;
+    },
+    onEnd: ({ translationY, translationX, velocityX, velocityY }) => {
+      const snapPointX = snapPoint(translationX, velocityX, snapPointsX.value);
+      const snapPointY = snapPoint(translationY, velocityY, snapPointsY.value);
+      translateX.value = withSpring(snapPointX);
+      translateY.value = withSpring(snapPointY);
+      currentX.value = withSpring(snapPointX);
+      currentY.value = withSpring(snapPointY);
+      if (scale.value !== 1) {
+        scale.value = withSpring(1);
+      }
+    },
+  });
+
+  const style = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: translateX.value },
+        { translateY: translateY.value },
+        { scale: scale.value },
+      ],
+    };
+  });
+
+  const onTouchStart = () => {
+    if (isFullScreen) return;
+    if (scale.value !== 1.1) {
+      scale.value = withSpring(1.1);
+    }
+  };
+
+  const onTouchEnd = () => {
+    if (isFullScreen) return;
+    if (scale.value !== 1) {
+      scale.value = withSpring(1);
+    }
+  };
+
+  const onFullScreen = () => dispatch(setFullScreen(!isFullScreen));
 
   const onMessages = () => {
     if (meeting?._id) {
@@ -232,7 +326,7 @@ const FloatingVideo = ({ tracks }:any) => {
   }
 
   const header = () => {
-    if (!isMaximized) return;
+    if (!isFullScreen) return;
 
     return (
       <View style={styles.header}>
@@ -264,6 +358,9 @@ const FloatingVideo = ({ tracks }:any) => {
         <TouchableOpacity onPress={onMessages}>
           <View style={styles.icon}>
             <MessageIcon />
+            {
+              hasNewMessage && <View style={styles.indicator} />
+            }
           </View>
         </TouchableOpacity>
         <View style={{ width: 5 }} />
@@ -294,28 +391,54 @@ const FloatingVideo = ({ tracks }:any) => {
   }
 
   return (
-    <View style={styles.container} >
-      <VideoLayout
-        ref={videoRef}
-        loading={loading}
-        header={header}
-        options={{ isMute, isVideoEnable, tracks }}
-        user={user}
-        participants={meeting.otherParticipants}
-        meetingParticipants={meeting.participants}
-        agora={agora}
-        isVoiceCall={isVoiceCall}
-        callEnded={meeting?.ended}
-        message={meeting?.notification}
-        setNotification={() => dispatch(setNotification(null))}
-        onEndCall={onEndCall}
-        onMute={onMute}
-        isGroup={meeting?.isGroup}
-        isMaximize={isMaximized}
-        pinnedParticipant={pinnedParticipant}
-        setPinnedParticipant={onSetPinnedParticipant}
-      />
-    </View>
+    <PanGestureHandler enabled={!isFullScreen} onGestureEvent={onGestureEvent}>
+      <AnimatedPressable
+        style={[styles.container, styles.shadow, !isFullScreen && styles.position, style]}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}>
+        <View
+          style={[
+            styles.remote,
+            isFullScreen ? styles.maximize : styles.minimize,
+            !isFullScreen && styles.border,
+          ]}
+        >
+          {
+            !isFullScreen && (
+              <View style={{ position: 'absolute', top: 5, right: 5, zIndex: 999 }}>
+                <TouchableOpacity onPress={onFullScreen}>
+                <Feather
+                  name="maximize-2"
+                  size={12}
+                  color={'white'}
+                />
+                </TouchableOpacity>
+              </View>
+            )
+          }
+          <VideoLayout
+            ref={videoRef}
+            loading={loading}
+            header={header}
+            options={{ isMute, isVideoEnable }}
+            user={user}
+            participants={meeting.otherParticipants}
+            meetingParticipants={meeting.participants}
+            agora={agora}
+            isVoiceCall={isVoiceCall}
+            callEnded={meeting?.ended}
+            message={meeting?.notification}
+            setNotification={() => dispatch(setNotification(null))}
+            onEndCall={onEndCall}
+            onMute={onMute}
+            isGroup={meeting?.isGroup}
+            isMaximize={isFullScreen}
+            pinnedParticipant={pinnedParticipant}
+            setPinnedParticipant={onSetPinnedParticipant}
+          />
+        </View>
+      </AnimatedPressable>
+    </PanGestureHandler>
   )
 }
 

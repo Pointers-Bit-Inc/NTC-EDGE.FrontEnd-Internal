@@ -55,6 +55,10 @@ import MicOffIcon from './mic-off';
 import MicOnIcon from './mic-on';
 import PinParticipantIcon from './pin-participant';
 import AddMeetingIcon from './add-meeting';
+import SpeakerOnIcon from './speaker-on';
+import SpeakerOffIcon from './speaker-off';
+import VideoOffIcon from './video-off';
+import VideoOnIcon from './video-on';
 
 export {
   ExclamationIcon,
@@ -114,4 +118,8 @@ export {
   MicOnIcon,
   PinParticipantIcon,
   AddMeetingIcon,
+  SpeakerOnIcon,
+  SpeakerOffIcon,
+  VideoOffIcon,
+  VideoOnIcon,
 };
