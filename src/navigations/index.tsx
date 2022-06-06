@@ -27,21 +27,24 @@ import EdgeLogo from "@assets/svg/edge";
 import SettingTopBar from "@assets/svg/settingTopBar";
 import HelpTopBar from "@assets/svg/helpTopbar";
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
-import ProfileImage from "@atoms/image/profile";
 import {isMobile} from "@pages/activities/isMobile";
 import Login from "@screens/login/login";
 import FloatingVideo from '@components/pages/chat-modal/floating-video';
 import {useComponentLayout} from "../hooks/useComponentLayout";
-import {setTopBarNav} from "../reducers/application/actions";
-import axios from "axios";
-import {BASE_URL} from "../services/config";
-import {ToastType} from "@atoms/toast/ToastProvider";
-import {Menu,MenuOption,MenuOptions,MenuTrigger} from "react-native-popup-menu";
-import DotHorizontalIcon from "@assets/svg/dotHorizontal";
+import {
+    setApplicationItem,
+    setApplications,
+    setNotPinnedApplication,
+    setPinnedApplication,
+    setTopBarNav
+} from "../reducers/application/actions";
 import ProfileMenu from "@molecules/headerRightMenu";
-import useLogout from "../hooks/useLogout";
-import Alert from "@atoms/alert";
 import CustomAlert from "@pages/activities/alert/alert";
+import {resetUser} from "../reducers/user/actions";
+import {setResetFilterStatus} from "../reducers/activity/actions";
+import {resetMeeting} from "../reducers/meeting/actions";
+import {resetChannel} from "../reducers/channel/actions";
+import useOneSignal from "../hooks/useOneSignal";
 
 type RootStackParamList = {
     App: undefined;
@@ -103,7 +106,16 @@ const RootNavigator = () => {
     const dispatch=useDispatch();
     const [visible, setVisible] = useState(false);
     const { meeting } = useSelector((state:RootStateOrAny) => state.meeting);
-    const onLogout = useLogout(user, dispatch)
+    const onLogout = () => {
+        dispatch(setApplications([]))
+        dispatch(setPinnedApplication([]))
+        dispatch(setNotPinnedApplication([]))
+        dispatch(setApplicationItem({}))
+        dispatch(setResetFilterStatus([]))
+        dispatch(resetUser());
+        dispatch(resetMeeting());
+        dispatch(resetChannel());
+    }
     const renderFloatingVideo = () => {
         if (Platform?.OS === 'web') {
             return null
@@ -138,6 +150,7 @@ const RootNavigator = () => {
                     {
                         title : null ,
                         headerRight : () => {
+                            const {destroy} = useOneSignal(user);
                             const dispatch=useDispatch();
                             const [activitySizeComponent,onActivityLayoutComponent]=useComponentLayout();
                             useEffect(()=>{
@@ -170,8 +183,9 @@ const RootNavigator = () => {
                                         confirmText='OK'
                                         cancelText='Cancel'
                                         onConfirmPressed={() => {
-                                            setVisible(false)
+                                            const api=Api(user.sessionToken);
                                             onLogout()
+                                            destroy();
                                             navigation.dispatch(StackActions.replace('Login'));
                                         }}
                                         onDismissed={()=>{
