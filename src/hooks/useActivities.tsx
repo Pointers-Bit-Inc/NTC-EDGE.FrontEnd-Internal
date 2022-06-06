@@ -255,7 +255,16 @@ export function useActivities(props){
             Alert.alert('Alert',err?.message||'Something went wrong.');
              
            if(err.request.status == "401"){
-               useLogout(user, dispatch);
+               const api=Api(user.sessionToken);
+               dispatch(setApplications([]))
+               dispatch(setPinnedApplication([]))
+               dispatch(setNotPinnedApplication([]))
+               dispatch(setApplicationItem({}))
+               dispatch(setResetFilterStatus([]))
+               dispatch(resetUser());
+               dispatch(resetMeeting());
+               dispatch(resetChannel());
+               destroy();
                setTimeout(()=>{
                    props.navigation.dispatch(StackActions.replace('Login'));
                },500);

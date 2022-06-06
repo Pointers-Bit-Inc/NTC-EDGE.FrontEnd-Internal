@@ -76,7 +76,11 @@ function ActivityModal(props:any){
             remarks:remarks ? remarks : undefined,
             assignedPersonnel:assignId ? assignId : undefined,
         };
-
+        let AddORNoparams:any=
+        {
+            ORNumber: remarks ? remarks : undefined,
+            ORBy: assignId ? assignId : undefined
+        }
         setCurrentLoading(status);
         if(status==DECLINED){
             setAssignId("")
@@ -95,18 +99,28 @@ function ActivityModal(props:any){
                 remarks:remarks ? remarks : undefined,
             };
         }
+
         if(user?.role?.key==CASHIER){
             url=`/applications/${applicationId}/update-payment-status`;
             params={
                 paymentStatus:status,
                 remarks:remarks ? remarks : undefined,
             };
+
         }
         if(props?.details?.service?.serviceCode === "service-22"){
             delete params.assignedPersonnel
         }
+
+        const addORNumber = user?.role?.key==CASHIER ? await api.post(`/applications/${applicationId}/add-or-number`, AddORNoparams).catch(e=>{
+            setGrayedOut(false);
+            setCurrentLoading('');
+            Alert.alert('Alert',e?.message||'Something went wrong.');
+            return callback(e);
+        }) : null
         console.log(url,params,assignId);
-        if(applicationId){
+        if((applicationId && (user?.role?.key==CASHIER && addORNumber?.status == 200 )) || (getRole(user,[ DIRECTOR,EVALUATOR,ACCOUNTANT]) && applicationId )){
+
             await api.patch(url,params)
             .then(res=>{
                 setGrayedOut(false);

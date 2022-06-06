@@ -13,6 +13,18 @@ import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-han
 import {StackActions} from "@react-navigation/native";
 import {fontValue} from "@pages/activities/fontValue";
 import useLogout from "../../../hooks/useLogout";
+import {
+  setApplicationItem,
+  setApplications,
+  setNotPinnedApplication,
+  setPinnedApplication
+} from "../../../reducers/application/actions";
+import {setResetFilterStatus} from "../../../reducers/activity/actions";
+import {resetUser} from "../../../reducers/user/actions";
+import {resetMeeting} from "../../../reducers/meeting/actions";
+import {resetChannel} from "../../../reducers/channel/actions";
+import useOneSignal from "../../../hooks/useOneSignal";
+import Api from "../../../services/api";
 
 
 
@@ -24,7 +36,7 @@ export default ({
   const profilePicture = user?.profilePicture?.small;
   const photo = profilePicture ? {uri: profilePicture} : require('@assets/avatar.png');
   const [visible, setVisible] = useState(false);
-
+  const { destroy } = useOneSignal(user);
   const settings = [
     /*{
       label: 'Notifications',
@@ -58,8 +70,17 @@ export default ({
 
   const onLogout =  useCallback(() => {
     setVisible(false)
-    useLogout(user, dispatch);
     setTimeout(()=>{
+      const api=Api(user.sessionToken);
+      dispatch(setApplications([]))
+      dispatch(setPinnedApplication([]))
+      dispatch(setNotPinnedApplication([]))
+      dispatch(setApplicationItem({}))
+      dispatch(setResetFilterStatus([]))
+      dispatch(resetUser());
+      dispatch(resetMeeting());
+      dispatch(resetChannel());
+      destroy();
       navigation.dispatch(StackActions.replace('Login'));
     },500);
   }, []);
