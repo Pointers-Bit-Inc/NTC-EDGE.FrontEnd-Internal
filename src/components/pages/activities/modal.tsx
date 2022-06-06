@@ -78,8 +78,8 @@ function ActivityModal(props:any){
         };
         let AddORNoparams:any=
         {
-            ORNumber: remarks ? remarks : undefined,
-            ORBy: assignId ? assignId : undefined
+            orNumber: remarks ? remarks : undefined,
+            orBy: assignId ? assignId : undefined
         }
         setCurrentLoading(status);
         if(status==DECLINED){
@@ -118,7 +118,7 @@ function ActivityModal(props:any){
             Alert.alert('Alert',e?.message||'Something went wrong.');
             return callback(e);
         }) : null
-        console.log(url,params,assignId);
+        console.log(url,params,assignId, addORNumber?.status == 200);
         if((applicationId && (user?.role?.key==CASHIER && addORNumber?.status == 200 )) || (getRole(user,[ DIRECTOR,EVALUATOR,ACCOUNTANT]) && applicationId )){
 
             await api.patch(url,params)

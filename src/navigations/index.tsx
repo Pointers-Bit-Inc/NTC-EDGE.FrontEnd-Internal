@@ -45,6 +45,7 @@ import {setResetFilterStatus} from "../reducers/activity/actions";
 import {resetMeeting} from "../reducers/meeting/actions";
 import {resetChannel} from "../reducers/channel/actions";
 import useOneSignal from "../hooks/useOneSignal";
+import Api from "../services/api";
 
 type RootStackParamList = {
     App: undefined;
@@ -187,6 +188,7 @@ const RootNavigator = () => {
                                             onLogout()
                                             destroy();
                                             navigation.dispatch(StackActions.replace('Login'));
+                                            setVisible(false)
                                         }}
                                         onDismissed={()=>{
                                             setVisible(false)
