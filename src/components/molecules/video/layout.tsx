@@ -10,7 +10,7 @@ import React, {
 import { View, StyleSheet, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import lodash from 'lodash';
 import { useInitializeAgora } from 'src/hooks/useAgora';
-import { MicIcon, CameraIcon, MicOffIcon } from '@components/atoms/icon';
+import { MicIcon, CameraIcon, MicOffIcon, MessageIcon, ParticipantsIcon, ArrowDownIcon } from '@components/atoms/icon';
 import {
   RtcLocalView,
   RtcRemoteView,
@@ -23,8 +23,11 @@ import Text from '@components/atoms/text';
 import { text } from '@styles/color';
 import VideoButtons from '@components/molecules/video/buttons'
 import VideoNotification from './notification';
+import { getChannelName, getTimerString } from 'src/utils/formatting'
 import IParticipants from 'src/interfaces/IParticipants';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { Bold } from '@styles/font';
+import useTimer from 'src/hooks/useTimer';
 const { width, height } = Dimensions.get('window');
 
 const AgoraLocalView =
@@ -73,6 +76,23 @@ const styles = StyleSheet.create({
   layoutTwoVideo: {
     flex: 1,
     backgroundColor: 'black',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    position: 'absolute',
+    zIndex: 1,
+    paddingVertical: 10,
+    paddingTop: 30,
+    paddingHorizontal: 15,
+  },
+  icon: {
+    paddingHorizontal: 5
+  },
+  channelName: {
+    flex: 1,
+    marginHorizontal: 10,
   },
   horizontal: {
     flexDirection: 'row',
@@ -139,6 +159,8 @@ interface Props {
   agora?: any;
   callEnded?: boolean;
   message?: string;
+  hasRoomName?: boolean;
+  name?: string;
   isVoiceCall?: boolean;
   onEndCall?: any;
   onMute?: any;
@@ -147,6 +169,9 @@ interface Props {
   isMaximize?: boolean;
   pinnedParticipant?: any;
   setPinnedParticipant?: any;
+  onMessages?: any;
+  onAddParticipants?: any;
+  onFullScreen?: any;
 }
 
 export type VideoLayoutRef =  {
@@ -165,10 +190,11 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   meetingParticipants = [],
   user = {},
   options = {},
-  header = () => {},
   agora = {},
   callEnded = false,
   message = '',
+  hasRoomName = false,
+  name = '',
   isVoiceCall = false,
   onEndCall = () => {},
   onMute = () => {},
@@ -177,9 +203,16 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   isMaximize = true,
   pinnedParticipant = null,
   setPinnedParticipant = () => {},
+  onMessages = () => {},
+  onAddParticipants = () => {},
+  onFullScreen = () => {},
 }, ref) => {
   const [selectedPeer, setSelectedPeer]:any = useState(null);
   const [peerList, setPeerList]:any = useState([]);
+  const {
+    timer,
+    setStarted
+  } = useTimer();
   const {
     initAgora,
     destroyAgoraEngine,
@@ -228,11 +261,13 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   useEffect(() => {
     if (isInit) {
       joinChannel();
+      setStarted(true);
     }
   }, [isInit]);
 
   useEffect(() => {
     if (callEnded) {
+      setStarted(false);
       destroyAgoraEngine();
     }
   }, [callEnded]);
@@ -588,7 +623,47 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   const renderHeader = () => {
     if (joinSucceed && !callEnded) {
       if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
-        return header();
+        if (!isMaximize) return;
+        return (
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => {
+              // leaveMeeting(meeting._id, 'leave');
+              onFullScreen()
+            }}>
+              <ArrowDownIcon
+                color={'white'}
+                size={20}
+              />
+            </TouchableOpacity>
+            <View style={styles.channelName}>
+              <Text
+                color={'white'}
+                size={12}
+                numberOfLines={1}
+                style={{ fontFamily: Bold }}
+              >
+                {getChannelName({ otherParticipants: participants, isGroup: isGroup, hasRoomName: hasRoomName, name: name })}
+              </Text>
+              <Text
+                color='white'
+                size={12}
+              >
+                {getTimerString(timer)}
+              </Text>
+            </View>
+            <TouchableOpacity onPress={onMessages}>
+              <View style={styles.icon}>
+                <MessageIcon />
+              </View>
+            </TouchableOpacity>
+            <View style={{ width: 5 }} />
+            <TouchableOpacity onPress={onAddParticipants}>
+              <View style={styles.icon}>
+                <ParticipantsIcon />
+              </View>
+            </TouchableOpacity>
+          </View>
+        );
       }
     }
 

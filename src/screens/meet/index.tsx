@@ -148,7 +148,7 @@ const Meet = ({ navigation }) => {
   const dispatch = useDispatch();
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { normalizedMeetingList } = useSelector((state:RootStateOrAny) => state.meeting);
+  const normalizedMeetingList = useSelector((state:RootStateOrAny) => state.meeting.normalizedMeetingList);
   const meetingList = useMemo(() => {
     const meetingList = lodash.keys(normalizedMeetingList).map(m => {
       const meeting = normalizedMeetingList[m];

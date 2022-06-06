@@ -107,7 +107,8 @@ const List: FC<Props> = ({
   const navigation = useNavigation();
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { channelMessages, pendingMessages } = useSelector((state:RootStateOrAny) => state.channel);
+  const channelMessages = useSelector((state:RootStateOrAny) => state.channel.channelMessages);
+  const pendingMessages = useSelector((state:RootStateOrAny) => state.channel.pendingMessages);
   const messages = useMemo(() => {
     const normalizedMessages = channelMessages[channelId]?.messages || {};
     const channelPendingMessages = pendingMessages[channelId || 'temp'] || {};

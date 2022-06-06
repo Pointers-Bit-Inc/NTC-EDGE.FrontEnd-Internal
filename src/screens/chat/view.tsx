@@ -159,7 +159,8 @@ const ChatView = ({ navigation, route }:any) => {
       return selectedChannel;
     }
   );
-  const { normalizeActiveMeetings, meeting } = useSelector((state: RootStateOrAny) => state.meeting)
+  const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings)
+  const meeting = useSelector((state: RootStateOrAny) => state.meeting.meeting)
   const selectedMessage = useSelector((state:RootStateOrAny) => {
     const { selectedMessage } = state.channel;
     return selectedMessage[_id];

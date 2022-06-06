@@ -100,12 +100,20 @@ const linking = {
     },
 };
 
+const FloatingVideoComponent = () => {
+    const meeting = useSelector((state:RootStateOrAny) => state.meeting.meeting);
+
+    if (lodash.size(meeting) > 0 && Platform?.OS !== 'web') {
+        return <FloatingVideo />;
+    }
+
+    return null
+}
 
 const RootNavigator = () => {
     const user = useSelector((state: RootStateOrAny) => state.user) || {};
     const dispatch=useDispatch();
     const [visible, setVisible] = useState(false);
-    const { meeting } = useSelector((state:RootStateOrAny) => state.meeting);
     const onLogout = () => {
         dispatch(setApplications([]))
         dispatch(setPinnedApplication([]))
@@ -115,17 +123,6 @@ const RootNavigator = () => {
         dispatch(resetUser());
         dispatch(resetMeeting());
         dispatch(resetChannel());
-    }
-    const renderFloatingVideo = () => {
-        if (Platform?.OS === 'web') {
-            return null
-        }
-
-        if (lodash.size(meeting) > 0) {
-            return <FloatingVideo />;
-        }
-
-        return null;
     }
 
     return (
@@ -226,7 +223,7 @@ const RootNavigator = () => {
                 <Stack.Screen name="NewChat" component={ NewChat }/>
                 <Stack.Screen name="SearchActivities" component={ Search }/>
             </Stack.Navigator>
-            {renderFloatingVideo()}
+            <FloatingVideoComponent />
             {visible && <View style={{position: "absolute", width: "100%", height: "100%",backgroundColor: "rgba(0,0,0,0.5)"}}/>}
         </NavigationContainer>
 

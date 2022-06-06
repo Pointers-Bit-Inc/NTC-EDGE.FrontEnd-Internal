@@ -161,9 +161,10 @@ const ChatList = ({ navigation }:any) => {
   const dispatch = useDispatch();
   const swipeableRef:any = useRef({});
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { normalizedChannelList } = useSelector((state:RootStateOrAny) => state.channel);
-  const { normalizeActiveMeetings, meeting } = useSelector((state: RootStateOrAny) => state.meeting);
-  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
+  const normalizedChannelList = useSelector((state:RootStateOrAny) => state.channel.normalizedChannelList);
+  const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
+  const meeting = useSelector((state: RootStateOrAny) => state.meeting.meeting);
+  const selectedMessage = useSelector((state:RootStateOrAny) => state.channel.selectedMessage);
   const channelList = useMemo(() => {
     const channelList = lodash.keys(normalizedChannelList).map((ch:any) => {
       const channel = normalizedChannelList[ch];
@@ -338,7 +339,6 @@ const onClose = (item:IMeetings, leave = false) => {
       </TouchableOpacity>
     );
   };
-  const { activitySizeComponent } = useSelector((state: RootStateOrAny) => state.application);
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
