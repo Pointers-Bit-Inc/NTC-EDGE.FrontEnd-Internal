@@ -269,6 +269,7 @@ function Search(props:any){
             bottomLoader={bottomLoader}
             size={size}
             total={total}
+            setApplications={setApplications}
             applications={applications}
             onPress={handleBackButtonClick}
             value={textInput}

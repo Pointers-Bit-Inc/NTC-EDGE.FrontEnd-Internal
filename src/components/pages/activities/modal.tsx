@@ -328,7 +328,7 @@ function ActivityModal(props:any){
                                     <ApprovedButton
                                         user={user}
                                         currentLoading={currentLoading}
-                                        allButton={allButton}
+                                        allButton={false}
                                         onPress={()=>{
 
                                                 setApproveVisible(true)
