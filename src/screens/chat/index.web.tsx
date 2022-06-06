@@ -976,7 +976,7 @@ const ChatList=({navigation}:any)=>{
                                         <View style={{flexDirection:"row",alignItems:"center"}}>
                                             <View style={{flexDirection:"row",paddingRight:42}}>
                                                 <TouchableOpacity onPress={()=>{
-                                                    onVideoCall(false);
+                                                    onVideoCall(true);
                                                 }}>
                                                     <View style={{paddingRight:24}}>
                                                         <NewCallIcon

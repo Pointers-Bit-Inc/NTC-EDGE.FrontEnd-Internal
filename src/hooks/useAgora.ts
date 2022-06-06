@@ -55,7 +55,7 @@ export const useInitializeAgora = ({
     rtcEngine.current = await RtcEngine.create(appId);
     await rtcEngine.current?.enableVideo();
     await rtcEngine.current?.enableAudio();
-    await rtcEngine.current?.enableAudioVolumeIndication(1000, 3, false);
+    await rtcEngine.current?.enableAudioVolumeIndication(2000, 3, false);
     await rtcEngine.current?.muteLocalAudioStream(options?.isMute);
     await rtcEngine.current?.muteLocalVideoStream(!options?.isVideoEnable);
     await rtcEngine.current?.setEnableSpeakerphone(true);
