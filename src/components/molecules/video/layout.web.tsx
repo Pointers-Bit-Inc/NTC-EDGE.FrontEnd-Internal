@@ -164,6 +164,9 @@ interface Props {
   isMaximize?: boolean;
   pinnedParticipant?: any;
   setPinnedParticipant?: any;
+  onMessages?: any;
+  onAddParticipants?: any;
+  onFullScreen?: any;
 }
 
 export type VideoLayoutRef =  {

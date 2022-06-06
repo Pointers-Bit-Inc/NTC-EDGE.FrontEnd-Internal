@@ -1,27 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Alert, Dimensions, FlatList, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
+import { Alert, Dimensions, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Text from '@components/atoms/text'
 import { Regular, Regular500 } from '@styles/font'
-import { AddPeopleIcon, ArrowLeftIcon, CloseIcon, MicOffIcon, MicOnIcon, NewMeetIcon, NewPenIcon, NewPhoneIcon, PinParticipantIcon, ToggleIcon } from '@components/atoms/icon'
-import LinkIcon from '@components/atoms/icon/link'
+import { AddPeopleIcon, CloseIcon, MicOffIcon, MicOnIcon } from '@components/atoms/icon'
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux'
 import lodash from 'lodash';
 import IParticipants from 'src/interfaces/IParticipants';
-import { getChannelName } from 'src/utils/formatting';
 import { ContactItem } from '@components/molecules/list-item'
-import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal'
-import CreateMeeting from '@components/pages/chat-modal/meeting';
 import { outline, text } from '@styles/color'
 import AwesomeAlert from 'react-native-awesome-alerts'
 import useApi from 'src/services/api'
 import Loading from '@components/atoms/loading'
 import { updateChannel } from 'src/reducers/channel/actions'
-import { setFullScreen, setMeeting, setOptions, setPinnedParticipant, setToggle } from 'src/reducers/meeting/actions'
+import { setPinnedParticipant } from 'src/reducers/meeting/actions'
 import AddParticipants from '@components/pages/chat-modal/add-participants'
-import { InputField } from '@components/molecules/form-fields'
 import useSignalr from 'src/hooks/useSignalr'
-import MessageMember from '@components/pages/chat-modal/message'
-import RemoveParticipantIcon from '@components/atoms/icon/remove-participant'
 import { fontValue } from '@components/pages/activities/fontValue'
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu'
 const { width, height } = Dimensions.get('window');
@@ -324,10 +317,6 @@ const Participants = ({ onClose = () => {} }:any) => {
                   type === 'inTheMeeting' && (
                     <MenuOption
                       onSelect={() => {
-                        dispatch(setToggle({
-                          uid: item.uid,
-                          muted: !item.muted,
-                        }));
                         setLoading(true);
                         muteParticipant(meetingId, {
                           participantId: item._id,

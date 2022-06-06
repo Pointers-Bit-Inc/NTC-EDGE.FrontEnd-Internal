@@ -17,7 +17,7 @@ import AwesomeAlert from 'react-native-awesome-alerts'
 import useApi from 'src/services/api'
 import Loading from '@components/atoms/loading'
 import { updateChannel } from 'src/reducers/channel/actions'
-import { setFullScreen, setMeeting, setOptions, setPinnedParticipant, setToggle } from 'src/reducers/meeting/actions'
+import { setFullScreen, setMeeting, setOptions, setPinnedParticipant } from 'src/reducers/meeting/actions'
 import AddParticipants from '@components/pages/chat-modal/add-participants'
 import { InputField } from '@components/molecules/form-fields'
 import useSignalr from 'src/hooks/useSignalr'
@@ -262,10 +262,6 @@ const Participants = ({ navigation }) => {
                 listType === 'inTheMeeting' && (
                   <TouchableOpacity onPress={() => {
                     optionModalRef.current?.close();
-                    dispatch(setToggle({
-                      uid: selectedParticipant.uid,
-                      muted: !selectedParticipant.muted,
-                    }));
                     setLoading(true);
                     muteParticipant(meetingId, {
                       participantId: selectedParticipant._id,

@@ -105,7 +105,8 @@ export default function ActivitiesPage(props:any){
         flatListViewRef
     }=useActivities(props);
 
-    const { normalizeActiveMeetings, meeting } = useSelector((state: RootStateOrAny) => state.meeting);
+    const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
+    const meeting = useSelector((state: RootStateOrAny) => state.meeting.meeting);
     const meetingList = useMemo(() => {
         if (meeting?._id) {
             return [];

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect,useState} from 'react';
+import {useEffect,useMemo,useState} from 'react';
 import {Dimensions,Linking,Platform,StyleSheet,Text,TouchableOpacity,useWindowDimensions,View} from 'react-native';
 import {createDrawerNavigator,} from '@react-navigation/drawer';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -107,26 +107,29 @@ export default function TabBar({navigation,route}){
     }=useSignalr();
 
     const {tabBarHeight,pinnedApplications,notPinnedApplications}=useSelector((state:RootStateOrAny)=>state.application);
-    const { hasNewChat = false, hasMeet = false, currentMeeting = {} } = useSelector((state: RootStateOrAny) => {
-        const { channel = {}, meeting = {} } = state;
-        const { channelList = [] } = channel;
-        const { activeMeetings = [] } = meeting;
+    const currentMeeting = useSelector((state: RootStateOrAny) => state.channel.meeting);
+    const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.channel.normalizeActiveMeetings);
+    const hasNewChat = false;
+    const hasMeet = false;
+    // const { hasNewChat = false, hasMeet = false, currentMeeting = {} } = useSelector((state: RootStateOrAny) => {
+    //     const { channel = {}, meeting = {} } = state;
+    //     const { channelList = [] } = channel;
+    //     const { activeMeetings = [] } = meeting;
 
-        const hasNewChat = lodash.reject(channelList, (ch:IRooms) => ch.hasSeen);
-        const hasMeet = lodash.reject(activeMeetings, (mt:IMeetings) => mt.ended);
-        return {
-            hasNewChat: lodash.size(hasNewChat) > 0,
-            hasMeet: lodash.size(hasMeet) > 0,
-            currentMeeting: meeting.meeting,
-        }
-    })
-    const newMeeting = useSelector((state: RootStateOrAny) => {
-      const { normalizeActiveMeetings } = state.meeting
+    //     const hasNewChat = lodash.reject(channelList, (ch:IRooms) => ch.hasSeen);
+    //     const hasMeet = lodash.reject(activeMeetings, (mt:IMeetings) => mt.ended);
+    //     return {
+    //         hasNewChat: lodash.size(hasNewChat) > 0,
+    //         hasMeet: lodash.size(hasMeet) > 0,
+    //         currentMeeting: meeting.meeting,
+    //     }
+    // })
+    const newMeeting = useMemo(() => {
       const meetingList = lodash.keys(normalizeActiveMeetings).map((m:string) => normalizeActiveMeetings[m])
       const hasMeet = lodash.reject(meetingList, (mt:IMeetings) => mt.ended);
       const newMeeting = lodash.find(hasMeet, (am:IMeetings) => lodash.find(am.participants, (ap:IParticipants) => ap._id === user._id && ap.hasJoined === false && !(ap.status === 'busy' || ap.muted)));
       return newMeeting;
-    })
+    }, [normalizeActiveMeetings]);
     const [pnApplication,setPnApplication]=useState(pinnedApplications);
     const [notPnApplication,setNotPnApplication]=useState(notPinnedApplications);
     const dispatch=useDispatch();

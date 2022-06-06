@@ -1,6 +1,5 @@
 import { View, Dimensions, Pressable, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-
 import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,
@@ -12,29 +11,21 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import lodash from 'lodash';
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
-import { ArrowDownIcon, MessageIcon, ParticipantsIcon } from '@components/atoms/icon'
 import {
   resetCurrentMeeting,
-  setFullScreen,
-  setMeeting,
   setNotification,
   setOptions,
   setPinnedParticipant,
-  setToggle,
   updateMeetingParticipants,
 } from 'src/reducers/meeting/actions';
 import { setSelectedChannel, setMeetings, removeSelectedMessage } from 'src/reducers/channel/actions';
-import Text from '@components/atoms/text'
 import VideoLayout from '@components/molecules/video/layout'
-import { getChannelName, getTimerString } from 'src/utils/formatting'
 import useSignalr from 'src/hooks/useSignalr';
 import { requestCameraAndAudioPermission } from 'src/hooks/usePermission';
 import { Feather } from '@expo/vector-icons';
-import { Bold } from '@styles/font';
 import { useNavigation } from '@react-navigation/native';
 import IParticipants from 'src/interfaces/IParticipants';
 import { RFValue } from 'react-native-responsive-fontsize';
-import useTimer from 'src/hooks/useTimer';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -132,20 +123,15 @@ const FloatingVideo = ({ tracks }:any) => {
   const navigation = useNavigation();
   const videoRef = useRef<any>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { selectedMessage, normalizedChannelList } = useSelector((state:RootStateOrAny) => state.channel);
-  const { meeting, options, meetingId, isFullScreen, pinnedParticipant, toggleMute, roomId } = useSelector((state:RootStateOrAny) => {
-    const { meeting, options = {}, isFullScreen, pinnedParticipant, toggleMute } = state.meeting;
-    meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
-    return {
-      meeting,
-      options,
-      meetingId: meeting?._id,
-      isFullScreen,
-      pinnedParticipant,
-      toggleMute,
-      roomId: meeting?.roomId,
-    };
-  });
+  const selectedMessage = useSelector((state:RootStateOrAny) => state.channel.selectedMessage);
+  const normalizedChannelList = useSelector((state:RootStateOrAny) => state.channel.normalizedChannelList);
+  const meeting = useSelector((state:RootStateOrAny) => state.meeting.meeting);
+  meeting.otherParticipants = lodash.reject(meeting.participants, (p:IParticipants) => p._id === user._id);
+  const options = useSelector((state:RootStateOrAny) => state.meeting.options);
+  const isFullScreen = useSelector((state:RootStateOrAny) => state.meeting.isFullScreen);
+  const pinnedParticipant = useSelector((state:RootStateOrAny) => state.meeting.pinnedParticipant);
+  const roomId = meeting?.roomId;
+  const meetingId = meeting?._id;
   const {
     isMute = false,
     isVideoEnable = true,
@@ -158,10 +144,7 @@ const FloatingVideo = ({ tracks }:any) => {
     leaveMeeting,
     muteParticipant,
   } = useSignalr();
-  const {
-    timer,
-    setStarted
-  } = useTimer();
+  
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
   const [isMaximized, setIsMaximized] = useState(true);
@@ -209,7 +192,6 @@ const FloatingVideo = ({ tracks }:any) => {
                 if (result) {
                   dispatch(updateMeetingParticipants(result.meeting));
                   setAgora(result?.agora);
-                  setStarted(true);
                 }
               } else {
                 setLoading(false);
@@ -234,21 +216,10 @@ const FloatingVideo = ({ tracks }:any) => {
   }, [meetingId]);
 
   useEffect(() => {
-    let interval:any = null;
-    if (!meeting.ended) {
-      setStarted(false);
-    } else {
+    if (meeting.ended) {
       setIsMaximized(true);
-      dispatch(setToggle(null));
     }
-    return () => clearInterval(interval);
   }, [meeting.ended]);
-
-  useEffect(() => {
-    if (toggleMute) {
-      dispatch(setToggle(null));
-    }
-  }, [toggleMute]);
 
   useEffect(() => {
     if (normalizedChannelList && normalizedChannelList[roomId]) {
@@ -336,51 +307,6 @@ const FloatingVideo = ({ tracks }:any) => {
     }
   }
 
-  const header = () => {
-    if (!isMaximized) return;
-
-    return (
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => {
-          // leaveMeeting(meeting._id, 'leave');
-          onFullScreen()
-        }}>
-          <ArrowDownIcon
-            color={'white'}
-            size={20}
-          />
-        </TouchableOpacity>
-        <View style={styles.channelName}>
-          <Text
-            color={'white'}
-            size={12}
-            numberOfLines={1}
-            style={{ fontFamily: Bold }}
-          >
-            {getChannelName({ otherParticipants: meeting?.otherParticipants, isGroup: meeting?.isGroup, hasRoomName: meeting.hasRoomName, name: meeting.name })}
-          </Text>
-          <Text
-            color='white'
-            size={12}
-          >
-            {getTimerString(timer)}
-          </Text>
-        </View>
-        <TouchableOpacity onPress={onMessages}>
-          <View style={styles.icon}>
-            <MessageIcon />
-          </View>
-        </TouchableOpacity>
-        <View style={{ width: 5 }} />
-        <TouchableOpacity onPress={onAddParticipants}>
-          <View style={styles.icon}>
-            <ParticipantsIcon />
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   const onEndCall = (endCall = false) => {
     if (isHost || endCall) {
       endMeeting(meeting._id);
@@ -427,7 +353,6 @@ const FloatingVideo = ({ tracks }:any) => {
           <VideoLayout
             ref={videoRef}
             loading={loading}
-            header={header}
             options={{ isMute, isVideoEnable }}
             user={user}
             participants={meeting.otherParticipants}
@@ -436,6 +361,8 @@ const FloatingVideo = ({ tracks }:any) => {
             isVoiceCall={isVoiceCall}
             callEnded={meeting?.ended}
             message={meeting?.notification}
+            hasRoomName={meeting?.hasRoomName}
+            name={meeting?.name}
             setNotification={() => dispatch(setNotification(null))}
             onEndCall={onEndCall}
             onMute={onMute}
@@ -443,6 +370,9 @@ const FloatingVideo = ({ tracks }:any) => {
             isMaximize={isMaximized}
             pinnedParticipant={pinnedParticipant}
             setPinnedParticipant={onSetPinnedParticipant}
+            onMessages={onMessages}
+            onAddParticipants={onAddParticipants}
+            onFullScreen={onFullScreen}
           />
         </View>
       </AnimatedPressable>

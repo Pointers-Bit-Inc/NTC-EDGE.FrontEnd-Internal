@@ -245,7 +245,7 @@ function Chat(props:{participants:any,newChat:boolean,user,navigation,onNewChat?
         leaveMeeting,
     }=useSignalr();
     const swipeableRef:any=useRef({});
-    const {selectedChannel}=useSelector((state:RootStateOrAny)=>state.channel);
+    const selectedChannel=useSelector((state:RootStateOrAny)=>state.channel.selectedChannel);
     const dispatch=useDispatch();
     const meetingList=useSelector((state:RootStateOrAny)=>{
         const {normalizeActiveMeetings}=state.meeting;

@@ -8,7 +8,6 @@ import {
   setNotification,
   setOptions,
   setPinnedParticipant,
-  setToggle,
   updateMeetingParticipants,
 } from 'src/reducers/meeting/actions';
 import { setSelectedChannel, setMeetings, removeSelectedMessage } from 'src/reducers/channel/actions';
@@ -113,8 +112,8 @@ const FloatingVideo = ({ tracks }:any) => {
   const videoRef = useRef<any>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
   const { selectedMessage, normalizedChannelList } = useSelector((state:RootStateOrAny) => state.channel);
-  const { meeting, options, meetingId, isFullScreen, pinnedParticipant, toggleMute, roomId } = useSelector((state:RootStateOrAny) => {
-    const { meeting, options = {}, isFullScreen, pinnedParticipant, toggleMute } = state.meeting;
+  const { meeting, options, meetingId, isFullScreen, pinnedParticipant, roomId } = useSelector((state:RootStateOrAny) => {
+    const { meeting, options = {}, isFullScreen, pinnedParticipant } = state.meeting;
     meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
     return {
       meeting,
@@ -122,7 +121,6 @@ const FloatingVideo = ({ tracks }:any) => {
       meetingId: meeting?._id,
       isFullScreen,
       pinnedParticipant,
-      toggleMute,
       roomId: meeting?.roomId,
     };
   });
@@ -152,7 +150,6 @@ const FloatingVideo = ({ tracks }:any) => {
       setStarted(false);
     } else {
       setIsMaximized(true);
-      dispatch(setToggle(null));
     }
   }, [meeting]);
 
@@ -187,12 +184,6 @@ const FloatingVideo = ({ tracks }:any) => {
       }));
     }
   }, [meetingId]);
-
-  useEffect(() => {
-    if (toggleMute) {
-      dispatch(setToggle(null));
-    }
-  }, [toggleMute]);
 
   useEffect(() => {
     if (normalizedChannelList && normalizedChannelList[roomId]) {

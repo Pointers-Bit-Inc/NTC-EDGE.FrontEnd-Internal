@@ -97,7 +97,9 @@ const List = () => {
   const modalRef = useRef<BottomModalRef>(null);
   const meetingModalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { selectedChannel, channelMessages, pendingMessages } = useSelector((state:RootStateOrAny) => state.channel);
+  const selectedChannel = useSelector((state:RootStateOrAny) => state.channel.selectedChannel);
+  const channelMessages = useSelector((state:RootStateOrAny) => state.channel.channelMessages);
+  const pendingMessages = useSelector((state:RootStateOrAny) => state.channel.pendingMessages);
   const { _id, isGroup, lastMessage, otherParticipants = [], participants = [], hasRoomName, name, author = {} } = useMemo( () => {
     selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, (p:IParticipants) => p._id === user._id);
     return selectedChannel;

@@ -15,12 +15,8 @@ import { ArrowDownIcon, MessageIcon, ParticipantsIcon } from '@components/atoms/
 import {
   resetCurrentMeeting,
   setFullScreen,
-  setMeeting,
   setNotification,
-  setOptions,
   setPinnedParticipant,
-  setToggle,
-  updateMeetingParticipants,
 } from 'src/reducers/meeting/actions';
 import { setSelectedChannel, setMeetings, removeSelectedMessage } from 'src/reducers/channel/actions';
 import Text from '@components/atoms/text'
@@ -130,9 +126,10 @@ const FloatingVideo = () => {
   const navigation = useNavigation();
   const videoRef = useRef<any>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { selectedMessage, normalizedChannelList } = useSelector((state:RootStateOrAny) => state.channel);
-  const { meeting, options, meetingId, isFullScreen, pinnedParticipant, toggleMute, roomId } = useSelector((state:RootStateOrAny) => {
-    const { meeting, options, isFullScreen, pinnedParticipant, toggleMute } = state.meeting;
+  const selectedMessage = useSelector((state:RootStateOrAny) => state.channel.selectedMessage);
+  const normalizedChannelList = useSelector((state:RootStateOrAny) => state.channel.normalizedChannelList);
+  const { meeting, options, meetingId, isFullScreen, pinnedParticipant, roomId } = useSelector((state:RootStateOrAny) => {
+    const { meeting, options, isFullScreen, pinnedParticipant } = state.meeting;
     meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
     return {
       meeting,
@@ -140,7 +137,6 @@ const FloatingVideo = () => {
       meetingId: meeting?._id,
       isFullScreen,
       pinnedParticipant,
-      toggleMute,
       roomId: meeting?.roomId,
     };
   });
@@ -227,17 +223,10 @@ const FloatingVideo = () => {
         setTimer(timer => timer + 1);
       }, 1000);
     } else {
-      dispatch(setToggle(null));
       dispatch(setFullScreen(true));
     }
     return () => clearInterval(interval);
   }, [meeting.ended]);
-
-  useEffect(() => {
-    if (toggleMute) {
-      setToggle(null);
-    }
-  }, [toggleMute]);
 
   useEffect(() => {
     if (normalizedChannelList && normalizedChannelList[roomId]) {
