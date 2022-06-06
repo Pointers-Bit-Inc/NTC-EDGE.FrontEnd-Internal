@@ -71,13 +71,8 @@ export function useActivities(props){
     };
 
 
-    const {selectedChangeStatus,visible}=useSelector((state:RootStateOrAny)=>state.activity);
-    const {
-        pinnedApplications,
-        notPinnedApplications,
-        applicationItem,
-        selectedYPos
-    }=useSelector((state:RootStateOrAny)=>{
+    const activities_s=useSelector((state:RootStateOrAny)=>state.activity);
+    const applications_s =useSelector((state:RootStateOrAny)=>{
         return state.application
     });
    /* React.useEffect(() => {
@@ -119,7 +114,7 @@ export function useActivities(props){
 
     const ispinnedApplications=(applications:any)=>{
         setTotalPages(Math.ceil(applications?.length/10));
-        const selectedClone=selectedChangeStatus?.filter((status:string)=>{
+        const selectedClone=activities_s?.selectedChangeStatus?.filter((status:string)=>{
             return status!=DATE_ADDED
         });
 
@@ -177,11 +172,11 @@ export function useActivities(props){
         setCountRefresh(countRefresh+1)
     },[countRefresh]);
 
-    const selectedClone=selectedChangeStatus?.filter((status:string)=>{
+    const selectedClone=activities_s?.selectedChangeStatus?.filter((status:string)=>{
         return status!=DATE_ADDED
     });
 
-    const checkDateAdded=selectedChangeStatus?.filter((status:string)=>{
+    const checkDateAdded=activities_s?.selectedChangeStatus?.filter((status:string)=>{
         return status==DATE_ADDED
     });
     const query=(pinned)=>{
@@ -225,6 +220,7 @@ export function useActivities(props){
 
     function fnApplications(endpoint){
         let isCurrent=true;
+
         setRefreshing(true);
         axios.all(endpoint.map((ep) => axios.get(ep.url,{...config,params:query(ep.pinned)}))).then(
             axios.spread((pinned, notPinned) => {
@@ -278,7 +274,7 @@ export function useActivities(props){
     
     useEffect(()=>{
         return fnApplications([{url: BASE_URL+ `/users/${user._id}/assigned-applications`, pinned: 1}, {url: BASE_URL+ `/users/${user._id}/unassigned-applications`, pinned: 0}])
-    },[countRefresh,searchTerm,selectedChangeStatus.length]);
+    },[countRefresh,searchTerm,activities_s?.selectedChangeStatus.length]);
 
 
     const [currentPage,setCurrentPage]=useState(1);
@@ -293,13 +289,13 @@ export function useActivities(props){
     const pnApplications=useMemo(()=>{
 
         setUpdateUnReadReadApplication(false);
-        return ispinnedApplications(pinnedApplications)
-    },[updateUnReadReadApplication,updateModal,searchTerm,selectedChangeStatus?.length,pinnedApplications?.length,currentPage]);
+        return ispinnedApplications(applications_s?.pinnedApplications)
+    },[updateUnReadReadApplication,updateModal,searchTerm,activities_s?.selectedChangeStatus?.length,applications_s?.pinnedApplications?.length,currentPage]);
 
     const notPnApplications=useMemo(()=>{
         setUpdateUnReadReadApplication(false);
-        return ispinnedApplications(notPinnedApplications)
-    },[updateUnReadReadApplication,updateModal,searchTerm,selectedChangeStatus?.length,notPinnedApplications?.length,currentPage]);
+        return ispinnedApplications(applications_s?.notPinnedApplications)
+    },[updateUnReadReadApplication,updateModal,searchTerm,activities_s?.selectedChangeStatus?.length,applications_s?.notPinnedApplications?.length,currentPage]);
 
     const userPress=(index:number)=>{
         let newArr=[...numberCollapsed];
@@ -372,7 +368,7 @@ export function useActivities(props){
 
                 } else{
                     dispatch(handleInfiniteLoad({
-                        data:getList(response.data.docs,selectedChangeStatus),
+                        data:getList(response.data.docs,activities_s?.selectedChangeStatus),
                         user:user
                     }));
                     setInfiniteLoad(false);
@@ -519,8 +515,8 @@ export function useActivities(props){
         user,
         setUpdateModal,
         config,
-        visible,
-        applicationItem,
+        visible: activities_s.visible,
+        applicationItem: applications_s?.applicationItem,
         dispatch,
         getActiveMeetingList,
         endMeeting,

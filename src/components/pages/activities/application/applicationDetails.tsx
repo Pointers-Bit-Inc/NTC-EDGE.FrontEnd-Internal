@@ -25,7 +25,7 @@ let outputLabel = (applicationType: string) => {
 
 const ApplicationDetails = (props: any) => {
     const dimensions = useWindowDimensions();
-    const {rightLayoutComponent} = useSelector((state: RootStateOrAny) => state.application);
+    const applications_s= useSelector((state: RootStateOrAny) => state.application);
     const [modalVisible, setModalVisible] = useState(false);
     return <ScrollView contentContainerStyle={{flex: 1}}
                        style={{paddingTop: 20, width: "100%", backgroundColor: "#f8f8f8",}}>
@@ -85,12 +85,12 @@ const ApplicationDetails = (props: any) => {
             <SafeAreaView style={{flex: 1,}}>
                 <View style={[{flex: 1,}, isMobile || dimensions?.width < 768 ? {} : {
                     alignItems: "flex-end",
-                    top: rightLayoutComponent?.top
+                    top: applications_s?.rightLayoutComponent?.top
                 }]}>
                     <OnBackdropPress styles={{}} onPressOut={() => setModalVisible(!modalVisible)}/>
                     <OnBackdropPress styles={isMobile || dimensions?.width < 768 ? {} : {
                         alignSelf: "flex-end",
-                        width: rightLayoutComponent?.width || undefined,
+                        width: applications_s?.rightLayoutComponent?.width || undefined,
                         backgroundColor: "rgba(0, 0, 0, 0)"
                     }} onPressOut={() => setModalVisible(!modalVisible)}/>
 
@@ -116,11 +116,11 @@ const ApplicationDetails = (props: any) => {
                             <OnBackdropPress
                                 styles={isMobile || dimensions?.width < 768 ? {backgroundColor: "rgba(0, 0, 0, 0)"} : {
                                     alignSelf: "flex-end",
-                                    width: rightLayoutComponent?.width || "100%",
+                                    width: applications_s?.rightLayoutComponent?.width || "100%",
                                     backgroundColor: "rgba(0, 0, 0, 0.5)"
                                 }} onPressOut={() => setModalVisible(!modalVisible)}/>
-                            <PdfViewr width={rightLayoutComponent?.width}
-                                      height={rightLayoutComponent?.height} requirement={props?.documents}/>
+                            <PdfViewr width={applications_s?.rightLayoutComponent?.width}
+                                      height={applications_s?.rightLayoutComponent?.height} requirement={props?.documents}/>
                         </ScrollView>
 
                     </View>

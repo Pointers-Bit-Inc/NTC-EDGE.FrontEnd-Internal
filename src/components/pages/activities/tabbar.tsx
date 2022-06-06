@@ -106,7 +106,7 @@ export default function TabBar({navigation,route}){
         checkVersion,
     }=useSignalr();
 
-    const {tabBarHeight,pinnedApplications,notPinnedApplications}=useSelector((state:RootStateOrAny)=>state.application);
+    const application_s=useSelector((state:RootStateOrAny)=>state.application);
     const currentMeeting = useSelector((state: RootStateOrAny) => state.channel.meeting);
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.channel.normalizeActiveMeetings);
     const hasNewChat = false;
@@ -130,8 +130,8 @@ export default function TabBar({navigation,route}){
       const newMeeting = lodash.find(hasMeet, (am:IMeetings) => lodash.find(am.participants, (ap:IParticipants) => ap._id === user._id && ap.hasJoined === false && !(ap.status === 'busy' || ap.muted)));
       return newMeeting;
     }, [normalizeActiveMeetings]);
-    const [pnApplication,setPnApplication]=useState(pinnedApplications);
-    const [notPnApplication,setNotPnApplication]=useState(notPinnedApplications);
+    const [pnApplication,setPnApplication]=useState(application_s?.pinnedApplications);
+    const [notPnApplication,setNotPnApplication]=useState(application_s?.notPinnedApplications);
     const dispatch=useDispatch();
     const soundRef:any=React.useRef(new Audio.Sound());
     const playSound=async()=>{
@@ -189,10 +189,10 @@ export default function TabBar({navigation,route}){
 
     useEffect(()=>{
 
-        setPnApplication(pinnedApplications.reduce((n,e)=>!e?.dateRead ? n+1 : n,0));
-        setNotPnApplication(notPinnedApplications.reduce((n,e)=>!e?.dateRead ? n+1 : n,0))
+        setPnApplication(application_s?.pinnedApplications.reduce((n,e)=>!e?.dateRead ? n+1 : n,0));
+        setNotPnApplication(application_s?.notPinnedApplications.reduce((n,e)=>!e?.dateRead ? n+1 : n,0))
 
-    },[pinnedApplications,notPinnedApplications,pnApplication,notPnApplication]);
+    },[application_s?.pinnedApplications,application_s?.notPinnedApplications,pnApplication,notPnApplication]);
 
     function ActivityTab({state,descriptors,navigation}:any){
         const currentRoute=state.routes.map((route:any,index:number)=>getFocusedRouteNameFromRoute(route));
@@ -200,7 +200,7 @@ export default function TabBar({navigation,route}){
 
         return (
             <View onLayout={(event)=>{
-                if(tabBarHeight==0){
+                if(application_s?.tabBarHeight==0){
                     dispatch(setTabBarHeight(event.nativeEvent.layout.height))
                 }
 

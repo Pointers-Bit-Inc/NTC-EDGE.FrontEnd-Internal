@@ -13,7 +13,7 @@ import {isMobile} from "@pages/activities/isMobile";
 
 const {width, height} = Dimensions.get('window');
 const PaymentModal = (props: any) => {
-    const {rightLayoutComponent} = useSelector((state: RootStateOrAny) => state.application)
+    const applications_s = useSelector((state: RootStateOrAny) => state.application)
     function Cell({ data }) {
         return (
             <View style={styles.cellStyle}>
@@ -54,8 +54,8 @@ const PaymentModal = (props: any) => {
                  ...Platform.select({
                      native: {   },
                      default: {
-                         width: rightLayoutComponent?.width,
-                         top : rightLayoutComponent?.top,
+                         width: applications_s?.rightLayoutComponent?.width,
+                         top : applications_s?.rightLayoutComponent?.top,
                      }
                  }),
 
@@ -80,7 +80,7 @@ const PaymentModal = (props: any) => {
                      </View>
                      
                      <ScrollView>
-                            <View style={[styles.group8, { height: isMobile ? undefined : rightLayoutComponent?.height- rightLayoutComponent?.top , alignItems: 'center'}]}>
+                            <View style={[styles.group8, { height: isMobile ? undefined : applications_s?.rightLayoutComponent?.height- applications_s?.rightLayoutComponent?.top , alignItems: 'center'}]}>
 
                                 <View style={styles.paymentModal}>
                                      <View>

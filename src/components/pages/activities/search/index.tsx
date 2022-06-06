@@ -20,7 +20,7 @@ import {setApplicationItem} from "../../../../reducers/application/actions";
 
 function Search(props:any){
     const dispatch=useDispatch();
-    const {selectedChangeStatus}=useSelector((state:RootStateOrAny)=>state.activity);
+    const activity_s=useSelector((state:RootStateOrAny)=>state.activity);
     const user=useSelector((state:RootStateOrAny)=>state.user);
     const [isHandleLoad,setIsHandleLoad]=useState(true);
     const [page,setPage]=useState(0);
@@ -44,7 +44,7 @@ function Search(props:any){
         }
     };
     const groupApplications=(app:any)=>{
-        const selectedClone=selectedChangeStatus?.filter((status:string)=>{
+        const selectedClone=activity_s?.selectedChangeStatus?.filter((status:string)=>{
             return status!=DATE_ADDED
         });
         const list=getFilter({
