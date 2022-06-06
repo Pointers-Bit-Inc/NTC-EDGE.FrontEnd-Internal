@@ -13,8 +13,8 @@ export const styles=StyleSheet.create({
     }
 });
 export default function Loader(refreshing,searchTerm,size){
-    const activity_s=useSelector((state:RootStateOrAny)=>state.activity);
-    const selectedClone=activity_s?.selectedChangeStatus?.filter((status:string)=>{
+    const selectedChangeStatus=useSelector((state:RootStateOrAny)=>state.activity?.selectedChangeStatus);
+    const selectedClone=selectedChangeStatus?.filter((status:string)=>{
         return status!=DATE_ADDED
     });
 console.log(size)

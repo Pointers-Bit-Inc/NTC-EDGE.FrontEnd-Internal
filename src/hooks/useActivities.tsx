@@ -71,10 +71,18 @@ export function useActivities(props){
     };
 
 
-    const activities_s=useSelector((state:RootStateOrAny)=>state.activity);
-    const applications_s =useSelector((state:RootStateOrAny)=>{
-        return state.application
+    const selectedChangeStatus=useSelector((state:RootStateOrAny)=>state.activity?.selectedChangeStatus);
+    const visible= useSelector((state:RootStateOrAny)=>state.activity?.visible);
+    const applicationItem =useSelector((state:RootStateOrAny)=>{
+        return state.application?.applicationItem
     });
+    const pinnedApplications =useSelector((state:RootStateOrAny)=>{
+        return state.application?.pinnedApplications
+    });
+    const notPinnedApplications =useSelector((state:RootStateOrAny)=>{
+        return state.application?.notPinnedApplications
+    });
+
    /* React.useEffect(() => {
         if(!isMobile) {
            props?.navigation?.addListener('focus', () => {
@@ -114,7 +122,7 @@ export function useActivities(props){
 
     const ispinnedApplications=(applications:any)=>{
         setTotalPages(Math.ceil(applications?.length/10));
-        const selectedClone=activities_s?.selectedChangeStatus?.filter((status:string)=>{
+        const selectedClone=selectedChangeStatus?.filter((status:string)=>{
             return status!=DATE_ADDED
         });
 
@@ -172,11 +180,11 @@ export function useActivities(props){
         setCountRefresh(countRefresh+1)
     },[countRefresh]);
 
-    const selectedClone=activities_s?.selectedChangeStatus?.filter((status:string)=>{
+    const selectedClone=selectedChangeStatus?.filter((status:string)=>{
         return status!=DATE_ADDED
     });
 
-    const checkDateAdded=activities_s?.selectedChangeStatus?.filter((status:string)=>{
+    const checkDateAdded=selectedChangeStatus?.filter((status:string)=>{
         return status==DATE_ADDED
     });
     const query=(pinned)=>{
@@ -274,7 +282,7 @@ export function useActivities(props){
     
     useEffect(()=>{
         return fnApplications([{url: BASE_URL+ `/users/${user._id}/assigned-applications`, pinned: 1}, {url: BASE_URL+ `/users/${user._id}/unassigned-applications`, pinned: 0}])
-    },[countRefresh,searchTerm,activities_s?.selectedChangeStatus.length]);
+    },[countRefresh,searchTerm,selectedChangeStatus.length]);
 
 
     const [currentPage,setCurrentPage]=useState(1);
@@ -289,13 +297,13 @@ export function useActivities(props){
     const pnApplications=useMemo(()=>{
 
         setUpdateUnReadReadApplication(false);
-        return ispinnedApplications(applications_s?.pinnedApplications)
-    },[updateUnReadReadApplication,updateModal,searchTerm,activities_s?.selectedChangeStatus?.length,applications_s?.pinnedApplications?.length,currentPage]);
+        return ispinnedApplications(pinnedApplications)
+    },[updateUnReadReadApplication,updateModal,searchTerm,selectedChangeStatus?.length,pinnedApplications?.length,currentPage]);
 
     const notPnApplications=useMemo(()=>{
         setUpdateUnReadReadApplication(false);
-        return ispinnedApplications(applications_s?.notPinnedApplications)
-    },[updateUnReadReadApplication,updateModal,searchTerm,activities_s?.selectedChangeStatus?.length,applications_s?.notPinnedApplications?.length,currentPage]);
+        return ispinnedApplications(notPinnedApplications)
+    },[updateUnReadReadApplication,updateModal,searchTerm,selectedChangeStatus?.length,notPinnedApplications?.length,currentPage]);
 
     const userPress=(index:number)=>{
         let newArr=[...numberCollapsed];
@@ -368,7 +376,7 @@ export function useActivities(props){
 
                 } else{
                     dispatch(handleInfiniteLoad({
-                        data:getList(response.data.docs,activities_s?.selectedChangeStatus),
+                        data:getList(response.data.docs,selectedChangeStatus),
                         user:user
                     }));
                     setInfiniteLoad(false);
@@ -515,8 +523,8 @@ export function useActivities(props){
         user,
         setUpdateModal,
         config,
-        visible: activities_s.visible,
-        applicationItem: applications_s?.applicationItem,
+        visible,
+        applicationItem: applicationItem,
         dispatch,
         getActiveMeetingList,
         endMeeting,

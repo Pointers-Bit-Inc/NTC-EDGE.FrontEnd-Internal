@@ -288,7 +288,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
 
 
 const Requirement=(props:any)=>{
-    const applications_s=useSelector((state:RootStateOrAny)=>state.application);
+    const rightLayoutComponent=useSelector((state:RootStateOrAny)=>state.application?.rightLayoutComponent);
     const dimensions=useWindowDimensions();
     return <ScrollView style={{backgroundColor:"#f8f8f8",width:"100%"}}>
         {props?.requirements?.map((requirement:any,index:number)=>{
@@ -307,7 +307,7 @@ const Requirement=(props:any)=>{
                             keyExtractor={(item, index)=> index}
                             renderItem={({item}) => {
                                 return <RequirementView dimensions={dimensions}
-                                                        rightLayoutComponent={applications_s?.rightLayoutComponent}
+                                                        rightLayoutComponent={rightLayoutComponent}
                                                         requirement={item}/>
                             }}
                         />
