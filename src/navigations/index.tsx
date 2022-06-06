@@ -111,20 +111,70 @@ const FloatingVideoComponent = () => {
     return null
 }
 
-const RootNavigator = () => {
+const HeaderRight = ({ setVisible = () => {}, visible }:any) => {
     const user = useSelector((state: RootStateOrAny) => state.user) || {};
+    const navigation = useNavigation();
+    const {destroy} = useOneSignal(user);
     const dispatch=useDispatch();
-    const [visible, setVisible] = useState(false);
+    const [activitySizeComponent,onActivityLayoutComponent]=useComponentLayout();
+
     const onLogout = () => {
-        dispatch(setApplications([]))
-        dispatch(setPinnedApplication([]))
-        dispatch(setNotPinnedApplication([]))
-        dispatch(setApplicationItem({}))
-        dispatch(setResetFilterStatus([]))
-        dispatch(resetUser());
-        dispatch(resetMeeting());
-        dispatch(resetChannel());
+        setVisible(false)
+        setTimeout(()=>{
+          dispatch(setApplications([]))
+          dispatch(setPinnedApplication([]))
+          dispatch(setNotPinnedApplication([]))
+          dispatch(setApplicationItem({}))
+          dispatch(setResetFilterStatus([]))
+          dispatch(resetUser());
+          dispatch(resetMeeting());
+          dispatch(resetChannel());
+          destroy();
+          navigation.dispatch(StackActions.replace('Login'));
+        },500);
     }
+
+    useEffect(()=>{
+        dispatch(setTopBarNav(activitySizeComponent))
+    }, [activitySizeComponent?.width])
+
+    return (
+        <View onLayout={onActivityLayoutComponent} style={{flexDirection:"row"}}>
+            <View style={{paddingRight:32}}>
+                <SettingTopBar height={26} width={26}></SettingTopBar>
+            </View>
+            <View style={{paddingRight:32}}>
+                <HelpTopBar height={26} width={26}></HelpTopBar>
+            </View>
+            <View style={{paddingRight:32}}>
+
+                <ProfileMenu onClose={()=>{
+
+                }} onSelect={value=>{
+                    if(value=="editProfile"){
+                        navigation.navigate('UserProfileScreen')
+                    } else if(value=="logout"){
+                        setVisible(true)
+                    }
+                }} user={user}/>
+                <CustomAlert
+                    showClose={false}
+                    show={visible}
+                    title='Log out'
+                    message='Are you sure you want to log out?'
+                    confirmText='OK'
+                    cancelText='Cancel'
+                    onConfirmPressed={onLogout}
+                    onDismissed={()=>setVisible(false)}
+                    onCancelPressed={()=>setVisible(false)}
+                />
+            </View>
+        </View>
+    )
+}
+
+const RootNavigator = () => {
+    const [visible, setVisible] = useState(false);
 
     return (
         <NavigationContainer linking={linking}>
@@ -147,58 +197,9 @@ const RootNavigator = () => {
                 <Stack.Screen name="ActivitiesScreen" component={ TabBar } options={
                     {
                         title : null ,
-                        headerRight : () => {
-                            const {destroy} = useOneSignal(user);
-                            const dispatch=useDispatch();
-                            const [activitySizeComponent,onActivityLayoutComponent]=useComponentLayout();
-                            useEffect(()=>{
-                                dispatch(setTopBarNav(activitySizeComponent))
-                            }, [activitySizeComponent?.width])
-                            const navigation = useNavigation();
-                            return <View onLayout={onActivityLayoutComponent} style={{flexDirection:"row"}}>
-                                <View style={{paddingRight:32}}>
-                                    <SettingTopBar height={26} width={26}></SettingTopBar>
-                                </View>
-                                <View style={{paddingRight:32}}>
-                                    <HelpTopBar height={26} width={26}></HelpTopBar>
-                                </View>
-                                <View style={{paddingRight:32}}>
-
-                                    <ProfileMenu onClose={()=>{
-
-                                    }} onSelect={value=>{
-                                        if(value=="editProfile"){
-                                            navigation.navigate('UserProfileScreen')
-                                        } else if(value=="logout"){
-                                            setVisible(true)
-                                        }
-                                    }} user={user}/>
-                                    <CustomAlert
-                                        showClose={false}
-                                        show={visible}
-                                        title='Log out'
-                                        message='Are you sure you want to log out?'
-                                        confirmText='OK'
-                                        cancelText='Cancel'
-                                        onConfirmPressed={() => {
-                                            onLogout()
-                                            destroy();
-                                            navigation.dispatch(StackActions.replace('Login'));
-                                            setVisible(false)
-                                        }}
-                                        onDismissed={()=>{
-                                            setVisible(false)
-                                        }}
-                                        onCancelPressed={() => {
-
-                                            setVisible(false)
-                                        }}
-                                    />
-                                </View>
-
-
-                            </View>
-                        },
+                        headerRight : () => (
+                            <HeaderRight setVisible={setVisible} visible={visible} />
+                        ),
                         headerLeft : () => (
                             <View style={ { paddingLeft : 32 } }>
                                 <EdgeLogo width={ 127 } height={ 29 }/>

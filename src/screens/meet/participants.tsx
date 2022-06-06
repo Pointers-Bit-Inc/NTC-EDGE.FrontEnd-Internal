@@ -273,7 +273,7 @@ const Participants = ({ navigation }) => {
                     <View style={[styles.option]}>
                       {
                         !selectedParticipant.muted ? (
-                          <MicOffIcon />
+                          <MicOffIcon color={'#212121'} />
                         ) : (
                           <MicOnIcon />
                         )

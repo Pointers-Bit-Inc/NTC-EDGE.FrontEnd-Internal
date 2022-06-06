@@ -73,7 +73,7 @@ const App = ({ navigation }:any) => {
     }
   }, [fontsLoaded]);
 
-  if (Platform.OS == 'web' && !appIsReady) {
+  if (Platform.OS == 'web' && !fontsLoaded) {
     return null;
   }
 

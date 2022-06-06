@@ -463,7 +463,7 @@ const VideoCall = () => {
     }
   }, [fontsLoaded]);
 
-  if (!appIsReady) {
+  if (!fontsLoaded) {
     return null;
   }
 
