@@ -181,7 +181,6 @@ const RootNavigator = () => {
                                         confirmText='OK'
                                         cancelText='Cancel'
                                         onConfirmPressed={() => {
-                                            const api=Api(user.sessionToken);
                                             onLogout()
                                             destroy();
                                             navigation.dispatch(StackActions.replace('Login'));

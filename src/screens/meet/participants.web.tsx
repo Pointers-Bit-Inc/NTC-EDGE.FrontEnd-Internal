@@ -161,6 +161,18 @@ const styles = StyleSheet.create({
     marginTop: -5,
     paddingHorizontal: 0
   },
+  menuOptions: {
+    padding: 10,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  }
 })
 
 const Participants = ({ onClose = () => {} }:any) => {
@@ -309,7 +321,7 @@ const Participants = ({ onClose = () => {} }:any) => {
             }
           />
         </MenuTrigger>
-        <MenuOptions>
+        <MenuOptions optionsContainerStyle={styles.menuOptions}>
           {
             isHost(user) && (
               <>
@@ -325,14 +337,16 @@ const Participants = ({ onClose = () => {} }:any) => {
                           setLoading(false);
                         });
                       }}
-                      text={`${item.muted ? 'Unmute' : 'Mute'} participant`}
-                    />
+                    >
+                      <Text>{`${item.muted ? 'Unmute' : 'Mute'} participant`}</Text>
+                    </MenuOption>
                   )
                 }
                 <MenuOption
                   onSelect={() => onRemoveConfirm(item)}
-                  text={'Remove from meeting'}
-                />
+                >
+                  <Text>Remove from meeting</Text>
+                </MenuOption>
               </>
             )
           }
@@ -340,8 +354,9 @@ const Participants = ({ onClose = () => {} }:any) => {
             type === 'inTheMeeting' && (
               <MenuOption
                 onSelect={() => dispatch(setPinnedParticipant(item))}
-                text={'Pin for me'}
-              />
+              >
+                <Text>Pin for me</Text>
+              </MenuOption>
             )
           }
         </MenuOptions>

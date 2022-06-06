@@ -56,10 +56,11 @@ const App = ({ navigation }:any) => {
   });
   useEffect(() => {
     if (fontsLoaded) {
+      setAppIsReady(true);
       const hideSplashscreen = async () => {
         await SplashScreen.hideAsync();
         if (user && user.email) {
-          navigation.dispatch(StackActions.replace('ActivitiesScreen'));
+          navigation.replace('ActivitiesScreen');
         } else {
           if (Platform.OS === 'web') {
             navigation.replace('Login');
@@ -72,7 +73,7 @@ const App = ({ navigation }:any) => {
     }
   }, [fontsLoaded]);
 
-  if (Platform.OS == 'web' && !fontsLoaded) {
+  if (Platform.OS == 'web' && !appIsReady) {
     return null;
   }
 

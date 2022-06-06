@@ -176,6 +176,18 @@ const { ids, styles } = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#606A80',
+  },
+  menuOptions: {
+    padding: 10,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   }
 });
 
@@ -200,6 +212,7 @@ const getUrlVars = () => {
 
 const VideoCall = () => {
   const dispatch = useDispatch();
+  const [appIsReady, setAppIsReady] = useState(false);
   let [fontsLoaded] = useFonts({
     Poppins_100Thin,
     Poppins_100Thin_Italic,
@@ -410,8 +423,14 @@ const VideoCall = () => {
           Alert.alert('Something went wrong');
         } else {
           if (data) {
-            setSelectedContacts([data]);
-            checkSelectedItems([data]);
+            if (data.isGroup) {
+              setSelectedContacts([data]);
+              checkSelectedItems([data]);
+            } else {
+              const filteredParticipants = lodash.reject(data.participants, (p:IParticipants) => p._id === user._id);
+              setSelectedContacts(filteredParticipants);
+              checkSelectedItems(filteredParticipants);
+            }
           } else {
             Alert.alert('Something went wrong');
           }
@@ -438,7 +457,13 @@ const VideoCall = () => {
     }
   }, [loading, selectedContacts, ready, tempMeeting]);
 
-  if (!fontsLoaded) {
+  useEffect(() => {
+    if(fontsLoaded) {
+      setAppIsReady(true);
+    }
+  }, [fontsLoaded]);
+
+  if (!appIsReady) {
     return null;
   }
 
@@ -448,14 +473,15 @@ const VideoCall = () => {
         <MenuTrigger>
           <ArrowDownIcon size={18} color={"white"}/>
         </MenuTrigger>
-        <MenuOptions>
+        <MenuOptions optionsContainerStyle={styles.menuOptions}>
           <FlatList
             data={list}
             renderItem={({ item, index})=>
               <MenuOption
                 onSelect={() => onSelect(item)}
-                text={item.label}
-              />
+              >
+                <Text>{item.label}</Text>
+              </MenuOption>
             }
           />
         </MenuOptions>

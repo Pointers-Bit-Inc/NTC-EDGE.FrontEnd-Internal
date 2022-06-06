@@ -144,6 +144,18 @@ const { styles, ids } = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 30,
     marginHorizontal: 10,
+  },
+  menuOptions: {
+    padding: 10,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   }
 })
 interface Props {
@@ -609,14 +621,15 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
         <MenuTrigger>
           <MenuIcon type='more' color='white' size={fontValue(30)} />
         </MenuTrigger>
-        <MenuOptions>
+        <MenuOptions optionsContainerStyle={styles.menuOptions}>
           <FlatList
             data={list}
             renderItem={({ item, index})=>
               <MenuOption
                 onSelect={() => onSelect(item)}
-                text={item}
-              />
+              >
+                <Text>{item}</Text>
+              </MenuOption>
             }
           />
         </MenuOptions>
