@@ -41,7 +41,9 @@ function isCashier(cashier: boolean, action: {}, i: number) {
                 || action.payload?.data[i].paymentStatus == APPROVED
                 || action.payload?.data[i].paymentStatus == PAID
                 || action.payload?.data[i].paymentStatus == DECLINED)
-            : true);
+            : (
+                action.payload?.data[i].status == DECLINED || action.payload?.data[i].status == APPROVED
+            ));
 }
 
 export default function basket(state = initialState, action = {}) {
