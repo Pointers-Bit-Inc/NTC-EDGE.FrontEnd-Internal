@@ -41,9 +41,7 @@ function isCashier(cashier: boolean, action: {}, i: number) {
                 || action.payload?.data[i].paymentStatus == APPROVED
                 || action.payload?.data[i].paymentStatus == PAID
                 || action.payload?.data[i].paymentStatus == DECLINED)
-            : (
-                action.payload?.data[i].status == DECLINED || action.payload?.data[i].status == APPROVED
-            ));
+            : true);
 }
 
 export default function basket(state = initialState, action = {}) {
@@ -209,9 +207,7 @@ export default function basket(state = initialState, action = {}) {
                         state = state.set("pinnedApplications", pinned)
                     }
                 } else if (directorAndEvaluator) {
-                    console.log("outside directoe and evaluator")
                     if (action.payload.status == FORAPPROVAL || action.payload.status == FOREVALUATION || action.payload.status == APPROVED || action.payload.status == DECLINED) {
-
                         _notPinned.status = action.payload.status
                         _notPinned.assignedPersonnel = action.payload.assignedPersonnel?._id || action.payload.assignedPersonnel
                         state = state.set('pinnedApplications', pinned.filter(o => o._id !== pinned[pinnedIndex]._id));
@@ -219,7 +215,6 @@ export default function basket(state = initialState, action = {}) {
                             ...notPinned.concat(_notPinned),
                         ]);
                     } else {
-                        console.log("else directoe and evaluator")
                         pinned[pinnedIndex].status = action.payload.status
                         pinned[pinnedIndex].assignedPersonnel = action.payload.assignedPersonnel?._id || action.payload.assignedPersonnel
                         state = state.set("pinnedApplications", pinned)
