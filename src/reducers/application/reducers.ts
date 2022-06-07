@@ -115,7 +115,7 @@ export default function basket(state = initialState, action = {}) {
             for (let i = 0; i < action.payload?.data?.length; i++) {
 
                 if ((
-                    (action.payload?.data?.[i]?.assignedPersonnel?._id || action.payload?.data?.[i]?.assignedPersonnel ) == action.payload?.user?._id) && (cashier && action.payload?.data?.[i]?.paymentHistory?.length )
+                    (action.payload?.data?.[i]?.assignedPersonnel?._id || action.payload?.data?.[i]?.assignedPersonnel ) == action.payload?.user?._id) && (cashier ?  action.payload?.data?.[i]?.paymentHistory?.length : true )
                     ) {
 
                     isPinned.push(action.payload?.data?.[i])

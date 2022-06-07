@@ -71,13 +71,13 @@ const PdfDownloadWeb = (props: { url: string; }) => {
                 }
                 //setisdownloaded(false)
                 if (Platform.OS == 'android') {
-                   // showSnackbar('File downloaded');
+                    showToast(ToastType.Success,"File downloaded")
                 }
                 console.log('The file saved to ', res);
             })
             .catch((e) => {
                // setisdownloaded(true)
-                //showSnackbar(e.message);
+                showToast(ToastType.Success,e.message);
                 console.log('The file saved to ERROR', e.message)
             });
     }
