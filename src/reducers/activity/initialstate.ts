@@ -22,7 +22,7 @@ export const DATE_ADDED = "Date Added",
     ACCOUNTANT = "accountant",
     ACTIVITIES = "Activities",
     ACTIVITIESLIST = "ActivitiesList",
-
+    PAYMENTPENDING = "PaymentPending",
     CHAT = "Chat",
     MEET = "Meet",
     SCANQR = "QR",
