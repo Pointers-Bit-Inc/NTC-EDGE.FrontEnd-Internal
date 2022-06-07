@@ -777,7 +777,7 @@ const Info = (props:any) => {
                           isHost: params.isHost,
                           isVoiceCall: params.isVoiceCall,
                         }));
-                        setTimeout(() => dispatch(setMeeting(data)), 300);
+                        setTimeout(() => dispatch(setMeeting(data)), 500);
                     }}
                 />
             </View>
