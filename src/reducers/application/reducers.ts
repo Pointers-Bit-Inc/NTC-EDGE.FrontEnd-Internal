@@ -35,10 +35,7 @@ const initialState = new InitialState();
 
 function isCashier(cashier: boolean, action: {}, i: number) {
     return (
-        cashier ? (
-                !action.payload?.data[i]?.paymentMethod?.length
-                || action.payload?.data[i].paymentStatus == PENDING
-                || action.payload?.data[i].paymentStatus == APPROVED
+        cashier ? ( action.payload?.data[i].paymentStatus == APPROVED
                 || action.payload?.data[i].paymentStatus == PAID
                 || action.payload?.data[i].paymentStatus == DECLINED)
             : (
