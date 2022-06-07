@@ -47,8 +47,6 @@ function isCashier(cashier: boolean, action: {}, i: number) {
 }
 
 export default function basket(state = initialState, action = {}) {
-
-
     switch (action.type) {
         case SET_SELECTED_YPOS: {
             console.log(action.payload)
@@ -139,9 +137,13 @@ export default function basket(state = initialState, action = {}) {
                     isNotPinned.push(action.payload?.data?.[i])
                 }
             }
-            state = state.set('notPinnedApplications', isNotPinned);
-            state = state.set('pinnedApplications', isPinned);
 
+            state = state.set('notPinnedApplications', [
+                ..._.uniqBy(state.notPinnedApplications.concat(...isNotPinned), "_id"),
+            ]);
+            state = state.set('pinnedApplications', [
+                ..._.uniqBy(state.pinnedApplications.concat(isPinned), "_id"),
+            ]);
 
             return state
         }
