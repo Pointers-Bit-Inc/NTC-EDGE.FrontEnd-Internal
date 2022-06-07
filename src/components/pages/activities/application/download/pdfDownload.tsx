@@ -27,7 +27,7 @@ const PdfDownloadWeb = (props: { url: string; }) => {
                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                     onDownload();
                 } else {
-                    Alert.alert('Error','Storage Permission Not Granted');
+                    showToast(ToastType.Error,'Storage Permission Not Granted')
                 }
             } catch (err) {
                 console.log("++++"+err);
