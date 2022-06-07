@@ -59,6 +59,7 @@ export const useInitializeAgora = ({
     await rtcEngine.current?.muteLocalAudioStream(options?.isMute);
     await rtcEngine.current?.muteLocalVideoStream(!options?.isVideoEnable);
     await rtcEngine.current?.setEnableSpeakerphone(true);
+    await rtcEngine.current?.setAudioProfile(0, 8);
     await rtcEngine.current?.setVideoEncoderConfiguration({
       bitrate: 1710,
       frameRate: 30,
