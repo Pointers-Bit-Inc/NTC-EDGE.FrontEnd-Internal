@@ -12,6 +12,7 @@ import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
 import Constants from "expo-constants";
 import PdfDownload from "./download/pdfDownload";
+import {PAID} from "../../../../reducers/activity/initialstate";
 
 let outputLabel = (applicationType: string) => {
     applicationType = applicationType?.toLowerCase();
@@ -42,7 +43,7 @@ const ApplicationDetails = (props: any) => {
                 <Text
                     style={[styles.service, {fontFamily: Regular500}]}>{props?.service?.applicationType?.element || props?.service?.radioType?.label}</Text>
                 {
-                    props?.documents && (props?.applicantType || props?.service?.name) &&
+                    props?.documents && (props?.applicantType || props?.service?.name) && props?.paymentStatus == PAID &&
                     <View style={{paddingVertical: 10}}>
                         <Pressable onPress={() => setModalVisible(true)}>
                             <View style={{flexDirection: "row"}}>
