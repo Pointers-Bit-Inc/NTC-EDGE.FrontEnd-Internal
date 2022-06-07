@@ -1,15 +1,15 @@
 import {
-    ACCOUNTANT ,
-    APPROVED ,
-    CASHIER ,
-    DECLINED ,
-    DIRECTOR ,
-    EVALUATOR , FORAPPROVAL , FOREVALUATION ,
-    FORVERIFICATION ,
-    PAID ,
+    ACCOUNTANT,
+    APPROVED,
+    CASHIER,
+    DECLINED,
+    DIRECTOR,
+    EVALUATOR, FORAPPROVAL, FOREVALUATION, FORPAYMENT,
+    FORVERIFICATION,
+    PAID,
     PAYMENTPENDING,
-    PENDING ,
-    UNVERIFIED , VERIFIED
+    PENDING,
+    UNVERIFIED, VERIFIED
 } from "../activity/initialstate";
 import _ from "lodash";
 
@@ -115,7 +115,7 @@ export default function basket(state = initialState, action = {}) {
             for (let i = 0; i < action.payload?.data?.length; i++) {
 
                 if ((
-                    (action.payload?.data?.[i]?.assignedPersonnel?._id || action.payload?.data?.[i]?.assignedPersonnel ) == action.payload?.user?._id) && (cashier ?  !(action.payload?.data?.[i]?.paymentStatus == PAID || action.payload?.data?.[i]?.paymentStatus == APPROVED  || action.payload?.data?.[i]?.paymentStatus == DECLINED) : true )
+                    (action.payload?.data?.[i]?.assignedPersonnel?._id || action.payload?.data?.[i]?.assignedPersonnel ) == action.payload?.user?._id) && (cashier ?  !(action.payload?.data?.[i]?.paymentStatus == PENDING || action.payload?.data?.[i]?.paymentStatus == FORVERIFICATION || action.payload?.data?.[i]?.paymentStatus == FORPAYMENT|| action.payload?.data?.[i]?.paymentStatus == FORAPPROVAL) : true )
                     ) {
 
                     isPinned.push(action.payload?.data?.[i])
