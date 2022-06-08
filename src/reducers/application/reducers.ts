@@ -39,7 +39,7 @@ function isCashier(cashier: boolean, action: {}, i: number) {
                 || action.payload?.data[i].paymentStatus == PAID
                 || action.payload?.data[i].paymentStatus == DECLINED)
             : (
-                false
+                action.payload?.data[i].status == DECLINED || action.payload?.data[i].status == APPROVED
             ));
 }
 
