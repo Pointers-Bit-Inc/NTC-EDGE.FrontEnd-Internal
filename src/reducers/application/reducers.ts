@@ -27,7 +27,8 @@ const {
     SET_RIGHT_LAYOUT_COMPONENT,
     SET_TOPBARNAV,
     SET_ACTIVITY_SIZE,
-    SET_SELECTED_YPOS
+    SET_SELECTED_YPOS,
+    UPDATE_APPLICATIONS
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -126,7 +127,8 @@ export default function basket(state = initialState, action = {}) {
             for (let i = 0; i < action.payload?.data?.length; i++) {
 
                 if ((
-                        (action.payload?.data?.[i]?.assignedPersonnel?._id || action.payload?.data?.[i]?.assignedPersonnel) == action.payload?.user?._id) ) {
+                        (action.payload?.data?.[i]?.assignedPersonnel?._id || action.payload?.data?.[i]?.assignedPersonnel) == action.payload?.user?._id) &&
+                    !isCashier(cashier, action, i)) {
 
                     isPinned.push(action.payload?.data?.[i])
                 } else {
@@ -163,6 +165,24 @@ export default function basket(state = initialState, action = {}) {
             state = state.set('pinnedApplications', [
                 ..._.uniqBy(state.pinnedApplications.concat(isPinned), "_id"),
             ]);
+            return state
+        }
+        case UPDATE_APPLICATIONS: {
+
+            const isNotPinned = []
+            const isPinned = []
+            for (let i = 0; i < action.payload?.data.length; i++) {
+                if (((action.payload?.data[i]?.assignedPersonnel?._id || action.payload?.data[i]?.assignedPersonnel) === action.payload?.user?._id) &&
+                    !isCashier(cashier, action, i)) {
+                    isPinned.push(action.payload?.data[i])
+                } else {
+                    isNotPinned.push(action.payload?.data[i])
+                }
+            }
+
+
+            state = state.set('notPinnedApplications', isNotPinned);
+            state = state.set('pinnedApplications',isPinned);
             return state
         }
         case UPDATE_APPLICATION_STATUS: {

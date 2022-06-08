@@ -14,7 +14,12 @@ import {
 
 import {SEARCH,SEARCHMOBILE} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny,useSelector} from "react-redux";
-import {setApplicationItem,setSelectedYPos} from "../../../reducers/application/actions";
+import {
+    setApplicationItem,
+    setNotPinnedApplication,
+    setPinnedApplication,
+    setSelectedYPos
+} from "../../../reducers/application/actions";
 import ActivityModal from "@pages/activities/modal";
 import FilterIcon from "@assets/svg/filterIcon";
 import {ActivityItem} from "@pages/activities/activityItem";
@@ -102,7 +107,9 @@ export default function ActivitiesPage(props:any){
         opacity,
         activitySizeComponent,
         scrollViewRef,yPos,setYPos,
-        flatListViewRef
+        flatListViewRef,
+        pinnedApplications,
+        notPinnedApplications
     }=useActivities(props);
 
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
@@ -291,9 +298,7 @@ export default function ActivitiesPage(props:any){
                             }
 
                             }>
-
                                 <Filter pressed={visible} width={fontValue(32)} height={fontValue(32)}/>
-
                             </TouchableOpacity>
                             {(
                                 !(
@@ -432,7 +437,8 @@ export default function ActivitiesPage(props:any){
                                             isOpen={isOpen}
                                             config={config}
                                             /*
-                                            isPinned={true}*/
+                                                isPinned={true}
+                                            */
                                             searchQuery={searchTerm}
                                             key={i}
                                             selected={applicationItem?._id==activity?._id}
@@ -487,7 +493,30 @@ export default function ActivitiesPage(props:any){
                                    readFn={unReadReadApplicationFn}
                                    details={applicationItem}
                                    onChangeAssignedId={(event)=>{
+                                       console.log(event, "edward")
+                                       let _notPinnedApplications= [...notPinnedApplications]
+                                       let _pinnedApplications= [...pinnedApplications]
+                                       let flag = 1
+
+                                       for (let i = 0; i < _notPinnedApplications?.length; i++) {
+                                           if(!flag) break
+                                           console.log("eventId", event?._id)
+                                           if(_notPinnedApplications?.[i]?._id == event?._id){
+                                               _notPinnedApplications[i]= event
+                                              }
+                                       }
+                                       flag = 1
+                                       for (let i = 0; i < _pinnedApplications?.length; i++) {
+                                           if(!flag) break
+                                           if(_pinnedApplications?.[i]?._id == event?._id){
+                                               _pinnedApplications[i] = event
+
+                                           }
+                                       }
+                                       setUpdateModal(true);
                                        dispatch(setApplicationItem(event))
+                                       dispatch(setNotPinnedApplication(_notPinnedApplications))
+                                       dispatch(setPinnedApplication(_pinnedApplications))
                                    }}
                                    visible={modalVisible}
                                    onDismissed={(event:boolean,_id:number)=>{

@@ -12,7 +12,8 @@ const {
     SET_RIGHT_LAYOUT_COMPONENT,
     SET_TOPBARNAV,
     SET_ACTIVITY_SIZE,
-    SET_SELECTED_YPOS
+    SET_SELECTED_YPOS,
+    UPDATE_APPLICATIONS
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -78,6 +79,12 @@ export function readUnreadApplications(payload) {
 export function handleInfiniteLoad(payload) {
     return {
         type: HANDLE_LOAD,
+        payload,
+    };
+}
+export function updateApplications(payload) {
+    return {
+        type: UPDATE_APPLICATIONS,
         payload,
     };
 }

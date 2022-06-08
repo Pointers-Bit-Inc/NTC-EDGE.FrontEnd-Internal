@@ -14,5 +14,6 @@ export default keyMirror({
   SET_RIGHT_LAYOUT_COMPONENT: null,
   SET_TOPBARNAV: null,
   SET_ACTIVITY_SIZE: null,
-  SET_SELECTED_YPOS: null
+  SET_SELECTED_YPOS: null,
+  UPDATE_APPLICATIONS: null
 });

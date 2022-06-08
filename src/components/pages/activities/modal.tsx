@@ -131,15 +131,15 @@ function ActivityModal(props:any){
                         const data=res.data?.doc||res?.data;
 
 
-                        console.log(data?.assignedPersonnel?._id||data?.assignedPersonnel,"assigned personnel");
-                        props.onChangeAssignedId(data);
+
+
                         dispatch(updateApplicationStatus({
                             application:data,
                             status:status,
                             assignedPersonnel:data?.assignedPersonnel?._id||data?.assignedPersonnel,
                             userType:user?.role?.key
                         }));
-
+                        props.onChangeAssignedId(data);
                         //setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
                         setChange(true);
                         // props.onDismissed(true, applicationId)
