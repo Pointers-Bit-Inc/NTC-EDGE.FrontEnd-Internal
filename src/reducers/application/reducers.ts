@@ -39,7 +39,7 @@ function isCashier(cashier: boolean, action: {}, i: number) {
                 || action.payload?.data[i].paymentStatus == PAID
                 || action.payload?.data[i].paymentStatus == DECLINED)
             : (
-                action.payload?.data[i].status == DECLINED || action.payload?.data[i].status == APPROVED
+                false
             ));
 }
 
@@ -126,8 +126,7 @@ export default function basket(state = initialState, action = {}) {
             for (let i = 0; i < action.payload?.data?.length; i++) {
 
                 if ((
-                        (action.payload?.data?.[i]?.assignedPersonnel?._id || action.payload?.data?.[i]?.assignedPersonnel) == action.payload?.user?._id) &&
-                    !isCashier(cashier, action, i)) {
+                        (action.payload?.data?.[i]?.assignedPersonnel?._id || action.payload?.data?.[i]?.assignedPersonnel) == action.payload?.user?._id) ) {
 
                     isPinned.push(action.payload?.data?.[i])
                 } else {
