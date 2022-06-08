@@ -102,9 +102,9 @@ const linking = {
 };
 
 const FloatingVideoComponent = () => {
-    const meeting = useSelector((state:RootStateOrAny) => state.meeting.meeting);
+    const meetingId = useSelector((state:RootStateOrAny) => state.meeting.meeting?._id);
 
-    if (lodash.size(meeting) > 0 && Platform?.OS !== 'web') {
+    if (lodash.size(meetingId) > 0 && Platform?.OS !== 'web') {
         return <FloatingVideo />;
     }
 
