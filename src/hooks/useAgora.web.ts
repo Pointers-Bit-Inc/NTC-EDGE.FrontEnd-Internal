@@ -87,7 +87,7 @@ export const useInitializeAgora = ({
       volumes.forEach((volume, index) => {
         setVolumIndicator({
           ...volumeIndicator,
-          [volume.uid]: Math.floor(volume.level),
+          [volume.uid]: Math.floor(volume.level) > 5 ? 1 : 0,
         });
       });
     });
