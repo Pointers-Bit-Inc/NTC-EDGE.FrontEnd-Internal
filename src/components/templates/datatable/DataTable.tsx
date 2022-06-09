@@ -599,15 +599,17 @@ const DataTable=(props)=>{
 
     const DrawerIcon = () => {
         let Icon:any=null;
+        let width = ((dimensions?.width * 10)) * 0.05
+        let height = ((dimensions?.height * 3)) * 0.05
         switch (props.name) {
             case EMPLOYEES:
-                Icon = <EmployeeIcon width={5 * 30} height={5 * 31} color={ "rgba(128, 129, 150,1)"}/>
+                Icon = <EmployeeIcon width={width} height={height} color={ "rgba(128, 129, 150,1)"}/>
                 break;
             case USERS:
-                Icon = <UserIcon width={5 * 30} height={5 * 31} color={ "rgba(128, 129, 150,1)"}/>
+                Icon = <UserIcon  width={width} height={height}  color={ "rgba(128, 129, 150,1)"}/>
                 break;
             default:
-                Icon = <UserIcon width={5 * 30} height={5 * 31} color={ "rgba(128, 129, 150,1)"}/>
+                Icon = <UserIcon  width={width} height={height}  color={ "rgba(128, 129, 150,1)"}/>
                 break;
 
         }
