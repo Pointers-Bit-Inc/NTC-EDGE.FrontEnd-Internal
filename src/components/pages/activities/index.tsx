@@ -493,14 +493,12 @@ export default function ActivitiesPage(props:any){
                                    readFn={unReadReadApplicationFn}
                                    details={applicationItem}
                                    onChangeAssignedId={(event)=>{
-                                       console.log(event, "edward")
                                        let _notPinnedApplications= [...notPinnedApplications]
                                        let _pinnedApplications= [...pinnedApplications]
                                        let flag = 1
 
                                        for (let i = 0; i < _notPinnedApplications?.length; i++) {
                                            if(!flag) break
-                                           console.log("eventId", event?._id)
                                            if(_notPinnedApplications?.[i]?._id == event?._id){
                                                _notPinnedApplications[i]= event
                                               }

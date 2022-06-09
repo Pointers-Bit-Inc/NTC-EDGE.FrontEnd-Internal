@@ -404,119 +404,127 @@ const DataTable=(props)=>{
 
     const renderItems=({item})=>{
         return <View style={{paddingLeft:24,borderTopWidth:1,borderTopColor:"#f0f0f0"}}>
-            <View style={style.rowStyle}>
-                <View style={style.cellStyle}>
-                    <Text style={[style.tableHeader,{color:"#000000"}]}>{item._id}</Text>
-                </View>
-                <View style={style.cellStyle}>
-                    <View style={{flexDirection:"row",alignItems:"center",}}>
-                        <View style={{paddingRight:15}}>
-                            <ProfileImage
-                                size={fontValue(45)}
-                                image={item?.profilePicture?.thumb ? item?.profilePicture?.thumb.match(/[^/]+(jpg|jpeg|png|gif)$/i) ? item?.profilePicture?.thumb : item?.profilePicture?.thumb+".png" : null}
-                                name={item?.firstName ? `${item?.firstName} ${item?.lastName}` : (
-                                    item?.applicantName ? item?.applicantName : "")}
-                            />
-                        </View>
 
-                        <View style={{flex:1}}>
-                            <Text numberOfLines={1} style={[style.tableHeader,{color:"#000000"}]}><Highlighter
-                                highlightStyle={{backgroundColor:'#BFD6FF'}}
-                                searchWords={[value]}
-                                textToHighlight={`${item.firstName} ${item.lastName}`}
-                            /></Text>
-                            <Text numberOfLines={1}
-                                  style={[style.tableHeader,{fontSize:10,color:"#2863D6"}]}><Highlighter
-                                highlightStyle={{backgroundColor:'#BFD6FF'}}
-                                searchWords={[value]}
-                                textToHighlight={item.email}
-                            /></Text>
+                <TouchableOpacity style={style.rowStyle} onPress={()=>{
+                    setState('view');
+                    setData(item)
+                }
+                }>
+                    <View style={style.cellStyle}>
+                        <Text style={[style.tableHeader,{color:"#000000"}]}>{item._id}</Text>
+                    </View>
+                    <View style={style.cellStyle}>
+                        <View style={{flexDirection:"row",alignItems:"center",}}>
+                            <View style={{paddingRight:15}}>
+                                <ProfileImage
+                                    size={fontValue(45)}
+                                    image={item?.profilePicture?.thumb ? item?.profilePicture?.thumb.match(/[^/]+(jpg|jpeg|png|gif)$/i) ? item?.profilePicture?.thumb : item?.profilePicture?.thumb+".png" : null}
+                                    name={item?.firstName ? `${item?.firstName} ${item?.lastName}` : (
+                                        item?.applicantName ? item?.applicantName : "")}
+                                />
+                            </View>
+
+                            <View style={{flex:1}}>
+                                <Text numberOfLines={1} style={[style.tableHeader,{color:"#000000"}]}><Highlighter
+                                    highlightStyle={{backgroundColor:'#BFD6FF'}}
+                                    searchWords={[value]}
+                                    textToHighlight={`${item.firstName} ${item.lastName}`}
+                                /></Text>
+                                <Text numberOfLines={1}
+                                      style={[style.tableHeader,{fontSize:10,color:"#2863D6"}]}><Highlighter
+                                    highlightStyle={{backgroundColor:'#BFD6FF'}}
+                                    searchWords={[value]}
+                                    textToHighlight={item.email}
+                                /></Text>
+                            </View>
+
                         </View>
 
                     </View>
+                    <View style={[style.cellStyle,{flex:0.5}]}>
+                        <Text style={[style.tableHeader,{color:"#000000"}]}>{item?.role?.name}</Text>
+                    </View>
+                    <View style={[style.cellStyle,{flex:0.5}]}>
+                        <Menu onClose={()=>{
 
-                </View>
-                <View style={[style.cellStyle,{flex:0.5}]}>
-                    <Text style={[style.tableHeader,{color:"#000000"}]}>{item?.role?.name}</Text>
-                </View>
-                <View style={[style.cellStyle,{flex:0.5}]}>
-                    <Menu onClose={()=>{
+                        }} onSelect={value=>{
+                            if(value=="edit"){
+                                let newArr=[...userProfileForm];
 
-                    }} onSelect={value=>{
-                        if(value=="edit"){
-                            let newArr=[...userProfileForm];
-
-                            setState('edit');
-                            userProfileForm.map((e,index)=>{
-                                for(const props in item){
-                                    if(newArr[index]['stateName']===props&&props==='role'){
-                                        newArr[index]['value']=item?.[props]?.key;
-                                    } else if(newArr[index]['stateName']===props){
-                                        newArr[index]['value']=item[props];
+                                setState('edit');
+                                userProfileForm.map((e,index)=>{
+                                    for(const props in item){
+                                        if(newArr[index]['stateName']===props&&props==='role'){
+                                            newArr[index]['value']=item?.[props]?.key;
+                                        } else if(newArr[index]['stateName']===props){
+                                            newArr[index]['value']=item[props];
+                                        }
                                     }
-                                }
 
-                            });
-                            setUserProfileForm(newArr);
-                            setModalClose(true)
-                        } else if(value=="view"){
-                            setState('view');
-                            setData(item)
-                        }else if(value=="delete"){
-                            axios.delete(BASE_URL+`/users/${item._id}`).then((response)=>{
-                                showToast(ToastType.Success,"Successfully deleted!")
-                            }).catch((error)=>{
-                                console.log(error.response);
-                                let _err='';
-                                for(const err in error?.response?.data?.errors){
-                                    _err+=error?.response?.data?.errors?.[err]?.toString()+"\n";
-                                }
-                                showToast(ToastType.Error,error?.response?.data.trim()||error?.response?.statusText)
-                            })
-                        }
+                                });
+                                setUserProfileForm(newArr);
+                                setModalClose(true)
+                            } else if(value=="view"){
+                                setState('view');
+                                setData(item)
+                            }else if(value=="delete"){
+                                axios.delete(BASE_URL+`/users/${item._id}`).then((response)=>{
+                                    showToast(ToastType.Success,"Successfully deleted!")
+                                }).catch((error)=>{
+                                    console.log(error.response);
+                                    let _err='';
+                                    for(const err in error?.response?.data?.errors){
+                                        _err+=error?.response?.data?.errors?.[err]?.toString()+"\n";
+                                    }
+                                    showToast(ToastType.Error,error?.response?.data.trim()||error?.response?.statusText)
+                                })
+                            }
 
-                    }}>
-
-                        <MenuTrigger text={
-
-                            <DotHorizontalIcon/>
-                        }>
-
-                        </MenuTrigger>
-
-                        <MenuOptions optionsContainerStyle={{
-                            marginTop:30,
-                            shadowColor:"rgba(0,0,0,1)",
-                            paddingVertical:10,
-                            borderRadius:8,
-                            shadowOffset:{
-                                width:0,
-                                height:0
-                            },
-                            elevation:45,
-                            shadowOpacity:0.1,
-                            shadowRadius:15,
                         }}>
-                            <MenuOption value={'view'}>
-                                <View>
-                                    <Text>{'View'}</Text>
-                                </View>
-                            </MenuOption>
-                            <MenuOption value={'edit'}>
-                                <View>
-                                    <Text>{'Edit'}</Text>
-                                </View>
-                            </MenuOption>
-                            <MenuOption value={'delete'}>
-                                <View>
-                                    <Text>{'Delete'}</Text>
-                                </View>
-                            </MenuOption>
-                        </MenuOptions>
 
-                    </Menu>
-                </View>
-            </View>
+                            <MenuTrigger text={
+
+                                <DotHorizontalIcon/>
+                            }>
+
+                            </MenuTrigger>
+
+                            <MenuOptions optionsContainerStyle={{
+                                marginTop:30,
+                                shadowColor:"rgba(0,0,0,1)",
+                                paddingVertical:10,
+                                borderRadius:8,
+                                shadowOffset:{
+                                    width:0,
+                                    height:0
+                                },
+                                elevation:45,
+                                shadowOpacity:0.1,
+                                shadowRadius:15,
+                            }}>
+                                <MenuOption value={'view'}>
+                                    <View>
+                                        <Text>{'View'}</Text>
+                                    </View>
+                                </MenuOption>
+                                <MenuOption value={'edit'}>
+                                    <View>
+                                        <Text>{'Edit'}</Text>
+                                    </View>
+                                </MenuOption>
+                                <MenuOption value={'delete'}>
+                                    <View>
+                                        <Text>{'Delete'}</Text>
+                                    </View>
+                                </MenuOption>
+                            </MenuOptions>
+
+                        </Menu>
+                    </View>
+                </TouchableOpacity>
+
+
+
         </View>
 
     };
