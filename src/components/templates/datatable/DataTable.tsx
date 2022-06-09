@@ -346,7 +346,12 @@ const DataTable=(props)=>{
                     _err+=error?.response?.data?.errors?.[err]?.toString()+"\n";
 
                 }
-                showToast(ToastType.Error,_err)
+                if(_err){
+                    showToast(ToastType.Error,_err)
+                }
+
+
+
             });
             setLoading(false);
             flatListRef?.current?.scrollToOffset({offset:0,animated:true});
@@ -767,16 +772,16 @@ const DataTable=(props)=>{
                                 </View>
 
                                 <View style={style.flatlist}>
-                                    {loading&&
+
                                         <View style={{zIndex: 2, height:"90%",justifyContent:"center",alignSelf:"center",position:"absolute"}}>
                                             {!docs.length && <View>
                                                 <DrawerIcon/>
                                             </View>}
-                                            <View style={{padding: 20}}>
+                                            {loading &&<View style={{padding: 20}}>
                                                 <ActivityIndicator color={"#808196"}/>
-                                            </View>
+                                            </View>}
 
-                                        </View>}
+                                        </View>
                                     {/*<TouchableOpacity onPress={()=> flatListRef?.current?.scrollToOffset({offset: 0, animated: true})}>
                                 <View style={{justifyContent: "center", alignItems: "center"}}>
                                     <ChevronUpIcon/>
