@@ -1,7 +1,7 @@
 import {
     ActivityIndicator,
     FlatList,
-    Modal,
+    Modal, Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -37,6 +37,13 @@ import {Toast} from "@atoms/toast/Toast";
 import EmployeeIcon from "@assets/svg/employeeIcon";
 import {EMPLOYEES, USERS} from "../../../reducers/activity/initialstate";
 import UserIcon from "@assets/svg/userIcon";
+import LeftSideWeb from "@atoms/left-side-web";
+import {isMobile} from "@pages/activities/isMobile";
+import {isLandscapeSync, isTablet} from "react-native-device-info";
+import NoActivity from "@assets/svg/noActivity";
+import ProfileData from "@templates/datatable/ProfileData";
+import Left from "@atoms/icon/left";
+import NavBar from "@molecules/navbar";
 
 const style=StyleSheet.create({
     row:{
@@ -165,6 +172,7 @@ const DataTable=(props)=>{
     const [loading,setLoading]=useState([]);
     const [role,setRole]=useState('');
     const flatListRef=useRef();
+    const [data, setData] = useState({})
     const [alert,setAlert]=useState();
     const originalForm=[
         {
@@ -451,7 +459,10 @@ const DataTable=(props)=>{
                             });
                             setUserProfileForm(newArr);
                             setModalClose(true)
-                        } else if(value=="delete"){
+                        } else if(value=="view"){
+                            setState('view');
+                            setData(item)
+                        }else if(value=="delete"){
                             axios.delete(BASE_URL+`/users/${item._id}`).then((response)=>{
                                 showToast(ToastType.Success,"Successfully deleted!")
                             }).catch((error)=>{
@@ -486,6 +497,11 @@ const DataTable=(props)=>{
                             shadowOpacity:0.1,
                             shadowRadius:15,
                         }}>
+                            <MenuOption value={'view'}>
+                                <View>
+                                    <Text>{'View'}</Text>
+                                </View>
+                            </MenuOption>
                             <MenuOption value={'edit'}>
                                 <View>
                                     <Text>{'Edit'}</Text>
@@ -616,154 +632,192 @@ const DataTable=(props)=>{
         return Icon
     }
 
+    // @ts-ignore
     return (
         <>
-            <View style={style.container}>
-                <View style={[styles.container,styles.shadow,{
-                    flex:1,
+            <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
+                <View style={[styles.container, styles.shadow, {
+                    flexBasis: (
+                        (
+                            isMobile && !(
+                                Platform?.isPad || isTablet())) || dimensions?.width < 768 || (
+                            (
+                                Platform?.isPad || isTablet()) && !isLandscapeSync())) ? "100%" : (!(state == 'view' || state == "") ? "100%": "60%"),
+                    flexGrow: 0,
+                    flexShrink: 0,
+                    backgroundColor: "#FFFFFF"
                 }]}>
-                    <View style={style.title}>
-                        <Text style={style.text}>
-                            {props.title}
-                        </Text>
-                        <View style={style.search}>
-                            <View style={{flex:0.90,paddingRight:15}}>
-                                <TextInput value={value} onChangeText={text=>{
-                                    setValue(text)
+                    <View style={style.container}>
+                        <View style={[styles.container,styles.shadow,{
+                            flex:1,
+                        }]}>
+                            <View style={style.title}>
+                                <Text style={style.text}>
+                                    {props.title}
+                                </Text>
+                                <View style={style.search}>
+                                    <View style={{flex:0.90,paddingRight:15}}>
+                                        <TextInput value={value} onChangeText={text=>{
+                                            setValue(text)
 
-                                }} placeholderTextColor={"#6E7191"} placeholder={"Search"} style={styles.search}/>
-                                <View style={styles.searchIcon}>
-                                    <SearchIcon/>
-                                </View>
-                            </View>
-                            <View style={style.rightrow}>
-                                <View style={{paddingRight:10}}>
-                                    <View style={style.filter}>
-                                        <Menu onClose={()=>{
-
-                                        }} onSelect={value=>{
-                                            setRole(role=>role==value ? "" : value)
-                                        }}>
-
-                                            <MenuTrigger text={
-                                                <FilterOutlineIcon/>}>
-
-                                            </MenuTrigger>
-
-                                            <MenuOptions optionsContainerStyle={{
-                                                marginTop:50,
-                                                shadowColor:"rgba(0,0,0,1)",
-                                                paddingVertical:10,
-                                                borderRadius:8,
-                                                shadowOffset:{
-                                                    width:0,
-                                                    height:0
-                                                },
-                                                elevation:45,
-                                                shadowOpacity:0.1,
-                                                shadowRadius:15,
-                                            }}>
-                                                {
-                                                    props.filter.map((option)=>{
-                                                        return <MenuOption value={option?.value}>
-                                                            <View>
-                                                                <Text>{option?.label}</Text>
-                                                            </View>
-                                                        </MenuOption>
-                                                    })
-                                                }
-
-                                            </MenuOptions>
-
-                                        </Menu>
-
-                                    </View>
-                                </View>
-                                <TouchableOpacity onPress={()=>{
-                                    setState('add');
-                                    setModalClose(true)
-                                }}>
-                                    <View style={style.addParticipant}>
-                                        <View style={{paddingRight:10}}>
-                                            <AddParticipantOutlineIcon color={"#fff"}/>
+                                        }} placeholderTextColor={"#6E7191"} placeholder={"Search"} style={styles.search}/>
+                                        <View style={styles.searchIcon}>
+                                            <SearchIcon/>
                                         </View>
-
-                                        <Text style={{color:"#fff"}}>{props.addButtonTitle}</Text>
                                     </View>
-                                </TouchableOpacity>
+                                    <View style={style.rightrow}>
+                                        <View style={{paddingRight:10}}>
+                                            <View style={style.filter}>
+                                                <Menu onClose={()=>{
+
+                                                }} onSelect={value=>{
+                                                    setRole(role=>role==value ? "" : value)
+                                                }}>
+
+                                                    <MenuTrigger>
+                                                        <FilterOutlineIcon/>
+                                                    </MenuTrigger>
+
+                                                    <MenuOptions optionsContainerStyle={{
+                                                        marginTop:50,
+                                                        shadowColor:"rgba(0,0,0,1)",
+                                                        paddingVertical:10,
+                                                        borderRadius:8,
+                                                        shadowOffset:{
+                                                            width:0,
+                                                            height:0
+                                                        },
+                                                        elevation:45,
+                                                        shadowOpacity:0.1,
+                                                        shadowRadius:15,
+                                                    }}>
+                                                        {
+                                                            props.filter.map((option)=>{
+                                                                return <MenuOption value={option?.value}>
+                                                                    <View>
+                                                                        <Text>{option?.label}</Text>
+                                                                    </View>
+                                                                </MenuOption>
+                                                            })
+                                                        }
+
+                                                    </MenuOptions>
+
+                                                </Menu>
+
+                                            </View>
+                                        </View>
+                                        <TouchableOpacity onPress={()=>{
+                                            setState('add');
+                                            setModalClose(true)
+                                        }}>
+                                            <View style={style.addParticipant}>
+                                                <View style={{paddingRight:10}}>
+                                                    <AddParticipantOutlineIcon color={"#fff"}/>
+                                                </View>
+
+                                                <Text style={{color:"#fff"}}>{props.addButtonTitle}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+
+                                    </View>
+
+                                </View>
 
                             </View>
-
-                        </View>
-
-                    </View>
-                    <View style={style.shadow}>
+                            <View style={style.shadow}>
 
 
-                        <View style={style.headerTable}>
+                                <View style={style.headerTable}>
 
-                            <View style={style.headerTextContainer}>
+                                    <View style={style.headerTextContainer}>
 
-                                <Text
-                                    style={style.textTable}>{props.title}</Text>
+                                        <Text
+                                            style={style.textTable}>{props.title}</Text>
 
-                            </View>
-                        </View>
-                        <View style={{marginHorizontal:45,backgroundColor:"#fff",}}>
-
-                            <View style={{paddingLeft:24,}}>
-                                <View style={style.rowStyle}>
-                                    <View style={style.cellStyle}>
-                                        <Text style={style.tableHeader}>ID</Text>
-                                    </View>
-                                    <View style={style.cellStyle}>
-                                        <Text style={style.tableHeader}>NAME</Text>
-                                    </View>
-                                    <View style={style.cellStyle}>
-                                        <Text style={style.tableHeader}>DEPARTMENT ROLE</Text>
-                                    </View>
-
-                                    <View>
-                                        <View style={{width:24}}/>
                                     </View>
                                 </View>
-                            </View>
-                        </View>
+                                <View style={{marginHorizontal:45,backgroundColor:"#fff",}}>
 
-                        <View style={style.flatlist}>
-                            {loading&&
-                            <View style={{zIndex: 2, height:"90%",justifyContent:"center",alignSelf:"center",position:"absolute"}}>
-                                {!docs.length && <View>
-                                    <DrawerIcon/>
-                                </View>}
-                                <View style={{padding: 20}}>
-                                    <ActivityIndicator color={"#808196"}/>
+                                    <View style={{paddingLeft:24,}}>
+                                        <View style={style.rowStyle}>
+                                            <View style={style.cellStyle}>
+                                                <Text style={style.tableHeader}>ID</Text>
+                                            </View>
+                                            <View style={style.cellStyle}>
+                                                <Text style={style.tableHeader}>NAME</Text>
+                                            </View>
+                                            <View style={style.cellStyle}>
+                                                <Text style={style.tableHeader}>DEPARTMENT ROLE</Text>
+                                            </View>
+
+                                            <View>
+                                                <View style={{width:24}}/>
+                                            </View>
+                                        </View>
+                                    </View>
                                 </View>
 
-                            </View>}
-                            {/*<TouchableOpacity onPress={()=> flatListRef?.current?.scrollToOffset({offset: 0, animated: true})}>
+                                <View style={style.flatlist}>
+                                    {loading&&
+                                        <View style={{zIndex: 2, height:"90%",justifyContent:"center",alignSelf:"center",position:"absolute"}}>
+                                            {!docs.length && <View>
+                                                <DrawerIcon/>
+                                            </View>}
+                                            <View style={{padding: 20}}>
+                                                <ActivityIndicator color={"#808196"}/>
+                                            </View>
+
+                                        </View>}
+                                    {/*<TouchableOpacity onPress={()=> flatListRef?.current?.scrollToOffset({offset: 0, animated: true})}>
                                 <View style={{justifyContent: "center", alignItems: "center"}}>
                                     <ChevronUpIcon/>
                                 </View>
                             </TouchableOpacity>*/}
-                            <FlatList
-                                ref={flatListRef}
-                                contentContainerStyle={style.contentContainer}
-                                data={docs}
-                                keyExtractor={item=>item._id}
-                                renderItem={renderItems}
-                            />
-                            {/*<TouchableOpacity onPress={()=> flatListRef?.current?.scrollToEnd({animated: true})}>
+                                    <FlatList
+                                        ref={flatListRef}
+                                        contentContainerStyle={style.contentContainer}
+                                        data={docs}
+                                        keyExtractor={item=>item._id}
+                                        renderItem={renderItems}
+                                    />
+                                    {/*<TouchableOpacity onPress={()=> flatListRef?.current?.scrollToEnd({animated: true})}>
                                 <View style={{justifyContent: "center", alignItems: "center"}}>
                                     <ChevronDownIcon/>
                                 </View>
                             </TouchableOpacity>*/}
 
 
+                                </View>
+                                <Pagination size={size} page={page} total={total} fetch={fetch}/>
+                            </View>
                         </View>
-                        <Pagination size={size} page={page} total={total} fetch={fetch}/>
                     </View>
+
                 </View>
+
+                {
+                    !(
+                        (
+                            isMobile && !(
+                                Platform?.isPad || isTablet()))) && dimensions?.width > 768 &&
+                    <View style={[{flex: 1,   alignItems: "center", overflow: "scroll"}]}>
+                        <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between",  paddingVertical: 15,paddingHorizontal: 15, backgroundColor: "#fff", width: "100%"}}>
+                            <View/>
+                            <Text style={{textAlign: "center", fontFamily: Bold}}>{data?.firstName + " " + data?.middleName + " " + data?.lastName}</Text>
+                            <TouchableOpacity onPress={() => {
+                                setState("close")
+                            }
+                            }>
+                                <CloseIcon></CloseIcon>
+                            </TouchableOpacity>
+                        </View>
+
+                        <ProfileData data={data}/>
+
+                    </View>
+                }
+
             </View>
             <Modal
                 animationType={"fade"}
