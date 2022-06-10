@@ -77,6 +77,8 @@ export function useAuth(navigation) {
             value : '' ,
             isValid : false ,
             error : '' ,
+            hasValidation: false,
+            description: '',
             characterLength : false ,
             upperAndLowerCase : false ,
             atLeastOneNumber : false ,
@@ -103,13 +105,13 @@ export function useAuth(navigation) {
                 });
             }
             case 'password': {
-                const passwordTest = validatePassword(value);
+                const passwordTest=validatePassword(value,'length');
                 return setFormValue({
                     ...formValue ,
                     [key] : {
-                        value : value ,
-                        isValid : true,
-                        error : '' ,
+                        value:value,
+                        isValid:passwordTest?.isValid,
+                        error:!passwordTest?.isValid ? errorResponse['password'] : '',
                         characterLength : passwordTest.characterLength ,
                         upperAndLowerCase : passwordTest.upperAndLowerCase ,
                         atLeastOneNumber : passwordTest.atLeastOneNumber ,

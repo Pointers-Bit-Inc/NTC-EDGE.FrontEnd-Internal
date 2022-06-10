@@ -103,16 +103,17 @@ export const useInitializeAgora = ({
     );
 
     rtcEngine.current?.addListener('RemoteVideoStateChanged', (uid, state) => {
-      setPeerVideoState({
-        ...peerVideoState,
+      setPeerVideoState((videoState:any) => ({
+        ...videoState,
         [uid]: state,
-      });
+      }));
     });
 
     rtcEngine.current?.addListener('RemoteAudioStateChanged', (uid, state) => {
-      setPeerAudioState({
+      setPeerAudioState((audioState:any) => ({
+        ...audioState,
         [uid]: state,
-      });
+      }));
     });
 
     rtcEngine.current?.addListener('Error', error => {

@@ -3,8 +3,10 @@ const validateEmail = (text:string) => {
   return regex.test(text);
 }
 
-const validatePassword = (text:string) => {
+const validatePassword = (text:string, type: any = '') => {
+
   const characterLength = /^.{8,}$/.test(text);
+  if (type === 'length') return { isValid: characterLength };
   const upperAndLowerCase = /[a-z].*[A-Z]|[A-Z].*[a-z]/.test(text);
   const atLeastOneNumber = /.*[0-9].*/.test(text);
   const strongPassword = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})").test(text);
@@ -15,11 +17,7 @@ const validatePassword = (text:string) => {
   } else if (strongPassword) {
     passwordStrength = 'Strong'
   }
-    console.log(characterLength,
-  upperAndLowerCase,
-  atLeastOneNumber,
-  strongPassword,
-  mediumPassword)
+
   return {
     characterLength,
     upperAndLowerCase,

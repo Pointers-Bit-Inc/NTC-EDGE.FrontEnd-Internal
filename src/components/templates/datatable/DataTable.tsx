@@ -1,7 +1,7 @@
 import {
     ActivityIndicator,
     FlatList,
-    Modal,
+    Modal, Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -37,6 +37,13 @@ import {Toast} from "@atoms/toast/Toast";
 import EmployeeIcon from "@assets/svg/employeeIcon";
 import {EMPLOYEES, USERS} from "../../../reducers/activity/initialstate";
 import UserIcon from "@assets/svg/userIcon";
+import LeftSideWeb from "@atoms/left-side-web";
+import {isMobile} from "@pages/activities/isMobile";
+import {isLandscapeSync, isTablet} from "react-native-device-info";
+import NoActivity from "@assets/svg/noActivity";
+import ProfileData from "@templates/datatable/ProfileData";
+import Left from "@atoms/icon/left";
+import NavBar from "@molecules/navbar";
 
 const style=StyleSheet.create({
     row:{
@@ -165,6 +172,7 @@ const DataTable=(props)=>{
     const [loading,setLoading]=useState([]);
     const [role,setRole]=useState('');
     const flatListRef=useRef();
+    const [data, setData] = useState({})
     const [alert,setAlert]=useState();
     const originalForm=[
         {
@@ -338,7 +346,12 @@ const DataTable=(props)=>{
                     _err+=error?.response?.data?.errors?.[err]?.toString()+"\n";
 
                 }
-                showToast(ToastType.Error,_err)
+                if(_err){
+                    showToast(ToastType.Error,_err)
+                }
+
+
+
             });
             setLoading(false);
             flatListRef?.current?.scrollToOffset({offset:0,animated:true});
@@ -396,111 +409,127 @@ const DataTable=(props)=>{
 
     const renderItems=({item})=>{
         return <View style={{paddingLeft:24,borderTopWidth:1,borderTopColor:"#f0f0f0"}}>
-            <View style={style.rowStyle}>
-                <View style={style.cellStyle}>
-                    <Text style={[style.tableHeader,{color:"#000000"}]}>{item._id}</Text>
-                </View>
-                <View style={style.cellStyle}>
-                    <View style={{flexDirection:"row",alignItems:"center",}}>
-                        <View style={{paddingRight:15}}>
-                            <ProfileImage
-                                size={fontValue(45)}
-                                image={item?.profilePicture?.thumb ? item?.profilePicture?.thumb.match(/[^/]+(jpg|jpeg|png|gif)$/i) ? item?.profilePicture?.thumb : item?.profilePicture?.thumb+".png" : null}
-                                name={item?.firstName ? `${item?.firstName} ${item?.lastName}` : (
-                                    item?.applicantName ? item?.applicantName : "")}
-                            />
-                        </View>
 
-                        <View style={{flex:1}}>
-                            <Text numberOfLines={1} style={[style.tableHeader,{color:"#000000"}]}><Highlighter
-                                highlightStyle={{backgroundColor:'#BFD6FF'}}
-                                searchWords={[value]}
-                                textToHighlight={`${item.firstName} ${item.lastName}`}
-                            /></Text>
-                            <Text numberOfLines={1}
-                                  style={[style.tableHeader,{fontSize:10,color:"#2863D6"}]}><Highlighter
-                                highlightStyle={{backgroundColor:'#BFD6FF'}}
-                                searchWords={[value]}
-                                textToHighlight={item.email}
-                            /></Text>
+                <TouchableOpacity style={style.rowStyle} onPress={()=>{
+                    setState('view');
+                    setData(item)
+                }
+                }>
+                    <View style={style.cellStyle}>
+                        <Text style={[style.tableHeader,{color:"#000000"}]}>{item._id}</Text>
+                    </View>
+                    <View style={style.cellStyle}>
+                        <View style={{flexDirection:"row",alignItems:"center",}}>
+                            <View style={{paddingRight:15}}>
+                                <ProfileImage
+                                    size={fontValue(45)}
+                                    image={item?.profilePicture?.thumb ? item?.profilePicture?.thumb.match(/[^/]+(jpg|jpeg|png|gif)$/i) ? item?.profilePicture?.thumb : item?.profilePicture?.thumb+".png" : null}
+                                    name={item?.firstName ? `${item?.firstName} ${item?.lastName}` : (
+                                        item?.applicantName ? item?.applicantName : "")}
+                                />
+                            </View>
+
+                            <View style={{flex:1}}>
+                                <Text numberOfLines={1} style={[style.tableHeader,{color:"#000000"}]}><Highlighter
+                                    highlightStyle={{backgroundColor:'#BFD6FF'}}
+                                    searchWords={[value]}
+                                    textToHighlight={`${item.firstName} ${item.lastName}`}
+                                /></Text>
+                                <Text numberOfLines={1}
+                                      style={[style.tableHeader,{fontSize:10,color:"#2863D6"}]}><Highlighter
+                                    highlightStyle={{backgroundColor:'#BFD6FF'}}
+                                    searchWords={[value]}
+                                    textToHighlight={item.email}
+                                /></Text>
+                            </View>
+
                         </View>
 
                     </View>
+                    <View style={[style.cellStyle,{flex:0.5}]}>
+                        <Text style={[style.tableHeader,{color:"#000000"}]}>{item?.role?.name}</Text>
+                    </View>
+                    <View style={[style.cellStyle,{flex:0.5}]}>
+                        <Menu onClose={()=>{
 
-                </View>
-                <View style={[style.cellStyle,{flex:0.5}]}>
-                    <Text style={[style.tableHeader,{color:"#000000"}]}>{item?.role?.name}</Text>
-                </View>
-                <View style={[style.cellStyle,{flex:0.5}]}>
-                    <Menu onClose={()=>{
+                        }} onSelect={value=>{
+                            if(value=="edit"){
+                                let newArr=[...userProfileForm];
 
-                    }} onSelect={value=>{
-                        if(value=="edit"){
-                            let newArr=[...userProfileForm];
-
-                            setState('edit');
-                            userProfileForm.map((e,index)=>{
-                                for(const props in item){
-                                    if(newArr[index]['stateName']===props&&props==='role'){
-                                        newArr[index]['value']=item?.[props]?.key;
-                                    } else if(newArr[index]['stateName']===props){
-                                        newArr[index]['value']=item[props];
+                                setState('edit');
+                                userProfileForm.map((e,index)=>{
+                                    for(const props in item){
+                                        if(newArr[index]['stateName']===props&&props==='role'){
+                                            newArr[index]['value']=item?.[props]?.key;
+                                        } else if(newArr[index]['stateName']===props){
+                                            newArr[index]['value']=item[props];
+                                        }
                                     }
-                                }
 
-                            });
-                            setUserProfileForm(newArr);
-                            setModalClose(true)
-                        } else if(value=="delete"){
-                            axios.delete(BASE_URL+`/users/${item._id}`).then((response)=>{
-                                showToast(ToastType.Success,"Successfully deleted!")
-                            }).catch((error)=>{
-                                console.log(error.response);
-                                let _err='';
-                                for(const err in error?.response?.data?.errors){
-                                    _err+=error?.response?.data?.errors?.[err]?.toString()+"\n";
-                                }
-                                showToast(ToastType.Error,error?.response?.data.trim()||error?.response?.statusText)
-                            })
-                        }
+                                });
+                                setUserProfileForm(newArr);
+                                setModalClose(true)
+                            } else if(value=="view"){
+                                setState('view');
+                                setData(item)
+                            }else if(value=="delete"){
+                                axios.delete(BASE_URL+`/users/${item._id}`).then((response)=>{
+                                    showToast(ToastType.Success,"Successfully deleted!")
+                                }).catch((error)=>{
+                                    console.log(error.response);
+                                    let _err='';
+                                    for(const err in error?.response?.data?.errors){
+                                        _err+=error?.response?.data?.errors?.[err]?.toString()+"\n";
+                                    }
+                                    showToast(ToastType.Error,error?.response?.data.trim()||error?.response?.statusText)
+                                })
+                            }
 
-                    }}>
-
-                        <MenuTrigger text={
-
-                            <DotHorizontalIcon/>
-                        }>
-
-                        </MenuTrigger>
-
-                        <MenuOptions optionsContainerStyle={{
-                            marginTop:30,
-                            shadowColor:"rgba(0,0,0,1)",
-                            paddingVertical:10,
-                            borderRadius:8,
-                            shadowOffset:{
-                                width:0,
-                                height:0
-                            },
-                            elevation:45,
-                            shadowOpacity:0.1,
-                            shadowRadius:15,
                         }}>
-                            <MenuOption value={'edit'}>
-                                <View>
-                                    <Text>{'Edit'}</Text>
-                                </View>
-                            </MenuOption>
-                            <MenuOption value={'delete'}>
-                                <View>
-                                    <Text>{'Delete'}</Text>
-                                </View>
-                            </MenuOption>
-                        </MenuOptions>
 
-                    </Menu>
-                </View>
-            </View>
+                            <MenuTrigger text={
+
+                                <DotHorizontalIcon/>
+                            }>
+
+                            </MenuTrigger>
+
+                            <MenuOptions optionsContainerStyle={{
+                                marginTop:30,
+                                shadowColor:"rgba(0,0,0,1)",
+                                paddingVertical:10,
+                                borderRadius:8,
+                                shadowOffset:{
+                                    width:0,
+                                    height:0
+                                },
+                                elevation:45,
+                                shadowOpacity:0.1,
+                                shadowRadius:15,
+                            }}>
+                                <MenuOption value={'view'}>
+                                    <View>
+                                        <Text>{'View'}</Text>
+                                    </View>
+                                </MenuOption>
+                                <MenuOption value={'edit'}>
+                                    <View>
+                                        <Text>{'Edit'}</Text>
+                                    </View>
+                                </MenuOption>
+                                <MenuOption value={'delete'}>
+                                    <View>
+                                        <Text>{'Delete'}</Text>
+                                    </View>
+                                </MenuOption>
+                            </MenuOptions>
+
+                        </Menu>
+                    </View>
+                </TouchableOpacity>
+
+
+
         </View>
 
     };
@@ -599,169 +628,209 @@ const DataTable=(props)=>{
 
     const DrawerIcon = () => {
         let Icon:any=null;
+        let width = ((dimensions?.width * 10)) * 0.05
+        let height = ((dimensions?.height * 3)) * 0.05
         switch (props.name) {
             case EMPLOYEES:
-                Icon = <EmployeeIcon width={5 * 30} height={5 * 31} color={ "rgba(128, 129, 150,1)"}/>
+                Icon = <EmployeeIcon width={width} height={height} color={ "rgba(128, 129, 150,1)"}/>
                 break;
             case USERS:
-                Icon = <UserIcon width={5 * 30} height={5 * 31} color={ "rgba(128, 129, 150,1)"}/>
+                Icon = <UserIcon  width={width} height={height}  color={ "rgba(128, 129, 150,1)"}/>
                 break;
             default:
-                Icon = <UserIcon width={5 * 30} height={5 * 31} color={ "rgba(128, 129, 150,1)"}/>
+                Icon = <UserIcon  width={width} height={height}  color={ "rgba(128, 129, 150,1)"}/>
                 break;
 
         }
         return Icon
     }
 
+    // @ts-ignore
     return (
         <>
-            <View style={style.container}>
-                <View style={[styles.container,styles.shadow,{
-                    flex:1,
+            <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
+                <View style={[styles.container, styles.shadow, {
+                    flexBasis: (
+                        (
+                            isMobile && !(
+                                Platform?.isPad || isTablet())) || dimensions?.width < 768 || (
+                            (
+                                Platform?.isPad || isTablet()) && !isLandscapeSync())) ? "100%" : (!(state == 'view' || state == "") ? "100%": "60%"),
+                    flexGrow: 0,
+                    flexShrink: 0,
+                    backgroundColor: "#FFFFFF"
                 }]}>
-                    <View style={style.title}>
-                        <Text style={style.text}>
-                            {props.title}
-                        </Text>
-                        <View style={style.search}>
-                            <View style={{flex:0.90,paddingRight:15}}>
-                                <TextInput value={value} onChangeText={text=>{
-                                    setValue(text)
+                    <View style={style.container}>
+                        <View style={[styles.container,styles.shadow,{
+                            flex:1,
+                        }]}>
+                            <View style={style.title}>
+                                <Text style={style.text}>
+                                    {props.title}
+                                </Text>
+                                <View style={style.search}>
+                                    <View style={{flex:0.90,paddingRight:15}}>
+                                        <TextInput value={value} onChangeText={text=>{
+                                            setValue(text)
 
-                                }} placeholderTextColor={"#6E7191"} placeholder={"Search"} style={styles.search}/>
-                                <View style={styles.searchIcon}>
-                                    <SearchIcon/>
-                                </View>
-                            </View>
-                            <View style={style.rightrow}>
-                                <View style={{paddingRight:10}}>
-                                    <View style={style.filter}>
-                                        <Menu onClose={()=>{
-
-                                        }} onSelect={value=>{
-                                            setRole(role=>role==value ? "" : value)
-                                        }}>
-
-                                            <MenuTrigger text={
-                                                <FilterOutlineIcon/>}>
-
-                                            </MenuTrigger>
-
-                                            <MenuOptions optionsContainerStyle={{
-                                                marginTop:50,
-                                                shadowColor:"rgba(0,0,0,1)",
-                                                paddingVertical:10,
-                                                borderRadius:8,
-                                                shadowOffset:{
-                                                    width:0,
-                                                    height:0
-                                                },
-                                                elevation:45,
-                                                shadowOpacity:0.1,
-                                                shadowRadius:15,
-                                            }}>
-                                                {
-                                                    props.filter.map((option)=>{
-                                                        return <MenuOption value={option?.value}>
-                                                            <View>
-                                                                <Text>{option?.label}</Text>
-                                                            </View>
-                                                        </MenuOption>
-                                                    })
-                                                }
-
-                                            </MenuOptions>
-
-                                        </Menu>
-
-                                    </View>
-                                </View>
-                                <TouchableOpacity onPress={()=>{
-                                    setState('add');
-                                    setModalClose(true)
-                                }}>
-                                    <View style={style.addParticipant}>
-                                        <View style={{paddingRight:10}}>
-                                            <AddParticipantOutlineIcon color={"#fff"}/>
+                                        }} placeholderTextColor={"#6E7191"} placeholder={"Search"} style={styles.search}/>
+                                        <View style={styles.searchIcon}>
+                                            <SearchIcon/>
                                         </View>
-
-                                        <Text style={{color:"#fff"}}>{props.addButtonTitle}</Text>
                                     </View>
-                                </TouchableOpacity>
+                                    <View style={style.rightrow}>
+                                        <View style={{paddingRight:10}}>
+                                            <View style={style.filter}>
+                                                <Menu onClose={()=>{
+
+                                                }} onSelect={value=>{
+                                                    setRole(role=>role==value ? "" : value)
+                                                }}>
+
+                                                    <MenuTrigger>
+                                                        <FilterOutlineIcon/>
+                                                    </MenuTrigger>
+
+                                                    <MenuOptions optionsContainerStyle={{
+                                                        marginTop:50,
+                                                        shadowColor:"rgba(0,0,0,1)",
+                                                        paddingVertical:10,
+                                                        borderRadius:8,
+                                                        shadowOffset:{
+                                                            width:0,
+                                                            height:0
+                                                        },
+                                                        elevation:45,
+                                                        shadowOpacity:0.1,
+                                                        shadowRadius:15,
+                                                    }}>
+                                                        {
+                                                            props.filter.map((option)=>{
+                                                                return <MenuOption value={option?.value}>
+                                                                    <View>
+                                                                        <Text>{option?.label}</Text>
+                                                                    </View>
+                                                                </MenuOption>
+                                                            })
+                                                        }
+
+                                                    </MenuOptions>
+
+                                                </Menu>
+
+                                            </View>
+                                        </View>
+                                        <TouchableOpacity onPress={()=>{
+                                            setState('add');
+                                            setModalClose(true)
+                                        }}>
+                                            <View style={style.addParticipant}>
+                                                <View style={{paddingRight:10}}>
+                                                    <AddParticipantOutlineIcon color={"#fff"}/>
+                                                </View>
+
+                                                <Text style={{color:"#fff"}}>{props.addButtonTitle}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+
+                                    </View>
+
+                                </View>
 
                             </View>
-
-                        </View>
-
-                    </View>
-                    <View style={style.shadow}>
+                            <View style={style.shadow}>
 
 
-                        <View style={style.headerTable}>
+                                <View style={style.headerTable}>
 
-                            <View style={style.headerTextContainer}>
+                                    <View style={style.headerTextContainer}>
 
-                                <Text
-                                    style={style.textTable}>{props.title}</Text>
+                                        <Text
+                                            style={style.textTable}>{props.title}</Text>
 
-                            </View>
-                        </View>
-                        <View style={{marginHorizontal:45,backgroundColor:"#fff",}}>
-
-                            <View style={{paddingLeft:24,}}>
-                                <View style={style.rowStyle}>
-                                    <View style={style.cellStyle}>
-                                        <Text style={style.tableHeader}>ID</Text>
-                                    </View>
-                                    <View style={style.cellStyle}>
-                                        <Text style={style.tableHeader}>NAME</Text>
-                                    </View>
-                                    <View style={style.cellStyle}>
-                                        <Text style={style.tableHeader}>DEPARTMENT ROLE</Text>
-                                    </View>
-
-                                    <View>
-                                        <View style={{width:24}}/>
                                     </View>
                                 </View>
-                            </View>
-                        </View>
+                                <View style={{marginHorizontal:45,backgroundColor:"#fff",}}>
 
-                        <View style={style.flatlist}>
-                            {loading&&
-                            <View style={{zIndex: 2, height:"90%",justifyContent:"center",alignSelf:"center",position:"absolute"}}>
-                                {!docs.length && <View>
-                                    <DrawerIcon/>
-                                </View>}
-                                <View style={{padding: 20}}>
-                                    <ActivityIndicator color={"#808196"}/>
+                                    <View style={{paddingLeft:24,}}>
+                                        <View style={style.rowStyle}>
+                                            <View style={style.cellStyle}>
+                                                <Text style={style.tableHeader}>ID</Text>
+                                            </View>
+                                            <View style={style.cellStyle}>
+                                                <Text style={style.tableHeader}>NAME</Text>
+                                            </View>
+                                            <View style={style.cellStyle}>
+                                                <Text style={style.tableHeader}>DEPARTMENT ROLE</Text>
+                                            </View>
+
+                                            <View>
+                                                <View style={{width:24}}/>
+                                            </View>
+                                        </View>
+                                    </View>
                                 </View>
 
-                            </View>}
-                            {/*<TouchableOpacity onPress={()=> flatListRef?.current?.scrollToOffset({offset: 0, animated: true})}>
+                                <View style={style.flatlist}>
+
+                                        <View style={{zIndex: 2, height:"90%",justifyContent:"center",alignSelf:"center",position:"absolute"}}>
+                                            {!docs.length && <View>
+                                                <DrawerIcon/>
+                                            </View>}
+                                            {loading &&<View style={{padding: 20}}>
+                                                <ActivityIndicator color={"#808196"}/>
+                                            </View>}
+
+                                        </View>
+                                    {/*<TouchableOpacity onPress={()=> flatListRef?.current?.scrollToOffset({offset: 0, animated: true})}>
                                 <View style={{justifyContent: "center", alignItems: "center"}}>
                                     <ChevronUpIcon/>
                                 </View>
                             </TouchableOpacity>*/}
-                            <FlatList
-                                ref={flatListRef}
-                                contentContainerStyle={style.contentContainer}
-                                data={docs}
-                                keyExtractor={item=>item._id}
-                                renderItem={renderItems}
-                            />
-                            {/*<TouchableOpacity onPress={()=> flatListRef?.current?.scrollToEnd({animated: true})}>
+                                    <FlatList
+                                        ref={flatListRef}
+                                        contentContainerStyle={style.contentContainer}
+                                        data={docs}
+                                        keyExtractor={item=>item._id}
+                                        renderItem={renderItems}
+                                    />
+                                    {/*<TouchableOpacity onPress={()=> flatListRef?.current?.scrollToEnd({animated: true})}>
                                 <View style={{justifyContent: "center", alignItems: "center"}}>
                                     <ChevronDownIcon/>
                                 </View>
                             </TouchableOpacity>*/}
 
 
+                                </View>
+                                <Pagination size={size} page={page} total={total} fetch={fetch}/>
+                            </View>
                         </View>
-                        <Pagination size={size} page={page} total={total} fetch={fetch}/>
                     </View>
+
                 </View>
+
+                {
+                    !(
+                        (
+                            isMobile && !(
+                                Platform?.isPad || isTablet()))) && dimensions?.width > 768 &&
+                    <View style={[{flex: 1,   alignItems: "center", overflow: "scroll"}]}>
+                        <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between",  paddingVertical: 15,paddingHorizontal: 15, backgroundColor: "#fff", width: "100%"}}>
+                            <View/>
+                            <Text style={{textAlign: "center", fontFamily: Bold}}>{data?.firstName + " " + data?.middleName + " " + data?.lastName}</Text>
+                            <TouchableOpacity onPress={() => {
+                                setState("close")
+                            }
+                            }>
+                                <CloseIcon></CloseIcon>
+                            </TouchableOpacity>
+                        </View>
+
+                        <ProfileData data={data}/>
+
+                    </View>
+                }
+
             </View>
             <Modal
                 animationType={"fade"}

@@ -39,7 +39,6 @@ import {resetMeeting} from "../reducers/meeting/actions";
 import {resetChannel} from "../reducers/channel/actions";
 import {StackActions} from "@react-navigation/native";
 import useOneSignal from "./useOneSignal";
-import useLogout from "./useLogout";
 
 function convertStatusText(convertedStatus:any[],item:any){
     let _converted:never[]=[]
@@ -357,32 +356,44 @@ export function useActivities(props){
     const handleLoad=useCallback((page_)=>{
         let _page:string;
         setInfiniteLoad(true);
+
         if((
             page*size)<total || page_ ){
             _page="?page="+(
                 (page_ || page)+1);
                //013021
-            axios.get(BASE_URL+ `/users/${user._id}/unassigned-applications${_page}`,{...config,params:query(0)}).then((response)=>{
+            var endpoint = [{url: BASE_URL+ `/users/${user._id}/unassigned-applications${_page}`, pinned: 1}, {url: BASE_URL+ `/users/${user._id}/unassigned-applications`, pinned: 0}]
 
-                if(response?.data?.message) Alert.alert(response.data.message);
-                response?.data?.size ? setSize(response?.data?.size) : setSize(0);
-                response?.data?.total ? setTotal(response?.data?.total) : setTotal(0);
-                response?.data?.page ? setPage(response?.data?.page) : setPage(0);
+            axios.all(endpoint.map((ep) => axios.get(ep.url,{...config,params:query(ep.pinned)}))).then(
+                axios.spread((pinned, notPinned) => {
 
 
 
-                if(response?.data?.docs.length == 0){
+                    if(pinned?.data?.message) Alert.alert(pinned.data.message);
+                    pinned?.data?.size ? setSize(pinned?.data?.size) : setSize(0);
+                    pinned?.data?.total ? setTotal(pinned?.data?.total) : setTotal(0);
+                    pinned?.data?.page ? setPage(pinned?.data?.page) : setPage(0);
+
+                    if(notPinned?.data?.message) Alert.alert(notPinned.data.message);
+                    notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
+                    notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
+                    notPinned?.data?.page ? setPage(notPinned?.data?.page) : setPage(0);
+
+                    if(pinned?.data?.docs.length == 0 || notPinned?.data?.docs.length == 0 ){
+                        setInfiniteLoad(false);
+
+                    } else{
+                        dispatch(handleInfiniteLoad({
+                            data:getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],selectedChangeStatus),
+                            user:user
+                        }));
+                        setInfiniteLoad(false);
+                    }
                     setInfiniteLoad(false);
 
-                } else{
-                    dispatch(handleInfiniteLoad({
-                        data:getList(response.data.docs,selectedChangeStatus),
-                        user:user
-                    }));
-                    setInfiniteLoad(false);
-                }
-                setInfiniteLoad(false);
-            }).catch((err)=>{
+                })
+
+            ).catch((err)=>{
                 Alert.alert('Alert',err?.message||'Something went wrong.');
                 setInfiniteLoad(false);
                 console.warn(err)
@@ -564,6 +575,8 @@ export function useActivities(props){
         opacity,
         scrollViewRef,
         yPos, setYPos,
-        flatListViewRef
+        flatListViewRef,
+        notPinnedApplications,
+        pinnedApplications
     };
 }
