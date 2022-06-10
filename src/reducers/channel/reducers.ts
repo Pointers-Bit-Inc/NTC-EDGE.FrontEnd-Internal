@@ -125,7 +125,7 @@ export default function basket(state = initialState, action:any) {
         }
       }
 
-      if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
+      if (state.normalizedChannelList[action.payload.roomId]?.lastMessage?._id === action.payload._id) {
           newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
           .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt);
       }
@@ -161,7 +161,7 @@ export default function basket(state = initialState, action:any) {
         .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
       }
 
-      if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
+      if (state.normalizedChannelList[action.payload.roomId]?.lastMessage?._id === action.payload._id) {
           newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
           .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt);
       }
