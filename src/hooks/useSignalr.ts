@@ -313,6 +313,18 @@ const useSignalr = () => {
   const endMeeting = useCallback((id, callback = () => {}, config = {}) => {
     api.patch(`/meetings/${id}/callend`, config)
     .then(res => {
+      if (res.data) {
+        const data = res.data;
+        dispatch(updateMessages(data.roomId, data));
+          if (data.meeting) {
+            dispatch(endCall({
+              _id: data.meeting._id,
+              ended: true,
+              endedAt: data.meeting.EndedAt,
+              updatedAt: data.meeting.EndedAt,
+            }));
+          }
+      }
       return callback(null, res.data);
     })
     .catch(err => {
@@ -333,6 +345,7 @@ const useSignalr = () => {
   const muteParticipant = useCallback((id, payload, callback = () => {}, config = {}) => {
     api.patch(`/meetings/${id}/toggle-mute`, payload, config)
     .then(res => {
+      if (res.data) dispatch(setToggle(res.data));
       return callback(null, res.data);
     })
     .catch(err => {
