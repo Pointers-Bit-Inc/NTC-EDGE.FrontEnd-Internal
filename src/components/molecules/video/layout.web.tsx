@@ -238,6 +238,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     initAgora,
     destroyAgoraEngine,
     joinChannel,
+    leaveChannel,
     isInit,
     myId,
     peerIds,
@@ -288,7 +289,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   useEffect(() => {
     if (callEnded) {
       setSideContent('');
-      destroyAgoraEngine();
+      leaveChannel();
     }
   }, [callEnded]);
 
@@ -382,10 +383,10 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     }
 
     switch(true) {
-      case width <= 768 && numberOfColumns > 1:
+      case width <= 400 && numberOfColumns > 1:
         numberOfColumns = 1;
         break;
-      case width > 768 && width <= 992 && numberOfColumns > 2:
+      case width > 400 && width <= 992 && numberOfColumns > 2:
         numberOfColumns = 2;
         break;
       case width > 992 && width <= 1200 && numberOfColumns > 3:
@@ -713,7 +714,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             />
             <View style={{ position: 'absolute', right: 30, bottom: 15 }}>
               {
-                width < 768 ? renderMenu(['Messages', 'Participants'], (item:string = '') => onSetSideContent(item?.toLowerCase())) : (
+                width < 400 ? renderMenu(['Messages', 'Participants'], (item:string = '') => onSetSideContent(item?.toLowerCase())) : (
                   <View style={{ flexDirection: 'row' }}>
                     <TouchableOpacity
                       onPress={() => onSetSideContent('messages')}

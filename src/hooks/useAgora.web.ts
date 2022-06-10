@@ -172,6 +172,8 @@ export const useInitializeAgora = ({
   const leaveChannel = async () => {
     await client.leave();
     client.removeAllListeners();
+    tracks[0].close();
+    tracks[1].close();
     setIsInit(false);
     setJoinSucceed(false);
     setPeerIds([]);
@@ -183,9 +185,9 @@ export const useInitializeAgora = ({
       return;
     }
     if (isMute) {
-      await tracks[0].setEnabled(true);
+      await client.publish(tracks[0]);
     } else {
-      await tracks[0].setEnabled(false);
+      await client.unpublish(tracks[0]);
     }
     setIsMute(!isMute);
   };

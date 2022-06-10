@@ -366,16 +366,14 @@ const Participants = ({ onClose = () => {} }:any) => {
 
   if (onAddParticipant) {
     return (
-      <View style={{ paddingTop: 15 }}>
-        <AddParticipants
-          members={participants}
-          onClose={() => setOnAddParticipant(false)}
-          onSubmit={(members:any)=>{
-            setOnAddParticipant(false);
-            setTimeout(() => addMembers(members), 300);
-          }}
-        />
-      </View>
+      <AddParticipants
+        members={participants}
+        onClose={() => setOnAddParticipant(false)}
+        onSubmit={(members:any)=>{
+          setOnAddParticipant(false);
+          setTimeout(() => addMembers(members), 300);
+        }}
+      />
     )
   }
 
