@@ -499,7 +499,7 @@ export default function ActivitiesPage(props:any){
 
                                        for (let i = 0; i < _notPinnedApplications?.length; i++) {
                                            if(!flag) break
-                                           if(_notPinnedApplications?.[i]?._id == event?._id){
+                                           if(_notPinnedApplications?.[i]?._id == event?._id ){
                                                _notPinnedApplications[i]= event
                                               }
                                        }
@@ -507,14 +507,15 @@ export default function ActivitiesPage(props:any){
                                        for (let i = 0; i < _pinnedApplications?.length; i++) {
                                            if(!flag) break
                                            if(_pinnedApplications?.[i]?._id == event?._id){
-                                               _pinnedApplications[i] = event
-
+                                               _notPinnedApplications.unshift(event)
+                                               _pinnedApplications.splice(i, 1)
                                            }
                                        }
-                                       setUpdateModal(true);
+
                                        dispatch(setApplicationItem(event))
                                        dispatch(setNotPinnedApplication(_notPinnedApplications))
                                        dispatch(setPinnedApplication(_pinnedApplications))
+                                       setUpdateModal(true);
                                    }}
                                    visible={modalVisible}
                                    onDismissed={(event:boolean,_id:number)=>{
