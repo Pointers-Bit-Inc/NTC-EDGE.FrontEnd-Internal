@@ -31,10 +31,10 @@ export default function Meeting(state = initialState, action:any = {}) {
     }
     case SET_NOTIFICATION: {
       let newState = state;
-      if (!action.payload) {
-        return state.setIn(['meeting', 'notification'], null);
-      }
       if (state.meeting?._id) {
+        if (!action.payload) {
+          return state.setIn(['meeting', 'notification'], null);
+        }
         if (state.meeting._id === action.payload.meetingId) {
           newState = state.setIn(['meeting', 'notification'], action.payload.message);
           if (action.payload.status === 'joined' || action.payload.status === 'busy' || action.payload.status === 'leave') {

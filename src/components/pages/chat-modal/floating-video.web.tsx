@@ -182,6 +182,7 @@ const FloatingVideo = ({ tracks }:any) => {
         isMute: false,
         isVideoEnable: true,
       }));
+      location.reload();
     }
   }, [meetingId]);
 

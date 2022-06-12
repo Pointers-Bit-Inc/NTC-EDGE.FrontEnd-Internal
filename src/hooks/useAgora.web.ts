@@ -53,17 +53,17 @@ export const useInitializeAgora = ({
     client.on("user-published", async (user, mediaType) => {
       await client.subscribe(user, mediaType);
       if (mediaType === "video") {
-        setPeerVideoState({
-          ...peerVideoState,
+        setPeerVideoState((videoState:any) => ({
+          ...videoState,
           [user.uid]: user.videoTrack,
-        });
+        }));
       }
       if (mediaType === "audio") {
         user.audioTrack?.play();
-        setPeerAudioState({
-          ...peerAudioState,
+        setPeerAudioState((audioState:any) => ({
+          ...audioState,
           [user.uid]: user.audioTrack,
-        });
+        }));
       }
     });
 
@@ -85,10 +85,10 @@ export const useInitializeAgora = ({
     client.enableAudioVolumeIndicator();
     client.on("volume-indicator", (volumes) => {
       volumes.forEach((volume, index) => {
-        setVolumIndicator({
-          ...volumeIndicator,
-          [volume.uid]: Math.floor(volume.level),
-        });
+        setVolumIndicator((volumeState:any) => ({
+          ...volumeState,
+          [volume.uid]: Math.floor(volume.level) > 5 ? 1 : 0,
+        }));
       });
     });
     
@@ -108,17 +108,17 @@ export const useInitializeAgora = ({
 
     client.on("user-joined", (user) => {
       if (user.audioTrack) {
-        setPeerAudioState({
-          ...peerAudioState,
+        setPeerAudioState((audioState:any) => ({
+          ...audioState,
           [user.uid]: user.audioTrack,
-        });
+        }));
       }
 
       if (user.videoTrack) {
-        setPeerVideoState({
-          ...peerVideoState,
+        setPeerVideoState((videoState:any) => ({
+          ...videoState,
           [user.uid]: user.videoTrack,
-        });
+        }));
       }
 
       setPeerIds((peerIdsLocal:any) => {
@@ -172,6 +172,8 @@ export const useInitializeAgora = ({
   const leaveChannel = async () => {
     await client.leave();
     client.removeAllListeners();
+    tracks[0].close();
+    tracks[1].close();
     setIsInit(false);
     setJoinSucceed(false);
     setPeerIds([]);
@@ -183,9 +185,9 @@ export const useInitializeAgora = ({
       return;
     }
     if (isMute) {
-      await tracks[0].setEnabled(true);
+      await client.publish(tracks[0]);
     } else {
-      await tracks[0].setEnabled(false);
+      await client.unpublish(tracks[0]);
     }
     setIsMute(!isMute);
   };

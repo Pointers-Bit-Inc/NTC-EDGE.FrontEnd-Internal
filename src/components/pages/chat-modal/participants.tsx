@@ -7,7 +7,8 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  StatusBar
+  StatusBar,
+  Platform
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import lodash from 'lodash';
@@ -198,7 +199,7 @@ const MeetingParticipants = ({
       <FlatList
         style={[styles.outlineBorder, !lodash.size(participants) && { borderBottomWidth: 0 }]}
         horizontal
-        showsHorizontalScrollIndicator={false}
+        showsHorizontalScrollIndicator={Platform.OS === 'web'}
         data={participants}
         renderItem={({ item }) => (
           <SelectedContact
@@ -283,7 +284,7 @@ const MeetingParticipants = ({
       </View>
       <FlatList
         data={contacts}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={Platform.OS === 'web'}
         refreshControl={
           <RefreshControl
             tintColor={primaryColor} // ios
