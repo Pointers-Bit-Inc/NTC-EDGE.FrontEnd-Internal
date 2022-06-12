@@ -362,9 +362,9 @@ export function useActivities(props){
             _page="?page="+(
                 (page_ || page)+1);
                //013021
-            var endpoint = [{url: BASE_URL+ `/users/${user._id}/unassigned-applications${_page}`, pinned: 1}, {url: BASE_URL+ `/users/${user._id}/unassigned-applications`, pinned: 0}]
+            var endpoint = [{url: BASE_URL+ `/users/${user._id}/assigned-applications${_page}`, pinned: 1}, {url: BASE_URL+ `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
 
-            axios.all(endpoint.map((ep) => axios.get(ep.url,{...config,params:query(ep.pinned)}))).then(
+            axios.all(endpoint.map((ep) => axios.get(ep.url,{...config,params:{...query(ep.pinned)}}))).then(
                 axios.spread((pinned, notPinned) => {
 
 
@@ -382,13 +382,11 @@ export function useActivities(props){
                     if(pinned?.data?.docs.length == 0 || notPinned?.data?.docs.length == 0 ){
                         setInfiniteLoad(false);
 
-                    } else{
-                        dispatch(handleInfiniteLoad({
-                            data:getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],selectedChangeStatus),
-                            user:user
-                        }));
-                        setInfiniteLoad(false);
                     }
+                    dispatch(handleInfiniteLoad({
+                        data:getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],selectedChangeStatus),
+                        user:user
+                    }));
                     setInfiniteLoad(false);
 
                 })
