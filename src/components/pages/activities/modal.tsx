@@ -34,6 +34,7 @@ import {useComponentLayout} from "../../../hooks/useComponentLayout";
 import ModalTab from "@pages/activities/modalTab/modalTab";
 import {isLandscapeSync,isTablet} from "react-native-device-info";
 import {Toast} from "@atoms/toast/Toast";
+import axios from "axios";
 
 function ActivityModal(props:any){
 
@@ -56,6 +57,7 @@ function ActivityModal(props:any){
     const [remarks,setRemarks]=useState("");
     const [prevRemarks,setPrevRemarks]=useState("");
     const [grayedOut,setGrayedOut]=useState(false);
+    const cancelTokenSource = axios.CancelToken.source();
     const onDismissed=()=>{
         setVisible(false)
     };
@@ -121,7 +123,7 @@ function ActivityModal(props:any){
         console.log(url,params,assignId, addORNumber?.status == 200);
         if((applicationId && (user?.role?.key==CASHIER && addORNumber?.status == 200 )) || (getRole(user,[ DIRECTOR,EVALUATOR,ACCOUNTANT]) && applicationId )){
 
-            await api.patch(url,params)
+            await api.patch(url,{...params,  cancelToken: cancelTokenSource?.token,})
             .then(res=>{
                 setGrayedOut(false);
                 setCurrentLoading('');
@@ -244,11 +246,9 @@ function ActivityModal(props:any){
                     setApprovalIcon(false);
                     setShowClose(false)
                     props.onDismissed(true);
-
                 }}
                 onLoading={alertLoading}
                 onCancelPressed={()=>{
-
                     setShowAlert(false);
                     if(approvalIcon){
                         setApprovalIcon(false);
@@ -364,7 +364,10 @@ function ActivityModal(props:any){
             </View>
             <Approval
                 size={activityModalScreenComponent}
-                onModalDismissed={()=>{
+                onModalDismissed={(event?:any)=>{
+                    if(event == "cancel"){
+                        cancelTokenSource?.cancel();
+                    }
                     setStatus(prevStatus);
                     setRemarks(prevRemarks);
                     setAssignId(props?.details?.assignedPersonnel?._id||props?.details?.assignedPersonnel)
@@ -394,7 +397,8 @@ function ActivityModal(props:any){
                     onChangeApplicationStatus(status,(err,appId)=>{
 
                         if(!err){
-                            console.log(9, "onChangeApplicationStatus");
+                            onApproveDismissed();
+                            props.onDismissed(true);
                             callback(true,(bool)=>{
 
                             })
@@ -410,12 +414,12 @@ function ActivityModal(props:any){
 
                 }}
                 onExit={()=>{
+
                     onApproveDismissed();
                     props.onDismissed(true);
 
                 }}
                 onDismissed={(event?:any,callback?:(bool)=>{})=>{
-
                     if(event==APPROVED){
                        onApproveDismissed();
 

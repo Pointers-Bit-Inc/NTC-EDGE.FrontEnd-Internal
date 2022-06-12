@@ -114,9 +114,10 @@ const Approval=(props:any)=>{
             console.warn(err)
         });
         return ()=>{
-            cancelTokenSource.cancel();
+            cancelTokenSource?.cancel();
             setLoading(false);
             isCurrent=false
+            _springHide()
         }
     },[]);
 
@@ -145,7 +146,13 @@ const Approval=(props:any)=>{
             setShowClose(false);
             props.onExit();
         } else{
-            props.onModalDismissed();
+           if(alertLoading){
+               setAlertLoading(false)
+               props.onModalDismissed("cancel");
+           }else{
+               props.onModalDismissed();
+           }
+
             setApprovalIcon(false);
             setShowClose(false)
         }
@@ -198,10 +205,6 @@ const Approval=(props:any)=>{
                     onDismissed={()=>onCancelPress(APPROVED,true)}
                     onLoading={alertLoading}
                     onCancelPressed={()=>{
-                        if(loading){
-                            setLoading(false);
-                            cancelTokenSource.cancel();
-                        }
                         onCancelPress('exit',true)
                     }}
                     onConfirmPressed={()=>{

@@ -77,11 +77,11 @@ function CustomAlert(props) {
                                         </TouchableOpacity>
                                        }
                                        <TouchableOpacity onPress={() => {
-                                           _springHide(false)
-
-
+                                           if(!props.onLoading){
+                                               _springHide(false)
+                                           }
                                        }}>
-                                           <Text style={[alertStyle.cancelButtonTextStyle]}>Close</Text>
+                                           <Text style={[props.onLoading ?alertStyle.disableButtonTextStyle :  alertStyle.cancelButtonTextStyle  ]}>Close</Text>
                                        </TouchableOpacity>
 
                                    </>

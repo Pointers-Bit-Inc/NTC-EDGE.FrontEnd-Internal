@@ -1,6 +1,7 @@
 import {Dimensions, StyleSheet} from "react-native";
 import {Poppins_500Medium} from "@expo-google-fonts/poppins";
 import {Bold , Regular500} from "@styles/font";
+import {disabledColor} from "@styles/color";
 const { height, width } = Dimensions.get('window');
 export const alertStyle = StyleSheet.create({
     actionContainerStyle: {
@@ -29,5 +30,10 @@ export const alertStyle = StyleSheet.create({
         fontSize: 18,
          fontFamily: Regular500  ,
         color: "#DC2626"
+    },
+    disableButtonTextStyle:{
+        fontSize: 18,
+        fontFamily: Regular500  ,
+        color: disabledColor
     }
 });
