@@ -137,10 +137,10 @@ export default function basket(state = initialState, action = {}) {
             }
 
             state = state.set('notPinnedApplications', [
-                ..._.uniqBy(state.notPinnedApplications.concat(...isNotPinned), "_id"),
+                ...isNotPinned
             ]);
             state = state.set('pinnedApplications', [
-                ..._.uniqBy(state.pinnedApplications.concat(isPinned), "_id"),
+                ...isPinned
             ]);
 
             return state

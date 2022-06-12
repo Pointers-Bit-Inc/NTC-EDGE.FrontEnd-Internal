@@ -52,6 +52,7 @@ const Approval=(props:any)=>{
     const [validateRemarks,setValidateRemarks]=useState<{error:boolean}>({error:false});
     const [loading,setLoading]=useState(false);
     const approveInputField = useRef()
+    const cancelTokenSource = axios.CancelToken.source();
     useEffect(()=>{
         approveInputField?.current?.focus()
     }, [_springHide])
@@ -76,6 +77,7 @@ const Approval=(props:any)=>{
 
         await axios.get(BASE_URL+'/users',
             {
+                cancelToken: cancelTokenSource.token,
                 params:{
                     ...(
                         role.length>0&&{role:role})
@@ -112,6 +114,7 @@ const Approval=(props:any)=>{
             console.warn(err)
         });
         return ()=>{
+            cancelTokenSource.cancel();
             setLoading(false);
             isCurrent=false
         }
@@ -194,7 +197,13 @@ const Approval=(props:any)=>{
                     type={approvalIcon ? APPROVED : ""}
                     onDismissed={()=>onCancelPress(APPROVED,true)}
                     onLoading={alertLoading}
-                    onCancelPressed={()=>onCancelPress('exit',true)}
+                    onCancelPressed={()=>{
+                        if(loading){
+                            setLoading(false);
+                            cancelTokenSource.cancel();
+                        }
+                        onCancelPress('exit',true)
+                    }}
                     onConfirmPressed={()=>{
 
                         setAlertLoading(true);
