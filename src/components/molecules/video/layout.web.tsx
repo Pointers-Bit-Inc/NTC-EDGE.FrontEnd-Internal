@@ -11,12 +11,10 @@ import { View, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithou
 import StyleSheet from 'react-native-media-query';
 import lodash from 'lodash';
 import { useInitializeAgora } from 'src/hooks/useAgora';
-import { MicIcon, CameraIcon, MicOffIcon, MessageIcon, ParticipantsIcon, CloseIcon, ArrowDownIcon, MenuIcon } from '@components/atoms/icon';
-
+import { MicOffIcon, MessageIcon, ParticipantsIcon, CloseIcon, ArrowDownIcon, MenuIcon } from '@components/atoms/icon';
+import { Hoverable } from 'react-native-web-hooks';
 import {
   AgoraVideoPlayer,
-  IMicrophoneAudioTrack,
-  ICameraVideoTrack
 } from "agora-rtc-react";
 
 import ConnectingVideo from '@components/molecules/video/connecting'
@@ -283,13 +281,16 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   useEffect(() => {
     if (isInit) {
       joinChannel();
+
+      return () => {
+        leaveChannel();
+      }
     }
   }, [isInit]);
 
   useEffect(() => {
     if (callEnded) {
       setSideContent('');
-      leaveChannel();
     }
   }, [callEnded]);
 
@@ -432,7 +433,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     const userParticipantDetails:IParticipants = lodash.find(meetingParticipants, (p:IParticipants) => p._id === user?._id);
     if (userParticipantDetails) {
       if (!!userParticipantDetails.muted !== isMute) {
-        toggleIsMute();
+        toggleIsMute(userParticipantDetails.muted);
       }
     }
   }
@@ -714,7 +715,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             />
             <View style={{ position: 'absolute', right: 30, bottom: 15 }}>
               {
-                width < 400 ? renderMenu(['Messages', 'Participants'], (item:string = '') => onSetSideContent(item?.toLowerCase())) : (
+                width < 768 ? renderMenu(['Messages', 'Participants'], (item:string = '') => onSetSideContent(item?.toLowerCase())) : (
                   <View style={{ flexDirection: 'row' }}>
                     <TouchableOpacity
                       onPress={() => onSetSideContent('messages')}

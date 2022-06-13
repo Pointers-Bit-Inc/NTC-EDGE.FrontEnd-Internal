@@ -174,7 +174,6 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     toggleIsVideoEnable,
     switchCamera,
     tracks,
-    ready,
   } = useInitializeAgora({
     ...agora,
     options: {
@@ -276,7 +275,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     const userParticipantDetails:IParticipants = lodash.find(meetingParticipants, (p:IParticipants) => p._id === user?._id);
     if (userParticipantDetails) {
       if (!!userParticipantDetails.muted !== isMute) {
-        toggleIsMute();
+        toggleIsMute(userParticipantDetails.muted);
       }
     }
   }

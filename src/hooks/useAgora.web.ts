@@ -180,16 +180,16 @@ export const useInitializeAgora = ({
     setMyId(0);
   };
 
-  const toggleIsMute = async () => {
+  const toggleIsMute = async (mute = false) => {
     if (!isInit) {
       return;
     }
-    if (isMute) {
+    if (!mute) {
       await client.publish(tracks[0]);
     } else {
       await client.unpublish(tracks[0]);
     }
-    setIsMute(!isMute);
+    setIsMute(mute);
   };
 
   const toggleRemoteAudio = async (uid, muted) => {

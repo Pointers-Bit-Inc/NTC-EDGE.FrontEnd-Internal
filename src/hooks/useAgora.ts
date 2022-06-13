@@ -149,10 +149,10 @@ export const useInitializeAgora = ({
     setJoinSucceed(false);
   }, []);
 
-  const toggleIsMute = useCallback(async () => {
-    await rtcEngine.current?.muteLocalAudioStream(!isMute);
-    setIsMute(!isMute);
-  }, [isMute]);
+  const toggleIsMute = async (mute = false) => {
+    await rtcEngine.current?.muteLocalAudioStream(mute);
+    setIsMute(mute);
+  };
 
   const toggleRemoteAudio = useCallback(async (uid, muted) => {
     await rtcEngine.current?.muteRemoteAudioStream(uid, muted)
