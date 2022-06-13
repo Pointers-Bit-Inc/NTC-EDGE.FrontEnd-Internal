@@ -18,6 +18,7 @@ const {
   REMOVE_MEETING_FROM_LIST,
   SET_PINNED_PARTICIPANT,
   TOGGLE_MUTE,
+  END_CALL,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -132,6 +133,10 @@ export default function Meeting(state = initialState, action:any = {}) {
 
       let newState = state.setIn(['normalizedMeetingList', action.payload._id, 'participants'], participants)
 
+      if (state.meeting?._id === action.payload._id) {
+        newState = newState.setIn(['meeting', 'participants'], participants);
+      }
+
       if (!action.payload.ended) {
         newState = state.setIn(['normalizeActiveMeetings', action.payload._id, 'participants'], participants)
       }
@@ -179,7 +184,39 @@ export default function Meeting(state = initialState, action:any = {}) {
       return state.setIn(['pinnedParticipant'], action.payload);
     }
     case TOGGLE_MUTE: {
-      return state.setIn(['toggleMute'], action.payload);
+      let newState = state;
+      if (action.payload) {
+        const updatedParticipant = action.payload?.participants[0];
+        if (state.meeting?._id === action.payload?._id) {
+          const participants = state.meeting.participants.map((p:IParticipants) => {
+            if (p._id === updatedParticipant._id) {
+              return updatedParticipant;
+            }
+            return p;
+          })
+          newState = newState.setIn(['meeting', 'participants'], participants);
+        }
+      }
+      return newState;
+    }
+    case END_CALL: {
+      let newState = state;
+
+      if (state.meeting?._id === action.payload?._id) {
+        const meeting = action.payload;
+        newState = newState.setIn(['meeting', 'ended'], true)
+        .setIn(['meeting','endedAt'], meeting.endedAt)
+        .setIn(['meeting', 'updatedAt'], meeting.endedAt);
+      }
+
+      newState = newState.removeIn(['normalizeActiveMeetings', action.payload?._id]);
+
+      if (!!state.normalizedMeetingList[action.payload?._id]) {
+        newState = newState.setIn(['normalizedMeetingList', action.payload?._id, 'ended'], true)
+        .setIn(['normalizedMeetingList', action.payload?._id, 'endedAt'], action.payload.endedAt)
+        .setIn(['normalizedMeetingList', action.payload?._id, 'updatedAt'], action.payload.endedAt);
+      }
+      return newState;
     }
     default:
       return state;

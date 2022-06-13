@@ -7,7 +7,7 @@ import { BASE_URL, API_VERSION } from 'src/services/config';
 import useApi from 'src/services/api';
 import { normalize, schema } from 'normalizr';
 import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
-import { addMeeting, updateMeeting, setConnectionStatus, setNotification, setMeeting, removeMeetingFromList } from 'src/reducers/meeting/actions';
+import { addMeeting, updateMeeting, setConnectionStatus, setNotification, setMeeting, removeMeetingFromList, setToggle, endCall } from 'src/reducers/meeting/actions';
 import { addMessages, updateMessages, addChannel, removeChannel, updateChannel, addFiles, updateParticipants } from 'src/reducers/channel/actions';
 
 const useSignalr = () => {
@@ -48,6 +48,18 @@ const useSignalr = () => {
         }
         case 'update': {
           dispatch(updateMessages(data.roomId, data));
+          break;
+        }
+        case 'endcall': {
+          dispatch(updateMessages(data.roomId, data));
+          if (data.meeting) {
+            dispatch(endCall({
+              _id: data.meeting._id,
+              ended: true,
+              endedAt: data.meeting.EndedAt,
+              updatedAt: data.meeting.EndedAt,
+            }));
+          }
           break;
         }
       }
@@ -110,6 +122,10 @@ const useSignalr = () => {
           dispatch(setMeeting(null));
           dispatch(removeMeetingFromList(data._id));
           Alert.alert('Alert', 'You have been removed from the meeting.');
+          break;
+        }
+        case 'togglemute': {
+          dispatch(setToggle(data));
           break;
         }
       }
@@ -295,8 +311,20 @@ const useSignalr = () => {
   }, []);
 
   const endMeeting = useCallback((id, callback = () => {}, config = {}) => {
-    api.patch(`/meetings/${id}/end`, config)
+    api.patch(`/meetings/${id}/callend`, config)
     .then(res => {
+      if (res.data) {
+        const data = res.data;
+        dispatch(updateMessages(data.roomId, data));
+          if (data.meeting) {
+            dispatch(endCall({
+              _id: data.meeting._id,
+              ended: true,
+              endedAt: data.meeting.EndedAt,
+              updatedAt: data.meeting.EndedAt,
+            }));
+          }
+      }
       return callback(null, res.data);
     })
     .catch(err => {
@@ -315,8 +343,9 @@ const useSignalr = () => {
   }, []);
 
   const muteParticipant = useCallback((id, payload, callback = () => {}, config = {}) => {
-    api.patch(`/meetings/${id}/mute`, payload, config)
+    api.patch(`/meetings/${id}/toggle-mute`, payload, config)
     .then(res => {
+      if (res.data) dispatch(setToggle(res.data));
       return callback(null, res.data);
     })
     .catch(err => {
