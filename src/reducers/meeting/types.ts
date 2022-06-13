@@ -25,4 +25,5 @@ export default keyMirror({
   REMOVE_MEETING_FROM_LIST: null,
   SET_PINNED_PARTICIPANT: null,
   TOGGLE_MUTE: null,
+  END_CALL: null,
 });

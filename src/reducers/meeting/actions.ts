@@ -19,6 +19,7 @@ const {
   REMOVE_MEETING_FROM_LIST,
   SET_PINNED_PARTICIPANT,
   TOGGLE_MUTE,
+  END_CALL,
 } = require('./types').default;
 
 interface NormalizedMeeting {
@@ -138,6 +139,13 @@ export function setPinnedParticipant(payload:IParticipants|null) {
 export function setToggle(payload:any) {
   return {
     type: TOGGLE_MUTE,
+    payload,
+  }
+}
+
+export function endCall(payload:any) {
+  return {
+    type: END_CALL,
     payload,
   }
 }
