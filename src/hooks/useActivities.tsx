@@ -371,18 +371,14 @@ export function useActivities(props){
 
                     if(pinned?.data?.message) Alert.alert(pinned.data.message);
                     pinned?.data?.size ? setSize(pinned?.data?.size) : setSize(0);
-                    pinned?.data?.total ? setTotal(pinned?.data?.total) : setTotal(0);
+                    pinned?.data?.total  ? setTotal(pinned?.data?.total) : setTotal(0);
                     pinned?.data?.page ? setPage(pinned?.data?.page) : setPage(0);
 
                     if(notPinned?.data?.message) Alert.alert(notPinned.data.message);
                     notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
                     notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
-                    notPinned?.data?.page ? setPage(notPinned?.data?.page) : setPage(0);
+                    notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size   ? setPage(notPinned?.data?.page) : setPage(0);
 
-                    if(pinned?.data?.docs.length == 0 || notPinned?.data?.docs.length == 0 ){
-                        setInfiniteLoad(false);
-
-                    }
                     dispatch(handleInfiniteLoad({
                         data:getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],selectedChangeStatus),
                         user:user
