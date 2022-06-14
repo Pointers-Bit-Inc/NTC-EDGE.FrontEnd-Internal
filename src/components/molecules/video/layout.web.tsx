@@ -427,8 +427,8 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
       numberOfRow = numberOfColumns;
     }
     
-    const boxWidth = width / numberOfColumns -(6 * numberOfColumns);
-    const boxHeight = ((height - (6 * numberOfRow)) / numberOfRow);
+    const boxWidth =  (width / numberOfColumns) - (8 * numberOfColumns);
+    const boxHeight = ((height - (8 * numberOfRow)) / numberOfRow);
 
     setBoxDimension({
       width: boxWidth,
@@ -604,7 +604,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   const renderVideoElement = () => {
     if (joinSucceed && tracks && !callEnded) {
       if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
-        if (pinnedParticipant) {
+        if (pinnedParticipant && lodash.size(peerIds) > 1) {
           return renderFullView();
         }
         return (

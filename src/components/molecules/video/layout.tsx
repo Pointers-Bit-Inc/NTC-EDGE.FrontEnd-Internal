@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   smallVideo: {
     backgroundColor: '#606A80',
     width: width * 0.30,
-    height: width * 0.37,
+    height: width * 0.35,
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
