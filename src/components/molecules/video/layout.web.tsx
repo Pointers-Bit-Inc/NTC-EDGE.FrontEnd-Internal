@@ -152,8 +152,8 @@ const { styles, ids } = StyleSheet.create({
       height: 2,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowRadius:15,
+    elevation: 45,
   },
   hoveredOption: {
     position: 'absolute',
@@ -748,7 +748,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               isMute={isMute}
               isVideoEnabled={isVideoEnable}
             />
-            <View style={{ position: 'absolute', right: 30, bottom: 15 }}>
+            <View style={{ position: 'absolute', right: 30, bottom: 20 }}>
               {
                 width < 768 ? renderMenu(['Messages', 'Participants'], (item:string = '') => onSetSideContent(item?.toLowerCase())) : (
                   <View style={{ flexDirection: 'row' }}>
