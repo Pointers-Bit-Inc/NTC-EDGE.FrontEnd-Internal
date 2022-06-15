@@ -52,6 +52,7 @@ const Approval=(props:any)=>{
     const [validateRemarks,setValidateRemarks]=useState<{error:boolean}>({error:false});
     const [loading,setLoading]=useState(false);
     const approveInputField = useRef()
+    const [visible, setVisible] = useState(true)
     const cancelTokenSource = axios.CancelToken.source();
     useEffect(()=>{
         approveInputField?.current?.focus()
@@ -138,7 +139,6 @@ const Approval=(props:any)=>{
 
     const onCancelPress=(event,bool?:any)=>{
         setAlertLoading(false);
-
         setShowAlert(false);
         if(approvalIcon){
 
@@ -165,6 +165,7 @@ const Approval=(props:any)=>{
     const [isTyping,setIsTyping]=useState(true);
     const [onFocus,setOnFocus]=useState(false);
     const dimensions=useWindowDimensions();
+
     useEffect(()=>{
         if(showAlert || props.visible){
             //TODO: add state
@@ -202,9 +203,13 @@ const Approval=(props:any)=>{
                 <CustomAlert
                     showClose={showClose}
                     type={approvalIcon ? APPROVED : ""}
-                    onDismissed={()=>onCancelPress(APPROVED,true)}
+                    onDismissed={()=>{
+                        setVisible(false)
+                        onCancelPress(APPROVED,true)
+                    }}
                     onLoading={alertLoading}
                     onCancelPressed={()=>{
+
                         onCancelPress('exit',true)
                     }}
                     onConfirmPressed={()=>{
@@ -228,6 +233,7 @@ const Approval=(props:any)=>{
 
                             } else if(!response){
                                 props.onDismissed(APPROVED,()=>{
+
                                     setShowAlert(false);
                                     setApprovalIcon(false);
                                     setShowClose(false);
@@ -242,7 +248,7 @@ const Approval=(props:any)=>{
                         })
 
                     }}
-                    show={showAlert} title={title}
+                    show={showAlert } title={title}
                     message={message}/>
                 <KeyboardAvoidingView
                     behavior={Platform.OS==="ios" ? "padding" : "height"}
@@ -252,7 +258,7 @@ const Approval=(props:any)=>{
                     {
                         <Animated.View style={[styles.group,{
                             width:((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync())))||dimensions.width<=768 ? "100%" : "31.6%",  //474/1500
-                            display:!showAlert ? undefined : "none"
+                            display:!showAlert && visible  ? undefined : "none"
                         },{transform:[{scale:springValue}]}]}>
                             <View style={styles.shadow}>
                                 <View style={styles.rect}>
@@ -267,7 +273,7 @@ const Approval=(props:any)=>{
                                     </Text>
                                     <View style={styles.group2}>
 
-                                        { getRole(user,[CASHIER, DIRECTOR,EVALUATOR,ACCOUNTANT])&&
+                                        { getRole(user,[CASHIER, DIRECTOR,ACCOUNTANT]) ?
                                         <InputField
                                             ref={approveInputField}
                                             inputStyle={{
@@ -305,7 +311,7 @@ const Approval=(props:any)=>{
                                                 setRemarks(text)
                                             }
                                             }
-                                        />}
+                                        /> : <View style={{paddingVertical: 20}}/>}
                                         <View style={{marginTop:5}}>
                                             <TouchableOpacity disabled={!(remarks) && getRole(user,[CASHIER])} onPress={onConfirmation}>
                                                 <View style={[styles.confirmButton, {backgroundColor:!(remarks) && getRole(user,[CASHIER]) ? disabledColor :primaryColor,}]}>

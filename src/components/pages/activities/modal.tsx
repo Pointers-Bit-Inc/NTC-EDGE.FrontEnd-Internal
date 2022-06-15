@@ -366,7 +366,7 @@ function ActivityModal(props:any){
                 size={activityModalScreenComponent}
                 onModalDismissed={(event?:any)=>{
                     if(event == "cancel"){
-                        cancelTokenSource?.cancel();
+                        //cancelTokenSource?.cancel();
                     }
                     setStatus(prevStatus);
                     setRemarks(prevRemarks);
@@ -385,7 +385,6 @@ function ActivityModal(props:any){
                 }}
                 visible={approveVisible}
                 confirm={(event:any,callback:(res,callback)=>{})=>{
-                    console.log("event")
                     let status="";
                     if(getRole(user,[DIRECTOR,EVALUATOR])){
                         status=FORAPPROVAL
@@ -397,13 +396,12 @@ function ActivityModal(props:any){
                     onChangeApplicationStatus(status,(err,appId)=>{
 
                         if(!err){
-                            onApproveDismissed();
-                            props.onDismissed(true);
+
                             callback(true,(bool)=>{
 
                             })
                         } else{
-                            console.log(0);
+
                             callback(false,(bool)=>{
 
                             })
