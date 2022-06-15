@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   container: {
@@ -18,7 +18,12 @@ export default StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 12,
     fontSize: 13,
-    color: "rgba(0, 0, 0, 0.87)"
+    color: "rgba(0, 0, 0, 0.87)",
+    ...Platform.select({
+      web: {
+        outlineStyle: 'none'
+      }
+    }),
   },
 
   tag: {
