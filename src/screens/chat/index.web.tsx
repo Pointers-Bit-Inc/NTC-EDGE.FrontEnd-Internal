@@ -20,6 +20,7 @@ import {
   addChannel,
   addPendingMessage,
   addToChannelList,
+  removeChannel,
   removeSelectedMessage,
   setChannelList,
   setMeetings,
@@ -32,6 +33,7 @@ import Text from '@atoms/text';
 import {
   CheckIcon,
   CloseIcon,
+  MenuIcon,
   NewCallIcon,
   NewChatIcon,
   NewVideoIcon
@@ -43,6 +45,7 @@ import MeetIcon from '@assets/svg/meetIcon';
 import {
   getChannelImage,
   getChannelName,
+  getDateTimeString,
   getTimeDifference,
   getTimeString
 } from '../../utils/formatting';
@@ -73,7 +76,7 @@ import SendIcon from '@assets/svg/SendIcon';
 import useAttachmentPicker from '../../hooks/useAttachment';
 import Modal from 'react-native-modal';
 import Info from '@screens/chat/info';
-import { MenuProvider } from 'react-native-popup-menu';
+import { Menu, MenuOption, MenuOptions, MenuProvider, MenuTrigger } from 'react-native-popup-menu';
 
 const profPic = require('@assets/newMessageProfilePicture.png');
 const draftProfPic = require('@assets/draftNewMessageProfilePicture.png');
@@ -82,6 +85,7 @@ import { MEET } from '../../reducers/activity/initialstate';
 import { NoContent } from '@screens/meet/index.web';
 import { openUrl } from 'src/utils/web-actions';
 import IParticipants from 'src/interfaces/IParticipants';
+import Loading from '@components/atoms/loading';
 
 const { width, height } = Dimensions.get('window');
 
@@ -142,7 +146,18 @@ const styles = StyleSheet.create({
     color: text.default,
     fontSize: fontValue(18)
   },
-
+  menuOptions: {
+    padding: 10,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius:15,
+    elevation: 45,
+  },
   separator: {
     height: StyleSheet.hairlineWidth,
     width: width - 70,
@@ -243,6 +258,23 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     bottom: 0
+  },
+  menuOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  loading: {
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    position: 'absolute',
+    zIndex: 999,
+    width,
+    height,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  contentContainerStyle: {
+    borderRadius: 15,
+    maxWidth: 300,
   }
 });
 
@@ -256,7 +288,7 @@ function Chat(props: {
   onBackdropPress: () => void;
   onSubmit: (res: any) => void;
 }) {
-  const { getChatList, endMeeting, leaveMeeting } = useSignalr();
+  const { getChatList, endMeeting, leaveMeeting, leaveChannel } = useSignalr();
   const swipeableRef: any = useRef({});
   const selectedChannel = useSelector(
     (state: RootStateOrAny) => state.channel.selectedChannel
@@ -272,6 +304,7 @@ function Chat(props: {
   const [searchText, setSearchText] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const [updating, setUpdating] = useState(false);
   const [sendRequest, setSendRequest] = useState(0);
   const [pageIndex, setPageIndex] = useState(1);
   const [fetching, setFetching] = useState(false);
@@ -375,37 +408,6 @@ function Chat(props: {
     </View>
   );
 
-  const renderRightActions = (progress, dragX, item) => {
-    const trans = dragX.interpolate({
-      inputRange: [-50, 100],
-      outputRange: [10, 100]
-    });
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          setSelectedItem(item);
-          setShowAlert(true);
-        }}
-      >
-        <Animated.View
-          style={{
-            paddingHorizontal: 15,
-            marginLeft: 10,
-            backgroundColor: '#CF0327',
-            flex: 1,
-            transform: [{ translateX: trans }],
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <NewDeleteIcon color={'white'} />
-          <Text color="white" size={12}>
-            Delete
-          </Text>
-        </Animated.View>
-      </TouchableOpacity>
-    );
-  };
   const ListFooterComponent = () => {
     return (
       <ListFooter
@@ -436,7 +438,6 @@ function Chat(props: {
               Chat
             </Text>
           </View>
-
           <View style={{ width: 25 }} />
           <Hoverable>
             {(isHovered) => (
@@ -596,30 +597,26 @@ function Chat(props: {
                 <View
                   style={!props.newChat && !item._id && { display: 'none' }}
                 >
-                  <Swipeable
-                    ref={(ref) => (swipeableRef.current[item._id] = ref)}
-                    renderRightActions={(progress, dragX) =>
-                      renderRightActions(progress, dragX, item)
-                    }
-                  >
-                    <Hoverable>
-                      {(isHovered) => (
-                        <View
-                          style={{
-                            backgroundColor:
-                              ((item.id == -1 || item.id == -2) &&
-                              item?._id == undefined &&
-                              item.name == 'New Chat'
-                                ? '#F0F0FF'
-                                : !props.newChat &&
-                                  selectedChannel?._id === item?._id) &&
-                              !isMobile
-                                ? '#F0F0FF'
-                                : isHovered
-                                ? '#F0F0FF'
-                                : '#fff'
-                          }}
-                        >
+                  <Hoverable>
+                    {(isHovered) => (
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          backgroundColor:
+                            ((item.id == -1 || item.id == -2) &&
+                            item?._id == undefined &&
+                            item.name == 'New Chat'
+                              ? '#F0F0FF'
+                              : !props.newChat &&
+                                selectedChannel?._id === item?._id) &&
+                            !isMobile
+                              ? '#F0F0FF'
+                              : isHovered
+                              ? '#F0F0FF'
+                              : '#fff'
+                        }}
+                      >
+                        <View style={{ flex: 1 }}>
                           <ChatItem
                             image={getChannelImage(item)}
                             imageSize={50}
@@ -645,9 +642,47 @@ function Chat(props: {
                             }}
                           />
                         </View>
-                      )}
-                    </Hoverable>
-                  </Swipeable>
+                        <View style={{ justifyContent: 'center', right: 25 }}>
+                          <View style={{ overflow: 'hidden', width: isHovered ? undefined : 0 }}>
+                            <Menu>
+                              <MenuTrigger>
+                                <MenuIcon type='more' color='#4E4B66' size={fontValue(30)} />
+                              </MenuTrigger>
+                              <MenuOptions optionsContainerStyle={styles.menuOptions}>
+                                <MenuOption onSelect={() => {
+                                  setSelectedItem(item);
+                                  setShowAlert(true);
+                                }}>
+                                  <View style={[styles.menuOption]}>
+                                    <NewDeleteIcon
+                                      height={fontValue(20)}
+                                      width={fontValue(20)}
+                                      color={text.error}
+                                    />
+                                    <Text style={{ marginLeft: 5 }} color={text.error} size={14}>
+                                      Delete
+                                    </Text>
+                                  </View>
+                                </MenuOption>
+                              </MenuOptions>
+                            </Menu>
+                          </View>
+                          {
+                            !isHovered && (
+                              <View style={{ justifyContent: 'center', right: 25 }}>
+                                <Text
+                                  color='#808196'
+                                  size={10}
+                                >
+                                  {getDateTimeString(item?.lastMessage?.createdAt, 'MM/DD')}
+                                </Text>
+                              </View>
+                            )
+                          }
+                        </View>
+                      </View>
+                    )}
+                  </Hoverable>
                 </View>
               )
             );
@@ -661,13 +696,12 @@ function Chat(props: {
       )}
 
       <AwesomeAlert
-        overlayStyle={{ flex: 1 }}
+        overlayStyle={{ flex: 1, width: '100%', height: '100%', backgroundColor: undefined }}
+        show={showAlert}
         showProgress={false}
-        contentContainerStyle={{ borderRadius: 15, maxWidth: width * 0.7 }}
+        contentContainerStyle={[styles.contentContainerStyle]}
         titleStyle={styles.title}
-        message={
-          'Are you sure you want to permanently delete this conversation?'
-        }
+        message={'Are you sure you want to permanently delete this conversation?'}
         messageStyle={styles.title}
         contentStyle={styles.content}
         closeOnTouchOutside={false}
@@ -681,7 +715,34 @@ function Chat(props: {
         actionContainerStyle={{ justifyContent: 'space-around' }}
         cancelText="Cancel"
         confirmText="Yes"
+        onCancelPressed={() => {
+          swipeableRef.current[selectedItem?._id]?.close();
+          setShowAlert(false);
+        }}
+        onConfirmPressed={() => {
+          setShowAlert(false);
+          setUpdating(true);
+          setTimeout(() => 
+            leaveChannel(selectedItem._id, (err, res) => {
+              setUpdating(false);
+              if (res) {
+                dispatch(removeChannel(res));
+              }
+              if (err) {
+                console.log('ERR', err);
+              }
+            }),
+            500
+          );
+        }} 
       />
+      {
+        updating && (
+          <View style={styles.loading}>
+            <Loading color='#fff' size={10} />
+          </View>
+        )
+      }
     </View>
   );
 }

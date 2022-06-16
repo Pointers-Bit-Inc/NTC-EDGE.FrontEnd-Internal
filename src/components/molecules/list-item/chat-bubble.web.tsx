@@ -1,8 +1,8 @@
-import React,{FC,useState} from 'react'
+import React,{FC,useRef,useState} from 'react'
 import {Dimensions,Image,Platform,StyleSheet,TouchableOpacity,View} from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
-import {CheckIcon,NewFileIcon,NewMeetIcon,NewVideoIcon,WriteIcon} from '@components/atoms/icon';
+import {CheckIcon,MenuIcon,NewFileIcon,NewMeetIcon,NewVideoIcon,WriteIcon} from '@components/atoms/icon';
 import {getChatTimeString,getDateTimeString,getFileSize, getTimerString} from 'src/utils/formatting'
 import {bubble,button,primaryColor,text} from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
@@ -14,6 +14,8 @@ import hairlineWidth=StyleSheet.hairlineWidth;
 import IParticipants from 'src/interfaces/IParticipants';
 import GroupImage from '../image/group';
 import dayjs from 'dayjs';
+import { useHover } from 'react-native-web-hooks';
+import { Menu, MenuOption, MenuOptions, MenuProvider, MenuTrigger } from 'react-native-popup-menu';
 
 const { width } = Dimensions.get('window');
 
@@ -52,6 +54,7 @@ const styles = StyleSheet.create({
   },
   systemMessage: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     marginTop: 5,
     alignItems: 'center',
     marginLeft: -3,
@@ -155,6 +158,26 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 5,
     marginBottom: 5,
+  },
+  menuTrigger: {
+    height: 30,
+    width: 30,
+    backgroundColor: 'white',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  menuOptions: {
+    padding: 10,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius:15,
+    elevation: 45,
   }
 })
 
@@ -185,6 +208,23 @@ interface Props {
   [x: string]: any;
 }
 
+const MenuBar = () => {
+  return (
+    <Menu>
+      <MenuTrigger>
+        <View style={{ height: 30, width: 30, backgroundColor: 'white', borderRadius: 30, justifyContent: 'center', alignItems: 'center' }}>
+          <MenuIcon type='more' color='#4E4B66' size={fontValue(24)} />
+        </View>
+      </MenuTrigger>
+      <MenuOptions>
+        <MenuOption>
+          <Text>Delete</Text>
+        </MenuOption>
+      </MenuOptions>
+    </Menu>
+  )
+}
+
 const ChatBubble:FC<Props> = ({
   message,
   messageType,
@@ -212,6 +252,8 @@ const ChatBubble:FC<Props> = ({
   isGroup = false,
   ...otherProps
 }) => {
+  const ref = useRef(null);
+  const isHovered = useHover(ref);
   const [showDetails, setShowDetails] = useState(false);
   const deletedOrUnsend = deleted || (unSend && isSender);
 
@@ -301,7 +343,7 @@ const ChatBubble:FC<Props> = ({
       </View>
     )
   }
-  console.log('MESSAGE TYPE', messageType, system, message);
+
   if (messageType === 'leave' || messageType === 'removed' || messageType === 'added' || messageType === 'newroom' || (messageType === 'text' && system)) {
     return (
       <>
@@ -403,7 +445,7 @@ const ChatBubble:FC<Props> = ({
   }
 
   return (
-    <>
+    <View ref={ref}>
       {renderTime()}
       <View style={[styles.container, { maxWidth }, style]}>
         {
@@ -476,6 +518,24 @@ const ChatBubble:FC<Props> = ({
             </View>
           )
         }
+        {
+          (isSender && !(deleted || unSend || system)) && (
+            <View style={{ overflow: 'hidden', width: isHovered ? undefined : 0, marginLeft: 5, alignSelf: 'center' }}>
+              <Menu>
+                <MenuTrigger>
+                  <View style={styles.menuTrigger}>
+                    <MenuIcon type='more' color='#4E4B66' size={fontValue(24)} />
+                  </View>
+                </MenuTrigger>
+                <MenuOptions optionsContainerStyle={styles.menuOptions}>
+                  <MenuOption onSelect={() => {}}>
+                    <Text>Delete</Text>
+                  </MenuOption>
+                </MenuOptions>
+              </Menu>
+            </View>
+          )
+        }
       </View>
       {
         ((showDetails || showSeen) && lodash.size(seenByOthers) > 0) && (
@@ -527,7 +587,7 @@ const ChatBubble:FC<Props> = ({
           </View>
         )
       }
-    </>
+    </View>
   )
 }
 

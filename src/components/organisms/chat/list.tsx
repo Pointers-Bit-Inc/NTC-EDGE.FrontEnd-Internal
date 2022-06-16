@@ -125,7 +125,13 @@ const ChatList: FC<Props> = ({
     let specialMessage = item.type === 'newmeeting';
     
     if (Platform.OS === 'web') {
-      specialMessage = item.type === 'newmeeting' || item.type === 'callended' || item.type === 'leave' || item.type === 'removed' || item.type === 'added';
+      specialMessage = item.type === 'newmeeting' ||
+      item.type === 'callended' ||
+      item.type === 'leave' ||
+      item.type === 'removed' ||
+      item.type === 'added' ||
+      item.type === 'newroom' ||
+      (item.type === 'text' && item.system);
     }
 
     return (
@@ -168,21 +174,17 @@ const ChatList: FC<Props> = ({
     )
   }
   return (
-    <>
-
-      <FlatList
-        showsVerticalScrollIndicator={Platform.OS === 'web'}
-        inverted={true}
-        data={error ? [] : messages}
-        renderItem={renderItem}
-        keyExtractor={(item:any) => item._id}
-        ListEmptyComponent={emptyComponent}
-        ListFooterComponent={() => <View style={{ height: 15 }} />}
-        ListHeaderComponent={listHeaderComponent}
-        {...otherProps}
-      />
-    </>
-
+    <FlatList
+      showsVerticalScrollIndicator={Platform.OS === 'web'}
+      inverted={true}
+      data={error ? [] : messages}
+      renderItem={renderItem}
+      keyExtractor={(item:any) => item._id}
+      ListEmptyComponent={emptyComponent}
+      ListFooterComponent={() => <View style={{ height: 15 }} />}
+      ListHeaderComponent={listHeaderComponent}
+      {...otherProps}
+    />
   )
 }
 

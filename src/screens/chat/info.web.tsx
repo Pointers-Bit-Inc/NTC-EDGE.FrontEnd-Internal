@@ -39,7 +39,7 @@ const {height,width}=Dimensions.get('window');
 
 const styles = StyleSheet.create({
     safeAreaView: {
-        flex:0.9,
+        flex:0.93,
         backgroundColor:"#fff"
     },
     cancelText: {
@@ -509,7 +509,7 @@ const Info = (props:any) => {
         ))
     };
     const [onAddParticipant,setOnAddParticipant]=useState(false);
-    return <SafeAreaView style={styles.safeAreaView}>
+    return <View style={styles.safeAreaView}>
 
         {!onAddParticipant&&<View style={styles.header}>
             <View>
@@ -795,7 +795,7 @@ const Info = (props:any) => {
             title={alertData.title}
             message={alertData.message}/>
         
-    </SafeAreaView>
+    </View>
 
 
 };
