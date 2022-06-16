@@ -53,7 +53,7 @@ const ModalTab=props=>{
             id:4,
             name:'SOA & Payment',
             active:false,
-            isShow:[CASHIER,ACCOUNTANT],
+            isShow:[CASHIER,ACCOUNTANT, EVALUATOR],
             label:<View style={[styles.tabItem,{gap:5}]}><SoaPaymentWebIcon/><Text
                 style={styles.tabTextItem}> SOA & Payment</Text></View>
         },
