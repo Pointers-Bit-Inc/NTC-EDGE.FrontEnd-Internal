@@ -11,12 +11,10 @@ import { View, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithou
 import StyleSheet from 'react-native-media-query';
 import lodash from 'lodash';
 import { useInitializeAgora } from 'src/hooks/useAgora';
-import { MicIcon, CameraIcon, MicOffIcon, MessageIcon, ParticipantsIcon, CloseIcon, ArrowDownIcon, MenuIcon } from '@components/atoms/icon';
-
+import { MicOffIcon, MessageIcon, ParticipantsIcon, CloseIcon, ArrowDownIcon, MenuIcon } from '@components/atoms/icon';
+import { Hoverable } from 'react-native-web-hooks';
 import {
   AgoraVideoPlayer,
-  IMicrophoneAudioTrack,
-  ICameraVideoTrack
 } from "agora-rtc-react";
 
 import ConnectingVideo from '@components/molecules/video/connecting'
@@ -30,7 +28,7 @@ import { fontValue } from '@components/pages/activities/fontValue';
 import Info from '@screens/chat/info';
 import ChatView from '@components/pages/chat-modal/view';
 import { RootStateOrAny, useSelector } from 'react-redux';
-import { Bold } from '@styles/font';
+import { Bold, Regular500 } from '@styles/font';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import MeetingParticipants from '@screens/meet/participants';
 const { width } = Dimensions.get('window');
@@ -154,8 +152,14 @@ const { styles, ids } = StyleSheet.create({
       height: 2,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowRadius:15,
+    elevation: 45,
+  },
+  hoveredOption: {
+    position: 'absolute',
+    zIndex: 99,
+    top: 5,
+    right: 0,
   }
 })
 interface Props {
@@ -212,13 +216,14 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 }, ref) => {
   const { height, width } = useWindowDimensions();
   const { tracks } = options;
-  const { _id, name, hasRoomName, otherParticipants, lastMessage } = useSelector(
+  const { _id, name, otherParticipants, lastMessage } = useSelector(
     (state:RootStateOrAny) => {
       const { selectedChannel } = state.channel;
       selectedChannel.otherParticipants = lodash.reject(selectedChannel.participants, p => p._id === user._id);
       return selectedChannel;
     }
   );
+  const isHost = useSelector((state:RootStateOrAny) => state.meeting?.options?.isHost);
   const [selectedPeer, setSelectedPeer]:any = useState(null);
   const [peerList, setPeerList]:any = useState([]);
   const [sideContent, setSideContent] = useState('');
@@ -283,13 +288,16 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   useEffect(() => {
     if (isInit) {
       joinChannel();
+
+      return () => {
+        leaveChannel();
+      }
     }
   }, [isInit]);
 
   useEffect(() => {
     if (callEnded) {
       setSideContent('');
-      leaveChannel();
     }
   }, [callEnded]);
 
@@ -383,10 +391,10 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     }
 
     switch(true) {
-      case width <= 400 && numberOfColumns > 1:
+      case width <= 375 && numberOfColumns > 1:
         numberOfColumns = 1;
         break;
-      case width > 400 && width <= 992 && numberOfColumns > 2:
+      case width > 375 && width <= 992 && numberOfColumns > 2:
         numberOfColumns = 2;
         break;
       case width > 992 && width <= 1200 && numberOfColumns > 3:
@@ -419,8 +427,8 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
       numberOfRow = numberOfColumns;
     }
     
-    const boxWidth = width / numberOfColumns -(6 * numberOfColumns);
-    const boxHeight = ((height - (6 * numberOfRow)) / numberOfRow);
+    const boxWidth =  (width / numberOfColumns) - (8 * numberOfColumns);
+    const boxHeight = ((height - (8 * numberOfRow)) / numberOfRow);
 
     setBoxDimension({
       width: boxWidth,
@@ -432,7 +440,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     const userParticipantDetails:IParticipants = lodash.find(meetingParticipants, (p:IParticipants) => p._id === user?._id);
     if (userParticipantDetails) {
       if (!!userParticipantDetails.muted !== isMute) {
-        toggleIsMute();
+        toggleIsMute(userParticipantDetails.muted);
       }
     }
   }
@@ -456,74 +464,47 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   const onLayout = ({ nativeEvent }:any) => setLayout(nativeEvent.layout);
 
   const renderVideoItem = (item:any, style:any = null, pinned = false) => {
-    const findParticipant = lodash.find(meetingParticipants, p => p.uid === item);
+    if (pinned) return null;
+    
+    const findParticipant = lodash.find(meetingParticipants, (p:IParticipants) => p.uid === item);
+    
     if (!findParticipant) return null
+
+    let options = [
+      findParticipant.muted ? 'Unmute' : 'Mute',
+      pinnedParticipant?._id === findParticipant?._id ? 'Unpin participant' : 'Pin participant'
+    ];
+
+    if (!isHost) {
+      options.shift();
+    }
+
+    const onSelectOption = (option = '') => {
+      const op = option.toLowerCase();
+      if (op === 'pin participant' || op === 'unpin participant') {
+        onSetPinnedParticipant(findParticipant)
+      } else if (op === 'mute' || op === 'unmute') {
+        onMute(findParticipant.muted, findParticipant);
+      }
+    }
+
     if (item === myId && !pinned) {
       return (
-        <TouchableWithoutFeedback key={item} onPress={() => onSetPinnedParticipant(findParticipant)}>
-          <View style={[
-            styles.videoBox,
-            style || { width: boxDimension.width, height: boxDimension.height },
-            volumeIndicator[item] && { borderColor: '#2863D6' }
-          ]}>
-            {
-              isVideoEnable ? (
-                <AgoraVideoPlayer
-                  style={videoStyle}
-                  videoTrack={tracks[1]}
-                  config={{
-                    mirror: false,
-                    fit: 'contain',
-                  }}
-                />
-              ) : (
-                <ProfileImage
-                  image={findParticipant?.profilePicture?.thumb}
-                  name={`${findParticipant.firstName} ${findParticipant.lastName}`}
-                  size={50}
-                  textSize={16}
-                />
-              )
-            }
-            <Text
-              style={
-                isVideoEnable ?
-                styles.floatingName : styles.name
-              }
-              numberOfLines={1}
-              size={12}
-              color={'white'}
-            >
-              {findParticipant?.title || ''} {findParticipant.firstName}
-            </Text>
-            {
-              isMute ? (
-                <View style={styles.mic}>
-                  <MicOffIcon
-                    color={text.error}
-                    width={fontValue(16)}
-                    height={fontValue(16)}
-                  />
-                </View>
-              ) : null
-            }
-          </View>
-        </TouchableWithoutFeedback>
-      );
-    }
-    return (
-      <TouchableWithoutFeedback key={item} onPress={() => onSetPinnedParticipant(findParticipant)}>
-        <View style={[
+        <View key={item} style={[
           styles.videoBox,
           style || { width: boxDimension.width, height: boxDimension.height },
-          !!volumeIndicator[item] && { borderColor: '#2863D6' }
+          volumeIndicator[item] && { borderColor: '#2863D6' },
         ]}>
+          <View style={styles.hoveredOption}>
+            {
+              renderMenu(options, onSelectOption)
+            }
+          </View>
           {
-            (!!peerVideoState[item] && !pinned) ? (
+            isVideoEnable ? (
               <AgoraVideoPlayer
-                key={item}
                 style={videoStyle}
-                videoTrack={peerVideoState[item]} 
+                videoTrack={tracks[1]}
                 config={{
                   mirror: false,
                   fit: 'contain',
@@ -540,7 +521,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
           }
           <Text
             style={
-              (!!peerVideoState[item] && !pinned) ?
+              isVideoEnable ?
               styles.floatingName : styles.name
             }
             numberOfLines={1}
@@ -550,7 +531,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             {findParticipant?.title || ''} {findParticipant.firstName}
           </Text>
           {
-            findParticipant.muted ? (
+            isMute ? (
               <View style={styles.mic}>
                 <MicOffIcon
                   color={text.error}
@@ -561,14 +542,69 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             ) : null
           }
         </View>
-      </TouchableWithoutFeedback>
+      );
+    }
+    return (
+      <View key={item} style={[
+        styles.videoBox,
+        style || { width: boxDimension.width, height: boxDimension.height },
+        !!volumeIndicator[item] && { borderColor: '#2863D6' },
+      ]}>
+        <View style={styles.hoveredOption}>
+          {
+            renderMenu(options, onSelectOption)
+          }
+        </View>
+        {
+          (!!peerVideoState[item] && !pinned) ? (
+            <AgoraVideoPlayer
+              key={item}
+              style={videoStyle}
+              videoTrack={peerVideoState[item]} 
+              config={{
+                mirror: false,
+                fit: 'contain',
+              }}
+            />
+          ) : (
+            <ProfileImage
+              image={findParticipant?.profilePicture?.thumb}
+              name={`${findParticipant.firstName} ${findParticipant.lastName}`}
+              size={50}
+              textSize={16}
+            />
+          )
+        }
+        <Text
+          style={
+            (!!peerVideoState[item] && !pinned) ?
+            styles.floatingName : styles.name
+          }
+          numberOfLines={1}
+          size={12}
+          color={'white'}
+        >
+          {findParticipant?.title || ''} {findParticipant.firstName}
+        </Text>
+        {
+          findParticipant.muted ? (
+            <View style={styles.mic}>
+              <MicOffIcon
+                color={text.error}
+                width={fontValue(16)}
+                height={fontValue(16)}
+              />
+            </View>
+          ) : null
+        }
+      </View>
     );
   }
 
   const renderVideoElement = () => {
     if (joinSucceed && tracks && !callEnded) {
       if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
-        if (pinnedParticipant) {
+        if (pinnedParticipant && lodash.size(peerIds) > 1) {
           return renderFullView();
         }
         return (
@@ -607,7 +643,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             data={peerIds}
             renderItem={({ item }) => renderVideoItem(
               item,
-              { width: 280, height: 180, marginBottom: 10 },
+              { width: 280, height: 180 },
               pinnedParticipant?.uid === item
             )}
           />
@@ -712,9 +748,9 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               isMute={isMute}
               isVideoEnabled={isVideoEnable}
             />
-            <View style={{ position: 'absolute', right: 30, bottom: 15 }}>
+            <View style={{ position: 'absolute', right: 30, bottom: 20 }}>
               {
-                width < 400 ? renderMenu(['Messages', 'Participants'], (item:string = '') => onSetSideContent(item?.toLowerCase())) : (
+                width < 768 ? renderMenu(['Messages', 'Participants'], (item:string = '') => onSetSideContent(item?.toLowerCase())) : (
                   <View style={{ flexDirection: 'row' }}>
                     <TouchableOpacity
                       onPress={() => onSetSideContent('messages')}

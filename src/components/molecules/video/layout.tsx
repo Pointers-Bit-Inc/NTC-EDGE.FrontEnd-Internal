@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   smallVideo: {
     backgroundColor: '#606A80',
     width: width * 0.30,
-    height: width * 0.37,
+    height: width * 0.35,
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: 10,
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 30 : 60,
+    bottom: 30,
   },
 })
 
@@ -216,6 +216,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   const {
     initAgora,
     destroyAgoraEngine,
+    leaveChannel,
     joinChannel,
     isInit,
     myId,
@@ -262,6 +263,11 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     if (isInit) {
       joinChannel();
       setStarted(true);
+
+      return () => {
+        leaveChannel();
+        destroyAgoraEngine();
+      }
     }
   }, [isInit]);
 
@@ -336,7 +342,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     const userParticipantDetails:IParticipants = lodash.find(meetingParticipants, (p:IParticipants) => p._id === user?._id);
     if (userParticipantDetails) {
       if (!!userParticipantDetails.muted !== isMute) {
-        toggleIsMute();
+        toggleIsMute(userParticipantDetails.muted);
       }
     }
   }
@@ -453,7 +459,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
           )
         }
         {
-          isMaximize && peerAudioState[selectedPeer] === 0 ? (
+          isMaximize && findParticipant.muted ? (
             <View style={[styles.mic, { top: 85, left: 18 }]}>
               <MicOffIcon
                 color={text.error}
@@ -559,7 +565,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               {findParticipant?.title || ''} {findParticipant.firstName}
             </Text>
             {
-              peerAudioState[item] === 0 ? (
+              findParticipant.muted ? (
                 <View style={styles.mic}>
                   <MicOffIcon
                     color={text.error}

@@ -30,8 +30,8 @@ import { RFValue } from 'react-native-responsive-fontsize';
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const dimensions = {
-  width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height + (Platform.OS === 'ios' ? 0 : 60),
+  width: Dimensions.get('screen').width,
+  height: Dimensions.get('screen').height,
 };
 
 const VideoWidth = dimensions.width * 0.5;

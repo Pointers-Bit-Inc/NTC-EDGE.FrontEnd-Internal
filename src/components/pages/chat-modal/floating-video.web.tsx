@@ -277,8 +277,15 @@ const FloatingVideo = ({ tracks }:any) => {
     }
   }
 
-  const onMute = (muted:boolean) => {
-    muteParticipant(meetingId, { muted });
+  const onMute = (muted:boolean, selectedParticipant:any) => {
+    if (selectedParticipant) {
+      muteParticipant(meetingId, {
+        participantId: selectedParticipant._id,
+        muted: !selectedParticipant.muted,
+      });
+    } else {
+      muteParticipant(meetingId, { muted });
+    }
   }
 
   const onSetPinnedParticipant = (participant:IParticipants) => {
