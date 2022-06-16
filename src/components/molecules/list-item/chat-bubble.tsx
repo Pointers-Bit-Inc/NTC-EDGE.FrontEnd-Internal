@@ -1,17 +1,19 @@
-import React, { FC, useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, Platform, Dimensions, Image } from 'react-native'
+import React,{FC,useState} from 'react'
+import {Dimensions,Image,Platform,StyleSheet,TouchableOpacity,View} from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
-import { CheckIcon, DeleteIcon, NewFileIcon, WriteIcon } from '@components/atoms/icon'
-import { getChatTimeString, getDateTimeString, getFileSize, getTimerString } from 'src/utils/formatting'
-import { primaryColor, bubble, text, outline, button } from '@styles/color'
+import {CheckIcon,NewFileIcon,NewMeetIcon,WriteIcon} from '@components/atoms/icon';
+import {getChatTimeString,getFileSize, getTimerString} from 'src/utils/formatting'
+import {bubble,button,primaryColor,text} from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
-import { fontValue } from '@components/pages/activities/fontValue';
+import {Regular500} from '@styles/font';
+import {fontValue} from '@components/pages/activities/fontValue';
 import IAttachment from 'src/interfaces/IAttachment';
-import dayjs from 'dayjs';
+import hairlineWidth=StyleSheet.hairlineWidth;
 import IParticipants from 'src/interfaces/IParticipants';
-import { Regular500 } from '@styles/font';
+import GroupImage from '../image/group';
+import dayjs from 'dayjs';
 
 const { width } = Dimensions.get('window');
 
@@ -39,6 +41,7 @@ const styles = StyleSheet.create({
         paddingBottom:  undefined,
       }
     })
+
   },
   imageBubble: {
     marginRight: 2,
@@ -47,10 +50,19 @@ const styles = StyleSheet.create({
     height: width * 0.3,
     backgroundColor: bubble.primary,
   },
+  image: {
+    width: 25,
+    height: 25,
+    borderRadius: 25,
+    backgroundColor: primaryColor,
+    marginRight: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   seenContainer: {
-    paddingTop: 5,
+    paddingTop: 3,
+    paddingBottom: 10,
     flexDirection: 'row',
-    paddingHorizontal: 5,
   },
   seenTimeContainer: {
     alignSelf: 'center',
@@ -58,12 +70,33 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 10,
   },
+
   flipX: {
     transform: [
       {
         scaleX: -1
       }
     ]
+  },
+  hrText:{
+    flex:1,
+    paddingVertical: 20,
+    alignSelf:'center',
+    width:"100%",
+    flexDirection:"row",
+    justifyContent:"center"
+  },
+  border:{
+    flex:1,
+    backgroundColor:  "#D1D1D6",
+    width:"100%",
+    height:hairlineWidth,
+    alignSelf:"center"
+  },
+  hrContent:{
+    color:  "#2863D6",
+    paddingHorizontal:20,
+    textAlign:'center'
   },
   check: {
     borderRadius: fontValue(12),
@@ -98,32 +131,13 @@ const styles = StyleSheet.create({
     width: width * 0.3,
     height: width * 0.3,
   },
-  hrText:{
-    flex:1,
-    paddingVertical: 20,
-    alignSelf:'center',
-    width:"100%",
-    flexDirection:"row",
-    justifyContent:"center"
-  },
-  border:{
-    flex:1,
-    backgroundColor:  "#D1D1D6",
-    width:"100%",
-    height:1,
-    alignSelf:"center"
-  },
-  hrContent:{
-    color:  "#2863D6",
-    paddingHorizontal:20,
-    textAlign:'center'
-  },
   notif: {
     backgroundColor: '#C4C4C4',
     alignSelf: 'center',
     paddingHorizontal: 15,
     paddingVertical: 2,
     borderRadius: 15,
+    marginBottom: 5,
     marginTop: 5,
   },
   callAgainBtn: {
@@ -133,7 +147,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: button.info,
     borderRadius: 5,
-    marginTop: 10,
+    marginTop: 5,
     marginBottom: 5,
   }
 })
@@ -142,8 +156,8 @@ interface Props {
   message?: string;
   messageType?: string;
   attachment?: IAttachment;
-  isSender?: boolean;
   sender?: any;
+  isSender?: boolean;
   maxWidth?: any;
   style?: any;
   createdAt?: any;
@@ -161,6 +175,7 @@ interface Props {
   meeting?: any;
   onCallAgain?: any;
   user?: any;
+  isGroup?: boolean;
   [x: string]: any;
 }
 
@@ -168,8 +183,8 @@ const ChatBubble:FC<Props> = ({
   message,
   messageType,
   attachment,
-  isSender = false,
   sender = {},
+  isSender = false,
   maxWidth = '60%',
   style,
   createdAt,
@@ -188,16 +203,41 @@ const ChatBubble:FC<Props> = ({
   meeting = null,
   onCallAgain = () => {},
   user = {},
+  isGroup = false,
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
   const deletedOrUnsend = deleted || (unSend && isSender);
-  const senderName = isSender ? 'You' : sender.firstName;
+
+  const _getSenderName = () => {
+    if (isSender) {
+      return 'You';
+    }
+    let result = '';
+    if (sender.title) result += sender.title + ' ';
+    result += sender.firstName;
+    return result;
+  }
+
+  const senderName = _getSenderName();
 
   const checkIfImage = (uri:any) => {
     if (uri && (uri.endsWith(".png") || uri.endsWith(".jpg") || uri.endsWith(".jpeg"))) return true;
     return false;
   };
+
+  const renderTime = () => {
+    return (showDetails || showDate) ? (
+      <View style={styles.seenTimeContainer}>
+        <Text
+            color={'#64748B'}
+            size={12}
+        >
+          {getChatTimeString(createdAt)}
+        </Text>
+      </View>
+    ) : null;
+  }
 
   const renderContent = () => {
     if (deletedOrUnsend) {
@@ -214,8 +254,7 @@ const ChatBubble:FC<Props> = ({
           }
         </Text>
       )
-    }
-    else if (!!attachment) {
+    } else if (!!attachment) {
       return (
         <View style={styles.file}>
           <NewFileIcon
@@ -244,18 +283,16 @@ const ChatBubble:FC<Props> = ({
       let joinedParticipants = [];
       let timeDiff = null;
       let missedCall = false;
-      let isGroupMeeting = false;
       let title = 'Call ended';
 
       if (meeting) {
         joinedParticipants = lodash.filter(meeting.participants, (p:IParticipants) => p.hasJoined);
-        isGroupMeeting = lodash.size(meeting.participants) > 2
         const timeStart = dayjs(meeting?.createdAt);
         const timeEnded = dayjs(meeting?.endedAt);
         timeDiff = timeEnded.diff(timeStart);
         timeDiff = getTimerString(timeDiff/1000);
 
-        if (!isGroupMeeting) {
+        if (!isGroup) {
           missedCall = lodash.size(joinedParticipants) < 2;
         }
       }
@@ -295,6 +332,20 @@ const ChatBubble:FC<Props> = ({
           >
             {getChatTimeString(createdAt)}
           </Text>
+          {
+            !!lodash.size(joinedParticipants) && isGroup && (
+              <View style={{ alignSelf: 'flex-start', marginTop: 5 }}>
+                <GroupImage
+                  participants={joinedParticipants}
+                  size={meeting?.isGroup ? 35 : 30}
+                  textSize={meeting?.isGroup ? 24 : 16}
+                  sizeOfParticipants={5}
+                  showOthers={true}
+                  inline={true}
+                />
+              </View>
+            )
+          }
           <TouchableOpacity onPress={() => onCallAgain(!meeting?.isVoiceCall)}>
             <View style={styles.callAgainBtn}>
               <Text
@@ -309,6 +360,7 @@ const ChatBubble:FC<Props> = ({
         </View>
       )
     }
+    
     return (
       <Text
         size={14}
@@ -322,31 +374,7 @@ const ChatBubble:FC<Props> = ({
   if (messageType === 'leave' || messageType === 'removed' || messageType === 'added') {
     return (
       <>
-        {
-          (showDetails || showDate) && (
-              Platform.select({
-                native:(
-                    <View style={styles.seenTimeContainer}>
-                      <Text
-                          color={'#64748B'}
-                          size={12}
-                      >
-                        {getChatTimeString(createdAt)}
-                      </Text>
-                    </View>
-                ),
-                web:(
-                    <View style={styles.hrText}>
-                      <View style={styles.border}/>
-                      <View>
-                        <Text style={[styles.hrContent, {color:  "#64748B",}]}>{getChatTimeString(createdAt)}</Text>
-                      </View>
-                      <View style={styles.border}/>
-                    </View>
-                )
-              })
-          )
-        }
+        {renderTime()}
         <View style={styles.notif}>
           <Text
             size={14}
@@ -360,33 +388,27 @@ const ChatBubble:FC<Props> = ({
     )
   }
 
+  if (messageType === 'newmeeting') {
+    return (
+      <>
+        {renderTime()}
+        <View style={{ flexDirection: 'row', marginTop: 5, alignItems: 'center', marginLeft: -3 }}>
+          <NewMeetIcon color={'#2863D6'} />
+          <Text
+            size={14}
+            color={'#606A80'}
+            style={{ textAlign: 'center', marginLeft: 5 }}
+          >
+            {`${isSender ? 'You' : `${senderName} has`} started the call`}
+          </Text>
+        </View>
+      </>
+    )
+  }
+
   return (
     <>
-      {
-        (showDetails || showDate || system) && (
-            Platform.select({
-              native:(
-                  <View style={styles.seenTimeContainer}>
-                    <Text
-                        color={text.default}
-                        size={12}
-                    >
-                      {getChatTimeString(createdAt)}
-                    </Text>
-                  </View>
-              ),
-              web:(
-                  <View style={styles.hrText}>
-                    <View style={styles.border}/>
-                    <View>
-                      <Text style={[styles.hrContent, {color:  "#808196",}]}>{getChatTimeString(createdAt)}</Text>
-                    </View>
-                    <View style={styles.border}/>
-                  </View>
-              )
-            })
-        )
-      }
+      {renderTime()}
       <TouchableOpacity
         onPress={() => !!attachment ? onPreview() : setShowDetails(!showDetails)}
         onLongPress={(isSender && !(deleted || unSend || system)) ? onLongPress : null}
@@ -394,8 +416,22 @@ const ChatBubble:FC<Props> = ({
       >
         <View style={[styles.container, { maxWidth }, style]}>
           {
+            (!isSender && isGroup) ? (
+              <View
+                style={{ marginLeft: -5 }}
+              >
+                <ProfileImage
+                  image={sender?.profilePicture?.thumb}
+                  name={`${sender.firstName} ${sender.lastName}`}
+                  size={25}
+                  textSize={10}
+                />
+              </View>
+            ) : null
+          }
+          {
             (edited && isSender && !(deleted || unSend)) && (
-              <View style={{ alignSelf: 'center', marginRight: 5 }}>
+              <View style={{ alignSelf: 'center', marginRight: 0 }}>
                 <WriteIcon
                   type='pen'
                   color={text.info}
@@ -404,40 +440,52 @@ const ChatBubble:FC<Props> = ({
               </View>
             )
           }
-          {
-            checkIfImage(attachment?.uri) && !deletedOrUnsend ? (
-              <Image
-                resizeMode={'cover'}
-                style={[
-                  styles.imageBubble,
-                  {
-                    backgroundColor: isSender ? bubble.primary : bubble.secondary
-                  }
-                ]}
-                borderRadius={10}
-                source={{ uri: attachment?.uri }}
-              />
-            ) : (
-              <View style={styles.bubbleContainer}>
-                <View
+          <View style={{ marginLeft: 5 }}>
+            {
+              (!isSender && isGroup) ? (
+                <Text
+                  size={10}
+                  color={text.default}
+                >
+                  {_getSenderName()}
+                </Text>
+              ) : null
+            }
+            {
+              checkIfImage(attachment?.uri) && !deletedOrUnsend ? (
+                <Image
+                  resizeMode={'cover'}
                   style={[
-                    styles.bubble,
+                    styles.imageBubble,
                     {
                       backgroundColor: isSender ? bubble.primary : bubble.secondary
-                    },
-                    (deletedOrUnsend || system) && {
-                      backgroundColor: '#E5E5E5'
-                    },
+                    }
                   ]}
-                >
-                  {renderContent()}
+                  borderRadius={10}
+                  source={{ uri: attachment?.uri }}
+                />
+              ) : (
+                <View style={styles.bubbleContainer}>
+                  <View
+                    style={[
+                      styles.bubble,
+                      {
+                        backgroundColor: isSender ? bubble.primary : bubble.secondary
+                      },
+                      (deletedOrUnsend || system) && {
+                        backgroundColor: '#E5E5E5'
+                      },
+                    ]}
+                  >
+                    {renderContent()}
+                  </View>
                 </View>
-              </View>
-            )
-          }
+              )
+            }
+          </View>
           {
-            (edited && !isSender) && (
-              <View style={{ alignSelf: 'center', marginLeft: 5 }}>
+            (edited && !isSender && !(deleted || unSend)) && (
+              <View style={{ alignSelf: 'center', marginTop: 10, marginLeft: 5 }}>
                 <WriteIcon
                   type='pen'
                   color={text.default}
@@ -462,21 +510,51 @@ const ChatBubble:FC<Props> = ({
         </View>
       </TouchableOpacity>
       {
-        ((showDetails || showSeen) && seenByEveryone) && !edited && (
+        ((showDetails || showSeen) && lodash.size(seenByOthers) > 0) && (
           <View
-            style={[{ flexDirection: 'row', paddingTop: 3, paddingBottom: 10 }, isSender && styles.flipX]}
+            style={[
+              styles.seenContainer,
+              {
+                maxWidth,
+                alignSelf: isSender ? 'flex-end' : 'flex-start',
+                paddingLeft: isSender ? 0 : 20,
+              }
+            ]}
           >
             {
-              seenByOthers.map(seen => (
-                <ProfileImage
-                  style={[{ marginHorizontal: 1, }, isSender && styles.flipX]}
-                  key={seen._id}
-                  image={seen?.profilePicture?.thumb}
-                  name={`${seen.firstName} ${seen.lastName}`}
-                  size={12}
-                  textSize={5}
-                />
-              ))
+              (seenByEveryone && isGroup) ? (
+                <Text
+                  color={'#64748B'}
+                  numberOfLines={2}
+                  size={10}
+                >
+                  <Text
+                    color={'#64748B'}
+                    size={10}
+                    style={{ fontFamily: Regular500 }}
+                  >
+                    {'Seen by '}
+                  </Text>
+                  everyone
+                </Text>
+              ) : (
+                <View
+                  style={[{ flexDirection: 'row' }, isSender && styles.flipX]}
+                >
+                  {
+                    seenByOthers.map(seen => (
+                      <ProfileImage
+                        style={[{ marginHorizontal: 1, }, isSender && styles.flipX]}
+                        key={seen._id}
+                        image={seen?.profilePicture?.thumb}
+                        name={`${seen.firstName} ${seen.lastName}`}
+                        size={12}
+                        textSize={5}
+                      />
+                    ))
+                  }
+                </View>
+              )
             }
           </View>
         )

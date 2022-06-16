@@ -226,27 +226,14 @@ const ChatBubble:FC<Props> = ({
 
   const renderTime = () => {
     return (showDetails || showDate) ? (
-      Platform.select({
-        native:(
-            <View style={styles.seenTimeContainer}>
-              <Text
-                  color={'#64748B'}
-                  size={12}
-              >
-                {getChatTimeString(createdAt)}
-              </Text>
-            </View>
-        ),
-        web:(
-            <View style={styles.hrText}>
-              <View style={styles.border}/>
-              <View>
-                <Text style={[styles.hrContent, {color:  "#64748B",}]}>{getChatTimeString(createdAt)}</Text>
-              </View>
-              <View style={styles.border}/>
-            </View>
-        )
-      })
+      <View style={styles.seenTimeContainer}>
+        <Text
+            color={'#64748B'}
+            size={12}
+        >
+          {getChatTimeString(createdAt)}
+        </Text>
+      </View>
     ) : null;
   }
 

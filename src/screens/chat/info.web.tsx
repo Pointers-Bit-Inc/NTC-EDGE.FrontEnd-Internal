@@ -161,7 +161,7 @@ const MenuBar = (props:MenuBarInterface) => {
                             <Text
                                 style={{marginLeft:15}}
                                 color={"black"}
-                                size={18}
+                                size={14}
                             >
                                 Call {`${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}
                             </Text>
@@ -175,7 +175,7 @@ const MenuBar = (props:MenuBarInterface) => {
                         <Text
                             style={{marginLeft:15}}
                             color={"black"}
-                            size={18}
+                            size={14}
                         >
                             Message {`${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}
                         </Text>
@@ -189,7 +189,7 @@ const MenuBar = (props:MenuBarInterface) => {
                                     <Text
                                         style={{marginLeft:15}}
                                         color={"black"}
-                                        size={18}
+                                        size={14}
                                     >
                                         Add as admin
                                     </Text>
@@ -200,7 +200,7 @@ const MenuBar = (props:MenuBarInterface) => {
                                     <Text
                                         style={{marginLeft:15}}
                                         color={text.error}
-                                        size={18}
+                                        size={14}
                                     >
                                         Remove from chat
                                     </Text>
