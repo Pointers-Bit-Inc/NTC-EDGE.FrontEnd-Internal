@@ -381,7 +381,7 @@ class TabBar extends Component<Props , State> {
                 <ScrollView
                     horizontal
                     contentContainerStyle={ [
-                        { width : "100%" } ,
+
                         styles.scrollContainer ,
                         tabMargin && { paddingRight : tabMargin } ,
                         scrollContainerStyle ,

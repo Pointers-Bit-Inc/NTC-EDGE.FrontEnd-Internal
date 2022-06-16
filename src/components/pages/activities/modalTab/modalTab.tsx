@@ -49,7 +49,7 @@ const ModalTab = props => {
             id : 4 ,
             name : 'SOA & Payment' ,
             active : false ,
-            isShow : [CASHIER , ACCOUNTANT]
+            isShow : [CASHIER , ACCOUNTANT,EVALUATOR]
         } ,
     ]);
 
