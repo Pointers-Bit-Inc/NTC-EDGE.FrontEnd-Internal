@@ -1,5 +1,5 @@
-import React,{useRef,useState} from "react";
-import {Animated,Text,TouchableWithoutFeedback,View} from "react-native";
+import React, {useRef, useState} from "react";
+import {Animated, Text, TouchableWithoutFeedback, View} from "react-native";
 import {styles} from "@pages/activities/styles";
 import ChevronDownIcon from "@assets/svg/chevron-down";
 import Collapsible from "react-native-collapsible";
@@ -88,7 +88,11 @@ const ApplicationList=(props:{onPress:()=>void,item:any,numbers:{parentIndex:num
         </TouchableWithoutFeedback>
 
         <Collapsible collapsed={!isOpen}>
-            {props.item.activity.map(props.element)}
+            {props.item.activity.sort(function(a, b) {
+                var c = new Date(a.updatedAt);
+                var d = new Date(b.updatedAt);
+                return d.getTime()-c.getTime();
+            }).map(props.element)}
             <View style={{height:30,backgroundColor:"white"}}/>
         </Collapsible>
 
