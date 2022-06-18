@@ -31,9 +31,14 @@
     "win": {
       "icon": "assets/favicon.png",
       "requestedExecutionLevel": "requireAdministrator",
+      "compression": "store",
       "target": [
         {
-          "target": "nsis"
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         }
       ]
     },
@@ -53,7 +58,9 @@
       ]
     },
     "mac": {
-      "icon": "assets/favicon.png"
+      "icon": "assets/favicon.png",
+      "identity": null,
+      "compression": "store"
     },
     "linux": {
       "icon": "assets/favicon.png"
