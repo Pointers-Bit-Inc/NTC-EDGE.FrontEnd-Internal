@@ -149,6 +149,7 @@ export default function basket(state = initialState, action = {}) {
 
             const isNotPinned = []
             const isPinned = []
+            const cashier = [CASHIER].indexOf(action.payload?.user?.role?.key) != -1;
             for (let i = 0; i < action.payload?.data.length; i++) {
                 if (((action.payload?.data[i]?.assignedPersonnel?._id || action.payload?.data[i]?.assignedPersonnel) === action.payload?.user?._id) &&
                     !isCashier(cashier, action, i)) {

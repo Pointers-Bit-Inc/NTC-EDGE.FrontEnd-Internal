@@ -5,7 +5,7 @@ import hairlineWidth = StyleSheet.hairlineWidth;
 
 export const styles = StyleSheet.create({
     pinnedActivityContainer:{
-      
+
         shadowColor: "rgba(0,0,0,0.1)",
         shadowOffset: {
             width: 0,
@@ -44,11 +44,11 @@ export const styles = StyleSheet.create({
     rect: {
         ...Platform.select({
             native: {
-                    paddingTop : 40 ,
-                    padding : 30 ,
+                paddingTop : 40 ,
+                padding : 30 ,
             },
             default: {
-               paddingTop: 10,
+                paddingTop: 10,
                 paddingHorizontal : 24 ,
             }
         }),
@@ -161,7 +161,7 @@ export const styles = StyleSheet.create({
         paddingVertical: 20,
         justifyContent: "space-between",
         flexDirection: "row",
-           alignItems: "center"
+        alignItems: "center"
     },
 
     pinnedgroup: {
@@ -276,7 +276,7 @@ export const styles = StyleSheet.create({
         height: 80
     },
     rect11: {
-       alignSelf: "center", justifyContent: "center",
+        alignSelf: "center", justifyContent: "center",
         borderRadius: 25,
         top: 27,
         left: 0,
@@ -537,7 +537,7 @@ export const styles = StyleSheet.create({
         alignItems:'center',
         backgroundColor:"#fff",
         paddingTop:15,
-         paddingBottom: 13.5,
+        paddingBottom: 13.5,
         paddingHorizontal:26
     },
     titleContainer:{

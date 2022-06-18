@@ -62,7 +62,7 @@ export function useActivities(props){
     const {user,cashier,director,evaluator,checker,accountant}=useUserRole();
     const { destroy } = useOneSignal(user);
     const [updateModal,setUpdateModal]=useState(false);
-      const [onTouch, setOnTouch] = useState(true)
+    const [onTouch, setOnTouch] = useState(true)
     const config={
         headers:{
             Authorization:"Bearer ".concat(user?.sessionToken)
@@ -82,25 +82,25 @@ export function useActivities(props){
         return state.application?.notPinnedApplications
     });
 
-   /* React.useEffect(() => {
-        if(!isMobile) {
-           props?.navigation?.addListener('focus', () => {
-                if(selectedYPos?.yPos != undefined  ){
-                    if(selectedYPos.type){
-                        flatListViewRef?.current?.scrollToOffset({ offset:  0 , animated: true });
-                        scrollViewRef?.current?.scrollTo({ y: selectedYPos.type ? selectedYPos?.yPos : 0, animated: true });
-                    }else{
-                        flatListViewRef?.current?.scrollToOffset({ offset: selectedYPos.type ? 0 :selectedYPos?.yPos + 30, animated: true });
-                    }
-                }
-            });
-        }
+    /* React.useEffect(() => {
+         if(!isMobile) {
+            props?.navigation?.addListener('focus', () => {
+                 if(selectedYPos?.yPos != undefined  ){
+                     if(selectedYPos.type){
+                         flatListViewRef?.current?.scrollToOffset({ offset:  0 , animated: true });
+                         scrollViewRef?.current?.scrollTo({ y: selectedYPos.type ? selectedYPos?.yPos : 0, animated: true });
+                     }else{
+                         flatListViewRef?.current?.scrollToOffset({ offset: selectedYPos.type ? 0 :selectedYPos?.yPos + 30, animated: true });
+                     }
+                 }
+             });
+         }
 
-        return {
+         return {
 
-        }
+         }
 
-    }, [props?.navigation, selectedYPos]);*/
+     }, [props?.navigation, selectedYPos]);*/
     const dispatch=useDispatch();
     const {getActiveMeetingList,endMeeting,leaveMeeting}=useSignalr();
 
@@ -126,7 +126,7 @@ export function useActivities(props){
         });
 
 
-        
+
 
         const list=getList(applications,selectedClone);
         const groups=list?.reduce((groups:any,activity:any)=>{
@@ -169,7 +169,7 @@ export function useActivities(props){
         }
         return groupArrays.slice(0,currentPage*25);
     };
-    
+
     const [updateUnReadReadApplication,setUpdateUnReadReadApplication]=useState(false);
     const [searchTerm,setSearchTerm]=useState('');
     const [countRefresh,setCountRefresh]=useState(0);
@@ -256,29 +256,29 @@ export function useActivities(props){
         ).catch((err)=>{
             setRefreshing(false);
             Alert.alert('Alert',err?.message||'Something went wrong.');
-             
-           if(err.request.status == "401"){
-               const api=Api(user.sessionToken);
-               dispatch(setApplications([]))
-               dispatch(setPinnedApplication([]))
-               dispatch(setNotPinnedApplication([]))
-               dispatch(setApplicationItem({}))
-               dispatch(setResetFilterStatus([]))
-               dispatch(resetUser());
-               dispatch(resetMeeting());
-               dispatch(resetChannel());
-               destroy();
-               setTimeout(()=>{
-                   props.navigation.dispatch(StackActions.replace('Login'));
-               },500);
-           }
+
+            if(err.request.status == "401"){
+                const api=Api(user.sessionToken);
+                dispatch(setApplications([]))
+                dispatch(setPinnedApplication([]))
+                dispatch(setNotPinnedApplication([]))
+                dispatch(setApplicationItem({}))
+                dispatch(setResetFilterStatus([]))
+                dispatch(resetUser());
+                dispatch(resetMeeting());
+                dispatch(resetChannel());
+                destroy();
+                setTimeout(()=>{
+                    props.navigation.dispatch(StackActions.replace('Login'));
+                },500);
+            }
         })
 
         return ()=>{
             isCurrent=false
         }
     }
-    
+
     useEffect(()=>{
         return fnApplications([{url: BASE_URL+ `/users/${user._id}/assigned-applications`, pinned: 1}, {url: BASE_URL+ `/users/${user._id}/unassigned-applications`, pinned: 0}])
     },[countRefresh,searchTerm,selectedChangeStatus.length]);
@@ -361,7 +361,7 @@ export function useActivities(props){
             page*size)<total || page_ ){
             _page="?page="+(
                 (page_ || page)+1);
-               //013021
+            //013021
             var endpoint = [{url: BASE_URL+ `/users/${user._id}/assigned-applications${_page}`, pinned: 1}, {url: BASE_URL+ `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
 
             axios.all(endpoint.map((ep) => axios.get(ep.url,{...config,params:{...query(ep.pinned)}}))).then(
@@ -438,7 +438,7 @@ export function useActivities(props){
     };
     const [sizeComponent,onLayoutComponent]=useComponentLayout();
     const [searchSizeComponent,onSearchLayoutComponent]=useComponentLayout();
-        const [activitySizeComponent,onActivityLayoutComponent]=useComponentLayout();
+    const [activitySizeComponent,onActivityLayoutComponent]=useComponentLayout();
 
     const [containerHeight,setContainerHeight]=useState(148);
     const [isReady, setIsReady] = useState(false)
@@ -496,9 +496,9 @@ export function useActivities(props){
     const onMomentumScrollEnd=()=>{
 
         const toValue=_scrollValue>containerHeight&&
-                      _clampedScrollValue>(
+        _clampedScrollValue>(
             containerHeight)/2
-                      ? _offsetValue+containerHeight : _offsetValue-containerHeight;
+            ? _offsetValue+containerHeight : _offsetValue-containerHeight;
 
         Animated.timing(offsetAnim,{
             toValue,

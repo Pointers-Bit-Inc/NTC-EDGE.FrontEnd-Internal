@@ -60,8 +60,8 @@ export default function ActivitiesPage(props:any){
 
     const dimensions=useWindowDimensions();
     const Filter=(
-                     isMobile&& !(
-                         Platform?.isPad||isTablet()))||dimensions?.width<=768 ? FilterIcon : FilterPressIcon;
+        isMobile&& !(
+            Platform?.isPad||isTablet()))||dimensions?.width<=768 ? FilterIcon : FilterPressIcon;
     const {
         isReady,
         user,
@@ -244,7 +244,7 @@ export default function ActivitiesPage(props:any){
                 }
             </ScrollView>
 
-        </View>}
+            </View>}
     </>;
 
 
@@ -256,11 +256,11 @@ export default function ActivitiesPage(props:any){
             <View style={{backgroundColor:"#F8F8F8",flex:1,flexDirection:"row"}}>
                 <View onLayout={onActivityLayoutComponent} style={[styles.container,styles.shadow,{
                     flexBasis:(
-                                  (
-                                      isMobile&& !(
-                                          Platform?.isPad||isTablet()))||dimensions?.width<768||(
-                                      (
-                                          Platform?.isPad||isTablet())&& !isLandscapeSync())) ? "100%" : 466,
+                        (
+                            isMobile&& !(
+                                Platform?.isPad||isTablet()))||dimensions?.width<768||(
+                            (
+                                Platform?.isPad||isTablet())&& !isLandscapeSync())) ? "100%" : 466,
                     flexGrow:0,
                     flexShrink:0
                 }]}>
