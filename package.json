@@ -18,7 +18,7 @@
       "output": "dist"
     },
     "nsis": {
-      "oneClick": false,
+      "oneClick": true,
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
       "installerIcon": "assets/favicon.png",
