@@ -6,6 +6,8 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
+    "mac": "yarn electron-webpack && yarn electron-builder --dir --mac",
+    "win": "yarn electron-webpack && yarn electron-builder --dir --win --x64 --ia32",
     "eject": "expo eject",
     "prettier:write": "npx prettier --write **/*.{js,jsx,ts,tsx,json} && npx prettier --write *.{js,jsx,ts,tsx,json}",
     "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx ./"
@@ -34,11 +36,7 @@
       "compression": "store",
       "target": [
         {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
+          "target": "nsis"
         }
       ]
     },
