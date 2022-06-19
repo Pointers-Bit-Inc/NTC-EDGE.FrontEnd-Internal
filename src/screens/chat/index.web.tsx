@@ -643,30 +643,34 @@ function Chat(props: {
                           />
                         </View>
                         <View style={{ justifyContent: 'center', right: 25 }}>
-                          <View style={{ overflow: 'hidden', width: isHovered ? undefined : 0 }}>
-                            <Menu>
-                              <MenuTrigger>
-                                <MenuIcon type='more' color='#4E4B66' size={fontValue(30)} />
-                              </MenuTrigger>
-                              <MenuOptions optionsContainerStyle={styles.menuOptions}>
-                                <MenuOption onSelect={() => {
-                                  setSelectedItem(item);
-                                  setShowAlert(true);
-                                }}>
-                                  <View style={[styles.menuOption]}>
-                                    <NewDeleteIcon
-                                      height={fontValue(20)}
-                                      width={fontValue(20)}
-                                      color={text.error}
-                                    />
-                                    <Text style={{ marginLeft: 5 }} color={text.error} size={14}>
-                                      Delete
-                                    </Text>
-                                  </View>
-                                </MenuOption>
-                              </MenuOptions>
-                            </Menu>
-                          </View>
+                          {
+                            !(item.id < 0) && (
+                              <View style={{ overflow: 'hidden', width: isHovered ? undefined : 0 }}>
+                                <Menu>
+                                  <MenuTrigger>
+                                    <MenuIcon type='more' color='#4E4B66' size={fontValue(30)} />
+                                  </MenuTrigger>
+                                  <MenuOptions optionsContainerStyle={styles.menuOptions}>
+                                    <MenuOption onSelect={() => {
+                                      setSelectedItem(item);
+                                      setShowAlert(true);
+                                    }}>
+                                      <View style={[styles.menuOption]}>
+                                        <NewDeleteIcon
+                                          height={fontValue(20)}
+                                          width={fontValue(20)}
+                                          color={text.error}
+                                        />
+                                        <Text style={{ marginLeft: 5 }} color={text.error} size={14}>
+                                          Delete
+                                        </Text>
+                                      </View>
+                                    </MenuOption>
+                                  </MenuOptions>
+                                </Menu>
+                              </View>
+                            )
+                          }
                           {
                             !isHovered && (
                               <View style={{ justifyContent: 'center', right: 25 }}>
@@ -696,7 +700,7 @@ function Chat(props: {
       )}
 
       <AwesomeAlert
-        overlayStyle={{ flex: 1, width: '100%', height: '100%', backgroundColor: undefined }}
+        overlayStyle={{ flex: 1, width: '100%', height: '100%' }}
         show={showAlert}
         showProgress={false}
         contentContainerStyle={[styles.contentContainerStyle]}
@@ -1250,7 +1254,7 @@ const ChatList = ({ navigation }: any) => {
               {
                 borderTopWidth: 2,
                 paddingHorizontal: 32,
-                paddingTop: 42,
+                paddingTop: Platform.OS === 'web' ? 15 : 42,
                 borderTopColor: '#efefef',
                 backgroundColor: '#f8f8f8'
               }

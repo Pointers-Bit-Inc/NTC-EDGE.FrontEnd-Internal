@@ -2,7 +2,7 @@ import React,{FC,useRef,useState} from 'react'
 import {Dimensions,Image,Platform,StyleSheet,TouchableOpacity,View} from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
-import {CheckIcon,MenuIcon,NewFileIcon,NewMeetIcon,NewVideoIcon,WriteIcon} from '@components/atoms/icon';
+import {CheckIcon,MenuIcon,NewEditIcon,NewFileIcon,NewMeetIcon,NewVideoIcon,WriteIcon} from '@components/atoms/icon';
 import {getChatTimeString,getDateTimeString,getFileSize, getTimerString} from 'src/utils/formatting'
 import {bubble,button,primaryColor,text} from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
@@ -178,7 +178,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius:15,
     elevation: 45,
-  }
+  },
+  menuOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 })
 
 interface Props {
@@ -445,149 +449,176 @@ const ChatBubble:FC<Props> = ({
   }
 
   return (
-    <View ref={ref}>
+    <>
       {renderTime()}
-      <View style={[styles.container, { maxWidth }, style]}>
-        {
-          !isSender ?(
-            <View
-              style={{ marginLeft: -5 }}
-            >
-              <ProfileImage
-                image={sender?.profilePicture?.thumb}
-                name={`${sender.firstName} ${sender.lastName}`}
-                size={25}
-                textSize={10}
-              />
-            </View>
-          ) : null
-        }
-        <View style={{ marginLeft: 5 }}>
+      <View ref={ref}>
+        <View style={[styles.container, { maxWidth }, style]}>
           {
-            (!isSender && isGroup) ? (
-              <Text
-                size={10}
-                color={text.default}
+            !isSender ?(
+              <View
+                style={{ marginLeft: -5 }}
               >
-                {_getSenderName()}
-              </Text>
+                <ProfileImage
+                  image={sender?.profilePicture?.thumb}
+                  name={`${sender.firstName} ${sender.lastName}`}
+                  size={25}
+                  textSize={10}
+                />
+              </View>
             ) : null
           }
-          {
-            checkIfImage(attachment?.uri) && !deletedOrUnsend ? (
-              <Image
-                resizeMode={'cover'}
-                style={[
-                  styles.imageBubble,
-                  {
-                    backgroundColor: isSender ? '#E3E5EF' : 'white'
-                  }
-                ]}
-                borderRadius={10}
-                source={{ uri: attachment?.uri }}
-              />
-            ) : (
-              <View style={styles.bubbleContainer}>
-                <View
+          <View style={{ marginLeft: 5 }}>
+            {
+              (!isSender && isGroup) ? (
+                <Text
+                  size={10}
+                  color={text.default}
+                >
+                  {_getSenderName()}
+                </Text>
+              ) : null
+            }
+            {
+              checkIfImage(attachment?.uri) && !deletedOrUnsend ? (
+                <Image
+                  resizeMode={'cover'}
                   style={[
-                    styles.bubble,
+                    styles.imageBubble,
                     {
                       backgroundColor: isSender ? '#E3E5EF' : 'white'
-                    },
-                    (deletedOrUnsend || system) && {
-                      backgroundColor: '#E5E5E5'
-                    },
+                    }
                   ]}
-                >
-                  {renderContent()}
+                  borderRadius={10}
+                  source={{ uri: attachment?.uri }}
+                />
+              ) : (
+                <View style={styles.bubbleContainer}>
+                  <View
+                    style={[
+                      styles.bubble,
+                      {
+                        backgroundColor: isSender ? '#E3E5EF' : 'white'
+                      },
+                      (deletedOrUnsend || system) && {
+                        backgroundColor: '#E5E5E5'
+                      },
+                    ]}
+                  >
+                    {renderContent()}
+                  </View>
                 </View>
+              )
+            }
+          </View>
+          {
+            (!isSeen && isSender && !deleted && !system && !(unSend && isSender)) && (
+              <View
+                style={[styles.check, delivered && { backgroundColor: text.info }]}
+              >
+                <CheckIcon
+                  type='check1'
+                  size={8}
+                  color={delivered ? 'white' : text.info}
+                />
+              </View>
+            )
+          }
+          {
+            (isSender && !(deleted || unSend || system)) && (
+              <View style={{ overflow: 'hidden', width: isHovered ? undefined : 0, marginLeft: 10, alignSelf: 'center' }}>
+                <Menu>
+                  <MenuTrigger>
+                    <View style={styles.menuTrigger}>
+                      <MenuIcon type='more' color='#4E4B66' size={fontValue(24)} />
+                    </View>
+                  </MenuTrigger>
+                  <MenuOptions optionsContainerStyle={styles.menuOptions}>
+                    {
+                      !attachment && (
+                        <MenuOption onSelect={() => onLongPress('edit')}>
+                          <View style={[styles.menuOption]}>
+                            <WriteIcon
+                              type='pen'
+                              color={text.default}
+                              size={16}
+                            />
+                            <Text style={{ marginLeft: 15 }} color={text.default} size={14}>
+                              Edit
+                            </Text>
+                          </View>
+                        </MenuOption>
+                      )
+                    }
+                    <MenuOption onSelect={() => onLongPress('delete')}>
+                      <View style={[styles.menuOption]}>
+                        <NewDeleteIcon
+                          height={fontValue(20)}
+                          width={fontValue(20)}
+                          color={text.error}
+                        />
+                        <Text style={{ marginLeft: 10 }} color={text.error} size={14}>
+                          Delete
+                        </Text>
+                      </View>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
               </View>
             )
           }
         </View>
         {
-          (!isSeen && isSender && !deleted && !system && !(unSend && isSender)) && (
+          ((showDetails || showSeen) && lodash.size(seenByOthers) > 0) && (
             <View
-              style={[styles.check, delivered && { backgroundColor: text.info }]}
+              style={[
+                styles.seenContainer,
+                {
+                  maxWidth,
+                  alignSelf: isSender ? 'flex-end' : 'flex-start',
+                  paddingLeft: isSender ? 0 : 20,
+                }
+              ]}
             >
-              <CheckIcon
-                type='check1'
-                size={8}
-                color={delivered ? 'white' : text.info}
-              />
-            </View>
-          )
-        }
-        {
-          (isSender && !(deleted || unSend || system)) && (
-            <View style={{ overflow: 'hidden', width: isHovered ? undefined : 0, marginLeft: 5, alignSelf: 'center' }}>
-              <Menu>
-                <MenuTrigger>
-                  <View style={styles.menuTrigger}>
-                    <MenuIcon type='more' color='#4E4B66' size={fontValue(24)} />
+              {
+                (seenByEveryone && isGroup) ? (
+                  <Text
+                    color={'#64748B'}
+                    numberOfLines={2}
+                    size={10}
+                  >
+                    <Text
+                      color={'#64748B'}
+                      size={10}
+                      style={{ fontFamily: Regular500 }}
+                    >
+                      {'Seen by '}
+                    </Text>
+                    everyone
+                  </Text>
+                ) : (
+                  <View
+                    style={[{ flexDirection: 'row' }, isSender && styles.flipX]}
+                  >
+                    {
+                      seenByOthers.map(seen => (
+                        <ProfileImage
+                          style={[{ marginHorizontal: 1, }, isSender && styles.flipX]}
+                          key={seen._id}
+                          image={seen?.profilePicture?.thumb}
+                          name={`${seen.firstName} ${seen.lastName}`}
+                          size={12}
+                          textSize={5}
+                        />
+                      ))
+                    }
                   </View>
-                </MenuTrigger>
-                <MenuOptions optionsContainerStyle={styles.menuOptions}>
-                  <MenuOption onSelect={() => {}}>
-                    <Text>Delete</Text>
-                  </MenuOption>
-                </MenuOptions>
-              </Menu>
+                )
+              }
             </View>
           )
         }
       </View>
-      {
-        ((showDetails || showSeen) && lodash.size(seenByOthers) > 0) && (
-          <View
-            style={[
-              styles.seenContainer,
-              {
-                maxWidth,
-                alignSelf: isSender ? 'flex-end' : 'flex-start',
-                paddingLeft: isSender ? 0 : 20,
-              }
-            ]}
-          >
-            {
-              (seenByEveryone && isGroup) ? (
-                <Text
-                  color={'#64748B'}
-                  numberOfLines={2}
-                  size={10}
-                >
-                  <Text
-                    color={'#64748B'}
-                    size={10}
-                    style={{ fontFamily: Regular500 }}
-                  >
-                    {'Seen by '}
-                  </Text>
-                  everyone
-                </Text>
-              ) : (
-                <View
-                  style={[{ flexDirection: 'row' }, isSender && styles.flipX]}
-                >
-                  {
-                    seenByOthers.map(seen => (
-                      <ProfileImage
-                        style={[{ marginHorizontal: 1, }, isSender && styles.flipX]}
-                        key={seen._id}
-                        image={seen?.profilePicture?.thumb}
-                        name={`${seen.firstName} ${seen.lastName}`}
-                        size={12}
-                        textSize={5}
-                      />
-                    ))
-                  }
-                </View>
-              )
-            }
-          </View>
-        )
-      }
-    </View>
+    </>
   )
 }
 

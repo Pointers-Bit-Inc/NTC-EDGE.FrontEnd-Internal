@@ -74,7 +74,7 @@ const ChatList: FC<Props> = ({
     </View>
   );
 
-  const listHeaderComponent = () => <View style={{ height: 15 }} />;
+  const listHeaderComponent = () => <View style={{ height: Platform.OS === 'web' ? 0 : 15 }} />;
 
   const renderItem = ({ item, index }:any) => {
     if (!lodash.size(item.sender)) {
@@ -149,7 +149,7 @@ const ChatList: FC<Props> = ({
           isSeen={lodash.size(item.seen) - 1 > 0}
           showDate={!isSameDate}
           maxWidth={width * 0.6}
-          onLongPress={() => showOption(item)}
+          onLongPress={(type?:string) => showOption(item, type)}
           deleted={item.deleted}
           unSend={item.unSend}
           edited={item.edited}
@@ -181,7 +181,7 @@ const ChatList: FC<Props> = ({
       renderItem={renderItem}
       keyExtractor={(item:any) => item._id}
       ListEmptyComponent={emptyComponent}
-      ListFooterComponent={() => <View style={{ height: 15 }} />}
+      ListFooterComponent={() => <View style={{ height: Platform.OS === 'web' ? 0 : 15 }} />}
       ListHeaderComponent={listHeaderComponent}
       {...otherProps}
     />
