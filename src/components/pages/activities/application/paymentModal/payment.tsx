@@ -321,7 +321,7 @@ const Payment=(props:any)=>{
                         </Text>
                     </View>
                     {
-                        props?.soa?.map((soa,index)=>(
+                        props?.soa?.filter((s) => s?.amount )?.map((soa,index)=>(
                             <View key={index} style={{width:"100%"}}>
                                 <View
                                     key={soa._id}
