@@ -879,6 +879,12 @@ const ChatList = ({ navigation }: any) => {
     }
   }, [selectedMessage, rendered, _id]);
 
+  useEffect(() => {
+    if (!channelId) {
+      setIsSideMenuVisible(false);
+    }
+  }, [channelId]);
+
   const [chatSize, onChatLayout] = useComponentLayout();
   useEffect(() => {
     dispatch(setChatLayout(chatSize));

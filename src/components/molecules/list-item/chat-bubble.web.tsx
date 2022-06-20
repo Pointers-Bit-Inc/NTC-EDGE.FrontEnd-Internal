@@ -414,6 +414,32 @@ const ChatBubble:FC<Props> = ({
 
     return (
       <>
+        {
+          messageType === 'newmeeting' && (
+            <>
+              {renderTime()}
+              <View style={styles.systemMessage}>
+                <View
+                  style={{ marginRight: 5, marginLeft: -2 }}
+                >
+                  <ProfileImage
+                    image={sender?.profilePicture?.thumb}
+                    name={`${sender.firstName} ${sender.lastName}`}
+                    size={25}
+                    textSize={10}
+                  />
+                </View>
+                <Text
+                  size={14}
+                  color={'#606A80'}
+                  style={{ textAlign: 'center' }}
+                >
+                  {`${senderName} created a meeting.`}
+                </Text>
+              </View>
+            </>
+          )
+        }
         {renderTime()}
         <View style={styles.systemMessage}>
           {
