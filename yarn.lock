@@ -4149,6 +4149,11 @@ emit.io@^0.2.3:
   resolved "https://registry.yarnpkg.com/emit.io/-/emit.io-0.2.3.tgz#1c217af9b66b6325b7e058dff6573015f1293d66"
   integrity sha1-HCF6+bZrYyW34Fjf9lcwFfEpPWY=
 
+emoji-picker-react@^3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/emoji-picker-react/-/emoji-picker-react-3.5.1.tgz#dbb4cda675a58dc86624d2fc488f75c2f4fc377d"
+  integrity sha512-cuSthFAvUO8Q1N7KJPEgZ7N0JNIWPKgN5GUmKe71UlSD4qFYI/p05RT9nohlWOq6YSFhEy2mI/60zBZiaku4mg==
+
 emoji-regex@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-8.0.0.tgz#e818fd69ce5ccfcb404594f842963bf53164cc37"

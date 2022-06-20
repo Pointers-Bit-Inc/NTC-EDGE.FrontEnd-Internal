@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import Picker from 'emoji-picker-react';
 import lodash from 'lodash';
 import {
   addChannel,
@@ -780,6 +781,7 @@ const ChatList = ({ navigation }: any) => {
   const [showLayout, setShowLayout] = useState(false);
   const [onNewChat, setOnNewChat] = useState(false);
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
   const toggleSideMenu = () =>
     setIsSideMenuVisible((isSideMenuVisible) => !isSideMenuVisible);
 
@@ -921,7 +923,13 @@ const ChatList = ({ navigation }: any) => {
       _sendFile(channelId, selectedFile, name || '', participants);
     }
   }, [selectedFile]);
+
   const [participant, setParticipant]: any = useState([]);
+  
+  const onEmojiClick = (event:any, emojiObject:any) => {
+    setInputText((i) => `${i}${emojiObject.emoji}`);
+  };
+  
   return (
     <View style={{ flexDirection: 'row', flex: 1 }}>
       <View
@@ -1247,7 +1255,18 @@ const ChatList = ({ navigation }: any) => {
             )}
           </View>
         )}
-
+        {
+          showEmoji && (
+            <View style={{ position: 'absolute', zIndex: 99, bottom: 75, left: 75 }}>
+              <Picker
+                onEmojiClick={onEmojiClick}
+                disableAutoFocus={true}
+                groupNames={{ smileys_people: 'PEOPLE' }}
+                native
+              />
+            </View>
+          )
+        }
         {_id && showLayout && !onNewChat && activeTab == 0 && (
           <View
             style={[
@@ -1272,7 +1291,6 @@ const ChatList = ({ navigation }: any) => {
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
             />
-
             <View
               style={{
                 flexDirection: 'row',
@@ -1291,7 +1309,9 @@ const ChatList = ({ navigation }: any) => {
                 <TouchableOpacity onPress={pickDocument}>
                   <AttachIcon />
                 </TouchableOpacity>
-                <EmojiIcon />
+                <TouchableOpacity onPress={() => setShowEmoji(!showEmoji)}>
+                  <EmojiIcon />
+                </TouchableOpacity>
                 <TouchableOpacity onPress={pickImage}>
                   <GifIcon />
                 </TouchableOpacity>

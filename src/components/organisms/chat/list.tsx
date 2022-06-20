@@ -74,7 +74,7 @@ const ChatList: FC<Props> = ({
     </View>
   );
 
-  const listHeaderComponent = () => <View style={{ height: Platform.OS === 'web' ? 0 : 15 }} />;
+  const listHeaderComponent = () => <View style={{ height: 15 }} />;
 
   const renderItem = ({ item, index }:any) => {
     if (!lodash.size(item.sender)) {
@@ -181,7 +181,7 @@ const ChatList: FC<Props> = ({
       renderItem={renderItem}
       keyExtractor={(item:any) => item._id}
       ListEmptyComponent={emptyComponent}
-      ListFooterComponent={() => <View style={{ height: Platform.OS === 'web' ? 0 : 15 }} />}
+      ListFooterComponent={() => <View style={{ height: 15 }} />}
       ListHeaderComponent={listHeaderComponent}
       {...otherProps}
     />
