@@ -759,6 +759,7 @@ const ChatList = ({ navigation }: any) => {
     { key: 'fileList', title: 'Files' }
   ]);
   const initialLayout = { width: Dimensions.get('window').width };
+  const routeIsFocused = !!navigation?.isFocused();
   const dimensions = useWindowDimensions();
   const dispatch = useDispatch();
   const { sendMessage, editMessage, endMeeting, leaveMeeting } = useSignalR();
@@ -867,6 +868,12 @@ const ChatList = ({ navigation }: any) => {
       dispatch(setSelectedChannel({}));
     };
   }, []);
+
+  useEffect(() => {
+    if (!routeIsFocused && channelId) {
+      dispatch(setSelectedChannel({}));
+    }
+  }, [routeIsFocused, channelId]);
 
   useEffect(() => {
     if (rendered) {
