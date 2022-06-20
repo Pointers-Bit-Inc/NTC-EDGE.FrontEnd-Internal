@@ -87,8 +87,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   imageFile: {
-    width: width * 0.3,
-    height: width * 0.3,
+    marginRight: 2,
+    width: 250,
+    height: 250,
   }
 })
 
@@ -192,13 +193,7 @@ const PendingBubble:FC<Props> = ({
             attachment?.mimeType === 'application/octet-stream' ? (
               <Image
                 resizeMode={'cover'}
-                style={[
-                  {
-                    marginRight: 2,
-                    width: width * 0.3,
-                    height: width * 0.3,
-                  }
-                ]}
+                style={styles.imageFile}
                 borderRadius={10}
                 source={{ uri: attachment.uri }}
               />

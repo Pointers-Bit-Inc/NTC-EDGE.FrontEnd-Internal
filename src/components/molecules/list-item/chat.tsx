@@ -118,7 +118,7 @@ const ChatItem: FC<Props> = ({
             </View>
           </View>
           <View style={styles.horizontal}>
-            <View style={[styles.horizontal, { flex: 1, paddingRight: Platform.OS === 'web' ? 0 : 60, marginTop: Platform.OS === 'ios' ? 0 : -5 }]}>
+            <View style={[styles.horizontal, { flex: 1, paddingRight: 60, marginTop: Platform.OS === 'ios' ? 0 : -5 }]}>
               <Text
                 color={!seen ? 'black' : text.default}
                 size={12}

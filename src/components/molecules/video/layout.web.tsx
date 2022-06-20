@@ -679,7 +679,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
       return (
         <>
           <View style={styles.titleContainer}>
-            <View style={{ position: 'absolute', left: 0, zIndex: 999 }}>
+            <View style={{ position: 'absolute', left: 0, bottom: 5, zIndex: 999 }}>
               <TouchableOpacity onPress={() => onSetSideContent('')}>
                 <CloseIcon
                   type='close'
