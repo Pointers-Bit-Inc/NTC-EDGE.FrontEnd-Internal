@@ -1,5 +1,5 @@
 import React,{FC,useRef,useState} from 'react'
-import {Dimensions,Image,Platform,StyleSheet,TouchableOpacity,View} from 'react-native'
+import {Dimensions,Image,Linking,Platform,StyleSheet,TouchableOpacity,View} from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
 import {CheckIcon,MenuIcon,NewEditIcon,NewFileIcon,NewMeetIcon,NewVideoIcon,WriteIcon} from '@components/atoms/icon';
@@ -305,27 +305,29 @@ const ChatBubble:FC<Props> = ({
       )
     } else if (!!attachment) {
       return (
-        <View style={styles.file}>
-          <NewFileIcon
-            color={'#606A80'}
-          />
-          <View style={{ paddingHorizontal: 5, maxWidth: width * 0.3 }}>
-            <Text
-              size={12}
+        <TouchableOpacity onPress={() => Linking.openURL(attachment.uri)}>
+          <View style={styles.file}>
+            <NewFileIcon
               color={'#606A80'}
-            >
-              {attachment.name}
-            </Text>
-            <Text
-              size={10}
-              color={'#606A80'}
-              style={{ top: -2 }}
-            >
-              {getFileSize(attachment.size)}
-            </Text>
+            />
+            <View style={{ paddingHorizontal: 5, maxWidth: width * 0.3 }}>
+              <Text
+                size={12}
+                color={'#606A80'}
+              >
+                {attachment.name}
+              </Text>
+              <Text
+                size={10}
+                color={'#606A80'}
+                style={{ top: -2 }}
+              >
+                {getFileSize(attachment.size)}
+              </Text>
+            </View>
+            <View style={{ width: 10 }} />
           </View>
-          <View style={{ width: 10 }} />
-        </View>
+        </TouchableOpacity>
       )
     }
     
@@ -480,17 +482,19 @@ const ChatBubble:FC<Props> = ({
             }
             {
               checkIfImage(attachment?.uri) && !deletedOrUnsend ? (
-                <Image
-                  resizeMode={'cover'}
-                  style={[
-                    styles.imageBubble,
-                    {
-                      backgroundColor: isSender ? '#E3E5EF' : 'white'
-                    }
-                  ]}
-                  borderRadius={10}
-                  source={{ uri: attachment?.uri }}
-                />
+                <TouchableOpacity onPress={() => Linking.openURL(attachment?.uri) }>
+                  <Image
+                    resizeMode={'cover'}
+                    style={[
+                      styles.imageBubble,
+                      {
+                        backgroundColor: isSender ? '#E3E5EF' : 'white'
+                      }
+                    ]}
+                    borderRadius={10}
+                    source={{ uri: attachment?.uri }}
+                  />
+                </TouchableOpacity>
               ) : (
                 <View style={styles.bubbleContainer}>
                   <View
