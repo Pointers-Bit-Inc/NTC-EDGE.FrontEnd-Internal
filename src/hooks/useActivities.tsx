@@ -571,6 +571,7 @@ export function useActivities(props){
         yPos, setYPos,
         flatListViewRef,
         notPinnedApplications,
-        pinnedApplications
+        pinnedApplications,
+        setRefreshing
     };
 }
