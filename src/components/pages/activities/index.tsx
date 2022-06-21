@@ -59,6 +59,7 @@ import {Regular500} from "@styles/font";
 
 import {PanGestureHandler, State} from 'react-native-gesture-handler';
 import PullToRefresh from "@pages/activities/pull-to-refresh/PullToRefresh";
+import listEmpty from "./listEmpty";
 
 export default function ActivitiesPage(props: any) {
 
@@ -337,6 +338,7 @@ export default function ActivitiesPage(props: any) {
 
     const onMomentumScrollBegin = () => {
         isListGliding.current = true;
+        setOnEndReachedCalledDuringMomentum(false)
     };
 
     const onMomentumScrollEnd = () => {
@@ -570,14 +572,16 @@ export default function ActivitiesPage(props: any) {
                                 {useNativeDriver: true},
                             ) : null
                         }
+                        ListFooterComponent={refreshing ? <View/> :bottomLoader}
                         onMomentumScrollBegin={onMomentumScrollBegin}
                         onScrollEndDrag={onScrollEndDrag}
                         onMomentumScrollEnd={onMomentumScrollEnd}
-
+                        ListEmptyComponent={()=>listEmpty(refreshing,searchTerm,(
+                            notPnApplications.length)+pnApplications?.map((item:any,index:number)=>item?.activity&&item?.activity?.map((act:any,i:number)=>(
+                            act?.assignedPersonnel?._id||act?.assignedPersonnel)==user?._id)).length)}
                         ListHeaderComponent={header ? listHeaderComponent() : null}
                         contentContainerStyle={{
                             paddingTop: HeaderHeight + TabBarHeight + (!!lodash.size(meetingList) && 80),
-                            minHeight: windowHeight - SafeStatusBar + HeaderHeight,
                         }}
                         onEndReached={() => {
                             if (!onEndReachedCalledDuringMomentum || !(
