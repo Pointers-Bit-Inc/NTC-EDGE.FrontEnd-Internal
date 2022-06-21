@@ -7,11 +7,13 @@ import {
   InteractionManager,
   Platform,
   RefreshControl,
+  ScrollView,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
   useWindowDimensions,
-  View
+  View,
+  Image
 } from 'react-native';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -37,6 +39,7 @@ import {
   MenuIcon,
   NewCallIcon,
   NewChatIcon,
+  NewFileIcon,
   NewVideoIcon
 } from '@atoms/icon';
 import { Bold, Regular, Regular500 } from '@styles/font';
@@ -47,6 +50,7 @@ import {
   getChannelImage,
   getChannelName,
   getDateTimeString,
+  getFileSize,
   getTimeDifference,
   getTimeString
 } from '../../utils/formatting';
@@ -276,6 +280,22 @@ const styles = StyleSheet.create({
   contentContainerStyle: {
     borderRadius: 15,
     maxWidth: 300,
+  },
+  fileItemContainer: {
+    padding: 5,
+    maxWidth: 200,
+    height: 40,
+    flexDirection: 'row',
+    backgroundColor: '#E3E5EF',
+    borderRadius: 3,
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  removeFileItem: {
+    position: 'absolute',
+    zIndex: 99,
+    right: -10,
+    top: -5,
   }
 });
 
@@ -764,16 +784,6 @@ const ChatList = ({ navigation }: any) => {
   const dispatch = useDispatch();
   const { sendMessage, editMessage, endMeeting, leaveMeeting } = useSignalR();
   const layout = useWindowDimensions();
-  const onClose = (item: IMeetings, leave = false) => {
-    if (leave && item.isGroup) {
-      dispatch(removeActiveMeeting(item._id));
-      return leaveMeeting(item._id, 'busy');
-    } else if (item.host._id === user._id || !item.isGroup) {
-      return endMeeting(item._id);
-    } else {
-      return dispatch(removeActiveMeeting(item._id));
-    }
-  };
   const user = useSelector((state: RootStateOrAny) => state.user);
   const inputRef: any = useRef(null);
   const [inputText, setInputText] = useState('');
@@ -783,8 +793,12 @@ const ChatList = ({ navigation }: any) => {
   const [onNewChat, setOnNewChat] = useState(false);
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
-  const toggleSideMenu = () =>
-    setIsSideMenuVisible((isSideMenuVisible) => !isSideMenuVisible);
+  const [chatSize, onChatLayout] = useComponentLayout();
+  const [activeTab, setActiveTab] = useState(0);
+  const [activeRoute, setActiveRoute] = useState('list');
+  const [fileToBeSend, setFileToBeSend] = useState([]);
+  const { selectedFile, pickImage, pickDocument } = useAttachmentPicker();
+  const [participant, setParticipant]: any = useState([]);
 
   const { _id, otherParticipants, participants, isGroup, hasRoomName, name } =
     useSelector((state: RootStateOrAny) => {
@@ -795,7 +809,6 @@ const ChatList = ({ navigation }: any) => {
       );
       return selectedChannel;
     });
-
   const meetingList = useSelector((state: RootStateOrAny) => {
     const { normalizeActiveMeetings } = state.meeting;
     let meetingList = lodash
@@ -804,6 +817,25 @@ const ChatList = ({ navigation }: any) => {
     meetingList = lodash.filter(meetingList, (m) => m.roomId === _id);
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
   });
+  const channelId = _id;
+  const selectedMessage = useSelector((state: RootStateOrAny) => {
+    const { selectedMessage } = state.channel;
+    return selectedMessage[channelId];
+  });
+
+  const toggleSideMenu = () =>
+    setIsSideMenuVisible((isSideMenuVisible) => !isSideMenuVisible);
+
+  const onClose = (item: IMeetings, leave = false) => {
+    if (leave && item.isGroup) {
+      dispatch(removeActiveMeeting(item._id));
+      return leaveMeeting(item._id, 'busy');
+    } else if (item.host._id === user._id || !item.isGroup) {
+      return endMeeting(item._id);
+    } else {
+      return dispatch(removeActiveMeeting(item._id));
+    }
+  };
 
   const onJoin = (item: IMeetings) => {
     openUrl(`/VideoCall?meetingId=${item._id}`);
@@ -826,12 +858,15 @@ const ChatList = ({ navigation }: any) => {
       }
     );
   };
-  const channelId = _id;
-  const selectedMessage = useSelector((state: RootStateOrAny) => {
-    const { selectedMessage } = state.channel;
-    return selectedMessage[channelId];
-  });
+
   const onSendMessage = useCallback(() => {
+    if (lodash.size(fileToBeSend) > 0) {
+      fileToBeSend.forEach(f => {
+        _sendFile(channelId, f, name || '', participants);
+      });
+      setFileToBeSend([]);
+    }
+    
     if (!inputText) {
       return;
     }
@@ -845,7 +880,7 @@ const ChatList = ({ navigation }: any) => {
       inputRef.current?.blur();
       setInputText('');
     }
-  }, [channelId, inputText]);
+  }, [channelId, inputText, fileToBeSend]);
 
   const onRemoveSelectedMessage = () => dispatch(removeSelectedMessage(channelId))
 
@@ -855,6 +890,39 @@ const ChatList = ({ navigation }: any) => {
         channelId: channelId,
         message: inputText,
         messageType: 'text'
+      })
+    );
+  };
+
+  const renderScene = ({ route, jumpTo }) => {
+    const sceneIndex = index == 0 ? 'list' : 'fileList';
+    if (route.key != activeRoute && sceneIndex) {
+      jumpTo(activeRoute);
+    }
+
+    switch (route.key) {
+      case 'list':
+        return <List />;
+      case 'fileList':
+        return <FileList />;
+      default:
+        return null;
+    }
+  };
+
+  const _sendFile = (
+    channelId: string,
+    attachment: any,
+    groupName = '',
+    participants: any = []
+  ) => {
+    dispatch(
+      addPendingMessage({
+        attachment,
+        channelId,
+        groupName,
+        participants,
+        messageType: 'file'
       })
     );
   };
@@ -892,57 +960,104 @@ const ChatList = ({ navigation }: any) => {
     }
   }, [channelId]);
 
-  const [chatSize, onChatLayout] = useComponentLayout();
   useEffect(() => {
     dispatch(setChatLayout(chatSize));
   }, [chatSize]);
-  const [activeTab, setActiveTab] = useState(0);
-  const [activeRoute, setActiveRoute] = useState('list');
-  const renderScene = ({ route, jumpTo }) => {
-    const sceneIndex = index == 0 ? 'list' : 'fileList';
-    if (route.key != activeRoute && sceneIndex) {
-      jumpTo(activeRoute);
-    }
 
-    switch (route.key) {
-      case 'list':
-        return <List />;
-      case 'fileList':
-        return <FileList />;
-      default:
-        return null;
-    }
-  };
-  const { selectedFile, pickImage, pickDocument } = useAttachmentPicker();
-
-  const _sendFile = (
-    channelId: string,
-    attachment: any,
-    groupName = '',
-    participants: any = []
-  ) => {
-    dispatch(
-      addPendingMessage({
-        attachment,
-        channelId,
-        groupName,
-        participants,
-        messageType: 'file'
-      })
-    );
-  };
   useEffect(() => {
     if (lodash.size(selectedFile)) {
-      _sendFile(channelId, selectedFile, name || '', participants);
+      setFileToBeSend((files:any) => [...files, selectedFile]);
+      // _sendFile(channelId, selectedFile, name || '', participants);
     }
   }, [selectedFile]);
 
-  const [participant, setParticipant]: any = useState([]);
   
   const onEmojiClick = (event:any, emojiObject:any) => {
     setInputText((i) => `${i}${emojiObject.emoji}`);
   };
-  
+
+  const removeFile = (i:number) => {
+    setFileToBeSend((files:any) => {
+      const updated:any = [];
+      for(let f:number = 0; f < files.length; f++) {
+        if (f !== i) {
+          updated.push(files[f]);
+        }
+      }
+      return updated;
+    })
+  }
+
+  const removeFileItem = (i:number) => {
+    return (
+      <View style={styles.removeFileItem}>
+        <TouchableOpacity onPress={() => removeFile(i)}>
+          <View
+            style={[
+              styles.plus,
+              {
+                width: 18,
+                height: 18,
+                borderRadius: 18,
+                backgroundColor: 'white',
+                overflow: 'hidden',
+                borderWidth: 1,
+              }
+            ]}
+          >
+            <CloseIcon
+              type='close'
+              size={fontValue(10)}
+              color={'#212121'}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  const fileItem = (item:any, index:number) => {
+    if (item?.mimeType === 'application/octet-stream') {
+      return (
+        <View key={index} style={[styles.fileItemContainer, { width: 40, padding: 0 }]}>
+          {removeFileItem(index)}
+          <Image
+            resizeMode={'cover'}
+            style={{ height: '100%', width: '100%', borderRadius: 3 }}
+            borderRadius={3}
+            source={{ uri: item?.uri }}
+          />
+        </View>
+      );
+    }
+
+    return (
+      <View key={index} style={styles.fileItemContainer}>
+        {removeFileItem(index)}
+        <NewFileIcon
+          color={'#606A80'}
+        />
+        <View style={{ paddingHorizontal: 5, maxWidth: 100 }}>
+          <Text
+            numberOfLines={1}
+            size={12}
+            color={'#606A80'}
+          >
+            {item.name}
+          </Text>
+          <Text
+            numberOfLines={1}
+            size={10}
+            color={'#606A80'}
+            style={{ top: -2 }}
+          >
+            {getFileSize(item.size)}
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
   return (
     <View style={{ flexDirection: 'row', flex: 1 }}>
       <View
@@ -1286,12 +1401,20 @@ const ChatList = ({ navigation }: any) => {
               {
                 borderTopWidth: 2,
                 paddingHorizontal: 32,
-                paddingTop: Platform.OS === 'web' ? 15 : 42,
+                paddingTop: 10,
                 borderTopColor: '#efefef',
                 backgroundColor: '#f8f8f8'
               }
             ]}
           >
+            {
+              <ScrollView
+                style={{ marginBottom: 10, paddingTop: 10, marginTop: -10 }}
+                horizontal
+              >
+                {fileToBeSend?.map(fileItem)}
+              </ScrollView>
+            }
             <InputField
               ref={inputRef}
               placeholder={'Type a message'}
@@ -1363,7 +1486,7 @@ const ChatList = ({ navigation }: any) => {
                     </TouchableOpacity>
                   </View>
                 ) : (
-                  <TouchableOpacity disabled={!inputText} onPress={onSendMessage}>
+                  <TouchableOpacity disabled={!(inputText || lodash.size(fileToBeSend) > 0)} onPress={onSendMessage}>
                     <View style={{ marginLeft: 10 }}>
                       <SendIcon />
                     </View>
