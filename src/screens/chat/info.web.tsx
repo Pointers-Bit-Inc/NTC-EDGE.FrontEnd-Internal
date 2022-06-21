@@ -39,7 +39,7 @@ const {height,width}=Dimensions.get('window');
 
 const styles = StyleSheet.create({
     safeAreaView: {
-        flex:0.9,
+        flex:0.93,
         backgroundColor:"#fff"
     },
     cancelText: {
@@ -161,7 +161,7 @@ const MenuBar = (props:MenuBarInterface) => {
                             <Text
                                 style={{marginLeft:15}}
                                 color={"black"}
-                                size={18}
+                                size={14}
                             >
                                 Call {`${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}
                             </Text>
@@ -175,7 +175,7 @@ const MenuBar = (props:MenuBarInterface) => {
                         <Text
                             style={{marginLeft:15}}
                             color={"black"}
-                            size={18}
+                            size={14}
                         >
                             Message {`${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}
                         </Text>
@@ -189,7 +189,7 @@ const MenuBar = (props:MenuBarInterface) => {
                                     <Text
                                         style={{marginLeft:15}}
                                         color={"black"}
-                                        size={18}
+                                        size={14}
                                     >
                                         Add as admin
                                     </Text>
@@ -200,7 +200,7 @@ const MenuBar = (props:MenuBarInterface) => {
                                     <Text
                                         style={{marginLeft:15}}
                                         color={text.error}
-                                        size={18}
+                                        size={14}
                                     >
                                         Remove from chat
                                     </Text>
@@ -509,7 +509,7 @@ const Info = (props:any) => {
         ))
     };
     const [onAddParticipant,setOnAddParticipant]=useState(false);
-    return <SafeAreaView style={styles.safeAreaView}>
+    return <View style={styles.safeAreaView}>
 
         {!onAddParticipant&&<View style={styles.header}>
             <View>
@@ -795,7 +795,7 @@ const Info = (props:any) => {
             title={alertData.title}
             message={alertData.message}/>
         
-    </SafeAreaView>
+    </View>
 
 
 };

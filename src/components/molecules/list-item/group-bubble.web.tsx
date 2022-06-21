@@ -7,7 +7,7 @@ import {getChatTimeString,getFileSize, getTimerString} from 'src/utils/formattin
 import {bubble,button,primaryColor,text} from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
-import {Regular500} from '@styles/font';
+import {Regular, Regular500} from '@styles/font';
 import {fontValue} from '@components/pages/activities/fontValue';
 import IAttachment from 'src/interfaces/IAttachment';
 import hairlineWidth=StyleSheet.hairlineWidth;
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bubble: {
-    borderRadius: fontValue(15),
+    borderRadius: fontValue(6),
     padding: fontValue(5),
     paddingHorizontal: fontValue(10),
     flexDirection: 'row',
@@ -175,7 +175,6 @@ interface Props {
   meeting?: any;
   onCallAgain?: any;
   user?: any;
-  isGroup?: boolean;
   [x: string]: any;
 }
 
@@ -203,7 +202,6 @@ const ChatBubble:FC<Props> = ({
   meeting = null,
   onCallAgain = () => {},
   user = {},
-  isGroup = false,
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -228,13 +226,10 @@ const ChatBubble:FC<Props> = ({
 
   const renderTime = () => {
     return (showDetails || showDate) ? (
-      <View style={styles.seenTimeContainer}>
-        <Text
-            color={'#64748B'}
-            size={12}
-        >
-          {getChatTimeString(createdAt)}
-        </Text>
+      <View style={styles.hrText}>
+        <View style={styles.border}/>
+        <Text style={[styles.hrContent, {color:  "#64748B",}]}>{getChatTimeString(createdAt)}</Text>
+        <View style={styles.border}/>
       </View>
     ) : null;
   }
@@ -282,8 +277,6 @@ const ChatBubble:FC<Props> = ({
     if (messageType === 'callended') {
       let joinedParticipants = [];
       let timeDiff = null;
-      let missedCall = false;
-      let title = 'Call ended';
 
       if (meeting) {
         joinedParticipants = lodash.filter(meeting.participants, (p:IParticipants) => p.hasJoined);
@@ -291,21 +284,6 @@ const ChatBubble:FC<Props> = ({
         const timeEnded = dayjs(meeting?.endedAt);
         timeDiff = timeEnded.diff(timeStart);
         timeDiff = getTimerString(timeDiff/1000);
-
-        if (!isGroup) {
-          missedCall = lodash.size(joinedParticipants) < 2;
-        }
-      }
-
-      if (missedCall) {
-        if (isSender) {
-          const recipient = lodash.find(meeting.participants, (p:IParticipants) => p._id !== user._id)
-          if (recipient) {
-            title = `${recipient.firstName} missed your call`
-          }
-        } else {
-          title = 'You missed a call'
-        }
       }
 
       return (
@@ -314,10 +292,10 @@ const ChatBubble:FC<Props> = ({
             <Text
               size={14}
             >
-              {title}
+              Meeting ended
             </Text>
             {
-              !!timeDiff && !missedCall && (
+              !!timeDiff && (
                 <Text
                   size={14}
                 >
@@ -326,14 +304,8 @@ const ChatBubble:FC<Props> = ({
               )
             }
           </View>
-          <Text
-              color={text.default}
-              size={12}
-          >
-            {getChatTimeString(createdAt)}
-          </Text>
           {
-            !!lodash.size(joinedParticipants) && isGroup && (
+            !!lodash.size(joinedParticipants) && (
               <View style={{ alignSelf: 'flex-start', marginTop: 5 }}>
                 <GroupImage
                   participants={joinedParticipants}
@@ -362,12 +334,21 @@ const ChatBubble:FC<Props> = ({
     }
     
     return (
-      <Text
-        size={14}
-        color={(isSender && !system) ? 'white' : 'black'}
-      >
-        {message}
-      </Text>
+      <View>
+        <Text
+          size={10}
+          color={'black'}
+          style={{ fontFamily: Regular }}
+        >
+          {getChatTimeString(createdAt)}
+        </Text>
+        <Text
+          size={14}
+          color={'black'}
+        >
+          {message}
+        </Text>
+      </View>
     )
   }
 
@@ -409,106 +390,100 @@ const ChatBubble:FC<Props> = ({
   return (
     <>
       {renderTime()}
-      <TouchableOpacity
-        onPress={() => !!attachment ? onPreview() : setShowDetails(!showDetails)}
-        onLongPress={(isSender && !(deleted || unSend || system)) ? onLongPress : null}
-        {...otherProps}
-      >
-        <View style={[styles.container, { maxWidth }, style]}>
+      <View style={[styles.container, { maxWidth }, style]}>
+        {
+          !isSender ?(
+            <View
+              style={{ marginLeft: -5 }}
+            >
+              <ProfileImage
+                image={sender?.profilePicture?.thumb}
+                name={`${sender.firstName} ${sender.lastName}`}
+                size={25}
+                textSize={10}
+              />
+            </View>
+          ) : null
+        }
+        {
+          (edited && isSender && !(deleted || unSend)) && (
+            <View style={{ alignSelf: 'center', marginRight: 0 }}>
+              <WriteIcon
+                type='pen'
+                color={text.info}
+                size={14}
+              />
+            </View>
+          )
+        }
+        <View style={{ marginLeft: 5 }}>
           {
-            (!isSender && isGroup) ? (
-              <View
-                style={{ marginLeft: -5 }}
+            !isSender ? (
+              <Text
+                size={10}
+                color={text.default}
               >
-                <ProfileImage
-                  image={sender?.profilePicture?.thumb}
-                  name={`${sender.firstName} ${sender.lastName}`}
-                  size={25}
-                  textSize={10}
-                />
-              </View>
+                {_getSenderName()}
+              </Text>
             ) : null
           }
           {
-            (edited && isSender && !(deleted || unSend)) && (
-              <View style={{ alignSelf: 'center', marginRight: 0 }}>
-                <WriteIcon
-                  type='pen'
-                  color={text.info}
-                  size={14}
-                />
-              </View>
-            )
-          }
-          <View style={{ marginLeft: 5 }}>
-            {
-              (!isSender && isGroup) ? (
-                <Text
-                  size={10}
-                  color={text.default}
-                >
-                  {_getSenderName()}
-                </Text>
-              ) : null
-            }
-            {
-              checkIfImage(attachment?.uri) && !deletedOrUnsend ? (
-                <Image
-                  resizeMode={'cover'}
+            checkIfImage(attachment?.uri) && !deletedOrUnsend ? (
+              <Image
+                resizeMode={'cover'}
+                style={[
+                  styles.imageBubble,
+                  {
+                    backgroundColor: isSender ? '#E3E5EF' : 'white'
+                  }
+                ]}
+                borderRadius={10}
+                source={{ uri: attachment?.uri }}
+              />
+            ) : (
+              <View style={styles.bubbleContainer}>
+                <View
                   style={[
-                    styles.imageBubble,
+                    styles.bubble,
                     {
-                      backgroundColor: isSender ? bubble.primary : bubble.secondary
-                    }
+                      backgroundColor: isSender ? '#E3E5EF' : 'white'
+                    },
+                    (deletedOrUnsend || system) && {
+                      backgroundColor: '#E5E5E5'
+                    },
                   ]}
-                  borderRadius={10}
-                  source={{ uri: attachment?.uri }}
-                />
-              ) : (
-                <View style={styles.bubbleContainer}>
-                  <View
-                    style={[
-                      styles.bubble,
-                      {
-                        backgroundColor: isSender ? bubble.primary : bubble.secondary
-                      },
-                      (deletedOrUnsend || system) && {
-                        backgroundColor: '#E5E5E5'
-                      },
-                    ]}
-                  >
-                    {renderContent()}
-                  </View>
+                >
+                  {renderContent()}
                 </View>
-              )
-            }
-          </View>
-          {
-            (edited && !isSender && !(deleted || unSend)) && (
-              <View style={{ alignSelf: 'center', marginTop: 10, marginLeft: 5 }}>
-                <WriteIcon
-                  type='pen'
-                  color={text.default}
-                  size={14}
-                />
-              </View>
-            )
-          }
-          {
-            (!isSeen && isSender && !deleted && !system && !(unSend && isSender)) && (
-              <View
-                style={[styles.check, delivered && { backgroundColor: text.info }]}
-              >
-                <CheckIcon
-                  type='check1'
-                  size={8}
-                  color={delivered ? 'white' : text.info}
-                />
               </View>
             )
           }
         </View>
-      </TouchableOpacity>
+        {
+          (edited && !isSender && !(deleted || unSend)) && (
+            <View style={{ alignSelf: 'center', marginTop: 10, marginLeft: 5 }}>
+              <WriteIcon
+                type='pen'
+                color={text.default}
+                size={14}
+              />
+            </View>
+          )
+        }
+        {
+          (!isSeen && isSender && !deleted && !system) && (
+            <View
+              style={[styles.check, delivered && { backgroundColor: text.info }]}
+            >
+              <CheckIcon
+                type='check1'
+                size={8}
+                color={delivered ? 'white' : text.info}
+              />
+            </View>
+          )
+        }
+      </View>
       {
         ((showDetails || showSeen) && lodash.size(seenByOthers) > 0) && (
           <View
@@ -522,7 +497,7 @@ const ChatBubble:FC<Props> = ({
             ]}
           >
             {
-              (seenByEveryone && isGroup) ? (
+              seenByEveryone ? (
                 <Text
                   color={'#64748B'}
                   numberOfLines={2}

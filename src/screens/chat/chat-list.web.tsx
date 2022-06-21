@@ -40,7 +40,6 @@ import Button from '@components/atoms/button';
 import ChatList from '@components/organisms/chat/list';
 import { outline, text, button } from '@styles/color';
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
-import { RFValue } from 'react-native-responsive-fontsize';
 import { Regular, Regular500 } from '@styles/font';
 import IMessages from 'src/interfaces/IMessages';
 import IParticipants from 'src/interfaces/IParticipants';
@@ -51,6 +50,7 @@ import GroupImage from '@components/molecules/image/group';
 import CreateMeeting from '@components/pages/chat-modal/meeting';
 import { setMeeting, setOptions } from 'src/reducers/meeting/actions';
 import { openUrl } from 'src/utils/web-actions';
+import { fontValue } from '@components/pages/activities/fontValue';
 
 const { width, height } = Dimensions.get('window');
 
@@ -79,30 +79,31 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   cancelText: {
-    fontSize: RFValue(16),
+    fontSize: fontValue(16),
     color: text.info,
     fontFamily: Regular500
   },
   confirmText: {
-    fontSize: RFValue(16),
+    fontSize: fontValue(16),
     color: text.error,
     fontFamily: Regular500
   },
   title: {
     color: '#14142B',
     textAlign: 'center',
-    fontSize: RFValue(16),
+    fontSize: fontValue(16),
     fontFamily: Regular500
   },
   message: {
     color: '#4E4B66',
     textAlign: 'center',
-    fontSize: RFValue(14),
+    fontSize: fontValue(14),
     marginHorizontal: 15,
     marginBottom: 15,
     fontFamily: Regular
   },
   content: {
+    maxWidth: 400,
     borderBottomColor: outline.default,
     borderBottomWidth: 1
   }
@@ -322,17 +323,26 @@ const List = () => {
 
   useEffect(() => {
     if (lastMessage && rendered) {
-      const hasSeen = lodash.find(lastMessage?.seen, (s) => s._id === user._id);
+      const hasSeen = lodash.find(lastMessage?.seen, (s:IParticipants) => s._id === user._id);
       if (!hasSeen) {
         seenMessage(lastMessage._id);
       }
     }
   }, [lastMessage, rendered]);
 
-  const showOption = (item) => {
-    setMessage(item);
-    modalRef.current?.open();
-  };
+  const showOption = (item:IMessages, type?:string) => {
+    console.log('TYPE TYPE', type);
+    if (type === 'edit') {
+      dispatch(setSelectedMessage(channelId, item));
+    } else if (type === 'delete') {
+      setMessage(item);
+      setShowDeleteOption(true);
+      modalRef.current?.open();
+    } else {
+      setMessage(item);
+      modalRef.current?.open();
+    }
+  }
 
   const options = () => {
     return (
@@ -346,8 +356,8 @@ const List = () => {
           >
             <View style={styles.button}>
               <NewEditIcon
-                height={RFValue(22)}
-                width={RFValue(22)}
+                height={fontValue(22)}
+                width={fontValue(22)}
                 color={text.default}
               />
               <Text style={{ marginLeft: 15 }} color={text.default} size={18}>
@@ -367,8 +377,8 @@ const List = () => {
         >
           <View style={[styles.button, { borderBottomWidth: 0 }]}>
             <NewDeleteIcon
-              height={RFValue(22)}
-              width={RFValue(22)}
+              height={fontValue(22)}
+              width={fontValue(22)}
               color={text.error}
             />
             <Text style={{ marginLeft: 15 }} color={text.error} size={18}>

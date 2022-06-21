@@ -1,11 +1,12 @@
 import React, { FC } from 'react'
-import { View, FlatList, Dimensions, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, FlatList, Dimensions, StyleSheet, ActivityIndicator, Platform } from 'react-native'
 import lodash from 'lodash';
 import Text from '@components/atoms/text';
 import { chatSameDate } from 'src/utils/formatting'; 
 import { ChatBubble, GroupBubble, PendingBubble } from '@components/molecules/list-item';
 import { text } from 'src/styles/color';
 import { RFValue } from 'react-native-responsive-fontsize';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const { width } = Dimensions.get('window');
 
@@ -111,8 +112,8 @@ const ChatList: FC<Props> = ({
     );
     if (latestSeenSize > 0) {
       if (latestSeenSize < lodash.size(participants)) {
-        seenByOthers = lodash.reject(seenByOthers, p =>
-          lodash.find(latestSeen, l => l._id === p._id)
+        seenByOthers = lodash.reject(seenByOthers, (p:IParticipants) =>
+          lodash.find(latestSeen, (l:IParticipants) => l._id === p._id)
         );
       }
     }
@@ -121,63 +122,45 @@ const ChatList: FC<Props> = ({
     const showSeen = lastMessage?._id === item._id ||
       latestSeenSize === 0 ||
       seenByOthersCount > 0 && seenByOthersCount < lodash.size(participants);
-    const specialMessage = item.type === 'newmeeting';
+    let specialMessage = item.type === 'newmeeting';
     
+    if (Platform.OS === 'web') {
+      specialMessage = item.type === 'newmeeting' ||
+      item.type === 'callended' ||
+      item.type === 'leave' ||
+      item.type === 'removed' ||
+      item.type === 'added' ||
+      item.type === 'newroom' ||
+      (item.type === 'text' && item.system);
+    }
+
     return (
-      <View style={[styles.bubbleContainer, { alignItems: isSender ? 'flex-end' : 'flex-start' }]}>
-        {
-          isGroup ? (
-            <GroupBubble
-              message={item.message}
-              messageType={item.type}
-              attachment={item.attachment}
-              isSender={isSender}
-              sender={item.sender}
-              seenByOthers={seenByOthers}
-              seenByEveryone={seenByEveryone}
-              showSeen={showSeen}
-              isSeen={lodash.size(item.seen) - 1 > 0}
-              showDate={!isSameDate}
-              createdAt={item.createdAt}
-              maxWidth={width * 0.6}
-              onLongPress={() => showOption(item)}
-              deleted={item.deleted}
-              unSend={item.unSend}
-              edited={item.edited}
-              system={item.system}
-              delivered={item.delivered}
-              onPreview={() => onPreview(item)}
-              meeting={item.meeting}
-              onCallAgain={onCallAgain}
-              user={user}
-            />
-          ) : (
-            <ChatBubble
-              message={item.message}
-              messageType={item.type}
-              attachment={item.attachment}
-              isSender={isSender}
-              sender={item.sender}
-              createdAt={item.createdAt}
-              seenByOthers={seenByOthers}
-              seenByEveryone={seenByEveryone}
-              showSeen={showSeen}
-              isSeen={lodash.size(item.seen) - 1 > 0}
-              showDate={!isSameDate}
-              maxWidth={width * 0.6}
-              onLongPress={() => showOption(item)}
-              deleted={item.deleted}
-              unSend={item.unSend}
-              edited={item.edited}
-              system={item.system}
-              delivered={item.delivered}
-              onPreview={() => onPreview(item)}
-              meeting={item.meeting}
-              onCallAgain={onCallAgain}
-              user={user}
-            />
-          )
-        }
+      <View style={[styles.bubbleContainer, { alignItems: (isSender && !specialMessage) ? 'flex-end' : 'flex-start' }]}>
+        <ChatBubble
+          message={item.message}
+          messageType={item.type}
+          attachment={item.attachment}
+          isSender={isSender}
+          sender={item.sender}
+          createdAt={item.createdAt}
+          seenByOthers={seenByOthers}
+          seenByEveryone={seenByEveryone}
+          showSeen={showSeen}
+          isSeen={lodash.size(item.seen) - 1 > 0}
+          showDate={!isSameDate}
+          maxWidth={width * 0.6}
+          onLongPress={(type?:string) => showOption(item, type)}
+          deleted={item.deleted}
+          unSend={item.unSend}
+          edited={item.edited}
+          system={item.system}
+          delivered={item.delivered}
+          onPreview={() => onPreview(item)}
+          meeting={item.meeting}
+          onCallAgain={onCallAgain}
+          user={user}
+          isGroup={isGroup}
+        />
       </View>
     )
   }
@@ -191,21 +174,17 @@ const ChatList: FC<Props> = ({
     )
   }
   return (
-    <>
-
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        inverted={true}
-        data={error ? [] : messages}
-        renderItem={renderItem}
-        keyExtractor={(item:any) => item._id}
-        ListEmptyComponent={emptyComponent}
-        ListFooterComponent={() => <View style={{ height: 15 }} />}
-        ListHeaderComponent={listHeaderComponent}
-        {...otherProps}
-      />
-    </>
-
+    <FlatList
+      showsVerticalScrollIndicator={Platform.OS === 'web'}
+      inverted={true}
+      data={error ? [] : messages}
+      renderItem={renderItem}
+      keyExtractor={(item:any) => item._id}
+      ListEmptyComponent={emptyComponent}
+      ListFooterComponent={() => <View style={{ height: 15 }} />}
+      ListHeaderComponent={listHeaderComponent}
+      {...otherProps}
+    />
   )
 }
 

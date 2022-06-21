@@ -44,7 +44,7 @@ const defaultSnapY = [0, defaultPositionY];
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    zIndex: 99,
+    zIndex: 999,
   },
   position: {
     top: Platform.OS === 'android' ? 30 : 35,

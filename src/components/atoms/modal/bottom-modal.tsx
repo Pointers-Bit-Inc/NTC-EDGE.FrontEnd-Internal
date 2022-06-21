@@ -6,7 +6,7 @@ import React, {
   ForwardRefRenderFunction,
   ReactNode,
 } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, Platform, useWindowDimensions } from 'react-native';
 import Modal from 'react-native-modal';
 const { height } = Dimensions.get('window');
 
@@ -15,12 +15,24 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     margin: 0,
   },
+  webView: {
+    justifyContent: 'center',
+    margin: 0,
+  },
   container: {
     maxHeight: height * 0.9,
     backgroundColor: 'white',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
   },
+  webContainer: {
+    maxHeight: height * 0.9,
+    width: 400,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    borderTopRightRadius: 15,
+    alignSelf: 'center',
+  }
 });
 
 interface Props {
@@ -43,6 +55,7 @@ const BottomModal: ForwardRefRenderFunction<BottomModalRef, Props> = (
   { children, header, footer, contentStyle = {}, containerStyle = {}, avoidKeyboard = true, ...otherProps },
   ref,
 ) => {
+  const { width } = useWindowDimensions();
   const modalRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
   useImperativeHandle(ref, () => ({
@@ -52,17 +65,16 @@ const BottomModal: ForwardRefRenderFunction<BottomModalRef, Props> = (
   }));
   return (
     <Modal
-
       ref={modalRef}
       isVisible={showModal}
       avoidKeyboard={avoidKeyboard}
       onBackdropPress={() => setShowModal(false)}
       onSwipeComplete={() => setShowModal(false)}
       statusBarTranslucent={true}
-      style={styles.view}
+      style={(Platform.OS === 'web' && width > 500) ? styles.webView : styles.view}
       {...otherProps}
     >
-      <View style={[styles.container, containerStyle]}>
+      <View style={[(Platform.OS === 'web' && width > 500) ? styles.webContainer : styles.container, containerStyle]}>
         {header}
         <View style={contentStyle}>{children}</View>
         {footer}

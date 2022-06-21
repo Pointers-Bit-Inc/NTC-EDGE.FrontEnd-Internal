@@ -21,7 +21,6 @@ const useAttachmentPicker = () => {
         'application/zip',
         'text/csv',
       ],
-      multiple: true,
       copyToCacheDirectory: true,
     });
     if (result.type === 'success') {
