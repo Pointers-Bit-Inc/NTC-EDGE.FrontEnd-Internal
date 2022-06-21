@@ -119,7 +119,10 @@ const PullToRefresh: FC<PullToRefreshProps> = ({
     if (children) {
         finalChildren = React.cloneElement(children as ReactElement, {
             ref: scrollRef,
+            bounces: false,
+            scrollEnabled: !refreshing,
             scrollEventThrottle: 16,
+
         });
     }
     if (renderChildren) {

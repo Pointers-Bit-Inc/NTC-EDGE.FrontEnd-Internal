@@ -59,6 +59,7 @@ import {Regular500} from "@styles/font";
 
 import {PanGestureHandler, State} from 'react-native-gesture-handler';
 import PullToRefresh from "@pages/activities/pull-to-refresh/PullToRefresh";
+
 export default function ActivitiesPage(props: any) {
 
     const dimensions = useWindowDimensions();
@@ -426,17 +427,17 @@ export default function ActivitiesPage(props: any) {
 
         );
     };
-    const listHeaderComponent=()=><>
-        {!searchVisible&& !!pnApplications?.length&&containerHeight&&
-            <View style={[styles.pinnedActivityContainer,{
-                marginBottom:5,
-                paddingBottom:20,
-                backgroundColor:"#fff"
+    const listHeaderComponent = () => <>
+        {!searchVisible && !!pnApplications?.length && containerHeight &&
+            <View style={[styles.pinnedActivityContainer, {
+                marginBottom: 5,
+                paddingBottom: 20,
+                backgroundColor: "#fff"
             }]}>
-                {!!pnApplications?.length&&
-                    <View style={[styles.pinnedgroup,{height:undefined}]}>
-                        <View style={[styles.pinnedcontainer,{paddingVertical:10}]}>
-                            <Text style={[styles.pinnedActivity,{fontFamily:Regular500,}]}>Pinned
+                {!!pnApplications?.length &&
+                    <View style={[styles.pinnedgroup, {height: undefined}]}>
+                        <View style={[styles.pinnedcontainer, {paddingVertical: 10}]}>
+                            <Text style={[styles.pinnedActivity, {fontFamily: Regular500,}]}>Pinned
                                 Activity</Text>
                         </View>
                     </View>}
@@ -448,12 +449,12 @@ export default function ActivitiesPage(props: any) {
                 <ScrollView showsVerticalScrollIndicator={false}
                             nestedScrollEnabled={true}
                             onScroll={(event) => {
-                                if(!isMobile){
+                                if (!isMobile) {
                                     new Promise((resolve, reject) => {
                                         setTimeout(() => {
                                             resolve(event?.nativeEvent?.contentOffset?.y)
                                         }, 1000);
-                                    }).then((data)=>{
+                                    }).then((data) => {
                                         setYPos(data)
                                     });
                                 }
@@ -461,9 +462,9 @@ export default function ActivitiesPage(props: any) {
                             }}
                             scrollEventThrottle={16}
                             ref={scrollViewRef}
-                            style={{maxHeight:300}}>
+                            style={{maxHeight: 300}}>
                     {
-                        pnApplications.map((item:any,index:number)=>{
+                        pnApplications.map((item: any, index: number) => {
                             return item?.activity && <FlatList
                                 scrollEventThrottle={16}
                                 key={index}
@@ -474,30 +475,31 @@ export default function ActivitiesPage(props: any) {
 
                                 renderItem={(act, i) => {
                                     return (
-                                        act?.item?.assignedPersonnel?._id||act?.item?.assignedPersonnel)==user?._id&&<ActivityItem
-                                        isOpen={isOpen}
-                                        config={config}
-                                        key={i}
-                                        selected={applicationItem?._id==act?.item?._id}
-                                        currentUser={user}
-                                        role={user?.role?.key}
-                                        searchQuery={searchTerm}
-                                        activity={act?.item}
-                                        isPinned={true}
-                                        onPressUser={(event:any)=>{
+                                            act?.item?.assignedPersonnel?._id || act?.item?.assignedPersonnel) == user?._id &&
+                                        <ActivityItem
+                                            isOpen={isOpen}
+                                            config={config}
+                                            key={i}
+                                            selected={applicationItem?._id == act?.item?._id}
+                                            currentUser={user}
+                                            role={user?.role?.key}
+                                            searchQuery={searchTerm}
+                                            activity={act?.item}
+                                            isPinned={true}
+                                            onPressUser={(event: any) => {
 
-                                            /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
-                                            })*/
-                                            dispatch(setApplicationItem({...act?.item,isOpen:`pin${i}${index}`}));
-                                            //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
-                                            if(event?.icon=='more'){
-                                                setMoreModalVisible(true)
-                                            } else{
-                                                setModalVisible(true)
-                                            }
-                                            dispatch(setSelectedYPos({yPos, type: 1}))
-                                        }} index={`pin${i}${index}`}
-                                        swiper={(index:number,progress:any,dragX:any,onPressUser:any)=>renderSwiper(index,progress,dragX,onPressUser,act?.item,unReadReadApplicationFn)}/>
+                                                /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
+                                                })*/
+                                                dispatch(setApplicationItem({...act?.item, isOpen: `pin${i}${index}`}));
+                                                //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
+                                                if (event?.icon == 'more') {
+                                                    setMoreModalVisible(true)
+                                                } else {
+                                                    setModalVisible(true)
+                                                }
+                                                dispatch(setSelectedYPos({yPos, type: 1}))
+                                            }} index={`pin${i}${index}`}
+                                            swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, act?.item, unReadReadApplicationFn)}/>
                                 }
                                 }
                                 keyExtractor={(item, index) => `_key${index.toString()}`}
@@ -525,15 +527,15 @@ export default function ActivitiesPage(props: any) {
         switch (route.key) {
             case 'tab0':
                 data = notPnApplications;
-                header =  true
+                header = true
                 break;
             case 'tab1':
                 data = pnApplications;
-                header =  false
+                header = false
                 break;
             case 'tab2':
                 data = notPnApplications;
-                header =  false;
+                header = false;
                 break;
             default:
                 return null;
@@ -541,7 +543,8 @@ export default function ActivitiesPage(props: any) {
 
         return (
             <>
-                <PullToRefresh offset={ HeaderHeight + TabBarHeight + ( !!lodash.size(meetingList) &&  80)}  refreshing={refreshing} onRefresh={onRefresh}>
+                <PullToRefresh offset={HeaderHeight + TabBarHeight + (!!lodash.size(meetingList) && 80)}
+                               refreshing={refreshing} onRefresh={onRefresh}>
                     <Animated.FlatList
                         // scrollEnabled={canScroll}
                         {...listPanResponder.panHandlers}
@@ -565,7 +568,7 @@ export default function ActivitiesPage(props: any) {
                                     },
                                 ],
                                 {useNativeDriver: true},
-                            ): null
+                            ) : null
                         }
                         onMomentumScrollBegin={onMomentumScrollBegin}
                         onScrollEndDrag={onScrollEndDrag}
@@ -573,7 +576,7 @@ export default function ActivitiesPage(props: any) {
 
                         ListHeaderComponent={header ? listHeaderComponent() : null}
                         contentContainerStyle={{
-                            paddingTop: HeaderHeight + TabBarHeight + ( !!lodash.size(meetingList) &&  80),
+                            paddingTop: HeaderHeight + TabBarHeight + (!!lodash.size(meetingList) && 80),
                             minHeight: windowHeight - SafeStatusBar + HeaderHeight,
                         }}
                         onEndReached={() => {
@@ -651,63 +654,63 @@ export default function ActivitiesPage(props: any) {
         });
         return (
 
-                <Animated.View
-                    style={{
-                        top: 0,
-                        zIndex: 1,
-                        position: 'absolute',
-                        transform: [{translateY: headerTranslate}],
-                        paddingTop: (containerHeight),
-                        width: '100%',
-                    }}>
-                    {
-                        !!lodash.size(meetingList) && (
-                            <FlatList
-                                data={meetingList}
-                                bounces={false}
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                snapToInterval={activitySizeComponent?.width || dimensions?.width}
-                                decelerationRate={0}
-                                keyExtractor={(item: any) => item._id}
-                                renderItem={({item}) => (
-                                    <MeetingNotif
-                                        style={{
-                                            ...Platform.select({
-                                                native: {
-                                                    width: activitySizeComponent?.width || dimensions?.width
-                                                },
-                                                default: {
-                                                    width: 466
-                                                }
-                                            })
-                                        }}
-                                        name={getChannelName({
-                                            ...item,
-                                            otherParticipants: item?.participants
-                                        })}
-                                        time={item.createdAt}
-                                        host={item.host}
-                                        onJoin={() => onJoin(item)}
-                                        onClose={(leave: any) => onClose(item, leave)}
-                                        closeText={'Cancel'}
-                                    />
-                                )}
-                            />
-                        )
-                    }
-                    <TabBar
-                        {...props}
-                        onTabPress={({route, preventDefault}) => {
-                            if (isListGliding.current) {
-                                preventDefault();
-                            }
-                        }}
-                        style={styles1.tab}
-                        renderLabel={renderLabel}
-                        indicatorStyle={styles1.indicator}
-                    />
-                </Animated.View>
+            <Animated.View
+                style={{
+                    top: 0,
+                    zIndex: 1,
+                    position: 'absolute',
+                    transform: [{translateY: headerTranslate}],
+                    paddingTop: (containerHeight),
+                    width: '100%',
+                }}>
+                {
+                    !!lodash.size(meetingList) && (
+                        <FlatList
+                            data={meetingList}
+                            bounces={false}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            snapToInterval={activitySizeComponent?.width || dimensions?.width}
+                            decelerationRate={0}
+                            keyExtractor={(item: any) => item._id}
+                            renderItem={({item}) => (
+                                <MeetingNotif
+                                    style={{
+                                        ...Platform.select({
+                                            native: {
+                                                width: activitySizeComponent?.width || dimensions?.width
+                                            },
+                                            default: {
+                                                width: 466
+                                            }
+                                        })
+                                    }}
+                                    name={getChannelName({
+                                        ...item,
+                                        otherParticipants: item?.participants
+                                    })}
+                                    time={item.createdAt}
+                                    host={item.host}
+                                    onJoin={() => onJoin(item)}
+                                    onClose={(leave: any) => onClose(item, leave)}
+                                    closeText={'Cancel'}
+                                />
+                            )}
+                        />
+                    )
+                }
+                <TabBar
+                    {...props}
+                    onTabPress={({route, preventDefault}) => {
+                        if (isListGliding.current) {
+                            preventDefault();
+                        }
+                    }}
+                    style={styles1.tab}
+                    renderLabel={renderLabel}
+                    indicatorStyle={styles1.indicator}
+                />
+            </Animated.View>
 
         );
     };
@@ -761,85 +764,85 @@ export default function ActivitiesPage(props: any) {
         <>
             <StatusBar barStyle={'light-content'}/>
             <SafeAreaView style={{flex: 1, backgroundColor: primaryColor}}>
-            <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
-                <View onLayout={onActivityLayoutComponent} style={[styles.container, styles.shadow, {
-                    flexBasis: (
-                        (
-                            isMobile && !(
-                                Platform?.isPad || isTablet())) || dimensions?.width < 768 || (
+                <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
+                    <View onLayout={onActivityLayoutComponent} style={[styles.container, styles.shadow, {
+                        flexBasis: (
                             (
-                                Platform?.isPad || isTablet()) && !isLandscapeSync())) ? "100%" : 466,
-                    flexGrow: 0,
-                    flexShrink: 0
-                }]}>
-                    <View style={styles1.container}>
-                        {renderTabView()}
-                        {renderHeader()}
+                                isMobile && !(
+                                    Platform?.isPad || isTablet())) || dimensions?.width < 768 || (
+                                (
+                                    Platform?.isPad || isTablet()) && !isLandscapeSync())) ? "100%" : 466,
+                        flexGrow: 0,
+                        flexShrink: 0
+                    }]}>
+                        <View style={styles1.container}>
+                            {renderTabView()}
+                            {renderHeader()}
+                        </View>
                     </View>
+                    {
+                        !(
+                            (
+                                isMobile && !(
+                                    Platform?.isPad || isTablet()))) && lodash.isEmpty(applicationItem) && dimensions?.width > 768 &&
+                        <View style={[{flex: 1, justifyContent: "center", alignItems: "center"}]}>
+
+                            <NoActivity/>
+                            <Text style={{color: "#A0A3BD", fontSize: fontValue(24)}}>No activity
+                                selected</Text>
+
+
+                        </View>
+                    }
+
+
+                    {(
+                        !lodash.isEmpty(applicationItem)) && <View style={{flex: 1}}>
+                        <ItemMoreModal details={applicationItem} visible={moreModalVisible} onDismissed={() => {
+                            onMoreModalDismissed(applicationItem?.isOpen)
+                        }}/>
+                        <ActivityModal updateModal={updateModalFn}
+                                       readFn={unReadReadApplicationFn}
+                                       details={applicationItem}
+                                       onChangeAssignedId={(event) => {
+                                           let _notPinnedApplications = [...notPinnedApplications]
+                                           let _pinnedApplications = [...pinnedApplications]
+                                           let flag = 1
+
+                                           for (let i = 0; i < _notPinnedApplications?.length; i++) {
+                                               if (!flag) break
+                                               if (_notPinnedApplications?.[i]?._id == event?._id) {
+                                                   _notPinnedApplications[i] = event
+                                               }
+                                           }
+                                           flag = 1
+                                           for (let i = 0; i < _pinnedApplications?.length; i++) {
+                                               if (!flag) break
+                                               if (_pinnedApplications?.[i]?._id == event?._id) {
+                                                   _notPinnedApplications.unshift(event)
+                                                   _pinnedApplications.splice(i, 1)
+                                               }
+                                           }
+
+                                           dispatch(setApplicationItem(event))
+                                           dispatch(setNotPinnedApplication(_notPinnedApplications))
+                                           dispatch(setPinnedApplication(_pinnedApplications))
+                                           setUpdateModal(true);
+                                       }}
+                                       visible={modalVisible}
+                                       onDismissed={(event: boolean, _id: number) => {
+                                           setUpdateModal(false);
+                                           dispatch(setApplicationItem({}));
+                                           if (event && _id) {
+                                               //  dispatch(deleteApplications(_id))
+                                           }
+                                           if (event) {
+                                               onRefresh()
+                                           }
+                                           onDismissed()
+                                       }}/></View>}
+
                 </View>
-            {
-                !(
-                    (
-                        isMobile && !(
-                            Platform?.isPad || isTablet()))) && lodash.isEmpty(applicationItem) && dimensions?.width > 768 &&
-                <View style={[{flex: 1, justifyContent: "center", alignItems: "center"}]}>
-
-                    <NoActivity/>
-                    <Text style={{color: "#A0A3BD", fontSize: fontValue(24)}}>No activity
-                        selected</Text>
-
-
-                </View>
-            }
-
-
-            {(
-                !lodash.isEmpty(applicationItem)) && <View style={{flex: 1}}>
-                <ItemMoreModal details={applicationItem} visible={moreModalVisible} onDismissed={() => {
-                    onMoreModalDismissed(applicationItem?.isOpen)
-                }}/>
-                <ActivityModal updateModal={updateModalFn}
-                               readFn={unReadReadApplicationFn}
-                               details={applicationItem}
-                               onChangeAssignedId={(event) => {
-                                   let _notPinnedApplications = [...notPinnedApplications]
-                                   let _pinnedApplications = [...pinnedApplications]
-                                   let flag = 1
-
-                                   for (let i = 0; i < _notPinnedApplications?.length; i++) {
-                                       if (!flag) break
-                                       if (_notPinnedApplications?.[i]?._id == event?._id) {
-                                           _notPinnedApplications[i] = event
-                                       }
-                                   }
-                                   flag = 1
-                                   for (let i = 0; i < _pinnedApplications?.length; i++) {
-                                       if (!flag) break
-                                       if (_pinnedApplications?.[i]?._id == event?._id) {
-                                           _notPinnedApplications.unshift(event)
-                                           _pinnedApplications.splice(i, 1)
-                                       }
-                                   }
-
-                                   dispatch(setApplicationItem(event))
-                                   dispatch(setNotPinnedApplication(_notPinnedApplications))
-                                   dispatch(setPinnedApplication(_pinnedApplications))
-                                   setUpdateModal(true);
-                               }}
-                               visible={modalVisible}
-                               onDismissed={(event: boolean, _id: number) => {
-                                   setUpdateModal(false);
-                                   dispatch(setApplicationItem({}));
-                                   if (event && _id) {
-                                       //  dispatch(deleteApplications(_id))
-                                   }
-                                   if (event) {
-                                       onRefresh()
-                                   }
-                                   onDismissed()
-                               }}/></View>}
-
-            </View>
             </SafeAreaView>
         </>
 
