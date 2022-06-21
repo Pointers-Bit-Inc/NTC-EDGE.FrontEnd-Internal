@@ -81,7 +81,7 @@ type TabStateType = {
     [string | number]: LayoutType,
 };
 
-class TabBar extends Component<Props , State> {
+class   TabBar extends Component<Props , State> {
     static defaultProps = {
         tabMargin : 20 ,
         tabBarTextStyle : {} ,
@@ -374,8 +374,8 @@ class TabBar extends Component<Props , State> {
             tabs ,
         } = this.props;
         return (
-            <View
-                style={ [styles.tabs , { backgroundColor } , style , tabBarStyle] }
+            <Animated.View
+                style={ [styles.tabs , { backgroundColor } , style , tabBarStyle, ] }
                 onLayout={ this.measureTabsContainer }
             >
                 <ScrollView
@@ -408,7 +408,7 @@ class TabBar extends Component<Props , State> {
                     { this.state.renderUnderline && this.renderUnderline() }
 
                 </ScrollView>
-            </View>
+            </Animated.View>
         );
     }
 }
