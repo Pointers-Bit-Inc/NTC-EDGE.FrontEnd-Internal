@@ -60,8 +60,9 @@ const PullToRefresh: FC<PullToRefreshProps> = ({
             return true;
         },
         onActive(event) {
-            if (event.translationY > 0) {
+            if (event.translationY > 0  ) {
                 translateY.value = event.translationY;
+
                 runOnJS(setProgress)(progress.value);
             } else {
                 translateY.value = withTiming(0);

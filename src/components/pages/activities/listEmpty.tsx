@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ActivityIndicator,StyleSheet,Text,View} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, useWindowDimensions, View} from 'react-native';
 import {DATE_ADDED} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny,useSelector} from "react-redux";
 import NoActivity from "@assets/svg/noActivity";
@@ -17,11 +17,10 @@ export default function Loader(refreshing,searchTerm,size){
     const selectedClone=selectedChangeStatus?.filter((status:string)=>{
         return status!=DATE_ADDED
     });
-console.log(size)
     return (
         <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
 
-            {refreshing  ? <ActivityIndicator/> : selectedClone.length && !( size || size?.length) ? <><NoActivity></NoActivity><Text
+            {refreshing  ? <View/> : selectedClone.length && !( size || size?.length) ? <><NoActivity></NoActivity><Text
                                                                           style={styles.noContent}>No Content "{selectedClone.toString()}"</Text></>
 
                                                                       : size || size?.length ? <></> : <><NoActivity></NoActivity><Text style={styles.noContent}>No Content</Text></>}
