@@ -579,13 +579,14 @@ export default function ActivitiesPage(props: any) {
                             act?.assignedPersonnel?._id||act?.assignedPersonnel)==user?._id)).length)}
                         ListHeaderComponent={header ? listHeaderComponent() : null}
                         contentContainerStyle={{
-                           paddingTop: Platform.OS != "ios" ?HeaderHeight + TabBarHeight + (!!lodash.size(meetingList) && 80) : 0,
+
+                           paddingTop: Platform.OS != "ios" ?containerHeight  + TabBarHeight + (!!lodash.size(meetingList) && 80) : 0,
                         }}
-                        contentInset={{top: HeaderHeight + TabBarHeight + (!!lodash.size(meetingList) && 80)}}
-                       contentOffset={{y: -HeaderHeight + TabBarHeight + (!!lodash.size(meetingList) && 80)}}
+                        contentInset={{top: containerHeight  + TabBarHeight + (!!lodash.size(meetingList) && 80)}}
+                       contentOffset={{y: -containerHeight  + TabBarHeight + (!!lodash.size(meetingList) && 80)}}
                         refreshControl={
                             <RefreshControl
-                                progressViewOffset={HeaderHeight + TabBarHeight + (!!lodash.size(meetingList) && 80)}
+                                progressViewOffset={containerHeight + TabBarHeight + (!!lodash.size(meetingList) && 80)}
                                 refreshing={refreshing}
                                 onRefresh={onRefresh}
                             />
