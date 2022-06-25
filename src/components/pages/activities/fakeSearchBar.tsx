@@ -17,13 +17,13 @@ export const FakeSearchBar = (props: { onSearchLayoutComponent,  animated,  onPr
                     <View style={[styles.rect7, {marginTop: 0, width: "100%", marginLeft: 0}]}>
                         <View style={styles.iconRow}>
 
-                            <SearchIcon height={fontValue(20)} width={fontValue(20)} style={styles.icon}></SearchIcon>
+                                <SearchIcon height={fontValue(20)} width={fontValue(20)} style={styles.icon}></SearchIcon>
 
-                            <View
+                                <View
 
-                                style={styles.textInput}
+                                    style={styles.textInput}
 
-                            >
+                                >
                                 <Text style={{fontFamily: Regular, fontSize: fontValue(12), color: "rgba(128,128,128,1)",}}>Search</Text>
                             </View>
 

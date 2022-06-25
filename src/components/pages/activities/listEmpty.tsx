@@ -18,10 +18,12 @@ export default function Loader(refreshing,searchTerm,size){
     const selectedClone=selectedChangeStatus?.filter((status:string)=>{
         return status!=DATE_ADDED
     });
-    const dimension = useWindowDimensions()
+
     return (
-        <View  style={{justifyContent: "center", alignItems: "center", height: "100%", width: "100%"  }}>
-            {refreshing  ? <View/> : selectedClone.length && !( size || size?.length) ? <><NoActivity></NoActivity><Text
+
+        <View  style={{justifyContent: "center", alignItems: "center",   height: "90%", width: "100%"  }}>
+
+            {refreshing  ? <ActivityIndicator /> : selectedClone.length && !( size || size?.length) ? <><NoActivity></NoActivity><Text
                     style={styles.noContent}>No Content "{selectedClone.toString()}"</Text></>
 
                 : size || size?.length ? <></> : <><NoActivity></NoActivity><Text style={styles.noContent}>No Content</Text></>}

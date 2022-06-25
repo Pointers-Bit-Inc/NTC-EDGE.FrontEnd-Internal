@@ -1,5 +1,5 @@
 import {Platform , StyleSheet} from "react-native";
-import {Bold} from "@styles/font";
+import {Bold, Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import hairlineWidth = StyleSheet.hairlineWidth;
 
@@ -15,6 +15,10 @@ export const styles = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 10,
 
+    },
+    noContent:{
+        fontFamily:Regular,
+        textAlign:"center",alignSelf:"center",color:"#A0A3BD",fontSize:fontValue(24)
     },
     shadow: {
         shadowColor: "rgba(0,0,0,0.1)",
