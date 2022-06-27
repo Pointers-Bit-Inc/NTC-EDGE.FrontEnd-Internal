@@ -25,14 +25,11 @@ import Animated, {
 } from "react-native-reanimated";
 import TabBar from "./components/TabBar";
 import useScrollSync from "./hooks/useScrollSync";
-import ConnectionList from "./components/ConnectionList";
 import {Connection} from "./types/Connection";
 import {ScrollPair} from "./types/ScrollPair";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
-import {FRIENDS, SUGGESTIONS} from "./mocks/connections";
 import {HeaderConfig} from "./types/HeaderConfig";
 import {Visibility} from "./types/Visibility";
-import HeaderOverlay from "./components/HeaderOverlay";
 import lodash from "lodash";
 import {useActivities} from "../../../hooks/useActivities";
 import {isMobile} from "@pages/activities/isMobile";
@@ -337,8 +334,8 @@ const ActivitiesPage = (props) => {
 
     const сurrentScrollValue = useDerivedValue(
         () =>
-            tabIndex === 0 ? allScrollValue.value : pendingScrollValue.value,
-        [tabIndex, allScrollValue, pendingScrollValue]
+            tabIndex === 0 ? allScrollValue.value : tabIndex == 1 ? pendingScrollValue.value : historyScrollValue.value,
+        [tabIndex, allScrollValue, pendingScrollValue, historyScrollValue]
     );
 
     const translateY = useDerivedValue(
