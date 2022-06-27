@@ -34,11 +34,21 @@ const useDownload = () => {
   const downloadFile = (attachment:any) => {
     const { config, fs } = RNFetchBlob;
     let RootDir = fs.dirs.DownloadDir;
+
+    if (Platform.OS === 'ios') {
+      RootDir = fs.dirs.DocumentDir;
+    }
+
     const date = new Date();
     const FILE_URL = attachment.uri;
     const downloadPath = `${RootDir}/${Math.floor(date.getTime() + date.getSeconds() / 2)}-${attachment.name}`;
     let options = {
       fileCache: true,
+      ios: {
+        fileCache: true,
+        path: downloadPath,
+        notification: true,
+      },
       addAndroidDownloads: {
         path: downloadPath,
         description: 'downloading file...',
