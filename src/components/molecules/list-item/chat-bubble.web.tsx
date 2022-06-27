@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     width: 250,
     height: 250,
+    borderRadius: 10,
     backgroundColor: bubble.primary,
   },
   systemMessage: {
