@@ -31,8 +31,7 @@ export const styles = StyleSheet.create({
         shadowRadius: 10,
     },
     container: {
-        zIndex: 1,
-
+        zIndex: 2,
         backgroundColor: "rgba(230, 230, 230,1)"
     },
     horizontal: {
@@ -57,7 +56,6 @@ export const styles = StyleSheet.create({
             }
         }),
         paddingVertical:15,
-
 
         flexDirection: "row"
     },
@@ -91,6 +89,7 @@ export const styles = StyleSheet.create({
 
     },
     searcg: {
+        zIndex: 0,
         left: 0,
         right: 0,
     },

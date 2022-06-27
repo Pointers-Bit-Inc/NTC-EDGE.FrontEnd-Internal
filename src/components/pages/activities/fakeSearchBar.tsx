@@ -9,7 +9,7 @@ import {isMobile} from "@pages/activities/isMobile";
 export const FakeSearchBar = (props: { onSearchLayoutComponent,  animated,  onPress: () => void, searchVisible: boolean }) => {
     const dimensions = useWindowDimensions();
     return <Animated.View
-        onLayout={ props.onSearchLayoutComponent}
+        //onLayout={ props.onSearchLayoutComponent}
         style={[styles.searcg, props.animated]}>
         <View style={[styles.rect26, {paddingVertical: isMobile || dimensions?.width < 800 ?  10 : undefined } ]}>
             <TouchableOpacity onPress={props.onPress}>

@@ -55,6 +55,7 @@ function convertStatusText(convertedStatus:any[],item:any){
 export function useActivities(props){
     const scrollViewRef = useRef()
     const flatListViewRef = useRef()
+    const scrollableTabView = useRef()
     const [yPos, setYPos] = useState(0)
     const [total,setTotal]=useState(0);
     const [page,setPage]=useState(0);
@@ -269,6 +270,7 @@ export function useActivities(props){
                 dispatch(resetChannel());
                 destroy();
                 setTimeout(()=>{
+
                     props.navigation.dispatch(StackActions.replace('Login'));
                 },500);
             }
@@ -570,6 +572,7 @@ export function useActivities(props){
         scrollViewRef,
         yPos, setYPos,
         flatListViewRef,
+        scrollableTabView,
         notPinnedApplications,
         pinnedApplications,
         setRefreshing

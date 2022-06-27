@@ -21,7 +21,7 @@ export default function Loader(refreshing,searchTerm,size){
 
     return (
 
-        <View  style={{justifyContent: "center", alignItems: "center",   height: "90%", width: "100%"  }}>
+        <View  style={{justifyContent: "center", alignItems: "center",   height: "60%", width: "100%"  }}>
 
             {refreshing  ? <ActivityIndicator /> : selectedClone.length && !( size || size?.length) ? <><NoActivity></NoActivity><Text
                     style={styles.noContent}>No Content "{selectedClone.toString()}"</Text></>
