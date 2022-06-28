@@ -285,7 +285,7 @@ const ActivitiesPage = (props) => {
 
     const [headerHeight, setHeaderHeight] = useState(0);
 
-    const defaultHeaderHeight =   !!lodash.size(meetingList) ? 80 : 0;
+    const defaultHeaderHeight =   (!!lodash.size(meetingList) ? 80 : 0) + 44;
 
     const headerConfig = useMemo<HeaderConfig>(
         () => ({
@@ -517,6 +517,7 @@ const ActivitiesPage = (props) => {
                 [-headerDiff, OVERLAY_VISIBILITY_OFFSET - headerDiff, 0],
                 [Visibility.Visible, Visibility.Hidden, Visibility.Hidden]
             ),
+            backgroundColor: primaryColor,
             zIndex: !!translateY.value ? 3 : 1
         }});
 
@@ -532,7 +533,7 @@ const ActivitiesPage = (props) => {
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
-            <SafeAreaView style={{flex: 1, backgroundColor: primaryColor,}}>
+            <View style={{flex: 1, backgroundColor: primaryColor,}}>
                 <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
                     <View  style={[styles1.container, styles1.shadow, {
                         flexBasis: (
@@ -550,7 +551,7 @@ const ActivitiesPage = (props) => {
                                     backgroundColor: ((isMobile && !(Platform?.isPad || isTablet()))) ? "#041B6E" : "#fff",
                                     ...Platform.select({
                                         native: {
-                                            paddingTop:(top ) ? 0 : 40 ,
+                                            paddingTop: 40 ,
                                         },
                                         web:{
                                             paddingTop: 10 ,
@@ -751,7 +752,7 @@ const ActivitiesPage = (props) => {
                                            onDismissed()
                                        }}/></View>}
                 </View>
-            </SafeAreaView>
+            </View>
         </>
 
     )
