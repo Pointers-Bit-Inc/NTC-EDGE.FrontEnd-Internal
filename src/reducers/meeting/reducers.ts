@@ -90,8 +90,11 @@ export default function Meeting(state = initialState, action:any = {}) {
         const participantsId = action.payload.participantsId;
 
         let newState = state.setIn(['normalizedMeetingList', action.payload._id, 'participants'], participants)
-        .setIn(['normalizedMeetingList', action.payload._id, 'participantsId'], participantsId)
-        .setIn(['normalizeActiveMeetings', action.payload._id, 'participants'], participants);
+        .setIn(['normalizedMeetingList', action.payload._id, 'participantsId'], participantsId);
+        
+        if (state.normalizeActiveMeetings[action.payload._id]) {
+          newState = newState.setIn(['normalizeActiveMeetings', action.payload._id, 'participants'], participants);
+        }
 
         if (state.meeting?._id === action.payload._id) {
           newState = newState.setIn(['meeting'], action.payload)
