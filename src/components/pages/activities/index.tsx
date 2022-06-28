@@ -285,7 +285,7 @@ const ActivitiesPage = (props) => {
 
     const [headerHeight, setHeaderHeight] = useState(0);
 
-    const defaultHeaderHeight =   (!!lodash.size(meetingList) ? 80 : 0) + 44;
+    const defaultHeaderHeight =   (!!lodash.size(meetingList) ? 80 : 0) + (Platform.OS == "web" ? 0 : 44);
 
     const headerConfig = useMemo<HeaderConfig>(
         () => ({
@@ -391,8 +391,9 @@ const ActivitiesPage = (props) => {
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
 
-            ListEmptyComponent={() => listEmpty(refreshing, searchTerm, notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
-                act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length)}
+            ListEmptyComponent={() => listEmpty(refreshing, searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
+                act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : tabIndex == 1 ? pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
+                act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length :  notPnApplications.length )}
             ListHeaderComponent={isHeader ? listHeaderComponent() : null}
 
             style={{flex: 1,}}
