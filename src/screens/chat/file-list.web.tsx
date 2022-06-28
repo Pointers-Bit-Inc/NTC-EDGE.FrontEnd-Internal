@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, FlatList, TouchableOpacity, InteractionManager, ActivityIndicator, Dimensions, Image } from 'react-native'
+import { View, StyleSheet, FlatList, TouchableOpacity, InteractionManager, ActivityIndicator, Dimensions, Image, Linking } from 'react-native'
 import Modal from 'react-native-modal';
 import Text from '@components/atoms/text'
 import { ArrowDownIcon, CheckIcon, CloseIcon, DownloadIcon, FileIcon, MinusIcon, NewCheckIcon, NewFileIcon, TrashIcon } from '@components/atoms/icon';
@@ -467,7 +467,7 @@ const FileList = () => {
         onSwipeComplete={() => setPreview({})}
         style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 15 }}
       >
-        <View style={{ position: 'absolute', top: 10, left: 0 }}>
+        <View style={{ position: 'absolute', top: 0, left: 0 }}>
           <TouchableOpacity onPress={() => setPreview({})}>
             <CloseIcon
               type={'md-close'}
@@ -495,9 +495,22 @@ const FileList = () => {
                 style={{ textAlign: 'center', marginTop: 15 }}
                 color={'white'}
                 size={18}
+                numberOfLines={3}
               >
                 {preview?.attachment?.name}
               </Text>
+              <View style={{ justifyContent: 'center', marginTop: 30 }}>
+                <TouchableOpacity onPress={() => Linking.openURL(preview?.attachment?.uri)}>
+                  <View style={{ paddingHorizontal: 15, paddingVertical: 10, backgroundColor: '#2863D6', borderRadius: 10 }}>
+                    <Text
+                      color={'white'}
+                      size={16}
+                    >
+                      Download
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           )
         }
