@@ -307,69 +307,21 @@ const ActivitiesPage = (props) => {
     );
 
     const allScrollValue = useSharedValue(0);
-    const allPrevContentOffsetY = useSharedValue(0)
-    const allScrollHandler = useAnimatedScrollHandler({
-        onScroll: (event) => {
-            let newScY = allScrollValue.value
-            if (event.contentOffset.y < allPrevContentOffsetY.value) {
-                newScY -= allPrevContentOffsetY.value - event.contentOffset.y
-            } else {
-                newScY += event.contentOffset.y - allPrevContentOffsetY.value
-            }
-            if (newScY < 0) {
-                newScY = 0
-            }
-            if (newScY > headerHeight) {
-                newScY = headerHeight
-            }
-            allScrollValue.value = newScY
-            allPrevContentOffsetY.value = event.contentOffset.y
-        },
 
-    });
+    const allScrollHandler = useAnimatedScrollHandler(
+        (event) => (allScrollValue.value = event.contentOffset.y)
+    );
 
     const pendingScrollValue = useSharedValue(0);
-    const pendingPrevContentOffsetY = useSharedValue(0)
-    const pendingScrollHandler = useAnimatedScrollHandler({
-        onScroll: (event) => {
-            let newScY = pendingScrollValue.value
-            if (event.contentOffset.y < pendingPrevContentOffsetY.value) {
-                newScY -= pendingPrevContentOffsetY.value - event.contentOffset.y
-            } else {
-                newScY += event.contentOffset.y - pendingPrevContentOffsetY.value
-            }
-            if (newScY < 0) {
-                newScY = 0
-            }
-            if (newScY > headerHeight ) {
-                newScY = headerHeight
-            }
-            pendingScrollValue.value = newScY
-            pendingPrevContentOffsetY.value = event.contentOffset.y
-        },
 
-    });
+    const pendingScrollHandler = useAnimatedScrollHandler(
+        (event) => (pendingScrollValue.value = event.contentOffset.y)
+    );
     const historyScrollValue = useSharedValue(0);
-    const historyPrevContentOffsetY = useSharedValue(0)
-    const historyScrollHandler =useAnimatedScrollHandler({
-        onScroll: (event) => {
-            let newScY = historyScrollValue.value
-            if (event.contentOffset.y < historyPrevContentOffsetY.value) {
-                newScY -= historyPrevContentOffsetY.value - event.contentOffset.y
-            } else {
-                newScY += event.contentOffset.y - historyPrevContentOffsetY.value
-            }
-            if (newScY < 0) {
-                newScY = 0
-            }
-            if (newScY > headerHeight) {
-                newScY = headerHeight
-            }
-            historyScrollValue.value = newScY
-            historyPrevContentOffsetY.value = event.contentOffset.y
-        },
 
-    });
+    const historyScrollHandler = useAnimatedScrollHandler(
+        (event) => (historyScrollValue.value = event.contentOffset.y)
+    );
     const scrollPairs = useMemo<ScrollPair[]>(
         () => [
             {list: allRef, position: allScrollValue},
@@ -397,14 +349,12 @@ const ActivitiesPage = (props) => {
 
     const headerAnimatedStyle = useAnimatedStyle(() => {
 
-
         return {
             transform: [{translateY: translateY.value}],
             opacity: interpolate(
                 translateY.value,
                 [-headerDiff, 0],
                 [Visibility.Hidden, Visibility.Visible],
-                Extrapolate.CLAMP,
             ),
         };
     })
@@ -598,7 +548,7 @@ const ActivitiesPage = (props) => {
                             <View onLayout={onLayoutComponent}>
                                 <Animated.View style={[styles1.rect, styles1.horizontal, {
                                     backgroundColor: ((isMobile && !(Platform?.isPad || isTablet()))) ? "#041B6E" : "#fff",
-                                    paddingTop: (top || Platform.OS == "web")? 0 : 40 ,
+                                    paddingTop: (top || Platform.OS == "web") ? 0 : 40 ,
                                 },]}>
 
                                     {(
