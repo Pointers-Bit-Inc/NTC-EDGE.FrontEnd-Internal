@@ -300,7 +300,10 @@ function ActivityModal(props:any){
                         props.onDismissed(change);
                         setChange(false)
                     }}>
-                        <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
+
+                            <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
+
+
                     </TouchableOpacity>
 
                     <Text style={[styles.applicationType,{width:"90%"}]}>{props?.details?.applicationType||props?.details?.service?.name}</Text>

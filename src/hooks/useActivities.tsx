@@ -213,7 +213,11 @@ export function useActivities(props){
             ...(
                 searchTerm&&{keyword:searchTerm}),
             ...(
-                {pageSize: pinned ? 100 :10, sort:checkDateAdded.length ? "asc" : "desc"}),
+                {
+                    pageSize: pinned ? 100 :10,
+                    sort:checkDateAdded.length ? "asc" : "desc",
+                    region: user?.employeeDetails?.region
+                }),
             ...(
                 selectedClone.length>0&&{
                     [cashier ? "paymentStatus" : 'status']:selectedClone.map((item:any)=>{
