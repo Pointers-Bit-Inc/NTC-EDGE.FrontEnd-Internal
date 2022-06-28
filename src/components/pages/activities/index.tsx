@@ -72,6 +72,7 @@ import ActivityModal from "@pages/activities/modal";
 import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
+import Extrapolate = module
 
 const TAB_BAR_HEIGHT = 48;
 const HEADER_HEIGHT = 48;
@@ -346,14 +347,17 @@ const ActivitiesPage = (props) => {
         transform: [{translateY: translateY.value}],
     }));
 
-    const headerAnimatedStyle = useAnimatedStyle(() => ({
-        transform: [{translateY: translateY.value}],
-        opacity: interpolate(
-            translateY.value,
-            [-headerDiff, 0],
-            [Visibility.Hidden, Visibility.Visible]
-        ),
-    }));
+    const headerAnimatedStyle = useAnimatedStyle(() => {
+
+        return {
+            transform: [{translateY: translateY.value}],
+            opacity: interpolate(
+                translateY.value,
+                [-headerDiff, 0],
+                [Visibility.Hidden, Visibility.Visible],
+            ),
+        };
+    })
 
     const contentContainerStyle = useMemo<StyleProp<ViewStyle>>(
         () => ({
@@ -508,13 +512,13 @@ const ActivitiesPage = (props) => {
     );
     const collapsedOverlayAnimatedStyle = useAnimatedStyle(() => {
         return {
-        opacity: interpolate(
-            translateY.value,
-            [-headerDiff, OVERLAY_VISIBILITY_OFFSET - headerDiff, 0],
-            [Visibility.Visible, Visibility.Hidden, Visibility.Hidden]
-        ),
-        zIndex: !!translateY.value ? 3 : 1
-    }});
+            opacity: interpolate(
+                translateY.value,
+                [-headerDiff, OVERLAY_VISIBILITY_OFFSET - headerDiff, 0],
+                [Visibility.Visible, Visibility.Hidden, Visibility.Hidden]
+            ),
+            zIndex: !!translateY.value ? 3 : 1
+        }});
 
 
     const collapsedOverlayStyle = useMemo<StyleProp<ViewStyle>>(
@@ -528,7 +532,7 @@ const ActivitiesPage = (props) => {
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
-            <SafeAreaView style={{flex: 1, backgroundColor: primaryColor}}>
+            <SafeAreaView style={{flex: 1, backgroundColor: primaryColor,}}>
                 <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
                     <View  style={[styles1.container, styles1.shadow, {
                         flexBasis: (
@@ -544,7 +548,7 @@ const ActivitiesPage = (props) => {
                             <View onLayout={onLayoutComponent}>
                                 <Animated.View style={[styles1.rect, styles1.horizontal, {
                                     backgroundColor: ((isMobile && !(Platform?.isPad || isTablet()))) ? "#041B6E" : "#fff",
-
+                                    paddingTop: (top || Platform.OS == "web") ? 0 : 40 ,
                                 },]}>
 
                                     {(
@@ -743,7 +747,7 @@ const ActivitiesPage = (props) => {
             </SafeAreaView>
         </>
 
-)
+    )
 
 };
 

@@ -53,6 +53,16 @@ function convertStatusText(convertedStatus:any[],item:any){
 }
 
 export function useActivities(props){
+
+
+
+
+
+
+
+
+
+
     const scrollViewRef = useRef()
     const flatListViewRef = useRef()
     const scrollableTabView = useRef()
@@ -473,16 +483,15 @@ export function useActivities(props){
     var _clampedScrollValue=0;
     var _offsetValue=0;
     var _scrollValue=0;
+
     useEffect(()=>{
         scrollY.addListener(({value})=>{
-
             const diff=value-_scrollValue;
             _scrollValue=value;
             _clampedScrollValue=Math.min(
                 Math.max(_clampedScrollValue+diff,0),
                 containerHeight,
             )
-
         });
         offsetAnim.addListener(({value})=>{
             _offsetValue=value;
