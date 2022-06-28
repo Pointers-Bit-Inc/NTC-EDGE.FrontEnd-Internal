@@ -548,7 +548,14 @@ const ActivitiesPage = (props) => {
                             <View onLayout={onLayoutComponent}>
                                 <Animated.View style={[styles1.rect, styles1.horizontal, {
                                     backgroundColor: ((isMobile && !(Platform?.isPad || isTablet()))) ? "#041B6E" : "#fff",
-                                    paddingTop: (top || Platform.OS == "web") ? 0 : 40 ,
+                                    ...Platform.select({
+                                        native: {
+                                            paddingTop:(top ) ? 0 : 40 ,
+                                        },
+                                        web:{
+                                            paddingTop: 10 ,
+                                        }
+                                    })
                                 },]}>
 
                                     {(
