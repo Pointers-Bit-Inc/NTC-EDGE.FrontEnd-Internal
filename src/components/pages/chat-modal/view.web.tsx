@@ -6,7 +6,9 @@ import {
   Platform,
   InteractionManager,
   Keyboard,
-  Animated
+  Animated,
+  ScrollView,
+  Image
 } from 'react-native';
 import lodash from 'lodash';
 import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
@@ -17,8 +19,12 @@ import {
   PlusIcon,
   CheckIcon,
   NewMessageIcon,
-  CloseIcon
+  CloseIcon,
+  NewFileIcon
 } from '@components/atoms/icon';
+import {
+  getFileSize,
+} from '../../../utils/formatting';
 import { InputField } from '@components/molecules/form-fields';
 import { button, header } from '@styles/color';
 import {
@@ -34,6 +40,7 @@ import AttachIcon from '@assets/svg/AttachIcon';
 import EmojiIcon from '@assets/svg/EmojiIcon';
 import GifIcon from '@assets/svg/GifIcon';
 import SendIcon from '@assets/svg/SendIcon';
+import Text from '@atoms/text';
 import { fontValue } from '../activities/fontValue';
 
 const styles = StyleSheet.create({
@@ -108,6 +115,22 @@ const styles = StyleSheet.create({
     height: 15,
     width: 35,
     borderRadius: 4
+  },
+  fileItemContainer: {
+    padding: 5,
+    maxWidth: 200,
+    height: 40,
+    flexDirection: 'row',
+    backgroundColor: '#E3E5EF',
+    borderRadius: 3,
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  removeFileItem: {
+    position: 'absolute',
+    zIndex: 99,
+    right: -10,
+    top: -5,
   }
 });
 
@@ -144,11 +167,24 @@ const ChatView: FC<Props> = ({
   const [rendered, setRendered] = useState(false);
   const [showAttachmentOption, setShowAttachmentOption] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
+  const [fileToBeSend, setFileToBeSend] = useState([]);
   const Height = useRef(new Animated.Value(0));
 
   const onEmojiClick = (event: any, emojiObject: any) => {
     setInputText((i) => `${i}${emojiObject.emoji}`);
   };
+
+  const removeFile = (i:number) => {
+    setFileToBeSend((files:any) => {
+      const updated:any = [];
+      for(let f:number = 0; f < files.length; f++) {
+        if (f !== i) {
+          updated.push(files[f]);
+        }
+      }
+      return updated;
+    })
+  }
 
   const onRemoveSelectedMessage = () =>
     dispatch(removeSelectedMessage(channelId));
@@ -202,6 +238,13 @@ const ChatView: FC<Props> = ({
   };
 
   const onSendMessage = useCallback(() => {
+    if (lodash.size(fileToBeSend) > 0 && lodash.size(participants) > 0) {
+      fileToBeSend.forEach(f => {
+        _sendFile(channelId, f, groupName || '', participants);
+      });
+      setFileToBeSend([]);
+    }
+
     if (!inputText || lodash.size(participants) === 0) {
       return;
     }
@@ -214,7 +257,7 @@ const ChatView: FC<Props> = ({
       inputRef.current?.blur();
       setInputText('');
     }
-  }, [channelId, inputText]);
+  }, [channelId, inputText, fileToBeSend]);
 
   const onShowAttachmentOption = () => {
     inputRef.current?.blur();
@@ -225,9 +268,9 @@ const ChatView: FC<Props> = ({
     setShowAttachmentOption(false);
   };
   useEffect(() => {
-    console.log('sending files');
     if (lodash.size(selectedFile)) {
-      _sendFile(channelId, selectedFile, groupName, participants);
+      setFileToBeSend((files:any) => [...files, selectedFile]);
+      // _sendFile(channelId, selectedFile, name || '', participants);
     }
   }, [selectedFile]);
 
@@ -269,6 +312,76 @@ const ChatView: FC<Props> = ({
     }
   }, [selectedMessage, rendered]);
 
+  const removeFileItem = (i:number) => {
+    return (
+      <View style={styles.removeFileItem}>
+        <TouchableOpacity onPress={() => removeFile(i)}>
+          <View
+            style={[
+              styles.plus,
+              {
+                width: 18,
+                height: 18,
+                borderRadius: 18,
+                backgroundColor: 'white',
+                overflow: 'hidden',
+                borderWidth: 1,
+              }
+            ]}
+          >
+            <CloseIcon
+              type='close'
+              size={fontValue(10)}
+              color={'#212121'}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  const fileItem = (item:any, index:number) => {
+    if (item?.mimeType === 'application/octet-stream') {
+      return (
+        <View key={index} style={[styles.fileItemContainer, { width: 40, padding: 0 }]}>
+          {removeFileItem(index)}
+          <Image
+            resizeMode={'cover'}
+            style={{ height: '100%', width: '100%', borderRadius: 3 }}
+            borderRadius={3}
+            source={{ uri: item?.uri }}
+          />
+        </View>
+      );
+    }
+
+    return (
+      <View key={index} style={styles.fileItemContainer}>
+        {removeFileItem(index)}
+        <NewFileIcon
+          color={'#606A80'}
+        />
+        <View style={{ paddingHorizontal: 5, maxWidth: 100 }}>
+          <Text
+            numberOfLines={1}
+            size={12}
+            color={'#606A80'}
+          >
+            {item.name}
+          </Text>
+          <Text
+            numberOfLines={1}
+            size={10}
+            color={'#606A80'}
+            style={{ top: -2 }}
+          >
+            {getFileSize(item.size)}
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
   return (
     <View style={styles.container}>
       <View style={{ flex: 1 }}>
@@ -299,12 +412,20 @@ const ChatView: FC<Props> = ({
           {
             borderTopWidth: 2,
             paddingHorizontal: 32,
-            paddingTop: 15,
+            paddingTop: 10,
             borderTopColor: '#efefef',
             backgroundColor: '#f8f8f8'
           }
         ]}
       >
+        {
+          <ScrollView
+            style={{ marginBottom: 10, paddingTop: 10, marginTop: -10 }}
+            horizontal
+          >
+            {fileToBeSend?.map(fileItem)}
+          </ScrollView>
+        }
         <InputField
           ref={inputRef}
           placeholder={'Type a message'}
@@ -343,7 +464,7 @@ const ChatView: FC<Props> = ({
               <GifIcon />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity disabled={!inputText} onPress={onSendMessage}>
+          <TouchableOpacity disabled={!(inputText || lodash.size(fileToBeSend) > 0)} onPress={onSendMessage}>
             {selectedMessage?._id ? (
               <View
                 style={{
@@ -361,7 +482,7 @@ const ChatView: FC<Props> = ({
                     />
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity disabled={!inputText} onPress={onSendMessage}>
+                <TouchableOpacity disabled={!(inputText || lodash.size(fileToBeSend) > 0)} onPress={onSendMessage}>
                   <View
                     style={[
                       styles.plus,
@@ -369,7 +490,7 @@ const ChatView: FC<Props> = ({
                         marginRight: 0,
                         marginLeft: 10
                       },
-                      !inputText && {
+                      !(inputText || lodash.size(fileToBeSend) > 0) && {
                         borderColor: '#212121'
                       }
                     ]}
@@ -377,7 +498,7 @@ const ChatView: FC<Props> = ({
                     <CheckIcon
                       type="check1"
                       size={fontValue(18)}
-                      color={!inputText ? '#C4C4C4' : '#606A80'}
+                      color={!(inputText || lodash.size(fileToBeSend) > 0) ? '#C4C4C4' : '#606A80'}
                     />
                   </View>
                 </TouchableOpacity>

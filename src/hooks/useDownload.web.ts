@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Alert, PermissionsAndroid, Platform } from 'react-native'
 import RNFetchBlob from 'react-native-blob-util';
@@ -31,33 +32,20 @@ const useDownload = () => {
     }
   };
 
-  const downloadFile = (attachment:any) => {
-    const { config, fs } = RNFetchBlob;
-    let RootDir = fs.dirs.DownloadDir;
-
-    if (Platform.OS === 'ios') {
-      RootDir = fs.dirs.DocumentDir;
+  const downloadFile = async (attachment:any) => {
+    try {
+      let link:any = document.createElement('a');
+      link.href = attachment.uri;
+      link.download = attachment.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      link = null;
+      return attachment;
+    } catch (err) {
+      console.log('ERROR', err);
+      throw err;
     }
-
-    const date = new Date();
-    const FILE_URL = attachment.uri;
-    const downloadPath = `${RootDir}/${Math.floor(date.getTime() + date.getSeconds() / 2)}-${attachment.name}`;
-    let options = {
-      fileCache: true,
-      ios: {
-        fileCache: true,
-        path: downloadPath,
-        notification: true,
-      },
-      addAndroidDownloads: {
-        path: downloadPath,
-        description: 'downloading file...',
-        notification: true,
-        // useDownloadManager works with Android only
-        useDownloadManager: true,   
-      },
-    };
-    return config(options).fetch('GET', FILE_URL)
   };
 
   return {

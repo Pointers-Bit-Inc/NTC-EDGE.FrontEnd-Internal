@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, FC, useMemo } from 'react'
-import {View,TouchableOpacity,StyleSheet,InteractionManager,Platform, Dimensions, Image} from 'react-native';
+import {View,TouchableOpacity,StyleSheet,InteractionManager,Platform, Dimensions, Image, Linking} from 'react-native';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
@@ -458,7 +458,7 @@ const List: FC<Props> = ({
             onSwipeComplete={() => setPreview({})}
             style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 15 }}
           >
-            <View style={{ position: 'absolute', top: 10, right: 0 }}>
+            <View style={{ position: 'absolute', top: 0, right: 0 }}>
               <TouchableOpacity onPress={() => setPreview({})}>
                 <Text
                   color={'white'}
@@ -486,9 +486,22 @@ const List: FC<Props> = ({
                     style={{ textAlign: 'center', marginTop: 15 }}
                     color={'white'}
                     size={18}
+                    numberOfLines={3}
                   >
                     {preview?.attachment?.name}
                   </Text>
+                  <View style={{ justifyContent: 'center', marginTop: 30 }}>
+                    <TouchableOpacity onPress={() => Linking.openURL(preview?.attachment?.uri)}>
+                      <View style={{ paddingHorizontal: 15, paddingVertical: 10, backgroundColor: '#2863D6', borderRadius: 10 }}>
+                        <Text
+                          color={'white'}
+                          size={16}
+                        >
+                          Download
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               )
             }
