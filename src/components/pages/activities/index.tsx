@@ -21,7 +21,7 @@ import Animated, {
     useAnimatedScrollHandler,
     useAnimatedStyle,
     useDerivedValue,
-    useSharedValue,
+    useSharedValue, scrollTo, withTiming, Easing, useAnimatedRef
 } from "react-native-reanimated";
 import TabBar from "./components/TabBar";
 import useScrollSync from "./hooks/useScrollSync";
@@ -73,6 +73,9 @@ import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import Extrapolate = module
+import {clamp} from "@pages/activities/worket/clamp";
+import ConnectionList from "@pages/activities/components/ConnectionList";
+import {FRIENDS, SUGGESTIONS} from "@pages/activities/mocks/connections";
 
 const TAB_BAR_HEIGHT = 48;
 const HEADER_HEIGHT = 48;
@@ -277,7 +280,7 @@ const ActivitiesPage = (props) => {
 
     const {height: screenHeight} = useWindowDimensions();
 
-    const allRef = useRef<FlatList>(null);
+    const allRef = useAnimatedRef<FlatList>();
     const pendingRef = useRef<FlatList>(null);
     const historyRef = useRef<FlatList>(null);
 
@@ -307,10 +310,65 @@ const ActivitiesPage = (props) => {
     );
 
     const allScrollValue = useSharedValue(0);
-
-    const allScrollHandler = useAnimatedScrollHandler(
-        (event) => (allScrollValue.value = event.contentOffset.y)
-    );
+    const translationY = useSharedValue(0);
+    const headerProgressY = useSharedValue(0);
+    //
+    const startHeaderProgressOffsetY = useSharedValue(0);
+    const isScrolling = useSharedValue(false);
+    const startScrollY = useSharedValue(0);
+    const allScrollHandler =  useAnimatedScrollHandler<{}>({
+        onScroll: event => {
+            allScrollValue.value = event.contentOffset.y;
+            if (isScrolling.value) {
+                const diff = startScrollY.value - allScrollValue.value;
+                if (diff < 0) {
+                    //scroll up
+                    const maxDiffValue = Math.max(diff, -headerHeight);
+                    headerProgressY.value = clamp(
+                        startHeaderProgressOffsetY.value + maxDiffValue,
+                        -headerHeight,
+                        0,
+                    );
+                }
+            }
+        },
+        onBeginDrag: event => {
+            startScrollY.value = event.contentOffset.y;
+            startHeaderProgressOffsetY.value = headerProgressY.value;
+            isScrolling.value = true;
+        },
+        onEndDrag: () => {
+            isScrolling.value = false;
+            //
+            if (headerProgressY.value < 0) {
+                headerProgressY.value = withTiming(-headerHeight, {
+                    duration: 250,
+                    easing: Easing.bezier(0.16, 1, 0.3, 1),
+                });
+            }
+            //Scroll to hide header bar if not scroll much
+            if (allScrollValue.value < headerHeight) {
+                scrollTo(allRef, 0, headerHeight, true);
+            }
+        },
+        onMomentumBegin: () => {
+            isScrolling.value = false;
+            //
+            if (startScrollY.value > allScrollValue.value) {
+                //scroll up
+                headerProgressY.value = withTiming(0, {
+                    duration: 250,
+                    easing: Easing.linear,
+                });
+            } else {
+                //scroll down
+                headerProgressY.value = withTiming(-headerHeight, {
+                    duration: 250,
+                    easing: Easing.bezier(0.16, 1, 0.3, 1),
+                });
+            }
+        },
+    });
 
     const pendingScrollValue = useSharedValue(0);
 
@@ -344,28 +402,24 @@ const ActivitiesPage = (props) => {
     );
 
     const tabBarAnimatedStyle = useAnimatedStyle(() => ({
-        transform: [{translateY: translateY.value}],
+        transform: [{translateY: headerProgressY.value}],
     }));
 
     const headerAnimatedStyle = useAnimatedStyle(() => {
 
         return {
-            transform: [{translateY: translateY.value}],
-            opacity: interpolate(
-                translateY.value,
-                [-headerDiff, 0],
-                [Visibility.Hidden, Visibility.Visible],
-            ),
+            transform: [{translateY: headerProgressY.value}],
+
         };
     })
 
     const contentContainerStyle = useMemo<StyleProp<ViewStyle>>(
         () => ({
-            paddingTop: rendered ? headerHeight + TAB_BAR_HEIGHT : 0,
+            paddingTop: rendered ? headerProgressY.value + TAB_BAR_HEIGHT : 0,
             paddingBottom: bottom,
             minHeight: screenHeight + headerDiff,
         }),
-        [rendered, headerHeight, bottom, screenHeight, headerDiff]
+        [rendered, headerProgressY.value, bottom, screenHeight, headerDiff]
     );
 
     const sharedProps = useMemo<Partial<FlatListProps<Connection>>>(
@@ -473,7 +527,12 @@ const ActivitiesPage = (props) => {
     }
 
     const renderAllActivities = useCallback(
-        () => getFlatList(allRef, allScrollHandler, sharedProps, notPnApplications, true),
+        () =><ConnectionList
+            ref={allRef}
+            data={SUGGESTIONS}
+            onScroll={allScrollHandler}
+            {...sharedProps}
+        />,
         [allRef, allScrollHandler, sharedProps]
     );
 
@@ -505,7 +564,6 @@ const ActivitiesPage = (props) => {
     const headerContainerStyle = useMemo<StyleProp<ViewStyle>>(
         () => [
             rendered ? styles.headerContainer : undefined,
-
             headerAnimatedStyle,
         ],
 
@@ -514,7 +572,7 @@ const ActivitiesPage = (props) => {
     const collapsedOverlayAnimatedStyle = useAnimatedStyle(() => {
         return {
             opacity: interpolate(
-                translateY.value,
+                headerProgressY.value,
                 [-headerDiff, OVERLAY_VISIBILITY_OFFSET - headerDiff, 0],
                 [Visibility.Visible, Visibility.Hidden, Visibility.Hidden]
             ),
@@ -527,9 +585,9 @@ const ActivitiesPage = (props) => {
         () => [
             styles.collapsedOvarlay,
             collapsedOverlayAnimatedStyle,
-            {height: heightCollapsed},
+            {height: headerProgressY.value},
         ],
-        [collapsedOverlayAnimatedStyle, heightCollapsed]
+        [collapsedOverlayAnimatedStyle, headerProgressY.value]
     );
     return (
         <>
