@@ -23,6 +23,7 @@ import AddParticipants from '@components/pages/chat-modal/add-participants'
 import { InputField } from '@components/molecules/form-fields'
 import useSignalr from 'src/hooks/useSignalr'
 import MessageMember from '@components/pages/chat-modal/message'
+import { SafeAreaView } from 'react-native-safe-area-context'
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -519,7 +520,7 @@ const ChatInfo = ({ navigation }:any) => {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack}>
           <View style={{ paddingRight: 5 }}>
@@ -839,7 +840,7 @@ const ChatInfo = ({ navigation }:any) => {
           </View>
         )
       }
-    </View>
+    </SafeAreaView>
   )
 }
 

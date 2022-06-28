@@ -476,7 +476,7 @@ const FileList = () => {
         onSwipeComplete={() => setPreview({})}
         style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 15 }}
       >
-        <View style={{ position: 'absolute', top: 0, right: 0 }}>
+        <View style={{ position: 'absolute', top: 20, right: 10 }}>
           <TouchableOpacity onPress={() => setPreview({})}>
             <Text
               color={'white'}
