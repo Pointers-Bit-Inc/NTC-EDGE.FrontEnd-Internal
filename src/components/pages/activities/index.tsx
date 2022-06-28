@@ -780,7 +780,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         backgroundColor: "white",
-        justifyContent: "center",
+        justifyContent: "flex-end",
         zIndex: 1,
     },
     headerContainer: {
