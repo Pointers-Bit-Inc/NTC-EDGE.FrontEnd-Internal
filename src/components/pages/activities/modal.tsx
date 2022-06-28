@@ -294,7 +294,7 @@ function ActivityModal(props:any){
                     padding:15,
                     paddingTop:40,
                 }}>
-                    <TouchableOpacity onPress={()=>{
+                    <TouchableOpacity  hitSlop={{top: 50, left: 50, bottom: 50, right: 50}} onPress={()=>{
                         setAssignId("");
                         setStatus("");
                         props.onDismissed(change);
