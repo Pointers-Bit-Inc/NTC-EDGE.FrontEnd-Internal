@@ -5,15 +5,15 @@ import Text from '@components/atoms/text';
 import { chatSameDate } from 'src/utils/formatting'; 
 import { ChatBubble, GroupBubble, PendingBubble } from '@components/molecules/list-item';
 import { text } from 'src/styles/color';
-import { RFValue } from 'react-native-responsive-fontsize';
 import IParticipants from 'src/interfaces/IParticipants';
+import { fontValue } from '@components/pages/activities/fontValue';
 
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   bubbleContainer: {
     alignItems: 'flex-start',
-    paddingHorizontal: RFValue(15),
+    paddingHorizontal: fontValue(15),
     paddingTop: 3,
   },
   loadingContainer: {
