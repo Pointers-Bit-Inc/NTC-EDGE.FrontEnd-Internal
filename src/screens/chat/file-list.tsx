@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, FlatList, TouchableOpacity, InteractionManager, ActivityIndicator, Dimensions, Image, Linking } from 'react-native'
+import { View, StyleSheet, FlatList, TouchableOpacity, InteractionManager, ActivityIndicator, Dimensions, Image, Linking, Platform } from 'react-native'
 import Modal from 'react-native-modal';
 import Text from '@components/atoms/text'
 import { ArrowDownIcon, CheckIcon, CloseIcon, DownloadIcon, FileIcon, MinusIcon, NewCheckIcon, NewFileIcon, TrashIcon } from '@components/atoms/icon';
@@ -392,14 +392,18 @@ const FileList = () => {
           />
         </TouchableOpacity>
         <View style={{ width: 10 }} />
-        <TouchableOpacity disabled={!groupAction || downloading} onPress={onDownload}>
-          <View style={styles.icon}>
-            <DownloadIcon
-              color={!!groupAction ? '#606A80' : '#979797'}
-              size={12}
-            />
-          </View>
-        </TouchableOpacity>
+        {
+          Platform.OS !== 'ios' && (
+            <TouchableOpacity disabled={!groupAction || downloading} onPress={onDownload}>
+              <View style={styles.icon}>
+                <DownloadIcon
+                  color={!!groupAction ? '#606A80' : '#979797'}
+                  size={12}
+                />
+              </View>
+            </TouchableOpacity>
+          )
+        }
         <TouchableOpacity disabled={!groupAction || deleting} onPress={onDelete}>
           <View style={styles.icon}>
             <TrashIcon
