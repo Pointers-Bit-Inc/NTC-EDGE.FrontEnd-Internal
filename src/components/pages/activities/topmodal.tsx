@@ -83,7 +83,8 @@ function TopModal(props: any) {
                 dispatch(setVisible(false))
             } }>
 
-            <SafeAreaView ref={ inputRef } style={ visible ? {
+            <View ref={ inputRef } style={ visible ? {
+
                 position : "absolute" ,
                 zIndex : 2 ,
                 top : 0 ,
@@ -172,7 +173,7 @@ function TopModal(props: any) {
 
                 </TouchableWithoutFeedback> }
 
-            </SafeAreaView>
+            </View>
         </Modal>
 
     );
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
         justifyContent : 'space-between' ,
         alignItems : 'center' ,
         padding  : 15 ,
-        paddingTop: 25 ,
+        paddingTop: 40 ,
         backgroundColor : '#041B6E'
     } ,
     rect : {

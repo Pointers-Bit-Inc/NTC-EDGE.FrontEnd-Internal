@@ -1,4 +1,5 @@
 import {createMaterialTopTabNavigator, MaterialTopTabBarProps,} from "@react-navigation/material-top-tabs";
+
 import React, {FC, memo, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
     FlatList,
@@ -72,8 +73,7 @@ import ActivityModal from "@pages/activities/modal";
 import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
-import Extrapolate = module
-
+import { FontAwesome } from "@expo/vector-icons";
 const TAB_BAR_HEIGHT = 48;
 const HEADER_HEIGHT = 48;
 
@@ -383,21 +383,19 @@ const ActivitiesPage = (props) => {
         return <Animated.FlatList
             refreshControl={
                 <RefreshControl
-                    progressViewOffset={refreshing ? 0 : containerHeight}
+                    progressViewOffset={refreshing ? 0 : headerHeight}
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                 />
             }
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
-
             ListEmptyComponent={() => listEmpty(refreshing, searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
                 act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : tabIndex == 1 ? pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
                 act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length :  notPnApplications.length )}
             ListHeaderComponent={isHeader ? listHeaderComponent() : null}
 
             style={{flex: 1,}}
-
             data={data}
             keyExtractor={(item, index) => index.toString()}
             ListFooterComponent={refreshing ? <View/> : bottomLoader}
@@ -469,7 +467,7 @@ const ActivitiesPage = (props) => {
                         )
                     }}/>
             )}
-        />;
+        />
     }
 
     const renderAllActivities = useCallback(
@@ -546,6 +544,7 @@ const ActivitiesPage = (props) => {
                         flexGrow: 0,
                         flexShrink: 0
                     }]}>
+
                         <Animated.View onLayout={handleHeaderLayout} style={headerContainerStyle}>
                             <View onLayout={onLayoutComponent}>
                                 <Animated.View style={[styles1.rect, styles1.horizontal, {
@@ -584,13 +583,13 @@ const ActivitiesPage = (props) => {
                                     }>
                                         <Filter pressed={visible} width={fontValue(32)} height={fontValue(32)}/>
                                     </TouchableOpacity>
-                                    {(
-                                            !(
-                                                isMobile && !(
-                                                    Platform?.isPad || isTablet())) && dimensions?.width > 768) &&
+                                    {
                                         <TouchableOpacity onPress={onRefresh}>
-                                            <RefreshWeb style={{paddingLeft: 15}} width={fontValue(26)}
-                                                        height={fontValue(24)} fill={"#fff"}/>
+                                            {(
+                                                !(
+                                                    isMobile && !(
+                                                        Platform?.isPad || isTablet())) && dimensions?.width > 768) ?<RefreshWeb style={{paddingLeft: 15}} width={fontValue(26)}
+                                                                                                                                 height={fontValue(24)} fill={"#fff"}/> :<View style={{paddingHorizontal: 5}}><FontAwesome name="refresh" size={30} color="white" /></View>}
                                         </TouchableOpacity>
                                     }
                                 </Animated.View>
