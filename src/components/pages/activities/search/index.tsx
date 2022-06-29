@@ -133,7 +133,8 @@ function Search(props:any){
                 await axios.get(BASE_URL+`/applications`,{
                     ...config,params:{
                         keyword:defaultSanitize(text),
-                        page:_page
+                        page:_page,
+                        region: user?.employeeDetails?.region
                     }
                 }).then(async(response)=>{
 
@@ -172,7 +173,8 @@ function Search(props:any){
                 await axios.get(BASE_URL+`/applications`,{
                     ...config,params:{
                         keyword:defaultSanitize(text),
-                        page:_page
+                        page:_page,
+                        region: user?.employeeDetails?.region
                     }
                 }).then((response)=>{
                     if(response?.data?.message) Alert.alert(response.data.message);
@@ -210,7 +212,8 @@ function Search(props:any){
             const _page=page+1;
             await axios.get(BASE_URL+`/applications`,{
                 ...config,params:{
-                    keyword:defaultSanitize(text)
+                    keyword:defaultSanitize(text),
+                    region: user?.employeeDetails?.region
                 }
             }).then(async(response)=>{
                 setIsHandleLoad(true);
