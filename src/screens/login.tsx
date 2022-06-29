@@ -26,7 +26,7 @@ import { StackActions } from '@react-navigation/native';
 import Ellipsis from "@atoms/ellipsis";
 import {setTabBarHeight} from "../reducers/application/actions";
 const logo = require('@assets/ntc-edge-horizontal.png');
-const background = require('@assets/background.png');
+const background = require('@assets/loginbackground.png');
 
 const { width, height } = Dimensions.get('screen');
 const navigationBarHeight = height - Dimensions.get('window').height;
@@ -206,7 +206,7 @@ const Login = ({ navigation }:any) => {
           style={styles.bgImage}
           imageStyle={{flex: 1}}
       >
-        <StatusBar barStyle='dark-content' />
+        <StatusBar barStyle='light-content' />
 
         <ScrollView
             contentContainerStyle={{flexGrow: 1}}
