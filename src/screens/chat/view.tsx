@@ -49,6 +49,7 @@ import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import useAttachmentPicker from 'src/hooks/useAttachment';
 import { Regular, Regular500 } from '@styles/font';
 import { AttachmentMenu } from '@components/molecules/menu';
+import IParticipants from 'src/interfaces/IParticipants';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -169,8 +170,8 @@ const ChatView = ({ navigation, route }:any) => {
     if (meeting?._id) {
       return [];
     }
-    let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
-    meetingList = lodash.filter(meetingList, m => m.roomId === _id);
+    let meetingList = lodash.keys(normalizeActiveMeetings).map((m:string) => normalizeActiveMeetings[m])
+    meetingList = lodash.filter(meetingList, (m:IMeetings) => m.roomId === _id && !lodash.find(m.participants, (p:IParticipants) => p._id === user._id && p.status === 'busy'));
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
   }, [normalizeActiveMeetings, meeting]);
   const [inputText, setInputText] = useState('');

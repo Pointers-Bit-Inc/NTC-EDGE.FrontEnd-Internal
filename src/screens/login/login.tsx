@@ -21,7 +21,7 @@ import {fontValue} from "@pages/activities/fontValue";
 import useKeyboard from "../../hooks/useKeyboard";
 
 const logo = require('@assets/ntc-edge-horizontal.png');
-const background = require('@assets/background.png');
+const background = require('@assets/loginbackground.png');
 const { height } = Dimensions.get('screen');
 const navigationBarHeight = height - Dimensions.get('window').height;
 const Login = ({ navigation }: any) => {
@@ -35,7 +35,7 @@ const Login = ({ navigation }: any) => {
             style={ styles.bgImage }
             imageStyle={ { flex : 1 } }
         >
-            <StatusBar barStyle="dark-content"/>
+            <StatusBar barStyle="light-content"/>
 
             <ScrollView
                 keyboardShouldPersistTaps="handled"
