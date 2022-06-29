@@ -181,7 +181,7 @@ export default function TabBar({navigation,route}){
     },[]);
 
     useEffect(() => {
-        if (lodash.size(newMeeting) && !currentMeeting?._id) {
+        if (lodash.size(newMeeting) && !currentMeeting?._id && Platform.OS != 'web') {
           playSound();
         }
         return () => {
