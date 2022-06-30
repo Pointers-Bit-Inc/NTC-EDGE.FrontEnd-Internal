@@ -76,12 +76,12 @@ const Approval=(props:any)=>{
             role="cashier"
         }
 
-        await axios.get(BASE_URL+'/users',
+        await axios.get(BASE_URL+'/employees',
             {
                 cancelToken: cancelTokenSource.token,
                 params:{
                     ...(
-                        role.length>0&&{role:role})
+                        role.length>0&&{role:role, })
                 },
                 headers:{
                     Authorization:"Bearer ".concat(user?.sessionToken)
