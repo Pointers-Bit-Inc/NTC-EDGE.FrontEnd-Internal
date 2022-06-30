@@ -53,8 +53,19 @@ function convertStatusText(convertedStatus:any[],item:any){
 }
 
 export function useActivities(props){
+
+
+
+
+
+
+
+
+
+
     const scrollViewRef = useRef()
     const flatListViewRef = useRef()
+    const scrollableTabView = useRef()
     const [yPos, setYPos] = useState(0)
     const [total,setTotal]=useState(0);
     const [page,setPage]=useState(0);
@@ -202,7 +213,11 @@ export function useActivities(props){
             ...(
                 searchTerm&&{keyword:searchTerm}),
             ...(
-                {pageSize: pinned ? 100 :10, sort:checkDateAdded.length ? "asc" : "desc"}),
+                {
+                    pageSize: pinned ? 100 :10,
+                    sort:checkDateAdded.length ? "asc" : "desc",
+                    region: user?.employeeDetails?.region
+                }),
             ...(
                 selectedClone.length>0&&{
                     [cashier ? "paymentStatus" : 'status']:selectedClone.map((item:any)=>{
@@ -269,6 +284,7 @@ export function useActivities(props){
                 dispatch(resetChannel());
                 destroy();
                 setTimeout(()=>{
+
                     props.navigation.dispatch(StackActions.replace('Login'));
                 },500);
             }
@@ -471,16 +487,15 @@ export function useActivities(props){
     var _clampedScrollValue=0;
     var _offsetValue=0;
     var _scrollValue=0;
+
     useEffect(()=>{
         scrollY.addListener(({value})=>{
-
             const diff=value-_scrollValue;
             _scrollValue=value;
             _clampedScrollValue=Math.min(
                 Math.max(_clampedScrollValue+diff,0),
                 containerHeight,
             )
-
         });
         offsetAnim.addListener(({value})=>{
             _offsetValue=value;
@@ -570,7 +585,9 @@ export function useActivities(props){
         scrollViewRef,
         yPos, setYPos,
         flatListViewRef,
+        scrollableTabView,
         notPinnedApplications,
-        pinnedApplications
+        pinnedApplications,
+        setRefreshing
     };
 }

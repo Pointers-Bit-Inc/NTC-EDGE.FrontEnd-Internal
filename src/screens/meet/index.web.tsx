@@ -497,7 +497,6 @@ const Meet = ({ navigation }) => {
                       showsVerticalScrollIndicator={false}
                       renderItem={renderItem}
                       keyExtractor={(item:any)=>item._id}
-                      ListEmptyComponent={emptyComponent}
                       ListFooterComponent={ListFooterComponent}
                       ItemSeparatorComponent={()=><View
                           style={{width:width-RFValue(60),height:1,backgroundColor:'#E5E5E5',alignSelf:'flex-end'}}/>}

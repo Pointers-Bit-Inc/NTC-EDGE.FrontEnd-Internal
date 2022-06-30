@@ -1,5 +1,5 @@
 import {Platform , StyleSheet} from "react-native";
-import {Bold} from "@styles/font";
+import {Bold, Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import hairlineWidth = StyleSheet.hairlineWidth;
 
@@ -16,6 +16,10 @@ export const styles = StyleSheet.create({
         shadowRadius: 10,
 
     },
+    noContent:{
+        fontFamily:Regular,
+        textAlign:"center",alignSelf:"center",color:"#A0A3BD",fontSize:fontValue(24)
+    },
     shadow: {
         shadowColor: "rgba(0,0,0,0.1)",
         shadowOffset: {
@@ -27,8 +31,7 @@ export const styles = StyleSheet.create({
         shadowRadius: 10,
     },
     container: {
-        zIndex: 1,
-
+        zIndex: 2,
         backgroundColor: "rgba(230, 230, 230,1)"
     },
     horizontal: {
@@ -44,7 +47,7 @@ export const styles = StyleSheet.create({
     rect: {
         ...Platform.select({
             native: {
-                paddingTop : 40 ,
+                paddingTop : 0,
                 padding : 30 ,
             },
             default: {
@@ -53,7 +56,6 @@ export const styles = StyleSheet.create({
             }
         }),
         paddingVertical:15,
-
 
         flexDirection: "row"
     },
@@ -87,6 +89,7 @@ export const styles = StyleSheet.create({
 
     },
     searcg: {
+        zIndex: 0,
         left: 0,
         right: 0,
     },

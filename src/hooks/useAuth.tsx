@@ -39,7 +39,7 @@ export function useAuth(navigation) {
 
     const onLogin = async (data) => {
         setLoading(true);
-        api.post('/signin' , {
+        api.post('/internal-signin' , {
             email : data.email ,
             password : data.password ,
         })

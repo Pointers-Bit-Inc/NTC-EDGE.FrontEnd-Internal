@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     backgroundColor: primaryColor,
     paddingTop: Platform.OS === 'android' ? 41.5 : 41,
-    paddingBottom: 17,
+    paddingBottom: Platform.OS === 'android' ? 16.5 : 17,
   },
   titleContainer: {
     flex: 1,
@@ -344,7 +344,7 @@ const onClose = (item:IMeetings, leave = false) => {
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
         <View style={styles.headerContent}>
-          <TouchableOpacity style={{ paddingTop: 1 }} onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
+          <TouchableOpacity style={{ paddingTop: 0.5 }} onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
             <HomeMenuIcon/>
             {/* <ProfileImage
               size={45}

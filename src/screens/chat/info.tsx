@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     paddingHorizontal: 10,
-    paddingTop: 30,
+    paddingTop: Platform.OS === 'android' ? 45 : 30,
     paddingBottom: 5,
     borderBottomColor: '#F0F0F0',
     borderBottomWidth: 1,
