@@ -156,7 +156,23 @@ export default function Meeting(state = initialState, action:any = {}) {
       return state.setIn(['normalizedMeetingList'], {})
         .setIn(['activeMeetings'], [])
         .setIn(['meeting'], null)
-        .setIn(['pinnedParticipant'], null);
+        .setIn(['pinnedParticipant'], null)
+        .setIn(['normalizedMeetingList'], {})
+        .setIn(['activeMeetings'], [])
+        .setIn(['list'], [])
+        .setIn(['normalizeActiveMeetings'], {})
+        .setIn(['meetingId'], null)
+        .setIn(['meetingParticipants'], [])
+        .setIn(['options'], {
+          isHost: false,
+          isVoiceCall: false,
+          isMute: false,
+          isVideoEnable: true,
+        })
+        .setIn(['isFullScreen'], true)
+        .setIn(['connectionStatus'], '')
+        .setIn(['pinnedParticipant'], null)
+        .setIn(['toggleMute'], null)
     }
     case SET_OPTIONS: {
       return state.setIn(['options'], action.payload);

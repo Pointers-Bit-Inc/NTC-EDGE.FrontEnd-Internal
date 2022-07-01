@@ -198,6 +198,8 @@ export default function basket(state = initialState, action:any) {
         .setIn(['normalizedMessages'], {})
         .setIn(['channelMessages'], {})
         .setIn(['selectedMessage'], {})
+        .setIn(['selectedChannel'], {})
+        .setIn(['pendingMessages'], {})
         .setIn(['files'], {})
         .setIn(['meetingList'], [])
         .setIn(['searchValue'], '');
