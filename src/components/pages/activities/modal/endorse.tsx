@@ -49,7 +49,7 @@ const Endorsed = (props: any) => {
     const [validateRemarks , setValidateRemarks] = useState<{ error: boolean }>({ error : false });
 
     const fetchEndorse = async (isCurrent: boolean) => {
-        await axios.get(BASE_URL + '/users' ,
+        await axios.get(BASE_URL + '/employees' ,
             {
                 headers : {
                     Authorization : "Bearer ".concat(user.sessionToken)
