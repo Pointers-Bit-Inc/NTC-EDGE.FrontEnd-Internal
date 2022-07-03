@@ -1267,32 +1267,52 @@ const ChatList = ({ navigation }: any) => {
                         <View
                           style={{ flexDirection: 'row', paddingRight: 40 }}
                         >
-                          <TouchableOpacity
-                            onPress={() => {
-                              onVideoCall(true);
-                            }}
-                          >
-                            <View style={{ paddingRight: 20 }}>
-                              <NewCallIcon
-                                color={button.info}
-                                height={24}
-                                width={24}
-                              />
-                            </View>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() => {
-                              onVideoCall(false);
-                            }}
-                          >
-                            <View>
-                              <NewVideoIcon
-                                color={button.info}
-                                height={24}
-                                width={24}
-                              />
-                            </View>
-                          </TouchableOpacity>
+                          <Hoverable>
+                            {(isHovered) => (
+                              <TouchableOpacity onPress={() => onVideoCall(true)}>
+                                <View
+                                  style={[
+                                    styles.headerNewChatIcon,
+                                    {
+                                      backgroundColor: isHovered ? '#2863D6' : 'transparent',
+                                      marginHorizontal: 0,
+                                      borderWidth: 0,
+                                      padding: 10,
+                                    }
+                                  ]}
+                                >
+                                  <NewCallIcon
+                                    color={isHovered ? 'white' : button.info}
+                                    height={24}
+                                    width={24}
+                                  />
+                                </View>
+                              </TouchableOpacity>
+                            )}
+                          </Hoverable>
+                          <Hoverable>
+                            {(isHovered) => (
+                              <TouchableOpacity onPress={() => onVideoCall(false)}>
+                                <View
+                                  style={[
+                                    styles.headerNewChatIcon,
+                                    {
+                                      backgroundColor: isHovered ? '#2863D6' : 'transparent',
+                                      marginHorizontal: 0,
+                                      borderWidth: 0,
+                                      padding: 10,
+                                    }
+                                  ]}
+                                >
+                                  <NewVideoIcon
+                                    color={isHovered ? 'white' : button.info}
+                                    height={24}
+                                    width={24}
+                                  />
+                                </View>
+                              </TouchableOpacity>
+                            )}
+                          </Hoverable>
                         </View>
                         <TouchableOpacity
                           onPress={() => {

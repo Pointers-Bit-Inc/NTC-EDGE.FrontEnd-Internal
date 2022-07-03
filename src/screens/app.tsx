@@ -74,13 +74,15 @@ const App = ({ navigation }:any) => {
     }
   }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
-
   if (Platform.OS == 'web') {
     return (
-      <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: '#031A6E' }}>
+      <View style={{
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#031A6E'
+      }}>
         <Image
           resizeMode='contain'
           source={logo}
