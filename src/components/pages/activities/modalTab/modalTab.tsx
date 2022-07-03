@@ -70,7 +70,9 @@ const ModalTab = props => {
         createdAt ,
         documents,
         proofOfPayment,
-        remarks
+        remarks,
+        paymentStatus,
+        paymentHistory
     } = useApplicant(props.details)
     const [initialPage,setInitialPage]=useState(true);
     useEffect(()=>{
@@ -123,8 +125,10 @@ const ModalTab = props => {
                         key={ index }/>
                 } else if (isShow && tab.id === 2) {
                     return <ApplicationDetails
+                        paymentStatus={paymentStatus}
                         tabLabel={ { label : tab.name } }
                         label={ tab.name }
+                        createdAt={createdAt}
                         service={ service }
                         documents={documents}
                         selectedType={ selectedTypes }
@@ -138,8 +142,10 @@ const ModalTab = props => {
                 } else if (isShow && tab.id === 4  && service?.serviceCode !== "service-22" ) {
                     return <Payment tabLabel={ { label : tab.name } }
                                     label={ tab.name }
+                                    paymentStatus={paymentStatus}
                                     proofOfPayment={ proofOfPayment }
                                     updatedAt={ updatedAt }
+                                    paymentHistory={paymentHistory}
                                     paymentMethod={ paymentMethod }
                                     applicant={ applicant }
                                     totalFee={ totalFee }

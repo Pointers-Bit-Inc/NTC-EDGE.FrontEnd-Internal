@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, useWindowDimensions, View} from "react-native";
-import {Bold, Regular500} from "@styles/font";
+import {Bold, Regular, Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {input} from "@styles/color";
 import PdfViewr from "@pages/activities/application/application_pdf/pdfViewr";
@@ -13,19 +13,28 @@ import {requirementStyles} from "@pages/activities/application/requirementModal/
 import Constants from "expo-constants";
 import PdfDownload from "./download/pdfDownload";
 import {PAID} from "../../../../reducers/activity/initialstate";
-
-let outputLabel = (applicationType: string) => {
-    applicationType = applicationType?.toLowerCase();
-    if (applicationType?.match('admission slip')) return 'Admission Slip';
+import Moment from 'moment';
+import Timeline from "@molecules/timeline/timeline";
+let outputLabel = (applicationType: string, serviceCode: string, service: string) => {
+    applicationType = (`${applicationType} ${service?.name}`)?.toLowerCase();
+    if (serviceCode === 'service-22') return 'Receipt';
+    else if (applicationType?.match('accreditation')) return 'Accreditation';
+    else if (applicationType?.match('admission slip') || serviceCode === 'service-1') return 'Admission Slip';
     else if (applicationType?.match('certificate')) return 'Certificate';
     else if (applicationType?.match('license')) return 'License';
     else if (applicationType?.match('permit')) return 'Permit';
-    return applicationType;
+    return '';
 };
 
 
 const ApplicationDetails = (props: any) => {
     const dimensions = useWindowDimensions();
+    const steps = [
+        { title: 'Test', description: 'Test1', date: '12-12', time: '10:10' },
+        { title: 'Test', description: 'Test2', date: '12-12', time: '10:10' },
+        { title: 'Test', description: 'Test3', date: '12-12', time: '10:10' },
+        { title: 'Test', description: 'Test4', date: '12-12', time: '10:10' },
+    ];
     const rightLayoutComponent= useSelector((state: RootStateOrAny) => state.application?.rightLayoutComponent);
     const [modalVisible, setModalVisible] = useState(false);
     return <ScrollView contentContainerStyle={{flex: 1}}
@@ -37,6 +46,9 @@ const ApplicationDetails = (props: any) => {
                 <View style={styles.rect}>
                     <Text style={styles.file}>APPLICATION FORM</Text>
                 </View>
+                <Text
+                    style={[styles.service, {fontFamily: Regular, paddingTop: 10}]}>Submitted { Moment(props.createdAt).fromNow()}</Text>
+
                 <Text style={styles.applicationType}>{props?.applicantType || props?.service?.name}</Text>
                 <Text
                     style={[styles.service, {fontFamily: Regular500}]}>{props?.service?.applicationType?.label || props?.service?.name}</Text>
@@ -51,7 +63,7 @@ const ApplicationDetails = (props: any) => {
                                     <FileOutlineIcon height={fontValue(20)} width={fontValue(16)}/>
                                 </View>
                                 <Text
-                                    style={requirementStyles.text}>{outputLabel(props?.applicantType || props?.service?.name)}</Text>
+                                    style={requirementStyles.text}>{outputLabel(props?.applicantType || props?.service?.name, props?.service?.serviceCode,  props?.service?.name )}</Text>
                             </View>
 
                         </Pressable>
@@ -72,8 +84,12 @@ const ApplicationDetails = (props: any) => {
                 }
 
             </View>
-
+           {/* <View style={styles.group2}>
+            <Timeline steps={steps} />
+            </View>*/}
         </View>
+
+
 
         <Modal
             animationType="slide"
@@ -83,7 +99,7 @@ const ApplicationDetails = (props: any) => {
                 setModalVisible(!modalVisible);
             }}
         >
-            <SafeAreaView style={{flex: 1,}}>
+            <View style={{flex: 1, paddingTop: 44}}>
                 <View style={[{flex: 1,}, isMobile || dimensions?.width < 768 ? {} : {
                     alignItems: "flex-end",
                     top: rightLayoutComponent?.top
@@ -126,7 +142,7 @@ const ApplicationDetails = (props: any) => {
 
                     </View>
                 </View>
-            </SafeAreaView>
+            </View>
 
         </Modal>
     </ScrollView>
