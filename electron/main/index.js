@@ -4,6 +4,10 @@ import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 
 const webOptions = {
+  width: 1200,
+  height: 800,
+  minWidth: 1200,
+  minHeight: 800,
   titleBarStyle: 'hidden',
   backgroundColor: '#031A6E',
   show: false,
