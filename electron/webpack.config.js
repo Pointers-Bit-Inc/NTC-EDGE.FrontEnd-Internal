@@ -1,5 +1,4 @@
-const path = require('path');
-const createExpoWebpackConfigAsync = require('@expo/webpack-config');
+const { withExpoWebpack } = require('@expo/electron-adapter');
 
 const aliases = {
   "@assets": "./assets",
@@ -12,7 +11,7 @@ const aliases = {
   "@pages": "./src/components/pages",
   "@screens": "./src/screens",
   "@reducers": "./src/reducers",
-  "@utils": "./src/utils"
+  "@utils": "./src/utils",
 };
 
 const babelLoaderRules = [{
@@ -24,29 +23,19 @@ const babelLoaderRules = [{
 }];
 
 // Expo CLI will await this method so you can optionally return a promise.
-module.exports = async function(env, argv) {
-  const config = await createExpoWebpackConfigAsync(env, argv);
+module.exports = async function(config) {
   // If you want to add a new alias to the config.
-  config.resolve.alias = {
+  const expoConfig = withExpoWebpack(config)
+  expoConfig.resolve.alias = {
     ...config.resolve.alias,
     ...aliases
   };
-  config.resolve.extensions.push('.web.js', '.web.ts', '.web.tsx');
-  config.module.rules = [
-    ...config.module.rules,
+  expoConfig.resolve.extensions.push('.web.js', '.web.ts', '.web.tsx');
+  expoConfig.module.rules = [
+    ...expoConfig.module.rules,
     ...babelLoaderRules,
   ];
-  config.devtool = false;
-  config.optimization = {
-    splitChunks: {
-      minSize: 10000,
-      maxSize: 250000,
-    }
-  };
-  config.performance = {
-    hints: false
-  }
-  config.mode = 'production';
   // Finally return the new config for the CLI to use.
-  return config;
+  return expoConfig;
+
 };

@@ -39,7 +39,7 @@ export default {
       "versionCode": 1
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
     },
     "plugins": [
       [
