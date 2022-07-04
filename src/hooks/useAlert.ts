@@ -5,6 +5,7 @@ export  function useAlert(show:boolean,dismissed?:any, canceled?:any) {
     const springValue = useRef(new Animated.Value(0.1)).current;
 
     const [showSelf, setShowSelf] = useState(false)
+    const [timeout_, setTimeout_] = useState(0)
     const _toggleAlert = (fromConstructor?: boolean) => {
         if (fromConstructor) setShowSelf(true)
         else setShowSelf(show => !show);
@@ -40,7 +41,7 @@ export  function useAlert(show:boolean,dismissed?:any, canceled?:any) {
             }else{
               canceled()
             }
-        }, 70);
+        }, 0);
     };
 
     const _springCollapse = () => {
