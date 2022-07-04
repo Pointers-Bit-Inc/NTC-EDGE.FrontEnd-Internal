@@ -40,45 +40,6 @@ export default {
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "build": {
-        "babel": {
-          "include": [
-            "-",
-            "@ant-design/react-native",
-            "@microsoft/signalr",
-            "@typescript-eslint/eslint-plugin",
-            "agora",
-            "agora-rtc-react",
-            "agora-rtc-sdk",
-            "axios",
-            "dayjs",
-            "eslint-config-airbnb-typescript",
-            "eslint-config-prettier",
-            "eslint-plugin-import",
-            "eslint-plugin-jsx-a11y",
-            "eslint-plugin-react",
-            "fbjs",
-            "immutable",
-            "lodash",
-            "moment",
-            "native",
-            "normalizr",
-            "permissions",
-            "prettier",
-            "react",
-            "react-dom",
-            "react-redux",
-            "react-responsive",
-            "react-scroll-paged-view",
-            "react-timer-mixin",
-            "react-underline-tabbar",
-            "redux",
-            "redux-persist",
-            "redux-thunk",
-            "styled-components"
-          ]
-        }
-      }
     },
     "plugins": [
       [
