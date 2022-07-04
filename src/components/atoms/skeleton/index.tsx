@@ -19,16 +19,12 @@ export default class Skeleton extends Component<Props> {
                 duration: 350, useNativeDriver: true
             }
         ).start(() => {
-            this.timeoutId  = setTimeout(() => {
+
                 this.circleAnimated()
-            }, 1000);
         })
     }
     componentDidMount() {
         this.circleAnimated()
-    }
-    componentWillUnmount() {
-        clearTimeout(this.timeoutId);
     }
 
     render() {
