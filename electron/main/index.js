@@ -1,13 +1,13 @@
 'use strict';
 
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, dialog } from 'electron';
 import * as path from 'path';
 
 const webOptions = {
-  width: 1200,
-  height: 800,
-  minWidth: 1200,
-  minHeight: 800,
+  width: 900,
+  height: 600,
+  minWidth: 900,
+  minHeight: 600,
   titleBarStyle: 'hidden',
   backgroundColor: '#031A6E',
   show: false,
@@ -20,21 +20,69 @@ const webOptions = {
   }
 }
 
+const title = 'NTC-EDGE PORTAL';
+const message = 'Something is temporarily wrong with your network connection. Please make sure you are connected to the internet. \n\nDo you want to try forcefully reloading the app?';
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow;
 
 function createMainWindow() {
   const browserWindow = new BrowserWindow(webOptions);
-  // In this example, only windows with the `about:blank` url will be created.
-  // All other urls will be blocked.
-  browserWindow.webContents.setWindowOpenHandler(({ url }) => {
-    return {
-      action: 'allow',
-      overrideBrowserWindowOptions: {
-        ...webOptions,
-        show: true
+  //catch network error status
+  browserWindow.webContents.on('did-fail-load', async (event= Event, errorCode= number, errorDescription= string, validatedURL= string, isMainFrame= boolean) => {
+    if (errorDescription === 'ERR_INTERNET_DISCONNECTED' || errorDescription === 'ERR_PROXY_CONNECTION_FAILED') {
+      const { response } = await dialog.showMessageBox({
+        title,
+        message,
+        buttons: ['Reload', 'Cancel'],
+        cancelId: 1,
+      })
+      if (response === 0) {
+        browserWindow.reload();
+      } else if (response === 1) {
+        browserWindow.close();
       }
     }
+  });
+
+  browserWindow.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures, referrer, postBody) => {
+    event.preventDefault()
+    const win = new BrowserWindow({
+      ...webOptions,
+      webContents: options.webContents, // use existing webContents if provided
+      show: false
+    })
+    //catch network error status
+    win.webContents.on('did-fail-load', async (event= Event, errorCode= number, errorDescription= string, validatedURL= string, isMainFrame= boolean) => {
+      if (errorDescription === 'ERR_INTERNET_DISCONNECTED' || errorDescription === 'ERR_PROXY_CONNECTION_FAILED') {
+        const { response } = await dialog.showMessageBox({
+          title,
+          message,
+          buttons: ['Reload', 'Cancel'],
+          cancelId: 1,
+        })
+        if (response === 0) {
+          win.reload();
+        } else if (response === 1) {
+          win.close();
+        }
+      }
+    });
+
+    win.once('ready-to-show', () => win.show())
+    
+    if (!options.webContents) {
+      const loadOptions = {
+        httpReferrer: referrer
+      }
+      if (postBody != null) {
+        const { data, contentType, boundary } = postBody
+        loadOptions.postData = postBody.data
+        loadOptions.extraHeaders = `content-type: ${contentType}; boundary=${boundary}`
+      }
+
+      win.loadURL(url, loadOptions);
+    }
+    event.newGuest = win
   })
 
   browserWindow.loadURL('https://www.ntcedge.com/');
