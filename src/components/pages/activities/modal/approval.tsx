@@ -1,4 +1,4 @@
-import React,{useEffect,useRef,useState} from "react";
+import React,{useEffect,useRef} from "react";
 import {
     ActivityIndicator,
     Alert,
@@ -30,6 +30,7 @@ import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {isLandscapeSync,isTablet} from "react-native-device-info";
+import useSafeState from "../../../../hooks/useSafeState";
 
 const {width,height}=Dimensions.get('window');
 
@@ -46,14 +47,14 @@ const Approval=(props:any)=>{
 
     const isKeyboardVisible=useKeyboard();
     const user=useSelector((state:RootStateOrAny)=>state.user);
-    const [pickedCashier,setPickedCashier]=useState<any[]>();
-    const [message,setMessage]=useState<string>("");
-    const [cashier,setCashier]=useState();
-    const [remarks,setRemarks]=useState("");
-    const [validateRemarks,setValidateRemarks]=useState<{error:boolean}>({error:false});
-    const [loading,setLoading]=useState(false);
+    const [pickedCashier,setPickedCashier]=useSafeState<any[]>();
+    const [message,setMessage]=useSafeState<string>("");
+    const [cashier,setCashier]=useSafeState();
+    const [remarks,setRemarks]=useSafeState("");
+    const [validateRemarks,setValidateRemarks]=useSafeState<{error:boolean}>({error:false});
+    const [loading,setLoading]=useSafeState(false);
     const approveInputField = useRef()
-    const [visible, setVisible] = useState(true)
+    const [visible, setVisible] = useSafeState(true)
     const cancelTokenSource = axios.CancelToken.source();
     useEffect(()=>{
         approveInputField?.current?.focus()
@@ -167,12 +168,12 @@ const Approval=(props:any)=>{
         }
         setTitle("Application Approve")
     };
-    const [alertLoading,setAlertLoading]=useState(false);
-    const [approvalIcon,setApprovalIcon]=useState(false);
-    const [title,setTitle]=useState("Approve Application");
-    const [showClose,setShowClose]=useState(false);
-    const [isTyping,setIsTyping]=useState(true);
-    const [onFocus,setOnFocus]=useState(false);
+    const [alertLoading,setAlertLoading]=useSafeState(false);
+    const [approvalIcon,setApprovalIcon]=useSafeState(false);
+    const [title,setTitle]=useSafeState("Approve Application");
+    const [showClose,setShowClose]=useSafeState(false);
+    const [isTyping,setIsTyping]=useSafeState(true);
+    const [onFocus,setOnFocus]=useSafeState(false);
     const dimensions=useWindowDimensions();
 
     useEffect(()=>{

@@ -7,6 +7,8 @@ export default class Skeleton extends Component<Props> {
     constructor(props) {
         super(props)
         this.circleAnimatedValue = new Animated.Value(0)
+        this.timeoutId = 0
+
     }
     circleAnimated = () => {
         this.circleAnimatedValue.setValue(0)
@@ -17,7 +19,7 @@ export default class Skeleton extends Component<Props> {
                 duration: 350, useNativeDriver: true
             }
         ).start(() => {
-            setTimeout(() => {
+            this.timeoutId  = setTimeout(() => {
                 this.circleAnimated()
             }, 1000);
         })
@@ -25,6 +27,10 @@ export default class Skeleton extends Component<Props> {
     componentDidMount() {
         this.circleAnimated()
     }
+    componentWillUnmount() {
+        clearTimeout(this.timeoutId);
+    }
+
     render() {
         const translateX = this.circleAnimatedValue.interpolate({
             inputRange: [0, 1],
