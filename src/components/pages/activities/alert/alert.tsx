@@ -1,114 +1,296 @@
-import React, {useEffect, useState} from "react";
-import {ActivityIndicator, Animated, Dimensions, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import Modal from "react-native-modal";
-import {alertStyle} from "@pages/activities/alert/styles";
+import React, { Component } from 'react';
+import {
+    Text,
+    Animated,
+    View,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    ActivityIndicator,
+    BackHandler,
+    Modal,
+    Platform,
+    StyleSheet
+} from 'react-native';
+
+import PropTypes from 'prop-types';
+import { alertStyle } from './styles';
+import {Bold} from "@styles/font";
+import {fontValue} from "@pages/activities/fontValue";
 import CloseModal from "@assets/svg/closeModal";
 import {APPROVED, DECLINED, FOREVALUATION} from "../../../../reducers/activity/initialstate";
 import EndorseToIcon from "@assets/svg/endorseTo";
 import ApplicationApproved from "@assets/svg/application-approved";
-import {useAlert} from "../../../../hooks/useAlert";
-import {Bold} from "@styles/font";
-import {RFValue} from "react-native-responsive-fontsize";
-import {fontValue} from "@pages/activities/fontValue";
-
-const {width} = Dimensions.get('window');
-
-function CustomAlert(props) {
-    const {springValue, _springHide} = useAlert(props.show,  props.onDismissed, props.onCancelPressed);
 
 
 
-    return (
-        <Modal
-            useNativeDriver={true}
-            supportedOrientations={['portrait', 'landscape']}
-            animationType="none"
-            transparent={true}
-            visible={props.show}
-                onRequestClose={() => {
-                    _springHide()
-                }
-            }
-        >
+const HwBackHandler = BackHandler;
+const HW_BACK_EVENT = 'hardwareBackPress';
 
-               <Animated.View style={[   { transform: [{ scale: springValue}] }]}>
-                   <View style={styles.group}>
-                       <View style={[styles.container___, styles.shadow]}>
-                           <View style={styles.container__}>
+const { OS } = Platform;
 
-                               <View style={[styles.container_, {padding: "5%", paddingHorizontal: 48,}]}>
-                                   {
-                                       props?.type == DECLINED && <View>
-                                           <CloseModal></CloseModal>
-                                       </View>
+export default class AwesomeAlert extends Component {
+    constructor(props) {
+        super(props);
+        const { show } = this.props;
+        this.springValue = new Animated.Value(props.animatedValue);
 
-                                   }
-                                   {
-                                       props?.type == FOREVALUATION && <View style={{paddingBottom: 10}}>
-                                           <EndorseToIcon height_={fontValue(60)} width_={fontValue(60)} color={"#2863D6"}></EndorseToIcon>
-                                       </View>
-                                   }
-                                   {
-                                       props?.type == APPROVED && <View>
-                                           <ApplicationApproved/>
-                                       </View>
-                                   }
-                                   <Text style={[styles.title, alertStyle.titleStyle]}>{props?.title}</Text>
-                                   <Text style={styles.description_}>
-                                       {props?.message ? props?.message : "Are you sure you want to approve this application?"}
+        this.state = {
+            showSelf: false,
+        };
 
-                                   </Text>
+        if (show) this._springShow(true);
+    }
 
-                               </View>
+    componentDidMount() {
+        HwBackHandler.addEventListener(HW_BACK_EVENT, this._handleHwBackEvent);
+    }
+
+    _springShow = (fromConstructor) => {
+        const { useNativeDriver = false } = this.props;
+
+        this._toggleAlert(fromConstructor);
+        Animated.spring(this.springValue, {
+            toValue: 1,
+            bounciness: 10,
+            useNativeDriver,
+        }).start();
+    };
+
+    _springHide = () => {
+        const { useNativeDriver = false } = this.props;
+
+        if (this.state.showSelf === true) {
+            Animated.spring(this.springValue, {
+                toValue: 0,
+                tension: 10,
+                useNativeDriver,
+            }).start();
+
+            setTimeout(() => {
+                this._toggleAlert();
+                this._onDismiss();
+            }, 70);
+        }
+    };
+
+    _toggleAlert = (fromConstructor) => {
+        if (fromConstructor) this.state = { showSelf: true };
+        else this.setState({ showSelf: !this.state.showSelf });
+    };
+
+    _handleHwBackEvent = () => {
+        const { closeOnHardwareBackPress } = this.props;
+        if (this.state.showSelf && closeOnHardwareBackPress) {
+            this._springHide();
+            return true;
+        } else if (!closeOnHardwareBackPress && this.state.showSelf) {
+            return true;
+        }
+
+        return false;
+    };
+
+    _onTapOutside = () => {
+        const { closeOnTouchOutside } = this.props;
+        if (closeOnTouchOutside) this._springHide();
+    };
+
+    _onDismiss = () => {
+        const { onDismiss } = this.props;
+        onDismiss && onDismiss();
+    };
+
+    _renderButton = (data) => {
+        const {
+            testID,
+            text,
+            backgroundColor,
+            buttonStyle,
+            buttonTextStyle,
+            onPress,
+        } = data;
+
+        return (
+            <TouchableOpacity  style={[alertStyle.button, { backgroundColor }, buttonStyle]} testID={testID} onPress={onPress}>
+                <Text style={[alertStyle.buttonText, buttonTextStyle]}>{text}</Text>
+            </TouchableOpacity>
+        );
+    };
+
+    _renderAlert = () => {
+        const animation = { transform: [{ scale: this.springValue }] };
+
+        const { showProgress } = this.props;
+        const { title, message, customView = null } = this.props;
+
+        const {
+            showCancelButton,
+            cancelText,
+            cancelButtonColor,
+            cancelButtonStyle,
+            cancelButtonTextStyle,
+            onCancelPressed,
+            cancelButtonTestID
+        } = this.props;
+
+        const {
+            showConfirmButton,
+            confirmText,
+            confirmButtonColor,
+            confirmButtonStyle,
+            confirmButtonTextStyle,
+            onConfirmPressed,
+            confirmButtonTestID
+        } = this.props;
+
+        const {
+            alertContainerStyle,
+            overlayStyle,
+            progressSize,
+            progressColor,
+            contentContainerStyle,
+            contentStyle,
+            titleStyle,
+            messageStyle,
+            actionContainerStyle,
+        } = this.props;
+
+        const cancelButtonData = {
+            testID: cancelButtonTestID,
+            text: cancelText,
+            backgroundColor: cancelButtonColor,
+            buttonStyle: cancelButtonStyle,
+            buttonTextStyle: cancelButtonTextStyle,
+            onPress: onCancelPressed,
+        };
+
+        const confirmButtonData = {
+            testID: confirmButtonTestID,
+            text: confirmText,
+            backgroundColor: confirmButtonColor,
+            buttonStyle: confirmButtonStyle,
+            buttonTextStyle: confirmButtonTextStyle,
+            onPress: onConfirmPressed,
+        };
+
+        return (
+            <View style={[alertStyle.container, alertContainerStyle]}>
+                <TouchableWithoutFeedback onPress={this._onTapOutside}>
+                    <View style={[alertStyle.overlay, overlayStyle]} />
+                </TouchableWithoutFeedback>
+                <Animated.View
+                    style={[alertStyle.contentContainer, animation, contentContainerStyle]}
+                >
+                    <View style={styles.group}>
+                        <View style={[styles.container___, styles.shadow]}>
+                            <View style={styles.container__}>
+
+                                <View style={[styles.container_, {padding: "5%", paddingHorizontal: 48,}]}>
+                                    {
+                                        this.props?.type == DECLINED && <View>
+                                            <CloseModal></CloseModal>
+                                        </View>
+
+                                    }
+                                    {
+                                        this.props?.type == FOREVALUATION && <View style={{paddingBottom: 10}}>
+                                            <EndorseToIcon height_={fontValue(60)} width_={fontValue(60)} color={"#2863D6"}></EndorseToIcon>
+                                        </View>
+                                    }
+                                    {
+                                        this.props?.type == APPROVED && <View>
+                                            <ApplicationApproved/>
+                                        </View>
+                                    }
+                                    <Text style={[styles.title, alertStyle.titleStyle]}>{this.props?.title}</Text>
+                                    <Text style={styles.description_}>
+                                        {this.props?.message ? this.props?.message : "Are you sure you want to approve this application?"}
+
+                                    </Text>
+
+                                </View>
 
 
-                           </View>
-                           <View style={[styles.action, {alignItems: "flex-end", paddingVertical: 15}]}>
-                               {
+                            </View>
+                            <View style={[styles.action, {alignItems: "flex-end", paddingVertical: 15}]}>
+                                {
 
-                                   props?.showClose == false && <>
-                                       {props.onLoading ?  <ActivityIndicator style={{alignSelf: "center"}}
-                                                                              color={"rgba(40,99,214,1)"}/> :
-                                        <TouchableOpacity onPress={props.onConfirmPressed}>
+                                    this.props?.showClose == false && <>
+                                        {this.props.onLoading ?  <ActivityIndicator style={{alignSelf: "center"}}
+                                                                               color={"rgba(40,99,214,1)"}/> :
+                                            <TouchableOpacity onPress={this.props.onConfirmPressed}>
 
-                                            <Text
-                                                style={[alertStyle.confirmButtonTextStyle]}>{props?.confirmButton || 'Yes'}</Text>
+                                                <Text
+                                                    style={[alertStyle.confirmButtonTextStyle]}>{this.props?.confirmButton || 'Yes'}</Text>
 
+                                            </TouchableOpacity>
+                                        }
+                                        <TouchableOpacity onPress={() => {
+                                            if(!this.props.onLoading){
+                                                this.props.onDismissed()
+                                            }
+                                        }}>
+                                            <Text style={[this.props.onLoading ?alertStyle.disableButtonTextStyle :  alertStyle.cancelButtonTextStyle  ]}>Close</Text>
                                         </TouchableOpacity>
-                                       }
-                                       <TouchableOpacity onPress={() => {
-                                           if(!props.onLoading){
-                                                   _springHide(false)
-                                           }
-                                       }}>
-                                           <Text style={[props.onLoading ?alertStyle.disableButtonTextStyle :  alertStyle.cancelButtonTextStyle  ]}>Close</Text>
-                                       </TouchableOpacity>
 
-                                   </>
+                                    </>
 
-                               }
+                                }
 
-                               {props?.showClose == true &&
-                               <TouchableOpacity onPress={() => {
+                                {this.props?.showClose == true &&
+                                    <TouchableOpacity onPress={() => {
 
-                                   _springHide(true)
-                               }}>
-                                   <Text style={[alertStyle.confirmButtonTextStyle]}>Close</Text>
-                               </TouchableOpacity>
-                               }
+                                        this.props.onCancelPressed()
+                                    }}>
+                                        <Text style={[alertStyle.confirmButtonTextStyle]}>Close</Text>
+                                    </TouchableOpacity>
+                                }
 
-                           </View>
-                       </View>
-                   </View>
-               </Animated.View>
+                            </View>
+                        </View>
+                    </View>
+                </Animated.View>
+            </View>
+        );
+    };
 
+    render() {
+        const { show, showSelf } = this.state;
+        const { modalProps = {}, closeOnHardwareBackPress } = this.props;
 
+        const wrapInModal = OS === 'android' || OS === 'ios';
 
-        </Modal>
+        return showSelf ?
+            wrapInModal ? (
+                <Modal
+                    animationType="none"
+                    transparent={true}
+                    visible={show}
+                    onRequestClose={() => {
+                        if (showSelf && closeOnHardwareBackPress) {
+                            this._springHide();
+                        }
+                    }}
+                    {...modalProps}
+                >
+                    {this._renderAlert()}
+                </Modal>
+            ) : this._renderAlert()
+            : null;
+    }
 
-    );
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        const { show } = nextProps;
+        const { showSelf } = this.state;
+
+        if (show && !showSelf) this._springShow();
+        else if (show === false && showSelf) this._springHide();
+    }
+
+    componentWillUnmount() {
+        HwBackHandler.removeEventListener(HW_BACK_EVENT, this._handleHwBackEvent);
+    }
 }
-
 const styles = StyleSheet.create({
     group: {
         alignSelf: "center"
@@ -123,7 +305,7 @@ const styles = StyleSheet.create({
         shadowRadius: 20,},
     container___: {
 
-                flexDirection: "column",
+        flexDirection: "column",
         justifyContent: "space-around",
         backgroundColor: "rgba(255,255,255,1)",
         borderRadius: 14,
@@ -134,7 +316,7 @@ const styles = StyleSheet.create({
 
 
         //paddingVertical: 15
-     
+
     },
     container_: {
 
@@ -153,7 +335,7 @@ const styles = StyleSheet.create({
         color: "#121212",
         textAlign: "center"
     },
-    
+
     action: {
         borderTopWidth: 1,
         borderTopColor: "rgba(217,219,233,1)",
@@ -162,5 +344,48 @@ const styles = StyleSheet.create({
         justifyContent: "space-around"
     },
 });
+AwesomeAlert.propTypes = {
+    show: PropTypes.bool,
+    animatedValue: PropTypes.number,
+    useNativeDriver: PropTypes.bool,
+    showProgress: PropTypes.bool,
+    title: PropTypes.string,
+    message: PropTypes.string,
+    closeOnTouchOutside: PropTypes.bool,
+    closeOnHardwareBackPress: PropTypes.bool,
+    showCancelButton: PropTypes.bool,
+    showConfirmButton: PropTypes.bool,
+    cancelText: PropTypes.string,
+    confirmText: PropTypes.string,
+    cancelButtonColor: PropTypes.string,
+    confirmButtonColor: PropTypes.string,
+    onCancelPressed: PropTypes.func,
+    onConfirmPressed: PropTypes.func,
+    customView: PropTypes.oneOfType([
+        PropTypes.element,
+        PropTypes.node,
+        PropTypes.func,
+    ]),
+    modalProps: PropTypes.object,
+    cancelButtonTestID: PropTypes.string,
+    confirmButtonTestID: PropTypes.string
+};
 
-export default CustomAlert;
+AwesomeAlert.defaultProps = {
+    show: false,
+    animatedValue: 0.3,
+    useNativeDriver: false,
+    showProgress: false,
+    closeOnTouchOutside: true,
+    closeOnHardwareBackPress: true,
+    showCancelButton: false,
+    showConfirmButton: false,
+    cancelText: 'Cancel',
+    confirmText: 'Confirm',
+    cancelButtonColor: '#D0D0D0',
+    confirmButtonColor: '#AEDEF4',
+    customView: null,
+    modalProps: {},
+    cancelButtonTestID: 'awesome-alert-cancel-btn',
+    confirmButtonTestID: 'awesome-alert-confirm-btn'
+};

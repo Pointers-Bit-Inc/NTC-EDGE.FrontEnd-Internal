@@ -74,6 +74,7 @@ import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import { FontAwesome } from "@expo/vector-icons";
+import Skeleton from "@atoms/skeleton";
 const TAB_BAR_HEIGHT = 48;
 const HEADER_HEIGHT = 48;
 
@@ -419,53 +420,58 @@ const ActivitiesPage = (props) => {
             onMomentumScrollEnd={onMomentumScrollEnd}
             scrollEventThrottle={1}
             renderItem={({item, index}) => (
-                <ApplicationList
-                    key={index}
-                    onPress={() => {
-                        userPress(index)
+                <>
 
-                    }}
-                    item={item}
-                    numbers={numberCollapsed}
-                    index={index}
+                    <ApplicationList
+                        key={index}
+                        onPress={() => {
+                            userPress(index)
 
-                    element={(activity: any, i: number) => {
-                        return (
+                        }}
+                        item={item}
+                        numbers={numberCollapsed}
+                        index={index}
 
-                            <ActivityItem
-                                isOpen={isOpen}
-                                config={config}
-                                /*
-                                    isPinned={true}
-                                */
-                                searchQuery={searchTerm}
-                                key={i}
-                                selected={applicationItem?._id == activity?._id}
-                                parentIndex={index}
-                                role={user?.role?.key}
-                                activity={activity}
-                                currentUser={user}
-                                onPressUser={(event: any) => {
-                                    dispatch(setSelectedYPos({yPos, type: 0}))
-                                    dispatch(setApplicationItem({
-                                        ...activity,
-                                        isOpen: `${index}${i}`
-                                    }));
-                                    //setDetails({ ...activity , isOpen : `${ index }${ i }` });
-                                    /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
-                                    })*/
-                                    if (event?.icon == 'more') {
-                                        setMoreModalVisible(true)
-                                    } else {
-                                        setModalVisible(true)
-                                    }
+                        element={(activity: any, i: number) => {
+                            return (
 
-                                }}
 
-                                index={`${index}${i}`}
-                                swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
-                        )
-                    }}/>
+                                <ActivityItem
+                                    isOpen={isOpen}
+                                    config={config}
+                                    /*
+                                        isPinned={true}
+                                    */
+                                    searchQuery={searchTerm}
+                                    key={i}
+                                    selected={applicationItem?._id == activity?._id}
+                                    parentIndex={index}
+                                    role={user?.role?.key}
+                                    activity={activity}
+                                    currentUser={user}
+                                    onPressUser={(event: any) => {
+                                        dispatch(setSelectedYPos({yPos, type: 0}))
+                                        dispatch(setApplicationItem({
+                                            ...activity,
+                                            isOpen: `${index}${i}`
+                                        }));
+                                        //setDetails({ ...activity , isOpen : `${ index }${ i }` });
+                                        /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
+                                        })*/
+                                        if (event?.icon == 'more') {
+                                            setMoreModalVisible(true)
+                                        } else {
+                                            setModalVisible(true)
+                                        }
+
+                                    }}
+
+                                    index={`${index}${i}`}
+                                    swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
+                            )
+                        }}/>
+                </>
+
             )}
         />
     }
