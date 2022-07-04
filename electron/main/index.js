@@ -33,7 +33,7 @@ function createMainWindow() {
     }
   })
 
-  browserWindow.loadURL('https://ntcedge.com/');
+  browserWindow.loadURL('https://www.ntcedge.com/');
   
   browserWindow.on('closed', () => {
     mainWindow = null;
