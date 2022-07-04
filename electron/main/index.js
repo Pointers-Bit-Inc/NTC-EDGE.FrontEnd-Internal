@@ -2,45 +2,46 @@
 
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
-import { format as formatUrl } from 'url';
 
-const isDevelopment = false;
+const webOptions = {
+  titleBarStyle: 'hidden',
+  backgroundColor: '#031A6E',
+  show: false,
+  icon: path.join(__dirname, '../../assets/electron.png'),
+  webPreferences: {
+    devTools: false,
+    nodeIntegration: true,
+    contextIsolation: false,
+    enableRemoteModule: true,
+  }
+}
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow;
 
 function createMainWindow() {
-  const browserWindow = new BrowserWindow({ webPreferences: {
-    nodeIntegration: true, contextIsolation: false, enableRemoteModule: true
-  } });
+  const browserWindow = new BrowserWindow(webOptions);
+  // In this example, only windows with the `about:blank` url will be created.
+  // All other urls will be blocked.
+  browserWindow.webContents.setWindowOpenHandler(({ url }) => {
+    return {
+      action: 'allow',
+      overrideBrowserWindowOptions: {
+        ...webOptions,
+        show: true
+      }
+    }
+  })
 
-  if (isDevelopment) {
-    browserWindow.webContents.openDevTools();
-  }
-
-  if (isDevelopment) {
-    browserWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
-  } else {
-    browserWindow.loadURL('https://ntcedge.com/');
-    // browserWindow.loadURL(
-    //   formatUrl({
-    //     pathname: path.join(__dirname, 'index.html'),
-    //     protocol: 'file',
-    //     slashes: true,
-    //   })
-    // );
-  }
-
+  browserWindow.loadURL('https://ntcedge.com/');
+  
   browserWindow.on('closed', () => {
     mainWindow = null;
   });
 
-  browserWindow.webContents.on('devtools-opened', () => {
-    browserWindow.focus();
-    setImmediate(() => {
-      browserWindow.focus();
-    });
-  });
+  browserWindow.once('ready-to-show', () => {
+    browserWindow.show()
+  })
 
   return browserWindow;
 }

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   FlatList,
+  Image,
 } from 'react-native'
 import StyleSheet from 'react-native-media-query';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
@@ -19,6 +20,8 @@ import useSignalr from 'src/hooks/useSignalr';
 import { AgoraVideoPlayer, createMicrophoneAndCameraTracks } from 'agora-rtc-react';
 import { button, text } from '@styles/color';
 import { Bold, Regular, Regular500 } from '@styles/font';
+
+const logo = require('@assets/ntc-edge.png');
 
 import {
   useFonts,
@@ -463,8 +466,25 @@ const VideoCall = () => {
     }
   }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return null;
+  if (!appIsReady) {
+    return (
+      <View style={{
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#031A6E'
+      }}>
+        <Image
+          resizeMode='contain'
+          source={logo}
+          style={{
+            height: 250,
+            width: 250,
+          }}
+        />
+      </View>
+    )
   }
 
   const renderMenu = (list:any = [], onSelect:any = () => {}) => {

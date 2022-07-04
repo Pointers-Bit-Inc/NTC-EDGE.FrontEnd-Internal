@@ -23,15 +23,15 @@
       "oneClick": true,
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
-      "installerIcon": "assets/favicon.png",
-      "uninstallerIcon": "assets/favicon.png",
-      "installerHeaderIcon": "assets/favicon.png",
+      "installerIcon": "assets/electron.png",
+      "uninstallerIcon": "assets/electron.png",
+      "installerHeaderIcon": "assets/electron.png",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "NTC-EDGE Portal"
     },
     "win": {
-      "icon": "assets/favicon.png",
+      "icon": "assets/electron.png",
       "requestedExecutionLevel": "requireAdministrator",
       "compression": "store",
       "target": [
@@ -56,12 +56,12 @@
       ]
     },
     "mac": {
-      "icon": "assets/favicon.png",
+      "icon": "assets/electron.png",
       "identity": null,
       "compression": "store"
     },
     "linux": {
-      "icon": "assets/favicon.png"
+      "icon": "assets/electron.png"
     },
     "extraMetadata": {
       "main": "main.js"
