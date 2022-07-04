@@ -31,7 +31,6 @@ import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 import * as Animatable from 'react-native-animatable'
 import {isTablet} from "react-native-device-info";
-import {StaticBone} from "@molecules/skeleton/StaticBone";
 import Skeleton from "@molecules/skeleton";
 
 const styles=StyleSheet.create({
