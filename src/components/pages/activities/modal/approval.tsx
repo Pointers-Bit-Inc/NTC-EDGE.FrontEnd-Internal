@@ -37,10 +37,18 @@ const Approval=(props:any)=>{
 
     const {springValue,_springHide,_springCollapse}=useAlert(props.visible,()=>{
         setOnFocus(false);
-        props.onDismissed(APPROVED);
+        props.onDismissed(APPROVED,()=>{
+            setShowAlert(false);
+            setApprovalIcon(false);
+            setShowClose(false);
+        })
 
-    });
+    }, () => {
+        setApprovalIcon(false);
+        setShowClose(false);
 
+        props.onExit();
+    })
 
     const isKeyboardVisible=useKeyboard();
     const user=useSelector((state:RootStateOrAny)=>state.user);
@@ -134,22 +142,28 @@ const Approval=(props:any)=>{
             props.onChangeRemarks(remarks,cashier);
             setMessage("Are you sure you want to approve this application?");
             setShowAlert(true)
+            setVisible(true)
         })
     };
 
     const onCancelPress=(event,bool?:any)=>{
+
         setAlertLoading(false);
         setShowAlert(false);
         if(approvalIcon){
 
             setApprovalIcon(false);
             setShowClose(false);
+
             props.onExit();
+
+
         } else{
            if(alertLoading){
                setAlertLoading(false)
                props.onModalDismissed("cancel");
            }else{
+
                props.onModalDismissed();
            }
 
@@ -173,7 +187,7 @@ const Approval=(props:any)=>{
             props.onExit();
             _springHide()
         }
-        
+
     }, [isLandscapeSync()])
     return (
 
@@ -209,19 +223,17 @@ const Approval=(props:any)=>{
                     }}
                     onLoading={alertLoading}
                     onCancelPressed={()=>{
-
-                        onCancelPress('exit',true)
+                        _springHide()
                     }}
                     onConfirmPressed={()=>{
 
                         setAlertLoading(true);
                         props.confirm({cashier:cashier,remarks:remarks},(response,callback)=>{
-
+                            setShowAlert(false)
                             setAlertLoading(false);
                             if(response){
 
                                 props.onDismissed(null,(bool)=>{
-
                                     setShowClose(true);
                                     setApprovalIcon(true);
                                     setTitle("Application Approved");
@@ -232,8 +244,8 @@ const Approval=(props:any)=>{
                                 callback(true);
 
                             } else if(!response){
-                                props.onDismissed(APPROVED,()=>{
 
+                                props.onDismissed(APPROVED,()=>{
                                     setShowAlert(false);
                                     setApprovalIcon(false);
                                     setShowClose(false);
@@ -250,6 +262,11 @@ const Approval=(props:any)=>{
                     }}
                     show={showAlert } title={title}
                     message={message}/>
+
+
+
+
+
                 <KeyboardAvoidingView
                     behavior={Platform.OS==="ios" ? "padding" : "height"}
                     style={[styles.container,{marginHorizontal:10,alignItems:"center",}]}
@@ -313,7 +330,7 @@ const Approval=(props:any)=>{
                                             }
                                         /> : <View style={{paddingVertical: 20}}/>}
                                         <View style={{marginTop:5}}>
-                                            <TouchableOpacity disabled={!(remarks) && getRole(user,[CASHIER])} onPress={onConfirmation}>
+                                            <TouchableOpacity disabled={!(remarks) && getRole(user,[CASHIER])} onPress={getRole(user,[CASHIER]) ? onConfirmation : onConfirmation()}>
                                                 <View style={[styles.confirmButton, {backgroundColor:!(remarks) && getRole(user,[CASHIER]) ? disabledColor :primaryColor,}]}>
                                                     <Text style={styles.confirm}>Confirm</Text>
                                                 </View>

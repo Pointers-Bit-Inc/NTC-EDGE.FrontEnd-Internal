@@ -6,6 +6,7 @@ export default function useApplicant(props) {
         soa = props?.soa ,
         totalFee = props?.totalFee ,
         paymentMethod = props?.paymentMethod ,
+        paymentHistory = props?.paymentHistory ,
         requirements = props?.requirements || props?.service?.applicationType?.requirements ,
         updatedAt = props?.updatedAt ,
         approvalHistory = props?.approvalHistory ,
@@ -14,7 +15,8 @@ export default function useApplicant(props) {
         createdAt = props?.createdAt ,
         proofOfPayment = props?.proofOfPayment,
         documents = props?.document,
-        remarks=  props?.remarks
+        remarks=  props?.remarks,
+        paymentStatus = props?.paymentStatus
     return {applicant,
         selectedTypes,
         applicationType,
@@ -30,5 +32,7 @@ export default function useApplicant(props) {
         schedule,
         documents,
         remarks,
+        paymentStatus,
+        paymentHistory,
         proofOfPayment}
 }

@@ -36,6 +36,17 @@ module.exports = async function(env, argv) {
     ...config.module.rules,
     ...babelLoaderRules,
   ];
+  config.devtool = false;
+  config.optimization = {
+    splitChunks: {
+      minSize: 10000,
+      maxSize: 250000,
+    }
+  };
+  config.performance = {
+    hints: false
+  }
+  config.mode = 'production';
   // Finally return the new config for the CLI to use.
   return config;
 };

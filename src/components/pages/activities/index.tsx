@@ -383,7 +383,6 @@ const ActivitiesPage = (props) => {
         return <Animated.FlatList
             refreshControl={
                 <RefreshControl
-
                     progressViewOffset={headerHeight}
                     refreshing={refreshing}
                     onRefresh={onRefresh}
