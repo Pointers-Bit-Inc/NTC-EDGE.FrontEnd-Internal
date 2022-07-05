@@ -109,7 +109,7 @@ export default function TabBar({navigation,route}){
     const pinnedApplications=useSelector((state:RootStateOrAny)=>state.application?.pinnedApplications);
     const notPinnedApplications=useSelector((state:RootStateOrAny)=>state.application?.notPinnedApplications);
     const tabBarHeight=useSelector((state:RootStateOrAny)=>state.application?.tabBarHeight);
-    const currentMeeting = useSelector((state: RootStateOrAny) => state.channel.meeting);
+    const currentMeeting = useSelector((state: RootStateOrAny) => state.meeting.meeting);
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
     const hasNewChat = false;
     const hasMeet = false;
