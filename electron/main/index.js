@@ -8,7 +8,6 @@ const webOptions = {
   height: 600,
   minWidth: 900,
   minHeight: 600,
-  titleBarStyle: 'hidden',
   backgroundColor: '#031A6E',
   show: false,
   icon: path.join(__dirname, '../../assets/electron.png'),

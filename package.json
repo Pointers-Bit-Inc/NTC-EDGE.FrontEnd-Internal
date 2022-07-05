@@ -7,7 +7,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "mac": "yarn electron-webpack && yarn electron-builder --dir --mac",
-    "win": "yarn electron-webpack && yarn electron-builder --dir --win --x64 --ia32",
+    "win": "yarn electron-webpack && yarn electron-builder --win --publish always",
     "eject": "expo eject",
     "prettier:write": "npx prettier --write **/*.{js,jsx,ts,tsx,json} && npx prettier --write *.{js,jsx,ts,tsx,json}",
     "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx ./"
@@ -20,23 +20,27 @@
       "output": "dist"
     },
     "nsis": {
-      "oneClick": true,
+      "oneClick": false,
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
-      "installerIcon": "assets/electron.png",
-      "uninstallerIcon": "assets/electron.png",
-      "installerHeaderIcon": "assets/electron.png",
+      "installerIcon": "assets/electron.ico",
+      "uninstallerIcon": "assets/electron.ico",
+      "installerHeaderIcon": "assets/electron.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "NTC-EDGE Portal"
     },
     "win": {
-      "icon": "assets/electron.png",
+      "icon": "assets/electron.ico",
       "requestedExecutionLevel": "requireAdministrator",
-      "compression": "store",
+      "artifactName": "${productName} Setup ${version} ${arch}.${ext}",
       "target": [
         {
-          "target": "nsis"
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         }
       ]
     },
