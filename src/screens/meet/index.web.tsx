@@ -359,8 +359,8 @@ const Meet = ({ navigation }) => {
         <ListFooter
             hasError={hasError}
             fetching={fetching}
-            loadingText="Loading more chat..."
-            errorText="Unable to load chats"
+            loadingText="Loading more meetings..."
+            errorText="Unable to load meetings"
             refreshText="Refresh"
             onRefresh={() => fetchMoreMeeting(true)}
         />
