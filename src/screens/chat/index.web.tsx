@@ -405,6 +405,7 @@ function Chat(props: {
           setHasMore(res.hasMore);
         }
         if (err) {
+          setHasError(true);
           console.log('ERR', err);
         }
         setLoading(false);
