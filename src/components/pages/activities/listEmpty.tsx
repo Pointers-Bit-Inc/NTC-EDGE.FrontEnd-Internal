@@ -1,11 +1,12 @@
 import * as React from 'react';
-import {ActivityIndicator, StyleSheet, Text, useWindowDimensions, View} from 'react-native';
+import {ActivityIndicator, FlatList, StyleSheet, Text, useWindowDimensions, View} from 'react-native';
 import {DATE_ADDED} from "../../../reducers/activity/initialstate";
 import {RootStateOrAny,useSelector} from "react-redux";
 import NoActivity from "@assets/svg/noActivity";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular} from "@styles/font";
 import absoluteFill = StyleSheet.absoluteFill;
+import Skeleton from "@atoms/skeleton";
 
 export const styles=StyleSheet.create({
     noContent:{
@@ -13,6 +14,15 @@ export const styles=StyleSheet.create({
         textAlign:"center",alignSelf:"center",color:"#A0A3BD",fontSize:fontValue(24)
     }
 });
+
+function Placeholder(props: { renderItem: () => JSX.Element, keyExtractor: (item) => any }) {
+    return <View style={{justifyContent: "flex-end", width: "100%"}}><FlatList
+        data={[1,2,3,4,5,6]}
+        renderItem={props.renderItem}
+        keyExtractor={props.keyExtractor}
+    /></View>;
+}
+
 export default function Loader(refreshing,searchTerm,size){
     const selectedChangeStatus=useSelector((state:RootStateOrAny)=>state.activity?.selectedChangeStatus);
     const selectedClone=selectedChangeStatus?.filter((status:string)=>{
@@ -21,12 +31,12 @@ export default function Loader(refreshing,searchTerm,size){
 
     return (
 
-        <View  style={{justifyContent: "center", alignItems: "center",   height: "60%", width: "100%"  }}>
+        <View  style={[{justifyContent: "center", alignItems: "center",   width: "100%"  }]}>
 
-            {refreshing  ? <ActivityIndicator /> : selectedClone.length && !( size || size?.length) ? <><NoActivity></NoActivity><Text
+            {refreshing  ? <Placeholder renderItem={() => <Skeleton/>} keyExtractor={item => item}/>  : selectedClone.length && !( size || size?.length) ? <><NoActivity></NoActivity><Text
                     style={styles.noContent}>No Content "{selectedClone.toString()}"</Text></>
 
-                : size || size?.length ? <></> : <><NoActivity></NoActivity><Text style={styles.noContent}>No Content</Text></>}
+                : size || size?.length ? <Placeholder renderItem={() => <Skeleton/>} keyExtractor={item => item}/> : <><NoActivity></NoActivity><Text style={styles.noContent}>No Content</Text></>}
         </View>
 
     );

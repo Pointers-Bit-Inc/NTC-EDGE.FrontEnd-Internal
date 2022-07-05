@@ -58,6 +58,7 @@ function ActivityModal(props:any){
     const [prevRemarks,setPrevRemarks]=useState("");
     const [grayedOut,setGrayedOut]=useState(false);
     const cancelTokenSource = axios.CancelToken.source();
+    const [showAlert1, setShowAlert1] = useState(false)
     const onDismissed=()=>{
         setVisible(false)
     };
@@ -68,21 +69,21 @@ function ActivityModal(props:any){
         setApproveVisible(false)
     };
     const onChangeApplicationStatus=async(status:string,callback=(err:any,appId?:any)=>{
-    })=>{
+    }, event)=>{
         setGrayedOut(true);
         const api=Api(user.sessionToken);
         const applicationId=props?.details?._id;
         let url=`/applications/${applicationId}/update-status`;
         let params:any={
             status,
-            remarks:remarks ? remarks : undefined,
-            assignedPersonnel:assignId ? assignId : undefined,
+            remarks:event.remarks ? event.remarks : remarks,
+            assignedPersonnel:event.cashier ? event.cashier  :assignId,
         };
         let AddORNoparams:any=
-        {
-            orNumber: remarks ? remarks : undefined,
-            orBy: assignId ? assignId : undefined
-        }
+            {
+                orNumber: event.remarks ? event.remarks : remarks,
+                orBy: event.cashier ? event.cashier  :assignId,
+            }
         setCurrentLoading(status);
         if(status==DECLINED){
             setAssignId("")
@@ -94,11 +95,11 @@ function ActivityModal(props:any){
                 assignId ? assignId : undefined);
             params={
                 status:(
-                           assignUserId) ? FOREVALUATION : status,
+                    assignUserId) ? FOREVALUATION : status,
                 assignedPersonnel:assignUserId ? props?.details?.approvalHistory?.[0].userId : (
                     assignId ? assignId : undefined),
 
-                remarks:remarks ? remarks : undefined,
+                remarks:event.remarks ? event.remarks : remarks,
             };
         }
 
@@ -106,7 +107,7 @@ function ActivityModal(props:any){
             url=`/applications/${applicationId}/update-payment-status`;
             params={
                 paymentStatus:status,
-                remarks:remarks ? remarks : undefined,
+                remarks:event.remarks ? event.remarks : remarks,
             };
 
         }
@@ -124,42 +125,42 @@ function ActivityModal(props:any){
         if((applicationId && (user?.role?.key==CASHIER && addORNumber?.status == 200 )) || (getRole(user,[ DIRECTOR,EVALUATOR,ACCOUNTANT]) && applicationId )){
 
             await api.patch(url,{...params,  cancelToken: cancelTokenSource?.token,})
-            .then(res=>{
-                setGrayedOut(false);
-                setCurrentLoading('');
-                if(res.status===200){
-                    if(res.data){
+                .then(res=>{
+                    setGrayedOut(false);
+                    setCurrentLoading('');
+                    if(res.status===200){
+                        if(res.data){
 
-                        const data=res.data?.doc||res?.data;
-
-
+                            const data=res.data?.doc||res?.data;
 
 
-                        dispatch(updateApplicationStatus({
-                            application:data,
-                            status:status,
-                            assignedPersonnel:data?.assignedPersonnel?._id||data?.assignedPersonnel,
-                            userType:user?.role?.key
-                        }));
-                        props.onChangeAssignedId(data);
-                        //setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
-                        setChange(true);
-                        // props.onDismissed(true, applicationId)
 
-                        return callback(null,applicationId);
+
+                            dispatch(updateApplicationStatus({
+                                application:data,
+                                status:status,
+                                assignedPersonnel:data?.assignedPersonnel?._id||data?.assignedPersonnel,
+                                userType:user?.role?.key
+                            }));
+                            props.onChangeAssignedId(data);
+                            //setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
+                            setChange(true);
+                            // props.onDismissed(true, applicationId)
+
+                            return callback(null,applicationId);
+                        }
                     }
-                }
 
-                Alert.alert('Alert','Something went wrong.');
+                    Alert.alert('Alert','Something went wrong.');
 
-                return callback('error');
-            })
-            .catch(e=>{
-                setGrayedOut(false);
-                setCurrentLoading('');
-                Alert.alert('Alert',e?.message||'Something went wrong.');
-                return callback(e);
-            })
+                    return callback('error');
+                })
+                .catch(e=>{
+                    setGrayedOut(false);
+                    setCurrentLoading('');
+                    Alert.alert('Alert',e?.message||'Something went wrong.');
+                    return callback(e);
+                })
         }
     };
 
@@ -185,7 +186,7 @@ function ActivityModal(props:any){
             props?.details?.assignedPersonnel?._id||props?.details?.assignedPersonnel));
         return status ? (
             cashier ? PaymentStatusText(status) : StatusText(status)) : (
-                   cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
+            cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
     },[assignId,status,(
         props?.details?.assignedPersonnel?._id||props?.details?.assignedPersonnel),props.details.paymentStatus,props.details._id,props.details.status]);
     const approveButton=statusMemo===APPROVED||statusMemo===VERIFIED;
@@ -194,12 +195,12 @@ function ActivityModal(props:any){
 
 
     const allButton=(
-                        cashier) ? (
-                        !!props?.details?.paymentMethod ? (
-                            assignId!=user?._id ? true : (
-                                declineButton||approveButton||grayedOut)) : true) : (
-                        assignId!=user?._id ? true : (
-                            declineButton||approveButton||grayedOut));
+        cashier) ? (
+        !!props?.details?.paymentMethod ? (
+            assignId!=user?._id ? true : (
+                declineButton||approveButton||grayedOut)) : true) : (
+        assignId!=user?._id ? true : (
+            declineButton||approveButton||grayedOut));
     const [alertLoading,setAlertLoading]=useState(false);
     const [approvalIcon,setApprovalIcon]=useState(false);
     const [title,setTitle]=useState("Approve Application");
@@ -301,7 +302,7 @@ function ActivityModal(props:any){
                         setChange(false)
                     }}>
 
-                            <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
+                        <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
 
 
                     </TouchableOpacity>
@@ -326,36 +327,41 @@ function ActivityModal(props:any){
                         }}>
                             <View style={styles.footer}>
                                 {getRole(user,[DIRECTOR,EVALUATOR,CASHIER,ACCOUNTANT])&&
-                                <View style={styles.groupButton}>
+                                    <View style={styles.groupButton}>
+                                        <ApprovedButton
+                                            user={user}
+                                            currentLoading={currentLoading}
+                                            allButton={allButton}
+                                            onPress={()=>{
+                                                if(getRole(user,[EVALUATOR])){
 
-                                    <ApprovedButton
-                                        user={user}
-                                        currentLoading={currentLoading}
-                                        allButton={allButton}
-                                        onPress={()=>{
-
-                                                setApproveVisible(true)
+                                                    setShowAlert1(true)
+                                                    setApproveVisible(true)
+                                                }else{
+                                                    setApproveVisible(true)
+                                                }
 
 
 
-                                        }}/>
 
-                                    { <DeclineButton
-                                        currentLoading={currentLoading}
-                                        allButton={allButton}
-                                        onPress={()=>{
-                                            setVisible(true)
-                                        }}/>}
+                                            }}/>
 
-                                </View>}
+                                        { <DeclineButton
+                                            currentLoading={currentLoading}
+                                            allButton={allButton}
+                                            onPress={()=>{
+                                                setVisible(true)
+                                            }}/>}
+
+                                    </View>}
 
                                 {getRole(user,[EVALUATOR]) && props?.details?.service?.serviceCode !== "service-22" &&
-                                <EndorsedButton
-                                    currentLoading={currentLoading}
-                                    allButton={allButton}
-                                    onPress={()=>{
-                                        setEndorseVisible(true)
-                                    }}/>}
+                                    <EndorsedButton
+                                        currentLoading={currentLoading}
+                                        allButton={allButton}
+                                        onPress={()=>{
+                                            setEndorseVisible(true)
+                                        }}/>}
 
 
                             </View>
@@ -366,6 +372,8 @@ function ActivityModal(props:any){
                 }
             </View>
             <Approval
+                showAlert={showAlert1}
+                setShowAlert={setShowAlert1}
                 size={activityModalScreenComponent}
                 onModalDismissed={(event?:any)=>{
                     if(event == "cancel"){
@@ -374,20 +382,28 @@ function ActivityModal(props:any){
                     setStatus(prevStatus);
                     setRemarks(prevRemarks);
                     setAssignId(props?.details?.assignedPersonnel?._id||props?.details?.assignedPersonnel)
+                    if(getRole(user,[EVALUATOR])){
+                        onApproveDismissed();
+                    }
                 }}
                 onChangeRemarks={(_remark:string,_assign)=>{
 
                     setPrevStatus(status);
                     setPrevRemarks(remarks);
                     setPrevAssignId(assignId);
+                    if(getRole(user,[CASHIER, DIRECTOR,ACCOUNTANT])){
+                        setRemarks(_remark);
+                        setAssignId(_assign)
+                    }
 
-                    setRemarks(_remark);
-
-                    setAssignId(_assign)
 
                 }}
+
+
                 visible={approveVisible}
                 confirm={(event:any,callback:(res,callback)=>{})=>{
+                    setRemarks(event.remark);
+                    setAssignId(event.cashier)
                     let status="";
                     if(getRole(user,[DIRECTOR,EVALUATOR])){
                         status=FORAPPROVAL
@@ -410,7 +426,7 @@ function ActivityModal(props:any){
                             })
                         }
 
-                    })
+                    }, event)
 
 
                 }}
@@ -422,7 +438,7 @@ function ActivityModal(props:any){
                 }}
                 onDismissed={(event?:any,callback?:(bool)=>{})=>{
                     if(event==APPROVED){
-                       onApproveDismissed();
+                        onApproveDismissed();
 
                     }
                     if(callback){

@@ -39,7 +39,7 @@ import {
     setTopBarNav
 } from "../reducers/application/actions";
 import ProfileMenu from "@molecules/headerRightMenu";
-import CustomAlert from "@pages/activities/alert/alert";
+import CustomAlert from "@pages/activities/alert/alert1";
 import {resetUser} from "../reducers/user/actions";
 import {setResetFilterStatus} from "../reducers/activity/actions";
 import {resetMeeting} from "../reducers/meeting/actions";
@@ -226,7 +226,7 @@ const RootNavigator = () => {
                 <Stack.Screen name="SearchActivities" component={ Search }/>
             </Stack.Navigator>
             <FloatingVideoComponent />
-            {visible && <View style={{position: "absolute", width: "100%", height: "100%",backgroundColor: "rgba(0,0,0,0.5)"}}/>}
+            {visible && <View style={{zIndex: -1, position: "absolute", width: "100%", height: "100%",backgroundColor: "rgba(0,0,0,0.5)"}}/>}
         </NavigationContainer>
 
     );
