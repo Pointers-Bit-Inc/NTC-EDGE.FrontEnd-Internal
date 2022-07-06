@@ -62,9 +62,13 @@ function Title(props:{nextValue,index,}){
 
         title=transformText(
             props.nextValue||props.index);
-        return <View style={styles.rect}>
-            <Text style={styles.file}>{title?.toUpperCase()}</Text>
+
+        return<View style={{paddingVertical: 5}}>
+            <View style={styles.rect}>
+                <Text style={styles.file}>{title?.toUpperCase()}</Text>
+            </View>
         </View>
+
     }
     return <></>
 }
@@ -79,7 +83,10 @@ function Separator({index}){
 }
 
 const RenderServiceMiscellaneous=(props)=>{
-    let service={...props.service}||{};
+    let service=JSON.parse(JSON.stringify(props.service||{}));
+
+
+
     const flatten=(obj)=>{
         var result={};
          (
@@ -105,6 +112,9 @@ const RenderServiceMiscellaneous=(props)=>{
          
         return result;
     };
+
+
+
     let _renderParent=(item:any)=>{
         const [keys,value]=item.item;
         var index,prevValue,nextValue,findIndex;
@@ -113,7 +123,6 @@ const RenderServiceMiscellaneous=(props)=>{
         }).findIndex((name)=>{
             return !isNaN(parseInt(name))
         });
-
         if(findIndex!= -1){
             index=keys?.split?.(".")?.reverse()?.[findIndex];
             prevValue=keys?.split?.(".")?.reverse()?.[findIndex-1];
@@ -126,7 +135,7 @@ const RenderServiceMiscellaneous=(props)=>{
         return (<View>
             <Title nextValue={nextValue} index={index}/>
             <Separator index={index}/>
-            <Row label={prevValue ? `${transformText(prevValue)}:` : ""} applicant={value}/>
+            <Row updateForm={props.updateForm} stateName={"service." + keys} edit={props.edit} label={prevValue ? `${transformText(prevValue)}:` : ""} display={value} applicant={props?.userProfileForm["service." + keys]}/>
         </View>)
 
 

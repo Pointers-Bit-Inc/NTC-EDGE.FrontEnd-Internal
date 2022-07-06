@@ -62,7 +62,9 @@ const styles=StyleSheet.create({
         paddingRight:fontValue(10),
         paddingLeft:fontValue(10)
     },
-    group:{},
+    group:{
+        paddingBottom: 10
+    },
     rect:{},
     header:{
         backgroundColor:"#EFF0F6",
@@ -98,7 +100,7 @@ const styles=StyleSheet.create({
     },
     divider:{
         padding:2,
-        paddingBottom:20
+        paddingBottom:5
     },
     status:{
 

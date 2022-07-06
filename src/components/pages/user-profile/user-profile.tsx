@@ -43,7 +43,83 @@ const UserProfileScreen=({navigation}:any)=>{
     const user=useSelector((state:RootStateOrAny)=>state.user)||{};
     const {profilePicture={}}=user;
     const photo=profilePicture?.small;
+    const originalForm=[
+        {
+            stateName:'userType',
+            id:1,
+            key:1,
+            required:true,
+            label:'User Type',
+            type:'input',
+            placeholder:'User Type',
+            value:user?.role?.name||'',
+            error:false,
+            editable:false,
+            disabledColor:text.disabled,
 
+        },
+        {
+            stateName:'firstName',
+            id:2,
+            key:2,
+            required:true,
+            label:'First Name',
+            type:'input',
+            placeholder:'First Name',
+            value:user?.firstName||'',
+            error:false,
+        },
+        {
+            stateName:'lastName',
+            id:3,
+            key:3,
+            required:true,
+            label:'Last Name',
+            type:'input',
+            placeholder:'Last Name',
+            value:user?.lastName||'',
+            error:false,
+        },
+        {
+            stateName:'email',
+            id:4,
+            key:4,
+            required:true,
+            label:'Email',
+            type:'input',
+            placeholder:'Email',
+            value:user?.email||'',
+            error:false,
+        },
+        {
+            stateName:'profilePicture',
+            id:11,
+            file:{},
+        },
+        {
+            stateName:'contactNumber',
+            id:9,
+            key:9,
+            required:true,
+            label:'Contact Number',
+            type:'input',
+            placeholder:'Contact Number',
+            value:user?.contactNumber||'',
+            error:false,
+        },
+        {
+            stateName:'address',
+            id:10,
+            key:10,
+            required:true,
+            label:'Address',
+            type:'input',
+            placeholder:'Address',
+            value:user?.address||'',
+            error:false,
+        },
+    ];
+    const [userProfileForm,setUserProfileForm]=useState(originalForm);
     const onUpdateForm=(id:number,text:any,element?:string,_key?:string)=>{
         let index=userProfileForm?.findIndex(app=>app?.id==id);
         let newArr=[...userProfileForm];
@@ -230,83 +306,8 @@ const UserProfileScreen=({navigation}:any)=>{
         basic:false,
     });
 
-    const originalForm=[
-        {
-            stateName:'userType',
-            id:1,
-            key:1,
-            required:true,
-            label:'User Type',
-            type:'input',
-            placeholder:'User Type',
-            value:user?.role?.name||'',
-            error:false,
-            editable:false,
-            disabledColor:text.disabled,
 
-        },
-        {
-            stateName:'firstName',
-            id:2,
-            key:2,
-            required:true,
-            label:'First Name',
-            type:'input',
-            placeholder:'First Name',
-            value:user?.firstName||'',
-            error:false,
-        },
-        {
-            stateName:'lastName',
-            id:3,
-            key:3,
-            required:true,
-            label:'Last Name',
-            type:'input',
-            placeholder:'Last Name',
-            value:user?.lastName||'',
-            error:false,
-        },
-        {
-            stateName:'email',
-            id:4,
-            key:4,
-            required:true,
-            label:'Email',
-            type:'input',
-            placeholder:'Email',
-            value:user?.email||'',
-            error:false,
-        },
-        {
-            stateName:'profilePicture',
-            id:11,
-            file:{},
-        },
-        {
-            stateName:'contactNumber',
-            id:9,
-            key:9,
-            required:true,
-            label:'Contact Number',
-            type:'input',
-            placeholder:'Contact Number',
-            value:user?.contactNumber||'',
-            error:false,
-        },
-        {
-            stateName:'address',
-            id:10,
-            key:10,
-            required:true,
-            label:'Address',
-            type:'input',
-            placeholder:'Address',
-            value:user?.address||'',
-            error:false,
-        },
-    ];
-    const [userProfileForm,setUserProfileForm]=useState(originalForm);
+
 
     const isValid=()=>{
         var valid=true;

@@ -35,6 +35,8 @@ import ModalTab from "@pages/activities/modalTab/modalTab";
 import {isLandscapeSync,isTablet} from "react-native-device-info";
 import {Toast} from "@atoms/toast/Toast";
 import axios from "axios";
+import useSafeState from "../../../hooks/useSafeState";
+import EditIcon from "@assets/svg/editIcon";
 
 function ActivityModal(props:any){
 
@@ -70,6 +72,7 @@ function ActivityModal(props:any){
     };
     const onChangeApplicationStatus=async(status:string,callback=(err:any,appId?:any)=>{
     }, event)=>{
+        console.log(event)
         setGrayedOut(true);
         const api=Api(user.sessionToken);
         const applicationId=props?.details?._id;
@@ -205,10 +208,12 @@ function ActivityModal(props:any){
     const [approvalIcon,setApprovalIcon]=useState(false);
     const [title,setTitle]=useState("Approve Application");
     const [showClose,setShowClose]=useState(false);
+    const [edit, setEdit] = useSafeState(false)
     const [activityModalScreenComponent,onActivityModalScreenComponent]=useComponentLayout();
     useEffect(()=>{
         dispatch(setRightLayoutComponent(activityModalScreenComponent))
     },[activityModalScreenComponent]);
+const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
 
     return (
 
@@ -280,7 +285,7 @@ function ActivityModal(props:any){
 
                         }
                         setShowClose(true)
-                    })
+                    },{remarks: remarks, cashier: assignId})
                 }}
                 show={showAlert} title={title}
                 message={message}/>
@@ -295,7 +300,7 @@ function ActivityModal(props:any){
                     padding:15,
                     paddingTop:40,
                 }}>
-                    <TouchableOpacity  hitSlop={{top: 50, left: 50, bottom: 50, right: 50}} onPress={()=>{
+                    <TouchableOpacity  hitSlop={hitSlop} onPress={()=>{
                         setAssignId("");
                         setStatus("");
                         props.onDismissed(change);
@@ -308,10 +313,13 @@ function ActivityModal(props:any){
                     </TouchableOpacity>
 
                     <Text style={[styles.applicationType,{width:"90%"}]}>{props?.details?.applicationType||props?.details?.service?.name}</Text>
-                    <View></View>
+                   <View/>
+                    {/*<TouchableOpacity hitSlop={hitSlop}  onPress={() => setEdit((bool) => !bool )}>
+                       <EditIcon color="#606A80"/>
+                   </TouchableOpacity>*/}
                 </View>}
 
-                <ModalTab dismissed={()=>{
+                <ModalTab edit={edit} dismissed={()=>{
                     props.onDismissed(change);
                 }} details={props.details} status={status}/>
                 {
@@ -405,8 +413,14 @@ function ActivityModal(props:any){
                     setRemarks(event.remark);
                     setAssignId(event.cashier)
                     let status="";
-                    if(getRole(user,[DIRECTOR,EVALUATOR])){
-                        status=FORAPPROVAL
+
+                    if(getRole(user,[DIRECTOR,EVALUATOR]) ){
+                        if(props?.details?.service?.serviceCode == "service-22"){
+                            status = APPROVED
+                        }else{
+                            status=FORAPPROVAL
+                        }
+
                     } else if(getRole(user,[ACCOUNTANT])){
                         status=APPROVED
                     } else if(getRole(user,[CASHIER])){
@@ -463,7 +477,7 @@ function ActivityModal(props:any){
 
                             })
                         }
-                    })
+                    }, event)
                 }
                 }
                 visible={visible}
@@ -503,7 +517,7 @@ function ActivityModal(props:any){
                             })
                         }
 
-                    });
+                    }, event);
                 }}
                 visible={endorseVisible}
                 onExit={()=>{
