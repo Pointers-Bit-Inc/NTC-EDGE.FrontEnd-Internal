@@ -8,7 +8,6 @@ const webOptions = {
   height: 600,
   minWidth: 900,
   minHeight: 600,
-  titleBarStyle: 'hidden',
   backgroundColor: '#031A6E',
   show: false,
   icon: path.join(__dirname, '../../assets/electron.png'),
@@ -30,11 +29,12 @@ function createMainWindow() {
   //catch network error status
   browserWindow.webContents.on('did-fail-load', async (event= Event, errorCode= number, errorDescription= string, validatedURL= string, isMainFrame= boolean) => {
     if (errorDescription === 'ERR_INTERNET_DISCONNECTED' || errorDescription === 'ERR_PROXY_CONNECTION_FAILED') {
-      const { response } = await dialog.showMessageBox({
+      const { response } = await dialog.showMessageBox(browserWindow, {
         title,
         message,
-        buttons: ['Reload', 'Cancel'],
+        buttons: ['Reload', 'Close'],
         cancelId: 1,
+        type: 'question',
       })
       if (response === 0) {
         browserWindow.reload();
@@ -54,11 +54,12 @@ function createMainWindow() {
     //catch network error status
     win.webContents.on('did-fail-load', async (event= Event, errorCode= number, errorDescription= string, validatedURL= string, isMainFrame= boolean) => {
       if (errorDescription === 'ERR_INTERNET_DISCONNECTED' || errorDescription === 'ERR_PROXY_CONNECTION_FAILED') {
-        const { response } = await dialog.showMessageBox({
+        const { response } = await dialog.showMessageBox(win, {
           title,
           message,
-          buttons: ['Reload', 'Cancel'],
+          buttons: ['Reload', 'Close'],
           cancelId: 1,
+          type: 'question',
         })
         if (response === 0) {
           win.reload();

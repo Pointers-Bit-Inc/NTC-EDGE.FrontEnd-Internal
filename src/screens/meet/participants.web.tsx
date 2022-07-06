@@ -244,7 +244,8 @@ const Participants = ({ onClose = () => {} }:any) => {
     setShowAlert(false);
     setLoading(true);
     api.post(`/rooms/${roomId}/add-members`,{
-      participants: addedMembers
+      participants: addedMembers,
+      meetingId,
     })
     .then((res) => {
       setLoading(false);
