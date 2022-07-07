@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Alert, Dimensions, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Text from '@components/atoms/text'
 import { Regular, Regular500 } from '@styles/font'
-import { AddPeopleIcon, ArrowLeftIcon, CloseIcon, MicOffIcon, MicOnIcon, NewMeetIcon, NewPenIcon, NewPhoneIcon, PinParticipantIcon, ToggleIcon } from '@components/atoms/icon'
+import { AddPeopleIcon, ArrowLeftIcon, CheckIcon, CloseIcon, MicOffIcon, MicOnIcon, NewMeetIcon, NewPenIcon, NewPhoneIcon, PinParticipantIcon, ToggleIcon } from '@components/atoms/icon'
 import { RFValue } from 'react-native-responsive-fontsize'
 import LinkIcon from '@components/atoms/icon/link'
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux'
@@ -255,6 +255,43 @@ const Participants = ({ navigation }) => {
   )
 
   const options = () => {
+    if (isHost(user) && listType === 'waitingInLobby') {
+      return (
+        <>
+          <TouchableOpacity>
+            <View style={[styles.option]}>
+              <CheckIcon
+                type='check2'
+                size={RFValue(18)}
+              />
+              <Text
+                style={{ marginLeft: 15 }}
+                color={'black'}
+                size={18}
+              >
+                Admit
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onRemoveConfirm}>
+            <View style={[styles.option]}>
+              <CloseIcon
+                type='close'
+                size={RFValue(18)}
+              />
+              <Text
+                style={{ marginLeft: 15 }}
+                color={'black'}
+                size={18}
+              >
+                Decline
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </>
+      )
+    }
+
     return (
       <>
         {

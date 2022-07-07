@@ -216,7 +216,6 @@ const FloatingVideo = ({ tracks }:any) => {
 
   useEffect(() => {
     const source = axios.CancelToken.source();
-    console.log('meetingUserData', userStatus);
     if (ready) {
       if (userStatus === 'pending' || userStatus === 'waiting') {
         setWaiting(true);

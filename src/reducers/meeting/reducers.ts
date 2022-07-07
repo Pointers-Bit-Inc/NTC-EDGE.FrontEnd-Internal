@@ -141,7 +141,7 @@ export default function Meeting(state = initialState, action:any = {}) {
       }
 
       if (!action.payload.ended) {
-        newState = state.setIn(['normalizeActiveMeetings', action.payload._id, 'participants'], participants)
+        newState = newState.setIn(['normalizeActiveMeetings', action.payload._id, 'participants'], participants)
       }
 
       return newState;
