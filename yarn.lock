@@ -11848,6 +11848,11 @@ react-native-file-viewer@^2.1.5:
   resolved "https://registry.yarnpkg.com/react-native-file-viewer/-/react-native-file-viewer-2.1.5.tgz#cd4544f573108e79002b5c7e1ebfce4371885250"
   integrity sha512-MGC6sx9jsqHdefhVQ6o0akdsPGpkXgiIbpygb2Sg4g4bh7v6K1cardLV1NwGB9A6u1yICOSDT/MOC//9Ez6EUg==
 
+react-native-floating-action@^1.22.0:
+  version "1.22.0"
+  resolved "https://registry.yarnpkg.com/react-native-floating-action/-/react-native-floating-action-1.22.0.tgz#7ec476f320e16855ad4077a3a9f36511d1718a52"
+  integrity sha512-m/9ueh2bgV+Dopelam2hu+FIY1wrIOPjpcBNgU3I5J9SqWmPQCarSz5L8zsW5QWE4YgXuaVbYAO/pgb0P8x/gQ==
+
 react-native-fs@^2.19.0:
   version "2.19.0"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.19.0.tgz#5747eb52a5a3d2b31c8fb76f5f8044d0a855122c"
