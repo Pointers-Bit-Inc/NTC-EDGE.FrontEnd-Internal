@@ -175,9 +175,7 @@ export default class AwesomeAlert extends Component {
 
         return (
             <View style={[alertStyle.container, alertContainerStyle]}>
-                <TouchableWithoutFeedback onPress={this._onTapOutside}>
-                    <View style={[alertStyle.overlay, overlayStyle]} />
-                </TouchableWithoutFeedback>
+
                 <Animated.View
                     style={[alertStyle.contentContainer, animation, contentContainerStyle]}
                 >

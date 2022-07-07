@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from "react";
-import {Platform, ScrollView, Text, useWindowDimensions, View} from "react-native";
+import {Platform, ScrollView, Text, TouchableOpacity, useWindowDimensions, View} from "react-native";
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
@@ -12,6 +12,10 @@ import Row from "@pages/activities/application/Row"
 import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous2";
 import styles from "@styles/applications/basicInfo"
 import useSafeState from "../../../../hooks/useSafeState";
+import axios from "axios";
+import {BASE_URL} from "../../../../services/config";
+import {RootStateOrAny, useSelector} from "react-redux";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 const flatten = require('flat')
 const BasicInfo = (props: any) => {
@@ -28,7 +32,7 @@ const BasicInfo = (props: any) => {
         }
     }
     const scrollRef = useRef();
-
+    const [showAlert, setShowAlert] = useSafeState(false)
 
     const applicant = props?.applicant?.user || props?.applicant;
     useEffect(() => {
@@ -49,7 +53,34 @@ const BasicInfo = (props: any) => {
 
         setUserProfileForm(newForm)
     }
+    const user=useSelector((state:RootStateOrAny)=>state.user);
     const dimensions = useWindowDimensions();
+    const updateApplication = () =>{
+        let profileForm = {...userProfileForm}
+        let dateOfBirth= profileForm?.['applicant.dateOfBirth'], dateValue = { year: "", month: "", day: ""}
+       if(typeof dateOfBirth == 'string'){
+           let dateOfBirthSplit = dateOfBirth?.split('-')
+           dateValue.year = dateOfBirthSplit[0]
+           dateValue.month = dateOfBirthSplit[1]
+           dateValue.day = dateOfBirthSplit[2]
+           profileForm['applicant.dateOfBirth'] = dateValue
+       }
+
+        axios.patch(BASE_URL + `/applications/${props.id}`, flatten.unflatten(profileForm), {headers:{
+                Authorization:"Bearer ".concat(user?.sessionToken)
+            }}).then( (response) => {
+            console.log(response.data)
+        });
+    }
+
+
+    const showAlertFn = () => {
+        setShowAlert(true)
+    };
+
+    const hideAlert = () => {
+       setShowAlert(false)
+    };
     return <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}
                        style={{width: "100%", backgroundColor: "#f8f8f8",}}>
 
@@ -207,6 +238,10 @@ const BasicInfo = (props: any) => {
                                          updateForm={applicantForm}
                                          applicant={userProfileForm?.["applicant.suffix"]}/>
                                     <Row edit={props.edit} label={"Date of Birth:"}
+                                         updateForm={applicantForm}
+                                         display={moment(userProfileForm?.["applicant.dateOfBirth"])?.format('LL')}
+                                         applicant={userProfileForm?.["applicant.dateOfBirth"]}/>
+                                    <Row edit={props.edit} label={"Date of Birth:"}
                                          show={true}
                                          showEdit={false}
                                          applicant={(applicant?.dateOfBirth?.year && applicant?.dateOfBirth?.month && applicant?.dateOfBirth?.day) ? moment(applicant?.dateOfBirth?.year + "-" + applicant?.dateOfBirth?.month + "-" + applicant?.dateOfBirth?.day)?.isValid() ? moment(applicant?.dateOfBirth?.year + "-" + applicant?.dateOfBirth?.month + "-" + applicant?.dateOfBirth?.day)?.format('LL') : "" : ""}/>
@@ -250,7 +285,14 @@ const BasicInfo = (props: any) => {
                                                  stateName={"applicant.address.barangay"}
                                                  updateForm={applicantForm}
                                                  applicant={userProfileForm['applicant.address.barangay']}/>
-
+                                            <Row edit={props.edit} label={"Street:"}
+                                                 stateName={"applicant.address.street"}
+                                                 updateForm={applicantForm}
+                                                 applicant={userProfileForm['applicant.address.street']}/>
+                                            <Row edit={props.edit} label={"Unit:"}
+                                                 stateName={"applicant.address.unit"}
+                                                 updateForm={applicantForm}
+                                                 applicant={userProfileForm['applicant.address.unit']}/>
                                             <Row edit={props.edit}
                                                  stateName={"applicant.address.province"}
                                                  updateForm={applicantForm}
@@ -314,16 +356,18 @@ const BasicInfo = (props: any) => {
                                     </View>
 
                                     <Row edit={props.edit} label={"Date:"}
-                                         applicant={userProfileForm?.["props.schedule.dateStart"]}
+                                         applicant={userProfileForm?.["schedule.dateStart"]}
                                          display={moment(props?.schedule.dateStart).isValid() ? moment(props?.schedule.dateStart).format('ddd DD MMMM YYYY') : props?.schedule.dateStart}/>
                                     <Row edit={props.edit} label={"Start Time:"}
                                          show={true}
                                          showEdit={false}
+                                         applicant={userProfileForm?.["schedule.dateStart"]}
                                          display={moment(props?.schedule.dateStart)?.isValid() ? moment(props?.schedule.dateStart).format('LT') : props?.schedule.dateStart} />
                                     <Row edit={props.edit} label={"End Time:"}
+                                         applicant={userProfileForm?.["schedule.dateEnd"]}
                                          display={moment(props?.schedule.dateEnd)?.isValid() ? moment(props?.schedule.dateEnd).format('LT') : props?.schedule.dateEnd}/>
-                                    <Row edit={props.edit} label={"Venue:"} applicant={props?.schedule.venue}/>
-                                    <Row edit={props.edit} label={"Seat No:"} applicant={props?.schedule.seatNumber}/>
+                                    <Row edit={props.edit} label={"Venue:"} applicant={userProfileForm?.["schedule.venue"]}/>
+                                    <Row edit={props.edit} label={"Seat No:"} applicant={userProfileForm?.["schedule.seatNumber"]}/>
 
 
                                 </View>}
@@ -331,6 +375,10 @@ const BasicInfo = (props: any) => {
                                 <RenderServiceMiscellaneous updateForm={applicantForm} userProfileForm={userProfileForm} edit={props.edit}
                                                             exclude={['_id', 'name', 'applicationType', 'serviceCode']}
                                                             service={props?.service}/>
+
+                                {/*<TouchableOpacity onPress={updateApplication}>
+                                    <Text>Save</Text>
+                                </TouchableOpacity>*/}
                             </View>
 
                         </View>
@@ -340,7 +388,25 @@ const BasicInfo = (props: any) => {
 
             }
         </View>
-
+        <AwesomeAlert
+            show={showAlert}
+            showProgress={false}
+            title="AwesomeAlert"
+            message="I have a message for you!"
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={false}
+            showCancelButton={true}
+            showConfirmButton={true}
+            cancelText="No, cancel"
+            confirmText="Yes, delete it"
+            confirmButtonColor="#DD6B55"
+            onCancelPressed={() => {
+                hideAlert();
+            }}
+            onConfirmPressed={() => {
+               hideAlert();
+            }}
+        />
     </ScrollView>
 
 };

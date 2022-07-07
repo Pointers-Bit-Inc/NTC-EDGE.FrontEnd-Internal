@@ -244,6 +244,7 @@ export function useActivities(props){
         let isCurrent=true;
 
         setRefreshing(true);
+        dispatch(setApplications({data:[],user:user}))
         axios.all(endpoint.map((ep) => axios.get(ep.url,{...config,params:query(ep.pinned)}))).then(
             axios.spread((pinned, notPinned) => {
                 if(pinned?.data?.message) Alert.alert(pinned.data.message);

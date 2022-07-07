@@ -208,7 +208,7 @@ function ActivityModal(props:any){
     const [approvalIcon,setApprovalIcon]=useState(false);
     const [title,setTitle]=useState("Approve Application");
     const [showClose,setShowClose]=useState(false);
-    const [edit, setEdit] = useSafeState(false)
+    const [edit, setEdit] = useSafeState(true)
     const [activityModalScreenComponent,onActivityModalScreenComponent]=useComponentLayout();
     useEffect(()=>{
         dispatch(setRightLayoutComponent(activityModalScreenComponent))
@@ -313,10 +313,10 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
                     </TouchableOpacity>
 
                     <Text style={[styles.applicationType,{width:"90%"}]}>{props?.details?.applicationType||props?.details?.service?.name}</Text>
-                   <View/>
-                    {/*<TouchableOpacity hitSlop={hitSlop}  onPress={() => setEdit((bool) => !bool )}>
+                  {/* <TouchableOpacity hitSlop={hitSlop}  onPress={() => setEdit((bool) => !bool )}>
                        <EditIcon color="#606A80"/>
                    </TouchableOpacity>*/}
+                    <View/>
                 </View>}
 
                 <ModalTab edit={edit} dismissed={()=>{

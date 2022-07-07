@@ -107,6 +107,7 @@ const ModalTab = props => {
                 const isShow = tab.isShow.indexOf(user?.role?.key) !== -1;
                 if (isShow && tab.id === 1) {
                     return <BasicInfo
+                        id={props.details?._id}
                         edit={props.edit}
                         schedule={ schedule }
                         service={ service }

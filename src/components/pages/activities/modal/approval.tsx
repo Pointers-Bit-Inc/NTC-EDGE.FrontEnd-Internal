@@ -194,7 +194,7 @@ const Approval=(props:any)=>{
             visible={props.visible}
             onRequestClose={_springHide}>
             <View style={props.showAlert&&(isMobile&& !(Platform?.isPad||isTablet())) ? {
-                zIndex:1,
+
                 flex:1,
                 width:"100%",
                 height:"100%",

@@ -75,6 +75,8 @@ import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import { FontAwesome } from "@expo/vector-icons";
 import Skeleton from "@atoms/skeleton";
+import {Icon} from "@ant-design/react-native";
+import { FloatButton } from "@components/organisms/floating-button";
 const TAB_BAR_HEIGHT = 48;
 const HEADER_HEIGHT = 48;
 
@@ -381,7 +383,7 @@ const ActivitiesPage = (props) => {
     );
 
     function getFlatList(ref, scrollHandler, sP, data, isHeader= false) {
-        return <Animated.FlatList
+        return <><Animated.FlatList
             refreshControl={
                 <RefreshControl
                     progressViewOffset={headerHeight}
@@ -474,6 +476,14 @@ const ActivitiesPage = (props) => {
 
             )}
         />
+            <FloatButton
+                buttonColor="gold"
+                btnOutRange="red"
+                onPress={() => console.log(456)}
+                position="right"
+                renderIcon={<Icon name="user" color="red" size={25} />}
+            />
+        </>
     }
 
     const renderAllActivities = useCallback(

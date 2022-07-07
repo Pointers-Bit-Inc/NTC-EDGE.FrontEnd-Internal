@@ -76,7 +76,7 @@ const ModalTab=props=>{
         documents,
         remarks,
         paymentHistory,
-        paymentStatus
+        paymentStatus,
     }=useApplicant(props.details);
     const [initialPage,setInitialPage]=useState(true);
     useEffect(()=>{
@@ -187,6 +187,8 @@ const ModalTab=props=>{
 
 
                     return <BasicInfo
+                        id={props.details?._id}
+                        edit={props.edit}
                         tabLabel={{label:tab.name}} label={tab.name}
                         paymentMethod={paymentMethod}
                         service={ service }

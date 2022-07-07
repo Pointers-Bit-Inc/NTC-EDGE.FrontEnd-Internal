@@ -10,7 +10,8 @@ export const alertStyle = StyleSheet.create({
         height: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-        position: 'absolute'
+        position: 'absolute',
+        zIndex: 3
     },
     overlay: {
         width: width,
@@ -64,6 +65,7 @@ export const alertStyle = StyleSheet.create({
         width: "100%",
         height: "100%",
         position: 'absolute',
+
         //backgroundColor: 'rgba(52,52,52,0.5)'
     },
     titleStyle:{
