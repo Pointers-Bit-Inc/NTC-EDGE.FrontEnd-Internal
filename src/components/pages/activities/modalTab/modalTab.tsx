@@ -107,6 +107,10 @@ const ModalTab = props => {
                 const isShow = tab.isShow.indexOf(user?.role?.key) !== -1;
                 if (isShow && tab.id === 1) {
                     return <BasicInfo
+                        userOriginalProfileForm={props.userOriginalProfileForm}
+                        userProfileForm={props.userProfileForm}
+                        hasChanges={props.hasChanges}
+                        setUserProfileForm={props.setUserProfileForm}
                         id={props.details?._id}
                         edit={props.edit}
                         schedule={ schedule }

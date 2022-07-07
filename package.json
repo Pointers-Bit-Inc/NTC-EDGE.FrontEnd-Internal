@@ -162,6 +162,7 @@
     "react-native-element-dropdown": "^1.6.3",
     "react-native-exit-app": "^1.1.0",
     "react-native-file-viewer": "^2.1.5",
+    "react-native-floating-action": "^1.22.0",
     "react-native-fs": "^2.19.0",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-image-pan-zoom": "^2.1.12",

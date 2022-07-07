@@ -1,5 +1,16 @@
 import React,{useEffect,useMemo,useState} from "react";
-import {Alert,Modal,Platform,StyleSheet,Text,TouchableOpacity,useWindowDimensions,View} from "react-native";
+import {
+    Alert as RNAlert,
+    BackHandler,
+    Modal,
+    Platform,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
+    View
+} from "react-native";
+import Alert from '@atoms/alert';
 import {primaryColor} from "@styles/color";
 import Disapproval from "@pages/activities/modal/disapproval";
 import Endorsed from "@pages/activities/modal/endorse";
@@ -37,9 +48,14 @@ import {Toast} from "@atoms/toast/Toast";
 import axios from "axios";
 import useSafeState from "../../../hooks/useSafeState";
 import EditIcon from "@assets/svg/editIcon";
-
+import {useNavigation} from "@react-navigation/native";
+import {updateMessages} from "../../../reducers/channel/actions";
+const flatten = require('flat')
 function ActivityModal(props:any){
+    const [userProfileForm, setUserProfileForm] = useSafeState(flatten.flatten(props.details))
 
+    const [userOriginalProfileForm, setUserOriginalProfileForm] = useSafeState(userProfileForm)
+    const navigation = useNavigation();
     const dispatch=useDispatch();
     const dimensions=useWindowDimensions();
     const NativeView=((isMobile && !Platform?.isPad)|| dimensions?.width < 768 || Platform?.isPad && !isLandscapeSync())? Modal : View;
@@ -121,7 +137,7 @@ function ActivityModal(props:any){
         const addORNumber = user?.role?.key==CASHIER ? await api.post(`/applications/${applicationId}/add-or-number`, AddORNoparams).catch(e=>{
             setGrayedOut(false);
             setCurrentLoading('');
-            Alert.alert('Alert',e?.message||'Something went wrong.');
+            RNAlert.alert('Alert',e?.message||'Something went wrong.');
             return callback(e);
         }) : null
         console.log(url,params,assignId, addORNumber?.status == 200);
@@ -154,24 +170,21 @@ function ActivityModal(props:any){
                         }
                     }
 
-                    Alert.alert('Alert','Something went wrong.');
+                    RNAlert.alert('Alert','Something went wrong.');
 
                     return callback('error');
                 })
                 .catch(e=>{
                     setGrayedOut(false);
                     setCurrentLoading('');
-                    Alert.alert('Alert',e?.message||'Something went wrong.');
+                    RNAlert.alert('Alert',e?.message||'Something went wrong.');
                     return callback(e);
                 })
         }
     };
-
-    function onShowConfirmation(status:string){
-        const name=props?.details?.applicant?.user;
-        setMessage(`Are you sure you want to approve this application?`);
-        setShowAlert(true)
-
+    const [hasChange, setHasChange] = useSafeState(false)
+    const hasChanges = (bool:boolean) => {
+        setHasChange(bool)
     }
 
     useEffect(()=>{
@@ -214,9 +227,25 @@ function ActivityModal(props:any){
         dispatch(setRightLayoutComponent(activityModalScreenComponent))
     },[activityModalScreenComponent]);
 const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
-
+    const [discardAlert,setDiscardAlert]=useSafeState(false);
+    const [editAlert,setEditAlert]=useSafeState(false);
+    const handleBackButtonClick=()=>{
+        if(hasChange) setDiscardAlert(true);
+        else{
+            setAssignId("");
+            props.onDismissed(change);
+            setChange(false)
+            return true;
+        }
+    };
+    const routeIsFocused=navigation.isFocused();
+    useEffect(()=>{
+        BackHandler.addEventListener('hardwareBackPress',handleBackButtonClick);
+        return ()=>{
+            BackHandler.removeEventListener('hardwareBackPress',handleBackButtonClick);
+        };
+    },[routeIsFocused]);
     return (
-
         <NativeView
             onLayout={onActivityModalScreenComponent}
             style={{height:"100%"}}
@@ -225,6 +254,7 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
             transparent={false}
             visible={props.visible}
             onRequestClose={()=>{
+
                 setAssignId("");
                 props.onDismissed(change);
                 setChange(false)
@@ -301,10 +331,8 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
                     paddingTop:40,
                 }}>
                     <TouchableOpacity  hitSlop={hitSlop} onPress={()=>{
-                        setAssignId("");
-                        setStatus("");
-                        props.onDismissed(change);
-                        setChange(false)
+                        handleBackButtonClick()
+
                     }}>
 
                         <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
@@ -313,13 +341,25 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
                     </TouchableOpacity>
 
                     <Text style={[styles.applicationType,{width:"90%"}]}>{props?.details?.applicationType||props?.details?.service?.name}</Text>
-                  {/* <TouchableOpacity hitSlop={hitSlop}  onPress={() => setEdit((bool) => !bool )}>
-                       <EditIcon color="#606A80"/>
-                   </TouchableOpacity>*/}
-                    <View/>
+                  <View style={{flexDirection: "row"}}>
+                      <TouchableOpacity hitSlop={hitSlop}  onPress={() => {
+                          if(hasChange) setEditAlert(true);
+                            else {
+                              setEdit((bool) => !bool )
+                          }
+
+                      }}>
+                          <EditIcon color="#606A80"/>
+                      </TouchableOpacity>
+                  </View>
+
+                    {/*<View/>*/}
                 </View>}
 
-                <ModalTab edit={edit} dismissed={()=>{
+                <ModalTab userOriginalProfileForm={userOriginalProfileForm}
+                          userProfileForm={userProfileForm}
+                          setUserProfileForm={setUserProfileForm}
+                          hasChanges={hasChanges} edit={edit} dismissed={()=>{
                     props.onDismissed(change);
                 }} details={props.details} status={status}/>
                 {
@@ -531,6 +571,47 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
                 }}
             />
             <Toast/>
+            <Alert
+                visible={discardAlert}
+                title={'Discard Changes'}
+                message={'Any unsaved changes will not be saved. Continue?'}
+                confirmText='OK'
+                cancelText={"Cancel"}
+                onConfirm={()=>{
+                    setAssignId("");
+                    setStatus("");
+                    props.onDismissed(change);
+                    setChange(false)
+                    setDiscardAlert(false)
+                }
+                   }
+                onCancel={()=>setDiscardAlert(false)}
+            />
+            <Alert
+                visible={editAlert}
+                title={'Edit Changes'}
+                message={'Any unsaved changes will not be saved. Continue?'}
+                confirmText='OK'
+                cancelText={"Cancel"}
+                onConfirm={()=>{
+                    setEdit((bool) => !bool )
+                    setEditAlert(false)
+
+                    const myPromise = new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            setUserProfileForm(userOriginalProfileForm)
+                        }, 300);
+                    });
+
+
+
+
+
+
+                }
+                   }
+                onCancel={()=>setEditAlert(false)}
+            />
         </NativeView>
     );
 }
