@@ -187,6 +187,7 @@ const ModalTab=props=>{
 
 
                     return <BasicInfo
+                        setUserOriginalProfileForm={props.setUserOriginalProfileForm}
                         userOriginalProfileForm={props.userOriginalProfileForm}
                         userProfileForm={props.userProfileForm}
                         hasChanges={props.hasChanges}

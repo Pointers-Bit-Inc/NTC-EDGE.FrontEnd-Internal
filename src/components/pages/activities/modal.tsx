@@ -359,6 +359,7 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
                 <ModalTab userOriginalProfileForm={userOriginalProfileForm}
                           userProfileForm={userProfileForm}
                           setUserProfileForm={setUserProfileForm}
+                          setUserOriginalProfileForm={setUserOriginalProfileForm}
                           hasChanges={hasChanges} edit={edit} dismissed={()=>{
                     props.onDismissed(change);
                 }} details={props.details} status={status}/>

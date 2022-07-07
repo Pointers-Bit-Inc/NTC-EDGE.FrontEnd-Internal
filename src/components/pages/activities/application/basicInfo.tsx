@@ -108,6 +108,8 @@ const BasicInfo = (props: any) => {
                 Authorization:"Bearer ".concat(user?.sessionToken)
             }}).then( (response) => {
             setShowAlert(true)
+            props.setUserProfileForm(props?.userProfileForm)
+           props.setUserOriginalProfileForm(props?.userProfileForm)
         });
     }
     const showAlertFn = () => {
