@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {BackHandler, Platform, ScrollView, Text, TouchableOpacity, useWindowDimensions, View} from "react-native";
+import {BackHandler, Platform, ScrollView, Text, Alert as RNAlert, useWindowDimensions, View} from "react-native";
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
@@ -19,7 +19,6 @@ import { FloatingAction } from "react-native-floating-action";
 const flatten = require('flat')
 import Check from "@assets/svg/check";
 import Alert from "@atoms/alert";
-
 
 const BasicInfo = (props: any) => {
 
@@ -92,8 +91,9 @@ const BasicInfo = (props: any) => {
             color: "#fff"
         }
     ];
-
+const [loading, setLoading] = useSafeState(false)
     const updateApplication = () =>{
+    setLoading(true)
         let profileForm = {...props.userProfileForm}
         let dateOfBirth= profileForm?.['applicant.dateOfBirth'], dateValue = { year: "", month: "", day: ""}
        if(typeof dateOfBirth == 'string'){
@@ -108,17 +108,15 @@ const BasicInfo = (props: any) => {
                 Authorization:"Bearer ".concat(user?.sessionToken)
             }}).then( (response) => {
             setShowAlert(true)
+            setLoading(false)
             props.setUserProfileForm(props?.userProfileForm)
            props.setUserOriginalProfileForm(props?.userProfileForm)
+        }).catch((err)=>{
+            setLoading(false)
+            RNAlert.alert('Alert',err?.message||'Something went wrong.');
+
         });
     }
-    const showAlertFn = () => {
-        setShowAlert(true)
-    };
-
-    const hideAlert = () => {
-       setShowAlert(false)
-    };
     return <><ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}
                        style={{width: "100%", backgroundColor: "#f8f8f8",}}>
 
