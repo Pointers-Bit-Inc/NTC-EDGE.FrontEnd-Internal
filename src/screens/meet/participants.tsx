@@ -176,15 +176,17 @@ const Participants = ({ navigation }) => {
   } = useSignalr();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const api = useApi(user.sessionToken);
-  const { inTheMeeting = [], othersInvited = [], roomId = '', participants = [], meetingId = '', host = {} } = useSelector((state:RootStateOrAny) => {
+  const { waitingInLobby = [], inTheMeeting = [], othersInvited = [], roomId = '', participants = [], meetingId = '', host = {} } = useSelector((state:RootStateOrAny) => {
     const { meeting = {} } = state.meeting;
     const inTheMeeting = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status === 'joined');
-    const othersInvited = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status !== 'joined');
+    const othersInvited = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => !(p.status === 'joined' || p.status === 'waiting'));
+    const waitingInLobby = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status === 'waiting');
     return {
       roomId: meeting?.roomId,
       meetingId: meeting?._id,
       inTheMeeting,
       othersInvited,
+      waitingInLobby,
       participants: meeting?.participants,
       host: meeting?.host,
     }
@@ -395,32 +397,36 @@ const Participants = ({ navigation }) => {
         </View>
       </View>
       <ScrollView>
-        {
-          isHost(user) && (
-            <>
-              <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
-                <TouchableOpacity onPress={() => navigation.navigate('Participants')}>
-                  <View style={styles.participantItem}>
-                    <AddPeopleIcon />
-                    <Text
-                      style={{ marginLeft: 10 }}
-                      size={16}
-                    >
-                      Add participants
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              {separator()}
-            </>
-          )
-        }
+        <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
+          <TouchableOpacity onPress={() => navigation.navigate('Participants')}>
+            <View style={styles.participantItem}>
+              <AddPeopleIcon />
+              <Text
+                style={{ marginLeft: 10 }}
+                size={16}
+              >
+                Add participants
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        {separator()}
         <View style={styles.participantsContainer}>
           <Text
             style={{ fontFamily: Regular500 }}
             size={14}
           >
-            In the  meeting ({lodash.size(inTheMeeting)})
+            Waiting in lobby ({lodash.size(waitingInLobby)})
+          </Text>
+          {renderParticipants(waitingInLobby, 'waitingInLobby')}
+        </View>
+        {separator()}
+        <View style={styles.participantsContainer}>
+          <Text
+            style={{ fontFamily: Regular500 }}
+            size={14}
+          >
+            In the meeting ({lodash.size(inTheMeeting)})
           </Text>
           {renderParticipants(inTheMeeting, 'inTheMeeting')}
         </View>

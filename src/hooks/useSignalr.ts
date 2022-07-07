@@ -7,7 +7,7 @@ import { BASE_URL, API_VERSION } from 'src/services/config';
 import useApi from 'src/services/api';
 import { normalize, schema } from 'normalizr';
 import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
-import { addMeeting, updateMeeting, setConnectionStatus, setNotification, setMeeting, removeMeetingFromList, setToggle, endCall } from 'src/reducers/meeting/actions';
+import { addMeeting, updateMeeting, setConnectionStatus, setNotification, setMeeting, removeMeetingFromList, setToggle, endCall, updateMeetingParticipants } from 'src/reducers/meeting/actions';
 import { addMessages, updateMessages, addChannel, removeChannel, updateChannel, addFiles, updateParticipants } from 'src/reducers/channel/actions';
 
 const useSignalr = () => {
@@ -111,6 +111,10 @@ const useSignalr = () => {
           if (lastMessage) dispatch(updateChannel(room));
           if (lastMessage) dispatch(addMessages(room._id, lastMessage));
           dispatch(updateMeeting(data));
+          break;
+        }
+        case 'updateParticipants': {
+          dispatch(updateMeetingParticipants(data));
           break;
         }
         case 'meetingnotification': {
@@ -299,6 +303,26 @@ const useSignalr = () => {
       return callback(err);
     });
   }, []);
+  
+  const meetingLobby = useCallback(({ meetingId }, callback = () => {}, config = {}) => {
+    api.get(`/meetings/${meetingId}/lobby`, config)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
+  const admitMeeting = useCallback(({ meetingId }, callback = () => {}, config = {}) => {
+    api.get(`/meetings/${meetingId}/admit`, config)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
 
   const getMeeting = useCallback((id, callback = () => {}, config = {}) => {
     api.get(`/meetings/${id}`, config)
@@ -418,6 +442,8 @@ const useSignalr = () => {
     endMeeting,
     leaveMeeting,
     joinMeeting,
+    meetingLobby,
+    admitMeeting,
     muteParticipant,
     getMeetingList,
     getActiveMeetingList,

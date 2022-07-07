@@ -1,5 +1,5 @@
 import { View, Dimensions, Pressable, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,
@@ -16,6 +16,7 @@ import {
   setNotification,
   setOptions,
   setPinnedParticipant,
+  updateMeeting,
   updateMeetingParticipants,
 } from 'src/reducers/meeting/actions';
 import { setSelectedChannel, setMeetings, removeSelectedMessage } from 'src/reducers/channel/actions';
@@ -26,6 +27,7 @@ import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import IParticipants from 'src/interfaces/IParticipants';
 import { RFValue } from 'react-native-responsive-fontsize';
+import axios from 'axios';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -127,6 +129,16 @@ const FloatingVideo = ({ tracks }:any) => {
   const normalizedChannelList = useSelector((state:RootStateOrAny) => state.channel.normalizedChannelList);
   const meeting = useSelector((state:RootStateOrAny) => state.meeting.meeting);
   meeting.otherParticipants = lodash.reject(meeting.participants, (p:IParticipants) => p._id === user._id);
+  const userStatus:string = useMemo(() => {
+    const userStatus = lodash.find(meeting.participants, (p:IParticipants) => p._id === user._id)?.status;
+    let status;
+
+    if (userStatus === 'pending' || userStatus === 'waiting') {
+      status = userStatus;
+    }
+
+    return status;
+  }, [meeting.participants]);
   const options = useSelector((state:RootStateOrAny) => state.meeting.options);
   const isFullScreen = useSelector((state:RootStateOrAny) => state.meeting.isFullScreen);
   const pinnedParticipant = useSelector((state:RootStateOrAny) => state.meeting.pinnedParticipant);
@@ -141,6 +153,7 @@ const FloatingVideo = ({ tracks }:any) => {
   const {
     endMeeting,
     joinMeeting,
+    meetingLobby,
     leaveMeeting,
     muteParticipant,
   } = useSignalr();
@@ -148,6 +161,8 @@ const FloatingVideo = ({ tracks }:any) => {
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
   const [isMaximized, setIsMaximized] = useState(true);
+  const [ready, setReady] = useState(false);
+  const [waiting, setWaiting] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
   const snapPointsX = useSharedValue(defaultSnapX);
@@ -173,8 +188,6 @@ const FloatingVideo = ({ tracks }:any) => {
   }, [isFullScreen]);
 
   useEffect(() => {
-    let unmounted = false;
-
     if (meetingId) {
       activateKeepAwake();
       requestCameraAndAudioPermission((err, result) => {
@@ -185,26 +198,12 @@ const FloatingVideo = ({ tracks }:any) => {
           );
           dispatch(resetCurrentMeeting());
         } else {
-          joinMeeting({ meetingId: meeting._id, muted: isMute }, (err:any, result:any) => {
-            if (!unmounted) {
-              if (result) {
-                setLoading(false);
-                if (result) {
-                  dispatch(updateMeetingParticipants(result.meeting));
-                  setAgora(result?.agora);
-                }
-              } else {
-                setLoading(false);
-                Alert.alert('Something went wrong.');
-              }
-            }
-          });
+          setReady(true);
         }
       });
     }
   
     return () => {
-      unmounted = true;
       deactivateKeepAwake(); 
       dispatch(setOptions({
         isHost: false,
@@ -214,6 +213,51 @@ const FloatingVideo = ({ tracks }:any) => {
       }));
     }
   }, [meetingId]);
+
+  useEffect(() => {
+    const source = axios.CancelToken.source();
+    console.log('meetingUserData', userStatus);
+    if (ready) {
+      if (userStatus === 'pending' || userStatus === 'waiting') {
+        setWaiting(true);
+        if (userStatus === 'pending') {
+          meetingLobby({ meetingId: meeting._id }, (err:any, result:any) => {
+            if (result) {
+              setLoading(false);
+              dispatch(updateMeeting(result));
+            } else {
+              if (axios.isCancel(err)) {
+                console.log('CANCELLED');
+              } else {
+                setLoading(false);
+                Alert.alert(err.message || 'Something went wrong.');
+              }
+            }
+          }, { cancelToken: source.token });
+        }
+      } else if (!userStatus) {
+        setWaiting(false);
+        joinMeeting({ meetingId: meeting._id, muted: isMute }, (err:any, result:any) => {
+          if (result) {
+            setLoading(false);
+            dispatch(updateMeetingParticipants(result.meeting));
+            setAgora(result?.agora);
+          } else {
+            if (axios.isCancel(err)) {
+              console.log('CANCELLED');
+            } else {
+              setLoading(false);
+              Alert.alert(err.message || 'Something went wrong.');
+            }
+          }
+        }, { cancelToken: source.token });
+      }
+    }
+
+    return () => {
+      source.cancel()
+    }
+  }, [ready, userStatus]);
 
   useEffect(() => {
     if (meeting.ended) {

@@ -174,10 +174,14 @@ const AddParticipants = ({ navigation }:any) => {
         setHasMore(res.hasMore);
       }
       if (err) {
-        console.log('ERR', err);
+        if (axios.isCancel(err)) {
+          console.log('CANCELLED');
+        } else {
+          Alert.alert(err.message || 'Something went wrong.');
+        }
       }
       setLoading(false);
-    });
+    }, { cancelToken: source.token });
   
     return () => {
       setLoading(false);

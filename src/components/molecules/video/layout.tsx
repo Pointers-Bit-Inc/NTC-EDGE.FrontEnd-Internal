@@ -6,11 +6,12 @@ import React, {
   useImperativeHandle,
   forwardRef,
   ForwardRefRenderFunction,
+  useMemo,
 } from 'react'
 import { View, StyleSheet, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import lodash from 'lodash';
 import { useInitializeAgora } from 'src/hooks/useAgora';
-import { MicIcon, CameraIcon, MicOffIcon, MessageIcon, ParticipantsIcon, ArrowDownIcon } from '@components/atoms/icon';
+import { MicIcon, CameraIcon, MicOffIcon, MessageIcon, ParticipantsIcon, ArrowDownIcon, CloseIcon } from '@components/atoms/icon';
 import {
   RtcLocalView,
   RtcRemoteView,
@@ -26,7 +27,7 @@ import VideoNotification from './notification';
 import { getChannelName, getTimerString } from 'src/utils/formatting'
 import IParticipants from 'src/interfaces/IParticipants';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { Bold } from '@styles/font';
+import { Bold, Regular500 } from '@styles/font';
 import useTimer from 'src/hooks/useTimer';
 const { width, height } = Dimensions.get('window');
 
@@ -77,12 +78,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
   },
+  headerPosition: {
+    zIndex: 1,
+    position: 'absolute',
+    width: '100%'
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
-    position: 'absolute',
-    zIndex: 1,
     paddingVertical: 10,
     paddingTop: 30,
     paddingHorizontal: 15,
@@ -147,6 +151,20 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 30,
   },
+  micButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+  },
+  lobbyNotifContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#2863D6',
+  }
 })
 
 interface Props {
@@ -208,6 +226,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   onFullScreen = () => {},
 }, ref) => {
   const [selectedPeer, setSelectedPeer]:any = useState(null);
+  const selectedParticipant = useMemo(() => lodash.find(meetingParticipants, (p:IParticipants) => p.uid === selectedPeer), [selectedPeer, meetingParticipants]);
   const [peerList, setPeerList]:any = useState([]);
   const {
     timer,
@@ -363,8 +382,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     <View style={{ width: 15 }} />
   );
   
-  const fullVideo = (isFocused) => {
-    const findParticipant = lodash.find(meetingParticipants, p => p.uid === selectedPeer);
+  const fullVideo = (isFocused:boolean) => {
     if (isFocused) {
       return (
         <View style={styles.fullVideo}>
@@ -392,36 +410,8 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                 size={isMaximize ? 16 : 12}
                 color={'white'}
               >
-                {findParticipant?.title || ''} {findParticipant?.firstName}
+                {selectedParticipant?.title || ''} {selectedParticipant?.firstName}
               </Text>
-            )
-          }
-          {
-            isMaximize && (
-              <>
-                {
-                  isMute ? (
-                    <View style={[styles.mic, { top: 85, left: 18 }]}>
-                      <MicOffIcon
-                        color={text.error}
-                      />
-                    </View>
-                  ) : null
-                }
-                {
-                  isVideoEnable && (
-                    <View style={{ position:'absolute', top: 85, right: 20 }}>
-                      <TouchableOpacity onPress={switchCamera}>
-                        <CameraIcon
-                          size={20}
-                          type='switch'
-                          color={'white'}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  )
-                }
-              </>
             )
           }
         </View>
@@ -439,8 +429,8 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             />
           ) : (
             <ProfileImage
-              image={findParticipant?.profilePicture?.thumb}
-              name={`${findParticipant?.firstName} ${findParticipant?.lastName}`}
+              image={selectedParticipant?.profilePicture?.thumb}
+              name={`${selectedParticipant?.firstName} ${selectedParticipant?.lastName}`}
               size={isMaximize ? 80 : 50}
               textSize={isMaximize ? 16 : 24}
             />
@@ -454,25 +444,16 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               size={isMaximize ? 16 : 12}
               color={'white'}
             >
-              {findParticipant?.title || ''} {findParticipant?.firstName}
+              {selectedParticipant?.title || ''} {selectedParticipant?.firstName}
             </Text>
           )
-        }
-        {
-          isMaximize && findParticipant.muted ? (
-            <View style={[styles.mic, { top: 85, left: 18 }]}>
-              <MicOffIcon
-                color={text.error}
-              />
-            </View>
-          ) : null
         }
       </View>
     )
   }
 
-  const renderItem = ({ item }) => {
-    const findParticipant = lodash.find(meetingParticipants, p => p.uid === item);
+  const renderItem = ({ item }:any) => {
+    const findParticipant = lodash.find(meetingParticipants, (p:IParticipants) => p.uid === item);
     if (findParticipant) {
       if (item === myId) {
         return (
@@ -630,44 +611,90 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
     if (joinSucceed && !callEnded) {
       if (isGroup || (!isGroup && lodash.size(peerIds) > 1)) {
         if (!isMaximize) return;
+        const isFocused = !selectedPeer || selectedPeer === myId;
         return (
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => {
-              // leaveMeeting(meeting._id, 'leave');
-              onFullScreen()
-            }}>
-              <ArrowDownIcon
-                color={'white'}
-                size={20}
-              />
-            </TouchableOpacity>
-            <View style={styles.channelName}>
-              <Text
-                color={'white'}
-                size={12}
-                numberOfLines={1}
-                style={{ fontFamily: Bold }}
-              >
-                {getChannelName({ otherParticipants: participants, isGroup: isGroup, hasRoomName: hasRoomName, name: name })}
-              </Text>
-              <Text
-                color='white'
-                size={12}
-              >
-                {getTimerString(timer)}
-              </Text>
+          <View style={styles.headerPosition}>
+            <View style={styles.header}>
+              <TouchableOpacity onPress={() => {
+                // leaveMeeting(meeting._id, 'leave');
+                onFullScreen()
+              }}>
+                <ArrowDownIcon
+                  color={'white'}
+                  size={20}
+                />
+              </TouchableOpacity>
+              <View style={styles.channelName}>
+                <Text
+                  color={'white'}
+                  size={12}
+                  numberOfLines={1}
+                  style={{ fontFamily: Bold }}
+                >
+                  {getChannelName({ otherParticipants: participants, isGroup: isGroup, hasRoomName: hasRoomName, name: name })}
+                </Text>
+                <Text
+                  color='white'
+                  size={12}
+                >
+                  {getTimerString(timer)}
+                </Text>
+              </View>
+              <TouchableOpacity onPress={onMessages}>
+                <View style={styles.icon}>
+                  <MessageIcon />
+                </View>
+              </TouchableOpacity>
+              <View style={{ width: 5 }} />
+              <TouchableOpacity onPress={onAddParticipants}>
+                <View style={styles.icon}>
+                  <ParticipantsIcon />
+                </View>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={onMessages}>
-              <View style={styles.icon}>
-                <MessageIcon />
+            <View style={styles.lobbyNotifContainer}>
+              <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                <Text color='white'>
+                  Guests are waiting to join.
+                </Text>
+                <TouchableOpacity onPress={onAddParticipants}>
+                  <Text
+                    style={{ fontFamily: Bold }}
+                    color='white'
+                  >
+                    {' '}View lobby
+                  </Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-            <View style={{ width: 5 }} />
-            <TouchableOpacity onPress={onAddParticipants}>
-              <View style={styles.icon}>
-                <ParticipantsIcon />
-              </View>
-            </TouchableOpacity>
+              <TouchableOpacity>
+                <CloseIcon
+                  color='white'
+                  type='close'
+                  size={RFValue(18)}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.micButtonContainer}>
+              {
+                (isFocused && isMute || !isFocused && selectedParticipant?.muted) && (
+                  <MicOffIcon
+                    color={text.error}
+                  />
+                )
+              }
+              <View style={{ flex: 1 }} />
+              {
+                isFocused && isVideoEnable && (
+                  <TouchableOpacity onPress={switchCamera}>
+                    <CameraIcon
+                      size={24}
+                      type='switch'
+                      color={'white'}
+                    />
+                  </TouchableOpacity>
+                )
+              }
+            </View>
           </View>
         );
       }
