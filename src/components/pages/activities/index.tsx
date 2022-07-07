@@ -476,13 +476,7 @@ const ActivitiesPage = (props) => {
 
             )}
         />
-            <FloatButton
-                buttonColor="gold"
-                btnOutRange="red"
-                onPress={() => console.log(456)}
-                position="right"
-                renderIcon={<Icon name="user" color="red" size={25} />}
-            />
+
         </>
     }
 

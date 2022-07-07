@@ -23,6 +23,10 @@ export default class Skeleton extends Component<Props> {
                 this.circleAnimated()
         })
     }
+    componentWillUnmount() {
+        this.circleAnimatedValue.setValue(0)
+    }
+
     componentDidMount() {
         this.circleAnimated()
     }

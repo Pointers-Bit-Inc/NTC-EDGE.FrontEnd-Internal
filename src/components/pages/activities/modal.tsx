@@ -208,7 +208,7 @@ function ActivityModal(props:any){
     const [approvalIcon,setApprovalIcon]=useState(false);
     const [title,setTitle]=useState("Approve Application");
     const [showClose,setShowClose]=useState(false);
-    const [edit, setEdit] = useSafeState(true)
+    const [edit, setEdit] = useSafeState(false)
     const [activityModalScreenComponent,onActivityModalScreenComponent]=useComponentLayout();
     useEffect(()=>{
         dispatch(setRightLayoutComponent(activityModalScreenComponent))
