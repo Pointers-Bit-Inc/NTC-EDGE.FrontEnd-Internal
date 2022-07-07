@@ -12,17 +12,23 @@ export default class Skeleton extends Component<Props> {
     }
     circleAnimated = () => {
         this.circleAnimatedValue.setValue(0)
-        Animated.timing(
-            this.circleAnimatedValue,
-            {
-                toValue: 1,
-                duration: 350, useNativeDriver: true
-            }
-        ).start(() => {
-            this.circleAnimatedValue.setValue(0)
+        new Promise((resolve, reject) => {
+
+                resolve();
+        }).then(()=>{
+            Animated.timing(
+                this.circleAnimatedValue,
+                {
+                    toValue: 1,
+                    duration: 350, useNativeDriver: true
+                }
+            ).start(() => {
+                this.circleAnimatedValue.setValue(0)
                 this.circleAnimated()
 
-        })
+            })
+        });
+
     }
     componentWillUnmount() {
         this.circleAnimatedValue.setValue(0)
