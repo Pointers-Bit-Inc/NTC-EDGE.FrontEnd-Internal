@@ -18,6 +18,7 @@ import {Hoverable} from "react-native-web-hooks";
 import CloseIcon from "@assets/svg/close";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
 import hairlineWidth=StyleSheet.hairlineWidth;
+import EditIcon from "@assets/svg/editIcon";
 
 
 const ModalTab=props=>{
@@ -166,6 +167,9 @@ const ModalTab=props=>{
                         {...params}
                         vertical={false}
                     />
+                    <TouchableOpacity onPress={props.editBtn}>
+                        <EditIcon color="#606A80"/>
+                    </TouchableOpacity>
                     <View style={{paddingVertical:29.5,paddingHorizontal:25}}>
                         <TouchableOpacity onPress={props.dismissed}>
                             <CloseIcon width={12} height={12}/>
@@ -187,6 +191,7 @@ const ModalTab=props=>{
 
 
                     return <BasicInfo
+setEdit={props.setEdit}
                         setUserOriginalProfileForm={props.setUserOriginalProfileForm}
                         userOriginalProfileForm={props.userOriginalProfileForm}
                         userProfileForm={props.userProfileForm}

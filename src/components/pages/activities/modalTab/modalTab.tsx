@@ -114,6 +114,7 @@ const ModalTab = props => {
                         setUserProfileForm={props.setUserProfileForm}
                         id={props.details?._id}
                         edit={props.edit}
+                        setEdit={props.setEdit}
                         schedule={ schedule }
                         service={ service }
                         tabLabel={ { label : tab.name } }

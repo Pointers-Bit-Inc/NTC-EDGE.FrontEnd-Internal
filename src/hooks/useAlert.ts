@@ -27,6 +27,7 @@ export  function useAlert(show:boolean,dismissed?:any, canceled?:any) {
     }, [show, springValue, ])
 
     const _springHide = (flag = true) => {
+        springValue.setValue(0)
         if(showSelf){
             Animated.spring(springValue, {
                 toValue: 0,
@@ -47,6 +48,7 @@ export  function useAlert(show:boolean,dismissed?:any, canceled?:any) {
     };
 
     const _springCollapse = () => {
+        springValue.setValue(0)
         Animated.spring(springValue, {
             toValue: 0,
             tension: 10,

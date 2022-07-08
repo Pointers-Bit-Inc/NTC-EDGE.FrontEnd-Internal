@@ -245,6 +245,14 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
             BackHandler.removeEventListener('hardwareBackPress',handleBackButtonClick);
         };
     },[routeIsFocused]);
+    const editBtn = () => {
+
+        if(hasChange) setEditAlert(true);
+        else {
+            setEdit((bool) => !bool )
+        }
+    }
+
     return (
         <NativeView
             onLayout={onActivityModalScreenComponent}
@@ -342,13 +350,7 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
 
                     <Text style={[styles.applicationType,{width:"90%"}]}>{props?.details?.applicationType||props?.details?.service?.name}</Text>
                   <View style={{flexDirection: "row"}}>
-                      <TouchableOpacity hitSlop={hitSlop}  onPress={() => {
-                          if(hasChange) setEditAlert(true);
-                            else {
-                              setEdit((bool) => !bool )
-                          }
-
-                      }}>
+                      <TouchableOpacity hitSlop={hitSlop}  onPress={editBtn}>
                           <EditIcon color="#606A80"/>
                       </TouchableOpacity>
                   </View>
@@ -356,8 +358,9 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
                     {/*<View/>*/}
                 </View>}
 
-                <ModalTab userOriginalProfileForm={userOriginalProfileForm}
+                <ModalTab  editBtn={editBtn}  userOriginalProfileForm={userOriginalProfileForm}
                           userProfileForm={userProfileForm}
+                           setEdit={setEdit}
                           setUserProfileForm={setUserProfileForm}
                           setUserOriginalProfileForm={setUserOriginalProfileForm}
                           hasChanges={hasChanges} edit={edit} dismissed={()=>{

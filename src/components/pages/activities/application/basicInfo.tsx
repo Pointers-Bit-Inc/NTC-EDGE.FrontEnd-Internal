@@ -1,5 +1,14 @@
-import React, {useEffect, useRef, useState} from "react";
-import {BackHandler, Platform, ScrollView, Text, Alert as RNAlert, useWindowDimensions, View} from "react-native";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {
+    BackHandler,
+    Platform,
+    ScrollView,
+    Text,
+    Alert as RNAlert,
+    useWindowDimensions,
+    View,
+    TouchableOpacity
+} from "react-native";
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
@@ -19,6 +28,8 @@ import { FloatingAction } from "react-native-floating-action";
 const flatten = require('flat')
 import Check from "@assets/svg/check";
 import Alert from "@atoms/alert";
+import {primaryColor} from "@styles/color";
+import CustomAlert from "../alert/alert1";
 
 const BasicInfo = (props: any) => {
 
@@ -50,8 +61,6 @@ const BasicInfo = (props: any) => {
     const applicantForm = (stateName, value) => {
         let newForm = {...props.userProfileForm}
         newForm[stateName] = value
-
-
         props.setUserProfileForm(newForm)
     }
     const user=useSelector((state:RootStateOrAny)=>state.user);
@@ -65,6 +74,7 @@ const BasicInfo = (props: any) => {
 
             if (props.userOriginalProfileForm?.[key] != props.userProfileForm?.[key]) {
                 hasChanges = true
+
                 props.hasChanges(hasChanges)
                 return
             }else{
@@ -92,31 +102,40 @@ const BasicInfo = (props: any) => {
         }
     ];
 const [loading, setLoading] = useSafeState(false)
-    const updateApplication = () =>{
-    setLoading(true)
-        let profileForm = {...props.userProfileForm}
+    const updateApplication = useCallback(() => {
+        setLoading(true)
+
+        let profileForm = props.userProfileForm
+
         let dateOfBirth= profileForm?.['applicant.dateOfBirth'], dateValue = { year: "", month: "", day: ""}
-       if(typeof dateOfBirth == 'string'){
-           let dateOfBirthSplit = dateOfBirth?.split('-')
-           dateValue.year = dateOfBirthSplit[0]
-           dateValue.month = dateOfBirthSplit[1]
-           dateValue.day = dateOfBirthSplit[2]
-           profileForm['applicant.dateOfBirth'] = dateValue
-       }
+        if(typeof dateOfBirth == 'string'){
+            let dateOfBirthSplit = dateOfBirth?.split('-')
+            dateValue.year = dateOfBirthSplit[0]
+            dateValue.month = dateOfBirthSplit[1]
+            dateValue.day = dateOfBirthSplit[2]
+            profileForm['applicant.dateOfBirth'] = dateValue
+        }
 
         axios.patch(BASE_URL + `/applications/${props.id}`, flatten.unflatten(profileForm), {headers:{
                 Authorization:"Bearer ".concat(user?.sessionToken)
             }}).then( (response) => {
             setShowAlert(true)
+                props.setEdit(false)
+
             setLoading(false)
-            props.setUserProfileForm(props?.userProfileForm)
-           props.setUserOriginalProfileForm(props?.userProfileForm)
+            var _flatten = flatten.flatten(response.data.doc)
+            props.setUserOriginalProfileForm(_flatten)
+            props.setUserProfileForm(_flatten)
+
+
+
+
         }).catch((err)=>{
             setLoading(false)
             RNAlert.alert('Alert',err?.message||'Something went wrong.');
 
         });
-    }
+    }, [showAlert, loading, props.userProfileForm])
     return <><ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}
                        style={{width: "100%", backgroundColor: "#f8f8f8",}}>
 
@@ -425,9 +444,13 @@ const [loading, setLoading] = useSafeState(false)
                                 <RenderServiceMiscellaneous updateForm={applicantForm} userProfileForm={props.userProfileForm} edit={props.edit}
                                                             exclude={['_id', 'name', 'applicationType', 'serviceCode']}
                                                             service={props?.service}/>
+                                {Platform.OS == 'web' && props.edit &&<View style={{padding: 20}}>
+    <TouchableOpacity onPress={updateApplication} style={{backgroundColor: primaryColor, padding: 20,   borderRadius: 10,  justifyContent: "center", alignItems: "center"}}>
+        <Text style={{color: "#fff", fontFamily: Regular}}>Save</Text>
+    </TouchableOpacity>
 
-
-                            </View>
+</View>}
+                               </View>
 
                         </View>
 
@@ -441,12 +464,22 @@ const [loading, setLoading] = useSafeState(false)
 
 
     </ScrollView>
-        <Alert
-            visible={showAlert}
+        <CustomAlert
+            showClose={true}
+            onDismissed={()=>{
+
+                setShowAlert(false)
+            }
+            }
+            onCancelPressed={()=>{
+            }
+            }
+
+            show={showAlert}
             title={'Success'}
             message={'The Application has been updated!'}
             confirmText='OK'
-            onConfirm={() => {
+            onConfirmPress={() => {
                 setShowAlert(false)
             }
             }
