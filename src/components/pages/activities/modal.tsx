@@ -261,7 +261,7 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
             }}>
 
             <View style={(isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync()))&&(
-                approveVisible||visible||endorseVisible||showAlert) ? {
+                visible||endorseVisible||showAlert) ? {
                 position:"absolute",
                 zIndex:2,
                 top:0,
