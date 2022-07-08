@@ -190,16 +190,15 @@ export const PullToRefreshView: React.FC<PullToRefreshViewProps> = ({
           },
           onPanResponderTerminationRequest: (evt, gestureState) => false,
           onPanResponderRelease: (event, gestureState) => {
-            // 判断是否达到了触发刷新的条件
+
             setDiferenceGy(0)
             const threshold = refreshTriggerHeight || headerHeight;
             if (containerTranslateY.current >= threshold && !disabled) {
-                // 触发刷新
+
                 onRefresh();
                 onClose();
             }
             else {
-                // 没到刷新的位置，回退到顶部
                 resetContainerPosition();
             }
    

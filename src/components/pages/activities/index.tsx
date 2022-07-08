@@ -380,14 +380,19 @@ const ActivitiesPage = (props) => {
 
     function getFlatList(ref, scrollHandler, sP, data, isHeader= false) {
 
-        return  <Animated.FlatList
-            refreshControl={
+        return  <PullToRefreshView
+            offset={headerHeight + 42}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            style={{ flex: 1}}
+        ><Animated.FlatList
+            /*refreshControl={
                 <RefreshControl
-                    progressViewOffset={headerHeight + 42}
+                    progressViewOffset={headerHeight}
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                 />
-            }
+            }*/
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={() => listEmpty(refreshing, searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
@@ -468,7 +473,7 @@ const ActivitiesPage = (props) => {
                 </>
 
             )}
-        />
+        /></PullToRefreshView>
     }
 
     const renderAllActivities = useCallback(
