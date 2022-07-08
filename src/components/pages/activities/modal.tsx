@@ -260,7 +260,18 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
                 setChange(false)
             }}>
 
+            <View style={(isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync()))&&(
+                visible||endorseVisible||showAlert) ? {
+                position:"absolute",
+                zIndex:2,
+                top:0,
+                left:0,
+                width:"100%",
+                height:"100%",
+                backgroundColor:"rgba(0, 0, 0, 0.5)",
+            } : {position:"absolute",}}>
 
+            </View>
 
 
             <CustomAlert
@@ -369,7 +380,7 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
                                         <ApprovedButton
                                             user={user}
                                             currentLoading={currentLoading}
-                                            allButton={allButton}
+                                            allButton={false}
                                             onPress={()=>{
                                                 if(getRole(user,[EVALUATOR])){
 
