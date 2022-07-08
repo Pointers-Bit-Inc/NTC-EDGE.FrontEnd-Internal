@@ -12,17 +12,28 @@ export default class Skeleton extends Component<Props> {
     }
     circleAnimated = () => {
         this.circleAnimatedValue.setValue(0)
-        Animated.timing(
-            this.circleAnimatedValue,
-            {
-                toValue: 1,
-                duration: 350, useNativeDriver: true
-            }
-        ).start(() => {
+        new Promise((resolve, reject) => {
 
+                resolve();
+        }).then(()=>{
+            Animated.timing(
+                this.circleAnimatedValue,
+                {
+                    toValue: 1,
+                    duration: 350, useNativeDriver: true
+                }
+            ).start(() => {
+                this.circleAnimatedValue.setValue(0)
                 this.circleAnimated()
-        })
+
+            })
+        });
+
     }
+    componentWillUnmount() {
+        this.circleAnimatedValue.setValue(0)
+    }
+
     componentDidMount() {
         this.circleAnimated()
     }
@@ -40,15 +51,15 @@ export default class Skeleton extends Component<Props> {
         return (
             <View style={styles.container}>
                 <View style={[{ marginBottom: 2 }, styles.card]}>
-                    <View style={{ width: 100, height: 100, borderRadius: 60, backgroundColor: '#ECEFF1', overflow: 'hidden', marginRight: 16 }}>
-                        <Animated.View style={{ width: '30%', opacity: 0.5, height: '100%', backgroundColor: 'white', transform: [{ translateX: translateX }] }}></Animated.View>
+                    <View style={{ width: 70, height: 70, borderRadius: 35, backgroundColor: '#ECEFF1', overflow: 'hidden', marginRight: 20 }}>
+                        <Animated.View style={{ width: '35%', opacity: 0.5, height: '100%', backgroundColor: 'white', transform: [{ translateX: translateX }] }}></Animated.View>
                     </View>
                     <View style={{ flex: 1, justifyContent: 'space-evenly', overflow: 'hidden' }}>
-                        <Animated.View style={{ backgroundColor: '#ECEFF1', height: 32 }}>
-                            <Animated.View style={{ width: '20%', height: '100%', backgroundColor: 'white', opacity: 0.5, transform: [{ translateX: translateX2 }] }}></Animated.View>
+                        <Animated.View style={{ backgroundColor: '#ECEFF1', height: 32/2 }}>
+                            <Animated.View style={{ width: '10%', height: '100%', backgroundColor: 'white', opacity: 0.5, transform: [{ translateX: translateX2 }] }}></Animated.View>
                         </Animated.View>
-                        <View style={{ backgroundColor: '#ECEFF1', height: 32 }}>
-                            <Animated.View style={{ width: '20%', height: '100%', backgroundColor: 'white', opacity: 0.5, transform: [{ translateX: translateX2 }] }}></Animated.View>
+                        <View style={{ backgroundColor: '#ECEFF1', height: 32/2 }}>
+                            <Animated.View style={{ width: '10%', height: '100%', backgroundColor: 'white', opacity: 0.5, transform: [{ translateX: translateX2 }] }}></Animated.View>
                         </View>
                     </View>
                 </View>
@@ -64,13 +75,14 @@ const styles = StyleSheet.create({
         //backgroundColor: '#fff',
         paddingTop: 6,
         paddingHorizontal: 16,
-        paddingBottom: 6
+        paddingBottom: 6,
+        borderRadius: 10,
     },
     card: {
-        padding: 16,
+        padding: 20,
         shadowColor: 'black',
-        borderRadius: 4,
-        backgroundColor: '#FAFAFA',
+        borderRadius: 10,
+        backgroundColor: '#Fff',
         shadowColor: 'black',
         shadowOffset: {
             width: 1,

@@ -1,5 +1,5 @@
-import React, {useEffect, useRef} from "react";
-import {Platform, ScrollView, Text, useWindowDimensions, View} from "react-native";
+import React, {useEffect, useRef, useState} from "react";
+import {BackHandler, Platform, ScrollView, Text, Alert as RNAlert, useWindowDimensions, View} from "react-native";
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
@@ -12,8 +12,14 @@ import Row from "@pages/activities/application/Row"
 import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous2";
 import styles from "@styles/applications/basicInfo"
 import useSafeState from "../../../../hooks/useSafeState";
-
+import axios from "axios";
+import {BASE_URL} from "../../../../services/config";
+import {RootStateOrAny, useSelector} from "react-redux";
+import { FloatingAction } from "react-native-floating-action";
 const flatten = require('flat')
+import Check from "@assets/svg/check";
+import Alert from "@atoms/alert";
+
 const BasicInfo = (props: any) => {
 
     let personnel: any = null;
@@ -28,8 +34,7 @@ const BasicInfo = (props: any) => {
         }
     }
     const scrollRef = useRef();
-
-
+    const [showAlert, setShowAlert] = useSafeState(false)
     const applicant = props?.applicant?.user || props?.applicant;
     useEffect(() => {
         if (Platform.isPad || Platform.OS == "web") {
@@ -40,17 +45,79 @@ const BasicInfo = (props: any) => {
         }
 
     }, [applicant?._id])
-    const [userProfileForm, setUserProfileForm] = useSafeState(flatten.flatten(props))
+
 
     const applicantForm = (stateName, value) => {
-        let newForm = {...userProfileForm}
+        let newForm = {...props.userProfileForm}
         newForm[stateName] = value
 
 
-        setUserProfileForm(newForm)
+        props.setUserProfileForm(newForm)
     }
+    const user=useSelector((state:RootStateOrAny)=>state.user);
     const dimensions = useWindowDimensions();
-    return <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}
+
+
+    const hasChanges=()=> {
+        var hasChanges=false;
+
+        for (const [key, value] of Object.entries(props.userOriginalProfileForm)) {
+
+            if (props.userOriginalProfileForm?.[key] != props.userProfileForm?.[key]) {
+                hasChanges = true
+                props.hasChanges(hasChanges)
+                return
+            }else{
+                hasChanges = false
+                props.hasChanges(hasChanges)
+            }
+        }
+
+
+    }
+
+
+    useEffect(()=>{
+        hasChanges()
+
+    }, [props.userProfileForm])
+
+    const actions = [
+        {
+            text: "Accessibility",
+            icon: <Check color={"#fff"}/>,
+            name: "bt_accessibility",
+            position: 1,
+            color: "#fff"
+        }
+    ];
+const [loading, setLoading] = useSafeState(false)
+    const updateApplication = () =>{
+    setLoading(true)
+        let profileForm = {...props.userProfileForm}
+        let dateOfBirth= profileForm?.['applicant.dateOfBirth'], dateValue = { year: "", month: "", day: ""}
+       if(typeof dateOfBirth == 'string'){
+           let dateOfBirthSplit = dateOfBirth?.split('-')
+           dateValue.year = dateOfBirthSplit[0]
+           dateValue.month = dateOfBirthSplit[1]
+           dateValue.day = dateOfBirthSplit[2]
+           profileForm['applicant.dateOfBirth'] = dateValue
+       }
+
+        axios.patch(BASE_URL + `/applications/${props.id}`, flatten.unflatten(profileForm), {headers:{
+                Authorization:"Bearer ".concat(user?.sessionToken)
+            }}).then( (response) => {
+            setShowAlert(true)
+            setLoading(false)
+            props.setUserProfileForm(props?.userProfileForm)
+           props.setUserOriginalProfileForm(props?.userProfileForm)
+        }).catch((err)=>{
+            setLoading(false)
+            RNAlert.alert('Alert',err?.message||'Something went wrong.');
+
+        });
+    }
+    return <><ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}
                        style={{width: "100%", backgroundColor: "#f8f8f8",}}>
 
         <View style={{flexDirection: isMobile || dimensions?.width <= 768 ? "column" : "row"}}>
@@ -179,33 +246,37 @@ const BasicInfo = (props: any) => {
                                          show={true}
                                          showEdit={false}
                                          applicant={applicant?.firstName && applicant?.lastName ? applicant?.firstName + (applicant?.middleName ? " " + applicant?.middleName?.charAt() + "." : "") + " " + applicant?.lastName : applicant?.applicantName ? applicant?.applicantName : ""}/>
-                                    {userProfileForm?.["applicant.firstName"] ?
+                                    {props.userProfileForm?.["applicant.firstName"] ?
                                         <Row edit={props.edit} label={"First Name:"}
                                              stateName={"applicant.firstName"}
                                              updateForm={applicantForm}
                                              show={false}
                                              showEdit={true}
-                                             applicant={userProfileForm?.["applicant.firstName"]}/> : <></>}
-                                    {userProfileForm?.["applicant.middleName"] ?
+                                             applicant={props.userProfileForm?.["applicant.firstName"]}/> : <></>}
+                                    {props.userProfileForm?.["applicant.middleName"] ?
                                         <Row edit={props.edit} label={"Middle Name:"}
                                              stateName={"applicant.middleName"}
                                              updateForm={applicantForm}
                                              show={false}
                                              showEdit={true}
-                                             applicant={userProfileForm?.["applicant.middleName"]}/> : <></>}
-                                    {userProfileForm?.["applicant.lastName"] ?
+                                             applicant={props.userProfileForm?.["applicant.middleName"]}/> : <></>}
+                                    {props.userProfileForm?.["applicant.lastName"] ?
                                         <Row edit={props.edit} label={"Last Name:"}
                                              stateName={"applicant.lastName"}
                                              updateForm={applicantForm}
                                              show={false}
                                              showEdit={true}
-                                             applicant={userProfileForm?.["applicant.lastName"]}/> : <></>}
+                                             applicant={props.userProfileForm?.["applicant.lastName"]}/> : <></>}
 
 
                                     <Row edit={props.edit} label={"Suffix:"}
                                          stateName={"applicant.suffix"}
                                          updateForm={applicantForm}
-                                         applicant={userProfileForm?.["applicant.suffix"]}/>
+                                         applicant={props.userProfileForm?.["applicant.suffix"]}/>
+                                    <Row edit={props.edit} label={"Date of Birth:"}
+                                         updateForm={applicantForm}
+                                         display={moment(props.userProfileForm?.["applicant.dateOfBirth"])?.format('LL')}
+                                         applicant={props.userProfileForm?.["applicant.dateOfBirth"]}/>
                                     <Row edit={props.edit} label={"Date of Birth:"}
                                          show={true}
                                          showEdit={false}
@@ -214,22 +285,22 @@ const BasicInfo = (props: any) => {
                                          stateName={"applicant.gender"}
                                          edit={props.edit}
                                          label={"Gender:"}
-                                         applicant={userProfileForm?.["applicant.gender"]}/>
+                                         applicant={props.userProfileForm?.["applicant.gender"]}/>
                                     <Row updateForm={applicantForm}
                                          stateName={"applicant.nationality"}
                                          edit={props.edit}
                                          label={"Nationality:"}
-                                         applicant={userProfileForm?.["applicant.nationality"]}/>
+                                         applicant={props.userProfileForm?.["applicant.nationality"]}/>
                                     <Row updateForm={applicantForm}
                                          stateName={"applicant.weight"}
                                          edit={props.edit}
                                          label={"Weight:"}
-                                         applicant={userProfileForm?.["applicant.weight"]}/>
+                                         applicant={props.userProfileForm?.["applicant.weight"]}/>
                                     <Row updateForm={applicantForm}
                                          stateName={"applicant.height"}
                                          edit={props.edit}
                                          label={"Height:"}
-                                         applicant={userProfileForm?.["applicant.height"]}/>
+                                         applicant={props.userProfileForm?.["applicant.height"]}/>
                                 </View>
                                 {!!Object.values({...applicant?.address}).join("") &&
                                     <>
@@ -245,24 +316,31 @@ const BasicInfo = (props: any) => {
                                             <Row edit={props.edit} label={"Unit/Rm/Bldg./Street:"}
                                                  stateName={"applicant.address.unit"}
                                                  updateForm={applicantForm}
-                                                 applicant={userProfileForm['applicant.address.unit']}/>
+                                                 applicant={props.userProfileForm['applicant.address.unit']}/>
                                             <Row edit={props.edit} label={"Barangay:"}
                                                  stateName={"applicant.address.barangay"}
                                                  updateForm={applicantForm}
-                                                 applicant={userProfileForm['applicant.address.barangay']}/>
-
+                                                 applicant={props.userProfileForm['applicant.address.barangay']}/>
+                                            <Row edit={props.edit} label={"Street:"}
+                                                 stateName={"applicant.address.street"}
+                                                 updateForm={applicantForm}
+                                                 applicant={props.userProfileForm['applicant.address.street']}/>
+                                            <Row edit={props.edit} label={"Unit:"}
+                                                 stateName={"applicant.address.unit"}
+                                                 updateForm={applicantForm}
+                                                 applicant={props.userProfileForm['applicant.address.unit']}/>
                                             <Row edit={props.edit}
                                                  stateName={"applicant.address.province"}
                                                  updateForm={applicantForm}
                                                  label={"Province:"}
-                                                 applicant={userProfileForm["applicant.address.province"]}/>
+                                                 applicant={props.userProfileForm["applicant.address.province"]}/>
                                             <Row updateForm={applicantForm}
                                                  stateName={"applicant.address.city"}
                                                  edit={props.edit} label={"City/Municipality:"}
-                                                 applicant={userProfileForm?.["applicant.address.city"]}/>
+                                                 applicant={props.userProfileForm?.["applicant.address.city"]}/>
                                             <Row updateForm={applicantForm} edit={props.edit} label={"Zip Code:"}
                                                  stateName={"applicant.address.zipCode"}
-                                                 applicant={userProfileForm?.["applicant.address.zipCode"]}/>
+                                                 applicant={props.userProfileForm?.["applicant.address.zipCode"]}/>
 
                                         </View>
                                     </>
@@ -278,13 +356,13 @@ const BasicInfo = (props: any) => {
                                     </View>
                                     <Row updateForm={applicantForm} edit={props.edit} label={"School Attended:"}
                                          stateName={"applicant.education.schoolAttended"}
-                                         applicant={userProfileForm?.["applicant.address.zipCode"]}/>
+                                         applicant={props.userProfileForm?.["applicant.address.zipCode"]}/>
                                     <Row updateForm={applicantForm} edit={props.edit} label={"Course Taken:"}
                                          stateName={"applicant.education.courseTaken"}
-                                         applicant={userProfileForm?.["applicant.education.courseTaken"]}/>
+                                         applicant={props.userProfileForm?.["applicant.education.courseTaken"]}/>
                                     <Row updateForm={applicantForm} edit={props.edit} label={"Year Graduated:"}
                                          stateName={"applicant.education.yearGraduated"}
-                                         applicant={userProfileForm?.["applicant.education.yearGraduated"]}/>
+                                         applicant={props.userProfileForm?.["applicant.education.yearGraduated"]}/>
 
 
 
@@ -298,10 +376,10 @@ const BasicInfo = (props: any) => {
                                     </View>
                                     <Row updateForm={applicantForm} edit={props.edit} label={"Contact Number:"}
                                          stateName={"applicant.contact.contactNumber"}
-                                         applicant={userProfileForm?.["applicant.contact.contactNumber"]}/>
+                                         applicant={props.userProfileForm?.["applicant.contact.contactNumber"]}/>
                                     <Row updateForm={applicantForm} edit={props.edit} label={"Email:"}
                                          stateName={"applicant.contact.email"}
-                                         applicant={userProfileForm?.["applicant.contact.email"]}/>
+                                         applicant={props.userProfileForm?.["applicant.contact.email"]}/>
 
 
                                 </View>}
@@ -314,23 +392,41 @@ const BasicInfo = (props: any) => {
                                     </View>
 
                                     <Row edit={props.edit} label={"Date:"}
-                                         applicant={userProfileForm?.["props.schedule.dateStart"]}
+                                         updateForm={applicantForm}
+                                         stateName={"schedule.dateStart"}
+                                         applicant={props.userProfileForm?.["schedule.dateStart"]}
                                          display={moment(props?.schedule.dateStart).isValid() ? moment(props?.schedule.dateStart).format('ddd DD MMMM YYYY') : props?.schedule.dateStart}/>
                                     <Row edit={props.edit} label={"Start Time:"}
+                                         updateForm={applicantForm}
                                          show={true}
                                          showEdit={false}
+                                         stateName={"schedule.dateStart"}
+                                         applicant={props.userProfileForm?.["schedule.dateStart"]}
                                          display={moment(props?.schedule.dateStart)?.isValid() ? moment(props?.schedule.dateStart).format('LT') : props?.schedule.dateStart} />
                                     <Row edit={props.edit} label={"End Time:"}
+                                         updateForm={applicantForm}
+                                         stateName={"schedule.dateEnd"}
+                                         applicant={props.userProfileForm?.["schedule.dateEnd"]}
                                          display={moment(props?.schedule.dateEnd)?.isValid() ? moment(props?.schedule.dateEnd).format('LT') : props?.schedule.dateEnd}/>
-                                    <Row edit={props.edit} label={"Venue:"} applicant={props?.schedule.venue}/>
-                                    <Row edit={props.edit} label={"Seat No:"} applicant={props?.schedule.seatNumber}/>
+                                    <Row updateForm={applicantForm}
+                                         stateName={"schedule.venue"}
+                                         edit={props.edit}
+                                         label={"Venue:"}
+                                         applicant={props.userProfileForm?.["schedule.venue"]}/>
+                                    <Row updateForm={applicantForm}
+                                         stateName={"schedule.seatNumber"}
+                                         edit={props.edit}
+                                         label={"Seat No:"}
+                                         applicant={props.userProfileForm?.["schedule.seatNumber"]}/>
 
 
                                 </View>}
                                 {props?.service && <View style={styles.divider}/>}
-                                <RenderServiceMiscellaneous updateForm={applicantForm} userProfileForm={userProfileForm} edit={props.edit}
+                                <RenderServiceMiscellaneous updateForm={applicantForm} userProfileForm={props.userProfileForm} edit={props.edit}
                                                             exclude={['_id', 'name', 'applicationType', 'serviceCode']}
                                                             service={props?.service}/>
+
+
                             </View>
 
                         </View>
@@ -339,10 +435,33 @@ const BasicInfo = (props: any) => {
                 </View>
 
             }
+
         </View>
 
-    </ScrollView>
 
+
+    </ScrollView>
+        <Alert
+            visible={showAlert}
+            title={'Success'}
+            message={'The Application has been updated!'}
+            confirmText='OK'
+            onConfirm={() => {
+                setShowAlert(false)
+            }
+            }
+        />
+        <FloatingAction
+
+            visible={props.edit}
+            actions={actions}
+            overrideWithAction
+            onPressItem={name => {
+
+                updateApplication()
+            }}
+        />
+</>
 };
 
 export default BasicInfo

@@ -28,7 +28,7 @@ export default function Loader(refreshing,searchTerm,size){
     const selectedClone=selectedChangeStatus?.filter((status:string)=>{
         return status!=DATE_ADDED
     });
-
+        console.log(size)
     return (
 
         <View  style={[{justifyContent: "center", alignItems: "center",   width: "100%"  }]}>
@@ -36,7 +36,7 @@ export default function Loader(refreshing,searchTerm,size){
             {refreshing  ? <Placeholder renderItem={() => <Skeleton/>} keyExtractor={item => item}/>  : selectedClone.length && !( size || size?.length) ? <><NoActivity></NoActivity><Text
                     style={styles.noContent}>No Content "{selectedClone.toString()}"</Text></>
 
-                : size || size?.length ? <Placeholder renderItem={() => <Skeleton/>} keyExtractor={item => item}/> : <><NoActivity></NoActivity><Text style={styles.noContent}>No Content</Text></>}
+                : (size || size?.length) ? <></> : <><NoActivity></NoActivity><Text style={styles.noContent}>No Content</Text></>}
         </View>
 
     );

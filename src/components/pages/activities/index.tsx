@@ -74,10 +74,8 @@ import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import { FontAwesome } from "@expo/vector-icons";
-import Skeleton from "@atoms/skeleton";
+import { PullToRefreshView } from "@components/molecules/PullToRefreshView";
 const TAB_BAR_HEIGHT = 48;
-const HEADER_HEIGHT = 48;
-
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
 const ActivitiesPage = (props) => {
@@ -381,10 +379,11 @@ const ActivitiesPage = (props) => {
     );
 
     function getFlatList(ref, scrollHandler, sP, data, isHeader= false) {
-        return <Animated.FlatList
+
+        return  <Animated.FlatList
             refreshControl={
                 <RefreshControl
-                    progressViewOffset={headerHeight}
+                    progressViewOffset={headerHeight + 42}
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                 />
@@ -395,7 +394,6 @@ const ActivitiesPage = (props) => {
                 act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : tabIndex == 1 ? pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
                 act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length :  notPnApplications.length )}
             ListHeaderComponent={isHeader ? listHeaderComponent() : null}
-
             style={{flex: 1,}}
             data={data}
             keyExtractor={(item, index) => index.toString()}
@@ -421,7 +419,6 @@ const ActivitiesPage = (props) => {
             scrollEventThrottle={1}
             renderItem={({item, index}) => (
                 <>
-
                     <ApplicationList
                         key={index}
                         onPress={() => {
@@ -434,8 +431,6 @@ const ActivitiesPage = (props) => {
 
                         element={(activity: any, i: number) => {
                             return (
-
-
                                 <ActivityItem
                                     isOpen={isOpen}
                                     config={config}
