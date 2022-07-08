@@ -311,6 +311,7 @@ const FloatingVideo = ({ tracks }:any) => {
         onMute={onMute}
         isGroup={meeting?.isGroup}
         isMaximize={isMaximized}
+        isHost={isHost}
         pinnedParticipant={pinnedParticipant}
         setPinnedParticipant={onSetPinnedParticipant}
       />

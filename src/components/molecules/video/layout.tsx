@@ -185,6 +185,7 @@ interface Props {
   setNotification?: any;
   isGroup?: boolean;
   isMaximize?: boolean;
+  isHost?: boolean;
   pinnedParticipant?: any;
   setPinnedParticipant?: any;
   onMessages?: any;
@@ -219,6 +220,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   setNotification = () => {},
   isGroup = false,
   isMaximize = true,
+  isHost = false,
   pinnedParticipant = null,
   setPinnedParticipant = () => {},
   onMessages = () => {},
@@ -227,6 +229,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 }, ref) => {
   const [selectedPeer, setSelectedPeer]:any = useState(null);
   const selectedParticipant = useMemo(() => lodash.find(meetingParticipants, (p:IParticipants) => p.uid === selectedPeer), [selectedPeer, meetingParticipants]);
+  const participantInLobby = useMemo(() => !!lodash.find(meetingParticipants, (p:IParticipants) => p.status === 'waiting'), [meetingParticipants]);
   const [peerList, setPeerList]:any = useState([]);
   const {
     timer,
@@ -652,28 +655,32 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                 </View>
               </TouchableOpacity>
             </View>
-            <View style={styles.lobbyNotifContainer}>
-              <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                <Text color='white'>
-                  Guests are waiting to join.
-                </Text>
-                <TouchableOpacity onPress={onAddParticipants}>
-                  <Text
-                    style={{ fontFamily: Bold }}
-                    color='white'
-                  >
-                    {' '}View lobby
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity>
-                <CloseIcon
-                  color='white'
-                  type='close'
-                  size={RFValue(18)}
-                />
-              </TouchableOpacity>
-            </View>
+            {
+              isHost && participantInLobby && (
+                <View style={styles.lobbyNotifContainer}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                    <Text color='white'>
+                      Guests are waiting to join.
+                    </Text>
+                    <TouchableOpacity onPress={onAddParticipants}>
+                      <Text
+                        style={{ fontFamily: Bold }}
+                        color='white'
+                      >
+                        {' '}View lobby
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <TouchableOpacity>
+                    <CloseIcon
+                      color='white'
+                      type='close'
+                      size={RFValue(18)}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )
+            }
             <View style={styles.micButtonContainer}>
               {
                 (isFocused && isMute || !isFocused && selectedParticipant?.muted) && (

@@ -305,7 +305,7 @@ const useSignalr = () => {
   }, []);
   
   const meetingLobby = useCallback(({ meetingId }, callback = () => {}, config = {}) => {
-    api.get(`/meetings/${meetingId}/lobby`, config)
+    api.post(`/meetings/${meetingId}/lobby`, config)
     .then(res => {
       return callback(null, res.data);
     })

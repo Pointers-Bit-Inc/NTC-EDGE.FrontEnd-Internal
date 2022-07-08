@@ -17,7 +17,7 @@ import AwesomeAlert from 'react-native-awesome-alerts'
 import useApi from 'src/services/api'
 import Loading from '@components/atoms/loading'
 import { updateChannel } from 'src/reducers/channel/actions'
-import { setFullScreen, setMeeting, setOptions, setPinnedParticipant } from 'src/reducers/meeting/actions'
+import { setFullScreen, setMeeting, setOptions, setPinnedParticipant, updateMeetingParticipants } from 'src/reducers/meeting/actions'
 import AddParticipants from '@components/pages/chat-modal/add-participants'
 import { InputField } from '@components/molecules/form-fields'
 import useSignalr from 'src/hooks/useSignalr'
@@ -234,6 +234,22 @@ const Participants = ({ navigation }) => {
     });
   }
 
+  const admitMember = () => {
+    optionModalRef.current?.close();
+    setLoading(true);
+    api.post(`/meetings/${meetingId}/admit?participantId=${selectedParticipant._id}`)
+    .then((res) => {
+      setLoading(false);
+      if(res.data) {
+        dispatch(updateMeetingParticipants(res.data));
+      }
+    })
+    .catch(e => {
+      setLoading(false);
+      Alert.alert('Alert', e?.message || 'Something went wrong.')
+    });
+  }
+
   const onRemoveConfirm = () => {
     optionModalRef.current?.close();
     setAlertData({
@@ -258,7 +274,7 @@ const Participants = ({ navigation }) => {
     if (isHost(user) && listType === 'waitingInLobby') {
       return (
         <>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={admitMember}>
             <View style={[styles.option]}>
               <CheckIcon
                 type='check2'
