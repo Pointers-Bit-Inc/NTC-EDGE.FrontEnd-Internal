@@ -380,7 +380,7 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
                                         <ApprovedButton
                                             user={user}
                                             currentLoading={currentLoading}
-                                            allButton={false}
+                                            allButton={allButton}
                                             onPress={()=>{
                                                 if(getRole(user,[EVALUATOR])){
 
