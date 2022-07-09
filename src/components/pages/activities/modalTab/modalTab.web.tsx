@@ -152,7 +152,7 @@ const ModalTab=props=>{
                 <View style={{
                     borderBottomWidth:hairlineWidth,
                     borderBottomColor:"#d2d2d2",
-                 
+
                     flexDirection:"row",
                     alignItems:"center",
                     justifyContent:"center",
@@ -191,6 +191,9 @@ const ModalTab=props=>{
 
 
                     return <BasicInfo
+                        setEditAlert={props.setEditAlert}
+                        editBtn={props.editBtn}
+                        updateApplication={props.updateApplication}
 setEdit={props.setEdit}
                         setUserOriginalProfileForm={props.setUserOriginalProfileForm}
                         userOriginalProfileForm={props.userOriginalProfileForm}

@@ -1,8 +1,10 @@
-import {StyleSheet,Text,View} from "react-native";
-import React, {useState} from "react";
+import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {useEffect, useRef, useState} from "react";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular,Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
+import useSafeState from "../../../../hooks/useSafeState";
+import CheckIcon from "@assets/svg/check";
 const styles = StyleSheet.create({
     group2 : {
         flexDirection : "row" ,
@@ -30,16 +32,27 @@ const styles = StyleSheet.create({
         textAlign : "left"
     } ,
 })
-const Row = (props: { display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
+const Row = (props: { updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
+    const [edit, setEdit] = useSafeState(false)
 
-    return  props.show && (props.display || props.applicant) && !props.edit  ? <View style={ styles.group2 }>
+    const [cloneValue, setCloneValue] = useSafeState(props.applicant)
+    return  (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || edit : !edit) ? <TouchableOpacity onPress={()=>{
+        setEdit(true)
+    }
+    } style={ styles.group2 }>
         <Text style={ styles.detail }>{ props.label }</Text>
         <Text style={ styles.detailInput }>{ props.display || props.applicant }</Text>
-    </View> : <>
-        {props.edit && props.editable && props.showEdit? <InputField onChange={(e) => {
-            props.updateForm(props.stateName, e.nativeEvent.text)
+    </TouchableOpacity> : <>
+        {((props.edit && props.editable && props.showEdit) || edit)? <InputField onClose={()=>{
+            props.updateForm(props.stateName, cloneValue)
+            setEdit(false)
+        }} onCheck={()=>{
+            props?.updateApplication()
+            setEdit(false)
+        }} checkable={true}  onChange={(e) => {
+            props.updateForm(props.stateName, e?.nativeEvent?.text)
         }
-        } value={props.applicant} label={props.label} /> : <></>}
+        }   value={props.applicant} label={props.label} /> : <></>}
     </>};
 
 Row.defaultProps = {

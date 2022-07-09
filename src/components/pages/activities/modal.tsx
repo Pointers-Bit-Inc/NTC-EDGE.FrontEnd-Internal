@@ -1,4 +1,4 @@
-import React,{useEffect,useMemo,useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {
     Alert as RNAlert,
     BackHandler,
@@ -33,7 +33,7 @@ import {
 import Api from 'src/services/api';
 import {setRightLayoutComponent,updateApplicationStatus} from "../../../reducers/application/actions";
 
-import CustomAlert from "@pages/activities/alert/alert";
+import CustomAlert from "@pages/activities/alert/alert1";
 import CloseIcon from "@assets/svg/close";
 import {ApprovedButton} from "@pages/activities/button/approvedButton";
 import {DeclineButton} from "@pages/activities/button/declineButton";
@@ -50,6 +50,7 @@ import useSafeState from "../../../hooks/useSafeState";
 import EditIcon from "@assets/svg/editIcon";
 import {useNavigation} from "@react-navigation/native";
 import {updateMessages} from "../../../reducers/channel/actions";
+import {BASE_URL} from "../../../services/config";
 const flatten = require('flat')
 function ActivityModal(props:any){
     const [userProfileForm, setUserProfileForm] = useSafeState(flatten.flatten(props.details))
@@ -77,6 +78,7 @@ function ActivityModal(props:any){
     const [grayedOut,setGrayedOut]=useState(false);
     const cancelTokenSource = axios.CancelToken.source();
     const [showAlert1, setShowAlert1] = useState(false)
+    const [showAlert2, setShowAlert2] = useState(false)
     const onDismissed=()=>{
         setVisible(false)
     };
@@ -253,6 +255,52 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
         }
     }
 
+    const [messageUpdate, setMessageUpdate] = useSafeState("")
+    const [titleUpdate, setTitleUpdate] = useSafeState("")
+
+    const updateApplication = useCallback((callback) => {
+
+        let profileForm = userProfileForm
+        let dateOfBirth= profileForm?.['applicant.dateOfBirth'], region= profileForm?.['region.code'],dateValue = { year: "", month: "", day: ""}
+
+        if(typeof dateOfBirth == 'string' && dateOfBirth){
+            let dateOfBirthSplit = dateOfBirth?.split('-')
+            dateValue.year = dateOfBirthSplit[0]
+            dateValue.month = dateOfBirthSplit[1]
+            dateValue.day = dateOfBirthSplit[2]
+            profileForm['applicant.dateOfBirth'] = dateValue
+        }
+
+
+        if(region){
+            profileForm['region'] = region
+        }
+
+        axios.patch(BASE_URL + `/applications/${props?.details?._id}`, flatten.unflatten(profileForm), {headers:{
+                Authorization:"Bearer ".concat(user?.sessionToken)
+            }}).then( (response) => {
+            setShowAlert2(true)
+            setEdit(false)
+
+            setMessageUpdate('The Application has been updated!')
+            setTitleUpdate("Success")
+            var _flatten = flatten.flatten({...response.data.doc})
+           setUserOriginalProfileForm({..._flatten})
+            setUserProfileForm(_flatten)
+callback()
+
+
+        }).catch((err)=>{
+
+            setMessageUpdate(err?.message||'Something went wrong.')
+            setTitleUpdate("Error")
+            callback()
+        });
+    }, [ userProfileForm])
+
+
+
+
     return (
         <NativeView
             onLayout={onActivityModalScreenComponent}
@@ -358,7 +406,7 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
                     {/*<View/>*/}
                 </View>}
 
-                <ModalTab  editBtn={editBtn}  userOriginalProfileForm={userOriginalProfileForm}
+                <ModalTab setEditAlert={setEditAlert} updateApplication={updateApplication}  editBtn={editBtn}  userOriginalProfileForm={userOriginalProfileForm}
                           userProfileForm={userProfileForm}
                            setEdit={setEdit}
                           setUserProfileForm={setUserProfileForm}
@@ -590,6 +638,25 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
                 }
                    }
                 onCancel={()=>setDiscardAlert(false)}
+            />
+            <CustomAlert
+                showClose={true}
+                onDismissed={()=>{
+                    setShowAlert2(false)
+                }
+                }
+                onCancelPressed={()=>{
+                }
+                }
+
+                show={showAlert2}
+                title={titleUpdate}
+                message={messageUpdate}
+                confirmText='OK'
+                onConfirmPress={() => {
+                    setShowAlert2(false)
+                }
+                }
             />
             <Alert
                 visible={editAlert}

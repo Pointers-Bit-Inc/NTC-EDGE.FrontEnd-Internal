@@ -106,10 +106,10 @@ const RenderServiceMiscellaneous=(props)=>{
                     default:
                         let date = new RegExp(/^\d{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])$/)
                         result[p]= date.test(e) && Date.parse(e)>0 ? moment(e)?.format('LL') : (e?.replace(/undefined/g,'') || e) ;
-                        break; 
+                        break;
                 }
             })(obj);
-         
+
         return result;
     };
 
@@ -135,13 +135,13 @@ const RenderServiceMiscellaneous=(props)=>{
         return (<View>
             <Title nextValue={nextValue} index={index}/>
             <Separator index={index}/>
-            <Row updateForm={props.updateForm} stateName={"service." + keys} edit={props.edit} label={prevValue ? `${transformText(prevValue)}:` : ""} display={value} applicant={props?.userProfileForm["service." + keys]}/>
+            <Row updateApplication={props?.updateApplication} updateForm={props.updateForm} stateName={"service." + keys} edit={props.edit} label={prevValue ? `${transformText(prevValue)}:` : ""} display={value} applicant={props?.userProfileForm["service." + keys]}/>
         </View>)
 
 
     };
 
-    
+
 
     return (
         <FlatList

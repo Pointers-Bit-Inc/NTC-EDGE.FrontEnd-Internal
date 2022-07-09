@@ -590,7 +590,7 @@ const ActivitiesPage = (props) => {
                                                 !(
                                                     isMobile && !(
                                                         Platform?.isPad || isTablet())) && dimensions?.width > 768) ?<RefreshWeb style={{paddingLeft: 15}} width={fontValue(26)}
-                                                                                                                                 height={fontValue(24)} fill={"#fff"}/> :<View style={{paddingHorizontal: 5}}><FontAwesome name="refresh" size={30} color="white" /></View>}
+                                                                                                                             height={fontValue(24)} fill={"#fff"}/> :<View style={{paddingHorizontal: 5}}><FontAwesome name="refresh" size={30} color="white" /></View>}
                                         </TouchableOpacity>
                                     }
                                 </Animated.View>
