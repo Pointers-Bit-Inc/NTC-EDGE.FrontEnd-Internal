@@ -1,10 +1,11 @@
 import useApi from "../services/api";
 import {useDispatch} from "react-redux";
-import {useCallback , useState} from "react";
+import {useCallback } from "react";
 import {setUser} from "../reducers/user/actions";
 import {StackActions , useFocusEffect} from "@react-navigation/native";
 import {validateEmail , validatePassword} from "../utils/form-validations";
 import {Alert , BackHandler} from "react-native";
+import useSafeState from "./useSafeState";
 
 export function useAuth(navigation) {
     const errorResponse = {
@@ -13,7 +14,7 @@ export function useAuth(navigation) {
     };
     const api = useApi('');
     const dispatch = useDispatch();
-    const [loading , setLoading] = useState(false);
+    const [loading , setLoading] = useSafeState(false);
     useFocusEffect(
         useCallback(() => {
             const onBackPress = () => {
@@ -52,7 +53,7 @@ export function useAuth(navigation) {
                 setLoading(false);
                 if (e) {
 
-                    
+
                     setFormValue({
                         ...formValue ,
                         email : {
@@ -64,7 +65,7 @@ export function useAuth(navigation) {
                 }
             });
     };
-    const [formValue , setFormValue] = useState({
+    const [formValue , setFormValue] = useSafeState({
         email : {
 
             value : '' ,

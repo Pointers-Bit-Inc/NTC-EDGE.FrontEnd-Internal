@@ -142,7 +142,7 @@ function ActivityModal(props:any){
             RNAlert.alert('Alert',e?.message||'Something went wrong.');
             return callback(e);
         }) : null
-        console.log(url,params,assignId, addORNumber?.status == 200);
+
         if((applicationId && (user?.role?.key==CASHIER && addORNumber?.status == 200 )) || (getRole(user,[ DIRECTOR,EVALUATOR,ACCOUNTANT]) && applicationId )){
 
             await api.patch(url,{...params,  cancelToken: cancelTokenSource?.token,})
@@ -191,12 +191,14 @@ function ActivityModal(props:any){
 
     useEffect(()=>{
 
+        setUserProfileForm(flatten.flatten(props.details))
+       setUserOriginalProfileForm(userProfileForm)
         return ()=>{
             setChange(false);
             setStatus("");
             setAssignId("")
         }
-    },[props?.details._id]);
+    },[ props?.details._id]);
 
     const statusMemo=useMemo(()=>{
         setStatus(status);
