@@ -74,7 +74,6 @@ import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import { FontAwesome } from "@expo/vector-icons";
-import FloatingButton from "@atoms/floating-button";
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
