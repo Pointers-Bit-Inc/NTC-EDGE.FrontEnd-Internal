@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, useWindowDimensions, View} from "react-native";
 import {Bold, Regular, Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
@@ -15,6 +15,7 @@ import PdfDownload from "./download/pdfDownload";
 import {PAID} from "../../../../reducers/activity/initialstate";
 import Moment from 'moment';
 import Timeline from "@molecules/timeline/timeline";
+import Card from "@pages/activities/application/card";
 let outputLabel = (applicationType: string, serviceCode: string, service: string) => {
     applicationType = (`${applicationType} ${service?.name}`)?.toLowerCase();
     if (serviceCode === 'service-22') return 'Receipt';
@@ -35,6 +36,38 @@ const ApplicationDetails = (props: any) => {
         { title: 'Test', description: 'Test3', date: '12-12', time: '10:10' },
         { title: 'Test', description: 'Test4', date: '12-12', time: '10:10' },
     ];
+    const applicantForm = (stateName, value) => {
+        let newForm = {...props.userProfileForm}
+        newForm[stateName] = value
+        props.setUserProfileForm(newForm)
+    }
+    const updateApplication = () => {
+        props?.updateApplication(()=>{
+
+        })
+
+    }
+    useEffect(()=>{
+        hasChanges()
+
+    }, [props.userProfileForm])
+    const hasChanges=()=> {
+        var hasChanges=false;
+
+        for (const [key, value] of Object.entries(props.userOriginalProfileForm)) {
+
+            if (props.userOriginalProfileForm?.[key] != props.userProfileForm?.[key]) {
+                hasChanges = true
+
+                props.hasChanges(hasChanges)
+                return
+            }else{
+                hasChanges = false
+                props.hasChanges(hasChanges)
+            }
+        }
+    }
+
     const rightLayoutComponent= useSelector((state: RootStateOrAny) => state.application?.rightLayoutComponent);
     const [modalVisible, setModalVisible] = useState(false);
     return <ScrollView contentContainerStyle={{flex: 1}}
@@ -46,14 +79,33 @@ const ApplicationDetails = (props: any) => {
                 <View style={styles.rect}>
                     <Text style={styles.file}>APPLICATION FORM</Text>
                 </View>
-                <Text
-                    style={[styles.service, {fontFamily: Regular, paddingTop: 10}]}>Submitted { Moment(props.createdAt).fromNow()}</Text>
 
-                <Text style={styles.applicationType}>{props?.applicantType || props?.service?.name}</Text>
-                <Text
-                    style={[styles.service, {fontFamily: Regular500}]}>{props?.service?.applicationType?.label || props?.service?.name}</Text>
-                <Text
-                    style={[styles.service, {fontFamily: Regular500}]}>{props?.service?.applicationType?.element || props?.service?.radioType?.label}</Text>
+                <Text style={[styles.service, {fontFamily: Regular, paddingTop: 10}]}>Submitted { Moment(props.createdAt).fromNow()}</Text>
+                <Card  updateApplication={updateApplication}
+                       updateForm={applicantForm}
+                      stateName={"service.name"}
+                      edit={props.edit}
+                      display={props.userProfileForm?.["service.name"]}
+                      label={"Application Type:"}
+                      style={styles.applicationType}
+                      applicant={props.userProfileForm?.["service.name"]}/>
+                <Card  updateApplication={updateApplication}
+                       updateForm={applicantForm}
+                       stateName={"service.applicationType.label"}
+                       edit={props.edit}
+                       display={props.userProfileForm?.["service.applicationType.label"]}
+                       label={"Application Type:"}
+                       style={[styles.service, {fontFamily: Regular500}]}
+                       applicant={props.userProfileForm?.["service.applicationType.label"]}/>
+                <Card  updateApplication={updateApplication}
+                       updateForm={applicantForm}
+                       stateName={"service.applicationType.element"}
+                       edit={props.edit}
+                       display={props.userProfileForm?.["service.applicationType.element"]}
+                       label={"Application Type Element:"}
+                       style={[styles.service, {fontFamily: Regular500}]}
+                       applicant={props.userProfileForm?.["service.applicationType.element"]}/>
+
                 {
                     props?.documents && (props?.applicantType || props?.service?.name) && props?.paymentStatus == PAID &&
                     <View style={{paddingVertical: 10}}>

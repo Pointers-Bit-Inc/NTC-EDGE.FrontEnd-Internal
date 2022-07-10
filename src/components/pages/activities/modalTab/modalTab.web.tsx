@@ -220,6 +220,15 @@ setEdit={props.setEdit}
                 } else if(isShow&&tab.id===2){
 
                     return <ApplicationDetails
+                        edit={props.edit}
+                        setEditAlert={props.setEditAlert}
+                        editBtn={props.editBtn}
+                        updateApplication={props.updateApplication}
+                        setUserOriginalProfileForm={props.setUserOriginalProfileForm}
+                        userOriginalProfileForm={props.userOriginalProfileForm}
+                        userProfileForm={props.userProfileForm}
+                        hasChanges={props.hasChanges}
+                        setUserProfileForm={props.setUserProfileForm}
                         tabLabel={{label:tab.name}} label={tab.name}
                         service={service}
                         documents={documents}
@@ -230,7 +239,15 @@ setEdit={props.setEdit}
                     return <Requirement tabLabel={{label:tab.name}} label={tab.name}
                                         requirements={requirements} key={index}/>
                 } else if(isShow&&tab.id===4 && service?.serviceCode !== "service-22" ){
-                    return <Payment tabLabel={{label:tab.name}} label={tab.name}
+                    return <Payment edit={props.edit}
+                                    setEditAlert={props.setEditAlert}
+                                    editBtn={props.editBtn}
+                                    updateApplication={props.updateApplication}
+                                    setUserOriginalProfileForm={props.setUserOriginalProfileForm}
+                                    userOriginalProfileForm={props.userOriginalProfileForm}
+                                    userProfileForm={props.userProfileForm}
+                                    hasChanges={props.hasChanges}
+                                    tabLabel={{label:tab.name}} label={tab.name}
                                     proofOfPayment={proofOfPayment}
                                     paymentStatus={paymentStatus}
                                     updatedAt={updatedAt}

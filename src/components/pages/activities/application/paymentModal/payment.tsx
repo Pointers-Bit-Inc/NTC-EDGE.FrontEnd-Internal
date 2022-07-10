@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -15,7 +15,7 @@ import Text from "@atoms/text";
 import {styles as paymentStyles} from "@pages/activities/application/paymentModal/styles"
 import {requirementStyles,styles} from "@pages/activities/application/requirementModal/styles"
 import FileOutlineIcon from "@assets/svg/fileOutline";
-import {Bold,Regular} from "@styles/font";
+import {Bold, Regular, Regular500} from "@styles/font";
 import {capitalize} from "@pages/activities/script";
 import {RootStateOrAny,useSelector} from "react-redux";
 import {ACCOUNTANT, APPROVED} from "../../../../../reducers/activity/initialstate";
@@ -27,6 +27,8 @@ import {isMobile} from "@pages/activities/isMobile";
 import DottedLine from "@assets/svg/dotted";
 import PdfViewr from "@pages/activities/application/pdf";
 import FileIcon from "@assets/svg/file";
+import Card from "@pages/activities/application/card";
+import useApplicantForm from "src/hooks/useApplicantForm";
 
 class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
 
@@ -258,6 +260,8 @@ class ProofPaymentView extends React.Component<{proofOfPayment:any}>{
     }
 }
 
+
+
 const Payment=(props:any)=>{
 
     const [visibleModal,setVisibleModal]=useState(false);
@@ -279,7 +283,7 @@ const Payment=(props:any)=>{
         soa.map(s=>total+=s.amount);
         return total;
     };
-
+    const {applicantForm, updateApplication} = useApplicantForm(props);
     const [sizeComponent,onLayoutComponent]=useComponentLayout();
     return <ScrollView style={{
         backgroundColor:"#F8F8F8",
@@ -325,23 +329,33 @@ const Payment=(props:any)=>{
                             <View key={index} style={{width:"100%"}}>
                                 <View
                                     key={soa._id}
-                                    style={paymentStyles.soaItem}
+                                  style={paymentStyles.soaItem}
                                 >
 
+<View style={{flex: 1}}>
 
-                                    <Text
-                                        color="#37405B"
-                                        style={{fontSize:fontValue(14)}}
-                                    >
-                                        {soa.item}
-                                    </Text>
+    <Card  updateApplication={updateApplication}
+           updateForm={applicantForm}
+           stateName={"soa." + index +".item"}
+           edit={props.edit}
+           display={props.userProfileForm?.["soa." + index +".item"]}
+           label={"Item:"}
+           style={{ color: "#37405B", fontSize:fontValue(14)}}
+           applicant={props.userProfileForm?.["soa." + index +".item"]}/>
+</View>
+<View style={{flex:1, width:  "100%",}}>
+    <Card  updateApplication={updateApplication}
+           updateForm={applicantForm}
+           touchableStyle={{alignSelf: "flex-end"}}
+           stateName={"soa." + index +".amount"}
+           edit={props.edit}
+           display={"₱" + props.userProfileForm?.["soa." + index +".amount"]}
+           label={"Amount:"}
+           style={{color: "#37405B", fontSize:fontValue(14)}}
+           applicant={"₱" + props.userProfileForm?.["soa." + index +".amount"]}/>
+</View>
 
-                                    <Text
-                                        color="#37405B"
-                                        style={{fontSize:fontValue(14)}}
-                                    >
-                                        ₱{soa.amount}
-                                    </Text>
+
 
                                 </View>
                                 <View style={{overflow:"hidden"}}>

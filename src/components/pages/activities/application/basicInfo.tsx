@@ -255,9 +255,11 @@ const [loading, setLoading] = useSafeState(false)
                                              applicant={props.userProfileForm?.["applicant.middleName"]}/> : <></>}
                                     {props.userProfileForm?.["applicant.lastName"] ?
                                         <Row edit={props.edit} label={"Last Name:"}
-                                             hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                             stateName={"applicant.lastName"}
+                                             hasChanges={props.hasChanges}
+                                             updateApplication={updateApplication}
                                              updateForm={applicantForm}
+                                             stateName={"applicant.lastName"}
+
                                              show={false}
                                              showEdit={true}
                                              applicant={props.userProfileForm?.["applicant.lastName"]}/> : <></>}

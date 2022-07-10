@@ -14,6 +14,7 @@ export default StyleSheet.create({
     marginBottom: fontValue(20),
   },
   container: {
+
     backgroundColor: background?.default,
     borderColor: background?.default,
     borderWidth: fontValue(2),

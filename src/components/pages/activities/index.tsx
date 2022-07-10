@@ -74,7 +74,6 @@ import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import { FontAwesome } from "@expo/vector-icons";
-import { PullToRefreshView } from "@components/molecules/PullToRefreshView";
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
@@ -380,95 +379,95 @@ const ActivitiesPage = (props) => {
 
     function getFlatList(ref, scrollHandler, sP, data, isHeader= false) {
 
-        return  <Animated.FlatList
-            refreshControl={
-                <RefreshControl
-                    progressViewOffset={headerHeight + 42}
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                />
-            }
-            showsVerticalScrollIndicator={false}
-            nestedScrollEnabled={true}
-            ListEmptyComponent={() => listEmpty(refreshing, searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
-                act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : tabIndex == 1 ? pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
-                act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length :  notPnApplications.length )}
-            ListHeaderComponent={isHeader ? listHeaderComponent() : null}
-            style={{flex: 1,}}
-            data={data}
-            keyExtractor={(item, index) => index.toString()}
-            ListFooterComponent={refreshing ? <View/> : bottomLoader}
-            onEndReached={() => {
-                if (!onEndReachedCalledDuringMomentum || !(
-                    isMobile && !(
-                        Platform?.isPad || isTablet()))) {
-                    handleLoad();
-                    setOnEndReachedCalledDuringMomentum(true);
+        return   <Animated.FlatList
+                refreshControl={
+                    <RefreshControl
+                        progressViewOffset={headerHeight + 42}
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
                 }
-            }}
-            ref={ref}
-            onScroll={scrollHandler}
-            {...sP}
-            onScrollEndDrag={onScrollEndDrag}
-            onEndReachedThreshold={0.5}
-            onMomentumScrollBegin={() => {
-                onMomentumScrollBegin();
-                setOnEndReachedCalledDuringMomentum(false)
-            }}
-            onMomentumScrollEnd={onMomentumScrollEnd}
-            scrollEventThrottle={1}
-            renderItem={({item, index}) => (
-                <>
-                    <ApplicationList
-                        key={index}
-                        onPress={() => {
-                            userPress(index)
+                showsVerticalScrollIndicator={false}
+                nestedScrollEnabled={true}
+                ListEmptyComponent={() => listEmpty(refreshing, searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
+                    act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : tabIndex == 1 ? pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
+                    act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length :  notPnApplications.length )}
+                ListHeaderComponent={isHeader ? listHeaderComponent() : null}
+                style={{flex: 1,}}
+                data={data}
+                keyExtractor={(item, index) => index.toString()}
+                ListFooterComponent={refreshing ? <View/> : bottomLoader}
+                onEndReached={() => {
+                    if (!onEndReachedCalledDuringMomentum || !(
+                        isMobile && !(
+                            Platform?.isPad || isTablet()))) {
+                        handleLoad();
+                        setOnEndReachedCalledDuringMomentum(true);
+                    }
+                }}
+                ref={ref}
+                onScroll={scrollHandler}
+                {...sP}
+                onScrollEndDrag={onScrollEndDrag}
+                onEndReachedThreshold={0.5}
+                onMomentumScrollBegin={() => {
+                    onMomentumScrollBegin();
+                    setOnEndReachedCalledDuringMomentum(false)
+                }}
+                onMomentumScrollEnd={onMomentumScrollEnd}
+                scrollEventThrottle={1}
+                renderItem={({item, index}) => (
+                    <>
+                        <ApplicationList
+                            key={index}
+                            onPress={() => {
+                                userPress(index)
 
-                        }}
-                        item={item}
-                        numbers={numberCollapsed}
-                        index={index}
+                            }}
+                            item={item}
+                            numbers={numberCollapsed}
+                            index={index}
 
-                        element={(activity: any, i: number) => {
-                            return (
-                                <ActivityItem
-                                    isOpen={isOpen}
-                                    config={config}
-                                    /*
-                                        isPinned={true}
-                                    */
-                                    searchQuery={searchTerm}
-                                    key={i}
-                                    selected={applicationItem?._id == activity?._id}
-                                    parentIndex={index}
-                                    role={user?.role?.key}
-                                    activity={activity}
-                                    currentUser={user}
-                                    onPressUser={(event: any) => {
-                                        dispatch(setSelectedYPos({yPos, type: 0}))
-                                        dispatch(setApplicationItem({
-                                            ...activity,
-                                            isOpen: `${index}${i}`
-                                        }));
-                                        //setDetails({ ...activity , isOpen : `${ index }${ i }` });
-                                        /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
-                                        })*/
-                                        if (event?.icon == 'more') {
-                                            setMoreModalVisible(true)
-                                        } else {
-                                            setModalVisible(true)
-                                        }
+                            element={(activity: any, i: number) => {
+                                return (
+                                    <ActivityItem
+                                        isOpen={isOpen}
+                                        config={config}
+                                        /*
+                                            isPinned={true}
+                                        */
+                                        searchQuery={searchTerm}
+                                        key={i}
+                                        selected={applicationItem?._id == activity?._id}
+                                        parentIndex={index}
+                                        role={user?.role?.key}
+                                        activity={activity}
+                                        currentUser={user}
+                                        onPressUser={(event: any) => {
+                                            dispatch(setSelectedYPos({yPos, type: 0}))
+                                            dispatch(setApplicationItem({
+                                                ...activity,
+                                                isOpen: `${index}${i}`
+                                            }));
+                                            //setDetails({ ...activity , isOpen : `${ index }${ i }` });
+                                            /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
+                                            })*/
+                                            if (event?.icon == 'more') {
+                                                setMoreModalVisible(true)
+                                            } else {
+                                                setModalVisible(true)
+                                            }
 
-                                    }}
+                                        }}
 
-                                    index={`${index}${i}`}
-                                    swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
-                            )
-                        }}/>
-                </>
+                                        index={`${index}${i}`}
+                                        swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
+                                )
+                            }}/>
+                    </>
 
-            )}
-        />
+                )}
+            />
     }
 
     const renderAllActivities = useCallback(
@@ -715,6 +714,7 @@ const ActivitiesPage = (props) => {
                         <ActivityModal updateModal={updateModalFn}
                                        readFn={unReadReadApplicationFn}
                                        details={applicationItem}
+
                                        onChangeAssignedId={(event) => {
                                            let _notPinnedApplications = [...notPinnedApplications]
                                            let _pinnedApplications = [...pinnedApplications]

@@ -107,7 +107,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
 
 
     return (
-        <View style={inputStyles.mainContainer}>
+        <View style={[inputStyles.mainContainer, containerStyle,]}>
 
             <View style={[
 
@@ -123,7 +123,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                     backgroundColor: '#fff', //input.background?.default,
                     borderColor: primaryColor,
                 },
-                containerStyle,
+
             ]}>
                 <View style={{ flex: 0.95 }}>
                     {!!otherProps.value && !!label && (
