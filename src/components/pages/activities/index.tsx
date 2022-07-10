@@ -74,6 +74,7 @@ import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import { FontAwesome } from "@expo/vector-icons";
+import FloatingButton from "@atoms/floating-button";
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
@@ -689,6 +690,7 @@ const ActivitiesPage = (props) => {
                             <Tab.Screen name="Pending">{renderPending}</Tab.Screen>
                             <Tab.Screen name="History">{renderHistory}</Tab.Screen>
                         </Tab.Navigator>
+
                     </View>
                     {
                         !(

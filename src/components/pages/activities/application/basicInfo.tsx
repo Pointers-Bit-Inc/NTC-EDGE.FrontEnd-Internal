@@ -92,15 +92,6 @@ const BasicInfo = (props: any) => {
 
     }, [props.userProfileForm])
 
-    const actions = [
-        {
-            text: "Accessibility",
-            icon: <Check color={"#fff"}/>,
-            name: "bt_accessibility",
-            position: 1,
-            color: "#fff"
-        }
-    ];
 const [loading, setLoading] = useSafeState(false)
     const updateApplication = () => {
         setLoading(true)
@@ -442,12 +433,7 @@ const [loading, setLoading] = useSafeState(false)
                                 <RenderServiceMiscellaneous hasChanges={props.hasChanges} updateApplication={updateApplication} updateForm={applicantForm} userProfileForm={props.userProfileForm} edit={props.edit}
                                                             exclude={['_id', 'name', 'applicationType', 'serviceCode']}
                                                             service={props?.service}/>
-                                {Platform.OS == 'web' && props.edit &&<View style={{padding: 20}}>
-    <TouchableOpacity onPress={updateApplication} style={{backgroundColor: primaryColor, padding: 20,   borderRadius: 10,  justifyContent: "center", alignItems: "center"}}>
-        <Text style={{color: "#fff", fontFamily: Regular}}>Save</Text>
-    </TouchableOpacity>
 
-</View>}
                                </View>
 
                         </View>
@@ -463,16 +449,7 @@ const [loading, setLoading] = useSafeState(false)
 
     </ScrollView>
 
-        <FloatingAction
 
-            visible={props.edit}
-            actions={actions}
-            overrideWithAction
-            onPressItem={name => {
-
-                updateApplication()
-            }}
-        />
 </>
 };
 

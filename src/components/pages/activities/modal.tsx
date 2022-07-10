@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
-    Alert as RNAlert,
+    Alert as RNAlert, Animated,
     BackHandler,
     Modal,
     Platform,
@@ -51,6 +51,9 @@ import EditIcon from "@assets/svg/editIcon";
 import {useNavigation} from "@react-navigation/native";
 import {updateMessages} from "../../../reducers/channel/actions";
 import {BASE_URL} from "../../../services/config";
+import FloatingButton from "@atoms/floating-button";
+import CheckIcon from "@assets/svg/check";
+
 const flatten = require('flat')
 function ActivityModal(props:any){
     const [userProfileForm, setUserProfileForm] = useSafeState(flatten.flatten(props.details))
@@ -301,8 +304,21 @@ callback()
         });
     }, [ userProfileForm])
 
-
-
+    const visibleAnimated= useRef(new Animated.Value(Number(!edit))).current;
+    const getAnimatedStyle = () => {
+        Animated.timing(visibleAnimated, {
+            toValue: Number(!edit),
+            duration: 300,
+            useNativeDriver: true
+        }).start();
+        return {
+            opacity: visibleAnimated,
+            transform: [{translateY: visibleAnimated.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [dimensions.height / 2, 0]
+                })}]
+        };
+    }
 
     return (
         <NativeView
@@ -418,11 +434,11 @@ callback()
                     props.onDismissed(change);
                 }} details={props.details} status={status}/>
                 {
-                    <View style={{
+                    <Animated.View style={[{
                         paddingHorizontal:!isMobile ? 64 : 0,
                         borderTopColor:'rgba(0, 0, 0, 0.1)',
                         borderTopWidth:1,backgroundColor:"white"
-                    }}>
+                    }, getAnimatedStyle()]}>
                         <View style={!(
                             isMobile)&&{
                             width:dimensions?.width<=768 ? "100%" : "60%",
@@ -469,11 +485,25 @@ callback()
 
                             </View>
                         </View>
-                    </View>
+                    </Animated.View>
 
 
                 }
             </View>
+            <FloatingButton
+                visible={edit}
+                button={{
+                    label:  <CheckIcon color={'#fff'} />,
+                    onPress: ()=>{
+                        updateApplication(()=>{
+
+                        })
+                    }
+                }}
+                // bottomMargin={80}
+                // hideBackgroundOverlay
+                // withoutAnimation
+            />
             <Approval
                 showAlert={showAlert1}
                 setShowAlert={setShowAlert1}
