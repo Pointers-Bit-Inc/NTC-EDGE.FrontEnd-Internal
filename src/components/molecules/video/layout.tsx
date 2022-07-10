@@ -229,7 +229,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 }, ref) => {
   const [selectedPeer, setSelectedPeer]:any = useState(null);
   const selectedParticipant = useMemo(() => lodash.find(meetingParticipants, (p:IParticipants) => p.uid === selectedPeer), [selectedPeer, meetingParticipants]);
-  const participantInLobby = useMemo(() => !!lodash.find(meetingParticipants, (p:IParticipants) => p.waitingInLobby), [meetingParticipants]);
+  const participantInLobby = useMemo(() => !!lodash.find(meetingParticipants, (p:IParticipants) => p.status === 'waiting' && p.waitingInLobby), [meetingParticipants]);
   const [peerList, setPeerList]:any = useState([]);
   const [showLobbyNotif, setShowLobbyNotif] = useState(false);
   const {

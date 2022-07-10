@@ -136,8 +136,11 @@ const FloatingVideo = ({ tracks }:any) => {
 
     if (userStatus === 'pending' || userStatus === 'waiting') {
       status = userStatus;
+    } else if (userStatus !== 'waiting' && participant.waitingInLobby) {
+      status = 'pending';
+    } else if (participant.waitingInLobby && !status) {
+      status = 'waiting';
     }
-    if (participant.waitingInLobby && !status) status = 'waiting';
 
     return status;
   }, [meeting.participants]);
