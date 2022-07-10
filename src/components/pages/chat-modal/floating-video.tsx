@@ -129,13 +129,15 @@ const FloatingVideo = ({ tracks }:any) => {
   const normalizedChannelList = useSelector((state:RootStateOrAny) => state.channel.normalizedChannelList);
   const meeting = useSelector((state:RootStateOrAny) => state.meeting.meeting);
   meeting.otherParticipants = lodash.reject(meeting.participants, (p:IParticipants) => p._id === user._id);
-  const userStatus:string = useMemo(() => {
-    const userStatus = lodash.find(meeting.participants, (p:IParticipants) => p._id === user._id)?.status;
-    let status;
+  const userStatus:string|undefined = useMemo(() => {
+    const participant:IParticipants = lodash.find(meeting.participants, (p:IParticipants) => p._id === user._id);
+    const userStatus = participant?.status;
+    let status:string = "";
 
     if (userStatus === 'pending' || userStatus === 'waiting') {
       status = userStatus;
     }
+    if (participant.waitingInLobby && !status) status = 'waiting';
 
     return status;
   }, [meeting.participants]);

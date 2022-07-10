@@ -114,7 +114,7 @@ const FloatingVideo = ({ tracks }:any) => {
   const { selectedMessage, normalizedChannelList } = useSelector((state:RootStateOrAny) => state.channel);
   const { meeting, options, meetingId, isFullScreen, pinnedParticipant, roomId } = useSelector((state:RootStateOrAny) => {
     const { meeting, options = {}, isFullScreen, pinnedParticipant } = state.meeting;
-    meeting.otherParticipants = lodash.reject(meeting.participants, p => p._id === user._id);
+    meeting.otherParticipants = lodash.reject(meeting.participants, (p:IParticipants) => p._id === user._id);
     return {
       meeting,
       options,

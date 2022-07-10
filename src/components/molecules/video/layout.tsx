@@ -229,8 +229,9 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
 }, ref) => {
   const [selectedPeer, setSelectedPeer]:any = useState(null);
   const selectedParticipant = useMemo(() => lodash.find(meetingParticipants, (p:IParticipants) => p.uid === selectedPeer), [selectedPeer, meetingParticipants]);
-  const participantInLobby = useMemo(() => !!lodash.find(meetingParticipants, (p:IParticipants) => p.status === 'waiting'), [meetingParticipants]);
+  const participantInLobby = useMemo(() => !!lodash.find(meetingParticipants, (p:IParticipants) => p.waitingInLobby), [meetingParticipants]);
   const [peerList, setPeerList]:any = useState([]);
+  const [showLobbyNotif, setShowLobbyNotif] = useState(false);
   const {
     timer,
     setStarted
@@ -359,6 +360,14 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
       setSelectedPeer(pinnedParticipant.uid);
     }
   }, [pinnedParticipant]);
+
+  useEffect(() => {
+    if (participantInLobby) {
+      setShowLobbyNotif(true);
+    } else {
+      setShowLobbyNotif(false);
+    }
+  }, [participantInLobby]);
 
   const checkToggleMute = () => {
     const userParticipantDetails:IParticipants = lodash.find(meetingParticipants, (p:IParticipants) => p._id === user?._id);
@@ -656,7 +665,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               </TouchableOpacity>
             </View>
             {
-              isHost && participantInLobby && (
+              isHost && showLobbyNotif && (
                 <View style={styles.lobbyNotifContainer}>
                   <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                     <Text color='white'>
@@ -671,7 +680,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                       </Text>
                     </TouchableOpacity>
                   </View>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => setShowLobbyNotif(false)}>
                     <CloseIcon
                       color='white'
                       type='close'
