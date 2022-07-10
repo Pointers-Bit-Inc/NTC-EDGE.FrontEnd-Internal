@@ -49,8 +49,8 @@ const Card = (props: {touchableStyle?:any, style?:any,   updateApplication?:any,
         }} onCheck={()=>{
             props?.updateApplication()
             setEdit(false)
-        }} checkable={true}  onChange={(e) => {
-            props.updateForm(props.stateName, e?.nativeEvent?.text)
+        }} checkable={true}  onChangeText={(e) => {
+            props.updateForm(props.stateName,e )
         }
         }   value={props.applicant} label={props.label} /> : <></>}
     </>};

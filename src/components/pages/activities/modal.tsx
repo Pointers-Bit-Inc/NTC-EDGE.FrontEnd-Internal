@@ -193,6 +193,7 @@ function ActivityModal(props:any){
 
         setUserProfileForm(flatten.flatten(props.details))
        setUserOriginalProfileForm(userProfileForm)
+        setHasChange(false)
         return ()=>{
             setChange(false);
             setStatus("");

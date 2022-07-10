@@ -349,10 +349,10 @@ const Payment=(props:any)=>{
            touchableStyle={{alignSelf: "flex-end"}}
            stateName={"soa." + index +".amount"}
            edit={props.edit}
-           display={"₱" + props.userProfileForm?.["soa." + index +".amount"]}
+           display={ props.userProfileForm?.["soa." + index +".amount"]}
            label={"Amount:"}
            style={{color: "#37405B", fontSize:fontValue(14)}}
-           applicant={"₱" + props.userProfileForm?.["soa." + index +".amount"]}/>
+           applicant={ props.userProfileForm?.["soa." + index +".amount"]}/>
 </View>
 
 
