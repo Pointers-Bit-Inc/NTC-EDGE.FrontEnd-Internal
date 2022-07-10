@@ -359,7 +359,7 @@ const Payment = (props: any) => {
                                               display={props.userProfileForm?.["soa." + index + ".amount"]}
                                               label={"Amount:"}
                                               style={{color: "#37405B", fontSize: fontValue(14)}}
-                                              applicant={props.userProfileForm?.["soa." + index + ".amount"]}/>
+                                              applicant={"" + props.userProfileForm?.["soa." + index + ".amount"]}/>
                                     </View>
 
 
