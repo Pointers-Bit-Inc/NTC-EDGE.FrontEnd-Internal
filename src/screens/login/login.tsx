@@ -29,7 +29,6 @@ const navigationBarHeight = height - Dimensions.get('window').height;
 const Login = ({ navigation }: any) => {
     const user = useSelector((state: RootStateOrAny) => state.user) || {};
     const biometricsLogin = user.biometrics;
-
     const {
         isBiometricSupported,
         grantAccess,

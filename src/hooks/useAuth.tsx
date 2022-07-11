@@ -139,7 +139,19 @@ export function useAuth(navigation) {
                 return navigation.navigate('ForgotPassword');
             }
             case 'login': {
-                return onLogin(value)
+                let cred:any = {
+                    email: formValue?.email?.value,
+                    password: formValue?.password?.value,
+                }
+    
+                if (formValue?.email?.isPhone) {
+                    cred = {
+                        phone: formValue?.email?.value,
+                        password: formValue?.password?.value ,
+                    }
+                }
+    
+                return onLogin(cred);
             }
             default:
                 return setFormValue({

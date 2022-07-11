@@ -27,6 +27,7 @@ import useOneSignal from "../../../hooks/useOneSignal";
 import Api from "../../../services/api";
 import BellIcon from '@assets/svg/bell';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import useBiometrics from 'src/hooks/useBiometrics';
 
 
 export default ({
@@ -42,6 +43,10 @@ export default ({
   const [enableBiometrics, setEnableBiometrics] = useState(false);
   const [loading, setLoading] = useState(false);
   const { destroy } = useOneSignal(user);
+  const {
+    isBiometricSupported,
+  } = useBiometrics();
+
   const settings = [
     /*{
       label: 'Notifications',
@@ -189,9 +194,13 @@ export default ({
         </View>
 
         {separator}
-        <View style={styles.sectionContainer}>
-          {renderRow({item: biometrics})}
-        </View>
+        {
+          isBiometricSupported && (
+            <View style={styles.sectionContainer}>
+              {renderRow({item: biometrics})}
+            </View>
+          )
+        }
         <View style={styles.sectionContainer}>
           {renderRow({item: logout})}
         </View>
