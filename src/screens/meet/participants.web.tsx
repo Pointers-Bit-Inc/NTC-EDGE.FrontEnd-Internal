@@ -399,26 +399,20 @@ const Participants = ({ onClose = () => {} }:any) => {
         </View>
       </View>
       <ScrollView>
-        {
-          isHost(user) && (
-            <>
-              <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
-                <TouchableOpacity onPress={() => setOnAddParticipant(true)}>
-                  <View style={styles.participantItem}>
-                    <AddPeopleIcon />
-                    <Text
-                      style={{ marginLeft: 10 }}
-                      size={16}
-                    >
-                      Add participants
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              {separator()}
-            </>
-          )
-        }
+        <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
+          <TouchableOpacity onPress={() => setOnAddParticipant(true)}>
+            <View style={styles.participantItem}>
+              <AddPeopleIcon />
+              <Text
+                style={{ marginLeft: 10 }}
+                size={16}
+              >
+                Add participants
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        {separator()}
         <View style={styles.participantsContainer}>
           <Text
             style={{ fontFamily: Regular500 }}

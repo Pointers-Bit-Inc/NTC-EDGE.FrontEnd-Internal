@@ -178,6 +178,7 @@ interface Props {
   setNotification?: any;
   isGroup?: boolean;
   isMaximize?: boolean;
+  isHost?: boolean;
   pinnedParticipant?: any;
   setPinnedParticipant?: any;
   onMessages?: any;
@@ -211,6 +212,7 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
   setNotification = () => {},
   isGroup = false,
   isMaximize = true,
+  isHost = false,
   pinnedParticipant = null,
   setPinnedParticipant = () => {},
 }, ref) => {
@@ -223,7 +225,6 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
       return selectedChannel;
     }
   );
-  const isHost = useSelector((state:RootStateOrAny) => state.meeting?.options?.isHost);
   const [selectedPeer, setSelectedPeer]:any = useState(null);
   const [peerList, setPeerList]:any = useState([]);
   const [sideContent, setSideContent] = useState('');

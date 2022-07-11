@@ -107,8 +107,10 @@ export default function basket(state = initialState, action:any) {
         .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
       }
 
-      newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
-      .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+      if (state.normalizedChannelList[action.payload.roomId]) {
+        newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+        .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+      }
 
       return newState;
     }

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Alert, Dimensions, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Text from '@components/atoms/text'
 import { Regular, Regular500 } from '@styles/font'
-import { AddPeopleIcon, ArrowLeftIcon, CloseIcon, MicOffIcon, MicOnIcon, NewMeetIcon, NewPenIcon, NewPhoneIcon, PinParticipantIcon, ToggleIcon } from '@components/atoms/icon'
+import { AddPeopleIcon, ArrowLeftIcon, CheckIcon, CloseIcon, MicOffIcon, MicOnIcon, NewMeetIcon, NewPenIcon, NewPhoneIcon, PinParticipantIcon, ToggleIcon } from '@components/atoms/icon'
 import { RFValue } from 'react-native-responsive-fontsize'
 import LinkIcon from '@components/atoms/icon/link'
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux'
@@ -17,7 +17,7 @@ import AwesomeAlert from 'react-native-awesome-alerts'
 import useApi from 'src/services/api'
 import Loading from '@components/atoms/loading'
 import { updateChannel } from 'src/reducers/channel/actions'
-import { setFullScreen, setMeeting, setOptions, setPinnedParticipant } from 'src/reducers/meeting/actions'
+import { setFullScreen, setMeeting, setOptions, setPinnedParticipant, updateMeetingParticipants } from 'src/reducers/meeting/actions'
 import AddParticipants from '@components/pages/chat-modal/add-participants'
 import { InputField } from '@components/molecules/form-fields'
 import useSignalr from 'src/hooks/useSignalr'
@@ -176,15 +176,17 @@ const Participants = ({ navigation }) => {
   } = useSignalr();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const api = useApi(user.sessionToken);
-  const { inTheMeeting = [], othersInvited = [], roomId = '', participants = [], meetingId = '', host = {} } = useSelector((state:RootStateOrAny) => {
+  const { waitingInLobby = [], inTheMeeting = [], othersInvited = [], roomId = '', participants = [], meetingId = '', host = {} } = useSelector((state:RootStateOrAny) => {
     const { meeting = {} } = state.meeting;
     const inTheMeeting = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status === 'joined');
-    const othersInvited = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status !== 'joined');
+    const othersInvited = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => !(p.status === 'joined' || p.status === 'waiting'));
+    const waitingInLobby = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status === 'waiting');
     return {
       roomId: meeting?.roomId,
       meetingId: meeting?._id,
       inTheMeeting,
       othersInvited,
+      waitingInLobby,
       participants: meeting?.participants,
       host: meeting?.host,
     }
@@ -219,11 +221,27 @@ const Participants = ({ navigation }) => {
   const removeMember = () => {
     setShowAlert(false);
     setLoading(true);
-    api.post(`/rooms/${roomId}/remove-member?participantId=${selectedParticipant._id}`)
+    api.post(`/rooms/${roomId}/remove-member?participantId=${selectedParticipant._id}&meetingId=${meetingId}`)
     .then((res) => {
       setLoading(false);
       if(res.data) {
         dispatch(updateChannel(res.data));
+      }
+    })
+    .catch(e => {
+      setLoading(false);
+      Alert.alert('Alert', e?.message || 'Something went wrong.')
+    });
+  }
+
+  const admitMember = () => {
+    optionModalRef.current?.close();
+    setLoading(true);
+    api.post(`/meetings/${meetingId}/admit?participantId=${selectedParticipant._id}`)
+    .then((res) => {
+      setLoading(false);
+      if(res.data) {
+        dispatch(updateMeetingParticipants(res.data));
       }
     })
     .catch(e => {
@@ -253,6 +271,43 @@ const Participants = ({ navigation }) => {
   )
 
   const options = () => {
+    if (isHost(user) && listType === 'waitingInLobby') {
+      return (
+        <>
+          <TouchableOpacity onPress={admitMember}>
+            <View style={[styles.option]}>
+              <CheckIcon
+                type='check2'
+                size={RFValue(18)}
+              />
+              <Text
+                style={{ marginLeft: 15 }}
+                color={'black'}
+                size={18}
+              >
+                Admit
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onRemoveConfirm}>
+            <View style={[styles.option]}>
+              <CloseIcon
+                type='close'
+                size={RFValue(18)}
+              />
+              <Text
+                style={{ marginLeft: 15 }}
+                color={'black'}
+                size={18}
+              >
+                Decline
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </>
+      )
+    }
+
     return (
       <>
         {
@@ -395,32 +450,36 @@ const Participants = ({ navigation }) => {
         </View>
       </View>
       <ScrollView>
-        {
-          isHost(user) && (
-            <>
-              <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
-                <TouchableOpacity onPress={() => navigation.navigate('Participants')}>
-                  <View style={styles.participantItem}>
-                    <AddPeopleIcon />
-                    <Text
-                      style={{ marginLeft: 10 }}
-                      size={16}
-                    >
-                      Add participants
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              {separator()}
-            </>
-          )
-        }
+        <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
+          <TouchableOpacity onPress={() => navigation.navigate('Participants')}>
+            <View style={styles.participantItem}>
+              <AddPeopleIcon />
+              <Text
+                style={{ marginLeft: 10 }}
+                size={16}
+              >
+                Add participants
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        {separator()}
         <View style={styles.participantsContainer}>
           <Text
             style={{ fontFamily: Regular500 }}
             size={14}
           >
-            In the  meeting ({lodash.size(inTheMeeting)})
+            Waiting in lobby ({lodash.size(waitingInLobby)})
+          </Text>
+          {renderParticipants(waitingInLobby, 'waitingInLobby')}
+        </View>
+        {separator()}
+        <View style={styles.participantsContainer}>
+          <Text
+            style={{ fontFamily: Regular500 }}
+            size={14}
+          >
+            In the meeting ({lodash.size(inTheMeeting)})
           </Text>
           {renderParticipants(inTheMeeting, 'inTheMeeting')}
         </View>
