@@ -225,7 +225,7 @@ const VideoCall = () => {
   const cameraList = useCamera();
   const microphoneList = useMicrophone();
   const playbackList = usePlayback();
-  const { ready, tracks }:any = useMicrophoneAndCameraTracks();
+  const { ready, tracks, error }:any = useMicrophoneAndCameraTracks();
   const [loading, setLoading] = useState(false);
   const [showParticipants, setShowParticipants] = useState(false);
   const [videoEnabled, setVideoEnabled] = useState(!isVoiceCall);
@@ -435,6 +435,14 @@ const VideoCall = () => {
       setAppIsReady(true);
     }
   }, [fontsLoaded]);
+
+  useEffect(() => {
+    if (error?.code === 'PERMISSION_DENIED') {
+      window.alert(
+        "Unable to access camera & microphone, Please allow camera & microphone access from system settings.",
+      );
+    }
+  }, [error]);
 
   if (!appIsReady) {
     return (
