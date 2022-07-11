@@ -139,19 +139,7 @@ export function useAuth(navigation) {
                 return navigation.navigate('ForgotPassword');
             }
             case 'login': {
-                let cred:any = {
-                    email: formValue?.email?.value,
-                    password: formValue?.password?.value,
-                }
-    
-                if (formValue?.email?.isPhone) {
-                    cred = {
-                        phone: formValue?.email?.value,
-                        password: formValue?.password?.value ,
-                    }
-                }
-    
-                return onLogin(cred);
+                return onLogin(value);
             }
             default:
                 return setFormValue({
@@ -175,14 +163,12 @@ export function useAuth(navigation) {
                 email: formValue?.email?.value,
                 password: formValue?.password?.value,
             }
-
             if (formValue?.email?.isPhone) {
                 cred = {
                     phone: formValue?.email?.value,
                     password: formValue?.password?.value ,
                 }
             }
-
             return onLogin(cred);
         }
     };

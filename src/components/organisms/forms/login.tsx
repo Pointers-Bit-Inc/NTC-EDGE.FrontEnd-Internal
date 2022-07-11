@@ -137,10 +137,19 @@ const LoginForm:FC<Props>=({isBiometricSupported=false,onBiometrics=()=>{},form=
                 value={form?.password?.value}
                 showPassword={()=>onChangeValue('showPassword')}
                 onChangeText={(value:string)=>onChangeValue('password',value)}
-                onSubmitEditing={(event:any)=>onChangeValue('login',{
-                    email:form?.email?.value,
-                    password:form?.password?.value
-                })}
+                onSubmitEditing={(event:any)=>{
+                    let cred:any = {
+                        email:form?.email?.value,
+                        password:form?.password?.value
+                    };
+                    if (form?.email?.isPhone) {
+                        cred = {
+                            phone: form?.email?.value,
+                            password: form?.password?.value ,
+                        }
+                    }
+                    onChangeValue('login',cred);
+                }}
             />
             {isBiometricSupported&&<View style={[styles.horizontal,{justifyContent:'flex-start'}]}>
                 <TouchableOpacity onPress={onBiometrics}>
