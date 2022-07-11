@@ -1,4 +1,4 @@
-const { SET_USER, UPDATE_USER, RESET_USER } = require('./types').default;
+const { SET_USER, UPDATE_USER, RESET_USER, SET_BIOMETRICS_LOGIN } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
 
@@ -7,13 +7,25 @@ const initialState = new InitialState();
 export default function basket(state = initialState, action = {}) {
   switch (action.type) {
     case SET_USER: {
-      return {
+      let biometrics = state.biometrics;
+
+      const newState = {
         ...state,
         ...action.payload,
         image: action?.payload?.profilePicture?.small || '',
       };
+
+      if (biometrics && biometrics.email !== newState.email) {
+        newState.biometrics = null;
+      } else {
+        newState.biometrics = biometrics;
+      }
+      
+      return newState;
     }
     case RESET_USER: {
+      let biometrics = state.biometrics;
+      
       return {
         username: '',
         email: '',
@@ -29,6 +41,7 @@ export default function basket(state = initialState, action = {}) {
         image: '',
         name: '',
         profilePicture: {},
+        biometrics,
       };
     }
     case UPDATE_USER:{
@@ -37,6 +50,7 @@ export default function basket(state = initialState, action = {}) {
 
      if(state.email != action.payload?.email){
        payload.email = action.payload?.email
+       payload.biometrics = null;
      }
       if(state.contactNumber != action.payload?.contactNumber){
         payload.contactNumber = action.payload?.contactNumber
@@ -53,6 +67,12 @@ export default function basket(state = initialState, action = {}) {
       return {
         ...state,
         ...payload
+      }
+    }
+    case SET_BIOMETRICS_LOGIN: {
+      return {
+        ...state,
+        biometrics: action.payload,
       }
     }
     default:

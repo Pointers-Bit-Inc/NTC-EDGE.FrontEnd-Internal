@@ -46,11 +46,13 @@ const styles=StyleSheet.create({
 });
 
 interface Props{
+    isBiometricSupported?: boolean;
+    onBiometrics?:any;
     form?:any;
     onChangeValue?:any;
 }
 
-const LoginForm:FC<Props>=({form={},onChangeValue=()=>{}})=>{
+const LoginForm:FC<Props>=({isBiometricSupported=false,onBiometrics=()=>{},form={},onChangeValue=()=>{}})=>{
     const inputRef:any=useRef(null);
     const passwordRef:any=useRef(null);
     const keepMeLoggedInChecker=(checked:boolean)=>{
@@ -140,6 +142,16 @@ const LoginForm:FC<Props>=({form={},onChangeValue=()=>{}})=>{
                     password:form?.password?.value
                 })}
             />
+            {isBiometricSupported&&<View style={[styles.horizontal,{justifyContent:'flex-start'}]}>
+                <TouchableOpacity onPress={onBiometrics}>
+                    <Text
+                        style={[InputStyles.text,{fontSize:fontValue(12),fontFamily:Regular500,color:text.primary}]}
+                        size={12}
+                    >
+                        Login with biometrics
+                    </Text>
+                </TouchableOpacity>
+            </View>}
             {isMobile&&<View style={[styles.horizontal,{justifyContent:'flex-start'}]}>
                 <TouchableOpacity onPress={()=>onChangeValue('forgotPassword')}>
                     <Text

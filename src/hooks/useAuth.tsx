@@ -44,6 +44,7 @@ export function useAuth(navigation) {
             email: data.email,
             phone: data.phone,
             password: data.password,
+            isBiometrics: !!data.isBiometrics
         })
             .then(res => {
                 setLoading(false);
@@ -66,6 +67,7 @@ export function useAuth(navigation) {
                 }
             });
     };
+    
     const [formValue , setFormValue] = useSafeState({
         email : {
             value : '' ,

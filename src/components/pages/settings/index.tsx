@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
-import { Image, View } from 'react-native';
+import { ActivityIndicator, Image, View } from 'react-native';
 import Text from '@atoms/text';
 import LogoutIcon from "@assets/svg/logout";
-import { ArrowRightIcon, CloseIcon, ExclamationIcon, RightIcon } from '@atoms/icon';
+import { ArrowRightIcon, CloseIcon, ExclamationIcon, RightIcon, ToggleIcon } from '@atoms/icon';
 import Alert from '@atoms/alert';
 import Button from '@atoms/button';
 import NavBar from '@molecules/navbar';
@@ -20,12 +20,13 @@ import {
   setPinnedApplication
 } from "../../../reducers/application/actions";
 import {setResetFilterStatus} from "../../../reducers/activity/actions";
-import {resetUser} from "../../../reducers/user/actions";
+import {resetUser, setBiometricsLogin} from "../../../reducers/user/actions";
 import {resetMeeting} from "../../../reducers/meeting/actions";
 import {resetChannel} from "../../../reducers/channel/actions";
 import useOneSignal from "../../../hooks/useOneSignal";
 import Api from "../../../services/api";
-
+import BellIcon from '@assets/svg/bell';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 export default ({
@@ -33,9 +34,13 @@ export default ({
 }: any) => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootStateOrAny) => state.user) || {};
+  const biometricsLogin = user.biometrics;
+  const api = Api(user.sessionToken);
   const profilePicture = user?.profilePicture?.small;
   const photo = profilePicture ? {uri: profilePicture} : require('@assets/avatar.png');
   const [visible, setVisible] = useState(false);
+  const [enableBiometrics, setEnableBiometrics] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { destroy } = useOneSignal(user);
   const settings = [
     /*{
@@ -60,6 +65,26 @@ export default ({
       onPress: () => {},
     },*/
   ];
+  const biometrics = {
+    label: 'Login with biometrics',
+    value: 'biometrics',
+    disabled: loading,
+    icon: <MaterialCommunityIcons
+      name="fingerprint"
+      size={20}
+      color={'black'}
+    />,
+    rightIcon: !loading ? <ToggleIcon
+      style={
+        enableBiometrics ?
+        styles.toggleActive :
+        styles.toggleDefault
+      }
+      size={28}
+    /> : <ActivityIndicator color={'#A0A3BD'} size={24} />,
+    onPress: () => onRequestBiometrics(user._id),
+  }
+
   const logout = {
     label: 'Log out',
     value: 'logout',
@@ -67,11 +92,9 @@ export default ({
     onPress: () => setVisible(true),
   };
 
-
-  const onLogout =  useCallback(() => {
+  const onLogout = useCallback(() => {
     setVisible(false)
     setTimeout(()=>{
-      const api=Api(user.sessionToken);
       dispatch(setApplications([]))
       dispatch(setPinnedApplication([]))
       dispatch(setNotPinnedApplication([]))
@@ -84,6 +107,7 @@ export default ({
       navigation.dispatch(StackActions.replace('Login'));
     },500);
   }, []);
+
   const renderRow = ({item}: any) => {
     return (
       <TouchableOpacity disabled={item?.disabled ? true : false} onPress={item?.onPress}>
@@ -93,22 +117,45 @@ export default ({
             <Text style={[styles.textSettings, !!item?.disabled && {color: disabledColor} , item?.value === 'logout' && {color: text.error}]}>{item?.label}</Text>
           </View>
           {
-            item?.value !== 'logout' &&
+            (item?.value !== 'logout' && !item?.rightIcon) &&
             <RightIcon />
           }
+          {item?.rightIcon}
         </View>
       </TouchableOpacity>
     )
   };
+
+  const onRequestBiometrics = async (userId:string) => {
+    if (enableBiometrics) {
+      setEnableBiometrics(false);
+      return dispatch(setBiometricsLogin(null));
+    }
+    setLoading(true);
+    api.get(`/users/${userId}/request-biometrics`)
+      .then(res => {
+        setLoading(false);
+        console.log('RESULT', res.data);
+        dispatch(setBiometricsLogin(res.data));
+      })
+      .catch(e => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (biometricsLogin?.email) {
+      setEnableBiometrics(true);
+    } else {
+      setEnableBiometrics(false);
+    }
+  }, [biometricsLogin]);
 
   const separator = <View style={styles.separator} />;
   const separator2 = <View style={styles.separator2} />;
 
   return (
     <>
-
-
-
       <NavBar
         title='Preview'
         leftIcon={<CloseIcon type='close' color='#fff' />}
@@ -142,13 +189,13 @@ export default ({
         </View>
 
         {separator}
-
+        <View style={styles.sectionContainer}>
+          {renderRow({item: biometrics})}
+        </View>
         <View style={styles.sectionContainer}>
           {renderRow({item: logout})}
-
         </View>
         <Alert
-
             visible={visible}
             title='Log out'
             message='Are you sure you want to log out?'
