@@ -11,7 +11,7 @@ import React, {
 import { View, StyleSheet, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import lodash from 'lodash';
 import { useInitializeAgora } from 'src/hooks/useAgora';
-import { MicIcon, CameraIcon, MicOffIcon, MessageIcon, ParticipantsIcon, ArrowDownIcon, CloseIcon } from '@components/atoms/icon';
+import { MicIcon, CameraIcon, MicOffIcon, MessageIcon, ParticipantsIcon, ArrowDownIcon, CloseIcon, NewGuestIcon } from '@components/atoms/icon';
 import {
   RtcLocalView,
   RtcRemoteView,
@@ -658,7 +658,10 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                 </View>
               </TouchableOpacity>
               <View style={{ width: 5 }} />
-              <TouchableOpacity onPress={onAddParticipants}>
+              <TouchableOpacity onPress={() => {
+                onAddParticipants();
+                setShowLobbyNotif(false);
+              }}>
                 <View style={styles.icon}>
                   <ParticipantsIcon />
                 </View>
@@ -668,10 +671,16 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
               isHost && showLobbyNotif && (
                 <View style={styles.lobbyNotifContainer}>
                   <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                    <View style={{ marginLeft: 15, marginRight: 15 }}>
+                      <NewGuestIcon color="white" />
+                    </View>
                     <Text color='white'>
                       Guests are waiting to join.
                     </Text>
-                    <TouchableOpacity onPress={onAddParticipants}>
+                    <TouchableOpacity onPress={() => {
+                      onAddParticipants();
+                      setShowLobbyNotif(false);
+                    }}>
                       <Text
                         style={{ fontFamily: Bold }}
                         color='white'

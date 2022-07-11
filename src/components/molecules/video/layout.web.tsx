@@ -1,7 +1,7 @@
 import React, {
   useEffect,
   useState,
-  ReactNode,
+  useMemo,
   FC,
   useImperativeHandle,
   forwardRef,
@@ -11,7 +11,7 @@ import { View, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithou
 import StyleSheet from 'react-native-media-query';
 import lodash from 'lodash';
 import { useInitializeAgora } from 'src/hooks/useAgora';
-import { MicOffIcon, MessageIcon, ParticipantsIcon, CloseIcon, ArrowDownIcon, MenuIcon } from '@components/atoms/icon';
+import { MicOffIcon, MessageIcon, ParticipantsIcon, CloseIcon, ArrowDownIcon, MenuIcon, NewGuestIcon } from '@components/atoms/icon';
 import { Hoverable } from 'react-native-web-hooks';
 import {
   AgoraVideoPlayer,
@@ -160,6 +160,17 @@ const { styles, ids } = StyleSheet.create({
     zIndex: 99,
     top: 5,
     right: 0,
+  },
+  lobbyNotifContainer: {
+    position: 'absolute',
+    right: 15,
+    top: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#2863D6',
   }
 })
 interface Props {
@@ -225,9 +236,11 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
       return selectedChannel;
     }
   );
+  const participantInLobby = useMemo(() => !!lodash.find(meetingParticipants, (p:IParticipants) => p.status === 'waiting' && p.waitingInLobby), [meetingParticipants]);
   const [selectedPeer, setSelectedPeer]:any = useState(null);
   const [peerList, setPeerList]:any = useState([]);
   const [sideContent, setSideContent] = useState('');
+  const [showLobbyNotif, setShowLobbyNotif] = useState(false);
   const [layout, setLayout] = useState({
     height: 0,
     left: 0,
@@ -361,6 +374,14 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
       setSelectedPeer(pinnedParticipant.uid);
     }
   }, [pinnedParticipant]);
+
+  useEffect(() => {
+    if (participantInLobby) {
+      setShowLobbyNotif(true);
+    } else {
+      setShowLobbyNotif(false);
+    }
+  }, [participantInLobby]);
 
   useEffect(() => {
     const { width, height } = layout;
@@ -726,6 +747,40 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
             onLayout={onLayout}
           >
             {renderVideoElement()}
+            {
+              isHost && showLobbyNotif && (
+                <View style={styles.lobbyNotifContainer}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                    <View style={{ marginLeft: 15, marginRight: 15 }}>
+                      <NewGuestIcon color="white" />
+                    </View>
+                    <Text color='white'>
+                      Guests are waiting to join.
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        onSetSideContent('participants');
+                        setShowLobbyNotif(false);
+                      }}
+                    >
+                      <Text
+                        style={{ fontFamily: Bold, marginRight: 15 }}
+                        color='white'
+                      >
+                        {' '}View lobby
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <TouchableOpacity onPress={() => setShowLobbyNotif(false)}>
+                    <CloseIcon
+                      color='white'
+                      type='close'
+                      size={fontValue(18)}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )
+            }
           </View>
         </View>
         {

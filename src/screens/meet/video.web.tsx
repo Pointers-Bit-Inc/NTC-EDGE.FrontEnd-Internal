@@ -18,7 +18,7 @@ import Text from '@components/atoms/text'
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 import useSignalr from 'src/hooks/useSignalr';
 import { AgoraVideoPlayer, createMicrophoneAndCameraTracks } from 'agora-rtc-react';
-import { button, text } from '@styles/color';
+import { button, outline, text } from '@styles/color';
 import { Bold, Regular, Regular500 } from '@styles/font';
 
 const logo = require('@assets/ntc-edge.png');
@@ -42,6 +42,7 @@ import ProfileImage from '@components/atoms/image/profile';
 import usePlayback from 'src/hooks/usePlayback';
 import IMeetings from 'src/interfaces/IMeetings';
 import { openUrl } from 'src/utils/web-actions';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const { ids, styles } = StyleSheet.create({
   container: {
@@ -176,7 +177,35 @@ const { ids, styles } = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius:15,
     elevation: 45,
-  }
+  },
+  cancelText: {
+    fontSize: fontValue(16),
+    color: '#DC2626',
+    fontFamily: Regular500,
+  },
+  confirmText: {
+    fontSize: fontValue(16),
+    color: text.info,
+    fontFamily: Regular500,
+  },
+  titleMessage: {
+    color: '#14142B',
+    textAlign: 'center',
+    fontSize: fontValue(18),
+    fontFamily: Regular500,
+  },
+  message: {
+    color: '#4E4B66',
+    textAlign: 'center',
+    fontSize:fontValue(14),
+    marginHorizontal: 15,
+    marginBottom: 15,
+    fontFamily: Regular,
+  },
+  content: {
+    borderBottomColor: outline.default,
+    borderBottomWidth: 1,
+  },
 });
 
 const useMicrophoneAndCameraTracks = createMicrophoneAndCameraTracks({
@@ -225,7 +254,7 @@ const VideoCall = () => {
   const cameraList = useCamera();
   const microphoneList = useMicrophone();
   const playbackList = usePlayback();
-  const { ready, tracks }:any = useMicrophoneAndCameraTracks();
+  const { ready, tracks, error }:any = useMicrophoneAndCameraTracks();
   const [loading, setLoading] = useState(false);
   const [showParticipants, setShowParticipants] = useState(false);
   const [videoEnabled, setVideoEnabled] = useState(!isVoiceCall);
@@ -242,6 +271,12 @@ const VideoCall = () => {
     participants: [],
   });
   const [selectedContacts, setSelectedContacts] = useState<any>([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertData, setAlertData] = useState({
+    title: '',
+    message: '',
+    confirm: '',
+  });
 
   const onStartMeeting = () => {
     setLoading(true);
@@ -435,6 +470,17 @@ const VideoCall = () => {
       setAppIsReady(true);
     }
   }, [fontsLoaded]);
+
+  useEffect(() => {
+    if (error?.code === 'PERMISSION_DENIED' || error?.code === 'NOT_READABLE') {
+      setAlertData({
+        title: 'Unable to access camera & microphone',
+        message: `Please allow camera & microphone access from ${error?.code === 'PERMISSION_DENIED' ? 'browser' : 'system'} settings.`,
+        confirm: 'OK',
+      });
+      setTimeout(() => setShowAlert(true), 500);
+    }
+  }, [error]);
 
   if (!appIsReady) {
     return (
@@ -815,6 +861,26 @@ const VideoCall = () => {
           )
         }
       </View>
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        contentContainerStyle={{ borderRadius: 15 }}
+        title={alertData.title}
+        titleStyle={styles.titleMessage}
+        message={alertData.message}
+        messageStyle={styles.message}
+        contentStyle={styles.content}
+        closeOnTouchOutside={false}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        cancelButtonColor={'white'}
+        confirmButtonColor={'white'}
+        cancelButtonTextStyle={styles.cancelText}
+        confirmButtonTextStyle={styles.confirmText}
+        actionContainerStyle={{ justifyContent: 'space-around' }}
+        confirmText={alertData.confirm}
+        onConfirmPressed={() => setShowAlert(false)}
+      />
     </View>
   );
 }
