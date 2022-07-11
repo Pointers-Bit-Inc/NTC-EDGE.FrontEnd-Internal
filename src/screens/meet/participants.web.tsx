@@ -12,7 +12,7 @@ import AwesomeAlert from 'react-native-awesome-alerts'
 import useApi from 'src/services/api'
 import Loading from '@components/atoms/loading'
 import { updateChannel } from 'src/reducers/channel/actions'
-import { setPinnedParticipant } from 'src/reducers/meeting/actions'
+import { setPinnedParticipant, updateMeetingParticipants } from 'src/reducers/meeting/actions'
 import AddParticipants from '@components/pages/chat-modal/add-participants'
 import useSignalr from 'src/hooks/useSignalr'
 import { fontValue } from '@components/pages/activities/fontValue'
@@ -182,15 +182,17 @@ const Participants = ({ onClose = () => {} }:any) => {
   } = useSignalr();
   const user = useSelector((state:RootStateOrAny) => state.user);
   const api = useApi(user.sessionToken);
-  const { inTheMeeting = [], othersInvited = [], roomId = '', participants = [], meetingId = '', host = {} } = useSelector((state:RootStateOrAny) => {
+  const { waitingInLobby = [], inTheMeeting = [], othersInvited = [], roomId = '', participants = [], meetingId = '', host = {} } = useSelector((state:RootStateOrAny) => {
     const { meeting = {} } = state.meeting;
     const inTheMeeting = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status === 'joined');
-    const othersInvited = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status !== 'joined');
+    const othersInvited = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => !(p.status === 'joined' || p.status === 'waiting'));
+    const waitingInLobby = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status === 'waiting');
     return {
       roomId: meeting?.roomId,
       meetingId: meeting?._id,
       inTheMeeting,
       othersInvited,
+      waitingInLobby,
       participants: meeting?.participants,
       host: meeting?.host,
     }
@@ -240,6 +242,21 @@ const Participants = ({ onClose = () => {} }:any) => {
     });
   }
 
+  const admitMember = () => {
+    setLoading(true);
+    api.post(`/meetings/${meetingId}/admit?participantId=${selectedParticipant._id}`)
+    .then((res) => {
+      setLoading(false);
+      if(res.data) {
+        dispatch(updateMeetingParticipants(res.data));
+      }
+    })
+    .catch(e => {
+      setLoading(false);
+      Alert.alert('Alert', e?.message || 'Something went wrong.')
+    });
+  }
+
   const addMembers = (addedMembers:any) => {
     setShowAlert(false);
     setLoading(true);
@@ -279,6 +296,66 @@ const Participants = ({ onClose = () => {} }:any) => {
   const showOption = (participant:IParticipants, type = '') => {
     setSelectedParticipant(participant)
     setListType(type);
+  }
+
+  const options = (type:string, item:IParticipants) => {
+    if (isHost(user) && listType === 'waitingInLobby') {
+      return (
+        <>
+          <MenuOption
+            onSelect={admitMember}
+          >
+            <Text>Admit</Text>
+          </MenuOption><MenuOption
+            onSelect={() => onRemoveConfirm(item)}
+          >
+            <Text>Decline</Text>
+          </MenuOption>
+        </>
+      )
+    }
+
+    return (
+      <>
+        {
+          isHost(user) && (
+            <>
+              {
+                type === 'inTheMeeting' && (
+                  <MenuOption
+                    onSelect={() => {
+                      setLoading(true);
+                      muteParticipant(meetingId, {
+                        participantId: item._id,
+                        muted: !item.muted,
+                      }, () => {
+                        setLoading(false);
+                      });
+                    }}
+                  >
+                    <Text>{`${item.muted ? 'Unmute' : 'Mute'} participant`}</Text>
+                  </MenuOption>
+                )
+              }
+              <MenuOption
+                onSelect={() => onRemoveConfirm(item)}
+              >
+                <Text>Remove from meeting</Text>
+              </MenuOption>
+            </>
+          )
+        }
+        {
+          type === 'inTheMeeting' && (
+            <MenuOption
+              onSelect={() => dispatch(setPinnedParticipant(item))}
+            >
+              <Text>Pin for me</Text>
+            </MenuOption>
+          )
+        }
+      </>
+    )
   }
 
   const renderParticipants = (participants = [], type = '') => {
@@ -323,43 +400,7 @@ const Participants = ({ onClose = () => {} }:any) => {
           />
         </MenuTrigger>
         <MenuOptions optionsContainerStyle={styles.menuOptions}>
-          {
-            isHost(user) && (
-              <>
-                {
-                  type === 'inTheMeeting' && (
-                    <MenuOption
-                      onSelect={() => {
-                        setLoading(true);
-                        muteParticipant(meetingId, {
-                          participantId: item._id,
-                          muted: !item.muted,
-                        }, () => {
-                          setLoading(false);
-                        });
-                      }}
-                    >
-                      <Text>{`${item.muted ? 'Unmute' : 'Mute'} participant`}</Text>
-                    </MenuOption>
-                  )
-                }
-                <MenuOption
-                  onSelect={() => onRemoveConfirm(item)}
-                >
-                  <Text>Remove from meeting</Text>
-                </MenuOption>
-              </>
-            )
-          }
-          {
-            type === 'inTheMeeting' && (
-              <MenuOption
-                onSelect={() => dispatch(setPinnedParticipant(item))}
-              >
-                <Text>Pin for me</Text>
-              </MenuOption>
-            )
-          }
+          {options(type, item)}
         </MenuOptions>
       </Menu>
     ))
@@ -411,6 +452,16 @@ const Participants = ({ onClose = () => {} }:any) => {
               </Text>
             </View>
           </TouchableOpacity>
+        </View>
+        {separator()}
+        <View style={styles.participantsContainer}>
+          <Text
+            style={{ fontFamily: Regular500 }}
+            size={14}
+          >
+            Waiting in lobby ({lodash.size(waitingInLobby)})
+          </Text>
+          {renderParticipants(waitingInLobby, 'waitingInLobby')}
         </View>
         {separator()}
         <View style={styles.participantsContainer}>

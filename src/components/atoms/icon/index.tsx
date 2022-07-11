@@ -59,6 +59,7 @@ import SpeakerOnIcon from './speaker-on';
 import SpeakerOffIcon from './speaker-off';
 import VideoOffIcon from './video-off';
 import VideoOnIcon from './video-on';
+import NewGuestIcon from './new-guest';
 
 export {
   ExclamationIcon,
@@ -122,4 +123,5 @@ export {
   SpeakerOffIcon,
   VideoOffIcon,
   VideoOnIcon,
+  NewGuestIcon,
 };
