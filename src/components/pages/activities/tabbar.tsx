@@ -113,23 +113,14 @@ export default function TabBar({navigation,route}){
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
     const hasNewChat = false;
     const hasMeet = false;
-    // const { hasNewChat = false, hasMeet = false, currentMeeting = {} } = useSelector((state: RootStateOrAny) => {
-    //     const { channel = {}, meeting = {} } = state;
-    //     const { channelList = [] } = channel;
-    //     const { activeMeetings = [] } = meeting;
-
-    //     const hasNewChat = lodash.reject(channelList, (ch:IRooms) => ch.hasSeen);
-    //     const hasMeet = lodash.reject(activeMeetings, (mt:IMeetings) => mt.ended);
-    //     return {
-    //         hasNewChat: lodash.size(hasNewChat) > 0,
-    //         hasMeet: lodash.size(hasMeet) > 0,
-    //         currentMeeting: meeting.meeting,
-    //     }
-    // })
     const newMeeting = useMemo(() => {
       const meetingList = lodash.keys(normalizeActiveMeetings).map((m:string) => normalizeActiveMeetings[m])
       const hasMeet = lodash.reject(meetingList, (mt:IMeetings) => mt.ended);
-      const newMeeting = lodash.find(hasMeet, (am:IMeetings) => lodash.find(am.participants, (ap:IParticipants) => ap._id === user._id && ap.hasJoined === false && !(ap.status === 'busy' || ap.muted)));
+      const newMeeting = lodash.find(hasMeet, (am:IMeetings) =>
+        lodash.find(am.participants, (ap:IParticipants) =>
+          ap._id === user._id && ap.hasJoined === false && !(ap.status === 'busy' || ap.status === 'waiting' || ap.muted)
+        )
+      );
       return newMeeting;
     }, [normalizeActiveMeetings]);
     const [pnApplication,setPnApplication]=useState(pinnedApplications);

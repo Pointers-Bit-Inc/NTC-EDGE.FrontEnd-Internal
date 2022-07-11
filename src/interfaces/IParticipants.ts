@@ -22,6 +22,7 @@ interface IParticipants {
   status: string;
   isAdmin?: boolean;
   muted?: boolean;
+  waitingInLobby?: boolean;
 }
 
 export default IParticipants;
