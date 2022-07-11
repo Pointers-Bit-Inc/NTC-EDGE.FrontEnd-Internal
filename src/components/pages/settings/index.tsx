@@ -73,11 +73,11 @@ export default ({
   const biometrics = {
     label: 'Login with biometrics',
     value: 'biometrics',
-    disabled: loading,
+    disabled: loading || !isBiometricSupported,
     icon: <MaterialCommunityIcons
       name="fingerprint"
       size={20}
-      color={'black'}
+      color={loading || !isBiometricSupported ? disabledColor : 'black'}
     />,
     rightIcon: !loading ? <ToggleIcon
       style={
@@ -194,13 +194,9 @@ export default ({
         </View>
 
         {separator}
-        {
-          isBiometricSupported && (
-            <View style={styles.sectionContainer}>
-              {renderRow({item: biometrics})}
-            </View>
-          )
-        }
+        <View style={styles.sectionContainer}>
+          {renderRow({item: biometrics})}
+        </View>
         <View style={styles.sectionContainer}>
           {renderRow({item: logout})}
         </View>
