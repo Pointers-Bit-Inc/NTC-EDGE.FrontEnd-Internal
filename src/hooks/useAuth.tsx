@@ -3,13 +3,13 @@ import {useDispatch} from "react-redux";
 import {useCallback } from "react";
 import {setUser} from "../reducers/user/actions";
 import {StackActions , useFocusEffect} from "@react-navigation/native";
-import {validateEmail , validatePassword} from "../utils/form-validations";
+import {validateEmail , validatePassword, validatePhone} from "../utils/form-validations";
 import {Alert , BackHandler} from "react-native";
 import useSafeState from "./useSafeState";
 
 export function useAuth(navigation) {
     const errorResponse = {
-        email : 'Enter a valid email address' ,
+        email : 'Enter a valid phone no./email address' ,
         password : 'Password must be at least 8 characters' ,
     };
     const api = useApi('');
@@ -41,8 +41,9 @@ export function useAuth(navigation) {
     const onLogin = async (data) => {
         setLoading(true);
         api.post('/internal-signin' , {
-            email : data.email ,
-            password : data.password ,
+            email: data.email,
+            phone: data.phone,
+            password: data.password,
         })
             .then(res => {
                 setLoading(false);
@@ -67,10 +68,10 @@ export function useAuth(navigation) {
     };
     const [formValue , setFormValue] = useSafeState({
         email : {
-
             value : '' ,
             isValid : false ,
             error : '' ,
+            isPhone: false,
             hasValidation: false,
            description: ''
         } ,
@@ -95,13 +96,17 @@ export function useAuth(navigation) {
     const onChangeValue = (key: string , value: any) => {
         switch (key) {
             case 'email': {
-                const checked = validateEmail(value);
+                const checkedEmail = validateEmail(value);
+                const checkedPhone = validatePhone(value);
+                const checked = checkedEmail || checkedPhone;
+
                 return setFormValue({
                     ...formValue ,
                     [key] : {
-                        value : value ,
-                        isValid : checked ,
-                        error : !checked ? errorResponse['email'] : ''
+                        value: value ,
+                        isValid: checked,
+                        isPhone: checkedPhone,
+                        error: !checked ? errorResponse['email'] : ''
                     }
                 });
             }
@@ -152,10 +157,19 @@ export function useAuth(navigation) {
         if (!formValue.password.isValid) {
             return onChangeValue('password' , formValue.password.value);
         } else {
-            return onLogin({
-                email : formValue?.email?.value ,
-                password : formValue?.password?.value ,
-            });
+            let cred:any = {
+                email: formValue?.email?.value,
+                password: formValue?.password?.value,
+            }
+
+            if (formValue?.email?.isPhone) {
+                cred = {
+                    phone: formValue?.email?.value,
+                    password: formValue?.password?.value ,
+                }
+            }
+
+            return onLogin(cred);
         }
     };
     const isValid =
