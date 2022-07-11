@@ -12,7 +12,7 @@ import {
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
-import {APPROVED, DECLINED} from "../../../../reducers/activity/initialstate";
+import {APPROVED, CASHIER, DECLINED} from "../../../../reducers/activity/initialstate";
 import moment from "moment";
 import {Bold, Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
@@ -186,7 +186,7 @@ const [loading, setLoading] = useSafeState(false)
 
                                             {personnel != undefined &&
                                                 (
-                                                    getStatusText(props, personnel) == APPROVED ? getStatusText(props, personnel) : (!excludeStatus(props, personnel) ||  !!(props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks))) &&
+                                                    getStatusText(props, personnel) == APPROVED ? getStatusText(props, personnel) : (!excludeStatus(props, personnel) ||  !!(props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks || props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks))) &&
                                                 <CustomText
                                                     style={{fontSize: fontValue(12), flex: 1, color: "#37405B"}}>
                                                     {(
@@ -210,7 +210,7 @@ const [loading, setLoading] = useSafeState(false)
                                                     }]}>{getStatusText(props, personnel) === DECLINED ? 'NOD/' : ''}Remarks</Text>
                                                     <Text style={[styles?.remarksContent, statusColor(
                                                         getStatusText(props, personnel)
-                                                    )]}>{props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks}</Text>
+                                                    )]}>{[CASHIER].indexOf(user?.role?.key)!= -1 && props.paymentHistory ? (props?.paymentHistory?.remarks|| props?.paymentHistory?.[0]?.remarks) : ( props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}</Text>
                                                 </View>
                                             </View>
 
