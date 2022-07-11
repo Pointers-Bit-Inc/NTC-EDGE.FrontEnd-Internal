@@ -193,18 +193,7 @@ const Approval=(props:any)=>{
             transparent={true}
             visible={props.visible}
             onRequestClose={_springHide}>
-            <View style={(isMobile&& !(Platform?.isPad||isTablet())) ? {
 
-                flex:1,
-                width:"100%",
-                height:"100%",
-                alignItems:'center',
-                justifyContent:'center',
-                position:'absolute',
-                backgroundColor:'rgba(52,52,52,0.5)',
-            } : {}}>
-                <OnBackdropPress onPressOut={_springHide}/>
-            </View>
             {loading && <View style={{flex: 1,alignItems:'center',
                 justifyContent:'center',}}>
                 <ActivityIndicator  color={"#fff"}/>
