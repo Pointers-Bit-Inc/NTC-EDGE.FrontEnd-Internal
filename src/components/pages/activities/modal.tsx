@@ -195,7 +195,7 @@ function ActivityModal(props:any){
     useEffect(()=>{
 
         setUserProfileForm(flatten.flatten(props.details))
-       setUserOriginalProfileForm(userProfileForm)
+        setUserOriginalProfileForm(userProfileForm)
         setHasChange(false)
         return ()=>{
             setChange(false);
@@ -234,7 +234,7 @@ function ActivityModal(props:any){
     useEffect(()=>{
         dispatch(setRightLayoutComponent(activityModalScreenComponent))
     },[activityModalScreenComponent]);
-const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
+    const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
     const [discardAlert,setDiscardAlert]=useSafeState(false);
     const [editAlert,setEditAlert]=useSafeState(false);
     const handleBackButtonClick=()=>{
@@ -291,9 +291,9 @@ const hitSlop = {top: 50, left: 50, bottom: 50, right: 50}
             setMessageUpdate('The Application has been updated!')
             setTitleUpdate("Success")
             var _flatten = flatten.flatten({...response.data.doc})
-           setUserOriginalProfileForm({..._flatten})
+            setUserOriginalProfileForm({..._flatten})
             setUserProfileForm(_flatten)
-callback()
+            callback()
 
 
         }).catch((err)=>{
@@ -416,18 +416,18 @@ callback()
                     </TouchableOpacity>
 
                     <Text style={[styles.applicationType,{width:"90%"}]}>{props?.details?.applicationType||props?.details?.service?.name}</Text>
-                  <View style={{flexDirection: "row"}}>
-                      <TouchableOpacity hitSlop={hitSlop}  onPress={editBtn}>
-                          <EditIcon color="#606A80"/>
-                      </TouchableOpacity>
-                  </View>
+                    <View style={{flexDirection: "row"}}>
+                        <TouchableOpacity hitSlop={hitSlop}  onPress={editBtn}>
+                            <EditIcon color="#606A80"/>
+                        </TouchableOpacity>
+                    </View>
 
                     {/*<View/>*/}
                 </View>}
 
                 <ModalTab setEditAlert={setEditAlert} updateApplication={updateApplication}  editBtn={editBtn}  userOriginalProfileForm={userOriginalProfileForm}
                           userProfileForm={userProfileForm}
-                           setEdit={setEdit}
+                          setEdit={setEdit}
                           setUserProfileForm={setUserProfileForm}
                           setUserOriginalProfileForm={setUserOriginalProfileForm}
                           hasChanges={hasChanges} edit={edit} dismissed={()=>{
@@ -450,7 +450,7 @@ callback()
                                         <ApprovedButton
                                             user={user}
                                             currentLoading={currentLoading}
-                                            allButton={allButton}
+                                            allButton={false}
                                             onPress={()=>{
                                                 if(getRole(user,[EVALUATOR])){
 
@@ -669,7 +669,7 @@ callback()
                     setChange(false)
                     setDiscardAlert(false)
                 }
-                   }
+                }
                 onCancel={()=>setDiscardAlert(false)}
             />
             <CustomAlert
@@ -713,7 +713,7 @@ callback()
 
 
                 }
-                   }
+                }
                 onCancel={()=>setEditAlert(false)}
             />
         </NativeView>

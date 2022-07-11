@@ -250,15 +250,15 @@ const Approval=(props:any)=>{
                     message={message}/>
                 {getRole(user,[CASHIER, DIRECTOR,ACCOUNTANT]) && <KeyboardAvoidingView
                     behavior={Platform.OS==="ios" ? "padding" : "height"}
-                    style={[styles.container,{marginHorizontal:10,alignItems:"center",}]}
+                    style={[styles.container]}
                 >
-                    <OnBackdropPress onPressOut={_springHide}/>
+                    <OnBackdropPress onPressOut={_springHide} styles={{  backgroundColor : !props.showAlert && visible  ? "rgba(0, 0, 0, 0.5)" : undefined}}/>
                     {
                         <Animated.View style={[styles.group,{
                             width:((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync())))||dimensions.width<=768 ? "100%" : "31.6%",  //474/1500
                             display:!props.showAlert && visible  ? undefined : "none"
                         },{transform:[{scale:springValue}]}]}>
-                            <View style={styles.shadow}>
+                            <View style={[styles.shadow, {marginHorizontal:10,}]}>
                                 <View style={styles.rect}>
                                     <View style={{alignSelf:'flex-start'}}>
                                         <TouchableOpacity onPress={_springHide}>

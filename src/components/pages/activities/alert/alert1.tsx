@@ -1,5 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {ActivityIndicator, Animated, Dimensions, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+    ActivityIndicator,
+    Animated,
+    Dimensions,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View
+} from "react-native";
 import Modal from "react-native-modal";
 import {alertStyle} from "@pages/activities/alert/styles";
 import CloseModal from "@assets/svg/closeModal";
