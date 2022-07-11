@@ -472,10 +472,10 @@ const VideoCall = () => {
   }, [fontsLoaded]);
 
   useEffect(() => {
-    if (error?.code === 'PERMISSION_DENIED') {
+    if (error?.code === 'PERMISSION_DENIED' || error?.code === 'NOT_READABLE') {
       setAlertData({
         title: 'Unable to access camera & microphone',
-        message: `Please allow camera & microphone access from system settings.`,
+        message: `Please allow camera & microphone access from ${error?.code === 'PERMISSION_DENIED' ? 'browser' : 'system'} settings.`,
         confirm: 'OK',
       });
       setTimeout(() => setShowAlert(true), 500);

@@ -101,7 +101,7 @@ const LoginForm:FC<Props>=({form={},onChangeValue=()=>{}})=>{
                 }}
                 ref={inputRef}
                 label={'Email address'}
-                placeholder="Email address"
+                placeholder="Phone no./Email address"
                 required={true}
                 hasValidation={true}
                 inputStyle={InputStyles.text}
