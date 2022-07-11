@@ -25,6 +25,8 @@ import hairlineWidth = StyleSheet.hairlineWidth;
 import button from "@pages/activities/modal/styles";
 import ConfirmRightArrow from "@assets/svg/confirmArrow";
 import {isLandscapeSync,isTablet} from "react-native-device-info";
+import CustomDropdown from "@pages/activities/dropdown/customdropdown";
+import useSafeState from "../../../../hooks/useSafeState";
 
 const { height , width } = Dimensions.get('window');
 
@@ -55,6 +57,10 @@ function Disapproval(props: any) {
         }
 
     }, [isLandscapeSync()])
+    const [dropdownValue, setDropdownValue] = useSafeState(1)
+    const [dropdownData, setDropdowmData] = useSafeState([
+        {label: "OTHERS", value: 1}
+    ])
     return (
 
         <Modal
@@ -147,10 +153,19 @@ function Disapproval(props: any) {
                         </TouchableOpacity>
                     </View>
 
-                    <View style={ { paddingVertical : 10 , paddingHorizontal : 20 } }>
+                    <View style={ {  paddingHorizontal : 20 } }>
                         <Text style={ styles.pleaseProvide }>
                             Please provide reason of disapproval
                         </Text>
+                        <View style={{paddingBottom: 10}}>
+                            <CustomDropdown value={dropdownValue}
+                                            label="Select Item"
+                                            data={ dropdownData }
+                                            onSelect={ ({ value }) => {
+                                                if (value) setDropdownValue(value)
+                                            } }/>
+                        </View>
+
                         <InputField
 
                             containerStyle={ {

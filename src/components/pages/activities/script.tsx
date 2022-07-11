@@ -273,7 +273,7 @@ export const getRole = (user, arr) => arr.indexOf(user?.role?.key) != -1;
 
 
 export const excludeStatus = (props: any, personnel: UserApplication) => getStatusText(props, personnel) == FORVERIFICATION ||
-    getStatusText(props, personnel) == FORAPPROVAL ||
+    getStatusText(props, personnel) == FORAPPROVAL  ||
     getStatusText(props, personnel) == FOREVALUATION;
 
 export function getStatusText(props: any, personnel: UserApplication | undefined) {

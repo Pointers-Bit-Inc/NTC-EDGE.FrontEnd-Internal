@@ -30,6 +30,9 @@ import Check from "@assets/svg/check";
 import Alert from "@atoms/alert";
 import {primaryColor} from "@styles/color";
 import CustomAlert from "../alert/alert1";
+import Calendar from "@assets/svg/calendar";
+import DateField from "@pages/activities/application/datefield";
+import TimeField from "@pages/activities/application/timefield";
 
 const BasicInfo = (props: any) => {
 
@@ -183,7 +186,7 @@ const [loading, setLoading] = useSafeState(false)
 
                                             {personnel != undefined &&
                                                 (
-                                                    getStatusText(props, personnel) == APPROVED ? getStatusText(props, personnel) : !excludeStatus(props, personnel)) &&
+                                                    getStatusText(props, personnel) == APPROVED ? getStatusText(props, personnel) : (!excludeStatus(props, personnel) ||  !!(props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks))) &&
                                                 <CustomText
                                                     style={{fontSize: fontValue(12), flex: 1, color: "#37405B"}}>
                                                     {(
@@ -261,7 +264,7 @@ const [loading, setLoading] = useSafeState(false)
                                          stateName={"applicant.suffix"}
                                          updateForm={applicantForm}
                                          applicant={props.userProfileForm?.["applicant.suffix"]}/>
-                                    <Row edit={props.edit} label={"Date of Birth:"}
+                                    <DateField edit={props.edit} label={"Date of Birth:"}
                                          hasChanges={props.hasChanges} updateApplication={updateApplication}
                                          updateForm={applicantForm}
                                          stateName={"applicant.dateOfBirth"}
@@ -394,21 +397,19 @@ const [loading, setLoading] = useSafeState(false)
                                         </View>
                                     </View>
 
-                                    <Row edit={props.edit} label={"Date:"}
+                                    <DateField edit={props.edit} label={"Date:"}
                                          updateForm={applicantForm}
                                          hasChanges={props.hasChanges} updateApplication={updateApplication}
                                          stateName={"schedule.dateStart"}
                                          applicant={props.userProfileForm?.["schedule.dateStart"]}
                                          display={moment(props?.schedule.dateStart).isValid() ? moment(props?.schedule.dateStart).format('ddd DD MMMM YYYY') : props?.schedule.dateStart}/>
-                                    <Row edit={props.edit} label={"Start Time:"}
+                                    <TimeField edit={props.edit} label={"Start Time:"}
                                          updateForm={applicantForm}
                                          hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                         show={true}
-                                         showEdit={false}
                                          stateName={"schedule.dateStart"}
                                          applicant={props.userProfileForm?.["schedule.dateStart"]}
                                          display={moment(props?.schedule.dateStart)?.isValid() ? moment(props?.schedule.dateStart).format('LT') : props?.schedule.dateStart} />
-                                    <Row edit={props.edit} label={"End Time:"}
+                                    <TimeField edit={props.edit} label={"End Time:"}
                                          hasChanges={props.hasChanges} updateApplication={updateApplication}
                                          updateForm={applicantForm}
                                          stateName={"schedule.dateEnd"}
