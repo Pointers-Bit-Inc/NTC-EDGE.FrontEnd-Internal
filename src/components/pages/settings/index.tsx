@@ -76,15 +76,14 @@ export default ({
     disabled: loading || !isBiometricSupported,
     icon: <MaterialCommunityIcons
       name="fingerprint"
-      size={20}
+      size={22}
       color={loading || !isBiometricSupported ? disabledColor : 'black'}
     />,
     rightIcon: !loading ? <ToggleIcon
-      style={
-        enableBiometrics ?
-        styles.toggleActive :
-        styles.toggleDefault
-      }
+      style={[
+        enableBiometrics ? styles.toggleActive : styles.toggleDefault,
+        loading || !isBiometricSupported && { color: disabledColor }
+      ]}
       size={28}
     /> : <ActivityIndicator color={'#A0A3BD'} size={24} />,
     onPress: () => onRequestBiometrics(user._id),
