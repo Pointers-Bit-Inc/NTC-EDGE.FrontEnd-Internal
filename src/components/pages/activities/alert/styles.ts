@@ -14,10 +14,10 @@ export const alertStyle = StyleSheet.create({
         zIndex: 3
     },
     overlay: {
-        width: width,
-        height: height,
+        width: "100%",
+        height: "100%",
         position: 'absolute',
-        //backgroundColor: 'rgba(52,52,52,0.5)'
+        backgroundColor: 'rgba(52,52,52,0.5)'
     },
     contentContainer: {
         maxWidth: '80%',
