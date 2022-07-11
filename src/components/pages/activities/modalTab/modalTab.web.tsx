@@ -247,6 +247,7 @@ setEdit={props.setEdit}
                                     userOriginalProfileForm={props.userOriginalProfileForm}
                                     userProfileForm={props.userProfileForm}
                                     hasChanges={props.hasChanges}
+                                    setUserProfileForm={props.setUserProfileForm}
                                     tabLabel={{label:tab.name}} label={tab.name}
                                     proofOfPayment={proofOfPayment}
                                     paymentStatus={paymentStatus}
