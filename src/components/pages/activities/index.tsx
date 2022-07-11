@@ -643,6 +643,7 @@ const ActivitiesPage = (props) => {
                             }} searchVisible={searchVisible}/>
 
                         </Animated.View>
+
                         <Animated.View  style={collapsedOverlayStyle}>
                             <View >
                                 {

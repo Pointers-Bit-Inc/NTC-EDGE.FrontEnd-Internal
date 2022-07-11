@@ -28,7 +28,6 @@ export default function Loader(refreshing,searchTerm,size){
     const selectedClone=selectedChangeStatus?.filter((status:string)=>{
         return status!=DATE_ADDED
     });
-        console.log(size)
     return (
 
         <View  style={[{justifyContent: "center", alignItems: "center",   width: "100%"  }]}>

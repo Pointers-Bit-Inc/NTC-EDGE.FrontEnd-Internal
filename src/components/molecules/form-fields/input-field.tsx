@@ -43,6 +43,7 @@ interface Props {
     required?: boolean;
     hasValidation?: boolean;
     containerStyle?: any;
+    mainContainerStyle?:any,
     inputStyle?: any;
     labelStyle?: any;
     outlineStyle?: any;
@@ -83,6 +84,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
       onFocus = () => {},
     onClose = () => {},
     onCheck = () => {},
+                                                                       mainContainerStyle,
       ...otherProps
   }, ref) => {
 
@@ -107,7 +109,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
 
 
     return (
-        <View style={[inputStyles.mainContainer, containerStyle,]}>
+        <View style={[inputStyles.mainContainer, mainContainerStyle,]}>
 
             <View style={[
 
@@ -123,7 +125,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                     backgroundColor: '#fff', //input.background?.default,
                     borderColor: primaryColor,
                 },
-
+containerStyle
             ]}>
                 <View style={{ flex: 0.95 }}>
                     {!!otherProps.value && !!label && (
