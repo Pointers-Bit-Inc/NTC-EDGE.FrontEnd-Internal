@@ -36,7 +36,7 @@ const Row = (props: { updateApplication?:any, hasChanges?:any, display?:string, 
     const [edit, setEdit] = useSafeState(false)
 
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
-    return  (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) ? <TouchableOpacity onPress={()=>{
+    return  (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) ? <TouchableOpacity disabled={!props?.showEdit} onPress={()=>{
         if(props.showEdit)setEdit(true)
     }
     } style={ styles.group2 }>

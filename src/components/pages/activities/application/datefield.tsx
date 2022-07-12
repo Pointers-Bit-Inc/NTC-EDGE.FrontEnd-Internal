@@ -77,8 +77,8 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
 
 
-    return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || edit : !edit) ? <TouchableOpacity onPress={()=>{
-        if(props.showEdit)setEdit(true)
+    return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || edit : !edit) ? <TouchableOpacity disabled={!props?.showEdit} onPress={()=>{
+        setEdit(true)
     }
     } style={ styles.group2 }>
         <Text style={ styles.detail }>{ props.label }</Text>
