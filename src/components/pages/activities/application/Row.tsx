@@ -43,13 +43,19 @@ const Row = (props: { updateApplication?:any, hasChanges?:any, display?:string, 
         <Text style={ styles.detail }>{ props.label }</Text>
         <Text style={ styles.detailInput }>{ props.display || props.applicant }</Text>
     </TouchableOpacity> : <>
-        {((props.edit && props.editable && props.showEdit) || edit)? <InputField onClose={()=>{
-            props.updateForm(props.stateName, cloneValue)
-            setEdit(false)
-        }} onCheck={()=>{
+        {((props.edit && props.editable && props.showEdit) || edit)? <InputField onSubmitEditing = {(event) => {
             props?.updateApplication()
             setEdit(false)
-        }} checkable={true}  onChange={(e) => {
+        }}
+
+                                                                                 onBlur={()=>{
+                                                                                     props.updateForm(props.stateName, cloneValue)
+                                                                                     setEdit(false)
+                                                                                 }
+                                                                                 } onClose={()=>{
+            props.updateForm(props.stateName, cloneValue)
+            setEdit(false)
+        }}   onChange={(e) => {
             props.updateForm(props.stateName, e?.nativeEvent?.text)
         }
         }   value={props.applicant} label={props.label} /> : <></>}

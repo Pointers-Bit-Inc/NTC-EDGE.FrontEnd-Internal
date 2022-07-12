@@ -292,7 +292,9 @@ const Payment = (props: any) => {
     };
     const {applicantForm, updateApplication} = useApplicantForm(props);
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
-    return <ScrollView style={{
+    return <ScrollView
+        keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
+        style={{
         backgroundColor: "#F8F8F8",
     }}>
         <View style={styles.containers}>
