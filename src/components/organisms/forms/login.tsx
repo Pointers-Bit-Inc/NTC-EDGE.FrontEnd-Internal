@@ -46,11 +46,13 @@ const styles=StyleSheet.create({
 });
 
 interface Props{
+    isBiometricSupported?: boolean;
+    onBiometrics?:any;
     form?:any;
     onChangeValue?:any;
 }
 
-const LoginForm:FC<Props>=({form={},onChangeValue=()=>{}})=>{
+const LoginForm:FC<Props>=({isBiometricSupported=false,onBiometrics=()=>{},form={},onChangeValue=()=>{}})=>{
     const inputRef:any=useRef(null);
     const passwordRef:any=useRef(null);
     const keepMeLoggedInChecker=(checked:boolean)=>{
@@ -100,8 +102,8 @@ const LoginForm:FC<Props>=({form={},onChangeValue=()=>{}})=>{
                     }
                 }}
                 ref={inputRef}
-                label={'Email address'}
-                placeholder="Email address"
+                label={'Phone no./Email address'}
+                placeholder="Phone no./Email address"
                 required={true}
                 hasValidation={true}
                 inputStyle={InputStyles.text}
@@ -135,11 +137,30 @@ const LoginForm:FC<Props>=({form={},onChangeValue=()=>{}})=>{
                 value={form?.password?.value}
                 showPassword={()=>onChangeValue('showPassword')}
                 onChangeText={(value:string)=>onChangeValue('password',value)}
-                onSubmitEditing={(event:any)=>onChangeValue('login',{
-                    email:form?.email?.value,
-                    password:form?.password?.value
-                })}
+                onSubmitEditing={(event:any)=>{
+                    let cred:any = {
+                        email:form?.email?.value,
+                        password:form?.password?.value
+                    };
+                    if (form?.email?.isPhone) {
+                        cred = {
+                            phone: form?.email?.value,
+                            password: form?.password?.value ,
+                        }
+                    }
+                    onChangeValue('login',cred);
+                }}
             />
+            {isBiometricSupported&&<View style={[styles.horizontal,{justifyContent:'flex-start'}]}>
+                <TouchableOpacity onPress={onBiometrics}>
+                    <Text
+                        style={[InputStyles.text,{fontSize:fontValue(12),fontFamily:Regular500,color:text.primary}]}
+                        size={12}
+                    >
+                        Login with biometrics
+                    </Text>
+                </TouchableOpacity>
+            </View>}
             {isMobile&&<View style={[styles.horizontal,{justifyContent:'flex-start'}]}>
                 <TouchableOpacity onPress={()=>onChangeValue('forgotPassword')}>
                     <Text
