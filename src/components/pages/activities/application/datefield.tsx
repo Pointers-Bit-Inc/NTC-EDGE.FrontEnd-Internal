@@ -78,7 +78,7 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
 
 
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || edit : !edit) ? <TouchableOpacity onPress={()=>{
-        setEdit(true)
+        if(props.showEdit)setEdit(true)
     }
     } style={ styles.group2 }>
         <Text style={ styles.detail }>{ props.label }</Text>

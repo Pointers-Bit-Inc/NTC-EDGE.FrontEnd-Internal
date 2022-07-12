@@ -1,13 +1,11 @@
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import React, {useEffect, useRef, useState} from "react";
+import React from "react";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular,Regular500} from "@styles/font";
-import InputField from "@molecules/form-fields/input-field";
 import useSafeState from "../../../../hooks/useSafeState";
 import CheckIcon from "@assets/svg/check";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
-import Moment from "moment";
-import {formatAMPM, toIsoFormat, yearList} from "../../../../utils/ntc";
+import {formatAMPM, toIsoFormat} from "../../../../utils/ntc";
 import {disabledColor} from "@styles/color";
 import CloseIcon from "@assets/svg/close";
 const styles = StyleSheet.create({
@@ -79,7 +77,7 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
 
 
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || edit : !edit) ? <TouchableOpacity onPress={()=>{
-        setEdit(true)
+        if(props.showEdit)setEdit(true)
     }
     } style={ styles.group2 }>
         <Text style={ styles.detail }>{ props.label }</Text>

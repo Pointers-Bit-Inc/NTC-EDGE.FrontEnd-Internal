@@ -1,14 +1,5 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {
-    BackHandler,
-    Platform,
-    ScrollView,
-    Text,
-    Alert as RNAlert,
-    useWindowDimensions,
-    View,
-    TouchableOpacity
-} from "react-native";
+import React, {useEffect, useRef} from "react";
+import {Platform, ScrollView, Text, useWindowDimensions, View} from "react-native";
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
@@ -21,18 +12,10 @@ import Row from "@pages/activities/application/Row"
 import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous2";
 import styles from "@styles/applications/basicInfo"
 import useSafeState from "../../../../hooks/useSafeState";
-import axios from "axios";
-import {BASE_URL} from "../../../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
-import { FloatingAction } from "react-native-floating-action";
-const flatten = require('flat')
-import Check from "@assets/svg/check";
-import Alert from "@atoms/alert";
-import {primaryColor} from "@styles/color";
-import CustomAlert from "../alert/alert1";
-import Calendar from "@assets/svg/calendar";
 import DateField from "@pages/activities/application/datefield";
 import TimeField from "@pages/activities/application/timefield";
+
 
 const BasicInfo = (props: any) => {
 
@@ -66,12 +49,12 @@ const BasicInfo = (props: any) => {
         newForm[stateName] = value
         props.setUserProfileForm(newForm)
     }
-    const user=useSelector((state:RootStateOrAny)=>state.user);
+    const user = useSelector((state: RootStateOrAny) => state.user);
     const dimensions = useWindowDimensions();
 
 
-    const hasChanges=()=> {
-        var hasChanges=false;
+    const hasChanges = () => {
+        var hasChanges = false;
 
         for (const [key, value] of Object.entries(props.userOriginalProfileForm)) {
 
@@ -80,7 +63,7 @@ const BasicInfo = (props: any) => {
 
                 props.hasChanges(hasChanges)
                 return
-            }else{
+            } else {
                 hasChanges = false
                 props.hasChanges(hasChanges)
             }
@@ -90,21 +73,22 @@ const BasicInfo = (props: any) => {
     }
 
 
-    useEffect(()=>{
+    useEffect(() => {
         hasChanges()
 
     }, [props.userProfileForm])
 
-const [loading, setLoading] = useSafeState(false)
+    const [loading, setLoading] = useSafeState(false)
     const updateApplication = () => {
         setLoading(true)
-        props?.updateApplication(()=>{
+        props?.updateApplication(() => {
             setLoading(false)
         })
 
     }
-    return <><ScrollView  keyboardShouldPersistTaps={Platform.OS=="ios" ? "handled" : "always"} showsVerticalScrollIndicator={false} ref={scrollRef}
-                       style={{width: "100%", backgroundColor: "#f8f8f8",}}>
+    return <><ScrollView keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
+                         showsVerticalScrollIndicator={false} ref={scrollRef}
+                         style={{width: "100%", backgroundColor: "#f8f8f8",}}>
 
         <View style={{flexDirection: isMobile || dimensions?.width <= 768 ? "column" : "row"}}>
             <View style={isMobile || dimensions?.width <= 768 ? {padding: 10, alignSelf: "center"} : {
@@ -186,7 +170,7 @@ const [loading, setLoading] = useSafeState(false)
 
                                             {personnel != undefined &&
                                                 (
-                                                    getStatusText(props, personnel) == APPROVED ? getStatusText(props, personnel) : (!excludeStatus(props, personnel) ||  !!(props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks || props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks))) &&
+                                                    getStatusText(props, personnel) == APPROVED ? getStatusText(props, personnel) : (!excludeStatus(props, personnel) || !!(props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks || props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks))) &&
                                                 <CustomText
                                                     style={{fontSize: fontValue(12), flex: 1, color: "#37405B"}}>
                                                     {(
@@ -210,7 +194,7 @@ const [loading, setLoading] = useSafeState(false)
                                                     }]}>{getStatusText(props, personnel) === DECLINED ? 'NOD/' : ''}Remarks</Text>
                                                     <Text style={[styles?.remarksContent, statusColor(
                                                         getStatusText(props, personnel)
-                                                    )]}>{[CASHIER].indexOf(user?.role?.key)!= -1 && props.paymentHistory ? (props?.paymentHistory?.remarks|| props?.paymentHistory?.[0]?.remarks) : ( props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}</Text>
+                                                    )]}>{[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}</Text>
                                                 </View>
                                             </View>
 
@@ -265,14 +249,14 @@ const [loading, setLoading] = useSafeState(false)
                                          updateForm={applicantForm}
                                          applicant={props.userProfileForm?.["applicant.suffix"]}/>
                                     <DateField edit={props.edit} label={"Date of Birth:"}
+                                               hasChanges={props.hasChanges} updateApplication={updateApplication}
+                                               updateForm={applicantForm}
+                                               stateName={"applicant.dateOfBirth"}
+                                               display={moment(props.userProfileForm?.["applicant.dateOfBirth"])?.format('LL')}
+                                               applicant={props.userProfileForm?.["applicant.dateOfBirth"]}/>
+                                    <Row updateForm={applicantForm}
                                          hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                         updateForm={applicantForm}
-                                         stateName={"applicant.dateOfBirth"}
-                                         display={moment(props.userProfileForm?.["applicant.dateOfBirth"])?.format('LL')}
-                                         applicant={props.userProfileForm?.["applicant.dateOfBirth"]}/>
-                                   <Row updateForm={applicantForm}
-                                        hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                        stateName={"applicant.gender"}
+                                         stateName={"applicant.gender"}
                                          edit={props.edit}
                                          label={"Gender:"}
                                          applicant={props.userProfileForm?.["applicant.gender"]}/>
@@ -369,7 +353,6 @@ const [loading, setLoading] = useSafeState(false)
                                          applicant={props.userProfileForm?.["applicant.education.yearGraduated"]}/>
 
 
-
                                 </View>}
                                 {applicant?.education && <View style={styles.divider}/>}
                                 {applicant?.contact && <View style={styles.group3}>
@@ -391,37 +374,45 @@ const [loading, setLoading] = useSafeState(false)
                                 </View>}
                                 {props?.schedule && <View style={styles.divider}/>}
                                 {props?.schedule && <View style={styles.group3}>
-                                    <View style={styles.group}>
+                                    {!props.edit &&<View style={styles.group}>
                                         <View style={styles.rect}>
                                             <Text style={styles.header}>SCHEDULE</Text>
                                         </View>
-                                    </View>
+                                    </View>}
 
                                     <DateField edit={props.edit} label={"Date:"}
-                                         updateForm={applicantForm}
-                                         hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                         stateName={"schedule.dateStart"}
-                                         applicant={props.userProfileForm?.["schedule.dateStart"]}
-                                         display={moment(props?.schedule.dateStart).isValid() ? moment(props?.schedule.dateStart).format('ddd DD MMMM YYYY') : props?.schedule.dateStart}/>
+                                               show={true}
+                                               showEdit={false}
+                                               updateForm={applicantForm}
+                                               hasChanges={props.hasChanges} updateApplication={updateApplication}
+                                               stateName={"schedule.dateStart"}
+                                               applicant={props.userProfileForm?.["schedule.dateStart"]}
+                                               display={moment(props?.schedule.dateStart).isValid() ? moment(props?.schedule.dateStart).format('ddd DD MMMM YYYY') : props?.schedule.dateStart}/>
                                     <TimeField edit={props.edit} label={"Start Time:"}
-                                         updateForm={applicantForm}
-                                         hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                         stateName={"schedule.dateStart"}
-                                         applicant={props.userProfileForm?.["schedule.dateStart"]}
-                                         display={moment(props?.schedule.dateStart)?.isValid() ? moment(props?.schedule.dateStart).format('LT') : props?.schedule.dateStart} />
+                                               show={true}
+                                               showEdit={false}
+                                               updateForm={applicantForm}
+                                               hasChanges={props.hasChanges} updateApplication={updateApplication}
+                                               stateName={"schedule.dateStart"}
+                                               applicant={props.userProfileForm?.["schedule.dateStart"]}
+                                               display={moment(props?.schedule.dateStart)?.isValid() ? moment(props?.schedule.dateStart).format('LT') : props?.schedule.dateStart}/>
                                     <TimeField edit={props.edit} label={"End Time:"}
-                                         hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                         updateForm={applicantForm}
-                                         stateName={"schedule.dateEnd"}
-                                         applicant={props.userProfileForm?.["schedule.dateEnd"]}
-                                         display={moment(props?.schedule.dateEnd)?.isValid() ? moment(props?.schedule.dateEnd).format('LT') : props?.schedule.dateEnd}/>
-                                    <Row updateForm={applicantForm}
+                                               show={true}
+                                               showEdit={false}
+                                               hasChanges={props.hasChanges} updateApplication={updateApplication}
+                                               updateForm={applicantForm}
+                                               stateName={"schedule.dateEnd"}
+                                               applicant={props.userProfileForm?.["schedule.dateEnd"]}
+                                               display={moment(props?.schedule.dateEnd)?.isValid() ? moment(props?.schedule.dateEnd).format('LT') : props?.schedule.dateEnd}/>
+                                    <Row  show={true}
+                                          showEdit={false} updateForm={applicantForm}
                                          hasChanges={props.hasChanges} updateApplication={updateApplication}
                                          stateName={"schedule.venue"}
                                          edit={props.edit}
                                          label={"Venue:"}
                                          applicant={props.userProfileForm?.["schedule.venue"]}/>
-                                    <Row updateForm={applicantForm}
+                                    <Row  show={true}
+                                          showEdit={false} updateForm={applicantForm}
                                          hasChanges={props.hasChanges} updateApplication={updateApplication}
                                          stateName={"schedule.seatNumber"}
                                          edit={props.edit}
@@ -431,11 +422,14 @@ const [loading, setLoading] = useSafeState(false)
 
                                 </View>}
                                 {props?.service && <View style={styles.divider}/>}
-                                <RenderServiceMiscellaneous hasChanges={props.hasChanges} updateApplication={updateApplication} updateForm={applicantForm} userProfileForm={props.userProfileForm} edit={props.edit}
+                                <RenderServiceMiscellaneous hasChanges={props.hasChanges}
+                                                            updateApplication={updateApplication}
+                                                            updateForm={applicantForm}
+                                                            userProfileForm={props.userProfileForm} edit={props.edit}
                                                             exclude={['_id', 'name', 'applicationType', 'serviceCode']}
                                                             service={props?.service}/>
 
-                               </View>
+                            </View>
 
                         </View>
 
@@ -447,11 +441,10 @@ const [loading, setLoading] = useSafeState(false)
         </View>
 
 
-
     </ScrollView>
 
 
-</>
+    </>
 };
 
 export default BasicInfo
