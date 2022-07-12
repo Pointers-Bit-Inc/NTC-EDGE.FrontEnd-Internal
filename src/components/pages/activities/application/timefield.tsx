@@ -7,7 +7,7 @@ import useSafeState from "../../../../hooks/useSafeState";
 import CheckIcon from "@assets/svg/check";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import Moment from "moment";
-import {toIsoFormat, yearList} from "../../../../utils/ntc";
+import {formatAMPM, toIsoFormat, yearList} from "../../../../utils/ntc";
 import {disabledColor} from "@styles/color";
 import CloseIcon from "@assets/svg/close";
 const styles = StyleSheet.create({
@@ -44,12 +44,11 @@ const styles = StyleSheet.create({
 
 const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
 
-    const [dates, setDates] = useSafeState(props?.applicant?.split('T')?.[0]?.split('-')), [time, setTime]= useSafeState(new Date(props?.applicant).toString()?.split(" ")?.[4]?.split(":"))
+    const [dates, setDates] = useSafeState(props?.applicant?.split('T')?.[0]?.split('-')), [time, setTime]= useSafeState(formatAMPM(new Date(props?.applicant)))
 
     const year = dates?.[0]
     const month = dates?.[1]
     const day = dates?.[2]
-    let _month = month || '00';
     const datesArray =Array.from(Array(60), (_, i) => {
         return {
             label: i.toString().length == 1 ? "0" +(i).toString() : (i).toString(),
@@ -75,7 +74,7 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
     const [edit, setEdit] = useSafeState(false)
     const [hourValue, setHourValue] = useSafeState(time?.[0])
     const [minuteValue, setMinuteValue] = useSafeState(time?.[1])
-    const [ampmValue, setAmpmValue] = useSafeState("am")
+    const [ampmValue, setAmpmValue] = useSafeState(time?.[2])
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
 
 
