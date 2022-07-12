@@ -5,12 +5,13 @@ import Requirement from "@pages/activities/application/requirementModal/requirem
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React,{useEffect,useState} from "react";
 import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
-import {Alert,Animated,InteractionManager,Platform} from "react-native";
+import {Alert,Animated,InteractionManager,KeyboardAvoidingView,Platform} from "react-native";
 import TabBar from "@pages/activities/tabs/tabbar";
 import ScrollableTabView from "@pages/activities/tabs";
 import Tab from "@pages/activities/tabs/Tab";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
 import {isMobile} from "@pages/activities/isMobile";
+import {styles} from "@pages/activities/application/requirementModal/styles";
 
 const ModalTab = props => {
 
@@ -185,6 +186,7 @@ const ModalTab = props => {
         }
 
     </ScrollableTabView>
+
 };
 
 export default ModalTab

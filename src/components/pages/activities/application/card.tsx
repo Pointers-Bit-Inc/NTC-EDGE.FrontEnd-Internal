@@ -44,12 +44,12 @@ const Card = (props: {touchableStyle?:any, style?:any,   updateApplication?:any,
         <Text style={props.style}>{props.display || props.applicant}</Text>
     </TouchableOpacity> : <>
         {((props.edit && props.editable && props.showEdit) || edit)? <InputField  onSubmitEditing = {(event) => {
-            props?.updateApplication()
+            if(!props.edit) props?.updateApplication()
             setEdit(false)
         }}
 
                                                                                   onBlur={()=>{
-                                                                                      props.updateForm(props.stateName, cloneValue)
+                                                                                      if(!props.edit) props.updateForm(props.stateName, cloneValue)
                                                                                       setEdit(false)
                                                                                   }
                                                                                   }
