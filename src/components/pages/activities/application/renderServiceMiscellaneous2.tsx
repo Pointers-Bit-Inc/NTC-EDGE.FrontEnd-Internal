@@ -1,4 +1,4 @@
-import {transformText} from "../../../../utils/ntc";
+import {isValidDate, transformText} from "../../../../utils/ntc";
 import Row from "@pages/activities/application/Row";
 import {FlatList,StyleSheet,Text,View} from "react-native";
 import React from "react";
@@ -8,6 +8,7 @@ import {Regular500} from "@styles/font";
 import moment from "moment";
 import _ from "lodash";
 import hairlineWidth=StyleSheet.hairlineWidth;
+import DateField from "@pages/activities/application/datefield";
 
 const styles=StyleSheet.create({
     subChildSeparator:{
@@ -132,10 +133,28 @@ const RenderServiceMiscellaneous=(props)=>{
             index=keys?.split?.(".")?.[keys.split(".")?.length];
             nextValue=keys?.split?.(".")?.[keys.split(".")?.length-2]||keys?.split?.(".")?.[0];
         }
+
+
         return (<View>
             <Title nextValue={nextValue} index={index}/>
             <Separator index={index}/>
-            <Row updateApplication={props?.updateApplication} updateForm={props.updateForm} stateName={"service." + keys} edit={props.edit} label={prevValue ? `${transformText(prevValue)}:` : ""} display={value} applicant={props?.userProfileForm["service." + keys]}/>
+
+            {isValidDate(props?.userProfileForm["service." + keys]) ? <DateField
+                updateApplication={props?.updateApplication}
+                updateForm={props.updateForm}
+                stateName={"service." + keys}
+                edit={props.edit}
+                label={prevValue ? `${transformText(prevValue)}:` : ""}
+                display={value}
+                applicant={props?.userProfileForm["service." + keys]}/> : <Row
+                updateApplication={props?.updateApplication}
+                updateForm={props.updateForm}
+                stateName={"service." + keys}
+                edit={props.edit}
+                label={prevValue ? `${transformText(prevValue)}:` : ""}
+                display={value}
+                applicant={props?.userProfileForm["service." + keys]}/>
+            }
         </View>)
 
 
