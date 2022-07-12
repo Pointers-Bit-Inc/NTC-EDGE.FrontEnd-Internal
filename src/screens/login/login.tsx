@@ -19,12 +19,34 @@ import {styles} from "@screens/login/styles";
 import {useAuth} from "../../hooks/useAuth";
 import {fontValue} from "@pages/activities/fontValue";
 import useKeyboard from "../../hooks/useKeyboard";
+import useBiometrics from "src/hooks/useBiometrics";
+import { RootStateOrAny, useSelector } from "react-redux";
 
 const logo = require('@assets/ntc-edge-horizontal.png');
 const background = require('@assets/loginbackground.png');
 const { height } = Dimensions.get('screen');
 const navigationBarHeight = height - Dimensions.get('window').height;
 const Login = ({ navigation }: any) => {
+    const user = useSelector((state: RootStateOrAny) => state.user) || {};
+    const biometricsLogin = user.biometrics;
+    const {
+        isBiometricSupported,
+        credentials,
+        handleBiometricAuth,
+    } = useBiometrics();
+
+    useEffect(() => {
+        if (isBiometricSupported && biometricsLogin) handleBiometricAuth();
+    }, [isBiometricSupported]);
+
+    useEffect(() => {
+        if (credentials) {
+            onChangeValue('login', {
+                email: credentials.username,
+                password: credentials.password,
+            });
+        }
+    }, [credentials]);
 
     const { loading , formValue , onChangeValue , onCheckValidation , isValid } = useAuth(navigation);
 
@@ -53,7 +75,7 @@ const Login = ({ navigation }: any) => {
 
                     <Text style={ styles.formTitleText }>Login</Text>
 
-                    <LoginForm onChangeValue={ onChangeValue } form={ formValue }/>
+                    <LoginForm isBiometricSupported={isBiometricSupported && !!biometricsLogin} onBiometrics={handleBiometricAuth} onChangeValue={ onChangeValue } form={ formValue }/>
 
                     <View style={ styles.bottomContainer }>
                         <Button

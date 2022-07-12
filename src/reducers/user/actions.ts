@@ -1,4 +1,4 @@
-const { SET_USER, UPDATE_USER, RESET_USER } = require('./types').default;
+const { SET_USER, UPDATE_USER, RESET_USER, SET_BIOMETRICS_LOGIN } = require('./types').default;
 
 export function setUser(payload) {
   return {
@@ -18,5 +18,12 @@ export function updateUser(payload) {
     type: UPDATE_USER,
     payload,
   };
+}
+
+export function setBiometricsLogin(payload) {
+  return {
+    type: SET_BIOMETRICS_LOGIN,
+    payload
+  }
 }
 
