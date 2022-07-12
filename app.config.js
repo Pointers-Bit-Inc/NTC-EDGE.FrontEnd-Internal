@@ -24,7 +24,7 @@ export default {
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone. This lets you make voice, video calls and more.",
         "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos to upload photos from your library. This also lets you save photos to your library.",
         "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to access your location for notification purposes.",
-        "NSFaceIDUsageDescription": "$(PRODUCT_NAME) Authentication with TouchId or FaceID"
+        "NSFaceIDUsageDescription": "Enabling Face ID allows you quick and secure access to your account."
       }
     },
     "androidStatusBar": {

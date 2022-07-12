@@ -15,7 +15,7 @@ export default function basket(state = initialState, action = {}) {
         image: action?.payload?.profilePicture?.small || '',
       };
 
-      if (biometrics && biometrics.email !== newState.email) {
+      if (biometrics !== newState._id) {
         newState.biometrics = null;
       } else {
         newState.biometrics = biometrics;

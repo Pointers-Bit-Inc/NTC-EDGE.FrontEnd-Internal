@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import { ActivityIndicator, Image, View } from 'react-native';
 import Text from '@atoms/text';
@@ -24,8 +24,6 @@ import {resetUser, setBiometricsLogin} from "../../../reducers/user/actions";
 import {resetMeeting} from "../../../reducers/meeting/actions";
 import {resetChannel} from "../../../reducers/channel/actions";
 import useOneSignal from "../../../hooks/useOneSignal";
-import Api from "../../../services/api";
-import BellIcon from '@assets/svg/bell';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import useBiometrics from 'src/hooks/useBiometrics';
 
@@ -36,12 +34,10 @@ export default ({
   const dispatch = useDispatch();
   const user = useSelector((state: RootStateOrAny) => state.user) || {};
   const biometricsLogin = user.biometrics;
-  const api = Api(user.sessionToken);
   const profilePicture = user?.profilePicture?.small;
   const photo = profilePicture ? {uri: profilePicture} : require('@assets/avatar.png');
   const [visible, setVisible] = useState(false);
   const [enableBiometrics, setEnableBiometrics] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { destroy } = useOneSignal(user);
   const {
     isBiometricSupported,
@@ -70,24 +66,24 @@ export default ({
       onPress: () => {},
     },*/
   ];
-  const biometrics = {
+  const biometrics = useMemo(() => ({
     label: 'Login with biometrics',
     value: 'biometrics',
-    disabled: loading || !isBiometricSupported,
+    disabled: !isBiometricSupported,
     icon: <MaterialCommunityIcons
       name="fingerprint"
       size={22}
-      color={loading || !isBiometricSupported ? disabledColor : 'black'}
+      color={!isBiometricSupported ? disabledColor : 'black'}
     />,
-    rightIcon: !loading ? <ToggleIcon
+    rightIcon: <ToggleIcon
       style={[
         enableBiometrics ? styles.toggleActive : styles.toggleDefault,
-        loading || !isBiometricSupported && { color: disabledColor }
+        !isBiometricSupported && { color: disabledColor }
       ]}
       size={28}
-    /> : <ActivityIndicator color={'#A0A3BD'} size={24} />,
-    onPress: () => onRequestBiometrics(user._id),
-  }
+    />,
+    onPress: () => onRequestBiometrics(),
+  }), [isBiometricSupported, enableBiometrics])
 
   const logout = {
     label: 'Log out',
@@ -130,25 +126,16 @@ export default ({
     )
   };
 
-  const onRequestBiometrics = async (userId:string) => {
+  const onRequestBiometrics = () => {
     if (enableBiometrics) {
-      setEnableBiometrics(false);
-      return dispatch(setBiometricsLogin(null));
+      dispatch(setBiometricsLogin(null));
+    } else {
+      dispatch(setBiometricsLogin(user._id));
     }
-    setLoading(true);
-    api.get(`/users/${userId}/request-biometrics`)
-      .then(res => {
-        setLoading(false);
-        console.log('RESULT', res.data);
-        dispatch(setBiometricsLogin(res.data));
-      })
-      .catch(e => {
-        setLoading(false);
-      });
   };
 
   useEffect(() => {
-    if (biometricsLogin?.email) {
+    if (biometricsLogin) {
       setEnableBiometrics(true);
     } else {
       setEnableBiometrics(false);

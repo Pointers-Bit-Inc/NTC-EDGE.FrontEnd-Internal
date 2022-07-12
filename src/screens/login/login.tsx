@@ -31,7 +31,7 @@ const Login = ({ navigation }: any) => {
     const biometricsLogin = user.biometrics;
     const {
         isBiometricSupported,
-        grantAccess,
+        credentials,
         handleBiometricAuth,
     } = useBiometrics();
 
@@ -40,11 +40,13 @@ const Login = ({ navigation }: any) => {
     }, [isBiometricSupported]);
 
     useEffect(() => {
-        if (grantAccess) {
-            biometricsLogin.isBiometrics = true;
-            onChangeValue('login', biometricsLogin);
+        if (credentials) {
+            onChangeValue('login', {
+                email: credentials.username,
+                password: credentials.password,
+            });
         }
-    }, [grantAccess]);
+    }, [credentials]);
 
     const { loading , formValue , onChangeValue , onCheckValidation , isValid } = useAuth(navigation);
 

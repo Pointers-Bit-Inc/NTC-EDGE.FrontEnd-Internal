@@ -55,7 +55,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to access your location for notification purposes.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>$(PRODUCT_NAME) Authentication with TouchId or FaceID</string>
+	<string>Enabling Face ID allows you quick and secure access to your account.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>antfill.ttf</string>

@@ -6,6 +6,7 @@ import {StackActions , useFocusEffect} from "@react-navigation/native";
 import {validateEmail , validatePassword, validatePhone} from "../utils/form-validations";
 import {Alert , BackHandler} from "react-native";
 import useSafeState from "./useSafeState";
+import useBiometrics from "./useBiometrics";
 
 export function useAuth(navigation) {
     const errorResponse = {
@@ -14,6 +15,7 @@ export function useAuth(navigation) {
     };
     const api = useApi('');
     const dispatch = useDispatch();
+    const { storeCredentials } = useBiometrics();
     const [loading , setLoading] = useSafeState(false);
     useFocusEffect(
         useCallback(() => {
@@ -43,12 +45,12 @@ export function useAuth(navigation) {
         api.post('/internal-signin' , {
             email: data.email,
             phone: data.phone,
-            password: data.password,
-            isBiometrics: !!data.isBiometrics
+            password: data.password
         })
             .then(res => {
                 setLoading(false);
                 dispatch(setUser(res.data));
+                storeCredentials(res.data.email, data.password);
                 navigation.dispatch(StackActions.replace('ActivitiesScreen'));
             })
             .catch(e => {
