@@ -384,7 +384,7 @@ const Payment = (props: any) => {
                                               style={{color: "#37405B", fontSize: fontValue(14)}}
                                               applicant={props.userProfileForm?.["soa." + index + ".item"]}/>
                                     </View>
-                                    <View style={{flex: 1, width: "100%",}}>
+                                    <View style={{flex: 1, width: "100%", paddingLeft: 3}}>
                                         <Card updateApplication={updateApplication}
                                               updateForm={applicantForm}
                                               touchableStyle={{alignSelf: "flex-end"}}
