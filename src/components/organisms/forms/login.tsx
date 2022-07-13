@@ -151,7 +151,7 @@ const LoginForm:FC<Props>=({isBiometricSupported=false,onBiometrics=()=>{},form=
                     onChangeValue('login',cred);
                 }}
             />
-            {isBiometricSupported&&<View style={[styles.horizontal,{justifyContent:'flex-start'}]}>
+            {isBiometricSupported&&<View style={[styles.horizontal,{justifyContent:'flex-start', marginBottom: 15}]}>
                 <TouchableOpacity onPress={onBiometrics}>
                     <Text
                         style={[InputStyles.text,{fontSize:fontValue(12),fontFamily:Regular500,color:text.primary}]}

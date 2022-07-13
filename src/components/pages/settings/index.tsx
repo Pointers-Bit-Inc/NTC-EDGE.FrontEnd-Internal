@@ -25,7 +25,7 @@ import {resetMeeting} from "../../../reducers/meeting/actions";
 import {resetChannel} from "../../../reducers/channel/actions";
 import useOneSignal from "../../../hooks/useOneSignal";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import useBiometrics from 'src/hooks/useBiometrics';
+import useBiometrics, { resetCredentials } from 'src/hooks/useBiometrics';
 
 
 export default ({
@@ -104,6 +104,7 @@ export default ({
       dispatch(resetMeeting());
       dispatch(resetChannel());
       destroy();
+      if (!enableBiometrics) resetCredentials();
       navigation.dispatch(StackActions.replace('Login'));
     },500);
   }, []);
@@ -180,7 +181,7 @@ export default ({
         </View>
 
         {separator}
-        <View style={styles.sectionContainer}>
+        <View style={[styles.sectionContainer, { paddingBottom: 10 }]}>
           {renderRow({item: biometrics})}
         </View>
         <View style={styles.sectionContainer}>
