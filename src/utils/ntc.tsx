@@ -34,22 +34,22 @@ const toIsoFormat = (date) => {
         pad(d.getUTCSeconds()) + '.' + padd(d.getMilliseconds()) + 'Z');
 }
 function formatAMPM(date) {
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0'+minutes : minutes;
-    return [hours, minutes,   ampm];
+var hours = date.getHours();
+var minutes = date.getMinutes();
+var ampm = hours >= 12 ? 'pm' : 'am';
+hours = hours % 12;
+hours = hours ? hours : 12;
+minutes = minutes < 10 ? '0'+minutes : minutes;
+return [hours, minutes, ampm];
 }
 
 function isValidDate(dateString) {
     //format yyyy-mm-dd
     var regEx = /^\d{4}-\d{2}-\d{2}$/;
-    if(!dateString.match(regEx)) return false;  // Invalid format
+    if(!dateString.match(regEx)) return false;
     var d = new Date(dateString);
     var dNum = d.getTime();
-    if(!dNum && dNum !== 0) return false; // NaN value, Invalid date
+    if(!dNum && dNum !== 0) return false;
     return d.toISOString().slice(0,10) === dateString;
 }
 export {

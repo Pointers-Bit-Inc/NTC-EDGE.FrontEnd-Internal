@@ -39,14 +39,14 @@ const styles = StyleSheet.create({
 })
 const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
 
-    const [dates, setDates] = useSafeState(props?.applicant?.split('T')?.[0]?.split('-')), [time, setTime]= useSafeState(props?.applicant.split('T')?.[1])
+    const [dates, setDates] = useSafeState(typeof props?.applicant == 'string' ?  props?.applicant?.split('T')?.[0]?.split('-') : [props?.applicant.year, props?.applicant.month, props?.applicant.day])
+        const [time, setTime]= useSafeState(typeof props?.applicant == 'string' ? props?.applicant?.split('T')?.[1] : null)
 
 
     const year = dates?.[0]
     const month = dates?.[1]
     const day = dates?.[2]
 
-    console.log(year, month, day)
 
     const monthsArray = [
         {label: 'January', value: '01'},

@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
     Alert as RNAlert, Animated,
     BackHandler,
+    KeyboardAvoidingView,
     Modal,
     Platform,
     StyleSheet,
@@ -16,7 +17,7 @@ import Disapproval from "@pages/activities/modal/disapproval";
 import Endorsed from "@pages/activities/modal/endorse";
 import Approval from "@pages/activities/modal/approval";
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
-import {getRole,PaymentStatusText,StatusText} from "@pages/activities/script";
+import {getRole, PaymentStatusText, removeEmpty, StatusText} from "@pages/activities/script";
 import {
     ACCOUNTANT,
     APPROVED,
@@ -282,7 +283,7 @@ function ActivityModal(props:any){
             profileForm['region'] = region
         }
 
-        axios.patch(BASE_URL + `/applications/${props?.details?._id}`, flatten.unflatten(profileForm), {headers:{
+        axios.patch(BASE_URL + `/applications/${props?.details?._id}`, flatten.unflatten(removeEmpty(profileForm)), {headers:{
                 Authorization:"Bearer ".concat(user?.sessionToken)
             }}).then( (response) => {
             setShowAlert2(true)
@@ -424,7 +425,10 @@ function ActivityModal(props:any){
 
                     {/*<View/>*/}
                 </View>}
-
+                <KeyboardAvoidingView
+                    behavior={Platform.OS==="ios" ? "padding" : "height"}
+                    style={[styles.container]}
+                >
                 <ModalTab setEditAlert={setEditAlert} updateApplication={updateApplication}  editBtn={editBtn}  userOriginalProfileForm={userOriginalProfileForm}
                           userProfileForm={userProfileForm}
                           setEdit={setEdit}
@@ -433,6 +437,7 @@ function ActivityModal(props:any){
                           hasChanges={hasChanges} edit={edit} dismissed={()=>{
                     props.onDismissed(change);
                 }} details={props.details} status={status}/>
+                </KeyboardAvoidingView>
                 {
                     <Animated.View style={[{
                         paddingHorizontal:!isMobile ? 64 : 0,
@@ -490,6 +495,7 @@ function ActivityModal(props:any){
 
                 }
             </View>
+
             <FloatingButton
                 visible={edit}
                 button={{

@@ -46,7 +46,7 @@ export default class AwesomeAlert extends Component {
     }
 
     _springShow = (fromConstructor) => {
-        const { useNativeDriver = false } = this.props;
+        const { useNativeDriver = true } = this.props;
 
         this._toggleAlert(fromConstructor);
         Animated.spring(this.springValue, {
@@ -57,7 +57,7 @@ export default class AwesomeAlert extends Component {
     };
 
     _springHide = () => {
-        const { useNativeDriver = false } = this.props;
+        const { useNativeDriver = true } = this.props;
 
         if (this.state.showSelf === true) {
             Animated.spring(this.springValue, {
@@ -375,7 +375,7 @@ AwesomeAlert.propTypes = {
 AwesomeAlert.defaultProps = {
     show: false,
     animatedValue: 0.3,
-    useNativeDriver: false,
+    useNativeDriver: true,
     showProgress: false,
     closeOnTouchOutside: true,
     closeOnHardwareBackPress: true,

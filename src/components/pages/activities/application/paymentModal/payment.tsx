@@ -3,6 +3,7 @@ import {
     ActivityIndicator,
     FlatList,
     Image,
+    KeyboardAvoidingView,
     Modal,
     Platform,
     SafeAreaView,
@@ -16,7 +17,7 @@ import {styles as paymentStyles} from "@pages/activities/application/paymentModa
 import {requirementStyles, styles} from "@pages/activities/application/requirementModal/styles"
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {Bold, Regular500} from "@styles/font";
-import {capitalize} from "@pages/activities/script";
+import {capitalize, removeEmpty} from "@pages/activities/script";
 import {RootStateOrAny, useSelector} from "react-redux";
 import {ACCOUNTANT, APPROVED} from "../../../../../reducers/activity/initialstate";
 import AnimatedImage from 'react-native-animated-image-viewer';
@@ -29,7 +30,10 @@ import PdfViewr from "@pages/activities/application/pdf";
 import FileIcon from "@assets/svg/file";
 import Card from "@pages/activities/application/card";
 import useApplicantForm from "src/hooks/useApplicantForm";
-
+import useSafeState from "../../../../../hooks/useSafeState";
+import {Ionicons} from "@expo/vector-icons";
+import CloseIcon from "@assets/svg/close";
+const flatten = require('flat')
 class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 
 
@@ -290,11 +294,40 @@ const Payment = (props: any) => {
         soa.map(s => total += s.amount);
         return total;
     };
+
+    const [soa, setSoa] = useSafeState(props?.soa.map(((s, index) => {
+        s.isEdit = false
+        s.id = index
+        return s
+    })) || [])
+    const largestNumber = (array) => {
+        var largest= 0;
+
+        for (var i=0; i<=largest;i++){
+            if (array[i]?.id >largest) {
+                largest=array[i]?.id;
+            }
+        }
+        return largest + 1
+    }
+
+    const addSoa = () => {
+
+        const obj = {id:largestNumber(soa), 'item': "", 'amount': "" + 0, };
+        setSoa((s)=>{
+
+            return [...s, obj]
+        })
+
+    }
     const {applicantForm, updateApplication} = useApplicantForm(props);
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
-    return <ScrollView style={{
-        backgroundColor: "#F8F8F8",
-    }}>
+    return  <ScrollView
+        keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
+        style={{
+            backgroundColor: "#F8F8F8",
+        }}>
+
         <View style={styles.containers}>
             <View onLayout={onLayoutComponent} style={styles.statement}>
 
@@ -332,10 +365,11 @@ const Payment = (props: any) => {
                         </Text>
                     </View>
                     {
-                        props?.soa.length ? props?.soa?.filter((s) => s?.amount)?.map((soa, index) => (
+                        soa.length ? soa?.map((s, index) => (
                             <View key={index} style={{width: "100%"}}>
+
                                 <View
-                                    key={soa._id}
+                                    key={s._id}
                                     style={paymentStyles.soaItem}
                                 >
 
@@ -345,23 +379,39 @@ const Payment = (props: any) => {
                                               updateForm={applicantForm}
                                               stateName={"soa." + index + ".item"}
                                               edit={props.edit}
-                                              display={props.userProfileForm?.["soa." + index + ".item"]}
+                                              display={props.userProfileForm?.["soa." + index + ".item"] || "Item"}
                                               label={"Item:"}
                                               style={{color: "#37405B", fontSize: fontValue(14)}}
                                               applicant={props.userProfileForm?.["soa." + index + ".item"]}/>
                                     </View>
-                                    <View style={{flex: 1, width: "100%",}}>
+                                    <View style={{flex: 1, width: "100%", paddingLeft: 3}}>
                                         <Card updateApplication={updateApplication}
                                               updateForm={applicantForm}
                                               touchableStyle={{alignSelf: "flex-end"}}
                                               stateName={"soa." + index + ".amount"}
                                               edit={props.edit}
-                                              display={props.userProfileForm?.["soa." + index + ".amount"]}
+                                              display={props.userProfileForm?.["soa." + index + ".amount"]|| "Amount"}
                                               label={"Amount:"}
                                               style={{color: "#37405B", fontSize: fontValue(14)}}
                                               applicant={"" + props.userProfileForm?.["soa." + index + ".amount"]}/>
                                     </View>
+                                    { props.edit && <View style={{ }}>
+                                        <TouchableOpacity  onPress={()=>{
+                                            let arr = soa
+                                            arr.splice(index, 1);
+                                            setSoa(arr);
+                                            let state = {...props.userProfileForm};
+                                            delete state?.["soa." + index + ".amount"];
+                                            delete state?.["soa." + index + ".item"];
 
+                                            console.log(state)
+
+                                            props.setUserProfileForm(state)
+                                        }
+                                        }  style={{paddingHorizontal: 10}}>
+                                            <CloseIcon/>
+                                        </TouchableOpacity>
+                                    </View>}
 
                                 </View>
                                 <View style={{overflow: "hidden"}}>
@@ -376,11 +426,14 @@ const Payment = (props: any) => {
                         style={{
                             backgroundColor: "#EFF0F6",
                             flexDirection: 'row',
-                            justifyContent: 'flex-end',
+                            justifyContent: props.edit ? 'space-between' : "flex-end",
                             alignItems: 'center',
                             marginTop: 15
                         }}
                     >
+                        {props.edit && <TouchableOpacity onPress={addSoa}>
+                            <Ionicons name="add" size={24} color="#37405B" />
+                        </TouchableOpacity>}
                         <Text
 
                             color="#37405B"

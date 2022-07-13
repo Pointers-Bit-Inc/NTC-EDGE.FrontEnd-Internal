@@ -43,13 +43,20 @@ const Card = (props: {touchableStyle?:any, style?:any,   updateApplication?:any,
     }>
         <Text style={props.style}>{props.display || props.applicant}</Text>
     </TouchableOpacity> : <>
-        {((props.edit && props.editable && props.showEdit) || edit)? <InputField  mainContainerStyle={[props.style, {marginVertical: 10}]} onClose={()=>{
+        {((props.edit && props.editable && props.showEdit) || edit)? <InputField  onSubmitEditing = {(event) => {
+            if(!props.edit) props?.updateApplication()
+            setEdit(false)
+        }}
+
+                                                                                  onBlur={()=>{
+                                                                                      if(!props.edit) props.updateForm(props.stateName, cloneValue)
+                                                                                      setEdit(false)
+                                                                                  }
+                                                                                  }
+                                                                                  mainContainerStyle={[props.style, {marginVertical: 10}]} onClose={()=>{
             props.updateForm(props.stateName, cloneValue)
             setEdit(false)
-        }} onCheck={()=>{
-            props?.updateApplication()
-            setEdit(false)
-        }} checkable={true}  onChangeText={(e) => {
+        }}  onChangeText={(e) => {
             props.updateForm(props.stateName,e )
         }
         }   value={props.applicant} label={props.label} /> : <></>}
