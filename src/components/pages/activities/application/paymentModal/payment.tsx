@@ -308,7 +308,7 @@ const Payment = (props: any) => {
     const getTotal = () => {
         let total = 0;
         soa.map(s => total += isNumber(parseFloat(s.amount)) ? parseFloat(s.amount) : 0 );
-        return total;
+        return total.toFixed(2);
     };
     const largestNumber = (array) => {
         return Math.max.apply(Math, array.map(function(o) { return o.id; })) + 1

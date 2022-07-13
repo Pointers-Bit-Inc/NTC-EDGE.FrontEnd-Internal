@@ -9,6 +9,7 @@ import {MenuProvider} from "react-native-popup-menu";
 import {ToastProvider} from "@atoms/toast/ToastProvider";
 import {Toast} from "@atoms/toast/Toast";
 
+
 export default function App() {
     return (
         <Provider store={ store }>
@@ -16,7 +17,7 @@ export default function App() {
                 <ToastProvider>
                 <StatusBar/>
                 <MenuProvider>
-                    
+
                     <Navigation/>
                 </MenuProvider>
                 <TopModal/>

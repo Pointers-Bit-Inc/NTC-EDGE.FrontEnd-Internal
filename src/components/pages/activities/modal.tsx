@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
-    Alert as RNAlert, Animated,
+    Alert as RNAlert,
+    Animated,
     BackHandler,
     KeyboardAvoidingView,
     Modal,
@@ -16,8 +17,8 @@ import {primaryColor} from "@styles/color";
 import Disapproval from "@pages/activities/modal/disapproval";
 import Endorsed from "@pages/activities/modal/endorse";
 import Approval from "@pages/activities/modal/approval";
-import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
-import {getRole, PaymentStatusText, removeEmpty, StatusText} from "@pages/activities/script";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
+import {getRole, PaymentStatusText, StatusText} from "@pages/activities/script";
 import {
     ACCOUNTANT,
     APPROVED,
@@ -32,7 +33,7 @@ import {
     VERIFIED,
 } from "../../../reducers/activity/initialstate";
 import Api from 'src/services/api';
-import {setRightLayoutComponent,updateApplicationStatus} from "../../../reducers/application/actions";
+import {setRightLayoutComponent, updateApplicationStatus} from "../../../reducers/application/actions";
 
 import CustomAlert from "@pages/activities/alert/alert1";
 import CloseIcon from "@assets/svg/close";
@@ -44,17 +45,18 @@ import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import {useComponentLayout} from "../../../hooks/useComponentLayout";
 import ModalTab from "@pages/activities/modalTab/modalTab";
-import {isLandscapeSync,isTablet} from "react-native-device-info";
+import {isLandscapeSync, isTablet} from "react-native-device-info";
 import {Toast} from "@atoms/toast/Toast";
 import axios from "axios";
 import useSafeState from "../../../hooks/useSafeState";
 import EditIcon from "@assets/svg/editIcon";
 import {useNavigation} from "@react-navigation/native";
-import {updateMessages} from "../../../reducers/channel/actions";
 import {BASE_URL} from "../../../services/config";
 import FloatingButton from "@atoms/floating-button";
 import CheckIcon from "@assets/svg/check";
 import {isNumber} from "../../../utils/ntc";
+import {useToast} from "../../../hooks/useToast";
+import {ToastType} from "@atoms/toast/ToastProvider";
 
 const flatten = require('flat')
 function ActivityModal(props:any){
@@ -262,12 +264,12 @@ function ActivityModal(props:any){
             setEdit((bool) => !bool )
         }
     }
-
+    const {showToast, hideToast}=useToast();
     const [messageUpdate, setMessageUpdate] = useSafeState("")
     const [titleUpdate, setTitleUpdate] = useSafeState("")
 
     const updateApplication = useCallback((callback) => {
-
+        showToast(ToastType.Info,"Loading...")
         let profileForm = userProfileForm
         let dateOfBirth= profileForm?.['applicant.dateOfBirth'], region= profileForm?.['region.code'],dateValue = { year: "", month: "", day: ""}
 
@@ -293,24 +295,30 @@ function ActivityModal(props:any){
         }
         const flattenSoa = flatten.unflatten(cleanSoa)?.soa.filter(s => s)
 
-        profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseInt(a.amount)) ? parseInt(a.amount) : 0 ), 0)
+        profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0 ), 0)
         axios.patch(BASE_URL + `/applications/${props?.details?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, {headers:{
                 Authorization:"Bearer ".concat(user?.sessionToken)
             }}).then( (response) => {
-            setShowAlert2(true)
+hideToast()
             setEdit(false)
-            setMessageUpdate('The Application has been updated!')
-            setTitleUpdate("Success")
+            /*setShowAlert2(true)
+             setMessageUpdate('The Application has been updated!')
+             setTitleUpdate("Success")*/
             var _flatten = flatten.flatten({...response.data.doc})
             setUserOriginalProfileForm({..._flatten})
             setUserProfileForm(_flatten)
             props.onChangeAssignedId(response.data.doc);
+            showToast(ToastType.Success,"Successfully updated!")
             callback()
 
-        }).catch((err)=>{
-
-            setMessageUpdate(err?.message||'Something went wrong.')
-            setTitleUpdate("Error")
+        }).catch((error)=>{
+            let _err='';
+            for(const err in error?.response?.data?.errors){
+                _err+=error?.response?.data?.errors?.[err]?.toString()+"\n";
+            }
+            showToast(ToastType.Error,error?.response?.data.trim()||error?.response?.statusText)
+           /* setMessageUpdate(err?.message||'Something went wrong.')
+            setTitleUpdate("Error")*/
             callback()
         });
     }, [ userProfileForm])
