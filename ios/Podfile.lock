@@ -51,6 +51,8 @@ PODS:
   - EXJSONUtils (0.2.1)
   - EXKeepAwake (10.0.2):
     - ExpoModulesCore
+  - EXLocalAuthentication (12.2.0):
+    - ExpoModulesCore
   - EXManifests (0.2.4):
     - EXJSONUtils
   - EXPermissions (13.0.3):
@@ -474,6 +476,7 @@ DEPENDENCIES:
   - EXImagePicker (from `../node_modules/expo-image-picker/ios`)
   - EXJSONUtils (from `../node_modules/expo-json-utils/ios`)
   - EXKeepAwake (from `../node_modules/expo-keep-awake/ios`)
+  - EXLocalAuthentication (from `../node_modules/expo-local-authentication/ios`)
   - EXManifests (from `../node_modules/expo-manifests/ios`)
   - EXPermissions (from `../node_modules/expo-permissions/ios`)
   - Expo (from `../node_modules/expo/ios`)
@@ -574,6 +577,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-json-utils/ios"
   EXKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
+  EXLocalAuthentication:
+    :path: "../node_modules/expo-local-authentication/ios"
   EXManifests:
     :path: "../node_modules/expo-manifests/ios"
   EXPermissions:
@@ -715,6 +720,7 @@ SPEC CHECKSUMS:
   EXImagePicker: bf704ef8e9171b05696a24114b44c6629565b45d
   EXJSONUtils: 5ee0d5cf76da70ad86f0be1a41cc70f47d69e06f
   EXKeepAwake: bf48d7f740a5cd2befed6cf9a49911d385c6c47d
+  EXLocalAuthentication: 7f37b242eae73f9acf111d39bdee3f1379e68902
   EXManifests: d3464cd2278f4a19cd80c1aa673231570b534c11
   EXPermissions: 7696f4c16e89981f84c04d96327f7e1e592373c0
   Expo: d9588796cd19999da4d440d87bf7eb7ae4dbd608
