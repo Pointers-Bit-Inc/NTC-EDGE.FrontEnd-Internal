@@ -42,7 +42,7 @@ hours = hours ? hours : 12;
 minutes = minutes < 10 ? '0'+minutes : minutes;
 return [hours, minutes, ampm];
 }
-
+const isNumber = (v: unknown) => typeof v === 'number' && !Number.isNaN(v);
 function isValidDate(dateString) {
     //format yyyy-mm-dd
     var regEx = /^\d{4}-\d{2}-\d{2}$/;
@@ -53,6 +53,7 @@ function isValidDate(dateString) {
     return d.toISOString().slice(0,10) === dateString;
 }
 export {
+    isNumber,
     transformText,
     yearList,
     toIsoFormat,

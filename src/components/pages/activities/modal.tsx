@@ -54,6 +54,7 @@ import {updateMessages} from "../../../reducers/channel/actions";
 import {BASE_URL} from "../../../services/config";
 import FloatingButton from "@atoms/floating-button";
 import CheckIcon from "@assets/svg/check";
+import {isNumber} from "../../../utils/ntc";
 
 const flatten = require('flat')
 function ActivityModal(props:any){
@@ -282,20 +283,29 @@ function ActivityModal(props:any){
         if(region){
             profileForm['region'] = region
         }
+        let pattern = /^soa.+(?:\[\d+])?(?:\.\w+(?:\[\d+])?)*$/;
+        let cleanSoa = {}
 
-        axios.patch(BASE_URL + `/applications/${props?.details?._id}`, flatten.unflatten(removeEmpty(profileForm)), {headers:{
+        for (const [key, value] of Object.entries(profileForm)) {
+            if(key.match(pattern) && value){
+                cleanSoa = {...cleanSoa, ...{[key]: value}}
+            }
+        }
+        const flattenSoa = flatten.unflatten(cleanSoa)?.soa.filter(s => s)
+
+        profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseInt(a.amount)) ? parseInt(a.amount) : 0 ), 0)
+        axios.patch(BASE_URL + `/applications/${props?.details?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, {headers:{
                 Authorization:"Bearer ".concat(user?.sessionToken)
             }}).then( (response) => {
             setShowAlert2(true)
             setEdit(false)
-
             setMessageUpdate('The Application has been updated!')
             setTitleUpdate("Success")
             var _flatten = flatten.flatten({...response.data.doc})
             setUserOriginalProfileForm({..._flatten})
             setUserProfileForm(_flatten)
+            props.onChangeAssignedId(response.data.doc);
             callback()
-
 
         }).catch((err)=>{
 
@@ -320,7 +330,6 @@ function ActivityModal(props:any){
                 })}]
         };
     }
-
     return (
         <NativeView
             onLayout={onActivityModalScreenComponent}
@@ -706,7 +715,6 @@ function ActivityModal(props:any){
                 onConfirm={()=>{
                     setEdit((bool) => !bool )
                     setEditAlert(false)
-
                     const myPromise = new Promise((resolve, reject) => {
                         setTimeout(() => {
                             setUserProfileForm(userOriginalProfileForm)
