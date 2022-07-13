@@ -33,6 +33,8 @@ target 'ntcedge' do
 
   pod 'react-native-webview', :path => '../node_modules/react-native-webview'
 
+  pod 'RNKeychain', :path => '../node_modules/react-native-keychain'
+
   post_install do |installer|
     react_native_post_install(installer)
 

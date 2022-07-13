@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import * as Keychain from 'react-native-keychain';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 
 const ACCESS_CONTROL = Keychain.ACCESS_CONTROL.BIOMETRY_ANY;
 const ACCESSIBLE = Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY;
 const AUTHENTICATION_TYPE = Keychain.AUTHENTICATION_TYPE.BIOMETRICS;
 const STORAGE = Keychain.STORAGE_TYPE.RSA;
+const BUNDLE_ID = 'portalapp.ntcedge.com';
+const ACCESS_GROUP = `4A3P2635GN.${BUNDLE_ID}`;
 
 const useBiometrics = () => {
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
@@ -25,16 +27,18 @@ const useBiometrics = () => {
     return await Keychain.setGenericPassword(username, password, {
       accessControl: ACCESS_CONTROL,
       accessible: ACCESSIBLE,
+      accessGroup: ACCESS_GROUP,
       authenticationType: AUTHENTICATION_TYPE,
       storage: STORAGE,
-      service: 'portalapp.ntcedge.com'
+      service: BUNDLE_ID
     });
   }
 
   const getCredentials = async () => {
     const options = {
       accessControl: ACCESS_CONTROL,
-      service: 'portalapp.ntcedge.com',
+      accessGroup: ACCESS_GROUP,
+      service: BUNDLE_ID,
       authenticationPrompt: {
         title: 'Login with your Biometrics',
         cancel: 'Cancel',
