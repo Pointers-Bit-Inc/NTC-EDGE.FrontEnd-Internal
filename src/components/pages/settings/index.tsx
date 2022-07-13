@@ -181,7 +181,7 @@ export default ({
         </View>
 
         {separator}
-        <View style={styles.sectionContainer}>
+        <View style={[styles.sectionContainer, { paddingBottom: 10 }]}>
           {renderRow({item: biometrics})}
         </View>
         <View style={styles.sectionContainer}>
