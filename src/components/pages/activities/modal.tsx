@@ -306,7 +306,6 @@ function ActivityModal(props:any){
             setUserProfileForm(_flatten)
             props.onChangeAssignedId(response.data.doc);
             callback()
-console.log(response.data.doc)
 
         }).catch((err)=>{
 
@@ -716,7 +715,6 @@ console.log(response.data.doc)
                 onConfirm={()=>{
                     setEdit((bool) => !bool )
                     setEditAlert(false)
-
                     const myPromise = new Promise((resolve, reject) => {
                         setTimeout(() => {
                             setUserProfileForm(userOriginalProfileForm)

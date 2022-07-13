@@ -302,12 +302,12 @@ const Payment = (props: any) => {
         setSoa(props?.soa.map(((s, index) => {
             return {...s, ...{isEdit: false, id: index}}
         })) || [])
-    }, [props.soa])
+    }, [props.soa, props.edit ])
 
 
     const getTotal = () => {
         let total = 0;
-        soa.map(s => total += isNumber(s.amount) ? s.amount : 0 );
+        soa.map(s => total += isNumber(parseFloat(s.amount)) ? parseFloat(s.amount) : 0 );
         return total;
     };
     const largestNumber = (array) => {
