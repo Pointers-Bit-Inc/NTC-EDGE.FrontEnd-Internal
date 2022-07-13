@@ -54,6 +54,7 @@ import {updateMessages} from "../../../reducers/channel/actions";
 import {BASE_URL} from "../../../services/config";
 import FloatingButton from "@atoms/floating-button";
 import CheckIcon from "@assets/svg/check";
+import {isNumber} from "../../../utils/ntc";
 
 const flatten = require('flat')
 function ActivityModal(props:any){
@@ -290,7 +291,10 @@ function ActivityModal(props:any){
                 cleanSoa = {...cleanSoa, ...{[key]: value}}
             }
         }
-        axios.patch(BASE_URL + `/applications/${props?.details?._id}`, {...flatten.unflatten(profileForm), ...{soa: flatten.unflatten(cleanSoa)?.soa.filter(s => s)}}, {headers:{
+        const flattenSoa = flatten.unflatten(cleanSoa)?.soa.filter(s => s)
+
+        profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseInt(a.amount)) ? parseInt(a.amount) : 0 ), 0)
+        axios.patch(BASE_URL + `/applications/${props?.details?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, {headers:{
                 Authorization:"Bearer ".concat(user?.sessionToken)
             }}).then( (response) => {
             setShowAlert2(true)
@@ -302,7 +306,7 @@ function ActivityModal(props:any){
             setUserProfileForm(_flatten)
             props.onChangeAssignedId(response.data.doc);
             callback()
-
+console.log(response.data.doc)
 
         }).catch((err)=>{
 
