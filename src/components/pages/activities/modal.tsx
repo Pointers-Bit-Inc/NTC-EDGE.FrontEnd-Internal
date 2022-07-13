@@ -300,6 +300,7 @@ function ActivityModal(props:any){
             var _flatten = flatten.flatten({...response.data.doc})
             setUserOriginalProfileForm({..._flatten})
             setUserProfileForm(_flatten)
+            props.onChangeAssignedId(response.data.doc);
             callback()
 
 

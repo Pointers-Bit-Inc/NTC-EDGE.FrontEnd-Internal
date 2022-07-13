@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -291,44 +291,48 @@ const Payment = (props: any) => {
         setVisibleRequireModal(false)
     };
 
+
+
+
     const [soa, setSoa] = useSafeState(props?.soa.map(((s, index) => {
         return {...s, ...{isEdit: false, id: index}}
     })) || [])
+
+    useEffect(()=>{
+        setSoa(props?.soa.map(((s, index) => {
+            return {...s, ...{isEdit: false, id: index}}
+        })) || [])
+    }, [props.soa])
+
+
     const getTotal = () => {
         let total = 0;
         soa.map(s => total += isNumber(s.amount) ? s.amount : 0 );
         return total;
     };
     const largestNumber = (array) => {
-        var largest= 0;
-
-        for (var i=0; i<=largest;i++){
-            if (array[i]?.id >largest) {
-                largest=array[i]?.id;
-            }
-        }
-        return largest + 1
+        return Math.max.apply(Math, array.map(function(o) { return o.id; })) + 1
     }
 
     const addSoa = () => {
 
-        const obj = {id:largestNumber(soa), 'item': "", 'amount': "" + 0, };
+        const obj = {id:largestNumber(soa), type: 'add',  'item': "", 'amount': "" + 0, };
         setSoa((s)=>{
 
             return [...s, obj]
         })
 
     }
-    const closeItem = (index)=>{
-        let arr = soa
-        arr.filter((el, i) => i  !== index);
-
+    const closeItem = (id, index)=>{
         let state = {...props.userProfileForm};
+        let arr = soa.filter((el, i) => {
+            return el.id  !== id
+        });
+
         delete state?.["soa." + index + ".amount"];
         delete state?.["soa." + index + ".item"];
         delete state?.["soa." + index + ".id"];
         delete state?.["soa." + index + ".isEdit"];
-
         props.setUserProfileForm(state)
         setSoa(arr);
     }
@@ -401,8 +405,7 @@ const Payment = (props: any) => {
                     </View>
                     {
                         soa.length ? soa?.map((s, index) => {
-                                return ("soa." + index + ".item" in props.userProfileForm) ?
-                                    <View key={index} style={{width: "100%"}}>
+                                return  <View key={index} style={{width: "100%"}}>
 
                                         <View
                                             key={s._id}
@@ -413,33 +416,32 @@ const Payment = (props: any) => {
 
                                                 <Card updateApplication={updateApplication}
                                                       updateForm={applicantForm}
-                                                      stateName={"soa." + index + ".item"}
+                                                      stateName={"soa." + s.id + ".item"}
                                                       edit={props.edit}
-                                                      display={props.userProfileForm?.["soa." + index + ".item"] || "Item"}
+                                                      display={props.userProfileForm?.["soa." + s.id + ".item"] || "Item"}
                                                       label={"Item:"}
                                                       style={{color: "#37405B", fontSize: fontValue(14)}}
-                                                      applicant={props.userProfileForm?.["soa." + index + ".item"]}/>
+                                                      applicant={props.userProfileForm?.["soa." + s.id + ".item"]}/>
                                             </View>
                                             <View style={{flex: 1, width: "100%", paddingLeft: 3}}>
                                                 <Card updateApplication={updateApplication}
 
 
                                                       updateForm={(stateName, value) => {
-                                                          console.log(stateName, value, "amount")
                                                           updateSoa('amount', parseInt(value), s.id)
                                                           applicantForm('totalFee', getTotal(soa))
                                                           applicantForm(stateName, value)
                                                       }}
                                                       touchableStyle={{alignSelf: "flex-end"}}
-                                                      stateName={"soa." + index + ".amount"}
+                                                      stateName={"soa." + s.id + ".amount"}
                                                       edit={props.edit}
-                                                      display={props.userProfileForm?.["soa." + index + ".amount"] || "Amount"}
+                                                      display={props.userProfileForm?.["soa." + s.id + ".amount"] || "Amount"}
                                                       label={"Amount:"}
                                                       style={{color: "#37405B", fontSize: fontValue(14)}}
-                                                      applicant={"" + props.userProfileForm?.["soa." + index + ".amount"]}/>
+                                                      applicant={"" + props.userProfileForm?.["soa." + s.id + ".amount"]}/>
                                             </View>
                                             {props.edit && <View style={{}}>
-                                                <TouchableOpacity onPress={() => closeItem(index)}
+                                                <TouchableOpacity onPress={() => closeItem(s.id, index)}
                                                                   style={{paddingHorizontal: 10}}>
                                                     <CloseIcon/>
                                                 </TouchableOpacity>
@@ -450,7 +452,7 @@ const Payment = (props: any) => {
                                             <DottedLine/>
                                         </View>
 
-                                    </View> : <></>
+                                    </View>
                             }
                         ) : <View style={{alignItems: 'center', justifyContent: 'center', paddingVertical: 10}}><Text
                             style={{fontSize: fontValue(16), fontFamily: Regular500}}>No S.O.A</Text></View>
