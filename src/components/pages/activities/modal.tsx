@@ -282,13 +282,19 @@ function ActivityModal(props:any){
         if(region){
             profileForm['region'] = region
         }
+        let pattern = /^soa.+(?:\[\d+])?(?:\.\w+(?:\[\d+])?)*$/;
+        let cleanSoa = {}
 
-        axios.patch(BASE_URL + `/applications/${props?.details?._id}`, flatten.unflatten(removeEmpty(profileForm)), {headers:{
+        for (const [key, value] of Object.entries(profileForm)) {
+            if(key.match(pattern) && value){
+                cleanSoa = {...cleanSoa, ...{[key]: value}}
+            }
+        }
+        axios.patch(BASE_URL + `/applications/${props?.details?._id}`, {...flatten.unflatten(profileForm), ...{soa: flatten.unflatten(cleanSoa)?.soa.filter(s => s)}}, {headers:{
                 Authorization:"Bearer ".concat(user?.sessionToken)
             }}).then( (response) => {
             setShowAlert2(true)
             setEdit(false)
-
             setMessageUpdate('The Application has been updated!')
             setTitleUpdate("Success")
             var _flatten = flatten.flatten({...response.data.doc})
@@ -320,7 +326,6 @@ function ActivityModal(props:any){
                 })}]
         };
     }
-
     return (
         <NativeView
             onLayout={onActivityModalScreenComponent}

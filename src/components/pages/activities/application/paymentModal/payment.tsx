@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -33,6 +33,8 @@ import useApplicantForm from "src/hooks/useApplicantForm";
 import useSafeState from "../../../../../hooks/useSafeState";
 import {Ionicons} from "@expo/vector-icons";
 import CloseIcon from "@assets/svg/close";
+import {isNumber} from "../../../../../utils/ntc";
+import _ from "lodash";
 const flatten = require('flat')
 class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 
@@ -289,17 +291,14 @@ const Payment = (props: any) => {
         setVisibleRequireModal(false)
     };
 
-    const getTotal = (soa) => {
+    const [soa, setSoa] = useSafeState(props?.soa.map(((s, index) => {
+        return {...s, ...{isEdit: false, id: index}}
+    })) || [])
+    const getTotal = () => {
         let total = 0;
-        soa.map(s => total += s.amount);
+        soa.map(s => total += isNumber(s.amount) ? s.amount : 0 );
         return total;
     };
-
-    const [soa, setSoa] = useSafeState(props?.soa.map(((s, index) => {
-        s.isEdit = false
-        s.id = index
-        return s
-    })) || [])
     const largestNumber = (array) => {
         var largest= 0;
 
@@ -318,6 +317,42 @@ const Payment = (props: any) => {
 
             return [...s, obj]
         })
+
+    }
+    const closeItem = (index)=>{
+        let arr = soa
+        arr.filter((el, i) => i  !== index);
+
+        let state = {...props.userProfileForm};
+        delete state?.["soa." + index + ".amount"];
+        delete state?.["soa." + index + ".item"];
+        delete state?.["soa." + index + ".id"];
+        delete state?.["soa." + index + ".isEdit"];
+
+        props.setUserProfileForm(state)
+        setSoa(arr);
+    }
+    const updateSoa = (stateName, value, index) =>{
+        let hasChanges = false
+        let compare=soa.findIndex(uf=>uf.id===index);
+        if(value!==props.soa?.[compare]?.[stateName]){
+            hasChanges=true;
+            props.hasChanges(hasChanges)
+        }
+        setSoa(prevState => {
+            const newState = prevState.map((obj, i) => {
+                if (obj.id === index) {
+
+                    return {...obj, [stateName]: value};
+                }
+
+                return obj;
+            });
+
+            return newState;
+        });
+
+
 
     }
     const {applicantForm, updateApplication} = useApplicantForm(props);
@@ -365,61 +400,59 @@ const Payment = (props: any) => {
                         </Text>
                     </View>
                     {
-                        soa.length ? soa?.map((s, index) => (
-                            <View key={index} style={{width: "100%"}}>
+                        soa.length ? soa?.map((s, index) => {
+                                return ("soa." + index + ".item" in props.userProfileForm) ?
+                                    <View key={index} style={{width: "100%"}}>
 
-                                <View
-                                    key={s._id}
-                                    style={paymentStyles.soaItem}
-                                >
+                                        <View
+                                            key={s._id}
+                                            style={paymentStyles.soaItem}
+                                        >
 
-                                    <View style={{flex: 1}}>
+                                            <View style={{flex: 1}}>
 
-                                        <Card updateApplication={updateApplication}
-                                              updateForm={applicantForm}
-                                              stateName={"soa." + index + ".item"}
-                                              edit={props.edit}
-                                              display={props.userProfileForm?.["soa." + index + ".item"] || "Item"}
-                                              label={"Item:"}
-                                              style={{color: "#37405B", fontSize: fontValue(14)}}
-                                              applicant={props.userProfileForm?.["soa." + index + ".item"]}/>
-                                    </View>
-                                    <View style={{flex: 1, width: "100%", paddingLeft: 3}}>
-                                        <Card updateApplication={updateApplication}
-                                              updateForm={applicantForm}
-                                              touchableStyle={{alignSelf: "flex-end"}}
-                                              stateName={"soa." + index + ".amount"}
-                                              edit={props.edit}
-                                              display={props.userProfileForm?.["soa." + index + ".amount"]|| "Amount"}
-                                              label={"Amount:"}
-                                              style={{color: "#37405B", fontSize: fontValue(14)}}
-                                              applicant={"" + props.userProfileForm?.["soa." + index + ".amount"]}/>
-                                    </View>
-                                    { props.edit && <View style={{ }}>
-                                        <TouchableOpacity  onPress={()=>{
-                                            let arr = soa
-                                            arr.splice(index, 1);
-                                            setSoa(arr);
-                                            let state = {...props.userProfileForm};
-                                            delete state?.["soa." + index + ".amount"];
-                                            delete state?.["soa." + index + ".item"];
+                                                <Card updateApplication={updateApplication}
+                                                      updateForm={applicantForm}
+                                                      stateName={"soa." + index + ".item"}
+                                                      edit={props.edit}
+                                                      display={props.userProfileForm?.["soa." + index + ".item"] || "Item"}
+                                                      label={"Item:"}
+                                                      style={{color: "#37405B", fontSize: fontValue(14)}}
+                                                      applicant={props.userProfileForm?.["soa." + index + ".item"]}/>
+                                            </View>
+                                            <View style={{flex: 1, width: "100%", paddingLeft: 3}}>
+                                                <Card updateApplication={updateApplication}
 
-                                            console.log(state)
 
-                                            props.setUserProfileForm(state)
-                                        }
-                                        }  style={{paddingHorizontal: 10}}>
-                                            <CloseIcon/>
-                                        </TouchableOpacity>
-                                    </View>}
+                                                      updateForm={(stateName, value) => {
+                                                          console.log(stateName, value, "amount")
+                                                          updateSoa('amount', parseInt(value), s.id)
+                                                          applicantForm('totalFee', getTotal(soa))
+                                                          applicantForm(stateName, value)
+                                                      }}
+                                                      touchableStyle={{alignSelf: "flex-end"}}
+                                                      stateName={"soa." + index + ".amount"}
+                                                      edit={props.edit}
+                                                      display={props.userProfileForm?.["soa." + index + ".amount"] || "Amount"}
+                                                      label={"Amount:"}
+                                                      style={{color: "#37405B", fontSize: fontValue(14)}}
+                                                      applicant={"" + props.userProfileForm?.["soa." + index + ".amount"]}/>
+                                            </View>
+                                            {props.edit && <View style={{}}>
+                                                <TouchableOpacity onPress={() => closeItem(index)}
+                                                                  style={{paddingHorizontal: 10}}>
+                                                    <CloseIcon/>
+                                                </TouchableOpacity>
+                                            </View>}
 
-                                </View>
-                                <View style={{overflow: "hidden"}}>
-                                    <DottedLine/>
-                                </View>
+                                        </View>
+                                        <View style={{overflow: "hidden"}}>
+                                            <DottedLine/>
+                                        </View>
 
-                            </View>
-                        )) : <View style={{alignItems: 'center', justifyContent: 'center', paddingVertical: 10}}><Text
+                                    </View> : <></>
+                            }
+                        ) : <View style={{alignItems: 'center', justifyContent: 'center', paddingVertical: 10}}><Text
                             style={{fontSize: fontValue(16), fontFamily: Regular500}}>No S.O.A</Text></View>
                     }
                     <View
@@ -454,7 +487,7 @@ const Payment = (props: any) => {
                             style={{fontSize: fontValue(16), fontFamily: Bold}}
                             color="#37405B"
                         >
-                            ₱{props.totalFee}
+                            ₱{getTotal()}
                         </Text>
                     </View>
                 </View>
