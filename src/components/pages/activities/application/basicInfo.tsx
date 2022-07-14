@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from "react";
-import {FlatList, Platform, ScrollView, Text, useWindowDimensions, View} from "react-native";
+import {FlatList, Platform, RefreshControl, ScrollView, Text, useWindowDimensions, View} from "react-native";
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
@@ -15,6 +15,12 @@ import useSafeState from "../../../../hooks/useSafeState";
 import {RootStateOrAny, useSelector} from "react-redux";
 import DateField from "@pages/activities/application/datefield";
 import TimeField from "@pages/activities/application/timefield";
+import {BASE_URL} from "../../../../services/config";
+import api from "../../../../services/api";
+import {ToastType} from "@atoms/toast/ToastProvider";
+import {useToast} from "../../../../hooks/useToast";
+import axios from "axios";
+import ToastLoading from "@components/atoms/toast/ToastLoading";
 
 
 const BasicInfo = (props: any) => {
@@ -86,8 +92,41 @@ const BasicInfo = (props: any) => {
         })
 
     }
+    const {showToast, hideToast}=useToast();
+    const [refreshing, setRefreshing] = React.useState(false);
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        hideToast()
+        showToast(ToastType.Info, <ToastLoading/>)
+        axios.get(BASE_URL + "/applications/" + props.id, {headers:{
+            Authorization:"Bearer ".concat(user?.sessionToken)
+        }}).then(() => {
+            hideToast()
+
+            showToast(ToastType.Success,"Successfully updated!")
+            setRefreshing(false);
+        }).catch((error)=>{
+            hideToast()
+            let _err='';
+
+            for(const err in error?.response?.data?.errors) {
+                _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
+            }
+            if(_err || error?.response?.data?.message ||error?.response?.statusText){
+                showToast(ToastType.Error,_err || error?.response?.data?.message ||error?.response?.statusText)
+            }
+            setRefreshing(false);
+        });
+    }, []);
+
     const history = ([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory?.length  ? props.paymentHistory?.filter(s => s?.remarks) :  (props?.approvalHistory?.length ? props?.approvalHistory?.filter(s => s?.remarks) : []))
     return <><ScrollView keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
+                         refreshControl={
+                             <RefreshControl
+                                 refreshing={refreshing}
+                                 onRefresh={onRefresh}
+                             />
+                         }
                          showsVerticalScrollIndicator={false} ref={scrollRef}
                          style={{width: "100%", backgroundColor: "#f8f8f8",}}>
 

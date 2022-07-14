@@ -58,17 +58,10 @@ import CheckIcon from "@assets/svg/check";
 import {isNumber} from "../../../utils/ntc";
 import {useToast} from "../../../hooks/useToast";
 import {ToastType} from "@atoms/toast/ToastProvider";
+import ToastLoading from "@components/atoms/toast/ToastLoading";
 const flatten = require('flat')
 
-function ToastLoading() {
-    return <View style={{alignItems: "center", justifyContent: "center"}}>
-        <ActivityIndicator color={"#fff"}/>
-        <View style={{paddingTop: 6}}>
-            <Text style={{color: "#fff", fontFamily: Regular, fontSize: 16}}>Loading...</Text>
-        </View>
 
-    </View>;
-}
 
 function ActivityModal(props:any){
     const [userProfileForm, setUserProfileForm] = useSafeState(flatten.flatten(props.details))
@@ -280,7 +273,7 @@ function ActivityModal(props:any){
     const [titleUpdate, setTitleUpdate] = useSafeState("")
 
     const updateApplication = useCallback((callback) => {
-        hideToast()
+hideToast()
         showToast(ToastType.Info, <ToastLoading/>)
         let profileForm = userProfileForm
         let dateOfBirth= profileForm?.['applicant.dateOfBirth'], region= profileForm?.['region.code'],dateValue = { year: "", month: "", day: ""}
@@ -324,12 +317,16 @@ function ActivityModal(props:any){
             callback()
 
         }).catch((error)=>{
+            hideToast()
             let _err='';
-            for(const err in error?.response?.data?.errors){
-                _err+=error?.response?.data?.errors?.[err]?.toString()+"\n";
+
+            for(const err in error?.response?.data?.errors) {
+                _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
             }
-            showToast(ToastType.Error,error?.response?.data.trim()||error?.response?.statusText)
-           /* setMessageUpdate(err?.message||'Something went wrong.')
+            if(_err || error?.response?.data?.message ||error?.response?.statusText){
+                showToast(ToastType.Error,_err || error?.response?.data?.message ||error?.response?.statusText)
+            }
+            /* setMessageUpdate(err?.message||'Something went wrong.')
             setTitleUpdate("Error")*/
             callback()
         });
