@@ -1,5 +1,5 @@
 import { View, Dimensions, Pressable, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import lodash from 'lodash';
 import { ArrowDownIcon, MessageIcon, ParticipantsIcon } from '@components/atoms/icon'
@@ -8,6 +8,7 @@ import {
   setNotification,
   setOptions,
   setPinnedParticipant,
+  updateMeeting,
   updateMeetingParticipants,
 } from 'src/reducers/meeting/actions';
 import { setSelectedChannel, setMeetings, removeSelectedMessage } from 'src/reducers/channel/actions';
@@ -20,6 +21,7 @@ import { useNavigation } from '@react-navigation/native';
 import IParticipants from 'src/interfaces/IParticipants';
 import { RFValue } from 'react-native-responsive-fontsize';
 import useTimer from 'src/hooks/useTimer';
+import axios from 'axios';
 
 const dimensions = {
   width: Dimensions.get('window').width,
@@ -124,6 +126,20 @@ const FloatingVideo = ({ tracks }:any) => {
       roomId: meeting?.roomId,
     };
   });
+  const userStatus:string|undefined = useMemo(() => {
+    const participant:IParticipants = lodash.find(meeting.participants, (p:IParticipants) => p._id === user._id);
+    const userStatus = participant?.status;
+    let status:string = "";
+    if (userStatus === 'pending' || userStatus === 'waiting') {
+      status = userStatus;
+    } else if (userStatus !== 'waiting' && participant.waitingInLobby) {
+      status = 'pending';
+    } else if (participant.waitingInLobby && !status) {
+      status = 'waiting';
+    }
+    return status;
+  }, [meeting.participants]);
+
   const {
     isMute = false,
     isVideoEnable = true,
@@ -133,6 +149,7 @@ const FloatingVideo = ({ tracks }:any) => {
   const {
     endMeeting,
     joinMeeting,
+    meetingLobby,
     leaveMeeting,
     muteParticipant,
   } = useSignalr();
@@ -143,6 +160,7 @@ const FloatingVideo = ({ tracks }:any) => {
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState({});
   const [isMaximized, setIsMaximized] = useState(true);
+  const [ready, setReady] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
   useEffect(() => {
@@ -154,28 +172,9 @@ const FloatingVideo = ({ tracks }:any) => {
   }, [meeting]);
 
   useEffect(() => {
-    let unmounted = false;
+    if (meetingId) setReady(true);
 
-    if (meetingId) {
-      joinMeeting({ meetingId: meeting._id, muted: isMute }, (err:any, result:any) => {
-        if (!unmounted) {
-          if (result) {
-            setLoading(false);
-            if (result) {
-              dispatch(updateMeetingParticipants(result.meeting));
-              setAgora(result?.agora);
-              setStarted(true);
-            }
-          } else {
-            setLoading(false);
-            Alert.alert('Something went wrong.');
-          }
-        }
-      });
-    }
-  
     return () => {
-      unmounted = true;
       dispatch(setOptions({
         isHost: false,
         isVoiceCall: false,
@@ -185,6 +184,49 @@ const FloatingVideo = ({ tracks }:any) => {
       location.reload();
     }
   }, [meetingId]);
+
+  useEffect(() => {
+    const source = axios.CancelToken.source();
+
+    if (ready) {
+      if (userStatus === 'pending' || userStatus === 'waiting') {
+        if (userStatus === 'pending') {
+          meetingLobby({ meetingId: meeting._id }, (err:any, result:any) => {
+            if (result) {
+              setLoading(false);
+              dispatch(updateMeeting(result));
+            } else {
+              if (axios.isCancel(err)) {
+                console.log('CANCELLED');
+              } else {
+                setLoading(false);
+                Alert.alert(err.message || 'Something went wrong.');
+              }
+            }
+          }, { cancelToken: source.token });
+        }
+      } else if (!userStatus) {
+        joinMeeting({ meetingId: meeting._id, muted: isMute }, (err:any, result:any) => {
+          setLoading(false);
+          if (result) {
+            dispatch(updateMeetingParticipants(result.meeting));
+            setAgora(result?.agora);
+            setStarted(true);
+          } else {
+            if (axios.isCancel(err)) {
+              console.log('CANCELLED');
+            } else {
+              Alert.alert(err.message || 'Something went wrong.');
+            }
+          }
+        }, { cancelToken: source.token });
+      }
+    }
+  
+    return () => {
+      source.cancel();
+    }
+  }, [ready, userStatus]);
 
   useEffect(() => {
     if (normalizedChannelList && normalizedChannelList[roomId]) {
