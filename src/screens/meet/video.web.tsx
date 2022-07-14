@@ -244,6 +244,7 @@ const VideoCall = () => {
     getMeeting,
     initSignalR,
     onConnection,
+    onStatusUpdate,
     onChatUpdate,
     onRoomUpdate,
     onMeetingUpdate,
@@ -391,6 +392,7 @@ const VideoCall = () => {
 
   useEffect(() => {
     initSignalR();
+    onConnection('OnStatusUpdate', onStatusUpdate);
     onConnection('OnChatUpdate',onChatUpdate);
     onConnection('OnRoomUpdate',onRoomUpdate);
     onConnection('OnMeetingUpdate',onMeetingUpdate);
