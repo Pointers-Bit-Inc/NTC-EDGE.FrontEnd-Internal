@@ -5,7 +5,7 @@ import {useToast} from "../../../hooks/useToast";
 import {errorColor,infoColor,successColor} from "@styles/color";
 
 const fadeDuration = 300;
-const tabBarHeight = 60;
+const tabBarHeight = 120;
 
 export const Toast: React.FC = () => {
     const { toastConfig, hideToast } = useToast();
@@ -75,7 +75,6 @@ export const Toast: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: {
-       
         alignSelf: "center",
         position: "absolute",
         marginHorizontal: 20,

@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
+    ActivityIndicator,
     Alert as RNAlert,
     Animated,
     BackHandler,
@@ -40,7 +41,7 @@ import CloseIcon from "@assets/svg/close";
 import {ApprovedButton} from "@pages/activities/button/approvedButton";
 import {DeclineButton} from "@pages/activities/button/declineButton";
 import {EndorsedButton} from "@pages/activities/button/endorsedButton";
-import {Bold} from "@styles/font";
+import {Bold, Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import {useComponentLayout} from "../../../hooks/useComponentLayout";
@@ -57,8 +58,18 @@ import CheckIcon from "@assets/svg/check";
 import {isNumber} from "../../../utils/ntc";
 import {useToast} from "../../../hooks/useToast";
 import {ToastType} from "@atoms/toast/ToastProvider";
-
 const flatten = require('flat')
+
+function ToastLoading() {
+    return <View style={{alignItems: "center", justifyContent: "center"}}>
+        <ActivityIndicator color={"#fff"}/>
+        <View style={{paddingTop: 6}}>
+            <Text style={{color: "#fff", fontFamily: Regular, fontSize: 16}}>Loading...</Text>
+        </View>
+
+    </View>;
+}
+
 function ActivityModal(props:any){
     const [userProfileForm, setUserProfileForm] = useSafeState(flatten.flatten(props.details))
 
@@ -104,7 +115,7 @@ function ActivityModal(props:any){
         let url=`/applications/${applicationId}/update-status`;
         let params:any={
             status,
-            remarks:event.remarks ? event.remarks : remarks,
+            remarks:  user?.role?.key==CASHIER ? "" :event.remarks ? event.remarks : remarks,
             assignedPersonnel:event.cashier ? event.cashier  :assignId,
         };
         let AddORNoparams:any=
@@ -269,7 +280,8 @@ function ActivityModal(props:any){
     const [titleUpdate, setTitleUpdate] = useSafeState("")
 
     const updateApplication = useCallback((callback) => {
-        showToast(ToastType.Info,"Loading...")
+
+        showToast(ToastType.Info, <ToastLoading/>)
         let profileForm = userProfileForm
         let dateOfBirth= profileForm?.['applicant.dateOfBirth'], region= profileForm?.['region.code'],dateValue = { year: "", month: "", day: ""}
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from "react";
-import {Platform, ScrollView, Text, useWindowDimensions, View} from "react-native";
+import {FlatList, Platform, ScrollView, Text, useWindowDimensions, View} from "react-native";
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
@@ -86,6 +86,7 @@ const BasicInfo = (props: any) => {
         })
 
     }
+    const history = ([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory?.length  ? props.paymentHistory?.filter(s => s?.remarks) :  (props?.approvalHistory?.length ? props?.approvalHistory?.filter(s => s?.remarks) : []))
     return <><ScrollView keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
                          showsVerticalScrollIndicator={false} ref={scrollRef}
                          style={{width: "100%", backgroundColor: "#f8f8f8",}}>
@@ -170,7 +171,7 @@ const BasicInfo = (props: any) => {
 
                                             {personnel != undefined &&
                                                 (
-                                                    getStatusText(props, personnel) == APPROVED ? getStatusText(props, personnel) : (!excludeStatus(props, personnel) || !!(props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks || props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks))) &&
+                                                    getStatusText(props, personnel) == APPROVED ? getStatusText(props, personnel) : (!excludeStatus(props, personnel) || [CASHIER].indexOf(user?.role?.key) != -1 ? !!(props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) :( props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks))) &&
                                                 <CustomText
                                                     style={{fontSize: fontValue(12), flex: 1, color: "#37405B"}}>
                                                     {(
@@ -180,7 +181,7 @@ const BasicInfo = (props: any) => {
 
                                         </View>
                                         {
-                                            !!(props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks) &&
+                                            ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks ) ?
                                             <View style={styles.group3}>
                                                 <View style={[styles?.remarksContainer, {
                                                     borderColor: remarkColor(
@@ -196,9 +197,32 @@ const BasicInfo = (props: any) => {
                                                         getStatusText(props, personnel)
                                                     )]}>{[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}</Text>
                                                 </View>
-                                            </View>
+                                            </View> :  (([CASHIER].indexOf(user?.role?.key) != -1 && !!props.paymentHistory ) ? !!props.paymentHistory : !!props.approvalHistory) ? <FlatList
+                                                    data={history }
+                                                    renderItem={({ item })=>{
 
-                                        }
+                                                        return <>
+
+                                                            <View style={styles.group3}>
+                                                            <View style={[styles?.remarksContainer, {
+                                                                borderColor: remarkColor(
+                                                                    item?.status
+                                                                )
+                                                            }]}>
+                                                                <Text style={[styles?.remarksTitle, {
+                                                                    color: remarkColor(
+                                                                        item?.status
+                                                                    )
+                                                                }]}>{ item?.status === DECLINED ? 'NOD/' : ''}Remarks</Text>
+                                                                <Text style={[styles?.remarksContent, statusColor(
+                                                                    item?.status
+                                                                )]}>{item?.remarks}</Text>
+                                                            </View>
+                                                        </View></>
+                                                    }
+                                                    }
+                                                    keyExtractor={item => item._id}
+                                                /> : <></>}
                                     </View>
 
                                 </View>
