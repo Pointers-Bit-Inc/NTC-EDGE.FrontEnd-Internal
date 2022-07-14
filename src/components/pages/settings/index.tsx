@@ -107,7 +107,7 @@ export default ({
       if (!enableBiometrics) resetCredentials();
       navigation.dispatch(StackActions.replace('Login'));
     },500);
-  }, []);
+  }, [enableBiometrics]);
 
   const renderRow = ({item}: any) => {
     return (

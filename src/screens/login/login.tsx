@@ -36,10 +36,6 @@ const Login = ({ navigation }: any) => {
     } = useBiometrics();
 
     useEffect(() => {
-        if (isBiometricSupported && biometricsLogin) handleBiometricAuth();
-    }, [isBiometricSupported]);
-
-    useEffect(() => {
         if (credentials) {
             onChangeValue('login', {
                 email: credentials.username,
