@@ -171,7 +171,7 @@ const BasicInfo = (props: any) => {
 
                                             {personnel != undefined &&
                                                 (
-                                                    getStatusText(props, personnel) == APPROVED ? getStatusText(props, personnel) : (!excludeStatus(props, personnel) || [CASHIER].indexOf(user?.role?.key) != -1 ? !!(props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) :( props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks))) &&
+                                                    getStatusText(props, personnel) == APPROVED ? getStatusText(props, personnel) : (!excludeStatus(props, personnel) || ([CASHIER].indexOf(user?.role?.key) != -1 ? !!(props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) :( props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)))) &&
                                                 <CustomText
                                                     style={{fontSize: fontValue(12), flex: 1, color: "#37405B"}}>
                                                     {(
