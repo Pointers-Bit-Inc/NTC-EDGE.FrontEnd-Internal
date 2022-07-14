@@ -198,6 +198,7 @@ const BasicInfo = (props: any) => {
                                                     <Text style={[styles?.remarksContent, statusColor(
                                                         getStatusText(props, personnel)
                                                     )]}>{[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}</Text>
+
                                                 </View>
                                             </View>
                                             </>
@@ -222,6 +223,17 @@ const BasicInfo = (props: any) => {
                                                                 <Text style={[styles?.remarksContent, statusColor(
                                                                     item?.status
                                                                 )]}>{item?.remarks}</Text>
+
+                                                                {(item?.personnel?.firstName && item?.personnel?.lastName) ? <Text style={[styles?.remarksTitle, {
+                                                                    color: remarkColor(
+                                                                        item.status
+                                                                    ),
+                                                                    fontSize: fontValue(12),
+                                                                    fontFamily: Regular,
+                                                                    marginRight: 15,
+                                                                    alignSelf: 'flex-end',
+                                                                    marginBottom: -10,
+                                                                }]}>{`by ${item?.personnel?.firstName} ${item?.personnel?.lastName}`}</Text> : <></>}
                                                             </View>
                                                         </View></>
                                                     }

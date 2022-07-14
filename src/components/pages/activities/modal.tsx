@@ -280,7 +280,7 @@ function ActivityModal(props:any){
     const [titleUpdate, setTitleUpdate] = useSafeState("")
 
     const updateApplication = useCallback((callback) => {
-
+        hideToast()
         showToast(ToastType.Info, <ToastLoading/>)
         let profileForm = userProfileForm
         let dateOfBirth= profileForm?.['applicant.dateOfBirth'], region= profileForm?.['region.code'],dateValue = { year: "", month: "", day: ""}
@@ -311,7 +311,7 @@ function ActivityModal(props:any){
         axios.patch(BASE_URL + `/applications/${props?.details?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, {headers:{
                 Authorization:"Bearer ".concat(user?.sessionToken)
             }}).then( (response) => {
-hideToast()
+            hideToast()
             setEdit(false)
             /*setShowAlert2(true)
              setMessageUpdate('The Application has been updated!')
