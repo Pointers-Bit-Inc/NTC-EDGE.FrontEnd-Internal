@@ -340,16 +340,15 @@ const DataTable=(props)=>{
                         }),
                 }
             }).catch((error)=>{
+                hideToast()
                 let _err='';
-                for(const err in error?.response?.data?.errors){
 
-                    _err+=error?.response?.data?.errors?.[err]?.toString()+"\n";
-
+                for(const err in error?.response?.data?.errors) {
+                    _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
                 }
-                if(_err){
-                    showToast(ToastType.Error,_err)
+                if(_err || error?.response?.data?.message ||error?.response?.statusText){
+                    showToast(ToastType.Error,_err || error?.response?.data?.message ||error?.response?.statusText)
                 }
-
 
 
             });
@@ -476,12 +475,16 @@ const DataTable=(props)=>{
                                 axios.delete(BASE_URL+`/users/${item._id}`).then((response)=>{
                                     showToast(ToastType.Success,"Successfully deleted!")
                                 }).catch((error)=>{
-                                    console.log(error.response);
+                                    hideToast()
                                     let _err='';
-                                    for(const err in error?.response?.data?.errors){
-                                        _err+=error?.response?.data?.errors?.[err]?.toString()+"\n";
+
+                                    for(const err in error?.response?.data?.errors) {
+                                        _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
                                     }
-                                    showToast(ToastType.Error,error?.response?.data.trim()||error?.response?.statusText)
+                                    if(_err || error?.response?.data?.message ||error?.response?.statusText){
+                                        showToast(ToastType.Error,_err || error?.response?.data?.message ||error?.response?.statusText)
+                                    }
+
                                 })
                             }
 
