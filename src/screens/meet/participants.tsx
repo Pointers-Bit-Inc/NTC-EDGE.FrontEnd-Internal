@@ -177,17 +177,28 @@ const Participants = ({ navigation }) => {
   const user = useSelector((state:RootStateOrAny) => state.user);
   const api = useApi(user.sessionToken);
   const { waitingInLobby = [], inTheMeeting = [], othersInvited = [], roomId = '', participants = [], meetingId = '', host = {} } = useSelector((state:RootStateOrAny) => {
+    const { selectedChannel = {} } = state.channel;
     const { meeting = {} } = state.meeting;
-    const inTheMeeting = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status === 'joined');
-    const othersInvited = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => !(p.status === 'joined' || p.status === 'waiting'));
-    const waitingInLobby = lodash.filter(meeting?.participants ?? [], (p:IParticipants) => p.status === 'waiting');
+    const meetingParticipants = meeting?.participants?.map((item:IParticipants) => {
+      const p:IParticipants = lodash.find(selectedChannel.participants, (p:IParticipants) => p._id === item._id);
+      
+      item.isOnline = p.isOnline;
+      item.lastOnline = p.lastOnline;
+      item.email = p.email;
+      item.name = `${p.firstName} ${p.lastName}`;
+
+      return item;
+    })
+    const inTheMeeting = lodash.filter(meetingParticipants ?? [], (p:IParticipants) => p.status === 'joined');
+    const othersInvited = lodash.filter(meetingParticipants ?? [], (p:IParticipants) => !(p.status === 'joined' || p.status === 'waiting'));
+    const waitingInLobby = lodash.filter(meetingParticipants ?? [], (p:IParticipants) => p.status === 'waiting');
     return {
       roomId: meeting?.roomId,
       meetingId: meeting?._id,
       inTheMeeting,
       othersInvited,
       waitingInLobby,
-      participants: meeting?.participants,
+      participants: meetingParticipants,
       host: meeting?.host,
     }
   });

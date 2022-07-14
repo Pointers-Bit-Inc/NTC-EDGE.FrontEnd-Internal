@@ -99,6 +99,7 @@ export default function TabBar({navigation,route}){
         initSignalR,
         destroySignalR,
         onConnection,
+        onStatusUpdate,
         onChatUpdate,
         onRoomUpdate,
         onMeetingUpdate,
@@ -163,6 +164,7 @@ export default function TabBar({navigation,route}){
     useEffect(()=>{
         initialize();
         initSignalR();
+        onConnection('OnStatusUpdate', onStatusUpdate);
         onConnection('OnChatUpdate',onChatUpdate);
         onConnection('OnRoomUpdate',onRoomUpdate);
         onConnection('OnMeetingUpdate',onMeetingUpdate);

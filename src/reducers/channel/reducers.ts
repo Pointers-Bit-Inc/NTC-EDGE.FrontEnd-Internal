@@ -1,6 +1,7 @@
 import lodash from 'lodash';
 import IMeetings from 'src/interfaces/IMeetings';
 import IMessages from 'src/interfaces/IMessages';
+import IParticipants from 'src/interfaces/IParticipants';
 const {
   SET_SELECTED_CHANNEL,
   SET_CHANNEL_LIST,
@@ -34,6 +35,7 @@ const {
   REMOVE_PENDING_MESSAGE,
 
   UPDATE_PARTICIPANTS,
+  UPDATE_PARTICIPANTS_STATUS,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -234,6 +236,36 @@ export default function basket(state = initialState, action:any) {
           newState = newState.setIn(['normalizedChannelList', action.payload._id, 'participants'], action.payload.participants)
           if (state.selectedChannel?._id === action.payload._id) {
             newState = newState.setIn(['selectedChannel', 'participants'], action.payload.participants);
+          }
+        }
+      }
+
+      return newState;
+    }
+    case UPDATE_PARTICIPANTS_STATUS: {
+      let newState = state;
+
+      if (action.payload?.participant) {
+        if (state.normalizedChannelList[action.payload.roomId]) {
+          const channelFromList = state.normalizedChannelList[action.payload.roomId];
+
+          newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'participants'], (() => {
+            return channelFromList.participants.map((p:IParticipants) => {
+              if (action.payload.participant._id === p._id) {
+                return action.payload.participant;
+              }
+              return p;
+            });
+          })());
+          if (state.selectedChannel?._id === action.payload.roomId) {
+            newState = newState.setIn(['selectedChannel', 'participants'], (() => {
+              return state.selectedChannel.participants.map((p:IParticipants) => {
+                if (action.payload.participant._id === p._id) {
+                  return action.payload.participant;
+                }
+                return p;
+              });
+            })());
           }
         }
       }
