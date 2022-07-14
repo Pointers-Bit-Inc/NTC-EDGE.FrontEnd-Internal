@@ -133,7 +133,7 @@ const BasicInfo = (props: any) => {
                                         </View>
                                     </View>
                                     <View style={{paddingVertical: 15}}>
-                                        {(([CASHIER].indexOf(user?.role?.key) != -1 ? (props.paymentHistory?.remarks) : (props?.approvalHistory?.remarks)) && ((typeof props?.approvalHistory == 'object') || (typeof props?.paymentHistory == 'object')) ) ? <View style={[styles.status, {paddingBottom: !!props.remarks ? 7.5 : 0}]}>
+                                        {<View style={[styles.status, {paddingBottom: !!props.remarks ? 7.5 : 0}]}>
 
                                             <View
                                                 style={{
@@ -179,7 +179,7 @@ const BasicInfo = (props: any) => {
 
                                                 </CustomText>}
 
-                                        </View> : <></>}
+                                        </View> }
                                         {
                                             ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks ) ?
                                             <>
@@ -207,51 +207,7 @@ const BasicInfo = (props: any) => {
                                                     renderItem={({ item })=>{
 
                                                         return <>
-                                                            <View style={[styles.status, {paddingBottom: !!props.remarks ? 7.5 : 0}]}>
 
-                                                                <View
-                                                                    style={{
-                                                                        flexDirection: "row",
-                                                                        justifyContent: "center",
-                                                                        alignItems: "center"
-                                                                    }}>
-                                                                    {
-                                                                        statusIcon(
-                                                                            item?.status
-                                                                            ,
-                                                                            styles.icon2,
-                                                                            1
-                                                                        )
-                                                                    }
-                                                                    <CustomText
-                                                                        style={[
-                                                                            styles.role,
-                                                                            statusColor(
-                                                                                item?.status
-                                                                            ),
-                                                                            {
-                                                                                fontSize: fontValue(16),
-                                                                                fontFamily: Bold,
-                                                                            }
-                                                                        ]}
-                                                                        numberOfLines={1}
-                                                                    >
-                                                                        {
-                                                                            item?.status?.toUpperCase()
-                                                                        }
-                                                                    </CustomText>
-                                                                </View>
-
-
-                                                                {item.personnel != undefined &&
-                                                                    <CustomText
-                                                                        style={{fontSize: fontValue(12), flex: 1, color: "#37405B"}}>
-                                                                        {(
-                                                                            item.personnel !== undefined ? `by ${item.personnel?.firstName} ${item.personnel?.lastName}` : ``)}
-
-                                                                    </CustomText>}
-
-                                                            </View>
                                                             <View style={styles.group3}>
                                                             <View style={[styles?.remarksContainer, {
                                                                 borderColor: remarkColor(
