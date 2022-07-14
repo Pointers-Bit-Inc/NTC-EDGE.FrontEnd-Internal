@@ -37,4 +37,5 @@ export default keyMirror({
   REMOVE_PENDING_MESSAGE: null,
 
   UPDATE_PARTICIPANTS: null,
+  UPDATE_PARTICIPANTS_STATUS: null,
 });

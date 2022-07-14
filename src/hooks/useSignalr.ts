@@ -8,7 +8,7 @@ import useApi from 'src/services/api';
 import { normalize, schema } from 'normalizr';
 import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
 import { addMeeting, updateMeeting, setConnectionStatus, setNotification, setMeeting, removeMeetingFromList, setToggle, endCall, updateMeetingParticipants } from 'src/reducers/meeting/actions';
-import { addMessages, updateMessages, addChannel, removeChannel, updateChannel, addFiles, updateParticipants } from 'src/reducers/channel/actions';
+import { addMessages, updateMessages, addChannel, removeChannel, updateChannel, addFiles, updateParticipants, updateParticipantStatus } from 'src/reducers/channel/actions';
 
 const useSignalr = () => {
   const dispatch = useDispatch();
@@ -38,6 +38,10 @@ const useSignalr = () => {
     signalr.current?.on(connection, callback),
   []);
 
+  const onStatusUpdate = (users:Array<string>, data:any) => {
+    dispatch(updateParticipantStatus(data));
+  }
+
   const onChatUpdate = (users:Array<string>, type:string, data:any) => {
     if (data) {
       switch(type) {
@@ -51,7 +55,7 @@ const useSignalr = () => {
           break;
         }
         case 'endcall': {
-          dispatch(updateMessages(data.roomId, data));
+          dispatch(addMessages(data.roomId, data));
           if (data.meeting) {
             dispatch(endCall({
               _id: data.meeting._id,
@@ -420,6 +424,7 @@ const useSignalr = () => {
     initSignalR,
     destroySignalR,
     onConnection,
+    onStatusUpdate,
     onChatUpdate,
     onRoomUpdate,
     onMeetingUpdate,

@@ -38,6 +38,7 @@ const {
   SET_PENDING_MESSAGE_ERROR,
 
   UPDATE_PARTICIPANTS,
+  UPDATE_PARTICIPANTS_STATUS,
 } = require('./types').default;
 
 export function setSelectedChannel(payload:IRooms | {}, isChannelExist = false) {
@@ -218,5 +219,12 @@ export function updateParticipants(payload:IRooms) {
     type: UPDATE_PARTICIPANTS,
     payload
   };
+}
+
+export function updateParticipantStatus(payload:any) {
+  return {
+    type: UPDATE_PARTICIPANTS_STATUS,
+    payload
+  }
 }
 
