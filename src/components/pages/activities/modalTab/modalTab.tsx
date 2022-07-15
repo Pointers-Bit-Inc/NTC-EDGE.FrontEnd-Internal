@@ -10,8 +10,6 @@ import TabBar from "@pages/activities/tabs/tabbar";
 import ScrollableTabView from "@pages/activities/tabs";
 import Tab from "@pages/activities/tabs/Tab";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
-import {isMobile} from "@pages/activities/isMobile";
-import {styles} from "@pages/activities/application/requirementModal/styles";
 
 const ModalTab = props => {
 
