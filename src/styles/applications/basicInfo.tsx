@@ -19,8 +19,7 @@ const styles=StyleSheet.create({
         marginLeft: 15,
     },
     remarksContent: {
-        fontSize: fontValue(15),
-        textAlign: 'justify',
+        fontSize: fontValue(12),
         margin: 15,
     },
     elevation:{

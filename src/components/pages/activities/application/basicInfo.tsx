@@ -247,43 +247,42 @@ const BasicInfo = (props: any) => {
                                             </View>
                                             </>
 
-                                                :  (([CASHIER].indexOf(user?.role?.key) != -1 && !!props.paymentHistory ) ? !!props.paymentHistory : !!props.approvalHistory) ? <FlatList
+                                                :  (([CASHIER].indexOf(user?.role?.key) != -1 && !!props.paymentHistory ) ? !!props.paymentHistory : !!props.approvalHistory) ?<View style={styles.group3}>
+                                                    <View style={[styles?.remarksContainer, {
+                                                        borderColor: remarkColor(
+                                                            getStatusText(props, personnel)
+                                                        )
+                                                    }]}>
+                                                        <Text style={[styles?.remarksTitle, {
+                                                            color: remarkColor(
+                                                                getStatusText(props, personnel)
+                                                            )
+                                                        }]}>{getStatusText(props, personnel) === DECLINED ? 'NOD/' : ''}Remarks</Text><FlatList
                                                     data={history }
                                                     renderItem={({ item })=>{
 
                                                         return <>
 
-                                                            <View style={styles.group3}>
-                                                            <View style={[styles?.remarksContainer, {
-                                                                borderColor: remarkColor(
-                                                                    item?.status
-                                                                )
-                                                            }]}>
-                                                                <Text style={[styles?.remarksTitle, {
-                                                                    color: remarkColor(
-                                                                        item?.status
-                                                                    )
-                                                                }]}>{ item?.status === DECLINED ? 'NOD/' : ''}Remarks</Text>
-                                                                <Text style={[styles?.remarksContent, statusColor(
-                                                                    item?.status
-                                                                )]}>{item?.remarks}</Text>
 
-                                                                {(item?.personnel?.firstName && item?.personnel?.lastName) ? <Text style={[styles?.remarksTitle, {
-                                                                    color: remarkColor(
-                                                                        item.status
-                                                                    ),
-                                                                    fontSize: fontValue(12),
-                                                                    fontFamily: Regular,
-                                                                    marginRight: 15,
-                                                                    alignSelf: 'flex-end',
-                                                                    marginBottom: -10,
-                                                                }]}>{`by ${item?.personnel?.firstName} ${item?.personnel?.lastName}`}</Text> : <></>}
-                                                            </View>
-                                                        </View></>
+                                                                <View style={{flexDirection: "row",borderBottomWidth: 1, borderBottomColor: "#EFEFEF"  }}>
+                                                                    <View style={{flex: 0.7}}>
+                                                                        <Text style={[styles?.remarksContent, statusColor(
+                                                                            item?.status
+                                                                        )]}>{item?.remarks}</Text>
+                                                                    </View>
+
+<View style={{flex: 0.3}}>
+    {(item?.personnel?.firstName && item?.personnel?.lastName) ? <Text style={[styles?.remarksContent, {color: "#565961"}]}>{`by: ${item?.personnel?.firstName} ${item?.personnel?.lastName}`}</Text> : <></>}
+</View>
+
+                                                                </View>
+
+                                                            </>
                                                     }
                                                     }
                                                     keyExtractor={item => item._id}
-                                                /> : <></>}
+                                                /></View>
+                                                </View> : <></>}
                                     </View>
 
                                 </View>
