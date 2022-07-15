@@ -139,7 +139,7 @@ const RenderServiceMiscellaneous=(props)=>{
             <Title nextValue={nextValue} index={index}/>
             <Separator index={index}/>
 
-            {isValidDate(props?.userProfileForm["service." + keys]) ? <DateField
+            {isValidDate(props?.userProfileForm?.["service." + keys]) ? <DateField
                 updateApplication={props?.updateApplication}
                 updateForm={props.updateForm}
                 stateName={"service." + keys}
