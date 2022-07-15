@@ -426,7 +426,7 @@ const Payment = (props: any) => {
                                             <View style={{flex: 1, width: "100%", paddingLeft: 3}}>
                                                 <Card updateApplication={updateApplication}
 
-
+                                                      keyboardType = {'number-pad'}
                                                       updateForm={(stateName, value) => {
                                                           updateSoa('amount', parseInt(value), s.id)
                                                           applicantForm('totalFee', getTotal(soa))

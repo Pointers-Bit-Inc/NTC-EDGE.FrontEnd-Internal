@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         textAlign : "left"
     } ,
 })
-const Card = (props: {touchableStyle?:any, style?:any,   updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
+const Card = (props: {keyboardType?:string, touchableStyle?:any, style?:any,   updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
     const [edit, setEdit] = useSafeState(false)
 
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
@@ -43,7 +43,7 @@ const Card = (props: {touchableStyle?:any, style?:any,   updateApplication?:any,
     }>
         <Text style={props.style}>{props.display || props.applicant}</Text>
     </TouchableOpacity> : <>
-        {((props.edit && props.editable && props.showEdit) || edit)? <InputField  onSubmitEditing = {(event) => {
+        {((props.edit && props.editable && props.showEdit) || edit)? <InputField keyboardType={props.keyboardType}  onSubmitEditing = {(event) => {
             if(!props.edit) props?.updateApplication()
             setEdit(false)
         }}
@@ -57,7 +57,15 @@ const Card = (props: {touchableStyle?:any, style?:any,   updateApplication?:any,
             props.updateForm(props.stateName, cloneValue)
             setEdit(false)
         }}  onChangeText={(e) => {
-            props.updateForm(props.stateName,e )
+            if(props.keyboardType == 'number-pad' || props.keyboardType == 'numeric'  ){
+
+                    props.updateForm(props.stateName,e.replace(/[^0-9]/g, '')  )
+
+
+            }else{
+                props.updateForm(props.stateName,e )
+            }
+
         }
         }   value={props.applicant} label={props.label} /> : <></>}
     </>};
