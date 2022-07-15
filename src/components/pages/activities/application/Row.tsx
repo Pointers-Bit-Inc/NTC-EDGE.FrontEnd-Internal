@@ -14,20 +14,15 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
         paddingHorizontal: 10,
         fontSize: fontValue(12)
-    },
-    detail: {
+    }, detail: {
         fontSize: fontValue(14),
         fontFamily: Regular,
         paddingRight: 0,
         textAlign: "left",
         flex: 1,
         alignSelf: "flex-start"
-    },
-    detailInput: {
-        fontSize: fontValue(14),
-        fontFamily: Regular500,
-        color: "#121212",
-        flex: 1,
+    }, detailInput: {
+        fontSize: fontValue(14), fontFamily: Regular500, color: "#121212", flex: 1,
 
         textAlign: "left"
     },
@@ -39,8 +34,7 @@ const Row = (props: { updateApplication?: any, hasChanges?: any, display?: strin
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) ?
         <TouchableOpacity disabled={!props?.showEdit} onPress={() => {
             if (props.showEdit) setEdit(true)
-        }
-        } style={styles.group2}>
+        }} style={styles.group2}>
             <Text style={styles.detail}>{props.label}</Text>
             <Text style={styles.detailInput}>{props.display || props.applicant}</Text>
         </TouchableOpacity> : <>
@@ -52,20 +46,16 @@ const Row = (props: { updateApplication?: any, hasChanges?: any, display?: strin
                                                                                       onBlur={() => {
                                                                                           props.updateForm(props.stateName, cloneValue)
                                                                                           setEdit(false)
-                                                                                      }
-                                                                                      } onClose={() => {
+                                                                                      }} onClose={() => {
                 props.updateForm(props.stateName, cloneValue)
                 setEdit(false)
             }} onChange={(e) => {
                 props.updateForm(props.stateName, e?.nativeEvent?.text)
-            }
-            } value={props.applicant} label={props.label}/> : <></>}
+            }} value={props.applicant } label={props.label}/> : <></>}
         </>
 };
 
 Row.defaultProps = {
-    editable: true,
-    show: true,
-    showEdit: true
+    editable: true, show: true, showEdit: true
 }
 export default Row

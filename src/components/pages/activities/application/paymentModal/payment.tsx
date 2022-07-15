@@ -438,7 +438,7 @@ const Payment = (props: any) => {
                                                       display={props.userProfileForm?.["soa." + s.id + ".amount"] || "Amount"}
                                                       label={"Amount:"}
                                                       style={{color: "#37405B", fontSize: fontValue(14)}}
-                                                      applicant={"" + props.userProfileForm?.["soa." + s.id + ".amount"]}/>
+                                                      applicant={props.userProfileForm?.["soa." + s.id + ".amount"] != undefined ? "" + props.userProfileForm?.["soa." + s.id + ".amount"] : ""}/>
                                             </View>
                                             {props.edit && <View style={{}}>
                                                 <TouchableOpacity onPress={() => closeItem(s.id, index)}
