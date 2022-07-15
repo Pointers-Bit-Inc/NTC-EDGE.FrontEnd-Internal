@@ -188,10 +188,10 @@ const Participants = ({ onClose = () => {} }:any) => {
     const meetingParticipants = meeting?.participants?.map((item:IParticipants) => {
       const p:IParticipants = lodash.find(selectedChannel.participants, (p:IParticipants) => p._id === item._id);
       
-      item.isOnline = p.isOnline;
-      item.lastOnline = p.lastOnline;
-      item.email = p.email;
-      item.name = `${p.firstName} ${p.lastName}`;
+      item.isOnline = p?.isOnline;
+      item.lastOnline = p?.lastOnline;
+      item.email = p?.email;
+      item.name = `${p?.firstName} ${p?.lastName}`;
 
       return item;
     });
