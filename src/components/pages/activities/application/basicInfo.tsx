@@ -123,7 +123,7 @@ const BasicInfo = (props: any) => {
             setRefreshing(false);
         });
     }, []);
-    const history =  ([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory?.length  ? props.paymentHistory?.filter(s => s?.remarks) :  (props?.approvalHistory?.length ? props?.approvalHistory?.filter(s => s?.remarks)  : []))
+    const history =  ([CASHIER].indexOf(user?.role?.key) != -1  ? (props.paymentHistory?.length  ? props.paymentHistory?.filter(s => s?.remarks) :  (props?.approvalHistory?.length ? props?.approvalHistory?.filter(s => s?.remarks)  : [])) : [])
 
     return <><ScrollView keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
                          refreshControl={
