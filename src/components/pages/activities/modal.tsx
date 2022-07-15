@@ -273,7 +273,7 @@ function ActivityModal(props:any){
     const [titleUpdate, setTitleUpdate] = useSafeState("")
 
     const updateApplication = useCallback((callback) => {
-hideToast()
+        hideToast()
         showToast(ToastType.Info, <ToastLoading/>)
         let profileForm = userProfileForm
         let dateOfBirth= profileForm?.['applicant.dateOfBirth'], region= profileForm?.['region.code'],dateValue = { year: "", month: "", day: ""}
@@ -312,8 +312,9 @@ hideToast()
             var _flatten = flatten.flatten({...response.data.doc})
             setUserOriginalProfileForm({..._flatten})
             setUserProfileForm(_flatten)
-            props.onChangeAssignedId(response.data.doc);
+            props.onChangeEvent(response.data.doc);
             showToast(ToastType.Success,"Successfully updated!")
+            console.log(response.data.doc)
             callback()
 
         }).catch((error)=>{
@@ -455,14 +456,14 @@ hideToast()
                     behavior={Platform.OS==="ios" ? "padding" : "height"}
                     style={[styles.container]}
                 >
-                <ModalTab setEditAlert={setEditAlert} updateApplication={updateApplication}  editBtn={editBtn}  userOriginalProfileForm={userOriginalProfileForm}
-                          userProfileForm={userProfileForm}
-                          setEdit={setEdit}
-                          setUserProfileForm={setUserProfileForm}
-                          setUserOriginalProfileForm={setUserOriginalProfileForm}
-                          hasChanges={hasChanges} edit={edit} dismissed={()=>{
-                    props.onDismissed(change);
-                }} details={props.details} status={status}/>
+                    <ModalTab setEditAlert={setEditAlert} updateApplication={updateApplication}  editBtn={editBtn}  userOriginalProfileForm={userOriginalProfileForm}
+                              userProfileForm={userProfileForm}
+                              setEdit={setEdit}
+                              setUserProfileForm={setUserProfileForm}
+                              setUserOriginalProfileForm={setUserOriginalProfileForm}
+                              hasChanges={hasChanges} edit={edit} dismissed={()=>{
+                        props.onDismissed(change);
+                    }} details={props.details} status={status}/>
                 </KeyboardAvoidingView>
                 {
                     <Animated.View style={[{
@@ -490,10 +491,6 @@ hideToast()
                                                 }else{
                                                     setApproveVisible(true)
                                                 }
-
-
-
-
                                             }}/>
 
                                         { <DeclineButton

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useMemo, useRef} from "react";
 import {FlatList, Platform, RefreshControl, ScrollView, Text, useWindowDimensions, View} from "react-native";
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
@@ -25,17 +25,22 @@ import ToastLoading from "@components/atoms/toast/ToastLoading";
 
 const BasicInfo = (props: any) => {
 
-    let personnel: any = null;
-    if (props) {
+    const personnel = useMemo(()=>{
+        var _personnel = ''
         if (!!props?.paymentMethod && props?.assignedPersonnel?._id) {
-            personnel = props?.assignedPersonnel
+            _personnel = props?.assignedPersonnel
         } else if (props?.paymentStatus == APPROVED || props?.paymentStatus == DECLINED) {
-            personnel = props?.paymentHistory?.[0]?.personnel || props?.paymentHistory?.personnel;
+            _personnel = props?.paymentHistory?.[0]?.personnel || props?.paymentHistory?.personnel;
         } else {
-            personnel = props?.approvalHistory?.[0]?.personnel || props?.approvalHistory?.personnel;
+            _personnel = props?.approvalHistory?.[0]?.personnel || props?.approvalHistory?.personnel;
 
         }
-    }
+        return _personnel
+    }, [props?.paymentMethod, props?.paymentHistory, props?.approvalHistory, props?.paymentStatus ])
+
+
+
+
     const scrollRef = useRef();
     const [showAlert, setShowAlert] = useSafeState(false)
     const applicant = props?.applicant?.user || props?.applicant;
@@ -210,13 +215,13 @@ const BasicInfo = (props: any) => {
 
                                             {personnel != undefined &&
                                                 (
-                                                    getStatusText(props, personnel) == APPROVED ? getStatusText(props, personnel) : (!excludeStatus(props, personnel) || ([CASHIER].indexOf(user?.role?.key) != -1 ? !!(props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) :( props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)))) &&
+                                                    getStatusText(props, personnel) == APPROVED ? getStatusText(props, personnel) : (!excludeStatus(props, personnel) || ([CASHIER].indexOf(user?.role?.key) != -1 ? !!(props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) :( props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)))) ?
                                                 <CustomText
                                                     style={{fontSize: fontValue(12), flex: 1, color: "#37405B"}}>
                                                     {(
                                                         personnel !== undefined ? `by ${personnel?.firstName} ${personnel?.lastName}` : ``)}
 
-                                                </CustomText>}
+                                                </CustomText> : <View/>}
 
                                         </View> }
                                         {

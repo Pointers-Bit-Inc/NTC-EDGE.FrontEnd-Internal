@@ -217,7 +217,7 @@ export default class AwesomeAlert extends Component {
 
                                     this.props?.showClose == false && <>
                                         {this.props.onLoading ?  <ActivityIndicator style={{alignSelf: "center"}}
-                                                                               color={"rgba(40,99,214,1)"}/> :
+                                                                                    color={"rgba(40,99,214,1)"}/> :
                                             <TouchableOpacity onPress={this.props.onConfirmPressed}>
 
                                                 <Text

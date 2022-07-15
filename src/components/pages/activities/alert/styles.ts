@@ -19,10 +19,7 @@ export const alertStyle = StyleSheet.create({
         backgroundColor: 'rgba(52,52,52,0.5)'
     },
     contentContainer: {
-        maxWidth: '80%',
-        borderRadius: 5,
-        //backgroundColor: 'white',
-        padding: 10
+
     },
     content: {
         justifyContent: 'center',

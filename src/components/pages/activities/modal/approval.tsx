@@ -348,7 +348,7 @@ const styles=StyleSheet.create({
         borderRadius:6,
     },
     container:{
-
+        zIndex: 5,
         flex:1,
         justifyContent:'center',
 
