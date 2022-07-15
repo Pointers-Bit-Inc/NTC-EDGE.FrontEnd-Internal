@@ -317,7 +317,7 @@ const DataTable=(props)=>{
     const [userProfileForm,setUserProfileForm]=useState(originalForm);
     const [state,setState]=useState('add');
     const user=useSelector((state:RootStateOrAny)=>state.user);
-    const {showToast}=useToast();
+    const {showToast, hideToast}=useToast();
     const config={
         headers:{
             Authorization:"Bearer ".concat(user?.sessionToken)

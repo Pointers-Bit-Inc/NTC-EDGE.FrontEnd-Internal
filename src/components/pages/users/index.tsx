@@ -11,5 +11,5 @@ export default function UsersPage(props:any){
     ]}
                       editTitle={'Edit User'}
                       editButtonTitle={'Edit User'}
-                      addButtonTitle={'Add User'} title={'Users'} url={BASE_URL+'/users'} role={'user'}/>;
+                      addButtonTitle={'Add User'} title={'Users'} url={BASE_URL+'/internal/users'} role={'user'}/>;
 }
