@@ -17,7 +17,7 @@ export const alertStyle = StyleSheet.create({
         width: "100%",
         height: "100%",
         position: 'absolute',
-        backgroundColor: 'rgba(52,52,52,0.5)'
+
     },
     contentContainer: {
 
