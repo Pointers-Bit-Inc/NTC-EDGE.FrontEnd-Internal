@@ -1,12 +1,21 @@
 import React,{FC,ReactElement,useEffect,useRef,useState} from 'react';
-import {FlatList,Modal,StyleSheet,Text,TouchableOpacity,View,} from 'react-native';
+import {
+    FlatList,
+    Modal,
+    Platform,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
+    View,
+} from 'react-native';
 import CaretDownIcon from "@assets/svg/caret-down";
 import {useOrientation} from "../../../../hooks/useOrientation";
 
 import {Regular,Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
-
 
 interface Props {
         label: string;
@@ -15,10 +24,13 @@ interface Props {
     }
 
     const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
+        const dimension = useWindowDimensions()
         const DropdownButton = useRef();
         const [visible, setVisible] = useState(false);
         const [selected, setSelected] = useState(undefined);
         const [dropdownTop, setDropdownTop] = useState(0);
+        const [dropdownBottom, setDropdownBottom] = useState(0);
+        const [dropdownHeight, setDropdownHeight] = useState(0);
         const [dropdownWidth, setDropdownWidth] = useState(0);
         const [dropdownLeft, setDropdownLeft] = useState(0);
         const [selectedIndex, setSelectedIndex] = useState(null)
@@ -44,9 +56,15 @@ interface Props {
         useEffect(()=>{
 
             DropdownButton?.current?.measure((_fx:number,_fy:number,_w:number,h:number,_px:number,py:number)=>{
+                console.log(_fx, _fy, _w,
+                h,
+                _px,
+                py)
                 setDropdownWidth(_w);
                 setDropdownLeft(_px);
                 setDropdownTop(py+h);
+                setDropdownHeight(py)
+                setDropdownBottom(dimension.height-(py));
             });
         }, [visible, dropdownTop])
 
@@ -88,7 +106,7 @@ interface Props {
                         style={styles.overlay}
                         onPress={() => setVisible(false)}
                     >
-                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, { bottom: data?.length < 6  ? undefined : "15%", width: dropdownWidth,flex: 1, left: dropdownLeft, top: dropdownTop}]}>
+                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, { bottom: data?.length < 6   ?  (dropdownHeight < 300  ? undefined : dropdownBottom ) : "15%", width: dropdownWidth,flex: 1, left: dropdownLeft, top:  dropdownHeight < 300 ? dropdownTop : undefined}]}>
                             {data?.length > 0 ? <FlatList
                                 showsVerticalScrollIndicator={false}
                                 style={styles.items}
@@ -100,7 +118,7 @@ interface Props {
                                                              averageItemLength ,
                                                          }) => {
                                     flatListRef.current?.scrollToOffset({
-                                        
+
                                         offset : index * averageItemLength ,
                                         animated : false ,
                                     });

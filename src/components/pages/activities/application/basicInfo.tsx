@@ -466,7 +466,7 @@ const BasicInfo = (props: any) => {
 
                                     <DateField edit={props.edit} label={"Date:"}
                                                show={true}
-                                               showEdit={false}
+                                               showEdit={true}
                                                updateForm={applicantForm}
                                                hasChanges={props.hasChanges} updateApplication={updateApplication}
                                                stateName={"schedule.dateStart"}
