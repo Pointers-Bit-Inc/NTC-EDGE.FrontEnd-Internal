@@ -1,4 +1,4 @@
-import React,{useEffect,useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
     ActivityIndicator,
     Alert,
@@ -185,12 +185,50 @@ const Approval=(props:any)=>{
         }
 
     }, [isLandscapeSync()])
+
+
+
+    const [animation] = useState(() => new Animated.Value(0));
+
+    const background = animation.interpolate({
+        inputRange: [0, 0.2, 1.8, 2],
+        outputRange: [
+            'rgba(255,255,255,0)',
+            'rgba(255,255,255,.3)',
+            'rgba(255,255,255,.3)',
+            'rgba(255,255,255,0)',
+        ],
+        extrapolate: 'clamp',
+    });
+
+    const display = animation.interpolate({
+        inputRange: [0.2, 1],
+        outputRange: [0, 1],
+        extrapolate: 'clamp',
+    });
+
+    const {height} = Dimensions.get('window');
+
+    const success = animation.interpolate({
+        inputRange: [1.1, 2],
+        outputRange: [0, -height],
+        extrapolate: 'clamp',
+    });
+
+
+
     return (
 
         <Modal
             supportedOrientations={['portrait','landscape']}
-            animationType="none"
+            animationType="slide"
             transparent={true}
+            onShow={()=>{
+                Animated.spring(animation, {
+                    toValue: 1,
+                    useNativeDriver: true,
+                }).start();
+            }}
             visible={props.visible}
             onRequestClose={_springHide}>
 
@@ -250,18 +288,30 @@ const Approval=(props:any)=>{
                     message={message}/>
                 {getRole(user,[CASHIER, DIRECTOR,ACCOUNTANT]) && <KeyboardAvoidingView
                     behavior={Platform.OS==="ios" ? "padding" : "height"}
-                    style={[styles.container, {alignItems:"center"}]}
+                    style={[styles.container,  {alignItems:"center"}]}
                 >
-                    <OnBackdropPress onPressOut={_springHide} styles={{  backgroundColor : !props.showAlert && visible && Platform.OS != "web"  ? "rgba(0, 0, 0, 0.5)" : undefined}}/>
+                    <OnBackdropPress  styles={{  backgroundColor : !props.showAlert && visible && Platform.OS != "web"  ? "rgba(0, 0, 0, 0.3)" : undefined}}/>
                     {
-                        <Animated.View style={[styles.group,{
+                        <Animated.View style={[ styles.group,{
                             width:((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync())))||dimensions.width<=768 ? "100%" : "31.6%",  //474/1500
-                            display:!props.showAlert && visible  ? undefined : "none"
-                        },{transform:[{scale:springValue}]}]}>
+                            display:!props.showAlert && visible  ? undefined : "none",
+                        },{
+                            transform: [{scale: display}, {translateY: success}],
+                        },]}>
                             <View style={[styles.shadow, {marginHorizontal:10,}]}>
                                 <View style={styles.rect}>
                                     <View style={{alignSelf:'flex-start'}}>
-                                        <TouchableOpacity onPress={_springHide}>
+                                        <TouchableOpacity onPress={() => {
+                                            Animated.spring(animation, {
+                                                toValue: 0,
+                                                useNativeDriver: true,
+                                            }).start(()=>{
+                                                props.onDismissed(APPROVED, () => {
+                                                    props.setShowAlert(false);
+                                                });
+                                            });
+
+                                        }}>
                                             <Ionicons name="md-close" style={{fontSize:fontValue(25)}}/>
                                         </TouchableOpacity>
                                     </View>
@@ -320,7 +370,6 @@ const Approval=(props:any)=>{
                                     </View>
                                 </View>
                             </View>
-
                         </Animated.View>}
                 </KeyboardAvoidingView>}
             </> }
@@ -330,6 +379,15 @@ const Approval=(props:any)=>{
     )
 };
 const styles=StyleSheet.create({
+    background: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     shadow:{
         borderRadius:12,
         shadowColor:"rgba(0,0,0,1)",

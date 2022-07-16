@@ -546,6 +546,7 @@ function ActivityModal(props:any){
                     if(getRole(user,[EVALUATOR])){
                         onApproveDismissed();
                     }
+
                 }}
                 onChangeRemarks={(_remark:string,_assign)=>{
 
@@ -556,7 +557,7 @@ function ActivityModal(props:any){
                         setRemarks(_remark);
                         setAssignId(_assign)
                     }
-
+                setShowAlert1(true)
 
                 }}
 

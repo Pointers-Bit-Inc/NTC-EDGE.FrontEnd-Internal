@@ -11,6 +11,7 @@ export const alertStyle = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         position: 'absolute',
+
     },
     overlay: {
         width: "100%",

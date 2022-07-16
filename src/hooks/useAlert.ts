@@ -34,12 +34,12 @@ export  function useAlert(show:boolean,dismissed?:any, canceled?:any) {
                 useNativeDriver: true,
             }).start();
 
-                _toggleAlert(false);
-                if(flag){
-                    dismissed()
-                }else{
-                    canceled()
-                }
+            _toggleAlert(false);
+            if(flag){
+                dismissed()
+            }else{
+                canceled()
+            }
         }
 
     };
