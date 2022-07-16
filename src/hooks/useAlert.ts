@@ -2,18 +2,16 @@ import {Animated} from "react-native";
 import {useEffect , useRef , useState} from "react";
 
 export  function useAlert(show:boolean,dismissed?:any, canceled?:any) {
-
     const springValue = useRef(new Animated.Value(0.1)).current;
 
     const [showSelf, setShowSelf] = useState(false)
-    const [timeout_, setTimeout_] = useState(0)
     const _toggleAlert = (fromConstructor?: boolean) => {
         if (fromConstructor) setShowSelf(true)
         else setShowSelf(show => !show);
     };
     const _springShow = (fromConstructor: boolean) => {
 
-       _toggleAlert(fromConstructor);
+        _toggleAlert(fromConstructor);
         Animated.spring(springValue, {
             toValue: 1,
             bounciness: 10,
@@ -23,8 +21,10 @@ export  function useAlert(show:boolean,dismissed?:any, canceled?:any) {
 
     useEffect(() => {
 
+        if (show) {
             _springShow(show);
-    }, [show, springValue, ])
+        }
+    }, [show ])
 
     const _springHide = (flag = true) => {
         if(showSelf){
@@ -34,28 +34,25 @@ export  function useAlert(show:boolean,dismissed?:any, canceled?:any) {
                 useNativeDriver: true,
             }).start();
 
-            setTimeout(() => {
                 _toggleAlert(false);
                 if(flag){
                     dismissed()
                 }else{
                     canceled()
                 }
-            }, 0);
         }
 
     };
 
     const _springCollapse = () => {
-        springValue.setValue(0)
-            Animated.spring(springValue, {
+        Animated.spring(springValue, {
             toValue: 0,
             tension: 10,
             useNativeDriver: true,
         }).start();
 
         setTimeout(() => {
-         _toggleAlert(false);
+            _toggleAlert(false);
         }, 70);
     };
 

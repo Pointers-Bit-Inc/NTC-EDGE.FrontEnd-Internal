@@ -1,7 +1,7 @@
 import {isValidDate, transformText} from "../../../../utils/ntc";
 import Row from "@pages/activities/application/Row";
 import {FlatList,StyleSheet,Text,View} from "react-native";
-import React from "react";
+import React, {useRef, useState} from "react";
 import {input} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular500} from "@styles/font";
