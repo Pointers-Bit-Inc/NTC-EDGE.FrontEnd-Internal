@@ -56,10 +56,7 @@ interface Props {
         useEffect(()=>{
 
             DropdownButton?.current?.measure((_fx:number,_fy:number,_w:number,h:number,_px:number,py:number)=>{
-                console.log(_fx, _fy, _w,
-                h,
-                _px,
-                py)
+
                 setDropdownWidth(_w);
                 setDropdownLeft(_px);
                 setDropdownTop(py+h);
