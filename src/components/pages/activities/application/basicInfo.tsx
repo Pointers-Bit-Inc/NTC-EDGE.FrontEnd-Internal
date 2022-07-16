@@ -465,38 +465,40 @@ const BasicInfo = (props: any) => {
                                     </View>}
 
                                     <DateField edit={props.edit} label={"Date:"}
-                                               show={true}
-                                               showEdit={true}
+                                               /*show={true}
+                                               showEdit={true}*/
                                                updateForm={applicantForm}
                                                hasChanges={props.hasChanges} updateApplication={updateApplication}
                                                stateName={"schedule.dateStart"}
                                                applicant={props.userProfileForm?.["schedule.dateStart"]}
                                                display={moment(props?.schedule.dateStart).isValid() ? moment(props?.schedule.dateStart).format('ddd DD MMMM YYYY') : props?.schedule.dateStart}/>
                                     <TimeField edit={props.edit} label={"Start Time:"}
-                                               show={true}
-                                               showEdit={false}
+                                               /*show={true}
+                                               showEdit={false}*/
                                                updateForm={applicantForm}
                                                hasChanges={props.hasChanges} updateApplication={updateApplication}
                                                stateName={"schedule.dateStart"}
                                                applicant={props.userProfileForm?.["schedule.dateStart"]}
                                                display={moment(props?.schedule.dateStart)?.isValid() ? moment(props?.schedule.dateStart).format('LT') : props?.schedule.dateStart}/>
                                     <TimeField edit={props.edit} label={"End Time:"}
-                                               show={true}
-                                               showEdit={false}
+                                               /*show={true}
+                                               showEdit={false}*/
                                                hasChanges={props.hasChanges} updateApplication={updateApplication}
                                                updateForm={applicantForm}
                                                stateName={"schedule.dateEnd"}
                                                applicant={props.userProfileForm?.["schedule.dateEnd"]}
                                                display={moment(props?.schedule.dateEnd)?.isValid() ? moment(props?.schedule.dateEnd).format('LT') : props?.schedule.dateEnd}/>
-                                    <Row  show={true}
-                                          showEdit={false} updateForm={applicantForm}
+                                    <Row  /*show={true}
+                                          showEdit={false} */
+                                          updateForm={applicantForm}
                                          hasChanges={props.hasChanges} updateApplication={updateApplication}
                                          stateName={"schedule.venue"}
                                          edit={props.edit}
                                          label={"Venue:"}
                                          applicant={props.userProfileForm?.["schedule.venue"]}/>
-                                    <Row  show={true}
-                                          showEdit={false} updateForm={applicantForm}
+                                    <Row  /*show={true}
+                                          showEdit={false}*/
+                                    updateForm={applicantForm}
                                          hasChanges={props.hasChanges} updateApplication={updateApplication}
                                          stateName={"schedule.seatNumber"}
                                          edit={props.edit}

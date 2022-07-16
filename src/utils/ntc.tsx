@@ -24,14 +24,13 @@ const yearList = () => {
 
 const toIsoFormat = (date) => {
     var d = new Date(date)
-
     // Padding functions
     function pad(n) {return (n<10? '0' :  '') + n}
     function padd(n){return (n<100? '0' : '') + pad(n)}
 
     return (d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()) +
         'T' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()) + ':' +
-        pad(d.getUTCSeconds()) + '.' + padd(d.getMilliseconds()) + 'Z');
+        pad(d.getUTCSeconds()) +  'Z');
 }
 function formatAMPM(date) {
 var hours = date.getHours();

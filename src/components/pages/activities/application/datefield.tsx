@@ -76,6 +76,10 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
     const [yearValue, setYearValue] = useSafeState(_year)
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
 
+    useEffect(()=>{
+        let _day = dayValue.length == 1 ? "0" + dayValue : dayValue
+        props.updateForm(props.stateName, `${yearValue}-${monthValue}-${_day}` + (time ? `T${time}` : ""))
+    }, [monthValue, dayValue, yearValue])
 
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || edit : !edit) ? <TouchableOpacity disabled={!props?.showEdit} onPress={()=>{
         setEdit(true)
@@ -92,7 +96,9 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
                                         label="Select Item"
                                         data={monthsArray}
                                         onSelect={({value}) => {
-                                            if (value) setMonthValue(value)
+                                            if (value) {
+                                                setMonthValue(value)
+                                            }
                                         }}/>
                     </View>
                     <View style={{flex:0.5, paddingHorizontal: 5}}>
@@ -119,8 +125,7 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
                 <View style={{ flexDirection: "row", justifyContent: "space-around" , borderRadius: 1, borderTopWidth: 1, borderColor: disabledColor}}>
                     <TouchableOpacity onPress={()=>{
                         //year, month, day, hour, minute, second, and millisecond
-                        let _day = dayValue.length == 1 ? "0" + dayValue : dayValue
-                        props.updateForm(props.stateName, `${yearValue}-${monthValue}-${_day}` + (time ? `T${time}` : ""))
+
                         props?.updateApplication()
                         setEdit(false)
                     }

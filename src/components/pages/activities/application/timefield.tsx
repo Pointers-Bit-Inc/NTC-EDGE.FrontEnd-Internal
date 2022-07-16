@@ -1,5 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import React from "react";
+import React, {useEffect} from "react";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular,Regular500} from "@styles/font";
 import useSafeState from "../../../../hooks/useSafeState";
@@ -8,6 +8,7 @@ import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import {formatAMPM, toIsoFormat} from "../../../../utils/ntc";
 import {disabledColor} from "@styles/color";
 import CloseIcon from "@assets/svg/close";
+import Moment from "moment";
 const styles = StyleSheet.create({
     group2 : {
         flexDirection : "row" ,
@@ -76,6 +77,11 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
 
 
+    useEffect(()=>{
+        props.updateForm(props.stateName, toIsoFormat(Moment(`${year}-${month}-${day} ${hourValue}:${minuteValue} ${ampmValue}`,'YYYY-MM-DD HH:mm a')))
+
+    }, [minuteValue, hourValue, ampmValue])
+
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || edit : !edit) ? <TouchableOpacity disabled={!props?.showEdit} onPress={()=>{
        setEdit(true)
     }
@@ -118,7 +124,7 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
                 <TouchableOpacity onPress={()=>{
                     //year, month, day, hour, minute, second, and millisecond
 
-                    props.updateForm(props.stateName, toIsoFormat(`${year}-${month}-${day} ${hourValue}:${minuteValue} ${ampmValue}`))
+
                     props?.updateApplication()
                     setEdit(false)
                 }

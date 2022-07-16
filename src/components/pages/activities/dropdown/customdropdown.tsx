@@ -16,6 +16,7 @@ import {useOrientation} from "../../../../hooks/useOrientation";
 import {Regular,Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
+import {outline} from "@styles/color";
 
 interface Props {
         label: string;
@@ -103,7 +104,7 @@ interface Props {
                         style={styles.overlay}
                         onPress={() => setVisible(false)}
                     >
-                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, { bottom: data?.length < 6   ?  (dropdownHeight < 300  ? undefined : dropdownBottom ) : "15%", width: dropdownWidth,flex: 1, left: dropdownLeft, top:  dropdownHeight < 300 ? dropdownTop : undefined}]}>
+                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, { bottom: data?.length < 6   ? undefined  : "15%", width: dropdownWidth,flex: 1, left: dropdownLeft, top:  dropdownTop}]}>
                             {data?.length > 0 ? <FlatList
                                 showsVerticalScrollIndicator={false}
                                 style={styles.items}
@@ -134,7 +135,9 @@ interface Props {
         return (
             <TouchableOpacity
                 ref={DropdownButton}
-                style={styles.button}
+                style={[styles.button, visible ? {borderWidth: 2,
+                    borderColor: outline.primary,
+                    backgroundColor: '#fff',} : {}]}
                 onPress={toggleDropdown}
             >
                 {renderDropdown()}

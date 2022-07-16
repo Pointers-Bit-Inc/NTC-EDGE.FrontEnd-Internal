@@ -300,6 +300,7 @@ function ActivityModal(props:any){
         }
         const flattenSoa = flatten.unflatten(cleanSoa)?.soa?.filter(s => s)
         if(flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0 ), 0)
+        console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
         axios.patch(BASE_URL + `/applications/${props?.details?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, {headers:{
                 Authorization:"Bearer ".concat(user?.sessionToken)
             }}).then( (response) => {
@@ -313,7 +314,7 @@ function ActivityModal(props:any){
             setUserProfileForm(_flatten)
             props.onChangeEvent(response.data.doc);
             showToast(ToastType.Success,"Successfully updated!")
-            console.log(response.data.doc)
+
             callback()
 
         }).catch((error)=>{
