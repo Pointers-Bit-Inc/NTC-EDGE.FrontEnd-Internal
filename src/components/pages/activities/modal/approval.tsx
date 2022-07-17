@@ -215,7 +215,14 @@ const Approval=(props:any)=>{
         extrapolate: 'clamp',
     });
 
-
+    useEffect(()=>{
+        if(props.visible){
+            Animated.spring(animation, {
+                toValue: 1,
+                useNativeDriver: true,
+            }).start();
+        }
+    }, [props.visible])
 
     return (
 
@@ -223,12 +230,6 @@ const Approval=(props:any)=>{
             supportedOrientations={['portrait','landscape']}
             animationType="slide"
             transparent={true}
-            onShow={()=>{
-                Animated.spring(animation, {
-                    toValue: 1,
-                    useNativeDriver: true,
-                }).start();
-            }}
             visible={props.visible}
             onRequestClose={_springHide}>
 

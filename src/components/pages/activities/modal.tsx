@@ -558,7 +558,7 @@ function ActivityModal(props:any){
                         setRemarks(_remark);
                         setAssignId(_assign)
                     }
-                setShowAlert1(true)
+                    setShowAlert1(true)
 
                 }}
 
