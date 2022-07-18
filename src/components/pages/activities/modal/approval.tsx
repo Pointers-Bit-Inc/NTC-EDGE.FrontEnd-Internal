@@ -303,14 +303,19 @@ const Approval=(props:any)=>{
                                 <View style={styles.rect}>
                                     <View style={{alignSelf:'flex-start'}}>
                                         <TouchableOpacity onPress={() => {
+
                                             Animated.spring(animation, {
                                                 toValue: 0,
+
                                                 useNativeDriver: true,
                                             }).start(()=>{
+
+                                            });
+                                            setTimeout(()=>{
                                                 props.onDismissed(APPROVED, () => {
                                                     props.setShowAlert(false);
                                                 });
-                                            });
+                                            }, 70)
 
                                         }}>
                                             <Ionicons name="md-close" style={{fontSize:fontValue(25)}}/>
