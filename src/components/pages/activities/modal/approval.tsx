@@ -215,6 +215,20 @@ const Approval=(props:any)=>{
         extrapolate: 'clamp',
     });
 
+    const closeButton = () =>{
+        Animated.spring(animation, {
+            toValue: 0,
+
+            useNativeDriver: true,
+        }).start(()=>{
+
+        });
+        setTimeout(()=>{
+            props.onDismissed(APPROVED, () => {
+                props.setShowAlert(false);
+            });
+        }, 70)
+    }
     useEffect(()=>{
         if(props.visible){
             Animated.spring(animation, {
@@ -302,22 +316,7 @@ const Approval=(props:any)=>{
                             <View style={[styles.shadow, {marginHorizontal:10,}]}>
                                 <View style={styles.rect}>
                                     <View style={{alignSelf:'flex-start'}}>
-                                        <TouchableOpacity onPress={() => {
-
-                                            Animated.spring(animation, {
-                                                toValue: 0,
-
-                                                useNativeDriver: true,
-                                            }).start(()=>{
-
-                                            });
-                                            setTimeout(()=>{
-                                                props.onDismissed(APPROVED, () => {
-                                                    props.setShowAlert(false);
-                                                });
-                                            }, 70)
-
-                                        }}>
+                                        <TouchableOpacity onPress={closeButton}>
                                             <Ionicons name="md-close" style={{fontSize:fontValue(25)}}/>
                                         </TouchableOpacity>
                                     </View>

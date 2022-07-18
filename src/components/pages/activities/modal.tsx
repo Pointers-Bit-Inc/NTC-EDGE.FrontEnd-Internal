@@ -271,7 +271,7 @@ function ActivityModal(props:any){
     const {showToast, hideToast}=useToast();
     const [messageUpdate, setMessageUpdate] = useSafeState("")
     const [titleUpdate, setTitleUpdate] = useSafeState("")
-
+    console.log(props)
     const updateApplication = useCallback((callback) => {
         hideToast()
         showToast(ToastType.Info, <ToastLoading/>)

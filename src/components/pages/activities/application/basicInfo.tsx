@@ -123,7 +123,13 @@ const BasicInfo = (props: any) => {
             setRefreshing(false);
         });
     }, []);
-    const history =  ([CASHIER].indexOf(user?.role?.key) != -1  ? (props.paymentHistory?.length  ? props.paymentHistory?.filter(s => s?.remarks) :  (props?.approvalHistory?.length ? props?.approvalHistory?.filter(s => s?.remarks)  : [])) : [])
+
+    const historyMemo = useMemo(()=>{
+        const _paymentHistory =  props.paymentHistory?.length  ? props.paymentHistory : []
+        const _approvalHistory =  props.approvalHistory?.length  ? props.approvalHistory : []
+        return [..._paymentHistory, ..._approvalHistory]?.filter(s => s?.remarks)
+    }, [props.paymentHistory, props.approvalHistory ])
+
 
     return <><ScrollView keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
                          refreshControl={
@@ -247,7 +253,7 @@ const BasicInfo = (props: any) => {
                                             </View>
                                             </>
 
-                                                :  (!!history?.length) ?<View style={styles.group3}>
+                                                :  (!!(historyMemo.length) ?<View style={styles.group3}>
                                                     <View style={[styles?.remarksContainer, {
                                                         borderColor: remarkColor(
                                                             getStatusText(props, personnel)
@@ -258,7 +264,7 @@ const BasicInfo = (props: any) => {
                                                                 getStatusText(props, personnel)
                                                             )
                                                         }]}>{getStatusText(props, personnel) === DECLINED ? 'NOD/' : ''}Remarks</Text><FlatList
-                                                    data={history }
+                                                    data={historyMemo}
                                                     renderItem={({ item })=>{
 
                                                         return <>
@@ -282,7 +288,7 @@ const BasicInfo = (props: any) => {
                                                     }
                                                     keyExtractor={item => item._id}
                                                 /></View>
-                                                </View> : <></>}
+                                                </View> : <></>)}
                                     </View>
 
                                 </View>
