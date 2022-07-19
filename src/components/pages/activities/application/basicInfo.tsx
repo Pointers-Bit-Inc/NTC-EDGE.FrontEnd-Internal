@@ -260,7 +260,7 @@ const BasicInfo = (props: any) => {
                                                     <View style={[styles?.remarksContainer, {
                                                         borderColor: remarkColor(
                                                             getStatusText(props, personnel)
-                                                        )
+                                                        ),
                                                     }]}>
                                                         <Text style={[styles?.remarksTitle, {
                                                             color: remarkColor(
@@ -268,12 +268,12 @@ const BasicInfo = (props: any) => {
                                                             )
                                                         }]}>{getStatusText(props, personnel) === DECLINED ? 'NOD/' : ''}Remarks</Text><FlatList
                                                     data={historyMemo}
-                                                    renderItem={({ item })=>{
+                                                    renderItem={({ item, index })=>{
 
                                                         return <>
 
 
-                                                                <View style={{flexDirection: "row",borderBottomWidth: 1, borderBottomColor: "#EFEFEF"  }}>
+                                                                <View style={{flexDirection: "row",borderTopWidth: index === 0 ? 0 : 1, borderTopColor: "#EFEFEF" }}>
                                                                     <View style={{flex: 0.5}}>
                                                                         <Text style={[styles?.remarksContent, statusColor(
                                                                             item?.status
