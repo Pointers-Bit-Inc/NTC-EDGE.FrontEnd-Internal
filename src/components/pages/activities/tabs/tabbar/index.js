@@ -88,7 +88,7 @@ class TabBar extends Component{
 
     onScrollContentSizeChange = (width, height) => {
         this.scrollContainerLayout = { width, height, x: 0, y: 0 };
-        this.checkMeasures();
+        this.checkMeasures()
     };
 
     setUnderlineRef = (ref) => {
@@ -228,7 +228,7 @@ class TabBar extends Component{
         this.currentContentOffset = e.nativeEvent.contentOffset;
     };
 
-    renderUnderline() {
+    renderUnderline () {
         const tabUnderlineStyle = {
             position: 'absolute',
             backgroundColor: this.props.underlineColor,
