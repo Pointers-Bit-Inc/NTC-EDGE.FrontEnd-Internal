@@ -239,7 +239,7 @@ setEdit={props.setEdit}
                     return <Requirement tabLabel={{label:tab.name}} label={tab.name}
                                         requirements={requirements} key={index}/>
                 } else if(isShow&&tab.id===4 && service?.serviceCode !== "service-22" ){
-                    return <Payment edit={props.edit}
+                    return <Payment loading={props.loading} edit={props.edit}
                                     setEditAlert={props.setEditAlert}
                                     editBtn={props.editBtn}
                                     updateApplication={props.updateApplication}

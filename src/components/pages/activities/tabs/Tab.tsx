@@ -1,5 +1,5 @@
 import {Animated , TouchableOpacity} from "react-native";
-import {primaryColor} from "@styles/color";
+import {infoColor, primaryColor} from "@styles/color";
 import {Bold , Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import React from "react";
@@ -16,7 +16,7 @@ const Tab = ({ tab , page , isTabActive , onPressHandler , onTabLayout , styles 
         <TouchableOpacity style={ style } onPress={ onPressHandler } onLayout={ onTabLayout } key={ page }>
             <Animated.View style={ containerStyle }>
                 <Animated.Text style={ {
-                    color : isTabActive ? primaryColor : "#606A80" ,
+                    color : isTabActive ? infoColor : "#606A80" ,
                     fontFamily : isTabActive ? Bold : Regular ,
                     fontSize : fontValue(12)
                 } }>{ label }</Animated.Text>

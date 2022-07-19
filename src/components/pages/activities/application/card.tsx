@@ -41,7 +41,7 @@ const Card = (props: {keyboardType?:string, touchableStyle?:any, style?:any,   u
         setEdit(true)
     }
     }>
-        <Text style={props.style}>{props.display || props.applicant}</Text>
+        <Text style={[props.style, { paddingVertical: 14,}]}>{props.display || props.applicant}</Text>
     </TouchableOpacity> : <>
         {((props.edit && props.editable && props.showEdit) || edit)? <InputField keyboardType={props.keyboardType}  onSubmitEditing = {(event) => {
             if(!props.edit) props?.updateApplication()

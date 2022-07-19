@@ -110,7 +110,7 @@ class TabBar extends Component{
             const restSpaceNow = scrollWidth - (tabContainerWidth + curOffsetX);
             const shouldScroll = Math.abs(restSpaceNow - restSpaceWillBe) < tabContainerWidth / 4;
             if (this.scrollView && shouldScroll) {
-                this.scrollView.scrollTo({ x: scrollOffset, animated: false });
+                this.scrollView.scrollTo({ x: scrollOffset, animated: false, useNativeDriver: true });
             }
         }
     };

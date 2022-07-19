@@ -16,7 +16,7 @@ import Text from "@atoms/text";
 import {styles as paymentStyles} from "@pages/activities/application/paymentModal/styles"
 import {requirementStyles, styles} from "@pages/activities/application/requirementModal/styles"
 import FileOutlineIcon from "@assets/svg/fileOutline";
-import {Bold, Regular500} from "@styles/font";
+import {Bold, Regular, Regular500} from "@styles/font";
 import {capitalize, removeEmpty} from "@pages/activities/script";
 import {RootStateOrAny, useSelector} from "react-redux";
 import {ACCOUNTANT, APPROVED} from "../../../../../reducers/activity/initialstate";
@@ -35,6 +35,8 @@ import {Ionicons} from "@expo/vector-icons";
 import CloseIcon from "@assets/svg/close";
 import {isNumber} from "../../../../../utils/ntc";
 import _ from "lodash";
+import {infoColor} from "@styles/color";
+import {PlusIcon} from "@atoms/icon";
 const flatten = require('flat')
 class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 
@@ -361,7 +363,23 @@ const Payment = (props: any) => {
     }
     const {applicantForm, updateApplication} = useApplicantForm(props);
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
-    return  <ScrollView
+    return  <>
+        {props.loading && <View style={ [{
+            width : "100%" ,
+            height : "100%" ,
+            alignItems : "center" ,
+            justifyContent : "center" ,
+            position: "absolute",
+            zIndex: 1,
+            backgroundColor : "rgba(0, 0, 0, 0.5)"
+        }]}>
+            <View style={{backgroundColor: infoColor, borderRadius: 24, flexDirection: "row", alignItems: "center", paddingHorizontal: fontValue(20), paddingVertical: fontValue(9)}}>
+                <ActivityIndicator color={"#fff"} style={{marginRight: 10}}/>
+                <Text style={{color: "#fff", fontFamily: Bold, fontSize: fontValue(16)}}>Saving</Text>
+            </View>
+
+        </View>}
+        <ScrollView
         keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
         style={{
             backgroundColor: "#F8F8F8",
@@ -370,22 +388,19 @@ const Payment = (props: any) => {
         <View style={styles.containers}>
             <View onLayout={onLayoutComponent} style={styles.statement}>
 
-                <View style={{alignItems: 'center', backgroundColor: "#EFF0F6"}}>
+                <View style={{alignItems: 'center', backgroundColor: "#E0E0E0"}}>
                     <Text
                         style={{paddingVertical: 6, fontSize: fontValue(14), fontFamily: Bold}}
                         color="#37405B"
 
                     >
-                        Statement of Account
+                        {"Statement of Account".toUpperCase()}
                     </Text>
                 </View>
                 <View style={{marginTop: 20}}>
                     <View
                         style={{
-                            paddingHorizontal: 15,
-                            paddingVertical: 10,
                             width: "100%",
-                            backgroundColor: "#EFF0F6",
                             flexDirection: 'row',
                             justifyContent: 'space-between'
                         }}
@@ -405,7 +420,7 @@ const Payment = (props: any) => {
                     </View>
                     {
                         soa.length ? soa?.map((s, index) => {
-                                return  <View key={index} style={{width: "100%"}}>
+                                return  <View key={index} style={{borderBottomColor: "#E5E5E5", borderBottomWidth: 2, width: "100%"}}>
 
                                         <View
                                             key={s._id}
@@ -420,7 +435,7 @@ const Payment = (props: any) => {
                                                       edit={props.edit}
                                                       display={props.userProfileForm?.["soa." + s.id + ".item"] || "Item"}
                                                       label={"Item:"}
-                                                      style={{color: "#37405B", fontSize: fontValue(14)}}
+                                                      style={{color: "#37405B", fontSize: fontValue(12)}}
                                                       applicant={props.userProfileForm?.["soa." + s.id + ".item"]}/>
                                             </View>
                                             <View style={{flex: 1, width: "100%", paddingLeft: 3}}>
@@ -448,50 +463,50 @@ const Payment = (props: any) => {
                                             </View>}
 
                                         </View>
-                                        <View style={{overflow: "hidden"}}>
-                                            <DottedLine/>
-                                        </View>
+
 
                                     </View>
                             }
                         ) : <View style={{alignItems: 'center', justifyContent: 'center', paddingVertical: 10}}><Text
                             style={{fontSize: fontValue(16), fontFamily: Regular500}}>No S.O.A</Text></View>
                     }
-                    <View
-                        style={{
-                            backgroundColor: "#EFF0F6",
-                            flexDirection: 'row',
-                            justifyContent: props.edit ? 'space-between' : "flex-end",
-                            alignItems: 'center',
-                            marginTop: 15
-                        }}
-                    >
-                        {props.edit && <TouchableOpacity onPress={addSoa}>
-                            <Ionicons name="add" size={24} color="#37405B" />
-                        </TouchableOpacity>}
-                        <Text
+                    { props.edit && <TouchableOpacity onPress={addSoa}><View style={{flexDirection: 'row', alignItems: "center", paddingTop: fontValue(14)}}>
+                        <View style={{marginRight: fontValue(10)}}>
+                            <PlusIcon size={fontValue(12)} color={infoColor}/>
+                        </View>
 
-                            color="#37405B"
-                            style={{fontSize: fontValue(16), fontFamily: Bold}}
+                        <Text style={{fontSize: fontValue(15), fontFamily: Regular, color: infoColor}}>Add Item</Text>
+                    </View></TouchableOpacity>}
+                    <View style={{paddingTop: 15}}>
+                        <View
+                            style={{
+                                borderTopWidth: 1,
+                                borderTopColor: "#000",
+                                backgroundColor: "#E0E0E0",
+                                flexDirection: 'row',
+                                justifyContent:  "flex-end",
+                                alignItems: 'center',
+                                paddingVertical: fontValue(5)
+                            }}
                         >
-                            Total
-                        </Text>
+
+                            <Text
+
+                                color="#37405B"
+                                style={{fontSize: fontValue(14), fontFamily: Regular, marginRight: 30}}
+                            >
+                                {"Total".toUpperCase()}
+                            </Text>
+                            <Text
+                                style={{fontSize: fontValue(16), fontFamily: Bold}}
+                                color="#37405B"
+                            >
+                                ₱{getTotal()}
+                            </Text>
+                        </View>
                     </View>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-end',
-                            alignItems: 'center',
-                            marginTop: 15
-                        }}
-                    >
-                        <Text
-                            style={{fontSize: fontValue(16), fontFamily: Bold}}
-                            color="#37405B"
-                        >
-                            ₱{getTotal()}
-                        </Text>
-                    </View>
+
+
                 </View>
 
 
@@ -595,7 +610,7 @@ const Payment = (props: any) => {
                       visible={visibleModal}
                       onDismissed={onDismissed}/>
     </ScrollView>
-
+</>
 };
 
 

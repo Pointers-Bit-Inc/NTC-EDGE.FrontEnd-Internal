@@ -5,11 +5,13 @@ import Requirement from "@pages/activities/application/requirementModal/requirem
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React,{useEffect,useState} from "react";
 import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
-import {Alert,Animated,InteractionManager,KeyboardAvoidingView,Platform} from "react-native";
+import {Alert, Animated, InteractionManager, KeyboardAvoidingView, Platform, View} from "react-native";
 import TabBar from "@pages/activities/tabs/tabbar";
 import ScrollableTabView from "@pages/activities/tabs";
 import Tab from "@pages/activities/tabs/Tab";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
+import {infoColor} from "@styles/color";
+import {fontValue} from "@pages/activities/fontValue";
 
 const ModalTab = props => {
 
@@ -85,6 +87,8 @@ const ModalTab = props => {
                 setInitialPage(false)
             }
             return <TabBar
+                underlineColor={infoColor}
+                underlineHeight={fontValue(3)}
                 renderTab={ (tab , page , isTabActive , onPressHandler , onTabLayout) => (
                     <Tab
                         key={ page }
@@ -100,6 +104,7 @@ const ModalTab = props => {
         } }
 
     >
+
         {
 
             tabs.map((tab , index) => {
@@ -159,7 +164,7 @@ const ModalTab = props => {
                                         requirements={ requirements }
                                         key={ index }/>
                 } else if (isShow && tab.id === 4  && service?.serviceCode !== "service-22" ) {
-                    return <Payment edit={props.edit}
+                    return <Payment loading={props.loading} edit={props.edit}
                                     setEditAlert={props.setEditAlert}
                                     editBtn={props.editBtn}
                                     updateApplication={props.updateApplication}

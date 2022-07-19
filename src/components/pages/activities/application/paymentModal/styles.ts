@@ -21,8 +21,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: "center",
         justifyContent: 'space-between',
-        paddingTop: 15,
-        paddingBottom: 5,
+
     },
     rect2: {
         width: 328,
