@@ -65,7 +65,6 @@ const flatten = require('flat')
 
 function ActivityModal(props:any){
     const [userProfileForm, setUserProfileForm] = useSafeState(flatten.flatten(props.details))
-
     const [userOriginalProfileForm, setUserOriginalProfileForm] = useSafeState(userProfileForm)
     const navigation = useNavigation();
     const dispatch=useDispatch();
@@ -120,7 +119,6 @@ function ActivityModal(props:any){
         if(status==DECLINED){
             setAssignId("")
         }
-
         if(user?.role?.key==ACCOUNTANT){
             const assignUserId=status==DECLINED&&props?.details?.approvalHistory?.[0]?.status==FORAPPROVAL&&props?.details?.approvalHistory?.[0]?.userId!=user?._id;
             assignUserId ? setAssignId(props?.details?.approvalHistory?.[0].userId) : (
@@ -130,44 +128,33 @@ function ActivityModal(props:any){
                     assignUserId) ? FOREVALUATION : status,
                 assignedPersonnel:assignUserId ? props?.details?.approvalHistory?.[0].userId : (
                     assignId ? assignId : undefined),
-
                 remarks:event.remarks ? event.remarks : remarks,
             };
         }
-
         if(user?.role?.key==CASHIER){
             url=`/applications/${applicationId}/update-payment-status`;
             params={
                 paymentStatus:status,
                 remarks:event.remarks ? event.remarks : remarks,
             };
-
         }
         if(props?.details?.service?.serviceCode === "service-22"){
             delete params.assignedPersonnel
         }
-
         const addORNumber = user?.role?.key==CASHIER ? await api.post(`/applications/${applicationId}/add-or-number`, AddORNoparams).catch(e=>{
             setGrayedOut(false);
             setCurrentLoading('');
             RNAlert.alert('Alert',e?.message||'Something went wrong.');
             return callback(e);
         }) : null
-
         if((applicationId && (user?.role?.key==CASHIER && addORNumber?.status == 200 )) || (getRole(user,[ DIRECTOR,EVALUATOR,ACCOUNTANT]) && applicationId )){
-
             await api.patch(url,{...params,  cancelToken: cancelTokenSource?.token,})
                 .then(res=>{
                     setGrayedOut(false);
                     setCurrentLoading('');
                     if(res.status===200){
                         if(res.data){
-
                             const data=res.data?.doc||res?.data;
-
-
-
-
                             dispatch(updateApplicationStatus({
                                 application:data,
                                 status:status,
@@ -178,13 +165,10 @@ function ActivityModal(props:any){
                             //setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
                             setChange(true);
                             // props.onDismissed(true, applicationId)
-
                             return callback(null,applicationId);
                         }
                     }
-
                     RNAlert.alert('Alert','Something went wrong.');
-
                     return callback('error');
                 })
                 .catch(e=>{
@@ -199,9 +183,7 @@ function ActivityModal(props:any){
     const hasChanges = (bool:boolean) => {
         setHasChange(bool)
     }
-
     useEffect(()=>{
-
         setUserProfileForm(flatten.flatten(props.details))
         setUserOriginalProfileForm(userProfileForm)
         setHasChange(false)
@@ -222,8 +204,7 @@ function ActivityModal(props:any){
     },[assignId,status,(
         props?.details?.assignedPersonnel?._id||props?.details?.assignedPersonnel),props.details.paymentStatus,props.details._id,props.details.status]);
     const approveButton=statusMemo===APPROVED||statusMemo===VERIFIED;
-    const declineButton=cashier ? (
-        statusMemo===UNVERIFIED||statusMemo===DECLINED) : statusMemo===DECLINED;
+    const declineButton=cashier ? (statusMemo===UNVERIFIED||statusMemo===DECLINED) : statusMemo===DECLINED;
 
 
     const allButton=(
@@ -262,7 +243,6 @@ function ActivityModal(props:any){
         };
     },[routeIsFocused]);
     const editBtn = () => {
-
         if(hasChange) setEditAlert(true);
         else {
             setEdit((bool) => !bool )
@@ -276,7 +256,6 @@ function ActivityModal(props:any){
         showToast(ToastType.Info, <ToastLoading/>)
         let profileForm = userProfileForm
         let dateOfBirth= profileForm?.['applicant.dateOfBirth'], region= profileForm?.['region.code'],dateValue = { year: "", month: "", day: ""}
-
         if(typeof dateOfBirth == 'string' && dateOfBirth){
             let dateOfBirthSplit = dateOfBirth?.split('-')
             dateValue.year = dateOfBirthSplit[0]
@@ -284,14 +263,11 @@ function ActivityModal(props:any){
             dateValue.day = dateOfBirthSplit[2]
             profileForm['applicant.dateOfBirth'] = dateValue
         }
-
-
         if(region){
             profileForm['region'] = region
         }
-        let pattern = /^soa.+(?:\[\d+])?(?:\.\w+(?:\[\d+])?)*$/;
+        let pattern =/^soa\.\d+\.\w+/
         let cleanSoa = {}
-
         for (const [key, value] of Object.entries(profileForm)) {
             if(key.match(pattern) && value){
                 cleanSoa = {...cleanSoa, ...{[key]: value}}
@@ -313,13 +289,10 @@ function ActivityModal(props:any){
             setUserProfileForm(_flatten)
             props.onChangeEvent(response.data.doc);
             showToast(ToastType.Success,"Successfully updated!")
-
             callback()
-
         }).catch((error)=>{
             hideToast()
             let _err='';
-
             for(const err in error?.response?.data?.errors) {
                 _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
             }
@@ -331,7 +304,6 @@ function ActivityModal(props:any){
             callback()
         });
     }, [ userProfileForm])
-
     const visibleAnimated= useRef(new Animated.Value(Number(!edit))).current;
     const getAnimatedStyle = () => {
         Animated.timing(visibleAnimated, {
@@ -356,12 +328,10 @@ function ActivityModal(props:any){
             transparent={false}
             visible={props.visible}
             onRequestClose={()=>{
-
                 setAssignId("");
                 props.onDismissed(change);
                 setChange(false)
             }}>
-
             <View style={(isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync()))&&(
                 visible||endorseVisible||showAlert) ? {
                 position:"absolute",
@@ -372,10 +342,7 @@ function ActivityModal(props:any){
                 height:"100%",
                 backgroundColor:"rgba(0, 0, 0, 0.5)",
             } : {position:"absolute",}}>
-
             </View>
-
-
             <CustomAlert
                 showClose={showClose}
                 type={approvalIcon ? APPROVED : ""}
@@ -403,8 +370,6 @@ function ActivityModal(props:any){
                     // setShowAlert(false)
                     setAlertLoading(true);
                     onChangeApplicationStatus(status,(err)=>{
-
-
                         setAlertLoading(false);
                         if(!err){
                             setApprovalIcon(true);
@@ -414,7 +379,6 @@ function ActivityModal(props:any){
                             setApprovalIcon(false);
                             setTitle("Alert");
                             setMessage(err?.message||'Something went wrong.');
-
                         }
                         setShowClose(true)
                     },{remarks: remarks, cashier: assignId})
@@ -427,29 +391,21 @@ function ActivityModal(props:any){
                     flexDirection:"row",
                     alignItems:"center",
                     borderBottomColor:"#F0F0F0",
-
                     justifyContent:"space-between",
                     padding:15,
                     paddingTop:40,
                 }}>
-                    <TouchableOpacity  hitSlop={hitSlop} onPress={()=>{
+                    <TouchableOpacity hitSlop={hitSlop} onPress={()=>{
                         handleBackButtonClick()
-
                     }}>
-
                         <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
-
-
                     </TouchableOpacity>
-
                     <Text style={[styles.applicationType,{width:"90%"}]}>{props?.details?.applicationType||props?.details?.service?.name}</Text>
                     <View style={{flexDirection: "row"}}>
                         <TouchableOpacity hitSlop={hitSlop}  onPress={editBtn}>
                             <EditIcon color="#606A80"/>
                         </TouchableOpacity>
                     </View>
-
-                    {/*<View/>*/}
                 </View>}
                 <KeyboardAvoidingView
                     behavior={Platform.OS==="ios" ? "padding" : "height"}
@@ -484,7 +440,6 @@ function ActivityModal(props:any){
                                             allButton={allButton}
                                             onPress={()=>{
                                                 if(getRole(user,[EVALUATOR])){
-
                                                     setShowAlert1(true)
                                                     setApproveVisible(true)
                                                 }else{
@@ -500,7 +455,6 @@ function ActivityModal(props:any){
                                             }}/>}
 
                                     </View>}
-
                                 {getRole(user,[EVALUATOR]) && props?.details?.service?.serviceCode !== "service-22" &&
                                     <EndorsedButton
                                         currentLoading={currentLoading}
@@ -508,16 +462,11 @@ function ActivityModal(props:any){
                                         onPress={()=>{
                                             setEndorseVisible(true)
                                         }}/>}
-
-
                             </View>
                         </View>
                     </Animated.View>
-
-
                 }
             </View>
-
             <FloatingButton
                 visible={edit}
                 button={{
