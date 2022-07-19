@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
     ActivityIndicator,
     Alert as RNAlert,
@@ -709,7 +709,7 @@ function ActivityModal(props: any) {
     );
 }
 
-export default ActivityModal
+export default memo(ActivityModal)
 const styles = StyleSheet.create({
     applicationType: {
         textAlign: "center",

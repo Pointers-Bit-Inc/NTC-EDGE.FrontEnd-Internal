@@ -254,7 +254,6 @@ const ScrollableTabView = createReactClass({
       >
 
 
-
           {scenes}
       </Animated.ScrollView>;
     } else {

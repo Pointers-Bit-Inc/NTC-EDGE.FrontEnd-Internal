@@ -1,5 +1,5 @@
-import React,{useEffect,useState} from "react";
-import {Platform,StyleSheet,TouchableOpacity,useWindowDimensions,View} from "react-native";
+import React, {useEffect, useState} from "react";
+import {Platform, StyleSheet, TouchableOpacity, useWindowDimensions, View} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
 import FileIcon from "@assets/svg/file";
@@ -13,26 +13,24 @@ import {
     StatusText
 } from "@pages/activities/script";
 
-import {APPROVED,CASHIER,DECLINED,} from "../../../reducers/activity/initialstate";
+import {APPROVED, CASHIER, DECLINED,} from "../../../reducers/activity/initialstate";
 import {outline} from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
 
 import EndorseIcon from "@assets/svg/endorse";
-import {Bold,Regular} from "@styles/font";
+import {Bold, Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {ActivitySwipeable} from "@pages/activities/nativeView/activitySwipeable";
 import MoreCircle from "@assets/svg/moreCircle";
 import {isMobile} from "@pages/activities/isMobile";
-import {Menu,MenuOption,MenuOptions,MenuTrigger} from "react-native-popup-menu";
+import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-menu";
 import UnseeIcon from "@assets/svg/unsee";
 import PinToTopIcon from "@assets/svg/pintotop";
 import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
-import * as Animatable from 'react-native-animatable'
 import {isTablet} from "react-native-device-info";
-import Skeleton from "@molecules/skeleton";
-
+import lodash from 'lodash';
 const styles=StyleSheet.create({
 
     containerBlur:{
@@ -277,7 +275,7 @@ export function ActivityItem(props:any){
 
         }
     }
-
+    const debouncedOnPress = lodash.debounce( props.onPressUser, 300, { leading: true, trailing: false });
     return (
 
         <Hoverable>
@@ -315,9 +313,7 @@ export function ActivityItem(props:any){
                                 </View>
                                 <View style={[styles.containerBlur,{borderWidth:props.selected ? 4 : 0,}]}>
 
-                                        <TouchableOpacity onPress={()=>{
-                                            props.onPressUser()
-                                        }}>
+                                        <TouchableOpacity onPress={debouncedOnPress}>
                                             <View style={
                                                 {
                                                     borderRadius:fontValue(10),

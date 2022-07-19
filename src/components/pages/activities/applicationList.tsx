@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {memo, useRef, useState} from "react";
 import {Animated, Text, TouchableWithoutFeedback, View} from "react-native";
 import {styles} from "@pages/activities/styles";
 import ChevronDownIcon from "@assets/svg/chevron-down";
@@ -100,4 +100,4 @@ const ApplicationList=(props:{onPress:()=>void,item:any,numbers:{parentIndex:num
 };
 
 
-export default ApplicationList;
+export default memo(ApplicationList);
