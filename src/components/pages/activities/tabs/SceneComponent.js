@@ -4,6 +4,7 @@ const { Component } = React;
 const { View, StyleSheet } = ReactNative;
 
 const StaticContainer = require('./StaticContainer');
+const memo = require("react").memo;
 
 const SceneComponent = (Props) => {
   const { shouldUpdated, ...props } = Props;
@@ -14,4 +15,4 @@ const SceneComponent = (Props) => {
   </View>;
 };
 
-module.exports = SceneComponent;
+module.exports = memo(SceneComponent);
