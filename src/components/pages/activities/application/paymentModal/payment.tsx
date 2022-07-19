@@ -1,9 +1,8 @@
-import React, {memo, useEffect, useMemo, useState} from "react";
+import React, {memo, useEffect, useState} from "react";
 import {
     ActivityIndicator,
     FlatList,
     Image,
-    KeyboardAvoidingView,
     Modal,
     Platform,
     SafeAreaView,
@@ -17,7 +16,7 @@ import {styles as paymentStyles} from "@pages/activities/application/paymentModa
 import {requirementStyles, styles} from "@pages/activities/application/requirementModal/styles"
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {Bold, Regular, Regular500} from "@styles/font";
-import {capitalize, removeEmpty} from "@pages/activities/script";
+import {capitalize} from "@pages/activities/script";
 import {RootStateOrAny, useSelector} from "react-redux";
 import {ACCOUNTANT, APPROVED} from "../../../../../reducers/activity/initialstate";
 import AnimatedImage from 'react-native-animated-image-viewer';
@@ -25,18 +24,17 @@ import {fontValue} from "@pages/activities/fontValue";
 import BorderPaymentBottom from "@assets/svg/borderPaymentBottom";
 import {useComponentLayout} from "../../../../../hooks/useComponentLayout";
 import {isMobile} from "@pages/activities/isMobile";
-import DottedLine from "@assets/svg/dotted";
 import PdfViewr from "@pages/activities/application/pdf";
 import FileIcon from "@assets/svg/file";
 import Card from "@pages/activities/application/card";
 import useApplicantForm from "src/hooks/useApplicantForm";
 import useSafeState from "../../../../../hooks/useSafeState";
-import {Ionicons} from "@expo/vector-icons";
 import CloseIcon from "@assets/svg/close";
 import {isNumber} from "../../../../../utils/ntc";
-import _ from "lodash";
 import {infoColor} from "@styles/color";
 import {PlusIcon} from "@atoms/icon";
+import {LoadingModal} from "@pages/activities/loading/loadingModal";
+
 const flatten = require('flat')
 class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 
@@ -364,21 +362,7 @@ const Payment = (props: any) => {
     const {applicantForm, updateApplication} = useApplicantForm(props);
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
     return  <>
-        {props.loading && <View style={ [{
-            width : "100%" ,
-            height : "100%" ,
-            alignItems : "center" ,
-            justifyContent : "center" ,
-            position: "absolute",
-            zIndex: 1,
-            backgroundColor : "rgba(0, 0, 0, 0.5)"
-        }]}>
-            <View style={{backgroundColor: infoColor, borderRadius: 24, flexDirection: "row", alignItems: "center", paddingHorizontal: fontValue(20), paddingVertical: fontValue(9)}}>
-                <ActivityIndicator color={"#fff"} style={{marginRight: 10}}/>
-                <Text style={{color: "#fff", fontFamily: Bold, fontSize: fontValue(16)}}>Saving</Text>
-            </View>
-
-        </View>}
+        {props.loading && <LoadingModal/>}
         <ScrollView
         keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
         style={{

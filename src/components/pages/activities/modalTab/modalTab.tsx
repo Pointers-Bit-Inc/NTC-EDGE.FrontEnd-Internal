@@ -111,6 +111,7 @@ const ModalTab = props => {
                 const isShow = tab.isShow.indexOf(user?.role?.key) !== -1;
                 if (isShow && tab.id === 1) {
                     return <BasicInfo
+                        loading={props.loading}
                         setEditAlert={props.setEditAlert}
                         editBtn={props.editBtn}
                         updateApplication={props.updateApplication}
@@ -140,6 +141,7 @@ const ModalTab = props => {
                         key={ index }/>
                 } else if (isShow && tab.id === 2) {
                     return <ApplicationDetails
+                        loading={props.loading}
                         edit={props.edit}
                         setEditAlert={props.setEditAlert}
                         editBtn={props.editBtn}

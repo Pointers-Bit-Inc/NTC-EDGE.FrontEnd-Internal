@@ -21,6 +21,7 @@ import {ToastType} from "@atoms/toast/ToastProvider";
 import {useToast} from "../../../../hooks/useToast";
 import axios from "axios";
 import ToastLoading from "@components/atoms/toast/ToastLoading";
+import LoadingModal from "@pages/activities/loading/loadingModal";
 
 
 const BasicInfo = (props: any) => {
@@ -131,7 +132,9 @@ const BasicInfo = (props: any) => {
     }, [props.paymentHistory, props.approvalHistory ])
 
 
-    return <><ScrollView keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
+    return <>
+        {props.loading && <LoadingModal/>}
+        <ScrollView keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
                          refreshControl={
                              <RefreshControl
                                  refreshing={refreshing}
@@ -271,13 +274,13 @@ const BasicInfo = (props: any) => {
 
 
                                                                 <View style={{flexDirection: "row",borderBottomWidth: 1, borderBottomColor: "#EFEFEF"  }}>
-                                                                    <View style={{flex: 0.7}}>
+                                                                    <View style={{flex: 0.5}}>
                                                                         <Text style={[styles?.remarksContent, statusColor(
                                                                             item?.status
                                                                         )]}>{item?.remarks}</Text>
                                                                     </View>
 
-<View style={{flex: 0.3}}>
+<View style={{flex: 0.5}}>
     {(item?.personnel?.firstName && item?.personnel?.lastName) ? <Text style={[styles?.remarksContent, {color: "#565961"}]}>{`by: ${item?.personnel?.firstName} ${item?.personnel?.lastName}`}</Text> : <></>}
 </View>
 

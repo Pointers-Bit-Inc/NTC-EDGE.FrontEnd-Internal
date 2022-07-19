@@ -16,6 +16,7 @@ import {PAID} from "../../../../reducers/activity/initialstate";
 import Moment from 'moment';
 import Timeline from "@molecules/timeline/timeline";
 import Card from "@pages/activities/application/card";
+import LoadingModal from "@pages/activities/loading/loadingModal";
 let outputLabel = (applicationType: string, serviceCode: string, service: string) => {
     applicationType = (`${applicationType} ${service?.name}`)?.toLowerCase();
     if (serviceCode === 'service-22') return 'Receipt';
@@ -70,7 +71,9 @@ const ApplicationDetails = (props: any) => {
 
     const rightLayoutComponent= useSelector((state: RootStateOrAny) => state.application?.rightLayoutComponent);
     const [modalVisible, setModalVisible] = useState(false);
-    return <ScrollView contentContainerStyle={{flex: 1}}
+    return <>
+        {props.loading && <LoadingModal/>}
+        <ScrollView contentContainerStyle={{flex: 1}}
                        style={{paddingTop: 20, width: "100%", backgroundColor: "#f8f8f8",}}>
         {/*<PdfViewrWeb height={height}
                   width={width} requirement={props?.documents}/>*/}
@@ -197,7 +200,7 @@ const ApplicationDetails = (props: any) => {
             </View>
 
         </Modal>
-    </ScrollView>
+    </ScrollView></>
 
 };
 const styles = StyleSheet.create({
