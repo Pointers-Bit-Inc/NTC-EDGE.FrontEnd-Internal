@@ -1,4 +1,4 @@
-import React from "react";
+import React, {memo} from "react";
 import {
     ActivityIndicator,
     Dimensions,FlatList,
@@ -243,7 +243,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
         .then(()=>{
             this.setState({onLoadStart:false});
             Image.getSize(this.props?.requirement?.original,(width,height)=>{
-                
+
                 this.setState({
                     source : {
                         ...this?.state?.source ,
@@ -319,4 +319,4 @@ const Requirement=(props:any)=>{
     </ScrollView>
 
 };
-export default Requirement
+export default memo(Requirement)

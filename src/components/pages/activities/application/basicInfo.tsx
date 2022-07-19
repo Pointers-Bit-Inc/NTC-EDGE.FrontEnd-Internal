@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef} from "react";
+import React, {memo, useEffect, useMemo, useRef} from "react";
 import {FlatList, Platform, RefreshControl, ScrollView, Text, useWindowDimensions, View} from "react-native";
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
@@ -539,4 +539,4 @@ const BasicInfo = (props: any) => {
     </>
 };
 
-export default BasicInfo
+export default memo(BasicInfo)

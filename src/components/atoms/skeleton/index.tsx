@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component, memo} from 'react';
 import { StyleSheet, View, Dimensions, Animated, Platform } from 'react-native';
 
 
 type Props = {};
-export default class Skeleton extends Component<Props> {
+class Skeleton extends Component<Props> {
     constructor(props) {
         super(props)
         this.circleAnimatedValue = new Animated.Value(0)
@@ -68,7 +68,7 @@ export default class Skeleton extends Component<Props> {
         );
     }
 }
-
+export default memo(Skeleton)
 const styles = StyleSheet.create({
     container: {
         flex: 1,

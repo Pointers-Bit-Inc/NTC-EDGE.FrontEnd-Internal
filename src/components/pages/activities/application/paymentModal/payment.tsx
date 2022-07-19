@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {memo, useEffect, useMemo, useState} from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -614,4 +614,4 @@ const Payment = (props: any) => {
 };
 
 
-export default Payment
+export default memo(Payment)

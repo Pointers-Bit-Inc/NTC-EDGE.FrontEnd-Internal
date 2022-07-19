@@ -19,6 +19,7 @@ const TimerMixin = require('react-timer-mixin');
 import PagerView from 'react-native-pager-view';
 import {infoColor} from "@styles/color";
 import {ActivityIndicator} from "react-native";
+import {memo} from "react";
 
 const SceneComponent = require('./SceneComponent');
 const DefaultTabBar = require('./DefaultTabBar');
@@ -413,7 +414,7 @@ const ScrollableTabView = createReactClass({
   },
 });
 
-export default ScrollableTabView;
+export default memo(ScrollableTabView);
 
 const styles = StyleSheet.create({
   container: {

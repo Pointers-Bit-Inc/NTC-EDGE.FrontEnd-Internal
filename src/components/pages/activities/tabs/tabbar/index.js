@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component, memo} from 'react';
 import { Text, TouchableOpacity, View, Animated, ScrollView } from 'react-native';
 import MatrixMath from 'react-native/Libraries/Utilities/MatrixMath';
 
@@ -340,4 +340,4 @@ class TabBar extends Component{
     }
 }
 
-export default TabBar;
+export default memo(TabBar);

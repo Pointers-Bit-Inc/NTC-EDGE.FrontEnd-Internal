@@ -799,4 +799,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ActivitiesPage;
+export default memo(ActivitiesPage);

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {memo, useEffect, useState} from "react";
 import {Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, useWindowDimensions, View} from "react-native";
 import {Bold, Regular, Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
@@ -264,4 +264,4 @@ const styles = StyleSheet.create({
     },
 
 });
-export default ApplicationDetails
+export default memo(ApplicationDetails)

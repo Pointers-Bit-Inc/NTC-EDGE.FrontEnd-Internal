@@ -1,5 +1,5 @@
 import {RootStateOrAny,useSelector} from "react-redux";
-import React,{useEffect,useState} from "react";
+import React, {memo, useEffect, useState} from "react";
 import {ACCOUNTANT,CASHIER,CHECKER,DIRECTOR,EVALUATOR} from "../../../../reducers/activity/initialstate";
 import {StyleSheet,Text,TouchableOpacity,View} from "react-native";
 import {Regular,Regular500} from "@styles/font";
@@ -264,7 +264,7 @@ setEdit={props.setEdit}
     </ViewPaged>
 
 };
-export default ModalTab
+export default memo(ModalTab)
 const styles=StyleSheet.create({
     tabSelected:{
         color:"#2863D6",

@@ -3,7 +3,7 @@ import BasicInfo from "@pages/activities/application/basicInfo";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
-import React,{useEffect,useState} from "react";
+import React, {memo, useEffect, useState} from "react";
 import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
 import {Alert, Animated, InteractionManager, KeyboardAvoidingView, Platform, View} from "react-native";
 import TabBar from "@pages/activities/tabs/tabbar";
@@ -192,4 +192,4 @@ const ModalTab = props => {
 
 };
 
-export default ModalTab
+export default memo(ModalTab)
