@@ -250,8 +250,8 @@ function ActivityModal(props: any) {
     const [messageUpdate, setMessageUpdate] = useSafeState("")
     const [titleUpdate, setTitleUpdate] = useSafeState("")
     const updateApplication = useCallback((callback) => {
-       /* hideToast()
-        showToast(ToastType.Info, <ToastLoading/>)*/
+        /* hideToast()
+         showToast(ToastType.Info, <ToastLoading/>)*/
         setLoading(true)
         let profileForm = userProfileForm
         let dateOfBirth = profileForm?.['applicant.dateOfBirth'], region = profileForm?.['region.code'],
@@ -404,13 +404,13 @@ function ActivityModal(props: any) {
                 }}>
 
                     {edit ?<TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
-                        <ChevronLeft width={fontValue(24)} height={fontValue(24)} color="#606A80"/>
-                    </TouchableOpacity> :
+                            <ChevronLeft width={fontValue(24)} height={fontValue(24)} color="#606A80"/>
+                        </TouchableOpacity> :
                         <TouchableOpacity hitSlop={hitSlop} onPress={() => {
-                        handleBackButtonClick()
-                    }}>
-                        <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
-                    </TouchableOpacity>}
+                            handleBackButtonClick()
+                        }}>
+                            <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
+                        </TouchableOpacity>}
                     <Text
                         style={[styles.applicationType, {width: "90%"}]}>{props?.details?.applicationType || props?.details?.service?.name}</Text>
 
@@ -418,12 +418,12 @@ function ActivityModal(props: any) {
                             updateApplication(() => {})
                         }
                         }>
-                        {loading ? <ActivityIndicator color={infoColor}/> :
-                            <Text style={{fontFamily: Regular, fontSize: fontValue(16), color: infoColor}}>Save</Text>}
+                            {loading ? <ActivityIndicator color={infoColor}/> :
+                                <Text style={{fontFamily: Regular, fontSize: fontValue(16), color: infoColor}}>Save</Text>}
                             {/* <EditIcon color="#606A80"/>*/}
                         </TouchableOpacity>
 
-                       :  <TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
+                        :  <TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
                             <Text style={{fontFamily: Regular, fontSize: fontValue(16), color: infoColor}}>Edit</Text>
                             {/* <EditIcon color="#606A80"/>*/}
                         </TouchableOpacity>

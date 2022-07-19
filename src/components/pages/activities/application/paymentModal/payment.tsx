@@ -435,7 +435,7 @@ const Payment = (props: any) => {
                                                       edit={props.edit}
                                                       display={props.userProfileForm?.["soa." + s.id + ".item"] || "Item"}
                                                       label={"Item:"}
-                                                      style={{color: "#37405B", fontSize: fontValue(12)}}
+                                                      style={{paddingVertical: 14,color: "#37405B", fontSize: fontValue(12)}}
                                                       applicant={props.userProfileForm?.["soa." + s.id + ".item"]}/>
                                             </View>
                                             <View style={{flex: 1, width: "100%", paddingLeft: 3}}>
@@ -452,7 +452,7 @@ const Payment = (props: any) => {
                                                       edit={props.edit}
                                                       display={props.userProfileForm?.["soa." + s.id + ".amount"] || "Amount"}
                                                       label={"Amount:"}
-                                                      style={{color: "#37405B", fontSize: fontValue(14)}}
+                                                      style={{paddingVertical: 14,color: "#37405B", fontSize: fontValue(14)}}
                                                       applicant={props.userProfileForm?.["soa." + s.id + ".amount"] != undefined ? "" + props.userProfileForm?.["soa." + s.id + ".amount"] : ""}/>
                                             </View>
                                             {props.edit && <View style={{}}>

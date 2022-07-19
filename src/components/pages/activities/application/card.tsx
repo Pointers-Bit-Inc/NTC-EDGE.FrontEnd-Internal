@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         textAlign : "left"
     } ,
 })
-const Card = (props: {keyboardType?:string, touchableStyle?:any, style?:any,   updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
+const Card = (props: {inputFieldStyle?:any, keyboardType?:string, touchableStyle?:any, style?:any,   updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
     const [edit, setEdit] = useSafeState(false)
 
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
@@ -41,7 +41,7 @@ const Card = (props: {keyboardType?:string, touchableStyle?:any, style?:any,   u
         setEdit(true)
     }
     }>
-        <Text style={[props.style, { paddingVertical: 14,}]}>{props.display || props.applicant}</Text>
+        <Text style={[props.style,]}>{props.display || props.applicant}</Text>
     </TouchableOpacity> : <>
         {((props.edit && props.editable && props.showEdit) || edit)? <InputField keyboardType={props.keyboardType}  onSubmitEditing = {(event) => {
             if(!props.edit) props?.updateApplication()
@@ -53,7 +53,7 @@ const Card = (props: {keyboardType?:string, touchableStyle?:any, style?:any,   u
                                                                                       setEdit(false)
                                                                                   }
                                                                                   }
-                                                                                  mainContainerStyle={[props.style, {marginVertical: 10}]} onClose={()=>{
+                                                                                  mainContainerStyle={[props.inputFieldStyle, {marginVertical: 10}]} onClose={()=>{
             props.updateForm(props.stateName, cloneValue)
             setEdit(false)
         }}  onChangeText={(e) => {
