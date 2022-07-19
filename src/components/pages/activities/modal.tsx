@@ -274,8 +274,6 @@ function ActivityModal(props:any){
                 cleanSoa = {...cleanSoa, ...{[key]: value}}
             }
         }
-
-        console.log(clean)
         const flattenSoa = flatten.unflatten(cleanSoa)?.soa?.filter(s => s)
         if(flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0 ), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
