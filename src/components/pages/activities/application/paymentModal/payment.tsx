@@ -434,7 +434,7 @@ const Payment = (props: any) => {
                                                       touchableStyle={{alignSelf: "flex-end"}}
                                                       stateName={"soa." + s.id + ".amount"}
                                                       edit={props.edit}
-                                                      display={props.userProfileForm?.["soa." + s.id + ".amount"] || "Amount"}
+                                                      display={props.userProfileForm?.["soa." + s.id + ".amount"] || "0"}
                                                       label={"Amount:"}
                                                       style={{paddingVertical: 14,color: "#37405B", fontSize: fontValue(14)}}
                                                       applicant={props.userProfileForm?.["soa." + s.id + ".amount"] != undefined ? "" + props.userProfileForm?.["soa." + s.id + ".amount"] : 0}/>
