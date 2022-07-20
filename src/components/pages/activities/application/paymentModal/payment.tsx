@@ -33,7 +33,7 @@ import CloseIcon from "@assets/svg/close";
 import {isNumber} from "../../../../../utils/ntc";
 import {infoColor} from "@styles/color";
 import {PlusIcon} from "@atoms/icon";
-import {LoadingModal} from "@pages/activities/loading/loadingModal";
+import LoadingModal from "@pages/activities/loading/loadingModal";
 
 const flatten = require('flat')
 class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
