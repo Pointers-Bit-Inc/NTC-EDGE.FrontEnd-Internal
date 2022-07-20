@@ -449,7 +449,7 @@ function ActivityModal(props: any) {
 
                 </KeyboardAvoidingView>
 
-                {
+                {!edit &&
                     <View style={[{
                         paddingHorizontal: !isMobile ? 64 : 0,
                         borderTopColor: 'rgba(0, 0, 0, 0.1)',
