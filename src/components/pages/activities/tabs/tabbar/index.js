@@ -340,4 +340,4 @@ class TabBar extends Component{
     }
 }
 
-export default memo(TabBar);
+export default (TabBar);

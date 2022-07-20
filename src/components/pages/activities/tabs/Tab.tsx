@@ -22,4 +22,4 @@ const Tab = ({ tab , page , isTabActive , onPressHandler , onTabLayout , styles 
         </TouchableOpacity>
     );
 };
-export default memo(Tab)
+export default Tab

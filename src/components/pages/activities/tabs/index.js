@@ -413,7 +413,7 @@ const ScrollableTabView = createReactClass({
   },
 });
 
-export default memo(ScrollableTabView);
+export default (ScrollableTabView);
 
 const styles = StyleSheet.create({
   container: {

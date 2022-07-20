@@ -223,7 +223,7 @@ const ScrollableTabBar = createReactClass({
   },
 });
 
-module.exports = memo(ScrollableTabBar);
+module.exports = (ScrollableTabBar);
 
 const styles = StyleSheet.create({
   tab: {

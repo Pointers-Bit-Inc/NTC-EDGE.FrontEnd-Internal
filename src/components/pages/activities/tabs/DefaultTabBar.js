@@ -113,4 +113,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = memo(DefaultTabBar);
+module.exports = (DefaultTabBar);

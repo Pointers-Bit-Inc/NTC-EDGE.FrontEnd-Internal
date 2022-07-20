@@ -15,4 +15,4 @@ const SceneComponent = (Props) => {
   </View>;
 };
 
-module.exports = memo(SceneComponent);
+module.exports = (SceneComponent);
