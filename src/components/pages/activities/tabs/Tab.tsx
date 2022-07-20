@@ -15,7 +15,7 @@ const Tab = ({ tab , page , isTabActive , onPressHandler , onTabLayout , styles 
             <View >
                 <Animated.Text style={ {
                     color : isTabActive ? infoColor : "#606A80" ,
-                    fontFamily : isTabActive ? Bold : Regular ,
+                    fontFamily : Regular ,
                     fontSize : fontValue(12)
                 } }>{ label }</Animated.Text>
             </View>

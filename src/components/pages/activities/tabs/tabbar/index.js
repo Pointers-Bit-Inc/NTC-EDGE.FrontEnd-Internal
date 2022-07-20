@@ -318,7 +318,7 @@ class TabBar extends Component{
                     ref={ node => (
                         this.scrollView = node) }
                     bounces={ false }
-                    scrollEventThrottle={ 1 }
+                    scrollEventThrottle={ 16 }
                     onScroll={ this.onTabBarScrolling }
                 >
                     <View style={ { flexDirection : "row" , flex : 1 , width : "100%" , justifyContent : "space-evenly" } }>
@@ -330,9 +330,11 @@ class TabBar extends Component{
                             return renderTab(tab , page , isTabActive , onPressHandler , onTabLayout);
                         }) }
 
+
+
                     </View>
 
-                    { this.state.renderUnderline && this.renderUnderline() }
+                   { this.state.renderUnderline && this.renderUnderline() }
 
                 </ScrollView>
             </View>
