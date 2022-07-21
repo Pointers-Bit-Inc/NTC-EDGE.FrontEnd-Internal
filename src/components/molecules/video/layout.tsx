@@ -11,6 +11,7 @@ import React, {
 import { View, StyleSheet, FlatList, Dimensions, Platform, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import lodash from 'lodash';
 import { useInitializeAgora } from 'src/hooks/useAgora';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MicIcon, CameraIcon, MicOffIcon, MessageIcon, ParticipantsIcon, ArrowDownIcon, CloseIcon, NewGuestIcon } from '@components/atoms/icon';
 import {
   RtcLocalView,
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
   floatingName: {
     position: 'absolute',
     bottom: 5,
-    left: 10,
+    left: 5,
   },
   mic: {
     position: 'absolute',
@@ -450,14 +451,26 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
         }
         {
           peerVideoState[selectedPeer] === VideoRemoteState.Decoding ? null : (
-            <Text
-              style={styles.name}
-              numberOfLines={1}
-              size={isMaximize ? 16 : 12}
-              color={'white'}
-            >
-              {selectedParticipant?.title || ''} {selectedParticipant?.firstName}
-            </Text>
+            <View style={styles.name}>
+              <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                {
+                  peerVideoState[selectedPeer] === VideoRemoteState.Frozen && (
+                    <MaterialCommunityIcons
+                      name='network-strength-3-alert'
+                      size={16}
+                      color={'#CF0327'}
+                    />
+                  )
+                }
+                <Text
+                  numberOfLines={1}
+                  size={isMaximize ? 16 : 12}
+                  color={'white'}
+                >
+                  {selectedParticipant?.title || ''} {selectedParticipant?.firstName}
+                </Text>
+              </View>
+            </View>
           )
         }
       </View>
@@ -546,17 +559,31 @@ const VideoLayout: ForwardRefRenderFunction<VideoLayoutRef, Props> = ({
                 />
               )
             }
-            <Text
+            <View
               style={
                 peerVideoState[item] === VideoRemoteState.Decoding ?
                 styles.floatingName : styles.name
               }
-              numberOfLines={1}
-              size={12}
-              color={'white'}
             >
-              {findParticipant?.title || ''} {findParticipant.firstName}
-            </Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                {
+                  peerVideoState[item] === VideoRemoteState.Frozen && (
+                    <MaterialCommunityIcons
+                      name='network-strength-3-alert'
+                      size={16}
+                      color={'#CF0327'}
+                    />
+                  )
+                }
+                <Text
+                  numberOfLines={1}
+                  size={12}
+                  color={'white'}
+                >
+                  {findParticipant?.title || ''} {findParticipant.firstName}
+                </Text>
+              </View>
+            </View>
             {
               findParticipant.muted ? (
                 <View style={styles.mic}>
