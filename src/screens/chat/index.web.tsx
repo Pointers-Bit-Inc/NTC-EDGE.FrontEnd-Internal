@@ -524,8 +524,8 @@ function Chat(props: {
               ]}
             >
               <RefreshWeb
-                width={fontValue(24)}
-                height={fontValue(22)}
+                width={fontValue(26)}
+                height={fontValue(24)}
                 fill={"#fff"}
               />
             </View>
