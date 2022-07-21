@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: 10,
     position: 'absolute',
-    bottom: 30,
+    bottom: Platform.OS === 'ios' ? 30 : 50,
   },
   micButtonContainer: {
     flexDirection: 'row',

@@ -98,6 +98,9 @@ export default function Meeting(state = initialState, action:any = {}) {
 
         if (state.meeting?._id === action.payload._id) {
           newState = newState.setIn(['meeting'], action.payload)
+          if (!action.payload.room) {
+            newState = newState.setIn(['meeting', 'room'], state.meeting.room)
+          }
         }
   
         if (action.payload.ended) {
