@@ -1,5 +1,6 @@
 import React, {Component, memo} from 'react';
 import { StyleSheet, View, Dimensions, Animated, Platform } from 'react-native';
+import {fontValue} from "@pages/activities/fontValue";
 
 
 type Props = {};
@@ -12,23 +13,18 @@ class Skeleton extends Component<Props> {
     }
     circleAnimated = () => {
         this.circleAnimatedValue.setValue(0)
-        new Promise((resolve, reject) => {
-
-                resolve();
-        }).then(()=>{
-            Animated.timing(
-                this.circleAnimatedValue,
-                {
-                    toValue: 1,
-                    duration: 350, useNativeDriver: true
-                }
-            ).start(() => {
-                this.circleAnimatedValue.setValue(0)
+        Animated.timing(
+            this.circleAnimatedValue,
+            {
+                useNativeDriver: true,
+                toValue: 1,
+                duration: 350
+            }
+        ).start(() => {
+            setTimeout(() => {
                 this.circleAnimated()
-
-            })
-        });
-
+            }, 1000);
+        })
     }
     componentWillUnmount() {
         this.circleAnimatedValue.setValue(0)
@@ -63,7 +59,6 @@ class Skeleton extends Component<Props> {
                         </View>
                     </View>
                 </View>
-
             </View>
         );
     }
@@ -72,7 +67,6 @@ export default memo(Skeleton)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        //backgroundColor: '#fff',
         paddingTop: 6,
         paddingHorizontal: 16,
         paddingBottom: 6,
@@ -80,14 +74,15 @@ const styles = StyleSheet.create({
     },
     card: {
         padding: 20,
-        shadowColor: 'black',
-        borderRadius: 10,
-        backgroundColor: '#Fff',
-        shadowColor: 'black',
+        shadowColor: "#000",
         shadowOffset: {
             width: 1,
-            height: 1
+            height: 1,
         },
+        shadowRadius: 3.84,
+        elevation: 5,
+        borderRadius: 10,
+        backgroundColor: '#Fff',
         shadowOpacity: 0.1,
         flexDirection: 'row'
     }
