@@ -91,6 +91,8 @@ import { NoContent } from '@screens/meet/index.web';
 import { openUrl } from 'src/utils/web-actions';
 import IParticipants from 'src/interfaces/IParticipants';
 import Loading from '@components/atoms/loading';
+import { FontAwesome } from '@expo/vector-icons';
+import RefreshWeb from '@assets/svg/refreshWeb';
 
 const { width, height } = Dimensions.get('window');
 
@@ -235,7 +237,6 @@ const styles = StyleSheet.create({
     borderColor: '#E5E5E5',
     marginHorizontal: 10,
     padding: 11,
-
     borderRadius: 100
   },
   plus: {
@@ -515,6 +516,20 @@ function Chat(props: {
               </TouchableOpacity>
             )}
           </Hoverable>
+          <TouchableOpacity onPress={onRequestData}>
+            <View
+              style={[
+                styles.headerNewChatIcon,
+                { borderWidth: 0, marginHorizontal: 0 }
+              ]}
+            >
+              <RefreshWeb
+                width={fontValue(24)}
+                height={fontValue(22)}
+                fill={"#fff"}
+              />
+            </View>
+          </TouchableOpacity>
         </View>
 
         {!!lodash.size(meetingList) && (

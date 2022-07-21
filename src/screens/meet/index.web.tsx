@@ -30,7 +30,7 @@ import IMeetings from 'src/interfaces/IMeetings';
 import IParticipants from 'src/interfaces/IParticipants';
 import {isMobile} from "@pages/activities/isMobile";
 import hairlineWidth=StyleSheet.hairlineWidth;
-import {fontValue as RFValue} from "@pages/activities/fontValue";
+import {fontValue, fontValue as RFValue} from "@pages/activities/fontValue";
 import NoConversationIcon from "@assets/svg/noConversations";
 import SdIcon from "@assets/svg/webitem/sd";
 import ApIcon from "@assets/svg/webitem/ap";
@@ -39,6 +39,7 @@ import VideoOutlineIcon from "@assets/svg/videoOutline";
 import CalendarAddOutline from "@assets/svg/calendarAddOutline";
 import { BASE_URL } from 'src/services/config';
 import { openUrl } from 'src/utils/web-actions';
+import RefreshWeb from '@assets/svg/refreshWeb';
 
 const { width, height } = Dimensions.get('window');
 
@@ -107,6 +108,13 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     width: '100%',
+  },
+  refresh: {
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    marginHorizontal: 10,
+    padding: 11,
+    borderRadius: 100
   },
   bar: {
     height: 15,
@@ -437,15 +445,20 @@ const Meet = ({ navigation }) => {
                   </Text>
 
                 </View>
-                {/* <TouchableOpacity
-                    onPress={onVideoCall}
-                >
-                  <View style={{flexDirection:'row',alignItems:'center'}}>
-                    <AddMeetingIcon
-                      color={"#113196"}
+                <TouchableOpacity onPress={onRequestData}>
+                  <View
+                    style={[
+                      styles.refresh,
+                      { borderWidth: 0, marginHorizontal: 0 }
+                    ]}
+                  >
+                    <RefreshWeb
+                      width={fontValue(26)}
+                      height={fontValue(24)}
+                      fill={"#fff"}
                     />
                   </View>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
               </View>
               <View  style={{paddingHorizontal: 24,paddingVertical: 46}}>
                 <View style={{paddingBottom: 24}}>
