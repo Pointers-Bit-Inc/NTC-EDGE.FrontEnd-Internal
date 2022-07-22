@@ -104,15 +104,15 @@ const useSignalr = () => {
         case 'create': {
           const { room } = data;
           const { lastMessage } = room;
-          dispatch(updateChannel(room));
-          dispatch(addMessages(room._id, lastMessage));
+          if (room) dispatch(updateChannel(room));
+          if (lastMessage) dispatch(addMessages(room._id, lastMessage));
           dispatch(addMeeting(data));
           break;
         };
         case 'update': {
-          const { room = {} } = data;
+          const { room } = data;
           const { lastMessage } = room;
-          if (lastMessage) dispatch(updateChannel(room));
+          if (room) dispatch(updateChannel(room));
           if (lastMessage) dispatch(addMessages(room._id, lastMessage));
           dispatch(updateMeeting(data));
           break;

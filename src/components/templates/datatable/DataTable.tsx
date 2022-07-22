@@ -44,6 +44,7 @@ import NoActivity from "@assets/svg/noActivity";
 import ProfileData from "@templates/datatable/ProfileData";
 import Left from "@atoms/icon/left";
 import NavBar from "@molecules/navbar";
+import RefreshWeb from "@assets/svg/refreshWeb";
 
 const style=StyleSheet.create({
     row:{
@@ -127,8 +128,18 @@ const style=StyleSheet.create({
         backgroundColor:"#fff",
     },
     headerTextContainer:{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         paddingVertical:16,
         paddingHorizontal:23
+    },
+    refresh: {
+        borderWidth: 1,
+        borderColor: '#E5E5E5',
+        marginHorizontal: 10,
+        padding: 11,
+        borderRadius: 100
     },
     flatlist:{
         marginBottom:5,
@@ -747,10 +758,21 @@ const DataTable=(props)=>{
                                 <View style={style.headerTable}>
 
                                     <View style={style.headerTextContainer}>
-
-                                        <Text
-                                            style={style.textTable}>{props.title}</Text>
-
+                                        <Text style={style.textTable}>{props.title}</Text>
+                                        <TouchableOpacity onPress={() => fetch()}>
+                                            <View
+                                                style={[
+                                                    style.refresh,
+                                                    { borderWidth: 0, marginHorizontal: 0 }
+                                                ]}
+                                            >
+                                                <RefreshWeb
+                                                    width={fontValue(26)}
+                                                    height={fontValue(24)}
+                                                    fill={"#fff"}
+                                                />
+                                            </View>
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
                                 <View style={{marginHorizontal:45,backgroundColor:"#fff",}}>

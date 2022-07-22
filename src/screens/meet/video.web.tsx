@@ -43,6 +43,7 @@ import usePlayback from 'src/hooks/usePlayback';
 import IMeetings from 'src/interfaces/IMeetings';
 import { openUrl } from 'src/utils/web-actions';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import { getBaseOs } from 'react-native-device-info';
 
 const { ids, styles } = StyleSheet.create({
   container: {
@@ -278,7 +279,7 @@ const VideoCall = () => {
     message: '',
     confirm: '',
   });
-
+  const [baseOS, setBaseOS] = useState();
   const onStartMeeting = () => {
     setLoading(true);
     if (currentMeeting.isChannelExist) {
@@ -397,6 +398,11 @@ const VideoCall = () => {
     onConnection('OnRoomUpdate',onRoomUpdate);
     onConnection('OnMeetingUpdate',onMeetingUpdate);
     onConnection('OnMeetingNotification',OnMeetingNotification);
+
+    getBaseOs().then((baseOs) => {
+      setBaseOS(baseOs);
+    });
+    
     return () => {
       destroySignalR();
     }
@@ -475,9 +481,18 @@ const VideoCall = () => {
 
   useEffect(() => {
     if (error?.code === 'PERMISSION_DENIED' || error?.code === 'NOT_READABLE') {
+      let instruction = 'Browser Settings>Privacy and security>Site Settings.'
+      if (error?.code !== 'PERMISSION_DENIED') {
+        if (baseOS === 'Mac OS') {
+          instruction = 'System Preferences>Security & Privacy>Privacy.'
+        } else {
+          instruction = 'System Settings>Privacy & security.'
+        }
+      }
+
       setAlertData({
         title: 'Unable to access camera & microphone',
-        message: `Please allow camera & microphone access from ${error?.code === 'PERMISSION_DENIED' ? 'browser' : 'system'} settings.`,
+        message: `Please allow camera & microphone access from ${instruction}`,
         confirm: 'OK',
       });
       setTimeout(() => setShowAlert(true), 500);
