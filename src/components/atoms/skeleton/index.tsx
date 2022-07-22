@@ -11,6 +11,9 @@ class Skeleton extends Component<Props> {
         this.timeoutId = 0
 
     }
+    state = {
+        isMounted: false
+    }
     circleAnimated = () => {
         this.circleAnimatedValue.setValue(0)
         Animated.timing(
@@ -21,16 +24,20 @@ class Skeleton extends Component<Props> {
                 duration: 350
             }
         ).start(() => {
-            setTimeout(() => {
-                this.circleAnimated()
-            }, 1000);
+
+                if(this.state.isMounted)this.circleAnimated()
         })
     }
     componentWillUnmount() {
-        this.circleAnimatedValue.setValue(0)
+        this.setState({
+            isMounted: false
+        })
     }
 
     componentDidMount() {
+        this.setState({
+            isMounted: true
+        })
         this.circleAnimated()
     }
 
