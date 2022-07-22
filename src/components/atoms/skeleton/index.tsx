@@ -8,32 +8,33 @@ class Skeleton extends Component<Props> {
     constructor(props) {
         super(props)
         this.circleAnimatedValue = new Animated.Value(0)
-        this.timeoutId = 0
 
     }
     state = {
-        isMounted: false
+        isMounted: true
     }
     circleAnimated = () => {
-        this.circleAnimatedValue.setValue(0)
-        Animated.timing(
-            this.circleAnimatedValue,
-            {
-                useNativeDriver: true,
-                toValue: 1,
-                duration: 350
-            }
-        ).start(() => {
+        if(this.state.isMounted){
+            this.circleAnimatedValue.setValue(0)
+            Animated.timing(
+                this.circleAnimatedValue,
+                {
+                    useNativeDriver: true,
+                    toValue: 1,
+                    duration: 350
+                }
+            ).start(() => {
 
-                if(this.state.isMounted)this.circleAnimated()
-        })
+                this.circleAnimated()
+            })
+        }
+
     }
     componentWillUnmount() {
         this.setState({
             isMounted: false
         })
     }
-
     componentDidMount() {
         this.setState({
             isMounted: true
