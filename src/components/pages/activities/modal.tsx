@@ -181,14 +181,22 @@ function ActivityModal(props: any) {
     const hasChanges = (bool: boolean) => {
         setHasChange(bool)
     }
+
+
+
+
     useEffect(() => {
+
         setUserProfileForm(flatten.flatten(props.details))
         setUserOriginalProfileForm(userProfileForm)
-        setHasChange(false)
+        if(userOriginalProfileForm._id != userProfileForm._id ){
+            setHasChange(false)
+        }
         return () => {
             setChange(false);
             setStatus("");
             setAssignId("")
+
         }
     }, [props?.details._id, hasChange]);
 

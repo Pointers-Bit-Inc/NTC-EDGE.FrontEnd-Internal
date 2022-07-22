@@ -60,6 +60,9 @@ const BasicInfo = (props: any) => {
     const applicantForm = (stateName, value) => {
         let newForm = {...props.userProfileForm}
         newForm[stateName] = value
+
+
+
         props.setUserProfileForm(newForm)
     }
     const user = useSelector((state: RootStateOrAny) => state.user);
@@ -132,7 +135,7 @@ const BasicInfo = (props: any) => {
         return [..._paymentHistory, ..._approvalHistory]?.filter(s => s?.remarks)
     }, [props.paymentHistory, props.approvalHistory ])
 
-
+console.log(props.userProfileForm?.["applicant.applicantName"])
     return <>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved}  loading={props.loading}/>}
         <ScrollView keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
@@ -242,10 +245,14 @@ const BasicInfo = (props: any) => {
                                                 <View style={[styles?.remarksContainer, {
                                                     borderColor: remarkColor(
                                                         getStatusText(props, personnel)
+                                                    ) == "#CF0327" ? "rgba(255, 0, 0, 0.25)" : remarkColor(
+                                                        getStatusText(props, personnel)
                                                     )
                                                 }]}>
                                                     <Text style={[styles?.remarksTitle, {
                                                         color: remarkColor(
+                                                            getStatusText(props, personnel)
+                                                        ) == "#CF0327" ? "#000" : remarkColor(
                                                             getStatusText(props, personnel)
                                                         )
                                                     }]}>{getStatusText(props, personnel) === DECLINED ? 'NOD/' : ''}Remarks</Text>
@@ -261,10 +268,14 @@ const BasicInfo = (props: any) => {
                                                     <View style={[styles?.remarksContainer, {
                                                         borderColor: remarkColor(
                                                             getStatusText(props, personnel)
+                                                        )== "#CF0327" ? "rgba(255, 0, 0, 0.25)" : remarkColor(
+                                                            getStatusText(props, personnel)
                                                         ),
                                                     }]}>
                                                         <Text style={[styles?.remarksTitle, {
                                                             color: remarkColor(
+                                                                getStatusText(props, personnel)
+                                                            )== "#CF0327" ? "#000" : remarkColor(
                                                                 getStatusText(props, personnel)
                                                             )
                                                         }]}>{getStatusText(props, personnel) === DECLINED ? 'NOD/' : ''}Remarks</Text><FlatList

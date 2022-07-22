@@ -11,7 +11,7 @@ const styles=StyleSheet.create({
 
     },
     remarksTitle: {
-        fontSize: fontValue(14),
+        fontSize: fontValue(12),
         fontFamily: Bold,
         backgroundColor: '#fff',
         alignSelf: 'flex-start',
@@ -20,6 +20,7 @@ const styles=StyleSheet.create({
         marginLeft: 15,
     },
     remarksContent: {
+        fontStyle: "italic",
         fontSize: fontValue(12),
         margin: 15,
     },
