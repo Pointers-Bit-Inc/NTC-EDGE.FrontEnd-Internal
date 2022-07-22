@@ -22,6 +22,7 @@ import {useToast} from "../../../../hooks/useToast";
 import axios from "axios";
 import ToastLoading from "@components/atoms/toast/ToastLoading";
 import LoadingModal from "@pages/activities/loading/loadingModal";
+import CollapseText from "@atoms/collapse-text";
 
 
 const BasicInfo = (props: any) => {
@@ -248,9 +249,9 @@ const BasicInfo = (props: any) => {
                                                             getStatusText(props, personnel)
                                                         )
                                                     }]}>{getStatusText(props, personnel) === DECLINED ? 'NOD/' : ''}Remarks</Text>
-                                                    <Text style={[styles?.remarksContent, statusColor(
+                                                    <CollapseText expandStyle={{color: "#565961"}} isOverflowStyle={{ marginLeft: 15,marginBottom: 7,}} textStyle={[ styles?.remarksContent,{marginBottom: 6}, statusColor(
                                                         getStatusText(props, personnel)
-                                                    )]}>{[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}</Text>
+                                                    )]} text={[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}/>
 
                                                 </View>
                                             </View>
@@ -275,9 +276,9 @@ const BasicInfo = (props: any) => {
 
                                                                 <View style={{flexDirection: "row",borderTopWidth: index === 0 ? 0 : 1, borderTopColor: "#EFEFEF" }}>
                                                                     <View style={{flex: 0.5}}>
-                                                                        <Text style={[styles?.remarksContent, statusColor(
+                                                                        <CollapseText expandStyle={{color: "#565961"}} isOverflowStyle={{ marginLeft: 15,marginBottom: 7,}} textStyle={[ styles?.remarksContent,{marginBottom: 6}, statusColor(
                                                                             item?.status
-                                                                        )]}>{item?.remarks}</Text>
+                                                                        )]} text={item?.remarks}></CollapseText>
                                                                     </View>
 
 <View style={{flex: 0.5}}>
