@@ -190,7 +190,7 @@ function ActivityModal(props: any) {
             setStatus("");
             setAssignId("")
         }
-    }, [props?.details._id]);
+    }, [props?.details._id, hasChange]);
 
     const statusMemo = useMemo(() => {
         setStatus(status);
