@@ -7,7 +7,7 @@ const styles=StyleSheet.create({
         borderWidth: 2,
         borderRadius: 10,
         marginTop: 7.5,
-        marginBottom: 15,
+        //marginBottom: 15,
 
     },
     remarksTitle: {
@@ -60,7 +60,7 @@ const styles=StyleSheet.create({
     group4:{},
     group3:{
         paddingRight:fontValue(10),
-        paddingLeft:fontValue(10)
+        paddingLeft:fontValue(10),
     },
     group:{
         paddingBottom: 10

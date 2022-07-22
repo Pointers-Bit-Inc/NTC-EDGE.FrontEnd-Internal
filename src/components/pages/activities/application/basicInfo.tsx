@@ -187,7 +187,7 @@ const BasicInfo = (props: any) => {
                                         </View>
                                     </View>
                                     <View style={{paddingVertical: 15}}>
-                                        {<View style={[styles.status, {paddingBottom: !!props.remarks ? 7.5 : 0}]}>
+                                        {<View style={[styles.status, {paddingBottom:!!(([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks) || (historyMemo.length))  ? 7.5 : 0}]}>
 
                                             <View
                                                 style={{
@@ -249,7 +249,7 @@ const BasicInfo = (props: any) => {
                                                             getStatusText(props, personnel)
                                                         )
                                                     }]}>{getStatusText(props, personnel) === DECLINED ? 'NOD/' : ''}Remarks</Text>
-                                                    <CollapseText expandStyle={{color: "#565961"}} isOverflowStyle={{ marginLeft: 15,marginBottom: 7,}} textStyle={[ styles?.remarksContent,{marginBottom: 6}, statusColor(
+                                                    <CollapseText expandStyle={{color: "#565961"}} isOverflowStyle={{ marginLeft: 15,marginBottom: 7,}} textStyle={[ styles?.remarksContent, statusColor(
                                                         getStatusText(props, personnel)
                                                     )]} text={[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}/>
 
