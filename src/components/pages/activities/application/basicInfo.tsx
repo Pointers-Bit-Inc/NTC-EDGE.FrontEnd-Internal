@@ -135,7 +135,6 @@ const BasicInfo = (props: any) => {
         return [..._paymentHistory, ..._approvalHistory]?.filter(s => s?.remarks)
     }, [props.paymentHistory, props.approvalHistory ])
 
-console.log(props.userProfileForm?.["applicant.applicantName"])
     return <>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved}  loading={props.loading}/>}
         <ScrollView keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
@@ -256,10 +255,18 @@ console.log(props.userProfileForm?.["applicant.applicantName"])
                                                             getStatusText(props, personnel)
                                                         )
                                                     }]}>{getStatusText(props, personnel) === DECLINED ? 'NOD/' : ''}Remarks</Text>
+                                                    <View style={{flexDirection: "row", }}>
+                                                        <View style={{flex: 0.5}}>
                                                     <CollapseText expandStyle={{color: "#565961"}} isOverflowStyle={{ marginLeft: 15,marginBottom: 7,}} textStyle={[ styles?.remarksContent, statusColor(
                                                         getStatusText(props, personnel)
                                                     )]} text={[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}/>
+                                                        </View>
 
+                                                        <View style={{flex: 0.5}}>
+                                                            {(personnel?.firstName && personnel?.lastName) ? <Text style={[styles?.remarksContent, {color: "#565961"}]}>{`by: ${personnel?.firstName} ${personnel?.lastName}`}</Text> : <></>}
+                                                        </View>
+
+                                                    </View>
                                                 </View>
                                             </View>
                                             </>
