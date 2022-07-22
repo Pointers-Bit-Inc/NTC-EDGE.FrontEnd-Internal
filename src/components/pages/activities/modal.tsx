@@ -205,6 +205,7 @@ function ActivityModal(props: any) {
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED;
 
     const [loading, setLoading] = useSafeState(false)
+    const [saved, setSaved] = useSafeState(false)
     const allButton = (
         cashier) ? (
         !!props?.details?.paymentMethod ? (
@@ -277,13 +278,19 @@ function ActivityModal(props: any) {
         const flattenSoa = flatten.unflatten(cleanSoa)?.soa?.filter(s => s)
         if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
+        setSaved(true)
         axios.patch(BASE_URL + `/applications/${props?.details?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, {
             headers: {
                 Authorization: "Bearer ".concat(user?.sessionToken)
             }
         }).then((response) => {
-            setLoading(false)
-            hideToast()
+           setSaved(false)
+            setTimeout(()=>{
+               setLoading(false)
+           }, 2500)
+
+
+            //hideToast()
             setEdit(false)
             /*setShowAlert2(true)
              setMessageUpdate('The Application has been updated!')
@@ -292,7 +299,7 @@ function ActivityModal(props: any) {
             setUserOriginalProfileForm({..._flatten})
             setUserProfileForm(_flatten)
             props.onChangeEvent(response.data.doc);
-            showToast(ToastType.Success, "Successfully updated!")
+            //showToast(ToastType.Success, "Successfully updated!")
             callback()
         }).catch((error) => {
             setLoading(false)
@@ -437,7 +444,7 @@ function ActivityModal(props: any) {
                     style={[styles.container]}
                 >
 
-                    <ModalTab loading={loading} setEditAlert={setEditAlert} updateApplication={updateApplication} editBtn={editBtn}
+                    <ModalTab saved={saved} loading={loading} setEditAlert={setEditAlert} updateApplication={updateApplication} editBtn={editBtn}
                               userOriginalProfileForm={userOriginalProfileForm}
                               userProfileForm={userProfileForm}
                               setEdit={setEdit}

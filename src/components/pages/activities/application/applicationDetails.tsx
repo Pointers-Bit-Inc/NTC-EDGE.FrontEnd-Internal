@@ -1,5 +1,15 @@
 import React, {memo, useEffect, useState} from "react";
-import {Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, useWindowDimensions, View} from "react-native";
+import {
+    Modal,
+    Platform,
+    Pressable,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    useWindowDimensions,
+    View
+} from "react-native";
 import {Bold, Regular, Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {input} from "@styles/color";
@@ -72,7 +82,7 @@ const ApplicationDetails = (props: any) => {
     const rightLayoutComponent= useSelector((state: RootStateOrAny) => state.application?.rightLayoutComponent);
     const [modalVisible, setModalVisible] = useState(false);
     return <>
-        {props.loading && <LoadingModal/>}
+        {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved}  loading={props.loading}/>}
         <ScrollView contentContainerStyle={{flex: 1}}
                        style={{paddingTop: 20, width: "100%", backgroundColor: "#f8f8f8",}}>
         {/*<PdfViewrWeb height={height}

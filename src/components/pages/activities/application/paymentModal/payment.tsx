@@ -362,7 +362,7 @@ const Payment = (props: any) => {
     const {applicantForm, updateApplication} = useApplicantForm(props);
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
     return  <>
-        {props.loading && <LoadingModal/>}
+        {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <ScrollView
         keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
         style={{

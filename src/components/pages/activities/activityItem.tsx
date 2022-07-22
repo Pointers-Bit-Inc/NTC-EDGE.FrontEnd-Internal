@@ -346,7 +346,7 @@ export function ActivityItem(props:any){
                                                                     highlightStyle={{backgroundColor:'#BFD6FF'}}
                                                                     searchWords={[props?.searchQuery]}
                                                                     textToHighlight={userActivity?.firstName ? `${userActivity?.firstName} ${userActivity?.lastName}` : (
-                                                                        userActivity?.applicantName ? userActivity?.applicantName : userActivity?.companyName)}
+                                                                        userActivity?.applicantName ? userActivity?.applicantName : userActivity?.companyName ? userActivity?.companyName : "")}
                                                                 />
 
                                                             </Text>

@@ -133,7 +133,7 @@ const BasicInfo = (props: any) => {
 
 
     return <>
-        {props.loading && <LoadingModal/>}
+        {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved}  loading={props.loading}/>}
         <ScrollView keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
                          refreshControl={
                              <RefreshControl

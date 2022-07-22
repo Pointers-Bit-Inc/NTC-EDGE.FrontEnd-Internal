@@ -110,7 +110,7 @@ const ModalTab = props => {
             tabs.map((tab , index) => {
                 const isShow = tab.isShow.indexOf(user?.role?.key) !== -1;
                 if (isShow && tab.id === 1) {
-                    return <BasicInfo
+                    return <BasicInfo saved={props.saved}
                         loading={props.loading}
                         setEditAlert={props.setEditAlert}
                         editBtn={props.editBtn}
@@ -140,7 +140,7 @@ const ModalTab = props => {
                         applicant={ applicant }
                         key={ index }/>
                 } else if (isShow && tab.id === 2) {
-                    return <ApplicationDetails
+                    return <ApplicationDetails saved={props.saved}
                         loading={props.loading}
                         edit={props.edit}
                         setEditAlert={props.setEditAlert}
@@ -161,12 +161,12 @@ const ModalTab = props => {
                         applicantType={ applicationType }
                         key={ index }/>
                 } else if (isShow && tab.id === 3) {
-                    return <Requirement tabLabel={ { label : tab.name } }
+                    return <Requirement saved={props.saved} tabLabel={ { label : tab.name } }
                                         label={ tab.name }
                                         requirements={ requirements }
                                         key={ index }/>
                 } else if (isShow && tab.id === 4  && service?.serviceCode !== "service-22" ) {
-                    return <Payment loading={props.loading} edit={props.edit}
+                    return <Payment saved={props.saved} loading={props.loading} edit={props.edit}
                                     setEditAlert={props.setEditAlert}
                                     editBtn={props.editBtn}
                                     updateApplication={props.updateApplication}
