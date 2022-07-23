@@ -192,8 +192,7 @@ function ActivityModal(props: any) {
         setUserProfileForm(flatten.flatten(props.details))
         setUserOriginalProfileForm(userProfileForm)
         if(userOriginalProfileForm._id != userProfileForm._id ){
-            setEdit(false)
-            setHasChange(false)
+
         }
         return () => {
             setChange(false);
@@ -201,7 +200,7 @@ function ActivityModal(props: any) {
             setAssignId("")
 
         }
-    }, [props?.details._id, hasChange, edit]);
+    }, [props?.details._id, ]);
 
     const statusMemo = useMemo(() => {
         setStatus(status);

@@ -14,7 +14,7 @@ const LoadingModal = (props) =>{
         justifyContent: "center",
         position: "absolute",
         zIndex: 4,
-        backgroundColor: "rgba(0, 0, 0, 0.5)"
+        backgroundColor:  props?.saved ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0)"
 
     }]}>
         <View style={[{
