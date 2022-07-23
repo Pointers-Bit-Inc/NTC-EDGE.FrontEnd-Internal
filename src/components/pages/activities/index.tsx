@@ -74,12 +74,13 @@ import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import { FontAwesome } from "@expo/vector-icons";
+import useSafeState from "../../../hooks/useSafeState";
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
 const ActivitiesPage = (props) => {
 
-
+    const [hasChange, setHasChange] = useSafeState(false)
     const dimensions = useWindowDimensions();
     const Filter = (
         isMobile && !(
@@ -432,6 +433,7 @@ const ActivitiesPage = (props) => {
                             return (
                                 <ActivityItem
                                     isOpen={isOpen}
+
                                     config={config}
                                     /*
                                         isPinned={true}
@@ -444,6 +446,7 @@ const ActivitiesPage = (props) => {
                                     activity={activity}
                                     currentUser={user}
                                     onPressUser={(event: any) => {
+                                        setHasChange(false)
                                         dispatch(setSelectedYPos({yPos, type: 0}))
                                         dispatch(setApplicationItem({
                                             ...activity,
@@ -721,6 +724,8 @@ const ActivitiesPage = (props) => {
                                            setUpdateModal(true);
                                        }
                                        }
+                                       hasChange={hasChange}
+                                       setHasChange={setHasChange}
                                        onChangeAssignedId={(event) => {
                                            let _notPinnedApplications = [...notPinnedApplications]
                                            let _pinnedApplications = [...pinnedApplications]

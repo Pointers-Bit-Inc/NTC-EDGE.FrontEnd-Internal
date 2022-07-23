@@ -62,8 +62,10 @@ const flatten = require('flat')
 
 
 function ActivityModal(props: any) {
-
-    const [userProfileForm, setUserProfileForm] = useSafeState(flatten.flatten(props.details))
+    const [edit, setEdit] = useSafeState(false)
+    const [userProfileForm, setUserProfileForm] = useSafeState(() => {
+        return flatten.flatten(props.details)
+    })
     const [userOriginalProfileForm, setUserOriginalProfileForm] = useSafeState(userProfileForm)
     const navigation = useNavigation();
     const dispatch = useDispatch();
@@ -179,24 +181,31 @@ function ActivityModal(props: any) {
                 })
         }
     };
-    const [hasChange, setHasChange] = useSafeState(false)
+
     const hasChanges = (bool: boolean) => {
-        setHasChange(bool)
+        props.setHasChange(bool)
     }
 
 
-    const [edit, setEdit] = useSafeState(false)
+
+    const [prevId, setPrevId] = useSafeState(0)
     useEffect(() => {
         setUserProfileForm(flatten.flatten(props.details))
         setUserOriginalProfileForm(userProfileForm)
-
+       /* console.log(prevId != props?.details._id, prevId , props?.details._id)
+        if(prevId != props?.details._id){
+            setPrevId(props?.details._id)
+            setHasChange(false)
+            setEdit(false)
+        }
+*/
         return () => {
             setChange(false);
             setStatus("");
             setAssignId("")
 
         }
-    }, [props?.details._id ]);
+    }, [props?.details._id,]);
 
     const statusMemo = useMemo(() => {
         setStatus(status);
@@ -232,7 +241,7 @@ function ActivityModal(props: any) {
     const [discardAlert, setDiscardAlert] = useSafeState(false);
     const [editAlert, setEditAlert] = useSafeState(false);
     const handleBackButtonClick = () => {
-        if (hasChange) setDiscardAlert(true);
+        if (props?.hasChange) setDiscardAlert(true);
         else {
             setAssignId("");
             props.onDismissed(change);
@@ -248,7 +257,7 @@ function ActivityModal(props: any) {
         };
     }, [routeIsFocused]);
     const editBtn = () => {
-        if (hasChange) setEditAlert(true);
+        if (props?.hasChange) setEditAlert(true);
         else {
             setEdit((bool) => !bool)
         }
@@ -297,6 +306,7 @@ function ActivityModal(props: any) {
 
 
             //hideToast()
+            props.setHasChange(false)
             setEdit(false)
             /*setShowAlert2(true)
              setMessageUpdate('The Application has been updated!')
@@ -308,6 +318,8 @@ function ActivityModal(props: any) {
             //showToast(ToastType.Success, "Successfully updated!")
             callback()
         }).catch((error) => {
+            setEdit(false)
+            props?.setHasChange(false)
             setLoading(false)
             //hideToast()
             let _err = '';
@@ -705,6 +717,7 @@ function ActivityModal(props: any) {
                 confirmText='OK'
                 cancelText={"Cancel"}
                 onConfirm={() => {
+                    props.setHasChange(false)
                     setEdit((bool) => !bool)
                     setEditAlert(false)
                     const myPromise = new Promise((resolve, reject) => {

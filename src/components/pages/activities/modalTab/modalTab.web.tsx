@@ -22,6 +22,7 @@ import EditIcon from "@assets/svg/editIcon";
 import {infoColor} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
 import LoadingModal from "@pages/activities/loading/loadingModal";
+import useSafeState from "../../../../hooks/useSafeState";
 
 
 const ModalTab=props=>{
@@ -82,6 +83,7 @@ const ModalTab=props=>{
         paymentHistory,
         paymentStatus,
     }=useApplicant(props.details);
+    const [paymentIndex, setPaymentIndex] = useSafeState()
     const [initialPage,setInitialPage]=useState(true);
     useEffect(()=>{
         setInitialPage(true)
@@ -256,7 +258,7 @@ const ModalTab=props=>{
                         return <Requirement saved={props.saved} loading={props.loading}  tabLabel={{label:tab.name}} label={tab.name}
                                             requirements={requirements} key={index}/>
                     } else if(isShow&&tab.id===4 && service?.serviceCode !== "service-22" ){
-                        return <Payment saved={props.saved} loading={props.loading} edit={props.edit}
+                        return <Payment paymentIndex={index}  setPaymentIndex={setPaymentIndex} saved={props.saved} loading={props.loading} edit={props.edit}
                                         setEditAlert={props.setEditAlert}
                                         editBtn={props.editBtn}
                                         updateApplication={props.updateApplication}
