@@ -186,23 +186,17 @@ function ActivityModal(props: any) {
 
 
     const [edit, setEdit] = useSafeState(false)
-    const [prevId, setPrevId] = useSafeState(0)
     useEffect(() => {
         setUserProfileForm(flatten.flatten(props.details))
         setUserOriginalProfileForm(userProfileForm)
-        if(prevId != props?.details._id){
 
-            setPrevId(props?.details._id)
-            setHasChange(false)
-            setEdit(false)
-        }
         return () => {
             setChange(false);
             setStatus("");
             setAssignId("")
 
         }
-    }, [props?.details._id ]);
+    }, [props?.details._id, userOriginalProfileForm, userProfileForm ]);
 
     const statusMemo = useMemo(() => {
         setStatus(status);
