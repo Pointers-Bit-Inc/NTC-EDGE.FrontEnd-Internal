@@ -185,14 +185,16 @@ function ActivityModal(props: any) {
     }
 
 
-
-
+    const [edit, setEdit] = useSafeState(false)
+    const [prevId, setPrevId] = useSafeState(0)
     useEffect(() => {
-
         setUserProfileForm(flatten.flatten(props.details))
         setUserOriginalProfileForm(userProfileForm)
-        if(userOriginalProfileForm._id != userProfileForm._id ){
+        if(prevId != props?.details._id){
 
+            setPrevId(props?.details._id)
+            setHasChange(false)
+            setEdit(false)
         }
         return () => {
             setChange(false);
@@ -200,7 +202,7 @@ function ActivityModal(props: any) {
             setAssignId("")
 
         }
-    }, [props?.details._id, ]);
+    }, [props?.details._id ]);
 
     const statusMemo = useMemo(() => {
         setStatus(status);
@@ -227,7 +229,7 @@ function ActivityModal(props: any) {
     const [approvalIcon, setApprovalIcon] = useState(false);
     const [title, setTitle] = useState("Approve Application");
     const [showClose, setShowClose] = useState(false);
-    const [edit, setEdit] = useSafeState(false)
+
     const [activityModalScreenComponent, onActivityModalScreenComponent] = useComponentLayout();
     useEffect(() => {
         dispatch(setRightLayoutComponent(activityModalScreenComponent))
