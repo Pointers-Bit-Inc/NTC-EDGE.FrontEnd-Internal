@@ -14,7 +14,8 @@ const {
     SET_ACTIVITY_SIZE,
     SET_SELECTED_YPOS,
     UPDATE_APPLICATIONS,
-    SET_HAS_CHANGE
+    SET_HAS_CHANGE,
+    SET_EDIT
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -26,6 +27,12 @@ export function setPinnedApplication(payload) {
 export function setHasChange(payload) {
     return {
         type: SET_HAS_CHANGE,
+        payload,
+    };
+}
+export function setEdit(payload) {
+    return {
+        type: SET_EDIT,
         payload,
     };
 }

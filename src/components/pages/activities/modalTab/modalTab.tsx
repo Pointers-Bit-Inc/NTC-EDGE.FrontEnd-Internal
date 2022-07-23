@@ -14,6 +14,7 @@ import {infoColor} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
 import {setEditModalVisible} from "../../../../reducers/activity/actions";
 import useSafeState from "../../../../hooks/useSafeState";
+import {setEdit} from "../../../../reducers/application/actions";
 
 const ModalTab = props => {
     const dispatch=useDispatch();
@@ -87,8 +88,11 @@ const ModalTab = props => {
     return <ScrollableTabView
         onChangeTab={(props)=>{
             if(paymentIndex == props.i && !editModalVisible){
+
                 dispatch(setEditModalVisible(true))
             }else if(paymentIndex != props.i && editModalVisible){
+
+                dispatch(setEdit(false))
                 dispatch(setEditModalVisible(false))
             }
         }

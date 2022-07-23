@@ -34,7 +34,12 @@ import {
     VERIFIED,
 } from "../../../reducers/activity/initialstate";
 import Api from 'src/services/api';
-import {setHasChange, setRightLayoutComponent, updateApplicationStatus} from "../../../reducers/application/actions";
+import {
+    setEdit,
+    setHasChange,
+    setRightLayoutComponent,
+    updateApplicationStatus
+} from "../../../reducers/application/actions";
 
 import CustomAlert from "@pages/activities/alert/alert1";
 import CloseIcon from "@assets/svg/close";
@@ -64,7 +69,8 @@ const flatten = require('flat')
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
     const hasChange = useSelector((state: RootStateOrAny) => state.application.hasChange);
-    const [edit, setEdit] = useSafeState(false)
+    const edit = useSelector((state: RootStateOrAny) => state.application.edit);
+
     const [userProfileForm, setUserProfileForm] = useSafeState(() => {
         return flatten.flatten(props.details)
     })
@@ -262,7 +268,7 @@ function ActivityModal(props: any) {
     const editBtn = () => {
         if (hasChange) setEditAlert(true);
         else {
-            setEdit((bool) => !bool)
+            dispatch(setEdit((bool) => !bool))
         }
     }
     const {showToast, hideToast} = useToast();
@@ -310,7 +316,7 @@ function ActivityModal(props: any) {
 
             //hideToast()
             dispatch(setHasChange(false))
-            setEdit(false)
+            dispatch(setEdit(false))
             /*setShowAlert2(true)
              setMessageUpdate('The Application has been updated!')
              setTitleUpdate("Success")*/
@@ -321,7 +327,7 @@ function ActivityModal(props: any) {
             //showToast(ToastType.Success, "Successfully updated!")
             callback()
         }).catch((error) => {
-            setEdit(false)
+            dispatch(setEdit(false))
             dispatch(setHasChange(false))
             setLoading(false)
             //hideToast()
@@ -721,7 +727,7 @@ function ActivityModal(props: any) {
                 cancelText={"Cancel"}
                 onConfirm={() => {
                     dispatch(setHasChange(false))
-                    setEdit((bool) => !bool)
+                    dispatch(setEdit((bool) => !bool))
                     setEditAlert(false)
                     const myPromise = new Promise((resolve, reject) => {
                         setTimeout(() => {

@@ -1,4 +1,4 @@
-import {RootStateOrAny,useSelector} from "react-redux";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import React, {memo, useEffect, useState} from "react";
 import {ACCOUNTANT,CASHIER,CHECKER,DIRECTOR,EVALUATOR} from "../../../../reducers/activity/initialstate";
 import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from "react-native";
@@ -23,9 +23,13 @@ import {infoColor} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
 import LoadingModal from "@pages/activities/loading/loadingModal";
 import useSafeState from "../../../../hooks/useSafeState";
+import {setEditModalVisible} from "../../../../reducers/activity/actions";
+import {setEdit} from "../../../../reducers/application/actions";
 
 
 const ModalTab=props=>{
+    const dispatch=useDispatch();
+    const editModalVisible = useSelector((state: RootStateOrAny) => state.activity.editModalVisible);
     const user=useSelector((state:RootStateOrAny)=>state.user);
 
     const [tabs,setTabs]=useState([
@@ -91,7 +95,17 @@ const ModalTab=props=>{
     return <>
         {props.loading && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <ViewPaged
+            onChange={(pageIndex)=>{
+                if(paymentIndex == pageIndex && !editModalVisible){
 
+                    dispatch(setEditModalVisible(true))
+                }else if(paymentIndex != pageIndex && editModalVisible){
+
+                    dispatch(setEdit(false))
+                    dispatch(setEditModalVisible(false))
+                }
+            }
+            }
             isMovingRender
             render
             vertical={false}

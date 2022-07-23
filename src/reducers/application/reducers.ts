@@ -29,7 +29,8 @@ const {
     SET_ACTIVITY_SIZE,
     SET_SELECTED_YPOS,
     UPDATE_APPLICATIONS,
-    SET_HAS_CHANGE
+    SET_HAS_CHANGE,
+    SET_EDIT
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -63,6 +64,10 @@ export default function basket(state = initialState, action = {}) {
         }
         case SET_HAS_CHANGE: {
             state = state.set('hasChange', action.payload);
+            return state
+        }
+        case SET_EDIT: {
+            state = state.set('edit', action.payload);
             return state
         }
         case SET_FILTER_RECT: {
