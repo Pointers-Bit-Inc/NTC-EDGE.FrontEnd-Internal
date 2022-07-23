@@ -7,5 +7,6 @@ export default keyMirror({
   SET_VISIBLE: null,
   UPDATE_ACTIVITY_STATUS: null,
   ADD_ACTIVITY: null,
-  SET_RESET_FILTER_STATUS: null
+  SET_RESET_FILTER_STATUS: null,
+  SET_EDIT_MODAL_VISIBLE: null
 });

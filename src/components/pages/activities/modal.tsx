@@ -62,6 +62,7 @@ const flatten = require('flat')
 
 
 function ActivityModal(props: any) {
+
     const [userProfileForm, setUserProfileForm] = useSafeState(flatten.flatten(props.details))
     const [userOriginalProfileForm, setUserOriginalProfileForm] = useSafeState(userProfileForm)
     const navigation = useNavigation();
@@ -87,6 +88,7 @@ function ActivityModal(props: any) {
     const cancelTokenSource = axios.CancelToken.source();
     const [showAlert1, setShowAlert1] = useState(false)
     const [showAlert2, setShowAlert2] = useState(false)
+    const editModalVisible = useSelector((state: RootStateOrAny) => state.activity.editModalVisible);
     const onDismissed = () => {
         setVisible(false)
     };
@@ -431,7 +433,7 @@ function ActivityModal(props: any) {
                     <Text
                         style={[styles.applicationType, {width: "90%"}]}>{props?.details?.applicationType || props?.details?.service?.name}</Text>
 
-                    {edit ? <TouchableOpacity hitSlop={hitSlop} onPress={() => {
+                    {editModalVisible ? edit  ? <TouchableOpacity hitSlop={hitSlop} onPress={() => {
                             updateApplication(() => {})
                         }
                         }>
@@ -443,7 +445,7 @@ function ActivityModal(props: any) {
                        :  <TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
                             <Text style={{fontFamily: Regular, fontSize: fontValue(16), color: infoColor}}>Edit</Text>
                             {/* <EditIcon color="#606A80"/>*/}
-                        </TouchableOpacity>
+                        </TouchableOpacity> : <></>
                     }
 
                 </View>}

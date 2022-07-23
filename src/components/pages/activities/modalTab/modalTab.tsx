@@ -1,4 +1,4 @@
-import {RootStateOrAny , useSelector} from "react-redux";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import BasicInfo from "@pages/activities/application/basicInfo";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Requirement from "@pages/activities/application/requirementModal/requirement";
@@ -12,10 +12,13 @@ import Tab from "@pages/activities/tabs/Tab";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
 import {infoColor} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
+import {setEditModalVisible} from "../../../../reducers/activity/actions";
+import useSafeState from "../../../../hooks/useSafeState";
 
 const ModalTab = props => {
-
+    const dispatch=useDispatch();
     const user = useSelector((state: RootStateOrAny) => state.user);
+    const editModalVisible = useSelector((state: RootStateOrAny) => state.activity.editModalVisible);
     const [_scrollX , set_scrollX] = useState(new Animated.Value(0));
     // 6 is a quantity of tabs
     const [interpolators , setInterpolators] = useState(Array.from({ length : 6 } , (_ , i) => i).map(idx => (
@@ -76,11 +79,20 @@ const ModalTab = props => {
         paymentHistory
     } = useApplicant(props.details)
     const [initialPage,setInitialPage]=useState(true);
+    const [paymentIndex, setPaymentIndex] = useSafeState()
     useEffect(()=>{
+        dispatch(setEditModalVisible(false))
         setInitialPage(true)
     },[props.details._id]);
     return <ScrollableTabView
-        onScroll={ (x) => _scrollX?.setValue(x) }
+        onChangeTab={(props)=>{
+            if(paymentIndex == props.i && !editModalVisible){
+                dispatch(setEditModalVisible(true))
+            }else if(paymentIndex != props.i && editModalVisible){
+                dispatch(setEditModalVisible(false))
+            }
+        }
+        }
         renderTabBar={ (props) => {
             if(initialPage && Platform?.isPad ){
                 props?.goToPage(0);
@@ -166,7 +178,8 @@ const ModalTab = props => {
                                         requirements={ requirements }
                                         key={ index }/>
                 } else if (isShow && tab.id === 4  && service?.serviceCode !== "service-22" ) {
-                    return <Payment saved={props.saved} loading={props.loading} edit={props.edit}
+
+                    return <Payment paymentIndex={index}  setPaymentIndex={setPaymentIndex} saved={props.saved} loading={props.loading} edit={props.edit}
                                     setEditAlert={props.setEditAlert}
                                     editBtn={props.editBtn}
                                     updateApplication={props.updateApplication}

@@ -17,7 +17,7 @@ import {requirementStyles, styles} from "@pages/activities/application/requireme
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {Bold, Regular, Regular500} from "@styles/font";
 import {capitalize} from "@pages/activities/script";
-import {RootStateOrAny, useSelector} from "react-redux";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import {ACCOUNTANT, APPROVED} from "../../../../../reducers/activity/initialstate";
 import AnimatedImage from 'react-native-animated-image-viewer';
 import {fontValue} from "@pages/activities/fontValue";
@@ -34,6 +34,7 @@ import {isNumber} from "../../../../../utils/ntc";
 import {infoColor} from "@styles/color";
 import {PlusIcon} from "@atoms/icon";
 import LoadingModal from "@pages/activities/loading/loadingModal";
+import {setEditModalVisible} from "../../../../../reducers/activity/actions";
 
 const flatten = require('flat')
 class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
@@ -276,7 +277,7 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 
 
 const Payment = (props: any) => {
-
+    const dispatch=useDispatch();
     const [visibleModal, setVisibleModal] = useState(false);
     const [visibleRequireModal, setVisibleRequireModal] = useState(false);
     const [selectImage, setSelectImage] = useState('');
@@ -303,7 +304,6 @@ const Payment = (props: any) => {
             return {...s, ...{isEdit: false, id: index}}
         })) || [])
     }, [props.soa, props.edit ])
-
 
     const getTotal = () => {
         let total = 0;
@@ -359,6 +359,10 @@ const Payment = (props: any) => {
 
 
     }
+    useEffect(()=>{
+        props.setPaymentIndex(props.paymentIndex)
+        dispatch(setEditModalVisible(true))
+    }, [])
     const {applicantForm, updateApplication} = useApplicantForm(props);
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
     return  <>

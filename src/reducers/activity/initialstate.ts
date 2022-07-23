@@ -40,6 +40,7 @@ export const DATE_ADDED = "Date Added",
 
 const InitialState = Record({
   visible: false,
+  editModalVisible: false,
   statusCode: [
     {
       id: 1,

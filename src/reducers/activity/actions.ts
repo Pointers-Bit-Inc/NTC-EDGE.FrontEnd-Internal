@@ -1,4 +1,4 @@
-const { SET_ACTIVITY, ON_CHECKED, SELECTED_CHANGE_STATUS, SET_VISIBLE , SET_RESET_FILTER_STATUS, UPDATE_ACTIVITY_STATUS,ADD_ACTIVITY} = require('./types').default;
+const { SET_ACTIVITY, ON_CHECKED, SELECTED_CHANGE_STATUS, SET_VISIBLE , SET_RESET_FILTER_STATUS,SET_EDIT_MODAL_VISIBLE, ADD_ACTIVITY} = require('./types').default;
 
 export function setActivity(payload) {
   return {
@@ -29,7 +29,13 @@ export function selectChangeStatus(payload) {
     payload,
   };
 }
+export function setEditModalVisible(payload) {
 
+  return {
+    type: SET_EDIT_MODAL_VISIBLE,
+    payload,
+  };
+}
 export function setVisible(payload) {
 
   return {
