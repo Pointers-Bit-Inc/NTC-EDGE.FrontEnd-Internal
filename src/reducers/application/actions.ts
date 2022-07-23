@@ -13,7 +13,8 @@ const {
     SET_TOPBARNAV,
     SET_ACTIVITY_SIZE,
     SET_SELECTED_YPOS,
-    UPDATE_APPLICATIONS
+    UPDATE_APPLICATIONS,
+    SET_HAS_CHANGE
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -22,7 +23,12 @@ export function setPinnedApplication(payload) {
         payload,
     };
 }
-
+export function setHasChange(payload) {
+    return {
+        type: SET_HAS_CHANGE,
+        payload,
+    };
+}
 export function updateApplicationStatus(payload) {
     return {
         type: UPDATE_APPLICATION_STATUS,

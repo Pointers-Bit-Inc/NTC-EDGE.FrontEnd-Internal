@@ -61,7 +61,8 @@ import {
     setApplicationItem,
     setNotPinnedApplication,
     setPinnedApplication,
-    setSelectedYPos
+    setSelectedYPos,
+    setHasChange
 } from "../../../reducers/application/actions";
 import {renderSwiper} from "@pages/activities/swiper";
 import {ActivityItem} from "@pages/activities/activityItem";
@@ -80,7 +81,6 @@ const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
 const ActivitiesPage = (props) => {
 
-    const [hasChange, setHasChange] = useSafeState(false)
     const dimensions = useWindowDimensions();
     const Filter = (
         isMobile && !(
@@ -136,6 +136,7 @@ const ActivitiesPage = (props) => {
     } = useActivities(props);
 
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
+
     const meeting = useSelector((state: RootStateOrAny) => state.meeting.meeting);
     const meetingList = useMemo(() => {
         if (meeting?._id) {
@@ -446,7 +447,7 @@ const ActivitiesPage = (props) => {
                                     activity={activity}
                                     currentUser={user}
                                     onPressUser={(event: any) => {
-                                        setHasChange(false)
+                                        dispatch(setHasChange(false))
                                         dispatch(setSelectedYPos({yPos, type: 0}))
                                         dispatch(setApplicationItem({
                                             ...activity,
@@ -724,8 +725,6 @@ const ActivitiesPage = (props) => {
                                            setUpdateModal(true);
                                        }
                                        }
-                                       hasChange={hasChange}
-                                       setHasChange={setHasChange}
                                        onChangeAssignedId={(event) => {
                                            let _notPinnedApplications = [...notPinnedApplications]
                                            let _pinnedApplications = [...pinnedApplications]

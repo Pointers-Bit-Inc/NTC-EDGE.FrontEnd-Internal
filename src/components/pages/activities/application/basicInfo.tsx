@@ -73,7 +73,7 @@ const BasicInfo = (props: any) => {
         var hasChanges = false;
 
         for (const [key, value] of Object.entries(props.userOriginalProfileForm)) {
-
+console.log(props.userOriginalProfileForm?.[key] != props.userProfileForm?.[key], props.userOriginalProfileForm?.[key] ,props.userProfileForm?.[key])
             if (props.userOriginalProfileForm?.[key] != props.userProfileForm?.[key]) {
                 hasChanges = true
 
