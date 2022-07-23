@@ -196,7 +196,7 @@ function ActivityModal(props: any) {
             setAssignId("")
 
         }
-    }, [props?.details._id, userOriginalProfileForm, userProfileForm ]);
+    }, [props?.details._id ]);
 
     const statusMemo = useMemo(() => {
         setStatus(status);
