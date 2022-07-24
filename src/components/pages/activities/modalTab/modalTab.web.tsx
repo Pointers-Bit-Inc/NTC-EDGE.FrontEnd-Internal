@@ -96,6 +96,8 @@ const ModalTab=props=>{
         {props.loading && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <ViewPaged
             onChange={(pageIndex)=>{
+
+                console.log(pageIndex, paymentIndex, editModalVisible)
                 if(paymentIndex == pageIndex && !editModalVisible){
 
                     dispatch(setEditModalVisible(true))
@@ -195,14 +197,14 @@ const ModalTab=props=>{
                             }
                             }>
                                 {props.loading ? <ActivityIndicator color={infoColor}/> :
-                                    <Text style={{fontFamily: Regular, fontSize: fontValue(16), color: infoColor}}>Save</Text>}
+                                    <Text style={styles.action}>Save</Text>}
                                 {/* <EditIcon color="#606A80"/>*/}
                             </TouchableOpacity>
 
-                            :
+                            : editModalVisible ?
                             <TouchableOpacity onPress={props.editBtn}>
-                                <EditIcon color="#606A80"/>
-                            </TouchableOpacity>}
+                                <Text style={styles.action}>Edit</Text>
+                            </TouchableOpacity> : <></>}
                         <View style={{paddingVertical:29.5,paddingHorizontal:25}}>
                             <TouchableOpacity onPress={props.dismissed}>
                                 <CloseIcon width={12} height={12}/>
@@ -321,5 +323,6 @@ const styles=StyleSheet.create({
     rect6:{
         height:3,
         marginTop:-5
-    },
+    }, action: {fontFamily: Regular, fontSize: fontValue(16), color: infoColor}
+
 });
