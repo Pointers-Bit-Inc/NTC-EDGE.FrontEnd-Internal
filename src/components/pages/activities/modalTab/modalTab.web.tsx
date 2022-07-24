@@ -90,6 +90,7 @@ const ModalTab=props=>{
     const [paymentIndex, setPaymentIndex] = useSafeState()
     const [initialPage,setInitialPage]=useState(true);
     useEffect(()=>{
+        dispatch(setEditModalVisible(false))
         setInitialPage(true)
     },[props.details._id]);
     return <>
@@ -97,7 +98,7 @@ const ModalTab=props=>{
         <ViewPaged
             onChange={(pageIndex)=>{
 
-                console.log(pageIndex, paymentIndex, editModalVisible)
+
                 if(paymentIndex == pageIndex && !editModalVisible){
 
                     dispatch(setEditModalVisible(true))
