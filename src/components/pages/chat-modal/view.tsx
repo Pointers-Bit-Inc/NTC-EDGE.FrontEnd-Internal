@@ -7,6 +7,7 @@ import {
   InteractionManager,
   Keyboard,
   Animated,
+  StatusBar,
 } from 'react-native'
 import lodash from 'lodash';
 import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
@@ -222,7 +223,7 @@ const ChatView: FC<Props> = ({
   useEffect(() => {
     const animateTo = (y, duration) => Animated.timing(Height.current, { toValue: y, duration, useNativeDriver: false }).start();
     const showSubscription = Keyboard.addListener("keyboardDidShow", evt => {
-      const height = evt.endCoordinates.height + (Platform.OS === 'ios' ? 0 : 25);
+      const height = evt.endCoordinates.height + (Platform.OS === 'ios' ? 0 : StatusBar.currentHeight || 25);
       animateTo(height, evt.duration);
     });
     const hideSubscription = Keyboard.addListener("keyboardDidHide", evt => {animateTo(0, evt.duration)});

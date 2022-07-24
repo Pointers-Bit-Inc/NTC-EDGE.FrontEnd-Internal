@@ -4,7 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-  BackHandler,
+  BackHandler,Platform,
 } from 'react-native';
 import Statusbar from '@atoms/status-bar';
 import Text from '@atoms/text';
@@ -27,9 +27,21 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   circle: {
-    height: width / 5,
-    width: width / 5,
-    borderRadius: width / 5,
+
+    ...Platform.select({
+      web: {
+        height: width *  0.046,
+        width: width *  0.046,
+        borderRadius: width *  0.046,
+      },
+      native:{
+        height: width / 5,
+        width: width / 5,
+        borderRadius: width / 5,
+      }
+    }),
+
+
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 30,
@@ -68,8 +80,7 @@ const ForgotPasswordSuccess = ({ navigation }:any) => {
         <Statusbar barStyle='dark-content' />
         <View style={styles.content}>
           <View style={styles.circle}>
-            <FilledSuccessIcon
-            />
+            <FilledSuccessIcon/>
           </View>
 
           <Text

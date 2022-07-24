@@ -15,13 +15,13 @@ const aliases = {
   "@utils": "./src/utils"
 };
 
-const babelLoaderRules = {
+const babelLoaderRules = [{
   test: /\.ts/,
   loader: 'babel-loader',
   options: {
     presets: ['babel-preset-expo'],
   },
-};
+}];
 
 // Expo CLI will await this method so you can optionally return a promise.
 module.exports = async function(env, argv) {
@@ -29,12 +29,24 @@ module.exports = async function(env, argv) {
   // If you want to add a new alias to the config.
   config.resolve.alias = {
     ...config.resolve.alias,
-    ...aliases,
+    ...aliases
   };
+  config.resolve.extensions.push('.web.js', '.web.ts', '.web.tsx');
   config.module.rules = [
     ...config.module.rules,
-    babelLoaderRules,
-];
+    ...babelLoaderRules,
+  ];
+  config.devtool = false;
+  config.optimization = {
+    splitChunks: {
+      minSize: 10000,
+      maxSize: 250000,
+    }
+  };
+  config.performance = {
+    hints: false
+  }
+  config.mode = 'production';
   // Finally return the new config for the CLI to use.
   return config;
 };

@@ -1,11 +1,14 @@
-import {transformText} from "../../../../utils/ntc";
+import {isValidDate, transformText} from "../../../../utils/ntc";
 import Row from "@pages/activities/application/Row";
 import {FlatList,StyleSheet,Text,View} from "react-native";
-import React from "react";
+import React, {useRef, useState} from "react";
 import {input} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular500} from "@styles/font";
 import moment from "moment";
+import _ from "lodash";
+import hairlineWidth=StyleSheet.hairlineWidth;
+import DateField from "@pages/activities/application/datefield";
 
 const styles=StyleSheet.create({
     subChildSeparator:{
@@ -31,10 +34,11 @@ const styles=StyleSheet.create({
         padding:10
     },
     rect:{
-        marginTop: 10,
+        marginTop:10,
         padding:10,
         paddingVertical:5,
-        backgroundColor:"#EFF0F6"
+        backgroundColor:"#EFF0F6",
+
     },
     file:{
         fontSize:fontValue(12),
@@ -48,6 +52,7 @@ const styles=StyleSheet.create({
     },
 });
 let title='';
+let no=null;
 
 function Title(props:{nextValue,index,}){
 
@@ -58,77 +63,110 @@ function Title(props:{nextValue,index,}){
 
         title=transformText(
             props.nextValue||props.index);
-        return <View style={styles.rect}>
-            <Text style={styles.file}>{title?.toUpperCase()}</Text>
+
+        return<View style={{paddingVertical: 5}}>
+            <View style={styles.rect}>
+                <Text style={styles.file}>{title?.toUpperCase()}</Text>
+            </View>
         </View>
+
     }
     return <></>
 }
 
+function Separator({index}){
+    if(no!=index&&index!=undefined){
+        no=index;
+        return no!=0 ? <View style={{marginTop:10,borderTopWidth: 1,borderColor:"#EFF0F6"}}/> : <></>;
+    }
+    return <></>
+
+}
+
 const RenderServiceMiscellaneous=(props)=>{
-    let service={...props?.service}||{};
+    let service=JSON.parse(JSON.stringify(props.service||{}));
+
+
+
     const flatten=(obj)=>{
-        for(let i=0; i<props.exclude.length; i++){
-            delete obj[props.exclude[i]];
-        }
-       
         var result={};
-        (
-            function f(e,p){
+         (
+            async function f(e,p=undefined){
                 switch(typeof e){
                     case "object":
-                        p=p?p+"." : "";
-                        for(var i in e){
-                            if(e[i]?.hasOwnProperty('year')){
-                                e[i] = moment(e[i])?.format('LL')
-                            }
-                            f(e[i],p+i);
+                        if(!!Object.values(e).join("")){
+                            p=p ? p+"." : "";
+                            _.forIn(e, async function(value,i){
+                                if(e[i]?.hasOwnProperty('year')){
+                                    e[i]=moment(e[i])?.format('LL')
+                                }
+                                await f(e[i],p+i);
+                            });
                         }
                         break;
                     default:
-                        result[p]=e;
+                        let date = new RegExp(/^\d{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])$/)
+                        result[p]= date.test(e) && Date.parse(e)>0 ? moment(e)?.format('LL') : (e?.replace(/undefined/g,'') || e) ;
                         break;
                 }
             })(obj);
 
-        
-
         return result;
     };
+
+
+
     let _renderParent=(item:any)=>{
         const [keys,value]=item.item;
-        var index,prevValue,nextValue;
-        var findIndex=keys.split(".").reverse()?.map((key,index)=>{
+        var index,prevValue,nextValue,findIndex;
+        findIndex=keys.split(".").reverse()?.map((key,index)=>{
             return key
         }).findIndex((name)=>{
             return !isNaN(parseInt(name))
         });
         if(findIndex!= -1){
-            index=keys?.split(".")?.reverse()?.[findIndex];
+            index=keys?.split?.(".")?.reverse()?.[findIndex];
             prevValue=keys?.split?.(".")?.reverse()?.[findIndex-1];
-            nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1]
+            nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1];
         } else{
-            prevValue=keys?.split(".")?.[keys.split(".").length-1];
-            index=keys?.split(".")?.[keys.split(".").length]
-            nextValue=keys?.split?.(".")?.[keys.split(".").length-2]
+            prevValue=keys?.split?.(".")?.[keys.split(".")?.length-1];
+            index=keys?.split?.(".")?.[keys.split(".")?.length];
+            nextValue=keys?.split?.(".")?.[keys.split(".")?.length-2]||keys?.split?.(".")?.[0];
         }
 
 
+        return (<View>
+            <Title nextValue={nextValue} index={index}/>
+            <Separator index={index}/>
 
-       
-
-        return <View>
-
-            <Title nextValue={nextValue } index={index}/>
-            <Row label={prevValue ? `${transformText(prevValue)}:` : ""} applicant={value}/>
-        </View>
+            {isValidDate(props?.userProfileForm?.["service." + keys]) ? <DateField
+                updateApplication={props?.updateApplication}
+                updateForm={props.updateForm}
+                stateName={"service." + keys}
+                edit={props.edit}
+                label={prevValue ? `${transformText(prevValue)}:` : ""}
+                display={value}
+                applicant={props?.userProfileForm["service." + keys]}/> : <Row
+                updateApplication={props?.updateApplication}
+                updateForm={props.updateForm}
+                stateName={"service." + keys}
+                edit={props.edit}
+                label={prevValue ? `${transformText(prevValue)}:` : ""}
+                display={value}
+                applicant={props?.userProfileForm["service." + keys]}/>
+            }
+        </View>)
 
 
     };
+
+
+
     return (
         <FlatList
+            showsVerticalScrollIndicator={false}
             style={styles.group3}
-            data={Object.entries(flatten(service))}
+            data={Object.entries(flatten(_.omit(service,props.exclude)))}
             renderItem={_renderParent}
             keyExtractor={(item,index)=>`${index}`}
             scrollEnabled={false}

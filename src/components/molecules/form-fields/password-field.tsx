@@ -108,11 +108,8 @@ const PasswordField: ForwardRefRenderFunction<TextInputRef, Props> = ({
         <View style={inputStyles.mainContainer}>
             
             <View style={[
-
                 inputStyles.container,
-
                 inputStyles.rowContainer,
-
                 !!error && {
                     backgroundColor: input.background?.error,
                     borderColor: input.text?.errorColor,
@@ -149,7 +146,6 @@ const PasswordField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                     )}
                     <View
                         style={[
-
                             outlineStyle,
                             isFocused && { borderColor: activeColor },
                             !!error && { borderColor: errorColor },

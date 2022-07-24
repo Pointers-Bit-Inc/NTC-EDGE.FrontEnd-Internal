@@ -40,23 +40,38 @@ export const useInitializeAgora = ({
   const [isInit, setIsInit] = useState(false);
   const [joinSucceed, setJoinSucceed] = useState(false);
   const [peerIds, setPeerIds] = useState<number[]>([]);
-  const [peerVideoState, setPeerVideState] = useState({});
-  const [peerAudioState, setPeerAudioState] = useState({});
+  const [peerVideoState, setPeerVideoState] = useState<any>({});
+  const [peerAudioState, setPeerAudioState] = useState<any>({});
+  const [volumeIndicator, setVolumIndicator] = useState<any>({});
   const [myId, setMyId] = useState<number>(0);
   const [isMute, setIsMute] = useState(options?.isMute);
   const [isSpeakerEnable, setIsSpeakerEnable] = useState(true);
   const [isVideoEnable, setIsVideoEnable] = useState(options?.isVideoEnable);
   const [activeSpeaker, setActiveSpeaker] = useState(0);
+  let tracks:any = null;
   const rtcEngine = useRef<RtcEngine|null>(null);
 
-  const initAgora = useCallback(async () => {
+  const initAgora = async () => {
     rtcEngine.current = await RtcEngine.create(appId);
     await rtcEngine.current?.enableVideo();
     await rtcEngine.current?.enableAudio();
-    await rtcEngine.current?.enableAudioVolumeIndication(1000, 3, false);
+    await rtcEngine.current?.enableAudioVolumeIndication(2000, 3, false);
     await rtcEngine.current?.muteLocalAudioStream(options?.isMute);
     await rtcEngine.current?.muteLocalVideoStream(!options?.isVideoEnable);
     await rtcEngine.current?.setEnableSpeakerphone(true);
+    await rtcEngine.current?.setAudioProfile(0, 8);
+    await rtcEngine.current?.setVideoEncoderConfiguration({
+      bitrate: 1710,
+      frameRate: 30,
+      minFrameRate: 15,
+      minBitrate: 500,
+      degradationPrefer: 2,
+      dimensions: {
+        height: 720,
+        width: 1280,
+      },
+      mirrorMode: 2,
+    })
 
     rtcEngine.current?.addListener('UserJoined', (uid) => {
       setPeerIds(peerIdsLocal => {
@@ -88,17 +103,17 @@ export const useInitializeAgora = ({
     );
 
     rtcEngine.current?.addListener('RemoteVideoStateChanged', (uid, state) => {
-      setPeerVideState({
-        ...peerVideoState,
+      setPeerVideoState((videoState:any) => ({
+        ...videoState,
         [uid]: state,
-      });
+      }));
     });
 
     rtcEngine.current?.addListener('RemoteAudioStateChanged', (uid, state) => {
-      setPeerAudioState({
-        ...peerAudioState,
+      setPeerAudioState((audioState:any) => ({
+        ...audioState,
         [uid]: state,
-      });
+      }));
     });
 
     rtcEngine.current?.addListener('Error', error => {
@@ -118,11 +133,14 @@ export const useInitializeAgora = ({
     });
 
     setIsInit(true);
-  }, [appId, token, channelName, uid]);
+  };
 
   const joinChannel = useCallback(async () => {
-    await rtcEngine.current?.joinChannel(token, channelName, null, uid);
-  }, [channelName, token, uid]);
+    await rtcEngine.current?.joinChannel(token, channelName, null, uid, {
+      publishLocalAudio: !isMute,
+      publishLocalVideo: isVideoEnable,
+    });
+  }, [channelName, token, uid, isMute, isVideoEnable]);
 
   const leaveChannel = useCallback(async () => {
     await rtcEngine.current?.leaveChannel();
@@ -131,10 +149,14 @@ export const useInitializeAgora = ({
     setJoinSucceed(false);
   }, []);
 
-  const toggleIsMute = useCallback(async () => {
-    await rtcEngine.current?.muteLocalAudioStream(!isMute);
-    setIsMute(!isMute);
-  }, [isMute]);
+  const toggleIsMute = async (mute = false) => {
+    await rtcEngine.current?.muteLocalAudioStream(mute);
+    setIsMute(mute);
+  };
+
+  const toggleRemoteAudio = useCallback(async (uid, muted) => {
+    await rtcEngine.current?.muteRemoteAudioStream(uid, muted)
+  }, []);
 
   const toggleIsSpeakerEnable = useCallback(async () => {
     await rtcEngine.current?.setEnableSpeakerphone(!isSpeakerEnable);
@@ -154,15 +176,6 @@ export const useInitializeAgora = ({
     await rtcEngine.current?.destroy();
   }, []);
 
-  // useEffect(() => {
-  //   if (appId) {
-  //     initAgora();
-  //   }
-  //   return () => {
-  //     destroyAgoraEngine();
-  //   };
-  // }, [destroyAgoraEngine, initAgora, appId]);
-
   return {
     isInit,
     initAgora,
@@ -180,8 +193,11 @@ export const useInitializeAgora = ({
     joinChannel,
     leaveChannel,
     toggleIsMute,
+    toggleRemoteAudio,
     toggleIsSpeakerEnable,
     toggleIsVideoEnable,
     switchCamera,
+    tracks,
+    volumeIndicator,
   };
 };

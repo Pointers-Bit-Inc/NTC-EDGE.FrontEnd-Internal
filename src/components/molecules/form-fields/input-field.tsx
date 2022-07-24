@@ -1,11 +1,12 @@
 import React,{forwardRef,ForwardRefRenderFunction,useImperativeHandle,useRef,useState,} from 'react';
-import {StyleSheet,TouchableOpacity,View} from 'react-native';
+import {Platform, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Text from '@atoms/text';
 import TextInput from '@components/atoms/input';
-import {defaultColor,input,primaryColor,text} from '@styles/color';
+import {defaultColor, input, primaryColor, successColor, text} from '@styles/color';
 import inputStyles from "@styles/input-style"
 import CloseIcon from "@assets/svg/close";
 import {fontValue} from "@pages/activities/fontValue";
+import CheckIcon from '@assets/svg/check';
 
 const styles = StyleSheet.create({
     container: {
@@ -42,6 +43,7 @@ interface Props {
     required?: boolean;
     hasValidation?: boolean;
     containerStyle?: any;
+    mainContainerStyle?:any,
     inputStyle?: any;
     labelStyle?: any;
     outlineStyle?: any;
@@ -62,6 +64,7 @@ export type TextInputRef =  {
 
 const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
       clearable=true,
+      checkable=false,
       label = '',
       placeholder = '',
       secureTextEntry = false,
@@ -80,6 +83,8 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
       onBlur = () => {},
       onFocus = () => {},
     onClose = () => {},
+    onCheck = () => {},
+                                                                       mainContainerStyle,
       ...otherProps
   }, ref) => {
 
@@ -99,13 +104,13 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
         blur: () => inputRef?.current?.blur(),
         focus: () => inputRef?.current?.focus(),
     }));
-    
+
 
 
 
     return (
-        <View style={inputStyles.mainContainer}>
-            
+        <View style={[inputStyles.mainContainer, mainContainerStyle,]}>
+
             <View style={[
 
                 inputStyles.container,
@@ -120,7 +125,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                     backgroundColor: '#fff', //input.background?.default,
                     borderColor: primaryColor,
                 },
-                containerStyle,
+containerStyle
             ]}>
                 <View style={{ flex: 0.95 }}>
                     {!!otherProps.value && !!label && (
@@ -171,17 +176,40 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                     </View>
                 </View>
                 {
-                    (clearable && isFocused && !!editable && !!otherProps.value) &&
+                    (checkable && (Platform.OS == 'web' ? true : isFocused) ) &&
+                    <TouchableOpacity style={{display: undefined}} onPress={() => {
+                        onCheck()
+                    }}>
+                        <CheckIcon height={fontValue(15)} width={fontValue(15)} color={successColor}/>
+                    </TouchableOpacity>
+
+
+                }
+                {
+                    ((clearable && isFocused && !!editable && !!otherProps.value) || (checkable && (Platform.OS == 'web' ? true :isFocused) ) )&&
                     <TouchableOpacity  onPress={() => {
 
-                        if(otherProps?.onChangeText){
-                            onClose()
+                        if(otherProps?.onChangeText ){
+
                             otherProps?.onChangeText('')
                         }
+                        if(otherProps?.onChange ){
+
+                            otherProps?.onChange({e:{
+                                    nativeEvent: {
+                                        text: ''
+                                    }
+                                }})
+                        }
+                        onClose()
                     }}>
                         <CloseIcon height={fontValue(10)} width={fontValue(10)} color={error ? input.text.errorColor : input.text.mainColor}/>
                     </TouchableOpacity>
+
+
                 }
+
+
             </View>
 
             {
@@ -193,7 +221,7 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
                                 !!error && { color: input.text?.errorColor },
                             ]}
                         >
-                            {error || description}
+                            {description || error}
                         </Text>
                     </View>
                 )
@@ -201,13 +229,13 @@ const InputField: ForwardRefRenderFunction<TextInputRef, Props> = ({
         </View>
 
 
-        
 
 
 
 
 
-                        
+
+
     );
 };
 

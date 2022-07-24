@@ -522,8 +522,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ntcedge.portal;
-				PRODUCT_NAME = "com-ntcedge-portal";
+				PRODUCT_BUNDLE_IDENTIFIER = portalapp.ntcedge.com;
+				PRODUCT_NAME = "NTC-EDGE PORTAL";
 				SWIFT_OBJC_BRIDGING_HEADER = "ntcedge/ntcedge-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -551,8 +551,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ntcedge.portal;
-				PRODUCT_NAME = "com-ntcedge-portal";
+				PRODUCT_BUNDLE_IDENTIFIER = portalapp.ntcedge.com;
+				PRODUCT_NAME = "NTC-EDGE PORTAL";
 				SWIFT_OBJC_BRIDGING_HEADER = "ntcedge/ntcedge-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -580,7 +580,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ntcedge.portal.OneSignalNotificationServiceExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = portalapp.ntcedge.com.OneSignalNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -610,7 +610,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ntcedge.portal.OneSignalNotificationServiceExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = portalapp.ntcedge.com.OneSignalNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

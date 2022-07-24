@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 10,
+    paddingLeft: Platform.OS === 'web' ? 25 : 20,
   },
   horizontal: {
     flexDirection: 'row',
@@ -82,6 +83,11 @@ const ChatItem: FC<Props> = ({
       <TouchableOpacity onPress={onPress} {...otherProps}>
       <View style={[styles.container, styles.horizontal]}>
         {
+          (!seen && Platform.OS === 'web') && (
+            <View style={[styles.seenIndicator, { left: -15, marginRight: -10 }]} />
+          )
+        }
+        {
           !isGroup ? (
             <ProfileImage
               image={image}
@@ -132,7 +138,7 @@ const ChatItem: FC<Props> = ({
           </View>
         </View>
         {
-          !seen && (
+          (!seen && Platform.OS !== 'web') && (
             <View style={styles.seenIndicator} />
           )
         }

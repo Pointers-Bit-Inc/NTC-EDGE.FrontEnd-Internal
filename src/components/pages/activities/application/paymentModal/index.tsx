@@ -1,21 +1,19 @@
-import React , {useEffect , useState} from "react";
-import BackgroundPayment from "@assets/svg/backgroundpayment";
-import {Dimensions , Modal , Platform , ScrollView , StyleSheet , Text , TouchableOpacity , View} from "react-native";
+import React,{useEffect,useState} from "react";
+import {Dimensions,Modal,Platform,ScrollView,StyleSheet,Text,TouchableOpacity,View} from "react-native";
 import moment from "moment";
-import {Bold , Regular , Regular500} from "@styles/font";
-import {capitalize } from "@pages/activities/script";
-import {RFValue} from "react-native-responsive-fontsize";
+import {Bold,Regular} from "@styles/font";
+import {capitalize} from "@pages/activities/script";
 import {useComponentLayout} from "../../../../../hooks/useComponentLayout";
 import BorderPaymentTop from "@assets/svg/borderPayment";
 import BorderPaymentBottom from "@assets/svg/borderPaymentBottom";
 import {fontValue} from "@pages/activities/fontValue";
-import {RootStateOrAny , useSelector} from "react-redux";
+import {RootStateOrAny,useSelector} from "react-redux";
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {isMobile} from "@pages/activities/isMobile";
 
 const {width, height} = Dimensions.get('window');
 const PaymentModal = (props: any) => {
-    const {rightLayoutComponent} = useSelector((state: RootStateOrAny) => state.application)
+    const rightLayoutComponent = useSelector((state: RootStateOrAny) => state.application?.rightLayoutComponent)
     function Cell({ data }) {
         return (
             <View style={styles.cellStyle}>
@@ -41,9 +39,6 @@ const PaymentModal = (props: any) => {
     ];
     const [sizeComponent, onLayoutComponent] = useComponentLayout()
     const [amountOfBorder, setAmountOfBorder] = useState()
-    useEffect(()=>{
-
-    }, [sizeComponent])
     return <Modal
         supportedOrientations={['portrait', 'landscape']}
         animationType="slide"
@@ -61,8 +56,6 @@ const PaymentModal = (props: any) => {
                      default: {
                          width: rightLayoutComponent?.width,
                          top : rightLayoutComponent?.top,
-
-
                      }
                  }),
 
@@ -87,17 +80,21 @@ const PaymentModal = (props: any) => {
                      </View>
                      
                      <ScrollView>
-
-
                             <View style={[styles.group8, { height: isMobile ? undefined : rightLayoutComponent?.height- rightLayoutComponent?.top , alignItems: 'center'}]}>
 
-                                <View style={{top: -60}}>
-                                    <View style={{flexDirection: "row"}}>
-                                        {
-                                            !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map((top, index)=> <BorderPaymentTop key={index}  style={{marginBottom: -1}}/>)
-                                        }
-                                    </View>
-                                    <View  onLayout={onLayoutComponent} style={{backgroundColor: "white"}}>
+                                <View style={styles.paymentModal}>
+                                     <View>
+                                         {!isMobile && <View style={{position: "absolute", height: "100%", width: "100%",backgroundColor: "#2863D6"}}/>}
+                                         <View style={{flexDirection: "row", }} >
+
+                                             {
+                                                 !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map((top, index)=> <BorderPaymentTop key={index}  style={{marginBottom: -1}}/>)
+                                             }
+                                         </View>
+                                     </View>
+
+
+                                    <View  onLayout={onLayoutComponent} style={{backgroundColor: "white", }}>
                                         <View style={styles.group5}>
                                             <Text style={styles.title}>Payment received for</Text>
                                             <Text style={[styles.description]}>NTC-EDGE</Text>
@@ -126,11 +123,15 @@ const PaymentModal = (props: any) => {
 
 
                                     </View>
-                                    <View style={{ overflow: "hidden",flexDirection: "row", }}>
-                                        {
-                                            !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map((bottom, index)=> <BorderPaymentBottom key={index} style={{marginTop: -1}}/>)
-                                        }
+                                    <View>
+                                        {!isMobile && <View style={{position: "absolute", height: "100%", width: "100%",backgroundColor: "#2863D6"}}/> }
+                                        <View style={{ overflow: "hidden",flexDirection: "row", }}>
+                                            {
+                                                !!sizeComponent && Array(Math?.round(sizeComponent?.width/20))?.fill(0)?.map((bottom, index)=> <BorderPaymentBottom key={index} style={{marginTop: -1}}/>)
+                                            }
+                                        </View>
                                     </View>
+
                                 </View>
 
 
@@ -277,6 +278,21 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         justifyContent: "space-around"
     },
-    
+    paymentModal:{
+        ...Platform.select({
+                native:{
+                    top:-60
+                },
+                web:{
+                    top:-80,
+                    borderWidth:20,
+                    borderColor:"#2863D6"
+                }
+            }
+        ),
+
+    }
+
+
 });
 export default PaymentModal

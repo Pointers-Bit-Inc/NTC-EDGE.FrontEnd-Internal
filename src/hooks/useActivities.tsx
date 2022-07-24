@@ -1,4 +1,4 @@
-import React,{useCallback,useEffect,useMemo,useRef,useState} from "react";
+import React,{createRef,useCallback,useEffect,useMemo,useRef,useState} from "react";
 import {useUserRole} from "./useUserRole";
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
 import useSignalr from "./useSignalr";
@@ -19,9 +19,9 @@ import {
 import moment from "moment";
 import axios from "axios";
 import {BASE_URL} from "../services/config";
-import {Alert,Animated,Image} from "react-native";
+import {Alert,Animated,FlatList,Image,TouchableOpacity,View} from "react-native";
 import {
-    handleInfiniteLoad,
+    handleInfiniteLoad,setactivitySizeComponent,setApplicationItem,
     setApplications,
     setFilterRect,
     setNotPinnedApplication,
@@ -30,6 +30,15 @@ import {
 import Loader from "@pages/activities/bottomLoad";
 import {useComponentLayout} from "./useComponentLayout";
 import lodash from 'lodash';
+import {isMobile} from "@pages/activities/isMobile";
+import {ListFooter} from "@molecules/list-item";
+import Api from "../services/api";
+import {setResetFilterStatus} from "../reducers/activity/actions";
+import {resetUser} from "../reducers/user/actions";
+import {resetMeeting} from "../reducers/meeting/actions";
+import {resetChannel} from "../reducers/channel/actions";
+import {StackActions} from "@react-navigation/native";
+import useOneSignal from "./useOneSignal";
 
 function convertStatusText(convertedStatus:any[],item:any){
     let _converted:never[]=[]
@@ -43,13 +52,28 @@ function convertStatusText(convertedStatus:any[],item:any){
     return _uniqByStatus.length ? _uniqByStatus.toString() : [item].toString()
 }
 
-export function useActivities(){
+export function useActivities(props){
+
+
+
+
+
+
+
+
+
+
+    const scrollViewRef = useRef()
+    const flatListViewRef = useRef()
+    const scrollableTabView = useRef()
+    const [yPos, setYPos] = useState(0)
     const [total,setTotal]=useState(0);
     const [page,setPage]=useState(0);
     const [size,setSize]=useState(0);
     const {user,cashier,director,evaluator,checker,accountant}=useUserRole();
+    const { destroy } = useOneSignal(user);
     const [updateModal,setUpdateModal]=useState(false);
-      const [onTouch, setOnTouch] = useState(true)
+    const [onTouch, setOnTouch] = useState(true)
     const config={
         headers:{
             Authorization:"Bearer ".concat(user?.sessionToken)
@@ -57,16 +81,41 @@ export function useActivities(){
     };
 
 
-    const {selectedChangeStatus,visible}=useSelector((state:RootStateOrAny)=>state.activity);
-    const {
-        pinnedApplications,
-        notPinnedApplications,
-        applicationItem,
-    }=useSelector((state:RootStateOrAny)=>{
-        return state.application
+    const selectedChangeStatus=useSelector((state:RootStateOrAny)=>state.activity?.selectedChangeStatus);
+    const visible= useSelector((state:RootStateOrAny)=>state.activity?.visible);
+    const applicationItem =useSelector((state:RootStateOrAny)=>{
+        return state.application?.applicationItem
     });
+    const pinnedApplications =useSelector((state:RootStateOrAny)=>{
+        return state.application?.pinnedApplications
+    });
+    const notPinnedApplications =useSelector((state:RootStateOrAny)=>{
+        return state.application?.notPinnedApplications
+    });
+
+    /* React.useEffect(() => {
+         if(!isMobile) {
+            props?.navigation?.addListener('focus', () => {
+                 if(selectedYPos?.yPos != undefined  ){
+                     if(selectedYPos.type){
+                         flatListViewRef?.current?.scrollToOffset({ offset:  0 , animated: true });
+                         scrollViewRef?.current?.scrollTo({ y: selectedYPos.type ? selectedYPos?.yPos : 0, animated: true });
+                     }else{
+                         flatListViewRef?.current?.scrollToOffset({ offset: selectedYPos.type ? 0 :selectedYPos?.yPos + 30, animated: true });
+                     }
+                 }
+             });
+         }
+
+         return {
+
+         }
+
+     }, [props?.navigation, selectedYPos]);*/
     const dispatch=useDispatch();
     const {getActiveMeetingList,endMeeting,leaveMeeting}=useSignalr();
+
+
 
     function getList(list:any,selectedClone){
         return getFilter({
@@ -88,7 +137,7 @@ export function useActivities(){
         });
 
 
-        
+
 
         const list=getList(applications,selectedClone);
         const groups=list?.reduce((groups:any,activity:any)=>{
@@ -131,7 +180,7 @@ export function useActivities(){
         }
         return groupArrays.slice(0,currentPage*25);
     };
-    
+
     const [updateUnReadReadApplication,setUpdateUnReadReadApplication]=useState(false);
     const [searchTerm,setSearchTerm]=useState('');
     const [countRefresh,setCountRefresh]=useState(0);
@@ -148,7 +197,7 @@ export function useActivities(){
     const checkDateAdded=selectedChangeStatus?.filter((status:string)=>{
         return status==DATE_ADDED
     });
-    const query=()=>{
+    const query=(pinned)=>{
 
         const convertedStatus = notPnApplications.map((item)=>{
             return item.activity.map((i)=>{
@@ -164,7 +213,11 @@ export function useActivities(){
             ...(
                 searchTerm&&{keyword:searchTerm}),
             ...(
-                {sort:checkDateAdded.length ? "asc" : "desc"}),
+                {
+                    pageSize: pinned ? 100 :10,
+                    sort:checkDateAdded.length ? "asc" : "desc",
+                    region: user?.employeeDetails?.region
+                }),
             ...(
                 selectedClone.length>0&&{
                     [cashier ? "paymentStatus" : 'status']:selectedClone.map((item:any)=>{
@@ -187,76 +240,64 @@ export function useActivities(){
     };
     let count=0;
 
-    const fnApplications=(isCurrent:boolean,callback:(err:any)=>void)=>{
-             
+    function fnApplications(endpoint){
+        let isCurrent=true;
+
         setRefreshing(true);
-        axios.get(BASE_URL+`/applications`,{...config,params:query()}).then((response)=>{
-
-            const cashier = [CASHIER].indexOf(user?.role?.key) != -1;
-            const isNotPinned = []
-            const isPinned = []
-            for (let i = 0; i < response?.data?.docs?.length; i++) {
-
-                if ((
-                        (response?.data?.docs[i]?.assignedPersonnel?._id || response?.data.docs[i]?.assignedPersonnel ) == user?._id) &&
-                    !(
-                        cashier ?
-                        (
-                            !response?.data?.docs?.[i]?.paymentMethod?.length || response?.data?.docs?.[i]?.paymentStatus == PAID || response?.data?.docs?.[i]?.paymentStatus == APPROVED || response?.data?.docs?.[i]?.paymentStatus == DECLINED) : (
-                            response?.data?.docs?.[i]?.status == DECLINED || response?.data?.docs?.[i]?.status == APPROVED))) {
-
-                    isPinned.push(response?.data?.docs[i])
-                } else {
-
-                    isNotPinned.push(response?.data?.docs[i])
-                }
-            }
+        dispatch(setApplications({data:[],user:user}))
+        axios.all(endpoint.map((ep) => axios.get(ep.url,{...config,params:query(ep.pinned)}))).then(
+            axios.spread((pinned, notPinned) => {
+                if(pinned?.data?.message) Alert.alert(pinned.data.message);
+                if(notPinned?.data?.message) Alert.alert(notPinned.data.message);
+                if(isCurrent) setRefreshing(false);
 
 
-            if(response?.data?.message) Alert.alert(response.data.message);
-            if(isCurrent) setRefreshing(false);
+                if(count==0){
+                    count=1;
+                    if(count){
+
+                        notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
+                        notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
+                        notPinned?.data?.page ? setPage(notPinned?.data?.page) : setPage(0);
+                        dispatch(setApplications({data:[],user:user}))
+                        dispatch(setApplications({data:[...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],user:user}))
 
 
-
-            if(count==0){
-                count=1;
-                if(count){
-
-                    response?.data?.size ? setSize(response?.data?.size) : setSize(0);
-                    response?.data?.total ? setTotal(response?.data?.total) : setTotal(0);
-                    response?.data?.page ? setPage(response?.data?.page) : setPage(0);
-
-
-
-                    dispatch(setApplications({data:response?.data,user:user}))
-
-                    if(!isNotPinned.length) {
-                        setTimeout(()=>{
-                            handleLoad(response?.data?.page)
-                        }, 3000)
                     }
-
-
                 }
-            }
-            if(isCurrent) setRefreshing(false);
-        }).catch((err)=>{
+                if(isCurrent) setRefreshing(false);
+
+            })
+
+        ).catch((err)=>{
             setRefreshing(false);
             Alert.alert('Alert',err?.message||'Something went wrong.');
 
-            callback(false);
-            console.warn(err)
-        })
-    };
-    
-    useEffect(()=>{
-        let isCurrent=true;
+            if(err.request.status == "401"){
+                const api=Api(user.sessionToken);
+                dispatch(setApplications([]))
+                dispatch(setPinnedApplication([]))
+                dispatch(setNotPinnedApplication([]))
+                dispatch(setApplicationItem({}))
+                dispatch(setResetFilterStatus([]))
+                dispatch(resetUser());
+                dispatch(resetMeeting());
+                dispatch(resetChannel());
+                destroy();
+                setTimeout(()=>{
 
-        fnApplications(isCurrent,()=>{
-        });
+                    props.navigation.dispatch(StackActions.replace('Login'));
+                },500);
+            }
+        })
+
         return ()=>{
             isCurrent=false
         }
+    }
+
+    useEffect(()=>{
+        return fnApplications([{url: BASE_URL+ `/users/${user._id}/assigned-applications`, pinned: 1}, {url: BASE_URL+ `/users/${user._id}/unassigned-applications`, pinned: 0}])
     },[countRefresh,searchTerm,selectedChangeStatus.length]);
 
 
@@ -319,37 +360,51 @@ export function useActivities(){
     const [infiniteLoad,setInfiniteLoad]=useState(false);
     const [onEndReachedCalledDuringMomentum,setOnEndReachedCalledDuringMomentum]=useState(false);
     const bottomLoader=()=>{
-        return infiniteLoad ? <Loader/> : null
+        return infiniteLoad ? <Loader/> :  <ListFooter
+            hasError={!infiniteLoad}
+            fetching={ infiniteLoad}
+            loadingText="Loading more activities..."
+            errorText="Unable to load activities"
+            refreshText="Refresh"
+            onRefresh={() => handleLoad()}
+        />
     };
 
-
     const handleLoad=useCallback((page_)=>{
-
         let _page:string;
         setInfiniteLoad(true);
+
         if((
             page*size)<total || page_ ){
             _page="?page="+(
                 (page_ || page)+1);
+            //013021
+            var endpoint = [{url: BASE_URL+ `/users/${user._id}/assigned-applications${_page}`, pinned: 1}, {url: BASE_URL+ `/users/${user._id}/unassigned-applications${_page}`, pinned: 0}]
 
-            axios.get(BASE_URL+`/applications${_page}`,{...config,params:query()}).then((response)=>{
+            axios.all(endpoint.map((ep) => axios.get(ep.url,{...config,params:{...query(ep.pinned)}}))).then(
+                axios.spread((pinned, notPinned) => {
 
-                if(response?.data?.message) Alert.alert(response.data.message);
-                response?.data?.size ? setSize(response?.data?.size) : setSize(0);
-                response?.data?.total ? setTotal(response?.data?.total) : setTotal(0);
-                response?.data?.page ? setPage(response?.data?.page) : setPage(0);
-                if(response?.data?.docs.length==0){
-                    setInfiniteLoad(false);
 
-                } else{
+
+                    if(pinned?.data?.message) Alert.alert(pinned.data.message);
+                    pinned?.data?.size ? setSize(pinned?.data?.size) : setSize(0);
+                    pinned?.data?.total  ? setTotal(pinned?.data?.total) : setTotal(0);
+                    pinned?.data?.page ? setPage(pinned?.data?.page) : setPage(0);
+
+                    if(notPinned?.data?.message) Alert.alert(notPinned.data.message);
+                    notPinned?.data?.size ? setSize(notPinned?.data?.size) : setSize(0);
+                    notPinned?.data?.total ? setTotal(notPinned?.data?.total) : setTotal(0);
+                    notPinned?.data?.page && notPinned?.data?.docs.length >= notPinned?.data?.size   ? setPage(notPinned?.data?.page) : setPage(0);
+
                     dispatch(handleInfiniteLoad({
-                        data:getList(response.data.docs,selectedChangeStatus),
+                        data:getList([...(pinned?.data?.docs || []), ...(notPinned?.data?.docs || [])],selectedChangeStatus),
                         user:user
                     }));
                     setInfiniteLoad(false);
-                }
-                setInfiniteLoad(false);
-            }).catch((err)=>{
+
+                })
+
+            ).catch((err)=>{
                 Alert.alert('Alert',err?.message||'Something went wrong.');
                 setInfiniteLoad(false);
                 console.warn(err)
@@ -358,7 +413,7 @@ export function useActivities(){
             _page="?page="+(
                 page+1);
 
-            axios.get(BASE_URL+`/applications${_page}`,{...config,params:query()}).then((response)=>{
+            axios.get(BASE_URL+ `/users/${user._id}/unassigned-applications${_page}`,{...config,params:query(0)}).then((response)=>{
 
                 if(response?.data?.message) Alert.alert(response.data.message);
                 if(response?.data?.size) setSize(response?.data?.size);
@@ -407,6 +462,7 @@ export function useActivities(){
     useEffect(()=>{
 
         dispatch(setFilterRect(sizeComponent));
+        dispatch(setactivitySizeComponent(activitySizeComponent));
         if(sizeComponent?.height&&searchSizeComponent?.height){
 
             setContainerHeight(sizeComponent?.height+searchSizeComponent?.height)
@@ -432,16 +488,15 @@ export function useActivities(){
     var _clampedScrollValue=0;
     var _offsetValue=0;
     var _scrollValue=0;
+
     useEffect(()=>{
         scrollY.addListener(({value})=>{
-
             const diff=value-_scrollValue;
             _scrollValue=value;
             _clampedScrollValue=Math.min(
                 Math.max(_clampedScrollValue+diff,0),
                 containerHeight,
             )
-
         });
         offsetAnim.addListener(({value})=>{
             _offsetValue=value;
@@ -457,9 +512,9 @@ export function useActivities(){
     const onMomentumScrollEnd=()=>{
 
         const toValue=_scrollValue>containerHeight&&
-                      _clampedScrollValue>(
+        _clampedScrollValue>(
             containerHeight)/2
-                      ? _offsetValue+containerHeight : _offsetValue-containerHeight;
+            ? _offsetValue+containerHeight : _offsetValue-containerHeight;
 
         Animated.timing(offsetAnim,{
             toValue,
@@ -490,7 +545,7 @@ export function useActivities(){
         setUpdateModal,
         config,
         visible,
-        applicationItem,
+        applicationItem: applicationItem,
         dispatch,
         getActiveMeetingList,
         endMeeting,
@@ -508,6 +563,7 @@ export function useActivities(){
         moreModalVisible,
         setMoreModalVisible,
         onDismissed,
+        activitySizeComponent,
         onEndReachedCalledDuringMomentum,
         setOnEndReachedCalledDuringMomentum,
         bottomLoader,
@@ -526,6 +582,13 @@ export function useActivities(){
         onMomentumScrollEnd,
         onScrollEndDrag,
         headerTranslate,
-        opacity
+        opacity,
+        scrollViewRef,
+        yPos, setYPos,
+        flatListViewRef,
+        scrollableTabView,
+        notPinnedApplications,
+        pinnedApplications,
+        setRefreshing
     };
 }

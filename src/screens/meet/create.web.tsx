@@ -9,7 +9,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
-import { setMeeting } from 'src/reducers/meeting/actions';
+import { resetCurrentMeeting, setMeeting, setOptions } from 'src/reducers/meeting/actions';
 import { button, text } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
@@ -99,15 +99,16 @@ const CreateMeeting = ({ navigation, route }:any) => {
           data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
           room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room, isChannelExist));
-          dispatch(setMeeting(data));
-          navigation.replace('JoinVideoCall', {
-            isHost: true,
-            isVoiceCall,
-            options: {
+          dispatch(resetCurrentMeeting());
+          setTimeout(() => {
+            dispatch(setOptions({
+              isHost: true,
+              isVoiceCall,
               isMute: !micOn,
               isVideoEnable: videoOn,
-            }
-          });
+            }));
+            dispatch(setMeeting(data));
+          }, 100);
         }
       });
     } else {
@@ -118,14 +119,16 @@ const CreateMeeting = ({ navigation, route }:any) => {
           data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
           room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room));
-          dispatch(setMeeting(data));
-          navigation.replace('VideoCall', {
-            isHost: true,
-            options: {
+          dispatch(resetCurrentMeeting());
+          setTimeout(() => {
+            dispatch(setOptions({
+              isHost: true,
+              isVoiceCall: false,
               isMute: !micOn,
               isVideoEnable: videoOn,
-            }
-          });
+            }));
+            dispatch(setMeeting(data));
+          }, 100);
         }
       });
     }

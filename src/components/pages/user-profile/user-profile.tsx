@@ -32,6 +32,7 @@ import {Bold} from '@styles/font';
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import useKeyboard from "../../../hooks/useKeyboard";
+import {removeEmpty} from "@pages/activities/script";
 
 const STATUSBAR_HEIGHT=StatusBar?.currentHeight;
 const {width,height}=Dimensions.get('window');
@@ -42,7 +43,83 @@ const UserProfileScreen=({navigation}:any)=>{
     const user=useSelector((state:RootStateOrAny)=>state.user)||{};
     const {profilePicture={}}=user;
     const photo=profilePicture?.small;
+    const originalForm=[
+        {
+            stateName:'userType',
+            id:1,
+            key:1,
+            required:true,
+            label:'User Type',
+            type:'input',
+            placeholder:'User Type',
+            value:user?.role?.name||'',
+            error:false,
+            editable:false,
+            disabledColor:text.disabled,
 
+        },
+        {
+            stateName:'firstName',
+            id:2,
+            key:2,
+            required:true,
+            label:'First Name',
+            type:'input',
+            placeholder:'First Name',
+            value:user?.firstName||'',
+            error:false,
+        },
+        {
+            stateName:'lastName',
+            id:3,
+            key:3,
+            required:true,
+            label:'Last Name',
+            type:'input',
+            placeholder:'Last Name',
+            value:user?.lastName||'',
+            error:false,
+        },
+        {
+            stateName:'email',
+            id:4,
+            key:4,
+            required:true,
+            label:'Email',
+            type:'input',
+            placeholder:'Email',
+            value:user?.email||'',
+            error:false,
+        },
+        {
+            stateName:'profilePicture',
+            id:11,
+            file:{},
+        },
+        {
+            stateName:'contactNumber',
+            id:9,
+            key:9,
+            required:true,
+            label:'Contact Number',
+            type:'input',
+            placeholder:'Contact Number',
+            value:user?.contactNumber||'',
+            error:false,
+        },
+        {
+            stateName:'address',
+            id:10,
+            key:10,
+            required:true,
+            label:'Address',
+            type:'input',
+            placeholder:'Address',
+            value:user?.address||'',
+            error:false,
+        },
+    ];
+    const [userProfileForm,setUserProfileForm]=useState(originalForm);
     const onUpdateForm=(id:number,text:any,element?:string,_key?:string)=>{
         let index=userProfileForm?.findIndex(app=>app?.id==id);
         let newArr=[...userProfileForm];
@@ -229,83 +306,8 @@ const UserProfileScreen=({navigation}:any)=>{
         basic:false,
     });
 
-    const originalForm=[
-        {
-            stateName:'userType',
-            id:1,
-            key:1,
-            required:true,
-            label:'User Type',
-            type:'input',
-            placeholder:'User Type',
-            value:user?.role?.name||'',
-            error:false,
-            editable:false,
-            disabledColor:text.disabled,
 
-        },
-        {
-            stateName:'firstName',
-            id:2,
-            key:2,
-            required:true,
-            label:'First Name',
-            type:'input',
-            placeholder:'First Name',
-            value:user?.firstName||'',
-            error:false,
-        },
-        {
-            stateName:'lastName',
-            id:3,
-            key:3,
-            required:true,
-            label:'Last Name',
-            type:'input',
-            placeholder:'Last Name',
-            value:user?.lastName||'',
-            error:false,
-        },
-        {
-            stateName:'email',
-            id:4,
-            key:4,
-            required:true,
-            label:'Email',
-            type:'input',
-            placeholder:'Email',
-            value:user?.email||'',
-            error:false,
-        },
-        {
-            stateName:'profilePicture',
-            id:11,
-            file:{},
-        },
-        {
-            stateName:'contactNumber',
-            id:9,
-            key:9,
-            required:true,
-            label:'Contact Number',
-            type:'input',
-            placeholder:'Contact Number',
-            value:user?.contactNumber||'',
-            error:false,
-        },
-        {
-            stateName:'address',
-            id:10,
-            key:10,
-            required:true,
-            label:'Address',
-            type:'input',
-            placeholder:'Address',
-            value:user?.address||'',
-            error:false,
-        },
-    ];
-    const [userProfileForm,setUserProfileForm]=useState(originalForm);
+
 
     const isValid=()=>{
         var valid=true;
@@ -372,21 +374,7 @@ const UserProfileScreen=({navigation}:any)=>{
             return true;
         }
     };
-    const removeEmpty=obj=>{
-        if(Array.isArray(obj)){
-            return obj.map(v=>(
-                v&& !(
-                    v instanceof Date)&& typeof v==='object' ? removeEmpty(v) : v)).filter(v=>v)
-        } else{
-            return Object.entries(obj)
-            .map(([k,v])=>[k,v&& !(
-                v instanceof Date)&& typeof v==='object' ? removeEmpty(v) : v])
-            .reduce((a,[k,v])=>(
-                typeof v!=='boolean'&& !v ? a : (
-                    (
-                        a[k]=v), a)),{})
-        }
-    };
+
 
     function updateUserProfile(dp:boolean,formData:{}){
         console.log("outside isValid");
@@ -490,12 +478,14 @@ const UserProfileScreen=({navigation}:any)=>{
                 }}
             />
 
-            <ScrollView ref={scrollView} keyboardShouldPersistTaps={Platform.OS=="ios" ? "handled" : "always"}
-                        style={styles.scrollview} showsVerticalScrollIndicator={false}>
+            <ScrollView ref={scrollView}
+                        keyboardShouldPersistTaps={Platform.OS=="ios" ? "handled" : "always"}
+                        style={styles.scrollview}
+                        showsVerticalScrollIndicator={false}>
                 <View style={[styles.row,{marginBottom:20}]}>
                     <View>
                         <ProfileImage
-                            size={width/4}
+                            size={isMobile ? width/4 : width * 0.1}
                             textSize={25}
                             image={photo}
                             name={`${user.firstName} ${user.lastName}`}
@@ -528,7 +518,10 @@ const UserProfileScreen=({navigation}:any)=>{
                 <TouchableOpacity onPress={()=>navigation.navigate('ResetPassword')}>
                     <Text style={styles.changePassword}>Change Password</Text>
                 </TouchableOpacity>
-                <View style={{height:width/3}}/>
+                {Platform.select({
+                    web: <View style={{height:width* 0.02}}/>,
+                    native: <View style={{height:width/3}}/>
+                })}
             </ScrollView>
 
             <Button

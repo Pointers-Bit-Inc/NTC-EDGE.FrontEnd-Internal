@@ -1,6 +1,7 @@
 import lodash from 'lodash';
 import IMeetings from 'src/interfaces/IMeetings';
 import IMessages from 'src/interfaces/IMessages';
+import IParticipants from 'src/interfaces/IParticipants';
 const {
   SET_SELECTED_CHANNEL,
   SET_CHANNEL_LIST,
@@ -32,6 +33,9 @@ const {
   ADD_PENDING_MESSAGE,
   SET_PENDING_MESSAGE_ERROR,
   REMOVE_PENDING_MESSAGE,
+
+  UPDATE_PARTICIPANTS,
+  UPDATE_PARTICIPANTS_STATUS,
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -41,10 +45,10 @@ const initialState = new InitialState();
 export default function basket(state = initialState, action:any) {
   switch (action.type) {
     case SET_SELECTED_CHANNEL: {
-      if (!action.isChannelExist) {
-        return state.setIn(['selectedChannel'], action.payload)
-        .setIn(['channelMessages', action.payload._id, 'messages'], {});
+      if (!!state.normalizedChannelList[action.payload._id]) {
+        return state.setIn(['selectedChannel'], state.normalizedChannelList[action.payload._id]);
       }
+
       return state.setIn(['selectedChannel'], action.payload);
     }
     case SET_CHANNEL_LIST: {
@@ -85,7 +89,13 @@ export default function basket(state = initialState, action:any) {
       return newState;
     }
     case REMOVE_CHANNEL: {
-      return state.removeIn(['normalizedChannelList', action.payload]);
+      let newState = state.removeIn(['normalizedChannelList', action.payload]);
+
+      if (state.selectedChannel?._id === action.payload) {
+        newState = newState.setIn(['selectedChannel'], {});
+      }
+
+      return newState;
     }
     case SET_MESSAGES: {
       return state.setIn(['channelMessages', action.channelId, 'messages'], action.payload);
@@ -103,8 +113,10 @@ export default function basket(state = initialState, action:any) {
         .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
       }
 
-      newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
-      .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+      if (state.normalizedChannelList[action.payload.roomId]) {
+        newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
+        .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt)
+      }
 
       return newState;
     }
@@ -121,7 +133,7 @@ export default function basket(state = initialState, action:any) {
         }
       }
 
-      if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
+      if (state.normalizedChannelList[action.payload.roomId]?.lastMessage?._id === action.payload._id) {
           newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
           .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt);
       }
@@ -157,7 +169,7 @@ export default function basket(state = initialState, action:any) {
         .setIn(['selectedChannel', 'updatedAt'], action.payload.updatedAt);
       }
 
-      if (state.normalizedChannelList[action.payload.roomId].lastMessage._id === action.payload._id) {
+      if (state.normalizedChannelList[action.payload.roomId]?.lastMessage?._id === action.payload._id) {
           newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'lastMessage'], action.payload)
           .setIn(['normalizedChannelList', action.payload.roomId, 'updatedAt'], action.payload.updatedAt);
       }
@@ -194,6 +206,8 @@ export default function basket(state = initialState, action:any) {
         .setIn(['normalizedMessages'], {})
         .setIn(['channelMessages'], {})
         .setIn(['selectedMessage'], {})
+        .setIn(['selectedChannel'], {})
+        .setIn(['pendingMessages'], {})
         .setIn(['files'], {})
         .setIn(['meetingList'], [])
         .setIn(['searchValue'], '');
@@ -217,6 +231,50 @@ export default function basket(state = initialState, action:any) {
     }
     case RESET_PENDING_MESSAGES: {
       return state.setIn(['pendingMessages'], {});
+    }
+    case UPDATE_PARTICIPANTS: {
+      let newState = state;
+
+      if (action.payload?.participants) {
+        if (state.normalizedChannelList[action.payload._id]) {
+          newState = newState.setIn(['normalizedChannelList', action.payload._id, 'participants'], action.payload.participants)
+          if (state.selectedChannel?._id === action.payload._id) {
+            newState = newState.setIn(['selectedChannel', 'participants'], action.payload.participants);
+          }
+        }
+      }
+
+      return newState;
+    }
+    case UPDATE_PARTICIPANTS_STATUS: {
+      let newState = state;
+
+      if (action.payload?.participant) {
+        if (state.normalizedChannelList[action.payload.roomId]) {
+          const channelFromList = state.normalizedChannelList[action.payload.roomId];
+
+          newState = newState.setIn(['normalizedChannelList', action.payload.roomId, 'participants'], (() => {
+            return channelFromList.participants.map((p:IParticipants) => {
+              if (action.payload.participant._id === p._id) {
+                return action.payload.participant;
+              }
+              return p;
+            });
+          })());
+          if (state.selectedChannel?._id === action.payload.roomId) {
+            newState = newState.setIn(['selectedChannel', 'participants'], (() => {
+              return state.selectedChannel.participants.map((p:IParticipants) => {
+                if (action.payload.participant._id === p._id) {
+                  return action.payload.participant;
+                }
+                return p;
+              });
+            })());
+          }
+        }
+      }
+
+      return newState;
     }
     default:
       return state;

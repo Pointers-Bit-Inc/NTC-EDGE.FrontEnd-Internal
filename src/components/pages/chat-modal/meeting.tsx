@@ -9,7 +9,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
-import { setMeeting } from 'src/reducers/meeting/actions';
+import { resetCurrentMeeting, setMeeting } from 'src/reducers/meeting/actions';
 import { button, header } from '@styles/color';
 import Text from '@atoms/text';
 import InputStyles from 'src/styles/input-style';
@@ -20,6 +20,7 @@ import Button from '@components/atoms/button';
 import lodash from 'lodash';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold, Regular500 } from '@styles/font';
+import IParticipants from 'src/interfaces/IParticipants';
 
 const styles = StyleSheet.create({
   container: {
@@ -102,33 +103,34 @@ const CreateMeeting = ({
           data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
           room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room, isChannelExist));
-          dispatch(setMeeting(data));
-          onSubmit('JoinVideoCall', {
+          dispatch(resetCurrentMeeting());
+          onSubmit({
             isHost: true,
             isVoiceCall,
             options: {
               isMute: !micOn,
               isVideoEnable: videoOn,
             }
-          });
+          }, data);
         }
       });
     } else {
-      createMeeting({ participants, name: meetingName }, (error, data) => {
+      const filteredParticipants = lodash.reject(participants, (p:IParticipants) => p._id === user._id);
+      createMeeting({ participants: filteredParticipants, name: meetingName }, (error, data) => {
         setLoading(false);
         if (!error) {
           const { room } = data;
           data.otherParticipants = lodash.reject(data.participants, p => p._id === user._id);
           room.otherParticipants =  data.otherParticipants;
           dispatch(setSelectedChannel(data.room));
-          dispatch(setMeeting(data));
-          onSubmit('VideoCall', {
+          dispatch(resetCurrentMeeting());
+          onSubmit({
             isHost: true,
             options: {
               isMute: !micOn,
               isVideoEnable: videoOn,
             }
-          });
+          }, data);
         }
       });
     }

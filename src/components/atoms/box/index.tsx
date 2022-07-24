@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react';
+    import React, { FC, ReactNode } from 'react';
 import { View } from 'react-native';
 import styles from './styles';
 

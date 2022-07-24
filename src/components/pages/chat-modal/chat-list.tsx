@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, FC, useMemo } from 'react'
-import {View,TouchableOpacity,StyleSheet,InteractionManager,Platform, Dimensions, Image} from 'react-native';
+import {View,TouchableOpacity,StyleSheet,InteractionManager,Platform, Dimensions, Image, Linking} from 'react-native';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import lodash from 'lodash';
@@ -23,13 +23,14 @@ import Button from '@components/atoms/button';
 import ChatList from '@components/organisms/chat/list';
 import { outline, text, button } from '@styles/color';
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
-import { RFValue } from 'react-native-responsive-fontsize';
 import {Bold,Regular,Regular500} from '@styles/font';
 import IMessages from 'src/interfaces/IMessages';
 import IParticipants from 'src/interfaces/IParticipants';
 import NoConversationIcon from "@assets/svg/noConversations";
 import { useNavigation } from '@react-navigation/native';
 import IAttachment from 'src/interfaces/IAttachment';
+import {NoContent} from "@screens/meet/index.web";
+import { fontValue } from '../activities/fontValue';
 
 const { width, height } = Dimensions.get('window');
 
@@ -58,25 +59,25 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   cancelText: {
-    fontSize: RFValue(16),
+    fontSize: fontValue(16),
     color: text.info,
     fontFamily: Regular500,
   },
   confirmText: {
-    fontSize: RFValue(16),
+    fontSize: fontValue(16),
     color: text.error,
     fontFamily: Regular500,
   },
   title: {
     color: '#14142B',
     textAlign: 'center',
-    fontSize: RFValue(16),
+    fontSize: fontValue(16),
     fontFamily: Regular500,
   },
   message: {
     color: '#4E4B66',
     textAlign: 'center',
-    fontSize:RFValue(14),
+    fontSize:fontValue(14),
     marginHorizontal: 15,
     marginBottom: 15,
     fontFamily: Regular,
@@ -106,7 +107,8 @@ const List: FC<Props> = ({
   const navigation = useNavigation();
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { channelMessages, pendingMessages } = useSelector((state:RootStateOrAny) => state.channel);
+  const channelMessages = useSelector((state:RootStateOrAny) => state.channel.channelMessages);
+  const pendingMessages = useSelector((state:RootStateOrAny) => state.channel.pendingMessages);
   const messages = useMemo(() => {
     const normalizedMessages = channelMessages[channelId]?.messages || {};
     const channelPendingMessages = pendingMessages[channelId || 'temp'] || {};
@@ -161,7 +163,7 @@ const List: FC<Props> = ({
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
     setFetching(true);
     setHasError(false);
-    getMessages(channelId, pageIndex, (err, res) => {
+    getMessages(channelId, pageIndex, false, (err, res) => {
       setLoading(false);
       if (res) {
         if (res.list) dispatch(addToMessages(channelId, res.list));
@@ -264,9 +266,18 @@ const List: FC<Props> = ({
     }
   }, [lastMessage, rendered]);
 
-  const showOption = (item) => {
-    setMessage(item);
-    modalRef.current?.open();
+  const showOption = (item:IMessages, type?:string) => {
+    console.log('TYPE TYPE', type);
+    if (type === 'edit') {
+      dispatch(setSelectedMessage(channelId, item));
+    } else if (type === 'delete') {
+      setMessage(item);
+      setShowDeleteOption(true);
+      modalRef.current?.open();
+    } else {
+      setMessage(item);
+      modalRef.current?.open();
+    }
   }
 
   const options = () => {
@@ -282,8 +293,8 @@ const List: FC<Props> = ({
             >
               <View style={styles.button}>
                 <NewEditIcon
-                  height={RFValue(22)}
-                  width={RFValue(22)}
+                  height={fontValue(22)}
+                  width={fontValue(22)}
                   color={text.default}
                 />
                 <Text
@@ -308,8 +319,8 @@ const List: FC<Props> = ({
         >
           <View style={[styles.button, { borderBottomWidth: 0 }]}>
             <NewDeleteIcon
-              height={RFValue(22)}
-              width={RFValue(22)}
+              height={fontValue(22)}
+              width={fontValue(22)}
               color={text.error}
             />
             <Text
@@ -409,7 +420,7 @@ const List: FC<Props> = ({
         !messages.length ?
           <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
             <View >
-              <NoConversationIcon/>
+              <NoContent/>
             </View>
             {
               Platform.select({
@@ -447,7 +458,7 @@ const List: FC<Props> = ({
             onSwipeComplete={() => setPreview({})}
             style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 15 }}
           >
-            <View style={{ position: 'absolute', top: 10, right: 0 }}>
+            <View style={{ position: 'absolute', top: 20, right: 10 }}>
               <TouchableOpacity onPress={() => setPreview({})}>
                 <Text
                   color={'white'}
@@ -475,9 +486,22 @@ const List: FC<Props> = ({
                     style={{ textAlign: 'center', marginTop: 15 }}
                     color={'white'}
                     size={18}
+                    numberOfLines={3}
                   >
                     {preview?.attachment?.name}
                   </Text>
+                  <View style={{ justifyContent: 'center', marginTop: 30 }}>
+                    <TouchableOpacity onPress={() => Linking.openURL(preview?.attachment?.uri)}>
+                      <View style={{ paddingHorizontal: 15, paddingVertical: 10, backgroundColor: '#2863D6', borderRadius: 10 }}>
+                        <Text
+                          color={'white'}
+                          size={16}
+                        >
+                          Download
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               )
             }

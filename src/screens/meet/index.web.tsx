@@ -12,13 +12,13 @@ import {
 } from 'react-native'
 import lodash from 'lodash';
 import { useSelector, RootStateOrAny, useDispatch } from 'react-redux'
-import { setMeeting, setMeetings, addToMeetings } from 'src/reducers/meeting/actions';
+import { setMeeting, setMeetings, addToMeetings, resetCurrentMeeting, setOptions } from 'src/reducers/meeting/actions';
 import { setSelectedChannel } from 'src/reducers/channel/actions';
 import useSignalr from 'src/hooks/useSignalr';
 import Meeting from '@components/molecules/list-item/meeting';
 import Text from '@components/atoms/text'
 import { getChannelName } from 'src/utils/formatting';
-import { NewVideoIcon, PlusIcon } from '@atoms/icon';
+import {AddMeetingIcon, NewVideoIcon,PlusIcon,VideoIcon} from '@atoms/icon';
 import { text, outline, primaryColor } from 'src/styles/color';
 import BottomModal, { BottomModalRef } from '@components/atoms/modal/bottom-modal';
 import { ListFooter } from '@components/molecules/list-item';
@@ -30,8 +30,16 @@ import IMeetings from 'src/interfaces/IMeetings';
 import IParticipants from 'src/interfaces/IParticipants';
 import {isMobile} from "@pages/activities/isMobile";
 import hairlineWidth=StyleSheet.hairlineWidth;
-import {fontValue as RFValue} from "@pages/activities/fontValue";
+import {fontValue, fontValue as RFValue} from "@pages/activities/fontValue";
 import NoConversationIcon from "@assets/svg/noConversations";
+import SdIcon from "@assets/svg/webitem/sd";
+import ApIcon from "@assets/svg/webitem/ap";
+import JsIcon from "@assets/svg/webitem/js";
+import VideoOutlineIcon from "@assets/svg/videoOutline";
+import CalendarAddOutline from "@assets/svg/calendarAddOutline";
+import { BASE_URL } from 'src/services/config';
+import { openUrl } from 'src/utils/web-actions';
+import RefreshWeb from '@assets/svg/refreshWeb';
 
 const { width, height } = Dimensions.get('window');
 
@@ -101,6 +109,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     width: '100%',
   },
+  refresh: {
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    marginHorizontal: 10,
+    padding: 11,
+    borderRadius: 100
+  },
   bar: {
     height: 15,
     width: 35,
@@ -158,14 +173,66 @@ const styles = StyleSheet.create({
     paddingTop:15,
     paddingBottom: 20,
     paddingHorizontal:26
-  }
+  } ,
+  row: {
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    flexDirection: "row",
+    paddingVertical: 11,
+    paddingHorizontal: 30,
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 5,width: 207.17, height: 50}
 })
+
+function Content(){
+  return <View style={{paddingHorizontal:14.30,justifyContent:"space-between"}}>
+    <View style={{borderRadius:20,backgroundColor:"#B4DAFF",width:45.71,height:8.57}}/>
+    <View style={{borderRadius:20,backgroundColor:"#DEE9FC",width:71.43,height:8.57}}/>
+  </View>;
+}
+
+export function NoContent(){
+  return <View style={{width:200,height:200,backgroundColor:"#E3ECFA",borderRadius:20}}>
+    <View style={[
+      styles.row,
+      {
+        marginTop:15,
+        marginLeft:-37.14,
+      }
+    ]}>
+      <SdIcon/>
+      <Content/>
+    </View>
+    <View style={[
+      styles.row,{
+        marginTop:11.43,
+        marginLeft:24.29
+      }]}>
+      <ApIcon/>
+      <Content/>
+    </View>
+    <View style={[
+      styles.row,{
+        marginTop:11.43,
+        marginLeft:-30,
+      }]}>
+      <JsIcon/>
+      <Content/>
+    </View>
+  </View>;
+}
 
 const Meet = ({ navigation }) => {
   const dispatch = useDispatch();
   const modalRef = useRef<BottomModalRef>(null);
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { normalizedMeetingList } = useSelector((state:RootStateOrAny) => state.meeting);
+  const normalizedMeetingList = useSelector((state:RootStateOrAny) => state.meeting.normalizedMeetingList);
   const meetingList = useMemo(() => {
     const meetingList = lodash.keys(normalizedMeetingList).map(m => {
       const meeting = normalizedMeetingList[m];
@@ -194,17 +261,12 @@ const Meet = ({ navigation }) => {
   });
 
   const onJoin = (item:IMeetings) => {
-    dispatch(setSelectedChannel(item.room));
-    dispatch(setMeeting(item));
-    navigation.navigate('Dial', {
-      isHost: item.host._id === user._id,
-      isVoiceCall: item.isVoiceCall,
-      options: {
-        isMute: false,
-        isVideoEnable: true,
-      }
-    });
+    openUrl(`/VideoCall?meetingId=${item._id}`);
   }
+
+  const onVideoCall = () => {
+    openUrl('/VideoCall');
+  } 
 
   const onRequestData = () => setSendRequest(request => request + 1);
 
@@ -244,6 +306,7 @@ const Meet = ({ navigation }) => {
           setHasMore(res.hasMore);
         }
         if (err) {
+          setHasError(true);
           console.log('ERR', err);
         }
         setLoading(false);
@@ -304,8 +367,8 @@ const Meet = ({ navigation }) => {
         <ListFooter
             hasError={hasError}
             fetching={fetching}
-            loadingText="Loading more chat..."
-            errorText="Unable to load chats"
+            loadingText="Loading more meetings..."
+            errorText="Unable to load meetings"
             refreshText="Refresh"
             onRefresh={() => fetchMoreMeeting(true)}
         />
@@ -359,6 +422,7 @@ const Meet = ({ navigation }) => {
     }
   }
   const dimensions=useWindowDimensions();
+
   return (
       <View style={{flexDirection:"row",flex:1}}>
         <View style={[styles.meetingContainer,{
@@ -367,127 +431,164 @@ const Meet = ({ navigation }) => {
           flexGrow:0,
           flexShrink:0
         }]}>
-      <View style={styles.container}>
-        <StatusBar barStyle={'light-content'} />
-          <View style={styles.header}>
-            <View style={styles.headerContent}>
-              <View style={styles.titleContainer}>
-                <Text
-                    color={'#113196'}
-                    size={20}
-                    style={{ fontFamily: Bold, marginBottom: Platform.OS === 'ios' ? 0 : -5 }}
-                >
-                  Meet
-                </Text>
-              </View>
-              <TouchableOpacity
-                  onPress={() => modalRef.current?.open()}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <NewVideoIcon
-                      color={"#113196"}
-                      width={RFValue(34)}
-                      height={RFValue(34)}
-                  />
-                  <PlusIcon
-                      color={'#113196'}
-                      size={RFValue(8)}
-                      style={{ position: 'absolute', left: RFValue(Platform.OS === 'ios' ? 10 : 10) }}
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
-
-          </View>
-
-        {
-            loading ? (
-                <View style={{ alignItems: 'center', marginTop: 15 }}>
-                  <ActivityIndicator size={'small'} color={text.default} />
+          <View style={styles.container}>
+            <StatusBar barStyle={'light-content'}/>
+            <View style={styles.header}>
+              <View style={styles.headerContent}>
+                <View style={styles.titleContainer}>
                   <Text
-                      style={{ marginTop: 10 }}
-                      size={14}
-                      color={text.default}
+                      color={'#113196'}
+                      size={20}
+                      style={{fontFamily:Bold,marginBottom:Platform.OS==='ios' ? 0 : -5}}
                   >
-                    Fetching meetings...
+                    Meeting
                   </Text>
+
                 </View>
-            ) : (
-                <FlatList
-                    data={meetingList}
-                    refreshControl={
-                      <RefreshControl
-                          tintColor={primaryColor} // ios
-                          progressBackgroundColor={primaryColor} // android
-                          colors={['white']} // android
-                          refreshing={loading}
-                          onRefresh={onRequestData}
-                      />
-                    }
-                    showsVerticalScrollIndicator={false}
-                    renderItem={renderItem}
-                    keyExtractor={(item:any) => item._id}
-                    ListEmptyComponent={emptyComponent}
-                    ListFooterComponent={ListFooterComponent}
-                    ItemSeparatorComponent={() => <View style={{ width: width - RFValue(60), height: 1, backgroundColor: '#E5E5E5', alignSelf: 'flex-end' }} />}
-                    onEndReached={() => fetchMoreMeeting()}
-                    onEndReachedThreshold={0.5}
-                />
-            )
-          }
-          <BottomModal
-              ref={modalRef}
-              onModalHide={() => modalRef.current?.close()}
-              avoidKeyboard={false}
-              header={
-                <View style={styles.bar} />
-              }
-              containerStyle={{ maxHeight: null }}
-              onBackdropPress={() => {}}
-          >
-            <View style={{ paddingBottom: 20, height: height * (Platform.OS === 'ios' ? 0.94 : 0.98) }}>
-              {
-                isNext ? (
-                    <CreateMeeting
-                        participants={currentMeeting.participants}
-                        onClose={() => setIsNext(false)}
-                        channelId={currentMeeting.channelId}
-                        isChannelExist={currentMeeting.isChannelExist}
-                        onSubmit={(type, params) => {
-                          modalRef.current?.close();
-                          setParticipants([]);
-                          setCurrentMeeting({
-                            channelId: '',
-                            isChannelExist: false,
-                            participants: [],
-                          })
-                          setIsNext(false);
-                          setTimeout(() => navigation.navigate(type, params), 300);
-                        }}
+                <TouchableOpacity onPress={onRequestData}>
+                  <View
+                    style={[
+                      styles.refresh,
+                      { borderWidth: 0, marginHorizontal: 0 }
+                    ]}
+                  >
+                    <RefreshWeb
+                      width={fontValue(26)}
+                      height={fontValue(24)}
+                      fill={"#fff"}
                     />
-                ) : (
-                    <MeetingParticipants
-                        meetingPartticipants={participants}
-                        onClose={() => {
-                          setParticipants([]);
-                          modalRef.current?.close();
-                        }}
-                        onSubmit={(res:any) => {
-                          checkSelectedItems(res);
-                          setParticipants(res);
-                          setIsNext(true);
-                        }}
-                    />
-                )
-              }
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View  style={{paddingHorizontal: 24,paddingVertical: 46}}>
+                <View style={{paddingBottom: 24}}>
+                  <Text color={"#606A80"} size={16}>Get started</Text>
+                </View>
+                <TouchableOpacity onPress={onVideoCall}>
+                  <View style={{paddingLeft: 17, alignItems: "center", flexDirection: "row", borderRadius: 10, borderWidth: 1,borderColor: "#E5E5E5", backgroundColor: "#fff", width: 303, height: 50}}>
+                    <View style={{paddingRight: 12}}>
+                      <VideoOutlineIcon/>
+                    </View>
+                    <Text size={20} color={"#606A80"}>Meet Now</Text>
+                  </View>
+                </TouchableOpacity>
+                <View style={{paddingTop: 23}}>
+                  <View style={{paddingLeft: 17, alignItems: "center", flexDirection: "row", borderRadius: 10, borderWidth: 1,borderColor: "#E5E5E5", backgroundColor: "#fff", width: 303, height: 50}}>
+                    <View style={{paddingRight: 12}}>
+                      <CalendarAddOutline/>
+                    </View>
+                    <Text size={20} color={"#606A80"}>Meet Later</Text>
+                  </View>
+                </View>
+
+              </View>
             </View>
-          </BottomModal>
+
+            {
+              loading ? (
+                  <View style={{alignItems:'center',marginTop:15}}>
+                    <ActivityIndicator size={'small'} color={text.default}/>
+                    <Text
+                        style={{marginTop:10}}
+                        size={14}
+                        color={text.default}
+                    >
+                      Fetching meetings...
+                    </Text>
+                  </View>
+              ) : (
+                  <FlatList
+                      data={meetingList}
+                      refreshControl={
+                        <RefreshControl
+                            tintColor={primaryColor} // ios
+                            progressBackgroundColor={primaryColor} // android
+                            colors={['white']} // android
+                            refreshing={loading}
+                            onRefresh={onRequestData}
+                        />
+                      }
+                      showsVerticalScrollIndicator={false}
+                      renderItem={renderItem}
+                      keyExtractor={(item:any)=>item._id}
+                      ListFooterComponent={ListFooterComponent}
+                      ItemSeparatorComponent={()=><View
+                          style={{width:width-RFValue(60),height:1,backgroundColor:'#E5E5E5',alignSelf:'flex-end'}}/>}
+                      onEndReached={()=>fetchMoreMeeting()}
+                      onEndReachedThreshold={0.5}
+                  />
+              )
+            }
+            <BottomModal
+                ref={modalRef}
+                onModalHide={()=>modalRef.current?.close()}
+                avoidKeyboard={false}
+                header={
+                  <View style={styles.bar}/>
+                }
+                containerStyle={{maxHeight:null}}
+                onBackdropPress={()=>{
+                }}
+            >
+
+              <View style={{
+                paddingBottom:20,
+                height:height*(
+                    Platform.OS==='ios' ? 0.94 : 0.98)
+              }}>
+                {
+                  isNext ? (
+                      <View>
+
+                        <CreateMeeting
+                            participants={currentMeeting.participants}
+                            onClose={()=>setIsNext(false)}
+                            channelId={currentMeeting.channelId}
+                            isChannelExist={currentMeeting.isChannelExist}
+                            onSubmit={(params, data)=>{
+                              modalRef.current?.close();
+                              setParticipants([]);
+                              setCurrentMeeting({
+                                channelId: '',
+                                isChannelExist: false,
+                                participants: [],
+                              })
+                              setIsNext(false);
+                              dispatch(setOptions({
+                                ...params.options,
+                                isHost: params.isHost,
+                                isVoiceCall: params.isVoiceCall,
+                              }));
+                              setTimeout(() => dispatch(setMeeting(data)), 500);
+                            }}
+                        /></View>
+
+                  ) : (
+                      <MeetingParticipants
+                          meetingPartticipants={participants}
+                          onClose={()=>{
+                            setParticipants([]);
+                            modalRef.current?.close();
+                          }}
+                          onSubmit={(res:any)=>{
+
+                            checkSelectedItems(res);
+                            setParticipants(res);
+                            setIsNext(true);
+                          }}
+                      />
+                  )
+                }
+              </View>
+            </BottomModal>
+          </View>
         </View>
-        </View>
-        <View style={{flex: 1}}>
-          <View style={{flex: 1, justifyContent:"center",alignItems:"center"}}>
-              <NoConversationIcon/>
-              <View style={{zIndex: -1, borderRadius: 15,  position: "absolute", backgroundColor: "#E3ECFA", width: 200, height: 200}}></View>
+        <View style={{flex:1}}>
+          <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+            <NoContent/>
+            <View style={{paddingTop: 30}}>
+              <Text size={24} color={"#A0A3BD"}>Meeting now or later</Text>
+            </View>
           </View>
         </View>
       </View>

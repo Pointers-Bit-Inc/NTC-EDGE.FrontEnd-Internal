@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Platform } from "react-native";
+import { Alert, Platform } from "react-native";
 import DeviceInfo from 'react-native-device-info';
 import { HubConnectionBuilder, HubConnection, LogLevel, HttpTransportType } from "@microsoft/signalr";
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
@@ -7,8 +7,8 @@ import { BASE_URL, API_VERSION } from 'src/services/config';
 import useApi from 'src/services/api';
 import { normalize, schema } from 'normalizr';
 import { roomSchema, messageSchema, meetingSchema } from 'src/reducers/schema';
-import { addMeeting, updateMeeting, setConnectionStatus, setNotification } from 'src/reducers/meeting/actions';
-import { addMessages, updateMessages, addChannel, removeChannel, updateChannel, addFiles } from 'src/reducers/channel/actions';
+import { addMeeting, updateMeeting, setConnectionStatus, setNotification, setMeeting, removeMeetingFromList, setToggle, endCall, updateMeetingParticipants } from 'src/reducers/meeting/actions';
+import { addMessages, updateMessages, addChannel, removeChannel, updateChannel, addFiles, updateParticipants, updateParticipantStatus } from 'src/reducers/channel/actions';
 
 const useSignalr = () => {
   const dispatch = useDispatch();
@@ -25,8 +25,6 @@ const useSignalr = () => {
         })
         .withAutomaticReconnect()
         .build();
-    signalr.current.serverTimeoutInMilliseconds = 1000 * 60 * 3;
-    signalr.current.keepAliveIntervalInMilliseconds = 1000 * 60 * 1;
     signalr.current.onclose(() => setConnectionStatus('disconnected'));
     signalr.current.onreconnected(() => setConnectionStatus('connected'));
     signalr.current.onreconnecting(() => setConnectionStatus('reconnecting'));
@@ -40,6 +38,10 @@ const useSignalr = () => {
     signalr.current?.on(connection, callback),
   []);
 
+  const onStatusUpdate = (users:Array<string>, data:any) => {
+    dispatch(updateParticipantStatus(data));
+  }
+
   const onChatUpdate = (users:Array<string>, type:string, data:any) => {
     if (data) {
       switch(type) {
@@ -50,6 +52,18 @@ const useSignalr = () => {
         }
         case 'update': {
           dispatch(updateMessages(data.roomId, data));
+          break;
+        }
+        case 'endcall': {
+          dispatch(addMessages(data.roomId, data));
+          if (data.meeting) {
+            dispatch(endCall({
+              _id: data.meeting._id,
+              ended: true,
+              endedAt: data.meeting.EndedAt,
+              updatedAt: data.meeting.EndedAt,
+            }));
+          }
           break;
         }
       }
@@ -70,7 +84,16 @@ const useSignalr = () => {
           if (data.lastMessage) dispatch(addMessages(data._id, data.lastMessage));
           break;
         }
+        case 'updateParticipants': {
+          dispatch(updateParticipants(data));
+          break;
+        }
         case 'delete': dispatch(removeChannel(data._id)); break;
+        case 'remove': {
+          dispatch(removeChannel(data._id));
+          Alert.alert('Alert', 'You have been removed from the chat.');
+          break;
+        }
       }
     }
   };
@@ -81,21 +104,36 @@ const useSignalr = () => {
         case 'create': {
           const { room } = data;
           const { lastMessage } = room;
-          dispatch(updateChannel(room));
-          dispatch(addMessages(room._id, lastMessage));
+          if (room) dispatch(updateChannel(room));
+          if (lastMessage) dispatch(addMessages(room._id, lastMessage));
           dispatch(addMeeting(data));
           break;
         };
         case 'update': {
-          const { room = {} } = data;
+          const { room } = data;
           const { lastMessage } = room;
-          if (lastMessage) dispatch(updateChannel(room));
+          if (room) dispatch(updateChannel(room));
           if (lastMessage) dispatch(addMessages(room._id, lastMessage));
           dispatch(updateMeeting(data));
           break;
         }
-        case 'notification': {
+        case 'updateParticipants': {
+          dispatch(updateMeetingParticipants(data));
+          break;
+        }
+        case 'meetingnotification': {
           dispatch(setNotification(data));
+          break;
+        }
+        case 'remove': {
+          dispatch(removeChannel(data.roomId));
+          dispatch(setMeeting(null));
+          dispatch(removeMeetingFromList(data._id));
+          Alert.alert('Alert', 'You have been removed from the meeting.');
+          break;
+        }
+        case 'togglemute': {
+          dispatch(setToggle(data));
           break;
         }
       }
@@ -105,7 +143,7 @@ const useSignalr = () => {
   const OnMeetingNotification = (users:Array<string>, type:string, data:any) => {
     if (data) {
       switch(type) {
-        case 'notification': {
+        case 'meetingnotification': {
           dispatch(setNotification(data));
           break;
         }
@@ -124,10 +162,20 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getChannelByParticipants = useCallback(({ participants }, callback = () => {}) => {
+  const getChannel = useCallback((id, callback = () => {}, config = {}) => {
+    api.get(`/rooms/${id}`, config)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
+  const getChannelByParticipants = useCallback(({ participants }, callback = () => {}, config = {}) => {
     api.post('/rooms/get-room', {
       participants,
-    })
+    }, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -136,8 +184,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const leaveChannel = useCallback((channelId, callback = () => {}) => {
-    api.delete(`/rooms/${channelId}/delete`)
+  const leaveChannel = useCallback((channelId, callback = () => {}, config = {}) => {
+    api.delete(`/rooms/${channelId}/delete`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -146,8 +194,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getChatList = useCallback((payload, callback = () => {}) => {
-    api.get(`rooms?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`)
+  const getChatList = useCallback((payload, callback = () => {}, config = {}) => {
+    api.get(`rooms?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}`, config)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(roomSchema));
@@ -158,8 +206,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getParticipantList = useCallback((payload, callback = () => {}) => {
-    api.get(`users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}&loadRooms=${payload.loadRooms || false}`)
+  const getParticipantList = useCallback((payload, callback = () => {}, config = {}) => {
+    api.get(`users/${user._id}/contacts?pageIndex=${payload.pageIndex || 1}&keyword=${payload.keyword || ""}&loadRooms=${payload.loadRooms || false}`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -188,8 +236,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const editMessage = useCallback((payload, callback = () => {}) => {
-    api.patch(`/messages/${payload.messageId}`, payload)
+  const editMessage = useCallback((payload, callback = () => {}, config = {}) => {
+    api.patch(`/messages/${payload.messageId}`, payload, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -198,8 +246,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const unSendMessage = useCallback((messageId, callback = () => {}) => {
-    api.patch(`/messages/${messageId}/unsend`)
+  const unSendMessage = useCallback((messageId, callback = () => {}, config = {}) => {
+    api.patch(`/messages/${messageId}/unsend`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -208,8 +256,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const deleteMessage = useCallback((messageId, callback = () => {}) => {
-    api.delete(`/messages/${messageId}/delete`)
+  const deleteMessage = useCallback((messageId, callback = () => {}, config = {}) => {
+    api.delete(`/messages/${messageId}/delete`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -218,8 +266,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const seenMessage = useCallback((id, callback = () => {}) => {
-    api.patch(`/messages/${id}/seen`)
+  const seenMessage = useCallback((id, callback = () => {}, config = {}) => {
+    api.patch(`/messages/${id}/seen`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -228,8 +276,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getMessages = useCallback((channelId, pageIndex, file = false, callback = () => {}) => {
-    api.get(`/messages?roomId=${channelId}&pageIndex=${pageIndex}&file=${file}`)
+  const getMessages = useCallback((channelId, pageIndex, file = false, callback = () => {}, config = {}) => {
+    api.get(`/messages?roomId=${channelId}&pageIndex=${pageIndex}&file=${file}`, config)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(messageSchema));
@@ -240,8 +288,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const createMeeting = useCallback((payload, callback = () => {}) => {
-    api.post('/meetings', payload)
+  const createMeeting = useCallback((payload, callback = () => {}, config = {}) => {
+    api.post('/meetings', payload, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -250,8 +298,18 @@ const useSignalr = () => {
     });
   }, []);
 
-  const joinMeeting = useCallback((meetingId, callback = () => {}) => {
-    api.get(`/meetings/${meetingId}/join`)
+  const joinMeeting = useCallback(({ meetingId, muted = false }, callback = () => {}, config = {}) => {
+    api.get(`/meetings/${meetingId}/join?muted=${muted}`, config)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+  
+  const meetingLobby = useCallback(({ meetingId }, callback = () => {}, config = {}) => {
+    api.post(`/meetings/${meetingId}/lobby`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -260,8 +318,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const endMeeting = useCallback((id, callback = () => {}) => {
-    api.patch(`/meetings/${id}/end`)
+  const admitMeeting = useCallback(({ meetingId }, callback = () => {}, config = {}) => {
+    api.get(`/meetings/${meetingId}/admit`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -270,8 +328,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const leaveMeeting = useCallback((id, status, callback = () => {}) => {
-    api.patch(`/meetings/${id}/leave?status=${status}`)
+  const getMeeting = useCallback((id, callback = () => {}, config = {}) => {
+    api.get(`/meetings/${id}`, config)
     .then(res => {
       return callback(null, res.data);
     })
@@ -280,8 +338,51 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getMeetingList = useCallback((payload, callback = () => {}) => {
-    api.get(`meetings?pageIndex=${payload.pageIndex || 1}`)
+  const endMeeting = useCallback((id, callback = () => {}, config = {}) => {
+    api.patch(`/meetings/${id}/callend`, config)
+    .then(res => {
+      if (res.data) {
+        const data = res.data;
+        dispatch(updateMessages(data.roomId, data));
+          if (data.meeting) {
+            dispatch(endCall({
+              _id: data.meeting._id,
+              ended: true,
+              endedAt: data.meeting.EndedAt,
+              updatedAt: data.meeting.EndedAt,
+            }));
+          }
+      }
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
+  const leaveMeeting = useCallback((id, status, callback = () => {}, config = {}) => {
+    api.patch(`/meetings/${id}/leave?status=${status}`, config)
+    .then(res => {
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
+  const muteParticipant = useCallback((id, payload, callback = () => {}, config = {}) => {
+    api.patch(`/meetings/${id}/toggle-mute`, payload, config)
+    .then(res => {
+      if (res.data) dispatch(setToggle(res.data));
+      return callback(null, res.data);
+    })
+    .catch(err => {
+      return callback(err);
+    });
+  }, []);
+
+  const getMeetingList = useCallback((payload, callback = () => {}, config = {}) => {
+    api.get(`meetings?pageIndex=${payload.pageIndex || 1}`, config)
     .then(res => {
       const { hasMore = false, list = [] } = res.data;
       const normalized = normalize(list, new schema.Array(meetingSchema));
@@ -292,8 +393,8 @@ const useSignalr = () => {
     });
   }, []);
 
-  const getActiveMeetingList = useCallback((callback = () => {}) => {
-    api.get(`/users/${user._id}/meetings?status=${"active"}`)
+  const getActiveMeetingList = useCallback((callback = () => {}, config = {}) => {
+    api.get(`/users/${user._id}/meetings?status=active`, config)
     .then(res => {
       const normalized = normalize(res.data, new schema.Array(meetingSchema));
       return callback(null, normalized?.entities?.meetings);
@@ -303,11 +404,11 @@ const useSignalr = () => {
     });
   }, [])
 
-  const checkVersion = useCallback((callback = () => {}) => {
+  const checkVersion = useCallback((callback = () => {}, config = {}) => {
     const version = API_VERSION;
     const os = Platform.OS;
     if (os) {
-      api.post('/check-version', { os, version })
+      api.post('/check-version', { os, version }, config)
       .then(res => {
         return callback(null, res.data);
       })
@@ -323,11 +424,13 @@ const useSignalr = () => {
     initSignalR,
     destroySignalR,
     onConnection,
+    onStatusUpdate,
     onChatUpdate,
     onRoomUpdate,
     onMeetingUpdate,
     OnMeetingNotification,
     createChannel,
+    getChannel,
     getChannelByParticipants,
     leaveChannel,
     getChatList,
@@ -340,9 +443,13 @@ const useSignalr = () => {
     seenMessage,
     getMessages,
     createMeeting,
+    getMeeting,
     endMeeting,
     leaveMeeting,
     joinMeeting,
+    meetingLobby,
+    admitMeeting,
+    muteParticipant,
     getMeetingList,
     getActiveMeetingList,
     checkVersion,

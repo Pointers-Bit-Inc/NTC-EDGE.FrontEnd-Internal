@@ -1,6 +1,5 @@
 import React,{useRef,useState} from "react";
 import {Alert,Dimensions,Modal,Platform,SafeAreaView,ScrollView,StyleSheet,TouchableOpacity,View} from "react-native";
-import CloseIcon from "@assets/svg/close";
 import Text from '@components/atoms/text'
 import {Bold,Regular,Regular500} from "@styles/font";
 import CreateChatIcon from "@assets/svg/addParticipantOutline";
@@ -22,7 +21,7 @@ import IParticipants from "../../interfaces/IParticipants";
 import BottomModal,{BottomModalRef} from "@atoms/modal/bottom-modal";
 import lodash from 'lodash';
 import {ContactItem} from "@molecules/list-item";
-import {NewPenIcon,ToggleIcon} from "@atoms/icon";
+import {CloseIcon, NewPenIcon,ToggleIcon} from "@atoms/icon";
 import AddParticipants from "@pages/chat-modal/add-participants";
 import {text} from "@styles/color";
 import {Hoverable} from "react-native-web-hooks";
@@ -34,38 +33,37 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import {APPROVED} from "../../reducers/activity/initialstate";
 import CustomAlert from "@pages/activities/alert/alert";
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
+import { setMeeting, setOptions } from 'src/reducers/meeting/actions'
 
 const {height,width}=Dimensions.get('window');
 
-const styles=StyleSheet.create({
-    safeAreaView:{
-        flex:0.9,
-
+const styles = StyleSheet.create({
+    safeAreaView: {
+        flex:0.93,
         backgroundColor:"#fff"
     },
-    cancelText:{
+    cancelText: {
         fontSize:RFValue(16),
         color:'#DC2626',
         fontFamily:Regular500,
     },
-    confirmText:{
+    confirmText: {
         fontSize:RFValue(16),
         color:text.info,
         fontFamily:Regular500,
     },
-    outlineText:{
+    outlineText: {
         borderRadius:10,
     },
-    inputText:{
+    inputText: {
         fontSize:RFValue(16),
         textAlign:'center',
     },
-    container:{
+    container: {
         margin:12,
         flex:1
     },
-
-    headerText:{
+    headerText: {
         width:"90%",
         fontSize:14,
         color:"#1F2022",
@@ -73,16 +71,16 @@ const styles=StyleSheet.create({
         fontWeight:"bold",
         fontFamily:Bold
     },
-    text:{
+    text: {
         fontFamily:Regular,fontSize:15,fontWeight:'400',lineHeight:22.5
     },
-    muteChatContainer:{
+    muteChatContainer: {
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'space-between',
         backgroundColor:'white',
     },
-    groupName:{
+    groupName: {
         height:undefined,
         borderWidth:1,
         borderColor:'white',
@@ -90,25 +88,24 @@ const styles=StyleSheet.create({
         marginTop:-5,
         paddingHorizontal:0
     },
-    menuItemText:{
+    menuItemText: {
         fontSize:14,
         paddingVertical:3,
         paddingHorizontal:10,
     },
-    menuItem:{
+    menuItem: {
         flexDirection:"row",
         paddingHorizontal:10,
         alignItems:"center"
     },
-    toggleDefault:{
+    toggleDefault: {
         transform:[{scaleX:-1}],
         color:'#A0A3BD',
     },
-    toggleActive:{
+    toggleActive: {
         color:'#610BEF',
     },
-    header:{
-
+    header: {
         gap:10,
         justifyContent:"space-between",
         flexDirection:"row",
@@ -118,103 +115,113 @@ const styles=StyleSheet.create({
         paddingVertical:20,
         paddingHorizontal:20
     },
+    optionContainer: {
+        shadowColor: "rgba(0,0,0,1)",
+        borderRadius: 8,
+        shadowOffset: {
+            width:0,
+            height:0
+        },
+        elevation: 45,
+        shadowOpacity: 0.1,
+        shadowRadius: 15,
+        marginLeft: -30,
+        marginTop: 20
+    }
 });
 
-function MenuBar(props:{opened:boolean,onClose:()=>void,onSelect:(value)=>void,onPress:()=>void,selectedParticipant:any,onPress1:()=>void,onPress2:()=>void,admin:undefined|boolean,onPress3:()=>void,onPress4:()=>void}){
-    return <Menu  onBackdropPress={props.onClose} opened={props.opened} onClose={props.onClose} onSelect={props.onSelect}>
+interface MenuBarInterface {
+    opened: boolean;
+    onClose: () => void;
+    onSelect: (value:any) => void;
+    onPress: () => void;
+    selectedParticipant: any;
+    onPress1: () => void;
+    onPress2: () => void;
+    admin: undefined | boolean;
+    onPress3: () => void;
+    onPress4: () => void;
+}
 
-        <MenuTrigger onPress={props.onPress}
-                     text={<View><DotHorizontalIcon/></View>}>
-
-        </MenuTrigger>
-
-        <MenuOptions optionsContainerStyle={{
-            shadowColor:"rgba(0,0,0,1)",
-            borderRadius:8,
-            shadowOffset:{
-                width:0,
-                height:0
-            },
-
-            elevation:45,
-            shadowOpacity:0.1,
-            shadowRadius:15,
-            marginLeft: -30,
-            marginTop: 20
-        }}>
-            <MenuOption value={`Call ${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}>
-                <TouchableOpacity onPress={props.onPress1}>
-                    <View style={[styles.option]}>
+const MenuBar = (props:MenuBarInterface) => {
+    return (
+        <Menu 
+            onBackdropPress={props.onClose}
+            opened={props.opened}
+            onClose={props.onClose}
+            onSelect={props.onSelect}
+        >
+            <MenuTrigger onPress={props.onPress}>
+                <DotHorizontalIcon/>
+            </MenuTrigger>
+            <MenuOptions optionsContainerStyle={styles.optionContainer}>
+                <MenuOption value={`Call ${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}>
+                    <TouchableOpacity onPress={props.onPress1}>
+                        <View style={[styles.option]}>
+                            <Text
+                                style={{marginLeft:15}}
+                                color={"black"}
+                                size={14}
+                            >
+                                Call {`${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                </MenuOption>
+                <MenuOption
+                    value={`Message ${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}
+                >
+                    <TouchableOpacity onPress={props.onPress2}>
                         <Text
                             style={{marginLeft:15}}
                             color={"black"}
-                            size={18}
-                        >
-                            Call {`${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-            </MenuOption>
-            <MenuOption
-                value={`Message ${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}>
-                <TouchableOpacity onPress={props.onPress2}>
-                    <View style={[styles.option]}>
-                        <Text
-                            style={{marginLeft:15}}
-                            color={"black"}
-                            size={18}
+                            size={14}
                         >
                             Message {`${props.selectedParticipant.firstName} ${props.selectedParticipant.lastName}`}
                         </Text>
-                    </View>
-                </TouchableOpacity>
-            </MenuOption>
-            {
-                props.admin&&(
-                    <>
-                        <MenuOption value={"Add as admin"}>
-                            <TouchableOpacity onPress={props.onPress3}>
-                                <View style={[styles.option]}>
+                    </TouchableOpacity>
+                </MenuOption>
+                {
+                    props.admin && (
+                        <>
+                            <MenuOption value={"Add as admin"}>
+                                <TouchableOpacity onPress={props.onPress3}>
                                     <Text
                                         style={{marginLeft:15}}
                                         color={"black"}
-                                        size={18}
+                                        size={14}
                                     >
                                         Add as admin
                                     </Text>
-                                </View>
-                            </TouchableOpacity>
-                        </MenuOption>
-                        <MenuOption value={"Remove from chat"}>
-                            <TouchableOpacity onPress={props.onPress4}>
-                                <View style={[styles.option]}>
+                                </TouchableOpacity>
+                            </MenuOption>
+                            <MenuOption value={"Remove from chat"}>
+                                <TouchableOpacity onPress={props.onPress4}>
                                     <Text
                                         style={{marginLeft:15}}
                                         color={text.error}
-                                        size={18}
+                                        size={14}
                                     >
                                         Remove from chat
                                     </Text>
-                                </View>
-                            </TouchableOpacity>
-                        </MenuOption>
-                    </>
-                )
-            }
-
-        </MenuOptions>
-
-    </Menu>;
+                                </TouchableOpacity>
+                            </MenuOption>
+                        </>
+                    )
+                }
+            </MenuOptions>
+        </Menu>
+    );
 }
 
-const Info=(props)=>{
-    const dispatch=useDispatch();
+const Info = (props:any) => {
+    const dispatch = useDispatch();
     const {
         leaveChannel,
-    }=useSignalr();
-    const user=useSelector((state:RootStateOrAny)=>state.user);
-    const api=useApi(user.sessionToken);
-    const {_id,otherParticipants=[],participants=[],hasRoomName=false,name='',isGroup=false,muted=false}=useSelector(
+    } = useSignalr();
+    const user = useSelector((state:RootStateOrAny)=>state.user);
+    const api = useApi(user.sessionToken);
+    const { _id, otherParticipants=[], participants=[], hasRoomName=false, name='', isGroup=false, muted=false } = useSelector(
         (state:RootStateOrAny)=>{
             const {selectedChannel}=state.channel;
             selectedChannel.otherParticipants=lodash.reject(selectedChannel.participants,(p:IParticipants)=>p._id===user._id);
@@ -360,7 +367,6 @@ const Info=(props)=>{
     };
     const isAdmin=()=>{
         const participant:IParticipants=lodash.find(participants,(p:IParticipants)=>p._id===user._id);
-
         return participant?.isAdmin;
     };
     const removeMember=()=>{
@@ -503,12 +509,15 @@ const Info=(props)=>{
         ))
     };
     const [onAddParticipant,setOnAddParticipant]=useState(false);
-    return <SafeAreaView style={styles.safeAreaView}>
+    return <View style={styles.safeAreaView}>
 
         {!onAddParticipant&&<View style={styles.header}>
             <View>
                 <TouchableOpacity onPress={()=>props.close()}>
-                    <CloseIcon/>
+                    <CloseIcon
+                        type='close'
+                        size={RFValue(18)}
+                    />
                 </TouchableOpacity>
             </View>
 
@@ -648,14 +657,20 @@ const Info=(props)=>{
             }
 
 
-            {onAddParticipant&&<AddParticipants
-                members={participants}
-                onClose={()=>setOnAddParticipant(false)}
-                onSubmit={(members:any)=>{
-                    setOnAddParticipant(false);
-                    setTimeout(()=>addMembers(members),300);
-                }}
-            />}
+            {
+                onAddParticipant && (
+                    <View style={{ paddingTop: 15 }}>
+                        <AddParticipants
+                            members={participants}
+                            onClose={()=>setOnAddParticipant(false)}
+                            onSubmit={(members:any)=>{
+                                setOnAddParticipant(false);
+                                setTimeout(()=>addMembers(members),300);
+                            }}
+                        />
+                    </View>
+                )
+            }
 
 
         </ScrollView>
@@ -755,9 +770,14 @@ const Info=(props)=>{
                     onClose={()=>meetingModalRef.current?.close()}
                     channelId={''}
                     isChannelExist={false}
-                    onSubmit={(type,params)=>{
-                        meetingModalRef.current?.close();
-                        setTimeout(()=>navigation.navigate(type,params),300);
+                    onSubmit={(params, data) => {
+                        modalRef.current?.close();
+                        dispatch(setOptions({
+                          ...params.options,
+                          isHost: params.isHost,
+                          isVoiceCall: params.isVoiceCall,
+                        }));
+                        setTimeout(() => dispatch(setMeeting(data)), 500);
                     }}
                 />
             </View>
@@ -775,7 +795,7 @@ const Info=(props)=>{
             title={alertData.title}
             message={alertData.message}/>
         
-    </SafeAreaView>
+    </View>
 
 
 };

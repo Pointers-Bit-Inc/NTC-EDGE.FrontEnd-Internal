@@ -156,6 +156,9 @@ const ResetPassword = ({navigation}: any) => {
                     }
                 });
             }
+            case "resetPassword":{
+                onCheckValidation()
+            }
             default:
                 return setFormValue({
                     ...formValue,
@@ -239,16 +242,7 @@ const ResetPassword = ({navigation}: any) => {
 
     return (
         <View style={styles.container}>
-            <Alert
-                visible={showAlert}
-                title={alert?.title}
-                message={alert?.message}
-                confirmText='OK'
-                onConfirm={() => {
-                    setShowAlert(false)
-                    navigation?.goBack()
-                }}
-            />
+
             {/* <AwesomeAlert
                 actionContainerStyle={{ flexDirection: "row-reverse" }}
                 show={showAlert}
@@ -286,8 +280,9 @@ const ResetPassword = ({navigation}: any) => {
                     </Text>
                 </TouchableOpacity>
             </View> */}
-            <ScrollView style={styles.content}>
+            <ScrollView  keyboardShouldPersistTaps={Platform.OS=="ios" ? "handled" : "always"} style={styles.content}>
                 <PasswordField
+
                     label={'Old password'}
                     placeholder="Old password"
                     textContentType="oneTimeCode"
@@ -323,6 +318,16 @@ const ResetPassword = ({navigation}: any) => {
                     }
                 </Button>
             </KeyboardAvoidingView>
+            <Alert
+                visible={showAlert}
+                title={alert?.title}
+                message={alert?.message}
+                confirmText='OK'
+                onConfirm={() => {
+                    setShowAlert(false)
+                    navigation?.goBack()
+                }}
+            />
         </View>
     )
 }

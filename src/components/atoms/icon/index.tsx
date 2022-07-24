@@ -46,6 +46,20 @@ import NewInfoIcon from './new-info';
 import NewPhoneIcon from './new-phone';
 import NewMeetIcon from './new-meet';
 import NewCameraIcon from './new-camera';
+import MessageIcon from './message';
+import ParticipantsIcon from './participants';
+import BackIcon from './back';
+import AddParticipantsIcon from './new-add-participants';
+import AddPeopleIcon from './add-people';
+import MicOffIcon from './mic-off';
+import MicOnIcon from './mic-on';
+import PinParticipantIcon from './pin-participant';
+import AddMeetingIcon from './add-meeting';
+import SpeakerOnIcon from './speaker-on';
+import SpeakerOffIcon from './speaker-off';
+import VideoOffIcon from './video-off';
+import VideoOnIcon from './video-on';
+import NewGuestIcon from './new-guest';
 
 export {
   ExclamationIcon,
@@ -96,4 +110,18 @@ export {
   NewPhoneIcon,
   NewMeetIcon,
   NewCameraIcon,
+  MessageIcon,
+  ParticipantsIcon,
+  BackIcon,
+  AddParticipantsIcon,
+  AddPeopleIcon,
+  MicOffIcon,
+  MicOnIcon,
+  PinParticipantIcon,
+  AddMeetingIcon,
+  SpeakerOnIcon,
+  SpeakerOffIcon,
+  VideoOffIcon,
+  VideoOnIcon,
+  NewGuestIcon,
 };

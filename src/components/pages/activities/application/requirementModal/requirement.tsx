@@ -1,5 +1,16 @@
-import React from "react";
-import {Dimensions,Image,Modal,Platform,ScrollView,Text,TouchableOpacity,useWindowDimensions,View} from "react-native";
+import React, {memo} from "react";
+import {
+    ActivityIndicator,
+    Dimensions,FlatList,
+    Image,
+    Modal,
+    Platform,Pressable,SafeAreaView,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
+    View
+} from "react-native";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles,styles} from "@pages/activities/application/requirementModal/styles";
 import AnimatedImage from 'react-native-animated-image-viewer';
@@ -11,13 +22,11 @@ import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {Card} from "@pages/activities/application/requirementModal/card";
 import PdfViewr from "@pages/activities/application/pdf/index";
 import FileIcon from "@assets/svg/file";
+import Constants from "expo-constants";
 
 const {width,height}=Dimensions.get("screen");
 
 class RequirementView extends React.Component<{requirement:any,rightLayoutComponent:any,dimensions:any}>{
-
-    
-
     state={
         onLoadStart:true,
         zoomed:false,
@@ -42,11 +51,8 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
         extension:''
     };
     imageZoom=null;
-
     _showImageModal=()=>this.setState({visible:true});
-
     _hideImageModal=()=>this.setState({visible:false});
-
     _requestClose=()=>{
         this.state.imageModal?.close();
         if(!isMobile){
@@ -54,22 +60,28 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
         }
     };
     _showImage=()=>{
-
-        this.state.image?.measure((x,y,width,height,pageX,pageY)=>{
-
-            this.setState({
-                _sourceMeasure:{
-                    width:width||0,
-                    height:height||0,
-                    pageX:pageX||0,
-                    pageY:pageY||0
+        new Promise((resolve, reject) => {
+            this.setState({onLoad:true, visible: true})
+            setTimeout(() => {
+                resolve('');
+            }, 1000);
+        }).then(()=>{
+            this.state?.image?.measure((x,y,width,height,pageX,pageY)=>{
+                if(width && height ){
+                    this.setState({
+                        _sourceMeasure:{
+                            width:parseInt(width,10),
+                            height:parseInt(height, 10),
+                            pageX:parseInt(pageX, 10),
+                            pageY:parseInt(pageY, 10)
+                        },
+                        onLoad:false
+                    });
+                }else{
+                    this.setState({visible:false})
                 }
             });
-
-
         });
-        this._showImageModal();
-
     };
 
     componentDidUpdate(prevProps,prevState){
@@ -91,7 +103,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
             <View style={[requirementStyles.cardDocument]}>
 
 
-                {<TouchableOpacity disabled={this.state.onLoadStart&&!this.state.extension} ref={image=>(
+                {<TouchableOpacity disabled={!this?.state?._imageSize?.height && this.state.onLoadStart&&!this.state.extension} ref={image=>(
                     this.state.image=image)}
                                    onPress={this._showImage} style={{
                     alignItems:"center",
@@ -107,7 +119,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
             </View>
 
             <View style={{alignItems:isMobile ? "center" : undefined}}>
-                <TouchableOpacity disabled={this.state.onLoadStart&&!this.state.extension} ref={image=>{
+                <TouchableOpacity disabled={!this?.state?._imageSize?.height && !this?.state?._imageSize?.width && this.state.onLoadStart&&!this.state.extension} ref={image=>{
                     this.state.image=image
                 }}
                                   onPress={this._showImage}>
@@ -137,8 +149,6 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                 }}
                             />
                         </View>
-
-
                     }
 
 
@@ -148,32 +158,31 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
 
             <Modal visible={this.state?.visible} transparent={true} onRequestClose={this._hideImageModal}>
 
-                <View style={[styles.container,isMobile||this.props.dimensions?.width<768 ? {} : {
+                <SafeAreaView style={[styles.container,isMobile||this.props.dimensions?.width<768 ? {} : {
                     alignItems:"flex-end",
                     top:this.props?.rightLayoutComponent?.top
                 }]}>
-                    <OnBackdropPress styles={{}} onPressOut={this._hideImageModal}/>
-                    <OnBackdropPress styles={isMobile||this.props.dimensions?.width<768 ? {} : {
+                    <OnBackdropPress styles={isMobile||this.props.dimensions?.width<768 ? {backgroundColor: "rgba(0,0,0,0)"} :{}} onPressOut={this._hideImageModal}/>
+                    <OnBackdropPress styles={isMobile||this.props.dimensions?.width<768 ? {backgroundColor: "rgba(0,0,0,0)"} : {
                         width:this.props?.rightLayoutComponent?.width||undefined,
                         backgroundColor:"rgba(0, 0, 0, 0.5)"
                     }}/>
 
-                    <View style={[styles.rect2,{width:this.props?.rightLayoutComponent?.width}]}>
-                        <View style={{alignSelf:'flex-end', zIndex: 1, paddingHorizontal:15,paddingVertical:15}}>
-                            <TouchableOpacity onPress={this._hideImageModal}>
-                                <Text style={styles.close}>Close</Text>
-                            </TouchableOpacity>
+                    <View style={[styles.rect2,{ width:this.props?.rightLayoutComponent?.width}]}>
+                        <View style={{alignSelf:'flex-end', zIndex: 1, }}>
+                            <View style={{ backgroundColor: "rgba(0,0,0,0.7)",padding: 20 ,}}>
+                                    <TouchableOpacity onPress={this._hideImageModal}>
+                                        <Text style={styles.close}>Close</Text>
+                                    </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
-
-                    <View style={{flex:1,backgroundColor:"rgba(0, 0, 0, 0.5)"}}>
-                        {this.state.extension ?
-
+                    <View style={{flex:1, marginTop: -Constants?.statusBarHeight, }}>
+                        {!this.state.onLoad ? this.state.extension ?
                          <PdfViewr width={this.props?.rightLayoutComponent?.width}
                                    height={this.props?.rightLayoutComponent?.height}
                                    requirement={this.props?.requirement}/> : (
                              isMobile||this.props.dimensions?.width<768 ?<AnimatedImage
-
                                                                             ref={imageModal=>(
                                                                                 this.state.imageModal=imageModal)}
                                                                             source={this?.state?.source}
@@ -181,9 +190,9 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                                                             imageSize={this.state?._imageSize||{height:300,width:300}}
                                                                             onClose={this._hideImageModal}
                                                                             animationDuration={200}
+
                                                                         /> :
                                  //height = height * (this.state._imageSize.height / width)
-
                              <ImageZoom onSwipeDown={this._hideImageModal} enableSwipeDown={true}
                                         cropWidth={this.props?.rightLayoutComponent?.width}
                                         enableDoubleClickZoom={true}
@@ -207,11 +216,13 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                                  </View>
 
                              </ImageZoom>)
-                        }
+                        : <View style={{flex: 1, width: this.props?.rightLayoutComponent?.width, justifyContent: "center", alignSelf: "center"}}>
+                             <ActivityIndicator color={"#fff"} />
+                         </View>}
                     </View>
 
 
-                </View>
+                </SafeAreaView>
             </Modal>
         </>;
     }
@@ -221,6 +232,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
 
         let _fileName=this.props?.requirement?.small?.split("/")?.[this.props?.requirement?.small?.split("/")?.length-1];
         this.setState({
+
             onLoadStart:true,
             fileName:_fileName,
             extension:(
@@ -233,13 +245,10 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
             Image.getSize(this.props?.requirement?.original,(width,height)=>{
 
                 this.setState({
-                    ...this.state,
-                    source:{
-                        ...this?.state?.source,
-                        uri:this?.props?.requirement?.original||"https://dummyimage.com/350x350/fff/aaa"
+                    source : {
+                        ...this?.state?.source ,
+                        uri : this?.props?.requirement?.original || "https://dummyimage.com/350x350/fff/aaa"
                     },
-                });
-                this.setState({
                     _imageSize:{
                         width: Platform.select({
                             native: width,
@@ -258,7 +267,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                     ...this.state,
                     source:{
                         ...this?.state?.source,
-                        uri:"https://dummyimage.com/350x350/fff/aaa"
+                        uri: this?.props?.requirement?.original ||"https://dummyimage.com/350x350/fff/aaa"
                     },
                 });
                 this.setState({onLoadStart:true})
@@ -268,7 +277,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                 ...this.state,
                 source:{
                     ...this?.state?.source,
-                    uri:"https://dummyimage.com/350x350/fff/aaa"
+                    uri:this?.props?.requirement?.original ||"https://dummyimage.com/350x350/fff/aaa"
                 },
             });
             this.setState({onLoadStart:true})
@@ -279,7 +288,7 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
 
 
 const Requirement=(props:any)=>{
-    const {rightLayoutComponent}=useSelector((state:RootStateOrAny)=>state.application);
+    const rightLayoutComponent=useSelector((state:RootStateOrAny)=>state.application?.rightLayoutComponent);
     const dimensions=useWindowDimensions();
     return <ScrollView style={{backgroundColor:"#f8f8f8",width:"100%"}}>
         {props?.requirements?.map((requirement:any,index:number)=>{
@@ -292,27 +301,16 @@ const Requirement=(props:any)=>{
                             <Text
                                 style={requirementStyles.description}>{requirement?.description}</Text>
                         </View>
-
-
-                        <ScrollView style={{flex:1,}}>
-                            {
-                                /*[{
-                                     "original": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                     "thumb": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                     "small": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                     "medium": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                     "large": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf",
-                                     "xlarge": "https://testedgeaccountstorage.blob.core.windows.net/files/612babc4-6f37-4ac1-8a06-392bf4328087.pdf"
-                                 }]*/
-                                requirement?.links?.map((link:any,idx:number)=>{
-                                    return <RequirementView dimensions={dimensions}
-                                                            rightLayoutComponent={rightLayoutComponent} key={idx}
-                                                            requirement={link}/>
-                                })
-                            }
-                        </ScrollView>
-
-
+                        <FlatList
+                            style={{flex:1,}}
+                            data={requirement?.links}
+                            keyExtractor={(item, index)=> index}
+                            renderItem={({item}) => {
+                                return <RequirementView dimensions={dimensions}
+                                                        rightLayoutComponent={rightLayoutComponent}
+                                                        requirement={item}/>
+                            }}
+                        />
                     </View>
                 </Card>
             </View>
@@ -321,4 +319,4 @@ const Requirement=(props:any)=>{
     </ScrollView>
 
 };
-export default Requirement
+export default memo(Requirement)

@@ -10,6 +10,7 @@ import styles from './styles';
 import api from "../../services/api";
 import NavBar from "@molecules/navbar";
 import Left from "@atoms/icon/left";
+import {isMobile} from "@pages/activities/isMobile";
 
 const errorResponse = {
   password: 'Password must be at least 8 characters',
@@ -130,13 +131,13 @@ const ResetPassword = ({ navigation, route }: any) => {
 
   return (
       <View style={styles.container}>
-        <NavBar
+        {isMobile &&<NavBar
             title={'Forgot Password'}
             rightIcon={<Text color='#fff'>Close</Text>}
             onRight={() => navigation.navigate('Login')}
             leftIcon={<Left color='#fff' size={17}/>}
             onLeft={() => navigation.pop()}
-        />
+        />}
 
         <KeyboardAvoidingView
             behavior={Platform.select({ ios: 'padding', android: undefined })}

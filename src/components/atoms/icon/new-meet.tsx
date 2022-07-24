@@ -1,11 +1,11 @@
 import React, { FC } from 'react'
 import Svg, { SvgProps, Path } from "react-native-svg";
-import { RFValue } from 'react-native-responsive-fontsize';
+import { fontValue } from '@components/pages/activities/fontValue';
 
 const NewMeetIcon: FC = (props: SvgProps) => (
   <Svg
-    width={RFValue(20)}
-    height={RFValue(15)}
+    width={fontValue(20)}
+    height={fontValue(15)}
     viewBox="0 0 20 15"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

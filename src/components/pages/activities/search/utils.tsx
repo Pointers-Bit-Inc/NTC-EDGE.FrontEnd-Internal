@@ -134,7 +134,7 @@ export const fillInChunks = ({
 }
 
 export function defaultSanitize(string: string): string {
-    return  string.replace(/\\/g, "\\\\")
+    return lodash.escapeRegExp(string)
 }
 
 function escapeRegExpFn(string: string): string {

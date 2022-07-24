@@ -35,7 +35,9 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
 import {
   removeActiveMeeting ,
-  setMeeting ,
+  resetCurrentMeeting,
+  setMeeting, 
+  setOptions,
 } from 'src/reducers/meeting/actions';
 import IMeetings from 'src/interfaces/IMeetings';
 import IParticipants from 'src/interfaces/IParticipants';
@@ -74,7 +76,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     backgroundColor: primaryColor,
     paddingTop: Platform.OS === 'android' ? 41.5 : 41,
-    paddingBottom: 17,
+    paddingBottom: Platform.OS === 'android' ? 16.5 : 17,
   },
   titleContainer: {
     flex: 1,
@@ -159,24 +161,30 @@ const ChatList = ({ navigation }:any) => {
   const dispatch = useDispatch();
   const swipeableRef:any = useRef({});
   const user = useSelector((state:RootStateOrAny) => state.user);
-  const { normalizedChannelList } = useSelector((state:RootStateOrAny) => state.channel);
-  const { normalizeActiveMeetings } = useSelector((state: RootStateOrAny) => state.meeting);
-  const { selectedMessage } = useSelector((state:RootStateOrAny) => state.channel);
+  const normalizedChannelList = useSelector((state:RootStateOrAny) => state.channel.normalizedChannelList);
+  const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
+  const meeting = useSelector((state: RootStateOrAny) => state.meeting.meeting);
+  const selectedMessage = useSelector((state:RootStateOrAny) => state.channel.selectedMessage);
   const channelList = useMemo(() => {
     const channelList = lodash.keys(normalizedChannelList).map((ch:any) => {
       const channel = normalizedChannelList[ch];
       channel.otherParticipants = lodash.reject(channel.participants, (p:IParticipants) => p._id === user._id);
-      channel.lastMessage.hasSeen = !!lodash.find(channel.lastMessage.seen, (s:IParticipants) => s._id === user._id);
+      if (channel.lastMessage) {
+        channel.lastMessage.hasSeen = !!lodash.find(channel?.lastMessage?.seen || [], (s:IParticipants) => s._id === user._id);
+      }
       return channel;
     });
-    return lodash.orderBy(channelList, 'lastMessage.createdAt', 'desc');
+    return lodash.orderBy(channelList, 'lastMessage.updatedAt', 'desc');
   }, [normalizedChannelList]);
 
   const meetingList = useMemo(() => {
+    if (meeting?._id) {
+      return [];
+    }
     let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
     meetingList = lodash.reject(meetingList, (m:IMeetings) => lodash.find(m.participants, (p:IParticipants) => p._id === user._id && (p.status === 'busy' || p.muted)));
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
-  }, [normalizeActiveMeetings]);
+  }, [normalizeActiveMeetings, meeting]);
 
   const {
     getChatList,
@@ -246,6 +254,7 @@ const ChatList = ({ navigation }:any) => {
           setHasMore(res.hasMore);
         }
         if (err) {
+          setHasError(true);
           console.log('ERR', err);
         }
         setLoading(false);
@@ -259,15 +268,16 @@ const ChatList = ({ navigation }:any) => {
 
   const onJoin = (item:IMeetings) => {
       dispatch(setSelectedChannel(item.room));
-      dispatch(setMeeting(item));
-      navigation.navigate('Dial', {
+      dispatch(resetCurrentMeeting());
+      setTimeout(() => {
+        dispatch(setOptions({
           isHost: item.host._id === user._id,
           isVoiceCall: item.isVoiceCall,
-          options: {
-              isMute: false,
-              isVideoEnable: true,
-          }
-      });
+          isMute: false,
+          isVideoEnable: true,
+        }));
+        dispatch(setMeeting(item));
+      }, 100);
   }
 
 const onClose = (item:IMeetings, leave = false) => {
@@ -330,13 +340,12 @@ const onClose = (item:IMeetings, leave = false) => {
       </TouchableOpacity>
     );
   };
-
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
       <View style={styles.header}>
         <View style={styles.headerContent}>
-          <TouchableOpacity style={{ paddingTop: 1 }} onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
+          <TouchableOpacity style={{ paddingTop: 0.5 }} onPress={() => navigation.navigate('Settings')/*openDrawer()*/}>
             <HomeMenuIcon/>
             {/* <ProfileImage
               size={45}
@@ -389,11 +398,11 @@ const onClose = (item:IMeetings, leave = false) => {
         </View>
         <SearchField
           containerStyle={{ paddingHorizontal: 20, paddingVertical: 20, paddingBottom: 10 }}
-          inputStyle={[InputStyles.text, styles.input]}
+          inputStyle={[styles.input]}
           iconStyle={styles.icon}
           placeholder="Search"
           placeholderTextColor="#6E7191"
-          outlineStyle={[InputStyles.outlineStyle, styles.outline]}
+          outlineStyle={[styles.outline]}
           value={searchText}
           onChangeText={setSearchText}
           onChangeTextDebounce={setSearchValue}

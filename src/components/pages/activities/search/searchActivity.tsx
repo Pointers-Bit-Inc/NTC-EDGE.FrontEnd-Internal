@@ -33,7 +33,9 @@ import {isMobile} from "@pages/activities/isMobile";
 import ActivityModalView from "@pages/activities/nativeView/activityModalView";
 import {setApplicationItem} from "../../../../reducers/application/actions";
 import {useActivities} from "../../../../hooks/useActivities";
-export function SearchActivity(props: {onBlur: any ,  isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
+import applications from "@screens/HomeScreen/Applications";
+import _ from "lodash";
+export function SearchActivity(props: {setApplications: any, onBlur: any ,  isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const {
         setIsOpen,
         user ,
@@ -151,6 +153,7 @@ export function SearchActivity(props: {onBlur: any ,  isHandleLoad:any, isRecent
                             </View>
                             }
                             <FlatList
+                                showsVerticalScrollIndicator={false}
                                 style={{flex: 1}}
                                 data={props.applications}
                                 keyExtractor={(item, index) => index.toString()}
@@ -235,10 +238,26 @@ export function SearchActivity(props: {onBlur: any ,  isHandleLoad:any, isRecent
                            readFn={ unReadReadApplicationFn }
                            details={ applicationItem }
                            onChangeAssignedId={ (event) => {
-                               dispatch(setApplicationItem(event))
+                               let _applications = [...props?.applications]
+                               let flag = 1
+
+
+                               for (let i = 0; i < _applications.length; i++) {
+                                   if(!flag) break
+                                   for (let j = 0; j < _applications?.[i]?.['activity'].length; j++) {
+                                       if(_applications?.[i]?.['activity']?.[j]._id == event._id){
+                                           _applications[i]['activity'][j] = event
+                                           flag = 0
+                                           break;
+                                       }
+                                   }
+                               }
+                               props?.setApplications(_applications)
+
                            } }
                            visible={ modalVisible }
                            onDismissed={ (event: boolean , _id: number) => {
+
                                setUpdateModal(false);
                                dispatch(setApplicationItem({  }))
                                if (event && _id) {

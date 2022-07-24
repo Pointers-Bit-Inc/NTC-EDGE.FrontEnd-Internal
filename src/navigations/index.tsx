@@ -1,37 +1,51 @@
 import * as React from 'react';
-import {NavigationContainer , useNavigation} from '@react-navigation/native';
+import {useEffect,useState} from 'react';
+import {NavigationContainer,StackActions,useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import lodash from 'lodash';
 import ForgotPassword from './forgot-password';
-import Dial from '@screens/meet/video';
-import VideoCall from '@screens/meet/video';
-import JoinVideoCall from '@screens/meet/video';
 import App from '@screens/app';
 import AppIntro from '@screens/intro';
 import UserProfile from "@pages/user-profile";
 import Settings from '@pages/settings';
 
 import Meeting from '@screens/meet';
-import Participants from '@screens/meet/participants';
+import Participants from '@screens/meet/add-participants';
 import CreateMeeting from '@screens/meet/create';
-import InitiateVideoCall from '@screens/meet/create';
+import VideoCall from '@screens/meet/video';
 
 import ChatList from '@screens/chat';
 import ViewChat from '@screens/chat/view';
 import ChatInfo from '@screens/chat/info';
+import MeetingParticipants from '@screens/meet/participants';
 import NewChat from '@screens/chat/new-chat';
 import Search from "@pages/activities/search";
 import TabBar from "@pages/activities/tabbar";
-import {Image , Platform , TouchableOpacity , View} from "react-native";
+import {Platform,Text,TouchableOpacity,View} from "react-native";
 import {primaryColor} from "@styles/color";
 import EdgeLogo from "@assets/svg/edge";
 import SettingTopBar from "@assets/svg/settingTopBar";
 import HelpTopBar from "@assets/svg/helpTopbar";
-import {RootStateOrAny ,  useSelector} from "react-redux";
-import {fontValue} from "@pages/activities/fontValue";
-import ProfileImage from "@atoms/image/profile";
-import {createRef , useRef} from "react";
+import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
 import {isMobile} from "@pages/activities/isMobile";
 import Login from "@screens/login/login";
+import FloatingVideo from '@components/pages/chat-modal/floating-video';
+import {useComponentLayout} from "../hooks/useComponentLayout";
+import {
+    setApplicationItem,
+    setApplications,
+    setNotPinnedApplication,
+    setPinnedApplication,
+    setTopBarNav
+} from "../reducers/application/actions";
+import ProfileMenu from "@molecules/headerRightMenu";
+import CustomAlert from "@pages/activities/alert/alert1";
+import {resetUser} from "../reducers/user/actions";
+import {setResetFilterStatus} from "../reducers/activity/actions";
+import {resetMeeting} from "../reducers/meeting/actions";
+import {resetChannel} from "../reducers/channel/actions";
+import useOneSignal from "../hooks/useOneSignal";
+import Api from "../services/api";
 
 type RootStackParamList = {
     App: undefined;
@@ -45,26 +59,125 @@ type RootStackParamList = {
     Settings: undefined;
     DrawerNavigation: undefined;
     Dial: undefined;
+    VideoCall: undefined;
     Meeting: undefined;
     Participants: undefined;
     CreateMeeting: undefined;
-    VideoCall: undefined;
     ChatList: undefined;
     ViewChat: undefined;
     ChatInfo: undefined;
+    MeetingParticipants: undefined;
     NewChat: undefined;
-    InitiateVideoCall: undefined;
-    JoinVideoCall: undefined;
     SearchActivities: undefined;
+    Dashboard: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+const linking = {
+    prefix: '/',
+    config: {
+        screens: {
+            App: '',
+            AppIntro: 'Intro',
+            Login: 'Login',
+            ForgotPassword: 'Forgot-Password',
+            HomeScreen: 'Home',
+            QrCodeScreen: 'Scanner',
+            UserProfileScreen: 'Profile',
+            Settings: 'Settings',
+            Dial: 'Dial',
+            Meeting: 'Meeting',
+            Participants: 'Participants',
+            CreateMeeting: 'Create-Meeting',
+            VideoCall: 'VideoCall',
+            ChatList: 'Chat-List',
+            ViewChat: 'Chat/:id',
+            ChatInfo: 'Chat-Info',
+            MeetingParticipants: 'Meeting-Participants',
+            NewChat: 'New-Chat',
+            SearchActivities: 'Search-Activities',
+            Dashboard: 'Dashboard',
+        }
+    },
+};
 
+const FloatingVideoComponent = () => {
+    const meetingId = useSelector((state:RootStateOrAny) => state.meeting.meeting?._id);
+
+    if (lodash.size(meetingId) > 0 && Platform?.OS !== 'web') {
+        return <FloatingVideo />;
+    }
+
+    return null
+}
+
+const HeaderRight = ({ setVisible = () => {}, visible }:any) => {
+    const user = useSelector((state: RootStateOrAny) => state.user) || {};
+    const navigation = useNavigation();
+    const {destroy} = useOneSignal(user);
+    const dispatch=useDispatch();
+    const [activitySizeComponent,onActivityLayoutComponent]=useComponentLayout();
+
+    const onLogout = () => {
+        setVisible(false)
+        setTimeout(()=>{
+          dispatch(setApplications([]))
+          dispatch(setPinnedApplication([]))
+          dispatch(setNotPinnedApplication([]))
+          dispatch(setApplicationItem({}))
+          dispatch(setResetFilterStatus([]))
+          dispatch(resetUser());
+          dispatch(resetMeeting());
+          dispatch(resetChannel());
+          destroy();
+          navigation.dispatch(StackActions.replace('Login'));
+        },500);
+    }
+
+    useEffect(()=>{
+        dispatch(setTopBarNav(activitySizeComponent))
+    }, [activitySizeComponent?.width])
+
+    return (
+        <View onLayout={onActivityLayoutComponent} style={{flexDirection:"row"}}>
+            <View style={{paddingRight:32}}>
+                <SettingTopBar height={26} width={26}></SettingTopBar>
+            </View>
+            <View style={{paddingRight:32}}>
+                <HelpTopBar height={26} width={26}></HelpTopBar>
+            </View>
+            <View style={{paddingRight:32}}>
+
+                <ProfileMenu onClose={()=>{
+
+                }} onSelect={value=>{
+                    if(value=="editProfile"){
+                        navigation.navigate('UserProfileScreen')
+                    } else if(value=="logout"){
+                        setVisible(true)
+                    }
+                }} user={user}/>
+                <CustomAlert
+                    showClose={false}
+                    show={visible}
+                    title='Log out'
+                    message='Are you sure you want to log out?'
+                    confirmText='OK'
+                    cancelText='Cancel'
+                    onConfirmPressed={onLogout}
+                    onDismissed={()=>setVisible(false)}
+                    onCancelPressed={()=>setVisible(false)}
+                />
+            </View>
+        </View>
+    )
+}
 
 const RootNavigator = () => {
-    const user = useSelector((state: RootStateOrAny) => state.user) || {};
+    const [visible, setVisible] = useState(false);
+
     return (
-        <NavigationContainer>
+        <NavigationContainer linking={linking}>
 
             <Stack.Navigator
 
@@ -84,29 +197,15 @@ const RootNavigator = () => {
                 <Stack.Screen name="ActivitiesScreen" component={ TabBar } options={
                     {
                         title : null ,
-                        headerRight : () => {
-                            const navigation = useNavigation();
-                            return <View style={ { paddingRight : 32 , gap : 32 , flexDirection : "row" } }>
-                                <SettingTopBar height={ 26 } width={ 26 }></SettingTopBar>
-                                <HelpTopBar height={ 26 } width={ 26 }></HelpTopBar>
-                                <TouchableOpacity onPress={()=> navigation.navigate("Settings")}>
-                                    <ProfileImage
-                                        style={ {
-                                            borderRadius : 26 , } }
-                                        size={ fontValue(28) }
-                                        image={ user?.profilePicture?.small }
-                                        name={ `${ user?.firstName } ${ user?.lastName }` }
-                                    />
-                                </TouchableOpacity>
-
-                            </View>
-                        },
+                        headerRight : () => (
+                            <HeaderRight setVisible={setVisible} visible={visible} />
+                        ),
                         headerLeft : () => (
                             <View style={ { paddingLeft : 32 } }>
                                 <EdgeLogo width={ 127 } height={ 29 }/>
                             </View>
                         ) ,
-                        headerShown : isMobile ? false : true ,
+                        headerShown : (isMobile && !Platform?.isPad) ? false : true ,
                         headerStyle : {
 
                             backgroundColor : primaryColor ,
@@ -115,20 +214,19 @@ const RootNavigator = () => {
                 }/>
                 <Stack.Screen name="UserProfileScreen" component={ UserProfile }/>
                 <Stack.Screen name="Settings" component={ Settings }/>
-                <Stack.Screen name="Dial" component={ Dial }/>
                 <Stack.Screen name="Meeting" component={ Meeting }/>
+                <Stack.Screen name="VideoCall" component={ VideoCall }/>
                 <Stack.Screen name="Participants" component={ Participants }/>
                 <Stack.Screen name="CreateMeeting" component={ CreateMeeting }/>
-                <Stack.Screen name="VideoCall" component={ VideoCall }/>
                 <Stack.Screen name="ChatList" component={ ChatList }/>
                 <Stack.Screen name="ViewChat" component={ ViewChat }/>
                 <Stack.Screen name="ChatInfo" component={ ChatInfo }/>
+                <Stack.Screen name="MeetingParticipants" component={ MeetingParticipants }/>
                 <Stack.Screen name="NewChat" component={ NewChat }/>
-                <Stack.Screen name="InitiateVideoCall" component={ InitiateVideoCall }/>
-                <Stack.Screen name="JoinVideoCall" component={ JoinVideoCall }/>
                 <Stack.Screen name="SearchActivities" component={ Search }/>
-
             </Stack.Navigator>
+            <FloatingVideoComponent />
+            {visible && <View style={{zIndex: -1, position: "absolute", width: "100%", height: "100%",backgroundColor: "rgba(0,0,0,0.5)"}}/>}
         </NavigationContainer>
 
     );

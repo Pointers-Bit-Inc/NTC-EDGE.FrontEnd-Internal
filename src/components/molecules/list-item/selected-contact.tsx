@@ -5,9 +5,9 @@ import { text, primaryColor } from 'src/styles/color';
 import { CloseIcon } from '@components/atoms/icon';
 import ProfileImage from '@components/atoms/image/profile'
 import GroupImage from '@components/molecules/image/group';
-import { RFValue } from 'react-native-responsive-fontsize';
 import IParticipants from 'src/interfaces/IParticipants';
 import lodash from 'lodash';
+import { fontValue } from '@components/pages/activities/fontValue';
 
 const imageSize = 42;
 
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 5,
     alignItems: 'center',
-    width: RFValue(imageSize + 10),
+    width: fontValue(imageSize + 10),
   },
   horizontal: {
     flexDirection: 'row',
@@ -47,9 +47,9 @@ const styles = StyleSheet.create({
     top: 0,
   },
   button: {
-    height: RFValue(18),
-    width: RFValue(18),
-    borderRadius: RFValue(18),
+    height: fontValue(18),
+    width: fontValue(18),
+    borderRadius: fontValue(18),
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
@@ -118,7 +118,7 @@ const SelectedItem: FC<Props> = ({
             <CloseIcon
               type={'md-close'}
               color={text.default}
-              size={RFValue(14)}
+              size={fontValue(14)}
             />
           </View>
         </TouchableOpacity>

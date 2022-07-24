@@ -1,19 +1,25 @@
-import {RootStateOrAny , useSelector} from "react-redux";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import BasicInfo from "@pages/activities/application/basicInfo";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
-import React , {useState} from "react";
+import React, {memo, useEffect, useState} from "react";
 import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
-import {Animated} from "react-native";
+import {Alert, Animated, InteractionManager, KeyboardAvoidingView, Platform, View} from "react-native";
 import TabBar from "@pages/activities/tabs/tabbar";
 import ScrollableTabView from "@pages/activities/tabs";
 import Tab from "@pages/activities/tabs/Tab";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
-
+import {infoColor} from "@styles/color";
+import {fontValue} from "@pages/activities/fontValue";
+import {setEditModalVisible} from "../../../../reducers/activity/actions";
+import useSafeState from "../../../../hooks/useSafeState";
+import {setEdit} from "../../../../reducers/application/actions";
 
 const ModalTab = props => {
+    const dispatch=useDispatch();
     const user = useSelector((state: RootStateOrAny) => state.user);
+    const editModalVisible = useSelector((state: RootStateOrAny) => state.activity.editModalVisible);
     const [_scrollX , set_scrollX] = useState(new Animated.Value(0));
     // 6 is a quantity of tabs
     const [interpolators , setInterpolators] = useState(Array.from({ length : 6 } , (_ , i) => i).map(idx => (
@@ -48,7 +54,7 @@ const ModalTab = props => {
             id : 4 ,
             name : 'SOA & Payment' ,
             active : false ,
-            isShow : [CASHIER , ACCOUNTANT]
+            isShow : [CASHIER , ACCOUNTANT,EVALUATOR]
         } ,
     ]);
 
@@ -67,61 +73,131 @@ const ModalTab = props => {
         approvalHistory ,
         assignedPersonnel ,
         createdAt ,
-        proofOfPayment
+        documents,
+        proofOfPayment,
+        remarks,
+        paymentStatus,
+        paymentHistory
     } = useApplicant(props.details)
+    const [initialPage,setInitialPage]=useState(true);
+    const [paymentIndex, setPaymentIndex] = useSafeState()
+    useEffect(()=>{
+        dispatch(setEditModalVisible(false))
+        setInitialPage(true)
+    },[props.details._id]);
     return <ScrollableTabView
-        onScroll={ (x) => _scrollX.setValue(x) }
-        renderTabBar={ () => <TabBar
-            renderTab={ (tab , page , isTabActive , onPressHandler , onTabLayout) => (
-                <Tab
-                    key={ page }
-                    tab={ tab }
-                    page={ page }
-                    isTabActive={ isTabActive }
-                    onPressHandler={ onPressHandler }
-                    onTabLayout={ onTabLayout }
-                    styles={ interpolators[page] }
-                />
-            ) }
-            tabBarStyle={ { paddingTop : 10 , borderTopColor : '#d2d2d2' , borderTopWidth : 1 } }/> }
+        onChangeTab={(props)=>{
+            if(paymentIndex == props.i && !editModalVisible){
+
+                dispatch(setEditModalVisible(true))
+            }else if(paymentIndex != props.i && editModalVisible){
+
+                dispatch(setEdit(false))
+                dispatch(setEditModalVisible(false))
+            }
+        }
+        }
+        renderTabBar={ (props) => {
+            if(initialPage && Platform?.isPad ){
+                props?.goToPage(0);
+                setInitialPage(false)
+            }
+            return <TabBar
+                underlineColor={infoColor}
+                underlineHeight={fontValue(3)}
+                renderTab={ (tab , page , isTabActive , onPressHandler , onTabLayout) => (
+                    <Tab
+                        key={ page }
+                        tab={ tab }
+                        page={ page }
+                        isTabActive={ isTabActive }
+                        onPressHandler={ onPressHandler }
+                        onTabLayout={ onTabLayout }
+                        styles={ interpolators[page] }
+                    />
+                ) }
+                tabBarStyle={ { paddingTop : 10 , borderTopColor : '#d2d2d2' , borderTopWidth : 1 } }/>
+        } }
 
     >
+
         {
 
             tabs.map((tab , index) => {
                 const isShow = tab.isShow.indexOf(user?.role?.key) !== -1;
                 if (isShow && tab.id === 1) {
-
-                    return <BasicInfo
-                        schedule={ schedule }
-                        service={ service }
-                        tabLabel={ { label : tab.name } } label={ tab.name }
-                        paymentMethod={ paymentMethod }
-                        assignedPersonnel={ assignedPersonnel }
-                        approvalHistory={ approvalHistory }
-                        status={ props.details.status }
-                        paymentHistory={ props?.details?.paymentHistory }
-                        paymentStatus={ props?.details?.paymentStatus }
-                        detailsStatus={ props?.details?.status }
-                        user={ user }
-                        createdAt={ createdAt }
-                        applicant={ applicant }
-                        key={ index }/>
+                    return <BasicInfo saved={props.saved}
+                                      loading={props.loading}
+                                      setEditAlert={props.setEditAlert}
+                                      editBtn={props.editBtn}
+                                      updateApplication={props.updateApplication}
+                                      setUserOriginalProfileForm={props.setUserOriginalProfileForm}
+                                      userOriginalProfileForm={props.userOriginalProfileForm}
+                                      userProfileForm={props.userProfileForm}
+                                      hasChanges={props.hasChanges}
+                                      setUserProfileForm={props.setUserProfileForm}
+                                      id={props.details?._id}
+                                      edit={props.edit}
+                                      setEdit={props.setEdit}
+                                      schedule={ schedule }
+                                      service={ service }
+                                      tabLabel={ { label : tab.name } }
+                                      label={ tab.name }
+                                      paymentMethod={ paymentMethod }
+                                      assignedPersonnel={ assignedPersonnel }
+                                      approvalHistory={ approvalHistory }
+                                      status={ props.details.status }
+                                      paymentHistory={ props?.details?.paymentHistory }
+                                      paymentStatus={ props?.details?.paymentStatus }
+                                      detailsStatus={ props?.details?.status }
+                                      user={ user }
+                                      remarks={remarks}
+                                      createdAt={ createdAt }
+                                      applicant={ applicant }
+                                      key={ index }/>
                 } else if (isShow && tab.id === 2) {
-
-                    return <ApplicationDetails
-                        tabLabel={ { label : tab.name } } label={ tab.name }
-                        service={ service }
-                        selectedType={ selectedTypes }
-                        applicantType={ applicationType }
-                        key={ index }/>
+                    return <ApplicationDetails saved={props.saved}
+                                               loading={props.loading}
+                                               edit={props.edit}
+                                               setEditAlert={props.setEditAlert}
+                                               editBtn={props.editBtn}
+                                               updateApplication={props.updateApplication}
+                                               setUserOriginalProfileForm={props.setUserOriginalProfileForm}
+                                               userOriginalProfileForm={props.userOriginalProfileForm}
+                                               userProfileForm={props.userProfileForm}
+                                               hasChanges={props.hasChanges}
+                                               setUserProfileForm={props.setUserProfileForm}
+                                               paymentStatus={paymentStatus}
+                                               tabLabel={ { label : tab.name } }
+                                               label={ tab.name }
+                                               createdAt={createdAt}
+                                               service={ service }
+                                               documents={documents}
+                                               selectedType={ selectedTypes }
+                                               applicantType={ applicationType }
+                                               key={ index }/>
                 } else if (isShow && tab.id === 3) {
-                    return <Requirement tabLabel={ { label : tab.name } } label={ tab.name }
-                                        requirements={ requirements } key={ index }/>
-                } else if (isShow && tab.id === 4) {
-                    return <Payment tabLabel={ { label : tab.name } } label={ tab.name }
+                    return <Requirement saved={props.saved} tabLabel={ { label : tab.name } }
+                                        label={ tab.name }
+                                        requirements={ requirements }
+                                        key={ index }/>
+                } else if (isShow && tab.id === 4  && service?.serviceCode !== "service-22" ) {
+
+                    return <Payment paymentIndex={index}  setPaymentIndex={setPaymentIndex} saved={props.saved} loading={props.loading} edit={props.edit}
+                                    setEditAlert={props.setEditAlert}
+                                    editBtn={props.editBtn}
+                                    updateApplication={props.updateApplication}
+                                    setUserOriginalProfileForm={props.setUserOriginalProfileForm}
+                                    userOriginalProfileForm={props.userOriginalProfileForm}
+                                    userProfileForm={props.userProfileForm}
+                                    hasChanges={props.hasChanges}
+                                    setUserProfileForm={props.setUserProfileForm}
+                                    tabLabel={ { label : tab.name } }
+                                    label={ tab.name }
+                                    paymentStatus={paymentStatus}
                                     proofOfPayment={ proofOfPayment }
                                     updatedAt={ updatedAt }
+                                    paymentHistory={paymentHistory}
                                     paymentMethod={ paymentMethod }
                                     applicant={ applicant }
                                     totalFee={ totalFee }
@@ -132,6 +208,7 @@ const ModalTab = props => {
         }
 
     </ScrollableTabView>
+
 };
 
-export default ModalTab
+export default memo(ModalTab)

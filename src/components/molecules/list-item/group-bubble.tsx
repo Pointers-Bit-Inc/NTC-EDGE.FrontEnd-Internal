@@ -2,15 +2,18 @@ import React,{FC,useState} from 'react'
 import {Dimensions,Image,Platform,StyleSheet,TouchableOpacity,View} from 'react-native'
 import Text from '@components/atoms/text'
 import lodash from 'lodash';
-import {CheckIcon,NewFileIcon,WriteIcon} from '@components/atoms/icon';
-import {getChatTimeString,getFileSize} from 'src/utils/formatting'
-import {bubble,primaryColor,text} from '@styles/color'
+import {CheckIcon,NewFileIcon,NewMeetIcon,WriteIcon} from '@components/atoms/icon';
+import {getChatTimeString,getFileSize, getTimerString} from 'src/utils/formatting'
+import {bubble,button,primaryColor,text} from '@styles/color'
 import ProfileImage from '@components/atoms/image/profile'
 import NewDeleteIcon from '@components/atoms/icon/new-delete';
 import {Regular500} from '@styles/font';
 import {fontValue} from '@components/pages/activities/fontValue';
 import IAttachment from 'src/interfaces/IAttachment';
 import hairlineWidth=StyleSheet.hairlineWidth;
+import IParticipants from 'src/interfaces/IParticipants';
+import GroupImage from '../image/group';
+import dayjs from 'dayjs';
 
 const { width } = Dimensions.get('window');
 
@@ -134,7 +137,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 2,
     borderRadius: 15,
+    marginBottom: 5,
     marginTop: 5,
+  },
+  callAgainBtn: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    alignContent: 'center',
+    justifyContent: 'center',
+    backgroundColor: button.info,
+    borderRadius: 5,
+    marginTop: 5,
+    marginBottom: 5,
   }
 })
 
@@ -158,6 +172,9 @@ interface Props {
   system?: boolean;
   delivered?: boolean;
   onPreview?: any;
+  meeting?: any;
+  onCallAgain?: any;
+  user?: any;
   [x: string]: any;
 }
 
@@ -182,23 +199,43 @@ const ChatBubble:FC<Props> = ({
   system = false,
   delivered = false,
   onPreview = () => {},
+  meeting = null,
+  onCallAgain = () => {},
+  user = {},
   ...otherProps
 }) => {
   const [showDetails, setShowDetails] = useState(false);
   const deletedOrUnsend = deleted || (unSend && isSender);
-  const senderName = isSender ? 'You' : sender.firstName;
 
   const _getSenderName = () => {
+    if (isSender) {
+      return 'You';
+    }
     let result = '';
     if (sender.title) result += sender.title + ' ';
     result += sender.firstName;
     return result;
   }
 
+  const senderName = _getSenderName();
+
   const checkIfImage = (uri:any) => {
     if (uri && (uri.endsWith(".png") || uri.endsWith(".jpg") || uri.endsWith(".jpeg"))) return true;
     return false;
   };
+
+  const renderTime = () => {
+    return (showDetails || showDate) ? (
+      <View style={styles.seenTimeContainer}>
+        <Text
+            color={'#64748B'}
+            size={12}
+        >
+          {getChatTimeString(createdAt)}
+        </Text>
+      </View>
+    ) : null;
+  }
 
   const renderContent = () => {
     if (deletedOrUnsend) {
@@ -241,15 +278,64 @@ const ChatBubble:FC<Props> = ({
       )
     }
     if (messageType === 'callended') {
+      let joinedParticipants = [];
+      let timeDiff = null;
+
+      if (meeting) {
+        joinedParticipants = lodash.filter(meeting.participants, (p:IParticipants) => p.hasJoined);
+        const timeStart = dayjs(meeting?.createdAt);
+        const timeEnded = dayjs(meeting?.endedAt);
+        timeDiff = timeEnded.diff(timeStart);
+        timeDiff = getTimerString(timeDiff/1000);
+      }
+
       return (
-        <Text
-          size={14}
-          color={'#979797'}
-        >
-          {message}
-        </Text>
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+            <Text
+              size={14}
+            >
+              Meeting ended
+            </Text>
+            {
+              !!timeDiff && (
+                <Text
+                  size={14}
+                >
+                  {timeDiff}
+                </Text>
+              )
+            }
+          </View>
+          {
+            !!lodash.size(joinedParticipants) && (
+              <View style={{ alignSelf: 'flex-start', marginTop: 5 }}>
+                <GroupImage
+                  participants={joinedParticipants}
+                  size={meeting?.isGroup ? 35 : 30}
+                  textSize={meeting?.isGroup ? 24 : 16}
+                  sizeOfParticipants={5}
+                  showOthers={true}
+                  inline={true}
+                />
+              </View>
+            )
+          }
+          <TouchableOpacity onPress={() => onCallAgain(!meeting?.isVoiceCall)}>
+            <View style={styles.callAgainBtn}>
+              <Text
+                style={{ textAlign: 'center', fontFamily: Regular500 }}
+                color={'white'}
+                size={12}
+              >
+                CALL AGAIN
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       )
     }
+    
     return (
       <Text
         size={14}
@@ -263,31 +349,7 @@ const ChatBubble:FC<Props> = ({
   if (messageType === 'leave' || messageType === 'removed' || messageType === 'added') {
     return (
       <>
-        {
-          (showDetails || showDate) && (
-              Platform.select({
-                native:(
-                    <View style={styles.seenTimeContainer}>
-                      <Text
-                          color={text.default}
-                          size={12}
-                      >
-                        {getChatTimeString(createdAt)}
-                      </Text>
-                    </View>
-                ),
-                web:(
-                    <View style={styles.hrText}>
-                      <View style={styles.border}/>
-                      <View>
-                        <Text style={[styles.hrContent, {color:  "#808196",}]}>{getChatTimeString(createdAt)}</Text>
-                      </View>
-                      <View style={styles.border}/>
-                    </View>
-                )
-              })
-          )
-        }
+        {renderTime()}
         <View style={styles.notif}>
           <Text
             size={14}
@@ -301,33 +363,27 @@ const ChatBubble:FC<Props> = ({
     )
   }
 
+  if (messageType === 'newmeeting') {
+    return (
+      <>
+        {renderTime()}
+        <View style={{ flexDirection: 'row', marginTop: 5, alignItems: 'center', marginLeft: -3 }}>
+          <NewMeetIcon color={'#2863D6'} />
+          <Text
+            size={14}
+            color={'#606A80'}
+            style={{ textAlign: 'center', marginLeft: 5 }}
+          >
+            {`${isSender ? 'You' : `${senderName} has`} started the call`}
+          </Text>
+        </View>
+      </>
+    )
+  }
+
   return (
     <>
-      {
-        (showDetails || showDate || system) && (
-            Platform.select({
-              native:(
-                  <View style={styles.seenTimeContainer}>
-                    <Text
-                        color={text.default}
-                        size={12}
-                    >
-                      {getChatTimeString(createdAt)}
-                    </Text>
-                  </View>
-              ),
-              web:(
-                  <View style={styles.hrText}>
-                    <View style={styles.border}/>
-                    <View>
-                      <Text style={[styles.hrContent, {color:  "#808196",}]}>{getChatTimeString(createdAt)}</Text>
-                    </View>
-                    <View style={styles.border}/>
-                  </View>
-              )
-            })
-        )
-      }
+      {renderTime()}
       <TouchableOpacity
         onPress={() => !!attachment ? onPreview() : setShowDetails(!showDetails)}
         onLongPress={(isSender && !(deleted || unSend || system)) ? onLongPress : null}
@@ -336,13 +392,16 @@ const ChatBubble:FC<Props> = ({
         <View style={[styles.container, { maxWidth }, style]}>
           {
             !isSender ?(
-              <ProfileImage
-                image={sender?.profilePicture?.thumb}
-                name={`${sender.firstName} ${sender.lastName}`}
-                size={25}
-                textSize={10}
+              <View
                 style={{ marginLeft: -5 }}
-              />
+              >
+                <ProfileImage
+                  image={sender?.profilePicture?.thumb}
+                  name={`${sender.firstName} ${sender.lastName}`}
+                  size={25}
+                  textSize={10}
+                />
+              </View>
             ) : null
           }
           {
@@ -440,12 +499,12 @@ const ChatBubble:FC<Props> = ({
             {
               seenByEveryone ? (
                 <Text
-                  color={text.default}
+                  color={'#64748B'}
                   numberOfLines={2}
                   size={10}
                 >
                   <Text
-                    color={text.default}
+                    color={'#64748B'}
                     size={10}
                     style={{ fontFamily: Regular500 }}
                   >

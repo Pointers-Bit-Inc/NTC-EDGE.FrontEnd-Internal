@@ -1,6 +1,5 @@
 import {TouchableOpacity} from "react-native";
-
-const React = require('react');
+import React,{memo} from "react";
 const { ViewPropTypes } = ReactNative = require('react-native');
 const PropTypes = require('prop-types');
 const createReactClass = require('create-react-class');
@@ -114,4 +113,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = DefaultTabBar;
+module.exports = (DefaultTabBar);

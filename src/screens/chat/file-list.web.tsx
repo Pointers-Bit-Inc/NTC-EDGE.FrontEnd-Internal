@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, FlatList, TouchableOpacity, InteractionManager, ActivityIndicator, Dimensions, Image } from 'react-native'
+import { View, StyleSheet, FlatList, TouchableOpacity, InteractionManager, ActivityIndicator, Dimensions, Image, Linking } from 'react-native'
 import Modal from 'react-native-modal';
 import Text from '@components/atoms/text'
 import { ArrowDownIcon, CheckIcon, CloseIcon, DownloadIcon, FileIcon, MinusIcon, NewCheckIcon, NewFileIcon, TrashIcon } from '@components/atoms/icon';
@@ -16,6 +16,7 @@ import {
 import { text } from '@styles/color';
 import { FileItem } from '@components/molecules/list-item';
 import {fontValue as RFValue} from "@pages/activities/fontValue";
+import useDownload from 'src/hooks/useDownload';
 
 const { width, height } = Dimensions.get('window');
 
@@ -158,7 +159,9 @@ const FileList = () => {
     deleteMessage,
   } = useSignalr();
 
-
+  const {
+    downloadFile,
+  } = useDownload();
 
   const fetchMoreMessages = (isPressed = false) => {
     if ((!hasMore || fetching || hasError || loading) && !isPressed) return;
@@ -291,7 +294,37 @@ const FileList = () => {
 
   const onDownload = async () => {
     
-  
+    if (selectedData) {
+      const promises:any = [];
+      setDownloading(true);
+      setDownloaded({});
+      setProgress({});
+      setError({});
+      selectedData.map((data:IMessages, index:number) => {
+        const delay = 100 * index;
+        promises.push(
+          new Promise(async (resolve, reject) => {
+            await new Promise(res => setTimeout(res, delay));
+            downloadFile(data.attachment)
+            .then((res) => {
+              setDownloaded((d:any) => ({ ...d, [data._id]: true }));
+              resolve(res);
+            })
+            .catch((err) => {
+              setError((err:any) => ({ ...err, [data._id]: true }));
+              reject(err);
+            })
+          })
+        )        
+      });
+
+      Promise.all(promises).then(function(values) {
+        setDownloading(false);
+      })
+      .catch((err = []) => {
+        setDownloading(false);
+      });
+    }
   }
 
   const emptyComponent = () => (
@@ -434,7 +467,7 @@ const FileList = () => {
         onSwipeComplete={() => setPreview({})}
         style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 15 }}
       >
-        <View style={{ position: 'absolute', top: 10, left: 0 }}>
+        <View style={{ position: 'absolute', top: 0, left: 0 }}>
           <TouchableOpacity onPress={() => setPreview({})}>
             <CloseIcon
               type={'md-close'}
@@ -462,9 +495,22 @@ const FileList = () => {
                 style={{ textAlign: 'center', marginTop: 15 }}
                 color={'white'}
                 size={18}
+                numberOfLines={3}
               >
                 {preview?.attachment?.name}
               </Text>
+              <View style={{ justifyContent: 'center', marginTop: 30 }}>
+                <TouchableOpacity onPress={() => Linking.openURL(preview?.attachment?.uri)}>
+                  <View style={{ paddingHorizontal: 15, paddingVertical: 10, backgroundColor: '#2863D6', borderRadius: 10 }}>
+                    <Text
+                      color={'white'}
+                      size={16}
+                    >
+                      Download
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           )
         }

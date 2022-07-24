@@ -9,7 +9,13 @@ const {
     SET_TAB_BAR_HEIGHT,
     SET_APPLICATION_ITEM,
     SET_FILTER_RECT,
-    SET_RIGHT_LAYOUT_COMPONENT
+    SET_RIGHT_LAYOUT_COMPONENT,
+    SET_TOPBARNAV,
+    SET_ACTIVITY_SIZE,
+    SET_SELECTED_YPOS,
+    UPDATE_APPLICATIONS,
+    SET_HAS_CHANGE,
+    SET_EDIT
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -18,10 +24,35 @@ export function setPinnedApplication(payload) {
         payload,
     };
 }
-
+export function setHasChange(payload) {
+    return {
+        type: SET_HAS_CHANGE,
+        payload,
+    };
+}
+export function setEdit(payload) {
+    return {
+        type: SET_EDIT,
+        payload,
+    };
+}
 export function updateApplicationStatus(payload) {
     return {
         type: UPDATE_APPLICATION_STATUS,
+        payload,
+    };
+}
+
+export function setTopBarNav(payload) {
+    return {
+        type: SET_TOPBARNAV,
+        payload,
+    };
+}
+
+export function setactivitySizeComponent(payload) {
+    return {
+        type: SET_ACTIVITY_SIZE,
         payload,
     };
 }
@@ -64,6 +95,12 @@ export function handleInfiniteLoad(payload) {
         payload,
     };
 }
+export function updateApplications(payload) {
+    return {
+        type: UPDATE_APPLICATIONS,
+        payload,
+    };
+}
 
 export function setFilterRect(payload) {
     return {
@@ -82,6 +119,13 @@ export function setRightLayoutComponent(payload) {
 export function setApplicationItem(payload) {
     return {
         type: SET_APPLICATION_ITEM,
+        payload,
+    };
+}
+
+export function setSelectedYPos(payload) {
+    return {
+        type: SET_SELECTED_YPOS,
         payload,
     };
 }

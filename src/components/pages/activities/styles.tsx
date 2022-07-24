@@ -1,11 +1,11 @@
 import {Platform , StyleSheet} from "react-native";
-import {Bold} from "@styles/font";
+import {Bold, Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import hairlineWidth = StyleSheet.hairlineWidth;
 
 export const styles = StyleSheet.create({
     pinnedActivityContainer:{
-      
+
         shadowColor: "rgba(0,0,0,0.1)",
         shadowOffset: {
             width: 0,
@@ -15,6 +15,10 @@ export const styles = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 10,
 
+    },
+    noContent:{
+        fontFamily:Regular,
+        textAlign:"center",alignSelf:"center",color:"#A0A3BD",fontSize:fontValue(24)
     },
     shadow: {
         shadowColor: "rgba(0,0,0,0.1)",
@@ -27,8 +31,7 @@ export const styles = StyleSheet.create({
         shadowRadius: 10,
     },
     container: {
-        zIndex: 1,
-
+        zIndex: 2,
         backgroundColor: "rgba(230, 230, 230,1)"
     },
     horizontal: {
@@ -44,16 +47,15 @@ export const styles = StyleSheet.create({
     rect: {
         ...Platform.select({
             native: {
-                    paddingTop : 40 ,
-                    padding : 30 ,
+                paddingTop : 0,
+                padding : 30 ,
             },
             default: {
-               paddingTop: 10,
+                paddingTop: 10,
                 paddingHorizontal : 24 ,
             }
         }),
         paddingVertical:15,
-
 
         flexDirection: "row"
     },
@@ -87,6 +89,7 @@ export const styles = StyleSheet.create({
 
     },
     searcg: {
+        zIndex: 0,
         left: 0,
         right: 0,
     },
@@ -161,7 +164,7 @@ export const styles = StyleSheet.create({
         paddingVertical: 20,
         justifyContent: "space-between",
         flexDirection: "row",
-           alignItems: "center"
+        alignItems: "center"
     },
 
     pinnedgroup: {
@@ -276,7 +279,7 @@ export const styles = StyleSheet.create({
         height: 80
     },
     rect11: {
-       alignSelf: "center", justifyContent: "center",
+        alignSelf: "center", justifyContent: "center",
         borderRadius: 25,
         top: 27,
         left: 0,
@@ -525,5 +528,36 @@ export const styles = StyleSheet.create({
     group4StackStack: {
         width: 292,
         height: 80
-    }
+    },
+    header:{
+        borderBottomWidth:hairlineWidth,
+        borderBottomColor:"#EFEFEF",
+        paddingBottom: 26,
+    },
+    headerContent:{
+        justifyContent:"center",
+        flexDirection:'row',
+        alignItems:'center',
+        backgroundColor:"#fff",
+        paddingTop:15,
+        paddingBottom: 13.5,
+        paddingHorizontal:26
+    },
+    titleContainer:{
+        flex:1
+    },
+    search:{
+        fontSize: Platform.isPad ? 24 :16,
+        paddingLeft:fontValue(35 ),
+        borderRadius:10,
+        padding:12,
+        backgroundColor:"#F0F0F0"
+    },
+    searchIcon:{
+        justifyContent:"center",
+        alignItems:"center",
+        height:"100%",
+        marginLeft:15,
+        position:"absolute",
+    },
 });

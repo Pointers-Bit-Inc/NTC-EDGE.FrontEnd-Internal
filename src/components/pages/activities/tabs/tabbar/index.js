@@ -1,132 +1,75 @@
-import React , {Component} from 'react';
-import {Animated , ScrollView , Text , TouchableOpacity , View} from 'react-native';
+import React, {Component, memo} from 'react';
+import { Text, TouchableOpacity, View, Animated, ScrollView } from 'react-native';
 import MatrixMath from 'react-native/Libraries/Utilities/MatrixMath';
 
 import styles from './styles';
 
-function transformOrigin(matrix , origin) {
-    const { x , y , z } = origin;
+function transformOrigin(matrix, origin) {
+    const { x, y, z } = origin;
 
     const translate = MatrixMath.createIdentityMatrix();
-    MatrixMath.reuseTranslate3dCommand(translate , x , y , z);
-    MatrixMath.multiplyInto(matrix , translate , matrix);
+    MatrixMath.reuseTranslate3dCommand(translate, x, y, z);
+    MatrixMath.multiplyInto(matrix, translate, matrix);
 
     const untranslate = MatrixMath.createIdentityMatrix();
-    MatrixMath.reuseTranslate3dCommand(untranslate , -x , -y , -z);
-    MatrixMath.multiplyInto(matrix , matrix , untranslate);
+    MatrixMath.reuseTranslate3dCommand(untranslate, -x, -y, -z);
+    MatrixMath.multiplyInto(matrix, matrix, untranslate);
 }
 
-function createTranslateXScaleX(scaleXFactor , x) {
-    // prettier-ignore
+function createTranslateXScaleX(scaleXFactor, x) {
     return [
-        scaleXFactor , 0 , 0 , 0 ,
-        0 , 1 , 0 , 0 ,
-        0 , 0 , 1 , 0 ,
-        x , 0 , 0 , 1 ,
+        scaleXFactor, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        x, 0, 0, 1,
     ];
 }
 
-export type TabType = {
-    label: string,
-    badge: string,
-    badgeColor?: string,
-    [string]: any,
-};
 
-export type Props = {
-    goToPage: Function,
-    activeTab: number,
-    tabs: TabType[],
-    underlineColor: string,
-    underlineHeight: number,
-    underlineBottomPosition: number,
-    backgroundColor: string,
-    activeTextColor: string,
-    inactiveTextColor: string,
-    tabBadgeColor: string,
-    scrollValue: Animated.Value,
-    scrollContainerStyle: Object,
-    tabStyles: {
-        tab?: Object,
-        badgeBubble?: Object,
-        badgeText?: Object,
-    },
-    tabMargin: number,
-    style: Object,
-    activeTabTextStyle: Object,
-    tabBarTextStyle: Object,
-    tabBarStyle: Object,
-    renderTab: (
-        tab: TabType ,
-        page: number ,
-        isTabActive: boolean ,
-        onPressHandler: Function ,
-        onTabLayout: Function ,
-    ) => any,
-};
-
-type State = {
-    renderUnderline: boolean,
-    tabScrollValue: number,
-};
-
-type LayoutType = {
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-};
-
-type TabStateType = {
-    [string | number]: LayoutType,
-};
-
-class TabBar extends Component<Props , State> {
+class TabBar extends Component{
     static defaultProps = {
-        tabMargin : 20 ,
-        tabBarTextStyle : {} ,
-        tabStyles : {
-            tab : {} ,
-            badgeBubble : {} ,
-            badgeText : {} ,
-        } ,
-        scrollContainerStyle : {} ,
-        style : {} ,
-        underlineColor : 'navy' ,
-        underlineHeight : 2 ,
-        underlineBottomPosition : 0 ,
+        tabMargin: 20,
+        tabBarTextStyle: {},
+        tabStyles: {
+            tab: {},
+        },
+        scrollContainerStyle: {},
+        style: {},
+        underlineColor: 'navy',
+        underlineHeight: 2,
+        underlineBottomPosition: 0,
     };
-    initialSetupWasDone: boolean = false;
-    currentContentOffset: { y: number, x: number } = { x : 0 , y : 0 };
-    tabState: TabStateType = {};
-    tabContainerLayout: LayoutType = {
-        width : 0 ,
-        height : 0 ,
-        x : 0 ,
-        y : 0 ,
+    initialSetupWasDone = false;
+    currentContentOffset= { x: 0, y: 0 };
+    tabState = {};
+    tabContainerLayout = {
+        width: 0,
+        height: 0,
+        x: 0,
+        y: 0,
     };
-    scrollContainerLayout: LayoutType = {
-        width : 0 ,
-        height : 0 ,
-        x : 0 ,
-        y : 0 ,
+    scrollContainerLayout = {
+        width: 0,
+        height: 0,
+        x: 0,
+        y: 0,
     };
-    underlineRef: ?any = null;
-    scrollView: ?any = null;
-    _animateListenerId: ?string = null;
-    offsetCollection: ?Object = null;
-    widthCollection: ?Object = null;
-    scrollOffsetsCollection: ?Object = null;
+    underlineRef = null;
+    scrollView = null;
+    _animateListenerId = null;
+    offsetCollection = null;
+    widthCollection = null;
+    scrollOffsetsCollection = null;
     state = {
-        renderUnderline : false ,
-        tabScrollValue : 0 ,
+        renderUnderline: false,
+        tabScrollValue: 0,
     };
 
     componentDidMount() {
         this._animateListenerId = this.props.scrollValue.addListener(this.handleScrolling);
     }
 
-    shouldComponentUpdate(nextProps: Props , nextState: State) {
+    shouldComponentUpdate(nextProps, nextState) {
         const serializedState = JSON.stringify(this.props) + JSON.stringify(this.state);
         const serializedNextState = JSON.stringify(nextProps) + JSON.stringify(nextState);
         return serializedState !== serializedNextState;
@@ -138,69 +81,60 @@ class TabBar extends Component<Props , State> {
         }
     }
 
-    measureTabsContainer = (event: Object) => {
+    measureTabsContainer = (event) => {
         this.tabContainerLayout = event.nativeEvent.layout;
         this.checkMeasures();
     };
 
-    onScrollContentSizeChange = (width: number , height: number) => {
-        this.scrollContainerLayout = { width , height , x : 0 , y : 0 };
-        this.checkMeasures();
+    onScrollContentSizeChange = (width, height) => {
+        this.scrollContainerLayout = { width, height, x: 0, y: 0 };
+        this.checkMeasures()
     };
 
-    setUnderlineRef = (ref: any) => {
+    setUnderlineRef = (ref) => {
         this.underlineRef = ref;
     };
 
-    handleScrolling = (event: { value: number }) => {
+    handleScrolling = (event) => {
         const { value } = event;
-        const dx = (
-            this.offsetCollection && this.offsetCollection._interpolation(value)) || 0;
-        const scaleX = (
-            this.widthCollection && this.widthCollection._interpolation(value)) || 0;
-        this.applyTransformToUnderline(scaleX , dx);
+        const dx = (this.offsetCollection && this.offsetCollection._interpolation(value)) || 0;
+        const scaleX = (this.widthCollection && this.widthCollection._interpolation(value)) || 0;
+        this.applyTransformToUnderline(scaleX, dx);
         if (this.scrollOffsetsCollection) {
             const scrollOffset =
                 this.scrollOffsetsCollection && this.scrollOffsetsCollection._interpolation(value);
-            if (this.scrollView) {
-                this.scrollView.scrollTo({ x : scrollOffset , animated : false });
+            const curOffsetX = this.currentContentOffset.x;
+            const tabContainerWidth = this.tabContainerLayout.width;
+            const scrollWidth = this.scrollContainerLayout.width;
+            const restSpaceWillBe = scrollWidth - (tabContainerWidth + scrollOffset);
+            const restSpaceNow = scrollWidth - (tabContainerWidth + curOffsetX);
+            const shouldScroll = Math.abs(restSpaceNow - restSpaceWillBe) < tabContainerWidth / 4;
+            if (this.scrollView && shouldScroll) {
+                this.scrollView.scrollTo({ x: scrollOffset, animated: false, useNativeDriver: true });
             }
         }
     };
 
-    applyTransformToUnderline(scaleXFactor: number , dx: number) {
+    applyTransformToUnderline(scaleXFactor, dx) {
         const { underlineRef } = this;
         if (!underlineRef) return;
-        const matrix = createTranslateXScaleX(scaleXFactor , dx);
-        transformOrigin(matrix , { x : -0.5 , y : 0 , z : 0 });
+        const matrix = createTranslateXScaleX(scaleXFactor, dx);
+        transformOrigin(matrix, { x: -0.5, y: 0, z: 0 });
         underlineRef.setNativeProps({
-            style : {
-                transform : [
+            style: {
+                transform: [
                     {
-                        matrix ,
-                    } ,
-                ] ,
-            } ,
+                        matrix,
+                    },
+                ],
+            },
         });
     }
-
-    onTabLayout(event: Object , page: number) {
-        const { x , y , width , height } = event.nativeEvent.layout;
-        this.tabState[page] = { x , y , width , height };
-        if (this.state.renderUnderline) {
-            this.calculateInterpolations();
-            // The next lines may look awful and it will be true
-            // But they are needed to update underline without glitches
-            // FIXME: Find another way to rerender update underline without glitches
-            this.setState({ renderUnderline : false } , () => {
-                this.setState({ renderUnderline : true } , () => {
-                    this.handleScrolling({ value : this.props.scrollValue.__getValue() });
-                });
-            });
-            return;
-        }
+    onTabLayout(event, page) {
+        const { x, y, width, height } = event.nativeEvent.layout;
+        this.tabState[page] = { x, y, width, height };
         if (this.props.tabs.length === Object.keys(this.tabState).length) {
-            this.setState({ renderUnderline : true } , this.checkMeasures);
+            this.setState({ renderUnderline: true }, this.checkMeasures);
         }
     }
 
@@ -210,12 +144,12 @@ class TabBar extends Component<Props , State> {
             this.tabContainerLayout.width !== 0 &&
             this.scrollContainerLayout.width !== 0
         ) {
-            this.calculateInterpolations();
             if (!this.initialSetupWasDone) {
                 const { activeTab } = this.props;
-                this.handleScrolling({ value : activeTab });
+                this.applyTransformToUnderline(this.tabState[activeTab].width, this.tabState[activeTab].x);
                 this.initialSetupWasDone = true;
             }
+            this.calculateInterpolations();
         }
     };
 
@@ -226,7 +160,7 @@ class TabBar extends Component<Props , State> {
         const tabContainerWidth = this.tabContainerLayout.width;
         const scrollWidth = this.scrollContainerLayout.width;
         const marginValue = this.props.tabMargin;
-        for (let i = 0 , len = inputRange.length; i < len; i += 1) {
+        for (let i = 0, len = inputRange.length; i < len; i += 1) {
             const key = inputRange[i];
             outputRangeLeft.push(this.tabState[key].x);
             outputRangeWidth.push(this.tabState[key].width);
@@ -241,16 +175,23 @@ class TabBar extends Component<Props , State> {
         }
         // $FlowFixMe
         this.offsetCollection = this.props.scrollValue.interpolate({
-            inputRange , // $FlowFixMe
-            outputRange : outputRangeLeft , // $FlowFixMe
+            inputRange, // $FlowFixMe
+            outputRange: outputRangeLeft, // $FlowFixMe
         });
         // $FlowFixMe
         this.widthCollection = this.props.scrollValue.interpolate({
-            inputRange , // $FlowFixMe
-            outputRange : outputRangeWidth , // $FlowFixMe
+            inputRange, // $FlowFixMe
+            outputRange: outputRangeWidth, // $FlowFixMe
         });
-        const outputRangeScroll = [0];
-        for (let i = 1 , len = inputRange.length; i < len; i += 1) {
+        if (scrollWidth <= tabContainerWidth) {
+            return;
+        }
+        const outputRangeScroll = [];
+        for (let i = 0, len = inputRange.length; i < len; i += 1) {
+            if (i === 0) {
+                outputRangeScroll.push(0);
+                continue; // eslint-disable-line
+            }
             const isLast = i === len - 1;
             const offset = outputRangeLeft[i];
             const tabWidth = outputRangeWidth[i];
@@ -259,129 +200,115 @@ class TabBar extends Component<Props , State> {
 
             if (offset + tabWidth + nextTabWidth + 2 * marginValue >= scrollWidth) {
                 if (isLast) {
-                    scrollOffset = offset - (
-                        tabContainerWidth - (
-                            tabWidth + marginValue));
+                    scrollOffset = offset - (tabContainerWidth - (tabWidth + marginValue));
                 } else {
                     // 1.3 - is a magical constant
                     // actually it is just 1.3 of margins. If to place 2
                     // scrollOffset will match with last tab's offset
                     // And it will prevent bounce effect while scrolling
                     scrollOffset =
-                        offset - (
-                            tabContainerWidth - (
-                                tabWidth + nextTabWidth + 1.3 * marginValue));
+                        offset - (tabContainerWidth - (tabWidth + nextTabWidth + 1.3 * marginValue));
                 }
             } else {
                 scrollOffset =
                     offset -
-                    (
-                        tabContainerWidth - (
-                            tabWidth + marginValue) + (
-                            nextTabWidth + 2 * marginValue)) / 2;
+                    (tabContainerWidth - (tabWidth + marginValue) + (nextTabWidth + 2 * marginValue)) / 2;
                 scrollOffset = scrollOffset >= 0 ? scrollOffset : 0;
             }
             outputRangeScroll.push(scrollOffset);
         }
-        if (scrollWidth <= tabContainerWidth) {
-            this.scrollOffsetsCollection = this.props.scrollValue.interpolate({
-                inputRange : [-1 , 0] , // $FlowFixMe
-                outputRange : [-40 , 0] , // $FlowFixMe
-                extrapolate : 'clamp' , // $FlowFixMe
-            });
-            return;
-        }
         // $FlowFixMe
         this.scrollOffsetsCollection = this.props.scrollValue.interpolate({
-            inputRange : [-1 , ...inputRange] , // $FlowFixMe
-            outputRange : [-40 , ...outputRangeScroll] , // $FlowFixMe
+            inputRange: [-1, ...inputRange], // $FlowFixMe
+            outputRange: [-40, ...outputRangeScroll], // $FlowFixMe
         });
     };
 
-    onTabBarScrolling = (e: Object) => {
+    onTabBarScrolling = (e) => {
         this.currentContentOffset = e.nativeEvent.contentOffset;
     };
 
-    renderUnderline() {
+    renderUnderline () {
         const tabUnderlineStyle = {
-            position : 'absolute' ,
-            backgroundColor : this.props.underlineColor ,
-            height : this.props.underlineHeight ,
-            width : 1 ,
-            bottom : this.props.underlineBottomPosition ,
-            padding : 0 ,
+            position: 'absolute',
+            backgroundColor: this.props.underlineColor,
+            height: this.props.underlineHeight,
+            width: 1,
+            bottom: this.props.underlineBottomPosition,
+            padding: 0,
         };
 
-        return <Animated.View ref={ this.setUnderlineRef } style={ [tabUnderlineStyle] }/>;
+        return <Animated.View ref={this.setUnderlineRef} style={[tabUnderlineStyle]} />;
     }
 
     renderTab = (
-        tab: TabType ,
-        page: number ,
-        isTabActive: boolean ,
-        onPressHandler: Function ,
-        onTabLayout: Function ,
+        tab,
+        page,
+        isTabActive,
+        onPressHandler,
+        onTabLayout,
     ) => {
-        const { tabBadgeColor , activeTabTextStyle } = this.props;
-        const { label , badge , badgeColor } = tab;
+        const { tabBadgeColor, activeTabTextStyle } = this.props;
+        const { label, badge, badgeColor } = tab;
         const activeTextColor = this.props.activeTextColor || 'navy';
         const inactiveTextColor = this.props.inactiveTextColor || 'black';
         const textStyle = this.props.tabBarTextStyle;
         return (
             <TouchableOpacity
-                style={ [
-                    styles.tab ,
-                    this.props.tabMargin && { marginLeft : this.props.tabMargin } ,
-                    this.props.tabStyles.tab ,
-                ] }
-                key={ page }
-                onPress={ onPressHandler }
-                onLayout={ onTabLayout }
+                style={[
+                    styles.tab,
+                    this.props.tabMargin && { marginLeft: this.props.tabMargin },
+                    this.props.tabStyles.tab,
+                ]}
+                key={page}
+                onPress={onPressHandler}
+                onLayout={onTabLayout}
             >
                 <Text
-                    style={ [
-                        { color : isTabActive ? activeTextColor : inactiveTextColor } ,
-                        textStyle ,
-                        isTabActive && activeTabTextStyle ,
-                    ] }
+                    style={[
+                        {
+                            color: isTabActive ? activeTextColor : inactiveTextColor,
+                        },
+                        textStyle,
+                        isTabActive && activeTabTextStyle,
+                    ]}
                 >
-                    { label }
+                    {label}
                 </Text>
-                { badge != null &&
-                (
-                    parseInt(badge , 10) > 0) && (
-                    <View
-                        style={ [
-                            styles.badgeBubble ,
-                            this.props.tabStyles.badgeBubble ,
-                            { backgroundColor : badgeColor || tabBadgeColor || activeTextColor } ,
-                        ] }
-                    >
-                        <Text style={ [styles.badgeText , this.props.tabStyles.badgeText] }>{ badge }</Text>
-                    </View>
-                ) }
+                {badge != null &&
+                    +badge > 0 && (
+                        <View
+                            style={[
+                                styles.badgeBubble,
+                                this.props.tabStyles.badgeBubble,
+                                { backgroundColor: badgeColor || tabBadgeColor || activeTextColor },
+                            ]}
+                        >
+                            <Text style={[styles.badgeText, this.props.tabStyles.badgeText]}>{badge}</Text>
+                        </View>
+                    )}
             </TouchableOpacity>
         );
     };
 
     render() {
         const {
-            style ,
-            backgroundColor ,
-            tabBarStyle ,
-            tabMargin ,
-            scrollContainerStyle ,
-            tabs ,
+            style,
+            backgroundColor,
+            tabBarStyle,
+            tabMargin,
+            scrollContainerStyle,
+            tabs,
         } = this.props;
         return (
             <View
-                style={ [styles.tabs , { backgroundColor } , style , tabBarStyle] }
-                onLayout={ this.measureTabsContainer }
+                style={[styles.tabs, { backgroundColor }, style, tabBarStyle]}
+                onLayout={this.measureTabsContainer}
             >
                 <ScrollView
                     horizontal
                     contentContainerStyle={ [
-                        { width : "100%" } ,
+                        tabs?.length < 4 ? { width : "100%" } : {},
                         styles.scrollContainer ,
                         tabMargin && { paddingRight : tabMargin } ,
                         scrollContainerStyle ,
@@ -391,7 +318,7 @@ class TabBar extends Component<Props , State> {
                     ref={ node => (
                         this.scrollView = node) }
                     bounces={ false }
-                    scrollEventThrottle={ 1 }
+                    scrollEventThrottle={ 16 }
                     onScroll={ this.onTabBarScrolling }
                 >
                     <View style={ { flexDirection : "row" , flex : 1 , width : "100%" , justifyContent : "space-evenly" } }>
@@ -403,9 +330,11 @@ class TabBar extends Component<Props , State> {
                             return renderTab(tab , page , isTabActive , onPressHandler , onTabLayout);
                         }) }
 
+
+
                     </View>
 
-                    { this.state.renderUnderline && this.renderUnderline() }
+                   { this.state.renderUnderline && this.renderUnderline() }
 
                 </ScrollView>
             </View>
@@ -413,4 +342,4 @@ class TabBar extends Component<Props , State> {
     }
 }
 
-export default TabBar;
+export default (TabBar);

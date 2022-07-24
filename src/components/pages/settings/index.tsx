@@ -1,43 +1,48 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
-import { Image, View } from 'react-native';
+import { ActivityIndicator, Image, View } from 'react-native';
 import Text from '@atoms/text';
-import BellIcon from "@assets/svg/bell";
-import DonutIcon from "@assets/svg/donut";
 import LogoutIcon from "@assets/svg/logout";
-import { ArrowRightIcon, CloseIcon, ExclamationIcon, RightIcon } from '@atoms/icon';
+import { ArrowRightIcon, CloseIcon, ExclamationIcon, RightIcon, ToggleIcon } from '@atoms/icon';
 import Alert from '@atoms/alert';
 import Button from '@atoms/button';
 import NavBar from '@molecules/navbar';
 import {disabledColor , text} from '@styles/color';
 import styles from './styles';
 import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import {resetUser , setUser} from 'src/reducers/user/actions'
-import { resetMeeting } from 'src/reducers/meeting/actions';
-import { resetChannel } from 'src/reducers/channel/actions';
-import {RFValue} from "react-native-responsive-fontsize";
-import Api from "../../../services/api";
 import {StackActions} from "@react-navigation/native";
 import {fontValue} from "@pages/activities/fontValue";
+import useLogout from "../../../hooks/useLogout";
 import {
   setApplicationItem,
   setApplications,
   setNotPinnedApplication,
   setPinnedApplication
 } from "../../../reducers/application/actions";
-// import OneSignal from 'react-native-onesignal';
-import useOneSignal from 'src/hooks/useOneSignal';
 import {setResetFilterStatus} from "../../../reducers/activity/actions";
+import {resetUser, setBiometricsLogin} from "../../../reducers/user/actions";
+import {resetMeeting} from "../../../reducers/meeting/actions";
+import {resetChannel} from "../../../reducers/channel/actions";
+import useOneSignal from "../../../hooks/useOneSignal";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import useBiometrics, { resetCredentials } from 'src/hooks/useBiometrics';
+
 
 export default ({
   navigation
 }: any) => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootStateOrAny) => state.user) || {};
+  const biometricsLogin = user.biometrics;
   const profilePicture = user?.profilePicture?.small;
   const photo = profilePicture ? {uri: profilePicture} : require('@assets/avatar.png');
   const [visible, setVisible] = useState(false);
+  const [enableBiometrics, setEnableBiometrics] = useState(false);
   const { destroy } = useOneSignal(user);
+  const {
+    isBiometricSupported,
+  } = useBiometrics();
+
   const settings = [
     /*{
       label: 'Notifications',
@@ -61,6 +66,25 @@ export default ({
       onPress: () => {},
     },*/
   ];
+  const biometrics = useMemo(() => ({
+    label: 'Login with biometrics',
+    value: 'biometrics',
+    disabled: !isBiometricSupported,
+    icon: <MaterialCommunityIcons
+      name="fingerprint"
+      size={22}
+      color={!isBiometricSupported ? disabledColor : 'black'}
+    />,
+    rightIcon: <ToggleIcon
+      style={[
+        enableBiometrics ? styles.toggleActive : styles.toggleDefault,
+        !isBiometricSupported && { color: disabledColor }
+      ]}
+      size={28}
+    />,
+    onPress: () => onRequestBiometrics(),
+  }), [isBiometricSupported, enableBiometrics])
+
   const logout = {
     label: 'Log out',
     value: 'logout',
@@ -68,10 +92,9 @@ export default ({
     onPress: () => setVisible(true),
   };
 
-  const onLogout =  useCallback(() => {
-    const api = Api(user.sessionToken);
+  const onLogout = useCallback(() => {
     setVisible(false)
-    setTimeout(() => {
+    setTimeout(()=>{
       dispatch(setApplications([]))
       dispatch(setPinnedApplication([]))
       dispatch(setNotPinnedApplication([]))
@@ -81,9 +104,11 @@ export default ({
       dispatch(resetMeeting());
       dispatch(resetChannel());
       destroy();
+      if (!enableBiometrics) resetCredentials();
       navigation.dispatch(StackActions.replace('Login'));
-    }, 500);
-  }, []);
+    },500);
+  }, [enableBiometrics]);
+
   const renderRow = ({item}: any) => {
     return (
       <TouchableOpacity disabled={item?.disabled ? true : false} onPress={item?.onPress}>
@@ -93,22 +118,36 @@ export default ({
             <Text style={[styles.textSettings, !!item?.disabled && {color: disabledColor} , item?.value === 'logout' && {color: text.error}]}>{item?.label}</Text>
           </View>
           {
-            item?.value !== 'logout' &&
+            (item?.value !== 'logout' && !item?.rightIcon) &&
             <RightIcon />
           }
+          {item?.rightIcon}
         </View>
       </TouchableOpacity>
     )
   };
+
+  const onRequestBiometrics = () => {
+    if (enableBiometrics) {
+      dispatch(setBiometricsLogin(null));
+    } else {
+      dispatch(setBiometricsLogin(user._id));
+    }
+  };
+
+  useEffect(() => {
+    if (biometricsLogin) {
+      setEnableBiometrics(true);
+    } else {
+      setEnableBiometrics(false);
+    }
+  }, [biometricsLogin]);
 
   const separator = <View style={styles.separator} />;
   const separator2 = <View style={styles.separator2} />;
 
   return (
     <>
-
-
-
       <NavBar
         title='Preview'
         leftIcon={<CloseIcon type='close' color='#fff' />}
@@ -142,13 +181,13 @@ export default ({
         </View>
 
         {separator}
-
+        <View style={[styles.sectionContainer, { paddingBottom: 10 }]}>
+          {renderRow({item: biometrics})}
+        </View>
         <View style={styles.sectionContainer}>
           {renderRow({item: logout})}
-
         </View>
         <Alert
-
             visible={visible}
             title='Log out'
             message='Are you sure you want to log out?'

@@ -1,3 +1,5 @@
+import Text from "@atoms/text";
+
 const React = require('react');
 const { Component } = React;
 const { ViewPropTypes } = ReactNative = require('react-native');
@@ -15,6 +17,9 @@ const {
 
 const TimerMixin = require('react-timer-mixin');
 import PagerView from 'react-native-pager-view';
+import {infoColor} from "@styles/color";
+import {ActivityIndicator} from "react-native";
+import {memo} from "react";
 
 const SceneComponent = require('./SceneComponent');
 const DefaultTabBar = require('./DefaultTabBar');
@@ -48,6 +53,7 @@ const ScrollableTabView = createReactClass({
     contentProps: PropTypes.object,
     scrollWithoutAnimation: PropTypes.bool,
     locked: PropTypes.bool,
+    scrollStyle:PropTypes.object,
     prerenderingSiblingsNumber: PropTypes.number,
   },
 
@@ -246,6 +252,8 @@ const ScrollableTabView = createReactClass({
         keyboardDismissMode="on-drag"
         {...this.props.contentProps}
       >
+
+
           {scenes}
       </Animated.ScrollView>;
     } else {
@@ -272,6 +280,7 @@ const ScrollableTabView = createReactClass({
         ref={(scrollView) => { this.scrollView = scrollView; }}
         {...this.props.contentProps}
       >
+
         {scenes}
       </AnimatedViewPagerAndroid>;
     }
@@ -340,7 +349,7 @@ const ScrollableTabView = createReactClass({
     if (!width || width <= 0 || Math.round(width) === Math.round(this.state.containerWidth)) {
       return;
     }
-    
+
     if (Platform.OS === 'ios') {
       const containerWidthAnimatedValue = new Animated.Value(width);
       // Need to call __makeNative manually to avoid a native animated bug. See
@@ -396,13 +405,15 @@ const ScrollableTabView = createReactClass({
 
     return <View style={[styles.container,  this.props.style, ]} onLayout={this._handleLayout}>
       {this.props.tabBarPosition === 'top' && this.renderTabBar(tabBarProps)}
-      {this.renderScrollableContent()}
+
+       {this.renderScrollableContent()}
+
       {(this.props.tabBarPosition === 'bottom' || overlayTabs) && this.renderTabBar(tabBarProps)}
     </View>;
   },
 });
 
-export default ScrollableTabView;
+export default (ScrollableTabView);
 
 const styles = StyleSheet.create({
   container: {

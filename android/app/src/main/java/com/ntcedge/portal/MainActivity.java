@@ -1,4 +1,4 @@
-package com.ntcedge.portal;
+package portalapp.ntcedge.com;
 import expo.modules.devmenu.react.DevMenuAwareReactActivity;
 import android.content.Intent;
 import expo.modules.devlauncher.DevLauncherController;

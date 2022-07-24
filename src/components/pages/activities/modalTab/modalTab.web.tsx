@@ -1,7 +1,7 @@
-import {RootStateOrAny,useSelector} from "react-redux";
-import React,{useEffect,useState} from "react";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
+import React, {memo, useEffect, useState} from "react";
 import {ACCOUNTANT,CASHIER,CHECKER,DIRECTOR,EVALUATOR} from "../../../../reducers/activity/initialstate";
-import {StyleSheet,Text,TouchableOpacity,View} from "react-native";
+import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Regular,Regular500} from "@styles/font";
 import {ViewPaged} from 'react-scroll-paged-view'
 import TabBar from 'react-underline-tabbar'
@@ -18,9 +18,18 @@ import {Hoverable} from "react-native-web-hooks";
 import CloseIcon from "@assets/svg/close";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
 import hairlineWidth=StyleSheet.hairlineWidth;
+import EditIcon from "@assets/svg/editIcon";
+import {infoColor} from "@styles/color";
+import {fontValue} from "@pages/activities/fontValue";
+import LoadingModal from "@pages/activities/loading/loadingModal";
+import useSafeState from "../../../../hooks/useSafeState";
+import {setEditModalVisible} from "../../../../reducers/activity/actions";
+import {setEdit} from "../../../../reducers/application/actions";
 
 
 const ModalTab=props=>{
+    const dispatch=useDispatch();
+    const editModalVisible = useSelector((state: RootStateOrAny) => state.activity.editModalVisible);
     const user=useSelector((state:RootStateOrAny)=>state.user);
 
     const [tabs,setTabs]=useState([
@@ -53,7 +62,7 @@ const ModalTab=props=>{
             id:4,
             name:'SOA & Payment',
             active:false,
-            isShow:[CASHIER,ACCOUNTANT],
+            isShow:[CASHIER,ACCOUNTANT, EVALUATOR],
             label:<View style={[styles.tabItem,{gap:5}]}><SoaPaymentWebIcon/><Text
                 style={styles.tabTextItem}> SOA & Payment</Text></View>
         },
@@ -72,158 +81,228 @@ const ModalTab=props=>{
         approvalHistory,
         assignedPersonnel,
         createdAt,
-        proofOfPayment
+        proofOfPayment,
+        documents,
+        remarks,
+        paymentHistory,
+        paymentStatus,
     }=useApplicant(props.details);
+    const [paymentIndex, setPaymentIndex] = useSafeState()
     const [initialPage,setInitialPage]=useState(true);
     useEffect(()=>{
+        dispatch(setEditModalVisible(false))
         setInitialPage(true)
     },[props.details._id]);
-    return <ViewPaged
+    return <>
+        {props.loading && <LoadingModal saved={props?.saved} loading={props.loading}/>}
+        <ViewPaged
+            onChange={(pageIndex)=>{
 
-        isMovingRender
-        render
-        vertical={false}
-        renderPosition='top'
-        renderHeader={(params)=>{
-            if(initialPage){
-                params.goToPage(0);
-                setInitialPage(false)
-            }
 
-            const _tabs=[...tabs];
+                if(paymentIndex == pageIndex && !editModalVisible){
 
-            _tabs[0].label=
-                <View style={[styles.tabItem,{gap:5}]}><BasicInfoWebIcon/><Text style={[styles.tabTextItem]}>Basic
-                    Info</Text></View>;
-            _tabs[1].label=<View style={[styles.tabItem,{gap:5}]}><ApplicationDetailWebIcon/><Text
-                style={[styles.tabTextItem]}>Application Details</Text></View>;
-            _tabs[2].label=<View style={[styles.tabItem,{gap:5}]}><RequirementWebIcon/><Text
-                style={[styles.tabTextItem]}>Requirements</Text></View>;
-            _tabs[3].label=<View style={[styles.tabItem,{gap:5}]}><SoaPaymentWebIcon/><Text
-                style={[styles.tabTextItem]}> SOA & Payment</Text></View>;
-            if(params.activeTab==0){
-                _tabs.find(a=>a.id==1).label=
-                    <View style={[styles.tabItem,{gap:5}]}><BasicInfoWebIcon fill={"#2863D6"}/><Text
-                        style={[styles.tabTextItem,styles.tabSelected]}>Basic Info</Text></View>
-            }
-            if(params.activeTab==1){
-                _tabs.find(a=>a.id==2).label=
-                    <View style={[styles.tabItem,{gap:5}]}><ApplicationDetailWebIcon fill={"#2863D6"}/><Text
-                        style={[styles.tabTextItem,styles.tabSelected]}>Application Details</Text></View>
-            }
-            if(params.activeTab==2){
-                if(getRole(user,[ACCOUNTANT,CASHIER])){
-                    _tabs.find(a=>a.id==4).label=
-                        <View style={[styles.tabItem,{gap:5}]}><SoaPaymentWebIcon fill={"#2863D6"}/><Text
-                            style={[styles.tabTextItem,styles.tabSelected]}> SOA & Payment</Text></View>
-                } else{
-                    _tabs.find(a=>a.id==3).label=
-                        <View style={[styles.tabItem,{gap:5}]}><RequirementWebIcon fill={"#2863D6"}/><Text
-                            style={[styles.tabTextItem,styles.tabSelected]}>Requirements</Text></View>
+                    dispatch(setEditModalVisible(true))
+                }else if(paymentIndex != pageIndex && editModalVisible){
+
+                    dispatch(setEdit(false))
+                    dispatch(setEditModalVisible(false))
                 }
             }
-
-            function renderTab({onPress,onLayout,tab:{label}}){
-                return (
-
-                    <TouchableOpacity onPress={onPress}>
-                        <Hoverable>
-                            {isHovered=>(
-                                <View style={{
-                                    backgroundColor:isHovered ? "#DFE5F1" : undefined,
-                                    paddingVertical:25
-                                }}>
-                                    <Text>{label}</Text>
-                                </View>
-                            )}
-                        </Hoverable>
-
-                    </TouchableOpacity>
-
-                )
             }
+            isMovingRender
+            render
+            vertical={false}
+            renderPosition='top'
+            renderHeader={(params)=>{
+                if(initialPage){
+                    params.goToPage(0);
+                    setInitialPage(false)
+                }
 
-            return (
-                <View style={{
-                    borderBottomWidth:hairlineWidth,
-                    borderBottomColor:"#d2d2d2",
-                 
-                    flexDirection:"row",
-                    alignItems:"center",
-                    justifyContent:"center",
-                    backgroundColor:"#fff"
-                }}>
-                    <TabBar
-                        style={{borderBottomWidth:0,borderBottomColor:"transparent",width:"100%"}}
-                        renderTab={renderTab}
-                        scrollViewStyle={{paddingLeft:60,flex:1,justifyContent:"flex-start",gap:35}}
-                        underlineStyle={{backgroundColor:"#2863D6",paddingHorizontal:25,height:7}}
-                        tabs={tabs.filter((tab,index)=>tab.isShow.indexOf(user?.role?.key)!== -1)}
-                        {...params}
-                        vertical={false}
-                    />
-                    <View style={{paddingVertical:29.5,paddingHorizontal:25}}>
-                        <TouchableOpacity onPress={props.dismissed}>
-                            <CloseIcon width={12} height={12}/>
+                const _tabs=[...tabs];
+
+                _tabs[0].label=
+                    <View style={[styles.tabItem,{gap:5}]}><BasicInfoWebIcon/><Text style={[styles.tabTextItem]}>Basic
+                        Info</Text></View>;
+                _tabs[1].label=<View style={[styles.tabItem,{gap:5}]}><ApplicationDetailWebIcon/><Text
+                    style={[styles.tabTextItem]}>Application Details</Text></View>;
+                _tabs[2].label=<View style={[styles.tabItem,{gap:5}]}><RequirementWebIcon/><Text
+                    style={[styles.tabTextItem]}>Requirements</Text></View>;
+                _tabs[3].label=<View style={[styles.tabItem,{gap:5}]}><SoaPaymentWebIcon/><Text
+                    style={[styles.tabTextItem]}> SOA & Payment</Text></View>;
+                if(params.activeTab==0){
+                    _tabs.find(a=>a.id==1).label=
+                        <View style={[styles.tabItem,{gap:5}]}><BasicInfoWebIcon fill={"#2863D6"}/><Text
+                            style={[styles.tabTextItem,styles.tabSelected]}>Basic Info</Text></View>
+                }
+                if(params.activeTab==1){
+                    _tabs.find(a=>a.id==2).label=
+                        <View style={[styles.tabItem,{gap:5}]}><ApplicationDetailWebIcon fill={"#2863D6"}/><Text
+                            style={[styles.tabTextItem,styles.tabSelected]}>Application Details</Text></View>
+                }
+                if(params.activeTab==2){
+                    if(getRole(user,[ACCOUNTANT,CASHIER])){
+                        _tabs.find(a=>a.id==4).label=
+                            <View style={[styles.tabItem,{gap:5}]}><SoaPaymentWebIcon fill={"#2863D6"}/><Text
+                                style={[styles.tabTextItem,styles.tabSelected]}> SOA & Payment</Text></View>
+                    } else{
+                        _tabs.find(a=>a.id==3).label=
+                            <View style={[styles.tabItem,{gap:5}]}><RequirementWebIcon fill={"#2863D6"}/><Text
+                                style={[styles.tabTextItem,styles.tabSelected]}>Requirements</Text></View>
+                    }
+                }
+
+                function renderTab({onPress,onLayout,tab:{label}}){
+                    return (
+
+                        <TouchableOpacity onPress={onPress}>
+                            <Hoverable>
+                                {isHovered=>(
+                                    <View style={{
+                                        backgroundColor:isHovered ? "#DFE5F1" : undefined,
+                                        paddingVertical:25
+                                    }}>
+                                        <Text>{label}</Text>
+                                    </View>
+                                )}
+                            </Hoverable>
+
                         </TouchableOpacity>
+
+                    )
+                }
+
+                return (
+                    <View style={{
+                        borderBottomWidth:hairlineWidth,
+                        borderBottomColor:"#d2d2d2",
+
+                        flexDirection:"row",
+                        alignItems:"center",
+                        justifyContent:"center",
+                        backgroundColor:"#fff"
+                    }}>
+
+                        <TabBar
+                            style={{borderBottomWidth:0,borderBottomColor:"transparent",width:"100%"}}
+                            renderTab={renderTab}
+                            scrollViewStyle={{paddingLeft:60,flex:1,justifyContent:"flex-start",gap:35}}
+                            underlineStyle={{backgroundColor:"#2863D6",paddingHorizontal:25,height:7}}
+                            tabs={tabs.filter((tab,index)=> !(service?.serviceCode == "service-22" && tab?.id===4) && tab.isShow.indexOf(user?.role?.key)!== -1)}
+                            {...params}
+                            vertical={false}
+                        />
+
+                        {props.edit ? <TouchableOpacity  onPress={() => {
+                                props.updateApplication(() => {})
+                            }
+                            }>
+                                {props.loading ? <ActivityIndicator color={infoColor}/> :
+                                    <Text style={styles.action}>Save</Text>}
+                                {/* <EditIcon color="#606A80"/>*/}
+                            </TouchableOpacity>
+
+                            : editModalVisible ?
+                            <TouchableOpacity onPress={props.editBtn}>
+                                <Text style={styles.action}>Edit</Text>
+                            </TouchableOpacity> : <></>}
+                        <View style={{paddingVertical:29.5,paddingHorizontal:25}}>
+                            <TouchableOpacity onPress={props.dismissed}>
+                                <CloseIcon width={12} height={12}/>
+                            </TouchableOpacity>
+
+                        </View>
+
 
                     </View>
 
+                )
+            }}
+        >
+            {
 
-                </View>
-
-            )
-        }}
-    >
-        {
-
-            tabs.map((tab,index)=>{
-                const isShow=tab.isShow.indexOf(user?.role?.key)!== -1;
-                if(isShow&&tab.id===1){
+                tabs.map((tab,index)=>{
+                    const isShow=tab.isShow.indexOf(user?.role?.key)!== -1;
+                    if(isShow&&tab.id===1){
 
 
-                    return <BasicInfo
-                        tabLabel={{label:tab.name}} label={tab.name}
-                        paymentMethod={paymentMethod}
-                        service={ service }
-                        schedule={ schedule }
-                        assignedPersonnel={assignedPersonnel}
-                        approvalHistory={approvalHistory}
-                        status={props.details.status}
-                        paymentHistory={props?.details?.paymentHistory}
-                        paymentStatus={props?.details?.paymentStatus}
-                        detailsStatus={props?.details?.status}
-                        user={user}
-                        createdAt={createdAt}
-                        applicant={applicant}
-                        key={index}/>
-                } else if(isShow&&tab.id===2){
+                        return <BasicInfo saved={props.saved} loading={props.loading}
+                                          setEditAlert={props.setEditAlert}
+                                          editBtn={props.editBtn}
+                                          updateApplication={props.updateApplication}
+                                          setEdit={props.setEdit}
+                                          setUserOriginalProfileForm={props.setUserOriginalProfileForm}
+                                          userOriginalProfileForm={props.userOriginalProfileForm}
+                                          userProfileForm={props.userProfileForm}
+                                          hasChanges={props.hasChanges}
+                                          setUserProfileForm={props.setUserProfileForm}
+                                          id={props.details?._id}
+                                          edit={props.edit}
+                                          tabLabel={{label:tab.name}} label={tab.name}
+                                          paymentMethod={paymentMethod}
+                                          service={ service }
+                                          schedule={ schedule }
+                                          assignedPersonnel={assignedPersonnel}
+                                          approvalHistory={approvalHistory}
+                                          status={props.details.status}
+                                          paymentHistory={props?.details?.paymentHistory}
+                                          paymentStatus={props?.details?.paymentStatus}
+                                          detailsStatus={props?.details?.status}
+                                          user={user}
+                                          remarks={remarks}
+                                          createdAt={createdAt}
+                                          applicant={applicant}
+                                          key={index}/>
+                    } else if(isShow&&tab.id===2){
 
-                    return <ApplicationDetails
-                        tabLabel={{label:tab.name}} label={tab.name}
-                        service={service}
-                        selectedType={selectedTypes}
-                        applicantType={applicationType}
-                        key={index}/>
-                } else if(isShow&&tab.id===3){
-                    return <Requirement tabLabel={{label:tab.name}} label={tab.name}
-                                        requirements={requirements} key={index}/>
-                } else if(isShow&&tab.id===4){
-                    return <Payment tabLabel={{label:tab.name}} label={tab.name}
-                                    proofOfPayment={proofOfPayment}
-                                    updatedAt={updatedAt}
-                                    paymentMethod={paymentMethod}
-                                    applicant={applicant}
-                                    totalFee={totalFee}
-                                    soa={soa}
-                                    key={index}/>
-                }
-            })
-        }
-    </ViewPaged>
+                        return <ApplicationDetails saved={props.saved} loading={props.loading}
+                                                   edit={props.edit}
+                                                   setEditAlert={props.setEditAlert}
+                                                   editBtn={props.editBtn}
+                                                   updateApplication={props.updateApplication}
+                                                   setUserOriginalProfileForm={props.setUserOriginalProfileForm}
+                                                   userOriginalProfileForm={props.userOriginalProfileForm}
+                                                   userProfileForm={props.userProfileForm}
+                                                   hasChanges={props.hasChanges}
+                                                   setUserProfileForm={props.setUserProfileForm}
+                                                   tabLabel={{label:tab.name}} label={tab.name}
+                                                   service={service}
+                                                   documents={documents}
+                                                   selectedType={selectedTypes}
+                                                   applicantType={applicationType}
+                                                   key={index}/>
+                    } else if(isShow&&tab.id===3){
+                        return <Requirement saved={props.saved} loading={props.loading}  tabLabel={{label:tab.name}} label={tab.name}
+                                            requirements={requirements} key={index}/>
+                    } else if(isShow&&tab.id===4 && service?.serviceCode !== "service-22" ){
+                        return <Payment paymentIndex={index}  setPaymentIndex={setPaymentIndex} saved={props.saved} loading={props.loading} edit={props.edit}
+                                        setEditAlert={props.setEditAlert}
+                                        editBtn={props.editBtn}
+                                        updateApplication={props.updateApplication}
+                                        setUserOriginalProfileForm={props.setUserOriginalProfileForm}
+                                        userOriginalProfileForm={props.userOriginalProfileForm}
+                                        userProfileForm={props.userProfileForm}
+                                        hasChanges={props.hasChanges}
+                                        setUserProfileForm={props.setUserProfileForm}
+                                        tabLabel={{label:tab.name}} label={tab.name}
+                                        proofOfPayment={proofOfPayment}
+                                        paymentStatus={paymentStatus}
+                                        updatedAt={updatedAt}
+                                        paymentMethod={paymentMethod}
+                                        applicant={applicant}
+                                        totalFee={totalFee}
+                                        soa={soa}
+                                        paymentHistory={paymentHistory}
+                                        key={index}/>
+                    }
+                })
+            }
+        </ViewPaged>
+    </>
+
 
 };
-export default ModalTab
+export default memo(ModalTab)
 const styles=StyleSheet.create({
     tabSelected:{
         color:"#2863D6",
@@ -245,5 +324,6 @@ const styles=StyleSheet.create({
     rect6:{
         height:3,
         marginTop:-5
-    },
+    }, action: {fontFamily: Regular, fontSize: fontValue(16), color: infoColor}
+
 });

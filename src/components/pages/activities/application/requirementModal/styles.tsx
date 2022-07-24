@@ -62,6 +62,14 @@ export const styles = StyleSheet.create({
     } ,
     container : {
         flex : 1 ,
+        ...Platform.select({
+            native: {
+                backgroundColor:"rgba(0, 0, 0, 0.5)"
+            },
+            default: {
+               
+            }
+        }),
 
     } ,
     group7 : {} ,
@@ -72,11 +80,10 @@ export const styles = StyleSheet.create({
 
             },
             default: {
-                top: -25,
+               
             }
         }),
-
-        alignSelf:'flex-end',paddingHorizontal:15,paddingVertical:15,
+        alignSelf:'flex-end',
         position: "absolute"
 
     } ,

@@ -41,7 +41,7 @@ import {
   resetPendingMessages,
   setSelectedChannel,
 } from 'src/reducers/channel/actions';
-import { removeActiveMeeting, setMeeting } from 'src/reducers/meeting/actions';
+import { removeActiveMeeting, resetCurrentMeeting, setMeeting, setOptions } from 'src/reducers/meeting/actions';
 import { RFValue } from 'react-native-responsive-fontsize';
 import CreateMeeting from '@components/pages/chat-modal/meeting';
 import IMeetings from 'src/interfaces/IMeetings';
@@ -49,6 +49,7 @@ import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import useAttachmentPicker from 'src/hooks/useAttachment';
 import { Regular, Regular500 } from '@styles/font';
 import { AttachmentMenu } from '@components/molecules/menu';
+import IParticipants from 'src/interfaces/IParticipants';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 15,
-    paddingTop: 40,
+    paddingTop: Platform.OS === 'android' ? 50 : 40,
     paddingBottom: 5,
     backgroundColor: header.secondary,
   },
@@ -159,16 +160,20 @@ const ChatView = ({ navigation, route }:any) => {
       return selectedChannel;
     }
   );
-  const { normalizeActiveMeetings } = useSelector((state: RootStateOrAny) => state.meeting)
+  const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings)
+  const meeting = useSelector((state: RootStateOrAny) => state.meeting.meeting)
   const selectedMessage = useSelector((state:RootStateOrAny) => {
     const { selectedMessage } = state.channel;
     return selectedMessage[_id];
   });
   const meetingList = useMemo(() => {
-    let meetingList = lodash.keys(normalizeActiveMeetings).map(m => normalizeActiveMeetings[m])
-    meetingList = lodash.filter(meetingList, m => m.roomId === _id);
+    if (meeting?._id) {
+      return [];
+    }
+    let meetingList = lodash.keys(normalizeActiveMeetings).map((m:string) => normalizeActiveMeetings[m])
+    meetingList = lodash.filter(meetingList, (m:IMeetings) => m.roomId === _id && !lodash.find(m.participants, (p:IParticipants) => p._id === user._id && p.status === 'busy'));
     return lodash.orderBy(meetingList, 'updatedAt', 'desc');
-  }, [normalizeActiveMeetings]);
+  }, [normalizeActiveMeetings, meeting]);
   const [inputText, setInputText] = useState('');
   const [index, setIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
@@ -238,15 +243,16 @@ const ChatView = ({ navigation, route }:any) => {
 
   const onJoin = (item:IMeetings) => {
     dispatch(setSelectedChannel(item.room));
-    dispatch(setMeeting(item));
-    navigation.navigate('Dial', {
-      isHost: item.host._id === user._id,
-      isVoiceCall: item.isVoiceCall,
-      options: {
+    dispatch(resetCurrentMeeting());
+    setTimeout(() => {
+      dispatch(setOptions({
+        isHost: item.host._id === user._id,
+        isVoiceCall: item.isVoiceCall,
         isMute: false,
         isVideoEnable: true,
-      }
-    });
+      }));
+      dispatch(setMeeting(item));
+    }, 100);
   }
 
   const onClose = (item:IMeetings, leave = false) => {
@@ -283,6 +289,11 @@ const ChatView = ({ navigation, route }:any) => {
       isGroup
     });
   }
+  useEffect(() => {
+    if (!lodash.size(otherParticipants)) {
+      navigation.goBack();
+    }
+  }, [otherParticipants]);
 
   useEffect(() => {
     if (lodash.size(selectedFile)) {
@@ -374,10 +385,10 @@ const ChatView = ({ navigation, route }:any) => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onInitiateCall(false)}>
-          <View style={{ paddingRight: 5 }}>
+          <View style={{ paddingRight: 2, marginTop: 4 }}>
             <NewCallIcon
               color={button.info}
-              height={RFValue(24)}
+              height={RFValue(20)}
               width={RFValue(24)}
             />
           </View>
@@ -386,8 +397,8 @@ const ChatView = ({ navigation, route }:any) => {
           <View style={{ paddingLeft: 5, paddingTop: 5 }}>
             <NewVideoIcon
               color={button.info}
-              height={RFValue(28)}
-              width={RFValue(28)}
+              height={RFValue(16)}
+              width={RFValue(20)}
             />
           </View>
         </TouchableOpacity>
@@ -418,16 +429,15 @@ const ChatView = ({ navigation, route }:any) => {
           )
         }
       </View>
-      <View style={{ flex: 1 }}>
-        <TabView
-          lazy
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          initialLayout={{ width: layout.width }}
-          renderTabBar={renderTabBar}
-        />
-      </View>
+      <TabView
+        lazy
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+        renderTabBar={renderTabBar}
+        style={{ flex: 1 }}
+      />
       {
         index === 0 ? (
           <KeyboardAvoidingView
@@ -512,9 +522,14 @@ const ChatView = ({ navigation, route }:any) => {
             isChannelExist={true}
             channelId={channelId}
             onClose={() => modalRef.current?.close()}
-            onSubmit={(type, params) => {
+            onSubmit={(params, data) => {
               modalRef.current?.close();
-              setTimeout(() => navigation.navigate(type, params), 300);
+              dispatch(setOptions({
+                ...params.options,
+                isHost: params.isHost,
+                isVoiceCall: params.isVoiceCall,
+              }));
+              setTimeout(() => dispatch(setMeeting(data)), 500);
             }}
           />
         </View>

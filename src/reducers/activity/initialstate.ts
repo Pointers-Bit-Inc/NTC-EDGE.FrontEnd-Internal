@@ -22,15 +22,25 @@ export const DATE_ADDED = "Date Added",
     ACCOUNTANT = "accountant",
     ACTIVITIES = "Activities",
     ACTIVITIESLIST = "ActivitiesList",
-
+    PAYMENTPENDING = "PaymentPending",
     CHAT = "Chat",
     MEET = "Meet",
     SCANQR = "QR",
     MORE = "More",
-SEARCH = "Search";
+    DASHBOARD = "Dashboard",
+    REPORT="Reports",
+    ROLEANDPERMISSION="Roles & Permission",
+    GROUP="Group",
+    EMPLOYEES="Employee",
+    USERS="Users",
+    SETTINGS="Settings",
+    SEARCH = "Search",
+
+    SEARCHMOBILE = "SearchActivities";
 
 const InitialState = Record({
   visible: false,
+  editModalVisible: false,
   statusCode: [
     {
       id: 1,
@@ -43,7 +53,7 @@ const InitialState = Record({
     {
       id: 2,
       checked: false,
-      status: FOREVALUATION,
+      status: FORAPPROVAL,
       iconBrand: 'evil',
       iconName: 'redo',
       isShow: [CHECKER, DIRECTOR, EVALUATOR]

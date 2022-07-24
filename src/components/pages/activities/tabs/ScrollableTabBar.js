@@ -12,6 +12,7 @@ const {
   Dimensions,
 } = ReactNative;
 const Button = require('./Button');
+const memo = require("react").memo;
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 
@@ -222,7 +223,7 @@ const ScrollableTabBar = createReactClass({
   },
 });
 
-module.exports = ScrollableTabBar;
+module.exports = (ScrollableTabBar);
 
 const styles = StyleSheet.create({
   tab: {

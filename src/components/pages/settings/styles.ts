@@ -59,4 +59,11 @@ export default StyleSheet.create({
   separator2: {
     height: 30,
   },
+  toggleDefault: {
+    transform: [{ scaleX: -1 }],
+    color: '#A0A3BD',
+  },
+  toggleActive: {
+    color: '#2863D6',
+  }
 });

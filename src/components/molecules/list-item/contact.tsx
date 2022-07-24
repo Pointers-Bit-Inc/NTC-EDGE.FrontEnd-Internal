@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Image, TouchableOpacity, ViewComponent, TextComponent } from 'react-native'
 import Text from '@components/atoms/text'
 import { text, primaryColor } from 'src/styles/color';
 import ProfileImage from '@components/atoms/image/profile';
@@ -52,6 +52,7 @@ interface Props {
   isOnline?: boolean,
   imageSize?: any,
   textSize?: any,
+  indicator?: any,
   [x: string]: any;
 }
 
@@ -66,6 +67,7 @@ const ContactItem: FC<Props> = ({
   isOnline = false,
   imageSize = 0,
   textSize = 0,
+  indicator = null,
   ...otherProps
 }) => {
   const getName = (data:any) => {
@@ -156,6 +158,7 @@ const ContactItem: FC<Props> = ({
               </Text>
           }
           {
+            typeof indicator === 'function' ? indicator() :
             !isGroup && (
               <Text
                 color={isOnline ? '#00AB76' : '#A0A3BD'}
