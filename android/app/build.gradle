@@ -151,8 +151,8 @@ android {
         applicationId 'portalapp.ntcedge.com'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "1.0.10"
+        versionCode 4
+        versionName "1.0.3"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     splits {
