@@ -62,13 +62,13 @@ import {
     setNotPinnedApplication,
     setPinnedApplication,
     setSelectedYPos,
-    setHasChange
+    setHasChange, setEdit
 } from "../../../reducers/application/actions";
 import {renderSwiper} from "@pages/activities/swiper";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {getChannelName} from "../../../utils/formatting";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
-import {SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
+import {ACTIVITIESLIST, ACTIVITYITEM, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import NoActivity from "@assets/svg/noActivity";
@@ -80,7 +80,6 @@ const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
 const ActivitiesPage = (props) => {
-
     const dimensions = useWindowDimensions();
     const Filter = (
         isMobile && !(
@@ -148,8 +147,7 @@ const ActivitiesPage = (props) => {
     }, [normalizeActiveMeetings, meeting]);
 
     useEffect(() => {
-
-        let unMount = false;
+       let unMount = false;
         getActiveMeetingList((err, result) => {
             if (!unMount) {
                 if (result) {
@@ -188,89 +186,7 @@ const ActivitiesPage = (props) => {
             return dispatch(removeActiveMeeting(item?._id));
         }
     };
-    const listHeaderComponent = () => <>
-        {!searchVisible && !!pnApplications?.length && containerHeight &&
-            <View style={[styles1.pinnedActivityContainer, {
-                marginBottom: 5,
-                paddingBottom: 20,
-                backgroundColor: "#fff"
-            }]}>
-                {!!pnApplications?.length &&
-                    <View style={[styles1.pinnedgroup, {height: undefined}]}>
-                        <View style={[styles1.pinnedcontainer, {paddingVertical: 10}]}>
-                            <Text style={[styles1.pinnedActivity, {fontFamily: Regular500,}]}>Pinned
-                                Activity</Text>
-                        </View>
-                    </View>}
-                {/* <TouchableOpacity onPress={()=>{
-            scrollViewRef?.current?.scrollTo({ y: yPos, animated: true });
-            }}>
-                <Text>test</Text>
-            </TouchableOpacity>*/}
-                <ScrollView showsVerticalScrollIndicator={false}
-                            nestedScrollEnabled={true}
-                            onScroll={(event) => {
-                                if (!isMobile) {
-                                    new Promise((resolve, reject) => {
-                                        setTimeout(() => {
-                                            resolve(event?.nativeEvent?.contentOffset?.y)
-                                        }, 1000);
-                                    }).then((data) => {
-                                        setYPos(data)
-                                    });
-                                }
 
-                            }}
-                            scrollEventThrottle={16}
-                            ref={scrollViewRef}
-                            style={{maxHeight: 300}}>
-                    {
-                        pnApplications.map((item: any, index: number) => {
-                            return item?.activity && <FlatList
-                                scrollEventThrottle={16}
-                                key={index}
-                                listKey={(item, index) => `_key${index.toString()}`}
-                                showsVerticalScrollIndicator={false}
-                                style={styles.items}
-                                data={item?.activity}
-
-                                renderItem={(act, i) => {
-                                    return (
-                                            act?.item?.assignedPersonnel?._id || act?.item?.assignedPersonnel) == user?._id &&
-                                        <ActivityItem
-                                            isOpen={isOpen}
-                                            config={config}
-                                            key={i}
-                                            selected={applicationItem?._id == act?.item?._id}
-                                            currentUser={user}
-                                            role={user?.role?.key}
-                                            searchQuery={searchTerm}
-                                            activity={act?.item}
-                                            isPinned={true}
-                                            onPressUser={(event: any) => {
-
-                                                /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
-                                                })*/
-                                                dispatch(setApplicationItem({...act?.item, isOpen: `pin${i}${index}`}));
-                                                //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
-                                                if (event?.icon == 'more') {
-                                                    setMoreModalVisible(true)
-                                                } else {
-                                                    setModalVisible(true)
-                                                }
-                                                dispatch(setSelectedYPos({yPos, type: 1}))
-                                            }} index={`pin${i}${index}`}
-                                            swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, act?.item, unReadReadApplicationFn)}/>
-                                }
-                                }
-                                keyExtractor={(item, index) => `_key${index.toString()}`}
-                            />
-                        })
-                    }
-                </ScrollView>
-
-            </View>}
-    </>;
 
 
     const {top, bottom} = useSafeAreaInsets();
@@ -378,7 +294,135 @@ const ActivitiesPage = (props) => {
         }),
         [contentContainerStyle, sync, heightExpanded]
     );
+    const onDismissedModal = (event: boolean, _id: number) => {
+        setUpdateModal(false);
+        dispatch(setApplicationItem({}));
+        if (event && _id) {
+            //  dispatch(deleteApplications(_id))
+        }
+        if (event) {
+            onRefresh()
+        }
+        onDismissed()
+    };
+    const onChangeAssignedId = (event) => {
+        let _notPinnedApplications = [...notPinnedApplications]
+        let _pinnedApplications = [...pinnedApplications]
+        let flag = 1
 
+        for (let i = 0; i < _notPinnedApplications?.length; i++) {
+            if (!flag) break
+            if (_notPinnedApplications?.[i]?._id == event?._id) {
+                _notPinnedApplications[i] = event
+            }
+        }
+        flag = 1
+        for (let i = 0; i < _pinnedApplications?.length; i++) {
+            if (!flag) break
+            if (_pinnedApplications?.[i]?._id == event?._id) {
+                _notPinnedApplications.unshift(event)
+                _pinnedApplications.splice(i, 1)
+            }
+        }
+
+        dispatch(setApplicationItem(event))
+        dispatch(setNotPinnedApplication(_notPinnedApplications))
+        dispatch(setPinnedApplication(_pinnedApplications))
+        setUpdateModal(true);
+    };
+    const onChangeEvent = (event) => {
+        dispatch(setApplicationItem(event))
+        setUpdateModal(true);
+    };
+    const listHeaderComponent = () => <>
+        {!searchVisible && !!pnApplications?.length && containerHeight &&
+            <View style={[styles1.pinnedActivityContainer, {
+                marginBottom: 5,
+                paddingBottom: 20,
+                backgroundColor: "#fff"
+            }]}>
+                {!!pnApplications?.length &&
+                    <View style={[styles1.pinnedgroup, {height: undefined}]}>
+                        <View style={[styles1.pinnedcontainer, {paddingVertical: 10}]}>
+                            <Text style={[styles1.pinnedActivity, {fontFamily: Regular500,}]}>Pinned
+                                Activity</Text>
+                        </View>
+                    </View>}
+                {/* <TouchableOpacity onPress={()=>{
+            scrollViewRef?.current?.scrollTo({ y: yPos, animated: true });
+            }}>
+                <Text>test</Text>
+            </TouchableOpacity>*/}
+                <ScrollView showsVerticalScrollIndicator={false}
+                            nestedScrollEnabled={true}
+                            onScroll={(event) => {
+                                if (!isMobile) {
+                                    new Promise((resolve, reject) => {
+                                        setTimeout(() => {
+                                            resolve(event?.nativeEvent?.contentOffset?.y)
+                                        }, 1000);
+                                    }).then((data) => {
+                                        setYPos(data)
+                                    });
+                                }
+
+                            }}
+                            scrollEventThrottle={16}
+                            ref={scrollViewRef}
+                            style={{maxHeight: 300}}>
+                    {
+                        pnApplications.map((item: any, index: number) => {
+                            return item?.activity && <FlatList
+                                scrollEventThrottle={16}
+                                key={index}
+                                listKey={(item, index) => `_key${index.toString()}`}
+                                showsVerticalScrollIndicator={false}
+                                style={styles.items}
+                                data={item?.activity}
+
+                                renderItem={(act, i) => {
+                                    return (
+                                            act?.item?.assignedPersonnel?._id || act?.item?.assignedPersonnel) == user?._id &&
+                                        <ActivityItem
+                                            isOpen={isOpen}
+                                            config={config}
+                                            key={i}
+                                            selected={applicationItem?._id == act?.item?._id}
+                                            currentUser={user}
+                                            role={user?.role?.key}
+                                            searchQuery={searchTerm}
+                                            activity={act?.item}
+                                            isPinned={true}
+                                            onPressUser={(event: any) => {
+                                                dispatch(setEdit(false))
+                                                dispatch(setHasChange(false))
+                                                /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
+                                                })*/
+                                                dispatch(setApplicationItem({...act?.item, isOpen: `pin${i}${index}`}));
+                                                //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
+                                                if (event?.icon == 'more') {
+                                                    setMoreModalVisible(true)
+                                                } else {
+                                                    setModalVisible(true)
+                                                }
+                                                dispatch(setSelectedYPos({yPos, type: 1}))
+                                                if(Platform.OS == "web"){
+                                                    setModalVisible(true)
+                                                }else{
+                                                    props.navigation.navigate(ACTIVITYITEM, {onDismissed: onDismissedModal, onChangeEvent: onChangeEvent, onChangeAssignedId: onChangeAssignedId});
+                                                }
+                                            }} index={`pin${i}${index}`}
+                                            swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, act?.item, unReadReadApplicationFn)}/>
+                                }
+                                }
+                                keyExtractor={(item, index) => `_key${index.toString()}`}
+                            />
+                        })
+                    }
+                </ScrollView>
+
+            </View>}
+    </>;
     function getFlatList(ref, scrollHandler, sP, data, isHeader= false) {
 
         return   <Animated.FlatList
@@ -447,6 +491,7 @@ const ActivitiesPage = (props) => {
                                     activity={activity}
                                     currentUser={user}
                                     onPressUser={(event: any) => {
+                                        dispatch(setEdit(false))
                                         dispatch(setHasChange(false))
                                         dispatch(setSelectedYPos({yPos, type: 0}))
                                         dispatch(setApplicationItem({
@@ -459,7 +504,15 @@ const ActivitiesPage = (props) => {
                                         if (event?.icon == 'more') {
                                             setMoreModalVisible(true)
                                         } else {
-                                            setModalVisible(true)
+                                            if(Platform.OS == "web"){
+                                                setModalVisible(true)
+                                            }else{
+                                                props.navigation.navigate(ACTIVITYITEM, {onDismissed: onDismissedModal, onChangeEvent: onChangeEvent, onChangeAssignedId: onChangeAssignedId});
+                                            }
+
+
+
+                                           //
                                         }
 
                                     }}
@@ -533,6 +586,7 @@ const ActivitiesPage = (props) => {
         ],
         [collapsedOverlayAnimatedStyle, heightCollapsed]
     );
+
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
@@ -719,48 +773,11 @@ const ActivitiesPage = (props) => {
                         }}/>
                         <ActivityModal updateModal={updateModalFn}
                                        readFn={unReadReadApplicationFn}
-                                       onChangeEvent={(event) => {
-                                           dispatch(setApplicationItem(event))
-                                           setUpdateModal(true);
-                                       }
-                                       }
-                                       onChangeAssignedId={(event) => {
-                                           let _notPinnedApplications = [...notPinnedApplications]
-                                           let _pinnedApplications = [...pinnedApplications]
-                                           let flag = 1
-
-                                           for (let i = 0; i < _notPinnedApplications?.length; i++) {
-                                               if (!flag) break
-                                               if (_notPinnedApplications?.[i]?._id == event?._id) {
-                                                   _notPinnedApplications[i] = event
-                                               }
-                                           }
-                                           flag = 1
-                                           for (let i = 0; i < _pinnedApplications?.length; i++) {
-                                               if (!flag) break
-                                               if (_pinnedApplications?.[i]?._id == event?._id) {
-                                                   _notPinnedApplications.unshift(event)
-                                                   _pinnedApplications.splice(i, 1)
-                                               }
-                                           }
-
-                                           dispatch(setApplicationItem(event))
-                                           dispatch(setNotPinnedApplication(_notPinnedApplications))
-                                           dispatch(setPinnedApplication(_pinnedApplications))
-                                           setUpdateModal(true);
-                                       }}
+                                       onChangeEvent={onChangeEvent}
+                                       onChangeAssignedId={onChangeAssignedId}
                                        visible={modalVisible}
-                                       onDismissed={(event: boolean, _id: number) => {
-                                           setUpdateModal(false);
-                                           dispatch(setApplicationItem({}));
-                                           if (event && _id) {
-                                               //  dispatch(deleteApplications(_id))
-                                           }
-                                           if (event) {
-                                               onRefresh()
-                                           }
-                                           onDismissed()
-                                       }}/></View>}
+                                       onDismissed={onDismissedModal}/>
+                        </View>}
                 </View>
             </View>
         </>

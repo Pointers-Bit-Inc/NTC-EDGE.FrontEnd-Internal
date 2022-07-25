@@ -210,7 +210,6 @@ const RenderPinned=({personnel,config}:any)=>{
                  size={fontValue(12)}
                  numberOfLines={1}
              >
-                 {` `}
              </Text></View> :
              <Text
                  style={{"marginLeft":3,"marginRight":5}}
@@ -311,7 +310,7 @@ export function ActivityItem(props:any){
                                         borderRadius:4
                                     }}/>
                                 </View>
-                                <View style={[styles.containerBlur,{borderWidth:props.selected ? 4 : 0,}]}>
+                                <View style={[styles.containerBlur,{borderWidth:props.selected && Platform.OS == "web" ? 4 : 0,}]}>
 
                                         <TouchableOpacity onPress={debouncedOnPress}>
                                             <View style={

@@ -67,6 +67,7 @@ const flatten = require('flat')
 
 
 function ActivityModal(props: any) {
+    const _props = Platform.OS == "web" ?  props : props?.route?.params
     const dispatch = useDispatch();
     const applicationItem =useSelector((state:RootStateOrAny)=>{
         return state.application?.applicationItem
@@ -174,7 +175,7 @@ function ActivityModal(props: any) {
                                 assignedPersonnel: data?.assignedPersonnel?._id || data?.assignedPersonnel,
                                 userType: user?.role?.key
                             }));
-                            props.onChangeAssignedId(data);
+                            _props.onChangeAssignedId(data);
                             //setStatus(cashier ? PaymentStatusText(status) : StatusText(status))
                             setChange(true);
                             // props.onDismissed(true, applicationId)
@@ -256,7 +257,10 @@ function ActivityModal(props: any) {
         if (hasChange) setDiscardAlert(true);
         else {
             setAssignId("");
-            props.onDismissed(change);
+            goBackAsync().then(()=>{
+                _props.onDismissed(change);
+            })
+
             setChange(false)
             return true;
         }
@@ -327,7 +331,7 @@ function ActivityModal(props: any) {
             var _flatten = flatten.flatten({...response.data.doc})
             setUserOriginalProfileForm({..._flatten})
             setUserProfileForm(_flatten)
-            props.onChangeEvent(response.data.doc);
+            _props.onChangeEvent(response.data.doc);
             //showToast(ToastType.Success, "Successfully updated!")
             callback()
         }).catch((error) => {
@@ -365,19 +369,19 @@ function ActivityModal(props: any) {
             }]
         };
     }
+    const goBackAsync = () => {
+        const promise = new Promise<void>(resolve => {
+            const subscription = Platform.OS == "web" ? resolve() : props.navigation?.addListener('didBlur', () => {
+                subscription.remove();
+                resolve();
+            });
+        });
+        props.navigation?.goBack();
+        return promise;
+    };
+
     return (
-        <NativeView
-            onLayout={onActivityModalScreenComponent}
-            style={{height: "100%"}}
-            supportedOrientations={['portrait', 'landscape']}
-            animationType="slide"
-            transparent={false}
-            visible={props.visible}
-            onRequestClose={() => {
-                setAssignId("");
-                props.onDismissed(change);
-                setChange(false)
-            }}>
+        <>
             <View style={(isMobile && !((Platform?.isPad || isTablet()) && isLandscapeSync())) && (
                 visible || endorseVisible || showAlert) ? {
                 position: "absolute",
@@ -396,7 +400,11 @@ function ActivityModal(props: any) {
                     setShowAlert(false);
                     setApprovalIcon(false);
                     setShowClose(false)
-                    props.onDismissed(true);
+
+                        goBackAsync().then(()=>{
+                            _props.onDismissed(true);
+                        })
+
                 }}
                 onLoading={alertLoading}
                 onCancelPressed={() => {
@@ -431,7 +439,7 @@ function ActivityModal(props: any) {
                 }}
                 show={showAlert} title={title}
                 message={message}/>
-            <View style={{flex: 1}}>
+            <View style={{flex: 1, backgroundColor: "#FFF"}}>
                 {(
                     isMobile || (Platform?.isPad)) && <View style={{
                     flexDirection: "row",
@@ -482,7 +490,9 @@ function ActivityModal(props: any) {
                               setUserProfileForm={setUserProfileForm}
                               setUserOriginalProfileForm={setUserOriginalProfileForm}
                               hasChanges={hasChanges} edit={edit} dismissed={() => {
-                        props.onDismissed(change);
+                        goBackAsync().then(()=> {
+                            _props.onDismissed(change);
+                        })
                     }} details={applicationItem} status={status}/>
 
                 </KeyboardAvoidingView>
@@ -604,7 +614,9 @@ function ActivityModal(props: any) {
                 onExit={() => {
 
                     onApproveDismissed();
-                    props.onDismissed(true);
+                    goBackAsync().then(()=> {
+                        _props.onDismissed(true);
+                    })
 
                 }}
                 onDismissed={(event?: any, callback?: (bool) => {}) => {
@@ -640,7 +652,9 @@ function ActivityModal(props: any) {
                 visible={visible}
                 onExit={() => {
                     onDismissed();
-                    props.onDismissed(true);
+                    goBackAsync().then(()=> {
+                        _props.onDismissed(true);
+                    })
                 }}
                 onDismissed={() => {
 
@@ -680,7 +694,9 @@ function ActivityModal(props: any) {
                 onExit={() => {
 
                     onEndorseDismissed();
-                    props.onDismissed(true);
+                    goBackAsync().then(()=> {
+                        _props.onDismissed(true);
+                    })
                 }}
                 onDismissed={() => {
 
@@ -697,7 +713,9 @@ function ActivityModal(props: any) {
                 onConfirm={() => {
                     setAssignId("");
                     setStatus("");
-                    props.onDismissed(change);
+                    goBackAsync().then(()=> {
+                        _props.onDismissed(change);
+                    })
                     setChange(false)
                     setDiscardAlert(false)
                 }
@@ -744,7 +762,7 @@ function ActivityModal(props: any) {
                 }
                 onCancel={() => setEditAlert(false)}
             />
-        </NativeView>
+        </>
     );
 }
 

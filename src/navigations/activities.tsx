@@ -2,11 +2,13 @@ import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ActivitiesPage from "@pages/activities/index";
 import Search from "@pages/activities/search";
-import {ACTIVITIESLIST , SEARCH} from "../reducers/activity/initialstate";
+import {ACTIVITIESLIST, ACTIVITYITEM, SEARCH} from "../reducers/activity/initialstate";
 import {getFocusedRouteNameFromRoute} from "@react-navigation/native";
+import ActivityModal from "@pages/activities/modal";
 type RootStackParamList = {
     ActivitiesList: undefined;
     Search: undefined;
+
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -22,6 +24,7 @@ const ActivitiesNavigator = ({ navigation, route }) => {
         >
             <Stack.Screen name={ACTIVITIESLIST}  component={ActivitiesPage} />
             <Stack.Screen name={SEARCH} component={Search} />
+
         </Stack.Navigator>
     );
 };

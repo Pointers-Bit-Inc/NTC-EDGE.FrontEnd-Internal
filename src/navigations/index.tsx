@@ -46,6 +46,8 @@ import {resetMeeting} from "../reducers/meeting/actions";
 import {resetChannel} from "../reducers/channel/actions";
 import useOneSignal from "../hooks/useOneSignal";
 import Api from "../services/api";
+import {ACTIVITYITEM} from "../reducers/activity/initialstate";
+import ActivityModal from "@pages/activities/modal";
 
 type RootStackParamList = {
     App: undefined;
@@ -70,6 +72,7 @@ type RootStackParamList = {
     NewChat: undefined;
     SearchActivities: undefined;
     Dashboard: undefined;
+    ActivityItem: undefined
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -121,16 +124,16 @@ const HeaderRight = ({ setVisible = () => {}, visible }:any) => {
     const onLogout = () => {
         setVisible(false)
         setTimeout(()=>{
-          dispatch(setApplications([]))
-          dispatch(setPinnedApplication([]))
-          dispatch(setNotPinnedApplication([]))
-          dispatch(setApplicationItem({}))
-          dispatch(setResetFilterStatus([]))
-          dispatch(resetUser());
-          dispatch(resetMeeting());
-          dispatch(resetChannel());
-          destroy();
-          navigation.dispatch(StackActions.replace('Login'));
+            dispatch(setApplications([]))
+            dispatch(setPinnedApplication([]))
+            dispatch(setNotPinnedApplication([]))
+            dispatch(setApplicationItem({}))
+            dispatch(setResetFilterStatus([]))
+            dispatch(resetUser());
+            dispatch(resetMeeting());
+            dispatch(resetChannel());
+            destroy();
+            navigation.dispatch(StackActions.replace('Login'));
         },500);
     }
 
@@ -224,6 +227,7 @@ const RootNavigator = () => {
                 <Stack.Screen name="MeetingParticipants" component={ MeetingParticipants }/>
                 <Stack.Screen name="NewChat" component={ NewChat }/>
                 <Stack.Screen name="SearchActivities" component={ Search }/>
+                <Stack.Screen name={ACTIVITYITEM} component={ActivityModal} />
             </Stack.Navigator>
             <FloatingVideoComponent />
             {visible && <View style={{zIndex: -1, position: "absolute", width: "100%", height: "100%",backgroundColor: "rgba(0,0,0,0.5)"}}/>}
