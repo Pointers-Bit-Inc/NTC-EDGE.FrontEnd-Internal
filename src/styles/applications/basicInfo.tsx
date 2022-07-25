@@ -22,8 +22,7 @@ const styles=StyleSheet.create({
     remarksContent: {
         fontStyle: "italic",
         fontSize: fontValue(12),
-        margin: 15,
-        marginBottom: 3,
+
     },
     elevation:{
         marginVertical:20,
