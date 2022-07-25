@@ -719,7 +719,6 @@ const ActivitiesPage = (props) => {
                         }}/>
                         <ActivityModal updateModal={updateModalFn}
                                        readFn={unReadReadApplicationFn}
-                                       details={applicationItem}
                                        onChangeEvent={(event) => {
                                            dispatch(setApplicationItem(event))
                                            setUpdateModal(true);

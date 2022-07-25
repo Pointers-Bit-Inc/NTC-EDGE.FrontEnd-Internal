@@ -68,11 +68,14 @@ const flatten = require('flat')
 
 function ActivityModal(props: any) {
     const dispatch = useDispatch();
+    const applicationItem =useSelector((state:RootStateOrAny)=>{
+        return state.application?.applicationItem
+    });
     const hasChange = useSelector((state: RootStateOrAny) => state.application.hasChange);
     const edit = useSelector((state: RootStateOrAny) => state.application.edit);
 
     const [userProfileForm, setUserProfileForm] = useSafeState(() => {
-        return flatten.flatten(props.details)
+        return flatten.flatten(applicationItem)
     })
     const [userOriginalProfileForm, setUserOriginalProfileForm] = useSafeState(userProfileForm)
     const navigation = useNavigation();
@@ -113,7 +116,7 @@ function ActivityModal(props: any) {
         console.log(event)
         setGrayedOut(true);
         const api = Api(user.sessionToken);
-        const applicationId = props?.details?._id;
+        const applicationId = applicationItem?._id;
         let url = `/applications/${applicationId}/update-status`;
         let params: any = {
             status,
@@ -130,13 +133,13 @@ function ActivityModal(props: any) {
             setAssignId("")
         }
         if (user?.role?.key == ACCOUNTANT) {
-            const assignUserId = status == DECLINED && props?.details?.approvalHistory?.[0]?.status == FORAPPROVAL && props?.details?.approvalHistory?.[0]?.userId != user?._id;
-            assignUserId ? setAssignId(props?.details?.approvalHistory?.[0].userId) : (
+            const assignUserId = status == DECLINED && applicationItem?.approvalHistory?.[0]?.status == FORAPPROVAL && applicationItem?.approvalHistory?.[0]?.userId != user?._id;
+            assignUserId ? setAssignId(applicationItem?.approvalHistory?.[0].userId) : (
                 assignId ? assignId : undefined);
             params = {
                 status: (
                     assignUserId) ? FOREVALUATION : status,
-                assignedPersonnel: assignUserId ? props?.details?.approvalHistory?.[0].userId : (
+                assignedPersonnel: assignUserId ? applicationItem?.approvalHistory?.[0].userId : (
                     assignId ? assignId : undefined),
                 remarks: event.remarks ? event.remarks : remarks,
             };
@@ -148,7 +151,7 @@ function ActivityModal(props: any) {
                 remarks: event.remarks ? event.remarks : remarks,
             };
         }
-        if (props?.details?.service?.serviceCode === "service-22") {
+        if (applicationItem?.service?.serviceCode === "service-22") {
             delete params.assignedPersonnel
         }
         const addORNumber = user?.role?.key == CASHIER ? await api.post(`/applications/${applicationId}/add-or-number`, AddORNoparams).catch(e => {
@@ -199,11 +202,11 @@ function ActivityModal(props: any) {
     const [prevId, setPrevId] = useSafeState(0)
     useEffect(() => {
 
-        setUserProfileForm(flatten.flatten(props.details))
-        setUserOriginalProfileForm(flatten.flatten(props.details))
-       /* console.log(prevId != props?.details._id, prevId , props?.details._id)
-        if(prevId != props?.details._id){
-            setPrevId(props?.details._id)
+        setUserProfileForm(flatten.flatten(applicationItem))
+        setUserOriginalProfileForm(flatten.flatten(applicationItem))
+       /* console.log(prevId != applicationItem._id, prevId , applicationItem._id)
+        if(prevId != applicationItem._id){
+            setPrevId(applicationItem._id)
             dispatch(setHasChange(false)
             setEdit(false)
         }
@@ -214,17 +217,17 @@ function ActivityModal(props: any) {
             setAssignId("")
 
         }
-    }, [props?.details._id,]);
+    }, [applicationItem._id,]);
 
     const statusMemo = useMemo(() => {
         setStatus(status);
         setAssignId(assignId || (
-            props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel));
+            applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel));
         return status ? (
             cashier ? PaymentStatusText(status) : StatusText(status)) : (
-            cashier ? PaymentStatusText(props.details.paymentStatus) : StatusText(props.details.status))
+            cashier ? PaymentStatusText(applicationItem.paymentStatus) : StatusText(applicationItem.status))
     }, [assignId, status, (
-        props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel), props.details.paymentStatus, props.details._id, props.details.status]);
+        applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel), applicationItem.paymentStatus, applicationItem._id, applicationItem.status]);
     const approveButton = statusMemo === APPROVED || statusMemo === VERIFIED;
     const declineButton = cashier ? (statusMemo === UNVERIFIED || statusMemo === DECLINED) : statusMemo === DECLINED;
 
@@ -232,7 +235,7 @@ function ActivityModal(props: any) {
     const [saved, setSaved] = useSafeState(false)
     const allButton = (
         cashier) ? (
-        !!props?.details?.paymentMethod ? (
+        !!applicationItem?.paymentMethod ? (
             assignId != user?._id ? true : (
                 declineButton || approveButton || grayedOut)) : true) : (
         assignId != user?._id ? true : (
@@ -268,7 +271,8 @@ function ActivityModal(props: any) {
     const editBtn = () => {
         if (hasChange) setEditAlert(true);
         else {
-            dispatch(setEdit((bool) => !bool))
+            let _edit = edit
+            dispatch(setEdit(!_edit))
         }
     }
     const {showToast, hideToast} = useToast();
@@ -303,7 +307,7 @@ function ActivityModal(props: any) {
         if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
         setSaved(true)
-        axios.patch(BASE_URL + `/applications/${props?.details?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, {
+        axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, {
             headers: {
                 Authorization: "Bearer ".concat(user?.sessionToken)
             }
@@ -447,7 +451,7 @@ function ActivityModal(props: any) {
                         <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
                     </TouchableOpacity>}
                     <Text
-                        style={[styles.applicationType, {width: "90%"}]}>{props?.details?.applicationType || props?.details?.service?.name}</Text>
+                        style={[styles.applicationType, {width: "90%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
 
                     {editModalVisible ? edit  ? <TouchableOpacity hitSlop={hitSlop} onPress={() => {
                             updateApplication(() => {})
@@ -479,7 +483,7 @@ function ActivityModal(props: any) {
                               setUserOriginalProfileForm={setUserOriginalProfileForm}
                               hasChanges={hasChanges} edit={edit} dismissed={() => {
                         props.onDismissed(change);
-                    }} details={props.details} status={status}/>
+                    }} details={applicationItem} status={status}/>
 
                 </KeyboardAvoidingView>
 
@@ -518,7 +522,7 @@ function ActivityModal(props: any) {
                                             }}/>}
 
                                     </View>}
-                                {getRole(user, [EVALUATOR]) && props?.details?.service?.serviceCode !== "service-22" &&
+                                {getRole(user, [EVALUATOR]) && applicationItem?.service?.serviceCode !== "service-22" &&
                                     <EndorsedButton
                                         currentLoading={currentLoading}
                                         allButton={allButton}
@@ -541,7 +545,7 @@ function ActivityModal(props: any) {
                     }
                     setStatus(prevStatus);
                     setRemarks(prevRemarks);
-                    setAssignId(props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel)
+                    setAssignId(applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel)
                     if (getRole(user, [EVALUATOR])) {
                         onApproveDismissed();
                     }
@@ -568,7 +572,7 @@ function ActivityModal(props: any) {
                     let status = "";
 
                     if (getRole(user, [DIRECTOR, EVALUATOR])) {
-                        if (props?.details?.service?.serviceCode == "service-22") {
+                        if (applicationItem?.service?.serviceCode == "service-22") {
                             status = APPROVED
                         } else {
                             status = FORAPPROVAL
@@ -615,7 +619,7 @@ function ActivityModal(props: any) {
             />
             <Disapproval
                 size={activityModalScreenComponent}
-                user={props?.details?.applicant?.user}
+                user={applicationItem?.applicant?.user}
                 remarks={setRemarks}
                 onChangeApplicationStatus={(event: any, callback: (bool, appId) => {}) => {
 
@@ -646,10 +650,10 @@ function ActivityModal(props: any) {
             />
             <Endorsed
                 size={activityModalScreenComponent}
-                assignedPersonnel={props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel}
+                assignedPersonnel={applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel}
                 onModalDismissed={() => {
                     setRemarks(prevRemarks);
-                    setAssignId(props?.details?.assignedPersonnel?._id || props?.details?.assignedPersonnel)
+                    setAssignId(applicationItem?.assignedPersonnel?._id || applicationItem?.assignedPersonnel)
                 }}
                 remarks={(event: any) => {
                     setPrevRemarks(remarks);
