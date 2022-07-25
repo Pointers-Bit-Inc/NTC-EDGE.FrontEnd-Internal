@@ -6,7 +6,7 @@ import Payment from "@pages/activities/application/paymentModal/payment";
 import React, {memo, useEffect, useState} from "react";
 import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
 import {Alert, Animated, InteractionManager, KeyboardAvoidingView, Platform, View} from "react-native";
-import TabBar from "@pages/activities/tabs/tabbar";
+import ScrollableTabBar from "@pages/activities/tabs/ScrollableTabBar";
 import ScrollableTabView from "@pages/activities/tabs";
 import Tab from "@pages/activities/tabs/Tab";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
@@ -102,7 +102,7 @@ const ModalTab = props => {
                 props?.goToPage(0);
                 setInitialPage(false)
             }
-            return <TabBar
+            return <ScrollableTabBar
                 underlineColor={infoColor}
                 underlineHeight={fontValue(3)}
                 renderTab={ (tab , page , isTabActive , onPressHandler , onTabLayout) => (
@@ -116,7 +116,7 @@ const ModalTab = props => {
                         styles={ interpolators[page] }
                     />
                 ) }
-                tabBarStyle={ { paddingTop : 10 , borderTopColor : '#d2d2d2' , borderTopWidth : 1 } }/>
+                style={ { paddingTop : 10 , borderTopColor : '#d2d2d2' , borderTopWidth : 1 } }/>
         } }
 
     >
