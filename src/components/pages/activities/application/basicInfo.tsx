@@ -254,18 +254,13 @@ const BasicInfo = (props: any) => {
                                                             getStatusText(props, personnel)
                                                         )
                                                     }]}>{getStatusText(props, personnel) === DECLINED ? 'NOD/' : ''}Remarks</Text>
-                                                    <View style={{flexDirection: "row", }}>
-                                                        <View style={{flex: 0.5}}>
+
+
                                                     <CollapseText expandStyle={{color: "#565961"}} isOverflowStyle={{ marginLeft: 15,marginBottom: 7,}} textStyle={[ styles?.remarksContent, statusColor(
                                                         getStatusText(props, personnel)
                                                     )]} text={[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}/>
-                                                        </View>
 
-                                                        <View style={{flex: 0.5}}>
-                                                            {(personnel?.firstName && personnel?.lastName) ? <Text style={[styles?.remarksContent, {color: "#565961"}]}>{`by: ${personnel?.firstName} ${personnel?.lastName}`}</Text> : <></>}
-                                                        </View>
 
-                                                    </View>
                                                 </View>
                                             </View>
                                             </>
@@ -292,15 +287,15 @@ const BasicInfo = (props: any) => {
 
 
                                                                 <View style={{flexDirection: "row",borderTopWidth: index === 0 ? 0 : 1, borderTopColor: "#EFEFEF" }}>
-                                                                    <View style={{flex: 0.5}}>
-                                                                        <CollapseText expandStyle={{color: "#565961"}} isOverflowStyle={{ marginLeft: 15,marginBottom: 7,}} textStyle={[ styles?.remarksContent,{marginBottom: 6}, statusColor(
+                                                                    <View style={{flex: item?.personnel?._id != personnel?._id ? 0.5 : 1}}>
+                                                                        <CollapseText expandStyle={{color: "#565961"}} isOverflowStyle={{ marginLeft: 15,marginBottom: 3,}} textStyle={[ styles?.remarksContent,{marginBottom: 6}, statusColor(
                                                                             item?.status
                                                                         )]} text={item?.remarks}></CollapseText>
                                                                     </View>
 
-<View style={{flex: 0.5}}>
-    {(item?.personnel?.firstName && item?.personnel?.lastName) ? <Text style={[styles?.remarksContent, {color: "#565961"}]}>{`by: ${item?.personnel?.firstName} ${item?.personnel?.lastName}`}</Text> : <></>}
-</View>
+                                                                    {item?.personnel?._id != personnel?._id ? <View style={{flex: 0.5}}>
+                                                                        {(item?.personnel?.firstName  && item?.personnel?.lastName) ? <Text style={[styles?.remarksContent, {color: "#565961"}]}>{`by: ${item?.personnel?.firstName} ${item?.personnel?.lastName}`}</Text> : <></>}
+                                                                    </View> : <></>}
 
                                                                 </View>
 
