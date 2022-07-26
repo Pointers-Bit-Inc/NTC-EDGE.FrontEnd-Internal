@@ -118,9 +118,6 @@ jobs:
           name: Installing expo-cli
           command: yarn global add expo-cli
       - run:
-          name: Installing netlify
-          command: yarn global add netlify-cli
-      - run:
           name: Publishing Expo app
           command: |
             yarn
