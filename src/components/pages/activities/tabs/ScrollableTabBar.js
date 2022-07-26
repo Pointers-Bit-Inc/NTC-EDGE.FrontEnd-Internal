@@ -249,6 +249,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   tabs: {
+    paddingRight: 20,
     flexDirection : "row" , flex : 1 , width : "100%" , justifyContent : "space-evenly",
   },
 });
