@@ -1,3 +1,5 @@
+import Text from "@atoms/text";
+
 const React = require('react');
 const { Component } = React;
 const { ViewPropTypes } = ReactNative = require('react-native');
@@ -13,17 +15,16 @@ const {
   InteractionManager,
 } = ReactNative;
 
-const ViewPagerAndroid = require('@react-native-community/viewpager');
 const TimerMixin = require('react-timer-mixin');
-const ViewPager = require('@react-native-community/viewpager');
+import PagerView from 'react-native-pager-view';
+
 
 const SceneComponent = require('./SceneComponent');
 const DefaultTabBar = require('./DefaultTabBar');
 const ScrollableTabBar = require('./ScrollableTabBar');
 
-const AnimatedViewPagerAndroid = Platform.OS === 'android' ?
-    Animated.createAnimatedComponent(ViewPager) :
-    undefined;
+const AnimatedViewPagerAndroid = Animated.createAnimatedComponent(PagerView)
+
 
 const ScrollableTabView = createReactClass({
   mixins: [TimerMixin, ],
@@ -50,6 +51,7 @@ const ScrollableTabView = createReactClass({
     contentProps: PropTypes.object,
     scrollWithoutAnimation: PropTypes.bool,
     locked: PropTypes.bool,
+    scrollStyle:PropTypes.object,
     prerenderingSiblingsNumber: PropTypes.number,
   },
 
@@ -248,6 +250,8 @@ const ScrollableTabView = createReactClass({
           keyboardDismissMode="on-drag"
           {...this.props.contentProps}
       >
+
+
         {scenes}
       </Animated.ScrollView>;
     } else {
@@ -274,6 +278,7 @@ const ScrollableTabView = createReactClass({
           ref={(scrollView) => { this.scrollView = scrollView; }}
           {...this.props.contentProps}
       >
+
         {scenes}
       </AnimatedViewPagerAndroid>;
     }
@@ -396,15 +401,17 @@ const ScrollableTabView = createReactClass({
       };
     }
 
-    return <View style={[styles.container, this.props.style, ]} onLayout={this._handleLayout}>
+    return <View style={[styles.container,  this.props.style, ]} onLayout={this._handleLayout}>
       {this.props.tabBarPosition === 'top' && this.renderTabBar(tabBarProps)}
+
       {this.renderScrollableContent()}
+
       {(this.props.tabBarPosition === 'bottom' || overlayTabs) && this.renderTabBar(tabBarProps)}
     </View>;
   },
 });
 
-module.exports = ScrollableTabView;
+export default (ScrollableTabView);
 
 const styles = StyleSheet.create({
   container: {

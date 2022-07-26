@@ -11,7 +11,7 @@ const Tab = ({ tab , page , isTabActive , onPressHandler , onTabLayout , styles 
     };
 
     return (
-        <TouchableOpacity style={ style } onPress={ () => onPressHandler(page) } onLayout={ onTabLayout } key={ page }>
+        <TouchableOpacity style={ style } onPress={ onPressHandler } onLayout={ onTabLayout } key={ page }>
             <View >
                 <Animated.Text style={ {
                     color : isTabActive ? infoColor : "#606A80" ,

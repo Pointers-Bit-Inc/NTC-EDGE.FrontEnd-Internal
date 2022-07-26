@@ -147,7 +147,7 @@ const ActivitiesPage = (props) => {
     }, [normalizeActiveMeetings, meeting]);
 
     useEffect(() => {
-       let unMount = false;
+        let unMount = false;
         getActiveMeetingList((err, result) => {
             if (!unMount) {
                 if (result) {
@@ -512,7 +512,7 @@ const ActivitiesPage = (props) => {
 
 
 
-                                           //
+                                            //
                                         }
 
                                     }}
@@ -777,7 +777,7 @@ const ActivitiesPage = (props) => {
                                        onChangeAssignedId={onChangeAssignedId}
                                        visible={modalVisible}
                                        onDismissed={onDismissedModal}/>
-                        </View>}
+                    </View>}
                 </View>
             </View>
         </>
