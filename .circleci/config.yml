@@ -379,6 +379,12 @@ jobs:
           platform: linux
       - node/install:
           node-version: '16.13.0'
+      - run:
+          name: Installing expo-cli
+          command: yarn global add expo-cli
+      - run:
+          name: Installing netlify
+          command: yarn global add netlify-cli
       - run: yarn
       - save_yarn_cache:
           platform: linux
