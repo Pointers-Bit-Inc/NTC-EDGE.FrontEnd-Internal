@@ -332,7 +332,7 @@ jobs:
           platform: linux
       - add_yarn_binaries_to_path
       - run:
-          name: Android APK Build
+          name: Android AAB Build
           command: npx eas-cli build --platform android --non-interactive
           no_output_timeout: 30m
 
@@ -358,7 +358,7 @@ jobs:
           platform: linux
       - add_yarn_binaries_to_path
       - run:
-          name: Android IOS Build
+          name: IOS Build
           command: npx eas-cli build --platform ios --non-interactive
           no_output_timeout: 30m
 
@@ -390,7 +390,7 @@ jobs:
           platform: linux
       - add_yarn_binaries_to_path
       - run:
-          name: Android WEB Build
+          name: WEB Build
           command: npm run web-build && npm run web-deploy
           no_output_timeout: 30m
 
