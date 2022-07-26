@@ -58,7 +58,7 @@ const ModalTab = props => {
             isShow : [CASHIER , ACCOUNTANT,EVALUATOR]
         } ,
     ]);
-    const loading = useMemo(() =>  props.loading, [props.loading])
+    //const loading = useMemo(() =>  props.loading, [props.loading])
 
     const {
         schedule,
