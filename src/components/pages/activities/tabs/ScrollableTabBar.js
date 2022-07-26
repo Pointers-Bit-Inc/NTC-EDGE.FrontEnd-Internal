@@ -95,7 +95,6 @@ const ScrollableTabBar = createReactClass({
     newScrollX -= (containerWidth - (1 - pageOffset) * tabWidth - pageOffset * nextTabWidth) / 2;
     newScrollX = newScrollX >= 0 ? newScrollX : 0;
 
-    if( !!this._scrollView.scrollTo({x: newScrollX, y: 0, animated: false, })){
       if (Platform.OS === 'android') {
         this._scrollView?.scrollTo({x: newScrollX, y: 0, animated: false, });
       } else {
@@ -103,7 +102,7 @@ const ScrollableTabBar = createReactClass({
         newScrollX = newScrollX > rightBoundScroll ? rightBoundScroll : newScrollX;
         this._scrollView?.scrollTo({x: newScrollX, y: 0, animated: false, });
       }
-    }
+
 
 
   },
@@ -250,6 +249,6 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   tabs: {
-    flexDirection : "row" , flex : 1 , width : "100%" , justifyContent : "space-evenly"
+    flexDirection : "row" , flex : 1 , width : "100%" , justifyContent : "space-evenly",
   },
 });

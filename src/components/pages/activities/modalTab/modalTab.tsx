@@ -3,10 +3,9 @@ import BasicInfo from "@pages/activities/application/basicInfo";
 import ApplicationDetails from "@pages/activities/application/applicationDetails";
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
-import React, {memo, useEffect, useState} from "react";
+import React, {memo, useEffect, useMemo, useState} from "react";
 import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
 import {Alert, Animated, InteractionManager, KeyboardAvoidingView, Platform, View} from "react-native";
-import ScrollableTabBar from "@pages/activities/tabs/ScrollableTabBar";
 import ScrollableTabView from "@pages/activities/tabs";
 import Tab from "@pages/activities/tabs/Tab";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
@@ -15,11 +14,13 @@ import {fontValue} from "@pages/activities/fontValue";
 import {setEditModalVisible} from "../../../../reducers/activity/actions";
 import useSafeState from "../../../../hooks/useSafeState";
 import {setEdit} from "../../../../reducers/application/actions";
+import TabBar from "@pages/activities/tabs/tabbar";
 
 const ModalTab = props => {
     const dispatch=useDispatch();
     const user = useSelector((state: RootStateOrAny) => state.user);
     const editModalVisible = useSelector((state: RootStateOrAny) => state.activity.editModalVisible);
+    const edit = useSelector((state: RootStateOrAny) => state.application.edit);
     const [_scrollX , set_scrollX] = useState(new Animated.Value(0));
     // 6 is a quantity of tabs
     const [interpolators , setInterpolators] = useState(Array.from({ length : 6 } , (_ , i) => i).map(idx => (
@@ -57,7 +58,7 @@ const ModalTab = props => {
             isShow : [CASHIER , ACCOUNTANT,EVALUATOR]
         } ,
     ]);
-
+    const loading = useMemo(() =>  props.loading, [props.loading])
 
     const {
         schedule,
@@ -77,7 +78,8 @@ const ModalTab = props => {
         proofOfPayment,
         remarks,
         paymentStatus,
-        paymentHistory
+        paymentHistory,
+
     } = useApplicant(props.details)
     const [initialPage,setInitialPage]=useState(true);
     const [paymentIndex, setPaymentIndex] = useSafeState()
@@ -95,6 +97,8 @@ const ModalTab = props => {
                 dispatch(setEdit(false))
                 dispatch(setEditModalVisible(false))
             }
+
+
         }
         }
         renderTabBar={ (props) => {
@@ -102,7 +106,9 @@ const ModalTab = props => {
                 props?.goToPage(0);
                 setInitialPage(false)
             }
-            return <ScrollableTabBar
+            //console.log(editModalVisible, edit, loading)
+
+            return <TabBar
                 underlineColor={infoColor}
                 underlineHeight={fontValue(3)}
                 renderTab={ (tab , page , isTabActive , onPressHandler , onTabLayout) => (
@@ -116,7 +122,7 @@ const ModalTab = props => {
                         styles={ interpolators[page] }
                     />
                 ) }
-                style={ { paddingTop : 10 , borderTopColor : '#d2d2d2' , borderTopWidth : 1 } }/>
+                tabBarStyle={ { paddingTop : 10 , borderTopColor : '#d2d2d2' , borderTopWidth : 1 } }/>
         } }
 
     >
@@ -178,7 +184,7 @@ const ModalTab = props => {
                                                key={ index }/>
                 } else if (isShow && tab.id === 3) {
                     return <Requirement saved={props.saved} tabLabel={ { label : tab.name } }
-                                        label={ tab.name }
+                                        label={  { label : tab.name } }
                                         requirements={ requirements }
                                         key={ index }/>
                 } else if (isShow && tab.id === 4  && service?.serviceCode !== "service-22" ) {

@@ -16,9 +16,11 @@ export default function useApplicant(props) {
         proofOfPayment = props?.proofOfPayment,
         documents = props?.document,
         remarks=  props?.remarks,
-        paymentStatus = props?.paymentStatus
+        paymentStatus = props?.paymentStatus,
+        saved = props.saved
     return {applicant,
         selectedTypes,
+        saved,
         applicationType,
         service,
         soa,
