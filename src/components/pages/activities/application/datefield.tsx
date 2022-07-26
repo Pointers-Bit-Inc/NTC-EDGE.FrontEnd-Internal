@@ -77,6 +77,7 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
 
     useEffect(()=>{
+        if(monthValue && dayValue && yearValue) return
         let _day = dayValue.length == 1 ? "0" + dayValue : dayValue
         props.updateForm(props.stateName, `${yearValue}-${monthValue}-${_day}` + (time ? `T${time}` : ""))
     }, [monthValue, dayValue, yearValue])

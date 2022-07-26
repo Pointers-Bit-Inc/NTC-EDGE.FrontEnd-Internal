@@ -394,8 +394,8 @@ const ActivitiesPage = (props) => {
                                             activity={act?.item}
                                             isPinned={true}
                                             onPressUser={(event: any) => {
-                                                dispatch(setEdit(false))
-                                                dispatch(setHasChange(false))
+
+
                                                 /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                                                 })*/
                                                 dispatch(setApplicationItem({...act?.item, isOpen: `pin${i}${index}`}));
@@ -403,14 +403,14 @@ const ActivitiesPage = (props) => {
                                                 if (event?.icon == 'more') {
                                                     setMoreModalVisible(true)
                                                 } else {
-                                                    setModalVisible(true)
+                                                    if(Platform.OS == "web"){
+                                                        setModalVisible(true)
+                                                    }else{
+                                                        props.navigation.navigate(ACTIVITYITEM, {onDismissed: onDismissedModal, onChangeEvent: onChangeEvent, onChangeAssignedId: onChangeAssignedId});
+                                                    }
                                                 }
                                                 dispatch(setSelectedYPos({yPos, type: 1}))
-                                                if(Platform.OS == "web"){
-                                                    setModalVisible(true)
-                                                }else{
-                                                    props.navigation.navigate(ACTIVITYITEM, {onDismissed: onDismissedModal, onChangeEvent: onChangeEvent, onChangeAssignedId: onChangeAssignedId});
-                                                }
+
                                             }} index={`pin${i}${index}`}
                                             swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, act?.item, unReadReadApplicationFn)}/>
                                 }

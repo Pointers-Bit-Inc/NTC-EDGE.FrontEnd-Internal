@@ -70,6 +70,7 @@ const BasicInfo = (props: any) => {
 
 
     const hasChanges = () => {
+
         var hasChanges = false;
 
         for (const [key, value] of Object.entries(props.userOriginalProfileForm)) {

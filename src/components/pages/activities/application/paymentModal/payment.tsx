@@ -337,9 +337,12 @@ const Payment = (props: any) => {
         setSoa(arr);
     }
     const updateSoa = (stateName, value, index) =>{
+
         let hasChanges = false
         let compare=soa.findIndex(uf=>uf.id===index);
+
         if(value!==props.soa?.[compare]?.[stateName]){
+
             hasChanges=true;
             props.hasChanges(hasChanges)
         }
@@ -359,10 +362,6 @@ const Payment = (props: any) => {
 
 
     }
-    useEffect(()=>{
-        props.setPaymentIndex(props.paymentIndex)
-        dispatch(setEditModalVisible(true))
-    }, [])
     const {applicantForm, updateApplication} = useApplicantForm(props);
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
     return  <>

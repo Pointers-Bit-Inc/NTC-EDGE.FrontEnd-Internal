@@ -72,13 +72,16 @@ function ActivityModal(props: any) {
     const applicationItem =useSelector((state:RootStateOrAny)=>{
         return state.application?.applicationItem
     });
+
     const hasChange = useSelector((state: RootStateOrAny) => state.application.hasChange);
     const edit = useSelector((state: RootStateOrAny) => state.application.edit);
 
     const [userProfileForm, setUserProfileForm] = useSafeState(() => {
         return flatten.flatten(applicationItem)
     })
-    const [userOriginalProfileForm, setUserOriginalProfileForm] = useSafeState(userProfileForm)
+    const [userOriginalProfileForm, setUserOriginalProfileForm] = useSafeState(() => {
+        return flatten.flatten(applicationItem)
+    })
     const navigation = useNavigation();
 
     const dimensions = useWindowDimensions();
@@ -199,10 +202,8 @@ function ActivityModal(props: any) {
     }
 
 
-
     const [prevId, setPrevId] = useSafeState(0)
     useEffect(() => {
-
         setUserProfileForm(flatten.flatten(applicationItem))
         setUserOriginalProfileForm(flatten.flatten(applicationItem))
        /* console.log(prevId != applicationItem._id, prevId , applicationItem._id)
@@ -219,7 +220,9 @@ function ActivityModal(props: any) {
 
         }
     }, [applicationItem._id,]);
+    useEffect(()=>{
 
+    }, [])
     const statusMemo = useMemo(() => {
         setStatus(status);
         setAssignId(assignId || (
@@ -254,6 +257,7 @@ function ActivityModal(props: any) {
     const [discardAlert, setDiscardAlert] = useSafeState(false);
     const [editAlert, setEditAlert] = useSafeState(false);
     const handleBackButtonClick = () => {
+
         if (hasChange) setDiscardAlert(true);
         else {
             setAssignId("");
@@ -444,6 +448,7 @@ function ActivityModal(props: any) {
                     isMobile || (Platform?.isPad)) && <View style={{
                     flexDirection: "row",
                     alignItems: "center",
+
                     borderBottomColor: "#F0F0F0",
                     justifyContent: "space-around",
                     padding: 15,

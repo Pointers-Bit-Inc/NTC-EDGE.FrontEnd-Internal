@@ -68,6 +68,7 @@ const ApplicationDetails = (props: any) => {
         for (const [key, value] of Object.entries(props.userOriginalProfileForm)) {
 
             if (props.userOriginalProfileForm?.[key] != props.userProfileForm?.[key]) {
+
                 hasChanges = true
 
                 props.hasChanges(hasChanges)
