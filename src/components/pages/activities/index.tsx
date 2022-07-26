@@ -54,7 +54,7 @@ import {Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import HomeMenuIcon from "@assets/svg/homemenu";
 import {setVisible} from "../../../reducers/activity/actions";
-import {primaryColor} from "@styles/color";
+import {infoColor, primaryColor} from "@styles/color";
 import RefreshWeb from "@assets/svg/refreshWeb";
 import {MeetingNotif} from '@components/molecules/list-item';
 import {
@@ -548,7 +548,11 @@ const ActivitiesPage = (props) => {
         ],
         [rendered, headerHeight, tabBarAnimatedStyle]
     );
-
+    const tabBarOptions = {
+        activeTintColor: infoColor,
+        inactiveTintColor: "#606A80",
+        indicatorStyle: {  height: 3 },
+    }
     const renderTabBar = useCallback<(props: MaterialTopTabBarProps) => React.ReactElement>(
         (props) => (
             <Animated.View style={tabBarStyle}>
@@ -743,7 +747,7 @@ const ActivitiesPage = (props) => {
 
                             </View>
                         </Animated.View>
-                        <Tab.Navigator tabBar={renderTabBar}>
+                        <Tab.Navigator tabBarOptions={tabBarOptions} tabBar={renderTabBar}>
                             <Tab.Screen name="All">{renderAllActivities}</Tab.Screen>
                             <Tab.Screen name="Pending">{renderPending}</Tab.Screen>
                             <Tab.Screen name="History">{renderHistory}</Tab.Screen>
@@ -767,7 +771,7 @@ const ActivitiesPage = (props) => {
 
 
                     {(
-                        !lodash.isEmpty(applicationItem)) && <View style={{flex: 1}}>
+                        (!lodash.isEmpty(applicationItem)) && Platform.OS == "web") && <View style={{flex: 1}}>
                         <ItemMoreModal details={applicationItem} visible={moreModalVisible} onDismissed={() => {
                             onMoreModalDismissed(applicationItem?.isOpen)
                         }}/>
