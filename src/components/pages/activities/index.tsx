@@ -428,6 +428,9 @@ const ActivitiesPage = (props) => {
         return   <Animated.FlatList
             refreshControl={
                 <RefreshControl
+                    tintColor={primaryColor} // ios
+                    progressBackgroundColor={primaryColor} // android
+                    colors={['white']} // android
                     progressViewOffset={headerHeight + 42}
                     refreshing={refreshing}
                     onRefresh={onRefresh}
