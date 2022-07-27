@@ -450,7 +450,7 @@ function ActivityModal(props: any) {
                     alignItems: "center",
 
                     borderBottomColor: "#F0F0F0",
-                    justifyContent: "space-around",
+                    justifyContent: "space-evenly",
                     padding: 15,
                     paddingTop: 40,
                 }}>
@@ -464,7 +464,7 @@ function ActivityModal(props: any) {
                         <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
                     </TouchableOpacity>}
                     <Text
-                        style={[styles.applicationType, {width: "90%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
+                        style={[styles.applicationType, {width: "85%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
 
                     {editModalVisible ? edit  ? <TouchableOpacity hitSlop={hitSlop} onPress={() => {
                             updateApplication(() => {})

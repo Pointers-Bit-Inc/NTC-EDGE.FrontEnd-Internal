@@ -35,8 +35,10 @@ const LoadingModal = (props) =>{
 
             elevation: 3,} : {}]}>
 
-            {  props?.saved ? <ActivityIndicator size={16}  color={"#fff"} style={{marginRight: 10}}/> : <CheckMarkIcon color={infoColor} />}
-                <Text style={{color: props?.saved ? "#fff" : infoColor, fontFamily: Bold, fontSize: fontValue(16)}}>{props?.loading ? "Saving" : "Saved" }</Text>
+            {  props?.saved ? <ActivityIndicator size={16}  color={"#fff"} style={{marginRight: 10}}/> : <View style={{marginRight: 10}}><CheckMarkIcon color={infoColor} /></View>}
+
+                    <Text style={{color: props?.saved ? "#fff" : infoColor, fontFamily: Bold, fontSize: fontValue(16)}}>{props?.saved  ? "Saving" : "Saved" }</Text>
+
 
         </View>
 
