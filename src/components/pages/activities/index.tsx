@@ -551,7 +551,7 @@ const ActivitiesPage = (props) => {
     const tabBarOptions = {
         activeTintColor: infoColor,
         inactiveTintColor: "#606A80",
-        indicatorStyle: {  height: 3 },
+        indicatorStyle: {  height: 3, backgroundColor: infoColor  },
     }
     const renderTabBar = useCallback<(props: MaterialTopTabBarProps) => React.ReactElement>(
         (props) => (
