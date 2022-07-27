@@ -25,7 +25,7 @@ import {setEditModalVisible} from "../../../../reducers/activity/actions";
 import useSafeState from "../../../../hooks/useSafeState";
 import {setEdit} from "../../../../reducers/application/actions";
 import {Route, TabBar, TabBarIndicator, TabView} from "react-native-tab-view";
-import {Regular} from "@styles/font";
+import {Bold, Regular} from "@styles/font";
 import {GetTabWidth} from "react-native-tab-view/lib/typescript/TabBarIndicator";
 import {isTablet} from "react-native-device-info";
 
@@ -247,7 +247,7 @@ const  getTranslateX = (
                         <View  >
                             <Text style={ {
                                 color : focused ? infoColor : "#606A80" ,
-                                fontFamily : Regular ,
+                                fontFamily : focused ? Bold : Regular ,
                                 fontSize : fontValue(12)
                             } }>{  route.title }</Text>
                         </View>
