@@ -247,7 +247,7 @@ const  getTranslateX = (
                         <View  >
                             <Text style={ {
                                 color : focused ? infoColor : "#606A80" ,
-                                fontFamily : focused ? Bold : Regular ,
+                                fontFamily : Regular , // focused ? Bold : Regular
                                 fontSize : fontValue(12)
                             } }>{  route.title }</Text>
                         </View>
