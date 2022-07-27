@@ -142,6 +142,48 @@ const BasicInfo = (props: any) => {
         const _paymentHistory =  props.paymentHistory?.length  ? props.paymentHistory : []
         const _approvalHistory =  props.approvalHistory?.length  ? props.approvalHistory : []
         return [..._paymentHistory, ..._approvalHistory]?.filter(s => s?.remarks)
+        /*return [
+            {
+                remarks: "test",
+                status: "pending",
+                personnel: {
+                    firstName: "test" ,
+                    lastName: "test"
+                }
+            },
+            {
+                remarks: "test.test..test.test.test.test.test.test.test.test.test.test.test.test.test.test",
+                status: "pending",
+                personnel: {
+                    firstName: "test" ,
+                    lastName: "test"
+                }
+            },
+            {
+                remarks: "lorem",
+                status: "Decline",
+                personnel: {
+                    firstName: "test" ,
+                    lastName: "test"
+                }
+            },
+            {
+                remarks: "test",
+                status: "pending",
+                personnel: {
+                    firstName: "test" ,
+                    lastName: "test"
+                }
+            },
+            {
+                remarks: "test",
+                status: "pending",
+                personnel: {
+                    firstName: "test" ,
+                    lastName: "test"
+                }
+            },
+        ]*/
     }, [props.paymentHistory, props.approvalHistory ])
 
     return <View style={{flex:1}}>
@@ -308,7 +350,7 @@ const BasicInfo = (props: any) => {
                                                                         )]} text={item?.remarks}></CollapseText>
                                                                     </View>
 
-                                                                    {item?.personnel?._id != personnel?._id ? <View style={{flex: 0.5}}>
+                                                                    {item?.personnel?._id != personnel?._id ? <View style={{flex: 0.5, alignItems: "center", justifyContent: "center"}}>
                                                                         {(item?.personnel?.firstName  && item?.personnel?.lastName) ? <Text style={[styles?.remarksContent, {color: "#565961"}]}>{`by: ${item?.personnel?.firstName} ${item?.personnel?.lastName}`}</Text> : <></>}
                                                                     </View> : <></>}
 
