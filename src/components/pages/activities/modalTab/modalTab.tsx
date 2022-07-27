@@ -260,19 +260,22 @@ const  getTranslateX = (
                         getTabWidth,
                         position,
                     } = indicatorProps;
-                    const translateX =
+                    /*const translateX =
                         routes.length > 1 ? getTranslateX( position, routes, getTabWidth) : 0;
 
+                    ;*/
                     const indicatorStyle = {
-                        transform: [{translateX}] as any,
+                       // transform: [{translateX}] as any,
                         height: 4,
                         backgroundColor: infoColor,
                         borderRadius: 4,
                         padding: 0,
                         left: 24 / 2,
-                    };
-                    const width = indicatorProps.getTabWidth(index) - 24
-                    return <TabBarIndicator {...indicatorProps} width={width}    style={indicatorStyle} />;
+                    }
+                    const width = getTabWidth(index) - 24
+                    return <TabBarIndicator {...indicatorProps} width={width}
+                                             style={indicatorStyle}
+                    />;
                 }}
 
                 tabStyle={{width: fontValue(136)}}
