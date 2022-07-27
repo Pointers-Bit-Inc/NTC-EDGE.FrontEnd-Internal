@@ -13,7 +13,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     useWindowDimensions,
-    View, Dimensions
+    View, Dimensions, I18nManager
 } from "react-native";
 import ScrollableTabBar from "@pages/activities/tabs/ScrollableTabBar";
 import ScrollableTabView from "@pages/activities/tabs";
@@ -24,8 +24,10 @@ import {fontValue} from "@pages/activities/fontValue";
 import {setEditModalVisible} from "../../../../reducers/activity/actions";
 import useSafeState from "../../../../hooks/useSafeState";
 import {setEdit} from "../../../../reducers/application/actions";
-import {TabBar, TabBarIndicator, TabView} from "react-native-tab-view";
+import {Route, TabBar, TabBarIndicator, TabView} from "react-native-tab-view";
 import {Regular} from "@styles/font";
+import {GetTabWidth} from "react-native-tab-view/lib/typescript/TabBarIndicator";
+import {isTablet} from "react-native-device-info";
 
 const ModalTab = props => {
     const dispatch = useDispatch();
@@ -212,6 +214,27 @@ const ModalTab = props => {
 
 
     };
+const  getTranslateX = (
+        position: Animated.AnimatedInterpolation,
+        routes: Route[],
+        getTabWidth: GetTabWidth
+    ) => {
+        const inputRange = routes.map((_, i) => i);
+
+        // every index contains widths at all previous indices
+        const outputRange = routes.reduce<number[]>((acc, _, i) => {
+            if (i === 0) return [0];
+            return [...acc, acc[i - 1] + getTabWidth(i - 1)];
+        }, []);
+
+        const translateX = position.interpolate({
+            inputRange,
+            outputRange,
+            extrapolate: 'clamp',
+        });
+
+        return Animated.multiply(translateX, I18nManager.isRTL ? -1 : 1);
+    };
     return <TabView
 
         style={{borderTopColor: 'rgba(0, 0, 0, 0.1)',
@@ -232,14 +255,24 @@ const ModalTab = props => {
                 }}
                 {...props}
                 renderIndicator={indicatorProps => {
+                    const {
+                        navigationState: {routes},
+                        getTabWidth,
+                        position,
+                    } = indicatorProps;
+                    const translateX =
+                        routes.length > 1 ? getTranslateX( position, routes, getTabWidth) : 0;
+
+                    const indicatorStyle = {
+                        transform: [{translateX}] as any,
+                        height: 4,
+                        backgroundColor: infoColor,
+                        borderRadius: 4,
+                        padding: 0,
+                        left: 24 / 2,
+                    };
                     const width = indicatorProps.getTabWidth(index) - 24
-                    return <TabBarIndicator {...indicatorProps} width={width} />
-                }}
-                indicatorStyle={{
-                    padding: 0,
-                    backgroundColor: infoColor,
-                    height: 4,
-                    left: 24 / 2,
+                    return <TabBarIndicator {...indicatorProps} width={width}    style={indicatorStyle} />;
                 }}
 
                 tabStyle={{width: fontValue(136)}}
