@@ -483,10 +483,7 @@ function ActivityModal(props: any) {
 
                 </View>}
 
-                <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    style={[styles.container]}
-                >
+
 
                     <ModalTab saved={saved} loading={loading} setEditAlert={setEditAlert} updateApplication={updateApplication} editBtn={editBtn}
                               userOriginalProfileForm={userOriginalProfileForm}
@@ -500,7 +497,6 @@ function ActivityModal(props: any) {
                         })
                     }} details={applicationItem} status={status}/>
 
-                </KeyboardAvoidingView>
 
                 {!edit &&
                     <View style={[{

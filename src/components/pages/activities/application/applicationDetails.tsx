@@ -1,5 +1,6 @@
 import React, {memo, useEffect, useState} from "react";
 import {
+    KeyboardAvoidingView,
     Modal,
     Platform,
     Pressable,
@@ -82,9 +83,15 @@ const ApplicationDetails = (props: any) => {
 
     const rightLayoutComponent= useSelector((state: RootStateOrAny) => state.application?.rightLayoutComponent);
     const [modalVisible, setModalVisible] = useState(false);
-    return <>
+    return <View style={{flex:1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved}  loading={props.loading}/>}
-        <ScrollView contentContainerStyle={{flex: 1}}
+        <KeyboardAvoidingView
+            style={{flex:1}}
+            behavior={Platform.OS === 'ios' ? 'position' : "height"}
+
+        >
+
+        <ScrollView
                        style={{paddingTop: 20, width: "100%", backgroundColor: "#f8f8f8",}}>
         {/*<PdfViewrWeb height={height}
                   width={width} requirement={props?.documents}/>*/}
@@ -211,7 +218,8 @@ const ApplicationDetails = (props: any) => {
             </View>
 
         </Modal>
-    </ScrollView></>
+    </ScrollView></KeyboardAvoidingView>
+</View>
 
 };
 const styles = StyleSheet.create({

@@ -2,7 +2,7 @@ import React, {memo, useEffect, useState} from "react";
 import {
     ActivityIndicator,
     FlatList,
-    Image,
+    Image, KeyboardAvoidingView,
     Modal,
     Platform,
     SafeAreaView,
@@ -364,13 +364,15 @@ const Payment = (props: any) => {
     }
     const {applicantForm, updateApplication} = useApplicantForm(props);
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
-    return  <>
+    return  <View style={{flex:1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
+        <KeyboardAvoidingView
+            style={{flex:1}}
+            behavior={Platform.OS === 'ios' ? 'position' : "height"}
+        >
+
         <ScrollView
-        keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
-        style={{
-            backgroundColor: "#F8F8F8",
-        }}>
+       >
 
         <View style={styles.containers}>
             <View onLayout={onLayoutComponent} style={styles.statement}>
@@ -597,7 +599,8 @@ const Payment = (props: any) => {
                       visible={visibleModal}
                       onDismissed={onDismissed}/>
     </ScrollView>
-</>
+    </KeyboardAvoidingView>
+</View>
 };
 
 

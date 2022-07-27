@@ -1,5 +1,14 @@
 import React, {memo, useEffect, useMemo, useRef} from "react";
-import {FlatList, Platform, RefreshControl, ScrollView, Text, useWindowDimensions, View} from "react-native";
+import {
+    FlatList,
+    KeyboardAvoidingView,
+    Platform,
+    RefreshControl,
+    ScrollView,
+    Text,
+    useWindowDimensions,
+    View
+} from "react-native";
 import {excludeStatus, getStatusText, remarkColor, statusColor, statusIcon} from "@pages/activities/script";
 import ProfileImage from "@atoms/image/profile";
 import CustomText from "@atoms/text";
@@ -135,9 +144,14 @@ const BasicInfo = (props: any) => {
         return [..._paymentHistory, ..._approvalHistory]?.filter(s => s?.remarks)
     }, [props.paymentHistory, props.approvalHistory ])
 
-    return <>
+    return <View style={{flex:1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved}  loading={props.loading}/>}
-        <ScrollView keyboardShouldPersistTaps={Platform.OS == "ios" ? "handled" : "always"}
+        <KeyboardAvoidingView
+            style={{flex:1}}
+            behavior={Platform.OS === 'ios' ? 'position' : "height"}
+        >
+
+        <ScrollView
                          refreshControl={
                              <RefreshControl
                                  refreshing={refreshing}
@@ -552,8 +566,8 @@ const BasicInfo = (props: any) => {
 
     </ScrollView>
 
-
-    </>
+        </KeyboardAvoidingView>
+    </View>
 };
 
 export default memo(BasicInfo)

@@ -235,58 +235,58 @@ const  getTranslateX = (
 
         return Animated.multiply(translateX, I18nManager.isRTL ? -1 : 1);
     };
-    return <TabView
 
-        style={{borderTopColor: 'rgba(0, 0, 0, 0.1)',
-            borderTopWidth: 1,}}
-        renderTabBar={props => (
-            <TabBar
+    return  <TabView
+            style={{borderTopColor: 'rgba(0, 0, 0, 0.1)',
+                borderTopWidth: 1,}}
+            renderTabBar={props => (
+                edit ? <></> : <TabBar
 
-                renderLabel={({route, focused}) => {
-                    return (
-                        <View  >
-                            <Text style={ {
-                                color : focused ? infoColor : "#606A80" ,
-                                fontFamily : Regular , // focused ? Bold : Regular
-                                fontSize : fontValue(12)
-                            } }>{  route.title }</Text>
-                        </View>
-                    );
-                }}
-                {...props}
-                renderIndicator={indicatorProps => {
-                    const {
-                        navigationState: {routes},
-                        getTabWidth,
-                        position,
-                    } = indicatorProps;
-                    /*const translateX =
-                        routes.length > 1 ? getTranslateX( position, routes, getTabWidth) : 0;
+                    renderLabel={({route, focused}) => {
+                        return (
+                            <View  >
+                                <Text style={ {
+                                    color : focused ? infoColor : "#606A80" ,
+                                    fontFamily : Regular , // focused ? Bold : Regular
+                                    fontSize : fontValue(12)
+                                } }>{  route.title }</Text>
+                            </View>
+                        );
+                    }}
+                    {...props}
+                    renderIndicator={indicatorProps => {
+                        const {
+                            navigationState: {routes},
+                            getTabWidth,
+                            position,
+                        } = indicatorProps;
+                        /*const translateX =
+                            routes.length > 1 ? getTranslateX( position, routes, getTabWidth) : 0;
 
-                    ;*/
-                    const indicatorStyle = {
-                       // transform: [{translateX}] as any,
-                        height: 4,
-                        backgroundColor: infoColor,
-                        borderRadius: 4,
-                        padding: 0,
-                        left: 24 / 2,
-                    }
-                    const width = getTabWidth(index) - 24
-                    return <TabBarIndicator {...indicatorProps} width={width}
-                                             style={indicatorStyle}
-                    />;
-                }}
+                        ;*/
+                        const indicatorStyle = {
+                            // transform: [{translateX}] as any,
+                            height: 4,
+                            backgroundColor: infoColor,
+                            borderRadius: 4,
+                            padding: 0,
+                            left: 24 / 2,
+                        }
+                        const width = getTabWidth(index) - 24
+                        return <TabBarIndicator {...indicatorProps} width={width}
+                                                style={indicatorStyle}
+                        />;
+                    }}
 
-                tabStyle={{width: fontValue(136)}}
-                scrollEnabled={true}
-                style={{  backgroundColor: 'white' }}
-            />
-        )}
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-    />
+                    tabStyle={{width: fontValue(136)}}
+                    scrollEnabled={true}
+                    style={{  backgroundColor: 'white' }}
+                />
+            )}
+            navigationState={{ index, routes }}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+        />
 }
 
 

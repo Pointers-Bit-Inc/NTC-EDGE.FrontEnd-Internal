@@ -1,4 +1,4 @@
-import {ActivityIndicator, View} from "react-native";
+import {ActivityIndicator, useWindowDimensions, View} from "react-native";
 import {infoColor} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
 import Text from "@atoms/text";
@@ -7,6 +7,7 @@ import React from "react";
 import CheckMarkIcon from "@assets/svg/checkmark";
 
 const LoadingModal = (props) =>{
+    const dimensions = useWindowDimensions();
     return <View style={[{
         width: "100%",
         height: "100%",
@@ -15,7 +16,6 @@ const LoadingModal = (props) =>{
         position: "absolute",
         zIndex: 4,
         backgroundColor:  props?.saved ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0)"
-
     }]}>
         <View style={[{
             backgroundColor:  props?.saved ? infoColor : "#fff",
