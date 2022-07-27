@@ -39,7 +39,7 @@ const CollapseText: FC<CollapseTextProps> = ({
                     ellipsizeMode="tail"
                     fontSize={px(14)}
                     lineHeight={lineHeight}
-                    style={[textStyle,{margin: 15, marginBottom: isOverflow ? 3 : 15}]}
+                    style={[textStyle,{marginBottom: isOverflow ? 3 : 15}]}
                 >
                     {text}
                 </Text>
