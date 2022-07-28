@@ -286,10 +286,10 @@ function ActivityModal(props: any) {
     const {showToast, hideToast} = useToast();
     const [messageUpdate, setMessageUpdate] = useSafeState("")
     const [titleUpdate, setTitleUpdate] = useSafeState("")
-    const updateApplication = useCallback((callback) => {
+    const updateApplication = useCallback((callback, isLoading = true) => {
        /* hideToast()
         showToast(ToastType.Info, <ToastLoading/>)*/
-        setLoading(true)
+        if(isLoading)setLoading(true)
         let profileForm = userProfileForm
         let dateOfBirth = profileForm?.['applicant.dateOfBirth'], region = profileForm?.['region.code'],
             dateValue = {year: "", month: "", day: ""}
@@ -314,16 +314,19 @@ function ActivityModal(props: any) {
         const flattenSoa = flatten.unflatten(cleanSoa)?.soa?.filter(s => s)
         if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
-        setSaved(true)
+        if(isLoading)setSaved(true)
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, {
             headers: {
                 Authorization: "Bearer ".concat(user?.sessionToken)
             }
         }).then((response) => {
-           setSaved(false)
-            setTimeout(()=>{
-               setLoading(false)
-           }, 2500)
+            if(isLoading)setSaved(false)
+            if(isLoading){
+                setTimeout(()=>{
+                    setLoading(false)
+                }, 2500)
+            }
+
 
 
             //hideToast()

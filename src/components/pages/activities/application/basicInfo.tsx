@@ -202,6 +202,13 @@ const BasicInfo = (props: any) => {
         })
 
     }
+    const isMoreRemark = () => {
+        setLoading(true)
+        props?.updateApplication(() => {
+            setLoading(false)
+        }, false)
+
+    }
     const {showToast, hideToast} = useToast();
     const [refreshing, setRefreshing] = React.useState(false);
     const onRefresh = React.useCallback(() => {
@@ -376,7 +383,7 @@ const BasicInfo = (props: any) => {
                                                               textStyle={[{fontSize: fontValue(12), fontFamily: Regular500, fontWeight: "500"}]}
                                                               text={[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}/>
                                                 <IsMorePress onPress={() => {
-                                                    //updateApplication()
+                                                    isMoreRemark()
                                                     setIsMore((bool) => !bool)
                                                 }} more={isMore}/>
                                             </View>
