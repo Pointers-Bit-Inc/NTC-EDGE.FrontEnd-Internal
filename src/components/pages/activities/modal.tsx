@@ -206,6 +206,7 @@ function ActivityModal(props: any) {
     useEffect(() => {
         setUserProfileForm(flatten.flatten(applicationItem))
         setUserOriginalProfileForm(flatten.flatten(applicationItem))
+        dispatch(setEdit(false))
        /* console.log(prevId != applicationItem._id, prevId , applicationItem._id)
         if(prevId != applicationItem._id){
             setPrevId(applicationItem._id)
@@ -220,9 +221,6 @@ function ActivityModal(props: any) {
 
         }
     }, [applicationItem._id,]);
-    useEffect(()=>{
-
-    }, [])
     const statusMemo = useMemo(() => {
         setStatus(status);
         setAssignId(assignId || (
