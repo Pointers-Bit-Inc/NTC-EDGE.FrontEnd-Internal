@@ -249,12 +249,13 @@ const BasicInfo = (props: any) => {
         return ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks )  ?
             <>
                 <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
+
                     <View style={styles.group}>
                         <View style={styles.rect}>
                             <Text style={styles.header}>REMARKS</Text>
                         </View>
                     </View>
-                    <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                    <View style={{flexDirection: "row",  alignItems: "center", justifyContent: "space-between"}}>
                         <View style={{flexDirection: "row",  alignItems: "center",}}>
                             <View style={{paddingRight: 10}}>
                                 <Text style={[{fontSize: fontValue(10), color: "#37405B"}]}>{`${personnel?.firstName} ${personnel?.lastName}`}</Text>
@@ -422,7 +423,7 @@ const BasicInfo = (props: any) => {
                         </View>
                     </View>}
 
-                    {Platform.OS != "web" && (historyMemo.length || ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks)) ? <View style={[styles.elevation, {marginVertical: 10,}]}>
+                    {Platform.OS != "web" && (historyMemo.length || ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks)) ? <View style={[styles.elevation,  {width:"90%",marginVertical: 10,}]}>
                         <View style={[styles.container, {marginVertical: 10}]}>
                             <View style={styles.group4}>
 

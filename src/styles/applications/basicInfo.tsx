@@ -64,11 +64,14 @@ const styles=StyleSheet.create({
         paddingLeft:fontValue(10),
     },
     group:{
+
         paddingBottom: 10
     },
-    rect:{},
-    header:{
+    rect:{
         backgroundColor:"#EFF0F6",
+    },
+    header:{
+
         textTransform:'uppercase',
         fontSize:fontValue(12),
         fontFamily:Regular500,
