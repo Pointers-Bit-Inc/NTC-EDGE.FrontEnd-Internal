@@ -33,7 +33,7 @@ const CollapseText: FC<CollapseTextProps> = ({
 
     return (
         <>
-            <View style={[textContainerStyle, { position: 'relative' }]}>
+            <View style={[textContainerStyle, { position: 'relative', paddingVertical: 3 }]}>
                 <Text
                     numberOfLines={hidden ? defaultNumberOfLines : undefined}
                     ellipsizeMode="tail"
