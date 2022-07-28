@@ -38,6 +38,7 @@ import ChevronUp from "@assets/svg/chevron-up";
 
 
 function Status(props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
+   console.log(props)
     return <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
         <View style={styles.group}>
             <View style={styles.rect}>
@@ -45,7 +46,7 @@ function Status(props: { user: any, paymentHistory: any, approvalHistory: any, h
             </View>
         </View>
         <View
-            style={[styles.status, {paddingBottom: !!(([CASHIER].indexOf(props.user?.role?.key) != -1 ? props.paymentHistory?.remarks : props.approvalHistory?.remarks) || (props.historyMemo.length)) ? 7.5 : 0}]}>
+            style={[styles.status, {justifyContent: props.assignedPersonnel?._id || props.personnel ? 'space-between' :"center",paddingBottom: !!(([CASHIER].indexOf(props.user?.role?.key) != -1 ? props.paymentHistory?.remarks : props.approvalHistory?.remarks) || (props.historyMemo.length)) ? 7.5 : 0}]}>
 
             <View
                 style={{
@@ -99,7 +100,7 @@ function Status(props: { user: any, paymentHistory: any, approvalHistory: any, h
 
                     </CustomText>
                 </View>
-                : <View style={{alignItems: "flex-end"}}>
+                : (props.assignedPersonnel ? <View style={{alignItems: "flex-end"}}>
 
                     <Text style={{color: "#808196"}}>Assigned to</Text>
                     <CustomText
@@ -108,7 +109,16 @@ function Status(props: { user: any, paymentHistory: any, approvalHistory: any, h
                             props.assignedPersonnel !== undefined ? `${props.assignedPersonnel?.firstName} ${props.assignedPersonnel?.lastName}` : ``)}
 
                     </CustomText>
-                </View>}
+                </View> : <View style={{alignItems: "flex-end"}}>
+
+                    <Text style={{color: "#808196"}}>Assigned to</Text>
+                    <CustomText
+                        style={{fontSize: fontValue(12), flex: 1, color: "#37405B"}}>
+                        {(
+                            props.personnel !== undefined ? `${props.personnel?.firstName} ${props.personnel?.lastName}` : ``)}
+
+                    </CustomText>
+                </View>)}
 
         </View>
     </View>;

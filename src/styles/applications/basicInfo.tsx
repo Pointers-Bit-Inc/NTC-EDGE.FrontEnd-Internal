@@ -110,7 +110,6 @@ const styles=StyleSheet.create({
 
         flexDirection:'row',
         flexWrap:"wrap",
-        justifyContent:"space-between",
         alignItems:"center",
         //paddingLeft:10
     }
