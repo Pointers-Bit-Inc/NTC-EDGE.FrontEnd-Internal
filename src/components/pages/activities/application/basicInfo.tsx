@@ -38,7 +38,7 @@ import ChevronUp from "@assets/svg/chevron-up";
 
 
 function Status(props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
-    return <View style={styles.group3}>
+    return <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
         <View style={styles.group}>
             <View style={styles.rect}>
                 <Text style={styles.header}>STATUS</Text>
@@ -127,6 +127,8 @@ function IsMorePress(props: { onPress: () => void, more: boolean }) {
         </View>
     </TouchableOpacity>;
 }
+
+
 
 const BasicInfo = (props: any) => {
 
@@ -243,7 +245,154 @@ const BasicInfo = (props: any) => {
         const _approvalHistory = props.approvalHistory?.length ? props.approvalHistory : []
        return [..._paymentHistory, ..._approvalHistory]?.filter(s => s?.remarks)
     }, [props.paymentHistory, props.approvalHistory, isMore])
+    function RemarkFn() {
+        return ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks )  ?
+            <>
+                <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
+                    <View style={styles.group}>
+                        <View style={styles.rect}>
+                            <Text style={styles.header}>REMARKS</Text>
+                        </View>
+                    </View>
+                    <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                        <View style={{flexDirection: "row",  alignItems: "center",}}>
+                            <View style={{paddingRight: 10}}>
+                                <Text style={[{fontSize: fontValue(10), color: "#37405B"}]}>{`${personnel?.firstName} ${personnel?.lastName}`}</Text>
+                            </View>
 
+                            <View
+                                style={{
+
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    backgroundColor: remarkColor(
+                                        getStatusText(props, personnel)
+                                    ),
+                                    borderRadius: fontValue(30),
+                                    paddingHorizontal: fontValue(5),
+                                    paddingVertical: fontValue(6)
+                                }}>
+
+                                <CustomText
+                                    style={[
+                                        styles.role,
+
+
+                                        {
+                                            fontSize: fontValue(10),
+                                            fontFamily: Bold,
+                                            color: "#fff"
+                                        }
+                                    ]}
+                                    numberOfLines={1}
+                                >
+                                    {
+                                        getStatusText(props,personnel)?.toUpperCase()
+                                    }
+                                </CustomText>
+                            </View>
+                        </View>
+                        <Text style={{color: "#606A80", fontSize: fontValue(10)}}>{moment([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time) : (props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time)).fromNow()}</Text>
+                    </View>
+
+                    <CollapseText expandStyle={{color: "#565961"}}
+                                  textContainerStyle={ {} }
+                                  textStyle={[{fontSize: fontValue(12), fontFamily: Regular500, fontWeight: "500"}]}
+                                  text={[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}/>
+                    <IsMorePress onPress={() => {
+                        isMoreRemark()
+                        setIsMore((bool) => !bool)
+                    }} more={isMore}/>
+                </View>
+            </>
+
+            : (!!(historyMemo.length) ? <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
+                <View style={styles.group}>
+                    <View style={styles.rect}>
+                        <Text style={styles.header}>REMARKS</Text>
+                    </View>
+                </View>
+
+                <FlatList
+                    data={historyMemo}
+                    renderItem={({item, index}) => {
+
+                        return <>
+                            <View style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between"
+                            }}>
+                                <View style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    paddingVertical: 5
+                                }}>
+                                    <View style={{paddingRight: 10}}>
+                                        <Text style={[{
+                                            fontSize: fontValue(10),
+                                            color: "#37405B"
+                                        }]}>{`${item.personnel?.firstName} ${item.personnel?.lastName}`}</Text>
+                                    </View>
+
+                                    <View
+                                        style={{
+
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            backgroundColor: remarkColor(
+                                                item?.status
+                                            ),
+
+                                            borderRadius: fontValue(30),
+                                            paddingHorizontal: fontValue(5),
+                                            paddingVertical: fontValue(6)
+                                        }}>
+
+                                        <CustomText
+                                            style={[
+                                                styles.role,
+
+
+                                                {
+                                                    fontSize: fontValue(10),
+                                                    fontFamily: Bold,
+                                                    color: "#fff"
+                                                }
+                                            ]}
+                                            numberOfLines={1}
+                                        >
+                                            {
+                                                item?.action?.toUpperCase()
+                                            }
+                                        </CustomText>
+                                    </View>
+                                </View>
+                                <Text style={{
+                                    color: "#606A80",
+                                    fontSize: fontValue(10)
+                                }}>{moment(item?.time).fromNow()}</Text>
+                            </View>
+
+                            <CollapseText expandStyle={{color: "#565961"}}
+                                          textContainerStyle={index == historyMemo.length - 1 ? {} : {
+                                              borderBottomColor: "#ECECEC",
+                                              borderBottomWidth: 1,
+                                          }}
+                                          textStyle={[{
+                                              fontSize: fontValue(12),
+                                              fontFamily: Regular500,
+                                              fontWeight: "500"
+                                          }]}
+                                          text={item?.remarks}/>
+                        </>
+                    }
+                    }
+                    keyExtractor={item => item._id}
+                />
+                <IsMorePress onPress={() => setIsMore((bool) => !bool)} more={isMore}/>
+            </View> : <></>);
+    }
     return <View style={{flex: 1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <KeyboardAvoidingView
@@ -262,7 +411,7 @@ const BasicInfo = (props: any) => {
                 style={{width: "100%", backgroundColor: "#f8f8f8",}}>
 
                 <View style={{flexDirection: isMobile || dimensions?.width <= 768 ? "column" : "row"}}>
-                    {<View style={styles.elevation}>
+                    {Platform.OS != "web" && <View style={styles.elevation}>
                         <View style={[styles.container, {marginVertical: 10}]}>
                             <View style={styles.group4}>
                                 <Status user={user} paymentHistory={props.paymentHistory}
@@ -273,157 +422,11 @@ const BasicInfo = (props: any) => {
                         </View>
                     </View>}
 
-                    {(historyMemo.length || ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks)) ? <View style={[styles.elevation, {marginVertical: 10,}]}>
+                    {Platform.OS != "web" && (historyMemo.length || ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks)) ? <View style={[styles.elevation, {marginVertical: 10,}]}>
                         <View style={[styles.container, {marginVertical: 10}]}>
                             <View style={styles.group4}>
 
-                                <View style={styles.group3}>
-                                    <View style={styles.group}>
-                                        <View style={styles.rect}>
-                                            <Text style={styles.header}>REMARKS</Text>
-                                        </View>
-                                    </View>
-                                </View>
-                                {
-                                    ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks )  ?
-                                        <>
-
-                                            <View style={styles.group3}>
-
-                                                <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
-                                                    <View style={{flexDirection: "row",  alignItems: "center",}}>
-                                                        <View style={{paddingRight: 10}}>
-                                                            <Text style={[{fontSize: fontValue(10), color: "#37405B"}]}>{`${personnel?.firstName} ${personnel?.lastName}`}</Text>
-                                                        </View>
-
-                                                        <View
-                                                            style={{
-
-                                                                alignItems: "center",
-                                                                justifyContent: "center",
-                                                                backgroundColor: remarkColor(
-                                                                    getStatusText(props, personnel)
-                                                                ),
-                                                                borderRadius: fontValue(30),
-                                                                paddingHorizontal: fontValue(5),
-                                                                paddingVertical: fontValue(6)
-                                                            }}>
-
-                                                            <CustomText
-                                                                style={[
-                                                                    styles.role,
-
-
-                                                                    {
-                                                                        fontSize: fontValue(10),
-                                                                        fontFamily: Bold,
-                                                                        color: "#fff"
-                                                                    }
-                                                                ]}
-                                                                numberOfLines={1}
-                                                            >
-                                                                {
-                                                                    getStatusText(props,personnel)?.toUpperCase()
-                                                                }
-                                                            </CustomText>
-                                                        </View>
-                                                    </View>
-                                                    <Text style={{color: "#606A80", fontSize: fontValue(10)}}>{moment([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time) : (props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time)).fromNow()}</Text>
-                                                </View>
-
-                                                <CollapseText expandStyle={{color: "#565961"}}
-                                                              textContainerStyle={ {} }
-                                                              textStyle={[{fontSize: fontValue(12), fontFamily: Regular500, fontWeight: "500"}]}
-                                                              text={[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}/>
-                                                <IsMorePress onPress={() => {
-                                                    isMoreRemark()
-                                                    setIsMore((bool) => !bool)
-                                                }} more={isMore}/>
-                                            </View>
-                                        </>
-
-                                        : (!!(historyMemo.length) ? <View style={styles.group3}>
-
-
-                                            <FlatList
-                                                data={historyMemo}
-                                                renderItem={({item, index}) => {
-
-                                                    return <>
-                                                        <View style={{
-                                                            flexDirection: "row",
-                                                            alignItems: "center",
-                                                            justifyContent: "space-between"
-                                                        }}>
-                                                            <View style={{
-                                                                flexDirection: "row",
-                                                                alignItems: "center",
-                                                                paddingVertical: 5
-                                                            }}>
-                                                                <View style={{paddingRight: 10}}>
-                                                                    <Text style={[{
-                                                                        fontSize: fontValue(10),
-                                                                        color: "#37405B"
-                                                                    }]}>{`${item.personnel?.firstName} ${item.personnel?.lastName}`}</Text>
-                                                                </View>
-
-                                                                <View
-                                                                    style={{
-
-                                                                        alignItems: "center",
-                                                                        justifyContent: "center",
-                                                                        backgroundColor: remarkColor(
-                                                                            item?.status
-                                                                        ),
-
-                                                                        borderRadius: fontValue(30),
-                                                                        paddingHorizontal: fontValue(5),
-                                                                        paddingVertical: fontValue(6)
-                                                                    }}>
-
-                                                                    <CustomText
-                                                                        style={[
-                                                                            styles.role,
-
-
-                                                                            {
-                                                                                fontSize: fontValue(10),
-                                                                                fontFamily: Bold,
-                                                                                color: "#fff"
-                                                                            }
-                                                                        ]}
-                                                                        numberOfLines={1}
-                                                                    >
-                                                                        {
-                                                                            item?.action?.toUpperCase()
-                                                                        }
-                                                                    </CustomText>
-                                                                </View>
-                                                            </View>
-                                                            <Text style={{
-                                                                color: "#606A80",
-                                                                fontSize: fontValue(10)
-                                                            }}>{moment(item?.time).fromNow()}</Text>
-                                                        </View>
-
-                                                        <CollapseText expandStyle={{color: "#565961"}}
-                                                                      textContainerStyle={index == historyMemo.length - 1 ? {} : {
-                                                                          borderBottomColor: "#ECECEC",
-                                                                          borderBottomWidth: 1,
-                                                                      }}
-                                                                      textStyle={[{
-                                                                          fontSize: fontValue(12),
-                                                                          fontFamily: Regular500,
-                                                                          fontWeight: "500"
-                                                                      }]}
-                                                                      text={item?.remarks}/>
-                                                    </>
-                                                }
-                                                }
-                                                keyExtractor={item => item._id}
-                                            />
-                                            <IsMorePress onPress={() => setIsMore((bool) => !bool)} more={isMore}/>
-                                        </View> : <></>)}
+                               <RemarkFn/>
 
                             </View>
                         </View>
@@ -473,8 +476,12 @@ const BasicInfo = (props: any) => {
                                                     approvalHistory={props?.approvalHistory} historyMemo={historyMemo}
                                                     props={props}
                                                     personnel={personnel} paymentHistory1={props?.paymentHistory}
-                                                    assignedPersonnel={props.assignedPersonnel}/>}
+                                                    assignedPersonnel={props.assignedPersonnel}/>
+                                        }
+                                        {Platform.OS == "web" &&
+                                            <RemarkFn/>
 
+                                        }
 
                                         <View style={styles.group3}>
                                             <View style={styles.group}>
