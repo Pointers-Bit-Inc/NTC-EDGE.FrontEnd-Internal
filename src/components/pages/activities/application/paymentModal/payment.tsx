@@ -311,7 +311,8 @@ const Payment = (props: any) => {
         return total.toFixed(2);
     };
     const largestNumber = (array) => {
-        return Math.max.apply(Math, array.map(function(o) { return o.id; })) + 1
+        if(!array.length) return 1
+        return Math.max.apply(Math, array.map(function(o) { return o?.id ; })) + 1
     }
 
     const addSoa = () => {
@@ -362,8 +363,19 @@ const Payment = (props: any) => {
 
 
     }
+    useEffect(()=>{
+        if(Platform.OS == "web"){
+            props.setPaymentIndex(props.paymentIndex)
+            dispatch(setEditModalVisible(true))
+        }
+
+    }, [])
     const {applicantForm, updateApplication} = useApplicantForm(props);
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
+
+    useEffect(() =>{
+        console.log(soa)
+    }, [soa])
     return  <View style={{flex:1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <KeyboardAvoidingView

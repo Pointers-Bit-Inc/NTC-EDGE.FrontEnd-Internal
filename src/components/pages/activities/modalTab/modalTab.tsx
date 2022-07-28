@@ -107,8 +107,24 @@ const ModalTab = props => {
     const layout = useWindowDimensions();
 
     const [index, setIndex] = React.useState(0);
-    useEffect(() => {
 
+
+    const routes = useMemo(() => {
+
+        return tabs.filter((tab,_index)=> {
+            return !(service?.serviceCode == "service-22" && tab?.id===4) && tab.isShow.indexOf(user?.role?.key)!== -1
+        }).map((__tab, __index) => {
+            if(__tab.title == 'SOA & Payment'){
+                setPaymentIndex(__index)
+            }
+            return __tab
+        })
+
+
+
+    }, [tabs])
+    useEffect(() => {
+        console.log(index, paymentIndex)
         if(paymentIndex == index && !editModalVisible){
 
             dispatch(setEditModalVisible(true))
@@ -118,14 +134,6 @@ const ModalTab = props => {
             dispatch(setEditModalVisible(false))
         }
     }, [index])
-    const routes = useMemo(() => {
-        return tabs.filter((tab,_index)=> {
-            if(tab.title == 'SOA & Payment'){
-                setPaymentIndex(_index)
-            }
-            return !(service?.serviceCode == "service-22" && tab?.id===4) && tab.isShow.indexOf(user?.role?.key)!== -1
-        })
-    }, [tabs])
     const renderScene = ({route, jumpTo}) => {
         if(initialPage && Platform?.isPad ){
             jumpTo(0)
@@ -237,6 +245,7 @@ const  getTranslateX = (
     };
 
     return  <TabView
+
             style={{borderTopColor: 'rgba(0, 0, 0, 0.1)',
                 borderTopWidth: 1,}}
             renderTabBar={props => (

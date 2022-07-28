@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, {FC, memo} from 'react';
 import {StyleProp, TextStyle, TouchableOpacity, View, ViewStyle} from 'react-native';
 
 import Text from '../text';
@@ -24,8 +24,8 @@ const CollapseText: FC<CollapseTextProps> = ({
                                                  lineHeight = px(18),
                                                  textStyle,
                                                  textContainerStyle,
-                                                 expandText = 'More',
-                                                 unExpandText = 'Less',
+                                                 expandText = 'See More',
+                                                 unExpandText = 'See Less',
                                                  expandStyle,
                                              }) => {
     const [isOverflow, { set: setOverflow }] = useBoolean(false);
@@ -84,4 +84,4 @@ const CollapseText: FC<CollapseTextProps> = ({
     );
 };
 
-export default CollapseText;
+export default memo(CollapseText);

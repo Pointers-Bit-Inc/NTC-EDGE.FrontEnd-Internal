@@ -23,6 +23,7 @@ const Alert: FC<Props> = ({
 }) => {
   return (
     <AwesomeAlert
+        useNativeDriver={true}
       show={visible}
       title={title}
       message={message}
