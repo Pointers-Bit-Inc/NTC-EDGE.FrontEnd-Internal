@@ -34,6 +34,7 @@ import lodash from 'lodash';
 const styles=StyleSheet.create({
 
     containerBlur:{
+        paddingTop: 10,
         borderColor:!(
             isMobile&& !(
                 Platform?.isPad||isTablet())) ? "#AAB6DF" : "transparent",
@@ -67,11 +68,11 @@ const styles=StyleSheet.create({
     content:{
 
         flex:1,
-        paddingBottom:10,
+
         borderBottomColor:outline.default,
         // borderBottomWidth: StyleSheet.hairlineWidth,
         paddingLeft:5,
-        paddingTop:15
+
     },
     name:{
         marginBottom:5,
@@ -340,25 +341,23 @@ export function ActivityItem(props:any){
                                                 <View style={styles.content}>
                                                     <View style={styles.section}>
                                                         <View style={styles.name}>
-                                                            <Text
-                                                                //style={{color: props?.activity?.dateRead ? "#565961" : "#000"}}
-                                                                style={{
-                                                                    fontFamily:Bold,
-                                                                    fontSize:fontValue(14,)
-                                                                }}
-                                                                numberOfLines={1}
-                                                            >
+
                                                                 <Highlighter
+                                                                    style={{
+                                                                        fontFamily:Bold,
+                                                                        fontSize:fontValue(14,)
+                                                                    }}
                                                                     highlightStyle={{backgroundColor:'#BFD6FF'}}
                                                                     searchWords={[props?.searchQuery]}
                                                                     textToHighlight={userActivity?.firstName ? `${userActivity?.firstName} ${userActivity?.lastName}` : (
                                                                         userActivity?.applicantName ? userActivity?.applicantName : userActivity?.companyName ? userActivity?.companyName : "")}
                                                                 />
+                                                            <View>
+                                                                 <Text style={{color: "#606A80"}}>
+                                                                    {props?.activity?.applicant?.companyName ? "Company" : "Individual"}
+                                                                </Text>
+                                                            </View>
 
-                                                            </Text>
-                                                            {props?.activity?.applicant?.companyName && <Text style={{color: "#606A80"}}>
-                                                                {props?.activity?.applicant?.companyName}
-                                                            </Text>}
                                                         </View>
                                                         <View style={styles.date}>
 
@@ -382,6 +381,7 @@ export function ActivityItem(props:any){
 
                                             </View>
                                             <View style={[styles.section, {paddingHorizontal:fontValue(10),
+                                                paddingTop:fontValue(4) ,
                                                 paddingBottom:props?.activity?.assignedPersonnel?.id||props?.activity?.assignedPersonnel ? fontValue(4) :fontValue(10) }]}>
                                                 <View style={{flex:1,alignItems:'flex-start', }}>
                                                     <RenderApplication
