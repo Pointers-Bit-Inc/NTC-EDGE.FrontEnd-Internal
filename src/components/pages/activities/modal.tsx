@@ -479,7 +479,7 @@ function ActivityModal(props: any) {
                        :  <TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
                             <Text style={{fontFamily: Regular, fontSize: fontValue(16), color: infoColor}}>Edit</Text>
                             {/* <EditIcon color="#606A80"/>*/}
-                        </TouchableOpacity> : <></>
+                        </TouchableOpacity> : <Text style={{fontFamily: Regular, fontSize: fontValue(16),opacity: 0}}>Edit</Text>
                     }
 
                 </View>}
