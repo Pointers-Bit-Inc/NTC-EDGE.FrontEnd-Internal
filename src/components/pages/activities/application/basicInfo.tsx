@@ -242,53 +242,6 @@ const BasicInfo = (props: any) => {
         const _paymentHistory = props.paymentHistory?.length ? props.paymentHistory : []
         const _approvalHistory = props.approvalHistory?.length ? props.approvalHistory : []
        return [..._paymentHistory, ..._approvalHistory]?.filter(s => s?.remarks)
-       /* return [
-            {
-                action: "test",
-                remarks: "test",
-                status: "pending",
-                personnel: {
-                    firstName: "test" ,
-                    lastName: "test"
-                }
-            },
-            {
-                action: "test",
-                remarks: "test.test..test.test.test.test.test.test.test.test.test.test.test.test.test.test",
-                status: "pending",
-                personnel: {
-                    firstName: "test" ,
-                    lastName: "test"
-                }
-            },
-            {
-                action: "test",
-                remarks: "lorem",
-                status: "Decline",
-                personnel: {
-                    firstName: "test" ,
-                    lastName: "test"
-                }
-            },
-            {
-                action: "test",
-                remarks: "test",
-                status: "Pending",
-                personnel: {
-                    firstName: "test" ,
-                    lastName: "test"
-                }
-            },
-            {
-                action: "test",
-                remarks: "test",
-                status: "pending",
-                personnel: {
-                    firstName: "test" ,
-                    lastName: "test"
-                }
-            },
-        ]?.filter((s, index) => (!isMore ? index === 0 : (s?.remarks && s?.action)))*/
     }, [props.paymentHistory, props.approvalHistory, isMore])
 
     return <View style={{flex: 1}}>
@@ -309,7 +262,7 @@ const BasicInfo = (props: any) => {
                 style={{width: "100%", backgroundColor: "#f8f8f8",}}>
 
                 <View style={{flexDirection: isMobile || dimensions?.width <= 768 ? "column" : "row"}}>
-                    {Platform.OS != "web" && <View style={styles.elevation}>
+                    {<View style={styles.elevation}>
                         <View style={[styles.container, {marginVertical: 10}]}>
                             <View style={styles.group4}>
                                 <Status user={user} paymentHistory={props.paymentHistory}
@@ -320,7 +273,7 @@ const BasicInfo = (props: any) => {
                         </View>
                     </View>}
 
-                    {Platform.OS != "web" && (historyMemo.length || ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks)) ? <View style={[styles.elevation, {marginVertical: 10,}]}>
+                    {(historyMemo.length || ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks)) ? <View style={[styles.elevation, {marginVertical: 10,}]}>
                         <View style={[styles.container, {marginVertical: 10}]}>
                             <View style={styles.group4}>
 
