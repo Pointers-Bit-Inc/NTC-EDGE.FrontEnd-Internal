@@ -38,7 +38,7 @@ import ChevronUp from "@assets/svg/chevron-up";
 
 
 function Status(props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
-   console.log(props)
+
     return <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
         <View style={styles.group}>
             <View style={styles.rect}>

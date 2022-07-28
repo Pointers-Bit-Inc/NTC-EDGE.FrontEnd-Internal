@@ -7,7 +7,7 @@ import {Hoverable} from 'react-native-web-hooks';
 import {
     formatDate,
     getActivityStatus,
-    PaymentStatusText,
+    PaymentStatusText, remarkColor,
     statusColor,
     statusIcon,
     StatusText
@@ -59,6 +59,7 @@ const styles=StyleSheet.create({
         alignItems:'center',
     },
     section:{
+
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'space-between',
@@ -79,14 +80,13 @@ const styles=StyleSheet.create({
         color:"#606A80"
     },
     application:{
-
         borderRadius:5,
         marginLeft:0,
         //borderWidth: StyleSheet.hairlineWidth,
         borderColor:'#163776',
     },
     status:{
-        paddingLeft:5,
+        paddingHorizontal:5,
         paddingVertical:2,
         borderRadius:5,
         marginLeft:15
@@ -137,12 +137,19 @@ const RenderStatus=({trigger,status}:any)=>{
             style={[
                 styles.horizontal,
                 //statusBackgroundColor(status),
+
                 styles.status,
+                {
+                    backgroundColor: remarkColor(status),
+                    paddingHorizontal: fontValue(5),
+                    borderRadius: fontValue(30)
+                },
             ]}
         >
-            {statusIcon(status,{marginRight:3})}
+           {/* {statusIcon(status,{marginRight:3})}*/}
+
             <Text
-                style={[statusColor(status)]}
+                style={{color: "#fff"}}
                 size={fontValue(14)}
                 numberOfLines={1}
             >
@@ -319,7 +326,7 @@ export function ActivityItem(props:any){
                                                     flex:1,
 
                                                     paddingHorizontal:fontValue(10),
-                                                    paddingVertical:props?.activity?.assignedPersonnel?.id||props?.activity?.assignedPersonnel ? undefined : fontValue(10),
+                                                    //paddingVertical:props?.activity?.assignedPersonnel?.id||props?.activity?.assignedPersonnel ? undefined : fontValue(10),
                                                     flexDirection:"row",
                                                     alignItems:"center"
                                                 }
@@ -349,6 +356,9 @@ export function ActivityItem(props:any){
                                                                 />
 
                                                             </Text>
+                                                            {props?.activity?.applicant?.companyName && <Text style={{color: "#606A80"}}>
+                                                                {props?.activity?.applicant?.companyName}
+                                                            </Text>}
                                                         </View>
                                                         <View style={styles.date}>
 
@@ -366,17 +376,21 @@ export function ActivityItem(props:any){
                                                             </Text>
                                                         </View>
                                                     </View>
-                                                    <View style={styles.section}>
-                                                        <View style={{flex:1,alignItems:'flex-start'}}>
-                                                            <RenderApplication
-                                                                applicationType={props?.activity?.applicationType||props?.activity?.service?.name}/>
-                                                        </View>
 
-                                                        <RenderStatus
-                                                            status={getStatus}
-                                                        />
-                                                    </View>
 
+                                                </View>
+
+                                            </View>
+                                            <View style={[styles.section, {paddingHorizontal:fontValue(10),
+                                                paddingBottom:props?.activity?.assignedPersonnel?.id||props?.activity?.assignedPersonnel ? fontValue(4) :fontValue(10) }]}>
+                                                <View style={{flex:1,alignItems:'flex-start', }}>
+                                                    <RenderApplication
+                                                        applicationType={props?.activity?.applicationType||props?.activity?.service?.name}/>
+                                                </View>
+                                                <View style={{paddingLeft: 6}}>
+                                                    <RenderStatus
+                                                        status={getStatus}
+                                                    />
                                                 </View>
 
                                             </View>
