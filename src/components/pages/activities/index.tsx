@@ -429,7 +429,7 @@ const ActivitiesPage = (props) => {
             refreshControl={
                 <RefreshControl
                     tintColor={primaryColor} // ios
-                    progressBackgroundColor={primaryColor} // android
+                    progressBackgroundColor={infoColor} // android
                     colors={['white']} // android
                     progressViewOffset={headerHeight + 42}
                     refreshing={refreshing}
