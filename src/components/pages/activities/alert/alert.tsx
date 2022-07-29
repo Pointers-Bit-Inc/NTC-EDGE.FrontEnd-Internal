@@ -171,83 +171,91 @@ export default class AwesomeAlert extends Component {
         };
 
         return (
-            <View style={[alertStyle.container, alertContainerStyle]}>
-                <TouchableWithoutFeedback onPress={this._onTapOutside}>
-                    <View style={[alertStyle.overlay, {  backgroundColor: Platform.OS == "web" ? undefined : 'rgba(52,52,52,0.5)'},  overlayStyle]} />
-                </TouchableWithoutFeedback>
-                <Animated.View
-                    style={[alertStyle.contentContainer, animation, contentContainerStyle]}
-                >
-                    <View style={styles.group}>
-                        <View style={[styles.container___, styles.shadow]}>
-                            <View style={styles.container__}>
+            <View style={{width: '100%',
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'absolute', }}>
+                <View style={[alertStyle.container, alertContainerStyle]}>
+                    <TouchableWithoutFeedback >
+                        <View style={[alertStyle.overlay, {  backgroundColor: Platform.OS == "web" ? undefined : 'rgba(52,52,52,0.5)'},  overlayStyle]} />
+                    </TouchableWithoutFeedback>
+                    <Animated.View
+                        style={[alertStyle.contentContainer, animation, contentContainerStyle]}
+                    >
+                        <View style={styles.group}>
+                            <View style={[styles.container___, styles.shadow]}>
+                                <View style={styles.container__}>
 
-                                <View style={[styles.container_, {padding: "5%", paddingHorizontal: 48,}]}>
-                                    {
-                                        this.props?.type == DECLINED && <View>
-                                            <CloseModal></CloseModal>
-                                        </View>
+                                    <View style={[styles.container_, {padding: "5%", paddingHorizontal: 48,}]}>
+                                        {
+                                            this.props?.type == DECLINED && <View>
+                                                <CloseModal></CloseModal>
+                                            </View>
 
-                                    }
-                                    {
-                                        this.props?.type == FOREVALUATION && <View style={{paddingBottom: 10}}>
-                                            <EndorseToIcon height_={fontValue(60)} width_={fontValue(60)} color={"#2863D6"}></EndorseToIcon>
-                                        </View>
-                                    }
-                                    {
-                                        this.props?.type == APPROVED && <View>
-                                            <ApplicationApproved/>
-                                        </View>
-                                    }
-                                    <Text style={[styles.title, alertStyle.titleStyle]}>{this.props?.title}</Text>
-                                    <Text style={styles.description_}>
-                                        {this.props?.message ? this.props?.message : "Are you sure you want to approve this application?"}
+                                        }
+                                        {
+                                            this.props?.type == FOREVALUATION && <View style={{paddingBottom: 10}}>
+                                                <EndorseToIcon height_={fontValue(60)} width_={fontValue(60)} color={"#2863D6"}></EndorseToIcon>
+                                            </View>
+                                        }
+                                        {
+                                            this.props?.type == APPROVED && <View>
+                                                <ApplicationApproved/>
+                                            </View>
+                                        }
+                                        <Text style={[styles.title, alertStyle.titleStyle]}>{this.props?.title}</Text>
+                                        <Text style={styles.description_}>
+                                            {this.props?.message ? this.props?.message : "Are you sure you want to approve this application?"}
 
-                                    </Text>
+                                        </Text>
+
+                                    </View>
+
 
                                 </View>
+                                <View style={[styles.action, {alignItems: "flex-end", paddingVertical: 15}]}>
+                                    {
 
+                                        this.props?.showClose == false && <>
+                                            {this.props.onLoading ?  <ActivityIndicator style={{alignSelf: "center"}}
+                                                                                        color={"rgba(40,99,214,1)"}/> :
+                                                <TouchableOpacity onPress={this.props.onConfirmPressed}>
 
-                            </View>
-                            <View style={[styles.action, {alignItems: "flex-end", paddingVertical: 15}]}>
-                                {
+                                                    <Text
+                                                        style={[alertStyle.confirmButtonTextStyle]}>{this.props?.confirmButton || 'Yes'}</Text>
 
-                                    this.props?.showClose == false && <>
-                                        {this.props.onLoading ?  <ActivityIndicator style={{alignSelf: "center"}}
-                                                                                    color={"rgba(40,99,214,1)"}/> :
-                                            <TouchableOpacity onPress={this.props.onConfirmPressed}>
-
-                                                <Text
-                                                    style={[alertStyle.confirmButtonTextStyle]}>{this.props?.confirmButton || 'Yes'}</Text>
-
-                                            </TouchableOpacity>
-                                        }
-                                        <TouchableOpacity onPress={() => {
-                                            if(!this.props.onLoading){
-                                                this.props.onDismissed()
+                                                </TouchableOpacity>
                                             }
+                                            <TouchableOpacity onPress={() => {
+                                                if(!this.props.onLoading){
+                                                    this.props.onDismissed()
+                                                }
+                                            }}>
+                                                <Text style={[this.props.onLoading ?alertStyle.disableButtonTextStyle :  alertStyle.cancelButtonTextStyle  ]}>Close</Text>
+                                            </TouchableOpacity>
+
+                                        </>
+
+                                    }
+
+                                    {this.props?.showClose == true &&
+                                        <TouchableOpacity onPress={() => {
+
+                                            this.props.onCancelPressed()
                                         }}>
-                                            <Text style={[this.props.onLoading ?alertStyle.disableButtonTextStyle :  alertStyle.cancelButtonTextStyle  ]}>Close</Text>
+                                            <Text style={[alertStyle.confirmButtonTextStyle]}>Close</Text>
                                         </TouchableOpacity>
+                                    }
 
-                                    </>
-
-                                }
-
-                                {this.props?.showClose == true &&
-                                    <TouchableOpacity onPress={() => {
-
-                                        this.props.onCancelPressed()
-                                    }}>
-                                        <Text style={[alertStyle.confirmButtonTextStyle]}>Close</Text>
-                                    </TouchableOpacity>
-                                }
-
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </Animated.View>
+                    </Animated.View>
+                </View>
             </View>
+
+
         );
     };
 

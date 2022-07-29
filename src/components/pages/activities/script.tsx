@@ -31,6 +31,7 @@ import {Dispatch} from "redux";
 import {Regular500} from "@styles/font";
 import {Role, UserApplication} from "@pages/activities/interface";
 import {fontValue} from "@pages/activities/fontValue";
+import moment from "moment";
 
 export const capitalize = (str) => {
     return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)).join(' ');
@@ -69,7 +70,15 @@ export const StatusText = (status: string) => {
     }
 };
 
+export const readableToHuman=(_date)=>{
 
+    let date=moment(_date);
+
+    if(moment().diff(date,'days')>=2){
+        return date.fromNow();
+    }
+    return date.calendar().split(' ')[0];
+};
 export const formatDate = (date: string) => {
 
     date = !date?.split("T") ? checkFormatIso(date) : date;

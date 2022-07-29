@@ -100,8 +100,8 @@ const ModalTab = props => {
     } = useApplicant(props.details)
     const [initialPage, setInitialPage] = useState(true);
     const [paymentIndex, setPaymentIndex] = useSafeState(undefined)
+    const [basicInfoIndex, setBasicInfoIndex] = useSafeState(undefined)
     useEffect(() => {
-        dispatch(setEditModalVisible(false))
         setInitialPage(true)
     }, [props.details._id]);
     const layout = useWindowDimensions();
@@ -117,6 +117,9 @@ const ModalTab = props => {
             if(__tab.title == 'SOA & Payment'){
                 setPaymentIndex(__index)
             }
+            if(__tab.title == 'Basic Info'){
+                setBasicInfoIndex(__index)
+            }
             return __tab
         })
 
@@ -124,12 +127,11 @@ const ModalTab = props => {
 
     }, [tabs])
     useEffect(() => {
-        console.log(index, paymentIndex)
         if(paymentIndex == index && !editModalVisible){
-
             dispatch(setEditModalVisible(true))
-        }else if(paymentIndex != index && editModalVisible){
-
+        }else if(basicInfoIndex == index && !editModalVisible){
+            dispatch(setEditModalVisible(true))
+        }else if(basicInfoIndex != index && paymentIndex != index && editModalVisible){
             dispatch(setEdit(false))
             dispatch(setEditModalVisible(false))
         }

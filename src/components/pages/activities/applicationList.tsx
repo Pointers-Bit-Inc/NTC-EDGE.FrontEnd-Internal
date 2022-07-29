@@ -3,7 +3,7 @@ import {Animated, Text, TouchableWithoutFeedback, View} from "react-native";
 import {styles} from "@pages/activities/styles";
 import ChevronDownIcon from "@assets/svg/chevron-down";
 import Collapsible from "react-native-collapsible";
-import {formatDate} from "@pages/activities/script";
+import {formatDate, readableToHuman} from "@pages/activities/script";
 import moment from "moment";
 import {useAlert} from "../../../hooks/useAlert";
 import ChevronUpIcon from "@assets/svg/chevron-up";
@@ -30,15 +30,7 @@ const ApplicationList=(props:{onPress:()=>void,item:any,numbers:{parentIndex:num
     };
 
 
-    const readableToHuman=()=>{
 
-        let date=moment(props.item.date);
-
-        if(moment().diff(date,'days')>=2){
-            return date.fromNow();
-        }
-        return date.calendar().split(' ')[0];
-    };
 
 
     return <View style={[styles.group26,]}>
@@ -56,7 +48,7 @@ const ApplicationList=(props:{onPress:()=>void,item:any,numbers:{parentIndex:num
 
                         <View style={styles.date}>
                             <Text
-                                style={styles.dateText}>{`${readableToHuman()} • ${moment(props.item.date).format('MMM DD, yyyy')}`} </Text>
+                                style={styles.dateText}>{`${readableToHuman(props.item.date)} • ${moment(props.item.date).format('MMM DD, yyyy')}`} </Text>
                         </View>
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center",}}>

@@ -75,7 +75,6 @@ function Disapproval(props: any) {
             } }>
 
 
-            <OnBackdropPress onPressOut={ props.onDismissed }/>
 
 
             <CustomAlert
@@ -182,8 +181,13 @@ function Disapproval(props: any) {
                                              height < 720 && isKeyboardVisible) ? 100 : height * 0.25
                             } }
                             placeholder={ 'Remarks' }
-                            inputStyle={ { [Platform.OS == "android" ? "padding" : "height"] : (
-                                                        height < 720 && isKeyboardVisible) ? 70 : height * 0.15,fontWeight : "400" , fontSize : fontValue(14) } }
+                            inputStyle={{
+                                textAlignVertical: "top",
+                                [Platform.OS=="android" ? "height" : "height"]:(
+                                    height<720&&isKeyboardVisible) ? 70 : height*0.15,
+                                fontWeight:"400",
+                                fontSize:fontValue(14)
+                            }}
                             multiline={ true }
                             value={ text }
                             onChangeText={ setText }

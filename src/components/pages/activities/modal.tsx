@@ -60,8 +60,8 @@ import {BASE_URL} from "../../../services/config";
 import {isNumber} from "../../../utils/ntc";
 import {useToast} from "../../../hooks/useToast";
 import {ToastType} from "@atoms/toast/ToastProvider";
-import ToastLoading from "@components/atoms/toast/ToastLoading";
 import ChevronLeft from "@assets/svg/chevron-left";
+import LoadingModal from "@pages/activities/loading/loadingModal";
 
 const flatten = require('flat')
 
@@ -385,8 +385,7 @@ function ActivityModal(props: any) {
         return promise;
     };
 
-    return (
-        <>
+    return ( <>
             <View style={(isMobile && !((Platform?.isPad || isTablet()) && isLandscapeSync())) && (
                 visible || endorseVisible || showAlert) ? {
                 position: "absolute",
@@ -764,7 +763,7 @@ function ActivityModal(props: any) {
                 }
                 onCancel={() => setEditAlert(false)}
             />
-        </>
+          </>
     );
 }
 

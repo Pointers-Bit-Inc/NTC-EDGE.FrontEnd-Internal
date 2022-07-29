@@ -35,6 +35,7 @@ import LoadingModal from "@pages/activities/loading/loadingModal";
 import CollapseText from "@atoms/collapse-text";
 import ChevronDown from "@assets/svg/chevron-down";
 import ChevronUp from "@assets/svg/chevron-up";
+import RowText from "@pages/activities/application/RowText";
 
 
 function Status(props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
@@ -46,7 +47,10 @@ function Status(props: { user: any, paymentHistory: any, approvalHistory: any, h
             </View>
         </View>
         <View
-            style={[styles.status, {justifyContent: props.assignedPersonnel?._id || props.personnel ? 'space-between' :"center",paddingBottom: !!(([CASHIER].indexOf(props.user?.role?.key) != -1 ? props.paymentHistory?.remarks : props.approvalHistory?.remarks) || (props.historyMemo.length)) ? 7.5 : 0}]}>
+            style={[styles.status, {
+                justifyContent: props.assignedPersonnel?._id || props.personnel ? 'space-between' : "center",
+                paddingBottom: !!(([CASHIER].indexOf(props.user?.role?.key) != -1 ? props.paymentHistory?.remarks : props.approvalHistory?.remarks) || (props.historyMemo.length)) ? 7.5 : 0
+            }]}>
 
             <View
                 style={{
@@ -137,7 +141,6 @@ function IsMorePress(props: { onPress: () => void, more: boolean }) {
         </View>
     </TouchableOpacity>;
 }
-
 
 
 const BasicInfo = (props: any) => {
@@ -253,10 +256,11 @@ const BasicInfo = (props: any) => {
     const historyMemo = useMemo(() => {
         const _paymentHistory = props.paymentHistory?.length ? props.paymentHistory : []
         const _approvalHistory = props.approvalHistory?.length ? props.approvalHistory : []
-       return [..._paymentHistory, ..._approvalHistory]?.filter(s => s?.remarks)
+        return [..._paymentHistory, ..._approvalHistory]?.filter(s => s?.remarks)
     }, [props.paymentHistory, props.approvalHistory, isMore])
+
     function RemarkFn() {
-        return ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks )  ?
+        return ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks) ?
             <>
                 <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
 
@@ -265,10 +269,13 @@ const BasicInfo = (props: any) => {
                             <Text style={styles.header}>REMARKS</Text>
                         </View>
                     </View>
-                    <View style={{flexDirection: "row",  alignItems: "center", justifyContent: "space-between"}}>
-                        <View style={{flexDirection: "row",  alignItems: "center",}}>
+                    <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                        <View style={{flexDirection: "row", alignItems: "center",}}>
                             <View style={{paddingRight: 10}}>
-                                <Text style={[{fontSize: fontValue(10), color: "#37405B"}]}>{`${personnel?.firstName} ${personnel?.lastName}`}</Text>
+                                <Text style={[{
+                                    fontSize: fontValue(10),
+                                    color: "#37405B"
+                                }]}>{`${personnel?.firstName} ${personnel?.lastName}`}</Text>
                             </View>
 
                             <View
@@ -298,16 +305,19 @@ const BasicInfo = (props: any) => {
                                     numberOfLines={1}
                                 >
                                     {
-                                        getStatusText(props,personnel)?.toUpperCase()
+                                        getStatusText(props, personnel)?.toUpperCase()
                                     }
                                 </CustomText>
                             </View>
                         </View>
-                        <Text style={{color: "#606A80", fontSize: fontValue(10)}}>{moment([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time) : (props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time)).fromNow()}</Text>
+                        <Text style={{
+                            color: "#606A80",
+                            fontSize: fontValue(10)
+                        }}>{moment([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time) : (props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time)).fromNow()}</Text>
                     </View>
 
                     <CollapseText expandStyle={{color: "#565961"}}
-                                  textContainerStyle={ {} }
+                                  textContainerStyle={{}}
                                   textStyle={[{fontSize: fontValue(12), fontFamily: Regular500, fontWeight: "500"}]}
                                   text={[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}/>
                     <IsMorePress onPress={() => {
@@ -317,93 +327,95 @@ const BasicInfo = (props: any) => {
                 </View>
             </>
 
-            : (!!(historyMemo.length) ? <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
-                <View style={styles.group}>
-                    <View style={styles.rect}>
-                        <Text style={styles.header}>REMARKS</Text>
+            : (!!(historyMemo.length) ?
+                <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
+                    <View style={styles.group}>
+                        <View style={styles.rect}>
+                            <Text style={styles.header}>REMARKS</Text>
+                        </View>
                     </View>
-                </View>
 
-                <FlatList
-                    data={historyMemo}
-                    renderItem={({item, index}) => {
+                    <FlatList
+                        data={historyMemo}
+                        renderItem={({item, index}) => {
 
-                        return <>
-                            <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between"
-                            }}>
+                            return <>
                                 <View style={{
                                     flexDirection: "row",
                                     alignItems: "center",
-                                    paddingVertical: 5
+                                    justifyContent: "space-between"
                                 }}>
-                                    <View style={{paddingRight: 10}}>
-                                        <Text style={[{
-                                            fontSize: fontValue(10),
-                                            color: "#37405B"
-                                        }]}>{`${item.personnel?.firstName} ${item.personnel?.lastName}`}</Text>
-                                    </View>
+                                    <View style={{
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        paddingVertical: 5
+                                    }}>
+                                        <View style={{paddingRight: 10}}>
+                                            <Text style={[{
+                                                fontSize: fontValue(10),
+                                                color: "#37405B"
+                                            }]}>{`${item.personnel?.firstName} ${item.personnel?.lastName}`}</Text>
+                                        </View>
 
-                                    <View
-                                        style={{
+                                        <View
+                                            style={{
 
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            backgroundColor: remarkColor(
-                                                item?.status
-                                            ),
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                backgroundColor: remarkColor(
+                                                    item?.status
+                                                ),
 
-                                            borderRadius: fontValue(30),
-                                            paddingHorizontal: fontValue(5),
-                                            paddingVertical: fontValue(6)
-                                        }}>
+                                                borderRadius: fontValue(30),
+                                                paddingHorizontal: fontValue(5),
+                                                paddingVertical: fontValue(6)
+                                            }}>
 
-                                        <CustomText
-                                            style={[
-                                                styles.role,
+                                            <CustomText
+                                                style={[
+                                                    styles.role,
 
 
+                                                    {
+                                                        fontSize: fontValue(10),
+                                                        fontFamily: Bold,
+                                                        color: "#fff"
+                                                    }
+                                                ]}
+                                                numberOfLines={1}
+                                            >
                                                 {
-                                                    fontSize: fontValue(10),
-                                                    fontFamily: Bold,
-                                                    color: "#fff"
+                                                    item?.action?.toUpperCase()
                                                 }
-                                            ]}
-                                            numberOfLines={1}
-                                        >
-                                            {
-                                                item?.action?.toUpperCase()
-                                            }
-                                        </CustomText>
+                                            </CustomText>
+                                        </View>
                                     </View>
+                                    <Text style={{
+                                        color: "#606A80",
+                                        fontSize: fontValue(10)
+                                    }}>{moment(item?.time).fromNow()}</Text>
                                 </View>
-                                <Text style={{
-                                    color: "#606A80",
-                                    fontSize: fontValue(10)
-                                }}>{moment(item?.time).fromNow()}</Text>
-                            </View>
 
-                            <CollapseText expandStyle={{color: "#565961"}}
-                                          textContainerStyle={index == historyMemo.length - 1 ? {} : {
-                                              borderBottomColor: "#ECECEC",
-                                              borderBottomWidth: 1,
-                                          }}
-                                          textStyle={[{
-                                              fontSize: fontValue(12),
-                                              fontFamily: Regular500,
-                                              fontWeight: "500"
-                                          }]}
-                                          text={item?.remarks}/>
-                        </>
-                    }
-                    }
-                    keyExtractor={item => item._id}
-                />
-                <IsMorePress onPress={() => setIsMore((bool) => !bool)} more={isMore}/>
-            </View> : <></>);
+                                <CollapseText expandStyle={{color: "#565961"}}
+                                              textContainerStyle={index == historyMemo.length - 1 ? {} : {
+                                                  borderBottomColor: "#ECECEC",
+                                                  borderBottomWidth: 1,
+                                              }}
+                                              textStyle={[{
+                                                  fontSize: fontValue(12),
+                                                  fontFamily: Regular500,
+                                                  fontWeight: "500"
+                                              }]}
+                                              text={item?.remarks}/>
+                            </>
+                        }
+                        }
+                        keyExtractor={item => item._id}
+                    />
+                    <IsMorePress onPress={() => setIsMore((bool) => !bool)} more={isMore}/>
+                </View> : <></>);
     }
+
     return <View style={{flex: 1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <KeyboardAvoidingView
@@ -433,22 +445,22 @@ const BasicInfo = (props: any) => {
                         </View>
                     </View>}
 
-                    {Platform.OS != "web" && (historyMemo.length || ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks)) ? <View style={[styles.elevation,  {width:"90%",marginVertical: 10,}]}>
-                        <View style={[styles.container, {marginVertical: 10}]}>
-                            <View style={styles.group4}>
+                    {Platform.OS != "web" && (historyMemo.length || ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks)) ?
+                        <View style={[styles.elevation, {width: "90%", marginVertical: 10,}]}>
+                            <View style={[styles.container, {marginVertical: 10}]}>
+                                <View style={styles.group4}>
 
-                               <RemarkFn/>
+                                    <RemarkFn/>
 
+                                </View>
                             </View>
-                        </View>
-                    </View> : <></>}
+                        </View> : <></>}
                     <View style={isMobile || dimensions?.width <= 768 ? {padding: 10, alignSelf: "center"} : {
                         paddingLeft: 20,
                         paddingVertical: 20
                     }}>
                         <ProfileImage
                             size={fontValue(150)}
-                            style={{borderRadius: 4}}
 
                             textSize={22}
                             image={applicant?.profilePicture?.small.match(/[^/]+(jpeg|jpg|png|gif)$/i) ? applicant?.profilePicture?.small : applicant?.profilePicture?.small + ".png"}
@@ -501,75 +513,32 @@ const BasicInfo = (props: any) => {
                                                 </View>
                                             </View>
 
-                                            <Row edit={props.edit} label={"Full Name:"}
-                                                 stateName={"applicant.applicantName"}
-                                                 updateForm={applicantForm}
-                                                 hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                                 applicant={props.userProfileForm?.["applicant.applicantName"]}/>
+                                            <RowText label={"Full Name:"}
+                                                     applicant={props.userProfileForm?.["applicant.applicantName"]}/>
                                             {props.userProfileForm?.["applicant.firstName"] ?
-                                                <Row edit={props.edit} label={"First Name:"}
-                                                     stateName={"applicant.firstName"}
-                                                     updateForm={applicantForm}
-                                                     show={false}
-                                                     hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                                     showEdit={true}
-                                                     applicant={props.userProfileForm?.["applicant.firstName"]}/> : <></>}
+                                                <RowText label={"First Name:"}
+                                                         applicant={props.userProfileForm?.["applicant.firstName"]}/> : <></>}
                                             {props.userProfileForm?.["applicant.middleName"] ?
-                                                <Row edit={props.edit} label={"Middle Name:"}
-                                                     hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                                     stateName={"applicant.middleName"}
-                                                     updateForm={applicantForm}
-                                                     show={false}
-                                                     showEdit={true}
-                                                     applicant={props.userProfileForm?.["applicant.middleName"]}/> : <></>}
+                                                <RowText label={"Middle Name:"}
+                                                         applicant={props.userProfileForm?.["applicant.middleName"]}/> : <></>}
                                             {props.userProfileForm?.["applicant.lastName"] ?
-                                                <Row edit={props.edit} label={"Last Name:"}
-                                                     hasChanges={props.hasChanges}
-                                                     updateApplication={updateApplication}
-                                                     updateForm={applicantForm}
-                                                     stateName={"applicant.lastName"}
-
-                                                     show={false}
-                                                     showEdit={true}
-                                                     applicant={props.userProfileForm?.["applicant.lastName"]}/> : <></>}
+                                                <RowText label={"Last Name:"}
+                                                         applicant={props.userProfileForm?.["applicant.lastName"]}/> : <></>}
 
 
-                                            <Row edit={props.edit} label={"Suffix:"}
-                                                 hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                                 stateName={"applicant.suffix"}
-                                                 updateForm={applicantForm}
-                                                 applicant={props.userProfileForm?.["applicant.suffix"]}/>
-                                            <DateField edit={props.edit} label={"Date of Birth:"}
-                                                       hasChanges={props.hasChanges}
-                                                       updateApplication={updateApplication}
-                                                       updateForm={applicantForm}
-                                                       stateName={"applicant.dateOfBirth"}
-                                                       display={moment(props.userProfileForm?.["applicant.dateOfBirth"])?.format('LL')}
-                                                       applicant={props.userProfileForm?.["applicant.dateOfBirth"]}/>
-                                            <Row updateForm={applicantForm}
-                                                 hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                                 stateName={"applicant.gender"}
-                                                 edit={props.edit}
-                                                 label={"Gender:"}
-                                                 applicant={props.userProfileForm?.["applicant.gender"]}/>
-                                            <Row updateForm={applicantForm}
-                                                 hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                                 stateName={"applicant.nationality"}
-                                                 edit={props.edit}
-                                                 label={"Nationality:"}
-                                                 applicant={props.userProfileForm?.["applicant.nationality"]}/>
-                                            <Row updateForm={applicantForm}
-                                                 hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                                 stateName={"applicant.weight"}
-                                                 edit={props.edit}
-                                                 label={"Weight:"}
-                                                 applicant={props.userProfileForm?.["applicant.weight"]}/>
-                                            <Row updateForm={applicantForm}
-                                                 hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                                 stateName={"applicant.height"}
-                                                 edit={props.edit}
-                                                 label={"Height:"}
-                                                 applicant={props.userProfileForm?.["applicant.height"]}/>
+                                            <RowText label={"Suffix:"}
+                                                     applicant={props.userProfileForm?.["applicant.suffix"]}/>
+                                            <RowText label={"Date of Birth:"}
+                                                     display={moment(props.userProfileForm?.["applicant.dateOfBirth"])?.format('LL')}
+                                            />
+                                            <RowText label={"Gender:"}
+                                                     applicant={props.userProfileForm?.["applicant.gender"]}/>
+                                            <RowText label={"Nationality:"}
+                                                     applicant={props.userProfileForm?.["applicant.nationality"]}/>
+                                            <RowText label={"Weight:"}
+                                                     applicant={props.userProfileForm?.["applicant.weight"]}/>
+                                            <RowText label={"Height:"}
+                                                     applicant={props.userProfileForm?.["applicant.height"]}/>
                                         </View>
                                         {!!Object.values({...applicant?.address}).join("") &&
                                             <>
@@ -582,50 +551,22 @@ const BasicInfo = (props: any) => {
                                                     </View>
 
 
-                                                    <Row edit={props.edit} label={"Unit/Rm/Bldg./Street:"}
-                                                         hasChanges={props.hasChanges}
-                                                         updateApplication={updateApplication}
-                                                         stateName={"applicant.address.unit"}
-                                                         updateForm={applicantForm}
-                                                         applicant={props.userProfileForm['applicant.address.unit']}/>
-                                                    <Row edit={props.edit} label={"Barangay:"}
-                                                         hasChanges={props.hasChanges}
-                                                         updateApplication={updateApplication}
-                                                         stateName={"applicant.address.barangay"}
-                                                         updateForm={applicantForm}
-                                                         applicant={props.userProfileForm['applicant.address.barangay']}/>
-                                                    <Row edit={props.edit} label={"Street:"}
-                                                         hasChanges={props.hasChanges}
-                                                         updateApplication={updateApplication}
-                                                         stateName={"applicant.address.street"}
-                                                         updateForm={applicantForm}
-                                                         applicant={props.userProfileForm['applicant.address.street']}/>
-                                                    <Row edit={props.edit} label={"Unit:"}
-                                                         hasChanges={props.hasChanges}
-                                                         updateApplication={updateApplication}
-                                                         stateName={"applicant.address.unit"}
-                                                         updateForm={applicantForm}
-                                                         applicant={props.userProfileForm['applicant.address.unit']}/>
-                                                    <Row edit={props.edit}
-                                                         hasChanges={props.hasChanges}
-                                                         updateApplication={updateApplication}
-                                                         stateName={"applicant.address.province"}
-                                                         updateForm={applicantForm}
-                                                         label={"Province:"}
-                                                         applicant={props.userProfileForm["applicant.address.province"]}/>
-                                                    <Row updateForm={applicantForm}
+                                                    <RowText label={"Unit/Rm/Bldg./Street:"}
 
-                                                         hasChanges={props.hasChanges}
-                                                         updateApplication={updateApplication}
-                                                         stateName={"applicant.address.city"}
-                                                         edit={props.edit} label={"City/Municipality:"}
-                                                         applicant={props.userProfileForm?.["applicant.address.city"]}/>
-                                                    <Row updateForm={applicantForm} edit={props.edit}
-                                                         label={"Zip Code:"}
-                                                         hasChanges={props.hasChanges}
-                                                         updateApplication={updateApplication}
-                                                         stateName={"applicant.address.zipCode"}
-                                                         applicant={props.userProfileForm?.["applicant.address.zipCode"]}/>
+                                                             applicant={props.userProfileForm['applicant.address.unit']}/>
+                                                    <RowText label={"Barangay:"}
+                                                             applicant={props.userProfileForm['applicant.address.barangay']}/>
+                                                    <RowText label={"Street:"}
+                                                             applicant={props.userProfileForm['applicant.address.street']}/>
+                                                    <RowText label={"Unit:"}
+
+                                                             applicant={props.userProfileForm['applicant.address.unit']}/>
+                                                    <RowText label={"Province:"}
+                                                        applicant={props.userProfileForm["applicant.address.province"]}/>
+                                                    <RowText label={"City/Municipality:"}
+                                                             applicant={props.userProfileForm?.["applicant.address.city"]}/>
+                                                    <RowText label={"Zip Code:"}
+                                                             applicant={props.userProfileForm?.["applicant.address.zipCode"]}/>
 
                                                 </View>
                                             </>
@@ -639,18 +580,12 @@ const BasicInfo = (props: any) => {
                                                     <Text style={styles.header}>Educational Background</Text>
                                                 </View>
                                             </View>
-                                            <Row updateForm={applicantForm} edit={props.edit} label={"School Attended:"}
-                                                 hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                                 stateName={"applicant.education.schoolAttended"}
-                                                 applicant={props.userProfileForm?.["applicant.address.zipCode"]}/>
-                                            <Row updateForm={applicantForm} edit={props.edit} label={"Course Taken:"}
-                                                 hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                                 stateName={"applicant.education.courseTaken"}
-                                                 applicant={props.userProfileForm?.["applicant.education.courseTaken"]}/>
-                                            <Row updateForm={applicantForm} edit={props.edit} label={"Year Graduated:"}
-                                                 hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                                 stateName={"applicant.education.yearGraduated"}
-                                                 applicant={props.userProfileForm?.["applicant.education.yearGraduated"]}/>
+                                            <RowText label={"School Attended:"}
+                                                     applicant={props.userProfileForm?.["applicant.address.zipCode"]}/>
+                                            <RowText label={"Course Taken:"}
+                                                     applicant={props.userProfileForm?.["applicant.education.courseTaken"]}/>
+                                            <RowText label={"Year Graduated:"}
+                                                     applicant={props.userProfileForm?.["applicant.education.yearGraduated"]}/>
 
 
                                         </View>}
@@ -661,14 +596,12 @@ const BasicInfo = (props: any) => {
                                                     <Text style={styles.header}>Contact Details</Text>
                                                 </View>
                                             </View>
-                                            <Row updateForm={applicantForm} edit={props.edit} label={"Contact Number:"}
-                                                 hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                                 stateName={"applicant.contact.contactNumber"}
-                                                 applicant={props.userProfileForm?.["applicant.contact.contactNumber"]}/>
-                                            <Row updateForm={applicantForm} edit={props.edit} label={"Email:"}
-                                                 hasChanges={props.hasChanges} updateApplication={updateApplication}
-                                                 stateName={"applicant.contact.email"}
-                                                 applicant={props.userProfileForm?.["applicant.contact.email"]}/>
+                                            <RowText label={"Contact Number:"}
+
+                                                     applicant={props.userProfileForm?.["applicant.contact.contactNumber"]}/>
+                                            <RowText label={"Email:"}
+
+                                                     applicant={props.userProfileForm?.["applicant.contact.email"]}/>
 
 
                                         </View>}
@@ -691,7 +624,7 @@ const BasicInfo = (props: any) => {
                                                        display={moment(props?.schedule.dateStart).isValid() ? moment(props?.schedule.dateStart).format('ddd DD MMMM YYYY') : props?.schedule.dateStart}/>
                                             <TimeField edit={props.edit} label={"Start Time:"}
                                                 /*show={true}
-                                                showEdit={false}*/
+                                                */
                                                        updateForm={applicantForm}
                                                        hasChanges={props.hasChanges}
                                                        updateApplication={updateApplication}
@@ -700,7 +633,7 @@ const BasicInfo = (props: any) => {
                                                        display={moment(props?.schedule.dateStart)?.isValid() ? moment(props?.schedule.dateStart).format('LT') : props?.schedule.dateStart}/>
                                             <TimeField edit={props.edit} label={"End Time:"}
                                                 /*show={true}
-                                                showEdit={false}*/
+                                                */
                                                        hasChanges={props.hasChanges}
                                                        updateApplication={updateApplication}
                                                        updateForm={applicantForm}
@@ -708,17 +641,15 @@ const BasicInfo = (props: any) => {
                                                        applicant={props.userProfileForm?.["schedule.dateEnd"]}
                                                        display={moment(props?.schedule.dateEnd)?.isValid() ? moment(props?.schedule.dateEnd).format('LT') : props?.schedule.dateEnd}/>
                                             <Row  /*show={true}
-                                          showEdit={false} */
+                                           */
                                                 updateForm={applicantForm}
-                                                hasChanges={props.hasChanges} updateApplication={updateApplication}
                                                 stateName={"schedule.venue"}
                                                 edit={props.edit}
                                                 label={"Venue:"}
                                                 applicant={props.userProfileForm?.["schedule.venue"]}/>
                                             <Row  /*show={true}
-                                          showEdit={false}*/
+                                          */
                                                 updateForm={applicantForm}
-                                                hasChanges={props.hasChanges} updateApplication={updateApplication}
                                                 stateName={"schedule.seatNumber"}
                                                 edit={props.edit}
                                                 label={"Seat No:"}

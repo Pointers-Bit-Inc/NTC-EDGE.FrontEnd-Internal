@@ -138,7 +138,7 @@ const Endorsed = (props: any) => {
                 onCancelPress()
             } }>
 
-            <View style={ showAlert ? {
+            {Platform.OS != "web" && <View style={ showAlert ? {
                 zIndex : 1 ,
                 flex : 1 ,
                 width : "100%" ,
@@ -147,7 +147,7 @@ const Endorsed = (props: any) => {
                 justifyContent : 'center' ,
                 position : 'absolute' ,
                 backgroundColor : 'rgba(52,52,52,0.5)'
-            } : {} }/>
+            } : {} }/>}
 
             <CustomAlert
 
@@ -249,8 +249,13 @@ const Endorsed = (props: any) => {
                                               height : (
                                                            height < 720 && isKeyboardVisible) ? 75 : height * 0.15
                                           } }
-                                          inputStyle={ { [Platform.OS == "android" ? "padding" : "height"] : (
-                                                                      height < 720 && isKeyboardVisible) ? 70 : height * 0.15,fontWeight : "400" , fontSize : fontValue(14) } }
+                                          inputStyle={{
+                                              textAlignVertical: "top",
+                                              height:(
+                                                  height<720&&isKeyboardVisible) ? 70 : height*0.15,
+                                              fontWeight:"400",
+                                              fontSize:fontValue(14)
+                                          }}
                                           error={ validateRemarks.error }
                                           errorColor={ errorColor }
                                           placeholder={ 'Remarks' }

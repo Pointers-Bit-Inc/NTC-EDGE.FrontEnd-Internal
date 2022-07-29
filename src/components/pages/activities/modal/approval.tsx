@@ -242,7 +242,7 @@ const Approval=(props:any)=>{
 
         <Modal
             supportedOrientations={['portrait','landscape']}
-            animationType="slide"
+            animationType="none"
             transparent={true}
             visible={props.visible}
             onRequestClose={_springHide}>
@@ -328,9 +328,11 @@ const Approval=(props:any)=>{
 
                                         { getRole(user,[CASHIER, DIRECTOR,ACCOUNTANT]) ?
                                             <InputField
+
                                                 ref={approveInputField}
                                                 inputStyle={{
-                                                    [Platform.OS=="android" ? "padding" : "height"]:(
+                                                    textAlignVertical: "top",
+                                                    [Platform.OS=="android" ? "height" : "height"]:(
                                                         height<720&&isKeyboardVisible) ? 70 : height*0.15,
                                                     fontWeight:"400",
                                                     fontSize:fontValue(14)

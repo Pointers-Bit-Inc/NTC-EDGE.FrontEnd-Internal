@@ -7,7 +7,7 @@ import {Hoverable} from 'react-native-web-hooks';
 import {
     formatDate,
     getActivityStatus,
-    PaymentStatusText, remarkColor,
+    PaymentStatusText, readableToHuman, remarkColor,
     statusColor,
     statusIcon,
     StatusText
@@ -282,7 +282,6 @@ export function ActivityItem(props:any){
         }
     }
     const [pressed, setPressed] = useState(false)
-    const debouncedOnPress = lodash.debounce( props.onPressUser, 300, { leading: true, trailing: false });
     return (
 
         <Hoverable>
@@ -323,7 +322,7 @@ export function ActivityItem(props:any){
                                             Platform?.isPad||isTablet())) ? "#AAB6DF" : (pressed ? "#98AFDC" : "#E5E5E5"),backgroundColor: pressed ? "#DCE8FF" : "#fff",borderWidth:props.selected && Platform.OS == "web" ? 4 : 1,}]}>
 
                                         <TouchableOpacity activeOpacity={100} onPressIn={()=>setPressed(true)}
-                                                          onPressOut={()=>setPressed(false)} onPress={debouncedOnPress}>
+                                                          onPressOut={()=>setPressed(false)} onPress={props.onPressUser}>
                                             <View style={
                                                 {
                                                     borderRadius:fontValue(10),
@@ -374,7 +373,7 @@ export function ActivityItem(props:any){
                                                                 }
                                                                 numberOfLines={1}
                                                             >
-                                                                {formatDate(props.activity.createdAt)}
+                                                                {readableToHuman(props.activity.createdAt)}
                                                             </Text>
                                                         </View>
                                                     </View>
