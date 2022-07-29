@@ -28,6 +28,7 @@ import Moment from 'moment';
 import Timeline from "@molecules/timeline/timeline";
 import Card from "@pages/activities/application/card";
 import LoadingModal from "@pages/activities/loading/loadingModal";
+import ApplicationCard from "@pages/activities/application/applicationCard";
 let outputLabel = (applicationType: string, serviceCode: string, service: string) => {
     applicationType = (`${applicationType} ${service?.name}`)?.toLowerCase();
     if (serviceCode === 'service-22') return 'Receipt';
@@ -102,26 +103,17 @@ const ApplicationDetails = (props: any) => {
                 </View>
 
                 <Text style={[styles.service, {fontFamily: Regular, paddingTop: 10}]}>Submitted { Moment(props.createdAt).fromNow()}</Text>
-                <Card  updateApplication={updateApplication}
-                       updateForm={applicantForm}
-                      stateName={"service.name"}
-                      edit={props.edit}
+                <ApplicationCard
                       display={props.userProfileForm?.["service.name"]}
                       label={"Application Type:"}
                       style={styles.applicationType}
                       applicant={props.userProfileForm?.["service.name"]}/>
-                <Card  updateApplication={updateApplication}
-                       updateForm={applicantForm}
-                       stateName={"service.applicationType.label"}
-                       edit={props.edit}
+                <ApplicationCard
                        display={props.userProfileForm?.["service.applicationType.label"]}
                        label={"Application Type:"}
                        style={[styles.service, {fontFamily: Regular500}]}
                        applicant={props.userProfileForm?.["service.applicationType.label"]}/>
-                <Card  updateApplication={updateApplication}
-                       updateForm={applicantForm}
-                       stateName={"service.applicationType.element"}
-                       edit={props.edit}
+                <ApplicationCard
                        display={props.userProfileForm?.["service.applicationType.element"]}
                        label={"Application Type Element:"}
                        style={[styles.service, {fontFamily: Regular500}]}

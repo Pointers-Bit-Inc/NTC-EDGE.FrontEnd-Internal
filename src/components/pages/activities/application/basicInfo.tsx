@@ -515,16 +515,9 @@ const BasicInfo = (props: any) => {
 
                                             <RowText label={"Full Name:"}
                                                      applicant={props.userProfileForm?.["applicant.applicantName"]}/>
-                                            {props.userProfileForm?.["applicant.firstName"] ?
-                                                <RowText label={"First Name:"}
-                                                         applicant={props.userProfileForm?.["applicant.firstName"]}/> : <></>}
-                                            {props.userProfileForm?.["applicant.middleName"] ?
-                                                <RowText label={"Middle Name:"}
-                                                         applicant={props.userProfileForm?.["applicant.middleName"]}/> : <></>}
-                                            {props.userProfileForm?.["applicant.lastName"] ?
-                                                <RowText label={"Last Name:"}
-                                                         applicant={props.userProfileForm?.["applicant.lastName"]}/> : <></>}
 
+                                            <RowText label={"Company Name:"}
+                                                     applicant={props.userProfileForm?.["applicant.companyName"]}/>
 
                                             <RowText label={"Suffix:"}
                                                      applicant={props.userProfileForm?.["applicant.suffix"]}/>
