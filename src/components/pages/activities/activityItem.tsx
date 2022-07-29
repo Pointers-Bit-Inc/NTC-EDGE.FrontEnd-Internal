@@ -35,11 +35,9 @@ const styles=StyleSheet.create({
 
     containerBlur:{
         paddingTop: 10,
-        borderColor:!(
-            isMobile&& !(
-                Platform?.isPad||isTablet())) ? "#AAB6DF" : "transparent",
-        borderRadius:10,
-        backgroundColor:"#fff",
+
+        borderRadius:fontValue(10),
+
         shadowColor:"rgba(0,0,0,1)",
         shadowOffset:{
             height:0,
@@ -142,7 +140,8 @@ const RenderStatus=({trigger,status}:any)=>{
                 styles.status,
                 {
                     backgroundColor: remarkColor(status),
-                    paddingHorizontal: fontValue(5),
+                    paddingHorizontal: fontValue(10),
+                    paddingVertical: fontValue(5),
                     borderRadius: fontValue(30)
                 },
             ]}
@@ -151,7 +150,7 @@ const RenderStatus=({trigger,status}:any)=>{
 
             <Text
                 style={{color: "#fff"}}
-                size={fontValue(14)}
+                size={fontValue(10)}
                 numberOfLines={1}
             >
                 {status?.toUpperCase()}
@@ -165,7 +164,7 @@ const RenderApplication=({applicationType}:any)=>{
     return (
         <View
             style={[
-                {backgroundColor:"#BFBEFC"},
+                //{backgroundColor:"#BFBEFC"},
                 styles.horizontal,
                 styles.application
             ]}
@@ -177,8 +176,8 @@ const RenderApplication=({applicationType}:any)=>{
             <Text
 
                 style={{marginLeft:3,marginRight:5}}
-                color="#2A00A2"
-                size={fontValue(10)}
+                color="#606A80"
+                size={fontValue(12)}
                 numberOfLines={1}
             >
                 {(
@@ -282,6 +281,7 @@ export function ActivityItem(props:any){
 
         }
     }
+    const [pressed, setPressed] = useState(false)
     const debouncedOnPress = lodash.debounce( props.onPressUser, 300, { leading: true, trailing: false });
     return (
 
@@ -318,9 +318,12 @@ export function ActivityItem(props:any){
                                         borderRadius:4
                                     }}/>
                                 </View>
-                                <View style={[styles.containerBlur,{borderWidth:props.selected && Platform.OS == "web" ? 4 : 0,}]}>
+                                <View style={[styles.containerBlur,{borderColor:!(
+                                        isMobile&& !(
+                                            Platform?.isPad||isTablet())) ? "#AAB6DF" : (pressed ? "#98AFDC" : "#E5E5E5"),backgroundColor: pressed ? "#DCE8FF" : "#fff",borderWidth:props.selected && Platform.OS == "web" ? 4 : 1,}]}>
 
-                                        <TouchableOpacity onPress={debouncedOnPress}>
+                                        <TouchableOpacity activeOpacity={100} onPressIn={()=>setPressed(true)}
+                                                          onPressOut={()=>setPressed(false)} onPress={debouncedOnPress}>
                                             <View style={
                                                 {
                                                     borderRadius:fontValue(10),

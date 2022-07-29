@@ -309,7 +309,7 @@ const Approval=(props:any)=>{
                     {
                         <Animated.View style={[ styles.group,{
                             width:((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync())))||dimensions.width<=768 ? "100%" : "31.6%",  //474/1500
-                            display:!props.showAlert && visible  ? undefined : "none",
+                            opacity:!props.showAlert && visible  ? 100 : 0,
                         },{
                             transform: [{scale: display}, {translateY: success}],
                         },]}>

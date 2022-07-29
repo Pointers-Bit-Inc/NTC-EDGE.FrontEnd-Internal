@@ -1,9 +1,9 @@
-import {TouchableWithoutFeedback , View} from "react-native";
+import {Animated, TouchableWithoutFeedback , View} from "react-native";
 import React from "react";
 
 export function     OnBackdropPress(props: { onPressOut: any, styles: {  } }) {
     return <TouchableWithoutFeedback onPressOut={ props.onPressOut }>
-        <View style={ [{
+        <Animated.View style={ [{
             width : "100%" ,
             height : "100%" ,
             alignItems : "center" ,

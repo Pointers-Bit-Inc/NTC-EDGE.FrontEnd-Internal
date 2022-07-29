@@ -56,7 +56,7 @@ const ApplicationList=(props:{onPress:()=>void,item:any,numbers:{parentIndex:num
 
                         <View style={styles.date}>
                             <Text
-                                style={styles.dateText}>{`${readableToHuman()} • ${formatDate(props.item.date)}`} </Text>
+                                style={styles.dateText}>{`${readableToHuman()} • ${moment(props.item.date).format('MMM DD, yyyy')}`} </Text>
                         </View>
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center",}}>
