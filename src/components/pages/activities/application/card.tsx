@@ -34,7 +34,41 @@ const styles = StyleSheet.create({
     } ,
 })
 const Card = (props: {inputFieldStyle?:any, keyboardType?:string, touchableStyle?:any, style?:any,   updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
-    return <Text style={[props.style,]}>{props.display || props.applicant}</Text>};
+    const [edit, setEdit] = useSafeState(false)
+
+    const [cloneValue, setCloneValue] = useSafeState(props.applicant)
+    return  (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || edit : !edit) ? <TouchableOpacity style={props.touchableStyle} onPress={()=>{
+        setEdit(true)
+    }
+    }>
+        <Text style={[props.style,]}>{props.display || props.applicant}</Text>
+    </TouchableOpacity> : <>
+        {((props.edit && props.editable && props.showEdit) || edit)? <InputField keyboardType={props.keyboardType}  onSubmitEditing = {(event) => {
+            if(!props.edit) props?.updateApplication()
+            setEdit(false)
+        }}
+
+                                                                                 onBlur={()=>{
+                                                                                     if(!props.edit) props.updateForm(props.stateName, cloneValue)
+                                                                                     setEdit(false)
+                                                                                 }
+                                                                                 }
+                                                                                 mainContainerStyle={[props.inputFieldStyle, {marginVertical: 10}]} onClose={()=>{
+            props.updateForm(props.stateName, cloneValue)
+            setEdit(false)
+        }}  onChangeText={(e) => {
+            if(props.keyboardType == 'number-pad' || props.keyboardType == 'numeric'  ){
+
+                props.updateForm(props.stateName,e.replace(/[^0-9]/g, '')  )
+
+
+            }else{
+                props.updateForm(props.stateName,e )
+            }
+
+        }
+        }   value={props.applicant} label={props.label} /> : <></>}
+    </>};
 
 Card.defaultProps = {
     editable: true,
