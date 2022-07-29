@@ -76,6 +76,7 @@ import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import { FontAwesome } from "@expo/vector-icons";
 import useSafeState from "../../../hooks/useSafeState";
+import RefreshRN from "@assets/svg/refreshRN";
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
@@ -646,7 +647,8 @@ const ActivitiesPage = (props) => {
                                     }
 
                                     }>
-                                        <Filter pressed={visible} width={fontValue(32)} height={fontValue(32)}/>
+
+                                        <Filter pressed={visible} width={fontValue(18)} height={fontValue(18)}/>
                                     </TouchableOpacity>
                                     {
                                         <TouchableOpacity onPress={onRefresh}>
@@ -654,7 +656,7 @@ const ActivitiesPage = (props) => {
                                                 !(
                                                     isMobile && !(
                                                         Platform?.isPad || isTablet())) && dimensions?.width > 768) ?<RefreshWeb style={{paddingLeft: 15}} width={fontValue(26)}
-                                                                                                                             height={fontValue(24)} fill={"#fff"}/> :<View style={{paddingHorizontal: 5}}><FontAwesome name="refresh" size={30} color="white" /></View>}
+                                                                                                                             height={fontValue(24)} fill={"#fff"}/> :<View style={{paddingLeft: 23}}><RefreshRN/></View>}
                                         </TouchableOpacity>
                                     }
                                 </Animated.View>

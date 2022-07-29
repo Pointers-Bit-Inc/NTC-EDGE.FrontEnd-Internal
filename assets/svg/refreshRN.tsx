@@ -1,17 +1,17 @@
 import * as React from "react";
 import Svg, { Path } from "react-native-svg";
 
-const FilterIcon = (props) => (
+const RefreshRN = (props) => (
     <Svg
         width={18}
         height={18}
-        viewBox="0 0 20 20"
+        viewBox="0 0 18 18"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         {...props}
     >
         <Path
-            d="M1 2C1 1.44772 1.44772 1 2 1H18C18.5523 1 19 1.44772 19 2V4.58579C19 4.851 18.8946 5.10536 18.7071 5.29289L12.2929 11.7071C12.1054 11.8946 12 12.149 12 12.4142V15L8 19V12.4142C8 12.149 7.89464 11.8946 7.70711 11.7071L1.29289 5.29289C1.10536 5.10536 1 4.851 1 4.58579V2Z"
+            d="M1 1V6H1.58152M16.9381 8C16.446 4.05369 13.0796 1 9 1C5.64262 1 2.76829 3.06817 1.58152 6M1.58152 6H6M17 17V12H16.4185M16.4185 12C15.2317 14.9318 12.3574 17 9 17C4.92038 17 1.55399 13.9463 1.06189 10M16.4185 12H12"
             stroke="white"
             strokeWidth={2}
             strokeLinecap="round"
@@ -20,4 +20,4 @@ const FilterIcon = (props) => (
     </Svg>
 );
 
-export default FilterIcon;
+export default RefreshRN;

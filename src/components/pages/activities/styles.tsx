@@ -67,7 +67,7 @@ export const styles = StyleSheet.create({
     },
     activity: {
 
-        fontSize: fontValue(20) ,
+        fontSize: fontValue(16) ,
         marginLeft: 15,
         fontFamily: Bold,
     },
@@ -178,13 +178,13 @@ export const styles = StyleSheet.create({
         fontSize: fontValue(16),
         ...Platform.select({
             native: {
-                color: "#2863D6",
+                color: "#000",
             },
             default: {
                 color: "#4E4B66",
             }
         }),
-
+        fontFamily: Bold,
         textAlign: "left",
         marginLeft: 20
     },
