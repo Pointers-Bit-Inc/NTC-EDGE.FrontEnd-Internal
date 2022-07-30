@@ -252,14 +252,14 @@ const BasicInfo = (props: any) => {
             setRefreshing(false);
         });
     }, []);
-    const [isMore, setIsMore] = useSafeState(true)
+
     const historyMemo = useMemo(() => {
         const _paymentHistory = props.paymentHistory?.length ? props.paymentHistory : []
         const _approvalHistory = props.approvalHistory?.length ? props.approvalHistory : []
         return [..._paymentHistory, ..._approvalHistory]?.filter((s, index) => {
-            return isMore ? s?.remarks : s?.remarks && index == 0
+            return props.isMore ? s?.remarks : s?.remarks && index == 0
         })
-    }, [props.paymentHistory, props.approvalHistory, isMore])
+    }, [props.paymentHistory, props.approvalHistory, props.isMore])
 
     function RemarkFn() {
         return ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks) ?
@@ -324,8 +324,8 @@ const BasicInfo = (props: any) => {
                                   text={[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}/>
                     <IsMorePress onPress={() => {
                         isMoreRemark()
-                        setIsMore((bool) => !bool)
-                    }} more={isMore}/>
+                        props.setIsMore((bool) => !bool)
+                    }} more={props.isMore}/>
                 </View>
             </>
 
@@ -414,7 +414,7 @@ const BasicInfo = (props: any) => {
                         }
                         keyExtractor={item => item._id}
                     />
-                    <IsMorePress onPress={() => setIsMore((bool) => !bool)} more={isMore}/>
+                    <IsMorePress onPress={() => props.setIsMore((bool) => !bool)} more={props.isMore}/>
                 </View> : <></>);
     }
 

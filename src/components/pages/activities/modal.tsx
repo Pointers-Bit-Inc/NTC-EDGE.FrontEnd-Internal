@@ -385,7 +385,8 @@ function ActivityModal(props: any) {
         return promise;
     };
 
-    return ( <>
+    return (
+        <>
             <View style={(isMobile && !((Platform?.isPad || isTablet()) && isLandscapeSync())) && (
                 visible || endorseVisible || showAlert) ? {
                 position: "absolute",
