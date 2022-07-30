@@ -415,7 +415,7 @@ const BasicInfo = (props: any) => {
                             </>
                         }
                         }
-                        keyExtractor={item => item._id}
+                        keyExtractor={(item, index) => index}
                     />
                     <IsMorePress onPress={() => props.setIsMore((bool) => !bool)} more={props.isMore}/>
                 </View> : <></>);

@@ -324,9 +324,6 @@ function ActivityModal(props: any) {
                     setLoading(false)
                 }, 2500)
             }
-
-
-
             //hideToast()
             dispatch(setHasChange(false))
             dispatch(setEdit(false))
