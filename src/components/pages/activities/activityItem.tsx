@@ -30,7 +30,6 @@ import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 import {isTablet} from "react-native-device-info";
-import lodash from 'lodash';
 const styles=StyleSheet.create({
 
     containerBlur:{
@@ -326,7 +325,7 @@ export function ActivityItem(props:any){
                                         isMobile&& !(
                                             Platform?.isPad||isTablet())) ? "#AAB6DF" : (pressed ? "#98AFDC" : "#E5E5E5"),backgroundColor: pressed ? "#DCE8FF" : "#fff",borderWidth:props.selected && Platform.OS == "web" ? 4 : 1,}]}>
 
-                                        <TouchableOpacity activeOpacity={100} onPressIn={()=>setPressed(true)}
+                                        <TouchableOpacity  activeOpacity={100} onPressIn={()=>setPressed(true)}
                                                           onPressOut={()=>setPressed(false)} onPress={props.onPressUser}>
                                             <View style={
                                                 {

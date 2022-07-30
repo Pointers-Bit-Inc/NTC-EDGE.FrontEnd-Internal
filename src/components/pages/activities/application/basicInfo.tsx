@@ -256,7 +256,9 @@ const BasicInfo = (props: any) => {
     const historyMemo = useMemo(() => {
         const _paymentHistory = props.paymentHistory?.length ? props.paymentHistory : []
         const _approvalHistory = props.approvalHistory?.length ? props.approvalHistory : []
-        return [..._paymentHistory, ..._approvalHistory]?.filter(s => s?.remarks)
+        return [..._paymentHistory, ..._approvalHistory]?.filter((s, index) => {
+            return isMore ? s?.remarks : s?.remarks && index == 0
+        })
     }, [props.paymentHistory, props.approvalHistory, isMore])
 
     function RemarkFn() {
@@ -348,7 +350,6 @@ const BasicInfo = (props: any) => {
                                     <View style={{
                                         flexDirection: "row",
                                         alignItems: "center",
-                                        paddingVertical: 5
                                     }}>
                                         <View style={{paddingRight: 10}}>
                                             <Text style={[{
