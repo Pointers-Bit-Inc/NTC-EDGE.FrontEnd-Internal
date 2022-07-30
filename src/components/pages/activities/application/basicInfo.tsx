@@ -343,6 +343,7 @@ const BasicInfo = (props: any) => {
 
                             return <>
                                 <View style={{
+                                    paddingTop:index != historyMemo.length - 1 ? 0 : 10,
                                     flexDirection: "row",
                                     alignItems: "center",
                                     justifyContent: "space-between"
