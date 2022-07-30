@@ -77,7 +77,8 @@ const styles=StyleSheet.create({
     },
     date:{
         flex: 1,
-        paddingRight: 10,
+        paddingVertical: 6,
+        paddingRight: 6,
         alignSelf: "flex-start",
         justifyContent: "flex-end",
         color:"#606A80"
