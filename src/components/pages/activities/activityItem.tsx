@@ -14,7 +14,7 @@ import {
 } from "@pages/activities/script";
 
 import {APPROVED, CASHIER, DECLINED,} from "../../../reducers/activity/initialstate";
-import {outline} from 'src/styles/color';
+import {infoColor, outline} from 'src/styles/color';
 import Highlighter from "@pages/activities/search/highlighter";
 
 import EndorseIcon from "@assets/svg/endorse";
@@ -76,6 +76,10 @@ const styles=StyleSheet.create({
         marginBottom:5,
     },
     date:{
+        flex: 1,
+        paddingRight: 10,
+        alignSelf: "flex-start",
+        justifyContent: "flex-end",
         color:"#606A80"
     },
     application:{
@@ -366,7 +370,8 @@ export function ActivityItem(props:any){
                                                             <Text
                                                                 style={
                                                                     {
-                                                                        color:"#606A80",
+                                                                        alignSelf: "flex-end",
+                                                                        color:infoColor,
                                                                         fontFamily:Regular,
                                                                         fontSize:fontValue(10)
                                                                     }
