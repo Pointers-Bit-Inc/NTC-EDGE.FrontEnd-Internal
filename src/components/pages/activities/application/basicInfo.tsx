@@ -36,6 +36,8 @@ import CollapseText from "@atoms/collapse-text";
 import ChevronDown from "@assets/svg/chevron-down";
 import ChevronUp from "@assets/svg/chevron-up";
 import RowText from "@pages/activities/application/RowText";
+import Loading from "@atoms/loading";
+import {infoColor} from "@styles/color";
 
 
 function Status(props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
@@ -128,16 +130,17 @@ function Status(props: { user: any, paymentHistory: any, approvalHistory: any, h
     </View>;
 }
 
-function IsMorePress(props: { onPress: () => void, more: boolean }) {
+function IsMorePress(props: { loading: any, onPress: () => void, more: boolean }) {
     return <TouchableOpacity onPress={props.onPress}>
         <View style={{flex: 1, justifyContent: "flex-end", flexDirection: "row", alignItems: "center"}}>
-            <Text style={{
+
+            {props.loading ? <Loading numberOfDots={3} size={6} color={infoColor}/> : <><Text style={{
                 fontFamily: Regular500,
                 fontSize: fontValue(12),
                 color: "#2863D6",
                 paddingRight: fontValue(10)
             }}>{props.more ? "See less" : "See More"}</Text>
-            {props.more ? <ChevronUp color={"#2863D6"}/> : <ChevronDown color={"#2863D6"}/>}
+            {props.more ? <ChevronUp color={"#2863D6"}/> : <ChevronDown color={"#2863D6"}/>}</>}
         </View>
     </TouchableOpacity>;
 }
@@ -325,7 +328,7 @@ const BasicInfo = (props: any) => {
                     <IsMorePress onPress={() => {
                         isMoreRemark()
                         props.setIsMore((bool) => !bool)
-                    }} more={props.isMore}/>
+                    }} loading={loading} more={props.isMore}/>
                 </View>
             </>
 
