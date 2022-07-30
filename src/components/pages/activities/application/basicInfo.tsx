@@ -257,7 +257,7 @@ const BasicInfo = (props: any) => {
         const _paymentHistory = props.paymentHistory?.length ? props.paymentHistory : []
         const _approvalHistory = props.approvalHistory?.length ? props.approvalHistory : []
         return [..._paymentHistory, ..._approvalHistory]?.filter((s, index) => {
-            return props.isMore ? s?.remarks : s?.remarks && index == 0
+            return props.isMore ?  s?.remarks && index == 0 :s?.remarks
         })
     }, [props.paymentHistory, props.approvalHistory, props.isMore])
 
