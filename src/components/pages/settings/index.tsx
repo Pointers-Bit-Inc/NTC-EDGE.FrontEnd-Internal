@@ -26,6 +26,7 @@ import {resetChannel} from "../../../reducers/channel/actions";
 import useOneSignal from "../../../hooks/useOneSignal";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import useBiometrics, { resetCredentials } from 'src/hooks/useBiometrics';
+import useCountUp from "../../../hooks/useCountUp";
 
 
 export default ({
@@ -94,6 +95,8 @@ export default ({
 
   const onLogout = useCallback(() => {
     setVisible(false)
+    const progress = useCountUp(500)
+    const countUp = (Math.max(0, Math.round(progress * progress)))
     setTimeout(()=>{
       dispatch(setApplications([]))
       dispatch(setPinnedApplication([]))

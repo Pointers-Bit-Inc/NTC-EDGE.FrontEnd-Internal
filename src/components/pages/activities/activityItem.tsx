@@ -378,7 +378,7 @@ export function ActivityItem(props:any){
                                                                 }
                                                                 numberOfLines={1}
                                                             >
-                                                                {readableToHuman(props.activity.createdAt)}
+                                                                {readableToHuman(formatDate(props.activity.createdAt))}
                                                             </Text>
                                                         </View>
                                                     </View>

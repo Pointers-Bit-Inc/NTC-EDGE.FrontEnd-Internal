@@ -31,8 +31,6 @@ const ApplicationList=(props:{onPress:()=>void,item:any,numbers:{parentIndex:num
 
 
 
-
-
     return <View style={[styles.group26,]}>
         <TouchableWithoutFeedback onPress={()=>{
             props.onPress();
