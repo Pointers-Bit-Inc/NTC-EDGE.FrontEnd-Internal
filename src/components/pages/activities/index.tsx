@@ -297,11 +297,13 @@ const ActivitiesPage = (props) => {
     );
     const onDismissedModal = (event: boolean, _id: number) => {
         setUpdateModal(false);
+        console.log("onRefresh")
         dispatch(setApplicationItem({}));
         if (event && _id) {
             //  dispatch(deleteApplications(_id))
         }
         if (event) {
+            console.log("onRefresh")
             onRefresh()
         }
         onDismissed()

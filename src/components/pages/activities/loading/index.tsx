@@ -69,7 +69,7 @@ class Dot extends React.Component {
         Animated.timing(
             this.scale,
             {
-                useNativeDriver: false,
+                useNativeDriver: true,
                 toValue: 1,
                 duration: this.props.animationDuration,
             }

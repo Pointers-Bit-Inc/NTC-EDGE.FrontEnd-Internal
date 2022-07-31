@@ -95,8 +95,6 @@ export default ({
 
   const onLogout = useCallback(() => {
     setVisible(false)
-    const progress = useCountUp(500)
-    const countUp = (Math.max(0, Math.round(progress * progress)))
     setTimeout(()=>{
       dispatch(setApplications([]))
       dispatch(setPinnedApplication([]))

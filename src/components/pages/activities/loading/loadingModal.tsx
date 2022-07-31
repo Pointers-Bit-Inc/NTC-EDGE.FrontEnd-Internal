@@ -7,7 +7,6 @@ import React from "react";
 import CheckMarkIcon from "@assets/svg/checkmark";
 
 const LoadingModal = (props) =>{
-    const dimensions = useWindowDimensions();
     return <View style={[{
         width: "100%",
         height: "100%",

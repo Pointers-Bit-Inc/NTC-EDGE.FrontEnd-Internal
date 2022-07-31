@@ -544,9 +544,9 @@ const BasicInfo = (props: any) => {
 
                                             <RowText label={"Suffix:"}
                                                      applicant={props.userProfileForm?.["applicant.suffix"]}/>
-                                            <RowText label={"Date of Birth:"}
+                                            {props.userProfileForm?.["applicant.dateOfBirth"] ? <RowText label={"Date of Birth:"}
                                                      display={moment(props.userProfileForm?.["applicant.dateOfBirth"])?.format('LL')}
-                                            />
+                                            /> : <></>}
                                             <RowText label={"Gender:"}
                                                      applicant={props.userProfileForm?.["applicant.gender"]}/>
                                             <RowText label={"Nationality:"}

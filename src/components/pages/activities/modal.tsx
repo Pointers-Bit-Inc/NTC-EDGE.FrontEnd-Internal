@@ -35,6 +35,7 @@ import {
 } from "../../../reducers/activity/initialstate";
 import Api from 'src/services/api';
 import {
+    setApplicationItem,
     setEdit,
     setHasChange,
     setRightLayoutComponent,
@@ -152,7 +153,7 @@ function ActivityModal(props: any) {
             url = `/applications/${applicationId}/update-payment-status`;
             params = {
                 paymentStatus: status,
-                //remarks: event.remarks ? event.remarks : remarks,
+                remarks: event.remarks ? event.remarks : remarks,
             };
         }
         if (applicationItem?.service?.serviceCode === "service-22") {
@@ -165,7 +166,7 @@ function ActivityModal(props: any) {
             return callback(e);
         }) : null
         if ((applicationId && (user?.role?.key == CASHIER && addORNumber?.status == 200)) || (getRole(user, [DIRECTOR, EVALUATOR, ACCOUNTANT]) && applicationId)) {
-            await api.patch(url, {...params, cancelToken: cancelTokenSource?.token,})
+            await api.patch(url, {...params})
                 .then(res => {
                     setGrayedOut(false);
                     setCurrentLoading('');
@@ -259,9 +260,7 @@ function ActivityModal(props: any) {
         if (hasChange) setDiscardAlert(true);
         else {
             setAssignId("");
-            goBackAsync().then(()=>{
-                _props.onDismissed(change);
-            })
+            goBackAsync()
 
             setChange(false)
             return true;
@@ -379,6 +378,7 @@ function ActivityModal(props: any) {
             });
         });
         props.navigation?.goBack();
+        _props.onDismissed(change);
         return promise;
     };
 
@@ -403,9 +403,7 @@ function ActivityModal(props: any) {
                     setApprovalIcon(false);
                     setShowClose(false)
 
-                        goBackAsync().then(()=>{
-                            _props.onDismissed(true);
-                        })
+                        goBackAsync()
 
                 }}
                 onLoading={alertLoading}
@@ -490,9 +488,7 @@ function ActivityModal(props: any) {
                               setUserProfileForm={setUserProfileForm}
                               setUserOriginalProfileForm={setUserOriginalProfileForm}
                               hasChanges={hasChanges} edit={edit} dismissed={() => {
-                        goBackAsync().then(()=> {
-                            _props.onDismissed(change);
-                        })
+                        goBackAsync()
                     }} details={applicationItem} status={status}/>
 
 
@@ -587,10 +583,8 @@ function ActivityModal(props: any) {
                             status = FORAPPROVAL
                         }
 
-                    } else if (getRole(user, [ACCOUNTANT])) {
+                    } else if (getRole(user, [ACCOUNTANT, CASHIER])) {
                         status = APPROVED
-                    } else if (getRole(user, [CASHIER])) {
-                        status = PAID
                     }
                     onChangeApplicationStatus(status, (err, appId) => {
 
@@ -613,9 +607,7 @@ function ActivityModal(props: any) {
                 onExit={() => {
 
                     onApproveDismissed();
-                    goBackAsync().then(()=> {
-                        _props.onDismissed(true);
-                    })
+                    goBackAsync()
 
                 }}
                 onDismissed={(event?: any, callback?: (bool) => {}) => {
@@ -651,9 +643,7 @@ function ActivityModal(props: any) {
                 visible={visible}
                 onExit={() => {
                     onDismissed();
-                    goBackAsync().then(()=> {
-                        _props.onDismissed(true);
-                    })
+                    goBackAsync()
                 }}
                 onDismissed={() => {
 
@@ -694,6 +684,7 @@ function ActivityModal(props: any) {
 
                     onEndorseDismissed();
                     goBackAsync().then(()=> {
+                        console.log(1)
                         _props.onDismissed(true);
                     })
                 }}
@@ -712,9 +703,7 @@ function ActivityModal(props: any) {
                 onConfirm={() => {
                     setAssignId("");
                     setStatus("");
-                    goBackAsync().then(()=> {
-                        _props.onDismissed(change);
-                    })
+                    goBackAsync()
                     setChange(false)
                     setDiscardAlert(false)
                 }

@@ -313,7 +313,6 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "space-around",
         backgroundColor: "rgba(255,255,255,1)",
-        zIndex: 4,
         borderRadius: 14,
         borderWidth: 0,
         borderColor: "#000000"

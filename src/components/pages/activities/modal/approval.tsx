@@ -237,7 +237,6 @@ const Approval=(props:any)=>{
             }).start();
         }
     }, [props.visible])
-
     return (
 
         <Modal
@@ -303,13 +302,14 @@ const Approval=(props:any)=>{
                     message={message}/>
                 {getRole(user,[CASHIER, DIRECTOR,ACCOUNTANT]) && <KeyboardAvoidingView
                     behavior={Platform.OS==="ios" ? "padding" : "height"}
-                    style={[styles.container,  {alignItems:"center"}]}
+                    style={[styles.container,  {zIndex: !props.showAlert && visible  ? 0 : -1, alignItems:"center"}]}
                 >
                     <OnBackdropPress  styles={{  backgroundColor : !props.showAlert && visible && Platform.OS != "web"  ? "rgba(0, 0, 0, 0.3)" : undefined}}/>
                     {
                         <Animated.View style={[ styles.group,{
                             width:((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync())))||dimensions.width<=768 ? "100%" : "31.6%",  //474/1500
                             opacity:!props.showAlert && visible  ? 100 : 0,
+                            //display:!props.showAlert && visible  ? undefined : "none",
                         },{
                             transform: [{scale: display}, {translateY: success}],
                         },]}>
@@ -413,7 +413,7 @@ const styles=StyleSheet.create({
         borderRadius:6,
     },
     container:{
-        zIndex: 5,
+
         flex:1,
         justifyContent:'center',
 
