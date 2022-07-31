@@ -1,4 +1,4 @@
-import React, {memo, useEffect, useMemo, useRef} from "react";
+import React, {memo, useEffect, useMemo, useRef, useState} from "react";
 import {
     FlatList,
     KeyboardAvoidingView,
@@ -420,8 +420,25 @@ const BasicInfo = (props: any) => {
                     <IsMorePress onPress={() => props.setIsMore((bool) => !bool)} more={props.isMore}/>
                 </View> : <></>);
     }
+    const containerRef = useRef(null);
+    const textRef = useRef(null);
+    const scrollViewRef = useRef()
+    const [measure, setMeasure] = useState(null);
 
-    return <View style={{flex: 1}}>
+    useEffect(() => {
+        if (textRef.current && containerRef.current) {
+            textRef.current.measureLayout(
+                containerRef.current,
+                (left, top, width, height) => {
+                    if(props.edit){
+                        scrollRef?.current?.scrollTo({ y: top, animated: true })
+                    }
+
+                }
+            );
+        }
+    }, [props.edit]);
+    return <View ref={containerRef} style={{flex: 1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <KeyboardAvoidingView
             style={{flex: 1}}
@@ -435,7 +452,8 @@ const BasicInfo = (props: any) => {
                         onRefresh={onRefresh}
                     />
                 }
-                showsVerticalScrollIndicator={false} ref={scrollRef}
+                showsVerticalScrollIndicator={false}
+                ref={scrollRef}
                 style={{width: "100%", backgroundColor: "#f8f8f8",}}>
 
                 <View style={{flexDirection: isMobile || dimensions?.width <= 768 ? "column" : "row"}}>
@@ -493,7 +511,7 @@ const BasicInfo = (props: any) => {
                     </View>
 
                     {props.applicant &&
-                        <View style={!(
+                        <View  style={!(
                             isMobile) && {flex: 1, paddingRight: 10}}>
                             <View style={styles.elevation}>
                                 <View style={[styles.container, {marginTop: 20}]}>
@@ -603,6 +621,7 @@ const BasicInfo = (props: any) => {
 
 
                                         </View>}
+                                        <View ref={textRef}/>
                                         {props?.schedule && <View style={styles.divider}/>}
                                         {props?.schedule && <View style={styles.group3}>
                                             {!props.edit && <View style={styles.group}>

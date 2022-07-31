@@ -137,6 +137,7 @@ const ModalTab = props => {
         }
     }, [index])
     const [isMore, setIsMore] = useSafeState(true)
+    const [yPos, setYPos] = useSafeState(undefined)
     const renderScene = ({route, jumpTo}) => {
         if(initialPage && Platform?.isPad ){
             jumpTo(0)
@@ -145,6 +146,7 @@ const ModalTab = props => {
         switch (route.key) {
             case 'Basic Info':
                 return <BasicInfo isMore={isMore} setIsMore={setIsMore} saved={props.saved}
+                                  yPos={yPos} setYPos={setYPos}
                                   loading={props.loading}
                                   setEditAlert={props.setEditAlert}
                                   editBtn={props.editBtn}

@@ -93,6 +93,8 @@ const ModalTab=props=>{
         dispatch(setEditModalVisible(false))
         setInitialPage(true)
     },[props.details._id]);
+    const [isMore, setIsMore] = useSafeState(true)
+    const [yPos, setYPos] = useSafeState(undefined)
     return <>
         {props.loading && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <ViewPaged
@@ -226,7 +228,7 @@ const ModalTab=props=>{
                     if(isShow&&tab.id===1){
 
 
-                        return <BasicInfo saved={props.saved} loading={props.loading}
+                        return <BasicInfo   isMore={isMore} setIsMore={setIsMore} yPos={yPos} setYPos={setYPos} saved={props.saved} loading={props.loading}
                                           setEditAlert={props.setEditAlert}
                                           editBtn={props.editBtn}
                                           updateApplication={props.updateApplication}
