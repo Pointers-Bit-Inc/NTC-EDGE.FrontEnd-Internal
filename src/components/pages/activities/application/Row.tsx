@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TouchableOpacity} from "react-native";
+import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import React from "react";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular, Regular500} from "@styles/font";
@@ -32,12 +32,10 @@ const Row = (props: { updateApplication?: any, hasChanges?: any, display?: strin
 
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) ?
-        <TouchableOpacity disabled={!props?.showEdit} onPress={() => {
-            if (props.showEdit) setEdit(true)
-        }} style={styles.group2}>
+        <View style={styles.group2}>
             <Text style={styles.detail}>{props.label}</Text>
             <Text style={styles.detailInput}>{props.display || props.applicant}</Text>
-        </TouchableOpacity> : <>
+        </View> : <>
             {((props.edit && props.editable && props.showEdit) || edit) ? <InputField onSubmitEditing={(event) => {
                 props?.updateApplication()
                 setEdit(false)

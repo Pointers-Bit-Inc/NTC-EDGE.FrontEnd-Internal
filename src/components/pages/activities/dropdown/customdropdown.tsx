@@ -55,12 +55,10 @@ interface Props {
         }, [data, value, selectedIndex])
 
         useEffect(()=>{
-
             DropdownButton?.current?.measure((_fx:number,_fy:number,_w:number,h:number,_px:number,py:number)=>{
-
                 setDropdownWidth(_w);
                 setDropdownLeft(_px);
-                setDropdownTop((h + py) - (Platform.OS === 'ios' ? 0 : (StatusBar?.currentHeight || 32)));
+                setDropdownTop((h + py) - (Platform.OS === 'ios' ? 0 : (StatusBar?.currentHeight || 0)));
                 setDropdownHeight(py)
                 setDropdownBottom((py));
             });

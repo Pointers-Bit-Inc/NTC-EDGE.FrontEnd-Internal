@@ -89,8 +89,9 @@ const ModalTab=props=>{
     }=useApplicant(props.details);
     const [paymentIndex, setPaymentIndex] = useSafeState()
     const [initialPage,setInitialPage]=useState(true);
+    const [basicInfoIndex, setBasicInfoIndex] = useSafeState(undefined)
     useEffect(()=>{
-        dispatch(setEditModalVisible(false))
+        dispatch(setEditModalVisible(true))
         setInitialPage(true)
     },[props.details._id]);
     const [isMore, setIsMore] = useSafeState(true)
@@ -99,13 +100,12 @@ const ModalTab=props=>{
         {props.loading && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <ViewPaged
             onChange={(pageIndex)=>{
-
-
                 if(paymentIndex == pageIndex && !editModalVisible){
 
                     dispatch(setEditModalVisible(true))
-                }else if(paymentIndex != pageIndex && editModalVisible){
-
+                }else if(basicInfoIndex == pageIndex && !editModalVisible){
+                    dispatch(setEditModalVisible(true))
+                }else if(basicInfoIndex != pageIndex && paymentIndex != pageIndex && editModalVisible){
                     dispatch(setEdit(false))
                     dispatch(setEditModalVisible(false))
                 }
@@ -223,12 +223,14 @@ const ModalTab=props=>{
         >
             {
 
-                tabs.map((tab,index)=>{
+                tabs.filter((tab,_index)=> {
+                    return !(service?.serviceCode == "service-22" && tab?.id===4) && tab.isShow.indexOf(user?.role?.key)!== -1
+                }).map((tab,index)=>{
                     const isShow=tab.isShow.indexOf(user?.role?.key)!== -1;
                     if(isShow&&tab.id===1){
 
 
-                        return <BasicInfo   isMore={isMore} setIsMore={setIsMore} yPos={yPos} setYPos={setYPos} saved={props.saved} loading={props.loading}
+                        return <BasicInfo basicInfoIndex={index}  setBasicInfoIndex={setBasicInfoIndex}    isMore={isMore} setIsMore={setIsMore} yPos={yPos} setYPos={setYPos} saved={props.saved} loading={props.loading}
                                           setEditAlert={props.setEditAlert}
                                           editBtn={props.editBtn}
                                           updateApplication={props.updateApplication}

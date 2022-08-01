@@ -22,7 +22,7 @@ import Row from "@pages/activities/application/Row"
 import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous2";
 import styles from "@styles/applications/basicInfo"
 import useSafeState from "../../../../hooks/useSafeState";
-import {RootStateOrAny, useSelector} from "react-redux";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import DateField from "@pages/activities/application/datefield";
 import TimeField from "@pages/activities/application/timefield";
 import {BASE_URL} from "../../../../services/config";
@@ -38,6 +38,7 @@ import ChevronUp from "@assets/svg/chevron-up";
 import RowText from "@pages/activities/application/RowText";
 import Loading from "@atoms/loading";
 import {infoColor} from "@styles/color";
+import {setEditModalVisible} from "../../../../reducers/activity/actions";
 
 
 function Status(props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
@@ -147,7 +148,7 @@ function IsMorePress(props: { loading: any, onPress: () => void, more: boolean }
 
 
 const BasicInfo = (props: any) => {
-
+    const dispatch=useDispatch();
     const personnel = useMemo(() => {
         var _personnel = ''
         if (!!props?.paymentMethod && props?.assignedPersonnel?._id) {
@@ -424,9 +425,15 @@ const BasicInfo = (props: any) => {
     const textRef = useRef(null);
     const scrollViewRef = useRef()
     const [measure, setMeasure] = useState(null);
+    useEffect(()=>{
+        if(Platform.OS == "web"){
+            props.setBasicInfoIndex(props.basicInfoIndex)
+            dispatch(setEditModalVisible(true))
+        }
 
+    }, [])
     useEffect(() => {
-        if (textRef.current && containerRef.current) {
+        if (textRef.current && containerRef.current &&  Platform.OS != "web") {
             textRef.current.measureLayout(
                 containerRef.current,
                 (left, top, width, height) => {
@@ -624,7 +631,7 @@ const BasicInfo = (props: any) => {
                                         <View ref={textRef}/>
                                         {props?.schedule && <View style={styles.divider}/>}
                                         {props?.schedule && <View style={styles.group3}>
-                                            {!props.edit && <View style={styles.group}>
+                                            {<View style={styles.group}>
                                                 <View style={styles.rect}>
                                                     <Text style={styles.header}>SCHEDULE</Text>
                                                 </View>
