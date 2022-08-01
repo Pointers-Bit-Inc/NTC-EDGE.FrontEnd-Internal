@@ -644,7 +644,7 @@ const ActivitiesPage = (props) => {
                                         </TouchableOpacity>}
 
                                     <Text
-                                        style={[styles1.activity, {
+                                        style={[styles1.activity,  {
                                             color: (
                                                 isMobile && !(
                                                     Platform?.isPad || isTablet())) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor,

@@ -64,11 +64,11 @@ function Title(props:{nextValue,index,}){
         title=transformText(
             props.nextValue||props.index);
 
-        return<View style={{paddingVertical: 5}}>
+        return <>{title?.toUpperCase() ? <View style={{paddingVertical: 5}}>
             <View style={styles.rect}>
                 <Text style={styles.file}>{title?.toUpperCase()}</Text>
             </View>
-        </View>
+        </View> : <></>}</>
 
     }
     return <></>
@@ -136,6 +136,7 @@ const RenderServiceMiscellaneous=(props)=>{
 
 
         return (<View>
+
             <Title nextValue={nextValue} index={index}/>
             <Separator index={index}/>
 
