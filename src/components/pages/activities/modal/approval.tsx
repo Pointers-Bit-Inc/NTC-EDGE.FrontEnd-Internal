@@ -21,7 +21,7 @@ import {BASE_URL} from "../../../../services/config";
 import {ACCOUNTANT,APPROVED,CASHIER,DIRECTOR,EVALUATOR,} from "../../../../reducers/activity/initialstate";
 import {RootStateOrAny,useSelector} from "react-redux";
 import useKeyboard from 'src/hooks/useKeyboard';
-import {disabledColor, errorColor, primaryColor} from "@styles/color";
+import {disabledColor, errorColor, infoColor, primaryColor} from "@styles/color";
 import CustomAlert from "@pages/activities/alert/alert";
 import {useAlert} from "../../../../hooks/useAlert";
 import {getRole} from "@pages/activities/script";
@@ -31,12 +31,13 @@ import {isMobile} from "@pages/activities/isMobile";
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {isLandscapeSync,isTablet} from "react-native-device-info";
 import useSafeState from "../../../../hooks/useSafeState";
+import Loading from "@atoms/loading";
 
 const {width,height}=Dimensions.get('window');
 
 const Approval=(props:any)=>{
 
-    const {springValue,_springHide,_springCollapse}=useAlert(props.visible,()=>{
+    const {springValue,_springHide,_springCollapse}=useAlert(props.showAlert,()=>{
         setOnFocus(false);
         props.onDismissed(APPROVED, () => {
             props.setShowAlert(false);
@@ -246,10 +247,11 @@ const Approval=(props:any)=>{
             visible={props.visible}
             onRequestClose={_springHide}>
 
-            {loading && <View style={{flex: 1,alignItems:'center',
+            {loading && <><View style={{  flex: 1,alignItems:'center',
                 justifyContent:'center',}}>
-                <ActivityIndicator  color={"#fff"}/>
-            </View>}
+                <OnBackdropPress  styles={{  backgroundColor : !props.showAlert && visible && Platform.OS != "web"  ? "rgba(0, 0, 0, 0.3)" : undefined}}/>
+                <Loading color={infoColor}/>
+            </View></>}
             {!loading && <>
                 <CustomAlert
                     showClose={showClose}
@@ -259,6 +261,8 @@ const Approval=(props:any)=>{
                     }}
                     onLoading={alertLoading}
                     onCancelPressed={()=>{
+
+
                         onCancelPress('exit',true)
                     }}
                     onConfirmPressed={async () => {

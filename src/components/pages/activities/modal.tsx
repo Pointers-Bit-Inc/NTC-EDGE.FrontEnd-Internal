@@ -153,7 +153,7 @@ function ActivityModal(props: any) {
             url = `/applications/${applicationId}/update-payment-status`;
             params = {
                 paymentStatus: status,
-                remarks: event.remarks ? event.remarks : remarks,
+                //remarks: event.remarks ? event.remarks : remarks,
             };
         }
         if (applicationItem?.service?.serviceCode === "service-22") {

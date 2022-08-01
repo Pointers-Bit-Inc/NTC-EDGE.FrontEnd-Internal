@@ -650,7 +650,7 @@ const ActivitiesPage = (props) => {
 
                                     }>
 
-                                        <Filter pressed={visible} width={fontValue(18)} height={fontValue(18)}/>
+                                        <Filter pressed={visible} width={fontValue(Platform.OS == "web" ? 26 : 18)} height={fontValue(18)}/>
                                     </TouchableOpacity>
                                     {
                                         <TouchableOpacity onPress={onRefresh}>
