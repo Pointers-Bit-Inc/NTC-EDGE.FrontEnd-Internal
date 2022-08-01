@@ -60,9 +60,9 @@ interface Props {
 
                 setDropdownWidth(_w);
                 setDropdownLeft(_px);
-                setDropdownTop(py+h);
+                setDropdownTop((h + py) - (Platform.OS === 'ios' ? 0 : (StatusBar?.currentHeight || 32)));
                 setDropdownHeight(py)
-                setDropdownBottom(dimension.height-(py));
+                setDropdownBottom((py));
             });
         }, [visible, dropdownTop])
 
@@ -104,7 +104,7 @@ interface Props {
                         style={styles.overlay}
                         onPress={() => setVisible(false)}
                     >
-                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, { bottom: data?.length < 6   ? undefined  : "15%", width: dropdownWidth,flex: 1, left: dropdownLeft, top:  dropdownTop}]}>
+                        {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, { bottom: data?.length < 6   ? undefined  : "15%", width: dropdownWidth,flex: 1, left: dropdownLeft, top:  dropdownTop + 5}]}>
                             {data?.length > 0 ? <FlatList
                                 showsVerticalScrollIndicator={false}
                                 style={styles.items}
@@ -179,7 +179,6 @@ interface Props {
             marginRight: 10,
         },
         dropdown: {
-            marginTop: 5,
 
             alignSelf: isMobile ? "center" : "flex-end",
             position: 'absolute',
