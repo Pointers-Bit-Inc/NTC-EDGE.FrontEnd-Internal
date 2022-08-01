@@ -452,29 +452,35 @@ function ActivityModal(props: any) {
                 }}>
 
                     {edit ?<TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
-                        <ChevronLeft width={fontValue(24)} height={fontValue(24)} color="#606A80"/>
+                        <View style={{paddingRight: 10}}>
+                            <ChevronLeft width={fontValue(24)} height={fontValue(24)} color="#606A80"/>
+                        </View>
                     </TouchableOpacity> :
                         <TouchableOpacity hitSlop={hitSlop} onPress={() => {
                         handleBackButtonClick()
                     }}>
-                        <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
+                            <View  style={{paddingRight: 10}}>
+                                <CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/>
+                            </View>
+
                     </TouchableOpacity>}
                     <Text
-                        style={[styles.applicationType, {width: "85%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
+                        style={[styles.applicationType,]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
 
                     {editModalVisible ? edit  ? <TouchableOpacity hitSlop={hitSlop} onPress={() => {
                             updateApplication(() => {})
                         }
                         }>
-                        {loading ? <ActivityIndicator color={infoColor}/> :
-                            <Text style={{fontFamily: Regular, fontSize: fontValue(16), color: infoColor}}>Save</Text>}
+                            {loading ? <View style={{paddingLeft: 10}}><ActivityIndicator color={infoColor}/></View> :
+                            <Text style={{paddingLeft: 10,fontFamily: Regular, fontSize: fontValue(16), color: infoColor}}>Save</Text>}
                             {/* <EditIcon color="#606A80"/>*/}
                         </TouchableOpacity>
 
                        :  <TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
-                            <Text style={{fontFamily: Regular, fontSize: fontValue(16), color: infoColor}}>Edit</Text>
+
+                            <Text style={{paddingLeft: 10,fontFamily: Regular, fontSize: fontValue(16), color: infoColor}}>Edit</Text>
                             {/* <EditIcon color="#606A80"/>*/}
-                        </TouchableOpacity> : <Text style={{fontFamily: Regular, fontSize: fontValue(16),opacity: 0}}>Edit</Text>
+                        </TouchableOpacity> : <Text style={{paddingLeft: 10,fontFamily: Regular, fontSize: fontValue(16),opacity: 0}}>Edit</Text>
                     }
 
                 </View>}
