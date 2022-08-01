@@ -74,9 +74,8 @@ import ActivityModal from "@pages/activities/modal";
 import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
-import { FontAwesome } from "@expo/vector-icons";
-import useSafeState from "../../../hooks/useSafeState";
 import RefreshRN from "@assets/svg/refreshRN";
+
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
 const Tab = createMaterialTopTabNavigator();
@@ -189,7 +188,6 @@ const ActivitiesPage = (props) => {
     };
 
 
-
     const {top, bottom} = useSafeAreaInsets();
 
     const {height: screenHeight} = useWindowDimensions();
@@ -202,7 +200,7 @@ const ActivitiesPage = (props) => {
 
     const [headerHeight, setHeaderHeight] = useState(0);
 
-    const defaultHeaderHeight =   (!!lodash.size(meetingList) ? 80 : 0) + (Platform.OS == "web" ? 0 : 44);
+    const defaultHeaderHeight = (!!lodash.size(meetingList) ? 80 : 0) + (Platform.OS == "web" ? 0 : 44);
 
     const headerConfig = useMemo<HeaderConfig>(
         () => ({
@@ -406,10 +404,14 @@ const ActivitiesPage = (props) => {
                                                 if (event?.icon == 'more') {
                                                     setMoreModalVisible(true)
                                                 } else {
-                                                    if(Platform.OS == "web"){
+                                                    if (Platform.OS == "web") {
                                                         setModalVisible(true)
-                                                    }else{
-                                                        props.navigation.navigate(ACTIVITYITEM, {onDismissed: onDismissedModal, onChangeEvent: onChangeEvent, onChangeAssignedId: onChangeAssignedId});
+                                                    } else {
+                                                        props.navigation.navigate(ACTIVITYITEM, {
+                                                            onDismissed: onDismissedModal,
+                                                            onChangeEvent: onChangeEvent,
+                                                            onChangeAssignedId: onChangeAssignedId
+                                                        });
                                                     }
                                                 }
                                                 dispatch(setSelectedYPos({yPos, type: 1}))
@@ -426,9 +428,10 @@ const ActivitiesPage = (props) => {
 
             </View>}
     </>;
-    function getFlatList(ref, scrollHandler, sP, data, isHeader= false) {
 
-        return   <Animated.FlatList
+    function getFlatList(ref, scrollHandler, sP, data, isHeader = false) {
+
+        return <Animated.FlatList
             refreshControl={
                 <RefreshControl
                     tintColor={primaryColor} // ios
@@ -443,7 +446,7 @@ const ActivitiesPage = (props) => {
             nestedScrollEnabled={true}
             ListEmptyComponent={() => listEmpty(refreshing, searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
                 act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : tabIndex == 1 ? pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
-                act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length :  notPnApplications.length )}
+                act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : notPnApplications.length)}
             ListHeaderComponent={isHeader ? listHeaderComponent() : null}
             style={{flex: 1,}}
             data={data}
@@ -510,12 +513,15 @@ const ActivitiesPage = (props) => {
                                         if (event?.icon == 'more') {
                                             setMoreModalVisible(true)
                                         } else {
-                                            if(Platform.OS == "web"){
+                                            if (Platform.OS == "web") {
                                                 setModalVisible(true)
-                                            }else{
-                                                props.navigation.navigate(ACTIVITYITEM, {onDismissed: onDismissedModal, onChangeEvent: onChangeEvent, onChangeAssignedId: onChangeAssignedId});
+                                            } else {
+                                                props.navigation.navigate(ACTIVITYITEM, {
+                                                    onDismissed: onDismissedModal,
+                                                    onChangeEvent: onChangeEvent,
+                                                    onChangeAssignedId: onChangeAssignedId
+                                                });
                                             }
-
 
 
                                             //
@@ -557,7 +563,7 @@ const ActivitiesPage = (props) => {
     const tabBarOptions = {
         activeTintColor: infoColor,
         inactiveTintColor: "#606A80",
-        indicatorStyle: {  height: 3, backgroundColor: infoColor  },
+        indicatorStyle: {height: 3, backgroundColor: infoColor},
     }
     const renderTabBar = useCallback<(props: MaterialTopTabBarProps) => React.ReactElement>(
         (props) => (
@@ -585,7 +591,8 @@ const ActivitiesPage = (props) => {
             ),
             backgroundColor: primaryColor,
             zIndex: !!translateY.value ? 3 : 1
-        }});
+        }
+    });
 
 
     const collapsedOverlayStyle = useMemo<StyleProp<ViewStyle>>(
@@ -602,7 +609,7 @@ const ActivitiesPage = (props) => {
             <StatusBar barStyle={'light-content'}/>
             <View style={{flex: 1, backgroundColor: primaryColor,}}>
                 <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
-                    <View  style={[styles1.container, styles1.shadow, {
+                    <View style={[styles1.container, styles1.shadow, {
                         flexBasis: (
                             (
                                 isMobile && !(
@@ -619,10 +626,10 @@ const ActivitiesPage = (props) => {
                                     backgroundColor: ((isMobile && !(Platform?.isPad || isTablet()))) ? "#041B6E" : "#fff",
                                     ...Platform.select({
                                         native: {
-                                            paddingTop: 40 ,
+                                            paddingTop: 40,
                                         },
-                                        web:{
-                                            paddingTop: 10 ,
+                                        web: {
+                                            paddingTop: 10,
                                         }
                                     })
                                 },]}>
@@ -631,7 +638,8 @@ const ActivitiesPage = (props) => {
                                             (
                                                 isMobile && !(
                                                     Platform?.isPad || isTablet())) || dimensions?.width < 768) &&
-                                        <TouchableOpacity  onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
+                                        <TouchableOpacity
+                                            onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
                                             <HomeMenuIcon height={fontValue(24)} width={fontValue(24)}/>
                                         </TouchableOpacity>}
 
@@ -650,15 +658,18 @@ const ActivitiesPage = (props) => {
 
                                     }>
 
-                                        <Filter pressed={visible} width={fontValue(Platform.OS == "web" ? 26 : 18)} height={fontValue(18)}/>
+                                        <Filter pressed={visible} width={fontValue(Platform.OS == "web" ? 26 : 18)}
+                                                height={fontValue(18)}/>
                                     </TouchableOpacity>
                                     {
                                         <TouchableOpacity onPress={onRefresh}>
                                             {(
                                                 !(
                                                     isMobile && !(
-                                                        Platform?.isPad || isTablet())) && dimensions?.width > 768) ?<RefreshWeb style={{paddingLeft: 15}} width={fontValue(26)}
-                                                                                                                             height={fontValue(24)} fill={"#fff"}/> :<View style={{paddingLeft: 23}}><RefreshRN/></View>}
+                                                        Platform?.isPad || isTablet())) && dimensions?.width > 768) ?
+                                                <RefreshWeb style={{paddingLeft: 15}} width={fontValue(26)}
+                                                            height={fontValue(24)} fill={"#fff"}/> :
+                                                <View style={{paddingLeft: 23}}><RefreshRN/></View>}
                                         </TouchableOpacity>
                                     }
                                 </Animated.View>
@@ -710,11 +721,10 @@ const ActivitiesPage = (props) => {
 
                                 props.navigation.navigate(isMobile ? SEARCHMOBILE : SEARCH);
                             }} searchVisible={searchVisible}/>
-
                         </Animated.View>
 
-                        <Animated.View  style={collapsedOverlayStyle}>
-                            <View >
+                        <Animated.View style={collapsedOverlayStyle}>
+                            <View>
                                 {
                                     !!lodash.size(meetingList) && (
                                         <FlatList

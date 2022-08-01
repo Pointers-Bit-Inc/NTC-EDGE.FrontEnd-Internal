@@ -67,7 +67,7 @@ export const styles = StyleSheet.create({
     },
     activity: {
 
-        fontSize: fontValue(Platform.OS == "web" ? 20 :16) ,
+        fontSize: fontValue(Platform.OS == "web" ? 20 :20) ,
         marginLeft: 15,
         fontFamily: Bold,
     },
