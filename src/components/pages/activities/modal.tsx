@@ -162,7 +162,14 @@ function ActivityModal(props: any) {
         const addORNumber = user?.role?.key == CASHIER ? await api.post(`/applications/${applicationId}/add-or-number`, AddORNoparams).catch(e => {
             setGrayedOut(false);
             setCurrentLoading('');
-            RNAlert.alert('Alert', e?.message || 'Something went wrong.');
+            let _err = '';
+            for (const err in e?.response?.data?.errors) {
+                _err += e?.response?.data?.errors?.[err]?.toString() + "\n";
+            }
+            if (_err || e?.response?.data?.message || e?.response?.statusText) {
+
+                showToast(ToastType.Error, _err || e?.response?.data?.message || e?.response?.statusText)
+            }
             return callback(e);
         }) : null
         if ((applicationId && (user?.role?.key == CASHIER && addORNumber?.status == 200)) || (getRole(user, [DIRECTOR, EVALUATOR, ACCOUNTANT]) && applicationId)) {
@@ -192,7 +199,13 @@ function ActivityModal(props: any) {
                 .catch(e => {
                     setGrayedOut(false);
                     setCurrentLoading('');
-                    RNAlert.alert('Alert', e?.message || 'Something went wrong.');
+                    let _err = '';
+                    for (const err in e?.response?.data?.errors) {
+                        _err += e?.response?.data?.errors?.[err]?.toString() + "\n";
+                    }
+                    if (_err || e?.response?.data?.message || e?.response?.statusText) {
+                        showToast(ToastType.Error, _err || e?.response?.data?.message || e?.response?.statusText)
+                    }
                     return callback(e);
                 })
         }
@@ -312,7 +325,6 @@ function ActivityModal(props: any) {
         if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
         if(isLoading)setSaved(true)
-        console.log((profileForm))
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, {
             headers: {
                 Authorization: "Bearer ".concat(user?.sessionToken)
@@ -585,8 +597,10 @@ function ActivityModal(props: any) {
                             status = FORAPPROVAL
                         }
 
-                    } else if (getRole(user, [ACCOUNTANT, CASHIER])) {
+                    } else if (getRole(user, [ACCOUNTANT])) {
                         status = APPROVED
+                    }else if (getRole(user, [CASHIER])) {
+                        status = PAID
                     }
                     onChangeApplicationStatus(status, (err, appId) => {
 
@@ -695,7 +709,7 @@ function ActivityModal(props: any) {
                     onEndorseDismissed()
                 }}
             />
-            <Toast/>
+            {Platform.OS != "web" ? <Toast/> : <></>}
             <Alert
                 visible={discardAlert}
                 title={'Discard Changes'}

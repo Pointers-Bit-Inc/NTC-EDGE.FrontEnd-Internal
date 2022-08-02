@@ -423,7 +423,8 @@ const BasicInfo = (props: any) => {
     }
     const containerRef = useRef(null);
     const textRef = useRef(null);
-    const scrollViewRef = useRef()
+
+
     const [measure, setMeasure] = useState(null);
     useEffect(()=>{
         if(Platform.OS == "web"){

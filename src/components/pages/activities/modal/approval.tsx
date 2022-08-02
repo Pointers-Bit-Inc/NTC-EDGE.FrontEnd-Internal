@@ -191,6 +191,7 @@ const Approval=(props:any)=>{
 
     const [animation] = useState(() => new Animated.Value(0));
 
+
     const background = animation.interpolate({
         inputRange: [0, 0.2, 1.8, 2],
         outputRange: [
