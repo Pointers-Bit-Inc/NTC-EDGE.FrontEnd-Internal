@@ -20,7 +20,7 @@ export const alertStyle = StyleSheet.create({
 
     },
     contentContainer: {
-
+        width: "95%"
     },
     content: {
         justifyContent: 'center',

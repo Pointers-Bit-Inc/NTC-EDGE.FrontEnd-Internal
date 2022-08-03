@@ -324,7 +324,7 @@ function ActivityModal(props: any) {
         const flattenSoa = flatten.unflatten(cleanSoa)?.soa?.filter(s => s)
         if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
-        if(isLoading)setSaved(true)
+        if(isLoading) setSaved(true)
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, {
             headers: {
                 Authorization: "Bearer ".concat(user?.sessionToken)
@@ -415,9 +415,7 @@ function ActivityModal(props: any) {
                     setShowAlert(false);
                     setApprovalIcon(false);
                     setShowClose(false)
-
-                        goBackAsync()
-
+                    goBackAsync()
                 }}
                 onLoading={alertLoading}
                 onCancelPressed={() => {

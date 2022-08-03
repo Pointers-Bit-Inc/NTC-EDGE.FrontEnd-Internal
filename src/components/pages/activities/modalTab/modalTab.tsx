@@ -250,12 +250,11 @@ const  getTranslateX = (
     };
 
     return  <TabView
-
+        
             style={{borderTopColor: 'rgba(0, 0, 0, 0.1)',
                 borderTopWidth: 1,}}
             renderTabBar={props => (
                 edit ? <></> : <TabBar
-
                     renderLabel={({route, focused}) => {
                         return (
                             <View  >
