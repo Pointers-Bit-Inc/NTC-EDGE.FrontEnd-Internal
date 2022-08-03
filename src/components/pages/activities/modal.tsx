@@ -380,11 +380,8 @@ function ActivityModal(props: any) {
             }
         }
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {...payload, ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))}, config).then((response) => {
-            profileForm['soa'] = response.data
+            profileForm['soa'] = {...cleanSoa, ...{totalFee:  response.data?.totalFee, soa: response.data?.statement_Of_Account}}
         }).catch((error) => {
-            dispatch(setEdit(false))
-            dispatch(setHasChange(false))
-            setLoading(false)
             let _err = '';
             for (const err in error?.response?.data?.errors) {
                 _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
