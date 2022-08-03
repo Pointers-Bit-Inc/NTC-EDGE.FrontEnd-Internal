@@ -55,6 +55,7 @@ const transformToFeePayload = (application: any) => {
     equipment = (equipment || (proposedEquipment || (particulars || [])))?.[0];
 
     let { bandwidth = 0, validity = {} } = station;
+    if(!station?.bandwidth?.bandwidth) bandwidth = 0
     let { year, month, day } = validity;
     let expired = year && month && day ? Moment(new Date()).set({year, month, date: day}) : new Date()?.toISOString();
 
@@ -169,7 +170,7 @@ const transformToFeePayload = (application: any) => {
             station: _station,
         };
     };
-
+//1234, 12, 13, 14, 15, 16, 17, 18, 19, 21
     let feePayload = {
         service: service?.serviceCode?.split('-')?.[1], //
         subService: applicationType?.serviceCode || '', //
@@ -181,10 +182,10 @@ const transformToFeePayload = (application: any) => {
         boundary: boundaryFn(), //
         location: region, //
         installedEquipment: installedEquipmentFn(), //
-        power: equipment?.powerOutput, //
+        power: isNumber(parseInt(equipment?.powerOutput)) ? parseInt(equipment?.powerOutput) : 0, //
         transmission: equipment?.transmission, //
         bandwidth, //
-        frequency: frequencyFn,
+        frequency: frequencyFn(),
 
         mode: '', //stationLen > 1 ? 'duplex' : stationLen === 1 ? 'simplex' : '', TEMP; CHANGE THIS
         spectrum: stationDetailsFn()?.spectrum,

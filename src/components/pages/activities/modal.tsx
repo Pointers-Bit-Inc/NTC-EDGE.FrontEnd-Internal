@@ -19,7 +19,7 @@ import Disapproval from "@pages/activities/modal/disapproval";
 import Endorsed from "@pages/activities/modal/endorse";
 import Approval from "@pages/activities/modal/approval";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {getRole, PaymentStatusText, StatusText} from "@pages/activities/script";
+import {getRole, PaymentStatusText, removeEmpty, StatusText} from "@pages/activities/script";
 import {
     ACCOUNTANT,
     APPROVED,
@@ -58,7 +58,7 @@ import axios from "axios";
 import useSafeState from "../../../hooks/useSafeState";
 import {useNavigation} from "@react-navigation/native";
 import {BASE_URL} from "../../../services/config";
-import {isNumber} from "../../../utils/ntc";
+import {isNumber, transformToFeePayload} from "../../../utils/ntc";
 import {useToast} from "../../../hooks/useToast";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import ChevronLeft from "@assets/svg/chevron-left";
@@ -296,10 +296,10 @@ function ActivityModal(props: any) {
     const {showToast, hideToast} = useToast();
     const [messageUpdate, setMessageUpdate] = useSafeState("")
     const [titleUpdate, setTitleUpdate] = useSafeState("")
-    const updateApplication = useCallback((callback, isLoading = true) => {
-       /* hideToast()
-        showToast(ToastType.Info, <ToastLoading/>)*/
-        if(isLoading)setLoading(true)
+    const updateApplication = useCallback(async (callback, isLoading = true) => {
+        /* hideToast()
+         showToast(ToastType.Info, <ToastLoading/>)*/
+        if (isLoading) setLoading(true)
         let profileForm = userProfileForm
         let dateOfBirth = profileForm?.['applicant.dateOfBirth'], region = profileForm?.['region.code'],
             dateValue = {year: "", month: "", day: ""}
@@ -321,18 +321,90 @@ function ActivityModal(props: any) {
                 cleanSoa = {...cleanSoa, ...{[key]: value}}
             }
         }
+        let config = {
+            headers: {
+                Authorization: "Bearer ".concat(user?.sessionToken)
+            }
+        }
+        let payload = {
+            "id": "string",
+            "service": "string",
+            "subService": "string",
+            "types": "string",
+            "frequency": "string",
+            "station": 0,
+            "location": "string",
+            "bandwidth": 0,
+            "mode": "string",
+            "spectrum": "string",
+            "channels": 0,
+            "transmission": "string",
+            "boundary": "string",
+            "installedEquipment": "string",
+            "units": 0,
+            "category": "string",
+            "power": 0,
+            "validity": 0,
+            "updatedAt": "2022-08-03T15:45:12.690Z",
+            "expired": "2022-08-03T15:45:12.690Z",
+            "discount": 0,
+            "numberOfPermitsOrCERTSOrApp": 0,
+            "classes": "string",
+            "fixed": 0,
+            "landBase": 0,
+            "publicTrunked": 0,
+            "terrestrialCommunication": 0,
+            "landMobile": 0,
+            "portable": 0,
+            "repeater": 0,
+            "invoice": 0,
+            "nos": 0,
+            "stationCount": 0,
+            "stationClassChannels": {
+                "fx": 0,
+                "fb": 0,
+                "publicTrunked": 0,
+                "tc": 0,
+                "ml": 0,
+                "p": 0,
+                "rt": 0
+            },
+            "stationClassUnits": {
+                "fx": 0,
+                "fb": 0,
+                "publicTrunked": 0,
+                "tc": 0,
+                "ml": 0,
+                "p": 0,
+                "rt": 0
+            }
+        }
+        await axios.post(BASE_URL + "/applications/calculate-total-fee", {...payload, ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))}, config).then((response) => {
+            profileForm['soa'] = response.data
+        }).catch((error) => {
+            dispatch(setEdit(false))
+            dispatch(setHasChange(false))
+            setLoading(false)
+            let _err = '';
+            for (const err in error?.response?.data?.errors) {
+                _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
+            }
+            if (_err || error?.response?.data?.message || error?.response?.statusText) {
+                showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText)
+            }
+        });
         const flattenSoa = flatten.unflatten(cleanSoa)?.soa?.filter(s => s)
         if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
-        if(isLoading) setSaved(true)
+        if (isLoading) setSaved(true)
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, {
             headers: {
                 Authorization: "Bearer ".concat(user?.sessionToken)
             }
         }).then((response) => {
-            if(isLoading)setSaved(false)
-            if(isLoading){
-                setTimeout(()=>{
+            if (isLoading) setSaved(false)
+            if (isLoading) {
+                setTimeout(() => {
                     setLoading(false)
                 }, 2500)
             }
