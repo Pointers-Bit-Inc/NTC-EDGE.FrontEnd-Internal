@@ -68,9 +68,9 @@ const flatten = require('flat')
 
 
 function ActivityModal(props: any) {
-    const _props = Platform.OS == "web" ?  props : props?.route?.params
+    const _props = Platform.OS == "web" ? props : props?.route?.params
     const dispatch = useDispatch();
-    const applicationItem =useSelector((state:RootStateOrAny)=>{
+    const applicationItem = useSelector((state: RootStateOrAny) => {
         return state.application?.applicationItem
     });
 
@@ -221,13 +221,13 @@ function ActivityModal(props: any) {
         setUserProfileForm(flatten.flatten(applicationItem))
         setUserOriginalProfileForm(flatten.flatten(applicationItem))
         dispatch(setEdit(false))
-       /* console.log(prevId != applicationItem._id, prevId , applicationItem._id)
-        if(prevId != applicationItem._id){
-            setPrevId(applicationItem._id)
-            dispatch(setHasChange(false)
-            setEdit(false)
-        }
-*/
+        /* console.log(prevId != applicationItem._id, prevId , applicationItem._id)
+         if(prevId != applicationItem._id){
+             setPrevId(applicationItem._id)
+             dispatch(setHasChange(false)
+             setEdit(false)
+         }
+ */
         return () => {
             setChange(false);
             setStatus("");
@@ -345,8 +345,8 @@ function ActivityModal(props: any) {
             "category": "string",
             "power": 0,
             "validity": 0,
-            "updatedAt": "2022-08-03T15:45:12.690Z",
-            "expired": "2022-08-03T15:45:12.690Z",
+            "updatedAt": "",
+            "expired": "",
             "discount": 0,
             "numberOfPermitsOrCERTSOrApp": 0,
             "classes": "string",
@@ -379,26 +379,31 @@ function ActivityModal(props: any) {
                 "rt": 0
             }
         }
-        await axios.post(BASE_URL + "/applications/calculate-total-fee", {...payload, ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))}, config).then((response) => {
-            profileForm['soa'] = {...cleanSoa, ...{totalFee:  response.data?.totalFee, soa: response.data?.statement_Of_Account || response.data?.soa}}
-        }).catch((error) => {
-            let _err = '';
-            for (const err in error?.response?.data?.errors) {
-                _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
-            }
-            if (_err || error?.response?.data?.message || error?.response?.statusText) {
-                showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText)
-            }
-        });
+        await axios.post(BASE_URL + "/applications/calculate-total-fee", {...payload, ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))}, config)
+            .then((response) => {
+                profileForm['soa'] = {
+                    ...cleanSoa, ...{
+                        totalFee: response.data?.totalFee,
+                        soa: response.data?.statement_Of_Account || response.data?.soa
+                    }
+                }
+            }).catch((error) => {
+                dispatch(setEdit(false))
+                dispatch(setHasChange(false))
+                setLoading(false)
+                let _err = '';
+                for (const err in error?.response?.data?.errors) {
+                    _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
+                }
+                if (_err || error?.response?.data?.message || error?.response?.statusText) {
+                    showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText)
+                }
+            });
         const flattenSoa = flatten.unflatten(cleanSoa)?.soa?.filter(s => s)
         if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
         if (isLoading) setSaved(true)
-        axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, {
-            headers: {
-                Authorization: "Bearer ".concat(user?.sessionToken)
-            }
-        }).then((response) => {
+        axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, config).then((response) => {
             if (isLoading) setSaved(false)
             if (isLoading) {
                 setTimeout(() => {
@@ -531,46 +536,64 @@ function ActivityModal(props: any) {
                     paddingTop: 40,
                 }}>
 
-                    {edit ?<TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
-                            <View style={{marginHorizontal: 10}}><ChevronLeft width={fontValue(24)} height={fontValue(24)} color="#606A80"/></View>
-                    </TouchableOpacity> :
+                    {edit ? <TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
+                            <View style={{marginHorizontal: 10}}><ChevronLeft width={fontValue(24)} height={fontValue(24)}
+                                                                              color="#606A80"/></View>
+                        </TouchableOpacity> :
                         <TouchableOpacity hitSlop={hitSlop} onPress={() => {
-                        handleBackButtonClick()
-                    }}>
-                            <View style={{marginHorizontal: 10}}><CloseIcon width={fontValue(16)} height={fontValue(16)} color="#606A80"/></View>
-                    </TouchableOpacity>}
+                            handleBackButtonClick()
+                        }}>
+                            <View style={{marginHorizontal: 10}}><CloseIcon width={fontValue(16)} height={fontValue(16)}
+                                                                            color="#606A80"/></View>
+                        </TouchableOpacity>}
                     <Text
                         style={[styles.applicationType, {width: "85%"}]}>{applicationItem?.applicationType || applicationItem?.service?.name}</Text>
 
-                    {editModalVisible ? edit  ? <TouchableOpacity   hitSlop={hitSlop} onPress={() => {
-                            updateApplication(() => {})
+                    {editModalVisible ? edit ? <TouchableOpacity hitSlop={hitSlop} onPress={() => {
+                            updateApplication(() => {
+                            })
                         }
                         }>
-                        {loading ? <ActivityIndicator color={infoColor}/> :
-                            <Text style={{marginHorizontal: 10, fontFamily: Regular, fontSize: fontValue(16), color: infoColor}}>Save</Text>}
+                            {loading ? <ActivityIndicator color={infoColor}/> :
+                                <Text style={{
+                                    marginHorizontal: 10,
+                                    fontFamily: Regular,
+                                    fontSize: fontValue(16),
+                                    color: infoColor
+                                }}>Save</Text>}
                             {/* <EditIcon color="#606A80"/>*/}
                         </TouchableOpacity>
 
-                       :  <TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
+                        : <TouchableOpacity hitSlop={hitSlop} onPress={editBtn}>
 
-                            <Text style={{marginHorizontal: 10,fontFamily: Regular, fontSize: fontValue(16), color: infoColor}}>Edit</Text>
+                            <Text style={{
+                                marginHorizontal: 10,
+                                fontFamily: Regular,
+                                fontSize: fontValue(16),
+                                color: infoColor
+                            }}>Edit</Text>
                             {/* <EditIcon color="#606A80"/>*/}
-                        </TouchableOpacity> : <Text style={{marginHorizontal: 10,fontFamily: Regular, fontSize: fontValue(16),opacity: 0}}>Edit</Text>
+                        </TouchableOpacity> : <Text style={{
+                        marginHorizontal: 10,
+                        fontFamily: Regular,
+                        fontSize: fontValue(16),
+                        opacity: 0
+                    }}>Edit</Text>
                     }
 
                 </View>}
 
 
-
-                    <ModalTab saved={saved} loading={loading} setEditAlert={setEditAlert} updateApplication={updateApplication} editBtn={editBtn}
-                              userOriginalProfileForm={userOriginalProfileForm}
-                              userProfileForm={userProfileForm}
-                              setEdit={setEdit}
-                              setUserProfileForm={setUserProfileForm}
-                              setUserOriginalProfileForm={setUserOriginalProfileForm}
-                              hasChanges={hasChanges} edit={edit} dismissed={() => {
-                        goBackAsync()
-                    }} details={applicationItem} status={status}/>
+                <ModalTab saved={saved} loading={loading} setEditAlert={setEditAlert}
+                          updateApplication={updateApplication} editBtn={editBtn}
+                          userOriginalProfileForm={userOriginalProfileForm}
+                          userProfileForm={userProfileForm}
+                          setEdit={setEdit}
+                          setUserProfileForm={setUserProfileForm}
+                          setUserOriginalProfileForm={setUserOriginalProfileForm}
+                          hasChanges={hasChanges} edit={edit} dismissed={() => {
+                    goBackAsync()
+                }} details={applicationItem} status={status}/>
 
 
                 {!edit &&
@@ -666,7 +689,7 @@ function ActivityModal(props: any) {
 
                     } else if (getRole(user, [ACCOUNTANT])) {
                         status = APPROVED
-                    }else if (getRole(user, [CASHIER])) {
+                    } else if (getRole(user, [CASHIER])) {
                         status = PAID
                     }
                     onChangeApplicationStatus(status, (err, appId) => {
@@ -766,7 +789,7 @@ function ActivityModal(props: any) {
                 onExit={() => {
 
                     onEndorseDismissed();
-                    goBackAsync().then(()=> {
+                    goBackAsync().then(() => {
                         console.log(1)
                         _props.onDismissed(true);
                     })
@@ -833,7 +856,7 @@ function ActivityModal(props: any) {
                 }
                 onCancel={() => setEditAlert(false)}
             />
-          </>
+        </>
     );
 }
 

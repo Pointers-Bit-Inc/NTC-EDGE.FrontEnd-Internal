@@ -328,6 +328,6 @@ const styles=StyleSheet.create({
     rect6:{
         height:3,
         marginTop:-5
-    }, action: {fontFamily: Regular, fontSize: fontValue(16), color: infoColor}
+    }, action: {paddingHorizontal: 6,fontFamily: Regular, fontSize: fontValue(16), color: infoColor}
 
 });
