@@ -449,7 +449,21 @@ function ActivityModal(props: any) {
             /*setShowAlert2(true)
              setMessageUpdate('The Application has been updated!')
              setTitleUpdate("Success")*/
-            var _flatten = flatten.flatten({...response.data.doc})
+            let _applicationItem = response.data?.doc
+
+
+            if( _applicationItem?.service?.stationClass ){
+                for (let i = 0; i < _applicationItem?.service?.stationClass?.length; i++) {
+
+                    let _split = _applicationItem?.service?.stationClass[i].class.split(" • ")
+                    if(_split.length == 2){
+                        _applicationItem.service.stationClass[i].class = _split[0]
+                        _applicationItem.service.stationClass[i].unit = _split[1]
+                    }
+
+                }
+            }
+            var _flatten = flatten.flatten({..._applicationItem})
             setUserOriginalProfileForm({..._flatten})
             setUserProfileForm(_flatten)
             _props.onChangeEvent(response.data.doc);
