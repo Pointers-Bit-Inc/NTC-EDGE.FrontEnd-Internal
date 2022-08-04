@@ -71,16 +71,29 @@ function ActivityModal(props: any) {
     const _props = Platform.OS == "web" ? props : props?.route?.params
     const dispatch = useDispatch();
     const applicationItem = useSelector((state: RootStateOrAny) => {
-        return state.application?.applicationItem
+        let _applicationItem = state.application?.applicationItem
+        for (let i = 0; i < _applicationItem?.service?.stationClass?.length; i++) {
+
+            let _split = _applicationItem?.service?.stationClass[i].class.split(" • ")
+            if(_split.length == 2){
+                _applicationItem.service.stationClass[i].class = _split[0]
+                _applicationItem.service.stationClass[i].unit = _split[1]
+            }
+
+        }
+
+        return _applicationItem
     });
 
     const hasChange = useSelector((state: RootStateOrAny) => state.application.hasChange);
     const edit = useSelector((state: RootStateOrAny) => state.application.edit);
 
     const [userProfileForm, setUserProfileForm] = useSafeState(() => {
+
         return flatten.flatten(applicationItem)
     })
     const [userOriginalProfileForm, setUserOriginalProfileForm] = useSafeState(() => {
+
         return flatten.flatten(applicationItem)
     })
     const navigation = useNavigation();
@@ -313,9 +326,23 @@ function ActivityModal(props: any) {
         if (region) {
             profileForm['region'] = region
         }
+        let _service = {
+            service: {
+                stationClass: []
+            }
+        }
+
+        for (let i = 0; i < applicationItem?.service?.stationClass?.length; i++) {
+
+            let _obj = applicationItem?.service?.stationClass[i]
+
+            _service.service.stationClass.push({"class": _obj.class + " • " + _obj.unit})
+
+        }
         // /^soa.+(?:\[\d+])?(?:\.\w+(?:\[\d+])?)*$/;
         let pattern = /^soa\.\d+\.\w+$/
         let cleanSoa = {}
+
         for (const [key, value] of Object.entries(profileForm)) {
             if (key.match(pattern) && value) {
                 cleanSoa = {...cleanSoa, ...{[key]: value}}
@@ -403,7 +430,13 @@ function ActivityModal(props: any) {
         if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
         if (isLoading) setSaved(true)
-        axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...flatten.unflatten(profileForm), ...{soa: flattenSoa}}, config).then((response) => {
+        const profileFormUnflatten = flatten.unflatten(profileForm)
+        console.log(_service?.service?.stationClass)
+        if( profileFormUnflatten?.service?.stationClass){
+            profileFormUnflatten.service.stationClass=  _service?.service?.stationClass
+        }
+
+        axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten ,...{soa: flattenSoa}}, config).then((response) => {
             if (isLoading) setSaved(false)
             if (isLoading) {
                 setTimeout(() => {
@@ -468,7 +501,6 @@ function ActivityModal(props: any) {
         _props.onDismissed(change);
         return promise;
     };
-
     return (
         <>
             <View style={(isMobile && !((Platform?.isPad || isTablet()) && isLandscapeSync())) && (

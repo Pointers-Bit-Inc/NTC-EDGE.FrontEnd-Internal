@@ -38,8 +38,9 @@ const transformText = (text: string) => {
     else if (text === 'rocEctNumber') return 'ROC/ECT No.';
     return text?.replace(/([a-z])([A-Z])/g, '$1 $2')?.split(' ')?.map((word: string) => word?.charAt(0)?.toUpperCase() + word?.substring?.(1))?.join(' ');
 };
+//1234, 12, 13, 14, 15, 16, 17, 18, 19, 21
 const transformToFeePayload = (application: any) => {
-    let { service = {}, region } = application;
+    let { service = {}, region = '' } = application;
     let {
         applicationDetails = {},
         applicationType = {},
@@ -57,7 +58,7 @@ const transformToFeePayload = (application: any) => {
 
     let { validity = {} } = station || {};
     let { year, month, day } = validity;
-    let expired = year && month && day ? Moment(new Date()).set({year, month, date: day}) : new Date()?.toISOString();
+    let expired = year && month && day ? Moment(new Date()).set({year, month, date: day}) : '';
 
     let label = applicationType?.label?.toLowerCase();
 
@@ -90,11 +91,12 @@ const transformToFeePayload = (application: any) => {
         if (applicationType?.serviceCode === 'ROC') _category = applicationType?.element || '';
         else _category = applicationType?.category || '';
         if (applicationDetails?.variation) _category += `${_category ? '' : '-'}${applicationDetails?.variation}`;
+        return _category;
     };
     let bandwidthFn = () => {
         return {
-            bandwidth: Number(station?.bandwidth?.bandwidth),
-            unit: station?.bandwidth?.unit,
+            bandwidth: Number(station?.bandwidth?.bandwidth || 0),
+            unit: station?.bandwidth?.unit || '',
         }
     };
     let frequencyFn = () => {
@@ -111,6 +113,13 @@ const transformToFeePayload = (application: any) => {
          */
         return service?.frequency || service?.station?.map((s: any) => s?.frequency) || service?.station?.map((s: any) => s?.proposedFrequency);;
     };
+    let tranmissionFn = () => {
+        let _t = equipment?.transmission?.split(' • ');
+        return {
+            transmission: _t?.[0] || '',
+            frequency: _t?.[1] || '',
+        };
+    };
     let channelFn = () => {
         let _frequency = frequencyFn();
         let _frequencies = [];
@@ -126,23 +135,13 @@ const transformToFeePayload = (application: any) => {
     };
     let classOfStation = (forChannel = false) => {
         let _csObj = {};
-        if (particulars?.length > 0) {
-            particulars?.forEach((p: any) => {
-                console.log('p?.class', p?.class);
-                let _split = p?.class?.split(' • ');
-                _csObj = {
-                    ..._csObj,
-                    [_split?.[0]]: forChannel ? channelFn()?.length : _split?.[1],
-                }
-            });
-        }
-        else if (stationClass?.length > 0) {
-            stationClass?.forEach((c: string) => {
-                console.log('c', c);
+        let _scArr = (particulars || stationClass) || [];
+        if (_scArr?.length > 0) {
+            _scArr?.forEach((c: any) => {
                 let _split = c?.class?.split(' • ');
                 _csObj = {
                     ..._csObj,
-                    [_split?.[0]]: forChannel ? channelFn()?.length : _split?.[1],
+                    [_split?.[0]]: Number((forChannel ? (channelFn()?.length) : _split?.[1] || 0)),
                 }
             });
         }
@@ -224,29 +223,28 @@ const transformToFeePayload = (application: any) => {
     */
 
     let feePayload = {
-        service: service?.serviceCode?.split('-')?.[1], //
+        service: service?.serviceCode?.split('-')?.[1] || '', //
         subService: applicationType?.serviceCode || '', //
         types: typeFn(), //
         category: categoryFn(), //
         validity: Number(applicationDetails?.noOfYears || 0), //
-        units: equipment?.length, //
-        nos: valueAddedServices?.service?.length, //
+        units: equipment?.length || 0, //
+        nos: valueAddedServices?.service?.length || 0, //
         boundary: boundaryFn(), //
         location: region, //
         installedEquipment: installedEquipmentFn(), //
-        power: Number(equipment?.powerOutput), //
-        transmission: equipment?.transmission, //
+        power: Number(equipment?.powerOutput || 0), //
+        transmission: tranmissionFn()?.transmission, //
+        frequency: tranmissionFn()?.frequency, //
         bandwidth: bandwidthFn(), //
-        frequency: '', // should be high, very high, etc
-        mode: transmissionType?.transmissionType, //
+        mode: transmissionType?.transmissionType || '', //
         stationClassUnits: classOfStation(), //
         stationClassChannels: classOfStation(true), //
-        expired,
+        expired, //
     };
 
     return feePayload;
 };
-//1234, 12, 13, 14, 15, 16, 17, 18, 19, 21
 const yearList = () => {
     var presentYear = Moment().add(50, 'years').get('year');
     var startYear = Moment().subtract(50, 'years');

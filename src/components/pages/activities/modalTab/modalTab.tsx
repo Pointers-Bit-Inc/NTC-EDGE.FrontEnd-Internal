@@ -4,20 +4,8 @@ import ApplicationDetails from "@pages/activities/application/applicationDetails
 import Requirement from "@pages/activities/application/requirementModal/requirement";
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React, {memo, useEffect, useMemo, useState} from "react";
-import {ACCOUNTANT , CASHIER , CHECKER , DIRECTOR , EVALUATOR} from "../../../../reducers/activity/initialstate";
-import {
-    Text,
-    Alert,
-    Animated,
-    InteractionManager,
-    KeyboardAvoidingView,
-    Platform,
-    useWindowDimensions,
-    View, Dimensions, I18nManager
-} from "react-native";
-import ScrollableTabBar from "@pages/activities/tabs/ScrollableTabBar";
-import ScrollableTabView from "@pages/activities/tabs";
-import Tab from "@pages/activities/tabs/Tab";
+import {ACCOUNTANT, CASHIER, CHECKER, DIRECTOR, EVALUATOR} from "../../../../reducers/activity/initialstate";
+import {Animated, I18nManager, Platform, Text, useWindowDimensions, View} from "react-native";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
 import {infoColor} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
@@ -25,9 +13,8 @@ import {setEditModalVisible} from "../../../../reducers/activity/actions";
 import useSafeState from "../../../../hooks/useSafeState";
 import {setEdit} from "../../../../reducers/application/actions";
 import {Route, TabBar, TabBarIndicator, TabView} from "react-native-tab-view";
-import {Bold, Regular} from "@styles/font";
+import {Regular} from "@styles/font";
 import {GetTabWidth} from "react-native-tab-view/lib/typescript/TabBarIndicator";
-import {isTablet} from "react-native-device-info";
 
 const ModalTab = props => {
     const dispatch = useDispatch();
@@ -111,27 +98,26 @@ const ModalTab = props => {
 
     const routes = useMemo(() => {
 
-        return tabs.filter((tab,_index)=> {
-            return !(service?.serviceCode == "service-22" && tab?.id===4) && tab.isShow.indexOf(user?.role?.key)!== -1
+        return tabs.filter((tab, _index) => {
+            return !(service?.serviceCode == "service-22" && tab?.id === 4) && tab.isShow.indexOf(user?.role?.key) !== -1
         }).map((__tab, __index) => {
-            if(__tab.title == 'SOA & Payment'){
+            if (__tab.title == 'SOA & Payment') {
                 setPaymentIndex(__index)
             }
-            if(__tab.title == 'Basic Info'){
+            if (__tab.title == 'Basic Info') {
                 setBasicInfoIndex(__index)
             }
             return __tab
         })
 
 
-
     }, [tabs])
     useEffect(() => {
-        if(paymentIndex == index && !editModalVisible){
+        if (paymentIndex == index && !editModalVisible) {
             dispatch(setEditModalVisible(true))
-        }else if(basicInfoIndex == index && !editModalVisible){
+        } else if (basicInfoIndex == index && !editModalVisible) {
             dispatch(setEditModalVisible(true))
-        }else if(basicInfoIndex != index && paymentIndex != index && editModalVisible){
+        } else if (basicInfoIndex != index && paymentIndex != index && editModalVisible) {
             dispatch(setEdit(false))
             dispatch(setEditModalVisible(false))
         }
@@ -139,7 +125,7 @@ const ModalTab = props => {
     const [isMore, setIsMore] = useSafeState(true)
     const [yPos, setYPos] = useSafeState(undefined)
     const renderScene = ({route, jumpTo}) => {
-        if(initialPage && Platform?.isPad ){
+        if (initialPage && Platform?.isPad) {
             jumpTo(0)
             setInitialPage(false)
         }
@@ -199,35 +185,35 @@ const ModalTab = props => {
                                     key={index}/>
             case 'SOA & Payment':
                 return <Payment
-                                setPaymentIndex={setPaymentIndex}
-                                saved={props.saved}
-                                loading={props.loading}
-                                edit={props.edit}
-                                setEditAlert={props.setEditAlert}
-                                editBtn={props.editBtn}
-                                updateApplication={props.updateApplication}
-                                setUserOriginalProfileForm={props.setUserOriginalProfileForm}
-                                userOriginalProfileForm={props.userOriginalProfileForm}
-                                userProfileForm={props.userProfileForm}
-                                hasChanges={props.hasChanges}
-                                setUserProfileForm={props.setUserProfileForm}
+                    setPaymentIndex={setPaymentIndex}
+                    saved={props.saved}
+                    loading={props.loading}
+                    edit={props.edit}
+                    setEditAlert={props.setEditAlert}
+                    editBtn={props.editBtn}
+                    updateApplication={props.updateApplication}
+                    setUserOriginalProfileForm={props.setUserOriginalProfileForm}
+                    userOriginalProfileForm={props.userOriginalProfileForm}
+                    userProfileForm={props.userProfileForm}
+                    hasChanges={props.hasChanges}
+                    setUserProfileForm={props.setUserProfileForm}
 
-                                paymentStatus={paymentStatus}
-                                proofOfPayment={proofOfPayment}
-                                updatedAt={updatedAt}
-                                paymentHistory={paymentHistory}
-                                paymentMethod={paymentMethod}
-                                applicant={applicant}
-                                totalFee={totalFee}
-                                soa={soa}
-                                key={index}/>
+                    paymentStatus={paymentStatus}
+                    proofOfPayment={proofOfPayment}
+                    updatedAt={updatedAt}
+                    paymentHistory={paymentHistory}
+                    paymentMethod={paymentMethod}
+                    applicant={applicant}
+                    totalFee={totalFee}
+                    soa={soa}
+                    key={index}/>
             default:
                 return null;
         }
 
 
     };
-const  getTranslateX = (
+    const getTranslateX = (
         position: Animated.AnimatedInterpolation,
         routes: Route[],
         getTabWidth: GetTabWidth
@@ -249,64 +235,63 @@ const  getTranslateX = (
         return Animated.multiply(translateX, I18nManager.isRTL ? -1 : 1);
     };
 
-    return  <TabView
-        
-            style={{borderTopColor: 'rgba(0, 0, 0, 0.1)',
-                borderTopWidth: 1,}}
-            renderTabBar={props => (
-                edit ? <></> : <TabBar
-                    renderLabel={({route, focused}) => {
-                        return (
-                            <View  >
-                                <Text style={ {
-                                    color : focused ? infoColor : "#606A80" ,
-                                    fontFamily : Regular , // focused ? Bold : Regular
-                                    fontSize : fontValue(12)
-                                } }>{  route.title }</Text>
-                            </View>
-                        );
-                    }}
-                    {...props}
-                    renderIndicator={indicatorProps => {
-                        const {
-                            navigationState: {routes},
-                            getTabWidth,
-                            position,
-                        } = indicatorProps;
-                        /*const translateX =
-                            routes.length > 1 ? getTranslateX( position, routes, getTabWidth) : 0;
+    return <TabView
 
-                        ;*/
-                        const indicatorStyle = {
-                            // transform: [{translateX}] as any,
-                            height: 4,
-                            backgroundColor: infoColor,
-                            borderRadius: 4,
-                            padding: 0,
-                            left: 24 / 2,
-                        }
-                        const width = getTabWidth(index) - 24
-                        return <TabBarIndicator {...indicatorProps} width={width}
-                                                style={indicatorStyle}
-                        />;
-                    }}
+        style={{
+            borderTopColor: 'rgba(0, 0, 0, 0.1)',
+            borderTopWidth: 1,
+        }}
+        renderTabBar={props => (
+            edit ? <></> : <TabBar
+                renderLabel={({route, focused}) => {
+                    return (
+                        <View>
+                            <Text style={{
+                                color: focused ? infoColor : "#606A80",
+                                fontFamily: Regular, // focused ? Bold : Regular
+                                fontSize: fontValue(12)
+                            }}>{route.title}</Text>
+                        </View>
+                    );
+                }}
+                {...props}
+                renderIndicator={indicatorProps => {
+                    const {
+                        navigationState: {routes},
+                        getTabWidth,
+                        position,
+                    } = indicatorProps;
+                    /*const translateX =
+                        routes.length > 1 ? getTranslateX( position, routes, getTabWidth) : 0;
 
-                    tabStyle={{width: fontValue(136)}}
-                    scrollEnabled={true}
-                    style={{  backgroundColor: 'white' }}
-                />
-            )}
-            navigationState={{ index, routes }}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-        />
+                    ;*/
+                    const indicatorStyle = {
+                        // transform: [{translateX}] as any,
+                        height: 4,
+                        backgroundColor: infoColor,
+                        borderRadius: 4,
+                        padding: 0,
+                        left: 24 / 2,
+                    }
+                    const width = getTabWidth(index) - 24
+                    return <TabBarIndicator {...indicatorProps} width={width}
+                                            style={indicatorStyle}
+                    />;
+                }}
+
+                tabStyle={{width: fontValue(136)}}
+                scrollEnabled={true}
+                style={{backgroundColor: 'white'}}
+            />
+        )}
+        navigationState={{index, routes}}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+    />
 }
 
 
-
 export default memo(ModalTab)
-
-
 
 
 /*
