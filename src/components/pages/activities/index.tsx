@@ -465,14 +465,11 @@ const ActivitiesPage = (props) => {
             ref={ref}
             onScroll={scrollHandler}
             {...sharedProps}
-            onScrollEndDrag={onScrollEndDrag}
             onEndReachedThreshold={0.5}
             onMomentumScrollBegin={() => {
                 onMomentumScrollBegin();
                 setOnEndReachedCalledDuringMomentum(false)
             }}
-            onMomentumScrollEnd={onMomentumScrollEnd}
-            scrollEventThrottle={16}
             renderItem={({item, index}) => (
                 <>
                     <ApplicationList
@@ -539,9 +536,7 @@ const ActivitiesPage = (props) => {
 
         )}/>
     }
-    const [isTapped, setIsTapped] = useSafeState(false)
     const renderAllActivities = useCallback(
-
         () => getFlatList(allRef, allScrollHandler, notPnApplications, true),
         [allRef, allScrollHandler, sharedProps]
     );
@@ -765,11 +760,8 @@ const ActivitiesPage = (props) => {
 
                             </View>
                         </Animated.View>
-                        <Tab.Navigator  screenListeners={{
-                            tabPress: e => {
-                                if(!isTapped)setIsTapped(true)
-                        }}}   tabBarOptions={tabBarOptions} tabBar={renderTabBar}>
-                            <Tab.Screen name="All">{renderAllActivities}</Tab.Screen>
+                        <Tab.Navigator tabBarOptions={tabBarOptions} tabBar={renderTabBar}>
+                            <Tab.Screen  name="All">{renderAllActivities}</Tab.Screen>
                             <Tab.Screen name="Pending">{renderPending}</Tab.Screen>
                             <Tab.Screen name="History">{renderHistory}</Tab.Screen>
                         </Tab.Navigator>
