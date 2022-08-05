@@ -331,10 +331,10 @@ function ActivityModal(props: any) {
                 stationClass: []
             }
         }
+        let serviceStationClass = flatten.unflatten(profileForm)?.service?.stationClass
+        for (let i = 0; i < serviceStationClass?.length; i++) {
 
-        for (let i = 0; i < applicationItem?.service?.stationClass?.length; i++) {
-
-            let _obj = applicationItem?.service?.stationClass[i]
+            let _obj = serviceStationClass[i]
 
             _service.service.stationClass.push({"class": _obj.class + " • " + _obj.unit})
 
@@ -372,8 +372,8 @@ function ActivityModal(props: any) {
             "category": "string",
             "power": 0,
             "validity": 0,
-            "updatedAt": "",
-            "expired": "",
+            "updatedAt": new Date(),
+            "expired": new Date(),
             "discount": 0,
             "numberOfPermitsOrCERTSOrApp": 0,
             "classes": "string",
@@ -406,6 +406,7 @@ function ActivityModal(props: any) {
                 "rt": 0
             }
         }
+        console.log(removeEmpty(transformToFeePayload(flatten.unflatten(profileForm))))
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {...payload, ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))}, config)
             .then((response) => {
                 profileForm['soa'] = {
@@ -431,7 +432,6 @@ function ActivityModal(props: any) {
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
         if (isLoading) setSaved(true)
         const profileFormUnflatten = flatten.unflatten(profileForm)
-        console.log(_service?.service?.stationClass)
         if( profileFormUnflatten?.service?.stationClass){
             profileFormUnflatten.service.stationClass=  _service?.service?.stationClass
         }
