@@ -58,7 +58,7 @@ const transformToFeePayload = (application: any) => {
 
     let { validity = {} } = station || {};
     let { year, month, day } = validity;
-    let expired = year && month && day ? Moment(new Date()).set({year, month, date: day}) : '';
+    let expired = year && month && day ? Moment(new Date()).set({year, month, date: day}) : new Date()?.toISOString();
 
     let label = applicationType?.label?.toLowerCase();
 

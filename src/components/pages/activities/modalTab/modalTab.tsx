@@ -101,7 +101,7 @@ const ModalTab = props => {
         return tabs.filter((tab, _index) => {
             return !(service?.serviceCode == "service-22" && tab?.id === 4) && tab.isShow.indexOf(user?.role?.key) !== -1
         }).map((__tab, __index) => {
-            if (__tab.title == 'SOA & Payment') {
+            if (__tab.title == 'SOA & Payment'  ) {
                 setPaymentIndex(__index)
             }
             if (__tab.title == 'Basic Info') {
@@ -113,9 +113,9 @@ const ModalTab = props => {
 
     }, [tabs])
     useEffect(() => {
-        if (paymentIndex == index && !editModalVisible) {
+        if (paymentIndex == index && !editModalVisible && user?.role?.key != CASHIER ) {
             dispatch(setEditModalVisible(true))
-        } else if (basicInfoIndex == index && !editModalVisible) {
+        } else if (basicInfoIndex == index && !editModalVisible && user?.role?.key != CASHIER) {
             dispatch(setEditModalVisible(true))
         } else if (basicInfoIndex != index && paymentIndex != index && editModalVisible) {
             dispatch(setEdit(false))

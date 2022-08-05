@@ -75,6 +75,7 @@ import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import RefreshRN from "@assets/svg/refreshRN";
+import useSafeState from "../../../hooks/useSafeState";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -430,7 +431,7 @@ const ActivitiesPage = (props) => {
             </View>}
     </>;
 
-    function getFlatList(ref, scrollHandler, sP, data, isHeader = false) {
+    function getFlatList(ref, scrollHandler, data, isHeader = false) {
 
         return <Animated.FlatList
             refreshControl={
@@ -463,7 +464,7 @@ const ActivitiesPage = (props) => {
             }}
             ref={ref}
             onScroll={scrollHandler}
-            {...sP}
+            {...sharedProps}
             onScrollEndDrag={onScrollEndDrag}
             onEndReachedThreshold={0.5}
             onMomentumScrollBegin={() => {
@@ -471,7 +472,7 @@ const ActivitiesPage = (props) => {
                 setOnEndReachedCalledDuringMomentum(false)
             }}
             onMomentumScrollEnd={onMomentumScrollEnd}
-            scrollEventThrottle={1}
+            scrollEventThrottle={16}
             renderItem={({item, index}) => (
                 <>
                     <ApplicationList
@@ -538,20 +539,20 @@ const ActivitiesPage = (props) => {
 
         )}/>
     }
-
+    const [isTapped, setIsTapped] = useSafeState(false)
     const renderAllActivities = useCallback(
 
-        () => getFlatList(allRef, allScrollHandler, sharedProps, notPnApplications, true),
-        [allRef, allScrollHandler, tabIndex]
+        () => getFlatList(allRef, allScrollHandler, notPnApplications, true),
+        [allRef, allScrollHandler, sharedProps]
     );
 
     const renderPending = useCallback(
-        () => getFlatList(pendingRef, pendingScrollHandler, sharedProps, pnApplications, false),
-        [pendingRef, pendingScrollHandler, tabIndex]
+        () => getFlatList(pendingRef, pendingScrollHandler, pnApplications, false),
+        [pendingRef, pendingScrollHandler,sharedProps]
     );
     const renderHistory = useCallback(
-        () => getFlatList(historyRef, historyScrollHandler, sharedProps, notPnApplications, false),
-        [historyRef, historyScrollHandler, tabIndex]
+        () => getFlatList(historyRef, historyScrollHandler,  notPnApplications, false),
+        [historyRef, historyScrollHandler,  sharedProps]
     );
     const tabBarStyle = useMemo<StyleProp<ViewStyle>>(
         () => [
@@ -764,8 +765,11 @@ const ActivitiesPage = (props) => {
 
                             </View>
                         </Animated.View>
-                        <Tab.Navigator  tabBarOptions={tabBarOptions} tabBar={renderTabBar}>
-                            <Tab.Screen  name="All">{renderAllActivities}</Tab.Screen>
+                        <Tab.Navigator  screenListeners={{
+                            tabPress: e => {
+                                if(!isTapped)setIsTapped(true)
+                        }}}   tabBarOptions={tabBarOptions} tabBar={renderTabBar}>
+                            <Tab.Screen name="All">{renderAllActivities}</Tab.Screen>
                             <Tab.Screen name="Pending">{renderPending}</Tab.Screen>
                             <Tab.Screen name="History">{renderHistory}</Tab.Screen>
                         </Tab.Navigator>

@@ -4,7 +4,6 @@ import {
     Alert as RNAlert,
     Animated,
     BackHandler,
-    KeyboardAvoidingView,
     Modal,
     Platform,
     StyleSheet,
@@ -35,7 +34,6 @@ import {
 } from "../../../reducers/activity/initialstate";
 import Api from 'src/services/api';
 import {
-    setApplicationItem,
     setEdit,
     setHasChange,
     setRightLayoutComponent,
@@ -62,7 +60,6 @@ import {isNumber, transformToFeePayload} from "../../../utils/ntc";
 import {useToast} from "../../../hooks/useToast";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import ChevronLeft from "@assets/svg/chevron-left";
-import LoadingModal from "@pages/activities/loading/loadingModal";
 
 const flatten = require('flat')
 
@@ -75,7 +72,7 @@ function ActivityModal(props: any) {
         for (let i = 0; i < _applicationItem?.service?.stationClass?.length; i++) {
 
             let _split = _applicationItem?.service?.stationClass[i].class.split(" • ")
-            if(_split.length == 2){
+            if (_split.length == 2) {
                 _applicationItem.service.stationClass[i].class = _split[0]
                 _applicationItem.service.stationClass[i].unit = _split[1]
             }
@@ -172,19 +169,20 @@ function ActivityModal(props: any) {
         if (applicationItem?.service?.serviceCode === "service-22") {
             delete params.assignedPersonnel
         }
-        const addORNumber = user?.role?.key == CASHIER ? await api.post(`/applications/${applicationId}/add-or-number`, AddORNoparams).catch(e => {
-            setGrayedOut(false);
-            setCurrentLoading('');
-            let _err = '';
-            for (const err in e?.response?.data?.errors) {
-                _err += e?.response?.data?.errors?.[err]?.toString() + "\n";
-            }
-            if (_err || e?.response?.data?.message || e?.response?.statusText) {
+        const addORNumber = user?.role?.key == CASHIER ? await api.post(`/applications/${applicationId}/add-or-number`, AddORNoparams)
+            .catch(e => {
+                // setGrayedOut(false);
+                setCurrentLoading('');
+                let _err = '';
+                for (const err in e?.response?.data?.errors) {
+                    _err += e?.response?.data?.errors?.[err]?.toString() + "\n";
+                }
+                if (_err || e?.response?.data?.message || e?.response?.statusText) {
 
-                showToast(ToastType.Error, _err || e?.response?.data?.message || e?.response?.statusText)
-            }
-            return callback(e);
-        }) : null
+                    showToast(ToastType.Error, _err || e?.response?.data?.message || e?.response?.statusText)
+                }
+                return callback(e);
+            }) : null
         if ((applicationId && (user?.role?.key == CASHIER && addORNumber?.status == 200)) || (getRole(user, [DIRECTOR, EVALUATOR, ACCOUNTANT]) && applicationId)) {
             await api.patch(url, {...params})
                 .then(res => {
@@ -373,7 +371,7 @@ function ActivityModal(props: any) {
             "power": 0,
             "validity": 0,
             "updatedAt": new Date(),
-            "expired": new Date(),
+            "expired": '',
             "discount": 0,
             "numberOfPermitsOrCERTSOrApp": 0,
             "classes": "string",
@@ -406,7 +404,6 @@ function ActivityModal(props: any) {
                 "rt": 0
             }
         }
-        console.log(removeEmpty(transformToFeePayload(flatten.unflatten(profileForm))))
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {...payload, ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))}, config)
             .then((response) => {
                 profileForm['soa'] = {
@@ -432,11 +429,11 @@ function ActivityModal(props: any) {
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
         if (isLoading) setSaved(true)
         const profileFormUnflatten = flatten.unflatten(profileForm)
-        if( profileFormUnflatten?.service?.stationClass){
-            profileFormUnflatten.service.stationClass=  _service?.service?.stationClass
+        if (profileFormUnflatten?.service?.stationClass) {
+            profileFormUnflatten.service.stationClass = _service?.service?.stationClass
         }
 
-        axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten ,...{soa: flattenSoa}}, config).then((response) => {
+        axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...{soa: flattenSoa}}, config).then((response) => {
             if (isLoading) setSaved(false)
             if (isLoading) {
                 setTimeout(() => {
@@ -452,11 +449,11 @@ function ActivityModal(props: any) {
             let _applicationItem = response.data?.doc
 
 
-            if( _applicationItem?.service?.stationClass ){
+            if (_applicationItem?.service?.stationClass) {
                 for (let i = 0; i < _applicationItem?.service?.stationClass?.length; i++) {
 
                     let _split = _applicationItem?.service?.stationClass[i].class.split(" • ")
-                    if(_split.length == 2){
+                    if (_split.length == 2) {
                         _applicationItem.service.stationClass[i].class = _split[0]
                         _applicationItem.service.stationClass[i].unit = _split[1]
                     }

@@ -100,10 +100,10 @@ const ModalTab=props=>{
         {props.loading && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <ViewPaged
             onChange={(pageIndex)=>{
-                if(paymentIndex == pageIndex && !editModalVisible){
+                if(paymentIndex == pageIndex && !editModalVisible && user?.role?.key != CASHIER){
 
                     dispatch(setEditModalVisible(true))
-                }else if(basicInfoIndex == pageIndex && !editModalVisible){
+                }else if(basicInfoIndex == pageIndex && !editModalVisible && user?.role?.key != CASHIER){
                     dispatch(setEditModalVisible(true))
                 }else if(basicInfoIndex != pageIndex && paymentIndex != pageIndex && editModalVisible){
                     dispatch(setEdit(false))
