@@ -540,17 +540,18 @@ const ActivitiesPage = (props) => {
     }
 
     const renderAllActivities = useCallback(
+
         () => getFlatList(allRef, allScrollHandler, sharedProps, notPnApplications, true),
-        [allRef, allScrollHandler]
+        [allRef, allScrollHandler, tabIndex]
     );
 
     const renderPending = useCallback(
         () => getFlatList(pendingRef, pendingScrollHandler, sharedProps, pnApplications, false),
-        [pendingRef, pendingScrollHandler]
+        [pendingRef, pendingScrollHandler, tabIndex]
     );
     const renderHistory = useCallback(
         () => getFlatList(historyRef, historyScrollHandler, sharedProps, notPnApplications, false),
-        [historyRef, historyScrollHandler]
+        [historyRef, historyScrollHandler, tabIndex]
     );
     const tabBarStyle = useMemo<StyleProp<ViewStyle>>(
         () => [
@@ -603,7 +604,6 @@ const ActivitiesPage = (props) => {
         ],
         [collapsedOverlayAnimatedStyle, heightCollapsed]
     );
-
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
