@@ -542,16 +542,16 @@ const ActivitiesPage = (props) => {
 
     const renderAllActivities = useCallback(
         () => getFlatList(allRef, allScrollHandler, notPnApplications, true),
-        [allRef, allScrollHandler, notPnApplications,refreshing]
+        [allRef, allScrollHandler, sharedProps]
     );
 
     const renderPending = useCallback(
         () => getFlatList(pendingRef, pendingScrollHandler, pnApplications, false),
-        [pendingRef, pendingScrollHandler,pnApplications, refreshing]
+        [pendingRef, pendingScrollHandler,sharedProps]
     );
     const renderHistory = useCallback(
         () => getFlatList(historyRef, historyScrollHandler,  notPnApplications, false),
-        [historyRef, historyScrollHandler, notPnApplications,  refreshing]
+        [historyRef, historyScrollHandler,  sharedProps]
     );
     const tabBarStyle = useMemo<StyleProp<ViewStyle>>(
         () => [
