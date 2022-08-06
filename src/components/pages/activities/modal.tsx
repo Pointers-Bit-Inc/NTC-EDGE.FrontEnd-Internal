@@ -60,6 +60,7 @@ import {isNumber, transformToFeePayload} from "../../../utils/ntc";
 import {useToast} from "../../../hooks/useToast";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import ChevronLeft from "@assets/svg/chevron-left";
+import _ from "lodash";
 
 const flatten = require('flat')
 
@@ -406,12 +407,13 @@ function ActivityModal(props: any) {
         }
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {...payload, ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))}, config)
             .then((response) => {
-                profileForm['soa'] = {
-                    ...cleanSoa, ...{
-                        totalFee: response.data?.totalFee,
-                        soa: response.data?.statement_Of_Account || response.data?.soa
-                    }
+                const diff = _.differenceBy(flatten.unflatten(cleanSoa).soa, (response.data?.statement_Of_Account || response.data?.soa), 'item')
+                cleanSoa = {
+                    totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
+                    soa: _.uniqBy(removeEmpty([...flatten.unflatten(cleanSoa).soa, ...(response.data?.statement_Of_Account || response.data?.soa)]), 'item')
                 }
+
+
             }).catch((error) => {
                 dispatch(setEdit(false))
                 dispatch(setHasChange(false))
@@ -424,8 +426,7 @@ function ActivityModal(props: any) {
                     showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText)
                 }
             });
-        const flattenSoa = flatten.unflatten(cleanSoa)?.soa?.filter(s => s)
-        if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
+        //if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
         if (isLoading) setSaved(true)
         const profileFormUnflatten = flatten.unflatten(profileForm)
@@ -433,7 +434,7 @@ function ActivityModal(props: any) {
             profileFormUnflatten.service.stationClass = _service?.service?.stationClass
         }
 
-        axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...{soa: flattenSoa}}, config).then((response) => {
+        axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...cleanSoa}, config).then((response) => {
             if (isLoading) setSaved(false)
             if (isLoading) {
                 setTimeout(() => {

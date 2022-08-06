@@ -13,10 +13,12 @@ const LoadingModal = (props) =>{
         alignItems: "center",
         justifyContent: "center",
         position: "absolute",
+
         zIndex: 4,
         backgroundColor:  props?.saved ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0)"
     }]}>
         <View style={[{
+            opacity: props.loading ? 100 : 0,
             backgroundColor:  props?.saved ? infoColor : "#fff",
             borderRadius: 24,
             flexDirection: "row",
