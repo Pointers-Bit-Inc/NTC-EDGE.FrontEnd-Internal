@@ -330,10 +330,11 @@ const Payment = (props: any) => {
             return el.id  !== id
         });
 
-        delete state?.["soa." + index + ".amount"];
-        delete state?.["soa." + index + ".item"];
-        delete state?.["soa." + index + ".id"];
-        delete state?.["soa." + index + ".isEdit"];
+        delete state?.["soa." + id + ".amount"];
+        delete state?.["soa." + id + ".item"];
+        delete state?.["soa." + id + ".id"];
+        delete state?.["soa." + id + ".isEdit"];
+        console.log(state)
         props.setUserProfileForm(state)
         setSoa(arr);
     }
@@ -457,7 +458,10 @@ const Payment = (props: any) => {
                                                       applicant={props.userProfileForm?.["soa." + s.id + ".amount"] != undefined ? "" + props.userProfileForm?.["soa." + s.id + ".amount"] : 0}/>
                                             </View>
                                             {props.edit && <View style={{}}>
-                                                <TouchableOpacity onPress={() => closeItem(s.id, index)}
+                                                <TouchableOpacity onPress={() => {
+                                                    console.log(s.id, index)
+                                                    closeItem(s.id, index)
+                                                }}
                                                                   style={{paddingHorizontal: 10}}>
                                                     <CloseIcon/>
                                                 </TouchableOpacity>
