@@ -6,16 +6,16 @@ const useScrollSync = (
   scrollPairs: ScrollPair[],
   headerConfig: HeaderConfig
 ) => {
-  const sync: NonNullable<FlatListProps<any>["onMomentumScrollEnd"]> = (
-    event
+  const sync: NonNullable<FlatListProps<any>["onMomentumScrollEnd"]> = async (
+      event
   ) => {
-    const { y } = event.nativeEvent.contentOffset;
+    const {y} = event.nativeEvent.contentOffset;
 
-    const { heightCollapsed, heightExpanded } = headerConfig;
+    const {heightCollapsed, heightExpanded} = headerConfig;
 
     const headerDiff = heightExpanded - heightCollapsed;
 
-    for (const { list, position } of scrollPairs) {
+    for await(const {list, position} of scrollPairs) {
       const scrollPosition = position.value ?? 0;
 
       if (scrollPosition > headerDiff && y > headerDiff) {

@@ -76,6 +76,7 @@ import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import RefreshRN from "@assets/svg/refreshRN";
 import useSafeState from "../../../hooks/useSafeState";
+import {SceneMap} from "react-native-tab-view";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -293,11 +294,10 @@ const ActivitiesPage = (props) => {
             scrollEventThrottle: 16,
             scrollIndicatorInsets: {top: heightExpanded},
         }),
-        [contentContainerStyle, sync, heightExpanded]
+        [contentContainerStyle,sync, heightExpanded]
     );
     const onDismissedModal = (event: boolean, _id: number) => {
         setUpdateModal(false);
-        console.log("onRefresh")
         dispatch(setApplicationItem({}));
         if (event && _id) {
             //  dispatch(deleteApplications(_id))
@@ -536,18 +536,22 @@ const ActivitiesPage = (props) => {
 
         )}/>
     }
+
+
+
+
     const renderAllActivities = useCallback(
         () => getFlatList(allRef, allScrollHandler, notPnApplications, true),
-        [allRef, allScrollHandler, sharedProps]
+        [allRef, allScrollHandler, notPnApplications,refreshing]
     );
 
     const renderPending = useCallback(
         () => getFlatList(pendingRef, pendingScrollHandler, pnApplications, false),
-        [pendingRef, pendingScrollHandler,sharedProps]
+        [pendingRef, pendingScrollHandler,pnApplications, refreshing]
     );
     const renderHistory = useCallback(
         () => getFlatList(historyRef, historyScrollHandler,  notPnApplications, false),
-        [historyRef, historyScrollHandler,  sharedProps]
+        [historyRef, historyScrollHandler, notPnApplications,  refreshing]
     );
     const tabBarStyle = useMemo<StyleProp<ViewStyle>>(
         () => [
@@ -557,6 +561,18 @@ const ActivitiesPage = (props) => {
         ],
         [rendered, headerHeight, tabBarAnimatedStyle]
     );
+
+    const renderScene = SceneMap({
+        all: renderAllActivities,
+        pending: renderPending,
+        history: renderHistory,
+    });
+
+    const [routes] = React.useState([
+        { key: 'all', title: 'all' },
+        { key: 'pending', title: 'pending' },
+        { key: 'history', title: 'history' },
+    ]);
     const tabBarOptions = {
         activeTintColor: infoColor,
         inactiveTintColor: "#606A80",
@@ -600,6 +616,10 @@ const ActivitiesPage = (props) => {
         ],
         [collapsedOverlayAnimatedStyle, heightCollapsed]
     );
+
+
+
+
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
@@ -760,8 +780,8 @@ const ActivitiesPage = (props) => {
 
                             </View>
                         </Animated.View>
-                        <Tab.Navigator tabBarOptions={tabBarOptions} tabBar={renderTabBar}>
-                            <Tab.Screen  name="All">{renderAllActivities}</Tab.Screen>
+                        <Tab.Navigator  tabBarOptions={tabBarOptions} tabBar={renderTabBar}>
+                            <Tab.Screen name="All">{renderAllActivities}</Tab.Screen>
                             <Tab.Screen name="Pending">{renderPending}</Tab.Screen>
                             <Tab.Screen name="History">{renderHistory}</Tab.Screen>
                         </Tab.Navigator>
