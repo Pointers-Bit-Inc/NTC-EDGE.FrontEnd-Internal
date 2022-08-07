@@ -5,7 +5,24 @@ import {infoColor, primaryColor} from "@styles/color";
 import React, {forwardRef, memo} from "react";
 
 const GetFlatList = forwardRef(
-    (props, ref) => {
+    (props: {
+        headerHeight: number,
+        refreshing: boolean,
+        onRefresh: () => void,
+        listEmptyComponent: () => JSX.Element,
+        header: boolean,
+        element: JSX.Element,
+        data: any,
+        keyExtractor: (item, index) => string,
+        bottomLoader: () => JSX.Element,
+        onEndReached: () => void,
+        onScroll: any,
+        sharedProps: Partial<FlatListProps<Connection>>,
+        onMomentumScrollBegin: () => void, renderItem: ({
+                                                            item,
+                                                            index
+                                                        }: { item: any; index: any }) => JSX.Element
+    }, ref) => {
     return <Animated.FlatList
         refreshControl={
             <RefreshControl
