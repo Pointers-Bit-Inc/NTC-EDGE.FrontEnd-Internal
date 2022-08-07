@@ -32,7 +32,7 @@ import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {HeaderConfig} from "./types/HeaderConfig";
 import {Visibility} from "./types/Visibility";
 import lodash from "lodash";
-import {useActivities} from "../../../hooks/useActivities";
+import useActivities from "../../../hooks/useActivities";
 import {isMobile} from "@pages/activities/isMobile";
 import {isLandscapeSync, isTablet} from "react-native-device-info";
 import FilterPressIcon from "@assets/svg/filterPress";
@@ -76,7 +76,6 @@ import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import RefreshRN from "@assets/svg/refreshRN";
-import {SceneMap} from "react-native-tab-view";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;

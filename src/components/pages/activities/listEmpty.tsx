@@ -23,7 +23,7 @@ function Placeholder(props: { renderItem: () => JSX.Element, keyExtractor: (item
     /></View>;
 }
 
-export default function Loader(refreshing,searchTerm,size){
+function Loader(refreshing,searchTerm,size){
     const selectedChangeStatus=useSelector((state:RootStateOrAny)=>state.activity?.selectedChangeStatus);
     const selectedClone=selectedChangeStatus?.filter((status:string)=>{
         return status!=DATE_ADDED
@@ -40,3 +40,4 @@ export default function Loader(refreshing,searchTerm,size){
 
     );
 }
+export default Loader
