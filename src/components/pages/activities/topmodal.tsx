@@ -1,4 +1,4 @@
-import React,{useEffect,useRef} from "react";
+import React, {memo, useEffect, useRef} from "react";
 import {
     Dimensions ,
     Modal ,
@@ -354,4 +354,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default TopModal;
+export default memo(TopModal);

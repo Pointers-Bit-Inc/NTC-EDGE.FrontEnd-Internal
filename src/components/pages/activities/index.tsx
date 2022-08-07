@@ -5,7 +5,6 @@ import {
     FlatList,
     FlatListProps,
     Platform,
-    RefreshControl,
     ScrollView,
     StatusBar,
     StyleProp,
@@ -76,6 +75,7 @@ import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import RefreshRN from "@assets/svg/refreshRN";
+import GetFlatList from "@pages/activities/getFlatList";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -432,108 +432,88 @@ const ActivitiesPage = (props) => {
 
     function getFlatList(ref, scrollHandler, data, isHeader = false) {
 
-        return <Animated.FlatList
-            refreshControl={
-                <RefreshControl
-                    tintColor={primaryColor} // ios
-                    progressBackgroundColor={infoColor} // android
-                    colors={['white']} // android
-                    progressViewOffset={headerHeight + 42}
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                />
-            }
-            showsVerticalScrollIndicator={false}
-            nestedScrollEnabled={true}
-            ListEmptyComponent={() => listEmpty(refreshing, searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
-                act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : tabIndex == 1 ? pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
-                act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : notPnApplications.length)}
-            ListHeaderComponent={isHeader ? listHeaderComponent() : null}
-            style={{flex: 1,}}
-            data={data}
-            keyExtractor={(item, index) => index.toString()}
-            ListFooterComponent={refreshing ? <View/> : bottomLoader}
-            onEndReached={() => {
-                if (!onEndReachedCalledDuringMomentum || !(
-                    isMobile && !(
-                        Platform?.isPad || isTablet()))) {
-                    handleLoad();
-                    setOnEndReachedCalledDuringMomentum(true);
-                }
-            }}
-            ref={ref}
-            onScroll={scrollHandler}
-            {...sharedProps}
-            onEndReachedThreshold={0.5}
-            onMomentumScrollBegin={() => {
-                onMomentumScrollBegin();
-                setOnEndReachedCalledDuringMomentum(false)
-            }}
-            renderItem={({item, index}) => (
-                <>
-                    <ApplicationList
-                        key={index}
-                        onPress={() => {
-                            userPress(index)
+        return <GetFlatList headerHeight={headerHeight} refreshing={refreshing} onRefresh={onRefresh}
+                            listEmptyComponent={() => listEmpty(refreshing, searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
+                                act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : tabIndex == 1 ? pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
+                                act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : notPnApplications.length)}
+                            header={isHeader} element={listHeaderComponent()} data={data}
+                            keyExtractor={(item, index) => index.toString()} bottomLoader={bottomLoader}
+                            onEndReached={() => {
+                                if (!onEndReachedCalledDuringMomentum || !(
+                                    isMobile && !(
+                                        Platform?.isPad || isTablet()))) {
+                                    handleLoad();
+                                    setOnEndReachedCalledDuringMomentum(true);
+                                }
+                            }} ref={ref} onScroll={scrollHandler} sharedProps={sharedProps}
+                            onMomentumScrollBegin={() => {
+                                onMomentumScrollBegin();
+                                setOnEndReachedCalledDuringMomentum(false)
+                            }} renderItem={({item, index}) => (
+            <>
+                <ApplicationList
+                    key={index}
+                    onPress={() => {
+                        userPress(index)
 
-                        }}
-                        item={item}
-                        numbers={numberCollapsed}
-                        index={index}
+                    }}
+                    item={item}
+                    numbers={numberCollapsed}
+                    index={index}
 
-                        element={(activity: any, i: number) => {
-                            return (
-                                <ActivityItem
-                                    isOpen={isOpen}
+                    element={(activity: any, i: number) => {
+                        return (
+                            <ActivityItem
+                                isOpen={isOpen}
 
-                                    config={config}
-                                    /*
-                                        isPinned={true}
-                                    */
-                                    searchQuery={searchTerm}
-                                    key={i}
-                                    selected={applicationItem?._id == activity?._id}
-                                    parentIndex={index}
-                                    role={user?.role?.key}
-                                    activity={activity}
-                                    currentUser={user}
-                                    onPressUser={(event: any) => {
-                                        dispatch(setEdit(false))
-                                        dispatch(setHasChange(false))
-                                        dispatch(setSelectedYPos({yPos, type: 0}))
-                                        dispatch(setApplicationItem({
-                                            ...activity,
-                                            isOpen: `${index}${i}`
-                                        }));
-                                        //setDetails({ ...activity , isOpen : `${ index }${ i }` });
-                                        /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
-                                        })*/
-                                        if (event?.icon == 'more') {
-                                            setMoreModalVisible(true)
+                                config={config}
+                                /*
+                                    isPinned={true}
+                                */
+                                searchQuery={searchTerm}
+                                key={i}
+                                selected={applicationItem?._id == activity?._id}
+                                parentIndex={index}
+                                role={user?.role?.key}
+                                activity={activity}
+                                currentUser={user}
+                                onPressUser={(event: any) => {
+                                    dispatch(setEdit(false))
+                                    dispatch(setHasChange(false))
+                                    dispatch(setSelectedYPos({yPos, type: 0}))
+                                    dispatch(setApplicationItem({
+                                        ...activity,
+                                        isOpen: `${index}${i}`
+                                    }));
+                                    //setDetails({ ...activity , isOpen : `${ index }${ i }` });
+                                    /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
+                                    })*/
+                                    if (event?.icon == 'more') {
+                                        setMoreModalVisible(true)
+                                    } else {
+                                        if (Platform.OS == "web") {
+                                            setModalVisible(true)
                                         } else {
-                                            if (Platform.OS == "web") {
-                                                setModalVisible(true)
-                                            } else {
-                                                props.navigation.navigate(ACTIVITYITEM, {
-                                                    onDismissed: onDismissedModal,
-                                                    onChangeEvent: onChangeEvent,
-                                                    onChangeAssignedId: onChangeAssignedId
-                                                });
-                                            }
-
-
-                                            //
+                                            props.navigation.navigate(ACTIVITYITEM, {
+                                                onDismissed: onDismissedModal,
+                                                onChangeEvent: onChangeEvent,
+                                                onChangeAssignedId: onChangeAssignedId
+                                            });
                                         }
 
-                                    }}
 
-                                    index={`${index}${i}`}
-                                    swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
-                            )
-                        }}/>
-                </>
+                                        //
+                                    }
 
-            )}/>
+                                }}
+
+                                index={`${index}${i}`}
+                                swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
+                        )
+                    }}/>
+            </>
+
+        )}/>
     }
     const tabsHandlers = [
         {
@@ -592,7 +572,6 @@ const ActivitiesPage = (props) => {
     const headerContainerStyle = useMemo<StyleProp<ViewStyle>>(
         () => [
             rendered ? styles.headerContainer : undefined,
-
             headerAnimatedStyle,
         ],
 

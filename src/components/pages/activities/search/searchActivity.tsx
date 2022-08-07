@@ -32,7 +32,7 @@ import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import ActivityModalView from "@pages/activities/nativeView/activityModalView";
 import {setApplicationItem} from "../../../../reducers/application/actions";
-import {useActivities} from "../../../../hooks/useActivities";
+import useActivities from "../../../../hooks/useActivities";
 import applications from "@screens/HomeScreen/Applications";
 import _ from "lodash";
 export function SearchActivity(props: {setApplications: any, onBlur: any ,  isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
