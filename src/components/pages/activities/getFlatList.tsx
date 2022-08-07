@@ -2,27 +2,10 @@ import {FlatListProps, RefreshControl, View} from "react-native";
 import {Connection} from "@pages/activities/types/Connection";
 import Animated from "react-native-reanimated";
 import {infoColor, primaryColor} from "@styles/color";
-import React, {memo} from "react";
+import React, {forwardRef, memo} from "react";
 
-const GetFlatList = (props: {
-    headerHeight: number,
-    refreshing: boolean,
-    onRefresh: () => void,
-    listEmptyComponent: () => JSX.Element,
-    header: boolean,
-    element: JSX.Element,
-    data: any,
-    keyExtractor: (item, index) => string,
-    bottomLoader: () => JSX.Element,
-    onEndReached: () => void,
-    ref: any,
-    onScroll: any,
-    sharedProps: Partial<FlatListProps<Connection>>,
-    onMomentumScrollBegin: () => void, renderItem: ({
-                                                                                                                                                                                                                                                                                                                                                                                               item,
-                                                                                                                                                                                                                                                                                                                                                                                               index
-                                                                                                                                                                                                                                                                                                                                                                                           }: { item: any; index: any }) => JSX.Element
-}) => {
+const GetFlatList = forwardRef(
+    (props, ref) => {
     return <Animated.FlatList
         refreshControl={
             <RefreshControl
@@ -43,12 +26,12 @@ const GetFlatList = (props: {
         keyExtractor={props.keyExtractor}
         ListFooterComponent={props.refreshing ? <View/> : props.bottomLoader}
         onEndReached={props.onEndReached}
-        ref={props.ref}
+        ref={ref}
         onScroll={props.onScroll}
         {...props.sharedProps}
         onEndReachedThreshold={0.5}
         onMomentumScrollBegin={props.onMomentumScrollBegin}
         renderItem={props.renderItem}/>;
-}
+})
 
 export default memo(GetFlatList)
