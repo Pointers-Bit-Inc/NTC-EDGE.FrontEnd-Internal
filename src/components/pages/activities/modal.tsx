@@ -309,9 +309,11 @@ function ActivityModal(props: any) {
     const [messageUpdate, setMessageUpdate] = useSafeState("")
     const [titleUpdate, setTitleUpdate] = useSafeState("")
     const updateApplication = useCallback(async (callback, isLoading = true) => {
+       console.log(isLoading, "isloading")
         /* hideToast()
          showToast(ToastType.Info, <ToastLoading/>)*/
-        setLoading(true)
+        if (isLoading) setLoading(true)
+        if (isLoading) setSaved(true)
         let profileForm = userProfileForm
         let dateOfBirth = profileForm?.['applicant.dateOfBirth'], region = profileForm?.['region.code'],
             dateValue = {year: "", month: "", day: ""}
@@ -407,8 +409,9 @@ function ActivityModal(props: any) {
         }
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {...payload, ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))}, config)
             .then((response) => {
-                const diff = _.differenceBy(flatten.unflatten(cleanSoa).soa, (response.data?.statement_Of_Account || response.data?.soa), 'item')
                 setLoading(false)
+                const diff = _.differenceBy(flatten.unflatten(cleanSoa).soa, (response.data?.statement_Of_Account || response.data?.soa), 'item')
+
                 cleanSoa = {
                     totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
                    // totalFee: response.data?.totalFee,
@@ -428,19 +431,19 @@ function ActivityModal(props: any) {
             });
         //if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
-        if (isLoading) setSaved(true)
+
         const profileFormUnflatten = flatten.unflatten(profileForm)
         if (profileFormUnflatten?.service?.stationClass) {
             profileFormUnflatten.service.stationClass = _service?.service?.stationClass
         }
 
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...cleanSoa}, config).then((response) => {
-           setSaved(false)
-
+            if (isLoading) setSaved(false)
+            if (isLoading) {
                 setTimeout(() => {
                     setLoading(false)
                 }, 2500)
-
+            }
             //hideToast()
             dispatch(setHasChange(false))
             dispatch(setEdit(false))
