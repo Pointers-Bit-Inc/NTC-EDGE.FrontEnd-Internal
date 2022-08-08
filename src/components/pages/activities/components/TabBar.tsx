@@ -15,7 +15,7 @@ const TabBar: FC<Props> = ({ onIndexChange, ...props }) => {
     onIndexChange?.(index);
   }, [onIndexChange, index]);
 
-  return <MaterialTopTabBar {...props} />;
+  return <MaterialTopTabBar  {...props} />;
 };
 
 export default memo(TabBar);

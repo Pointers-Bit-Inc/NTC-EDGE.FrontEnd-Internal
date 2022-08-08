@@ -15,7 +15,7 @@ const useScrollSync = (
 
     const headerDiff = heightExpanded - heightCollapsed;
 
-    for await(const {list, position} of scrollPairs) {
+    for (const {list, position} of scrollPairs) {
       const scrollPosition = position.value ?? 0;
 
       if (scrollPosition > headerDiff && y > headerDiff) {
