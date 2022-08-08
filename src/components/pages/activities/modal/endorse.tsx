@@ -1,13 +1,14 @@
 import React , {useEffect , useState} from "react";
 import {
-    Alert ,
-    Dimensions ,
-    KeyboardAvoidingView ,
-    Modal ,
-    Platform ,
-    StyleSheet ,
-    Text ,
-    TouchableOpacity , TouchableWithoutFeedback , useWindowDimensions ,
+    ActivityIndicator,
+    Alert,
+    Dimensions,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    StyleSheet,
+    Text,
+    TouchableOpacity, TouchableWithoutFeedback, useWindowDimensions,
     View
 } from "react-native";
 import {InputField} from "@molecules/form-fields";
@@ -30,11 +31,14 @@ import hairlineWidth = StyleSheet.hairlineWidth;
 import button from "@pages/activities/modal/styles";
 import ConfirmRightArrow from "@assets/svg/confirmArrow";
 import {isLandscapeSync,isTablet} from "react-native-device-info";
+import {setEdit, setHasChange} from "../../../../reducers/application/actions";
+import {ToastType} from "@atoms/toast/ToastProvider";
+import {useToast} from "../../../../hooks/useToast";
 
 const { height , width } = Dimensions.get('window');
 
 const Endorsed = (props: any) => {
-
+    const {showToast, hideToast} = useToast();
     const user = useSelector((state: RootStateOrAny) => state.user);
     const [pickedEndorsed , setPickedEndorsed] = useState<any[]>();
     const [text , setText] = useState("");
@@ -47,15 +51,17 @@ const Endorsed = (props: any) => {
     const [title , setTitle] = useState("Endorse Application to");
     const [selected , setSelected] = useState(undefined);
     const [validateRemarks , setValidateRemarks] = useState<{ error: boolean }>({ error : false });
+    const [loading , setLoading] = useState(false);
 
     const fetchEndorse = async (isCurrent: boolean) => {
+        setLoading(true)
         await axios.get(BASE_URL + '/users' ,
             {
                 headers : {
                     Authorization : "Bearer ".concat(user.sessionToken)
                 }
             }).then((response) => {
-
+            setLoading(false)
             const filterResponse = [...(response?.data?.docs || response?.data)].filter((item) => {
                 return getRole(item , [DIRECTOR , EVALUATOR , ACCOUNTANT]) //&& user?._id != item?._id
             });
@@ -69,7 +75,16 @@ const Endorsed = (props: any) => {
                 setEndorsed( res[0]?.value || (props?.assignedPersonnel?._id || props?.assignedPersonnel))
             }
 
-        })
+        }).catch((error) => {
+            setLoading(false)
+            let _err = '';
+            for (const err in error?.response?.data?.errors) {
+                _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
+            }
+            if (_err || error?.response?.data?.message || error?.response?.statusText) {
+                showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText)
+            }
+        });
     };
 
     useEffect(() => {
@@ -228,11 +243,13 @@ const Endorsed = (props: any) => {
 
 
                                   <CustomDropdown value={ endorsed }
+                                                  loading={loading}
                                                   label="Select Item"
                                                   data={ pickedEndorsed }
                                                   onSelect={ ({ value }) => {
                                                       if (value) setEndorsed(value)
                                                   } }/>
+
                                   <View style={ { paddingVertical : 10 } }>
                                       <InputField
 

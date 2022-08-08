@@ -407,7 +407,10 @@ function ActivityModal(props: any) {
                 "rt": 0
             }
         }
-        await axios.post(BASE_URL + "/applications/calculate-total-fee", {...payload, ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))}, config)
+        await axios.post(BASE_URL + "/applications/calculate-total-fee", {
+            ...payload,
+            ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
+        }, config)
             .then((response) => {
                 if (isLoading)setLoading(false)
                 const diff = _.differenceBy(flatten.unflatten(cleanSoa).soa, (response.data?.statement_Of_Account || response.data?.soa), 'item')

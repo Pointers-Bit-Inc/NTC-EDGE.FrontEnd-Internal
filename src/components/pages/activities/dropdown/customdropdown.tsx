@@ -1,5 +1,6 @@
 import React,{FC,ReactElement,useEffect,useRef,useState} from 'react';
 import {
+    ActivityIndicator,
     FlatList,
     Modal,
     Platform,
@@ -22,9 +23,10 @@ interface Props {
         label: string;
         data: any;
         onSelect: (item: any) => void;
+        loading: false
     }
 
-    const CustomDropdown: FC<Props> = ({label, data, onSelect, value}) => {
+    const CustomDropdown: FC<Props> = ({label, data, onSelect, value, loading}) => {
         const dimension = useWindowDimensions()
         const DropdownButton = useRef();
         const [visible, setVisible] = useState(false);
@@ -122,7 +124,7 @@ interface Props {
                                 renderItem={renderItem}
                                 keyExtractor={(item, index) => index.toString()}
                             /> : <View style={{height: "100%", justifyContent: "center", alignItems: "center"}}>
-                                <Text>No Data</Text>
+                                {loading ? <ActivityIndicator/> :<Text>No Data</Text>}
                             </View>}
                         </View>}
                     </TouchableOpacity>
