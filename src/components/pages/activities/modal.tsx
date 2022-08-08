@@ -311,7 +311,7 @@ function ActivityModal(props: any) {
     const updateApplication = useCallback(async (callback, isLoading = true) => {
         /* hideToast()
          showToast(ToastType.Info, <ToastLoading/>)*/
-        if (isLoading) setLoading(true)
+        setLoading(true)
         let profileForm = userProfileForm
         let dateOfBirth = profileForm?.['applicant.dateOfBirth'], region = profileForm?.['region.code'],
             dateValue = {year: "", month: "", day: ""}
@@ -408,9 +408,10 @@ function ActivityModal(props: any) {
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {...payload, ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))}, config)
             .then((response) => {
                 const diff = _.differenceBy(flatten.unflatten(cleanSoa).soa, (response.data?.statement_Of_Account || response.data?.soa), 'item')
-
+                setLoading(false)
                 cleanSoa = {
                     totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
+                   // totalFee: response.data?.totalFee,
                     soa: _.uniqBy(removeEmpty([...flatten.unflatten(cleanSoa).soa, ...(response.data?.statement_Of_Account || response.data?.soa)]), 'item')
                 }
             }).catch((error) => {
@@ -434,12 +435,12 @@ function ActivityModal(props: any) {
         }
 
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...cleanSoa}, config).then((response) => {
-            if (isLoading) setSaved(false)
-            if (isLoading) {
+           setSaved(false)
+
                 setTimeout(() => {
                     setLoading(false)
                 }, 2500)
-            }
+
             //hideToast()
             dispatch(setHasChange(false))
             dispatch(setEdit(false))
