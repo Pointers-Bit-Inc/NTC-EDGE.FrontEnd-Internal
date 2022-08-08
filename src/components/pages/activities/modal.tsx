@@ -409,7 +409,7 @@ function ActivityModal(props: any) {
         }
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {...payload, ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))}, config)
             .then((response) => {
-                setLoading(false)
+                if (isLoading)setLoading(false)
                 const diff = _.differenceBy(flatten.unflatten(cleanSoa).soa, (response.data?.statement_Of_Account || response.data?.soa), 'item')
 
                 cleanSoa = {
@@ -420,7 +420,7 @@ function ActivityModal(props: any) {
             }).catch((error) => {
                 dispatch(setEdit(false))
                 dispatch(setHasChange(false))
-                setLoading(false)
+                if (isLoading)setLoading(false)
                 let _err = '';
                 for (const err in error?.response?.data?.errors) {
                     _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
@@ -436,7 +436,7 @@ function ActivityModal(props: any) {
         if (profileFormUnflatten?.service?.stationClass) {
             profileFormUnflatten.service.stationClass = _service?.service?.stationClass
         }
-
+        if (isLoading) setLoading(true)
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...cleanSoa}, config).then((response) => {
             if (isLoading) setSaved(false)
             if (isLoading) {
