@@ -147,6 +147,11 @@ const transformToFeePayload = (application: any) => {
         }
         return _csObj;
     };
+    let validityFn = () => {
+        let no = Number(applicationDetails?.noOfYears || 0);
+        if (isNaN(no)) return 0;
+        else return no;
+    };
 
     /*
     let classFn = () => {
@@ -227,7 +232,7 @@ const transformToFeePayload = (application: any) => {
         subService: applicationType?.serviceCode || '', //
         types: typeFn(), //
         category: categoryFn(), //
-        validity: Number(applicationDetails?.noOfYears || 0), //
+        validity: validityFn(), //
         units: equipment?.length || 0, //
         nos: valueAddedServices?.service?.length || 0, //
         boundary: boundaryFn(), //

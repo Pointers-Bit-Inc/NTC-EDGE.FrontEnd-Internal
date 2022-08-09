@@ -515,6 +515,7 @@ const ActivitiesPage = (props) => {
 
     const renderAllActivities = useCallback(
         () => <AnimatedFlatList
+
             refreshControl={
                 <RefreshControl
                     tintColor={primaryColor} // ios
@@ -619,6 +620,7 @@ const ActivitiesPage = (props) => {
         [rendered, headerHeight, tabBarAnimatedStyle]
     );
     const tabBarOptions = {
+
         "tabBarActiveTintColor": "#2F5BFA",
         "tabBarInactiveTintColor": "#606A80",
         "tabBarIndicatorStyle": {
@@ -824,7 +826,7 @@ const ActivitiesPage = (props) => {
 
                             </View>
                         </Animated.View>
-                        <Tab.Navigator screenOptions={tabBarOptions} tabBar={renderTabBar}>
+                        <Tab.Navigator  screenOptions={tabBarOptions} tabBar={renderTabBar}>
                             <Tab.Screen  name="All">{renderAllActivities}</Tab.Screen>
                             <Tab.Screen name="Pending">{renderPending}</Tab.Screen>
                             <Tab.Screen name="History">{renderHistory}</Tab.Screen>

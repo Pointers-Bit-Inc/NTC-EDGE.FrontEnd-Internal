@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {
     ActivityIndicator,
     Alert,
-    Animated,
+    Animated, BackHandler,
     Dimensions,
     KeyboardAvoidingView,
     Modal,
@@ -231,6 +231,7 @@ const Approval=(props:any)=>{
             });
         }, 70)
     }
+
     useEffect(()=>{
         if(props.visible){
             Animated.spring(animation, {
