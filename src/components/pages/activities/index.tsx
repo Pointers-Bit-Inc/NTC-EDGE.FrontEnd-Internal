@@ -3,7 +3,7 @@ import {createMaterialTopTabNavigator, MaterialTopTabBarProps,} from "@react-nav
 import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
     FlatList,
-    FlatListProps,
+    FlatListProps, ListRenderItem,
     Platform, RefreshControl,
     ScrollView,
     StatusBar,
@@ -76,6 +76,8 @@ import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import RefreshRN from "@assets/svg/refreshRN";
 import useSafeState from "../../../hooks/useSafeState";
+import {AnimatedFlatList} from "@pages/activities/components/ConnectionList";
+import ConnectionItem from "@pages/activities/components/ConnectionItem";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -430,10 +432,89 @@ const ActivitiesPage = (props) => {
 
             </View>}
     </>;
+    const renderItem = useCallback<ListRenderItem<Connection>>(
+        ({item, index}) => (
+            <>
+                <ApplicationList
+                    key={index}
+                    onPress={() => {
+                        userPress(index)
 
-    function getFlatList(ref, scrollHandler, data, isHeader = false) {
+                    }}
+                    item={item}
+                    numbers={numberCollapsed}
+                    index={index}
 
-        return <Animated.FlatList
+                    element={(activity: any, i: number) => {
+                        return (
+                            <ActivityItem
+                                isOpen={isOpen}
+
+                                config={config}
+                                /*
+                                    isPinned={true}
+                                */
+                                searchQuery={searchTerm}
+                                key={i}
+                                selected={applicationItem?._id == activity?._id}
+                                parentIndex={index}
+                                role={user?.role?.key}
+                                activity={activity}
+                                currentUser={user}
+                                onPressUser={(event: any) => {
+                                    dispatch(setEdit(false))
+                                    dispatch(setHasChange(false))
+                                    dispatch(setSelectedYPos({yPos, type: 0}))
+                                    dispatch(setApplicationItem({
+                                        ...activity,
+                                        isOpen: `${index}${i}`
+                                    }));
+                                    //setDetails({ ...activity , isOpen : `${ index }${ i }` });
+                                    /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
+                                    })*/
+                                    if (event?.icon == 'more') {
+                                        setMoreModalVisible(true)
+                                    } else {
+                                        if (Platform.OS == "web") {
+                                            setModalVisible(true)
+                                        } else {
+                                            props.navigation.navigate(ACTIVITYITEM, {
+                                                onDismissed: onDismissedModal,
+                                                onChangeEvent: onChangeEvent,
+                                                onChangeAssignedId: onChangeAssignedId
+                                            });
+                                        }
+
+
+                                        //
+                                    }
+
+                                }}
+
+                                index={`${index}${i}`}
+                                swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
+                        )
+                    }}/>
+            </>
+
+        ),
+        []
+    );
+    const  onEndReached = () => {
+        if (!onEndReachedCalledDuringMomentum || !(
+            isMobile && !(
+                Platform?.isPad || isTablet()))) {
+            handleLoad();
+            setOnEndReachedCalledDuringMomentum(true);
+        }
+    }
+
+    const  listEmptyComponent = () => listEmpty(refreshing, searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
+        act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : tabIndex == 1 ? pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
+        act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : notPnApplications.length);
+
+    const renderAllActivities = useCallback(
+        () => <AnimatedFlatList
             refreshControl={
                 <RefreshControl
                     tintColor={primaryColor} // ios
@@ -446,107 +527,87 @@ const ActivitiesPage = (props) => {
             }
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
-            ListEmptyComponent={() => listEmpty(refreshing, searchTerm, (tabIndex == 0) ? notPnApplications.length + pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
-                act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : tabIndex == 1 ? pnApplications?.map((item: any, index: number) => item?.activity && item?.activity?.map((act: any, i: number) => (
-                act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : notPnApplications.length)}
-            ListHeaderComponent={isHeader ? listHeaderComponent() : null}
+            ListEmptyComponent={listEmptyComponent}
+            ListHeaderComponent={listHeaderComponent()}
             style={{flex: 1,}}
-            data={data}
+            data={notPnApplications}
             keyExtractor={(item, index) => index.toString()}
             ListFooterComponent={refreshing ? <View/> : bottomLoader}
-            onEndReached={() => {
-                if (!onEndReachedCalledDuringMomentum || !(
-                    isMobile && !(
-                        Platform?.isPad || isTablet()))) {
-                    handleLoad();
-                    setOnEndReachedCalledDuringMomentum(true);
-                }
-            }}
-            ref={ref}
-            onScroll={scrollHandler}
+            onEndReached={onEndReached}
+            ref={allRef}
+            onScroll={allScrollHandler}
             {...sharedProps}
             onEndReachedThreshold={0.5}
             onMomentumScrollBegin={() => {
-                onMomentumScrollBegin();
+                //onMomentumScrollBegin();
                 setOnEndReachedCalledDuringMomentum(false)
             }}
-            renderItem={({item, index}) => (
-                <>
-                    <ApplicationList
-                        key={index}
-                        onPress={() => {
-                            userPress(index)
-
-                        }}
-                        item={item}
-                        numbers={numberCollapsed}
-                        index={index}
-
-                        element={(activity: any, i: number) => {
-                            return (
-                                <ActivityItem
-                                    isOpen={isOpen}
-
-                                    config={config}
-                                    /*
-                                        isPinned={true}
-                                    */
-                                    searchQuery={searchTerm}
-                                    key={i}
-                                    selected={applicationItem?._id == activity?._id}
-                                    parentIndex={index}
-                                    role={user?.role?.key}
-                                    activity={activity}
-                                    currentUser={user}
-                                    onPressUser={(event: any) => {
-                                        dispatch(setEdit(false))
-                                        dispatch(setHasChange(false))
-                                        dispatch(setSelectedYPos({yPos, type: 0}))
-                                        dispatch(setApplicationItem({
-                                            ...activity,
-                                            isOpen: `${index}${i}`
-                                        }));
-                                        //setDetails({ ...activity , isOpen : `${ index }${ i }` });
-                                        /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
-                                        })*/
-                                        if (event?.icon == 'more') {
-                                            setMoreModalVisible(true)
-                                        } else {
-                                            if (Platform.OS == "web") {
-                                                setModalVisible(true)
-                                            } else {
-                                                props.navigation.navigate(ACTIVITYITEM, {
-                                                    onDismissed: onDismissedModal,
-                                                    onChangeEvent: onChangeEvent,
-                                                    onChangeAssignedId: onChangeAssignedId
-                                                });
-                                            }
-
-
-                                            //
-                                        }
-
-                                    }}
-
-                                    index={`${index}${i}`}
-                                    swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
-                            )
-                        }}/>
-                </>
-
-            )}/>
-    }
-    const renderAllActivities = useCallback(
-        () => getFlatList(allRef, allScrollHandler, notPnApplications, true),
+            renderItem={renderItem}/>,
         [allRef, allScrollHandler, sharedProps]
     );
 
+
     const renderPending = useCallback(
-        () => getFlatList(pendingRef, pendingScrollHandler, pnApplications, false),
+        () => <AnimatedFlatList
+            refreshControl={
+                <RefreshControl
+                    tintColor={primaryColor} // ios
+                    progressBackgroundColor={infoColor} // android
+                    colors={['white']} // android
+                    progressViewOffset={headerHeight + 42}
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                />
+            }
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled={true}
+            ListEmptyComponent={listEmptyComponent}
+            style={{flex: 1,}}
+            data={pnApplications}
+            keyExtractor={(item, index) => index.toString()}
+            ListFooterComponent={refreshing ? <View/> : bottomLoader}
+            onEndReached={onEndReached}
+            ref={pendingRef}
+            onScroll={pendingScrollHandler}
+            {...sharedProps}
+            onEndReachedThreshold={0.5}
+            onMomentumScrollBegin={() => {
+                //onMomentumScrollBegin();
+                setOnEndReachedCalledDuringMomentum(false)
+            }}
+            renderItem={renderItem}/>,
         [pendingRef, pendingScrollHandler,sharedProps]
     );
+
     const renderHistory = useCallback(
-        () => getFlatList(historyRef, historyScrollHandler,  notPnApplications, false),
+        () => <AnimatedFlatList
+            refreshControl={
+                <RefreshControl
+                    tintColor={primaryColor} // ios
+                    progressBackgroundColor={infoColor} // android
+                    colors={['white']} // android
+                    progressViewOffset={headerHeight + 42}
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                />
+            }
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled={true}
+            ListEmptyComponent={listEmptyComponent}
+            style={{flex: 1,}}
+            data={notPnApplications}
+            keyExtractor={(item, index) => index.toString()}
+            ListFooterComponent={refreshing ? <View/> : bottomLoader}
+            onEndReached={onEndReached}
+            ref={historyRef}
+            onScroll={historyScrollHandler}
+            {...sharedProps}
+            onEndReachedThreshold={0.5}
+            onMomentumScrollBegin={() => {
+                //onMomentumScrollBegin();
+                setOnEndReachedCalledDuringMomentum(false)
+            }}
+            renderItem={renderItem}/>,
         [historyRef, historyScrollHandler,  sharedProps]
     );
     const tabBarStyle = useMemo<StyleProp<ViewStyle>>(
