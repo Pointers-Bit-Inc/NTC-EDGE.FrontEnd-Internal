@@ -144,13 +144,7 @@ const ActivitiesPage = (props) => {
         notPinnedApplications
     } = useActivities(props);
 
-    const {
-        scrollY,
-        index,
-        setIndex,
-        getRefForKey,
-        ...sceneProps
-    } = useScrollManager(tabs);
+
 
 
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
@@ -218,7 +212,13 @@ const ActivitiesPage = (props) => {
     const [tabIndex, setTabIndex] = useState(0);
 
     const [headerHeight, setHeaderHeight] = useState(0);
-
+    const {
+        scrollY,
+        index,
+        setIndex,
+        getRefForKey,
+        ...sceneProps
+    } = useScrollManager(tabs, Theme.sizing, headerHeight);
     const defaultHeaderHeight = (!!lodash.size(meetingList) ? 80 : 0) + (Platform.OS == "web" ? 0 : 44);
 
     const headerConfig = useMemo<HeaderConfig>(
@@ -585,7 +585,7 @@ const ActivitiesPage = (props) => {
                     isActive={tabs[index].key === tab.key}
                     routeKey={tab.key}
                     scrollY={scrollY}
-                    data={notPnApplications}
+                    data={tab.key == "pending" ? pnApplications : notPnApplications}
                     renderItem={({item, index}) => (
                         <>
                             <ApplicationList
@@ -654,7 +654,7 @@ const ActivitiesPage = (props) => {
                     {...sceneProps}
                 />
             )},
-        [getRefForKey, index, tabs, scrollY, refreshing, pnApplications, notPnApplications]
+        [getRefForKey, index, tabs,  scrollY, refreshing, pnApplications, notPnApplications]
     );
     return (
         <>

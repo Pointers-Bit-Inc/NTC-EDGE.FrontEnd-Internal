@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, FlatList } from 'react-native';
+import {Animated, FlatList, Platform} from 'react-native';
 
-import { CBTabViewOffset } from '../lib/CBAnimatedTabView';
 import { Theme } from "../lib/CBTheme";
 
-export const useScrollManager = (routes: { key: string; title: string }[], sizing = Theme.sizing) => {
-  const scrollY = useRef(new Animated.Value(-sizing.header)).current;
+export const useScrollManager = (routes: { key: string; title: string }[], sizing = Theme.sizing, headerHeight) => {
+  const CBTabViewOffset = Platform.OS === "ios" ? -headerHeight : 0
+  const scrollY = useRef(new Animated.Value(-headerHeight)).current;
   const [index, setIndex] = useState(0);
   const isListGliding = useRef(false);
   const tabkeyToScrollPosition = useRef<{ [key: string]: number }>({}).current;
@@ -34,10 +34,10 @@ export const useScrollManager = (routes: { key: string; title: string }[], sizin
         }
 
         if (/* header visible */ key !== curRouteKey) {
-          if (scrollValue <= CBTabViewOffset + sizing.header) {
+          if (scrollValue <= CBTabViewOffset + headerHeight) {
             scrollRef.scrollToOffset({
               offset: Math.max(
-                Math.min(scrollValue, CBTabViewOffset + sizing.header),
+                Math.min(scrollValue, CBTabViewOffset + headerHeight),
                 CBTabViewOffset,
               ),
               animated: false,
@@ -46,15 +46,15 @@ export const useScrollManager = (routes: { key: string; title: string }[], sizin
           } else if (
             /* header hidden */
             tabkeyToScrollPosition[key] <
-              CBTabViewOffset + sizing.header ||
+              CBTabViewOffset + headerHeight ||
             tabkeyToScrollPosition[key] == null
           ) {
             scrollRef.scrollToOffset({
-              offset: CBTabViewOffset + sizing.header,
+              offset: CBTabViewOffset + headerHeight,
               animated: false,
             });
             tabkeyToScrollPosition[key] =
-              CBTabViewOffset + sizing.header;
+              CBTabViewOffset + headerHeight;
           }
         }
       });
