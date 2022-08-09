@@ -90,7 +90,7 @@ const CBAnimatedTabViewWithoutMemo = <T extends any>({
         },
         default: {
           flexGrow: 1,
-          paddingTop: headerHeight + 10,
+          paddingTop: Theme.sizing.header + (Platform.OS  == "web" ? 0 :20),
           paddingBottom: Theme.spacing.gutter,
         },
       })}
