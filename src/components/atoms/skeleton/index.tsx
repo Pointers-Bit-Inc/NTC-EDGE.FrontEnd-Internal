@@ -56,14 +56,14 @@ class Skeleton extends Component<Props> {
             <View style={styles.container}>
                 <View style={[{ marginBottom: 2 }, styles.card]}>
                     <View style={{ width: 70, height: 70, borderRadius: 35, backgroundColor: '#ECEFF1', overflow: 'hidden', marginRight: 20 }}>
-                        <Animated.View style={{ width: '35%', opacity: 0.5, height: '100%', backgroundColor: 'white', transform: [{ translateX: translateX }] }}></Animated.View>
+                        <View style={{ width: '35%', opacity: 0.5, height: '100%', backgroundColor: 'white',}}></View>
                     </View>
                     <View style={{ flex: 1, justifyContent: 'space-evenly', overflow: 'hidden' }}>
-                        <Animated.View style={{ backgroundColor: '#ECEFF1', height: 32/2 }}>
-                            <Animated.View style={{ width: '10%', height: '100%', backgroundColor: 'white', opacity: 0.5, transform: [{ translateX: translateX2 }] }}></Animated.View>
-                        </Animated.View>
                         <View style={{ backgroundColor: '#ECEFF1', height: 32/2 }}>
-                            <Animated.View style={{ width: '10%', height: '100%', backgroundColor: 'white', opacity: 0.5, transform: [{ translateX: translateX2 }] }}></Animated.View>
+                            <View style={{ width: '10%', height: '100%', backgroundColor: 'white', opacity: 0.5,  }}></View>
+                        </View>
+                        <View style={{ backgroundColor: '#ECEFF1', height: 32/2 }}>
+                            <View style={{ width: '10%', height: '100%', backgroundColor: 'white', opacity: 0.5, }}></View>
                         </View>
                     </View>
                 </View>
