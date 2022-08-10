@@ -1,27 +1,61 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {createMaterialTopTabNavigator, MaterialTopTabBarProps,} from "@react-navigation/material-top-tabs";
+
+import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
-    StyleSheet,
-    View,
-    Text,
-    Dimensions,
-    useWindowDimensions,
-    Platform,
-    RefreshControl,
+    FlatList,
+    FlatListProps, ListRenderItem,
+    Platform, RefreshControl,
     ScrollView,
-    Animated,
-    FlatList, ViewProps, StyleProp, ViewStyle, FlatListProps, TouchableOpacity, StatusBar
+    StatusBar,
+    StyleProp,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
+    View,
+    ViewProps,
+    ViewStyle,
 } from "react-native";
-import {SafeAreaProvider, useSafeAreaInsets} from "react-native-safe-area-context";
+import Animated, {
+    interpolate,
+    useAnimatedScrollHandler,
+    useAnimatedStyle,
+    useDerivedValue,
+    useSharedValue,
+} from "react-native-reanimated";
+import TabBar from "./components/TabBar";
+import useScrollSync from "./hooks/useScrollSync";
+import {Connection} from "./types/Connection";
+import {ScrollPair} from "./types/ScrollPair";
+import {useSafeAreaInsets} from "react-native-safe-area-context";
+import {HeaderConfig} from "./types/HeaderConfig";
+import {Visibility} from "./types/Visibility";
+import lodash from "lodash";
+import useActivities from "../../../hooks/useActivities";
+import {isMobile} from "@pages/activities/isMobile";
+import {isLandscapeSync, isTablet} from "react-native-device-info";
 import FilterPressIcon from "@assets/svg/filterPress";
 import FilterIcon from "@assets/svg/filterIcon";
+import {styles as styles1} from "@pages/activities/styles";
+import {RootStateOrAny, useSelector} from "react-redux";
+import IMeetings from "../../../interfaces/IMeetings";
 import {
-    CBAnimatedNavBar,
-    CBAnimatedHeader,
-    CBAnimatedTabBar,
-    CBTabRoute,
-    CBTabView,
-    CBTabBar, Theme,
-} from "./lib";
+    removeActiveMeeting,
+    resetCurrentMeeting,
+    setActiveMeetings,
+    setMeeting,
+    setOptions
+} from "../../../reducers/meeting/actions";
+import IParticipants from "../../../interfaces/IParticipants";
+import {openUrl} from "../../../utils/web-actions";
+import {setSelectedChannel} from "../../../reducers/channel/actions";
+import {Regular500} from "@styles/font";
+import {fontValue} from "@pages/activities/fontValue";
+import HomeMenuIcon from "@assets/svg/homemenu";
+import {setVisible} from "../../../reducers/activity/actions";
+import {infoColor, primaryColor} from "@styles/color";
+import RefreshWeb from "@assets/svg/refreshWeb";
+import {MeetingNotif} from '@components/molecules/list-item';
 import {
     setApplicationItem,
     setEdit,
@@ -30,67 +64,23 @@ import {
     setPinnedApplication,
     setSelectedYPos
 } from "../../../reducers/application/actions";
-import { useScrollManager } from "./hooks";
-import { Scene, NavBar, NavBarTitle, Header } from "./components";
-import ApplicationList from "@pages/activities/applicationList";
-import {isMobile} from "@pages/activities/isMobile";
-import {isLandscapeSync, isTablet} from "react-native-device-info";
-import useActivities from "../../../hooks/useActivities";
+import {renderSwiper} from "@pages/activities/swiper";
 import {ActivityItem} from "@pages/activities/activityItem";
-import {infoColor, primaryColor} from "@styles/color";
-import {AnimatedFlatList} from "@pages/activities/components/ConnectionList";
-import listEmpty from "@pages/activities/listEmpty";
-import {ACTIVITYITEM, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
-import {styles as styles1} from "@pages/activities/styles";
-import {RootStateOrAny, useSelector} from "react-redux";
-import lodash from "lodash";
-import {
-    removeActiveMeeting,
-    resetCurrentMeeting,
-    setActiveMeetings,
-    setMeeting,
-    setOptions
-} from "../../../reducers/meeting/actions";
-import IMeetings from "../../../interfaces/IMeetings";
-import IParticipants from "../../../interfaces/IParticipants";
-import {openUrl} from "../../../utils/web-actions";
-import {setSelectedChannel} from "../../../reducers/channel/actions";
-import {HeaderConfig} from "@pages/activities/types/HeaderConfig";
-import {
-    interpolate,
-    useAnimatedScrollHandler,
-    useAnimatedStyle,
-    useDerivedValue,
-    useSharedValue
-} from "react-native-reanimated";
-import {ScrollPair} from "@pages/activities/types/ScrollPair";
-import useScrollSync from "@pages/activities/hooks/useScrollSync";
-import {Visibility} from "@pages/activities/types/Visibility";
-import {Connection} from "@pages/activities/types/Connection";
-import {Regular, Regular500} from "@styles/font";
-import {MeetingNotif} from "@molecules/list-item";
 import {getChannelName} from "../../../utils/formatting";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
-import NoActivity from "@assets/svg/noActivity";
-import {fontValue} from "@pages/activities/fontValue";
+import {ACTIVITYITEM, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
-import RefreshWeb from "@assets/svg/refreshWeb";
+import NoActivity from "@assets/svg/noActivity";
+import listEmpty from "./listEmpty";
+import ApplicationList from "@pages/activities/applicationList";
 import RefreshRN from "@assets/svg/refreshRN";
-import HomeMenuIcon from "@assets/svg/homemenu";
-import {setVisible} from "../../../reducers/activity/actions";
-import useMemoizedFn from "../../../hooks/useMemoizedFn";
-import {TabBar, TabBarIndicator} from "react-native-tab-view";
-const initialWidth = Dimensions.get("window").width;
-export type tabKeys = "all" | "pending" | "history";
-export const tabs = [
-    { key: "all" as tabKeys, title: "All" },
-    { key: "pending" as tabKeys, title: "Pending" },
-    { key: "history" as tabKeys, title: "History" },
-];
+import {AnimatedFlatList} from "@pages/activities/components/ConnectionList";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
+const Tab = createMaterialTopTabNavigator();
+
 const ActivitiesPage = (props) => {
     const dimensions = useWindowDimensions();
     const Filter = (
@@ -133,6 +123,7 @@ const ActivitiesPage = (props) => {
         onSearchLayoutComponent,
         onActivityLayoutComponent,
         containerHeight,
+        scrollY,
         onMomentumScrollBegin,
         onMomentumScrollEnd,
         onScrollEndDrag,
@@ -144,9 +135,6 @@ const ActivitiesPage = (props) => {
         pinnedApplications,
         notPinnedApplications
     } = useActivities(props);
-
-
-
 
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
 
@@ -213,13 +201,7 @@ const ActivitiesPage = (props) => {
     const [tabIndex, setTabIndex] = useState(0);
 
     const [headerHeight, setHeaderHeight] = useState(0);
-    const {
-        scrollY,
-        index,
-        setIndex,
-        getRefForKey,
-        ...sceneProps
-    } = useScrollManager(tabs, Theme.sizing, headerHeight);
+
     const defaultHeaderHeight = (!!lodash.size(meetingList) ? 80 : 0) + (Platform.OS == "web" ? 0 : 44);
 
     const headerConfig = useMemo<HeaderConfig>(
@@ -237,9 +219,7 @@ const ActivitiesPage = (props) => {
     const rendered = headerHeight > 0;
 
     const handleHeaderLayout = useCallback<NonNullable<ViewProps["onLayout"]>>(
-        useMemoizedFn((event) => {
-            return setHeaderHeight(event.nativeEvent.layout.height)
-        }),
+        (event) => setHeaderHeight(event.nativeEvent.layout.height),
         []
     );
 
@@ -357,7 +337,6 @@ const ActivitiesPage = (props) => {
         dispatch(setApplicationItem(event))
         setUpdateModal(true);
     };
-
     const listHeaderComponent = () => <>
         {!searchVisible && !!pnApplications?.length && containerHeight &&
             <View style={[styles1.pinnedActivityContainer, {
@@ -451,6 +430,74 @@ const ActivitiesPage = (props) => {
 
             </View>}
     </>;
+    const renderItem = useCallback<ListRenderItem<Connection>>(
+        ({item, index}) => (
+            <>
+                <ApplicationList
+                    key={index}
+                    onPress={() => {
+                        userPress(index)
+
+                    }}
+                    item={item}
+                    numbers={numberCollapsed}
+                    index={index}
+
+                    element={(activity: any, i: number) => {
+                        return (
+                            <ActivityItem
+                                isOpen={isOpen}
+
+                                config={config}
+                                /*
+                                    isPinned={true}
+                                */
+                                searchQuery={searchTerm}
+                                key={i}
+                                selected={applicationItem?._id == activity?._id}
+                                parentIndex={index}
+                                role={user?.role?.key}
+                                activity={activity}
+                                currentUser={user}
+                                onPressUser={(event: any) => {
+                                    dispatch(setEdit(false))
+                                    dispatch(setHasChange(false))
+                                    dispatch(setSelectedYPos({yPos, type: 0}))
+                                    dispatch(setApplicationItem({
+                                        ...activity,
+                                        isOpen: `${index}${i}`
+                                    }));
+                                    //setDetails({ ...activity , isOpen : `${ index }${ i }` });
+                                    /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
+                                    })*/
+                                    if (event?.icon == 'more') {
+                                        setMoreModalVisible(true)
+                                    } else {
+                                        if (Platform.OS == "web") {
+                                            setModalVisible(true)
+                                        } else {
+                                            props.navigation.navigate(ACTIVITYITEM, {
+                                                onDismissed: onDismissedModal,
+                                                onChangeEvent: onChangeEvent,
+                                                onChangeAssignedId: onChangeAssignedId
+                                            });
+                                        }
+
+
+                                        //
+                                    }
+
+                                }}
+
+                                index={`${index}${i}`}
+                                swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
+                        )
+                    }}/>
+            </>
+
+        ),
+        []
+    );
     const  onEndReached = () => {
         if (!onEndReachedCalledDuringMomentum || !(
             isMobile && !(
@@ -465,7 +512,7 @@ const ActivitiesPage = (props) => {
         act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : notPnApplications.length);
 
     const renderAllActivities = useCallback(
-        () => <AnimatedFlatList
+        () => <Animated.FlatList
 
             refreshControl={
                 <RefreshControl
@@ -500,7 +547,7 @@ const ActivitiesPage = (props) => {
 
 
     const renderPending = useCallback(
-        () => <AnimatedFlatList
+        () => <Animated.FlatList
             refreshControl={
                 <RefreshControl
                     tintColor={primaryColor} // ios
@@ -514,7 +561,7 @@ const ActivitiesPage = (props) => {
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyComponent}
-            style={{flex: 1, }}
+            style={{flex: 1,}}
             data={pnApplications}
             keyExtractor={(item, index) => index.toString()}
             ListFooterComponent={refreshing ? <View/> : bottomLoader}
@@ -532,7 +579,7 @@ const ActivitiesPage = (props) => {
     );
 
     const renderHistory = useCallback(
-        () => <AnimatedFlatList
+        () => <Animated.FlatList
             refreshControl={
                 <RefreshControl
                     tintColor={primaryColor} // ios
@@ -562,100 +609,60 @@ const ActivitiesPage = (props) => {
             renderItem={renderItem}/>,
         [historyRef, historyScrollHandler,  sharedProps]
     );
-    const renderScene = useCallback(
-        ({ route: tab }: { route: CBTabRoute }) => {
+    const tabBarStyle = useMemo<StyleProp<ViewStyle>>(
+        () => [
+            rendered ? styles.tabBarContainer : undefined,
+            {top: rendered ? headerHeight : undefined},
+            tabBarAnimatedStyle,
+        ],
+        [rendered, headerHeight, tabBarAnimatedStyle]
+    );
+    const tabBarOptions = {
 
-            return (
-                <Scene
-                    headerHeight={headerHeight}
-                    refreshControl={
-                        <RefreshControl
-                            tintColor={primaryColor} // ios
-                            progressBackgroundColor={infoColor} // android
-                            colors={['white']} // android
-                            refreshing={refreshing}
-                            onRefresh={onRefresh}
-                            progressViewOffset={140}
-                        />
-                    }
-                    showsVerticalScrollIndicator={false}
-                    nestedScrollEnabled={true}
-                    ListHeaderComponent={tab.key == 'all' ? listHeaderComponent() : null}
-                    ListFooterComponent={refreshing ? <View/> : bottomLoader}
-                    ListEmptyComponent={listEmptyComponent}
-                    isActive={tabs[index].key === tab.key}
-                    routeKey={tab.key}
-                    scrollY={scrollY}
-                    data={tab.key == "pending" ? pnApplications : notPnApplications}
-                    renderItem={({item, index}) => (
-                        <>
-                            <ApplicationList
-                                key={index}
-                                onPress={() => {
-                                    userPress(index)
+        "tabBarActiveTintColor": "#2F5BFA",
+        "tabBarInactiveTintColor": "#606A80",
+        "tabBarIndicatorStyle": {
+            "height": 3,
+            "backgroundColor": "#2F5BFA"
+        }
+    }
+    const renderTabBar = useCallback<(props: MaterialTopTabBarProps) => React.ReactElement>(
+        (props) => (
+            <Animated.View style={tabBarStyle}>
+                <TabBar  onIndexChange={setTabIndex} {...props} />
+            </Animated.View>
+        ),
+        [tabBarStyle]
+    );
+    const headerContainerStyle = useMemo<StyleProp<ViewStyle>>(
+        () => [
+            rendered ? styles.headerContainer : undefined,
 
-                                }}
-                                item={item}
-                                numbers={numberCollapsed}
-                                index={index}
+            headerAnimatedStyle,
+        ],
 
-                                element={(activity: any, i: number) => {
-                                    return (
-                                        <ActivityItem
-                                            isOpen={isOpen}
-
-                                            config={config}
-                                            /*
-                                                isPinned={true}
-                                            */
-                                            searchQuery={searchTerm}
-                                            key={i}
-                                            selected={applicationItem?._id == activity?._id}
-                                            parentIndex={index}
-                                            role={user?.role?.key}
-                                            activity={activity}
-                                            currentUser={user}
-                                            onPressUser={(event: any) => {
-                                                dispatch(setEdit(false))
-                                                dispatch(setHasChange(false))
-                                                dispatch(setSelectedYPos({yPos, type: 0}))
-                                                dispatch(setApplicationItem({
-                                                    ...activity,
-                                                    isOpen: `${index}${i}`
-                                                }));
-                                                //setDetails({ ...activity , isOpen : `${ index }${ i }` });
-                                                /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
-                                                })*/
-                                                if (event?.icon == 'more') {
-                                                    setMoreModalVisible(true)
-                                                } else {
-                                                    if (Platform.OS == "web") {
-                                                        setModalVisible(true)
-                                                    } else {
-                                                        props.navigation.navigate(ACTIVITYITEM, {
-                                                            onDismissed: onDismissedModal,
-                                                            onChangeEvent: onChangeEvent,
-                                                            onChangeAssignedId: onChangeAssignedId
-                                                        });
-                                                    }
+        [rendered, headerAnimatedStyle]
+    );
+    const collapsedOverlayAnimatedStyle = useAnimatedStyle(() => {
+        return {
+            opacity: interpolate(
+                translateY.value,
+                [-headerDiff, OVERLAY_VISIBILITY_OFFSET - headerDiff, 0],
+                [Visibility.Visible, Visibility.Hidden, Visibility.Hidden]
+            ),
+            backgroundColor: primaryColor,
+            zIndex: !!translateY.value ? 3 : 1
+        }
+    });
 
 
-                                                    //
-                                                }
-
-                                            }}
-
-                                            index={`${index}${i}`}
-                                            swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
-                                    )
-                                }}/>
-                        </>
-
-                    )}
-                    {...sceneProps}
-                />
-            )},
-        [getRefForKey, index, tabs,  scrollY, refreshing, pnApplications, notPnApplications]
+    const collapsedOverlayStyle = useMemo<StyleProp<ViewStyle>>(
+        () => [
+            styles.collapsedOvarlay,
+            collapsedOverlayAnimatedStyle,
+            {height: heightCollapsed},
+        ],
+        [collapsedOverlayAnimatedStyle, heightCollapsed]
     );
     return (
         <>
@@ -673,189 +680,156 @@ const ActivitiesPage = (props) => {
                         flexShrink: 0
                     }]}>
 
-                        <NavBar>
-                            <CBAnimatedNavBar  headerHeight={headerHeight}  scrollY={scrollY}>
-                                <View>
+                        <Animated.View onLayout={handleHeaderLayout} style={headerContainerStyle}>
+                            <View onLayout={onLayoutComponent}>
+                                <Animated.View style={[styles1.rect, styles1.horizontal, {
+                                    backgroundColor: ((isMobile && !(Platform?.isPad || isTablet()))) ? "#041B6E" : "#fff",
+                                    ...Platform.select({
+                                        native: {
+                                            paddingTop: 40,
+                                        },
+                                        web: {
+                                            paddingTop: 10,
+                                        }
+                                    })
+                                },]}>
+
+                                    {(
+                                            (
+                                                isMobile && !(
+                                                    Platform?.isPad || isTablet())) || dimensions?.width < 768) &&
+                                        <TouchableOpacity
+                                            onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
+                                            <HomeMenuIcon height={fontValue(24)} width={fontValue(24)}/>
+                                        </TouchableOpacity>}
+
+                                    <Text
+                                        style={[styles1.activity,  {
+                                            color: (
+                                                isMobile && !(
+                                                    Platform?.isPad || isTablet())) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor,
+                                        }]}>{(
+                                        isMobile && !(
+                                            Platform?.isPad || isTablet())) || dimensions?.width < 768 ? `Activity` : `Feed`}</Text>
+                                    <View style={{flex: 1}}/>
+                                    <TouchableOpacity onPress={() => {
+                                        dispatch(setVisible(true))
+                                    }
+
+                                    }>
+
+                                        <Filter pressed={visible} width={fontValue(Platform.OS == "web" ? 26 : 18)}
+                                                height={fontValue(Platform.OS == "web" ? 26 : 18)}/>
+                                    </TouchableOpacity>
                                     {
-                                        !!lodash.size(meetingList) && (
-                                            <FlatList
-                                                data={meetingList}
-                                                bounces={false}
-                                                horizontal
-                                                showsHorizontalScrollIndicator={false}
-                                                snapToInterval={activitySizeComponent?.width || dimensions?.width}
-                                                decelerationRate={0}
-                                                keyExtractor={(item: any) => item._id}
-                                                renderItem={({item}) => (
-                                                    <MeetingNotif
-                                                        style={{
-                                                            ...Platform.select({
-                                                                native: {
-                                                                    width: activitySizeComponent?.width || dimensions?.width
-                                                                },
-                                                                default: {
-                                                                    width: 466
-                                                                }
-                                                            })
-                                                        }}
-                                                        name={getChannelName({
-                                                            ...item,
-                                                            otherParticipants: item?.participants
-                                                        })}
-                                                        time={item.createdAt}
-                                                        host={item.host}
-                                                        onJoin={() => onJoin(item)}
-                                                        onClose={(leave: any) => onClose(item, leave)}
-                                                        closeText={'Cancel'}
-                                                    />
-                                                )}
-                                            />
-                                        )
+                                        <TouchableOpacity onPress={onRefresh}>
+                                            {(
+                                                !(
+                                                    isMobile && !(
+                                                        Platform?.isPad || isTablet())) && dimensions?.width > 768) ?
+                                                <RefreshWeb style={{paddingLeft: 15}} width={fontValue(26)}
+                                                            height={fontValue(24)} fill={"#fff"}/> :
+                                                <View style={{paddingLeft: 23}}><RefreshRN/></View>}
+                                        </TouchableOpacity>
                                     }
-
-                                </View>
-                            </CBAnimatedNavBar>
-                        </NavBar>
-
-                        <View style={styles.container}>
-                                <CBAnimatedHeader  headerHeight={headerHeight}  scrollY={scrollY}>
-<View onLayout={handleHeaderLayout}>
-    <View onLayout={onLayoutComponent}>
-        <Animated.View style={[styles1.rect, styles1.horizontal, {
-            backgroundColor: ((isMobile && !(Platform?.isPad || isTablet()))) ? "#041B6E" : "#fff",
-            ...Platform.select({
-                native: {
-                    paddingTop: 20,
-                },
-                web: {
-                    paddingTop: 10,
-                }
-            })
-        },]}>
-
-            {(
-                    (
-                        isMobile && !(
-                            Platform?.isPad || isTablet())) || dimensions?.width < 768) &&
-                <TouchableOpacity
-                    onPress={() => props.navigation.navigate('Settings')/*openDrawer()*/}>
-                    <HomeMenuIcon height={fontValue(24)} width={fontValue(24)}/>
-                </TouchableOpacity>}
-
-            <Text
-                style={[styles1.activity,  {
-                    color: (
-                        isMobile && !(
-                            Platform?.isPad || isTablet())) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor,
-                }]}>{(
-                isMobile && !(
-                    Platform?.isPad || isTablet())) || dimensions?.width < 768 ? `Activity` : `Feed`}</Text>
-            <View style={{flex: 1}}/>
-            <TouchableOpacity onPress={() => {
-                dispatch(setVisible(true))
-            }
-
-            }>
-
-                <Filter pressed={visible} width={fontValue(Platform.OS == "web" ? 26 : 18)}
-                        height={fontValue(Platform.OS == "web" ? 26 : 18)}/>
-            </TouchableOpacity>
-            {
-                <TouchableOpacity onPress={onRefresh}>
-                    {(
-                        !(
-                            isMobile && !(
-                                Platform?.isPad || isTablet())) && dimensions?.width > 768) ?
-                        <RefreshWeb style={{paddingLeft: 15}} width={fontValue(26)}
-                                    height={fontValue(24)} fill={"#fff"}/> :
-                        <View style={{paddingLeft: 23}}><RefreshRN/></View>}
-                </TouchableOpacity>
-            }
-        </Animated.View>
-    </View>
-    <View>
-        {
-            !!lodash.size(meetingList) && (
-                <FlatList
-                    data={meetingList}
-                    bounces={false}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    snapToInterval={activitySizeComponent?.width || dimensions?.width}
-                    decelerationRate={0}
-                    keyExtractor={(item: any) => item._id}
-                    renderItem={({item}) => (
-                        <MeetingNotif
-                            style={{
-                                ...Platform.select({
-                                    native: {
-                                        width: activitySizeComponent?.width || dimensions?.width
-                                    },
-                                    default: {
-                                        width: 466
-                                    }
-                                })
-                            }}
-                            name={getChannelName({
-                                ...item,
-                                otherParticipants: item?.participants
-                            })}
-                            time={item.createdAt}
-                            host={item.host}
-                            onJoin={() => onJoin(item)}
-                            onClose={(leave: any) => onClose(item, leave)}
-                            closeText={'Cancel'}
-                        />
-                    )}
-                />
-            )
-        }
-
-    </View>
-    <FakeSearchBar onSearchLayoutComponent={onSearchLayoutComponent}
-                   animated={{}} onPress={() => {
-
-        //setSearchVisible(true)
-        dispatch(setApplicationItem({}));
-
-        props.navigation.navigate(isMobile ? SEARCHMOBILE : SEARCH);
-    }} searchVisible={searchVisible}/>
-
-</View>
-
-                                </CBAnimatedHeader>
-
-                            <CBTabView
-
-                                width={initialWidth}
-                                index={index}
-                                setIndex={setIndex}
-                                routes={tabs}
-                                renderTabBar={(props) => {
-
-                                    return (
-                                    <CBAnimatedTabBar  headerHeight={headerHeight}  scrollY={scrollY}>
-                                        <TabBar
-                                            renderLabel={({route, focused}) => {
-                                                return (
-                                                        <Text style={{
-                                                            color: focused ? infoColor : "#606A80",
-                                                            fontFamily: Regular, // focused ? Bold : Regular
-                                                            fontSize: fontValue(12)
-                                                        }}>{route.title}</Text>
-                                                );
-                                            }}
-                                            {...props}
-                                            indicatorStyle={{height: 4,
-                                                backgroundColor: infoColor,
-                                                borderRadius: 4,}}
-                                            indicatorContainerStyle={{backgroundColor: "#fff"}}
+                                </Animated.View>
+                            </View>
+                            <View>
+                                {
+                                    !!lodash.size(meetingList) && (
+                                        <FlatList
+                                            data={meetingList}
+                                            bounces={false}
+                                            horizontal
+                                            showsHorizontalScrollIndicator={false}
+                                            snapToInterval={activitySizeComponent?.width || dimensions?.width}
+                                            decelerationRate={0}
+                                            keyExtractor={(item: any) => item._id}
+                                            renderItem={({item}) => (
+                                                <MeetingNotif
+                                                    style={{
+                                                        ...Platform.select({
+                                                            native: {
+                                                                width: activitySizeComponent?.width || dimensions?.width
+                                                            },
+                                                            default: {
+                                                                width: 466
+                                                            }
+                                                        })
+                                                    }}
+                                                    name={getChannelName({
+                                                        ...item,
+                                                        otherParticipants: item?.participants
+                                                    })}
+                                                    time={item.createdAt}
+                                                    host={item.host}
+                                                    onJoin={() => onJoin(item)}
+                                                    onClose={(leave: any) => onClose(item, leave)}
+                                                    closeText={'Cancel'}
+                                                />
+                                            )}
                                         />
-                                    </CBAnimatedTabBar>
-                                )}}
-                                renderScene={renderScene}
-                            />
-                        </View>
+                                    )
+                                }
+
+                            </View>
+                            <FakeSearchBar onSearchLayoutComponent={onSearchLayoutComponent}
+                                           animated={{}} onPress={() => {
+
+                                //setSearchVisible(true)
+                                dispatch(setApplicationItem({}));
+
+                                props.navigation.navigate(isMobile ? SEARCHMOBILE : SEARCH);
+                            }} searchVisible={searchVisible}/>
+                        </Animated.View>
+
+                        <Animated.View style={collapsedOverlayStyle}>
+                            <View>
+                                {
+                                    !!lodash.size(meetingList) && (
+                                        <FlatList
+                                            data={meetingList}
+                                            bounces={false}
+                                            horizontal
+                                            showsHorizontalScrollIndicator={false}
+                                            snapToInterval={activitySizeComponent?.width || dimensions?.width}
+                                            decelerationRate={0}
+                                            keyExtractor={(item: any) => item._id}
+                                            renderItem={({item}) => (
+                                                <MeetingNotif
+                                                    style={{
+                                                        ...Platform.select({
+                                                            native: {
+                                                                width: activitySizeComponent?.width || dimensions?.width
+                                                            },
+                                                            default: {
+                                                                width: 466
+                                                            }
+                                                        })
+                                                    }}
+                                                    name={getChannelName({
+                                                        ...item,
+                                                        otherParticipants: item?.participants
+                                                    })}
+                                                    time={item.createdAt}
+                                                    host={item.host}
+                                                    onJoin={() => onJoin(item)}
+                                                    onClose={(leave: any) => onClose(item, leave)}
+                                                    closeText={'Cancel'}
+                                                />
+                                            )}
+                                        />
+                                    )
+                                }
+
+                            </View>
+                        </Animated.View>
+                        <Tab.Navigator  screenOptions={tabBarOptions} tabBar={renderTabBar}>
+                            <Tab.Screen  name="All">{renderAllActivities}</Tab.Screen>
+                            <Tab.Screen name="Pending">{renderPending}</Tab.Screen>
+                            <Tab.Screen name="History">{renderHistory}</Tab.Screen>
+                        </Tab.Navigator>
+
                     </View>
                     {
                         !(
@@ -888,13 +862,15 @@ const ActivitiesPage = (props) => {
                 </View>
             </View>
         </>
-    );
-}
-export default ActivitiesPage
+
+    )
+
+};
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor:"#F8F8F8"
+        backgroundColor: "white",
     },
     tabBarContainer: {
         top: 0,
@@ -923,3 +899,5 @@ const styles = StyleSheet.create({
         zIndex: 2,
     },
 });
+
+export default memo(ActivitiesPage);

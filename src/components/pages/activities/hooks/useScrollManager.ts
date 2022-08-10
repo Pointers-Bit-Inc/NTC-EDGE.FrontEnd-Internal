@@ -27,7 +27,7 @@ export const useScrollManager = (routes: { key: string; title: string }[], sizin
       const curRouteKey = routes[index].key;
       const scrollValue = tabkeyToScrollPosition[curRouteKey];
 
-      Object.keys(tabkeyToScrollableChildRef).forEach((key) => {
+      Object.keys(tabkeyToScrollableChildRef).map((key) => {
         const scrollRef = tabkeyToScrollableChildRef[key];
         if (!scrollRef) {
           return;
