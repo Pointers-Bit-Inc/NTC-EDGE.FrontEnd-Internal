@@ -67,7 +67,7 @@ import {ScrollPair} from "@pages/activities/types/ScrollPair";
 import useScrollSync from "@pages/activities/hooks/useScrollSync";
 import {Visibility} from "@pages/activities/types/Visibility";
 import {Connection} from "@pages/activities/types/Connection";
-import {Regular500} from "@styles/font";
+import {Regular, Regular500} from "@styles/font";
 import {MeetingNotif} from "@molecules/list-item";
 import {getChannelName} from "../../../utils/formatting";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
@@ -80,6 +80,7 @@ import RefreshRN from "@assets/svg/refreshRN";
 import HomeMenuIcon from "@assets/svg/homemenu";
 import {setVisible} from "../../../reducers/activity/actions";
 import useMemoizedFn from "../../../hooks/useMemoizedFn";
+import {TabBar, TabBarIndicator} from "react-native-tab-view";
 const initialWidth = Dimensions.get("window").width;
 export type tabKeys = "all" | "pending" | "history";
 export const tabs = [
@@ -830,11 +831,32 @@ const ActivitiesPage = (props) => {
                                 index={index}
                                 setIndex={setIndex}
                                 routes={tabs}
-                                renderTabBar={(p) => (
+                                renderTabBar={(props) => {
+
+                                    return (
                                     <CBAnimatedTabBar  headerHeight={headerHeight}  scrollY={scrollY}>
-                                        <CBTabBar {...p}  onIndexChange={setIndex} />
+                                        <TabBar
+                                            renderLabel={({route, focused}) => {
+                                                return (
+                                                    <View>
+                                                        <Text style={{
+                                                            color: focused ? infoColor : "#606A80",
+                                                            fontFamily: Regular, // focused ? Bold : Regular
+                                                            fontSize: fontValue(12)
+                                                        }}>{route.title}</Text>
+                                                    </View>
+                                                );
+                                            }}
+                                            {...props}
+                                            indicatorStyle={{height: 4,
+                                                backgroundColor: infoColor,
+                                                borderRadius: 4,}}
+
+                                            tabStyle={{width: fontValue(136)}}
+                                            style={{backgroundColor: 'white'}}
+                                        />
                                     </CBAnimatedTabBar>
-                                )}
+                                )}}
                                 renderScene={renderScene}
                             />
                         </View>

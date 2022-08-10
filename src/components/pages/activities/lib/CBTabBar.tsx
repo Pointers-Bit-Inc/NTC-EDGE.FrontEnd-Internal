@@ -11,7 +11,8 @@ type Props<T extends Route> = Parameters<
   onIndexChange: (index: number) => void;
 };
 
-export const CBTabBar = <T extends Route>(props: Props<T>) => {
+export const CBTabBar = (props) => {
+console.log(props)
   const containerRef = useRef<View | null>(null);
   const inputRange = props.navigationState.routes.map((_, i) => i);
   const [measures, setMeasures] = useState<Measure[]>([]);
@@ -63,6 +64,7 @@ export const CBTabBar = <T extends Route>(props: Props<T>) => {
           }}
           ref={containerRef}>
         {props.navigationState.routes.map((route, i) => {
+
           const opacity = props.position.interpolate({
             inputRange,
             outputRange: inputRange.map(inputRangeIndex =>
@@ -70,8 +72,10 @@ export const CBTabBar = <T extends Route>(props: Props<T>) => {
             ),
           });
 
+
           return (
               <TabBarItem
+                  position={props.navigationState.index}
                   key={i}
                   onPress={props.onIndexChange}
                   index={i}
