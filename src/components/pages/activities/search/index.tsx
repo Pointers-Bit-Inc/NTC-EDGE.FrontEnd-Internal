@@ -263,6 +263,7 @@ function Search(props:any){
     };
     return (
         <SearchActivity
+            navigation={props.navigation}
             isHandleLoad={isHandleLoad}
             isRecentSearches={isRecentSearches}
             clearAll={clearAllSearchHistory}

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {
     ActivityIndicator ,
     Dimensions ,
@@ -31,11 +31,12 @@ import lodash from 'lodash';
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import ActivityModalView from "@pages/activities/nativeView/activityModalView";
-import {setApplicationItem} from "../../../../reducers/application/actions";
+import {setApplicationItem, setEdit, setHasChange, setSelectedYPos} from "../../../../reducers/application/actions";
 import useActivities from "../../../../hooks/useActivities";
 import applications from "@screens/HomeScreen/Applications";
 import _ from "lodash";
-export function SearchActivity(props: {setApplications: any, onBlur: any ,  isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
+import {ACTIVITYITEM} from "../../../../reducers/activity/initialstate";
+export function SearchActivity(props: {navigation: any,setApplications: any, onBlur: any ,  isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const {
         setIsOpen,
         user ,
@@ -67,12 +68,42 @@ export function SearchActivity(props: {setApplications: any, onBlur: any ,  isHa
 
 
 
-    const AnimatedTotal = (props) => {
+    const AnimatedTotal = useCallback((props) => {
         const progress = useCountUp(2000)
         const countUp = (Math.max(0, Math.round(progress * props.total)))
         return <Text>{countUp == props.total ?  props.total : countUp}</Text>
-    }
+    }, [])
 
+    const onChangeAssignedId = (event) => {
+        let _applications = [...props?.applications]
+        let flag = 1
+
+
+        for (let i = 0; i < _applications.length; i++) {
+            if(!flag) break
+            for (let j = 0; j < _applications?.[i]?.['activity'].length; j++) {
+                if(_applications?.[i]?.['activity']?.[j]._id == event._id){
+                    _applications[i]['activity'][j] = event
+                    flag = 0
+                    break;
+                }
+            }
+        }
+        props?.setApplications(_applications)
+
+    }
+    const onDismissedModal = (event: boolean , _id: number) => {
+
+        setUpdateModal(false);
+        dispatch(setApplicationItem({  }))
+        if (event && _id) {
+            //  dispatch(deleteApplications(_id))
+        }
+        if (event) {
+            onRefresh()
+        }
+        onDismissed()
+    };
     return <View style={[styles.container, {flexDirection: "row"}]}>
         <View style={[styles.group9, {
             flex : (
@@ -193,13 +224,32 @@ export function SearchActivity(props: {setApplications: any, onBlur: any ,  isHa
                                                     selected={applicationItem?._id == activity?._id}
                                                     onPressUser={(event: any) => {
 
-                                                        setIsOpen(undefined)
-                                                        dispatch(setApplicationItem({ ...activity , isOpen : `${ index }${ i }` }))
+                                                        dispatch(setEdit(false))
+                                                        dispatch(setHasChange(false))
+                                                        dispatch(setApplicationItem({
+                                                            ...activity,
+                                                            isOpen: `${index}${i}`
+                                                        }));
+                                                        //setDetails({ ...activity , isOpen : `${ index }${ i }` });
+                                                        /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
+                                                        })*/
                                                         if (event?.icon == 'more') {
                                                             setMoreModalVisible(true)
                                                         } else {
-                                                            setModalVisible(true)
+                                                            if (Platform.OS == "web") {
+                                                                setModalVisible(true)
+                                                            } else {
+                                                                props.navigation.navigate(ACTIVITYITEM, {
+                                                                    onDismissed: onDismissedModal,
+                                                                    onChangeEvent: () => {},
+                                                                    onChangeAssignedId: onChangeAssignedId
+                                                                });
+                                                            }
+
+
+                                                            //
                                                         }
+
 
                                                     }} index={`${index}${i}`}
                                                     swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, activity, unReadReadApplicationFn)}/>
@@ -237,36 +287,8 @@ export function SearchActivity(props: {setApplications: any, onBlur: any ,  isHa
             <ActivityModal updateModal={ updateModalFn }
                            readFn={ unReadReadApplicationFn }
                            details={ applicationItem }
-                           onChangeAssignedId={ (event) => {
-                               let _applications = [...props?.applications]
-                               let flag = 1
-
-
-                               for (let i = 0; i < _applications.length; i++) {
-                                   if(!flag) break
-                                   for (let j = 0; j < _applications?.[i]?.['activity'].length; j++) {
-                                       if(_applications?.[i]?.['activity']?.[j]._id == event._id){
-                                           _applications[i]['activity'][j] = event
-                                           flag = 0
-                                           break;
-                                       }
-                                   }
-                               }
-                               props?.setApplications(_applications)
-
-                           } }
+                           onChangeAssignedId={ onChangeAssignedId }
                            visible={ modalVisible }
-                           onDismissed={ (event: boolean , _id: number) => {
-
-                               setUpdateModal(false);
-                               dispatch(setApplicationItem({  }))
-                               if (event && _id) {
-                                   //  dispatch(deleteApplications(_id))
-                               }
-                               if (event) {
-                                   onRefresh()
-                               }
-                               onDismissed()
-                           } }/></ActivityModalView> }
+                           onDismissed={ onDismissedModal }/></ActivityModalView> }
     </View>;
 }
