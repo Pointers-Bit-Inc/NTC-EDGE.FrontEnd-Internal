@@ -135,21 +135,23 @@ const styles=StyleSheet.create({
 
 
 const RenderStatus=({trigger,status}:any)=>{
+const containerStatus = useMemo(() =>
+    [
+        styles.horizontal,
+        //statusBackgroundColor(status),
 
+        styles.status,
+        {
+            backgroundColor: remarkColor(status),
+            paddingHorizontal: fontValue(10),
+            paddingVertical: fontValue(5),
+            borderRadius: fontValue(30)
+        },
+    ]
+, [])
     return (
         <View
-            style={[
-                styles.horizontal,
-                //statusBackgroundColor(status),
-
-                styles.status,
-                {
-                    backgroundColor: remarkColor(status),
-                    paddingHorizontal: fontValue(10),
-                    paddingVertical: fontValue(5),
-                    borderRadius: fontValue(30)
-                },
-            ]}
+            style={containerStatus}
         >
            {/* {statusIcon(status,{marginRight:3})}*/}
 
@@ -166,13 +168,14 @@ const RenderStatus=({trigger,status}:any)=>{
 
 
 const RenderApplication=({applicationType}:any)=>{
+    const containerStyles = useMemo(() => [
+        //{backgroundColor:"#BFBEFC"},
+        styles.horizontal,
+        styles.application
+    ], [])
     return (
         <View
-            style={[
-                //{backgroundColor:"#BFBEFC"},
-                styles.horizontal,
-                styles.application
-            ]}
+            style={containerStyles}
         >
             <FileIcon
                 width={fontValue(20)}
@@ -202,23 +205,26 @@ const RenderApplication=({applicationType}:any)=>{
 
 
 const RenderPinned=({personnel,config}:any)=>{
-
+    const containerStyles = useMemo(() => [
+        {
+            //backgroundColor : "#F3F7FF" ,
+        },
+        styles.horizontal,
+        styles.application
+    ], [])
+    const personelStyle = useMemo(() => {
+        return {marginLeft:3,marginRight:5,width:"50%",borderRadius:14,backgroundColor:"#EAEDFF"}
+    }, [])
     return (
         <View
-            style={[
-                {
-                    //backgroundColor : "#F3F7FF" ,
-                },
-                styles.horizontal,
-                styles.application
-            ]}
+            style={containerStyles}
         >
             <EndorseIcon
                 width={fontValue(20)}
                 height={fontValue(20)}
             />
             {!personnel?.firstName ?
-             <View style={{marginLeft:3,marginRight:5,width:"50%",borderRadius:14,backgroundColor:"#EAEDFF"}}><Text
+             <View style={personelStyle}><Text
 
                  size={fontValue(12)}
                  numberOfLines={1}
@@ -274,20 +280,22 @@ const propsMemo = useMemo(() => props, [props])
 
     const dimensions=useWindowDimensions();
 
-    let personnel:any=null;
-    if(propsMemo?.activity){
-        if(!!propsMemo?.activity.paymentMethod&&propsMemo?.activity.assignedPersonnel?._id){
-            personnel=propsMemo?.activity.assignedPersonnel
-        } else if(propsMemo?.activity.paymentStatus==APPROVED||propsMemo?.activity.paymentStatus==DECLINED){
-            personnel=propsMemo?.activity?.paymentHistory?.[0]?.personnel||propsMemo?.activity?.paymentHistory?.personnel;
-        } else{
-            personnel=(
-                    propsMemo?.activity?.assignedPersonnel?._id ? propsMemo?.activity?.assignedPersonnel : null)||
-                propsMemo?.activity?.approvalHistory?.[0]?.personnel||
-                propsMemo?.activity?.approvalHistory?.personnel;
+    const personnel = useMemo(() => {
+        if(propsMemo?.activity){
+            if(!!propsMemo?.activity.paymentMethod&&propsMemo?.activity.assignedPersonnel?._id){
+                return propsMemo?.activity.assignedPersonnel
+            } else if(propsMemo?.activity.paymentStatus==APPROVED||propsMemo?.activity.paymentStatus==DECLINED){
+                return propsMemo?.activity?.paymentHistory?.[0]?.personnel||propsMemo?.activity?.paymentHistory?.personnel;
+            } else{
+                return (
+                        propsMemo?.activity?.assignedPersonnel?._id ? propsMemo?.activity?.assignedPersonnel : null)||
+                    propsMemo?.activity?.approvalHistory?.[0]?.personnel||
+                    propsMemo?.activity?.approvalHistory?.personnel;
 
+            }
         }
-    }
+    }, [propsMemo])
+
     const [pressed, setPressed] = useState(false)
     const container = useMemo(()=> [styles.container,{paddingRight:dimensions.width<=768 ? 20 : undefined}], [dimensions])
     const applicationContainer = useMemo(()=> styles.applicationContainer, [])
@@ -297,6 +305,45 @@ const propsMemo = useMemo(() => props, [props])
     const assignPersonnelStyle = useMemo(() => [styles.section, {paddingHorizontal:fontValue(10),
         paddingTop:fontValue(4) ,
         paddingBottom:propsMemo?.activity?.assignedPersonnel?.id||propsMemo?.activity?.assignedPersonnel ? fontValue(4) :fontValue(10) }], [])
+    const activityItem = useMemo(() => [{
+        height:8,
+            width:8,
+            backgroundColor:undefined,//propsMemo?.activity?.dateRead  ? "#fff" : "#2863D6" ,
+            borderRadius:4
+    }], []);
+    const assignPersonnelTop = useMemo(() => {
+        return {
+            borderRadius:fontValue(10),
+            flex:1,
+
+            paddingHorizontal:fontValue(10),
+            //paddingVertical:propsMemo?.activity?.assignedPersonnel?.id||propsMemo?.activity?.assignedPersonnel ? undefined : fontValue(10),
+            flexDirection:"row",
+            alignItems:"center"
+        }
+    }, [])
+    const  optionsContainerStyle = useMemo(() => {
+        return {
+            marginTop:50,
+
+            shadowColor:"rgba(0,0,0,1)",
+            paddingVertical:10,
+            borderRadius:8,
+            shadowOffset:{
+                width:0,
+                height:0
+            },
+            elevation:45,
+            shadowOpacity:0.1,
+            shadowRadius:15,
+        }
+    }, []);
+    const onMoreCircleStyle = useMemo(() => {
+        return [styles.moreCircle,selectedMoreCircle&&{
+            borderColor:'rgba(116, 115, 189, 0.3)',
+            borderWidth:4,
+        }]
+    }, []);
     return (
 
         <Hoverable>
@@ -325,27 +372,14 @@ const propsMemo = useMemo(() => props, [props])
 
                             <View style={applicationContainer}>
                                 <View style={{padding:5}}>
-                                    <View style={{
-                                        height:8,
-                                        width:8,
-                                        backgroundColor:undefined,//propsMemo?.activity?.dateRead  ? "#fff" : "#2863D6" ,
-                                        borderRadius:4
-                                    }}/>
+                                    <View style={activityItem}/>
                                 </View>
                                 <View style={applicationBlur}>
 
                                         <TouchableOpacity  activeOpacity={100} onPressIn={()=>setPressed(true)}
                                                           onPressOut={()=>setPressed(false)} onPress={propsMemo.onPressUser}>
                                             <View style={
-                                                {
-                                                    borderRadius:fontValue(10),
-                                                    flex:1,
-
-                                                    paddingHorizontal:fontValue(10),
-                                                    //paddingVertical:propsMemo?.activity?.assignedPersonnel?.id||propsMemo?.activity?.assignedPersonnel ? undefined : fontValue(10),
-                                                    flexDirection:"row",
-                                                    alignItems:"center"
-                                                }
+                                                assignPersonnelTop
                                             }>
                                                 <ProfileImage
                                                     size={fontValue(45)}
@@ -429,27 +463,11 @@ const propsMemo = useMemo(() => props, [props])
                                     }} onSelect={value=>setSelectedMoreCircle(true)}>
 
                                         <MenuTrigger onPress={onMoreCircle}>
-                                            <View style={[styles.moreCircle,selectedMoreCircle&&{
-                                                borderColor:'rgba(116, 115, 189, 0.3)',
-                                                borderWidth:4,
-                                            }]}>
+                                            <View style={onMoreCircleStyle}>
                                                 <MoreCircle selected={selectedMoreCircle}/>
                                             </View>
                                         </MenuTrigger>
-                                        <MenuOptions optionsContainerStyle={{
-                                            marginTop:50,
-
-                                            shadowColor:"rgba(0,0,0,1)",
-                                            paddingVertical:10,
-                                            borderRadius:8,
-                                            shadowOffset:{
-                                                width:0,
-                                                height:0
-                                            },
-                                            elevation:45,
-                                            shadowOpacity:0.1,
-                                            shadowRadius:15,
-                                        }}>
+                                        <MenuOptions optionsContainerStyle={optionsContainerStyle}>
                                             <MenuOption value={"Unread"}>
                                                 <View style={styles.menuItem}>
                                                     <UnseeIcon color={"#000"}/>
