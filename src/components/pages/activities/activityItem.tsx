@@ -251,7 +251,8 @@ const propsMemo = useMemo(() => props, [props])
     const status=[CASHIER].indexOf(propsMemo?.role)!= -1 ? PaymentStatusText(propsMemo?.activity?.paymentStatus) : StatusText(propsMemo?.activity?.status);
     const userActivity=propsMemo?.activity?.applicant?.user||propsMemo?.activity?.applicant;
     const getStatus=getActivityStatus(propsMemo,status);
-
+    const nameMemo = useMemo(() => userActivity?.firstName ? `${userActivity?.firstName} ${userActivity?.lastName}` : (
+        userActivity?.applicantName ? userActivity?.applicantName : userActivity?.companyName ? userActivity?.companyName : (propsMemo?.activity?.service?.applicationDetails?.clubName ? propsMemo?.activity?.service?.applicationDetails?.clubName : "")), [])
     useEffect(()=>{
         let unsubscribe=true;
         unsubscribe&&propsMemo?.isOpen==propsMemo?.index&&row[propsMemo?.index]?.close();
@@ -348,8 +349,7 @@ const propsMemo = useMemo(() => props, [props])
                                                 <ProfileImage
                                                     size={fontValue(45)}
                                                     image={userActivity?.profilePicture?.thumb ? userActivity?.profilePicture?.thumb.match(/[^/]+(jpg|jpeg|png|gif)$/i) ? userActivity?.profilePicture?.thumb : userActivity?.profilePicture?.thumb+".png" : null}
-                                                    name={userActivity?.firstName ? `${userActivity?.firstName} ${userActivity?.lastName}` : (
-                                                        userActivity?.applicantName ? userActivity?.applicantName : "")}
+                                                    name={nameMemo}
                                                 />
                                                 <View style={styles.content}>
                                                     <View style={styles.section}>
@@ -362,8 +362,7 @@ const propsMemo = useMemo(() => props, [props])
                                                                     }}
                                                                     highlightStyle={{backgroundColor:'#BFD6FF'}}
                                                                     searchWords={[propsMemo?.searchQuery]}
-                                                                    textToHighlight={userActivity?.firstName ? `${userActivity?.firstName} ${userActivity?.lastName}` : (
-                                                                        userActivity?.applicantName ? userActivity?.applicantName : userActivity?.companyName ? userActivity?.companyName : "")}
+                                                                    textToHighlight={nameMemo}
                                                                 />
                                                             <View>
                                                                  <Text style={{color: "#606A80"}}>

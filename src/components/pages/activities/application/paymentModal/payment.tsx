@@ -1,4 +1,4 @@
-import React, {memo, useEffect, useState} from "react";
+import React, {memo, useEffect, useMemo, useState} from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -276,7 +276,8 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 }
 
 
-const Payment = (props: any) => {
+const Payment = (_props: any) => {
+    const props = useMemo(() => _props , [_props])
     const dispatch=useDispatch();
     const [visibleModal, setVisibleModal] = useState(false);
     const [visibleRequireModal, setVisibleRequireModal] = useState(false);

@@ -1,4 +1,4 @@
-import React , {useState} from "react";
+import React, {useMemo, useState} from "react";
 import {
     Dimensions ,
     Modal ,
@@ -16,7 +16,8 @@ import FadeBackground from "@assets/svg/fade-background";
 import {fontValue} from "@pages/activities/fontValue";
 const { width , height } = Dimensions.get('window');
 
-const RequirementModal = (props: any) => {
+const RequirementModal = (_props: any) => {
+    const props = useMemo(() => _props , [_props])
     const [onLoad , setOnLoad] = useState(false);
     return <Modal
         supportedOrientations={ ['portrait' , 'landscape'] }

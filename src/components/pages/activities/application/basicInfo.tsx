@@ -147,7 +147,8 @@ function IsMorePress(props: { loading: any, onPress: () => void, more: boolean }
 }
 
 
-const BasicInfo = (props: any) => {
+const BasicInfo = (_props: any) => {
+    const props = useMemo(() => _props , [_props])
     const dispatch=useDispatch();
     const personnel = useMemo(() => {
         var _personnel = ''

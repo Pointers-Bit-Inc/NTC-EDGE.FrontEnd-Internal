@@ -3,9 +3,9 @@ import {createMaterialTopTabNavigator, MaterialTopTabBarProps,} from "@react-nav
 import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
     FlatList,
-    FlatListProps, ListRenderItem,
-    Platform, RefreshControl,
-    ScrollView,
+    FlatListProps,
+    Platform,
+    RefreshControl,
     StatusBar,
     StyleProp,
     StyleSheet,
@@ -49,7 +49,6 @@ import {
 import IParticipants from "../../../interfaces/IParticipants";
 import {openUrl} from "../../../utils/web-actions";
 import {setSelectedChannel} from "../../../reducers/channel/actions";
-import {Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import HomeMenuIcon from "@assets/svg/homemenu";
 import {setVisible} from "../../../reducers/activity/actions";
@@ -68,17 +67,15 @@ import {renderSwiper} from "@pages/activities/swiper";
 import ActivityItem from "@pages/activities/activityItem";
 import {getChannelName} from "../../../utils/formatting";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
-import {ACTIVITYITEM, APPROVED, CASHIER, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
+import {ACTIVITYITEM, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import NoActivity from "@assets/svg/noActivity";
 import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import RefreshRN from "@assets/svg/refreshRN";
-import {AnimatedFlatList} from "@pages/activities/components/ConnectionList";
 import useMemoizedFn from "../../../hooks/useMemoizedFn";
-import api from "../../../services/api";
-import Api from "../../../services/api";
+import ListHeaderComponent from "@pages/activities/listHeaderComponent";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -340,99 +337,69 @@ const ActivitiesPage = (props) => {
         setUpdateModal(true);
     };
 
-    const listHeaderComponent = () => <>
-        {!searchVisible && !!pnApplications?.length && containerHeight &&
-            <View style={[styles1.pinnedActivityContainer, {
-                marginBottom: 5,
-                paddingBottom: 20,
-                backgroundColor: "#fff"
-            }]}>
-                {!!pnApplications?.length &&
-                    <View style={[styles1.pinnedgroup, {height: undefined}]}>
-                        <View style={[styles1.pinnedcontainer, {paddingVertical: 10}]}>
-                            <Text style={[styles1.pinnedActivity, {fontFamily: Regular500,}]}>Pinned
-                                Activity</Text>
-                        </View>
-                    </View>}
-                {/* <TouchableOpacity onPress={()=>{
-            scrollViewRef?.current?.scrollTo({ y: yPos, animated: true });
-            }}>
-                <Text>test</Text>
-            </TouchableOpacity>*/}
-                <ScrollView showsVerticalScrollIndicator={false}
-                            nestedScrollEnabled={true}
-                            onScroll={(event) => {
-                                if (!isMobile) {
-                                    new Promise((resolve, reject) => {
-                                        setTimeout(() => {
-                                            resolve(event?.nativeEvent?.contentOffset?.y)
-                                        }, 1000);
-                                    }).then((data) => {
-                                        setYPos(data)
+    const listHeaderComponent = () => <ListHeaderComponent searchVisible={searchVisible} pnApplications={pnApplications}
+                                                           containerHeight={containerHeight} onScroll={(event) => {
+        if (!isMobile) {
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve(event?.nativeEvent?.contentOffset?.y)
+                }, 1000);
+            }).then((data) => {
+                setYPos(data)
+            });
+        }
+
+    }} ref={scrollViewRef} callbackfn={(item: any, index: number) => {
+        return item?.activity && <FlatList
+            scrollEventThrottle={16}
+            key={index}
+            listKey={(item, index) => `_key${index.toString()}`}
+            showsVerticalScrollIndicator={false}
+            style={styles.items}
+            data={item?.activity}
+
+            renderItem={(act, i) => {
+                return (
+                        act?.item?.assignedPersonnel?._id || act?.item?.assignedPersonnel) == user?._id &&
+                    <ActivityItem
+                        isOpen={isOpen}
+                        config={config}
+                        key={i}
+                        selected={applicationItem?._id == act?.item?._id}
+                        currentUser={user}
+                        role={user?.role?.key}
+                        searchQuery={searchTerm}
+                        activity={act?.item}
+                        isPinned={true}
+                        onPressUser={(event: any) => {
+
+
+                            /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
+                            })*/
+                            dispatch(setApplicationItem({...act?.item, isOpen: `pin${i}${index}`}));
+                            //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
+                            if (event?.icon == 'more') {
+                                setMoreModalVisible(true)
+                            } else {
+                                if (Platform.OS == "web") {
+                                    setModalVisible(true)
+                                } else {
+                                    props.navigation.navigate(ACTIVITYITEM, {
+                                        onDismissed: onDismissedModal,
+                                        onChangeEvent: onChangeEvent,
+                                        onChangeAssignedId: onChangeAssignedId
                                     });
                                 }
+                            }
+                            dispatch(setSelectedYPos({yPos, type: 1}))
 
-                            }}
-                            scrollEventThrottle={16}
-                            ref={scrollViewRef}
-                            style={{maxHeight: 300}}>
-                    {
-                        pnApplications.map((item: any, index: number) => {
-                            return item?.activity && <FlatList
-                                scrollEventThrottle={16}
-                                key={index}
-                                listKey={(item, index) => `_key${index.toString()}`}
-                                showsVerticalScrollIndicator={false}
-                                style={styles.items}
-                                data={item?.activity}
-
-                                renderItem={(act, i) => {
-                                    return (
-                                            act?.item?.assignedPersonnel?._id || act?.item?.assignedPersonnel) == user?._id &&
-                                        <ActivityItem
-                                            isOpen={isOpen}
-                                            config={config}
-                                            key={i}
-                                            selected={applicationItem?._id == act?.item?._id}
-                                            currentUser={user}
-                                            role={user?.role?.key}
-                                            searchQuery={searchTerm}
-                                            activity={act?.item}
-                                            isPinned={true}
-                                            onPressUser={(event: any) => {
-
-
-                                                /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
-                                                })*/
-                                                dispatch(setApplicationItem({...act?.item, isOpen: `pin${i}${index}`}));
-                                                //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
-                                                if (event?.icon == 'more') {
-                                                    setMoreModalVisible(true)
-                                                } else {
-                                                    if (Platform.OS == "web") {
-                                                        setModalVisible(true)
-                                                    } else {
-                                                        props.navigation.navigate(ACTIVITYITEM, {
-                                                            onDismissed: onDismissedModal,
-                                                            onChangeEvent: onChangeEvent,
-                                                            onChangeAssignedId: onChangeAssignedId
-                                                        });
-                                                    }
-                                                }
-                                                dispatch(setSelectedYPos({yPos, type: 1}))
-
-                                            }} index={`pin${i}${index}`}
-                                            swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, act?.item, unReadReadApplicationFn)}/>
-                                }
-                                }
-                                keyExtractor={(item, index) => `_key${index.toString()}`}
-                            />
-                        })
-                    }
-                </ScrollView>
-
-            </View>}
-    </>;
+                        }} index={`pin${i}${index}`}
+                        swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, act?.item, unReadReadApplicationFn)}/>
+            }
+            }
+            keyExtractor={(item, index) => `_key${index.toString()}`}
+        />
+    }}/>;
     const renderItem =useMemoizedFn(
         ({item, index}) => (
             <>
