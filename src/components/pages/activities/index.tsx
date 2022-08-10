@@ -76,6 +76,7 @@ import listEmpty from "./listEmpty";
 import ApplicationList from "@pages/activities/applicationList";
 import RefreshRN from "@assets/svg/refreshRN";
 import {AnimatedFlatList} from "@pages/activities/components/ConnectionList";
+import useMemoizedFn from "../../../hooks/useMemoizedFn";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -430,7 +431,7 @@ const ActivitiesPage = (props) => {
 
             </View>}
     </>;
-    const renderItem = useCallback<ListRenderItem<Connection>>(
+    const renderItem =useMemoizedFn(
         ({item, index}) => (
             <>
                 <ApplicationList
@@ -496,7 +497,6 @@ const ActivitiesPage = (props) => {
             </>
 
         ),
-        []
     );
     const  onEndReached = () => {
         if (!onEndReachedCalledDuringMomentum || !(
