@@ -42,9 +42,6 @@ export const CBAnimatedTabBar: FunctionComponent<CBAnimatedTabBarProps> = ({
           {children}
 
         </Animated.View>
-        <Animated.View style={{ opacity }}>
-          <View style={styles.border} />
-        </Animated.View>
       </>
 
   );
@@ -54,7 +51,6 @@ const styles = StyleSheet.create({
   tabBar: {
     width: "100%",
     zIndex: 10,
-    paddingBottom: 10,
     backgroundColor: "#fff",
   },
   border: {
