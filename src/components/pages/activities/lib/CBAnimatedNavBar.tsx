@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Animated } from "react-native";
+import {Animated, Platform} from "react-native";
 
 import { CBTabViewOffset } from "./CBAnimatedTabView";
 import { Theme } from "./CBTheme";
@@ -21,6 +21,7 @@ export const CBAnimatedNavBar: FunctionComponent<CBAnimatedNavBarProps> = ({
                                                                              headerHeight,
   scrollY,
 }) => {
+  const _CBTabViewOffset = Platform.OS === "ios" ? -headerHeight : 0;
   const [showTitle, setShowTitle] = useState(false);
   const opacity = useRef(new Animated.Value(0)).current;
 
@@ -34,7 +35,7 @@ export const CBAnimatedNavBar: FunctionComponent<CBAnimatedNavBarProps> = ({
 
   useEffect(() => {
     const listener = scrollY?.addListener(({ value }) => {
-      setShowTitle(value > CBTabViewOffset + headerHeight);
+      setShowTitle(value > _CBTabViewOffset + headerHeight);
     });
 
     return () => {

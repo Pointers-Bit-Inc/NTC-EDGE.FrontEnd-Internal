@@ -1,6 +1,7 @@
 import React, { memo, ReactElement } from "react";
 import { Animated, FlatListProps, Platform, ViewProps } from "react-native";
 import { Theme } from "./CBTheme";
+import {useSafeArea} from "react-native-safe-area-context";
 
 // we provide this bc ios allows overscrolling but android doesn't
 // so on ios because of pull to refresh / rubberbaanding we set scroll pos to negtaive header pos
@@ -51,7 +52,7 @@ const CBAnimatedTabViewWithoutMemo = <T extends any>({
     Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
       useNativeDriver: true,
     });
-
+  const { top: paddingTop } = useSafeArea();
   return (
     <Animated.FlatList<T>
         keyExtractor={(item, index) => index.toString()}
@@ -80,12 +81,11 @@ const CBAnimatedTabViewWithoutMemo = <T extends any>({
       contentOffset={Platform.select({
         ios: {
           x: 0,
-          y: -Theme.sizing.header,
+          y: -Theme.sizing.header + paddingTop,
         },
       })}
       contentContainerStyle={Platform.select({
         ios: {
-
           flexGrow: 1,
           paddingBottom: Theme.spacing.gutter,
         },

@@ -54,7 +54,7 @@ export const useScrollManager = (routes: { key: string; title: string }[], sizin
               animated: false,
             });
             tabkeyToScrollPosition[key] =
-              CBTabViewOffset + headerHeight;
+              CBTabViewOffset + headerHeight ;
           }
         }
       });
