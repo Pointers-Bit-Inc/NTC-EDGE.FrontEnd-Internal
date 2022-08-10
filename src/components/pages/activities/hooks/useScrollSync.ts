@@ -5,7 +5,6 @@ import { ScrollPair } from "../types/ScrollPair";
 const useScrollSync = (
   scrollPairs: ScrollPair[],
   headerConfig: HeaderConfig,
-  tabIndex: any
 ) => {
   const sync: NonNullable<FlatListProps<any>["onMomentumScrollEnd"]> = async (
       event
@@ -15,8 +14,6 @@ const useScrollSync = (
     const {heightCollapsed, heightExpanded} = headerConfig;
 
     const headerDiff = heightExpanded - heightCollapsed;
-
-    console.log(scrollPairs)
 
 
     for (const {list, position} of scrollPairs) {

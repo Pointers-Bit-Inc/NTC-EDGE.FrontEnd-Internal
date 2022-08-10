@@ -68,7 +68,7 @@ import {renderSwiper} from "@pages/activities/swiper";
 import {ActivityItem} from "@pages/activities/activityItem";
 import {getChannelName} from "../../../utils/formatting";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
-import {ACTIVITYITEM, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
+import {ACTIVITYITEM, APPROVED, CASHIER, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import NoActivity from "@assets/svg/noActivity";
@@ -77,6 +77,8 @@ import ApplicationList from "@pages/activities/applicationList";
 import RefreshRN from "@assets/svg/refreshRN";
 import {AnimatedFlatList} from "@pages/activities/components/ConnectionList";
 import useMemoizedFn from "../../../hooks/useMemoizedFn";
+import api from "../../../services/api";
+import Api from "../../../services/api";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -298,7 +300,6 @@ const ActivitiesPage = (props) => {
     );
     const onDismissedModal = (event: boolean, _id: number) => {
         setUpdateModal(false);
-        console.log("onRefresh")
         dispatch(setApplicationItem({}));
         if (event && _id) {
             //  dispatch(deleteApplications(_id))
@@ -338,6 +339,7 @@ const ActivitiesPage = (props) => {
         dispatch(setApplicationItem(event))
         setUpdateModal(true);
     };
+
     const listHeaderComponent = () => <>
         {!searchVisible && !!pnApplications?.length && containerHeight &&
             <View style={[styles1.pinnedActivityContainer, {

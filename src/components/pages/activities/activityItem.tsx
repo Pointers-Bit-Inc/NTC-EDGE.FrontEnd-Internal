@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {Platform, StyleSheet, TouchableOpacity, useWindowDimensions, View} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
@@ -286,6 +286,11 @@ export function ActivityItem(props:any){
         }
     }
     const [pressed, setPressed] = useState(false)
+    const container = useMemo(()=> [styles.container,{paddingRight:dimensions.width<=768 ? 20 : undefined}], [])
+    const applicationContainer = useMemo(()=> styles.applicationContainer, [])
+    const applicationBlur = useMemo(() => [styles.containerBlur,{borderColor:!(
+            isMobile&& !(
+                Platform?.isPad||isTablet())) ? "#AAB6DF" : (pressed ? "#98AFDC" : "#E5E5E5"),backgroundColor: pressed ? "#DCE8FF" : "#fff",borderWidth:props.selected && Platform.OS == "web" ? 4 : 1,}], [])
     return (
 
         <Hoverable>
@@ -310,9 +315,9 @@ export function ActivityItem(props:any){
                     >
 
                         <View
-                            style={[styles.container,{paddingRight:dimensions.width<=768 ? 20 : undefined}]}>
+                            style={container}>
 
-                            <View style={styles.applicationContainer}>
+                            <View style={applicationContainer}>
                                 <View style={{padding:5}}>
                                     <View style={{
                                         height:8,
@@ -321,9 +326,7 @@ export function ActivityItem(props:any){
                                         borderRadius:4
                                     }}/>
                                 </View>
-                                <View style={[styles.containerBlur,{borderColor:!(
-                                        isMobile&& !(
-                                            Platform?.isPad||isTablet())) ? "#AAB6DF" : (pressed ? "#98AFDC" : "#E5E5E5"),backgroundColor: pressed ? "#DCE8FF" : "#fff",borderWidth:props.selected && Platform.OS == "web" ? 4 : 1,}]}>
+                                <View style={applicationBlur}>
 
                                         <TouchableOpacity  activeOpacity={100} onPressIn={()=>setPressed(true)}
                                                           onPressOut={()=>setPressed(false)} onPress={props.onPressUser}>
