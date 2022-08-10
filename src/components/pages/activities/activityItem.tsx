@@ -30,6 +30,7 @@ import BellMuteIcon from "@assets/svg/bellMute";
 import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 import {isTablet} from "react-native-device-info";
+import useMemoizedFn from "../../../hooks/useMemoizedFn";
 const styles=StyleSheet.create({
 
     containerBlur:{
@@ -299,7 +300,7 @@ const propsMemo = useMemo(() => props, [props])
     return (
 
         <Hoverable>
-            {isHovered=>(
+            {useMemoizedFn(isHovered=>(
 
                 <View style={{
                     backgroundColor:propsMemo.selected&& !(
@@ -499,7 +500,7 @@ const propsMemo = useMemo(() => props, [props])
 
                 </View>
 
-            )}
+            ))}
         </Hoverable>
 
     );
