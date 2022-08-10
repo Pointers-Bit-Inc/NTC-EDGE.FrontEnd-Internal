@@ -94,7 +94,7 @@ const RenderServiceMiscellaneous=(props)=>{
             async function f(e,p=undefined){
                 switch(typeof e){
                     case "object":
-                        if(!!Object.values(e).join("")){
+                        if(!!Object?.values?.(e)?.join("")){
                             p=p ? p+"." : "";
                             _.forIn(e, async function(value,i){
                                 if(e[i]?.hasOwnProperty('year')){

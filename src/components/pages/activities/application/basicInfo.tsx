@@ -264,7 +264,23 @@ const BasicInfo = (props: any) => {
             return props.isMore ?  s?.remarks && index == 0 :s?.remarks
         })
     }, [props.paymentHistory, props.approvalHistory, props.isMore])
+    const drowdownVisible= useSelector((state:RootStateOrAny)=>state.activity?.drowdownVisible);
+    useEffect(
+        () => {
+            let timer1 = null
+            if(drowdownVisible){
+                timer1 = setTimeout(() => {
+                    scrollRef.current.scrollToEnd()
+                }, 100);
+            }
 
+
+            return () => {
+                clearTimeout(timer1);
+            };
+        },
+        [drowdownVisible]
+    );
     function RemarkFn() {
         return ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks) ?
             <>
@@ -682,6 +698,7 @@ const BasicInfo = (props: any) => {
 
 
                                         </View>}
+
                                         {props?.service && <View style={styles.divider}/>}
                                         <RenderServiceMiscellaneous hasChanges={props.hasChanges}
                                                                     updateApplication={updateApplication}
@@ -696,6 +713,7 @@ const BasicInfo = (props: any) => {
                                 </View>
 
                             </View>
+                            {drowdownVisible && props?.service?.examSeminar ? <View style={{marginBottom: 200}}/> : <></> }
                         </View>
 
                     }

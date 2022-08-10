@@ -5,6 +5,7 @@ export default keyMirror({
   ON_CHECKED: null,
   SELECTED_CHANGE_STATUS: null,
   SET_VISIBLE: null,
+  SET_DROPDOWN_VISIBLE: null,
   UPDATE_ACTIVITY_STATUS: null,
   ADD_ACTIVITY: null,
   SET_RESET_FILTER_STATUS: null,

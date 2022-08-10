@@ -41,6 +41,7 @@ export const DATE_ADDED = "Date Added",
 
 const InitialState = Record({
   visible: false,
+  drowdownVisible: false,
   editModalVisible: false,
   statusCode: [
     {

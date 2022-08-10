@@ -18,6 +18,8 @@ import {Regular,Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import {outline} from "@styles/color";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
+import {setDropdownVisible} from "../../../../reducers/activity/actions";
 
 interface Props {
         label: string;
@@ -29,6 +31,8 @@ interface Props {
     const CustomDropdown: FC<Props> = ({label, data, onSelect, value, loading}) => {
         const dimension = useWindowDimensions()
         const DropdownButton = useRef();
+        const dispatch=useDispatch();
+
         const [visible, setVisible] = useState(false);
         const [selected, setSelected] = useState(undefined);
         const [dropdownTop, setDropdownTop] = useState(0);
@@ -38,7 +42,13 @@ interface Props {
         const [dropdownLeft, setDropdownLeft] = useState(0);
         const [selectedIndex, setSelectedIndex] = useState(null)
         const toggleDropdown = (): void => {
-            visible ? setVisible(false) : openDropdown();
+            if(visible){
+                dispatch(setDropdownVisible(false))
+
+                setVisible(false)
+            } {
+                openDropdown();
+            }
         };
         useEffect(() => {
             let isCurrent = true
@@ -57,27 +67,34 @@ interface Props {
         }, [data, value, selectedIndex])
 
         useEffect(()=>{
-            DropdownButton?.current?.measure((_fx:number,_fy:number,_w:number,h:number,_px:number,py:number)=>{
-                setDropdownWidth(_w);
-                setDropdownLeft(_px);
-                setDropdownTop((h + py) - (Platform.OS === 'ios' ? 0 : (StatusBar?.currentHeight || 0)));
-                setDropdownHeight(py)
-                setDropdownBottom((py));
-            });
+            let timer1 = setTimeout(() => {
+                DropdownButton?.current?.measure((_fx:number,_fy:number,_w:number,h:number,_px:number,py:number)=>{
+                    setDropdownWidth(_w);
+                    setDropdownLeft(_px);
+                    setDropdownTop((h + py) - (Platform.OS === 'ios' ? 0 : (StatusBar?.currentHeight || 0)));
+                    setDropdownHeight(py)
+                    setDropdownBottom((py));
+                });
+            }, 500);
+            return () => {
+                clearTimeout(timer1);
+            };
         }, [visible, dropdownTop])
 
         const openDropdown = (): void => {
-
+            dispatch(setDropdownVisible(true))
 
             setVisible(true);
         };
         const orientation = useOrientation()
         useEffect(()=>{
+            dispatch(setDropdownVisible(false))
             setVisible(false);
         }, [orientation])
         const onItemPress = (item: any): void => {
             setSelected(item);
             onSelect(item);
+            dispatch(setDropdownVisible(false))
             setVisible(false);
         };
 
@@ -102,7 +119,10 @@ interface Props {
                        animationType="none">
                     <TouchableOpacity
                         style={styles.overlay}
-                        onPress={() => setVisible(false)}
+                        onPress={() => {
+                            dispatch(setDropdownVisible(false))
+                            setVisible(false)
+                        }}
                     >
                         {dropdownTop>0 && dropdownWidth > 0  && <View style={[styles.dropdown, { bottom: data?.length < 6   ? undefined  : "15%", width: dropdownWidth,flex: 1, left: dropdownLeft, top:  dropdownTop + 5}]}>
                             {data?.length > 0 ? <FlatList
@@ -179,7 +199,7 @@ interface Props {
             marginRight: 10,
         },
         dropdown: {
-
+            overflow: "hidden",
             alignSelf: isMobile ? "center" : "flex-end",
             position: 'absolute',
 
