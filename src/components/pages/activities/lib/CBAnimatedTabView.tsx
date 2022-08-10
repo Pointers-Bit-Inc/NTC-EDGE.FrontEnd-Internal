@@ -64,7 +64,7 @@ const CBAnimatedTabViewWithoutMemo = <T extends any>({
       initialNumToRender={initialNumToRender}
       maxToRenderPerBatch={maxToRenderPerBatch}
       ref={onRef}
-
+        onEndReachedThreshold={0.5}
       ListHeaderComponent={ListHeaderComponent}
       refreshControl={refreshControl}
       onContentSizeChange={onContentSizeChange}
@@ -85,6 +85,7 @@ const CBAnimatedTabViewWithoutMemo = <T extends any>({
       })}
       contentContainerStyle={Platform.select({
         ios: {
+
           flexGrow: 1,
           paddingBottom: Theme.spacing.gutter,
         },
