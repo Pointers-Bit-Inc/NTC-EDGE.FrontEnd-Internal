@@ -838,22 +838,18 @@ const ActivitiesPage = (props) => {
                                         <TabBar
                                             renderLabel={({route, focused}) => {
                                                 return (
-                                                    <View>
                                                         <Text style={{
                                                             color: focused ? infoColor : "#606A80",
                                                             fontFamily: Regular, // focused ? Bold : Regular
                                                             fontSize: fontValue(12)
                                                         }}>{route.title}</Text>
-                                                    </View>
                                                 );
                                             }}
                                             {...props}
                                             indicatorStyle={{height: 4,
                                                 backgroundColor: infoColor,
                                                 borderRadius: 4,}}
-
-                                            tabStyle={{width: fontValue(136)}}
-                                            style={{backgroundColor: 'white'}}
+                                            indicatorContainerStyle={{backgroundColor: "#fff"}}
                                         />
                                     </CBAnimatedTabBar>
                                 )}}
