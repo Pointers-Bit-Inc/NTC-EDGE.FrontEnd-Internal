@@ -65,7 +65,7 @@ import {
     setSelectedYPos
 } from "../../../reducers/application/actions";
 import {renderSwiper} from "@pages/activities/swiper";
-import {ActivityItem} from "@pages/activities/activityItem";
+import ActivityItem from "@pages/activities/activityItem";
 import {getChannelName} from "../../../utils/formatting";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
 import {ACTIVITYITEM, APPROVED, CASHIER, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";

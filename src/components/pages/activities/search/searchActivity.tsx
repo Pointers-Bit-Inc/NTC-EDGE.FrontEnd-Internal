@@ -13,7 +13,7 @@ import BackSpaceIcon from "@assets/svg/backspace";
 import CloseCircleIcon from "@assets/svg/closeCircle";
 import {styles} from "@pages/activities/search/styles";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {ActivityItem} from "@pages/activities/activityItem";
+import ActivityItem from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import ApplicationList from "@pages/activities/applicationList";
 import {unreadReadApplication} from "@pages/activities/script";

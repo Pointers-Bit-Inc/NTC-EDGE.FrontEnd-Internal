@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {memo, useEffect, useMemo, useState} from "react";
 import {Platform, StyleSheet, TouchableOpacity, useWindowDimensions, View} from "react-native";
 import Text from "@components/atoms/text";
 import ProfileImage from "@components/atoms/image/profile";
@@ -245,7 +245,7 @@ const closeRow=(index)=>{
 };
 
 
-export function ActivityItem(props:any){
+const ActivityItem = (props:any) =>{
 const propsMemo = useMemo(() => props, [props])
 
     const status=[CASHIER].indexOf(propsMemo?.role)!= -1 ? PaymentStatusText(propsMemo?.activity?.paymentStatus) : StatusText(propsMemo?.activity?.status);
@@ -287,7 +287,7 @@ const propsMemo = useMemo(() => props, [props])
         }
     }
     const [pressed, setPressed] = useState(false)
-    const container = useMemo(()=> [styles.container,{paddingRight:dimensions.width<=768 ? 20 : undefined}], [])
+    const container = useMemo(()=> [styles.container,{paddingRight:dimensions.width<=768 ? 20 : undefined}], [dimensions])
     const applicationContainer = useMemo(()=> styles.applicationContainer, [])
     const applicationBlur = useMemo(() => [styles.containerBlur,{borderColor:!(
             isMobile&& !(
@@ -505,3 +505,5 @@ const propsMemo = useMemo(() => props, [props])
 
     );
 }
+
+export default memo(ActivityItem)
