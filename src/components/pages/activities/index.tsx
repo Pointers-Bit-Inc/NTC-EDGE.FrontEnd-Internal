@@ -81,6 +81,7 @@ import HomeMenuIcon from "@assets/svg/homemenu";
 import {setVisible} from "../../../reducers/activity/actions";
 import useMemoizedFn from "../../../hooks/useMemoizedFn";
 import {TabBar, TabBarIndicator} from "react-native-tab-view";
+import {renderSwiper} from "@pages/activities/swiper";
 const initialWidth = Dimensions.get("window").width;
 export type tabKeys = "all" | "pending" | "history";
 export const tabs = [
