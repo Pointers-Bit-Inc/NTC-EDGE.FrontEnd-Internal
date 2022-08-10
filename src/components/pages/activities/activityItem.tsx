@@ -201,6 +201,7 @@ const RenderApplication=({applicationType}:any)=>{
 
 
 const RenderPinned=({personnel,config}:any)=>{
+
     return (
         <View
             style={[
@@ -245,23 +246,23 @@ const closeRow=(index)=>{
 
 
 export function ActivityItem(props:any){
+const propsMemo = useMemo(() => props, [props])
 
-
-    const status=[CASHIER].indexOf(props?.role)!= -1 ? PaymentStatusText(props?.activity?.paymentStatus) : StatusText(props?.activity?.status);
-    const userActivity=props?.activity?.applicant?.user||props?.activity?.applicant;
-    const getStatus=getActivityStatus(props,status);
+    const status=[CASHIER].indexOf(propsMemo?.role)!= -1 ? PaymentStatusText(propsMemo?.activity?.paymentStatus) : StatusText(propsMemo?.activity?.status);
+    const userActivity=propsMemo?.activity?.applicant?.user||propsMemo?.activity?.applicant;
+    const getStatus=getActivityStatus(propsMemo,status);
 
     useEffect(()=>{
         let unsubscribe=true;
-        unsubscribe&&props?.isOpen==props?.index&&row[props?.index]?.close();
-        unsubscribe&&props?.isOpen==props?.index&& !!row.length&&row[props?.index]?.close();
+        unsubscribe&&propsMemo?.isOpen==propsMemo?.index&&row[propsMemo?.index]?.close();
+        unsubscribe&&propsMemo?.isOpen==propsMemo?.index&& !!row.length&&row[propsMemo?.index]?.close();
         return ()=>{
             unsubscribe=false
         }
-    },[props.isOpen==props.index]);
+    },[propsMemo.isOpen==propsMemo.index]);
     useEffect(()=>{
-        setSelectedMoreCircle(props.activityMore==props.index)
-    },[props.activityMore]);
+        setSelectedMoreCircle(propsMemo.activityMore==propsMemo.index)
+    },[propsMemo.activityMore]);
     const [selectedMoreCircle,setSelectedMoreCircle]=useState(false);
     const onMoreCircle=()=>{
 
@@ -272,16 +273,16 @@ export function ActivityItem(props:any){
     const dimensions=useWindowDimensions();
 
     let personnel:any=null;
-    if(props?.activity){
-        if(!!props?.activity.paymentMethod&&props?.activity.assignedPersonnel?._id){
-            personnel=props?.activity.assignedPersonnel
-        } else if(props?.activity.paymentStatus==APPROVED||props?.activity.paymentStatus==DECLINED){
-            personnel=props?.activity?.paymentHistory?.[0]?.personnel||props?.activity?.paymentHistory?.personnel;
+    if(propsMemo?.activity){
+        if(!!propsMemo?.activity.paymentMethod&&propsMemo?.activity.assignedPersonnel?._id){
+            personnel=propsMemo?.activity.assignedPersonnel
+        } else if(propsMemo?.activity.paymentStatus==APPROVED||propsMemo?.activity.paymentStatus==DECLINED){
+            personnel=propsMemo?.activity?.paymentHistory?.[0]?.personnel||propsMemo?.activity?.paymentHistory?.personnel;
         } else{
             personnel=(
-                    props?.activity?.assignedPersonnel?._id ? props?.activity?.assignedPersonnel : null)||
-                props?.activity?.approvalHistory?.[0]?.personnel||
-                props?.activity?.approvalHistory?.personnel;
+                    propsMemo?.activity?.assignedPersonnel?._id ? propsMemo?.activity?.assignedPersonnel : null)||
+                propsMemo?.activity?.approvalHistory?.[0]?.personnel||
+                propsMemo?.activity?.approvalHistory?.personnel;
 
         }
     }
@@ -290,27 +291,30 @@ export function ActivityItem(props:any){
     const applicationContainer = useMemo(()=> styles.applicationContainer, [])
     const applicationBlur = useMemo(() => [styles.containerBlur,{borderColor:!(
             isMobile&& !(
-                Platform?.isPad||isTablet())) ? "#AAB6DF" : (pressed ? "#98AFDC" : "#E5E5E5"),backgroundColor: pressed ? "#DCE8FF" : "#fff",borderWidth:props.selected && Platform.OS == "web" ? 4 : 1,}], [])
+                Platform?.isPad||isTablet())) ? "#AAB6DF" : (pressed ? "#98AFDC" : "#E5E5E5"),backgroundColor: pressed ? "#DCE8FF" : "#fff",borderWidth:propsMemo.selected && Platform.OS == "web" ? 4 : 1,}], [])
+    const assignPersonnelStyle = useMemo(() => [styles.section, {paddingHorizontal:fontValue(10),
+        paddingTop:fontValue(4) ,
+        paddingBottom:propsMemo?.activity?.assignedPersonnel?.id||propsMemo?.activity?.assignedPersonnel ? fontValue(4) :fontValue(10) }], [])
     return (
 
         <Hoverable>
             {isHovered=>(
 
                 <View style={{
-                    backgroundColor:props.selected&& !(
+                    backgroundColor:propsMemo.selected&& !(
                         (
                             isMobile&& !(
                                 Platform?.isPad||isTablet()))) ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff"
                 }}>
                     <ActivitySwipeable
-                        ref={ref=>row[props.index]=ref}
-                        key={props.index}
+                        ref={ref=>row[propsMemo.index]=ref}
+                        key={propsMemo.index}
                         onSwipeableRightOpen={()=>{
-                            closeRow(props.index)
+                            closeRow(propsMemo.index)
                         }
                         }
                         renderRightActions={
-                            (progress,dragX)=>props.swiper(props.index,progress,dragX,props.onPressUser)
+                            (progress,dragX)=>propsMemo.swiper(propsMemo.index,progress,dragX,propsMemo.onPressUser)
                         }
                     >
 
@@ -322,21 +326,21 @@ export function ActivityItem(props:any){
                                     <View style={{
                                         height:8,
                                         width:8,
-                                        backgroundColor:undefined,//props?.activity?.dateRead  ? "#fff" : "#2863D6" ,
+                                        backgroundColor:undefined,//propsMemo?.activity?.dateRead  ? "#fff" : "#2863D6" ,
                                         borderRadius:4
                                     }}/>
                                 </View>
                                 <View style={applicationBlur}>
 
                                         <TouchableOpacity  activeOpacity={100} onPressIn={()=>setPressed(true)}
-                                                          onPressOut={()=>setPressed(false)} onPress={props.onPressUser}>
+                                                          onPressOut={()=>setPressed(false)} onPress={propsMemo.onPressUser}>
                                             <View style={
                                                 {
                                                     borderRadius:fontValue(10),
                                                     flex:1,
 
                                                     paddingHorizontal:fontValue(10),
-                                                    //paddingVertical:props?.activity?.assignedPersonnel?.id||props?.activity?.assignedPersonnel ? undefined : fontValue(10),
+                                                    //paddingVertical:propsMemo?.activity?.assignedPersonnel?.id||propsMemo?.activity?.assignedPersonnel ? undefined : fontValue(10),
                                                     flexDirection:"row",
                                                     alignItems:"center"
                                                 }
@@ -357,13 +361,13 @@ export function ActivityItem(props:any){
                                                                         fontSize:fontValue(14,)
                                                                     }}
                                                                     highlightStyle={{backgroundColor:'#BFD6FF'}}
-                                                                    searchWords={[props?.searchQuery]}
+                                                                    searchWords={[propsMemo?.searchQuery]}
                                                                     textToHighlight={userActivity?.firstName ? `${userActivity?.firstName} ${userActivity?.lastName}` : (
                                                                         userActivity?.applicantName ? userActivity?.applicantName : userActivity?.companyName ? userActivity?.companyName : "")}
                                                                 />
                                                             <View>
                                                                  <Text style={{color: "#606A80"}}>
-                                                                    {props?.activity?.applicant?.companyName ? "Company" : "Individual"}
+                                                                    {propsMemo?.activity?.applicant?.companyName ? "Company" : "Individual"}
                                                                 </Text>
                                                             </View>
 
@@ -381,7 +385,7 @@ export function ActivityItem(props:any){
                                                                 }
                                                                 numberOfLines={1}
                                                             >
-                                                                {readableToHuman(formatDate(props.activity.createdAt))}
+                                                                {readableToHuman(formatDate(propsMemo.activity.createdAt))}
                                                             </Text>
                                                         </View>
                                                     </View>
@@ -390,12 +394,10 @@ export function ActivityItem(props:any){
                                                 </View>
 
                                             </View>
-                                            <View style={[styles.section, {paddingHorizontal:fontValue(10),
-                                                paddingTop:fontValue(4) ,
-                                                paddingBottom:props?.activity?.assignedPersonnel?.id||props?.activity?.assignedPersonnel ? fontValue(4) :fontValue(10) }]}>
+                                            <View style={assignPersonnelStyle}>
                                                 <View style={{flex:1,alignItems:'flex-start', }}>
                                                     <RenderApplication
-                                                        applicationType={props?.activity?.applicationType||props?.activity?.service?.name}/>
+                                                        applicationType={propsMemo?.activity?.applicationType||propsMemo?.activity?.service?.name}/>
                                                 </View>
                                                 <View style={{paddingLeft: 6}}>
                                                     <RenderStatus
@@ -404,7 +406,7 @@ export function ActivityItem(props:any){
                                                 </View>
 
                                             </View>
-                                            {props?.activity?.assignedPersonnel?.id||props?.activity?.assignedPersonnel&&
+                                            {propsMemo?.activity?.assignedPersonnel?.id||propsMemo?.activity?.assignedPersonnel&&
                                             <View style={{
                                                 padding:fontValue(10),
                                                 borderTopColor:"#EFEFEF",
@@ -412,7 +414,7 @@ export function ActivityItem(props:any){
                                             }}>
                                                 <View style={styles.section}>
                                                     <View style={{flex:1,alignItems:'flex-start'}}>
-                                                        <RenderPinned config={props.config} personnel={personnel}/>
+                                                        <RenderPinned config={propsMemo.config} personnel={personnel}/>
                                                     </View>
                                                 </View>
                                             </View>
