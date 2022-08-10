@@ -39,10 +39,11 @@ import RowText from "@pages/activities/application/RowText";
 import Loading from "@atoms/loading";
 import {infoColor} from "@styles/color";
 import {setEditModalVisible} from "../../../../reducers/activity/actions";
+import _ from "lodash";
 
 
-function Status(props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
-
+function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
+    const props = useMemo(() => _props, [_props] )
     return <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
         <View style={styles.group}>
             <View style={styles.rect}>
@@ -132,6 +133,7 @@ function Status(props: { user: any, paymentHistory: any, approvalHistory: any, h
 }
 
 function IsMorePress(props: { loading: any, onPress: () => void, more: boolean }) {
+
     return <TouchableOpacity onPress={props.onPress}>
         <View style={{flex: 1, justifyContent: "flex-end", flexDirection: "row", alignItems: "center"}}>
 
@@ -261,10 +263,19 @@ const BasicInfo = (_props: any) => {
     const historyMemo = useMemo(() => {
         const _paymentHistory = props.paymentHistory?.length ? props.paymentHistory : []
         const _approvalHistory = props.approvalHistory?.length ? props.approvalHistory : []
+
+
+
         return [..._paymentHistory, ..._approvalHistory]?.filter((s, index) => {
-            return props.isMore ?  s?.remarks && index == 0 :s?.remarks
-        })
-    }, [props.paymentHistory, props.approvalHistory, props.isMore])
+            return s?.remarks
+        }) || []
+    }, [props.paymentHistory, props.approvalHistory])
+
+
+    const historyArrayMemo = useMemo(() => {
+
+        return  props.isMore ? historyMemo : [_.first(historyMemo)]
+    }, [props.paymentHistory,historyMemo, props.approvalHistory, props.isMore])
     const drowdownVisible= useSelector((state:RootStateOrAny)=>state.activity?.drowdownVisible);
     useEffect(
         () => {
@@ -350,7 +361,7 @@ const BasicInfo = (_props: any) => {
                 </View>
             </>
 
-            : (!!(historyMemo.length) ?
+            : (!!(historyArrayMemo?.length) ?
                 <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
                     <View style={styles.group}>
                         <View style={styles.rect}>
@@ -359,12 +370,12 @@ const BasicInfo = (_props: any) => {
                     </View>
 
                     <FlatList
-                        data={historyMemo}
+                        data={historyArrayMemo}
                         renderItem={({item, index}) => {
 
                             return <>
                                 <View style={{
-                                    paddingTop:index != historyMemo.length - 1 ? 0 : 10,
+                                    paddingTop:index != historyArrayMemo?.length - 1 ? 0 : 10,
                                     flexDirection: "row",
                                     alignItems: "center",
                                     justifyContent: "space-between"
@@ -420,7 +431,7 @@ const BasicInfo = (_props: any) => {
                                 </View>
 
                                 <CollapseText expandStyle={{color: "#565961"}}
-                                              textContainerStyle={index == historyMemo.length - 1 ? {} : {
+                                              textContainerStyle={index == historyArrayMemo?.length - 1 ? {} : {
                                                   borderBottomColor: "#ECECEC",
                                                   borderBottomWidth: 1,
                                               }}
@@ -435,7 +446,7 @@ const BasicInfo = (_props: any) => {
                         }
                         keyExtractor={(item, index) => index}
                     />
-                    <IsMorePress onPress={() => props.setIsMore((bool) => !bool)} more={props.isMore}/>
+                    <IsMorePress onPress={() => props.setIsMore((bool) => !bool)} more={props.isMore} loading={loading}/>
                 </View> : <></>);
     }
     const containerRef = useRef(null);
@@ -486,14 +497,14 @@ const BasicInfo = (_props: any) => {
                         <View style={[styles.container, {marginVertical: 10}]}>
                             <View style={styles.group4}>
                                 <Status user={user} paymentHistory={props.paymentHistory}
-                                        approvalHistory={props?.approvalHistory} historyMemo={historyMemo} props={props}
+                                        approvalHistory={props?.approvalHistory} historyMemo={historyArrayMemo} props={props}
                                         personnel={personnel} paymentHistory1={props?.paymentHistory}
                                         assignedPersonnel={props.assignedPersonnel}/>
                             </View>
                         </View>
                     </View>}
 
-                    {Platform.OS != "web" && (historyMemo.length || ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks)) ?
+                    {Platform.OS != "web" && (historyArrayMemo?.length || ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks)) ?
                         <View style={[styles.elevation, {width: "90%", marginVertical: 10,}]}>
                             <View style={[styles.container, {marginVertical: 10}]}>
                                 <View style={styles.group4}>
@@ -544,7 +555,7 @@ const BasicInfo = (_props: any) => {
 
                                         {Platform.OS == "web" &&
                                             <Status user={user} paymentHistory={props.paymentHistory}
-                                                    approvalHistory={props?.approvalHistory} historyMemo={historyMemo}
+                                                    approvalHistory={props?.approvalHistory} historyMemo={historyArrayMemo}
                                                     props={props}
                                                     personnel={personnel} paymentHistory1={props?.paymentHistory}
                                                     assignedPersonnel={props.assignedPersonnel}/>

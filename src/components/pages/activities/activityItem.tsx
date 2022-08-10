@@ -257,9 +257,10 @@ const propsMemo = useMemo(() => props, [props])
 
     const status=[CASHIER].indexOf(propsMemo?.role)!= -1 ? PaymentStatusText(propsMemo?.activity?.paymentStatus) : StatusText(propsMemo?.activity?.status);
     const userActivity=propsMemo?.activity?.applicant?.user||propsMemo?.activity?.applicant;
+
     const getStatus=getActivityStatus(propsMemo,status);
     const nameMemo = useMemo(() => userActivity?.firstName ? `${userActivity?.firstName} ${userActivity?.lastName}` : (
-        userActivity?.applicantName ? userActivity?.applicantName : userActivity?.companyName ? userActivity?.companyName : (propsMemo?.activity?.service?.applicationDetails?.clubName ? propsMemo?.activity?.service?.applicationDetails?.clubName : "")), [])
+        userActivity?.applicantName ? userActivity?.applicantName :propsMemo?.activity?.applicant?.companyName? propsMemo?.activity?.applicant?.companyName : (propsMemo?.activity?.service?.applicationDetails?.clubName ? propsMemo?.activity?.service?.applicationDetails?.clubName : "")), [])
     useEffect(()=>{
         let unsubscribe=true;
         unsubscribe&&propsMemo?.isOpen==propsMemo?.index&&row[propsMemo?.index]?.close();

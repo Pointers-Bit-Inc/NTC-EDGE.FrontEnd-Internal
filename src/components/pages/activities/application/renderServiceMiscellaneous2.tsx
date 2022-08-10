@@ -1,7 +1,7 @@
 import {isValidDate, transformText} from "../../../../utils/ntc";
 import Row from "@pages/activities/application/Row";
 import {FlatList,StyleSheet,Text,View} from "react-native";
-import React, {useRef, useState} from "react";
+import React, {memo, useRef, useState} from "react";
 import {input} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular500} from "@styles/font";
@@ -134,7 +134,6 @@ const RenderServiceMiscellaneous=(props)=>{
             nextValue=keys?.split?.(".")?.[keys.split(".")?.length-2]||keys?.split?.(".")?.[0];
         }
 
-
         return (<View>
 
             <Title nextValue={nextValue} index={index}/>
@@ -175,4 +174,4 @@ const RenderServiceMiscellaneous=(props)=>{
     )
 };
 
-export default RenderServiceMiscellaneous
+export default memo(RenderServiceMiscellaneous)
