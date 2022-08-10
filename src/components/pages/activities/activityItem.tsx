@@ -291,7 +291,7 @@ const propsMemo = useMemo(() => props, [props])
     const applicationContainer = useMemo(()=> styles.applicationContainer, [])
     const applicationBlur = useMemo(() => [styles.containerBlur,{borderColor:!(
             isMobile&& !(
-                Platform?.isPad||isTablet())) ? "#AAB6DF" : (pressed ? "#98AFDC" : "#E5E5E5"),backgroundColor: pressed ? "#DCE8FF" : "#fff",borderWidth:propsMemo.selected && Platform.OS == "web" ? 4 : 1,}], [])
+                Platform?.isPad||isTablet())) ? "#AAB6DF" : (pressed ? "#98AFDC" : "#E5E5E5"),backgroundColor: pressed ? "#DCE8FF" : "#fff",borderWidth:propsMemo.selected && Platform.OS == "web" ? 4 : 1,}], [pressed])
     const assignPersonnelStyle = useMemo(() => [styles.section, {paddingHorizontal:fontValue(10),
         paddingTop:fontValue(4) ,
         paddingBottom:propsMemo?.activity?.assignedPersonnel?.id||propsMemo?.activity?.assignedPersonnel ? fontValue(4) :fontValue(10) }], [])
