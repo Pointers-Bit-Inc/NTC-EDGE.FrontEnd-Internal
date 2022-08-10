@@ -1,4 +1,4 @@
-import React, {memo, useRef, useState} from "react";
+import React, {memo, useMemo, useRef, useState} from "react";
 import {Animated, Text, TouchableWithoutFeedback, View} from "react-native";
 import {styles} from "@pages/activities/styles";
 import ChevronDownIcon from "@assets/svg/chevron-down";
@@ -9,7 +9,8 @@ import {useAlert} from "../../../hooks/useAlert";
 import ChevronUpIcon from "@assets/svg/chevron-up";
 import {fontValue} from "@pages/activities/fontValue";
 
-const ApplicationList=(props:{onPress:()=>void,item:any,numbers:{parentIndex:number,child:number[]}[],index:number,element:(activity:any,i:number)=>JSX.Element})=>{
+const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:number,child:number[]}[],index:number,element:(activity:any,i:number)=>JSX.Element})=>{
+    const props = useMemo(() => _props , [_props])
     const chevronValue=useRef(new Animated.Value(0)).current;
     const [isOpen,setIsOpen]=useState(true);
     const {springValue,_springHide}=useAlert(true,()=>{
