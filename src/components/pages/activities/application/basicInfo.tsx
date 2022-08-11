@@ -40,6 +40,7 @@ import Loading from "@atoms/loading";
 import {infoColor} from "@styles/color";
 import {setEditModalVisible} from "../../../../reducers/activity/actions";
 import _ from "lodash";
+import useMemoizedFn from "../../../../hooks/useMemoizedFn";
 
 
 function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
@@ -299,75 +300,92 @@ const BasicInfo = (_props: any) => {
     const collapsedTime = useMemo(() => {
         return moment([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? ((props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time) ||  (props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time)) : ((props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time) || (props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time)) ).fromNow()
     }, [props])
-    function RemarkFn() {
-        return (props.paymentHistory?.remarks || props?.approvalHistory?.remarks) ?
-            <>
-                <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
-
-                    <View style={styles.group}>
-                        <View style={styles.rect}>
-                            <Text style={styles.header}>REMARKS</Text>
-                        </View>
-                    </View>
-                    <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
-                        <View style={{flexDirection: "row", alignItems: "center",}}>
-                            <View style={{paddingRight: 10}}>
-                                <Text style={[{
-                                    fontSize: fontValue(10),
-                                    color: "#37405B"
-                                }]}>{`${personnel?.firstName} ${personnel?.lastName}`}</Text>
-                            </View>
-
-                            <View
-                                style={{
-
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    backgroundColor: remarkColor(
-                                        getStatusText(props, personnel)
-                                    ),
-                                    borderRadius: fontValue(30),
-                                    paddingHorizontal: fontValue(5),
-                                    paddingVertical: fontValue(6)
-                                }}>
-
-                                <CustomText
-                                    style={[
-                                        styles.role,
-
-
-                                        {
-                                            fontSize: fontValue(10),
-                                            fontFamily: Bold,
-                                            color: "#fff"
-                                        }
-                                    ]}
-                                    numberOfLines={1}
-                                >
-                                    {
-                                        getStatusText(props, personnel)?.toUpperCase()
-                                    }
-                                </CustomText>
-                            </View>
-                        </View>
-                        <Text style={{
-                            color: "#606A80",
-                            fontSize: fontValue(10)
-                        }}>{collapsedTime}</Text>
-                    </View>
-
-                    <CollapseText expandStyle={{color: "#565961"}}
-                                  textContainerStyle={{}}
-                                  textStyle={[{fontSize: fontValue(12), fontFamily: Regular500, fontWeight: "500"}]}
-                                  text={collapsedText}/>
-                    <IsMorePress onPress={() => {
-                        isMoreRemark()
-                        props.setIsMore((bool) => !bool)
-                    }} loading={loading} more={props.isMore}/>
+    const containerMergeStyle = useMemo(() => [styles.elevation, {width: "90%", marginVertical: 10,}], [])
+    const containerMarginMergeStyle = useMemo(() => [styles.container, {marginVertical: 10}], [])
+    const ContainerRemarkStyle = useMemoizedFn((containerRemarkProps) => {
+        return <>{ Platform.OS == "web"? <>
+                {containerRemarkProps.children}
+            </> : <View style={containerMergeStyle}>
+            <View style={containerMarginMergeStyle}>
+                <View style={styles.group4}>
+                    {containerRemarkProps.children}
                 </View>
-            </>
+            </View>
+        </View>}</>
+    })
+
+    const RemarkFn = useMemoizedFn(() => {
+        return (props.paymentHistory?.remarks || props?.approvalHistory?.remarks) ?
+
+               <ContainerRemarkStyle>
+                   <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
+
+                       <View style={styles.group}>
+                           <View style={styles.rect}>
+                               <Text style={styles.header}>REMARKS</Text>
+                           </View>
+                       </View>
+                       <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                           <View style={{flexDirection: "row", alignItems: "center",}}>
+                               <View style={{paddingRight: 10}}>
+                                   <Text style={[{
+                                       fontSize: fontValue(10),
+                                       color: "#37405B"
+                                   }]}>{`${personnel?.firstName} ${personnel?.lastName}`}</Text>
+                               </View>
+
+                               <View
+                                   style={{
+
+                                       alignItems: "center",
+                                       justifyContent: "center",
+                                       backgroundColor: remarkColor(
+                                           getStatusText(props, personnel)
+                                       ),
+                                       borderRadius: fontValue(30),
+                                       paddingHorizontal: fontValue(5),
+                                       paddingVertical: fontValue(6)
+                                   }}>
+
+                                   <CustomText
+                                       style={[
+                                           styles.role,
+
+
+                                           {
+                                               fontSize: fontValue(10),
+                                               fontFamily: Bold,
+                                               color: "#fff"
+                                           }
+                                       ]}
+                                       numberOfLines={1}
+                                   >
+                                       {
+                                           getStatusText(props, personnel)?.toUpperCase()
+                                       }
+                                   </CustomText>
+                               </View>
+                           </View>
+                           <Text style={{
+                               color: "#606A80",
+                               fontSize: fontValue(10)
+                           }}>{collapsedTime}</Text>
+                       </View>
+
+                       <CollapseText expandStyle={{color: "#565961"}}
+                                     textContainerStyle={{}}
+                                     textStyle={[{fontSize: fontValue(12), fontFamily: Regular500, fontWeight: "500"}]}
+                                     text={collapsedText}/>
+                       <IsMorePress onPress={() => {
+                           isMoreRemark()
+                           props.setIsMore((bool) => !bool)
+                       }} loading={loading} more={props.isMore}/>
+                   </View>
+               </ContainerRemarkStyle>
+
 
             : (!!(historyArrayMemo?.length) ?
+                <ContainerRemarkStyle>
                 <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
                     <View style={styles.group}>
                         <View style={styles.rect}>
@@ -453,8 +471,9 @@ const BasicInfo = (_props: any) => {
                         keyExtractor={(item, index) => index}
                     />
                     <IsMorePress onPress={() => props.setIsMore((bool) => !bool)} more={props.isMore} loading={loading}/>
-                </View> : <></>);
-    }
+                </View>
+                </ContainerRemarkStyle> : <></>);
+    })
     const containerRef = useRef(null);
     const textRef = useRef(null);
 
@@ -510,16 +529,10 @@ const BasicInfo = (_props: any) => {
                         </View>
                     </View>}
 
-                    {Platform.OS != "web"  ?
-                        <View style={[styles.elevation, {width: "90%", marginVertical: 10,}]}>
-                            <View style={[styles.container, {marginVertical: 10}]}>
-                                <View style={styles.group4}>
+                    {Platform.OS != "web"   ?
 
                                     <RemarkFn/>
-
-                                </View>
-                            </View>
-                        </View> : <></>}
+ : <></>}
                     <View style={isMobile || dimensions?.width <= 768 ? {padding: 10, alignSelf: "center"} : {
                         paddingLeft: 20,
                         paddingVertical: 20
