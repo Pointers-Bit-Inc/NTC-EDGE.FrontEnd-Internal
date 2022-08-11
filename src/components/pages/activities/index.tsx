@@ -67,7 +67,7 @@ import {renderSwiper} from "@pages/activities/swiper";
 import ActivityItem from "@pages/activities/activityItem";
 import {getChannelName} from "../../../utils/formatting";
 import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
-import {ACTIVITYITEM, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
+import {ACTIVITYITEM, APPROVED, PAID, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import NoActivity from "@assets/svg/noActivity";
@@ -76,6 +76,7 @@ import ApplicationList from "@pages/activities/applicationList";
 import RefreshRN from "@assets/svg/refreshRN";
 import useMemoizedFn from "../../../hooks/useMemoizedFn";
 import ListHeaderComponent from "@pages/activities/listHeaderComponent";
+import Api from "../../../services/api";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -655,6 +656,7 @@ const ActivitiesPage = (props) => {
         flexGrow: 0,
         flexShrink: 0
     }], [isMobile,Platform?.isPad, isTablet(), isLandscapeSync()])
+
     return (
         <>
             <StatusBar barStyle={'light-content'}/>

@@ -66,7 +66,7 @@ const flatten = require('flat')
 
 
 function ActivityModal(props: any) {
-    const _props = Platform.OS == "web" ? props : props?.route?.params
+    const _props = useMemo(() => Platform.OS == "web" ? props : props?.route?.params, [props])
     const dispatch = useDispatch();
     const applicationItem = useSelector((state: RootStateOrAny) => {
         let _applicationItem = state.application?.applicationItem
@@ -82,7 +82,6 @@ function ActivityModal(props: any) {
 
         return _applicationItem
     });
-
     const hasChange = useSelector((state: RootStateOrAny) => state.application.hasChange);
     const edit = useSelector((state: RootStateOrAny) => state.application.edit);
 
@@ -309,7 +308,7 @@ function ActivityModal(props: any) {
     const [messageUpdate, setMessageUpdate] = useSafeState("")
     const [titleUpdate, setTitleUpdate] = useSafeState("")
     const updateApplication = useCallback(async (callback, isLoading = true) => {
-       console.log(isLoading, "isloading")
+
         /* hideToast()
          showToast(ToastType.Info, <ToastLoading/>)*/
         if (isLoading) setLoading(true)
@@ -645,7 +644,7 @@ function ActivityModal(props: any) {
                     goBackAsync()
                 }} details={applicationItem} status={status}/>
 
-
+                {Platform.OS != "web" ? <Toast/> : <></>}
                 {!edit &&
                     <View style={[{
                         paddingHorizontal: !isMobile ? 64 : 0,
@@ -849,7 +848,7 @@ function ActivityModal(props: any) {
                     onEndorseDismissed()
                 }}
             />
-            {Platform.OS != "web" ? <Toast/> : <></>}
+
             <Alert
                 visible={discardAlert}
                 title={'Discard Changes'}

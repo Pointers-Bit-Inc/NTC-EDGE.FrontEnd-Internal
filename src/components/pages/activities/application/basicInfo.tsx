@@ -293,8 +293,14 @@ const BasicInfo = (_props: any) => {
         },
         [drowdownVisible]
     );
+    const collapsedText = useMemo(() => {
+        return [CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? ((props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) || (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks) ): ((props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks) ||  (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks))
+    }, [props])
+    const collapsedTime = useMemo(() => {
+        return moment([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? ((props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time) ||  (props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time)) : ((props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time) || (props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time)) ).fromNow()
+    }, [props])
     function RemarkFn() {
-        return ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks) ?
+        return (props.paymentHistory?.remarks || props?.approvalHistory?.remarks) ?
             <>
                 <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
 
@@ -347,13 +353,13 @@ const BasicInfo = (_props: any) => {
                         <Text style={{
                             color: "#606A80",
                             fontSize: fontValue(10)
-                        }}>{moment([CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.time || props?.paymentHistory?.[0]?.time) : (props?.approvalHistory?.time || props?.approvalHistory?.[0]?.time)).fromNow()}</Text>
+                        }}>{collapsedTime}</Text>
                     </View>
 
                     <CollapseText expandStyle={{color: "#565961"}}
                                   textContainerStyle={{}}
                                   textStyle={[{fontSize: fontValue(12), fontFamily: Regular500, fontWeight: "500"}]}
-                                  text={[CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) : (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks)}/>
+                                  text={collapsedText}/>
                     <IsMorePress onPress={() => {
                         isMoreRemark()
                         props.setIsMore((bool) => !bool)
@@ -504,7 +510,7 @@ const BasicInfo = (_props: any) => {
                         </View>
                     </View>}
 
-                    {Platform.OS != "web" && (historyArrayMemo?.length || ([CASHIER].indexOf(user?.role?.key) != -1 ? props.paymentHistory?.remarks : props?.approvalHistory?.remarks)) ?
+                    {Platform.OS != "web"  ?
                         <View style={[styles.elevation, {width: "90%", marginVertical: 10,}]}>
                             <View style={[styles.container, {marginVertical: 10}]}>
                                 <View style={styles.group4}>
