@@ -806,10 +806,7 @@ const ActivitiesPage = (props) => {
 
                     </View>
                     {
-                        !(
-                            (
-                                isMobile && !(
-                                    Platform?.isPad || isTablet()))) && lodash.isEmpty(applicationItem) && dimensions?.width > 768 &&
+                         lodash.isEmpty(applicationItem) && dimensions?.width > 768 ?
                         <View style={[{flex: 1, justifyContent: "center", alignItems: "center"}]}>
 
                             <NoActivity/>
@@ -817,12 +814,12 @@ const ActivitiesPage = (props) => {
                                 selected</Text>
 
 
-                        </View>
+                        </View> : <></>
                     }
 
 
                     {(
-                        (!lodash.isEmpty(applicationItem)) && Platform.OS == "web") && <View style={{flex: 1}}>
+                        (!lodash.isEmpty(applicationItem)) && Platform.OS == "web" ) && <View style={{flex: 1}}>
                         <ItemMoreModal details={applicationItem} visible={moreModalVisible} onDismissed={() => {
                             onMoreModalDismissed(applicationItem?.isOpen)
                         }}/>
