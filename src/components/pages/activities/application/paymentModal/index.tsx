@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {Dimensions,Modal,Platform,ScrollView,StyleSheet,Text,TouchableOpacity,View} from "react-native";
 import moment from "moment";
 import {Bold,Regular} from "@styles/font";
@@ -10,9 +10,11 @@ import {fontValue} from "@pages/activities/fontValue";
 import {RootStateOrAny,useSelector} from "react-redux";
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {isMobile} from "@pages/activities/isMobile";
+import useMemoizedFn from "../../../../../hooks/useMemoizedFn";
 
 const {width, height} = Dimensions.get('window');
-const PaymentModal = (props: any) => {
+const PaymentModal = (_props: any) => {
+    const props = useMemo(() => _props, [_props])
     const rightLayoutComponent = useSelector((state: RootStateOrAny) => state.application?.rightLayoutComponent)
     function Cell({ data }) {
         return (
@@ -21,7 +23,7 @@ const PaymentModal = (props: any) => {
             </View>
         );
     }
-    function Row({ column }) {
+    const Row = (({ column }) => {
         return (
             <View style={styles.rowStyle}>
                 {column.map((data, index) => (
@@ -29,11 +31,10 @@ const PaymentModal = (props: any) => {
                 ))}
             </View>
         );
-    }
+    })
     const data = [
         ["Email", props?.applicant?.user?.email],
         ["Fee", "PHP " +  props?.totalFee],
-        ["Account number", "1234567"],
         ["Account", props?.applicant?.user?.firstName + " " + props?.applicant?.user?.lastName],
         ["Amount paid", "PHP" + props?.totalFee],
     ];

@@ -23,6 +23,7 @@ import {Card} from "@pages/activities/application/requirementModal/card";
 import PdfViewr from "@pages/activities/application/pdf/index";
 import FileIcon from "@assets/svg/file";
 import Constants from "expo-constants";
+import useMemoizedFn from "../../../../../hooks/useMemoizedFn";
 
 const {width,height}=Dimensions.get("screen");
 
@@ -291,26 +292,40 @@ const Requirement=(_props:any)=>{
     const props = useMemo(() => _props, [_props])
     const rightLayoutComponent=useSelector((state:RootStateOrAny)=>state.application?.rightLayoutComponent);
     const dimensions=useWindowDimensions();
+    const cardStyle = useMemo(() => [{paddingHorizontal:isMobile ? 20 : 40}], [])
+    const cardTitleStyle = useMemo(() => {
+        return [requirementStyles.cardTitle]
+    }, [])
+    const requirementTitleStyle = useMemo(() => {
+        return [requirementStyles.title]
+    }, [])
+    const requirementDescriptionStyle = useMemo(() => {
+        return [requirementStyles.description]
+    }, [])
+
+    const renderItem = useMemoizedFn(({item}) => {
+        return <RequirementView dimensions={dimensions}
+                                rightLayoutComponent={rightLayoutComponent}
+                                requirement={item}/>
+    })
+
+
     return <ScrollView style={{backgroundColor:"#f8f8f8",width:"100%"}}>
         {props?.requirements?.map((requirement:any,index:number)=>{
 
             return <View key={index} style={{padding:10}}>
                 <Card>
-                    <View style={[{paddingHorizontal:isMobile ? 20 : 40}]}>
-                        <View style={requirementStyles.cardTitle}>
-                            <Text style={requirementStyles.title}>{requirement?.title}</Text>
+                    <View style={cardStyle}>
+                        <View style={cardTitleStyle}>
+                            <Text style={requirementTitleStyle}>{requirement?.title}</Text>
                             <Text
-                                style={requirementStyles.description}>{requirement?.description}</Text>
+                                style={requirementDescriptionStyle}>{requirement?.description}</Text>
                         </View>
                         <FlatList
                             style={{flex:1,}}
                             data={requirement?.links}
                             keyExtractor={(item, index)=> index}
-                            renderItem={({item}) => {
-                                return <RequirementView dimensions={dimensions}
-                                                        rightLayoutComponent={rightLayoutComponent}
-                                                        requirement={item}/>
-                            }}
+                            renderItem={renderItem}
                         />
                     </View>
                 </Card>

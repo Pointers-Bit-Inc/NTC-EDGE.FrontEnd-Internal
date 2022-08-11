@@ -375,9 +375,6 @@ const Payment = (_props: any) => {
     const {applicantForm, updateApplication} = useApplicantForm(props);
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
 
-    useEffect(() =>{
-        console.log(soa)
-    }, [soa])
     return  <View style={{flex:1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <KeyboardAvoidingView
