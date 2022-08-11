@@ -2,13 +2,14 @@ import {
   MaterialTopTabBar,
   MaterialTopTabBarProps,
 } from "@react-navigation/material-top-tabs";
-import React, { FC, memo, useEffect } from "react";
+import React, {FC, memo, useEffect, useMemo} from "react";
 
 type Props = MaterialTopTabBarProps & {
   onIndexChange?: (index: number) => void;
 };
 
-const TabBar: FC<Props> = ({ onIndexChange, ...props }) => {
+const TabBar: FC<Props> = ({ onIndexChange, ..._props }) => {
+  const props = useMemo(()=> _props, [_props])
   const { index } = props.state;
 
   useEffect(() => {

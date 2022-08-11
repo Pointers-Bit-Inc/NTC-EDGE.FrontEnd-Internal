@@ -665,6 +665,9 @@ const ActivitiesPage = (props) => {
             isMobile && !(
                 Platform?.isPad || isTablet())) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor,
     }], [Platform?.isPad, isMobile, isTablet(), dimensions?.width])
+
+
+
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
@@ -802,28 +805,28 @@ const ActivitiesPage = (props) => {
 
                             </View>
                         </Animated.View>
-                        <Tab.Navigator  screenOptions={tabBarOptions} tabBar={renderTabBar}>
-                            <Tab.Screen  name="All">{renderAllActivities}</Tab.Screen>
+                        <Tab.Navigator screenOptions={tabBarOptions} tabBar={renderTabBar}>
+                            <Tab.Screen name="All">{renderAllActivities}</Tab.Screen>
                             <Tab.Screen name="Pending">{renderPending}</Tab.Screen>
                             <Tab.Screen name="History">{renderHistory}</Tab.Screen>
                         </Tab.Navigator>
 
                     </View>
                     {
-                         lodash.isEmpty(applicationItem) && dimensions?.width > 768 ?
-                        <View style={[{flex: 1, justifyContent: "center", alignItems: "center"}]}>
+                        lodash.isEmpty(applicationItem) && dimensions?.width > 768  && Platform.OS == "web" ?
+                            <View style={[{flex: 1, justifyContent: "center", alignItems: "center"}]}>
 
-                            <NoActivity/>
-                            <Text style={{color: "#A0A3BD", fontSize: fontValue(24)}}>No activity
-                                selected</Text>
+                                <NoActivity/>
+                                <Text style={{color: "#A0A3BD", fontSize: fontValue(24)}}>No activity
+                                    selected</Text>
 
 
-                        </View> : <></>
+                            </View> : <></>
                     }
 
 
                     {(
-                        (!lodash.isEmpty(applicationItem)) && Platform.OS == "web" ) && <View style={{flex: 1}}>
+                        (!lodash.isEmpty(applicationItem)) && Platform.OS == "web") && <View style={{flex: 1}}>
                         <ItemMoreModal details={applicationItem} visible={moreModalVisible} onDismissed={() => {
                             onMoreModalDismissed(applicationItem?.isOpen)
                         }}/>
