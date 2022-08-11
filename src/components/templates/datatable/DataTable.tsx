@@ -357,8 +357,8 @@ const DataTable=(props)=>{
                 for(const err in error?.response?.data?.errors) {
                     _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
                 }
-                if(_err || error?.response?.data?.message ||error?.response?.statusText){
-                    showToast(ToastType.Error,_err || error?.response?.data?.message ||error?.response?.statusText)
+                if (_err || error?.response?.data?.message || error?.response?.statusText || (typeof error?.response?.data == "string") ) {
+                    showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data)
                 }
 
 
@@ -492,8 +492,8 @@ const DataTable=(props)=>{
                                     for(const err in error?.response?.data?.errors) {
                                         _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
                                     }
-                                    if(_err || error?.response?.data?.message ||error?.response?.statusText){
-                                        showToast(ToastType.Error,_err || error?.response?.data?.message ||error?.response?.statusText)
+                                    if (_err || error?.response?.data?.message || error?.response?.statusText || (typeof error?.response?.data == "string") ) {
+                                        showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data)
                                     }
 
                                 })
