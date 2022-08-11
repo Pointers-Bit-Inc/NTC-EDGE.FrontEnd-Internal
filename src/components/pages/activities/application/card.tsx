@@ -1,5 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular,Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
@@ -33,29 +33,29 @@ const styles = StyleSheet.create({
         textAlign : "left"
     } ,
 })
-const Card = (props: {inputFieldStyle?:any, keyboardType?:string, touchableStyle?:any, style?:any,   updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
-    const [edit, setEdit] = useSafeState(false)
+const Card = (_props: {inputFieldStyle?:any, keyboardType?:string, touchableStyle?:any, style?:any,   updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
+   const props = useMemo(()=> _props, [_props] )
 
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
-    return  (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || edit : !edit) ? <TouchableOpacity style={props.touchableStyle} onPress={()=>{
-        setEdit(true)
+    return  ((props.show && (props.display || props.applicant) && !props.edit)) ? <TouchableOpacity style={props.touchableStyle} onPress={()=>{
+
     }
     }>
         <Text style={[props.style,]}>{props.display || props.applicant}</Text>
     </TouchableOpacity> : <>
-        {((props.edit && props.editable && props.showEdit) || edit)? <InputField keyboardType={props.keyboardType}  onSubmitEditing = {(event) => {
+        {((props.edit && props.editable && props.showEdit) )? <InputField keyboardType={props.keyboardType}  onSubmitEditing = {(event) => {
             if(!props.edit) props?.updateApplication()
-            setEdit(false)
+           // setEdit(false)
         }}
 
                                                                                  onBlur={()=>{
                                                                                      if(!props.edit) props.updateForm(props.stateName, cloneValue)
-                                                                                     setEdit(false)
+                                                                                     //setEdit(false)
                                                                                  }
                                                                                  }
                                                                                  mainContainerStyle={[props.inputFieldStyle, {marginVertical: 10}]} onClose={()=>{
             props.updateForm(props.stateName, cloneValue)
-            setEdit(false)
+            //setEdit(false)
         }}  onChangeText={(e) => {
             if(props.keyboardType == 'number-pad' || props.keyboardType == 'numeric'  ){
 

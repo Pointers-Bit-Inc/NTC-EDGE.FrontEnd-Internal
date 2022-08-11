@@ -587,7 +587,8 @@ const ActivitiesPage = (props) => {
         ],
         [rendered, headerHeight, tabBarAnimatedStyle]
     );
-    const tabBarOptions = {
+    const tabBarOptions = useMemo(() =>{
+        return {
         tabBarLabelStyle: {
 
             fontFamily: Regular,
@@ -599,7 +600,7 @@ const ActivitiesPage = (props) => {
             "height": 3,
             "backgroundColor": "#2F5BFA"
         }
-    }
+    }}, [])
     const renderTabBar = useCallback<(props: MaterialTopTabBarProps) => React.ReactElement>(
         (props) => (
             <Animated.View style={tabBarStyle}>
@@ -805,7 +806,7 @@ const ActivitiesPage = (props) => {
 
                             </View>
                         </Animated.View>
-                        <Tab.Navigator screenOptions={tabBarOptions} tabBar={renderTabBar}>
+                        <Tab.Navigator  screenOptions={tabBarOptions} tabBar={renderTabBar}>
                             <Tab.Screen name="All">{renderAllActivities}</Tab.Screen>
                             <Tab.Screen name="Pending">{renderPending}</Tab.Screen>
                             <Tab.Screen name="History">{renderHistory}</Tab.Screen>
