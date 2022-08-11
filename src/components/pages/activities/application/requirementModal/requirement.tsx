@@ -1,4 +1,4 @@
-import React, {memo} from "react";
+import React, {memo, useMemo} from "react";
 import {
     ActivityIndicator,
     Dimensions,FlatList,
@@ -287,7 +287,8 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
 }
 
 
-const Requirement=(props:any)=>{
+const Requirement=(_props:any)=>{
+    const props = useMemo(() => _props, [_props])
     const rightLayoutComponent=useSelector((state:RootStateOrAny)=>state.application?.rightLayoutComponent);
     const dimensions=useWindowDimensions();
     return <ScrollView style={{backgroundColor:"#f8f8f8",width:"100%"}}>

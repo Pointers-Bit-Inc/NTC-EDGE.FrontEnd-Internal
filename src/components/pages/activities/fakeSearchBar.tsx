@@ -1,13 +1,14 @@
 import {Text , TouchableOpacity , View , Animated , useWindowDimensions} from "react-native";
 import {styles} from "@pages/activities/styles";
 import SearchIcon from "@assets/svg/search";
-import React from "react";
+import React, {memo, useMemo} from "react";
 import {Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 
-export const FakeSearchBar = (props: { onSearchLayoutComponent,  animated,  onPress: () => void, searchVisible: boolean }) => {
-    const dimensions = useWindowDimensions();
+ const FakeSearchBar = (_props: { onSearchLayoutComponent,  animated,  onPress: () => void, searchVisible: boolean }) => {
+    const props = useMemo(() => _props, [_props])
+     const dimensions = useWindowDimensions();
     return <Animated.View
         //onLayout={ props.onSearchLayoutComponent}
         style={[styles.searcg, props.animated]}>
@@ -34,3 +35,4 @@ export const FakeSearchBar = (props: { onSearchLayoutComponent,  animated,  onPr
         </View>
     </Animated.View>;
 }
+export default memo(FakeSearchBar)

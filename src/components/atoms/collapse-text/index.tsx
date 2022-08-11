@@ -1,4 +1,4 @@
-import React, {FC, memo} from 'react';
+import React, {FC, memo, useMemo} from 'react';
 import {StyleProp, TextStyle, TouchableOpacity, View, ViewStyle} from 'react-native';
 
 import Text from '../text';
@@ -30,12 +30,13 @@ const CollapseText: FC<CollapseTextProps> = ({
                                              }) => {
     const [isOverflow, { set: setOverflow }] = useBoolean(false);
     const [hidden, { toggle: toggleHidden }] = useBoolean(true);
-
+   const isOverflowMemo = useMemo(() => isOverflow, [isOverflow])
+   const hiddenMemo = useMemo(() => hidden, [hidden])
     return (
         <>
             <View style={[textContainerStyle, { position: 'relative', paddingVertical: 3 }]}>
                 <Text
-                    numberOfLines={hidden ? defaultNumberOfLines : undefined}
+                    numberOfLines={hiddenMemo ? defaultNumberOfLines : undefined}
                     ellipsizeMode="tail"
                     fontSize={px(14)}
                     lineHeight={lineHeight}
@@ -43,7 +44,7 @@ const CollapseText: FC<CollapseTextProps> = ({
                 >
                     {text}
                 </Text>
-                {isOverflow && (
+                {isOverflowMemo && (
                     <View style={[isOverflowStyle, {flex: 1, justifyContent: "flex-end"}]} >
                         <TouchableOpacity
                             activeOpacity={0.5}
@@ -52,7 +53,7 @@ const CollapseText: FC<CollapseTextProps> = ({
                             }}
                         >
                             <Text fontSize={px(12)} color="gray500" style={expandStyle}>
-                                {hidden ? expandText : unExpandText}
+                                {hiddenMemo ? expandText : unExpandText}
                             </Text>
                         </TouchableOpacity>
                     </View>

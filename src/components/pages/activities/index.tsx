@@ -66,7 +66,7 @@ import {
 import {renderSwiper} from "@pages/activities/swiper";
 import ActivityItem from "@pages/activities/activityItem";
 import {getChannelName} from "../../../utils/formatting";
-import {FakeSearchBar} from "@pages/activities/fakeSearchBar";
+import FakeSearchBar from "@pages/activities/fakeSearchBar";
 import {ACTIVITYITEM, APPROVED, PAID, SEARCH, SEARCHMOBILE} from "../../../reducers/activity/initialstate";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
@@ -77,6 +77,7 @@ import RefreshRN from "@assets/svg/refreshRN";
 import useMemoizedFn from "../../../hooks/useMemoizedFn";
 import ListHeaderComponent from "@pages/activities/listHeaderComponent";
 import Api from "../../../services/api";
+import {Regular, Regular500} from "@styles/font";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -483,7 +484,6 @@ const ActivitiesPage = (props) => {
 
     const renderAllActivities = useCallback(
         () => <Animated.FlatList
-
             refreshControl={
                 <RefreshControl
                     tintColor={primaryColor} // ios
@@ -588,7 +588,11 @@ const ActivitiesPage = (props) => {
         [rendered, headerHeight, tabBarAnimatedStyle]
     );
     const tabBarOptions = {
+        tabBarLabelStyle: {
 
+            fontFamily: Regular,
+            fontSize: fontValue(12),
+        },
         "tabBarActiveTintColor": "#2F5BFA",
         "tabBarInactiveTintColor": "#606A80",
         "tabBarIndicatorStyle": {
@@ -656,7 +660,11 @@ const ActivitiesPage = (props) => {
         flexGrow: 0,
         flexShrink: 0
     }], [isMobile,Platform?.isPad, isTablet(), isLandscapeSync()])
-
+    const activityMergeStyle = useMemo(() => [styles1.activity,  {
+        color: (
+            isMobile && !(
+                Platform?.isPad || isTablet())) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor,
+    }], [Platform?.isPad, isMobile, isTablet(), dimensions?.width])
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
@@ -678,11 +686,7 @@ const ActivitiesPage = (props) => {
                                         </TouchableOpacity>}
 
                                     <Text
-                                        style={[styles1.activity,  {
-                                            color: (
-                                                isMobile && !(
-                                                    Platform?.isPad || isTablet())) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor,
-                                        }]}>{(
+                                        style={activityMergeStyle}>{(
                                         isMobile && !(
                                             Platform?.isPad || isTablet())) || dimensions?.width < 768 ? `Activity` : `Feed`}</Text>
                                     <View style={{flex: 1}}/>
