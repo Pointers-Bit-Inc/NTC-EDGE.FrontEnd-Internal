@@ -65,7 +65,6 @@ const styles=StyleSheet.create({
     },
     group:{
 
-        paddingBottom: 10
     },
     rect:{
         backgroundColor:"#EFF0F6",

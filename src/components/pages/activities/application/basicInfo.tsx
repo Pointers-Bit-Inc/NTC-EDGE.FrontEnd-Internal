@@ -169,7 +169,7 @@ const BasicInfo = (_props: any) => {
 
     const scrollRef = useRef();
     const [showAlert, setShowAlert] = useSafeState(false)
-    const applicant = props?.applicant?.user || props?.applicant;
+    const applicant = useMemo(()=>props?.applicant?.user || props?.applicant, [props?.applicant?.user ,props?.applicant]);
     useEffect(() => {
         if (Platform.isPad || Platform.OS == "web") {
             scrollRef?.current?.scrollTo({
@@ -738,7 +738,7 @@ const BasicInfo = (_props: any) => {
 
                                         </View>}
 
-                                        {props?.service && <View style={styles.divider}/>}
+
                                         <RenderServiceMiscellaneous hasChanges={props.hasChanges}
                                                                     updateApplication={updateApplication}
                                                                     updateForm={applicantForm}

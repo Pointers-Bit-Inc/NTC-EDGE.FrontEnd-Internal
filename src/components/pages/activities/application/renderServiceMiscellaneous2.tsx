@@ -48,7 +48,7 @@ const styles=StyleSheet.create({
     group3:{
         paddingRight:fontValue(10),
         paddingLeft:fontValue(10),
-        paddingVertical:fontValue(20)
+        paddingBottom:fontValue(20)
     },
 });
 let title='';
