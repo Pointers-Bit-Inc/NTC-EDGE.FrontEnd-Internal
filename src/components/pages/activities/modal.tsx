@@ -177,9 +177,8 @@ function ActivityModal(props: any) {
                 for (const err in e?.response?.data?.errors) {
                     _err += e?.response?.data?.errors?.[err]?.toString() + "\n";
                 }
-                if (_err || e?.response?.data?.message || e?.response?.statusText) {
-
-                    showToast(ToastType.Error, _err || e?.response?.data?.message || e?.response?.statusText)
+                if (_err || e?.response?.data?.message || e?.response?.statusText || (typeof e?.response?.data == "string") ) {
+                    showToast(ToastType.Error, _err || e?.response?.data?.message || e?.response?.statusText || e?.response?.data)
                 }
                 return callback(e);
             }) : null
