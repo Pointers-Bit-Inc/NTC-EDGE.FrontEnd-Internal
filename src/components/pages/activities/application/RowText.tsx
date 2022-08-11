@@ -1,5 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import React from "react";
+import React, {useMemo} from "react";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular, Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
         textAlign: "left"
     },
 })
-const RowText = (props: { display?: string, label: string, applicant?: any }) => {
-
+const RowText = (_props: { display?: string, label: string, applicant?: any }) => {
+    const props = useMemo(()=> _props, [_props])
     return  <>{(props.display || props.applicant )? <View style={styles.group2}>
             <Text style={styles.detail}>{props.label}</Text>
             <Text style={styles.detailInput}>{props.display || props.applicant}</Text>

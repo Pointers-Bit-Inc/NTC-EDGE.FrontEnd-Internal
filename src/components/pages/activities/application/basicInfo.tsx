@@ -584,7 +584,15 @@ const BasicInfo = (_props: any) => {
 
                                         }
 
-                                        <View style={styles.group3}>
+                                        {(applicant?.applicantName ||
+                                            applicant?.companyName ||
+                                            applicant?.suffix ||
+                                            applicant?.dateOfBirth ||
+                                            applicant?.gender ||
+                                            applicant?.nationality ||
+                                            applicant?.weight ||
+                                            applicant?.height
+                                        ) && <View style={styles.group3}>
                                             <View style={styles.group}>
                                                 <View style={styles.rect}>
                                                     <Text style={styles.header}>Basic Information</Text>
@@ -610,7 +618,7 @@ const BasicInfo = (_props: any) => {
                                                      applicant={props.userProfileForm?.["applicant.weight"]}/>
                                             <RowText label={"Height:"}
                                                      applicant={props.userProfileForm?.["applicant.height"]}/>
-                                        </View>
+                                        </View>}
                                         {!!Object.values({...applicant?.address}).join("") &&
                                             <>
                                                 <View style={styles.divider}/>
@@ -644,15 +652,15 @@ const BasicInfo = (_props: any) => {
 
                                         }
 
-                                        <View style={styles.divider}/>
-                                        {applicant?.education && <View style={styles.group3}>
+                                        {!!Object.values({...applicant?.address}).join("") &&<View style={styles.divider}/>}
+                                        {!!Object.values({...applicant?.education}).join("") && <View style={styles.group3}>
                                             <View style={styles.group}>
                                                 <View style={styles.rect}>
                                                     <Text style={styles.header}>Educational Background</Text>
                                                 </View>
                                             </View>
                                             <RowText label={"School Attended:"}
-                                                     applicant={props.userProfileForm?.["applicant.address.zipCode"]}/>
+                                                     applicant={props.userProfileForm?.["applicant.education.schoolAttended"]}/>
                                             <RowText label={"Course Taken:"}
                                                      applicant={props.userProfileForm?.["applicant.education.courseTaken"]}/>
                                             <RowText label={"Year Graduated:"}
@@ -660,7 +668,7 @@ const BasicInfo = (_props: any) => {
 
 
                                         </View>}
-                                        {applicant?.education && <View style={styles.divider}/>}
+                                        {!!Object.values({...applicant?.education}).join("")  && <View style={styles.divider}/>}
                                         {applicant?.contact && <View style={styles.group3}>
                                             <View style={styles.group}>
                                                 <View style={styles.rect}>
