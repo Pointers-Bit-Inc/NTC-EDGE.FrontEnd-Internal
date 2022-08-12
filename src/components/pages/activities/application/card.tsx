@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         textAlign : "left"
     } ,
 })
-const Card = (_props: {inputFieldStyle?:any, keyboardType?:string, touchableStyle?:any, style?:any,   updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
+const Card = (_props: {error?:any, inputFieldStyle?:any, keyboardType?:string, touchableStyle?:any, style?:any,   updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
    const props = useMemo(()=> _props, [_props] )
 
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
@@ -43,7 +43,7 @@ const Card = (_props: {inputFieldStyle?:any, keyboardType?:string, touchableStyl
     }>
         <Text style={[props.style,]}>{props.display || props.applicant}</Text>
     </TouchableOpacity> : <>
-        {((props.edit && props.editable && props.showEdit) )? <InputField keyboardType={props.keyboardType}  onSubmitEditing = {(event) => {
+        {((props.edit && props.editable && props.showEdit) )? <InputField description={"Duplicate Entry"} error={props.error} hasValidation={props.error} keyboardType={props.keyboardType}  onSubmitEditing = {(event) => {
             if(!props.edit) props?.updateApplication()
            // setEdit(false)
         }}
@@ -73,6 +73,7 @@ const Card = (_props: {inputFieldStyle?:any, keyboardType?:string, touchableStyl
 Card.defaultProps = {
     editable: true,
     show: true,
+    error: false,
     showEdit: true
 }
 export default Card
