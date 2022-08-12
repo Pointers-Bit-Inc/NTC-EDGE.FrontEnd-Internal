@@ -415,10 +415,10 @@ function ActivityModal(props: any) {
 
                 if (isLoading)setLoading(false)
                 const diff = _.differenceWith(flatten.unflatten(cleanSoa).soa, (response.data?.statement_Of_Account || response.data?.soa), _.isEqual)
-console.log("diff", diff)
+
                 cleanSoa = {
-                    totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
-                   // totalFee: response.data?.totalFee,
+                  //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
+                   totalFee: response.data?.totalFee,
                     soa: _.uniqBy(removeEmpty([...flatten.unflatten(cleanSoa).soa, ...(response.data?.statement_Of_Account || response.data?.soa)]), 'item')
                 }
 
