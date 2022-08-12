@@ -23,11 +23,16 @@ function Placeholder(props: { renderItem: () => JSX.Element, keyExtractor: (item
     /></View>;
 }
 
-function Loader(refreshing,searchTerm,size){
+const Loader = (refreshing,searchTerm,size) => {
     const selectedChangeStatus=useSelector((state:RootStateOrAny)=>state.activity?.selectedChangeStatus);
     const selectedClone=selectedChangeStatus?.filter((status:string)=>{
         return status!=DATE_ADDED
     });
+
+    const NoActivityMemo = () => {
+        return <><NoActivity/><Text style={styles.noContent}>No Content</Text></>;
+    }
+
     return (
 
         <View  style={[{justifyContent: "center", alignItems: "center",   width: "100%"  }]}>
@@ -35,7 +40,7 @@ function Loader(refreshing,searchTerm,size){
             {refreshing  ? <Placeholder renderItem={() => <Skeleton/>} keyExtractor={item => item}/>  : selectedClone.length && !( size || size?.length) ? <><NoActivity></NoActivity><Text
                     style={styles.noContent}>No Content "{selectedClone.toString()}"</Text></>
 
-                : (size || size?.length) ? <></> : <><NoActivity></NoActivity><Text style={styles.noContent}>No Content</Text></>}
+                : (size || size?.length) ? <></> : <NoActivityMemo/>}
         </View>
 
     );

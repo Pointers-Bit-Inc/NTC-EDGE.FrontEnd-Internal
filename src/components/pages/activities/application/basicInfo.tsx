@@ -46,7 +46,7 @@ import useMemoizedFn from "../../../../hooks/useMemoizedFn";
 function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, historyMemo: any[] | undefined, props: any, personnel: string, paymentHistory1: any, assignedPersonnel: any }) {
     const props = useMemo(() => _props, [_props] )
     return <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
-        <View style={styles.group}>
+        <View style={[styles.group, {paddingBottom: fontValue(6)}]}>
             <View style={styles.rect}>
                 <Text style={styles.header}>STATUS</Text>
             </View>
@@ -65,8 +65,8 @@ function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, 
                         getStatusText(props.props, props.personnel)
                     ),
                     borderRadius: fontValue(30),
-                    paddingHorizontal: fontValue(13.5),
-                    paddingVertical: fontValue(6)
+                    paddingHorizontal: fontValue(3),
+                    paddingVertical: fontValue(3)
                 }}>
                 {/*{
                                         statusIcon(
