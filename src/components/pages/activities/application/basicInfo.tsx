@@ -321,7 +321,7 @@ const BasicInfo = (_props: any) => {
                <ContainerRemarkStyle>
                    <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
 
-                       <View style={styles.group}>
+                       <View style={[styles.group, {paddingBottom: 10}]}>
                            <View style={styles.rect}>
                                <Text style={styles.header}>REMARKS</Text>
                            </View>
@@ -593,7 +593,7 @@ const BasicInfo = (_props: any) => {
                                             applicant?.nationality ||
                                             applicant?.weight ||
                                             applicant?.height
-                                        ) && <View style={styles.group3}>
+                                        )  ? <View style={styles.group3}>
                                             <View style={styles.group}>
                                                 <View style={styles.rect}>
                                                     <Text style={styles.header}>Basic Information</Text>
@@ -619,8 +619,8 @@ const BasicInfo = (_props: any) => {
                                                      applicant={props.userProfileForm?.["applicant.weight"]}/>
                                             <RowText label={"Height:"}
                                                      applicant={props.userProfileForm?.["applicant.height"]}/>
-                                        </View>}
-                                        {!!Object.values({...applicant?.address}).join("") &&
+                                        </View> : <></>}
+                                        {!!Object.values({...applicant?.address}).join("") ?
                                             <>
                                                 <View style={styles.divider}/>
                                                 <View style={styles.group3}>
@@ -649,12 +649,12 @@ const BasicInfo = (_props: any) => {
                                                              applicant={props.userProfileForm?.["applicant.address.zipCode"]}/>
 
                                                 </View>
-                                            </>
+                                            </> : <></>
 
                                         }
 
-                                        {!!Object.values({...applicant?.address}).join("") &&<View style={styles.divider}/>}
-                                        {!!Object.values({...applicant?.education}).join("") && <View style={styles.group3}>
+                                        {!!Object.values({...applicant?.address}).join("") ? <View style={styles.divider}/> : <></>}
+                                        {!!Object.values({...applicant?.education}).join("") ? <View style={styles.group3}>
                                             <View style={styles.group}>
                                                 <View style={styles.rect}>
                                                     <Text style={styles.header}>Educational Background</Text>
@@ -668,9 +668,9 @@ const BasicInfo = (_props: any) => {
                                                      applicant={props.userProfileForm?.["applicant.education.yearGraduated"]}/>
 
 
-                                        </View>}
-                                        {!!Object.values({...applicant?.education}).join("")  && <View style={styles.divider}/>}
-                                        {applicant?.contact && <View style={styles.group3}>
+                                        </View> : <></>}
+                                        {!!Object.values({...applicant?.education}).join("")  ? <View style={styles.divider}/> : <></>}
+                                        {applicant?.contact ? <View style={styles.group3}>
                                             <View style={styles.group}>
                                                 <View style={styles.rect}>
                                                     <Text style={styles.header}>Contact Details</Text>
@@ -684,15 +684,15 @@ const BasicInfo = (_props: any) => {
                                                      applicant={props.userProfileForm?.["applicant.contact.email"]}/>
 
 
-                                        </View>}
+                                        </View> : <></>}
                                         <View ref={textRef}/>
-                                        {props?.schedule && <View style={styles.divider}/>}
-                                        {props?.schedule && <View style={styles.group3}>
-                                            {<View style={styles.group}>
+                                        {props?.schedule  ? <View style={styles.divider}/> : <></>}
+                                        {props?.schedule ? <View style={styles.group3}>
+                                            <View style={styles.group}>
                                                 <View style={styles.rect}>
                                                     <Text style={styles.header}>SCHEDULE</Text>
                                                 </View>
-                                            </View>}
+                                            </View>
 
                                             <DateField edit={props.edit} label={"Date:"}
                                                 /*show={true}
@@ -737,7 +737,7 @@ const BasicInfo = (_props: any) => {
                                                 applicant={props.userProfileForm?.["schedule.seatNumber"]}/>
 
 
-                                        </View>}
+                                        </View> : <></>}
 
 
                                         <RenderServiceMiscellaneous hasChanges={props.hasChanges}

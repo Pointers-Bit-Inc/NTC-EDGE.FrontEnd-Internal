@@ -416,7 +416,7 @@ const ActivitiesPage = (props) => {
             keyExtractor={(item, index) => `_key${index.toString()}`}
         />
     }}/>;
-    const renderItem =useMemoizedFn(
+    const renderItem = useMemoizedFn(
         ({item, index}) => (
             <>
                 <ApplicationList

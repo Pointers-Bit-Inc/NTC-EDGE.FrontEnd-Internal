@@ -149,7 +149,7 @@ const RenderStatus = ({trigger, status}: any) => {
                     borderRadius: fontValue(30)
                 },
             ]
-        , [])
+        , [status])
     return (
         <View
             style={containerStatus}
@@ -263,6 +263,7 @@ function ProfileImageMemo(_props: { userActivity: any, name: any }) {
 }
 
 const ActivityItem = (props: any) => {
+
     const propsMemo = useMemo(() => props, [props])
 
     const status = [CASHIER].indexOf(propsMemo?.role) != -1 ? PaymentStatusText(propsMemo?.activity?.paymentStatus) : StatusText(propsMemo?.activity?.status);

@@ -36,7 +36,7 @@ export default ({
   const user = useSelector((state: RootStateOrAny) => state.user) || {};
   const biometricsLogin = user.biometrics;
   const profilePicture = user?.profilePicture?.small;
-  const photo = profilePicture ? {uri: profilePicture} : require('@assets/avatar.png');
+  const photo = useMemo(() => profilePicture ? {uri: profilePicture} : require('@assets/avatar.png'), [profilePicture]);
   const [visible, setVisible] = useState(false);
   const [enableBiometrics, setEnableBiometrics] = useState(false);
   const { destroy } = useOneSignal(user);

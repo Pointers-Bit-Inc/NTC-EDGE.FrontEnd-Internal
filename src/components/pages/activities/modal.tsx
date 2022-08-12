@@ -648,7 +648,7 @@ function ActivityModal(props: any) {
                 }} details={applicationItem} status={status}/>
 
                 {Platform.OS != "web" ? <Toast/> : <></>}
-                {!edit &&
+                {!edit ?
                     <View style={[{
                         paddingHorizontal: !isMobile ? 64 : 0,
                         borderTopColor: 'rgba(0, 0, 0, 0.1)',
@@ -692,7 +692,7 @@ function ActivityModal(props: any) {
                                         }}/>}
                             </View>
                         </View>
-                    </View>
+                    </View> : <></>
                 }
             </View>
 
