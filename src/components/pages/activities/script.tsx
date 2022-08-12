@@ -299,6 +299,7 @@ export function getStatusText(props: any, personnel: UserApplication | undefined
 }
 
 export function getActivityStatus(props: any, status: string) {
+
     return [CASHIER].indexOf(props?.role) != -1 ? PaymentStatusText(props?.activity?.paymentStatus || (props?.activity?.service?.serviceCode == 'service-22' && props?.activity?.status != PENDING ? APPROVED : FORVERIFICATION)) : StatusText((props?.activity?.service?.serviceCode == 'service-22' && props?.activity?.status == FORAPPROVAL ? APPROVED : (props?.activity?.status == FORAPPROVAL && props.activity.assignedPersonnel?._id != props.currentUser?._id ? APPROVED : props?.activity?.status)) || (props?.activity?.service?.serviceCode == 'service-22' ? APPROVED : FORAPPROVAL))
 }
 

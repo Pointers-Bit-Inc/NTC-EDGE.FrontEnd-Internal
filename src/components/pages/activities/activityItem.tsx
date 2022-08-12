@@ -169,6 +169,7 @@ const RenderStatus = ({trigger, status}: any) => {
 
 
 const RenderApplication = ({applicationType}: any) => {
+
     const containerStyles = useMemo(() => [
         //{backgroundColor:"#BFBEFC"},
         styles.horizontal,
@@ -317,12 +318,12 @@ const ActivityItem = (props: any) => {
                 Platform?.isPad || isTablet())) ? "#AAB6DF" : (pressed ? "#98AFDC" : "#E5E5E5"),
         backgroundColor: pressed ? "#DCE8FF" : "#fff",
         borderWidth: propsMemo.selected && Platform.OS == "web" ? 4 : 1,
-    }], [pressed])
+    }], [pressed, propsMemo])
     const assignPersonnelStyle = useMemo(() => [styles.section, {
         paddingHorizontal: fontValue(10),
         paddingTop: fontValue(4),
         paddingBottom: propsMemo?.activity?.assignedPersonnel?.id || propsMemo?.activity?.assignedPersonnel ? fontValue(4) : fontValue(10)
-    }], [])
+    }], [propsMemo])
     const activityItem = useMemo(() => [{
         height: 8,
         width: 8,
@@ -361,7 +362,7 @@ const ActivityItem = (props: any) => {
             borderColor: 'rgba(116, 115, 189, 0.3)',
             borderWidth: 4,
         }]
-    }, []);
+    }, [selectedMoreCircle]);
     return (
 
         <Hoverable>
