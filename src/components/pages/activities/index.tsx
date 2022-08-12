@@ -343,6 +343,7 @@ const ActivitiesPage = (props) => {
             if (!flag) break
             if (_notPinnedApplications?.[i]?._id == event?._id) {
                 _notPinnedApplications[i] = event
+                flag = 0
             }
         }
         flag = 1
@@ -350,6 +351,7 @@ const ActivitiesPage = (props) => {
             if (!flag) break
             if (_pinnedApplications?.[i]?._id == event?._id) {
                 _pinnedApplications[i] = event
+                flag = 0
             }
         }
         dispatch(setApplicationItem(event))
