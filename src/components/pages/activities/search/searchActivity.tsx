@@ -1,22 +1,20 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef} from "react";
 import {
-    ActivityIndicator ,
-    Dimensions ,
-    FlatList , Platform ,
-    ScrollView ,
-    Text ,
-    TextInput ,
-    TouchableOpacity , useWindowDimensions ,
+    ActivityIndicator,
+    Dimensions,
+    FlatList,
+    Platform,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
     View
 } from "react-native";
 import BackSpaceIcon from "@assets/svg/backspace";
-import CloseCircleIcon from "@assets/svg/closeCircle";
 import {styles} from "@pages/activities/search/styles";
-import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import ActivityItem from "@pages/activities/activityItem";
 import {renderSwiper} from "@pages/activities/swiper";
 import ApplicationList from "@pages/activities/applicationList";
-import {unreadReadApplication} from "@pages/activities/script";
 import ItemMoreModal from "@pages/activities/itemMoreModal";
 import ActivityModal from "@pages/activities/modal";
 import Loader from "@pages/activities/bottomLoad";
@@ -25,36 +23,40 @@ import {Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
 
 import NoActivity from "@assets/svg/noActivity";
-
-const {height} = Dimensions.get('screen');
 import lodash from 'lodash';
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import ActivityModalView from "@pages/activities/nativeView/activityModalView";
-import {setApplicationItem, setEdit, setHasChange, setSelectedYPos} from "../../../../reducers/application/actions";
+import {
+    setApplicationItem,
+    setEdit,
+    setHasChange,
+    setNotPinnedApplication, setPinnedApplication
+} from "../../../../reducers/application/actions";
 import useActivities from "../../../../hooks/useActivities";
-import applications from "@screens/HomeScreen/Applications";
-import _ from "lodash";
 import {ACTIVITYITEM} from "../../../../reducers/activity/initialstate";
-export function SearchActivity(props: {navigation: any,setApplications: any, onBlur: any ,  isHandleLoad:any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
+
+const {height} = Dimensions.get('screen');
+
+export function SearchActivity(props: { navigation: any, setApplications: any, onBlur: any, isHandleLoad: any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const {
         setIsOpen,
-        user ,
-        setUpdateModal ,
-        config ,
-        applicationItem ,
-        dispatch ,
-        onRefresh ,
-        modalVisible ,
-        setModalVisible ,
-        moreModalVisible ,
-        setMoreModalVisible ,
-        onDismissed ,
-        onEndReachedCalledDuringMomentum ,
-        setOnEndReachedCalledDuringMomentum ,
-        unReadReadApplicationFn ,
-        updateModalFn ,
-        isOpen ,
+        user,
+        setUpdateModal,
+        config,
+        applicationItem,
+        dispatch,
+        onRefresh,
+        modalVisible,
+        setModalVisible,
+        moreModalVisible,
+        setMoreModalVisible,
+        onDismissed,
+        onEndReachedCalledDuringMomentum,
+        setOnEndReachedCalledDuringMomentum,
+        unReadReadApplicationFn,
+        updateModalFn,
+        isOpen,
         onMoreModalDismissed
     } = useActivities();
     const dimensions = useWindowDimensions();
@@ -67,22 +69,27 @@ export function SearchActivity(props: {navigation: any,setApplications: any, onB
     }, [])
 
 
-
     const AnimatedTotal = useCallback((props) => {
         const progress = useCountUp(2000)
         const countUp = (Math.max(0, Math.round(progress * props.total)))
-        return <Text>{countUp == props.total ?  props.total : countUp}</Text>
+        return <Text>{countUp == props.total ? props.total : countUp}</Text>
     }, [])
 
     const onChangeAssignedId = (event) => {
+
+
+
+
+
+
         let _applications = [...props?.applications]
         let flag = 1
 
 
         for (let i = 0; i < _applications.length; i++) {
-            if(!flag) break
+            if (!flag) break
             for (let j = 0; j < _applications?.[i]?.['activity'].length; j++) {
-                if(_applications?.[i]?.['activity']?.[j]._id == event._id){
+                if (_applications?.[i]?.['activity']?.[j]._id == event._id) {
                     _applications[i]['activity'][j] = event
                     flag = 0
                     break;
@@ -92,10 +99,10 @@ export function SearchActivity(props: {navigation: any,setApplications: any, onB
         props?.setApplications(_applications)
 
     }
-    const onDismissedModal = (event: boolean , _id: number) => {
+    const onDismissedModal = (event: boolean, _id: number) => {
 
         setUpdateModal(false);
-        dispatch(setApplicationItem({  }))
+        dispatch(setApplicationItem({}))
         if (event && _id) {
             //  dispatch(deleteApplications(_id))
         }
@@ -106,17 +113,17 @@ export function SearchActivity(props: {navigation: any,setApplications: any, onB
     };
     return <View style={[styles.container, {flexDirection: "row"}]}>
         <View style={[styles.group9, {
-            flex : (
-                       isMobile  || dimensions?.width <768) ? 1 : 0.4 ,
-            flexBasis:  (
-                            isMobile  || dimensions?.width <768) ? "100%" : 466,
+            flex: (
+                isMobile || dimensions?.width < 768) ? 1 : 0.4,
+            flexBasis: (
+                isMobile || dimensions?.width < 768) ? "100%" : 466,
             flexGrow: 0,
             flexShrink: 0
-        } ]}>
+        }]}>
             <View style={styles.group4}>
                 <View style={styles.rect}>
                     <View style={styles.group2}>
-                        <TouchableOpacity style={{  paddingRight: 10}} onPress={()=> {
+                        <TouchableOpacity style={{paddingRight: 10}} onPress={() => {
                             onDismissed()
                             props.onPress()
                         }}>
@@ -127,17 +134,17 @@ export function SearchActivity(props: {navigation: any,setApplications: any, onB
                             ></BackSpaceIcon>
                         </TouchableOpacity>
 
-                        <View  style={styles.group}>
-                            
-                            <InputField  ref={inputRef}
+                        <View style={styles.group}>
 
-                                         inputStyle={{fontWeight: "400", fontSize: fontValue(14)}}
-                                         value={props.value}
-                                         onEndEditing={props.onEndEditing}
-                                         onChange={props.onChange}
-                                         onBlur={props.onEndEditing}
-                                         onChangeText={props.onChangeText}
-                                         placeholder="Search"/>
+                            <InputField ref={inputRef}
+
+                                        inputStyle={{fontWeight: "400", fontSize: fontValue(14)}}
+                                        value={props.value}
+                                        onEndEditing={props.onEndEditing}
+                                        onChange={props.onChange}
+                                        onBlur={props.onEndEditing}
+                                        onChangeText={props.onChangeText}
+                                        placeholder="Search"/>
 
                         </View>
 
@@ -148,16 +155,18 @@ export function SearchActivity(props: {navigation: any,setApplications: any, onB
             <View
                 style={[styles.group8, {backgroundColor: props.value.length < 1 || props.total == 0 ? "rgba(255,255,255,1)" : "rgba(255,255,255,0)",}]}>
 
-                {!props?.loading && props.value.length < 1 && <View style={[styles.header, { justifyContent: props.isRecentSearches ? "space-between": "center",}]}>
+                {!props?.loading && props.value.length < 1 && <View
+                    style={[styles.header, {justifyContent: props.isRecentSearches ? "space-between" : "center",}]}>
 
                     <Text
-                        style={[styles.recentSearches]}>{props.nevers.length &&  props.isRecentSearches == true ? "Recent Searches" : props.isRecentSearches == true ? "No Recent Searches" : <ActivityIndicator/>}</Text>
+                        style={[styles.recentSearches]}>{props.nevers.length && props.isRecentSearches == true ? "Recent Searches" : props.isRecentSearches == true ? "No Recent Searches" :
+                        <ActivityIndicator/>}</Text>
 
                     <TouchableOpacity onPress={props.clearAll}>
                         <Text style={{
                             fontSize: fontValue(14),
                             color: '#2863D6',
-                             fontFamily: Regular500  ,
+                            fontFamily: Regular500,
                         }}>{props.nevers.length ? "Clear all" : ""}</Text>
                     </TouchableOpacity>
 
@@ -165,9 +174,9 @@ export function SearchActivity(props: {navigation: any,setApplications: any, onB
 
 
                 {props?.loading &&
-                <View style={{backgroundColor: "#fff", paddingVertical: 10}}>
-                    <Loader/>
-                </View>
+                    <View style={{backgroundColor: "#fff", paddingVertical: 10}}>
+                        <Loader/>
+                    </View>
 
                 }
                 <View style={{flex: 1}}>
@@ -177,11 +186,12 @@ export function SearchActivity(props: {navigation: any,setApplications: any, onB
                         </ScrollView>
                         : <>
                             {!props?.loading && !!props.value.length &&
-                            <View style={styles.header}>
-                                <Text style={styles.recentSearches}>
-                                    {props.isHandleLoad ? <AnimatedTotal total={props.total}/> : props.total } results of
-                                    "<Text>{props.value}</Text>"</Text>
-                            </View>
+                                <View style={styles.header}>
+                                    <Text style={styles.recentSearches}>
+                                        {props.isHandleLoad ?
+                                            <AnimatedTotal total={props.total}/> : props.total} results of
+                                        "<Text>{props.value}</Text>"</Text>
+                                </View>
                             }
                             <FlatList
                                 showsVerticalScrollIndicator={false}
@@ -241,7 +251,7 @@ export function SearchActivity(props: {navigation: any,setApplications: any, onB
                                                             } else {
                                                                 props.navigation.navigate(ACTIVITYITEM, {
                                                                     onDismissed: onDismissedModal,
-                                                                    onChangeEvent: () => {},
+                                                                    onChangeEvent: onChangeAssignedId,
                                                                     onChangeAssignedId: onChangeAssignedId
                                                                 });
                                                             }
@@ -265,30 +275,29 @@ export function SearchActivity(props: {navigation: any,setApplications: any, onB
 
         </View>
 
-        
 
         {
             !(
-                isMobile )  && lodash.isEmpty(applicationItem) && dimensions?.width >768  &&
-            <View style={ [{ flex : 1 , justifyContent : "center" , alignItems : "center" }] }>
+                isMobile) && lodash.isEmpty(applicationItem) && dimensions?.width > 768 &&
+            <View style={[{flex: 1, justifyContent: "center", alignItems: "center"}]}>
 
                 <NoActivity/>
-                <Text style={ { color : "#A0A3BD" , fontSize : fontValue(24) } }>No activity
+                <Text style={{color: "#A0A3BD", fontSize: fontValue(24)}}>No activity
                     selected</Text>
 
 
             </View>
         }
 
-        { (!lodash.isEmpty(applicationItem) )  && <ActivityModalView>
-            <ItemMoreModal details={ applicationItem } visible={ moreModalVisible } onDismissed={ () => {
+        {(!lodash.isEmpty(applicationItem)) && <ActivityModalView>
+            <ItemMoreModal details={applicationItem} visible={moreModalVisible} onDismissed={() => {
                 onMoreModalDismissed(applicationItem?.isOpen)
-            } }/>
-            <ActivityModal updateModal={ updateModalFn }
-                           readFn={ unReadReadApplicationFn }
-                           details={ applicationItem }
-                           onChangeAssignedId={ onChangeAssignedId }
-                           visible={ modalVisible }
-                           onDismissed={ onDismissedModal }/></ActivityModalView> }
+            }}/>
+            <ActivityModal updateModal={updateModalFn}
+                           readFn={unReadReadApplicationFn}
+                           details={applicationItem}
+                           onChangeAssignedId={onChangeAssignedId}
+                           visible={modalVisible}
+                           onDismissed={onDismissedModal}/></ActivityModalView>}
     </View>;
 }

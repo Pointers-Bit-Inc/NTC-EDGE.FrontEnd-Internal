@@ -586,6 +586,7 @@ function convertStatusText(convertedStatus:any[],item:any){
         opacity,
         scrollViewRef,
         yPos, setYPos,
+        setSearchVisible,
         flatListViewRef,
         scrollableTabView,
         notPinnedApplications,

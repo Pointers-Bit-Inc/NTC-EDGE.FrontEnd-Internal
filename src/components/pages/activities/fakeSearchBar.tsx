@@ -14,8 +14,7 @@ import {isMobile} from "@pages/activities/isMobile";
         style={[styles.searcg, props.animated]}>
         <View style={[styles.rect26, {paddingVertical: isMobile || dimensions?.width < 800 ?  10 : undefined } ]}>
             <TouchableOpacity onPress={props.onPress}>
-                {!props.searchVisible &&
-                    <View style={[styles.rect7, {marginTop: 0, width: "100%", marginLeft: 0}]}>
+                <View style={[styles.rect7, {marginTop: 0, width: "100%", marginLeft: 0}]}>
                         <View style={styles.iconRow}>
 
                                 <SearchIcon height={fontValue(20)} width={fontValue(20)} style={styles.icon}></SearchIcon>
@@ -30,7 +29,6 @@ import {isMobile} from "@pages/activities/isMobile";
 
                         </View>
                     </View>
-                }
             </TouchableOpacity>
         </View>
     </Animated.View>;

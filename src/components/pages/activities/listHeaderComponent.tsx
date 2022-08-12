@@ -4,7 +4,7 @@ import {styles as styles1} from "@pages/activities/styles";
 import {Regular500} from "@styles/font";
 function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { date: string; activity: any; readableHuman: string }[], containerHeight: number, onScroll: (event) => void, ref: React.MutableRefObject<undefined>, callbackfn: (item: any, index: number) => any }) {
     return <>
-        {!props.searchVisible && !!props.pnApplications?.length && props.containerHeight &&
+        {!!props.pnApplications?.length && props.containerHeight &&
             <View style={[styles1.pinnedActivityContainer, {
                 marginBottom: 5,
                 paddingBottom: 20,
