@@ -61,6 +61,7 @@ function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, 
                 style={{
                     flexDirection: "row",
                     alignItems: "center",
+                    justifyContent: "center",
                     backgroundColor: remarkColor(
                         getStatusText(props.props, props.personnel)
                     ),
