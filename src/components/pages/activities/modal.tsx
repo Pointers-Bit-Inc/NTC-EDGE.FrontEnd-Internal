@@ -312,7 +312,7 @@ function ActivityModal(props: any) {
          showToast(ToastType.Info, <ToastLoading/>)*/
         if (isLoading) setLoading(true)
         if (isLoading) setSaved(true)
-        let profileForm = userProfileForm
+        let profileForm = JSON.parse(JSON.stringify(userProfileForm))
         let dateOfBirth = profileForm?.['applicant.dateOfBirth'], region = profileForm?.['region.code'],
             dateValue = {year: "", month: "", day: ""}
         if (typeof dateOfBirth == 'string' && dateOfBirth) {
@@ -410,10 +410,6 @@ function ActivityModal(props: any) {
         }
         let _flattenSoa = flatten.unflatten(cleanSoa).soa;
         let feePayload = removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
-        let findValidity = _flattenSoa.find((fee)=>{
-            return fee.item == 'Validity'
-        })
-
 
 
 
@@ -433,7 +429,7 @@ function ActivityModal(props: any) {
                    totalFee: response.data?.totalFee,
                     soa: _.uniqBy(removeEmpty([...(tabName == "Basic Info" ? [] : _flattenSoa), ...(response.data?.statement_Of_Account || response.data?.soa)]), 'item')
                 }
-
+                console.log(cleanSoa)
             }).catch((error) => {
                 dispatch(setEdit(false))
                 dispatch(setHasChange(false))
@@ -448,25 +444,31 @@ function ActivityModal(props: any) {
             });
         //if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
+        let findValidity = _flattenSoa.find((fee)=>{
+            return fee?.item == 'Validity'
+        })
 
+        if( tabName == "SOA & Payment" && findValidity?.amount >= 0 && !!findValidity){
+            if(userProfileForm?.['service.applicationParticulars.noOfYears']>= 0){
+                profileForm['service.applicationParticulars.noOfYears'] = findValidity?.amount?.toString()
 
-
-      if( tabName == "SOA & Payment" && findValidity?.amount >= 0){
-            if(profileForm['service.applicationParticulars.noOfYears']){
-                profileForm['service.applicationParticulars.noOfYears'] = findValidity.amount
             }
-            if(profileForm['service.applicationDetails.noOfYears']){
-                profileForm['service.applicationDetails.noOfYears'] = findValidity.amount
+            if(userProfileForm?.['service.applicationDetails.noOfYears'] >= 0){
+                profileForm['service.applicationDetails.noOfYears'] = findValidity?.amount?.toString()
+
             }
+
         }
 
         const profileFormUnflatten = flatten.unflatten(profileForm)
-        if (profileFormUnflatten?.service?.stationClass) {
-            profileFormUnflatten.service.stationClass = _service?.service?.stationClass
+        if (userProfileForm?.['service.stationClass']) {
+            profileForm['service.stationClass'] = _service?.service?.stationClass
+
         }
 
         if (isLoading) setLoading(true)
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...cleanSoa}, config).then((response) => {
+
             if (isLoading) setSaved(false)
             if (isLoading) {
                 setTimeout(() => {
