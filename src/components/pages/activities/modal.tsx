@@ -360,7 +360,10 @@ function ActivityModal(props: any) {
             "frequency": "string",
             "station": 0,
             "location": "string",
-            "bandwidth": 0,
+            "bandwidth": {
+                "bandwidth": 0,
+                "unit": "string"
+            },
             "mode": "string",
             "spectrum": "string",
             "channels": 0,
@@ -370,11 +373,11 @@ function ActivityModal(props: any) {
             "units": 0,
             "category": "string",
             "power": 0,
-            "validity": 0,
-            "updatedAt": new Date(),
-            "expired": '',
+            "noOfYears": 0,
+            "updatedAt": "2022-08-14T07:53:36.858Z",
+            "dateOfExpiry": "2022-08-14T07:53:36.858Z",
             "discount": 0,
-            "numberOfPermitsOrCERTSOrApp": 0,
+            "numberOfPermitsOrCertsOrApp": 0,
             "classes": "string",
             "fixed": 0,
             "landBase": 0,
@@ -384,7 +387,7 @@ function ActivityModal(props: any) {
             "portable": 0,
             "repeater": 0,
             "invoice": 0,
-            "nos": 0,
+            "nOs": 0,
             "stationCount": 0,
             "stationClassChannels": {
                 "fx": 0,
@@ -412,10 +415,9 @@ function ActivityModal(props: any) {
             ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
         }, config)
             .then((response) => {
-
                 if (isLoading)setLoading(false)
                 const diff = _.differenceWith(flatten.unflatten(cleanSoa).soa, (response.data?.statement_Of_Account || response.data?.soa), _.isEqual)
-
+                let _flattenSoa = flatten.unflatten(cleanSoa).soa
                 cleanSoa = {
                   //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
                    totalFee: response.data?.totalFee,

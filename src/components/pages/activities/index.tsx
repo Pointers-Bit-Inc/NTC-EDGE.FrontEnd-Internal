@@ -416,8 +416,7 @@ const ActivitiesPage = (props) => {
             keyExtractor={(item, index) => `_key${index.toString()}`}
         />
     }}/>;
-    const renderItem = useMemoizedFn(
-        ({item, index}) => (
+    const renderItem = ({item, index}) => (
             <>
                 <ApplicationList
                     key={index}
@@ -481,8 +480,7 @@ const ActivitiesPage = (props) => {
                     }}/>
             </>
 
-        ),
-    );
+        );
     const  onEndReached = () => {
         if (!onEndReachedCalledDuringMomentum || !(
             isMobile && !(
