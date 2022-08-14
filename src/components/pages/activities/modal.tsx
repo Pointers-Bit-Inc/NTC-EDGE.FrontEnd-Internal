@@ -426,7 +426,7 @@ function ActivityModal(props: any) {
 
                 cleanSoa = {
                   //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
-                   totalFee: response.data?.totalFee,
+                    totalFee: response.data?.totalFee,
                     soa: _.uniqBy(removeEmpty([...(tabName == "Basic Info" ? diff  : _flattenSoa), ...(response.data?.statement_Of_Account || response.data?.soa)]), 'item')
                 }
                 console.log(cleanSoa)
@@ -455,9 +455,7 @@ function ActivityModal(props: any) {
             }
             if(profileForm?.['service.applicationDetails.noOfYears'] >= 0){
                 profileForm['service.applicationDetails.noOfYears'] = findValidity?.amount?.toString()
-
             }
-
         }
 
         const profileFormUnflatten = flatten.unflatten(profileForm)

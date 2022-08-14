@@ -479,7 +479,6 @@ const ActivitiesPage = (props) => {
                         )
                     }}/>
             </>
-
         );
     const  onEndReached = () => {
         if (!onEndReachedCalledDuringMomentum || !(

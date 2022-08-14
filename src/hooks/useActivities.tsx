@@ -39,6 +39,7 @@ import {resetMeeting} from "../reducers/meeting/actions";
 import {resetChannel} from "../reducers/channel/actions";
 import {StackActions} from "@react-navigation/native";
 import useOneSignal from "./useOneSignal";
+import useMemoizedFn from "./useMemoizedFn";
 
 function convertStatusText(convertedStatus:any[],item:any){
     let _converted:never[]=[]
@@ -130,7 +131,7 @@ function convertStatusText(convertedStatus:any[],item:any){
         });
     }
 
-    const ispinnedApplications=(applications:any)=>{
+    const ispinnedApplications= useMemoizedFn((applications:any)=>{
         setTotalPages(Math.ceil(applications?.length/10));
         const selectedClone=selectedChangeStatus?.filter((status:string)=>{
             return status!=DATE_ADDED
@@ -163,23 +164,13 @@ function convertStatusText(convertedStatus:any[],item:any){
             return {
                 date,
                 readableHuman:moment([date]).fromNow(),
-                activity:groups[date],
+                activity:groups[date]
             };
         });
 
-        let a=[],b=[];
-        for(let i=0; i<groupArrays.length; i++){
-            for(let j=0; j<groupArrays[i].activity.length; j++){
-                b.push(0)
-            }
-            a.push({parentIndex:0,child:b});
 
-        }
-        if(a){
-            setNumberCollapsed(a)
-        }
         return groupArrays.slice(0,currentPage*25);
-    };
+    });
 
     const [updateUnReadReadApplication,setUpdateUnReadReadApplication]=useState(false);
     const [searchTerm,setSearchTerm]=useState('');

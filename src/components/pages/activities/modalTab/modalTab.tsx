@@ -136,7 +136,6 @@ const ModalTab = props => {
             case 'Basic Info':
                 return <BasicInfo isMore={isMore} setIsMore={setIsMore} saved={props.saved}
                                   yPos={yPos} setYPos={setYPos}
-                                  setTabName={props.setTabName}
                                   loading={props.loading}
                                   setEditAlert={props.setEditAlert}
                                   editBtn={props.editBtn}
@@ -189,7 +188,6 @@ const ModalTab = props => {
                                     key={index}/>
             case 'SOA & Payment':
                 return <Payment
-                    setTabName={props.setTabName}
                     setPaymentIndex={setPaymentIndex}
                     saved={props.saved}
                     loading={props.loading}

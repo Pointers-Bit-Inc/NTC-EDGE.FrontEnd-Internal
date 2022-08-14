@@ -1,5 +1,5 @@
-import React, {memo, useMemo, useRef, useState} from "react";
-import {Animated, Text, TouchableWithoutFeedback, View} from "react-native";
+import React, {memo, useCallback, useMemo, useRef, useState} from "react";
+import {Animated, FlatList, Text, TouchableWithoutFeedback, View} from "react-native";
 import {styles} from "@pages/activities/styles";
 import ChevronDownIcon from "@assets/svg/chevron-down";
 import Collapsible from "react-native-collapsible";
@@ -29,27 +29,57 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
             }
         });
     };
+    const container = useMemo(() => {
+        return [styles.group26,]
+    }, [])
 
-
-
-    return <View style={[styles.group26,]}>
+    const subcontainer = useMemo(() => {
+        return [styles.group25]
+    }, [])
+    const rect = useMemo(() => {
+        return [styles.rect34]
+    }, [])
+    const date = useMemo(() => {
+        return [styles.date]
+    }, [])
+    const dateText = useMemo(() => {
+        return [styles.dateText]
+    }, [])
+    const content = useMemo(() => {
+        return {flexDirection:"row",justifyContent:"space-between",alignItems:"center",}
+    }, [])
+    const renderItem = ({ item, index }) => {
+        return props.element(item, index)
+    }
+    const Element = () => {
+        return <FlatList
+            data={props.item.activity.sort(function(a, b) {
+                var c = new Date(a.updatedAt);
+                var d = new Date(b.updatedAt);
+                return d.getTime()-c.getTime();
+            })}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+        />
+    }
+    return <View style={container}>
         <TouchableWithoutFeedback onPress={()=>{
 
         }
 
         }>
-            <View style={styles.group25}>
+            <View style={subcontainer}>
 
-                <View style={styles.rect34}>
+                <View style={rect}>
 
                     <View>
 
-                        <View style={styles.date}>
+                        <View style={date}>
                             <Text
-                                style={styles.dateText}>{`${readableToHuman(props.item.date)} • ${moment(props.item.date).format('MMM DD, yyyy')}`} </Text>
+                                style={dateText}>{`${readableToHuman(props.item.date)} • ${moment(props.item.date).format('MMM DD, yyyy')}`} </Text>
                         </View>
                     </View>
-                    <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center",}}>
+                    <View style={content}>
                         <View style={{flex:0.1,alignItems:"center"}}>
 
                             <TouchableWithoutFeedback onPress={()=>setIsOpen(open=>!open)}>
@@ -78,11 +108,7 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
         </TouchableWithoutFeedback>
 
         <Collapsible collapsed={!isOpen}>
-            {props.item.activity.sort(function(a, b) {
-                var c = new Date(a.updatedAt);
-                var d = new Date(b.updatedAt);
-                return d.getTime()-c.getTime();
-            }).map(props.element)}
+            <Element/>
             <View style={{height:30,backgroundColor:"white"}}/>
         </Collapsible>
 
