@@ -427,7 +427,7 @@ function ActivityModal(props: any) {
                 cleanSoa = {
                   //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
                    totalFee: response.data?.totalFee,
-                    soa: _.uniqBy(removeEmpty([...(tabName == "Basic Info" ? [] : _flattenSoa), ...(response.data?.statement_Of_Account || response.data?.soa)]), 'item')
+                    soa: _.uniqBy(removeEmpty([...(tabName == "Basic Info" ? diff  : _flattenSoa), ...(response.data?.statement_Of_Account || response.data?.soa)]), 'item')
                 }
                 console.log(cleanSoa)
             }).catch((error) => {
@@ -444,16 +444,16 @@ function ActivityModal(props: any) {
             });
         //if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
-        let findValidity = _flattenSoa.find((fee)=>{
+        let findValidity = _flattenSoa?.find((fee)=>{
             return fee?.item == 'Validity'
         })
 
         if( tabName == "SOA & Payment" && findValidity?.amount >= 0 && !!findValidity){
-            if(userProfileForm?.['service.applicationParticulars.noOfYears']>= 0){
+            if(profileForm?.['service.applicationParticulars.noOfYears']>= 0){
                 profileForm['service.applicationParticulars.noOfYears'] = findValidity?.amount?.toString()
 
             }
-            if(userProfileForm?.['service.applicationDetails.noOfYears'] >= 0){
+            if(profileForm?.['service.applicationDetails.noOfYears'] >= 0){
                 profileForm['service.applicationDetails.noOfYears'] = findValidity?.amount?.toString()
 
             }
@@ -461,7 +461,7 @@ function ActivityModal(props: any) {
         }
 
         const profileFormUnflatten = flatten.unflatten(profileForm)
-        if (userProfileForm?.['service.stationClass']) {
+        if (profileForm?.['service.stationClass']) {
             profileForm['service.stationClass'] = _service?.service?.stationClass
 
         }
