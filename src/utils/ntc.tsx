@@ -182,6 +182,7 @@ const transformToFeePayload = (application: any) => {
         classes: classFn(),
         power: powerOutput,
         validity: applicationParticulars?.noOfYears || applicationDetails?.noOfYears || 0,
+        noOfYears: applicationParticulars?.noOfYears || applicationDetails?.noOfYears || 0,
         updatedAt: new Date()?.toISOString(),
         expired,
         discount: 0,

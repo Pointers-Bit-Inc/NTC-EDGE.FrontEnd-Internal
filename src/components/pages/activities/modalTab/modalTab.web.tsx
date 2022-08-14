@@ -101,9 +101,10 @@ const ModalTab=props=>{
         <ViewPaged
             onChange={(pageIndex)=>{
                 if(paymentIndex == pageIndex && !editModalVisible && user?.role?.key != CASHIER){
-
+                    props?.setTabName("SOA & Payment")
                     dispatch(setEditModalVisible(true))
                 }else if(basicInfoIndex == pageIndex && !editModalVisible && user?.role?.key != CASHIER){
+                    props?.setTabName('Basic Info')
                     dispatch(setEditModalVisible(true))
                 }else if(basicInfoIndex != pageIndex && paymentIndex != pageIndex && editModalVisible){
                     dispatch(setEdit(false))
@@ -231,6 +232,7 @@ const ModalTab=props=>{
 
 
                         return <BasicInfo basicInfoIndex={index}  setBasicInfoIndex={setBasicInfoIndex}    isMore={isMore} setIsMore={setIsMore} yPos={yPos} setYPos={setYPos} saved={props.saved} loading={props.loading}
+                                          setTabName={props.setTabName}
                                           setEditAlert={props.setEditAlert}
                                           editBtn={props.editBtn}
                                           updateApplication={props.updateApplication}
@@ -280,6 +282,7 @@ const ModalTab=props=>{
                                             requirements={requirements} key={index}/>
                     } else if(isShow&&tab.id===4 && service?.serviceCode !== "service-22" ){
                         return <Payment paymentIndex={index}  setPaymentIndex={setPaymentIndex} saved={props.saved} loading={props.loading} edit={props.edit}
+                                        setTabName={props.setTabName}
                                         setEditAlert={props.setEditAlert}
                                         editBtn={props.editBtn}
                                         updateApplication={props.updateApplication}

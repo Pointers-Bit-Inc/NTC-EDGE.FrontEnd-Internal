@@ -408,21 +408,30 @@ function ActivityModal(props: any) {
                 "rt": 0
             }
         }
+        let _flattenSoa = flatten.unflatten(cleanSoa).soa;
+        let feePayload = removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
+        let findValidity = _flattenSoa.find((fee)=>{
+            return fee.item == 'Validity'
+        })
+
+
+
+
 
 
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {
             ...payload,
-            ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
+            ...feePayload
         }, config)
             .then((response) => {
 
                 if (isLoading)setLoading(false)
-                const diff = _.differenceWith(flatten.unflatten(cleanSoa).soa, (response.data?.statement_Of_Account || response.data?.soa), _.isEqual)
-                let _flattenSoa = flatten.unflatten(cleanSoa).soa
+                const diff = _.differenceWith(_flattenSoa, (response.data?.statement_Of_Account || response.data?.soa), _.isEqual)
+
                 cleanSoa = {
                   //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
                    totalFee: response.data?.totalFee,
-                    soa: _.uniqBy(removeEmpty([...flatten.unflatten(cleanSoa).soa, ...(response.data?.statement_Of_Account || response.data?.soa)]), 'item')
+                    soa: _.uniqBy(removeEmpty([...(tabName == "Basic Info" ? [] : _flattenSoa), ...(response.data?.statement_Of_Account || response.data?.soa)]), 'item')
                 }
 
             }).catch((error) => {
@@ -440,10 +449,22 @@ function ActivityModal(props: any) {
         //if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
         //console.log({...flatten.unflatten(profileForm), ...{soa: flattenSoa}})
 
+
+
+      if( tabName == "SOA & Payment" && findValidity?.amount >= 0){
+            if(profileForm['service.applicationParticulars.noOfYears']){
+                profileForm['service.applicationParticulars.noOfYears'] = findValidity.amount
+            }
+            if(profileForm['service.applicationDetails.noOfYears']){
+                profileForm['service.applicationDetails.noOfYears'] = findValidity.amount
+            }
+        }
+
         const profileFormUnflatten = flatten.unflatten(profileForm)
         if (profileFormUnflatten?.service?.stationClass) {
             profileFormUnflatten.service.stationClass = _service?.service?.stationClass
         }
+
         if (isLoading) setLoading(true)
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...cleanSoa}, config).then((response) => {
             if (isLoading) setSaved(false)
@@ -524,6 +545,7 @@ function ActivityModal(props: any) {
         _props.onDismissed(change);
         return promise;
     };
+    const [tabName, setTabName] = useState(null)
     return (
         <>
             <View style={(isMobile && !((Platform?.isPad || isTablet()) && isLandscapeSync())) && (
@@ -644,6 +666,7 @@ function ActivityModal(props: any) {
                           userOriginalProfileForm={userOriginalProfileForm}
                           userProfileForm={userProfileForm}
                           setEdit={setEdit}
+                          setTabName={setTabName}
                           setUserProfileForm={setUserProfileForm}
                           setUserOriginalProfileForm={setUserOriginalProfileForm}
                           hasChanges={hasChanges} edit={edit} dismissed={() => {

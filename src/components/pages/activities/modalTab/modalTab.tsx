@@ -97,7 +97,6 @@ const ModalTab = props => {
 
 
     const routes = useMemo(() => {
-
         return tabs.filter((tab, _index) => {
             return !(service?.serviceCode == "service-22" && tab?.id === 4) && tab.isShow.indexOf(user?.role?.key) !== -1
         }).map((__tab, __index) => {
@@ -114,8 +113,10 @@ const ModalTab = props => {
     }, [tabs])
     useEffect(() => {
         if (paymentIndex == index && !editModalVisible && user?.role?.key != CASHIER ) {
+            props?.setTabName("SOA & Payment")
             dispatch(setEditModalVisible(true))
         } else if (basicInfoIndex == index && !editModalVisible && user?.role?.key != CASHIER) {
+            props?.setTabName('Basic Info')
             dispatch(setEditModalVisible(true))
         } else if (basicInfoIndex != index && paymentIndex != index && editModalVisible) {
             dispatch(setEdit(false))
@@ -129,10 +130,13 @@ const ModalTab = props => {
             jumpTo(0)
             setInitialPage(false)
         }
+
+
         switch (route.key) {
             case 'Basic Info':
                 return <BasicInfo isMore={isMore} setIsMore={setIsMore} saved={props.saved}
                                   yPos={yPos} setYPos={setYPos}
+                                  setTabName={props.setTabName}
                                   loading={props.loading}
                                   setEditAlert={props.setEditAlert}
                                   editBtn={props.editBtn}
@@ -185,6 +189,7 @@ const ModalTab = props => {
                                     key={index}/>
             case 'SOA & Payment':
                 return <Payment
+                    setTabName={props.setTabName}
                     setPaymentIndex={setPaymentIndex}
                     saved={props.saved}
                     loading={props.loading}
@@ -284,6 +289,7 @@ const ModalTab = props => {
                 style={{backgroundColor: 'white'}}
             />
         )}
+
         navigationState={{index, routes}}
         renderScene={renderScene}
         onIndexChange={setIndex}

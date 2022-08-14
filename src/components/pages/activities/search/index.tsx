@@ -1,4 +1,4 @@
-import React,{useCallback,useEffect,useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {Alert,BackHandler,Text,TouchableOpacity,View} from "react-native";
 import HistoryIcon from "@assets/svg/historyIcon";
 import CloseIcon from "@assets/svg/close";
@@ -261,6 +261,10 @@ function Search(props:any){
             setInfiniteLoad(false)
         })
     };
+
+
+
+
     return (
         <SearchActivity
             navigation={props.navigation}

@@ -38,7 +38,7 @@ import {ACTIVITYITEM} from "../../../../reducers/activity/initialstate";
 
 const {height} = Dimensions.get('screen');
 
-export function SearchActivity(props: { navigation: any, setApplications: any, onBlur: any, isHandleLoad: any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
+export function SearchActivity(props: { navigation: any, setApplications: any, isHandleLoad: any, isRecentSearches: any, clearAll: any, total: any, loading: boolean, setText: any, handleLoad: any, bottomLoader: any, size: any, refreshing: any, applications: any, onPress: () => void, value: string, onEndEditing: () => void, onChange: (event) => void, onChangeText: (text) => void, onPress1: () => void, translateX: any, nevers: [], callbackfn: (search, index) => JSX.Element }) {
     const {
         setIsOpen,
         user,
@@ -84,8 +84,6 @@ export function SearchActivity(props: { navigation: any, setApplications: any, o
 
         let _applications = [...props?.applications]
         let flag = 1
-
-
         for (let i = 0; i < _applications.length; i++) {
             if (!flag) break
             for (let j = 0; j < _applications?.[i]?.['activity'].length; j++) {
@@ -96,8 +94,7 @@ export function SearchActivity(props: { navigation: any, setApplications: any, o
                 }
             }
         }
-        props?.setApplications(_applications)
-
+        dispatch(setApplicationItem(event))
     }
     const onDismissedModal = (event: boolean, _id: number) => {
 

@@ -366,6 +366,7 @@ const Payment = (_props: any) => {
 
 
     }
+
     useEffect(() => {
         if (Platform.OS == "web") {
             props.setPaymentIndex(props.paymentIndex)
