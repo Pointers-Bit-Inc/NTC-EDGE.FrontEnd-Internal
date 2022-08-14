@@ -415,6 +415,7 @@ function ActivityModal(props: any) {
             ...removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
         }, config)
             .then((response) => {
+
                 if (isLoading)setLoading(false)
                 const diff = _.differenceWith(flatten.unflatten(cleanSoa).soa, (response.data?.statement_Of_Account || response.data?.soa), _.isEqual)
                 let _flattenSoa = flatten.unflatten(cleanSoa).soa
