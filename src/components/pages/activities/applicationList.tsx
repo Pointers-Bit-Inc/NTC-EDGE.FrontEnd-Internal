@@ -48,7 +48,9 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
     const content = useMemo(() => {
         return {flexDirection:"row",justifyContent:"space-between",alignItems:"center",}
     }, [])
-
+    const ActivityMemo = useMemo(() => {
+        return props.item.activity.map(props.element)
+    }, [ props.item.activity])
     return <View style={container}>
         <TouchableWithoutFeedback onPress={()=>{
 
@@ -95,7 +97,7 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
         </TouchableWithoutFeedback>
 
         <Collapsible collapsed={!isOpen}>
-            {props.item.activity.map(props.element)}
+            {ActivityMemo}
             <View style={{height:30,backgroundColor:"white"}}/>
         </Collapsible>
 
