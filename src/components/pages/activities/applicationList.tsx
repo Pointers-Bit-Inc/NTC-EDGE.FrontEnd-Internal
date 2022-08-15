@@ -53,7 +53,6 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
     }
     const Element = () => {
         return <FlatList
-            nestedScrollEnabled={true}
             data={props.item.activity}
             renderItem={renderItem}
             keyExtractor={item => item.id}
