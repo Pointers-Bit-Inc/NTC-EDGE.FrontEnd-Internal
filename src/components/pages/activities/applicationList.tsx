@@ -49,14 +49,15 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
         return {flexDirection:"row",justifyContent:"space-between",alignItems:"center",}
     }, [])
     const ActivityMemo = useMemo(() => {
-        return props.item.activity.map(props.element)
+        console.log(1)
+        return props.item.activity.sort(function(a, b) {
+            var c = new Date(a.updatedAt);
+            var d = new Date(b.updatedAt);
+            return d.getTime()-c.getTime();
+        }).map(props.element)
     }, [ props.item.activity])
     return <View style={container}>
-        <TouchableWithoutFeedback onPress={()=>{
-
-        }
-
-        }>
+        <View>
             <View style={subcontainer}>
 
                 <View style={rect}>
@@ -94,7 +95,7 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
                     </View>
                 </View>
             </View>
-        </TouchableWithoutFeedback>
+        </View>
 
         <Collapsible collapsed={!isOpen}>
             {ActivityMemo}

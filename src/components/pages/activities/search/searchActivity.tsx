@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef} from "react";
+import React, {useCallback, useEffect, useMemo, useRef} from "react";
 import {
     ActivityIndicator,
     Dimensions,
@@ -108,6 +108,10 @@ export function SearchActivity(props: { navigation: any, setApplications: any, i
         }
         onDismissed()
     };
+    const  CallBackFn = useMemo(() => {
+        return props.nevers?.map(props.callbackfn)
+    }, [props.nevers, props.callbackfn ]);
+
     return <View style={[styles.container, {flexDirection: "row"}]}>
         <View style={[styles.group9, {
             flex: (
@@ -179,7 +183,7 @@ export function SearchActivity(props: { navigation: any, setApplications: any, i
                 <View style={{flex: 1}}>
                     {props.value.length < 1 ?
                         <ScrollView showsVerticalScrollIndicator={false}>
-                            {props.nevers?.map(props.callbackfn)}
+                            {CallBackFn}
                         </ScrollView>
                         : <>
                             {!props?.loading && !!props.value.length &&
