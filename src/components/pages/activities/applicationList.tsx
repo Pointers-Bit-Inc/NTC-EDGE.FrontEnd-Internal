@@ -53,11 +53,8 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
     }
     const Element = () => {
         return <FlatList
-            data={props.item.activity.sort(function(a, b) {
-                var c = new Date(a.updatedAt);
-                var d = new Date(b.updatedAt);
-                return d.getTime()-c.getTime();
-            })}
+            nestedScrollEnabled={true}
+            data={props.item.activity}
             renderItem={renderItem}
             keyExtractor={item => item.id}
         />
