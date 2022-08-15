@@ -1,5 +1,5 @@
-import React, {memo, useCallback, useMemo, useRef, useState} from "react";
-import {Animated, FlatList, Text, TouchableWithoutFeedback, View} from "react-native";
+import React, {memo, useMemo, useRef, useState} from "react";
+import {Animated, Text, TouchableWithoutFeedback, View} from "react-native";
 import {styles} from "@pages/activities/styles";
 import ChevronDownIcon from "@assets/svg/chevron-down";
 import Collapsible from "react-native-collapsible";
@@ -48,16 +48,7 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
     const content = useMemo(() => {
         return {flexDirection:"row",justifyContent:"space-between",alignItems:"center",}
     }, [])
-    const renderItem = ({ item, index }) => {
-        return props.element(item, index)
-    }
-    const Element = () => {
-        return <FlatList
-            data={props.item.activity}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-        />
-    }
+
     return <View style={container}>
         <TouchableWithoutFeedback onPress={()=>{
 
@@ -104,7 +95,7 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
         </TouchableWithoutFeedback>
 
         <Collapsible collapsed={!isOpen}>
-            <Element/>
+            {props.item.activity.map(props.element)}
             <View style={{height:30,backgroundColor:"white"}}/>
         </Collapsible>
 
