@@ -125,97 +125,92 @@ const ModalTab = props => {
     }, [index])
     const [isMore, setIsMore] = useSafeState(true)
     const [yPos, setYPos] = useSafeState(undefined)
-    const renderScene = ({route, jumpTo}) => {
-        if (initialPage && Platform?.isPad) {
-            jumpTo(0)
-            setInitialPage(false)
+
+    const renderScene = useMemo(() => {
+        return ({route, jumpTo}) => {
+            if (initialPage && Platform?.isPad) {
+                jumpTo(0)
+                setInitialPage(false)
+            }
+
+
+            switch (route.key) {
+                case 'Basic Info':
+                    return <BasicInfo isMore={isMore} setIsMore={setIsMore} saved={props.saved}
+                                      yPos={yPos} setYPos={setYPos}
+                                      loading={props.loading}
+                                      setEditAlert={props.setEditAlert}
+                                      editBtn={props.editBtn}
+                                      updateApplication={props.updateApplication}
+                                      hasChanges={props.hasChanges}
+                                      id={props.details?._id}
+                                      edit={props.edit}
+                                      setEdit={props.setEdit}
+                                      schedule={schedule}
+                                      service={service}
+                                      paymentMethod={paymentMethod}
+                                      assignedPersonnel={assignedPersonnel}
+                                      approvalHistory={approvalHistory}
+                                      status={props.details.status}
+                                      paymentHistory={props?.details?.paymentHistory}
+                                      paymentStatus={props?.details?.paymentStatus}
+                                      detailsStatus={props?.details?.status}
+                                      user={user}
+                                      remarks={remarks}
+                                      createdAt={createdAt}
+                                      applicant={applicant}
+                                      key={index}/>;
+
+                case 'Application Details':
+                    return <ApplicationDetails saved={props.saved}
+                                               loading={props.loading}
+                                               edit={props.edit}
+                                               setEditAlert={props.setEditAlert}
+                                               editBtn={props.editBtn}
+                                               updateApplication={props.updateApplication}
+                                               hasChanges={props.hasChanges}
+                                               paymentStatus={paymentStatus}
+                                               createdAt={createdAt}
+                                               service={service}
+                                               documents={documents}
+                                               selectedType={selectedTypes}
+                                               applicantType={applicationType}
+                                               key={index}/>;
+                case 'Requirements':
+                    return <Requirement saved={props.saved}
+                                        requirements={requirements}
+                                        key={index}/>
+                case 'SOA & Payment':
+                    return <Payment
+                        setPaymentIndex={setPaymentIndex}
+                        saved={props.saved}
+                        loading={props.loading}
+                        edit={props.edit}
+                        setEditAlert={props.setEditAlert}
+                        editBtn={props.editBtn}
+                        updateApplication={props.updateApplication}
+                        hasChanges={props.hasChanges}
+
+                        paymentStatus={paymentStatus}
+                        proofOfPayment={proofOfPayment}
+                        updatedAt={updatedAt}
+                        paymentHistory={paymentHistory}
+                        paymentMethod={paymentMethod}
+                        applicant={applicant}
+                        totalFee={totalFee}
+                        soa={soa}
+                        key={index}/>
+                default:
+                    return null;
+            }
+
+
         }
-
-
-        switch (route.key) {
-            case 'Basic Info':
-                return <BasicInfo isMore={isMore} setIsMore={setIsMore} saved={props.saved}
-                                  yPos={yPos} setYPos={setYPos}
-                                  loading={props.loading}
-                                  setEditAlert={props.setEditAlert}
-                                  editBtn={props.editBtn}
-                                  updateApplication={props.updateApplication}
-                                  setUserOriginalProfileForm={props.setUserOriginalProfileForm}
-                                  userOriginalProfileForm={props.userOriginalProfileForm}
-                                  userProfileForm={props.userProfileForm}
-                                  hasChanges={props.hasChanges}
-                                  setUserProfileForm={props.setUserProfileForm}
-                                  id={props.details?._id}
-                                  edit={props.edit}
-                                  setEdit={props.setEdit}
-                                  schedule={schedule}
-                                  service={service}
-                                  paymentMethod={paymentMethod}
-                                  assignedPersonnel={assignedPersonnel}
-                                  approvalHistory={approvalHistory}
-                                  status={props.details.status}
-                                  paymentHistory={props?.details?.paymentHistory}
-                                  paymentStatus={props?.details?.paymentStatus}
-                                  detailsStatus={props?.details?.status}
-                                  user={user}
-                                  remarks={remarks}
-                                  createdAt={createdAt}
-                                  applicant={applicant}
-                                  key={index}/>;
-
-            case 'Application Details':
-                return <ApplicationDetails saved={props.saved}
-                                           loading={props.loading}
-                                           edit={props.edit}
-                                           setEditAlert={props.setEditAlert}
-                                           editBtn={props.editBtn}
-                                           updateApplication={props.updateApplication}
-                                           setUserOriginalProfileForm={props.setUserOriginalProfileForm}
-                                           userOriginalProfileForm={props.userOriginalProfileForm}
-                                           userProfileForm={props.userProfileForm}
-                                           hasChanges={props.hasChanges}
-                                           setUserProfileForm={props.setUserProfileForm}
-                                           paymentStatus={paymentStatus}
-                                           createdAt={createdAt}
-                                           service={service}
-                                           documents={documents}
-                                           selectedType={selectedTypes}
-                                           applicantType={applicationType}
-                                           key={index}/>;
-            case 'Requirements':
-                return <Requirement saved={props.saved}
-                                    requirements={requirements}
-                                    key={index}/>
-            case 'SOA & Payment':
-                return <Payment
-                    setPaymentIndex={setPaymentIndex}
-                    saved={props.saved}
-                    loading={props.loading}
-                    edit={props.edit}
-                    setEditAlert={props.setEditAlert}
-                    editBtn={props.editBtn}
-                    updateApplication={props.updateApplication}
-                    setUserOriginalProfileForm={props.setUserOriginalProfileForm}
-                    userOriginalProfileForm={props.userOriginalProfileForm}
-                    userProfileForm={props.userProfileForm}
-                    hasChanges={props.hasChanges}
-                    setUserProfileForm={props.setUserProfileForm}
-
-                    paymentStatus={paymentStatus}
-                    proofOfPayment={proofOfPayment}
-                    updatedAt={updatedAt}
-                    paymentHistory={paymentHistory}
-                    paymentMethod={paymentMethod}
-                    applicant={applicant}
-                    totalFee={totalFee}
-                    soa={soa}
-                    key={index}/>
-            default:
-                return null;
-        }
-
-
-    };
+    }, [
+        props.saved,
+        props.loading,
+        props.edit
+    ]);
     const getTranslateX = (
         position: Animated.AnimatedInterpolation,
         routes: Route[],
@@ -238,55 +233,59 @@ const ModalTab = props => {
         return Animated.multiply(translateX, I18nManager.isRTL ? -1 : 1);
     };
 
+    const renderIndicator = indicatorProps => {
+        const {
+            navigationState: {routes},
+            getTabWidth,
+            position,
+        } = indicatorProps;
+        /*const translateX =
+            routes.length > 1 ? getTranslateX( position, routes, getTabWidth) : 0;
+
+        ;*/
+        const indicatorStyle = {
+            // transform: [{translateX}] as any,
+            height: 4,
+            backgroundColor: infoColor,
+            borderRadius: 4,
+            padding: 0,
+            left: 24 / 2,
+        }
+        const width = getTabWidth(index) - 24
+        return <TabBarIndicator {...indicatorProps} width={width}
+                                style={indicatorStyle}
+        />;
+    }
+
+    const renderTabBar = props => (
+        edit ? <></> : <TabBar
+            renderLabel={({route, focused}) => {
+                return (
+                    <View>
+                        <Text style={{
+                            color: focused ? infoColor : "#606A80",
+                            fontFamily: Regular, // focused ? Bold : Regular
+                            fontSize: fontValue(12)
+                        }}>{route.title}</Text>
+                    </View>
+                );
+            }}
+            {...props}
+            renderIndicator={renderIndicator}
+
+            tabStyle={{width: fontValue(136)}}
+            scrollEnabled={true}
+            style={{backgroundColor: 'white'}}
+        />
+    )
+
     return <TabView
 
         style={{
             borderTopColor: 'rgba(0, 0, 0, 0.1)',
             borderTopWidth: 1,
         }}
-        renderTabBar={props => (
-            edit ? <></> : <TabBar
-                renderLabel={({route, focused}) => {
-                    return (
-                        <View>
-                            <Text style={{
-                                color: focused ? infoColor : "#606A80",
-                                fontFamily: Regular, // focused ? Bold : Regular
-                                fontSize: fontValue(12)
-                            }}>{route.title}</Text>
-                        </View>
-                    );
-                }}
-                {...props}
-                renderIndicator={indicatorProps => {
-                    const {
-                        navigationState: {routes},
-                        getTabWidth,
-                        position,
-                    } = indicatorProps;
-                    /*const translateX =
-                        routes.length > 1 ? getTranslateX( position, routes, getTabWidth) : 0;
-
-                    ;*/
-                    const indicatorStyle = {
-                        // transform: [{translateX}] as any,
-                        height: 4,
-                        backgroundColor: infoColor,
-                        borderRadius: 4,
-                        padding: 0,
-                        left: 24 / 2,
-                    }
-                    const width = getTabWidth(index) - 24
-                    return <TabBarIndicator {...indicatorProps} width={width}
-                                            style={indicatorStyle}
-                    />;
-                }}
-
-                tabStyle={{width: fontValue(136)}}
-                scrollEnabled={true}
-                style={{backgroundColor: 'white'}}
-            />
-        )}
+        renderTabBar={renderTabBar}
 
         navigationState={{index, routes}}
         renderScene={renderScene}

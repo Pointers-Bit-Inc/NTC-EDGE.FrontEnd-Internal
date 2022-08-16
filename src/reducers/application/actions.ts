@@ -15,12 +15,21 @@ const {
     SET_SELECTED_YPOS,
     UPDATE_APPLICATIONS,
     SET_HAS_CHANGE,
-    SET_EDIT
+    SET_EDIT,
+    SET_USER_PROFILE_FORM,
+    SET_USER_ORIGINAL_PROFILE_FORM,
+    UPDATE_CHANGE_EVENT
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
     return {
         type: SET_PINNED_APPLICATION,
+        payload,
+    };
+}
+export function updateChangeEvent(payload) {
+    return {
+        type: UPDATE_CHANGE_EVENT,
         payload,
     };
 }
@@ -122,7 +131,18 @@ export function setApplicationItem(payload) {
         payload,
     };
 }
-
+export function setUserProfileForm(payload) {
+    return {
+        type: SET_USER_PROFILE_FORM,
+        payload,
+    };
+}
+export function setUserOriginalProfileForm(payload) {
+    return {
+        type: SET_USER_ORIGINAL_PROFILE_FORM,
+        payload,
+    };
+}
 export function setSelectedYPos(payload) {
     return {
         type: SET_SELECTED_YPOS,

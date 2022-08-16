@@ -236,11 +236,7 @@ const ModalTab=props=>{
                                           editBtn={props.editBtn}
                                           updateApplication={props.updateApplication}
                                           setEdit={props.setEdit}
-                                          setUserOriginalProfileForm={props.setUserOriginalProfileForm}
-                                          userOriginalProfileForm={props.userOriginalProfileForm}
-                                          userProfileForm={props.userProfileForm}
                                           hasChanges={props.hasChanges}
-                                          setUserProfileForm={props.setUserProfileForm}
                                           id={props.details?._id}
                                           edit={props.edit}
                                           tabLabel={{label:tab.name}} label={tab.name}
@@ -265,11 +261,7 @@ const ModalTab=props=>{
                                                    setEditAlert={props.setEditAlert}
                                                    editBtn={props.editBtn}
                                                    updateApplication={props.updateApplication}
-                                                   setUserOriginalProfileForm={props.setUserOriginalProfileForm}
-                                                   userOriginalProfileForm={props.userOriginalProfileForm}
-                                                   userProfileForm={props.userProfileForm}
                                                    hasChanges={props.hasChanges}
-                                                   setUserProfileForm={props.setUserProfileForm}
                                                    tabLabel={{label:tab.name}} label={tab.name}
                                                    service={service}
                                                    documents={documents}
@@ -284,11 +276,7 @@ const ModalTab=props=>{
                                         setEditAlert={props.setEditAlert}
                                         editBtn={props.editBtn}
                                         updateApplication={props.updateApplication}
-                                        setUserOriginalProfileForm={props.setUserOriginalProfileForm}
-                                        userOriginalProfileForm={props.userOriginalProfileForm}
-                                        userProfileForm={props.userProfileForm}
                                         hasChanges={props.hasChanges}
-                                        setUserProfileForm={props.setUserProfileForm}
                                         tabLabel={{label:tab.name}} label={tab.name}
                                         proofOfPayment={proofOfPayment}
                                         paymentStatus={paymentStatus}

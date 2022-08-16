@@ -1,8 +1,12 @@
 import {useEffect} from "react";
+import {RootStateOrAny, useSelector} from "react-redux";
 
 function useApplicantForm(props: any) {
+    const userOriginalProfileForm = useSelector((state: RootStateOrAny) => state.application.userOriginalProfileForm);
+    const userProfileForm = useSelector((state: RootStateOrAny) => state.application.userProfileForm);
+
     const applicantForm = (stateName, value) => {
-        let newForm = {...props.userProfileForm}
+        let newForm = {...userProfileForm}
         newForm[stateName] = value
         props.setUserProfileForm(newForm)
     }
@@ -15,13 +19,13 @@ function useApplicantForm(props: any) {
     useEffect(() => {
         hasChanges()
 
-    }, [props.userProfileForm])
+    }, [userProfileForm])
     const hasChanges = () => {
         var hasChanges = false;
 
-        for (const [key, value] of Object.entries(props.userOriginalProfileForm)) {
+        for (const [key, value] of Object.entries(userOriginalProfileForm)) {
 
-            if (props.userOriginalProfileForm?.[key] != props.userProfileForm?.[key]) {
+            if (userOriginalProfileForm?.[key] != userProfileForm?.[key]) {
                 hasChanges = true
 
                 props.hasChanges(hasChanges)

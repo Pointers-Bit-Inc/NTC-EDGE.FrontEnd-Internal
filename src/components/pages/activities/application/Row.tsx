@@ -37,17 +37,11 @@ const Row = (props: { updateApplication?: any, hasChanges?: any, display?: strin
             <Text style={styles.detailInput}>{props.display || props.applicant}</Text>
         </View> : <>
             {((props.edit && props.editable && props.showEdit) || edit) ? <InputField onSubmitEditing={(event) => {
-                props?.updateApplication()
+                props.updateForm(props.stateName, event?.nativeEvent?.text)
                 setEdit(false)
             }}
 
-                                                                                      onBlur={() => {
-                                                                                          props.updateForm(props.stateName, cloneValue)
-                                                                                          setEdit(false)
-                                                                                      }} onClose={() => {
-                props.updateForm(props.stateName, cloneValue)
-                setEdit(false)
-            }} onChange={(e) => {
+                                                                                       onChange={(e) => {
                 props.updateForm(props.stateName, e?.nativeEvent?.text)
             }} value={props.applicant } label={props.label}/> : <></>}
         </>

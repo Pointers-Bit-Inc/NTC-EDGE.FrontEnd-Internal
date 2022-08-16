@@ -18,7 +18,7 @@ import PdfViewr from "@pages/activities/application/application_pdf/pdfViewr";
 import {isMobile} from "@pages/activities/isMobile";
 import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
 import {RFValue} from "react-native-responsive-fontsize";
-import {RootStateOrAny, useSelector} from "react-redux";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import FileOutlineIcon from "@assets/svg/fileOutline";
 import {requirementStyles} from "@pages/activities/application/requirementModal/styles";
 import Constants from "expo-constants";
@@ -29,6 +29,7 @@ import Timeline from "@molecules/timeline/timeline";
 import Card from "@pages/activities/application/card";
 import LoadingModal from "@pages/activities/loading/loadingModal";
 import ApplicationCard from "@pages/activities/application/applicationCard";
+import {setUserProfileForm} from "../../../../reducers/application/actions";
 let outputLabel = (applicationType: string, serviceCode: string, service: string) => {
     applicationType = (`${applicationType} ${service?.name}`)?.toLowerCase();
     if (serviceCode === 'service-22') return 'Receipt';
@@ -42,6 +43,9 @@ let outputLabel = (applicationType: string, serviceCode: string, service: string
 
 
 const ApplicationDetails = (props: any) => {
+    const dispatch = useDispatch();
+    const userProfileForm = useSelector((state: RootStateOrAny) => state.application.userProfileForm);
+    const userOriginalProfileForm = useSelector((state: RootStateOrAny) => state.application.userOriginalProfileForm);
     const dimensions = useWindowDimensions();
     const steps = [
         { title: 'Test', description: 'Test1', date: '12-12', time: '10:10' },
@@ -50,9 +54,9 @@ const ApplicationDetails = (props: any) => {
         { title: 'Test', description: 'Test4', date: '12-12', time: '10:10' },
     ];
     const applicantForm = (stateName, value) => {
-        let newForm = {...props.userProfileForm}
+        let newForm = {...userProfileForm}
         newForm[stateName] = value
-        props.setUserProfileForm(newForm)
+        dispatch(setUserProfileForm(newForm))
     }
     const updateApplication = () => {
         props?.updateApplication(()=>{
@@ -63,13 +67,13 @@ const ApplicationDetails = (props: any) => {
     useEffect(()=>{
         hasChanges()
 
-    }, [props.userProfileForm])
+    }, [userProfileForm])
     const hasChanges=()=> {
         var hasChanges=false;
 
-        for (const [key, value] of Object.entries(props.userOriginalProfileForm)) {
+        for (const [key, value] of Object.entries(userOriginalProfileForm)) {
 
-            if (props.userOriginalProfileForm?.[key] != props.userProfileForm?.[key]) {
+            if (userOriginalProfileForm?.[key] != userProfileForm?.[key]) {
 
                 hasChanges = true
 
@@ -104,20 +108,20 @@ const ApplicationDetails = (props: any) => {
 
                 <Text style={[styles.service, {fontFamily: Regular, paddingTop: 10}]}>Submitted { Moment(props.createdAt).fromNow()}</Text>
                 <ApplicationCard
-                      display={props.userProfileForm?.["service.name"]}
+                      display={userProfileForm?.["service.name"]}
                       label={"Application Type:"}
                       style={styles.applicationType}
-                      applicant={props.userProfileForm?.["service.name"]}/>
+                      applicant={userProfileForm?.["service.name"]}/>
                 <ApplicationCard
-                       display={props.userProfileForm?.["service.applicationType.label"]}
+                       display={userProfileForm?.["service.applicationType.label"]}
                        label={"Application Type:"}
                        style={[styles.service, {fontFamily: Regular500}]}
-                       applicant={props.userProfileForm?.["service.applicationType.label"]}/>
+                       applicant={userProfileForm?.["service.applicationType.label"]}/>
                 <ApplicationCard
-                       display={props.userProfileForm?.["service.applicationType.element"]}
+                       display={userProfileForm?.["service.applicationType.element"]}
                        label={"Application Type Element:"}
                        style={[styles.service, {fontFamily: Regular500}]}
-                       applicant={props.userProfileForm?.["service.applicationType.element"]}/>
+                       applicant={userProfileForm?.["service.applicationType.element"]}/>
 
                 {
                     props?.documents && (props?.applicantType || props?.service?.name) && props?.paymentStatus == PAID &&

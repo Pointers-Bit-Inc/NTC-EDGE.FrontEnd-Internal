@@ -302,11 +302,10 @@ const ActivitiesPage = (props) => {
         }
         onDismissed()
     };
-    const onChangeAssignedId = (event) => {
-        let _notPinnedApplications = [...notPinnedApplications]
-        let _pinnedApplications = [...pinnedApplications]
+    const onChangeAssignedId = useCallback((event) => {
+        let _notPinnedApplications = [...notPnApplications]
+        let _pinnedApplications = [...pnApplications]
         let flag = 1
-
         for (let i = 0; i < _notPinnedApplications?.length; i++) {
             if (!flag) break
             if (_notPinnedApplications?.[i]?._id == event?._id) {
@@ -326,33 +325,11 @@ const ActivitiesPage = (props) => {
         dispatch(setNotPinnedApplication(_notPinnedApplications))
         dispatch(setPinnedApplication(_pinnedApplications))
         setUpdateModal(true);
-    };
+    }, []);
     const onChangeEvent = (event) => {
-        let _notPinnedApplications = [...notPinnedApplications]
-        let _pinnedApplications = [...pinnedApplications]
-        let flag = 1
 
-        for (let i = 0; i < _notPinnedApplications?.length; i++) {
-            if (!flag) break
-            if (_notPinnedApplications?.[i]?._id == event?._id) {
-                _notPinnedApplications[i] = event
-                flag = 0
-            }
-        }
-        flag = 1
-        for (let i = 0; i < _pinnedApplications?.length; i++) {
-            if (!flag) break
-            if (_pinnedApplications?.[i]?._id == event?._id) {
-                _pinnedApplications[i] = event
-                flag = 0
-            }
-        }
-        dispatch(setApplicationItem(event))
-        dispatch(setNotPinnedApplication(_notPinnedApplications))
-        dispatch(setPinnedApplication(_pinnedApplications))
         setUpdateModal(true);
-    };
-
+    }
     const listHeaderComponent = () => <ListHeaderComponent searchVisible={searchVisible} pnApplications={pnApplications}
                                                            containerHeight={containerHeight} onScroll={(event) => {
         if (!isMobile) {
@@ -452,6 +429,7 @@ const ActivitiesPage = (props) => {
                                         ...activity,
                                         isOpen: `${index}${i}`
                                     }));
+
                                     //setDetails({ ...activity , isOpen : `${ index }${ i }` });
                                     /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {
                                     })*/
@@ -677,7 +655,6 @@ const ActivitiesPage = (props) => {
             isMobile && !(
                 Platform?.isPad || isTablet())) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor,
     }], [Platform?.isPad, isMobile, isTablet(), dimensions?.width])
-
 
 
     return (

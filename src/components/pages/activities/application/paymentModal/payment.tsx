@@ -36,6 +36,7 @@ import {infoColor} from "@styles/color";
 import {PlusIcon} from "@atoms/icon";
 import LoadingModal from "@pages/activities/loading/loadingModal";
 import {setEditModalVisible} from "../../../../../reducers/activity/actions";
+import {setUserProfileForm} from "../../../../../reducers/application/actions";
 
 const flatten = require('flat')
 
@@ -281,6 +282,9 @@ class ProofPaymentView extends React.Component<{ proofOfPayment: any }> {
 const Payment = (_props: any) => {
     const props = useMemo(() => _props, [_props])
     const dispatch = useDispatch();
+    const userProfileForm = useSelector((state: RootStateOrAny) => state.application.userProfileForm);
+    const userOriginalProfileForm = useSelector((state: RootStateOrAny) => state.application.userOriginalProfileForm);
+
     const [visibleModal, setVisibleModal] = useState(false);
     const [visibleRequireModal, setVisibleRequireModal] = useState(false);
     const [selectImage, setSelectImage] = useState('');
@@ -328,7 +332,7 @@ const Payment = (_props: any) => {
 
     }
     const closeItem = (id, index) => {
-        let state = {...props.userProfileForm};
+        let state = {...userProfileForm};
         let arr = soa.filter((el, i) => {
             return el.id !== id
         });
@@ -337,8 +341,7 @@ const Payment = (_props: any) => {
         delete state?.["soa." + id + ".item"];
         delete state?.["soa." + id + ".id"];
         delete state?.["soa." + id + ".isEdit"];
-        console.log(state)
-        props.setUserProfileForm(state)
+        dispatch(setUserProfileForm(state))
         setSoa(arr);
     }
     const updateSoa = (stateName, value, index) => {
@@ -374,7 +377,38 @@ const Payment = (_props: any) => {
         }
 
     }, [])
-    const {applicantForm, updateApplication} = useApplicantForm(props);
+    const applicantForm = (stateName, value) => {
+        let newForm = {...userProfileForm}
+        newForm[stateName] = value
+        dispatch(setUserProfileForm(newForm))
+    }
+    const updateApplication = () => {
+        props?.updateApplication(() => {
+
+        })
+
+    }
+    useEffect(() => {
+        hasChanges()
+
+    }, [userProfileForm])
+    const hasChanges = () => {
+        var hasChanges = false;
+
+        for (const [key, value] of Object.entries(userOriginalProfileForm)) {
+
+            if (userOriginalProfileForm?.[key] != userProfileForm?.[key]) {
+                console.log(key, userOriginalProfileForm?.[key] , userProfileForm?.[key])
+                hasChanges = true
+
+                props.hasChanges(hasChanges)
+                return
+            } else {
+                hasChanges = false
+                props.hasChanges(hasChanges)
+            }
+        }
+    }
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
 
     return <View style={{flex: 1}}>
@@ -451,14 +485,14 @@ const Payment = (_props: any) => {
                                                           error={s.error}
                                                           stateName={"soa." + s.id + ".item"}
                                                           edit={props.edit}
-                                                          display={props.userProfileForm?.["soa." + s.id + ".item"] || "Item"}
+                                                          display={userProfileForm?.["soa." + s.id + ".item"] || "Item"}
                                                           label={"Item:"}
                                                           style={{
                                                               paddingVertical: 14,
                                                               color: "#37405B",
                                                               fontSize: fontValue(12)
                                                           }}
-                                                          applicant={props.userProfileForm?.["soa." + s.id + ".item"]}/>
+                                                          applicant={userProfileForm?.["soa." + s.id + ".item"]}/>
                                                 </View>
                                                 <View style={{flex: 1, width: "100%", paddingLeft: 3}}>
                                                     <Card updateApplication={updateApplication}
@@ -472,14 +506,14 @@ const Payment = (_props: any) => {
                                                           touchableStyle={{alignSelf: "flex-end"}}
                                                           stateName={"soa." + s.id + ".amount"}
                                                           edit={props.edit}
-                                                          display={props.userProfileForm?.["soa." + s.id + ".amount"] || "0"}
+                                                          display={userProfileForm?.["soa." + s.id + ".amount"] || "0"}
                                                           label={"Amount:"}
                                                           style={{
                                                               paddingVertical: 14,
                                                               color: "#37405B",
                                                               fontSize: fontValue(14)
                                                           }}
-                                                          applicant={props.userProfileForm?.["soa." + s.id + ".amount"] != undefined ? "" + props.userProfileForm?.["soa." + s.id + ".amount"] : 0}/>
+                                                          applicant={userProfileForm?.["soa." + s.id + ".amount"] != undefined ? "" + userProfileForm?.["soa." + s.id + ".amount"] : 0}/>
                                                 </View>
                                                 {props.edit && <View style={{}}>
                                                     <TouchableOpacity onPress={() => {

@@ -17,5 +17,8 @@ export default keyMirror({
   SET_SELECTED_YPOS: null,
   UPDATE_APPLICATIONS: null,
   SET_HAS_CHANGE: null,
-  SET_EDIT: null
+  SET_EDIT: null,
+  SET_USER_PROFILE_FORM: null,
+  SET_USER_ORIGINAL_PROFILE_FORM: null,
+  UPDATE_CHANGE_EVENT: null
 });

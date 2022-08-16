@@ -80,7 +80,7 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
     useEffect(()=>{
         props.updateForm(props.stateName, toIsoFormat(Moment(`${year}-${month}-${day} ${hourValue}:${minuteValue} ${ampmValue}`,'YYYY-MM-DD HH:mm a')))
 
-    }, [minuteValue, hourValue, ampmValue])
+    }, [minuteValue, hourValue, ampmValue, year, month, day])
 
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || edit : !edit) ? <View  style={ styles.group2 }>
         <Text style={ styles.detail }>{ props.label }</Text>
@@ -96,7 +96,7 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
                                         if (value) setHourValue(value)
                                     }}/>
                 </View>
-                <View style={{flex:0.5, paddingHorizontal: 5}}>
+                <View style={{flex:0.7, paddingHorizontal: 5}}>
                     <CustomDropdown value={minuteValue}
                                     label="Select Item"
                                     data={datesArray}
@@ -104,7 +104,7 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
                                         if (value) setMinuteValue(value)
                                     }}/>
                 </View>
-                <View style={{flex:0.8}}>
+                <View style={{flex:0.7}}>
                     <CustomDropdown value={ampmValue}
                                     label="Select Item"
                                     data={ampmArray}

@@ -98,7 +98,7 @@ const DateField = (props: { updateApplication?:any, hasChanges?:any, display?:st
                                             }
                                         }}/>
                     </View>
-                    <View style={{flex:0.5, paddingHorizontal: 5}}>
+                    <View style={{flex:0.7, paddingHorizontal: 5}}>
                         <CustomDropdown value={dayValue}
                                         label="Select Item"
                                         data={datesArray}

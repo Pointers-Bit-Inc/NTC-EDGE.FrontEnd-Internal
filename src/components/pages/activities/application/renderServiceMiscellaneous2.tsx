@@ -146,14 +146,14 @@ const RenderServiceMiscellaneous=(props)=>{
                 edit={props.edit}
                 label={prevValue ? `${transformText(prevValue)}:` : ""}
                 display={value}
-                applicant={props?.userProfileForm["service." + keys]}/> : <Row
+                applicant={props?.userProfileForm?.["service." + keys]}/> : <Row
                 updateApplication={props?.updateApplication}
                 updateForm={props.updateForm}
                 stateName={"service." + keys}
                 edit={props.edit}
                 label={prevValue ? `${transformText(prevValue)}:` : ""}
                 display={value}
-                applicant={props?.userProfileForm["service." + keys]}/>
+                applicant={props?.userProfileForm?.["service." + keys]}/>
             }
         </View>)
 

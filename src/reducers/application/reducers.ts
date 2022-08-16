@@ -30,7 +30,10 @@ const {
     SET_SELECTED_YPOS,
     UPDATE_APPLICATIONS,
     SET_HAS_CHANGE,
-    SET_EDIT
+    SET_EDIT,
+    SET_USER_PROFILE_FORM,
+    SET_USER_ORIGINAL_PROFILE_FORM,
+    UPDATE_CHANGE_EVENT
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -49,12 +52,14 @@ function isCashier(cashier: boolean, action: {}, i: number) {
 export default function basket(state = initialState, action = {}) {
     switch (action.type) {
         case SET_SELECTED_YPOS: {
-            console.log(action.payload)
             state = state.set('selectedYPos', action.payload);
             return state
         }
+
+
+
         case SET_RIGHT_LAYOUT_COMPONENT: {
-            console.log("rightLayoutComponent", action.payload)
+
             state = state.set('rightLayoutComponent', action.payload);
             return state
         }
@@ -78,6 +83,14 @@ export default function basket(state = initialState, action = {}) {
         case SET_TOPBARNAV: {
 
             state = state.set('topBarNav', action.payload);
+            return state
+        }
+        case SET_USER_PROFILE_FORM: {
+            state = state.set('userProfileForm', action.payload);
+            return state
+        }
+        case SET_USER_ORIGINAL_PROFILE_FORM: {
+            state = state.set('userOriginalProfileForm', action.payload);
             return state
         }
         case SET_APPLICATION_ITEM: {
@@ -106,6 +119,33 @@ export default function basket(state = initialState, action = {}) {
 
             return state;
         }
+
+        case UPDATE_CHANGE_EVENT:{
+            let _notPinnedApplications = [...state.notPinnedApplications]
+            let _pinnedApplications = [...state.pinnedApplications]
+            let flag = 1
+            for (let i = 0; i < _notPinnedApplications?.length; i++) {
+                console.log(_notPinnedApplications?.[i]?._id == action.payload?._id)
+                if (_notPinnedApplications?.[i]?._id == action.payload?._id) {
+
+                    _notPinnedApplications[i] = action.payload
+                    state = state.set('notPinnedApplications', _notPinnedApplications);
+
+                }
+            }
+            flag = 1
+            for (let i = 0; i < _pinnedApplications?.length; i++) {
+
+                console.log(_pinnedApplications?.[i]?._id == action.payload?._id)
+                if (_pinnedApplications?.[i]?._id == action.payload?._id) {
+                    _pinnedApplications[i] = action.payload
+                    state = state.set('pinnedApplications', _pinnedApplications);
+                }
+            }
+
+            return state;
+        }
+
         case READ_UNREAD_APPLICATIONS: {
             const notPinned = [...state.notPinnedApplications];
             const pinned = [...state.pinnedApplications];

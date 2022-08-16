@@ -34,10 +34,11 @@ import {
 } from "../../../reducers/activity/initialstate";
 import Api from 'src/services/api';
 import {
+    setApplicationItem,
     setEdit,
     setHasChange,
-    setRightLayoutComponent,
-    updateApplicationStatus
+    setRightLayoutComponent, setUserOriginalProfileForm, setUserProfileForm,
+    updateApplicationStatus, updateChangeEvent
 } from "../../../reducers/application/actions";
 
 import CustomAlert from "@pages/activities/alert/alert1";
@@ -82,17 +83,16 @@ function ActivityModal(props: any) {
 
         return _applicationItem
     });
+
+    const userProfileForm = useSelector((state: RootStateOrAny) => {
+        return state.application.userProfileForm
+    });
+    const userOriginalProfileForm = useSelector((state: RootStateOrAny) => {
+        return state.application.userOriginalProfileForm
+    });
     const hasChange = useSelector((state: RootStateOrAny) => state.application.hasChange);
     const edit = useSelector((state: RootStateOrAny) => state.application.edit);
 
-    const [userProfileForm, setUserProfileForm] = useSafeState(() => {
-
-        return flatten.flatten(applicationItem)
-    })
-    const [userOriginalProfileForm, setUserOriginalProfileForm] = useSafeState(() => {
-
-        return flatten.flatten(applicationItem)
-    })
     const navigation = useNavigation();
 
     const dimensions = useWindowDimensions();
@@ -225,11 +225,11 @@ function ActivityModal(props: any) {
         dispatch(setHasChange(bool))
     }
 
-
     const [prevId, setPrevId] = useSafeState(0)
     useEffect(() => {
-        setUserProfileForm(flatten.flatten(applicationItem))
-        setUserOriginalProfileForm(flatten.flatten(applicationItem))
+
+        dispatch(setUserProfileForm(flatten.flatten(applicationItem)))
+        dispatch(setUserOriginalProfileForm(flatten.flatten(applicationItem)))
         dispatch(setEdit(false))
         /* console.log(prevId != applicationItem._id, prevId , applicationItem._id)
          if(prevId != applicationItem._id){
@@ -414,7 +414,6 @@ function ActivityModal(props: any) {
 
 
 
-
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {
             ...payload,
             ...feePayload
@@ -422,14 +421,14 @@ function ActivityModal(props: any) {
             .then((response) => {
 
                 if (isLoading)setLoading(false)
-                const diff = _.differenceWith(_flattenSoa, (response.data?.statement_Of_Account || response.data?.soa), _.isEqual)
+                const diff =  _.differenceBy(_flattenSoa, (response.data?.statement_Of_Account || response.data?.soa),  'item')
 
                 cleanSoa = {
                   //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
                     totalFee: response.data?.totalFee,
                     soa: _.uniqBy(removeEmpty([...(tabName == "Basic Info" ? diff  : _flattenSoa), ...(response.data?.statement_Of_Account || response.data?.soa)]), 'item')
                 }
-                console.log(cleanSoa)
+
             }).catch((error) => {
                 dispatch(setEdit(false))
                 dispatch(setHasChange(false))
@@ -438,8 +437,8 @@ function ActivityModal(props: any) {
                 for (const err in error?.response?.data?.errors) {
                     _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
                 }
-                if (_err || error?.response?.data?.message || error?.response?.statusText || (typeof error?.response?.data == "string") ) {
-                    showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data)
+                if (_err || error?.response?.data?.message || error?.response?.statusText || (typeof error?.response?.data == "string" || typeof error == "string") ) {
+                    showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data || error)
                 }
             });
         //if (flattenSoa) profileForm['totalFee'] = flattenSoa.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0)
@@ -494,14 +493,13 @@ function ActivityModal(props: any) {
                 }
             }
             var _flatten = flatten.flatten({..._applicationItem})
-            setUserOriginalProfileForm({..._flatten})
-            setUserProfileForm(_flatten)
-            _props.onChangeEvent(response.data.doc);
+            dispatch(setUserOriginalProfileForm(_flatten))
+            dispatch(setUserProfileForm(_flatten))
+            dispatch(setApplicationItem(_applicationItem))
+            dispatch(updateChangeEvent(response.data?.doc))
             //showToast(ToastType.Success, "Successfully updated!")
             callback()
         }).catch((error) => {
-            dispatch(setEdit(false))
-            dispatch(setHasChange(false))
             setLoading(false)
             //hideToast()
             let _err = '';
@@ -663,12 +661,8 @@ function ActivityModal(props: any) {
 
                 <ModalTab saved={saved} loading={loading} setEditAlert={setEditAlert}
                           updateApplication={updateApplication} editBtn={editBtn}
-                          userOriginalProfileForm={userOriginalProfileForm}
-                          userProfileForm={userProfileForm}
                           setEdit={setEdit}
                           setTabName={setTabName}
-                          setUserProfileForm={setUserProfileForm}
-                          setUserOriginalProfileForm={setUserOriginalProfileForm}
                           hasChanges={hasChanges} edit={edit} dismissed={() => {
                     goBackAsync()
                 }} details={applicationItem} status={status}/>
@@ -925,7 +919,7 @@ function ActivityModal(props: any) {
                     setEditAlert(false)
                     const myPromise = new Promise((resolve, reject) => {
                         setTimeout(() => {
-                            setUserProfileForm(userOriginalProfileForm)
+                            dispatch(setUserProfileForm(userOriginalProfileForm))
                         }, 300);
                     });
 

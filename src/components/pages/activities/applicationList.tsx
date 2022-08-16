@@ -49,6 +49,7 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
         return {flexDirection:"row",justifyContent:"space-between",alignItems:"center",}
     }, [])
     const ActivityMemo = useMemo(() => {
+
         return props.item.activity.sort(function(a, b) {
             var c = new Date(a.updatedAt);
             var d = new Date(b.updatedAt);
