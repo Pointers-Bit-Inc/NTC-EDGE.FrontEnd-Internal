@@ -342,6 +342,8 @@ export default function TabBar({navigation,route}){
                                 component={ActivitiesNavigator}/>
                  <Drawer.Screen options={{drawerLabel:CHAT,headerShown:false}} name={CHAT} component={ChatScreen}/>
                  <Drawer.Screen options={{drawerLabel:MEET,headerShown:false}} name={MEET} component={MeetScreen}/>
+                {getRole(user,[CHECKER,EVALUATOR,DIRECTOR])&& Platform.OS != "web" &&
+                    <Drawer.Screen options={{drawerLabel:SCANQR,headerShown:false}} name={SCANQR} component={QrCodeScanner}/>}
                  {/*<Drawer.Screen options={{drawerLabel:DASHBOARD,headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/>*/}
                  {/*<Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/>*/}
                  {/*<Drawer.Screen options={{drawerLabel:ROLEANDPERMISSION,headerShown:false}} name={ROLEANDPERMISSION} component={RoleAndPermissionNavigator}/>*/}

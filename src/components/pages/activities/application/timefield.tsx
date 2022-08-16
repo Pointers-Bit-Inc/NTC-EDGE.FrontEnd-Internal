@@ -1,5 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import React, {useEffect} from "react";
+import React, {useEffect, useMemo} from "react";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular,Regular500} from "@styles/font";
 import useSafeState from "../../../../hooks/useSafeState";
@@ -43,11 +43,12 @@ const styles = StyleSheet.create({
 
 const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:string, showEdit?:boolean, show?:boolean, editable?:boolean, updateForm?:any, stateName?:string, edit:string, label: string, applicant?: any }) => {
 
-    const [dates, setDates] = useSafeState(props?.applicant?.split('T')?.[0]?.split('-')), [time, setTime]= useSafeState(formatAMPM(new Date(props?.applicant)))
-
+    const dates = useMemo(() =>props?.applicant?.split('T')?.[0]?.split('-'), [props?.applicant]), [time, setTime]= useSafeState(formatAMPM(new Date(props?.applicant)))
     const year = dates?.[0]
     const month = dates?.[1]
     const day = dates?.[2]
+
+
     const datesArray =Array.from(Array(60), (_, i) => {
         return {
             label: i.toString().length == 1 ? "0" +(i).toString() : (i).toString(),
@@ -78,9 +79,10 @@ const TimeField = (props: { updateApplication?:any, hasChanges?:any, display?:st
 
 
     useEffect(()=>{
-        props.updateForm(props.stateName, toIsoFormat(Moment(`${year}-${month}-${day} ${hourValue}:${minuteValue} ${ampmValue}`,'YYYY-MM-DD HH:mm a')))
 
-    }, [minuteValue, hourValue, ampmValue, year, month, day])
+
+        props.updateForm(props.stateName, toIsoFormat(Moment(`${year}-${month}-${day} ${hourValue}:${minuteValue} ${ampmValue}`,'YYYY-MM-DD HH:mm a')))
+    }, [minuteValue, hourValue, ampmValue])
 
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || edit : !edit) ? <View  style={ styles.group2 }>
         <Text style={ styles.detail }>{ props.label }</Text>

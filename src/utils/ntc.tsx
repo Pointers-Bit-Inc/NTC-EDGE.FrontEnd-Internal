@@ -217,7 +217,7 @@ const toIsoFormat = (date) => {
     function pad(n) {return (n<10? '0' :  '') + n}
     function padd(n){return (n<100? '0' : '') + pad(n)}
 
-    return (d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate() + 1) +
+    return (d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getDate()) +
         'T' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()) + ':' +
         pad(d.getUTCSeconds()) +  'Z');
 }

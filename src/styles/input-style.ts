@@ -64,6 +64,7 @@ export default StyleSheet.create({
     fontSize: fontValue(12),
 
   },
+
   requiredText: {
     color: text?.errorColor,
   },
@@ -77,6 +78,7 @@ export default StyleSheet.create({
     fontSize: fontValue(14),
   },
   inputText: {
+    fontSize: fontValue(12),
     paddingHorizontal: 0,
     ...Platform.select({
       ios: {

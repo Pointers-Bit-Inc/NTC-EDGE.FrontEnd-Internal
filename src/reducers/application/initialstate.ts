@@ -14,6 +14,7 @@ const InitialState = Record({
   rightLayoutComponent: {width: 0, height: 0, left: 0, top: 0},
   filterRect: {width: 0, height: 0, left: 0, top: 0},
   applicationItem: {},
+  applicationItemId: 0,
   userProfileForm: {},
   userOriginalProfileForm: {},
   topBarNav: {width: 0, height: 0, left: 0, top: 0},

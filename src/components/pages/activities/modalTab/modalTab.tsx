@@ -190,7 +190,7 @@ const ModalTab = props => {
                         editBtn={props.editBtn}
                         updateApplication={props.updateApplication}
                         hasChanges={props.hasChanges}
-
+                        officialReceipt={props.officialReceipt}
                         paymentStatus={paymentStatus}
                         proofOfPayment={proofOfPayment}
                         updatedAt={updatedAt}

@@ -410,7 +410,7 @@ const Payment = (_props: any) => {
         }
     }
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
-
+console.log(props)
     return <View style={{flex: 1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <KeyboardAvoidingView
@@ -675,6 +675,7 @@ const Payment = (_props: any) => {
                               paymentMethod={props?.paymentMethod}
                               applicant={props?.applicant}
                               totalFee={props?.totalFee}
+                              officialReceipt={props?.officialReceipt}
                               visible={visibleModal}
                               onDismissed={onDismissed}/>
             </ScrollView>

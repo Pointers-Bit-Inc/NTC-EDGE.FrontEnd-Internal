@@ -31,6 +31,7 @@ import ArchiveIcon from "@assets/svg/archive";
 import DeleteIcon from "@assets/svg/delete";
 import {isTablet} from "react-native-device-info";
 import useMemoizedFn from "../../../hooks/useMemoizedFn";
+import {RootStateOrAny, useSelector} from "react-redux";
 
 const styles = StyleSheet.create({
 
@@ -264,9 +265,11 @@ function ProfileImageMemo(_props: { userActivity: any, name: any }) {
 }
 
 const ActivityItem = (props: any) => {
-
+    const applicationItemId = useSelector((state:RootStateOrAny)=>state.application.applicationItemId);
     const propsMemo = useMemo(() => props, [props])
-
+    const selected =useMemo(() => {
+        return Platform.OS == "web" ? applicationItemId == propsMemo.selected : false
+    }, [applicationItemId] )
     const status = [CASHIER].indexOf(propsMemo?.role) != -1 ? PaymentStatusText(propsMemo?.activity?.paymentStatus) : StatusText(propsMemo?.activity?.status);
     const userActivity = propsMemo?.activity?.applicant?.user || propsMemo?.activity?.applicant;
 
@@ -312,13 +315,16 @@ const ActivityItem = (props: any) => {
     const [pressed, setPressed] = useState(false)
     const container = useMemo(() => [styles.container, {paddingRight: dimensions.width <= 768 ? 20 : undefined}], [dimensions])
     const applicationContainer = useMemo(() => styles.applicationContainer, [])
-    const applicationBlur = useMemo(() => [styles.containerBlur, {
-        borderColor: !(
-            isMobile && !(
-                Platform?.isPad || isTablet())) ? "#AAB6DF" : (pressed ? "#98AFDC" : "#E5E5E5"),
-        backgroundColor: pressed ? "#DCE8FF" : "#fff",
-        borderWidth: propsMemo.selected && Platform.OS == "web" ? 4 : 1,
-    }], [pressed, propsMemo])
+    const applicationBlur = useMemo(() => {
+
+        return [styles.containerBlur, {
+            borderColor: !(
+                isMobile && !(
+                    Platform?.isPad || isTablet())) ? "#AAB6DF" : (pressed ? "#98AFDC" : "#E5E5E5"),
+            backgroundColor: pressed ? "#DCE8FF" : "#fff",
+            borderWidth: selected && Platform.OS == "web" ? 4 : 1,
+        }]
+    }, [pressed, selected ])
     const assignPersonnelStyle = useMemo(() => [styles.section, {
         paddingHorizontal: fontValue(10),
         paddingTop: fontValue(4),
@@ -369,7 +375,7 @@ const ActivityItem = (props: any) => {
             {useMemoizedFn(isHovered => (
 
                 <View style={{
-                    backgroundColor: propsMemo.selected && !(
+                    backgroundColor: selected && !(
                         (
                             isMobile && !(
                                 Platform?.isPad || isTablet()))) ? "#D4D3FF" : isHovered ? "#EEF3F6" : "#fff"
@@ -416,7 +422,7 @@ const ActivityItem = (props: any) => {
                                                             textToHighlight={nameMemo}
                                                         />
                                                         <View>
-                                                            <Text style={{color: "#606A80"}}>
+                                                            <Text style={{fontSize: fontValue(10,), color: "#606A80"}}>
                                                                 {propsMemo?.activity?.applicant?.companyName ? "Company" : "Individual"}
                                                             </Text>
                                                         </View>

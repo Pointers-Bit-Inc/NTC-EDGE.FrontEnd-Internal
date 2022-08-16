@@ -132,6 +132,7 @@ const ActivitiesPage = (props) => {
     } = useActivities(props);
 
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
+    const applicationItemId = useSelector((state: RootStateOrAny) => state.application.applicationItemId);
 
     const meeting = useSelector((state: RootStateOrAny) => state.meeting.meeting);
     const meetingList = useMemo(() => {
@@ -358,7 +359,7 @@ const ActivitiesPage = (props) => {
                         isOpen={isOpen}
                         config={config}
                         key={i}
-                        selected={applicationItem?._id == act?.item?._id}
+                        selected={ Platform?.OS == "web" ? act?.item?._id : false}
                         currentUser={user}
                         role={user?.role?.key}
                         searchQuery={searchTerm}
@@ -393,6 +394,7 @@ const ActivitiesPage = (props) => {
             keyExtractor={(item, index) => `_key${index.toString()}`}
         />
     }}/>;
+
     const renderItem = useCallback(({item, index}) => (
             <>
                 <ApplicationList
@@ -405,7 +407,7 @@ const ActivitiesPage = (props) => {
                     numbers={numberCollapsed}
                     index={index}
 
-                    element={(activity: any, i: number) => {
+                    element={(activity: any, i: number, selected) => {
                         return (
                             <ActivityItem
                                 isOpen={isOpen}
@@ -416,12 +418,13 @@ const ActivitiesPage = (props) => {
                                 */
                                 searchQuery={searchTerm}
                                 key={i}
-                                selected={applicationItem?._id == activity?._id}
+                                selected={Platform?.OS == "web" ? activity?._id : false}
                                 parentIndex={index}
                                 role={user?.role?.key}
                                 activity={activity}
                                 currentUser={user}
                                 onPressUser={(event: any) => {
+
                                     dispatch(setEdit(false))
                                     dispatch(setHasChange(false))
                                     dispatch(setSelectedYPos({yPos, type: 0}))
@@ -429,6 +432,8 @@ const ActivitiesPage = (props) => {
                                         ...activity,
                                         isOpen: `${index}${i}`
                                     }));
+
+
 
                                     //setDetails({ ...activity , isOpen : `${ index }${ i }` });
                                     /*unReadReadApplicationFn(activity?._id, false, true, (action: any) => {

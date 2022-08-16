@@ -554,10 +554,11 @@ export const styles = StyleSheet.create({
         backgroundColor:"#F0F0F0"
     },
     searchIcon:{
+
         justifyContent:"center",
         alignItems:"center",
         height:"100%",
-        marginLeft:15,
+        marginLeft:fontValue(15),
         position:"absolute",
     },
 });

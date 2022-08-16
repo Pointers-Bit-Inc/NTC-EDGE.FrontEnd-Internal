@@ -204,7 +204,6 @@ const BasicInfo = (_props: any) => {
         for (const [key, value] of Object.entries(userOriginalProfileForm)) {
 
             if (userOriginalProfileForm?.[key] != userProfileForm?.[key]) {
-
                 hasChanges = true
 
                 props.hasChanges(hasChanges)

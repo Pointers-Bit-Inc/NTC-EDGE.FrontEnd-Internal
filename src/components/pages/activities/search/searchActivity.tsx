@@ -232,7 +232,7 @@ export function SearchActivity(props: { navigation: any, setApplications: any, i
                                                     role={user?.role?.key}
                                                     activity={activity}
                                                     currentUser={user}
-                                                    selected={applicationItem?._id == activity?._id}
+                                                    selected={Platform?.OS == "web" ? activity?._id : false}
                                                     onPressUser={(event: any) => {
 
                                                         dispatch(setEdit(false))

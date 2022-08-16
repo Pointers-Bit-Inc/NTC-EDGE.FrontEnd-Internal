@@ -274,6 +274,7 @@ const ModalTab=props=>{
                     } else if(isShow&&tab.id===4 && service?.serviceCode !== "service-22" ){
                         return <Payment paymentIndex={index}  setPaymentIndex={setPaymentIndex} saved={props.saved} loading={props.loading} edit={props.edit}
                                         setEditAlert={props.setEditAlert}
+                                        officialReceipt={props.officialReceipt}
                                         editBtn={props.editBtn}
                                         updateApplication={props.updateApplication}
                                         hasChanges={props.hasChanges}

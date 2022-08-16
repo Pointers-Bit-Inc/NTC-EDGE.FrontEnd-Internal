@@ -32,10 +32,11 @@ const PaymentModal = (_props: any) => {
             </View>
         );
     })
+
     const data = [
         ["Email", props?.applicant?.user?.email],
         ["Fee", "PHP " +  props?.totalFee],
-        ["Account", props?.applicant?.user?.firstName + " " + props?.applicant?.user?.lastName],
+        ["Account", props?.applicant?.user?.firstName && props?.applicant?.user?.lastName ? props?.applicant?.user?.firstName + " " + props?.applicant?.user?.lastName : (props?.applicant?.fullName || (props?.applicant?.companyName || props?.applicant?.applicantName)  )],
         ["Amount paid", "PHP" + props?.totalFee],
     ];
     const [sizeComponent, onLayoutComponent] = useComponentLayout()
@@ -95,7 +96,7 @@ const PaymentModal = (_props: any) => {
                                      </View>
 
 
-                                    <View  onLayout={onLayoutComponent} style={{backgroundColor: "white", }}>
+                                    <View  onLayout={onLayoutComponent} style={{backgroundColor: "white", paddingVertical: 20 }}>
                                         <View style={styles.group5}>
                                             <Text style={styles.title}>Payment received for</Text>
                                             <Text style={[styles.description]}>NTC-EDGE</Text>
@@ -107,7 +108,10 @@ const PaymentModal = (_props: any) => {
                                         </View>
                                         <View style={styles.group2}>
                                             <View style={styles.rect}>
-                                                <Text style={styles.refNo12345678910}>Ref. No. 12345678910</Text>
+                                                {props?.officialReceipt?.orNumber ?
+                                                    <Text style={styles.refNo12345678910}>Ref.
+                                                        No. {props?.officialReceipt?.orNumber}</Text> : <></>
+                                                }
                                                 {props?.updatedAt &&
                                                 <Text style={styles.text}>{moment(props?.updatedAt).format('LLL')}</Text>}
                                             </View>

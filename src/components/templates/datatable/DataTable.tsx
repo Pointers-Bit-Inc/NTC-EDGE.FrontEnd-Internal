@@ -75,9 +75,8 @@ const style=StyleSheet.create({
     },
     title:{
         backgroundColor:"#fff",
-        paddingHorizontal:46,
-        paddingTop:22,
-        paddingBottom:22,
+        paddingHorizontal:25,
+        paddingVertical:22,
     },
     text:{
         color:"#113196",
@@ -91,8 +90,7 @@ const style=StyleSheet.create({
         paddingBottom:7,
         alignItems:"center",
         justifyContent:"space-between",
-        flexDirection:"row",
-        flex:1
+
     },
     rightrow:{
         flexDirection:"row"
@@ -124,7 +122,7 @@ const style=StyleSheet.create({
         marginTop:35,
         borderTopRightRadius:8,
         borderTopLeftRadius:8,
-        marginHorizontal:45,
+        marginHorizontal:25,
         backgroundColor:"#fff",
     },
     headerTextContainer:{
@@ -145,7 +143,7 @@ const style=StyleSheet.create({
         marginBottom:5,
         borderBottomRightRadius:8,
         borderBottomLeftRadius:8,
-        marginHorizontal:45,
+        marginHorizontal:25,
         flex:1,
         backgroundColor:"#fff",
     },
@@ -160,7 +158,7 @@ const style=StyleSheet.create({
         borderBottomWidth:1
     },
     pagination:{
-        paddingHorizontal:45,
+        paddingHorizontal:25,
         paddingVertical:15,
         flexDirection:"row",
         alignItems:"center",
@@ -501,11 +499,8 @@ const DataTable=(props)=>{
 
                         }}>
 
-                            <MenuTrigger text={
-
+                            <MenuTrigger>
                                 <DotHorizontalIcon/>
-                            }>
-
                             </MenuTrigger>
 
                             <MenuOptions optionsContainerStyle={{
@@ -679,10 +674,12 @@ const DataTable=(props)=>{
                             flex:1,
                         }]}>
                             <View style={style.title}>
-                                <Text style={style.text}>
-                                    {props.title}
-                                </Text>
-                                <View style={style.search}>
+                                <View>
+                                    <Text style={style.text}>
+                                        {props.title}
+                                    </Text>
+                                </View>
+                                <View style={[style.search, { flexDirection:"row",}]}>
                                     <View style={{flex:0.90,paddingRight:15}}>
                                         <TextInput value={value} onChangeText={text=>{
                                             setValue(text)
@@ -751,7 +748,9 @@ const DataTable=(props)=>{
 
                                 </View>
 
+
                             </View>
+
                             <View style={style.shadow}>
 
 
@@ -775,7 +774,7 @@ const DataTable=(props)=>{
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                                <View style={{marginHorizontal:45,backgroundColor:"#fff",}}>
+                                <View style={{marginHorizontal:25,backgroundColor:"#fff",}}>
 
                                     <View style={{paddingLeft:24,}}>
                                         <View style={style.rowStyle}>
@@ -867,7 +866,7 @@ const DataTable=(props)=>{
                 <View style={style.modal}>
 
                     <View style={{backgroundColor:"#fff",padding:20,borderRadius:8,}}>
-                        <View style={{height:dimensions.height*0.90,width:dimensions.width*0.5,}}>
+                        <View style={{height:dimensions.height*0.90,width:dimensions.width*0.7,}}>
 
 
                             <View style={{paddingBottom:20}}>
@@ -917,7 +916,7 @@ const DataTable=(props)=>{
                                      <Text style={{
                                          color:"white",
                                          fontFamily:Regular500,
-                                         fontWeight:500,
+                                         fontWeight:"500",
                                      }}>{state=='edit' ? props?.editButtonTitle : props?.addButtonTitle}</Text>}
                                 </View>
                             </TouchableOpacity>

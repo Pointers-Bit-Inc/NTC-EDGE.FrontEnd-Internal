@@ -10,12 +10,12 @@ import MeetIcon from "@assets/svg/meettabbar";
 import {
     ACTIVITIES,
     CHAT,
-    DASHBOARD,EMPLOYEES,
+    DASHBOARD, EMPLOYEES,
     GROUP,
     MEET,
     REPORT,
-    ROLEANDPERMISSION,
-    SEARCH,SETTINGS,USERS
+    ROLEANDPERMISSION, SCANQR,
+    SEARCH, SETTINGS, USERS
 } from "../../../reducers/activity/initialstate";
 import {fontValue} from "@pages/activities/fontValue";
 import {useComponentLayout} from "../../../hooks/useComponentLayout";
@@ -28,6 +28,7 @@ import GroupIcon from "@assets/svg/group";
 import EmployeeIcon from "@assets/svg/employeeIcon";
 import UserIcon from "@assets/svg/userIcon";
 import SettingIcon from "@assets/svg/SettingIcon";
+import ScanQrIcon from "@assets/svg/scanqrtabbar";
 
 const CustomSidebarMenu=(props:any)=>{
     const dispatch=useDispatch();
@@ -98,6 +99,10 @@ const CustomSidebarMenu=(props:any)=>{
                             break;
                         case EMPLOYEES:
                             tabIcon=<EmployeeIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;
+                            break;
+                        case SCANQR:
+                            tabIcon= <ScanQrIcon notification={false} width={fontValue(25)} height={fontValue(25)}
+                                                 fill={focused ? "#113196" : "#6E7191"}/>
                             break;
                         case USERS:
                             tabIcon=<UserIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;
