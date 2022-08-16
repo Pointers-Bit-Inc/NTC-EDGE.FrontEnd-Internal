@@ -48,7 +48,7 @@
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* com-ntcedge-portal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "com-ntcedge-portal.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* NTC-EDGE PORTAL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "NTC-EDGE PORTAL.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ntcedge/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ntcedge/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ntcedge/Images.xcassets; sourceTree = "<group>"; };
@@ -165,7 +165,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* com-ntcedge-portal.app */,
+				13B07F961A680F5B00A75B9A /* NTC-EDGE PORTAL.app */,
 				4298477327F41061002E62A3 /* OneSignalNotificationServiceExtension.appex */,
 			);
 			name = Products;
@@ -231,7 +231,7 @@
 			);
 			name = ntcedge;
 			productName = ntcedge;
-			productReference = 13B07F961A680F5B00A75B9A /* com-ntcedge-portal.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* NTC-EDGE PORTAL.app */;
 			productType = "com.apple.product-type.application";
 		};
 		4298477227F41061002E62A3 /* OneSignalNotificationServiceExtension */ = {
@@ -527,7 +527,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "ntcedge/ntcedge-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -555,7 +555,7 @@
 				PRODUCT_NAME = "NTC-EDGE PORTAL";
 				SWIFT_OBJC_BRIDGING_HEADER = "ntcedge/ntcedge-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
