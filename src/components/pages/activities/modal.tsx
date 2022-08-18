@@ -412,7 +412,10 @@ function ActivityModal(props: any) {
         let feePayload = removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
 
 
-
+console.log({
+    ...payload,
+    ...feePayload
+})
 
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {
             ...payload,
@@ -466,12 +469,7 @@ function ActivityModal(props: any) {
         if (isLoading) setLoading(true)
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...cleanSoa}, config).then((response) => {
 
-            if (isLoading) setSaved(false)
-            if (isLoading) {
-                setTimeout(() => {
-                    setLoading(false)
-                }, 2500)
-            }
+
             //hideToast()
             dispatch(setHasChange(false))
             dispatch(setEdit(false))
@@ -497,6 +495,12 @@ function ActivityModal(props: any) {
             dispatch(setUserProfileForm(_flatten))
             dispatch(setApplicationItem(_applicationItem))
             dispatch(updateChangeEvent(response.data?.doc))
+            if (isLoading) setSaved(false)
+            if (isLoading) {
+                setTimeout(() => {
+                    setLoading(false)
+                }, 2500)
+            }
             //showToast(ToastType.Success, "Successfully updated!")
             callback()
         }).catch((error) => {

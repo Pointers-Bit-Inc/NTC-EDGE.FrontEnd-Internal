@@ -717,7 +717,7 @@ const ActivitiesPage = (props) => {
                                             bounces={false}
                                             horizontal
                                             showsHorizontalScrollIndicator={false}
-                                            snapToInterval={activitySizeComponent?.width || dimensions?.width}
+                                            snapToInterval={sizeComponent?.width || dimensions?.width}
                                             decelerationRate={0}
                                             keyExtractor={(item: any) => item._id}
                                             renderItem={({item}) => (
@@ -725,7 +725,7 @@ const ActivitiesPage = (props) => {
                                                     style={{
                                                         ...Platform.select({
                                                             native: {
-                                                                width: activitySizeComponent?.width || dimensions?.width
+                                                                width: sizeComponent?.width || dimensions?.width
                                                             },
                                                             default: {
                                                                 width: 466
@@ -767,7 +767,7 @@ const ActivitiesPage = (props) => {
                                             bounces={false}
                                             horizontal
                                             showsHorizontalScrollIndicator={false}
-                                            snapToInterval={activitySizeComponent?.width || dimensions?.width}
+                                            snapToInterval={sizeComponent?.width || dimensions?.width}
                                             decelerationRate={0}
                                             keyExtractor={(item: any) => item._id}
                                             renderItem={({item}) => (
@@ -775,7 +775,7 @@ const ActivitiesPage = (props) => {
                                                     style={{
                                                         ...Platform.select({
                                                             native: {
-                                                                width: activitySizeComponent?.width || dimensions?.width
+                                                                width: sizeComponent?.width || dimensions?.width
                                                             },
                                                             default: {
                                                                 width: 466

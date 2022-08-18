@@ -101,7 +101,7 @@ const CustomSidebarMenu=(props:any)=>{
                             tabIcon=<EmployeeIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;
                             break;
                         case SCANQR:
-                            tabIcon= <ScanQrIcon notification={false} width={fontValue(25)} height={fontValue(25)}
+                            tabIcon= <ScanQrIcon notification={false} width={fontValue(22)} height={fontValue(22)}
                                                  fill={focused ? "#113196" : "#6E7191"}/>
                             break;
                         case USERS:

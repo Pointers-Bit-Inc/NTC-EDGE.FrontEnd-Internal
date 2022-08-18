@@ -546,7 +546,7 @@ function Chat(props: {
                   style={{
                     ...Platform.select({
                       native: {
-                        width: width
+                        width: Platform?.isPad ? width-108 :width
                       },
                       default: {
                         width: 466
@@ -1397,7 +1397,7 @@ const ChatList = ({ navigation }: any) => {
                     style={{
                       ...Platform.select({
                         native: {
-                          width: width
+                          width: Platform?.isPad ? width-108 :width
                         },
                         default: {
                           width: '100%'

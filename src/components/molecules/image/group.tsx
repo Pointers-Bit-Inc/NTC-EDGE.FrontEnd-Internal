@@ -8,6 +8,7 @@ import {fontValue} from "@pages/activities/fontValue";
 import IParticipants from 'src/interfaces/IParticipants';
 import Text from '@components/atoms/text';
 import { Regular, Regular500 } from '@styles/font';
+import {RFValue} from "react-native-responsive-fontsize";
 
 const styles = StyleSheet.create({
   image: {
@@ -131,7 +132,7 @@ const GroupImage: FC<Props> = ({
           style={styles.border}
           image={participants[0]?.profilePicture?.thumb}
           name={`${participants[0]?.firstName} ${participants[0]?.lastName}`}
-          size={imageSize}
+          size={fontValue(imageSize)}
           textSize={textSize/2}
         />
       </View>
@@ -140,7 +141,7 @@ const GroupImage: FC<Props> = ({
           style={styles.border}
           image={participants[1]?.profilePicture?.thumb}
           name={`${participants[1]?.firstName} ${participants[1]?.lastName}`}
-          size={imageSize}
+          size={fontValue(imageSize)}
           textSize={textSize/2}
         />
       </View>

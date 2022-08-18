@@ -383,7 +383,7 @@ const onClose = (item:IMeetings, leave = false) => {
                 keyExtractor={(item: any) => item._id}
                 renderItem={({item}) => (
                   <MeetingNotif
-                    style={{width}}
+                    style={{width: Platform?.isPad ? width-108 :width}}
                     name={getChannelName({...item, otherParticipants: item?.participants})}
                     time={item.createdAt}
                     host={item.host}

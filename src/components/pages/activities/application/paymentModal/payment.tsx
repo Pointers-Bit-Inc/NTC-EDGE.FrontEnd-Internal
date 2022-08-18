@@ -37,6 +37,7 @@ import {PlusIcon} from "@atoms/icon";
 import LoadingModal from "@pages/activities/loading/loadingModal";
 import {setEditModalVisible} from "../../../../../reducers/activity/actions";
 import {setUserProfileForm} from "../../../../../reducers/application/actions";
+import KeyboardShift from "@molecules/keyboard";
 
 const flatten = require('flat')
 
@@ -410,15 +411,16 @@ const Payment = (_props: any) => {
         }
     }
     const [sizeComponent, onLayoutComponent] = useComponentLayout();
-console.log(props)
     return <View style={{flex: 1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
-        <KeyboardAvoidingView
-            style={{flex: 1}}
-            behavior={Platform.OS === 'ios' ? 'position' : "height"}
+        <KeyboardShift>
+            {() => (
+        <View
+            style={{  flex: 1,}}
         >
 
             <ScrollView
+
             >
 
                 <View style={styles.containers}>
@@ -679,7 +681,9 @@ console.log(props)
                               visible={visibleModal}
                               onDismissed={onDismissed}/>
             </ScrollView>
-        </KeyboardAvoidingView>
+        </View>
+            )}
+        </KeyboardShift>
     </View>
 };
 

@@ -7,6 +7,7 @@ import {fontValue} from "@pages/activities/fontValue";
 import {Regular} from "@styles/font";
 import absoluteFill = StyleSheet.absoluteFill;
 import Skeleton from "@atoms/skeleton";
+import {useMemo} from "react";
 
 export const styles=StyleSheet.create({
     noContent:{
@@ -16,11 +17,16 @@ export const styles=StyleSheet.create({
 });
 
 function Placeholder(props: { renderItem: () => JSX.Element, keyExtractor: (item) => any }) {
-    return <View style={{justifyContent: "flex-end", width: "100%"}}><FlatList
-        data={[1,2,3,4,5,6]}
-        renderItem={props.renderItem}
-        keyExtractor={props.keyExtractor}
-    /></View>;
+    const RNPlaceholder = useMemo(()=>{
+        return <View style={{justifyContent: "flex-end", width: "100%"}}><FlatList
+            data={[1,2,3,4,5,6]}
+            renderItem={props.renderItem}
+            keyExtractor={props.keyExtractor}
+        /></View>
+    }, [])
+    return <>{
+        RNPlaceholder
+    }</>;
 }
 
 const Loader = (refreshing,searchTerm,size) => {

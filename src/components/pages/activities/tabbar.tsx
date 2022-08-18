@@ -329,7 +329,7 @@ export default function TabBar({navigation,route}){
                      drawerStyle:{
                          width:108
                      },
-                     drawerType:dimensions.width>=768 ? 'permanent' : 'front',
+                     drawerType: !(Platform.OS == "web" && Platform?.isPad)? 'permanent' : 'front',
                      drawerItemStyle:{
                          backgroundColor:'rgba(0,0,0,0)',
                          marginLeft:20,
@@ -342,7 +342,7 @@ export default function TabBar({navigation,route}){
                                 component={ActivitiesNavigator}/>
                  <Drawer.Screen options={{drawerLabel:CHAT,headerShown:false}} name={CHAT} component={ChatScreen}/>
                  <Drawer.Screen options={{drawerLabel:MEET,headerShown:false}} name={MEET} component={MeetScreen}/>
-                {getRole(user,[CHECKER,EVALUATOR,DIRECTOR])&& Platform.OS != "web" &&
+                {(getRole(user,[CHECKER,EVALUATOR,DIRECTOR])&& Platform.OS != "web") &&
                     <Drawer.Screen options={{drawerLabel:SCANQR,headerShown:false}} name={SCANQR} component={QrCodeScanner}/>}
                  {/*<Drawer.Screen options={{drawerLabel:DASHBOARD,headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/>*/}
                  {/*<Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/>*/}

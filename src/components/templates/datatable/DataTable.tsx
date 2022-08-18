@@ -182,6 +182,7 @@ const DataTable=(props)=>{
     const [role,setRole]=useState('');
     const flatListRef=useRef();
     const [data, setData] = useState({})
+    const [modalView, setModalView] = useState(false)
     const [alert,setAlert]=useState();
     const originalForm=[
         {
@@ -421,6 +422,7 @@ const DataTable=(props)=>{
                 <TouchableOpacity style={style.rowStyle} onPress={()=>{
                     setState('view');
                     setData(item)
+
                 }
                 }>
                     <View style={style.cellStyle}>
@@ -480,6 +482,7 @@ const DataTable=(props)=>{
                             } else if(value=="view"){
                                 setState('view');
                                 setData(item)
+                                setModalView(true)
                             }else if(value=="delete"){
                                 axios.delete(BASE_URL+`/users/${item._id}`).then((response)=>{
                                     showToast(ToastType.Success,"Successfully deleted!")
@@ -859,7 +862,7 @@ const DataTable=(props)=>{
             <Modal
                 animationType={"fade"}
                 transparent={true}
-                visible={modalClose}
+                visible={modalView}
                 onRequestClose={()=>{
                     console.log("Modal has been closed.")
                 }}>
@@ -867,6 +870,48 @@ const DataTable=(props)=>{
 
                     <View style={{backgroundColor:"#fff",padding:20,borderRadius:8,}}>
                         <View style={{height:dimensions.height*0.90,width:dimensions.width*0.7,}}>
+
+
+                            <View style={{paddingBottom:20}}>
+                                <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between",}}>
+                                    <Text style={style.text}>
+                                        {state=='edit' ? props.editTitle : props.addTitle}
+                                    </Text>
+                                    <TouchableOpacity onPress={()=>{
+                                        cleanForm();
+                                        setModalView(false)
+                                    }}>
+                                        <CloseIcon/>
+                                    </TouchableOpacity>
+
+                                </View>
+                            </View>
+
+                            <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}}>
+                                <ProfileData data={data}/>
+
+
+                            </ScrollView>
+
+                            <Toast/>
+
+
+                        </View>
+                    </View>
+
+                </View>
+            </Modal>
+            <Modal
+                animationType={"fade"}
+                transparent={true}
+                visible={modalClose}
+                onRequestClose={()=>{
+                    console.log("Modal has been closed.")
+                }}>
+                <View style={style.modal}>
+
+                    <View style={{backgroundColor:"#fff",padding:20,borderRadius:8,}}>
+                        <View style={{height:dimensions.height*0.90,width:dimensions.width*0.8,}}>
 
 
                             <View style={{paddingBottom:20}}>

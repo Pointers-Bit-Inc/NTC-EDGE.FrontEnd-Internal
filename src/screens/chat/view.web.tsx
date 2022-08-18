@@ -391,7 +391,8 @@ const ChatView = ({ navigation, route }:any) => {
                 <MeetingNotif
                     style={{...Platform.select({
                         native: {
-                          width: width
+                          width: Platform?.isPad ? width-108 :width
+
                         },
                         default: {
                           width: "100%"

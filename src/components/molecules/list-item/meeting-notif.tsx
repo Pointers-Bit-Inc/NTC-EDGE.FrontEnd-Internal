@@ -11,7 +11,7 @@ import {fontValue as RFValue} from "@pages/activities/fontValue";
 
 const styles = StyleSheet.create({
   container: {
-    padding: 15,
+    padding: RFValue(15),
     backgroundColor: '#E5EBFE',
     flexDirection: 'row',
     alignItems: 'center',
@@ -21,22 +21,22 @@ const styles = StyleSheet.create({
   joinButton: {
     padding: RFValue(5),
     height: RFValue(30),
-    paddingHorizontal: 15,
+    paddingHorizontal: RFValue(15),
     borderColor: '#610BEF',
-    borderWidth: 1,
+    borderWidth: RFValue(1),
     backgroundColor: '#610BEF',
-    borderRadius: 30,
-    marginHorizontal: 5,
+    borderRadius: RFValue(30),
+    marginHorizontal: RFValue(5),
   },
   closeButton: {
     paddingVertical: RFValue(4),
     height: RFValue(30),
-    paddingHorizontal: 20,
+    paddingHorizontal: RFValue(20),
     borderColor: '#CF0327',
     backgroundColor: '#CF0327',
-    borderWidth: 1,
-    borderRadius: 30,
-    marginHorizontal: 5,
+    borderWidth: RFValue(1),
+    borderRadius: RFValue(30),
+    marginHorizontal: RFValue(5),
   },
 })
 
@@ -64,7 +64,7 @@ const MeetingNotif: FC<Props> = ({
       <View style={{ flex: 1 }}>
         <Text
           color={'black'}
-          size={14}
+          size={RFValue(14)}
           numberOfLines={1}
           style={{ fontFamily: Bold }}
         >
@@ -72,13 +72,13 @@ const MeetingNotif: FC<Props> = ({
         </Text>
         <Text
           color={text.default}
-          size={10}
+          size={RFValue(10)}
         >
           {`Created by ${host?.firstName} ${host?.lastName}`}
         </Text>
         <Text
           color={text.default}
-          size={10}
+          size={RFValue(10)}
         >
           {getDateTimeString(time, '')}
         </Text>
@@ -98,7 +98,7 @@ const MeetingNotif: FC<Props> = ({
       >
         <Text
           color='white'
-          size={12}
+          size={RFValue(12)}
           style={{ fontFamily: Regular500 }}
         >
           Join

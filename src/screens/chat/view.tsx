@@ -416,8 +416,9 @@ const ChatView = ({ navigation, route }:any) => {
               keyExtractor={(item:any) => item._id}
               renderItem={({ item }) => (
                 <MeetingNotif
-                  style={{ width }}
-                  name={getChannelName({...item, otherParticipants: item?.participants})}
+                    style={{width: Platform?.isPad ? width-108 :width}}
+
+                    name={getChannelName({...item, otherParticipants: item?.participants})}
                   host={item.host}
                   time={item.createdAt}
                   onJoin={() => onJoin(item)}
