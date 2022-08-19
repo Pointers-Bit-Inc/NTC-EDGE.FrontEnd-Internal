@@ -75,7 +75,7 @@ export default memo(Skeleton)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 10,
+        marginTop: fontValue(10),
         paddingTop: fontValue(6),
         paddingHorizontal: fontValue(16),
         paddingBottom: fontValue(6),
@@ -85,14 +85,14 @@ const styles = StyleSheet.create({
         padding: fontValue(20),
         shadowColor: "#000",
         shadowOffset: {
-            width: fontValue(1),
-            height: fontValue(1),
+            width: (1),
+            height: (1),
         },
-        shadowRadius: fontValue(3.84),
-        elevation: fontValue(5),
-        borderRadius: fontValue(10),
+        shadowRadius: (3.84),
+        elevation: (5),
+        borderRadius: (10),
         backgroundColor: '#Fff',
-        shadowOpacity: fontValue(0.1),
+        shadowOpacity: (0.1),
         flexDirection: 'row'
     }
 });

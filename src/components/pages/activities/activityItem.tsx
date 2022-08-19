@@ -256,6 +256,7 @@ const closeRow = (index) => {
 
 
 function ProfileImageMemo(props: { userActivity: any, name: any }) {
+
     return  useMemo(() => <ProfileImage
         size={fontValue(45)}
         image={props.userActivity?.profilePicture?.thumb ? props.userActivity?.profilePicture?.thumb.match(/[^/]+(jpg|jpeg|png|gif)$/i) ? props.userActivity?.profilePicture?.thumb : props.userActivity?.profilePicture?.thumb + ".png" : null}
@@ -368,6 +369,7 @@ const ActivityItem = (props: any) => {
             borderWidth: 4,
         }]
     }, [selectedMoreCircle]);
+
     return (
 
         <Hoverable>

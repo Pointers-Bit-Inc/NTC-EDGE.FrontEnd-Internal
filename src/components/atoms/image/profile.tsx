@@ -7,7 +7,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { Bold, Regular } from '@styles/font';
 import {isMobile} from "@pages/activities/isMobile";
 import {isTablet} from "react-native-device-info";
-
+import FastImage from 'react-native-fast-image'
 const styles = StyleSheet.create({
   image: {
     height: 35,
@@ -70,9 +70,7 @@ const ProfileImage = ({
                 {others || getInitial(name)}
               </Text>
             </View>
-            <Image
-              width={imageSize}
-              height={imageSize}
+            <FastImage
               resizeMode={"cover"}
               source={{ uri: image }}
               style={[{
