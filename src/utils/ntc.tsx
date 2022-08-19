@@ -40,30 +40,43 @@ const transformText = (text: string) => {
 };
 //1234, 12, 13, 14, 15, 16, 17, 18, 19, 21
 const transformToFeePayload = (application: any) => {
-    let { service = {}, region } = application;
-    let { applicationDetails = {},  applicationParticulars = {}, applicationType = {}, station = [], proposedStation = [], equipment = [], proposedEquipment = [], stationClass = {} } = service;
+    let { service = {}, region = '' } = application;
+    let {
+        applicationDetails,
+        applicationType,
+        station,
+        proposedStation,
+        equipment,
+        proposedEquipment,
+        particulars,
+        stationClass,
+        valueAddedServices,
+        transmissionType,
+    } = service;
+    let equipments = equipment || (proposedEquipment || (particulars || []));
+    station = station?.length > 0
+        ? station
+        : !!station
+            ? Object.keys(station)?.length > 0
+                ? [station]
+                : []
+            : [];
+    let stations = station || (proposedStation || (particulars || []));
+    station = stations?.[0] || {};
+    equipment = equipments?.[0] || {};
 
-
-    let stationLen = station?.length;
-    station = ((station || proposedStation) || [])?.[0] || {};
-    equipment = ((equipment || proposedEquipment) || [])?.[0] || {};
-
-    let { frequency = '', proposedFrequency = '', /*bandwidth = 0,*/ powerOutput = 0, validity = {} } = station;
-    let bandwidth = 0; // temporary
+    let { validity = {} } = station || {};
     let { year, month, day } = validity;
     let expired = year && month && day ? Moment(new Date()).set({year, month, date: day}) : new Date()?.toISOString();
-    frequency = ((frequency || proposedFrequency) || '')?.toLowerCase()?.replace(' ', '');
 
     let label = applicationType?.label?.toLowerCase();
 
     let typeFn = () => {
-        let _label = applicationType?.type || 'new';
-        if (label?.match('new')) _label = 'new';
-        if (label?.match('renewal')) _label = 'renew';
+        let _label = applicationType?.type || '';
+        let _isRenewal = label?.match('renewal');
+        if (label?.match('new') && !_isRenewal) _label = 'new';
+        else if (_isRenewal) _label = 'renew';
         else if (label?.match('modification') || label?.match('modify')) _label = 'modification';
-        else if (label?.match('temporary') || label?.match('temporarily')) _label = 'temporary';
-        else if (label?.match('lifetime')) _label = 'lifetime';
-        else if (label?.match('register') || label?.match('registration')) _label = 'REG';
         else if (label?.match('permit')) {
             if (label?.match('possess') || label?.match('purchase')) _label = 'purchase/possess';
             else if (label?.match('sell') || label?.match('transfer')) _label = 'sell/transfer';
@@ -84,8 +97,77 @@ const transformToFeePayload = (application: any) => {
         return _label;
     };
     let categoryFn = () => {
-        if (applicationType?.serviceCode === 'ROC') return applicationType?.element || '';
-        else return applicationType?.category || (applicationType?.variation || '');
+        let _category = '';
+        if (applicationType?.serviceCode === 'ROC') _category = applicationType?.element || '';
+        else _category = applicationType?.category || '';
+        if (applicationDetails?.variation) _category += `${_category ? '-' : ''}${applicationDetails?.variation?.toLowerCase()}`;
+        _category = _category?.replace(' ', '');
+        return _category;
+    };
+    let bandwidthFn = () => {
+        let _basis =
+            station?.bandwidth?.bandwidth ||
+            station?.bandwidth?.unit
+                ? station
+                : equipment;
+        return {
+            bandwidth: Number(_basis?.bandwidth?.bandwidth || 0),
+            unit: _basis?.bandwidth?.unit || '',
+        }
+    };
+    let frequencyFn = () => {
+        /**
+         * frequency that is a section
+         * array
+         * [{tx: 1, rx: 1}]
+         *
+         * frequency that is a section
+         * [{frequency: 1}]
+         *
+         * frequency that is inside station
+         * could be string (pre-filled) or number
+         */
+        return service?.frequency || service?.station?.map((s: any) => s?.frequency) || service?.station?.map((s: any) => s?.proposedFrequency);;
+    };
+    let tranmissionFn = () => {
+        let _t = equipment?.transmission?.split(' • ');
+        return {
+            transmission: _t?.[0]?.toLowerCase() || '',
+            frequency: _t?.[1]?.toLowerCase()?.replace(' frequency', '')?.replace(' ', '') || '',
+        };
+    };
+    let channelFn = () => {
+        let _frequency = frequencyFn();
+        let _frequencies = [];
+        if (_frequency?.length > 0) {
+            _frequency?.forEach((f: any) => {
+                if (f?.tx > -1) _frequencies?.push(f?.tx);
+                if (f?.rx > -1) _frequencies?.push(f?.rx);
+                if (f?.frequency > -1) _frequencies?.push(f?.frequency);
+                if (f?.proposedFrequency > -1) _frequencies?.push(f?.proposedFrequency);
+            });
+        }
+        _frequencies = [...new Set(_frequencies)];
+        return _frequencies;
+    };
+    let classOfStation = (forChannel = false) => {
+        let _csObj = {};
+        let _scArr = (stationClass || particulars) || [];
+        if (_scArr?.length > 0) {
+            _scArr?.forEach((c: any) => {
+                let _split = c?.class?.split(' • ');
+                _csObj = {
+                    ..._csObj,
+                    [_split?.[0]]: Number((forChannel ? (channelFn()?.length || 0) : _split?.[1] || 0)),
+                }
+            });
+        }
+        return _csObj;
+    };
+    let noOfYears = () => {
+        let no = Number(applicationDetails?.noOfYears || 0);
+        if (isNaN(no)) return 0;
+        else return no;
     };
     let classFn = () => {
         let _e = applicationType?.element || '';
@@ -94,104 +176,100 @@ const transformToFeePayload = (application: any) => {
         if (_ndx > -1) return _split[_ndx + 1];
         else return '';
     };
+
+    /*
     let unitsFn = () => {
-        let _unit = 0;
-        Object.keys(stationClass)?.forEach((stn: string) => {
-            let _value = stationClass[stn]?.value;
-            _unit += _value;
-        });
-        return _unit;
+      let _unit = 0;
+      Object.keys(stationClass)?.forEach((stn: string) => {
+        let _value = stationClass[stn]?.value;
+        _unit += _value;
+      });
+      return _unit;
     };
     let stationDetailsFn = () => {
-        let radioStationLicense = '';
-        let spectrum = '';
-        let _station = '';
-        if (
-            label?.match('bwa') ||
-            label?.match('wdn') ||
-            label?.match('microwave')
-        ) {
-            _station = 'fixed';
-            radioStationLicense = 'FX';
-        }
-        else if (
-            label?.match('wdn') ||
-            label?.match('wll') ||
-            label?.match('bts')
-        ) {
-            _station = 'landbase';
-            radioStationLicense = 'FB';
-        }
-        else if (label?.match('public trunked')) {
-            _station = 'publictrunked'
-            radioStationLicense = 'Public Trunked';
-        }
-        else if (label?.match('vsat')) {
-            _station = 'TC-VSAT';
-            radioStationLicense = 'VSAT';
-        }
-        else radioStationLicense = '';
-
-        if (radioStationLicense === 'FB') {
-            if (bandwidth < 1) {}
-            else if (bandwidth > 0 && bandwidth < 10) spectrum = '1-10';
-            else if (bandwidth > 9 && bandwidth < 20) spectrum = '10-20';
-            else if (bandwidth > 19) spectrum = '20above';
-        }
-        else if (radioStationLicense === 'VSAT') spectrum = 'satelliteservice';
-        // publicradio
-        else if (radioStationLicense === 'Public Trunked') spectrum = 'publictrunked';
-            // wll
-        // pointtomultipoint
-        else if (radioStationLicense === 'FX') spectrum = 'pointtopoint';
-
-        if (stationClass?.RT > 0) _station = 'repeater';
-        else if (stationClass?.FX > 0) _station = 'fixed';
-        else if (stationClass?.FB > 0) _station = 'landbase';
-        else if (stationClass?.ML > 0) _station = 'landmobile';
-        else if (stationClass?.P > 0) _station = 'portable';
-            // BC
-            // FC
-            // FA
-        // MA
-        else if (stationClass?.TC > 0) _station = 'TC-VSAT';
-
-        return {
-            spectrum,
-            station: _station,
-        };
+      let radioStationLicense = '';
+      let spectrum = '';
+      let _station = '';
+      if (
+        label?.match('bwa') ||
+        label?.match('wdn') ||
+        label?.match('microwave')
+      ) {
+        _station = 'fixed';
+        radioStationLicense = 'FX';
+      }
+      else if (
+        label?.match('wdn') ||
+        label?.match('wll') ||
+        label?.match('bts')
+      ) {
+        _station = 'landbase';
+        radioStationLicense = 'FB';
+      }
+      else if (label?.match('public trunked')) {
+        _station = 'publictrunked'
+        radioStationLicense = 'Public Trunked';
+      }
+      else if (label?.match('vsat')) {
+        _station = 'TC-VSAT';
+        radioStationLicense = 'VSAT';
+      }
+      else radioStationLicense = '';
+      if (radioStationLicense === 'FB') {
+        if (bandwidth < 1) {}
+        else if (bandwidth > 0 && bandwidth < 10) spectrum = '1-10';
+        else if (bandwidth > 9 && bandwidth < 20) spectrum = '10-20';
+        else if (bandwidth > 19) spectrum = '20above';
+      }
+      else if (radioStationLicense === 'VSAT') spectrum = 'satelliteservice';
+      // publicradio
+      else if (radioStationLicense === 'Public Trunked') spectrum = 'publictrunked';
+      // wll
+      // pointtomultipoint
+      else if (radioStationLicense === 'FX') spectrum = 'pointtopoint';
+      if (stationClass?.RT > 0) _station = 'repeater';
+      else if (stationClass?.FX > 0) _station = 'fixed';
+      else if (stationClass?.FB > 0) _station = 'landbase';
+      else if (stationClass?.ML > 0) _station = 'landmobile';
+      else if (stationClass?.P > 0) _station = 'portable';
+      // BC
+      // FC
+      // FA
+      // MA
+      else if (stationClass?.TC > 0) _station = 'TC-VSAT';
+      return {
+        spectrum,
+        station: _station,
+      };
     };
+    */
 
     let feePayload = {
-        id: '',
-        service: service?.serviceCode?.split('-')?.[1],
-        subService: applicationType?.serviceCode || '',
-        types: typeFn(),
-        frequency,
-        station: unitsFn(),
-        location: region,
-        bandwidth,
-        mode: stationLen > 1 ? 'duplex' : stationLen === 1 ? 'simplex' : '',
-        spectrum: stationDetailsFn()?.spectrum,
-        channels: stationLen,
-        transmission: equipment?.transmission || '',
-        boundary: boundaryFn(),
-        installedEquipment: installedEquipmentFn(),
-        unit: unitsFn(),
-        category: categoryFn(),
-        classes: classFn(),
-        power: powerOutput,
-        validity: applicationParticulars?.noOfYears || applicationDetails?.noOfYears || 0,
-        noOfYears: applicationParticulars?.noOfYears || applicationDetails?.noOfYears || 0,
-        updatedAt: new Date()?.toISOString(),
-        expired,
-        discount: 0,
-        stationCount: stationLen,
-        stationClass,
+        service: service?.serviceCode?.split('-')?.[1] || '', //
+        subService: applicationType?.serviceCode || '', //
+        types: typeFn(), //
+        category: categoryFn(), //
+        classes: classFn(), //
+        noOfYears: noOfYears(), //
+        units: equipments?.length || 0, //
+        nos: valueAddedServices?.service?.length || 0, //
+        boundary: boundaryFn(), //
+        location: 'HighlyUrbanizedAreas', //region, //
+        installedEquipment: installedEquipmentFn(), //
+        power: Number(equipment?.powerOutput || 0), //
+        transmission: tranmissionFn()?.transmission, //
+        frequency: tranmissionFn()?.frequency, //
+        bandwidth: bandwidthFn(), //
+        mode: transmissionType?.transmissionType?.toLowerCase() || '', //
+        stationClassUnits: classOfStation(), //
+        stationClassChannels: classOfStation(true), //
+        expired, //
+        stationCount: stations?.length || 0,
     };
 
     return feePayload;
 };
+
 const yearList = () => {
     var presentYear = Moment().add(50, 'years').get('year');
     var startYear = Moment().subtract(50, 'years');
