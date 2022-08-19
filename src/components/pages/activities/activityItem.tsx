@@ -255,13 +255,12 @@ const closeRow = (index) => {
 };
 
 
-function ProfileImageMemo(_props: { userActivity: any, name: any }) {
-    const props = useMemo(() => _props, [_props])
-    return <ProfileImage
+function ProfileImageMemo(props: { userActivity: any, name: any }) {
+    return  useMemo(() => <ProfileImage
         size={fontValue(45)}
         image={props.userActivity?.profilePicture?.thumb ? props.userActivity?.profilePicture?.thumb.match(/[^/]+(jpg|jpeg|png|gif)$/i) ? props.userActivity?.profilePicture?.thumb : props.userActivity?.profilePicture?.thumb + ".png" : null}
         name={props.name}
-    />;
+    />, [props])
 }
 
 const ActivityItem = (props: any) => {
