@@ -415,9 +415,7 @@ const Payment = (_props: any) => {
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <KeyboardShift>
             {() => (
-        <View
-            style={{  flex: 1,}}
-        >
+
 
             <ScrollView
 
@@ -681,7 +679,6 @@ const Payment = (_props: any) => {
                               visible={visibleModal}
                               onDismissed={onDismissed}/>
             </ScrollView>
-        </View>
             )}
         </KeyboardShift>
     </View>

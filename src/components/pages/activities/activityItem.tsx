@@ -369,7 +369,6 @@ const ActivityItem = (props: any) => {
             borderWidth: 4,
         }]
     }, [selectedMoreCircle]);
-
     return (
 
         <Hoverable>
@@ -423,7 +422,7 @@ const ActivityItem = (props: any) => {
                                                             textToHighlight={nameMemo}
                                                         />
                                                         <View>
-                                                            <Text style={{fontSize: fontValue(10,), color: "#606A80"}}>
+                                                            <Text style={{fontSize: fontValue(12,), color: "#606A80"}}>
                                                                 {propsMemo?.activity?.applicant?.companyName ? "Company" : "Individual"}
                                                             </Text>
                                                         </View>
