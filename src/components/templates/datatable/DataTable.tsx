@@ -1,7 +1,8 @@
 import {
     ActivityIndicator,
     FlatList,
-    Modal, Platform,
+    Modal,
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -10,8 +11,8 @@ import {
     useWindowDimensions,
     View
 } from "react-native";
-import React,{useCallback,useEffect,useRef,useState} from "react";
-import {RootStateOrAny,useSelector} from "react-redux";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import axios from "axios";
 import Highlighter from "@pages/activities/search/highlighter";
 import DotHorizontalIcon from "@assets/svg/dotHorizontal";
@@ -20,13 +21,13 @@ import SearchIcon from "@assets/svg/search";
 import FilterOutlineIcon from "@assets/svg/FilterOutline";
 import AddParticipantOutlineIcon from "@assets/svg/addParticipantOutline";
 import Pagination from "@atoms/pagination";
-import {Bold,Regular500} from "@styles/font";
-import {Menu,MenuOption,MenuOptions,MenuTrigger} from "react-native-popup-menu";
+import {Bold, Regular500} from "@styles/font";
+import {Menu, MenuOption, MenuOptions, MenuTrigger} from "react-native-popup-menu";
 import ProfileImage from "@atoms/image/profile";
 import {fontValue} from "@pages/activities/fontValue";
 import {primaryColor} from "@styles/color";
 import FormField from "@organisms/forms/form";
-import {validateEmail,validatePassword,validatePhone,validateText} from "../../../utils/form-validations";
+import {validateEmail, validatePassword, validatePhone, validateText} from "../../../utils/form-validations";
 import useKeyboard from "../../../hooks/useKeyboard";
 import {BASE_URL} from "../../../services/config";
 import CloseIcon from "@assets/svg/close";
@@ -37,14 +38,14 @@ import {Toast} from "@atoms/toast/Toast";
 import EmployeeIcon from "@assets/svg/employeeIcon";
 import {EMPLOYEES, USERS} from "../../../reducers/activity/initialstate";
 import UserIcon from "@assets/svg/userIcon";
-import LeftSideWeb from "@atoms/left-side-web";
 import {isMobile} from "@pages/activities/isMobile";
 import {isLandscapeSync, isTablet} from "react-native-device-info";
-import NoActivity from "@assets/svg/noActivity";
 import ProfileData from "@templates/datatable/ProfileData";
-import Left from "@atoms/icon/left";
-import NavBar from "@molecules/navbar";
 import RefreshWeb from "@assets/svg/refreshWeb";
+import {setData} from "../../../reducers/application/actions";
+import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
+import ResetPasswordTab from "./ResetPasswordTab";
+import tabBarOption from "@templates/datatable/TabBarOptions";
 
 const style=StyleSheet.create({
     row:{
@@ -171,7 +172,9 @@ const style=StyleSheet.create({
         backgroundColor:"rgba(0,0,0,0.5)",
     },
 });
+
 const DataTable=(props)=>{
+    const dispatch = useDispatch();
     const dimensions=useWindowDimensions();
     const [value,setValue]=useState('');
     const [page,setPage]=useState(1);
@@ -181,9 +184,11 @@ const DataTable=(props)=>{
     const [loading,setLoading]=useState([]);
     const [role,setRole]=useState('');
     const flatListRef=useRef();
-    const [data, setData] = useState({})
     const [modalView, setModalView] = useState(false)
     const [alert,setAlert]=useState();
+    const data = useSelector((state: RootStateOrAny) => {
+        return state.application.data
+    });
     const originalForm=[
         {
             stateName:'_id',
@@ -420,13 +425,20 @@ const DataTable=(props)=>{
         return <View style={{paddingLeft:24,borderTopWidth:1,borderTopColor:"#f0f0f0"}}>
 
                 <TouchableOpacity style={style.rowStyle} onPress={()=>{
-                    setState('view');
-                    setData(item)
+                    dispatch(setData(item))
+                    if(Platform.OS == "web"){
+                        setState('view');
+                    }else{
+                        props.navigation.navigate('UserEdit')
+                    }
+
+
+
 
                 }
                 }>
                     <View style={style.cellStyle}>
-                        <Text style={[style.tableHeader,{color:"#000000"}]}>{item._id}</Text>
+                        <Text style={[style.tableHeader,{color:"#000000"}]}>{item._id.slice(0, 8)}</Text>
                     </View>
                     <View style={style.cellStyle}>
                         <View style={{flexDirection:"row",alignItems:"center",}}>
@@ -481,7 +493,7 @@ const DataTable=(props)=>{
                                 setModalClose(true)
                             } else if(value=="view"){
                                 setState('view');
-                                setData(item)
+                                dispatch(setData(item))
                                 setModalView(true)
                             }else if(value=="delete"){
                                 axios.delete(BASE_URL+`/users/${item._id}`).then((response)=>{
@@ -579,7 +591,7 @@ const DataTable=(props)=>{
             return updatedUser={...updatedUser,[up?.stateName]:up?.value};
         });
         setLoading(true);
-        axios[updatedUser?._id ? "patch" : "post"](BASE_URL+`/users/`+updatedUser?._id||"",updatedUser,config).then((response)=>{
+        axios[updatedUser?._id ? "patch" : "post"](BASE_URL+(updatedUser?._id ?  `/users/`+updatedUser?._id||"" : `/internal/users/`),updatedUser,config).then((response)=>{
             cleanForm();
             showToast(ToastType.Success,updatedUser?._id ? "Successfully updated!" : "Successfully created!");
             if(updatedUser?._id){
@@ -656,8 +668,9 @@ const DataTable=(props)=>{
         }
         return Icon
     }
-
+    const Tab = createMaterialTopTabNavigator();
     // @ts-ignore
+    const tabBarOptions = tabBarOption();
     return (
         <>
             <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
@@ -841,7 +854,7 @@ const DataTable=(props)=>{
                         (
                             isMobile && !(
                                 Platform?.isPad || isTablet()))) && dimensions?.width > 768 &&
-                    <View style={[{flex: 1,   alignItems: "center", overflow: "scroll"}]}>
+                    <View style={[{flex: 1}]}>
                         <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between",  paddingVertical: 15,paddingHorizontal: 15, backgroundColor: "#fff", width: "100%"}}>
                             <View/>
                             <Text style={{textAlign: "center", fontFamily: Bold}}>{data?.firstName + " " + data?.middleName + " " + data?.lastName}</Text>
@@ -852,8 +865,10 @@ const DataTable=(props)=>{
                                 <CloseIcon></CloseIcon>
                             </TouchableOpacity>
                         </View>
-
-                        <ProfileData data={data}/>
+                        <Tab.Navigator  screenOptions={tabBarOptions}>
+                            <Tab.Screen name="Profile Data" component={ProfileData} />
+                            <Tab.Screen name="Reset Password" component={ResetPasswordTab} />
+                        </Tab.Navigator>
 
                     </View>
                 }

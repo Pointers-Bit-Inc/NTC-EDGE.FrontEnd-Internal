@@ -33,7 +33,8 @@ const {
     SET_EDIT,
     SET_USER_PROFILE_FORM,
     SET_USER_ORIGINAL_PROFILE_FORM,
-    UPDATE_CHANGE_EVENT
+    UPDATE_CHANGE_EVENT,
+    SET_DATA
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -56,7 +57,11 @@ export default function basket(state = initialState, action = {}) {
             return state
         }
 
+        case SET_DATA: {
 
+            state = state.set('data', action.payload);
+            return state
+        }
 
         case SET_RIGHT_LAYOUT_COMPONENT: {
 

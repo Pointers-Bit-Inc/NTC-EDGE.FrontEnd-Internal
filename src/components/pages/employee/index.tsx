@@ -6,6 +6,7 @@ import {EMPLOYEES} from "../../../reducers/activity/initialstate";
 
 export default function EmployeePage(props:any){
     return <DataTable
+        navigation={props.navigation}
         name={EMPLOYEES}
         editTitle={'Edit Employee'}
         editButtonTitle={'Edit Employee'}

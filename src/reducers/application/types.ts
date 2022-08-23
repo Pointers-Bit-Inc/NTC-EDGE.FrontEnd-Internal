@@ -20,5 +20,6 @@ export default keyMirror({
   SET_EDIT: null,
   SET_USER_PROFILE_FORM: null,
   SET_USER_ORIGINAL_PROFILE_FORM: null,
-  UPDATE_CHANGE_EVENT: null
+  UPDATE_CHANGE_EVENT: null,
+  SET_DATA: null
 });

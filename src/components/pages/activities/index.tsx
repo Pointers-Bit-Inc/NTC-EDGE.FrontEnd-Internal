@@ -276,6 +276,7 @@ const ActivitiesPage = (props) => {
         () => ({
             paddingTop: rendered ? headerHeight + TAB_BAR_HEIGHT : 0,
             paddingBottom: bottom,
+
             minHeight: screenHeight + headerDiff,
         }),
         [rendered, headerHeight, bottom, screenHeight, headerDiff]
@@ -332,7 +333,7 @@ const ActivitiesPage = (props) => {
         setUpdateModal(true);
     }
     const listHeaderComponent = () => <ListHeaderComponent searchVisible={searchVisible} pnApplications={pnApplications}
-                                                           containerHeight={containerHeight} onScroll={(event) => {
+                                                           containerHeight={fontValue(containerHeight)} onScroll={(event) => {
         if (!isMobile) {
             new Promise((resolve, reject) => {
                 setTimeout(() => {

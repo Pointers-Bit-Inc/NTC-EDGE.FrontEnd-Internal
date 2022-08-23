@@ -48,6 +48,7 @@ import useOneSignal from "../hooks/useOneSignal";
 import Api from "../services/api";
 import {ACTIVITYITEM} from "../reducers/activity/initialstate";
 import ActivityModal from "@pages/activities/modal";
+import UserEdit from "@templates/datatable/userEdit";
 
 type RootStackParamList = {
     App: undefined;
@@ -72,7 +73,8 @@ type RootStackParamList = {
     NewChat: undefined;
     SearchActivities: undefined;
     Dashboard: undefined;
-    ActivityItem: undefined
+    ActivityItem: undefined;
+    UserEdit: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -215,6 +217,7 @@ const RootNavigator = () => {
                         }
                     }
                 }/>
+
                 <Stack.Screen name="UserProfileScreen" component={ UserProfile }/>
                 <Stack.Screen name="Settings" component={ Settings }/>
                 <Stack.Screen name="Meeting" component={ Meeting }/>
@@ -228,6 +231,7 @@ const RootNavigator = () => {
                 <Stack.Screen name="NewChat" component={ NewChat }/>
                 <Stack.Screen name="SearchActivities" component={ Search }/>
                 <Stack.Screen name={ACTIVITYITEM} component={ActivityModal} />
+
             </Stack.Navigator>
             <FloatingVideoComponent />
             {visible && <View style={{zIndex: -1, position: "absolute", width: "100%", height: "100%",backgroundColor: "rgba(0,0,0,0.5)"}}/>}

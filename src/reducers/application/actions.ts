@@ -18,7 +18,8 @@ const {
     SET_EDIT,
     SET_USER_PROFILE_FORM,
     SET_USER_ORIGINAL_PROFILE_FORM,
-    UPDATE_CHANGE_EVENT
+    UPDATE_CHANGE_EVENT,
+    SET_DATA
 } = require('./types').default;
 
 export function setPinnedApplication(payload) {
@@ -42,6 +43,12 @@ export function setHasChange(payload) {
 export function setEdit(payload) {
     return {
         type: SET_EDIT,
+        payload,
+    };
+}
+export function setData(payload) {
+    return {
+        type: SET_DATA,
         payload,
     };
 }

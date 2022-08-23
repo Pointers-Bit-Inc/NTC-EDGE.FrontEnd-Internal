@@ -1,15 +1,18 @@
 import {FlatList, Text, View} from "react-native";
 import Row from "@pages/activities/application/Row";
-import React from "react";
+import React, {memo} from "react";
 import styles from "@styles/applications/basicInfo"
 import {transformText} from "../../../utils/ntc";
 import _ from "lodash";
 import NavBar from "@molecules/navbar";
 import ProfileImage from "@components/atoms/image/profile";
 import {fontValue} from "@pages/activities/fontValue";
+import {RootStateOrAny, useSelector} from "react-redux";
 
-const ProfileData = (props) => {
-
+const ProfileData = () => {
+    const data = useSelector((state: RootStateOrAny) => {
+        return state.application.data
+    });
     return <View style={[styles.elevation]}>
 
         <View style={[styles.container, {marginVertical: 20}]}>
@@ -20,8 +23,8 @@ const ProfileData = (props) => {
                         style={{borderRadius:4}}
 
                         textSize={22}
-                        image={props.data?.profilePicture?.small.match(/[^/]+(jpeg|jpg|png|gif)$/i) ? props.data?.profilePicture?.small : props.data?.profilePicture?.small+".png"}
-                        name={props.data?.firstName  && props.data?.lastName ? props.data?.firstName+(props.data?.middleName ? " "+props.data?.middleName?.charAt()+"." : "")+" "+props.data?.lastName : props.data?.applicantName ? props.data?.applicantName : ""}
+                        image={data?.profilePicture?.small.match(/[^/]+(jpeg|jpg|png|gif)$/i) ? data?.profilePicture?.small : data?.profilePicture?.small+".png"}
+                        name={data?.firstName  && data?.lastName ? data?.firstName+(data?.middleName ? " "+data?.middleName?.charAt()+"." : "")+" "+data?.lastName : data?.applicantName ? data?.applicantName : ""}
                     />
                 </View>
 
@@ -35,9 +38,9 @@ const ProfileData = (props) => {
                     <FlatList
                         showsVerticalScrollIndicator={false}
                         style={styles.group3}
-                        data={Object.keys(_.omit(props.data, ['_id', 'role', 'profilePicture', 'createdAt'] ))}
+                        data={Object.keys(_.omit(data, ['_id', 'role', 'profilePicture', 'createdAt'] ))}
                         renderItem={(a) => {
-                        return  <Row label={`${transformText(a?.item)}:`} applicant={props.data?.[a?.item]}/>
+                        return  <Row label={`${transformText(a?.item)}:`} applicant={data?.[a?.item]}/>
                         }
                         }
                         keyExtractor={(item,index)=>`${index}`}
@@ -49,4 +52,4 @@ const ProfileData = (props) => {
     </View>
 }
 
-export default ProfileData
+export default memo(ProfileData)

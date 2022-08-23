@@ -423,7 +423,7 @@ const ActivityItem = (props: any) => {
                                                         />
                                                         <View>
                                                             <Text style={{fontSize: fontValue(12,), color: "#606A80"}}>
-                                                                {propsMemo?.activity?.applicant?.companyName ? "Company" : "Individual"}
+                                                                {propsMemo?.activity?.applicant?.userType}
                                                             </Text>
                                                         </View>
 

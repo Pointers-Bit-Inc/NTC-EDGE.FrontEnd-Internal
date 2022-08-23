@@ -269,7 +269,14 @@ const transformToFeePayload = (application: any) => {
 
     return feePayload;
 };
-
+const generatePassword = () =>{
+    var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%&*-+=?';
+    var charsarr = chars.split('');
+    var pasoutarr = new Array();
+    for(var x=0;x<16;x++){
+        pasoutarr[x] = charsarr[Math.floor(Math.random()*73)];}
+    return pasoutarr.join('');
+}
 const yearList = () => {
     var presentYear = Moment().add(50, 'years').get('year');
     var startYear = Moment().subtract(50, 'years');
@@ -319,6 +326,7 @@ function isValidDate(dateString) {
     return d.toISOString().slice(0,10) === dateString;
 }
 export {
+    generatePassword,
     transformToFeePayload,
     isNumber,
     transformText,

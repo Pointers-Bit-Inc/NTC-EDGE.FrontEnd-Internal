@@ -33,6 +33,8 @@ PODS:
     - ExpoModulesCore
     - ZXingObjC/OneD
     - ZXingObjC/PDF417
+  - EXClipboard (2.0.3):
+    - ExpoModulesCore
   - EXConstants (13.0.2):
     - ExpoModulesCore
   - EXDocumentPicker (10.1.3):
@@ -486,6 +488,7 @@ DEPENDENCIES:
   - EXApplication (from `../node_modules/expo-application/ios`)
   - EXAV (from `../node_modules/expo-av/ios`)
   - EXBarCodeScanner (from `../node_modules/expo-barcode-scanner/ios`)
+  - EXClipboard (from `../node_modules/expo-clipboard/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXDocumentPicker (from `../node_modules/expo-document-picker/ios`)
   - EXErrorRecovery (from `../node_modules/expo-error-recovery/ios`)
@@ -582,6 +585,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-av/ios"
   EXBarCodeScanner:
     :path: "../node_modules/expo-barcode-scanner/ios"
+  EXClipboard:
+    :path: "../node_modules/expo-clipboard/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
   EXDocumentPicker:
@@ -736,6 +741,7 @@ SPEC CHECKSUMS:
   EXApplication: 54fe5bd6268d697771645e8f1aef8b806a65247a
   EXAV: 8adf9a1c0161144d77e96149a1e5a5f9358be290
   EXBarCodeScanner: cc450529b9c5e02dd9e2498cc0dddf153f120dfe
+  EXClipboard: ead52260683fc856e58f5cc70f5ea5999bb9c049
   EXConstants: 88bf79622fbd9b476c96d8ec57fe97ca44fe8e3c
   EXDocumentPicker: d3eb6a207e1f370e496bea959b3ac145126560f5
   EXErrorRecovery: b0d7582714a2cc896e94a2308a356f94dbf14ef7
