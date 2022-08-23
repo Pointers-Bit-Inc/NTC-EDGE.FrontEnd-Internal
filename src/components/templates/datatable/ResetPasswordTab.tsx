@@ -11,7 +11,7 @@ import {RootStateOrAny, useSelector} from "react-redux";
 import Text from '@atoms/text'
 import {Bold} from "@styles/font";
 import * as Clipboard from 'expo-clipboard';
-import {infoColor, successColor} from "@styles/color";
+import {disabledColor, infoColor, successColor} from "@styles/color";
 import axios from "axios";
 import {BASE_URL} from "../../../services/config";
 import Alert from "@atoms/alert";
@@ -35,16 +35,32 @@ const ResetPasswordTab = () => {
     };
     const {showToast, hideToast} = useToast();
     const resetPassword = () => {
-        if(!data?._id) return
+        const _data = JSON.parse(JSON.stringify(data))
+        if(!_data?._id) return
         setAlert(false)
         setDisabled(true)
-        data.role = data.role.key
+        _data.role = _data.role.key
         const _temporaryPassword = generatePassword()
         setTemporaryPassword(_temporaryPassword)
-        data.password = _temporaryPassword
-        axios.patch(BASE_URL + "/users/" + data?._id,data, config).then((response)=>{
+        _data.password = _temporaryPassword
+
+
+        console.log(_data)
+
+        axios.patch(BASE_URL + "/users/" + _data?._id,_data, config).then((response)=>{
            setAlert(true)
             setDisabled(false)
+        }).catch(e => {
+            // setGrayedOut(false);
+            setAlert(true)
+            setDisabled(false)
+            let _err = '';
+            for (const err in e?.response?.data?.errors) {
+                _err += e?.response?.data?.errors?.[err]?.toString() + "\n";
+            }
+            if (_err || e?.response?.data?.message || e?.response?.statusText || (typeof e?.response?.data == "string") ) {
+                showToast(ToastType.Error, _err || e?.response?.data?.message || e?.response?.statusText || e?.response?.data)
+            }
         })
     }
 
@@ -53,8 +69,6 @@ const ResetPasswordTab = () => {
         showToast(ToastType.Success, 'Copied Text!')
         setAlert(false)
     }
-
-
 
     return <><View style={[styles.elevation]}>
 
@@ -66,7 +80,7 @@ const ResetPasswordTab = () => {
                 <View style={{ alignItems: "flex-start",  justifyContent: "flex-start"}}>
 
                     <TouchableOpacity disabled={disabled} onPress={resetPassword}>
-                        <View style={{flexDirection: "row", alignItems: "center", borderRadius: 6, justifyContent: "center", backgroundColor: infoColor, padding: fontValue(10), }}>
+                        <View style={{flexDirection: "row", alignItems: "center", borderRadius: 6, justifyContent: "center", backgroundColor: disabled ? disabledColor:  infoColor, padding: fontValue(10), }}>
                             <Text style={{ color: "#fff", fontFamily: Bold, fontSize: fontValue(14)}}>{disabled ? 'Resetting Password...' :'Reset Password'}</Text>
                             {disabled ? <ActivityIndicator color={"#fff"}/> : <></>}
                         </View>
@@ -79,24 +93,28 @@ const ResetPasswordTab = () => {
 
         </View>
     </View>
-    <Alert  confirmText={"Confirm"}
-        cancelText={"Cancel"} onConfirm={onConfirm} visible={alert} message={ <View>
+    <Alert  confirmText={"Copy to Clipboard"}
+        cancelText={"Cancel"} onCancel={()=> setAlert(false)} onConfirm={onConfirm} visible={alert} message={ <View>
         <View style={{paddingBottom: 10}}>
             <View style={{backgroundColor: 'rgba(50, 168, 82, 0.2)', padding: 10, justifyContent: "center", alignItems: "center", flexDirection: "row"}}>
                 <View style={{paddingRight: 10}}>
                     <CheckIcon/>
                 </View>
                 <View>
-                    <Text>
+                    <Text style={{fontFamily: Bold, fontSize: fontValue(16)}}>
                         Password has been reset
                     </Text>
                 </View>
             </View>
 
         </View>
-       <View style={{paddingBottom: 10}}>
-            <Text>Provide this temporary password to the user so they can sign in</Text>
+       <View style={{ paddingBottom: 10, justifyContent: "flex-start", alignItems: 'flex-start'}}>
+            <Text style={{fontSize: fontValue(14),}}>Provide this temporary password to the user so they can sign in</Text>
         </View>
+        <View style={{justifyContent: "flex-start", alignItems: 'flex-start'}}>
+            <Text style={{paddingBottom: 5}}>Temporary Password</Text>
+        </View>
+
         <InputField  value={temporaryPassword}  />
     </View>}/>
     </>

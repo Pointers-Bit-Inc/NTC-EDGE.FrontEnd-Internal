@@ -270,7 +270,7 @@ const transformToFeePayload = (application: any) => {
     return feePayload;
 };
 const generatePassword = () =>{
-    var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%&*-+=?';
+    var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
     var charsarr = chars.split('');
     var pasoutarr = new Array();
     for(var x=0;x<16;x++){

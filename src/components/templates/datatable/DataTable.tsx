@@ -494,7 +494,6 @@ const DataTable=(props)=>{
                             } else if(value=="view"){
                                 setState('view');
                                 dispatch(setData(item))
-                                setModalView(true)
                             }else if(value=="delete"){
                                 axios.delete(BASE_URL+`/users/${item._id}`).then((response)=>{
                                     showToast(ToastType.Success,"Successfully deleted!")
