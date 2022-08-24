@@ -127,29 +127,29 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
 
                     {
                         this.state.extension ? <FileIcon
-                                                 color={"#606A80"}
-                                                 width={150}
-                                                 height={150}
-                                             /> :
-                        <View style={{borderStyle:"solid"}}>
-                            <Image
-                                resizeMode={"cover"}
-                                style={{
-                                    borderRadius:10,
-                                    marginBottom:isMobile ? undefined : 25,
-                                    backgroundColor:"rgba(220,226,229,1)",
-                                    borderWidth:1,
-                                    borderColor:"rgba(213,214,214,1)",
+                                color={"#606A80"}
+                                width={150}
+                                height={150}
+                            /> :
+                            <View style={{borderStyle:"solid"}}>
+                                <Image
+                                    resizeMode={"cover"}
+                                    style={{
+                                        borderRadius:10,
+                                        marginBottom:isMobile ? undefined : 25,
+                                        backgroundColor:"rgba(220,226,229,1)",
+                                        borderWidth:1,
+                                        borderColor:"rgba(213,214,214,1)",
 
-                                    width:isMobile ? width/1.2 : 240,
-                                    height:isMobile ? 300 : 160,
+                                        width:isMobile ? width/1.2 : 240,
+                                        height:isMobile ? 300 : 160,
 
-                                }}
-                                source={{
-                                    uri:this.props?.requirement?.small,
-                                }}
-                            />
-                        </View>
+                                    }}
+                                    source={{
+                                        uri:this.props?.requirement?.small,
+                                    }}
+                                />
+                            </View>
                     }
 
 
@@ -172,54 +172,54 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                     <View style={[styles.rect2,{ width:this.props?.rightLayoutComponent?.width}]}>
                         <View style={{alignSelf:'flex-end', zIndex: 1, }}>
                             <View style={{ backgroundColor: "rgba(0,0,0,0.7)",padding: 20 ,}}>
-                                    <TouchableOpacity onPress={this._hideImageModal}>
-                                        <Text style={styles.close}>Close</Text>
-                                    </TouchableOpacity>
+                                <TouchableOpacity onPress={this._hideImageModal}>
+                                    <Text style={styles.close}>Close</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>
                     <View style={{flex:1, marginTop: -Constants?.statusBarHeight, }}>
                         {!this.state.onLoad ? this.state.extension ?
-                         <PdfViewr width={this.props?.rightLayoutComponent?.width}
-                                   height={this.props?.rightLayoutComponent?.height}
-                                   requirement={this.props?.requirement}/> : (
-                             isMobile||this.props.dimensions?.width<768 ?<AnimatedImage
-                                                                            ref={imageModal=>(
-                                                                                this.state.imageModal=imageModal)}
-                                                                            source={this?.state?.source}
-                                                                            sourceMeasure={this.state?._sourceMeasure}
-                                                                            imageSize={this.state?._imageSize||{height:300,width:300}}
-                                                                            onClose={this._hideImageModal}
-                                                                            animationDuration={200}
+                                <PdfViewr width={this.props?.rightLayoutComponent?.width}
+                                          height={this.props?.rightLayoutComponent?.height}
+                                          requirement={this.props?.requirement}/> : (
+                                    isMobile||this.props.dimensions?.width<768 ?<AnimatedImage
+                                            ref={imageModal=>(
+                                                this.state.imageModal=imageModal)}
+                                            source={this?.state?.source}
+                                            sourceMeasure={this.state?._sourceMeasure}
+                                            imageSize={this.state?._imageSize||{height:300,width:300}}
+                                            onClose={this._hideImageModal}
+                                            animationDuration={200}
 
-                                                                        /> :
-                                 //height = height * (this.state._imageSize.height / width)
-                             <ImageZoom onSwipeDown={this._hideImageModal} enableSwipeDown={true}
-                                        cropWidth={this.props?.rightLayoutComponent?.width}
-                                        enableDoubleClickZoom={true}
-                                        cropHeight={this.props?.rightLayoutComponent?.height}
-                                        imageWidth={this.props?.rightLayoutComponent?.width}
-                                        imageHeight={height*(
-                                            this.state._imageSize?.height/width)}>
-                                 <View style={{...Platform.select({native:{top: -60}, default: {}}), alignItems: "center"}}>
-                                     <Image style={{
-                                         /* transform:[
-                                              {
-                                                  scale: 0.5
-                                              }
-                                          ],*/
-                                         width: this.state._imageSize.width/1.5,
-                                         height:height*(
-                                             this.state._imageSize.height/width)
-                                     }}
-                                            resizeMode={"contain"}
-                                            source={this?.state?.source}/>
-                                 </View>
+                                        /> :
+                                        //height = height * (this.state._imageSize.height / width)
+                                        <ImageZoom onSwipeDown={this._hideImageModal} enableSwipeDown={true}
+                                                   cropWidth={this.props?.rightLayoutComponent?.width}
+                                                   enableDoubleClickZoom={true}
+                                                   cropHeight={this.props?.rightLayoutComponent?.height}
+                                                   imageWidth={this.props?.rightLayoutComponent?.width}
+                                                   imageHeight={height*(
+                                                       this.state._imageSize?.height/width)}>
+                                            <View style={{...Platform.select({native:{top: -60}, default: {}}), alignItems: "center"}}>
+                                                <Image style={{
+                                                    /* transform:[
+                                                         {
+                                                             scale: 0.5
+                                                         }
+                                                     ],*/
+                                                    width: this.state._imageSize.width/1.5,
+                                                    height:height*(
+                                                        this.state._imageSize.height/width)
+                                                }}
+                                                       resizeMode={"contain"}
+                                                       source={this?.state?.source}/>
+                                            </View>
 
-                             </ImageZoom>)
-                        : <View style={{flex: 1, width: this.props?.rightLayoutComponent?.width, justifyContent: "center", alignSelf: "center"}}>
-                             <ActivityIndicator color={"#fff"} />
-                         </View>}
+                                        </ImageZoom>)
+                            : <View style={{flex: 1, width: this.props?.rightLayoutComponent?.width, justifyContent: "center", alignSelf: "center"}}>
+                                <ActivityIndicator color={"#fff"} />
+                            </View>}
                     </View>
 
 
@@ -241,48 +241,48 @@ class RequirementView extends React.Component<{requirement:any,rightLayoutCompon
                     _fileName?.lastIndexOf('.')+1)))),
         });
         Image.prefetch(this.props?.requirement?.original)
-        .then(()=>{
-            this.setState({onLoadStart:false});
-            Image.getSize(this.props?.requirement?.original,(width,height)=>{
+            .then(()=>{
+                this.setState({onLoadStart:false});
+                Image.getSize(this.props?.requirement?.original,(width,height)=>{
 
-                this.setState({
-                    source : {
-                        ...this?.state?.source ,
-                        uri : this?.props?.requirement?.original || "https://dummyimage.com/350x350/fff/aaa"
-                    },
-                    _imageSize:{
-                        width: Platform.select({
-                            native: width,
-                            web: Dimensions.get("screen").height * width/height,
-                        }),
-                        height:Platform.select({
-                            native:height,
-                            web:(height/width)*Dimensions.get("screen").width
-                        })
-                    }
-                });
+                    this.setState({
+                        source : {
+                            ...this?.state?.source ,
+                            uri : this?.props?.requirement?.original || "https://dummyimage.com/350x350/fff/aaa"
+                        },
+                        _imageSize:{
+                            width: Platform.select({
+                                native: width,
+                                web: Dimensions.get("screen").height * width/height,
+                            }),
+                            height:Platform.select({
+                                native:height,
+                                web:(height/width)*Dimensions.get("screen").width
+                            })
+                        }
+                    });
 
-                this.setState({onLoadStart:false})
+                    this.setState({onLoadStart:false})
+                },error=>{
+                    this.setState({
+                        ...this.state,
+                        source:{
+                            ...this?.state?.source,
+                            uri: this?.props?.requirement?.original ||"https://dummyimage.com/350x350/fff/aaa"
+                        },
+                    });
+                    this.setState({onLoadStart:true})
+                })
             },error=>{
                 this.setState({
                     ...this.state,
                     source:{
                         ...this?.state?.source,
-                        uri: this?.props?.requirement?.original ||"https://dummyimage.com/350x350/fff/aaa"
+                        uri:this?.props?.requirement?.original ||"https://dummyimage.com/350x350/fff/aaa"
                     },
                 });
                 this.setState({onLoadStart:true})
-            })
-        },error=>{
-            this.setState({
-                ...this.state,
-                source:{
-                    ...this?.state?.source,
-                    uri:this?.props?.requirement?.original ||"https://dummyimage.com/350x350/fff/aaa"
-                },
             });
-            this.setState({onLoadStart:true})
-        });
 
     }
 }

@@ -550,7 +550,7 @@ console.log({
     const [tabName, setTabName] = useState(null)
     return (
         <>
-            <View style={(isMobile && !((Platform?.isPad || isTablet()) && isLandscapeSync())) && (
+            <View  style={(isMobile && !((Platform?.isPad || isTablet()) && isLandscapeSync())) && (
                 visible || endorseVisible || showAlert) ? {
                 position: "absolute",
                 zIndex: 2,
@@ -603,7 +603,7 @@ console.log({
                 }}
                 show={showAlert} title={title}
                 message={message}/>
-            <View style={{flex: 1, backgroundColor: "#FFF"}}>
+            <View onLayout={onActivityModalScreenComponent} style={{flex: 1, backgroundColor: "#FFF"}}>
                 {(
                     isMobile || (Platform?.isPad)) && <View style={{
                     flexDirection: "row",
