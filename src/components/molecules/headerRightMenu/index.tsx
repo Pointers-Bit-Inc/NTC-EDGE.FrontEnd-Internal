@@ -1,8 +1,9 @@
 import {Menu,MenuOption,MenuOptions,MenuTrigger} from "react-native-popup-menu";
 import ProfileImage from "@atoms/image/profile";
-import {Text,View} from "react-native";
+import {View} from "react-native";
 import * as React from "react";
-
+import {fontValue} from "@pages/activities/fontValue";
+import Text from "@atoms/text"
 function ProfileMenu(props:{onClose:()=>void,onSelect:(value)=>void,user:any}){
     return <Menu onClose={props.onClose} onSelect={props.onSelect}>
 
@@ -35,12 +36,12 @@ function ProfileMenu(props:{onClose:()=>void,onSelect:(value)=>void,user:any}){
         }}>
             <MenuOption value={"editProfile"}>
                 <View>
-                    <Text>{"Edit Profile"}</Text>
+                    <Text style={{fontSize: fontValue(12) }}>{"Edit Profile"}</Text>
                 </View>
             </MenuOption>
             <MenuOption value={"logout"}>
                 <View>
-                    <Text>{"Logout"}</Text>
+                    <Text style={{fontSize: fontValue(12) }}>{"Logout"}</Text>
                 </View>
             </MenuOption>
         </MenuOptions>

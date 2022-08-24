@@ -28,7 +28,7 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
                             onScroll={props.onScroll}
                             scrollEventThrottle={16}
                             ref={props.ref}
-                            style={{maxHeight: 300}}>
+                            style={{maxHeight: fontValue(300)}}>
                     {
                         props.pnApplications.map(props.callbackfn)
                     }

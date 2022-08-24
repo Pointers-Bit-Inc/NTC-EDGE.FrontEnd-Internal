@@ -2,6 +2,7 @@ import {Dimensions, StyleSheet} from "react-native";
 import {Poppins_500Medium} from "@expo-google-fonts/poppins";
 import {Bold , Regular500} from "@styles/font";
 import {disabledColor} from "@styles/color";
+import {fontValue} from "@pages/activities/fontValue";
 const { height, width } = Dimensions.get('window');
 export const alertStyle = StyleSheet.create({
     container: {
@@ -37,12 +38,12 @@ export const alertStyle = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 15,
         color: '#626262',
-        fontSize: 18
+        fontSize: fontValue(18),
     },
     message: {
         paddingTop: 5,
         color: '#7b7b7b',
-        fontSize: 14
+        fontSize: fontValue(14)
     },
     button: {
         paddingHorizontal: 10,
@@ -52,7 +53,7 @@ export const alertStyle = StyleSheet.create({
     },
     buttonText: {
         color: '#fff',
-        fontSize: 13
+        fontSize: fontValue(13)
     },
     actionContainerStyle: {
         justifyContent: "space-around",
@@ -67,23 +68,23 @@ export const alertStyle = StyleSheet.create({
     },
     titleStyle:{
         fontFamily: Bold,
-        fontSize: 18,
+        fontSize: fontValue(18),
     } ,
     contentContainerStyle:{
         borderRadius: 14,
     },
     confirmButtonTextStyle:{
-        fontSize: 18,
+        fontSize: fontValue(18),
         fontFamily: Regular500 ,
         color: "#2863D6"
     },
     cancelButtonTextStyle:{
-        fontSize: 18,
+        fontSize: fontValue(18),
         fontFamily: Regular500  ,
         color: "#DC2626"
     },
     disableButtonTextStyle:{
-        fontSize: 18,
+        fontSize: fontValue(18),
         fontFamily: Regular500  ,
         color: disabledColor
     }
