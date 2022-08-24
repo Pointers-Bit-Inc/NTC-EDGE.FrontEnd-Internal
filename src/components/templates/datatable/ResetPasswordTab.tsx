@@ -47,9 +47,7 @@ const ResetPasswordTab = () => {
         _data.password = _temporaryPassword
 
 
-
-
-        axios.patch(BASE_URL + "/users/" + _data?._id,_data, config).then((response)=>{
+        axios.post(BASE_URL + "/internal/users/" + _data?._id + "/reset-password",_data, config).then((response)=>{
            setAlert(true)
             setDisabled(false)
         }).catch(e => {

@@ -1,5 +1,5 @@
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import React from "react";
+import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {useMemo} from "react";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular, Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
@@ -29,12 +29,17 @@ const styles = StyleSheet.create({
 })
 const Row = (props: { updateApplication?: any, hasChanges?: any, display?: string, showEdit?: boolean, show?: boolean, editable?: boolean, updateForm?: any, stateName?: string, edit: string, label: string, applicant?: any }) => {
     const [edit, setEdit] = useSafeState(false)
-
+    const applicantMemo = useMemo(()=>props.display || props.applicant, [])
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
+    const SUPPORTED_FORMATS = ["jpg", "jpeg", "png"];
+    function get_url_extension(url: string) {
+        return url.split(/[#?]/)[0].split('.').pop().trim();
+    }
+
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) ?
         <View style={styles.group2}>
             <Text style={styles.detail}>{props.label}</Text>
-            <Text style={styles.detailInput}>{props.display || props.applicant}</Text>
+            {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{applicantMemo} </Text>}
         </View> : <>
             {((props.edit && props.editable && props.showEdit) || edit) ? <InputField onSubmitEditing={(event) => {
                 props.updateForm(props.stateName, event?.nativeEvent?.text)

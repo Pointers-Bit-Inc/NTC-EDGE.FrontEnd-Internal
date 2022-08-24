@@ -136,7 +136,7 @@ const RenderServiceMiscellaneous=(props)=>{
 
         return (<View>
 
-            <Title nextValue={nextValue} index={index}/>
+            {props?.isTitleVisible ? <Title nextValue={nextValue} index={index}/> : <></>}
             <Separator index={index}/>
 
             {isValidDate(props?.userProfileForm?.["service." + keys]) ? <DateField
@@ -173,5 +173,7 @@ const RenderServiceMiscellaneous=(props)=>{
         />
     )
 };
-
+RenderServiceMiscellaneous.defaultProps = {
+    isTitleVisible: true
+}
 export default memo(RenderServiceMiscellaneous)
