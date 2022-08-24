@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, StyleSheet, Animated, Easing } from 'react-native'
+import {fontValue} from "@pages/activities/fontValue";
 
 const SIZE = 10
 const MARGIN = 7.5
@@ -90,9 +91,9 @@ class Dot extends React.Component {
     render(){
         const { active, size, background, activeBackground, dotMargin } = this.props
         const style = {
-            height: size,
-            width: size,
-            borderRadius: size / 2,
+            height: fontValue(size),
+            width: fontValue(size),
+            borderRadius: fontValue(size / 2),
             marginHorizontal: dotMargin,
             backgroundColor: active ? activeBackground : background
         }
