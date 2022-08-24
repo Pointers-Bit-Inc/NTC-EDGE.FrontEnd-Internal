@@ -35,17 +35,19 @@ const ResetPasswordTab = () => {
     };
     const {showToast, hideToast} = useToast();
     const resetPassword = () => {
+
         const _data = JSON.parse(JSON.stringify(data))
+
         if(!_data?._id) return
         setAlert(false)
         setDisabled(true)
-        _data.role = _data.role.key
+        _data.role = _data?.role?.key
         const _temporaryPassword = generatePassword()
         setTemporaryPassword(_temporaryPassword)
         _data.password = _temporaryPassword
 
 
-        console.log(_data)
+
 
         axios.patch(BASE_URL + "/users/" + _data?._id,_data, config).then((response)=>{
            setAlert(true)

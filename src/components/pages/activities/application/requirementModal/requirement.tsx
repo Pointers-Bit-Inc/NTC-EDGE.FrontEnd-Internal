@@ -303,11 +303,11 @@ const Requirement=(_props:any)=>{
         return [requirementStyles.description]
     }, [])
 
-    const renderItem = useMemoizedFn(({item}) => {
+    const renderItem = ({item}) => {
         return <RequirementView dimensions={dimensions}
                                 rightLayoutComponent={rightLayoutComponent}
                                 requirement={item}/>
-    })
+    }
 
 
     return <ScrollView style={{backgroundColor:"#f8f8f8",width:"100%"}}>
