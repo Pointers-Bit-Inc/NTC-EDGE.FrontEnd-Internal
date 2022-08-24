@@ -40,7 +40,7 @@ const ResetPasswordTab = () => {
         setAlert(false)
         setDisabled(true)
         _data.role = _data.role.key
-        const _temporaryPassword = generatePassword()
+        const _temporaryPassword = "Reversed123"
         setTemporaryPassword(_temporaryPassword)
         _data.password = _temporaryPassword
 
@@ -70,9 +70,9 @@ const ResetPasswordTab = () => {
         setAlert(false)
     }
 
-    return <><View style={[styles.elevation]}>
+    return <><View style={[styles.elevation, {padding: 20}]}>
 
-        <View style={[styles.container, {marginVertical: 20}]}>
+
             <View style={styles.group3}>
                 <Text style={{fontFamily: Bold, fontSize: fontValue(18)}}>Reset Password</Text>
                 <Text  style={{fontSize: fontValue(12), paddingBottom: fontValue(12)}}>{data?.firstName  && data?.lastName ? data?.firstName+(data?.middleName ? " "+data?.middleName?.charAt()+"." : "")+" "+data?.lastName : data?.applicantName ? data?.applicantName : data?.companyName || "" }</Text>
@@ -90,11 +90,9 @@ const ResetPasswordTab = () => {
                 </View>
 
             </View>
-
-        </View>
     </View>
-    <Alert  confirmText={"Copy to Clipboard"}
-        cancelText={"Cancel"} onCancel={()=> setAlert(false)} onConfirm={onConfirm} visible={alert} message={ <View>
+    <Alert messageStyle={{paddingHorizontal: 0}}  confirmText={"Copy to Clipboard"}
+        cancelText={"Cancel"} onCancel={()=> setAlert(false)} onConfirm={onConfirm} visible={alert} message={ <View style={{paddingHorizontal: 10, paddingTop: 10}} >
         <View style={{paddingBottom: 10}}>
             <View style={{backgroundColor: 'rgba(50, 168, 82, 0.2)', padding: 10, justifyContent: "center", alignItems: "center", flexDirection: "row"}}>
                 <View style={{paddingRight: 10}}>
@@ -112,7 +110,7 @@ const ResetPasswordTab = () => {
             <Text style={{fontSize: fontValue(14),}}>Provide this temporary password to the user so they can sign in</Text>
         </View>
         <View style={{justifyContent: "flex-start", alignItems: 'flex-start'}}>
-            <Text style={{paddingBottom: 5}}>Temporary Password</Text>
+            <Text size={fontValue(12)} style={{paddingBottom: 5}}>Temporary Password</Text>
         </View>
 
         <InputField  value={temporaryPassword}  />

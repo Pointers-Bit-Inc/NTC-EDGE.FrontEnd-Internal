@@ -25,6 +25,7 @@ const styles=StyleSheet.create({
 
     },
     elevation:{
+
         marginVertical:20,
         borderRadius:5,
         alignSelf:"center",

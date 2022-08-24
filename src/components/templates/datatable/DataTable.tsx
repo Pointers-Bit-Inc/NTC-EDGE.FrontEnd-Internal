@@ -973,6 +973,7 @@ const DataTable=(props)=>{
                                 }}>
                                     {loading ? <ActivityIndicator color={"#fff"}/> :
                                      <Text style={{
+                                         fontSize: fontValue(12),
                                          color:"white",
                                          fontFamily:Regular500,
                                          fontWeight:"500",

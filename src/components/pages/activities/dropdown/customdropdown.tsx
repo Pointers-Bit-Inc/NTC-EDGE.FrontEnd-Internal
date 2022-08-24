@@ -185,11 +185,12 @@ interface Props {
             alignItems: 'center',
             borderRadius: 12,
             backgroundColor: '#EFF0F6',
-            height: 50,
+            height: fontValue(50),
             zIndex: 1
         },
         buttonText: {
             flex: 1,
+            fontSize: fontValue(12),
             color: "#6E7191",
              fontFamily: Regular  ,
             paddingHorizontal: 20,
