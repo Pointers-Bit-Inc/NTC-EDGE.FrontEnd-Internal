@@ -6,13 +6,18 @@ import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs
 import tabBarOption from "@templates/datatable/TabBarOptions";
 import CloseIcon from "@assets/svg/close";
 import {Bold} from "@styles/font";
+import {RootStateOrAny, useSelector} from "react-redux";
+import {fontValue} from "@pages/activities/fontValue";
 const Tab = createMaterialTopTabNavigator();
 const UserEdit = (props) => {
+    const data = useSelector((state: RootStateOrAny) => {
+        return state.application.data
+    });
     return    <View style={[{flex: 1}]}>
         <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between",  paddingVertical: 15,paddingHorizontal: 15, backgroundColor: "#fff", width: "100%"}}>
             <View/>
-            <Text style={{textAlign: "center", fontFamily: Bold}}></Text>
-            <TouchableOpacity>
+            <Text style={{fontSize: fontValue(14), textAlign: "center", fontFamily: Bold}}>{data?.firstName + " " + data?.middleName + " " + data?.lastName}</Text>
+            <TouchableOpacity onPress={()=>props.navigation.goBack()}>
                 <CloseIcon></CloseIcon>
             </TouchableOpacity>
         </View>

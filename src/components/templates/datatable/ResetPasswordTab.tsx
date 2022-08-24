@@ -40,7 +40,7 @@ const ResetPasswordTab = () => {
         setAlert(false)
         setDisabled(true)
         _data.role = _data.role.key
-        const _temporaryPassword = "Reversed123"
+        const _temporaryPassword = generatePassword()
         setTemporaryPassword(_temporaryPassword)
         _data.password = _temporaryPassword
 

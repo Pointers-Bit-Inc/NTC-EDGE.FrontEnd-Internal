@@ -2,6 +2,7 @@ import React, {memo} from "react";
 import {ScrollView, Text, View} from "react-native";
 import {styles as styles1} from "@pages/activities/styles";
 import {Regular500} from "@styles/font";
+import {fontValue} from "@pages/activities/fontValue";
 function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { date: string; activity: any; readableHuman: string }[], containerHeight: number, onScroll: (event) => void, ref: React.MutableRefObject<undefined>, callbackfn: (item: any, index: number) => any }) {
     return <>
         {!!props.pnApplications?.length && props.containerHeight &&
@@ -12,7 +13,7 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
             }]}>
                 {!!props.pnApplications?.length &&
                     <View style={[styles1.pinnedgroup, {height: undefined}]}>
-                        <View style={[styles1.pinnedcontainer, {paddingVertical: 10}]}>
+                        <View style={[styles1.pinnedcontainer, {paddingVertical: fontValue(12)}]}>
                             <Text style={[styles1.pinnedActivity, {fontFamily: Regular500,}]}>Pinned
                                 Activity</Text>
                         </View>

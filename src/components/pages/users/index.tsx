@@ -3,7 +3,7 @@ import DataTable from "@templates/datatable/DataTable";
 import {BASE_URL} from "../../../services/config";
 import {USERS} from "../../../reducers/activity/initialstate";
 export default function UsersPage(props:any){
-    return <DataTable  name={USERS} addTitle={'Create User'}  filter={[
+    return <DataTable navigation={props.navigation}  name={USERS} addTitle={'Create User'}  filter={[
         {
             value: "user",
             label: 'User'
