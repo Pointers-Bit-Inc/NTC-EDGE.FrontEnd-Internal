@@ -1,5 +1,5 @@
 import {FlatList, Text, TouchableOpacity, View} from "react-native";
-import React, {memo} from "react";
+import React, {memo, useMemo} from "react";
 import ProfileData from "@templates/datatable/ProfileData";
 import ResetPasswordTab from "@templates/datatable/ResetPasswordTab";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";

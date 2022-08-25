@@ -45,10 +45,9 @@ import {setResetFilterStatus} from "../reducers/activity/actions";
 import {resetMeeting} from "../reducers/meeting/actions";
 import {resetChannel} from "../reducers/channel/actions";
 import useOneSignal from "../hooks/useOneSignal";
-import Api from "../services/api";
 import {ACTIVITYITEM} from "../reducers/activity/initialstate";
 import ActivityModal from "@pages/activities/modal";
-import UserEdit from "@templates/datatable/userEdit";
+import ChooseNewPassword from "@screens/ChooseNewPassword";
 
 type RootStackParamList = {
     App: undefined;
@@ -75,6 +74,7 @@ type RootStackParamList = {
     Dashboard: undefined;
     ActivityItem: undefined;
     UserEdit: undefined;
+    ChooseNewPassword: undefined;
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -102,6 +102,7 @@ const linking = {
             NewChat: 'New-Chat',
             SearchActivities: 'Search-Activities',
             Dashboard: 'Dashboard',
+            ChooseNewPassword: 'Choose-New-Password/:token?'
         }
     },
 };
@@ -198,6 +199,7 @@ const RootNavigator = () => {
                 <Stack.Screen name="App" component={ App }/>
                 <Stack.Screen name="AppIntro" component={ AppIntro }/>
                 <Stack.Screen name="Login" component={ Login }/>
+                <Stack.Screen name="ChooseNewPassword" component={ ChooseNewPassword }/>
                 <Stack.Screen name="ForgotPassword" component={ ForgotPassword }/>
                 <Stack.Screen name="ActivitiesScreen" component={ TabBar } options={
                     {

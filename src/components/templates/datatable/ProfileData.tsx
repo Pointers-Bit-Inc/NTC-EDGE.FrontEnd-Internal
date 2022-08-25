@@ -1,6 +1,6 @@
 import {FlatList, ScrollView, Text, View} from "react-native";
 import Row from "@pages/activities/application/Row";
-import React, {memo} from "react";
+import React, {memo, useEffect, useMemo} from "react";
 import styles from "@styles/applications/basicInfo"
 import {transformText} from "../../../utils/ntc";
 import _ from "lodash";

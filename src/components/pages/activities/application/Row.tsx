@@ -29,11 +29,11 @@ const styles = StyleSheet.create({
 })
 const Row = (props: { updateApplication?: any, hasChanges?: any, display?: string, showEdit?: boolean, show?: boolean, editable?: boolean, updateForm?: any, stateName?: string, edit: string, label: string, applicant?: any }) => {
     const [edit, setEdit] = useSafeState(false)
-    const applicantMemo = useMemo(()=>props.display || props.applicant, [])
+    const applicantMemo = useMemo(()=>props.display || props.applicant, [props.display,  props.applicant])
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
     const SUPPORTED_FORMATS = ["jpg", "jpeg", "png"];
     function get_url_extension(url: string) {
-        return url.split(/[#?]/)[0].split('.').pop().trim();
+        return url?.split(/[#?]/)?.[0]?.split('.')?.pop()?.trim();
     }
 
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) ?
