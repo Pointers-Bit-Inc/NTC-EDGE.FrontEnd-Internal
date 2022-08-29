@@ -23,6 +23,7 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
             }}>
                 <Text>test</Text>
             </TouchableOpacity>*/}
+
                 <ScrollView showsVerticalScrollIndicator={false}
                             nestedScrollEnabled={true}
                             onScroll={props.onScroll}

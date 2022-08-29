@@ -1,4 +1,4 @@
-const { SET_USER, UPDATE_USER, RESET_USER, SET_BIOMETRICS_LOGIN } = require('./types').default;
+  const { SET_USER, UPDATE_USER, RESET_USER, SET_BIOMETRICS_LOGIN } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
 

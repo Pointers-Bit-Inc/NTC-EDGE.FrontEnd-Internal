@@ -99,6 +99,7 @@ const ModalTab=props=>{
     return <>
         {props.loading && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <ViewPaged
+
             onChange={(pageIndex)=>{
                 if(paymentIndex == pageIndex && !editModalVisible && user?.role?.key != CASHIER){
                     props?.setTabName("SOA & Payment")

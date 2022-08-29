@@ -52,6 +52,10 @@ const transformToFeePayload = (application: any) => {
         stationClass,
         valueAddedServices,
         transmissionType,
+        certificate,
+        license,
+        permit,
+        details
     } = service;
     let equipments = equipment || (proposedEquipment || (particulars || []));
     station = station?.length > 0
@@ -64,10 +68,6 @@ const transformToFeePayload = (application: any) => {
     let stations = station || (proposedStation || (particulars || []));
     station = stations?.[0] || {};
     equipment = equipments?.[0] || {};
-
-    let { validity = {} } = station || {};
-    let { year, month, day } = validity;
-    let expired = year && month && day ? Moment(new Date()).set({year, month, date: day}) : new Date()?.toISOString();
 
     let label = applicationType?.label?.toLowerCase();
 
@@ -176,6 +176,12 @@ const transformToFeePayload = (application: any) => {
         if (_ndx > -1) return _split[_ndx + 1];
         else return '';
     };
+    let expirationDateFn = () => {
+        let { dateOfExpiry = {} } = certificate || (license || (permit || (details || {})));
+        let { year, month, day } = dateOfExpiry;
+        let expirationDate = year && month && day ? Moment(new Date()).set({year, month, date: day}) : new Date()?.toISOString();
+        return expirationDate;
+    };
 
     /*
     let unitsFn = () => {
@@ -263,7 +269,7 @@ const transformToFeePayload = (application: any) => {
         mode: transmissionType?.transmissionType?.toLowerCase() || '', //
         stationClassUnits: classOfStation(), //
         stationClassChannels: classOfStation(true), //
-        expired, //
+        dateOfExpiry: expirationDateFn(), //
         stationCount: stations?.length || 0,
     };
 

@@ -412,11 +412,6 @@ function ActivityModal(props: any) {
         let feePayload = removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
 
 
-console.log({
-    ...payload,
-    ...feePayload
-})
-
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {
             ...payload,
             ...feePayload
@@ -465,7 +460,6 @@ console.log({
             profileForm['service.stationClass'] = _service?.service?.stationClass
 
         }
-
         if (isLoading) setLoading(true)
         axios.patch(BASE_URL + `/applications/${applicationItem?._id}`, {...profileFormUnflatten, ...cleanSoa}, config).then((response) => {
 

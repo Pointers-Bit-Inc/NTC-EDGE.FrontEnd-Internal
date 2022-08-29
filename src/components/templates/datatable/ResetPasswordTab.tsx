@@ -71,8 +71,6 @@ const ResetPasswordTab = () => {
     }
 
     return <><View style={[styles.elevation, {padding: 20}]}>
-
-
             <View style={styles.group3}>
                 <Text style={{fontFamily: Bold, fontSize: fontValue(18)}}>Reset Password</Text>
                 <Text  style={{fontSize: fontValue(12), paddingBottom: fontValue(12)}}>{data?.firstName  && data?.lastName ? data?.firstName+(data?.middleName ? " "+data?.middleName?.charAt()+"." : "")+" "+data?.lastName : data?.applicantName ? data?.applicantName : data?.companyName || "" }</Text>
