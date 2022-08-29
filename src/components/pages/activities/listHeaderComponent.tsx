@@ -1,9 +1,12 @@
-import React, {memo} from "react";
+import React, {memo, useMemo} from "react";
 import {ScrollView, Text, View} from "react-native";
 import {styles as styles1} from "@pages/activities/styles";
 import {Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { date: string; activity: any; readableHuman: string }[], containerHeight: number, onScroll: (event) => void, ref: React.MutableRefObject<undefined>, callbackfn: (item: any, index: number) => any }) {
+    const ActivityMemo = useMemo(()=> {
+        return props.pnApplications.map(props.callbackfn)
+    }, [props.pnApplications])
     return <>
         {!!props.pnApplications?.length && props.containerHeight &&
             <View style={[styles1.pinnedActivityContainer, {
@@ -31,7 +34,7 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
                             ref={props.ref}
                             style={{maxHeight: fontValue(300)}}>
                     {
-                        props.pnApplications.map(props.callbackfn)
+                        ActivityMemo
                     }
                 </ScrollView>
 

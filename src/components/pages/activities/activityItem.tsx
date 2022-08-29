@@ -310,7 +310,7 @@ const ActivityItem = (props: any) => {
 
             }
         }
-    }, [propsMemo])
+    }, [ propsMemo?.activity?.approvalHistory, propsMemo?.activity?.paymentHistory, propsMemo?.activity.paymentMethod , propsMemo?.activity.paymentStatus, propsMemo?.activity.assignedPersonnel])
 
     const [pressed, setPressed] = useState(false)
     const container = useMemo(() => [styles.container, {paddingRight: dimensions.width <= 768 ? 20 : undefined}], [dimensions])
@@ -329,7 +329,7 @@ const ActivityItem = (props: any) => {
         paddingHorizontal: fontValue(10),
         paddingTop: fontValue(4),
         paddingBottom: propsMemo?.activity?.assignedPersonnel?.id || propsMemo?.activity?.assignedPersonnel ? fontValue(4) : fontValue(10)
-    }], [propsMemo])
+    }], [propsMemo?.activity?.assignedPersonnel])
     const activityItem = useMemo(() => [{
         height: 8,
         width: 8,
@@ -372,7 +372,7 @@ const ActivityItem = (props: any) => {
     return (
 
         <Hoverable>
-            {useMemoizedFn(isHovered => (
+            {(isHovered => (
 
                 <View style={{
                     backgroundColor: selected && !(
