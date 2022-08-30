@@ -264,7 +264,7 @@ function convertStatusText(convertedStatus:any[],item:any){
             setRefreshing(false);
             Alert.alert('Alert',err?.message||'Something went wrong.');
 
-            if(err.request.status == "401"){
+            if(err?.request?.status == "401"){
                 const api=Api(user.sessionToken);
                 dispatch(setApplications([]))
                 dispatch(setPinnedApplication([]))

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { View, StyleSheet, Animated, Easing } from 'react-native';
+import {primaryColor} from "@styles/color";
 
 const styles = StyleSheet.create({
   container: {
@@ -16,7 +17,6 @@ const Loading = ({
   style = {},
 }) => {
   const opacity = useRef(new Animated.Value(0)).current;
-
   const RunAnimation = () =>
     Animated.loop(
       Animated.sequence([

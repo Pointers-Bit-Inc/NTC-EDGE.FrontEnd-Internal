@@ -332,6 +332,46 @@ const ActivitiesPage = (props) => {
 
         setUpdateModal(true);
     }
+
+    const getRenderItem = useCallback((act, i, index: number) => {
+        return (
+                act?.item?.assignedPersonnel?._id || act?.item?.assignedPersonnel) == user?._id &&
+            <ActivityItem
+                isOpen={isOpen}
+                config={config}
+                key={i}
+                selected={ Platform?.OS == "web" ? act?.item?._id : false}
+                currentUser={user}
+                role={user?.role?.key}
+                searchQuery={searchTerm}
+                activity={act?.item}
+                isPinned={true}
+                onPressUser={(event: any) => {
+
+
+                    /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
+                    })*/
+                    dispatch(setApplicationItem({...act?.item, isOpen: `pin${i}${index}`}));
+                    //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
+                    if (event?.icon == 'more') {
+                        setMoreModalVisible(true)
+                    } else {
+                        if (Platform.OS == "web") {
+                            setModalVisible(true)
+                        } else {
+                            props.navigation.navigate(ACTIVITYITEM, {
+                                onDismissed: onDismissedModal,
+                                onChangeEvent: onChangeEvent,
+                                onChangeAssignedId: onChangeAssignedId
+                            });
+                        }
+                    }
+                    dispatch(setSelectedYPos({yPos, type: 1}))
+
+                }} index={`pin${i}${index}`}
+                swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, act?.item, unReadReadApplicationFn)}/>
+    }, [])
+
     const listHeaderComponent = () => <ListHeaderComponent searchVisible={searchVisible} pnApplications={pnApplications}
                                                            containerHeight={fontValue(containerHeight)} onScroll={(event) => {
         if (!isMobile) {
@@ -354,42 +394,7 @@ const ActivitiesPage = (props) => {
             data={item?.activity}
 
             renderItem={(act, i) => {
-                return (
-                        act?.item?.assignedPersonnel?._id || act?.item?.assignedPersonnel) == user?._id &&
-                    <ActivityItem
-                        isOpen={isOpen}
-                        config={config}
-                        key={i}
-                        selected={ Platform?.OS == "web" ? act?.item?._id : false}
-                        currentUser={user}
-                        role={user?.role?.key}
-                        searchQuery={searchTerm}
-                        activity={act?.item}
-                        isPinned={true}
-                        onPressUser={(event: any) => {
-
-
-                            /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
-                            })*/
-                            dispatch(setApplicationItem({...act?.item, isOpen: `pin${i}${index}`}));
-                            //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
-                            if (event?.icon == 'more') {
-                                setMoreModalVisible(true)
-                            } else {
-                                if (Platform.OS == "web") {
-                                    setModalVisible(true)
-                                } else {
-                                    props.navigation.navigate(ACTIVITYITEM, {
-                                        onDismissed: onDismissedModal,
-                                        onChangeEvent: onChangeEvent,
-                                        onChangeAssignedId: onChangeAssignedId
-                                    });
-                                }
-                            }
-                            dispatch(setSelectedYPos({yPos, type: 1}))
-
-                        }} index={`pin${i}${index}`}
-                        swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, act?.item, unReadReadApplicationFn)}/>
+                return getRenderItem(act, i, index)
             }
             }
             keyExtractor={(item, index) => `_key${index.toString()}`}
@@ -874,3 +879,4 @@ const styles = StyleSheet.create({
 });
 
 export default memo(ActivitiesPage);
+

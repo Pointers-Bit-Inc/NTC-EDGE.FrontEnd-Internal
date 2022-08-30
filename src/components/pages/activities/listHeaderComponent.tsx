@@ -1,5 +1,5 @@
 import React, {memo, useMemo} from "react";
-import {ScrollView, Text, View} from "react-native";
+import {FlatList, ScrollView, Text, View} from "react-native";
 import {styles as styles1} from "@pages/activities/styles";
 import {Regular500} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
@@ -26,6 +26,10 @@ function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { 
             }}>
                 <Text>test</Text>
             </TouchableOpacity>*/}
+                {/*<View  style={{maxHeight: fontValue(300)}}>
+                    <FlatList showsVerticalScrollIndicator={false} nestedScrollEnabled={true} style={{flexGrow: 1, maxHeight: fontValue(300)}} data={props.pnApplications} renderItem={({item, index}) => props.callbackfn(item, index)}/>
+
+                </View>*/}
 
                 <ScrollView showsVerticalScrollIndicator={false}
                             nestedScrollEnabled={true}
