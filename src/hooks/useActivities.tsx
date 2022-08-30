@@ -205,7 +205,7 @@ function convertStatusText(convertedStatus:any[],item:any){
                 searchTerm&&{keyword:searchTerm}),
             ...(
                 {
-                    pageSize: pinned ? 100 :10,
+                    pageSize: pinned ? 20 :10,
                     sort:checkDateAdded.length ? "asc" : "desc",
                     region: user?.employeeDetails?.region
                 }),
