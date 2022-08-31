@@ -1,7 +1,7 @@
 import {isValidDate, transformText} from "../../../../utils/ntc";
 import Row from "@pages/activities/application/Row";
 import {FlatList,StyleSheet,Text,View} from "react-native";
-import React, {memo, useRef, useState} from "react";
+import React, {memo, useMemo, useRef, useState} from "react";
 import {input} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular500} from "@styles/font";
@@ -9,6 +9,8 @@ import moment from "moment";
 import _ from "lodash";
 import hairlineWidth=StyleSheet.hairlineWidth;
 import DateField from "@pages/activities/application/datefield";
+import Customdropdown from "@pages/activities/dropdown/customdropdown";
+import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 
 const styles=StyleSheet.create({
     subChildSeparator:{
@@ -92,7 +94,6 @@ const RenderServiceMiscellaneous=(props)=>{
         var result={};
          (
             async function f(e,p=undefined){
-                console.log(e)
                 switch(typeof e){
                     case "object":
 
@@ -118,8 +119,11 @@ const RenderServiceMiscellaneous=(props)=>{
         return result;
     };
 
-
-
+    const bandwidthUnits = useMemo(()=> [
+        {label: 'KHz', value: 'KHz'},
+        {label: 'MHz', value: 'MHz'},
+        {label: 'GHz', value: 'GHz'}
+    ], []);
     let _renderParent=(item:any)=>{
         const [keys,value]=item.item;
         var index,prevValue,nextValue,findIndex;
@@ -152,7 +156,14 @@ const RenderServiceMiscellaneous=(props)=>{
                 edit={props.edit}
                 label={prevValue ? `${transformText(prevValue)}:` : ""}
                 display={value}
-                applicant={props?.userProfileForm?.["service." + keys]}/> : <Row
+                applicant={props?.userProfileForm?.["service." + keys]}/> : (transformText(keys?.split?.(".")?.[keys.split(".")?.length-1]) == "Unit" &&  transformText(keys?.split?.(".")?.[keys.split(".")?.length-2]) == "Bandwidth")  ? <View style={{paddingBottom: 20}}>
+                <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
+                                label="Select Item"
+                                data={ bandwidthUnits }
+                                onSelect={ ({ value }) => {
+                                    if (value)  props.updateForm("service." + keys, value)
+                                } }/>
+            </View>:  <Row
                 updateApplication={props?.updateApplication}
                 updateForm={props.updateForm}
                 stateName={"service." + keys}

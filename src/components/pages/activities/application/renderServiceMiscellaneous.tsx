@@ -49,7 +49,12 @@ const styles = StyleSheet.create({
 const RenderServiceMiscellaneous = (props) => {
     let service = {...props?.service} || {};
     let _renderParent = ({item}: any) => {
-        if (!(props.exclude.indexOf(item) != -1)) {
+        if (
+            item !== '_id' &&
+            item !== 'name' &&
+            item !== 'applicationType' &&
+            item !== 'serviceCode'
+        ) {
             let parentItem = item;
             let parentLabel = transformText(item);
             let _renderGrandChild = (values: any) => {
@@ -57,13 +62,34 @@ const RenderServiceMiscellaneous = (props) => {
                     let childItem = item;
                     let childLabel = transformText(item);
                     let childValue = values?.[childItem];
-                    childValue = Date.parse(childValue) > 0  ? (moment(childValue)?.isValid() ? moment(childValue)?.format('LL') : !(typeof childValue == "object") ? childValue : "") : !(typeof childValue == "object") ? childValue : "";
-                    if (typeof(childValue) === 'object') return _renderGrandChild(childValue);
-                    return <Row label={ `${childLabel}:` } applicant={ childValue }/>
+                    childValue = Date.parse(childValue) > 0 ? moment(childValue)?.format('LL') : childValue;
+
+                    if (typeof(childValue) === 'object') {
+                        let _renderGGGChild = ({item}: any) => {
+                            let gchildItem = item;
+                            let gchildLabel = transformText(item);
+                            let gchildValue = childValue?.[gchildItem];
+                            gchildValue = Date.parse(gchildValue) > 0 ? moment(gchildValue)?.format('LL') : gchildValue;
+                            return renderRow(`${gchildLabel}:`, gchildValue);
+                        };
+                        return (
+                            <View style={styles.tableContainer}>
+                                {renderHeader(childLabel, true)}
+                                <FlatList
+                                    data={Object.keys(childValue)}
+                                    renderItem={_renderGGGChild}
+                                    keyExtractor={(item, index) => `${index}`}
+                                    scrollEnabled={false}
+                                    style={styles?.gggChildContainer}
+                                />
+                            </View>
+                        )
+                    }
+
+                    return renderRow(`${childLabel}:`, childValue);
                 };
                 return (
                     <FlatList
-                        showsVerticalScrollIndicator={false}
                         data={Object.keys(values)}
                         renderItem={_renderGGChild}
                         keyExtractor={(item, index) => `${index}`}
@@ -72,40 +98,33 @@ const RenderServiceMiscellaneous = (props) => {
                 )
             }
             let _renderChild = ({item}: any) => {
-                console.log('_renderChild', item)     ;
                 let childItem = item;
                 let childLabel = transformText(item);
                 let childValue = service?.[parentItem]?.[childItem];
-                childValue = moment(childValue)?.isValid() ? moment(childValue)?.format('LL') : childValue;
-
-                if (typeof(childValue) === 'object') return _renderGrandChild(childValue);
-                else return <Row label={ `${childLabel}:` } applicant={ childValue }/>
+                childValue = Date.parse(childValue) > 0 ? moment(childValue)?.format('LL') : childValue;
+                if (typeof(childValue) === 'object' && !!childValue) return _renderGrandChild(childValue);
+                else return renderRow(`${childLabel}:`, childValue);
             };
             return (
-                <View style={styles.group3}>
-                        <View style={ styles.rect }>
-                            <Text style={ styles.file }>{parentLabel?.toUpperCase()}</Text>
-                        </View>
-                        <FlatList
-                            showsVerticalScrollIndicator={false}
-                            data={Object.keys(service[item])}
-                            renderItem={_renderChild}
-                            keyExtractor={(item, index) => `${index}`}
-                            scrollEnabled={false}
-                            ItemSeparatorComponent={(item) => {
-                                return (
-                                    <View style={service?.[parentItem]?.length > 0 && styles?.subChildSeparator} />
-                                )
-                            }}
-                        />
+                <View style={styles.tableContainer}>
+                    {renderHeader(parentLabel?.toUpperCase())}
+                    <FlatList
+                        data={Object.keys(service[item])}
+                        renderItem={_renderChild}
+                        keyExtractor={(item, index) => `${index}`}
+                        scrollEnabled={false}
+                        ItemSeparatorComponent={(item) => {
+                            return (
+                                <View style={service?.[parentItem]?.length > 0 && styles?.subChildSeparator} />
+                            )
+                        }}
+                    />
                 </View>
-
             )
         }
     };
     return (
         <FlatList
-            showsVerticalScrollIndicator={false}
             data={Object.keys(service)}
             renderItem={_renderParent}
             keyExtractor={(item, index) => `${index}`}

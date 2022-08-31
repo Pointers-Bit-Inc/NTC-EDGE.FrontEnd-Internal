@@ -1,5 +1,5 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import React, {useMemo} from "react";
+import React, {memo, useMemo} from "react";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular, Regular500} from "@styles/font";
 import InputField from "@molecules/form-fields/input-field";
@@ -54,4 +54,4 @@ const Row = (props: { updateApplication?: any, hasChanges?: any, display?: strin
 Row.defaultProps = {
     editable: true, show: true, showEdit: true
 }
-export default Row
+export default memo(Row)

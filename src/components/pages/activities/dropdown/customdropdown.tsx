@@ -1,4 +1,4 @@
-import React,{FC,ReactElement,useEffect,useRef,useState} from 'react';
+import React, {FC, memo, ReactElement, useEffect, useRef, useState} from 'react';
 import {
     ActivityIndicator,
     FlatList,
@@ -64,7 +64,7 @@ interface Props {
               return () =>{
                   isCurrent = false
               }
-        }, [data, value, selectedIndex])
+        }, [selectedIndex])
 
         useEffect(()=>{
             let timer1 = setTimeout(() => {
@@ -131,16 +131,12 @@ interface Props {
                                 data={data}
                                 initialScrollIndex={selectedIndex || 0 || null}
                                 ref={flatListRef}
-                                onScrollToIndexFailed={ ({
-                                                             index ,
-                                                             averageItemLength ,
-                                                         }) => {
-                                    flatListRef.current?.scrollToOffset({
-
-                                        offset : index * averageItemLength ,
-                                        animated : false ,
-                                    });
-                                } }
+                               onScrollToIndexFailed={info => {
+                                const wait = new Promise(resolve => setTimeout(resolve, 100));
+                                wait.then(() => {
+                                    flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
+                                });
+                            }}
                                 renderItem={renderItem}
                                 keyExtractor={(item, index) => index.toString()}
                             /> : <View style={{height: "100%", justifyContent: "center", alignItems: "center"}}>
@@ -231,4 +227,4 @@ interface Props {
         },
     });
 
-    export default CustomDropdown;
+    export default memo(CustomDropdown);
