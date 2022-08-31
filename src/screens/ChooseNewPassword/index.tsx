@@ -203,7 +203,7 @@ const ChooseNewPassword = (props) => {
                 </View>
                 <View style={ styles.formContainer }>
 
-                    <Text style={ [styles.formTitleText] }>Reset Password</Text>
+                    <Text style={ [styles.formTitleText] }>New Password</Text>
                     <View style={{flex: 1, ...Platform.select({
                             native:{},
                             default:{
