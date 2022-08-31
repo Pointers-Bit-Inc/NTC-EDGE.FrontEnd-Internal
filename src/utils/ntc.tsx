@@ -259,6 +259,7 @@ const transformToFeePayload = (application: any) => {
         noOfYears: noOfYears(), //
         units: equipments?.length || 0, //
         nos: valueAddedServices?.service?.length || 0, //
+        noOfCopies: Number(details?.noOfCopies || 0), //
         boundary: boundaryFn(), //
         location: 'HighlyUrbanizedAreas', //region, //
         installedEquipment: installedEquipmentFn(), //
@@ -271,6 +272,7 @@ const transformToFeePayload = (application: any) => {
         stationClassChannels: classOfStation(true), //
         dateOfExpiry: expirationDateFn(), //
         stationCount: stations?.length || 0,
+        updatedAt: new Date()?.toISOString(),
     };
 
     return feePayload;
