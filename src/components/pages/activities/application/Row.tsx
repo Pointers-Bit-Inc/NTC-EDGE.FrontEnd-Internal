@@ -35,7 +35,6 @@ const Row = (props: { updateApplication?: any, hasChanges?: any, display?: strin
     function get_url_extension(url: string) {
         return url?.split(/[#?]/)?.[0]?.split('.')?.pop()?.trim();
     }
-
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) ?
         <View style={styles.group2}>
             <Text style={styles.detail}>{props.label}</Text>

@@ -92,11 +92,15 @@ const RenderServiceMiscellaneous=(props)=>{
         var result={};
          (
             async function f(e,p=undefined){
+                console.log(e)
                 switch(typeof e){
                     case "object":
-                        if(!!Object?.values?.(e)?.join("")){
+
+                        if(true){
+
                             p=p ? p+"." : "";
                             _.forIn(e, async function(value,i){
+
                                 if(e[i]?.hasOwnProperty('year')){
                                     e[i]=moment(e[i])?.format('LL')
                                 }
@@ -129,10 +133,12 @@ const RenderServiceMiscellaneous=(props)=>{
             prevValue=keys?.split?.(".")?.reverse()?.[findIndex-1];
             nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1];
         } else{
+
             prevValue=keys?.split?.(".")?.[keys.split(".")?.length-1];
             index=keys?.split?.(".")?.[keys.split(".")?.length];
             nextValue=keys?.split?.(".")?.[keys.split(".")?.length-2]||keys?.split?.(".")?.[0];
         }
+
 
         return (<View>
 
@@ -151,7 +157,7 @@ const RenderServiceMiscellaneous=(props)=>{
                 updateForm={props.updateForm}
                 stateName={"service." + keys}
                 edit={props.edit}
-                label={prevValue ? `${transformText(prevValue)}:` : ""}
+                label={prevValue ? `${transformText(keys?.split?.(".")?.[keys.split(".")?.length-1])}:` : ""}
                 display={value}
                 applicant={props?.userProfileForm?.["service." + keys]}/>
             }
