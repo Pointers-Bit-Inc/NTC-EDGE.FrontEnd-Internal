@@ -346,7 +346,7 @@ export default function TabBar({navigation,route}){
                     <Drawer.Screen options={{drawerLabel:SCANQR,headerShown:false}} name={SCANQR} component={QrCodeScanner}/>}
                  {/*<Drawer.Screen options={{drawerLabel:DASHBOARD,headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/>*/}
                  {/*<Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/>*/}
-                 {/*<Drawer.Screen options={{drawerLabel:ROLEANDPERMISSION,headerShown:false}} name={ROLEANDPERMISSION} component={RoleAndPermissionNavigator}/>*/}
+                    <Drawer.Screen options={{drawerLabel:ROLEANDPERMISSION,headerShown:false}} name={ROLEANDPERMISSION} component={RoleAndPermissionNavigator}/>
                  {/*<Drawer.Screen options={{drawerLabel:GROUP,headerShown:false}} name={GROUP} component={GroupNavigator}/>*/}
                  <Drawer.Screen options={{drawerLabel:EMPLOYEES,headerShown:false}} name={EMPLOYEES} component={EmployeeNavigator}/>
                  <Drawer.Screen options={{drawerLabel:USERS,headerShown:false}} name={USERS} component={UserNavigator}/>

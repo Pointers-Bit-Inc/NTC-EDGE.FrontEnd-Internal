@@ -4,6 +4,7 @@ import {fontValue} from "@pages/activities/fontValue";
 import hairlineWidth = StyleSheet.hairlineWidth;
 
 export const styles = StyleSheet.create({
+
     pinnedActivityContainer:{
 
         shadowColor: "rgba(0,0,0,0.1)",

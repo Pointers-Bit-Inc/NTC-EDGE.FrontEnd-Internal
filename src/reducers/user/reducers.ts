@@ -1,4 +1,4 @@
-  const { SET_USER, UPDATE_USER, RESET_USER, SET_BIOMETRICS_LOGIN } = require('./types').default;
+  const { SET_USER, UPDATE_USER, RESET_USER, SET_BIOMETRICS_LOGIN, SET_SESSION_TOKEN } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
 
@@ -69,6 +69,14 @@ export default function basket(state = initialState, action = {}) {
         ...payload
       }
     }
+
+    case SET_SESSION_TOKEN:{
+      return {
+        ...state,
+        sessionToken: action.payload,
+      }
+    }
+
     case SET_BIOMETRICS_LOGIN: {
       return {
         ...state,
