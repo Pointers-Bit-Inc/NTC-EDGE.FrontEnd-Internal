@@ -115,7 +115,13 @@ export default function RoleAndPermissionPage(props:any){
         }
     }
 
-
+    const config = useMemo(()=>{
+        return {
+            headers:{
+                Authorization:"Bearer ".concat(sessionToken)
+            }
+        };
+    }, [sessionToken])
 
 
     const parseAccess = () => {
@@ -176,11 +182,7 @@ export default function RoleAndPermissionPage(props:any){
     }
 
 
-    const config={
-        headers:{
-            Authorization:"Bearer ".concat(sessionToken)
-        }
-    };
+
 
 
 
@@ -240,7 +242,7 @@ export default function RoleAndPermissionPage(props:any){
         }
 
         axios.patch(BASE_URL + `/roles/${role.id}/permission`, _permission, config ).then((res) => {
-            console.log(sessionToken)
+
             dispatch(setSessionToken(res.data.sessionToken))
             showToast(ToastType.Success,"Success!")
         }).catch((error) => {
