@@ -248,12 +248,18 @@ export default function RoleAndPermissionPage(props:any){
         }).catch((error) => {
             setLoading(false)
             let _err = '';
+
             for (const err in error?.response?.data?.errors) {
                 _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
             }
             if (_err || error?.response?.data?.message || error?.response?.statusText || (typeof error?.response?.data == "string" || typeof error == "string") ) {
                 showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data || error)
+            }else{
+                showToast(ToastType.Error, error?.message||'Something went wrong.');
             }
+
+
+
         })
 
 
@@ -407,7 +413,7 @@ export default function RoleAndPermissionPage(props:any){
                         margin: 10,
                         justifyContent: 'center',
                         alignItems: 'center',}}>
-                        {/*<TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={newToken}>
+                       {/* <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={newToken}>
 
                             <Text style={[styles.text,  ]} size={14}>new token</Text>
 
