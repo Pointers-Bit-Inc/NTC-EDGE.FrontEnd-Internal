@@ -2,6 +2,7 @@ import {Platform , StyleSheet} from "react-native";
 import {Bold, Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import hairlineWidth = StyleSheet.hairlineWidth;
+import {infoColor} from "@styles/color";
 
 export const styles = StyleSheet.create({
 
@@ -561,5 +562,9 @@ export const styles = StyleSheet.create({
         height:"100%",
         marginLeft:fontValue(15),
         position:"absolute",
-    },
+    }, text: {
+        color: "#fff",
+        fontFamily: Bold,
+    }
+
 });
