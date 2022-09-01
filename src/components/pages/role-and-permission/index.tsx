@@ -412,7 +412,7 @@ export default function RoleAndPermissionPage(props:any){
                         </TouchableOpacity>*/}
                         <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={onParseAccess}>
 
-                            <Text style={[styles.text,  ]} size={14}>update</Text>
+                            <Text style={[styles.text, {color: "#fff"} ]} size={14}>update</Text>
 
                         </TouchableOpacity>
                     </View>

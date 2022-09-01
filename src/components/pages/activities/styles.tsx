@@ -563,7 +563,7 @@ export const styles = StyleSheet.create({
         marginLeft:fontValue(15),
         position:"absolute",
     }, text: {
-        color: "#fff",
+
         fontFamily: Bold,
     }
 
