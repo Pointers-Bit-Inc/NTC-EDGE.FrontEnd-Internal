@@ -340,8 +340,8 @@ export default function TabBar({navigation,route}){
                  drawerContent={(props)=><CustomSidebarMenu {...props} />} initialRouteName={ACTIVITIES}>
                  <Drawer.Screen options={{drawerLabel:ACTIVITIES,headerShown:false}} name={ACTIVITIES}
                                 component={ActivitiesNavigator}/>
-                 <Drawer.Screen options={{drawerLabel:CHAT,headerShown:false}} name={CHAT} component={ChatScreen}/>
-                 <Drawer.Screen options={{drawerLabel:MEET,headerShown:false}} name={MEET} component={MeetScreen}/>
+                {user?.role?.permission?.chat ?<Drawer.Screen options={{drawerLabel:CHAT,headerShown:false}} name={CHAT} component={ChatScreen}/> : <></>}
+                {user?.role?.permission?.meet ? <Drawer.Screen options={{drawerLabel:MEET,headerShown:false}} name={MEET} component={MeetScreen}/> : <></>}
                 {(getRole(user,[CHECKER,EVALUATOR,DIRECTOR])&& Platform.OS != "web") &&
                     <Drawer.Screen options={{drawerLabel:SCANQR,headerShown:false}} name={SCANQR} component={QrCodeScanner}/>}
                  {/*<Drawer.Screen options={{drawerLabel:DASHBOARD,headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/>*/}
