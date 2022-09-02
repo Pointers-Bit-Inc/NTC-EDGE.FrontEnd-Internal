@@ -48,7 +48,8 @@ import useOneSignal from "../hooks/useOneSignal";
 import {ACTIVITYITEM} from "../reducers/activity/initialstate";
 import ActivityModal from "@pages/activities/modal";
 import ChooseNewPassword from "@screens/ChooseNewPassword";
-
+import * as Linking from 'expo-linking';
+const prefix = Linking.createURL('/');
 type RootStackParamList = {
     App: undefined;
     AppIntro: undefined;
@@ -79,7 +80,7 @@ type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const linking = {
-    prefix: '/',
+    prefixes: [prefix],
     config: {
         screens: {
             App: '',

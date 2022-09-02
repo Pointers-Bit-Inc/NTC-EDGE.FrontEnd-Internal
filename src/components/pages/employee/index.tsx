@@ -10,6 +10,7 @@ export default function EmployeePage(props:any){
     const dispatch = useDispatch()
     const permission = useSelector((state:RootStateOrAny) => state.user.role.permission);
     const permissionName = 'employeePermission'
+    console.log(permission.employeePermission.create)
     return <DataTable
         navigation={props.navigation}
         name={EMPLOYEES}

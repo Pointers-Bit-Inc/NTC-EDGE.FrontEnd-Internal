@@ -1,5 +1,6 @@
 export default {
   "expo": {
+    "scheme": "portalapp.ntcedge.com",
     "name": "NTC-EDGE PORTAL",
     "slug": "ntc-edge-internal",
     "owner": "ntc-edge",
