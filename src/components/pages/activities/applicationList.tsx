@@ -55,7 +55,7 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
             var d = new Date(b.updatedAt);
             return d.getTime()-c.getTime();
         }).map(props.element)
-    }, [ props.item.activity, props.element])
+    }, [ ])
     return <View style={container}>
         <View>
             <View style={subcontainer}>
