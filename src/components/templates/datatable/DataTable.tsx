@@ -364,7 +364,7 @@ const DataTable=(props)=>{
                 if (_err || error?.response?.data?.message || error?.response?.statusText || (typeof error?.response?.data == "string") ) {
                     showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data)
                 }
-                if(error.response.status == 403){
+                if(error?.response?.status == 403){
                     props?.catchError('view')
                 }
 
