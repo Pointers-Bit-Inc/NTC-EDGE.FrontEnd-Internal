@@ -1,4 +1,4 @@
-  const { SET_USER, UPDATE_USER, RESET_USER, SET_BIOMETRICS_LOGIN, SET_SESSION_TOKEN } = require('./types').default;
+  const { SET_USER, UPDATE_USER, RESET_USER, SET_BIOMETRICS_LOGIN, SET_SESSION_TOKEN, SET_PERMISSION, SET_PERMISSION_ITEM } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
 
@@ -20,12 +20,12 @@ export default function basket(state = initialState, action = {}) {
       } else {
         newState.biometrics = biometrics;
       }
-      
+
       return newState;
     }
     case RESET_USER: {
       let biometrics = state.biometrics;
-      
+
       return {
         username: '',
         email: '',
@@ -81,6 +81,25 @@ export default function basket(state = initialState, action = {}) {
       return {
         ...state,
         biometrics: action.payload,
+      }
+    }
+
+    case SET_PERMISSION_ITEM: {
+      var newState = {...state}
+      if(newState.role.permission[action.payload.name][action.payload.permission]){
+        newState.role.permission[action.payload.name][action.payload.permission] = false
+      }
+      return {
+        ...newState
+      }
+    }
+    case SET_PERMISSION: {
+      var newState = {...state}
+      if(newState.role.permission){
+        newState.role.permission = action.payload
+      }
+      return {
+        ...newState
       }
     }
     default:

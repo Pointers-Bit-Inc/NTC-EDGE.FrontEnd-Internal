@@ -58,7 +58,7 @@ export default function RoleAndPermissionPage(props:any){
             setLoading(false);
         }).catch((response) => {
 
-            console.log(response.message)
+            console.log(response.response)
         })
     }
     const rolesMemo = useMemo(() => {

@@ -364,6 +364,10 @@ const DataTable=(props)=>{
                 if (_err || error?.response?.data?.message || error?.response?.statusText || (typeof error?.response?.data == "string") ) {
                     showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data)
                 }
+                if(error.response.status == 403){
+                    props?.catchError('view')
+                }
+
 
 
             });
@@ -535,16 +539,16 @@ const DataTable=(props)=>{
                                         <Text>{'View'}</Text>
                                     </View>
                                 </MenuOption>
-                                <MenuOption value={'edit'}>
+                                {props.permissionEdit ? <MenuOption value={'edit'}>
                                     <View>
                                         <Text>{'Edit'}</Text>
                                     </View>
-                                </MenuOption>
-                                <MenuOption value={'delete'}>
+                                </MenuOption> : <></>}
+                                {props.permissionDelete ? <MenuOption value={'delete'}>
                                     <View>
                                         <Text>{'Delete'}</Text>
                                     </View>
-                                </MenuOption>
+                                </MenuOption>: <></>}
                             </MenuOptions>
 
                         </Menu>
@@ -746,7 +750,7 @@ const DataTable=(props)=>{
 
                                             </View>
                                         </View>
-                                        <TouchableOpacity onPress={()=>{
+                                        {props.permissionCreate ?  <TouchableOpacity onPress={()=>{
                                             setState('add');
                                             setModalClose(true)
                                         }}>
@@ -757,7 +761,7 @@ const DataTable=(props)=>{
 
                                                 <Text style={{color:"#fff"}}>{props.addButtonTitle}</Text>
                                             </View>
-                                        </TouchableOpacity>
+                                        </TouchableOpacity> : <></>}
 
                                     </View>
 
