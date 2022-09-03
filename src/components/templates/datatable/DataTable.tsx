@@ -534,17 +534,17 @@ const DataTable=(props)=>{
                                 shadowOpacity:0.1,
                                 shadowRadius:15,
                             }}>
-                                <MenuOption value={'view'}>
+                                {props?.permissionView ? <MenuOption value={'view'}>
                                     <View>
                                         <Text>{'View'}</Text>
                                     </View>
-                                </MenuOption>
-                                {props.permissionEdit ? <MenuOption value={'edit'}>
+                                </MenuOption>: <></>}
+                                {props?.permissionEdit ? <MenuOption value={'edit'}>
                                     <View>
                                         <Text>{'Edit'}</Text>
                                     </View>
                                 </MenuOption> : <></>}
-                                {props.permissionDelete ? <MenuOption value={'delete'}>
+                                {props?.permissionDelete ? <MenuOption value={'delete'}>
                                     <View>
                                         <Text>{'Delete'}</Text>
                                     </View>

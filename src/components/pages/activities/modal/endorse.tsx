@@ -55,8 +55,9 @@ const Endorsed = (props: any) => {
 
     const fetchEndorse = async (isCurrent: boolean) => {
         setLoading(true)
-        await axios.get(BASE_URL + '/users' ,
+        await axios.get(BASE_URL + '/employees' ,
             {
+
                 headers : {
                     Authorization : "Bearer ".concat(user.sessionToken)
                 }
@@ -329,7 +330,7 @@ const styles = StyleSheet.create({
     rect : {
 
         justifyContent : "space-between" ,
-       
+
 
 
         backgroundColor : "rgba(255,255,255,1)" ,

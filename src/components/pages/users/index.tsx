@@ -16,6 +16,7 @@ export default function UsersPage(props: any) {
     },]}
 
         editTitle={'Edit User'}
+        permissionView={permission.userPermission.view}
         permissionCreate={permission.userPermission.create}
         permissionEdit={permission.userPermission.edit}
         permissionDelete={permission.userPermission.delete}

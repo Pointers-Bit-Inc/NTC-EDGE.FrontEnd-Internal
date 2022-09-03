@@ -667,7 +667,6 @@ const ActivitiesPage = (props) => {
                 Platform?.isPad || isTablet())) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor,
     }], [Platform?.isPad, isMobile, isTablet(), dimensions?.width])
 
-
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
