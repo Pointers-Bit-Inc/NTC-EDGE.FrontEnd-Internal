@@ -2,7 +2,7 @@ import React,{useState} from 'react';
 import {useAuth} from "../../hooks/useAuth";
 import {
     ImageBackground, Platform, ScrollView,
-    StatusBar,
+    StatusBar, TouchableOpacity,
     useWindowDimensions,
     View
 } from "react-native";
@@ -20,6 +20,7 @@ import axios from "axios";
 import {BASE_URL} from "../../services/config";
 import {RootStateOrAny, useSelector} from "react-redux";
 import Alert from "@atoms/alert";
+import ArrowLeft from "@atoms/icon/arrow-left";
 const errorResponse = {
     password: 'Password must be atleast 6 characters',
     confirm: 'Passwords do not match',
@@ -27,7 +28,6 @@ const errorResponse = {
 const background = require('@assets/webbackground.png');
 const ChooseNewPassword = (props) => {
 
-    console.log(props)
 
     const sessionToken = useSelector((state: RootStateOrAny) => state.user.sessionToken);
     const config = {
@@ -197,15 +197,28 @@ const ChooseNewPassword = (props) => {
         imageStyle={ { flex : 1 } }
     >
         <StatusBar barStyle="dark-content"/>
-            <View style={ { flex : 1 , justifyContent : "center" , alignItems : "center" } }>
-                <View style={ { paddingBottom : 40 } }>
+            <View style={ { flex : 1 , justifyContent : "center" , alignItems : "center", paddingVertical: 20 } }>
+                <View style={ { ...Platform.select({
+                        native:{
+                            paddingBottom : 20
+                        },
+                        default:{
+                            paddingBottom : 40
+                        }
+                    }) } }>
                     <EdgeBlue width={ 342 } height={ 78 }></EdgeBlue>
                 </View>
                 <View style={ styles.formContainer }>
-
+                    {props.navigation.canGoBack() ?<TouchableOpacity onPress={()=>{
+                        if (props.navigation.canGoBack()) {
+                            props.navigation.goBack();
+                        }
+                    }}>
+                       <ArrowLeft/>
+                    </TouchableOpacity> : <></>}
                     <Text style={ [styles.formTitleText] }>New Password</Text>
                     <View style={{flex: 1, ...Platform.select({
-                            native:{},
+                            native:{minWidth:"90%",},
                             default:{
                                 minWidth:330,
                             }
