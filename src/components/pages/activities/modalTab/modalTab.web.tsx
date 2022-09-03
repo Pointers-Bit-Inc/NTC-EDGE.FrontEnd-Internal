@@ -188,6 +188,7 @@ const ModalTab=props=>{
                     }}>
 
                         <TabBar
+
                             style={{borderBottomWidth:0,borderBottomColor:"transparent",width:"100%"}}
                             renderTab={renderTab}
                             scrollViewStyle={{paddingLeft:60,flex:1,justifyContent:"flex-start",gap:35}}
@@ -314,7 +315,7 @@ const styles=StyleSheet.create({
         lineHeight:24,
         textAlign:"center",
         fontFamily:Regular,
-        fontSize:16,
+        fontSize:14,
     },
     rect6:{
         height:3,
