@@ -176,10 +176,11 @@ const transformToFeePayload = (application: any) => {
         if (_ndx > -1) return _split[_ndx + 1];
         else return '';
     };
+
     let expirationDateFn = () => {
         let { dateOfExpiry = {} } = certificate || (license || (permit || (details || {})));
         let { year, month, day } = dateOfExpiry;
-        let expirationDate = year && month && day ? Moment(new Date()).set({year, month, date: day}) : new Date()?.toISOString();
+        let expirationDate = year && month && day ? Moment(new Date()).set({year, month, date: day})?.toISOString() : new Date()?.toISOString();
         return expirationDate;
     };
 
