@@ -283,23 +283,7 @@ const BasicInfo = (_props: any) => {
         return  props.isMore ? historyMemo : [_.first(historyMemo)]
     }, [props.paymentHistory,historyMemo, props.approvalHistory, props.isMore])
     const drowdownVisible= useSelector((state:RootStateOrAny)=>state.activity?.drowdownVisible);
-    useEffect(
-        () => {
-            let timer1 = null
 
-            if(drowdownVisible && (props?.service?.examSeminar || props?.service?.technician)){
-                timer1 = setTimeout(() => {
-                    scrollRef.current.scrollToEnd()
-                }, 100);
-            }
-
-
-            return () => {
-                clearTimeout(timer1);
-            };
-        },
-        [drowdownVisible]
-    );
     const collapsedText = useMemo(() => {
         return [CASHIER].indexOf(user?.role?.key) != -1 && props.paymentHistory ? ((props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks) || (props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks) ): ((props?.approvalHistory?.remarks || props?.approvalHistory?.[0]?.remarks) ||  (props?.paymentHistory?.remarks || props?.paymentHistory?.[0]?.remarks))
     }, [props])
@@ -758,7 +742,7 @@ const BasicInfo = (_props: any) => {
                                 </View>
 
                             </View>
-                            {drowdownVisible && (props?.service?.examSeminar || props?.service?.technician  )? <View style={{marginBottom: 200}}/> : <></> }
+                            {<View style={{marginBottom: 200}}/>  }
                         </View>
 
                     }
