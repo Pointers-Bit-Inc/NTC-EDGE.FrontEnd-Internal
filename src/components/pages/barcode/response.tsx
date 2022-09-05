@@ -10,6 +10,7 @@ import {useAlert} from "../../../hooks/useAlert";
 import EvaluationStatus from "@assets/svg/evaluationstatus";
 import {fontValue} from "@pages/activities/fontValue";
 import moment from "moment";
+import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous2";
 
 function Row(props:{label:any, input: any}){
     return props?.input ? <View style={styles.group18}>
@@ -24,7 +25,7 @@ function Row(props:{label:any, input: any}){
 
 export function Response(props: { verifiedInfo: any, verified: boolean, onPress: () => void, error: boolean, onPress1: () => void }) {
     const getFullName = (user) => {
-        return `${user?.firstName} ${user?.middleName} ${user?.lastName}`;
+        return user?.firstName && user?.lastName ?   `${user?.firstName} ${user?.middleName} ${user?.lastName}` : (user?.companyName ? user?.companyName : (user?.applicantName ? user?.applicantName : "")) ;
     }
     const getFullAddress = (applicant:any = {}) => {
         const { street, barangay, city, province } = applicant;
@@ -35,11 +36,16 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
         if (province) result += `, ${province}`;
         return result;
     }
+
+
+
+
     const applicant =  props?.verifiedInfo?.application?.applicant;
+    const service =  props?.verifiedInfo?.application?.service;
     const schedule =  props?.verifiedInfo?.application?.schedule;
     const education =  props?.verifiedInfo?.application?.education;
     const approvalHistory =  props?.verifiedInfo?.application?.approvalHistory;
-    
+
     return <>
         <Modal
             animationType="slide"
@@ -78,19 +84,22 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                         </View>
                     </View>
                     <ScrollView style={{paddingVertical:10}}>
-                        {(applicant?.firstName ||applicant?.lastName) && <ProfileImage
+                        {(applicant?.firstName ||applicant?.lastName || applicant?.applicantName || applicant?.companyName) && <ProfileImage
                             style={{borderRadius:5,alignSelf:'center'}}
                             size={130}
                             textSize={50}
                             image={applicant?.profilePicture?.small}
-                            name={`${applicant?.firstName} ${applicant?.lastName}`}
+                            name={ applicant?.firstName && applicant?.lastName ?   `${applicant?.firstName} ${applicant?.middleName} ${applicant?.lastName}` : (applicant?.companyName ? applicant?.companyName : (applicant?.applicantName ? applicant?.applicantName : "")) }
                         />}
                         <View style={[{paddingHorizontal:10,paddingVertical:15}]}>
                             {applicant && <View style={[styles.group17]}>
                                 <Text style={styles.examDetails}>BASIC INFO</Text>
-                                <Row input={(applicant?.firstName || applicant?.middleName || applicant?.lastName) &&  getFullName(applicant)} label={'Name: '}/>
+                                <Row input={(applicant?.firstName || applicant?.middleName || applicant?.lastName || applicant?.companyName || applicant?.applicantName) &&  getFullName(applicant)} label={'Name: '}/>
                                 <Row input={getFullAddress(applicant?.address)} label={'Address: '}/>
                             </View>}
+
+
+
                             {schedule && <View style={styles.group17}>
                                <Text style={styles.examDetails}>EXAM DETAILS</Text>
                                 <Row input={schedule?.venue} label={"Venue: "}/>
@@ -114,6 +123,9 @@ export function Response(props: { verifiedInfo: any, verified: boolean, onPress:
                                 <Row input={education?.yearGraduated} label={'Year Graduated: '}/>
 
                             </View> }
+
+                            <RenderServiceMiscellaneous exclude={['_id', 'name', 'applicationType', 'serviceCode']}
+                                                        service={service}/>
                         </View>
                     </ScrollView>
                 </View>

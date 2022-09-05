@@ -56,8 +56,6 @@ export function useAuth(navigation) {
             .catch(e => {
                 setLoading(false);
                 if (e) {
-
-
                     setFormValue({
                         ...formValue ,
                         email : {
@@ -69,7 +67,7 @@ export function useAuth(navigation) {
                 }
             });
     };
-    
+
     const [formValue , setFormValue] = useSafeState({
         email : {
             value : '' ,
