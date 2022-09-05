@@ -742,7 +742,7 @@ const BasicInfo = (_props: any) => {
                                 </View>
 
                             </View>
-                            {<View style={{marginBottom: 200}}/>  }
+                            {props.edit && <View style={{marginBottom: 200}}/>  }
                         </View>
 
                     }
