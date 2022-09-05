@@ -196,7 +196,7 @@ interface Props {
             marginRight: 10,
         },
         dropdown: {
-            overflow: "hidden",
+            overflow: "scroll",
             alignSelf: isMobile ? "center" : "flex-end",
             position: 'absolute',
 

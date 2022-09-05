@@ -286,7 +286,8 @@ const BasicInfo = (_props: any) => {
     useEffect(
         () => {
             let timer1 = null
-            if(drowdownVisible){
+
+            if(drowdownVisible && (props?.service?.examSeminar || props?.service?.technician)){
                 timer1 = setTimeout(() => {
                     scrollRef.current.scrollToEnd()
                 }, 100);
@@ -757,7 +758,7 @@ const BasicInfo = (_props: any) => {
                                 </View>
 
                             </View>
-                            {drowdownVisible && props?.service?.examSeminar ? <View style={{marginBottom: 200}}/> : <></> }
+                            {drowdownVisible && (props?.service?.examSeminar || props?.service?.technician  )? <View style={{marginBottom: 200}}/> : <></> }
                         </View>
 
                     }

@@ -156,7 +156,7 @@ const RenderServiceMiscellaneous=(props)=>{
                 edit={props.edit}
                 label={prevValue ? `${transformText(prevValue)}:` : ""}
                 display={value}
-                applicant={props?.userProfileForm?.["service." + keys]}/> : (transformText(keys?.split?.(".")?.[keys.split(".")?.length-1]) == "Unit" &&  transformText(keys?.split?.(".")?.[keys.split(".")?.length-2]) == "Bandwidth")  ? <View style={{paddingBottom: 20}}>
+                applicant={props?.userProfileForm?.["service." + keys]}/> : (transformText(keys?.split?.(".")?.[keys.split(".")?.length-1]) == "Unit" &&  transformText(keys?.split?.(".")?.[keys.split(".")?.length-2]) == "Bandwidth" && props.edit)  ? <View style={{paddingBottom: 20}}>
                 <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
                                 label="Select Item"
                                 data={ bandwidthUnits }
