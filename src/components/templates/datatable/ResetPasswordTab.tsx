@@ -41,6 +41,11 @@ const ResetPasswordTab = () => {
         if(!_data?._id) return
         setAlert(false)
         setDisabled(true)
+
+        if(typeof _data.address == "string"){
+            delete _data.address
+        }
+
         _data.role = _data?.role?.key
         const _temporaryPassword = generatePassword()
         setTemporaryPassword(_temporaryPassword)

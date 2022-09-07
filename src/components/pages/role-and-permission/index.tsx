@@ -23,7 +23,7 @@ import {
     employeeDelete,
     employeeEdit,
     employeeView,
-    meet,
+    meet, resetPasswordPermission,
     rolePermissionCreate,
     rolePermissionDelete,
     rolePermissionEdit,
@@ -95,6 +95,7 @@ export default function RoleAndPermissionPage(props:any){
         "chatPermission": false,
         "activityPermission": false,
         "meetPermission": false,
+        "resetPasswordPermission": false,
         "userPermission": {
             "view": false,
             "edit": false,
@@ -177,6 +178,9 @@ export default function RoleAndPermissionPage(props:any){
         if( _permission.rolePermission.view){
             p.push(rolePermissionView)
         }
+        if( _permission.resetPasswordPermission){
+            p.push(resetPasswordPermission)
+        }
         setAccess(p)
 
     }
@@ -239,6 +243,9 @@ export default function RoleAndPermissionPage(props:any){
         }
         if(_access.indexOf(rolePermissionView) !== -1){
             _permission.rolePermission.view = true
+        }
+        if(_access.indexOf(resetPasswordPermission) !== -1){
+            _permission.resetPasswordPermission = true
         }
 
         axios.patch(BASE_URL + `/roles/${role.id}/permission`, _permission, config ).then((res) => {
@@ -339,24 +346,11 @@ export default function RoleAndPermissionPage(props:any){
                     <Header size={14} title={"Access:"}/>
                     <ScrollView style={{ borderTopWidth: 1, borderTopColor: disabledColor}}>
                         <View style={{padding: 20}}>
-                            <CheckboxList
-                                containerStyle={{flex: 1}}
-                                showCheckAll={false}
-                                value={access}
-                                onChange={(value)=>{
 
-                                    setAccess(value)
-                                }
-                                }
-                                options={[
-                                    { label: 'Chat', value: chat },
-                                    { label: 'Meet', value: meet },
-                                    { label: 'Activity', value: activity},
-                                ]}
-                            />
                             <View>
-                                <Text size={14} style={styles.text}>User</Text>
+
                                 <CheckboxList
+                                    containerStyle={{flex: 1}}
                                     showCheckAll={false}
                                     value={access}
                                     onChange={(value)=>{
@@ -365,12 +359,30 @@ export default function RoleAndPermissionPage(props:any){
                                     }
                                     }
                                     options={[
-                                        { label: 'Create', value: userCreate },
-                                        { label: 'Read', value: userView },
-                                        { label: 'Update', value: userEdit },
-                                        { label: 'Delete', value: userDelete },
+                                        { label: 'Chat', value: chat },
+                                        { label: 'Meet', value: meet },
+                                        { label: 'Activity', value: activity},
                                     ]}
                                 />
+                                <View style={{paddingTop: 10}}>
+                                    <Text size={14} style={styles.text}>User</Text>
+                                    <CheckboxList
+                                        showCheckAll={false}
+                                        value={access}
+                                        onChange={(value)=>{
+
+                                            setAccess(value)
+                                        }
+                                        }
+                                        options={[
+                                            { label: 'Create', value: userCreate },
+                                            { label: 'Read', value: userView },
+                                            { label: 'Update', value: userEdit },
+                                            { label: 'Delete', value: userDelete },
+                                        ]}
+                                    />
+                                </View>
+                                <View style={{paddingTop: 10}}>
                                 <Text size={14} style={styles.text}>Employee</Text>
                                 <CheckboxList
                                     showCheckAll={false}
@@ -387,13 +399,14 @@ export default function RoleAndPermissionPage(props:any){
                                         { label: 'Delete', value: employeeDelete },
                                     ]}
                                 />
+                                </View>
+                                <View style={{paddingTop: 10}}>
                                 <Text size={14} style={styles.text}>Role and Permission</Text>
                                 <CheckboxList
                                     size={12}
                                     showCheckAll={false}
                                     value={access}
                                     onChange={(value)=>{
-
                                         setAccess(value)
                                     }
                                     }
@@ -404,8 +417,21 @@ export default function RoleAndPermissionPage(props:any){
                                         { label: 'Delete', value: rolePermissionDelete },
                                     ]}
                                 />
+                                </View>
                             </View>
-
+                            <Text size={14} style={styles.text}>Reset Password</Text>
+                            <CheckboxList
+                                size={12}
+                                showCheckAll={false}
+                                value={access}
+                                onChange={(value)=>{
+                                    setAccess(value)
+                                }
+                                }
+                                options={[
+                                    { label: 'Reset Password', value: resetPasswordPermission },
+                                ]}
+                            />
                         </View>
                     </ScrollView>
                     <View style={{

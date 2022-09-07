@@ -189,6 +189,7 @@ const DataTable=(props)=>{
     const data = useSelector((state: RootStateOrAny) => {
         return state.application.data
     });
+    const resetPasswordPermission=useSelector((state:RootStateOrAny)=>state.user?.role?.permission?.resetPasswordPermission);
     const originalForm=[
         {
             stateName:'_id',
@@ -870,7 +871,8 @@ const DataTable=(props)=>{
                         </View>
                         <Tab.Navigator  screenOptions={tabBarOptions}>
                             <Tab.Screen name="Profile Data" component={ProfileData} />
-                            <Tab.Screen name="Reset Password" component={ResetPasswordTab} />
+
+                            {resetPasswordPermission ? <Tab.Screen name="Reset Password" component={ResetPasswordTab} /> : <></>}
                         </Tab.Navigator>
 
                     </View>
