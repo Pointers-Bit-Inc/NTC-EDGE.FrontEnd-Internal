@@ -298,9 +298,9 @@ const ActivityItem = (props: any) => {
 
     const personnel = useMemo(() => {
         if (propsMemo?.activity) {
-            if (!!propsMemo?.activity.paymentMethod && propsMemo?.activity.assignedPersonnel?._id) {
-                return propsMemo?.activity.assignedPersonnel
-            } else if (propsMemo?.activity.paymentStatus == APPROVED || propsMemo?.activity.paymentStatus == DECLINED) {
+            if (!!propsMemo?.activity.paymentMethod && propsMemo?.activity?.assignedPersonnel?._id) {
+                return propsMemo?.activity?.assignedPersonnel
+            } else if (propsMemo?.activity?.paymentStatus == APPROVED || propsMemo?.activity?.paymentStatus == DECLINED) {
                 return propsMemo?.activity?.paymentHistory?.[0]?.personnel || propsMemo?.activity?.paymentHistory?.personnel;
             } else {
                 return (
