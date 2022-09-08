@@ -377,7 +377,7 @@ const BasicInfo = (_props: any) => {
             : (!!(historyArrayMemo?.length) ?
                 <ContainerRemarkStyle>
                 <View style={[styles.group3, Platform.OS == "web" ? {paddingVertical: 10} : {}]}>
-                    <View style={styles.group}>
+                    <View style={[styles.group, {paddingBottom: 10}]}>
                         <View style={styles.rect}>
                             <Text style={styles.header}>REMARKS</Text>
                         </View>
