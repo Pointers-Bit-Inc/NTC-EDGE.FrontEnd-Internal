@@ -124,11 +124,9 @@ const ActivitiesPage = (props) => {
         onLayoutComponent,
         onSearchLayoutComponent,
         containerHeight,
-        activitySizeComponent,
         scrollViewRef, yPos, setYPos,
-        flatListViewRef,
-        pinnedApplications,
-        notPinnedApplications
+        countRefresh,
+        updateModal
     } = useActivities(props);
 
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
@@ -468,7 +466,7 @@ const ActivitiesPage = (props) => {
                         )
                     }}/>
             </>
-        ), []);
+        ), [countRefresh, updateModal]);
     const  onEndReached = () => {
         if (!onEndReachedCalledDuringMomentum || !(
             isMobile && !(

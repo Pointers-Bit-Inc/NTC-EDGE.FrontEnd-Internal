@@ -236,10 +236,11 @@ export const getFilter = ({
                 (
                     item?.assignedPersonnel?._id || item?.assignedPersonnel)) == user?._id || item?.status == APPROVED || item?.status == DECLINED || _approvalHistory) || search
     } else if (evaluator) {
-        return item?.status.length > 0 || (
+        return item?.status?.length > 0 || (
             item?.assignedPersonnel?._id || item?.assignedPersonnel) == user?._id || item?.assignedPersonnel === null || _approvalHistory
     }
 });
+
 
 interface UnreadReadApplicationParams {
     unReadBtn: any;

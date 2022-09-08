@@ -582,7 +582,9 @@ function convertStatusText(convertedStatus:any[],item:any){
         scrollableTabView,
         notPinnedApplications,
         pinnedApplications,
-        setRefreshing
+        setRefreshing,
+        countRefresh,
+        updateModal
     };
 }
 
