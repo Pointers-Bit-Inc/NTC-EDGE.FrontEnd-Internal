@@ -12,7 +12,7 @@ import LeftSideWeb from "@atoms/left-side-web";
 import {BASE_URL} from "../../../services/config";
 import axios from "axios";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {setRole, setRoles} from "../../../reducers/role/actions";
+import {setAddRole, setDeleteRole, setRole, setRoles} from "../../../reducers/role/actions";
 import {Bold} from "@styles/font";
 import lodash from "lodash";
 import CheckboxList from "@atoms/checkboxlist";
@@ -37,6 +37,7 @@ import {ToastType} from "@atoms/toast/ToastProvider";
 import {useToast} from "../../../hooks/useToast";
 import {disabledColor, successColor} from "@styles/color";
 import {setSessionToken} from "../../../reducers/user/actions";
+import {InputField} from "@molecules/form-fields";
 
 export default function RoleAndPermissionPage(props:any){
     const dimensions=useWindowDimensions();
@@ -46,6 +47,7 @@ export default function RoleAndPermissionPage(props:any){
     const [page, setPage] = useState(1);
     const dispatch = useDispatch();
     const roles = useSelector((state: RootStateOrAny) => state.role.roles);
+
     const role = useSelector((state: RootStateOrAny) => state.role.role);
     const fetchRoles = () => {
         setLoading(true);
@@ -72,12 +74,49 @@ export default function RoleAndPermissionPage(props:any){
     const onItemPress =useCallback((item) =>  {
         return  dispatch(setRole(item))
     }, [])
+    const config = useMemo(()=>{
+        return {
+            headers:{
+                Authorization:"Bearer ".concat(sessionToken)
+            }
+        };
+    }, [sessionToken])
+    const onDelete = (id) => {
+        axios.delete(BASE_URL + "/roles/" + id, config ).then(()=>{
+            showToast(ToastType.Success,"Success! ")
+            dispatch(setDeleteRole(id))
+        }).catch((error) => {
+            setLoading(false)
+            let _err = '';
 
+            for (const err in error?.response?.data?.errors) {
+                _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
+            }
+            if (_err || error?.response?.data?.message || error?.response?.statusText || (typeof error?.response?.data == "string" || typeof error == "string") ) {
+                showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data || error)
+            }else{
+                showToast(ToastType.Error, error?.message||'Something went wrong.');
+            }
+
+
+
+        })
+    }
     const renderItem = ({ item }) => (
         <View style={{padding: 10}}>
             <TouchableOpacity onPress={()=> onItemPress(item)}>
                 <View style={[styles.shadow, {borderRadius: 10, backgroundColor: "#fff", padding: 10}]}>
-                    <Text style={{fontFamily: Bold}}>{item.name}</Text>
+                    <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+                        <View>
+                            <Text style={{fontFamily: Bold}}>{item.name}</Text>
+                        </View>
+                        <View>
+                            <TouchableOpacity onPress={() => onDelete(item.id)}>
+                               <Text>Delete</Text>
+                            </TouchableOpacity>
+
+                        </View>
+                    </View>
                 </View>
             </TouchableOpacity>
 
@@ -116,13 +155,7 @@ export default function RoleAndPermissionPage(props:any){
         }
     }
 
-    const config = useMemo(()=>{
-        return {
-            headers:{
-                Authorization:"Bearer ".concat(sessionToken)
-            }
-        };
-    }, [sessionToken])
+
 
 
     const parseAccess = () => {
@@ -186,69 +219,102 @@ export default function RoleAndPermissionPage(props:any){
     }
 
 
-
-
-
-
-
-
-    const onParseAccess = () =>{
-        let _access = [...access]
-      let _permission = {...permission}
-
-        if(_access.indexOf(chat) !== -1){
+    const [createRole , setCreateRole] = useState(false)
+    function parsePermission(_access: any[], _permission: { chatPermission: boolean; resetPasswordPermission: boolean; rolePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; userPermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; activityPermission: boolean; meetPermission: boolean; employeePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean } }) {
+        if (_access.indexOf(chat) !== -1) {
             _permission.chatPermission = true
         }
-        if(_access.indexOf(meet) !== -1){
+        if (_access.indexOf(meet) !== -1) {
             _permission.meetPermission = true
         }
-        if(_access.indexOf(activity) !== -1){
+        if (_access.indexOf(activity) !== -1) {
             _permission.activityPermission = true
         }
-        if(_access.indexOf(userCreate) !== -1){
+        if (_access.indexOf(userCreate) !== -1) {
             _permission.userPermission.create = true
         }
-        if(_access.indexOf(userDelete) !== -1){
+        if (_access.indexOf(userDelete) !== -1) {
             _permission.userPermission.delete = true
         }
-        if(_access.indexOf(userEdit) !== -1){
+        if (_access.indexOf(userEdit) !== -1) {
             _permission.userPermission.edit = true
         }
-        if(_access.indexOf(userView) !== -1){
+        if (_access.indexOf(userView) !== -1) {
             _permission.userPermission.view = true
         }
 
-        if(_access.indexOf(employeeCreate) !== -1){
+        if (_access.indexOf(employeeCreate) !== -1) {
             _permission.employeePermission.create = true
         }
-        if(_access.indexOf(employeeDelete) !== -1){
+        if (_access.indexOf(employeeDelete) !== -1) {
             _permission.employeePermission.delete = true
         }
-        if(_access.indexOf(employeeEdit) !== -1){
+        if (_access.indexOf(employeeEdit) !== -1) {
             _permission.employeePermission.edit = true
         }
-        if(_access.indexOf(employeeView) !== -1){
+        if (_access.indexOf(employeeView) !== -1) {
             _permission.employeePermission.view = true
         }
 
 
-        if(_access.indexOf(rolePermissionCreate) !== -1){
+        if (_access.indexOf(rolePermissionCreate) !== -1) {
             _permission.rolePermission.create = true
         }
-        if(_access.indexOf(rolePermissionDelete) !== -1){
+        if (_access.indexOf(rolePermissionDelete) !== -1) {
             _permission.rolePermission.delete = true
         }
-        if(_access.indexOf(rolePermissionEdit) !== -1){
+        if (_access.indexOf(rolePermissionEdit) !== -1) {
             _permission.rolePermission.edit = true
         }
-        if(_access.indexOf(rolePermissionView) !== -1){
+        if (_access.indexOf(rolePermissionView) !== -1) {
             _permission.rolePermission.view = true
         }
-        if(_access.indexOf(resetPasswordPermission) !== -1){
+        if (_access.indexOf(resetPasswordPermission) !== -1) {
             _permission.resetPasswordPermission = true
         }
 
-        axios.patch(BASE_URL + `/roles/${role.id}/permission`, _permission, config ).then((res) => {
+
+        return _permission
+
+    }
+
+    const [createRoleInput, setCreateRoleInput] = useState("")
+    const onCreateAccess =() =>{
+        let _access = [...access]
+        let _permission = {...permission}
+        let _parsePermission = parsePermission(_access, _permission);
+        axios.post(BASE_URL + "/roles", {permission: _parsePermission,name:createRoleInput} , config).then((res) => {
+            setCreateRoleInput("")
+            setCreateRole(false)
+            setAccess([])
+            showToast(ToastType.Success,"Success! ")
+            dispatch(setAddRole(res.data))
+        }).catch((error) => {
+            setLoading(false)
+            let _err = '';
+
+            for (const err in error?.response?.data?.errors) {
+                _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
+            }
+            if (_err || error?.response?.data?.message || error?.response?.statusText || (typeof error?.response?.data == "string" || typeof error == "string") ) {
+                showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data || error)
+            }else{
+                showToast(ToastType.Error, error?.message||'Something went wrong.');
+            }
+
+
+
+        })
+
+
+    }
+
+    const onParseAccess = () =>{
+        let _access = [...access]
+      let _permission = {...permission}
+        let _parsePermission = parsePermission(_access, _permission);
+
+        axios.patch(BASE_URL + `/roles/${role.id}/permission`, _parsePermission, config ).then((res) => {
 
             dispatch(setSessionToken(res.data.sessionToken))
             showToast(ToastType.Success,"Success!")
@@ -273,17 +339,23 @@ export default function RoleAndPermissionPage(props:any){
 
     }
 
+    const createRoleAndPermission = () =>{
 
-    function newToken () {
-        console.log(sessionToken)
     }
-
-
     return (
         <View style={{backgroundColor:"#F8F8F8",flex:1,flexDirection:"row"}}>
             <LeftSideWeb>
                 <View style={styles.header}>
-                    <Header title={"Roles & Permission"}/>
+                    <Header title={"Roles & Permission"}>
+                        <TouchableOpacity onPress={()=> {
+                            dispatch(setRole([]))
+                            setCreateRole(true)
+                            setAccess([])
+
+                        }}>
+                            <Text>Add a New Role</Text>
+                        </TouchableOpacity>
+                    </Header>
                     <View style={{marginHorizontal:26,}}>
 
                         <View style={{
@@ -328,7 +400,7 @@ export default function RoleAndPermissionPage(props:any){
                 !(
                     (
                         isMobile&& !(
-                            Platform?.isPad||isTablet())))&&  lodash.isEmpty(role) && dimensions?.width>768?
+                            Platform?.isPad||isTablet())))&& (!createRole) && lodash.isEmpty(role) && dimensions?.width>768?
                 <View style={[{flex:1,justifyContent:"center",alignItems:"center"}]}>
 
                     <NoActivity/>
@@ -454,6 +526,138 @@ export default function RoleAndPermissionPage(props:any){
 
 
                 </View>   : <></>
+            }
+
+
+
+            {(createRole && lodash.isEmpty(role)) ? <View style={[{flex:1, backgroundColor: "#fff",}]}>
+                <Header size={24} title={ "Create Role and Permission"}>
+                    <TouchableOpacity onPress={()=>{
+                        setCreateRole(false)
+                        dispatch(setRole({}))
+                    }
+                    }>
+                        <Text>Close</Text>
+                    </TouchableOpacity>
+                </Header>
+                <View style={{paddingHorizontal: 26}}>
+                    <InputField   onChangeText={setCreateRoleInput}
+                                  value={createRoleInput} placeholder={"Create a Role"} label={"Create a Role"} />
+                </View>
+
+                { role?.description ? <Header size={14} title={"Description:" + role?.description}/> : <></>}
+                <Header size={14} title={"Access:"}/>
+                <ScrollView style={{ borderTopWidth: 1, borderTopColor: disabledColor}}>
+                    <View style={{padding: 20}}>
+
+                        <View>
+
+                            <CheckboxList
+                                containerStyle={{flex: 1}}
+                                showCheckAll={false}
+                                value={access}
+                                onChange={(value)=>{
+
+                                    setAccess(value)
+                                }
+                                }
+                                options={[
+                                    { label: 'Chat', value: chat },
+                                    { label: 'Meet', value: meet },
+                                    { label: 'Activity', value: activity},
+                                ]}
+                            />
+                            <View style={{paddingTop: 10}}>
+                                <Text size={14} style={styles.text}>User</Text>
+                                <CheckboxList
+                                    showCheckAll={false}
+                                    value={access}
+                                    onChange={(value)=>{
+
+                                        setAccess(value)
+                                    }
+                                    }
+                                    options={[
+                                        { label: 'Create', value: userCreate },
+                                        { label: 'Read', value: userView },
+                                        { label: 'Update', value: userEdit },
+                                        { label: 'Delete', value: userDelete },
+                                    ]}
+                                />
+                            </View>
+                            <View style={{paddingTop: 10}}>
+                                <Text size={14} style={styles.text}>Employee</Text>
+                                <CheckboxList
+                                    showCheckAll={false}
+                                    value={access}
+                                    onChange={(value)=>{
+
+                                        setAccess(value)
+                                    }
+                                    }
+                                    options={[
+                                        { label: 'Create', value: employeeCreate },
+                                        { label: 'Read', value: employeeView },
+                                        { label: 'Update', value: employeeEdit },
+                                        { label: 'Delete', value: employeeDelete },
+                                    ]}
+                                />
+                            </View>
+                            <View style={{paddingTop: 10}}>
+                                <Text size={14} style={styles.text}>Role and Permission</Text>
+                                <CheckboxList
+                                    size={12}
+                                    showCheckAll={false}
+                                    value={access}
+                                    onChange={(value)=>{
+                                        setAccess(value)
+                                    }
+                                    }
+                                    options={[
+                                        { label: 'Create', value: rolePermissionCreate },
+                                        { label: 'Read', value: rolePermissionView },
+                                        { label: 'Update', value: rolePermissionEdit },
+                                        { label: 'Delete', value: rolePermissionDelete },
+                                    ]}
+                                />
+                            </View>
+                        </View>
+                        <Text size={14} style={styles.text}>Reset Password</Text>
+                        <CheckboxList
+                            size={12}
+                            showCheckAll={false}
+                            value={access}
+                            onChange={(value)=>{
+                                setAccess(value)
+                            }
+                            }
+                            options={[
+                                { label: 'Reset Password', value: resetPasswordPermission },
+                            ]}
+                        />
+                    </View>
+                </ScrollView>
+                <View style={{
+
+                    margin: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',}}>
+                    {/* <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={newToken}>
+
+                            <Text style={[styles.text,  ]} size={14}>new token</Text>
+
+                        </TouchableOpacity>*/}
+                    <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={onCreateAccess}>
+
+                        <Text style={[styles.text, {color: "#fff"} ]} size={14}>Create</Text>
+
+                    </TouchableOpacity>
+                </View>
+
+
+
+            </View>   : <></>
+
             }
 
 

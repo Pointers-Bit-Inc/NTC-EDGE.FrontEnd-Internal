@@ -1,4 +1,4 @@
-const { SET_ROLES, SET_ROLE } = require('./types').default;
+const { SET_ROLES, SET_ROLE, SET_DELETE_ROLE , SET_ADD_ROLE} = require('./types').default;
 
 export function setRoles(payload) {
   return {
@@ -14,3 +14,15 @@ export function setRole(payload) {
   };
 }
 
+export function setDeleteRole(payload) {
+  return {
+    type: SET_DELETE_ROLE,
+    payload,
+  };
+}
+export function setAddRole(payload) {
+  return {
+    type: SET_ADD_ROLE,
+    payload,
+  };
+}

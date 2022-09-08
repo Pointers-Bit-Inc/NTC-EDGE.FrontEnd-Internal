@@ -5,7 +5,7 @@ import {Bold} from "@styles/font";
 import React from "react";
 import UploadIcon from "@assets/svg/uploadReport";
 
-const  Header =({title, size = 24}) => {
+const  Header =({title, size = 24, children}) => {
     return <View style={styles.headerContent}>
 
             <View style={styles.titleContainer}>
@@ -17,6 +17,8 @@ const  Header =({title, size = 24}) => {
                     {title}
                 </Text>
             </View>
+
+        {children}
 
         </View>
 
