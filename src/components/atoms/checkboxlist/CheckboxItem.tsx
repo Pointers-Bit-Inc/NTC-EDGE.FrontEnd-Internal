@@ -39,7 +39,7 @@ export const CheckboxItem: FC<any> = ({
             activeOpacity={disabled ? 1 : 0.5}
             style={[mode === 'list' ? { width: '100%', flex: 1 } : {}, itemStyle]}
         >
-            <View style={[{flex: 1, flexDirection: "row", marginRight: 12, }, mode === 'list' ? { flex: 1, width: '100%' } : {}]}>
+            <View style={[{flex: 1, flexDirection: "row", alignItems: "center", marginRight: 12, }, mode === 'list' ? { flex: 1, width: '100%' } : {}]}>
                 <View style={{marginRight: 6}}>
                     {
                         mapping[status]  == "checkboxUnchecked" ? <IconCheckedboxUnchecked></IconCheckedboxUnchecked>:<IconCheckboxChecked color={primaryColor}></IconCheckboxChecked>

@@ -35,7 +35,7 @@ export const CheckboxList: FC<any> = ({
                     <CheckboxItem
                         mode="list"
                         disabled={false}
-                        label="全选"
+                        label="Select All"
                         value="checkbox-select-all"
                         status={checkedAllStatus}
                         size={size}
