@@ -128,7 +128,6 @@ const ActivitiesPage = (props) => {
         countRefresh,
         updateModal
     } = useActivities(props);
-
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
     const applicationItemId = useSelector((state: RootStateOrAny) => state.application.applicationItemId);
 
@@ -368,7 +367,7 @@ const ActivitiesPage = (props) => {
 
                 }} index={`pin${i}${index}`}
                 swiper={(index: number, progress: any, dragX: any, onPressUser: any) => renderSwiper(index, progress, dragX, onPressUser, act?.item, unReadReadApplicationFn)}/>
-    }, [])
+    }, [countRefresh, updateModal, user._id])
 
     const listHeaderComponent = () => <ListHeaderComponent searchVisible={searchVisible} pnApplications={pnApplications}
                                                            containerHeight={fontValue(containerHeight)} onScroll={(event) => {
@@ -466,7 +465,7 @@ const ActivitiesPage = (props) => {
                         )
                     }}/>
             </>
-        ), [countRefresh, updateModal]);
+        ), [countRefresh, updateModal, user._id]);
     const  onEndReached = () => {
         if (!onEndReachedCalledDuringMomentum || !(
             isMobile && !(
