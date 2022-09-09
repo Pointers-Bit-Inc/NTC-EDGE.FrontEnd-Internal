@@ -271,21 +271,18 @@ const ActivitiesPage = (props) => {
 
     const contentContainerStyle = useMemo<StyleProp<ViewStyle>>(
         () => ({
-            paddingTop: rendered ? headerHeight + TAB_BAR_HEIGHT : 0,
-            paddingBottom: bottom,
 
-            minHeight: screenHeight + headerDiff,
         }),
         [rendered, headerHeight, bottom, screenHeight, headerDiff]
     );
 
     const sharedProps = useMemo<Partial<FlatListProps<Connection>>>(
         () => ({
-            contentContainerStyle,
+           // contentContainerStyle,
             onMomentumScrollEnd: sync,
             onScrollEndDrag: sync,
             scrollEventThrottle: 16,
-            scrollIndicatorInsets: {top: heightExpanded},
+           // scrollIndicatorInsets: {top: heightExpanded},
         }),
         [contentContainerStyle, sync, heightExpanded]
     );
@@ -578,8 +575,8 @@ const ActivitiesPage = (props) => {
     );
     const tabBarStyle = useMemo<StyleProp<ViewStyle>>(
         () => [
-            rendered ? styles.tabBarContainer : undefined,
-            {top: rendered ? headerHeight : undefined},
+            //rendered ? styles.tabBarContainer : undefined,
+            //{top: rendered ? headerHeight : undefined},
             tabBarAnimatedStyle,
         ],
         [rendered, headerHeight, tabBarAnimatedStyle]
@@ -608,9 +605,9 @@ const ActivitiesPage = (props) => {
     );
     const headerContainerStyle = useMemo<StyleProp<ViewStyle>>(
         () => [
-            rendered ? styles.headerContainer : undefined,
+            //rendered ? styles.headerContainer : undefined,
 
-            headerAnimatedStyle,
+           // headerAnimatedStyle,
         ],
 
         [rendered, headerAnimatedStyle]
@@ -630,9 +627,7 @@ const ActivitiesPage = (props) => {
 
     const collapsedOverlayStyle = useMemo<StyleProp<ViewStyle>>(
         () => [
-            styles.collapsedOvarlay,
-            collapsedOverlayAnimatedStyle,
-            {height: heightCollapsed},
+
         ],
         [collapsedOverlayAnimatedStyle, heightCollapsed]
     );
@@ -671,9 +666,9 @@ const ActivitiesPage = (props) => {
                 <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
                     <View style={containerMergeStyle}>
 
-                        <Animated.View onLayout={handleHeaderLayout} style={headerContainerStyle}>
+                        <View onLayout={handleHeaderLayout} style={headerContainerStyle}>
                             <View onLayout={onLayoutComponent}>
-                                <Animated.View style={headerContainerMergeStyle}>
+                                <View style={headerContainerMergeStyle}>
 
                                     {(
                                             (
@@ -704,12 +699,12 @@ const ActivitiesPage = (props) => {
                                                 !(
                                                     isMobile && !(
                                                         Platform?.isPad || isTablet())) && dimensions?.width > 768) ?
-                                                <RefreshWeb style={{paddingLeft: 15}} width={fontValue(26)}
-                                                            height={fontValue(24)} fill={"#fff"}/> :
+                                                <RefreshWeb style={{paddingLeft: 15}} width={fontValue(28)}
+                                                            height={fontValue(28)} fill={"#fff"}/> :
                                                 <View style={{paddingLeft: 23}}><RefreshRN/></View>}
                                         </TouchableOpacity>
                                     }
-                                </Animated.View>
+                                </View>
                             </View>
                             <View>
                                 {
@@ -758,50 +753,10 @@ const ActivitiesPage = (props) => {
 
                                 props.navigation.navigate(isMobile ? SEARCHMOBILE : SEARCH);
                             }} searchVisible={searchVisible}/>
-                        </Animated.View>
+                        </View>
 
-                        <Animated.View style={collapsedOverlayStyle}>
-                            <View>
-                                {
-                                    !!lodash.size(meetingList) && (
-                                        <FlatList
-                                            data={meetingList}
-                                            bounces={false}
-                                            horizontal
-                                            showsHorizontalScrollIndicator={false}
-                                            snapToInterval={sizeComponent?.width || dimensions?.width}
-                                            decelerationRate={0}
-                                            keyExtractor={(item: any) => item._id}
-                                            renderItem={({item}) => (
-                                                <MeetingNotif
-                                                    style={{
-                                                        ...Platform.select({
-                                                            native: {
-                                                                width: sizeComponent?.width || dimensions?.width
-                                                            },
-                                                            default: {
-                                                                width: 466
-                                                            }
-                                                        })
-                                                    }}
-                                                    name={getChannelName({
-                                                        ...item,
-                                                        otherParticipants: item?.participants
-                                                    })}
-                                                    time={item.createdAt}
-                                                    host={item.host}
-                                                    onJoin={() => onJoin(item)}
-                                                    onClose={(leave: any) => onClose(item, leave)}
-                                                    closeText={'Cancel'}
-                                                />
-                                            )}
-                                        />
-                                    )
-                                }
 
-                            </View>
-                        </Animated.View>
-                        <Tab.Navigator  screenOptions={tabBarOptions} tabBar={renderTabBar}>
+                        <Tab.Navigator  screenOptions={tabBarOptions} >
                             <Tab.Screen name="All">{renderAllActivities}</Tab.Screen>
                             <Tab.Screen name="Pending">{renderPending}</Tab.Screen>
                             <Tab.Screen name="History">{renderHistory}</Tab.Screen>
