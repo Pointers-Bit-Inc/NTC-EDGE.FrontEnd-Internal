@@ -73,9 +73,9 @@ function ActivityModal(props: any) {
         let _applicationItem = state.application?.applicationItem
         for (let i = 0; i < _applicationItem?.service?.stationClass?.length; i++) {
 
-            let _split = _applicationItem?.service?.stationClass[i].class.split(" • ")
+            let _split = _applicationItem?.service?.stationClass[i]?.stationClass.split(" • ")
             if (_split.length == 2) {
-                _applicationItem.service.stationClass[i].class = _split[0]
+                _applicationItem.service.stationClass[i].stationClass = _split[0]
                 _applicationItem.service.stationClass[i].unit = _split[1]
             }
 
@@ -335,7 +335,7 @@ function ActivityModal(props: any) {
 
             let _obj = serviceStationClass[i]
 
-            _service.service.stationClass.push({"class": _obj.class + " • " + _obj.unit})
+            _service.service.stationClass.push({"class": _obj?.stationClass + " • " + _obj.unit})
 
         }
         // /^soa.+(?:\[\d+])?(?:\.\w+(?:\[\d+])?)*$/;
@@ -476,9 +476,9 @@ function ActivityModal(props: any) {
             if (_applicationItem?.service?.stationClass) {
                 for (let i = 0; i < _applicationItem?.service?.stationClass?.length; i++) {
 
-                    let _split = _applicationItem?.service?.stationClass[i].class.split(" • ")
+                    let _split = _applicationItem?.service?.stationClass[i]?.stationClass.split(" • ")
                     if (_split.length == 2) {
-                        _applicationItem.service.stationClass[i].class = _split[0]
+                        _applicationItem.service.stationClass[i].stationClass = _split[0]
                         _applicationItem.service.stationClass[i].unit = _split[1]
                     }
 
@@ -683,7 +683,7 @@ function ActivityModal(props: any) {
                                         <ApprovedButton
                                             user={user}
                                             currentLoading={currentLoading}
-                                            allButton={allButton}
+                                            allButton={false}
                                             onPress={() => {
                                                 if (getRole(user, [EVALUATOR])) {
                                                     setShowAlert1(true)
