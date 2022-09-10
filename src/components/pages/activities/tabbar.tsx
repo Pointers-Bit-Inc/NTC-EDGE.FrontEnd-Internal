@@ -342,7 +342,7 @@ export default function TabBar({navigation,route}){
                                 component={ActivitiesNavigator}/>
                 {user?.role?.permission?.chatPermission ?<Drawer.Screen options={{drawerLabel:CHAT,headerShown:false}} name={CHAT} component={ChatScreen}/> : <></>}
                 {user?.role?.permission?.meetPermission ? <Drawer.Screen options={{drawerLabel:MEET,headerShown:false}} name={MEET} component={MeetScreen}/> : <></>}
-                {(getRole(user,[CHECKER,EVALUATOR,DIRECTOR])&& Platform.OS != "web") &&
+                {(user?.role?.permission?.qrCodePermission && Platform.OS != "web") &&
                     <Drawer.Screen options={{drawerLabel:SCANQR,headerShown:false}} name={SCANQR} component={QrCodeScanner}/>}
                  {/*<Drawer.Screen options={{drawerLabel:DASHBOARD,headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/>*/}
                  {/*<Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/>*/}

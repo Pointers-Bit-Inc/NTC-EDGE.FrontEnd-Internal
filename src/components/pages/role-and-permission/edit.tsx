@@ -5,8 +5,17 @@ import {disabledColor, successColor} from "@styles/color";
 import {
     activity,
     chat,
-    employeeCreate, employeeDelete, employeeEdit, employeeView,
-    meet, resetPasswordPermission, rolePermissionCreate, rolePermissionDelete, rolePermissionEdit, rolePermissionView,
+    employeeCreate,
+    employeeDelete,
+    employeeEdit,
+    employeeView,
+    meet,
+    qrCodePermission,
+    resetPasswordPermission,
+    rolePermissionCreate,
+    rolePermissionDelete,
+    rolePermissionEdit,
+    rolePermissionView,
     userCreate,
     userDelete,
     userEdit,
@@ -114,7 +123,7 @@ const EditRoleAndPermissionScreen = (props) => {
                         />
                     </View>
                 </View>
-                <Text size={14} style={styles.text}>Reset Password</Text>
+                <Text size={14} style={styles.text}>Misc.</Text>
                 <CheckboxList
                     size={12}
                     showCheckAll={false}
@@ -125,6 +134,7 @@ const EditRoleAndPermissionScreen = (props) => {
                     }
                     options={[
                         { label: 'Reset Password', value: resetPasswordPermission },
+                        { label: 'Qr Code', value: qrCodePermission },
                     ]}
                 />
             </View>

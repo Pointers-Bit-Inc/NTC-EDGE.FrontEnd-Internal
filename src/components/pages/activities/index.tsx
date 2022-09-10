@@ -341,7 +341,6 @@ const ActivitiesPage = (props) => {
                 activity={act?.item}
                 isPinned={true}
                 onPressUser={(event: any) => {
-console.log(act?.item)
 
                     /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                     })*/

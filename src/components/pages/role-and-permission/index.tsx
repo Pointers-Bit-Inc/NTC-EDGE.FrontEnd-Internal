@@ -19,7 +19,7 @@ import {
     employeeDelete,
     employeeEdit,
     employeeView,
-    meet, resetPasswordPermission,
+    meet, qrCodePermission, resetPasswordPermission,
     rolePermissionCreate,
     rolePermissionDelete,
     rolePermissionEdit,
@@ -207,7 +207,7 @@ export default function RoleAndPermissionPage(props:any){
                                 />
                                 </View>
                             </View>
-                            <Text size={14} style={styles.text}>Reset Password</Text>
+                            <Text size={14} style={styles.text}>Misc.</Text>
                             <CheckboxList
                                 size={12}
                                 showCheckAll={false}
@@ -218,6 +218,7 @@ export default function RoleAndPermissionPage(props:any){
                                 }
                                 options={[
                                     { label: 'Reset Password', value: resetPasswordPermission },
+                                    { label: 'Qr Code', value: qrCodePermission },
                                 ]}
                             />
                         </View>
@@ -338,7 +339,7 @@ export default function RoleAndPermissionPage(props:any){
                                 />
                             </View>
                         </View>
-                        <Text size={14} style={styles.text}>Reset Password</Text>
+                        <Text size={14} style={styles.text}>Misc.</Text>
                         <CheckboxList
                             size={12}
                             showCheckAll={false}
@@ -349,6 +350,7 @@ export default function RoleAndPermissionPage(props:any){
                             }
                             options={[
                                 { label: 'Reset Password', value: resetPasswordPermission },
+                                { label: 'Qr Code', value: qrCodePermission },
                             ]}
                         />
                     </View>

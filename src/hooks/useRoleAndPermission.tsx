@@ -12,8 +12,17 @@ import {useToast} from "./useToast";
 import {
     activity,
     chat,
-    employeeCreate, employeeDelete, employeeEdit, employeeView,
-    meet, resetPasswordPermission, rolePermissionCreate, rolePermissionDelete, rolePermissionEdit, rolePermissionView,
+    employeeCreate,
+    employeeDelete,
+    employeeEdit,
+    employeeView,
+    meet,
+    qrCodePermission,
+    resetPasswordPermission,
+    rolePermissionCreate,
+    rolePermissionDelete,
+    rolePermissionEdit,
+    rolePermissionView,
     userCreate,
     userDelete,
     userEdit,
@@ -21,6 +30,7 @@ import {
 } from "../reducers/role/initialstate";
 import {setSessionToken} from "../reducers/user/actions";
 import lodash from "lodash";
+import {isMobile} from "@pages/activities/isMobile";
 const useRoleAndPermission =(navigation) => {
     const dimensions = useWindowDimensions();
     const [value, setValue] = useState();
@@ -55,7 +65,10 @@ const useRoleAndPermission =(navigation) => {
 
     const onItemPress = useCallback((item) => {
         dispatch(setRole(item))
-        navigation.push("EditRoleAndPermissionScreen")
+        if(isMobile){
+            navigation.push("EditRoleAndPermissionScreen")
+        }
+
     }, [])
     const config = useMemo(() => {
         return {
@@ -115,6 +128,7 @@ const useRoleAndPermission =(navigation) => {
         "activityPermission": false,
         "meetPermission": false,
         "resetPasswordPermission": false,
+        "qrCodePermission": false,
         "userPermission": {
             "view": false,
             "edit": false,
@@ -192,6 +206,10 @@ const useRoleAndPermission =(navigation) => {
         if (_permission.resetPasswordPermission) {
             p.push(resetPasswordPermission)
         }
+
+        if (_permission.qrCodePermission) {
+            p.push(qrCodePermission)
+        }
         setAccess(p)
 
     }
@@ -199,7 +217,7 @@ const useRoleAndPermission =(navigation) => {
 
     const [createRole, setCreateRole] = useState(false)
 
-    function parsePermission(_access: any[], _permission: { chatPermission: boolean; resetPasswordPermission: boolean; rolePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; userPermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; activityPermission: boolean; meetPermission: boolean; employeePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean } }) {
+    function parsePermission(_access: any[], _permission: { chatPermission: boolean;qrCodePermission: boolean; resetPasswordPermission: boolean; rolePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; userPermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; activityPermission: boolean; meetPermission: boolean; employeePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean } }) {
         if (_access.indexOf(chat) !== -1) {
             _permission.chatPermission = true
         }
@@ -250,6 +268,10 @@ const useRoleAndPermission =(navigation) => {
         }
         if (_access.indexOf(resetPasswordPermission) !== -1) {
             _permission.resetPasswordPermission = true
+        }
+
+        if (_access.indexOf(qrCodePermission) !== -1) {
+            _permission.qrCodePermission = true
         }
 
 

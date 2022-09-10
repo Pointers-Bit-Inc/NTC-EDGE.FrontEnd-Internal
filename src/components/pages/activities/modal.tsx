@@ -542,7 +542,6 @@ function ActivityModal(props: any) {
         return promise;
     };
     const [tabName, setTabName] = useState(null)
-
     return (
         <>
             <View  style={(isMobile && !((Platform?.isPad || isTablet()) && isLandscapeSync())) && (
@@ -551,8 +550,8 @@ function ActivityModal(props: any) {
                 zIndex: 2,
                 top: 0,
                 left: 0,
-                width: "100%",
-                height: "100%",
+                width: dimensions.width,
+                height: dimensions.height,
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
             } : {position: "absolute",}}>
             </View>
