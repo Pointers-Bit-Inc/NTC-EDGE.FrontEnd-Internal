@@ -419,7 +419,7 @@ function ActivityModal(props: any) {
             .then((response) => {
 
                 if (isLoading)setLoading(false)
-                const diff =  _.differenceBy(_flattenSoa, (response.data?.statement_Of_Account || response.data?.soa),  'item')
+                const diff =  _.uniqBy( _flattenSoa, (response.data?.statement_Of_Account || response.data?.soa),  'item')
 
                 cleanSoa = {
                   //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
@@ -542,6 +542,7 @@ function ActivityModal(props: any) {
         return promise;
     };
     const [tabName, setTabName] = useState(null)
+
     return (
         <>
             <View  style={(isMobile && !((Platform?.isPad || isTablet()) && isLandscapeSync())) && (

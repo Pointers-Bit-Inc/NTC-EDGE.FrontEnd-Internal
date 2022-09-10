@@ -201,7 +201,7 @@ const Endorsed = (props: any) => {
             <KeyboardAvoidingView
                 behavior={ Platform.OS === "ios" ? "padding" : "height" }
                 style={ [styles.container ,  {
-
+                    zIndex: !showAlert  ? 0 : -1,
                        width: "100%",
                     display : !showAlert ? undefined : "none" }] }
             >

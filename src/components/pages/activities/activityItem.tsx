@@ -151,6 +151,8 @@ const RenderStatus = ({trigger, status}: any) => {
                 },
             ]
         , [status])
+
+
     return (
         <View
             style={containerStatus}
