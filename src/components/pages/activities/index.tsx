@@ -353,6 +353,8 @@ const ActivitiesPage = (props) => {
                             });
                         }
                     }
+
+                    console.log(act.item)
                     dispatch(setSelectedYPos({yPos, type: 1}))
 
                 }} index={`pin${i}${index}`}

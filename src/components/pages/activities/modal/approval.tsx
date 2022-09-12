@@ -249,7 +249,11 @@ const Approval=(props:any)=>{
             visible={props.visible}
             onRequestClose={_springHide}>
 
-
+            {loading && <><View style={{  flex: 1,alignItems:'center',
+                justifyContent:'center',}}>
+                <OnBackdropPress  styles={{  backgroundColor : !props.showAlert && visible && Platform.OS != "web"  ? "rgba(0, 0, 0, 0.0)" : undefined}}/>
+                <Loading color={infoColor}/>
+            </View></>}
             {!loading && <>
                 <CustomAlert
                     showClose={showClose}

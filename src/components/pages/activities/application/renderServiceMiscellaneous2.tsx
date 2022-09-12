@@ -127,7 +127,7 @@ const RenderServiceMiscellaneous=(props)=>{
     let _renderParent=(item:any)=>{
         const [keys,value]=item.item;
         var index,prevValue,nextValue,findIndex;
-        findIndex=keys.split(".").reverse()?.map((key,index)=>{
+        findIndex=keys?.split(".")?.reverse()?.map((key,index)=>{
             return key
         }).findIndex((name)=>{
             return !isNaN(parseInt(name))
@@ -138,9 +138,9 @@ const RenderServiceMiscellaneous=(props)=>{
             nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1];
         } else{
 
-            prevValue=keys?.split?.(".")?.[keys.split(".")?.length-1];
-            index=keys?.split?.(".")?.[keys.split(".")?.length];
-            nextValue=keys?.split?.(".")?.[keys.split(".")?.length-2]||keys?.split?.(".")?.[0];
+            prevValue=keys?.split?.(".")?.[keys?.split(".")?.length-1];
+            index=keys?.split?.(".")?.[keys?.split(".")?.length];
+            nextValue=keys?.split?.(".")?.[keys?.split(".")?.length-2]||keys?.split?.(".")?.[0];
         }
 
 
@@ -156,7 +156,7 @@ const RenderServiceMiscellaneous=(props)=>{
                 edit={props.edit}
                 label={prevValue ? `${transformText(prevValue)}:` : ""}
                 display={value}
-                applicant={props?.userProfileForm?.["service." + keys]}/> : (transformText(keys?.split?.(".")?.[keys.split(".")?.length-1]) == "Unit" &&  transformText(keys?.split?.(".")?.[keys.split(".")?.length-2]) == "Bandwidth" && props.edit)  ? <View style={{paddingBottom: 20}}>
+                applicant={props?.userProfileForm?.["service." + keys]}/> : (transformText(keys?.split?.(".")?.[keys?.split(".")?.length-1]) == "Unit" &&  transformText(keys?.split?.(".")?.[keys?.split(".")?.length-2]) == "Bandwidth" && props.edit)  ? <View style={{paddingBottom: 20}}>
                 <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
                                 label="Select Item"
                                 data={ bandwidthUnits }
@@ -168,7 +168,7 @@ const RenderServiceMiscellaneous=(props)=>{
                 updateForm={props.updateForm}
                 stateName={"service." + keys}
                 edit={props.edit}
-                label={prevValue ? `${transformText(keys?.split?.(".")?.[keys.split(".")?.length-1])}:` : ""}
+                label={prevValue ? `${transformText(keys?.split?.(".")?.[keys?.split(".")?.length-1])}:` : ""}
                 display={value}
                 applicant={props?.userProfileForm?.["service." + keys]}/>
             }

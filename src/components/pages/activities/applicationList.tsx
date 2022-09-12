@@ -50,11 +50,7 @@ const ApplicationList=(_props:{onPress:()=>void,item:any,numbers:{parentIndex:nu
     }, [])
     const ActivityMemo = useMemo(() => {
 
-        return props.item.activity.sort(function(a, b) {
-            var c = new Date(a.updatedAt);
-            var d = new Date(b.updatedAt);
-            return d.getTime()-c.getTime();
-        }).map(props.element)
+        return props.item.activity.map(props.element)
     }, [props.element ])
     return <View style={container}>
         <View>
