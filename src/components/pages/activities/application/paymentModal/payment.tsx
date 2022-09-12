@@ -19,7 +19,7 @@ import FileOutlineIcon from "@assets/svg/fileOutline";
 import {Bold, Regular, Regular500} from "@styles/font";
 import {capitalize} from "@pages/activities/script";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import {ACCOUNTANT, APPROVED} from "../../../../../reducers/activity/initialstate";
+import {ACCOUNTANT, APPROVED, CASHIER} from "../../../../../reducers/activity/initialstate";
 import AnimatedImage from 'react-native-animated-image-viewer';
 import {fontValue} from "@pages/activities/fontValue";
 import BorderPaymentBottom from "@assets/svg/borderPaymentBottom";
@@ -586,7 +586,7 @@ const Payment = (_props: any) => {
                     <View style={[paymentStyles.container, {paddingTop: 12}]}>
 
 
-                        {((user?.role?.key !== ACCOUNTANT) && (props?.paymentHistory?.status == APPROVED && props?.paymentHistory?.action == APPROVED)) &&
+                        {((user?.role?.key !== ACCOUNTANT) && (user?.role?.key === CASHIER)) &&
                             <View style={requirementStyles.container}>
 
                                 <View style={[requirementStyles.card, {padding: undefined}]}>
