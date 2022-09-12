@@ -34,8 +34,12 @@ function ProfileMenu(props:{onClose:()=>void,onSelect:(value)=>void,user:any}){
             shadowOpacity:0.1,
             shadowRadius:15,
         }}>
+
             <MenuOption value={"editProfile"}>
-                <View>
+                <View style={{paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: "rgba(0,0,0,0.3)"}}>
+                    <Text  style={{fontSize: fontValue(12) }} >Hello, {props.user?.firstName}!</Text>
+                </View>
+                <View style={{paddingTop: 10}}>
                     <Text style={{fontSize: fontValue(12) }}>{"Edit Profile"}</Text>
                 </View>
             </MenuOption>

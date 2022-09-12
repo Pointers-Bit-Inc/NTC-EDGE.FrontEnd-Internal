@@ -131,10 +131,10 @@ const ModalTab = props => {
 
     }, [tabs])
     useEffect(() => {
-        if (paymentIndex == index && !editModalVisible && user?.role?.key != CASHIER) {
+        if (paymentIndex == index && !editModalVisible && !([CASHIER, ACCOUNTANT].indexOf(user?.role?.key) )) {
             props?.setTabName("SOA & Payment")
             dispatch(setEditModalVisible(true))
-        } else if (basicInfoIndex == index && !editModalVisible && user?.role?.key != CASHIER) {
+        } else if (basicInfoIndex == index && !editModalVisible && !([CASHIER, ACCOUNTANT].indexOf(user?.role?.key))) {
             props?.setTabName('Basic Info')
             dispatch(setEditModalVisible(true))
         } else if (basicInfoIndex != index && paymentIndex != index && editModalVisible) {
