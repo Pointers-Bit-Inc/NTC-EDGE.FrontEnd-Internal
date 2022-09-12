@@ -26,12 +26,11 @@ export const styles = StyleSheet.create({
     },
     bgImage: {
         backgroundColor: "#fff",
-        height ,
-        width,
+
     },
     formTitleText: {
         ...Platform.select({
-            
+
             native: {
                 fontSize: fontValue(20),
                 color: text.primary,
@@ -57,7 +56,7 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     formContainer: {
-       
+
         ...Platform.select({
             native: {
                 flex: 1,

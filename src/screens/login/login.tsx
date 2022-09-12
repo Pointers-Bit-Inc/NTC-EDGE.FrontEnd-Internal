@@ -6,7 +6,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     ScrollView,
-    StatusBar,
+    StatusBar, useWindowDimensions,
     View
 } from "react-native";
 import Text from "@atoms/text";
@@ -28,6 +28,7 @@ const { height } = Dimensions.get('screen');
 const navigationBarHeight = height - Dimensions.get('window').height;
 const Login = ({ navigation }: any) => {
     const user = useSelector((state: RootStateOrAny) => state.user) || {};
+    const dimension = useWindowDimensions()
     const biometricsLogin = user.biometrics;
     const {
         isBiometricSupported,
@@ -50,17 +51,17 @@ const Login = ({ navigation }: any) => {
         <ImageBackground
             resizeMode="stretch"
             source={ background }
-            style={ styles.bgImage }
+            style={[ styles.bgImage, {width: dimension.width, height: dimension.height}] }
             imageStyle={ { flex : 1 } }
         >
             <StatusBar barStyle="light-content"/>
 
             <ScrollView
                 keyboardShouldPersistTaps="handled"
-                contentContainerStyle={ { flexGrow : 1 } }
+                contentContainerStyle={ { flex: 1 } }
                 showsVerticalScrollIndicator={ false }
             >
-               
+
                 <Image
                     resizeMode="contain"
                     source={ logo }
