@@ -639,16 +639,17 @@ const ActivitiesPage = (props) => {
         })
     },], [isMobile,Platform?.isPad, isTablet()])
 
-    const containerMergeStyle = useMemo(() => [styles1.container, styles1.shadow, {
-        flex: 1
-      /*  flexBasis: (
+    const containerMergeStyle = useMemo(() => [styles1.container, styles1.shadow,isMobile ?  {
+        flex: 1,
+    } : {
+        flexBasis: (
             (
                 isMobile && !(
                     Platform?.isPad || isTablet())) || dimensions?.width < 768 || (
                 (
                     Platform?.isPad || isTablet()) && !isLandscapeSync())) ? "100%" : 466,
         flexGrow: 0,
-        flexShrink: 0*/
+        flexShrink: 0
     }], [isMobile,Platform?.isPad, isTablet(), isLandscapeSync()])
     const activityMergeStyle = useMemo(() => [styles1.activity,  {
         color: (
