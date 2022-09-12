@@ -78,6 +78,7 @@ import useMemoizedFn from "../../../hooks/useMemoizedFn";
 import ListHeaderComponent from "@pages/activities/listHeaderComponent";
 import Api from "../../../services/api";
 import {Regular, Regular500} from "@styles/font";
+import {FlashList} from "@shopify/flash-list";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -254,18 +255,13 @@ const ActivitiesPage = (props) => {
     );
 
     const tabBarAnimatedStyle = useAnimatedStyle(() => ({
-        transform: [{translateY: translateY.value}],
+       // transform: [{translateY: translateY.value}],
     }));
 
     const headerAnimatedStyle = useAnimatedStyle(() => {
 
         return {
-            transform: [{translateY: translateY.value}],
-            opacity: interpolate(
-                translateY.value,
-                [-headerDiff, 0],
-                [Visibility.Hidden, Visibility.Visible],
-            ),
+
         };
     })
 
@@ -279,9 +275,7 @@ const ActivitiesPage = (props) => {
     const sharedProps = useMemo<Partial<FlatListProps<Connection>>>(
         () => ({
            // contentContainerStyle,
-            onMomentumScrollEnd: sync,
-            onScrollEndDrag: sync,
-            scrollEventThrottle: 16,
+
            // scrollIndicatorInsets: {top: heightExpanded},
         }),
         [contentContainerStyle, sync, heightExpanded]
@@ -378,14 +372,15 @@ const ActivitiesPage = (props) => {
         }
 
     }} ref={scrollViewRef} callbackfn={(item: any, index: number) => {
-        return item?.activity && <FlatList
+        return item?.activity && <FlashList
             scrollEventThrottle={16}
+            refreshing={true}
             key={index}
             listKey={(item, index) => `_key${index.toString()}`}
             showsVerticalScrollIndicator={false}
-            style={styles.items}
+            contentContainerStyle={styles.items}
             data={item?.activity}
-
+            estimatedItemSize={300}
             renderItem={(act, i) => {
                 return getRenderItem(act, i, index)
             }
@@ -476,47 +471,46 @@ const ActivitiesPage = (props) => {
         act?.assignedPersonnel?._id || act?.assignedPersonnel) == user?._id)).length : notPnApplications.length));
 
     const renderAllActivities = useCallback(
-        () => <Animated.FlatList
+        () => <FlashList
             refreshControl={
                 <RefreshControl
                     tintColor={primaryColor} // ios
                     progressBackgroundColor={infoColor} // android
                     colors={['white']} // android
-                    progressViewOffset={headerHeight + 42}
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                 />
             }
+            refreshing={true}
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyComponent}
             ListHeaderComponent={listHeaderComponent()}
-            style={{flex: 1,}}
+            contentContainerStyle={{flex: 1,}}
             data={notPnApplications}
             keyExtractor={(item, index) => index.toString()}
             ListFooterComponent={refreshing ? <View/> : bottomLoader}
             onEndReached={onEndReached}
             ref={allRef}
-            onScroll={allScrollHandler}
-            {...sharedProps}
+            //onScroll={allScrollHandler}
+            estimatedItemSize={300}
             onEndReachedThreshold={0.5}
             onMomentumScrollBegin={() => {
                 //onMomentumScrollBegin();
                 setOnEndReachedCalledDuringMomentum(false)
             }}
             renderItem={renderItem}/>,
-        [allRef, allScrollHandler, sharedProps]
+        [notPnApplications , refreshing]
     );
 
 
     const renderPending = useCallback(
-        () => <Animated.FlatList
+        () => <FlashList
             refreshControl={
                 <RefreshControl
                     tintColor={primaryColor} // ios
                     progressBackgroundColor={infoColor} // android
                     colors={['white']} // android
-                    progressViewOffset={headerHeight + 42}
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                 />
@@ -524,53 +518,54 @@ const ActivitiesPage = (props) => {
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyComponent}
-            style={{flex: 1,}}
+            contentContainerStyle={{flex: 1,}}
             data={pnApplications}
             keyExtractor={(item, index) => index.toString()}
             ListFooterComponent={refreshing ? <View/> : bottomLoader}
             onEndReached={onEndReached}
             ref={pendingRef}
-            onScroll={pendingScrollHandler}
-            {...sharedProps}
+            refreshing={true}
+           // onScroll={pendingScrollHandler}
+            estimatedItemSize={300}
             onEndReachedThreshold={0.5}
             onMomentumScrollBegin={() => {
                 //onMomentumScrollBegin();
                 setOnEndReachedCalledDuringMomentum(false)
             }}
             renderItem={renderItem}/>,
-        [pendingRef, pendingScrollHandler,sharedProps]
+        [pnApplications, refreshing]
     );
 
     const renderHistory = useCallback(
-        () => <Animated.FlatList
+        () => <FlashList
             refreshControl={
                 <RefreshControl
                     tintColor={primaryColor} // ios
                     progressBackgroundColor={infoColor} // android
                     colors={['white']} // android
-                    progressViewOffset={headerHeight + 42}
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                 />
             }
+            estimatedItemSize={300}
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}
             ListEmptyComponent={listEmptyComponent}
-            style={{flex: 1,}}
+            contentContainerStyle={{flex: 1,}}
             data={notPnApplications}
             keyExtractor={(item, index) => index.toString()}
             ListFooterComponent={refreshing ? <View/> : bottomLoader}
             onEndReached={onEndReached}
             ref={historyRef}
-            onScroll={historyScrollHandler}
-            {...sharedProps}
+            refreshing={true}
+           //onScroll={historyScrollHandler}
             onEndReachedThreshold={0.5}
             onMomentumScrollBegin={() => {
                 //onMomentumScrollBegin();
                 setOnEndReachedCalledDuringMomentum(false)
             }}
             renderItem={renderItem}/>,
-        [historyRef, historyScrollHandler,  sharedProps]
+        [notPnApplications , refreshing ]
     );
     const tabBarStyle = useMemo<StyleProp<ViewStyle>>(
         () => [

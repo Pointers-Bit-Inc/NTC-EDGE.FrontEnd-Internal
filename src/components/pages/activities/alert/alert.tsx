@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     description_: {
-
+        fontSize: fontValue(14),
         padding: 10,
         color: "#121212",
         textAlign: "center"

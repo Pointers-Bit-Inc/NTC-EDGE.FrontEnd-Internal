@@ -249,11 +249,7 @@ const Approval=(props:any)=>{
             visible={props.visible}
             onRequestClose={_springHide}>
 
-            {loading && <><View style={{  flex: 1,alignItems:'center',
-                justifyContent:'center',}}>
-                <OnBackdropPress  styles={{  backgroundColor : !props.showAlert && visible && Platform.OS != "web"  ? "rgba(0, 0, 0, 0.3)" : undefined}}/>
-                <Loading color={infoColor}/>
-            </View></>}
+
             {!loading && <>
                 <CustomAlert
                     showClose={showClose}
@@ -310,7 +306,7 @@ const Approval=(props:any)=>{
                     behavior={Platform.OS==="ios" ? "padding" : "height"}
                     style={[styles.container,  {zIndex: !props.showAlert && visible  ? 0 : -1, alignItems:"center"}]}
                 >
-                    <OnBackdropPress  styles={{  backgroundColor : !props.showAlert && visible && Platform.OS != "web"  ? "rgba(0, 0, 0, 0.3)" : undefined}}/>
+                    <OnBackdropPress  styles={{ width: dimensions.width, height: dimensions.height,  backgroundColor : !props.showAlert && visible && Platform.OS != "web"  ? "rgba(0, 0, 0, 0.3)" : undefined}}/>
                     {
                         <Animated.View style={[ styles.group,{
                             width:((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync())))||dimensions.width<=768 ? "100%" : "31.6%",  //474/1500
