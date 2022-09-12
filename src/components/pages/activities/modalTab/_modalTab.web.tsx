@@ -23,8 +23,9 @@ import {infoColor} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
 import LoadingModal from "@pages/activities/loading/loadingModal";
 import useSafeState from "../../../../hooks/useSafeState";
-import {setEditModalVisible} from "../../../../reducers/activity/actions";
+import {setEditModalVisible, setFeedVisible} from "../../../../reducers/activity/actions";
 import {setEdit} from "../../../../reducers/application/actions";
+import SplitIcon from "@assets/svg/SplitIcon";
 
 
 const ModalTab=props=>{
@@ -96,6 +97,7 @@ const ModalTab=props=>{
     },[props.details._id]);
     const [isMore, setIsMore] = useSafeState(true)
     const [yPos, setYPos] = useSafeState(undefined)
+    const feedVisible = useSelector((state: RootStateOrAny) => state.activity.feedVisible);
     return <>
         {props.loading && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <ViewPaged
@@ -113,13 +115,13 @@ const ModalTab=props=>{
                 }
             }
             }
+            initialPage={user?.role?.key == ACCOUNTANT ? 2 : 0}
             isMovingRender
-            render
             vertical={false}
             renderPosition='top'
             renderHeader={(params)=>{
                 if(initialPage){
-                    params.goToPage(0);
+                    params.goToPage(user?.role?.key == ACCOUNTANT ? 2 : 0);
                     setInitialPage(false)
                 }
 
@@ -186,6 +188,15 @@ const ModalTab=props=>{
                         justifyContent:"center",
                         backgroundColor:"#fff"
                     }}>
+                        <View style={{paddingVertical:29.5,paddingHorizontal:25}}>
+                            <TouchableOpacity onPress={()=>{
+                                dispatch(setFeedVisible(!feedVisible))
+                            }} >
+                                <SplitIcon/>
+                            </TouchableOpacity>
+
+                        </View>
+
 
                         <TabBar
 

@@ -1,4 +1,4 @@
-const { SET_DROPDOWN_VISIBLE, SET_ACTIVITY, ON_CHECKED, SELECTED_CHANGE_STATUS, SET_VISIBLE , SET_RESET_FILTER_STATUS,SET_EDIT_MODAL_VISIBLE, ADD_ACTIVITY} = require('./types').default;
+const { SET_FEED_VISIBLE, SET_DROPDOWN_VISIBLE, SET_ACTIVITY, ON_CHECKED, SELECTED_CHANGE_STATUS, SET_VISIBLE , SET_RESET_FILTER_STATUS,SET_EDIT_MODAL_VISIBLE, ADD_ACTIVITY} = require('./types').default;
 
 export function setActivity(payload) {
   return {
@@ -40,6 +40,13 @@ export function setVisible(payload) {
 
   return {
     type: SET_VISIBLE,
+    payload,
+  };
+}
+export function setFeedVisible(payload) {
+
+  return {
+    type: SET_FEED_VISIBLE,
     payload,
   };
 }

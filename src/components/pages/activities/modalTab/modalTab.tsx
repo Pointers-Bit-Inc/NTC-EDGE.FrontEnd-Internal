@@ -5,16 +5,34 @@ import Requirement from "@pages/activities/application/requirementModal/requirem
 import Payment from "@pages/activities/application/paymentModal/payment";
 import React, {memo, useEffect, useMemo, useState} from "react";
 import {ACCOUNTANT, CASHIER, CHECKER, DIRECTOR, EVALUATOR} from "../../../../reducers/activity/initialstate";
-import {Animated, I18nManager, Platform, Text, useWindowDimensions, View} from "react-native";
+import {
+    ActivityIndicator,
+    Animated,
+    I18nManager,
+    Platform,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
+    View
+} from "react-native";
 import useApplicant from "@pages/activities/modalTab/useApplicant";
 import {infoColor} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
-import {setEditModalVisible} from "../../../../reducers/activity/actions";
+import {setEditModalVisible, setFeedVisible} from "../../../../reducers/activity/actions";
 import useSafeState from "../../../../hooks/useSafeState";
 import {setEdit} from "../../../../reducers/application/actions";
 import {Route, TabBar, TabBarIndicator, TabView} from "react-native-tab-view";
-import {Regular} from "@styles/font";
+import {Regular, Regular500} from "@styles/font";
 import {GetTabWidth} from "react-native-tab-view/lib/typescript/TabBarIndicator";
+import SplitIcon from "@assets/svg/SplitIcon";
+import hairlineWidth = StyleSheet.hairlineWidth;
+import CloseIcon from "@assets/svg/close";
+import BasicInfoWebIcon from "@assets/svg/basicInfoWebIcon";
+import ApplicationDetailWebIcon from "@assets/svg/applicationDetailWebIcon";
+import RequirementWebIcon from "@assets/svg/requirementWebIcon";
+import SoaPaymentWebIcon from "@assets/svg/soaPaymentWebIcon";
+import {isMobile} from "@pages/activities/isMobile";
 
 const ModalTab = props => {
     const dispatch = useDispatch();
@@ -90,17 +108,18 @@ const ModalTab = props => {
     const [basicInfoIndex, setBasicInfoIndex] = useSafeState(undefined)
     useEffect(() => {
         setInitialPage(true)
+        setIndex(user?.role?.key == ACCOUNTANT ? 2 : 0)
     }, [props.details._id]);
     const layout = useWindowDimensions();
 
-    const [index, setIndex] = React.useState(0);
+    const [index, setIndex] = React.useState(user?.role?.key == ACCOUNTANT ? 2 : 0);
 
 
     const routes = useMemo(() => {
         return tabs.filter((tab, _index) => {
             return !(service?.serviceCode == "service-22" && tab?.id === 4) && tab.isShow.indexOf(user?.role?.key) !== -1
         }).map((__tab, __index) => {
-            if (__tab.title == 'SOA & Payment'  ) {
+            if (__tab.title == 'SOA & Payment') {
                 setPaymentIndex(__index)
             }
             if (__tab.title == 'Basic Info') {
@@ -112,7 +131,7 @@ const ModalTab = props => {
 
     }, [tabs])
     useEffect(() => {
-        if (paymentIndex == index && !editModalVisible && user?.role?.key != CASHIER ) {
+        if (paymentIndex == index && !editModalVisible && user?.role?.key != CASHIER) {
             props?.setTabName("SOA & Payment")
             dispatch(setEditModalVisible(true))
         } else if (basicInfoIndex == index && !editModalVisible && user?.role?.key != CASHIER) {
@@ -129,7 +148,7 @@ const ModalTab = props => {
     const renderScene = useMemo(() => {
         return ({route, jumpTo}) => {
             if (initialPage && Platform?.isPad) {
-                jumpTo(0)
+                jumpTo(user?.role?.key == ACCOUNTANT ? 2 : 0)
                 setInitialPage(false)
             }
 
@@ -245,9 +264,9 @@ const ModalTab = props => {
         ;*/
         const indicatorStyle = {
             // transform: [{translateX}] as any,
-            height: 4,
+            height: 7,
             backgroundColor: infoColor,
-            borderRadius: 4,
+            borderRadius: 0,
             padding: 0,
             left: 24 / 2,
         }
@@ -257,27 +276,112 @@ const ModalTab = props => {
         />;
     }
 
-    const renderTabBar = props => (
-        edit ? <></> : <TabBar
-            renderLabel={({route, focused}) => {
-                return (
-                    <View>
-                        <Text style={{
-                            color: focused ? infoColor : "#606A80",
-                            fontFamily: Regular, // focused ? Bold : Regular
-                            fontSize: fontValue(12)
-                        }}>{route.title}</Text>
-                    </View>
-                );
-            }}
-            {...props}
-            renderIndicator={renderIndicator}
+    function tabIcon(title, focused) {
+        if (title == 'Basic Info') {
+            return <BasicInfoWebIcon fill={focused ? "#2863D6" : ""}/>
+        } else if (title == "Application Details") {
+            return <ApplicationDetailWebIcon fill={focused ? "#2863D6" : ""}/>
+        } else if (title == 'Requirements') {
+            return <RequirementWebIcon fill={focused ? "#2863D6" : ""}/>
+        } else if (title == 'SOA & Payment') {
+            return <SoaPaymentWebIcon fill={focused ? "#2863D6" : ""}/>
+        }
 
-            tabStyle={{width: fontValue(136)}}
-            scrollEnabled={true}
-            style={{backgroundColor: 'white'}}
-        />
-    )
+
+    }
+
+    const feedVisible = useSelector((state: RootStateOrAny) => state.activity.feedVisible);
+    const renderTabBar = (tabProp) =>{
+        return isMobile ?  <TabBar
+                    renderLabel={({route, focused}) => {
+                        return (
+                            <View style={{flexDirection: "row", alignItems: "center",}}>
+                                { isMobile ? <></> :
+                                    <View style={{paddingRight: 10}}>
+                                        {tabIcon(route.title, focused)}
+                                    </View>
+                                }
+                                <Text style={{
+                                    color: focused ? infoColor : "#606A80",
+                                    fontFamily: Regular, // focused ? Bold : Regular
+                                    fontSize: fontValue(14)
+                                }}>{route.title}</Text>
+                            </View>
+                        );
+                    }}
+                    {...tabProp}
+                    renderIndicator={renderIndicator}
+                    tabStyle={{width: fontValue(180)}}
+                    scrollEnabled={true}
+                    style={[{backgroundColor: 'white'}, isMobile ? {} :{shadowOpacity: 0.0, }]}
+                />  :  <View style={{
+            borderBottomWidth: 1,
+            borderBottomColor: "#d2d2d2",
+            justifyContent: 'space-between',
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "#fff"
+        }}>
+            <View style={{flexDirection: "row", alignItems: "center",}}>
+                <View style={{paddingVertical: 29.5, paddingHorizontal: 25}}>
+                    <TouchableOpacity onPress={() => {
+                        dispatch(setFeedVisible(!feedVisible))
+                    }}>
+                        <SplitIcon/>
+                    </TouchableOpacity>
+
+                </View>
+                <TabBar
+
+                    renderLabel={({route, focused}) => {
+                        return (
+                            <View style={{flexDirection: "row", alignItems: "center",}}>
+                                <View style={{paddingRight: 10}}>
+                                    {tabIcon(route.title, focused)}
+                                </View>
+                                <Text style={{
+                                    color: focused ? infoColor : "#606A80",
+                                    fontFamily: Regular, // focused ? Bold : Regular
+                                    fontSize: fontValue(14)
+                                }}>{route.title}</Text>
+                            </View>
+                        );
+                    }}
+                    {...tabProp}
+                    renderIndicator={renderIndicator}
+                    tabStyle={{width: fontValue(180)}}
+                    scrollEnabled={true}
+                    style={{shadowOpacity: 0.0, backgroundColor: 'white'}}
+                />
+            </View>
+            <View style={{flexDirection: "row", alignItems: "center",}}>
+                {props.edit ? <TouchableOpacity onPress={() => {
+                        props.updateApplication(() => {
+                        })
+                    }
+                    }>
+                        {props.loading ? <ActivityIndicator color={infoColor}/> :
+                            <Text style={styles.action}>Save</Text>}
+                        {/* <EditIcon color="#606A80"/>*/}
+                    </TouchableOpacity>
+
+                    : editModalVisible ?
+                        <TouchableOpacity onPress={props.editBtn}>
+                            <Text style={styles.action}>Edit</Text>
+                        </TouchableOpacity> : <></>}
+                <View style={{paddingVertical: 29.5, paddingHorizontal: 25}}>
+                    <TouchableOpacity onPress={() => {
+                        dispatch(setFeedVisible(true))
+                        props.dismissed()
+                    }}>
+                        <CloseIcon width={12} height={12}/>
+                    </TouchableOpacity>
+
+                </View>
+            </View>
+
+        </View>
+}
 
     return <TabView
 
@@ -295,6 +399,30 @@ const ModalTab = props => {
 
 
 export default memo(ModalTab)
+const styles=StyleSheet.create({
+    tabSelected:{
+        color:"#2863D6",
+        fontFamily:Regular500,
+        fontWeight:"500",
+        lineHeight:24,
+        textAlign:"center"
+    },
+    tabItem:{
+        flexDirection:"row",alignItems:"center"
+    },
+    tabTextItem:{
+        color:"#A0A3BD",
+        lineHeight:24,
+        textAlign:"center",
+        fontFamily:Regular,
+        fontSize:14,
+    },
+    rect6:{
+        height:3,
+        marginTop:-5
+    }, action: {paddingHorizontal: 6,fontFamily: Regular, fontSize: fontValue(16), color: infoColor}
+
+});
 
 
 /*

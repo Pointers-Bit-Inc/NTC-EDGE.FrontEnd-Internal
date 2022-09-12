@@ -76,7 +76,6 @@ import ApplicationList from "@pages/activities/applicationList";
 import RefreshRN from "@assets/svg/refreshRN";
 import useMemoizedFn from "../../../hooks/useMemoizedFn";
 import ListHeaderComponent from "@pages/activities/listHeaderComponent";
-import Api from "../../../services/api";
 import {Regular, Regular500} from "@styles/font";
 import {FlashList} from "@shopify/flash-list";
 
@@ -131,6 +130,9 @@ const ActivitiesPage = (props) => {
     } = useActivities(props);
     const normalizeActiveMeetings = useSelector((state: RootStateOrAny) => state.meeting.normalizeActiveMeetings);
     const applicationItemId = useSelector((state: RootStateOrAny) => state.application.applicationItemId);
+
+    const feedVisible = useSelector((state: RootStateOrAny) => state.activity.feedVisible);
+
 
     const meeting = useSelector((state: RootStateOrAny) => state.meeting.meeting);
     const meetingList = useMemo(() => {
@@ -642,26 +644,29 @@ const ActivitiesPage = (props) => {
     const containerMergeStyle = useMemo(() => [styles1.container, styles1.shadow,isMobile ?  {
         flex: 1,
     } : {
+        overflow: "scroll",
         flexBasis: (
             (
                 isMobile && !(
                     Platform?.isPad || isTablet())) || dimensions?.width < 768 || (
                 (
-                    Platform?.isPad || isTablet()) && !isLandscapeSync())) ? "100%" : 466,
+                    Platform?.isPad || isTablet()) && !isLandscapeSync())) ? "100%" : (feedVisible ? 466 : 0),
         flexGrow: 0,
         flexShrink: 0
-    }], [isMobile,Platform?.isPad, isTablet(), isLandscapeSync()])
+    }], [isMobile,Platform?.isPad, isTablet(), isLandscapeSync(), feedVisible])
     const activityMergeStyle = useMemo(() => [styles1.activity,  {
         color: (
             isMobile && !(
                 Platform?.isPad || isTablet())) || dimensions?.width < 768 ? "rgba(255,255,255,1)" : primaryColor,
-    }], [Platform?.isPad, isMobile, isTablet(), dimensions?.width])
+    }], [Platform?.isPad, isMobile, isTablet(), dimensions?.width, ])
 
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
             <View style={{flex: 1, backgroundColor: primaryColor,}}>
+
                 <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
+
                     <View style={containerMergeStyle}>
 
                         <View onLayout={handleHeaderLayout} style={headerContainerStyle}>

@@ -470,10 +470,10 @@ const BasicInfo = (_props: any) => {
 
     const [measure, setMeasure] = useState(null);
     useEffect(()=>{
-        if(Platform.OS == "web"){
+       /* if(Platform.OS == "web"){
             props.setBasicInfoIndex(props.basicInfoIndex)
             dispatch(setEditModalVisible(true))
-        }
+        }*/
 
     }, [])
     useEffect(() => {

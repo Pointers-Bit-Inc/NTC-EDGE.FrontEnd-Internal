@@ -371,13 +371,13 @@ const Payment = (_props: any) => {
 
     }
 
-    useEffect(() => {
+   /* useEffect(() => {
         if (Platform.OS == "web") {
             props.setPaymentIndex(props.paymentIndex)
             dispatch(setEditModalVisible(true))
         }
 
-    }, [])
+    }, [])*/
     const applicantForm = (stateName, value) => {
         let newForm = {...userProfileForm}
         newForm[stateName] = value
