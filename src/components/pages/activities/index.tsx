@@ -78,6 +78,7 @@ import useMemoizedFn from "../../../hooks/useMemoizedFn";
 import ListHeaderComponent from "@pages/activities/listHeaderComponent";
 import {Regular, Regular500} from "@styles/font";
 import {FlashList} from "@shopify/flash-list";
+import SplitIcon from "@assets/svg/SplitIcon";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -85,9 +86,7 @@ const Tab = createMaterialTopTabNavigator();
 
 const ActivitiesPage = (props) => {
     const dimensions = useWindowDimensions();
-    const Filter = (
-        isMobile && !(
-            Platform?.isPad || isTablet())) || dimensions?.width <= 768 ? FilterIcon : FilterPressIcon;
+    const Filter =  FilterPressIcon;
     const {
         isReady,
         user,
@@ -692,9 +691,8 @@ const ActivitiesPage = (props) => {
                                     }
 
                                     }>
-
-                                        <Filter pressed={visible} width={fontValue(Platform.OS == "web" ? 35 : 18)}
-                                                height={fontValue(Platform.OS == "web" ? 35 : 18)}/>
+                                        <Filter pressed={visible} width={fontValue(30)}
+                                                height={fontValue(30)}/>
                                     </TouchableOpacity>
                                     {
                                         <TouchableOpacity onPress={onRefresh}>
