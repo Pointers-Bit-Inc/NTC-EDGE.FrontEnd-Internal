@@ -320,10 +320,10 @@ const ModalTab = props => {
                     style={[{backgroundColor: 'white'}, isMobile ? {} :{shadowOpacity: 0.0, }]}
                 />  :  <View style={{
             borderBottomWidth: 1,
-            borderBottomColor: "#d2d2d2",
-            justifyContent: 'center',
             flexDirection: "row",
             alignItems: "center",
+            justifyContent: "space-between",
+            borderBottomColor: "#d2d2d2", width: "100%",
             backgroundColor: "#fff"
         }}>
             <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
@@ -357,34 +357,34 @@ const ModalTab = props => {
                     scrollEnabled={true}
                     style={{shadowOpacity: 0.0, backgroundColor: 'white'}}
                 />
-                <View style={{flexDirection: "row",  alignItems: "center",}}>
-                    {props.edit ? <TouchableOpacity onPress={() => {
-                            props.updateApplication(() => {
-                            })
-                        }
-                        }>
-                            {props.loading ? <ActivityIndicator color={infoColor}/> :
-                                <Text style={styles.action}>Save</Text>}
-                            {/* <EditIcon color="#606A80"/>*/}
-                        </TouchableOpacity>
 
-                        : editModalVisible ?
+            </View>
+            <View style={{flexDirection: "row",  alignItems: "center",}}>
+                {props.edit ? <TouchableOpacity onPress={() => {
+                        props.updateApplication(() => {
+                        })
+                    }
+                    }>
+                        {props.loading ? <ActivityIndicator color={infoColor}/> :
+                            <Text style={styles.action}>Save</Text>}
+                        {/* <EditIcon color="#606A80"/>*/}
+                    </TouchableOpacity>
 
-                            <TouchableOpacity onPress={props.editBtn}>
-                                <Text style={styles.action}>Edit</Text>
-                            </TouchableOpacity> : <View style={{opacity: "0%"}}> <Text style={styles.action}>Edit</Text></View>}
-                    <View style={{paddingVertical: 29.5, paddingHorizontal: 10}}>
-                        <TouchableOpacity onPress={() => {
-                            dispatch(setFeedVisible(true))
-                            props.dismissed()
-                        }}>
-                            <CloseIcon width={12} height={12}/>
-                        </TouchableOpacity>
+                    : editModalVisible ?
 
-                    </View>
+                        <TouchableOpacity onPress={props.editBtn}>
+                            <Text style={styles.action}>Edit</Text>
+                        </TouchableOpacity> : <View style={{opacity: "0%"}}> <Text style={styles.action}>Edit</Text></View>}
+                <View style={{paddingVertical: 29.5, paddingHorizontal: 10}}>
+                    <TouchableOpacity onPress={() => {
+                        dispatch(setFeedVisible(true))
+                        props.dismissed()
+                    }}>
+                        <CloseIcon width={12} height={12}/>
+                    </TouchableOpacity>
+
                 </View>
             </View>
-
 
         </View>
 }
