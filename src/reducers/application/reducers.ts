@@ -130,7 +130,7 @@ export default function basket(state = initialState, action = {}) {
             let _pinnedApplications = [...state.pinnedApplications]
             let flag = 1
             for (let i = 0; i < _notPinnedApplications?.length; i++) {
-                console.log(_notPinnedApplications?.[i]?._id == action.payload?._id)
+
                 if (_notPinnedApplications?.[i]?._id == action.payload?._id) {
 
                     _notPinnedApplications[i] = action.payload
@@ -141,7 +141,7 @@ export default function basket(state = initialState, action = {}) {
             flag = 1
             for (let i = 0; i < _pinnedApplications?.length; i++) {
 
-                console.log(_pinnedApplications?.[i]?._id == action.payload?._id)
+
                 if (_pinnedApplications?.[i]?._id == action.payload?._id) {
                     _pinnedApplications[i] = action.payload
                     state = state.set('pinnedApplications', _pinnedApplications);

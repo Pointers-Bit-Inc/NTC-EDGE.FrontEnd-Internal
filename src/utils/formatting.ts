@@ -207,8 +207,30 @@ const getFileSize = (byte = 0) => {
   }
   return byte;
 }
+const newObjInInitialArr = function(initialArr, newObject) {
+  let id = newObject.item;
+  let newArr = [];
+  for (let i = 0; i < initialArr.length; i++) {
+    if (id === initialArr[i].item) {
+      newArr.push(newObject);
+    } else {
+      newArr.push(initialArr[i]);
+    }
+  }
+  return newArr;
+};
+
+const updateObjectsInArr = function(initialArr, newArr) {
+  let finalUpdatedArr = initialArr;
+  for (let i = 0; i < newArr.length; i++) {
+    finalUpdatedArr = newObjInInitialArr(finalUpdatedArr, newArr[i]);
+  }
+
+  return finalUpdatedArr
+}
 
 export {
+  updateObjectsInArr,
   getInitial,
   getChannelName,
   getChannelImage,

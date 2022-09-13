@@ -10,5 +10,7 @@ export default keyMirror({
   ADD_ACTIVITY: null,
   SET_RESET_FILTER_STATUS: null,
   SET_EDIT_MODAL_VISIBLE: null,
-  SET_FEED_VISIBLE: null
+  SET_FEED_VISIBLE: null,
+  SET_TAB_NAME: null,
+  SET_UPDATE_INCREMENT: null
 });

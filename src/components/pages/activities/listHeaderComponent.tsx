@@ -6,7 +6,7 @@ import {fontValue} from "@pages/activities/fontValue";
 function ListHeaderComponent(props: { searchVisible: boolean, pnApplications: { date: string; activity: any; readableHuman: string }[], containerHeight: number, onScroll: (event) => void, ref: React.MutableRefObject<undefined>, callbackfn: (item: any, index: number) => any }) {
     const ActivityMemo = useMemo(()=> {
         return props.pnApplications.map(props.callbackfn)
-    }, [ props.callbackfn])
+    }, [  props.pnApplications, props.callbackfn])
     return <>
         {!!props.pnApplications?.length && props.containerHeight &&
             <View style={[styles1.pinnedActivityContainer, {

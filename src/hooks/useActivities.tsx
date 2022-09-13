@@ -63,7 +63,9 @@ function convertStatusText(convertedStatus:any[],item:any){
 
 
 
-
+     const updateIncrement = useSelector((state: RootStateOrAny) => {
+         return state.activity.updateIncrement
+     });
     const scrollViewRef = useRef()
     const flatListViewRef = useRef()
     const scrollableTabView = useRef()
@@ -302,15 +304,14 @@ function convertStatusText(convertedStatus:any[],item:any){
     const [searchVisible,setSearchVisible]=useState(false);
 
     const pnApplications=useMemo(()=>{
-
         setUpdateUnReadReadApplication(false);
         return ispinnedApplications(pinnedApplications)
-    },[updateUnReadReadApplication,updateModal,searchTerm,selectedChangeStatus?.length,pinnedApplications?.length,currentPage]);
+    },[updateIncrement, updateUnReadReadApplication,updateModal,searchTerm,selectedChangeStatus?.length,pinnedApplications?.length,currentPage]);
 
     const notPnApplications=useMemo(()=>{
         setUpdateUnReadReadApplication(false);
         return ispinnedApplications(notPinnedApplications)
-    },[updateUnReadReadApplication,updateModal,searchTerm,selectedChangeStatus?.length,notPinnedApplications?.length,currentPage]);
+    },[updateIncrement, updateUnReadReadApplication,updateModal,searchTerm,selectedChangeStatus?.length,notPinnedApplications?.length,currentPage]);
 
     const userPress=(index:number)=>{
         let newArr=[...numberCollapsed];

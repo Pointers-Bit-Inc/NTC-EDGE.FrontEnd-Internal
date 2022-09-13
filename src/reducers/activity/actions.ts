@@ -1,4 +1,4 @@
-const { SET_FEED_VISIBLE, SET_DROPDOWN_VISIBLE, SET_ACTIVITY, ON_CHECKED, SELECTED_CHANGE_STATUS, SET_VISIBLE , SET_RESET_FILTER_STATUS,SET_EDIT_MODAL_VISIBLE, ADD_ACTIVITY} = require('./types').default;
+const {SET_UPDATE_INCREMENT, SET_TAB_NAME, SET_FEED_VISIBLE, SET_DROPDOWN_VISIBLE, SET_ACTIVITY, ON_CHECKED, SELECTED_CHANGE_STATUS, SET_VISIBLE , SET_RESET_FILTER_STATUS,SET_EDIT_MODAL_VISIBLE, ADD_ACTIVITY} = require('./types').default;
 
 export function setActivity(payload) {
   return {
@@ -43,6 +43,7 @@ export function setVisible(payload) {
     payload,
   };
 }
+
 export function setFeedVisible(payload) {
 
   return {
@@ -50,7 +51,20 @@ export function setFeedVisible(payload) {
     payload,
   };
 }
+export function setTabName(payload) {
 
+  return {
+    type: SET_TAB_NAME,
+    payload,
+  };
+}
+export function setUpdateIncrement(payload) {
+
+  return {
+    type: SET_UPDATE_INCREMENT,
+    payload,
+  };
+}
 export function setDropdownVisible(payload) {
 
   return {

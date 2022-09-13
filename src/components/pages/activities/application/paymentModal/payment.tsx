@@ -499,7 +499,7 @@ const Payment = (_props: any) => {
 
                                                           keyboardType={'number-pad'}
                                                           updateForm={(stateName, value) => {
-                                                              updateSoa('amount', parseInt(value), s.id)
+                                                              updateSoa('amount', parseFloat(value), s.id)
                                                               applicantForm('totalFee', getTotal(soa))
                                                               applicantForm(stateName, value)
                                                           }}

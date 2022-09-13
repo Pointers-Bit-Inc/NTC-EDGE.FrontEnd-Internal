@@ -329,6 +329,7 @@ const ActivitiesPage = (props) => {
                 isOpen={isOpen}
                 config={config}
                 key={i}
+
                 selected={ Platform?.OS == "web" ? act?.item?._id : false}
                 currentUser={user}
                 role={user?.role?.key}
@@ -336,9 +337,10 @@ const ActivitiesPage = (props) => {
                 activity={act?.item}
                 isPinned={true}
                 onPressUser={(event: any) => {
-
                     /*unReadReadApplicationFn(act?._id, false, true, (action: any) => {
                     })*/
+                    dispatch(setEdit(false))
+                    dispatch(setHasChange(false))
                     dispatch(setApplicationItem({...act?.item, isOpen: `pin${i}${index}`}));
                     //setDetails({ ...act , isOpen : `pin${ i }${ index }` });
                     if (event?.icon == 'more') {
@@ -355,7 +357,6 @@ const ActivitiesPage = (props) => {
                         }
                     }
 
-                    console.log(act.item)
                     dispatch(setSelectedYPos({yPos, type: 1}))
 
                 }} index={`pin${i}${index}`}
@@ -503,7 +504,7 @@ const ActivitiesPage = (props) => {
                 setOnEndReachedCalledDuringMomentum(false)
             }}
             renderItem={renderItem}/>,
-        [notPnApplications , refreshing]
+        [notPnApplications , pnApplications, refreshing]
     );
 
 
@@ -663,8 +664,7 @@ const ActivitiesPage = (props) => {
         <>
             <StatusBar barStyle={'light-content'}/>
             <View style={{flex: 1, backgroundColor: primaryColor,}}>
-
-                <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
+             <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
 
                     <View style={containerMergeStyle}>
 

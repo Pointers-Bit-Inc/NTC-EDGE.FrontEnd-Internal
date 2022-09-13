@@ -59,7 +59,10 @@ const Card = (_props: {error?:any, inputFieldStyle?:any, keyboardType?:string, t
         }}  onChangeText={(e) => {
             if(props.keyboardType == 'number-pad' || props.keyboardType == 'numeric'  ){
 
-                props.updateForm(props.stateName,e.replace(/[^0-9]/g, '')  )
+                if(Number(e.replace(/[^0-9.\-]/g))){
+                    props.updateForm(props.stateName,Number(e.replace(/[^0-9.\-]/g , '' )))
+                }
+
 
 
             }else{

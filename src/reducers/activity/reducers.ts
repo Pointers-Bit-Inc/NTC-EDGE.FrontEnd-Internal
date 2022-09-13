@@ -1,6 +1,6 @@
 import {CASHIER, DIRECTOR, EVALUATOR} from "./initialstate";
 
-const { SET_FEED_VISIBLE, SET_DROPDOWN_VISIBLE, SET_ACTIVITY, ON_CHECKED, SET_RESET_FILTER_STATUS,  SET_EDIT_MODAL_VISIBLE, SET_VISIBLE, ADD_ACTIVITY } = require('./types').default;
+const {SET_UPDATE_INCREMENT, SET_TAB_NAME, SET_FEED_VISIBLE, SET_DROPDOWN_VISIBLE, SET_ACTIVITY, ON_CHECKED, SET_RESET_FILTER_STATUS,  SET_EDIT_MODAL_VISIBLE, SET_VISIBLE, ADD_ACTIVITY } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
 const initialState = new InitialState();
@@ -45,6 +45,16 @@ export default function basket(state = initialState, action = {}) {
     }
     case SET_FEED_VISIBLE:{
       return state.set('feedVisible', action.payload)
+    }
+
+    case SET_UPDATE_INCREMENT:{
+      console.log("updateIncrement",  action.payload)
+      state = state.set('updateIncrement', action.payload)
+      return state
+    }
+    case SET_TAB_NAME:{
+      state = state.set('tabName', action.payload)
+      return state
     }
     case SET_DROPDOWN_VISIBLE:{
       return state.set('drowdownVisible', action.payload)

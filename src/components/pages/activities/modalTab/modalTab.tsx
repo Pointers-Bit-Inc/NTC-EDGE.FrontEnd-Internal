@@ -19,7 +19,7 @@ import {
 import useApplicant from "@pages/activities/modalTab/useApplicant";
 import {infoColor} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
-import {setEditModalVisible, setFeedVisible} from "../../../../reducers/activity/actions";
+import {setEditModalVisible, setFeedVisible, setTabName} from "../../../../reducers/activity/actions";
 import useSafeState from "../../../../hooks/useSafeState";
 import {setEdit} from "../../../../reducers/application/actions";
 import {Route, TabBar, TabBarIndicator, TabView} from "react-native-tab-view";
@@ -38,6 +38,7 @@ const ModalTab = props => {
     const dispatch = useDispatch();
     const user = useSelector((state: RootStateOrAny) => state.user);
     const editModalVisible = useSelector((state: RootStateOrAny) => state.activity.editModalVisible);
+    const tabName = useSelector((state: RootStateOrAny) => state.activity.tabName);
     const edit = useSelector((state: RootStateOrAny) => state.application.edit);
     const [_scrollX, set_scrollX] = useState(new Animated.Value(0));
     // 6 is a quantity of tabs
@@ -131,11 +132,14 @@ const ModalTab = props => {
 
     }, [tabs])
     useEffect(() => {
-        if (paymentIndex == index && !editModalVisible && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
-            props?.setTabName("SOA & Payment")
+console.log(paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT), "pay")
+        if (paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
+            console.log(paymentIndex, "SOA & Payment")
+            dispatch(setTabName("SOA & Payment"))
             dispatch(setEditModalVisible(true))
         } else if (basicInfoIndex == index && !editModalVisible && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
-            props?.setTabName('Basic Info')
+            console.log(basicInfoIndex)
+            dispatch(setTabName('Basic Info'))
             dispatch(setEditModalVisible(true))
         } else if (basicInfoIndex != index && paymentIndex != index && editModalVisible) {
             dispatch(setEdit(false))
@@ -143,7 +147,7 @@ const ModalTab = props => {
         }
 
 
-    }, [index, props.details._id])
+    }, [index, props.details._id, tabName])
     const [isMore, setIsMore] = useSafeState(true)
     const [yPos, setYPos] = useSafeState(undefined)
 

@@ -37,8 +37,11 @@ import {
     setApplicationItem,
     setEdit,
     setHasChange,
-    setRightLayoutComponent, setUserOriginalProfileForm, setUserProfileForm,
-    updateApplicationStatus, updateChangeEvent
+    setRightLayoutComponent,
+    setUserOriginalProfileForm,
+    setUserProfileForm,
+    updateApplicationStatus,
+    updateChangeEvent
 } from "../../../reducers/application/actions";
 
 import CustomAlert from "@pages/activities/alert/alert1";
@@ -57,17 +60,20 @@ import axios from "axios";
 import useSafeState from "../../../hooks/useSafeState";
 import {useNavigation} from "@react-navigation/native";
 import {BASE_URL} from "../../../services/config";
-import {isNumber, transformToFeePayload} from "../../../utils/ntc";
+import {transformToFeePayload} from "../../../utils/ntc";
 import {useToast} from "../../../hooks/useToast";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import ChevronLeft from "@assets/svg/chevron-left";
 import _ from "lodash";
+import {mergeArrays, unionBy} from "../../../utils/formatting";
+import {setUpdateIncrement} from "../../../reducers/activity/actions";
 
 const flatten = require('flat')
 
 
 function ActivityModal(props: any) {
-    const _props = useMemo(() => Platform.OS == "web" ? props : props?.route?.params, [props])
+    const _props = useMemo(() => (Platform.OS == "web" || (
+        Platform?.isPad || isTablet()))  ? props : props?.route?.params, [props])
     const dispatch = useDispatch();
     const applicationItem = useSelector((state: RootStateOrAny) => {
         let _applicationItem = state.application?.applicationItem
@@ -86,6 +92,14 @@ function ActivityModal(props: any) {
 
     const userProfileForm = useSelector((state: RootStateOrAny) => {
         return state.application.userProfileForm
+    });
+
+    const tabName = useSelector((state: RootStateOrAny) => {
+        return state.activity.tabName
+    });
+
+    const updateIncrement = useSelector((state: RootStateOrAny) => {
+        return state.activity.updateIncrement
     });
     const userOriginalProfileForm = useSelector((state: RootStateOrAny) => {
         return state.application.userOriginalProfileForm
@@ -408,10 +422,8 @@ function ActivityModal(props: any) {
                 "rt": 0
             }
         }
-        let _flattenSoa = flatten.unflatten(cleanSoa).soa;
+        const _flattenSoa = flatten.unflatten(cleanSoa).soa;
         let feePayload = removeEmpty(transformToFeePayload(flatten.unflatten(profileForm)))
-
-
         await axios.post(BASE_URL + "/applications/calculate-total-fee", {
             ...payload,
             ...feePayload
@@ -419,13 +431,21 @@ function ActivityModal(props: any) {
             .then((response) => {
 
                 if (isLoading)setLoading(false)
-                const diff =  _.uniqBy( _flattenSoa, (response.data?.statement_Of_Account || response.data?.soa),  'item')
+                const diff =  _.differenceBy(_flattenSoa, (response.data?.statement_Of_Account || response.data?.soa),  'item')
+                let arr2 = (response.data?.statement_Of_Account || response.data?.soa).map((res)=>{
+                    delete res.description
+                    return res
+                })
+
+
+                let arr1 = (tabName == "Basic Info" ? diff  : _flattenSoa)
 
                 cleanSoa = {
                   //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
                     totalFee: response.data?.totalFee,
-                    soa: _.uniqBy(removeEmpty([...(tabName == "Basic Info" ? diff  : _flattenSoa), ...(response.data?.statement_Of_Account || response.data?.soa)]), 'item')
+                    soa: _.unionBy(arr1, arr2, 'item')
                 }
+                console.log(arr1)
 
             }).catch((error) => {
                 dispatch(setEdit(false))
@@ -485,16 +505,19 @@ function ActivityModal(props: any) {
                 }
             }
             var _flatten = flatten.flatten({..._applicationItem})
+
             dispatch(setUserOriginalProfileForm(_flatten))
             dispatch(setUserProfileForm(_flatten))
             dispatch(setApplicationItem(_applicationItem))
             dispatch(updateChangeEvent(response.data?.doc))
+
             if (isLoading) setSaved(false)
             if (isLoading) {
                 setTimeout(() => {
                     setLoading(false)
                 }, 2500)
             }
+            dispatch(setUpdateIncrement(updateIncrement + 1))
             //showToast(ToastType.Success, "Successfully updated!")
             callback()
         }).catch((error) => {
@@ -541,7 +564,7 @@ function ActivityModal(props: any) {
         _props.onDismissed(change);
         return promise;
     };
-    const [tabName, setTabName] = useState(null)
+
     return (
         <>
             <View  style={(isMobile && !((Platform?.isPad || isTablet()) && isLandscapeSync())) && (
@@ -660,7 +683,6 @@ function ActivityModal(props: any) {
                 <ModalTab saved={saved} loading={loading} setEditAlert={setEditAlert}
                           updateApplication={updateApplication} editBtn={editBtn}
                           setEdit={setEdit}
-                          setTabName={setTabName}
                           hasChanges={hasChanges} edit={edit} dismissed={() => {
                     goBackAsync()
                 }} details={applicationItem} status={status}/>
