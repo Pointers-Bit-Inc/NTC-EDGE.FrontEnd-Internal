@@ -171,10 +171,9 @@ const BasicInfo = (_props: any) => {
         return _personnel
     }, [props?.paymentMethod, props?.paymentHistory, props?.approvalHistory, props?.paymentStatus])
 
-
     const scrollRef = useRef();
     const [showAlert, setShowAlert] = useSafeState(false)
-    const applicant = useMemo(()=>props?.applicant?.user || props?.applicant, [props?.applicant?.user ,props?.applicant]);
+    const applicant = useMemo(()=>props?.applicant?.user || props?.applicant, [props?.applicant?.user ,props?.id]);
     useEffect(() => {
         if (Platform.isPad || Platform.OS == "web") {
             scrollRef?.current?.scrollTo({
@@ -182,7 +181,6 @@ const BasicInfo = (_props: any) => {
                 animated: true,
             });
         }
-
     }, [applicant?._id])
 
 
@@ -489,6 +487,8 @@ const BasicInfo = (_props: any) => {
             );
         }
     }, [props.edit]);
+
+    const dimension = useWindowDimensions()
     return <View ref={containerRef} style={{flex: 1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved} loading={props.loading}/>}
         <KeyboardAvoidingView
@@ -736,7 +736,7 @@ const BasicInfo = (_props: any) => {
                                                                     edit={props.edit}
                                                                     exclude={['_id', 'name', 'applicationType', 'serviceCode']}
                                                                     service={props?.service}/>
-                                       <View style={styles.group3}>
+                                        {props.edit || userProfileForm?.["note"]  ? <View style={styles.group3}>
                                            <View style={styles.group}>
                                                <View style={styles.rect}>
                                                    <Text style={styles.header}>Note</Text>
@@ -744,7 +744,25 @@ const BasicInfo = (_props: any) => {
                                            </View>
                                         <View style={{paddingTop: 5}}>
                                             <Row  /*show={true}
-                                          */
+
+                                      */        multiline={true}
+                                                containerStyle={ {
+                                                    height : undefined ,
+                                                    borderColor : "#D1D1D6" ,
+                                                    borderWidth : 1 ,
+                                                    backgroundColor : undefined ,
+                                                } }
+                                                outlineStyle={ {
+                                                    //  borderColor: "rgba(202,210,225,1)",
+                                                    paddingTop : 10 ,
+                                                    height : dimension.height * 0.25
+                                                } }
+                                                inputStyle={{
+                                                    textAlignVertical: "top",
+                                                    [Platform.OS=="android" ? "height" : "height"]: dimension.height*0.15,
+                                                    fontWeight:"400",
+                                                    fontSize:fontValue(14)
+                                                }}
                                                 updateForm={applicantForm}
                                                 stateName={"note"}
                                                 edit={props.edit}
@@ -752,7 +770,7 @@ const BasicInfo = (_props: any) => {
                                                 applicant={userProfileForm?.["note"]}/>
                                         </View>
 
-                                       </View>
+                                       </View> : <></>}
                                     </View>
 
                                 </View>

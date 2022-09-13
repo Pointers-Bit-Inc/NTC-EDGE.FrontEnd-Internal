@@ -141,6 +141,8 @@ const ModalTab = props => {
             dispatch(setEdit(false))
             dispatch(setEditModalVisible(false))
         }
+
+
     }, [index, props.details._id])
     const [isMore, setIsMore] = useSafeState(true)
     const [yPos, setYPos] = useSafeState(undefined)
@@ -228,7 +230,8 @@ const ModalTab = props => {
     }, [
         props.saved,
         props.loading,
-        props.edit
+        props.edit,
+        index, props.details._id
     ]);
     const getTranslateX = (
         position: Animated.AnimatedInterpolation,

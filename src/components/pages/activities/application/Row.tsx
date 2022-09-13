@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         textAlign: "left"
     },
 })
-const Row = (props: { updateApplication?: any, hasChanges?: any, display?: string, showEdit?: boolean, show?: boolean, editable?: boolean, updateForm?: any, stateName?: string, edit: string, label: string, applicant?: any }) => {
+const Row = (props: { outlineStyle?: any, containerStyle?:any, inputStyle?: any, multiline?: boolean, updateApplication?: any, hasChanges?: any, display?: string, showEdit?: boolean, show?: boolean, editable?: boolean, updateForm?: any, stateName?: string, edit: string, label: string, applicant?: any }) => {
     const [edit, setEdit] = useSafeState(false)
     const applicantMemo = useMemo(()=>props.display || props.applicant, [props.display,  props.applicant])
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
@@ -40,7 +40,7 @@ const Row = (props: { updateApplication?: any, hasChanges?: any, display?: strin
             <Text style={styles.detail}>{props.label}</Text>
             {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{applicantMemo} </Text>}
         </View> : <>
-            {((props.edit && props.editable && props.showEdit) || edit) ? <InputField  onSubmitEditing={(event) => {
+            {((props.edit && props.editable && props.showEdit) || edit) ? <InputField containerStyle={props.containerStyle} outlineStyle={props?.outlineStyle} inputStyle={props?.inputStyle} multiline={props.multiline}   onSubmitEditing={(event) => {
                 props.updateForm(props.stateName, event?.nativeEvent?.text)
                 setEdit(false)
             }}
@@ -52,6 +52,6 @@ const Row = (props: { updateApplication?: any, hasChanges?: any, display?: strin
 };
 
 Row.defaultProps = {
-    editable: true, show: true, showEdit: true
+    editable: true, show: true, showEdit: true, multiline: false, inputStyle: {}, containerStyle :{}, outlineStyle: {}
 }
 export default memo(Row)
