@@ -327,7 +327,7 @@ const ModalTab = props => {
                     <TouchableOpacity onPress={() => {
                         dispatch(setFeedVisible(!feedVisible))
                     }}>
-                        <SplitIcon/>
+                        <SplitIcon width={18} height={18} color={!feedVisible ? "#2863D6" : "#A0A3BD" }/>
                     </TouchableOpacity>
 
                 </View>

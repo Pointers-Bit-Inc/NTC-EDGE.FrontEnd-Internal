@@ -693,18 +693,13 @@ const ActivitiesPage = (props) => {
 
                                     }>
 
-                                        <Filter pressed={visible} width={fontValue(Platform.OS == "web" ? 26 : 18)}
-                                                height={fontValue(Platform.OS == "web" ? 26 : 18)}/>
+                                        <Filter pressed={visible} width={fontValue(Platform.OS == "web" ? 35 : 18)}
+                                                height={fontValue(Platform.OS == "web" ? 35 : 18)}/>
                                     </TouchableOpacity>
                                     {
                                         <TouchableOpacity onPress={onRefresh}>
-                                            {(
-                                                !(
-                                                    isMobile && !(
-                                                        Platform?.isPad || isTablet())) && dimensions?.width > 768) ?
-                                                <RefreshWeb style={{paddingLeft: 15}} width={fontValue(28)}
-                                                            height={fontValue(28)} fill={"#fff"}/> :
-                                                <View style={{paddingLeft: 23}}><RefreshRN/></View>}
+                                             <RefreshWeb style={{paddingLeft: 15}} width={fontValue(24)}
+                                                            height={fontValue(24)} fill={"#fff"}/>
                                         </TouchableOpacity>
                                     }
                                 </View>
