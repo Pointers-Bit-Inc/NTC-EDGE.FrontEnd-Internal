@@ -349,7 +349,7 @@ const ModalTab = props => {
                     }}
                     {...tabProp}
                     renderIndicator={renderIndicator}
-                    tabStyle={{width: fontValue(180)}}
+                    tabStyle={{width: fontValue(190)}}
                     scrollEnabled={true}
                     style={{shadowOpacity: 0.0, backgroundColor: 'white'}}
                 />
