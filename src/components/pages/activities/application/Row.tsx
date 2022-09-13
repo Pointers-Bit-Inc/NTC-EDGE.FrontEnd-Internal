@@ -40,7 +40,7 @@ const Row = (props: { updateApplication?: any, hasChanges?: any, display?: strin
             <Text style={styles.detail}>{props.label}</Text>
             {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{applicantMemo} </Text>}
         </View> : <>
-            {((props.edit && props.editable && props.showEdit) || edit) ? <InputField onSubmitEditing={(event) => {
+            {((props.edit && props.editable && props.showEdit) || edit) ? <InputField  onSubmitEditing={(event) => {
                 props.updateForm(props.stateName, event?.nativeEvent?.text)
                 setEdit(false)
             }}

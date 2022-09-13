@@ -736,7 +736,23 @@ const BasicInfo = (_props: any) => {
                                                                     edit={props.edit}
                                                                     exclude={['_id', 'name', 'applicationType', 'serviceCode']}
                                                                     service={props?.service}/>
+                                       <View style={styles.group3}>
+                                           <View style={styles.group}>
+                                               <View style={styles.rect}>
+                                                   <Text style={styles.header}>Note</Text>
+                                               </View>
+                                           </View>
+                                        <View style={{paddingTop: 5}}>
+                                            <Row  /*show={true}
+                                          */
+                                                updateForm={applicantForm}
+                                                stateName={"note"}
+                                                edit={props.edit}
+                                                label={"Note"}
+                                                applicant={userProfileForm?.["note"]}/>
+                                        </View>
 
+                                       </View>
                                     </View>
 
                                 </View>

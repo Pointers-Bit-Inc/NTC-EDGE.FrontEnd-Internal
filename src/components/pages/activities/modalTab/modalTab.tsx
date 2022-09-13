@@ -269,10 +269,13 @@ const ModalTab = props => {
             borderRadius: 0,
             padding: 0,
             left: 24 / 2,
-            marginBottom: -15
+            ...Platform.select({
+                web: {marginBottom:  -15 }
+            }),
         }
+
         const width = getTabWidth(index) - 24
-        return <TabBarIndicator   {...indicatorProps} width={width}
+        return <TabBarIndicator   {...indicatorProps}  width={width}
                                 style={indicatorStyle}
         />;
     }
@@ -318,13 +321,13 @@ const ModalTab = props => {
                 />  :  <View style={{
             borderBottomWidth: 1,
             borderBottomColor: "#d2d2d2",
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             flexDirection: "row",
             alignItems: "center",
             backgroundColor: "#fff"
         }}>
-            <View style={{flexDirection: "row", alignItems: "center",}}>
-                <View style={{paddingVertical: 29.5, paddingHorizontal: 25}}>
+            <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                <View style={{paddingVertical: 29.5, paddingHorizontal: 10}}>
                     <TouchableOpacity onPress={() => {
                         dispatch(setFeedVisible(!feedVisible))
                     }}>
@@ -343,43 +346,45 @@ const ModalTab = props => {
                                 <Text style={{
                                     color: focused ? infoColor : "#606A80",
                                     fontFamily: Regular, // focused ? Bold : Regular
-                                    fontSize: fontValue(14)
+                                    fontSize: fontValue(12)
                                 }}>{route.title}</Text>
                             </View>
                         );
                     }}
                     {...tabProp}
                     renderIndicator={renderIndicator}
-                    tabStyle={{width: fontValue(190)}}
+                    tabStyle={{width: fontValue(165)}}
                     scrollEnabled={true}
                     style={{shadowOpacity: 0.0, backgroundColor: 'white'}}
                 />
-            </View>
-            <View style={{flexDirection: "row", alignItems: "center",}}>
-                {props.edit ? <TouchableOpacity onPress={() => {
-                        props.updateApplication(() => {
-                        })
-                    }
-                    }>
-                        {props.loading ? <ActivityIndicator color={infoColor}/> :
-                            <Text style={styles.action}>Save</Text>}
-                        {/* <EditIcon color="#606A80"/>*/}
-                    </TouchableOpacity>
+                <View style={{flexDirection: "row",  alignItems: "center",}}>
+                    {props.edit ? <TouchableOpacity onPress={() => {
+                            props.updateApplication(() => {
+                            })
+                        }
+                        }>
+                            {props.loading ? <ActivityIndicator color={infoColor}/> :
+                                <Text style={styles.action}>Save</Text>}
+                            {/* <EditIcon color="#606A80"/>*/}
+                        </TouchableOpacity>
 
-                    : editModalVisible ?
-                        <TouchableOpacity onPress={props.editBtn}>
-                            <Text style={styles.action}>Edit</Text>
-                        </TouchableOpacity> : <></>}
-                <View style={{paddingVertical: 29.5, paddingHorizontal: 25}}>
-                    <TouchableOpacity onPress={() => {
-                        dispatch(setFeedVisible(true))
-                        props.dismissed()
-                    }}>
-                        <CloseIcon width={12} height={12}/>
-                    </TouchableOpacity>
+                        : editModalVisible ?
 
+                            <TouchableOpacity onPress={props.editBtn}>
+                                <Text style={styles.action}>Edit</Text>
+                            </TouchableOpacity> : <View style={{opacity: "0%"}}> <Text style={styles.action}>Edit</Text></View>}
+                    <View style={{paddingVertical: 29.5, paddingHorizontal: 10}}>
+                        <TouchableOpacity onPress={() => {
+                            dispatch(setFeedVisible(true))
+                            props.dismissed()
+                        }}>
+                            <CloseIcon width={12} height={12}/>
+                        </TouchableOpacity>
+
+                    </View>
                 </View>
             </View>
+
 
         </View>
 }
