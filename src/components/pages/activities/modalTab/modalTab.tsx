@@ -131,17 +131,17 @@ const ModalTab = props => {
 
     }, [tabs])
     useEffect(() => {
-        if (paymentIndex == index && !editModalVisible && !([CASHIER, ACCOUNTANT].indexOf(user?.role?.key) )) {
+        if (paymentIndex == index && !editModalVisible && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
             props?.setTabName("SOA & Payment")
             dispatch(setEditModalVisible(true))
-        } else if (basicInfoIndex == index && !editModalVisible && !([CASHIER, ACCOUNTANT].indexOf(user?.role?.key))) {
+        } else if (basicInfoIndex == index && !editModalVisible && !(user?.role?.key==CASHIER || user?.role?.key==ACCOUNTANT)) {
             props?.setTabName('Basic Info')
             dispatch(setEditModalVisible(true))
         } else if (basicInfoIndex != index && paymentIndex != index && editModalVisible) {
             dispatch(setEdit(false))
             dispatch(setEditModalVisible(false))
         }
-    }, [index])
+    }, [index, props.details._id])
     const [isMore, setIsMore] = useSafeState(true)
     const [yPos, setYPos] = useSafeState(undefined)
 
@@ -269,9 +269,10 @@ const ModalTab = props => {
             borderRadius: 0,
             padding: 0,
             left: 24 / 2,
+            marginBottom: -15
         }
         const width = getTabWidth(index) - 24
-        return <TabBarIndicator {...indicatorProps} width={width}
+        return <TabBarIndicator   {...indicatorProps} width={width}
                                 style={indicatorStyle}
         />;
     }
@@ -295,7 +296,7 @@ const ModalTab = props => {
         return isMobile ?  <TabBar
                     renderLabel={({route, focused}) => {
                         return (
-                            <View style={{flexDirection: "row", alignItems: "center",}}>
+                            <View style={{flexDirection: "row", alignItems: "center"}}>
                                 { isMobile ? <></> :
                                     <View style={{paddingRight: 10}}>
                                         {tabIcon(route.title, focused)}
@@ -335,7 +336,7 @@ const ModalTab = props => {
 
                     renderLabel={({route, focused}) => {
                         return (
-                            <View style={{flexDirection: "row", alignItems: "center",}}>
+                            <View style={{flexDirection: "row", alignItems: "center", }}>
                                 <View style={{paddingRight: 10}}>
                                     {tabIcon(route.title, focused)}
                                 </View>
