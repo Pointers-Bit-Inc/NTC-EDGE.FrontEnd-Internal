@@ -113,13 +113,14 @@ function Disapproval(props: any) {
 
             <KeyboardAvoidingView
                 behavior={ Platform.OS === "ios" ? "padding" : "height" }
-                style={ [styles.container, {zIndex: !showAlert  ? 0 : -1, alignItems:"center", paddingRight:((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync()))) || dimensions.width <= 768 ? undefined : 64,}] }
+                style={ [styles.container, {  paddingHorizontal: !((isMobile&& !(Platform?.isPad||isTablet()))) ? 64 : 0,zIndex: !showAlert  ? 0 : -1, alignItems:"center", paddingRight:((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync()))) || dimensions.width <= 768 ? undefined : 64,}] }
             >
 
                 <View style={ styles.rectFiller }>
                     <OnBackdropPress onPressOut={ props.onDismissed }/>
                 </View>
                 <View style={ [styles.rect , {
+
                     width: ((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync()))) || dimensions.width <= 768 ? "100%" : "32%",
                     display : !showAlert ? undefined : "none"
                 }] }>
