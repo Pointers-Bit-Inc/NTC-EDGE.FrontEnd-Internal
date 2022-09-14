@@ -16,13 +16,13 @@ import MoreTabBarIcon from "@assets/svg/moretabbar";
 import {
     ACTIVITIES,
     CHAT,
-    CHECKER,DASHBOARD,
-    DIRECTOR,EMPLOYEES,
-    EVALUATOR,GROUP,
+    CHECKER, CONFIGURATION, DASHBOARD,
+    DIRECTOR, EMPLOYEES,
+    EVALUATOR, GROUP,
     MEET,
-    MORE,REPORT,ROLEANDPERMISSION,
+    MORE, REPORT, ROLEANDPERMISSION,
     SCANQR,
-    SEARCH,SETTINGS,USERS,
+    SEARCH, SETTINGS, USERS,
 } from "../../../reducers/activity/initialstate";
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
 import {setTabBarHeight} from "../../../reducers/application/actions";
@@ -53,6 +53,7 @@ import EmployeeNavigator from "../../../navigations/employee";
 import UserNavigator from "../../../navigations/user";
 import Settings from "@pages/settings";
 import RoleAndPermissionNavigator from "../../../navigations/role-and-permission";
+import ConfigurationNavigator from "../../../navigations/configuration";
 
 const {width}=Dimensions.get('window');
 
@@ -344,6 +345,7 @@ export default function TabBar({navigation,route}){
                 {user?.role?.permission?.meetPermission ? <Drawer.Screen options={{drawerLabel:MEET,headerShown:false}} name={MEET} component={MeetScreen}/> : <></>}
                 {(user?.role?.permission?.qrCodePermission && Platform.OS != "web") &&
                     <Drawer.Screen options={{drawerLabel:SCANQR,headerShown:false}} name={SCANQR} component={QrCodeScanner}/>}
+                 <Drawer.Screen options={{drawerLabel:SETTINGS,headerShown:false}} name={CONFIGURATION} component={ConfigurationNavigator}/>
                  {/*<Drawer.Screen options={{drawerLabel:DASHBOARD,headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/>*/}
                  {/*<Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/>*/}
                 {user?.role?.permission?.rolePermission?.view ? <Drawer.Screen options={{drawerLabel:ROLEANDPERMISSION,headerShown:false}} name={ROLEANDPERMISSION} component={RoleAndPermissionNavigator}/> : <></>}

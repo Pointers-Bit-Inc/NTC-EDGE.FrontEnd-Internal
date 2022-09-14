@@ -663,6 +663,7 @@ const ActivitiesPage = (props) => {
     return (
         <>
             <StatusBar barStyle={'light-content'}/>
+
             <View style={{flex: 1, backgroundColor: primaryColor,}}>
              <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
 

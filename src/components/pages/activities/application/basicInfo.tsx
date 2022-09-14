@@ -736,6 +736,8 @@ const BasicInfo = (_props: any) => {
                                                                     edit={props.edit}
                                                                     exclude={['_id', 'name', 'applicationType', 'serviceCode']}
                                                                     service={props?.service}/>
+
+
                                         {props.edit || userProfileForm?.["note"]  ? <View style={styles.group3}>
                                            <View style={styles.group}>
                                                <View style={styles.rect}>

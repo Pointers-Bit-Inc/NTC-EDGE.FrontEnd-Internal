@@ -7,6 +7,7 @@ import {input} from "@styles/color";
 import {fontValue} from "@pages/activities/fontValue";
 import {Regular500} from "@styles/font";
 import {CASHIER} from "../../../../reducers/activity/initialstate";
+import {InputField} from "@molecules/form-fields";
 const styles = StyleSheet.create({
     subChildSeparator: {
         height: 1,
@@ -46,6 +47,17 @@ const styles = StyleSheet.create({
         paddingBottom: fontValue(20)
     } ,
 })
+
+function renderHeader(childLabel: string | undefined, b: boolean) {
+    return <Text>{childLabel}</Text>;
+}
+
+function renderRow(s: string, gchildValue: any) {
+    return <View style={{ alignItems: "center", flexDirection: "row"}}><View>
+        <Text>{s}</Text>
+    </View><InputField/></View>
+}
+
 const RenderServiceMiscellaneous = (props) => {
     let service = {...props?.service} || {};
     let _renderParent = ({item}: any) => {

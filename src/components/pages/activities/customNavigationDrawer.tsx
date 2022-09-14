@@ -9,7 +9,7 @@ import ChatIcon from "@assets/svg/chattabbar";
 import MeetIcon from "@assets/svg/meettabbar";
 import {
     ACTIVITIES,
-    CHAT,
+    CHAT, CONFIGURATION,
     DASHBOARD, EMPLOYEES,
     GROUP,
     MEET,
@@ -106,6 +106,9 @@ const CustomSidebarMenu=(props:any)=>{
                             break;
                         case USERS:
                             tabIcon=<UserIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;
+                            break;
+                        case CONFIGURATION:
+                            tabIcon=<SettingIcon focused={focused} color={focused ? "#113196" : "#6E7191"}/>;
                             break;
                         case SETTINGS:
                             tabIcon=<SettingIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;
