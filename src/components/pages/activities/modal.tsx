@@ -65,15 +65,13 @@ import {useToast} from "../../../hooks/useToast";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import ChevronLeft from "@assets/svg/chevron-left";
 import _ from "lodash";
-import {mergeArrays, unionBy} from "../../../utils/formatting";
 import {setUpdateIncrement} from "../../../reducers/activity/actions";
 
 const flatten = require('flat')
 
 
 function ActivityModal(props: any) {
-    const _props = useMemo(() => (Platform.OS == "web" || (
-        Platform?.isPad || isTablet()))  ? props : props?.route?.params, [props])
+    const _props = useMemo(() => (Platform.OS == "web"  ? props : props?.route?.params), [props])
     const dispatch = useDispatch();
     const applicationItem = useSelector((state: RootStateOrAny) => {
         let _applicationItem = state.application?.applicationItem
@@ -561,7 +559,7 @@ function ActivityModal(props: any) {
             });
         });
         props.navigation?.goBack();
-        _props.onDismissed(change);
+        props?.onDismissed(change);
         return promise;
     };
 
