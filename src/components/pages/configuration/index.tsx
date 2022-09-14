@@ -26,7 +26,6 @@ export default function ConfigurationPage(props:any){
                             alignItems:"center",
                             justifyContent:"space-between",
                             flexDirection:"row",
-                            flex:1
                         }}>
                             <View style={{flex:1,paddingRight:15}}>
                                 <TextInput value={value} onChangeText={text=>{
@@ -36,6 +35,12 @@ export default function ConfigurationPage(props:any){
                                     <SearchIcon/>
                                 </View>
                             </View>
+
+
+
+
+
+
                         </View>
 
 
