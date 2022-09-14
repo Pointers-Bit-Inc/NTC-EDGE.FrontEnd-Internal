@@ -34,7 +34,8 @@ const EditRoleAndPermissionScreen = (props) => {
         role,
         access,
         setAccess,
-        onParseAccess
+        onParseAccess,
+        updateValid
     } = useRoleAndPermission(props.navigation);
     return <View style={[{flex:1, backgroundColor: "#fff",}]}>
         <Header size={24} title={"Role: " + role?.name}>
@@ -149,7 +150,7 @@ const EditRoleAndPermissionScreen = (props) => {
                             <Text style={[styles.text,  ]} size={14}>new token</Text>
 
                         </TouchableOpacity>*/}
-            <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={onParseAccess}>
+            <TouchableOpacity disabled={!updateValid}  style={{backgroundColor: updateValid ? successColor : disabledColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={onParseAccess}>
 
                 <Text style={[styles.text, {color: "#fff"} ]} size={14}>Update</Text>
 

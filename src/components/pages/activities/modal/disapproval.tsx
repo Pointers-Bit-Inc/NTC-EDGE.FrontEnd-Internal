@@ -149,7 +149,7 @@ function Disapproval(props: any) {
                         <TouchableOpacity onPress={ () => {
                             props.onDismissed()
                         } }>
-                            <CloseIcon/>
+                            <CloseIcon width={fontValue(12)} height={fontValue(12)}/>
                         </TouchableOpacity>
                     </View>
 
@@ -202,7 +202,7 @@ function Disapproval(props: any) {
                             } }>
                                 <View style={ [button.confirmButton, {gap: 5} ]}>
                                     <Text style={ button.confirm }>Confirm</Text>
-                                    <ConfirmRightArrow></ConfirmRightArrow>
+                                    <ConfirmRightArrow width={fontValue(25)} height={fontValue(24)}></ConfirmRightArrow>
                                 </View>
                             </TouchableOpacity>
                         </View>

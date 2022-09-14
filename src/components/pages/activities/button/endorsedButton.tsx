@@ -9,7 +9,7 @@ import {Hoverable} from "react-native-web-hooks";
 
 export function EndorsedButton(props: { currentLoading: string, allButton: boolean, onPress: () => void }) {
    const [pressed, setPressed] = useState(false)
-    
+
     return  <Hoverable>
         { isHovered => (<View style={{flex: 0.8,}}>
         <TouchableWithoutFeedback
@@ -22,7 +22,7 @@ export function EndorsedButton(props: { currentLoading: string, allButton: boole
                 width: "85%",
                 alignSelf: "flex-end",
                 borderWidth: (props.allButton || isHovered) ? 2 :  1,
-                borderRadius: 24,
+                borderRadius: fontValue(24),
                 borderColor: props.allButton   ? "#c4c4c4" :  pressed ? "#041B6E" :  isHovered ? "#7792F3" : "#c4c4c4",
                 backgroundColor:  props.allButton  ? "#fff" :  pressed ? "#041B6E" :  isHovered ? "#E0E7FE" : "#fff",
                 height: undefined,
@@ -52,7 +52,12 @@ export function EndorsedButton(props: { currentLoading: string, allButton: boole
 
 
 const styles = StyleSheet.create({
+    rect24: {
+        height: 31,
+        borderRadius: fontValue(24)
+    },
     endorse: {
+        fontSize: fontValue(12),
         textAlign: "center",
     },
 })

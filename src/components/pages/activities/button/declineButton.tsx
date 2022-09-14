@@ -49,9 +49,10 @@ export function DeclineButton(props: { currentLoading: string, allButton: boolea
 const styles = StyleSheet.create({
     rect24: {
         height: 31,
-        borderRadius: 24
+        borderRadius: fontValue(24)
     },
     endorse: {
+        fontSize: fontValue(12),
         textAlign: "center",
     }
 })

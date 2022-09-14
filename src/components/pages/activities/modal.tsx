@@ -558,8 +558,11 @@ function ActivityModal(props: any) {
                 resolve();
             });
         });
-        props.navigation?.goBack();
-        props?.onDismissed(change);
+        if(props?.navigation?.canGoBack()){
+            props.navigation?.goBack();
+        }
+        _props?.onDismissed(change);
+
         return promise;
     };
 

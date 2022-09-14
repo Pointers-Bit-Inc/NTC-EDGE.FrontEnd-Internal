@@ -3,8 +3,8 @@ import Svg, { SvgProps, Path } from "react-native-svg";
 
 const CloseModal = (props: SvgProps) => (
     <Svg
-        width={67}
-        height={67}
+        width={props.width || 67}
+        height={props.height || 67}
         viewBox="0 0 67 67"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

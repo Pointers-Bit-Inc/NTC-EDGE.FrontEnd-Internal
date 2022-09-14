@@ -148,7 +148,7 @@ const CreateRoleAndPermissionScreen = (props) => {
                             <Text style={[styles.text,  ]} size={14}>new token</Text>
 
                         </TouchableOpacity>*/}
-            <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={onCreateAccess}>
+            <TouchableOpacity  style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={onCreateAccess}>
 
                 <Text style={[styles.text, {color: "#fff"} ]} size={14}>Create</Text>
 

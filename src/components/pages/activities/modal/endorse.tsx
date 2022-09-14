@@ -23,7 +23,7 @@ import CustomAlert from "@pages/activities/alert/alert";
 import CustomDropdown from "@pages/activities/dropdown/customdropdown";
 import {useOrientation} from "../../../../hooks/useOrientation";
 import {getRole} from "@pages/activities/script";
-import {Bold , Regular500} from "@styles/font";
+import {Bold, Regular, Regular500} from "@styles/font";
 import CloseIcon from "@assets/svg/close";
 import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
@@ -34,6 +34,8 @@ import {isLandscapeSync,isTablet} from "react-native-device-info";
 import {setEdit, setHasChange} from "../../../../reducers/application/actions";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import {useToast} from "../../../../hooks/useToast";
+import {OnBackdropPress} from "@pages/activities/modal/onBackdropPress";
+import {FileTextIcon} from "@assets/svg/fileText";
 
 const { height , width } = Dimensions.get('window');
 
@@ -198,7 +200,228 @@ const Endorsed = (props: any) => {
 
                 } } show={ showAlert } title={ title }
                 message={ message }/>
+
+
+
+
             <KeyboardAvoidingView
+                behavior={ Platform.OS === "ios" ? "padding" : "height" }
+                style={ [styles.container, {  paddingHorizontal: !((isMobile&& !(Platform?.isPad||isTablet()))) ? 64 : 0,zIndex: !showAlert  ? 0 : -1, alignItems:"center", paddingRight:((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync()))) || dimensions.width <= 768 ? undefined : 64,}] }
+            >
+
+                <View style={ styles.rectFiller }>
+                    <OnBackdropPress onPressOut={ props.onDismissed }/>
+                </View>
+                <View style={ [styles.rect , {
+
+                    width: ((isMobile&& !((Platform?.isPad||isTablet()) && isLandscapeSync()))) || dimensions.width <= 768 ? "100%" : "32%",
+                    display : !showAlert ? undefined : "none"
+                }] }>
+
+                    <View style={ {
+
+                        borderBottomColor: "#e5e5e5",
+                        borderBottomWidth: hairlineWidth,
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding : 20} }>
+                        <View style={ {
+                            flexDirection : 'row' ,
+                            alignItems : 'center' ,
+                            paddingHorizontal : 5 ,
+                            paddingVertical : 10
+                        } }>
+                            <EndorseToIcon width={ fontValue(43) } height={ fontValue(20) }  style={ styles.fileTextIcon }/>
+                            <View style={ styles.nodRemarksColumn }>
+                                <Text style={ styles.nodRemarks }>Endorse to</Text>
+
+                            </View>
+                        </View>
+                        <TouchableOpacity onPress={ () => {
+                            setValidateRemarks({ error : false });
+                            props.onDismissed()
+                        } }>
+                            <CloseIcon/>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={ {  paddingHorizontal : 20 } }>
+                        <View style={{paddingBottom: 10}}>
+                            <CustomDropdown value={ endorsed }
+                                            loading={loading}
+                                            label="Select Item"
+                                            data={ pickedEndorsed }
+                                            onSelect={ ({ value }) => {
+                                                if (value) setEndorsed(value)
+                                            } }/>
+                        </View>
+
+                        <InputField
+
+                            clearable={ false }
+                            containerStyle={ {
+                                height : undefined ,
+                                borderColor : "#D1D1D6" ,
+                                borderWidth : 1 ,
+                                backgroundColor : undefined ,
+                            } }
+                            outlineStyle={ {
+                                borderRadius : 4 ,
+                                paddingTop : 10 ,
+                                height : (
+                                    height < 720 && isKeyboardVisible) ? 100 : height * 0.25
+                            } }
+                            inputStyle={{
+                                textAlignVertical: "top",
+                                height:(
+                                    height<720&&isKeyboardVisible) ? 70 : height*0.15,
+                                fontWeight:"400",
+                                fontSize:fontValue(14)
+                            }}
+                            error={ validateRemarks.error }
+                            errorColor={ errorColor }
+                            placeholder={ 'Remarks' }
+                            multiline={ true }
+                            value={ text }
+                            onChangeText={ (text: string) => {
+
+                                setText(text)
+                            } }
+                        />
+                    </View>
+                    <View style={button.confirmButtonContainer}>
+                        <View style={ { padding : 20 , } }>
+                            <TouchableOpacity  disabled={ !picked } onPress={ onEndorseConfirm }>
+                                <View style={ [button.confirmButton, {gap: 5} ]}>
+                                    <Text style={ button.confirm }>Confirm</Text>
+                                    <ConfirmRightArrow width={fontValue(25)} height={fontValue(24)}></ConfirmRightArrow>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                </View>
+            </KeyboardAvoidingView>
+
+
+
+
+
+
+        </Modal>
+
+    );
+};
+const styles = StyleSheet.create({
+    container : {
+        flex : 1 ,
+
+    } ,
+    fileTextIcon : {
+        paddingLeft : fontValue(15) ,
+    } ,
+    group3Filler : {
+        flex : 1
+    } ,
+    group3 : {
+        width : "100%" ,
+        height : 540
+    } ,
+    rectFiller : {
+        flex : 1
+    } ,
+    rect : {
+        shadowColor: "rgba(0,0,0,1)",
+        shadowOffset: {
+            height: 0,
+            width: 0
+        },
+        elevation: 60,
+        shadowOpacity: 0.25,
+        shadowRadius: 20,
+        borderRadius : 15 ,
+        alignSelf : "flex-end" ,
+
+        backgroundColor : "rgba(255,255,255,1)" ,
+        borderBottomRightRadius : 0 ,
+        borderBottomLeftRadius : 0 ,
+    } ,
+    icon : {
+        color : "rgba(0,0,0,1)" ,
+        fontSize : fontValue(30) ,
+        marginLeft : 4
+    } ,
+    group : {
+        width : 232 ,
+        height : 35 ,
+        marginTop : 12
+    } ,
+    icon2 : {
+        color : "rgba(53,62,89,1)" ,
+        fontSize : fontValue(30)
+    } ,
+    nodRemarks : {
+        fontFamily : Bold ,
+        textAlign : "left" ,
+        fontSize : fontValue(18) ,
+        marginLeft : -1
+    } ,
+    pleaseProvide : {
+        fontFamily: Regular,
+        fontWeight: "400",
+        paddingTop: fontValue(25),
+        paddingBottom: fontValue(14),
+        fontSize : fontValue(14) ,
+    } ,
+    nodRemarksColumn : {
+
+        marginLeft : 10
+    } ,
+    icon2Row : {
+        height : 35 ,
+        flexDirection : "row"
+    } ,
+    rect2 : {
+
+        width : 355 ,
+        height : 290 ,
+        backgroundColor : "rgba(255,255,255,1)" ,
+        borderWidth : 1 ,
+        borderColor : "rgba(218,218,222,1)" ,
+        borderRadius : 8 ,
+        marginTop : 12 ,
+        marginLeft : 1
+    } ,
+    iconColumn : {
+
+        width : 340 ,
+        marginTop : 14 ,
+        marginLeft : 17
+    } ,
+    iconColumnFiller : {
+        flex : 1
+    } ,
+    group2 : {
+        width : 340 ,
+        height : 40 ,
+        marginBottom : 94 ,
+        marginLeft : 17
+    } ,
+    rect3 : {
+        width : 340 ,
+        height : 40 ,
+        backgroundColor : primaryColor ,
+        borderRadius : 9
+    } ,
+
+});
+
+export default Endorsed;
+
+
+/*
+ <KeyboardAvoidingView
                 behavior={ Platform.OS === "ios" ? "padding" : "height" }
                 style={ [styles.container ,  {
                     zIndex: !showAlert  ? 0 : -1,
@@ -305,92 +528,4 @@ const Endorsed = (props: any) => {
                   </View>
 
             </KeyboardAvoidingView>
-        </Modal>
-
-    );
-};
-
-const styles = StyleSheet.create({
-
-    shadow: {shadowColor: "rgba(0,0,0,1)",
-        shadowOffset: {
-            height: 0,
-            width: 0
-        },
-        elevation: 60,
-        shadowOpacity: 0.25,
-        shadowRadius: 20,},
-    container : {
-        flex : 1 ,
-        justifyContent : "flex-end"
-    } ,
-    rectFiller : {
-        flex : 1
-    } ,
-    rect : {
-
-        justifyContent : "space-between" ,
-
-
-
-        backgroundColor : "rgba(255,255,255,1)" ,
-        borderRadius : 15 ,
-        borderBottomRightRadius : 0 ,
-        borderBottomLeftRadius : 0 ,
-    } ,
-    icon : {
-        color : "rgba(128,128,128,1)" ,
-        fontSize : fontValue(25) ,
-    } ,
-    group : {
-        width : 138 ,
-        height : 30 ,
-        flexDirection : "row" ,
-        marginTop : 17
-    } ,
-    icon2 : {
-        color : "#000" ,
-        fontSize : fontValue(30)
-    } ,
-    endorseTo : {
-        fontFamily : Regular500 ,
-        color : "#121212" ,
-        fontSize : fontValue(18) ,
-        paddingLeft : 10 ,
-        paddingTop : 3
-    } ,
-    icon2Row : {
-        height : 30 ,
-        flexDirection : "row" ,
-        flex : 1
-    } ,
-    rect5 : {
-        width : 355 ,
-        height : 50 ,
-        backgroundColor : "rgba(255,255,255,1)" ,
-        borderWidth : 1 ,
-        borderColor : "rgba(202,210,225,1)" ,
-        borderRadius : 6 ,
-        padding : 5 ,
-        marginTop : 9 ,
-    } ,
-    iconColumn : {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        borderBottomWidth: hairlineWidth,
-        borderBottomColor: "#E5E5E5",
-        paddingVertical : 20 ,
-        paddingHorizontal: 24,
-    } ,
-    iconColumnFiller : {
-        flex : 1
-    } ,
-    rect6 : {
-        paddingHorizontal : 15 ,
-        width : '100%' ,
-    } ,
-
-});
-
-export default Endorsed;
+* */

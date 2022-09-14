@@ -160,8 +160,8 @@ interface Props {
                 <Text style={[styles.buttonText]}>
                     {(!!selected && selected?.label) || label}
                 </Text>
-                <CaretDownIcon style={{
-                    paddingHorizontal: 20,
+                <CaretDownIcon width={fontValue(24)} height={fontValue(24)}style={{
+                    paddingHorizontal: fontValue(20),
                     transform: [{
                         rotate: visible ? "0deg" : "180deg"
                     }]

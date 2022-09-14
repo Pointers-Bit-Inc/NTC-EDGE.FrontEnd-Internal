@@ -53,6 +53,8 @@ import EmployeeNavigator from "../../../navigations/employee";
 import UserNavigator from "../../../navigations/user";
 import Settings from "@pages/settings";
 import RoleAndPermissionNavigator from "../../../navigations/role-and-permission";
+import useSafeState from "../../../hooks/useSafeState";
+import {useSafeArea} from "react-native-safe-area-context";
 
 const {width}=Dimensions.get('window');
 
@@ -106,7 +108,7 @@ export default function TabBar({navigation,route}){
         OnMeetingNotification,
         checkVersion,
     }=useSignalr();
-
+    const {top}=useSafeArea()
     const pinnedApplications=useSelector((state:RootStateOrAny)=>state.application?.pinnedApplications);
     const notPinnedApplications=useSelector((state:RootStateOrAny)=>state.application?.notPinnedApplications);
     const tabBarHeight=useSelector((state:RootStateOrAny)=>state.application?.tabBarHeight);
@@ -196,7 +198,7 @@ export default function TabBar({navigation,route}){
         return (
             <View onLayout={(event)=>{
                 if(tabBarHeight==0){
-                    dispatch(setTabBarHeight(event.nativeEvent.layout.height))
+                    dispatch(setTabBarHeight(top + event.nativeEvent.layout.height))
                 }
 
             }} style={{

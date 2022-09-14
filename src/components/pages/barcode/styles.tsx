@@ -7,6 +7,13 @@ export const styles = StyleSheet.create({
     rect19: {
         justifyContent: "center",
         flex: 1
+    }, topButtons: {
+
+        position: 'absolute',
+        zIndex: 1,
+
+        right: 20,
+        top: 20
     },
     icon2: {
         color: "rgba(128,128,128,1)",
@@ -80,7 +87,7 @@ export const styles = StyleSheet.create({
         flex: 1
     },
     group12: {
-        
+
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
