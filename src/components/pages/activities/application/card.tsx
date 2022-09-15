@@ -6,6 +6,7 @@ import InputField from "@molecules/form-fields/input-field";
 import useSafeState from "../../../../hooks/useSafeState";
 import CheckIcon from "@assets/svg/check";
 import Moment from "moment";
+import {cleanNonNumericChars} from "../../../../utils/ntc";
 const styles = StyleSheet.create({
     group2 : {
         flexDirection : "row" ,
@@ -57,11 +58,11 @@ const Card = (_props: {error?:any, inputFieldStyle?:any, keyboardType?:string, t
             props.updateForm(props.stateName, cloneValue)
             //setEdit(false)
         }}  onChangeText={(e) => {
-            if(props.keyboardType == 'number-pad' || props.keyboardType == 'numeric'  ){
+            if(props.keyboardType == 'number-pad' ||props.keyboardType == 'decimal-pad' || props.keyboardType == 'numeric'  ){
 
-                if(Number(e.replace(/[^0-9.\-]/g))){
-                    props.updateForm(props.stateName,Number(e.replace(/[^0-9.\-]/g , '' )))
-                }
+
+                    props.updateForm(props.stateName, cleanNonNumericChars(e))
+
 
 
 

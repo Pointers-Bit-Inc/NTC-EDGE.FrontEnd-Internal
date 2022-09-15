@@ -46,10 +46,11 @@ export const ApprovedButton = (props: { currentLoading: string, allButton: boole
 }
 const styles = StyleSheet.create({
     rect22: {
-        
-        borderRadius: 24
+
+        borderRadius: fontValue(24)
     },
     approved: {
+        fontSize: fontValue(12),
         textAlign: "center",
         alignSelf: "center"
     },

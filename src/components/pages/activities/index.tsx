@@ -79,6 +79,7 @@ import ListHeaderComponent from "@pages/activities/listHeaderComponent";
 import {Regular, Regular500} from "@styles/font";
 import {FlashList} from "@shopify/flash-list";
 import SplitIcon from "@assets/svg/SplitIcon";
+import useSafeState from "../../../hooks/useSafeState";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -86,7 +87,9 @@ const Tab = createMaterialTopTabNavigator();
 
 const ActivitiesPage = (props) => {
     const dimensions = useWindowDimensions();
-    const Filter =  FilterPressIcon;
+    const Filter = (
+        isMobile && !(
+            Platform?.isPad || isTablet())) || dimensions?.width < 768 ? FilterIcon : FilterPressIcon;
     const {
         isReady,
         user,
@@ -692,13 +695,14 @@ const ActivitiesPage = (props) => {
                                     }
 
                                     }>
-                                        <Filter pressed={visible} width={fontValue(30)}
-                                                height={fontValue(30)}/>
+                                        <Filter pressed={visible} width={fontValue(Platform.isPad ? 30 :21)}
+                                                height={fontValue(Platform.isPad ? 30 :21)}/>
                                     </TouchableOpacity>
                                     {
                                         <TouchableOpacity onPress={onRefresh}>
-                                             <RefreshWeb style={{paddingLeft: 15}} width={fontValue(24)}
-                                                            height={fontValue(24)} fill={"#fff"}/>
+
+                                            {Platform.OS == "web" || Platform.isPad ? <RefreshWeb style={{paddingLeft: 15}} width={fontValue(24)}
+                                                            height={fontValue(24)} fill={"#fff"}/> : <View style={{paddingLeft: 23}}><RefreshRN/></View>}
                                         </TouchableOpacity>
                                     }
                                 </View>

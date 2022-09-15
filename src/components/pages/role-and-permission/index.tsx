@@ -51,8 +51,12 @@ export default function RoleAndPermissionPage(props:any){
         createRoleInput,
         setCreateRoleInput,
         onCreateAccess,
-        onParseAccess
+        onParseAccess,
+        updateValid
     } = useRoleAndPermission(props.navigation);
+
+
+
     return (
         <View style={{backgroundColor:"#F8F8F8",flex:1,flexDirection:"row"}}>
             <LeftSideWeb>
@@ -70,7 +74,7 @@ export default function RoleAndPermissionPage(props:any){
                             setAccess([])
 
                         }}>
-                            <Text>Add a New Role</Text>
+                            <Text style={{fontSize: fontValue(12)}}>Add a New Role</Text>
                         </TouchableOpacity>
                     </Header>
                     <View style={{marginHorizontal:26,}}>
@@ -233,7 +237,7 @@ export default function RoleAndPermissionPage(props:any){
                             <Text style={[styles.text,  ]} size={14}>new token</Text>
 
                         </TouchableOpacity>*/}
-                        <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={onParseAccess}>
+                        <TouchableOpacity disabled={!updateValid} style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={onParseAccess}>
 
                             <Text style={[styles.text, {color: "#fff"} ]} size={14}>Update</Text>
 
@@ -365,7 +369,7 @@ export default function RoleAndPermissionPage(props:any){
                             <Text style={[styles.text,  ]} size={14}>new token</Text>
 
                         </TouchableOpacity>*/}
-                    <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={onCreateAccess}>
+                    <TouchableOpacity  style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={onCreateAccess}>
 
                         <Text style={[styles.text, {color: "#fff"} ]} size={14}>Create</Text>
 

@@ -5,6 +5,7 @@ import SvgIcon from "@molecules/timeline/SvgIcon";
 import {disabledColor, lightPrimaryColor, primaryColor} from "@styles/color";
 import IconCheckboxChecked from "@molecules/timeline/IconCheckboxChecked";
 import IconCheckedboxUnchecked from "@molecules/timeline/IconCheckboxUnchecked";
+import {Bold, Regular} from "@styles/font";
 
 const mapping: Record<string, any> = {
     checked: 'checkboxChecked',
@@ -47,7 +48,7 @@ export const CheckboxItem: FC<any> = ({
                 </View>
                 {typeof label === 'string' ? (
                     <View style={{justifyContent: "center", alignItems: "center"}}>
-                        <Text color={disabled ? disabledColor : "rgba(0,0,0,0.5)"} style={labelStyle}>
+                        <Text size={14} color={mapping[status]  == "checkboxUnchecked" ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,1)"} style={[labelStyle, {fontFamily: mapping[status]  == "checkboxUnchecked" ? Regular : Bold}]}>
                             {label}
                         </Text>
                     </View>

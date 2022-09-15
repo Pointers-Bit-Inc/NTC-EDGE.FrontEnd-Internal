@@ -16,6 +16,9 @@ import {RootStateOrAny, useSelector} from "react-redux";
 import {BASE_URL} from "../../../services/config";
 import NavBar from "@molecules/navbar";
 import {CloseIcon} from "@atoms/icon";
+import SplitIcon from "@assets/svg/SplitIcon";
+import CameraRear from "@assets/svg/cameraRear";
+import {fontValue} from "@pages/activities/fontValue";
 
 const finderWidth: number = 280;
 const finderHeight: number = 230;
@@ -134,7 +137,7 @@ export default function QrCodeScan(props: any) {
             setIsError(true)
         }
     }
-
+    const [cameraType , setCameraType] = useState(true)
     return (
         <>
             <NavBar
@@ -148,15 +151,25 @@ export default function QrCodeScan(props: any) {
                 hasPermission && (
                     <RNCamera
                         onBarCodeRead={handleBarCodeScanned}
-                        type={RNCamera.Constants.Type.back}
+                        type={type ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front}
                         barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
                         style={[StyleSheet.absoluteFillObject, styles.container]}
                     >
+
+
                         <BarcodeMask edgeColor="#62B1F6" showAnimatedLine/>
                     </RNCamera>
                 )
 
             }
+                <View style={styles.topButtons}>
+                    <TouchableOpacity onPress={()=>{
+                        setCameraType((type) => !type)
+                    }}>
+                        <CameraRear width={fontValue(26)} height={fontValue(26)}/>
+                    </TouchableOpacity>
+
+                </View>
             {!hasPermission && (<View  style={[StyleSheet.absoluteFillObject, styles.container]}></View>)}
 
             <View style={styles.group7}>
@@ -180,6 +193,7 @@ export default function QrCodeScan(props: any) {
 
                     <View style={styles.group3}>
                         <View style={styles.rect2}>
+
                             <TouchableOpacity onPress={decode} >
                                 <View style={{paddingHorizontal: 25, paddingVertical: 10,}}>
                                     <UploadIcon style={styles.icon}/>

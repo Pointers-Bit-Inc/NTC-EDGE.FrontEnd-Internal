@@ -271,7 +271,7 @@ console.log(paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.
         ;*/
         const indicatorStyle = {
             // transform: [{translateX}] as any,
-            height: 7,
+            height: Platform.OS == "web" ? 7 : 5,
             backgroundColor: infoColor,
             borderRadius: 0,
             padding: 0,
@@ -338,7 +338,7 @@ console.log(paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.
                     <TouchableOpacity onPress={() => {
                         dispatch(setFeedVisible(!feedVisible))
                     }}>
-                        <SplitIcon width={18} height={18} color={!feedVisible ? "#2863D6" : "#A0A3BD" }/>
+                        <SplitIcon active={feedVisible}  width={18} height={18} color={!feedVisible ? "#2863D6" : "#A0A3BD" }/>
                     </TouchableOpacity>
 
                 </View>

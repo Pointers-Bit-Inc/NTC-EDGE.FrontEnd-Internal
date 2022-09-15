@@ -334,7 +334,42 @@ function isValidDate(dateString) {
     if(!dNum && dNum !== 0) return false;
     return d.toISOString().slice(0,10) === dateString;
 }
+
+const cleanNonNumericChars = (text) =>  {
+    if (!text || typeof text !== 'string') {
+        text = String(text);
+    }
+    // Remove non numeric and non .- chars
+    text = text.replace(/[^\d.,-]/g, '');
+
+    // replace "," with "."
+    text = text.replace(',', '.');
+
+    // Remove extra periods ('.', only one, at most left allowed in the string)
+    let splitText = text.split('.');
+    text =
+        splitText.shift() +
+        (splitText.length
+            ? '.' + splitText[0].slice(0,2)
+            : '');
+
+    // Remove '-' signs if there is more than one, or if it is not most left char
+    for (var i = 1; i < text.length; i++) {
+        var char = text.substr(i, 1);
+        if (char == '-') {
+            text = text.substr(0, i) + text.substr(i + 1);
+            // decrement value to avoid skipping character
+            i--;
+        }
+    }
+
+    // Remove leading zeros
+    text = text.replace(/^(-)?0+(?=\d)/, '$1'); //?=\d is a positive lookahead, which matches any digit 0-9
+
+    return text;
+}
 export {
+    cleanNonNumericChars,
     generatePassword,
     transformToFeePayload,
     isNumber,

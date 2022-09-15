@@ -31,6 +31,7 @@ import {
 import {setSessionToken} from "../reducers/user/actions";
 import lodash from "lodash";
 import {isMobile} from "@pages/activities/isMobile";
+import {fontValue} from "@pages/activities/fontValue";
 const useRoleAndPermission =(navigation) => {
     const dimensions = useWindowDimensions();
     const [value, setValue] = useState();
@@ -103,11 +104,11 @@ const useRoleAndPermission =(navigation) => {
                 <View style={[styles.shadow, {borderRadius: 10, backgroundColor: "#fff", padding: 10}]}>
                     <View style={{flexDirection: "row", justifyContent: "space-between"}}>
                         <View>
-                            <Text style={{fontFamily: Bold}}>{item.name}</Text>
+                            <Text style={{fontSize: fontValue(14), fontFamily: Bold}}>{item.name}</Text>
                         </View>
                         <View>
                             <TouchableOpacity onPress={() => onDelete(item.id)}>
-                                <Text>Delete</Text>
+                                <Text style={{fontSize: fontValue(10)}}>Delete</Text>
                             </TouchableOpacity>
 
                         </View>
@@ -119,10 +120,16 @@ const useRoleAndPermission =(navigation) => {
 
     );
     useEffect(() => {
-        parseAccess()
+        setAccess([])
+        setOriginalAccess([])
+        parseAccess({...role?.permission})
     }, [role?.id])
+
+
+
     const {showToast} = useToast();
     const [access, setAccess] = useState([])
+
     let permission = {
         "chatPermission": false,
         "activityPermission": false,
@@ -148,11 +155,11 @@ const useRoleAndPermission =(navigation) => {
             "create": false
         }
     }
+    const [originalAccess, setOriginalAccess] = useState([])
 
 
-    const parseAccess = () => {
+    const parseAccess = (_permission) => {
         if (lodash.isEmpty(role)) return
-        let _permission = {...role?.permission}
 
         let p = []
 
@@ -210,10 +217,10 @@ const useRoleAndPermission =(navigation) => {
         if (_permission.qrCodePermission) {
             p.push(qrCodePermission)
         }
+        setOriginalAccess(p)
         setAccess(p)
 
     }
-
 
     const [createRole, setCreateRole] = useState(false)
 
@@ -316,7 +323,7 @@ const useRoleAndPermission =(navigation) => {
         let _parsePermission = parsePermission(_access, _permission);
 
         axios.patch(BASE_URL + `/roles/${role.id}/permission`, _parsePermission, config).then((res) => {
-
+        parseAccess(_parsePermission)
             dispatch(setSessionToken(res.data.sessionToken))
             showToast(ToastType.Success, "Success!")
         }).catch((error) => {
@@ -337,10 +344,22 @@ const useRoleAndPermission =(navigation) => {
 
 
     }
+    const updateValid = useMemo(()=>{
+        let _bool = false
+        for (let i = 0; i < originalAccess.length; i++) {
+            for (let j = 0; j < access.length; j++) {
+                if(originalAccess[i] == access[j]){
+                    _bool = false
+                }else{
+                    _bool = true
+                }
+            }
 
-    const createRoleAndPermission = () => {
+        }
+console.log(_bool)
+        return _bool
+    }, [access, originalAccess])
 
-    }
     return {
         dimensions,
         value,
@@ -356,7 +375,8 @@ const useRoleAndPermission =(navigation) => {
         createRoleInput,
         setCreateRoleInput,
         onCreateAccess,
-        onParseAccess
+        onParseAccess,
+        updateValid
     };
 }
 

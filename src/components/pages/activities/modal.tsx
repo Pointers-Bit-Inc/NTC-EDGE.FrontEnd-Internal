@@ -65,15 +65,13 @@ import {useToast} from "../../../hooks/useToast";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import ChevronLeft from "@assets/svg/chevron-left";
 import _ from "lodash";
-import {mergeArrays, unionBy} from "../../../utils/formatting";
 import {setUpdateIncrement} from "../../../reducers/activity/actions";
 
 const flatten = require('flat')
 
 
 function ActivityModal(props: any) {
-    const _props = useMemo(() => (Platform.OS == "web" || (
-        Platform?.isPad || isTablet()))  ? props : props?.route?.params, [props])
+    const _props = useMemo(() => (Platform.OS == "web"  ? props : props?.route?.params), [props])
     const dispatch = useDispatch();
     const applicationItem = useSelector((state: RootStateOrAny) => {
         let _applicationItem = state.application?.applicationItem
@@ -432,13 +430,10 @@ function ActivityModal(props: any) {
 
                 if (isLoading)setLoading(false)
                 const diff =  _.differenceBy(_flattenSoa, (response.data?.statement_Of_Account || response.data?.soa),  'item')
-                let arr2 = (response.data?.statement_Of_Account || response.data?.soa).map((res)=>{
-                    delete res.description
-                    return res
-                })
+                let arr2 = (response.data?.statement_Of_Account || response.data?.soa)
 
 
-                let arr1 = (tabName == "Basic Info" ? diff  : _flattenSoa)
+                let arr1 = removeEmpty(tabName == "Basic Info" ? diff  : _flattenSoa)
 
                 cleanSoa = {
                   //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),
@@ -560,8 +555,11 @@ function ActivityModal(props: any) {
                 resolve();
             });
         });
-        props.navigation?.goBack();
-        _props.onDismissed(change);
+        if(props?.navigation?.canGoBack()){
+            props.navigation?.goBack();
+        }
+        _props?.onDismissed(change);
+
         return promise;
     };
 

@@ -190,18 +190,18 @@ export default class AwesomeAlert extends Component {
                                     <View style={[styles.container_, {padding: "5%", paddingHorizontal: 48,}]}>
                                         {
                                             this.props?.type == DECLINED && <View>
-                                                <CloseModal></CloseModal>
+                                                <CloseModal width={fontValue(67)} height={fontValue(67)}></CloseModal>
                                             </View>
 
                                         }
                                         {
                                             this.props?.type == FOREVALUATION && <View style={{paddingBottom: 10}}>
-                                                <EndorseToIcon height_={fontValue(60)} width_={fontValue(60)} color={"#2863D6"}></EndorseToIcon>
+                                                <EndorseToIcon height={fontValue(60)} width={fontValue(60)} color={"#2863D6"}></EndorseToIcon>
                                             </View>
                                         }
                                         {
                                             this.props?.type == APPROVED && <View>
-                                                <ApplicationApproved/>
+                                                <ApplicationApproved  height={fontValue(80)} width={fontValue(80)}/>
                                             </View>
                                         }
                                         <Text style={[styles.title, alertStyle.titleStyle]}>{this.props?.title}</Text>

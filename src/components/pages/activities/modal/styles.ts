@@ -1,6 +1,7 @@
 import {Bold} from "@styles/font";
 import {primaryColor} from "@styles/color";
 import {Platform , StyleSheet} from "react-native";
+import {fontValue} from "@pages/activities/fontValue";
 
 const button = StyleSheet.create({
     confirmButtonContainer : {
@@ -15,7 +16,7 @@ const button = StyleSheet.create({
     confirm : {
         color : "rgba(255,255,255,1)" ,
         fontFamily : Bold ,
-        fontSize : 18 ,
+        fontSize : fontValue(18) ,
     } ,
     confirmButton : {
         backgroundColor : primaryColor ,
@@ -28,7 +29,7 @@ const button = StyleSheet.create({
                 padding : 10
             }
         }) ,
-        
+
         flexDirection: "row",
         alignItems : 'center' ,
         justifyContent : 'center' ,
