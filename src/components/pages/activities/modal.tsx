@@ -430,13 +430,10 @@ function ActivityModal(props: any) {
 
                 if (isLoading)setLoading(false)
                 const diff =  _.differenceBy(_flattenSoa, (response.data?.statement_Of_Account || response.data?.soa),  'item')
-                let arr2 = (response.data?.statement_Of_Account || response.data?.soa).map((res)=>{
-                    delete res.description
-                    return res
-                })
+                let arr2 = (response.data?.statement_Of_Account || response.data?.soa)
 
 
-                let arr1 = (tabName == "Basic Info" ? diff  : _flattenSoa)
+                let arr1 = removeEmpty(tabName == "Basic Info" ? diff  : _flattenSoa)
 
                 cleanSoa = {
                   //  totalFee: response.data?.totalFee + diff.reduce((partialSum, a) => partialSum + (isNumber(parseFloat(a.amount)) ? parseFloat(a.amount) : 0), 0),

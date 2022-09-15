@@ -271,7 +271,7 @@ console.log(paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.
         ;*/
         const indicatorStyle = {
             // transform: [{translateX}] as any,
-            height: 7,
+            height: Platform.OS == "web" ? 7 : 5,
             backgroundColor: infoColor,
             borderRadius: 0,
             padding: 0,

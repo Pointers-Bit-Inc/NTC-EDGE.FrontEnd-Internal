@@ -87,7 +87,9 @@ const Tab = createMaterialTopTabNavigator();
 
 const ActivitiesPage = (props) => {
     const dimensions = useWindowDimensions();
-    const Filter =  FilterPressIcon;
+    const Filter = (
+        isMobile && !(
+            Platform?.isPad || isTablet())) || dimensions?.width < 768 ? FilterIcon : FilterPressIcon;
     const {
         isReady,
         user,
@@ -692,8 +694,8 @@ const ActivitiesPage = (props) => {
                                     }
 
                                     }>
-                                        <Filter pressed={visible} width={fontValue(30)}
-                                                height={fontValue(30)}/>
+                                        <Filter pressed={visible} width={fontValue(Platform.isPad ? 30 :21)}
+                                                height={fontValue(Platform.isPad ? 30 :21)}/>
                                     </TouchableOpacity>
                                     {
                                         <TouchableOpacity onPress={onRefresh}>
