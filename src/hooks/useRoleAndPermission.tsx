@@ -122,7 +122,7 @@ const useRoleAndPermission =(navigation) => {
     useEffect(() => {
         setAccess([])
         setOriginalAccess([])
-        parseAccess()
+        parseAccess({...role?.permission})
     }, [role?.id])
 
 
@@ -158,9 +158,8 @@ const useRoleAndPermission =(navigation) => {
     const [originalAccess, setOriginalAccess] = useState([])
 
 
-    const parseAccess = () => {
+    const parseAccess = (_permission) => {
         if (lodash.isEmpty(role)) return
-        let _permission = {...role?.permission}
 
         let p = []
 
@@ -324,7 +323,7 @@ const useRoleAndPermission =(navigation) => {
         let _parsePermission = parsePermission(_access, _permission);
 
         axios.patch(BASE_URL + `/roles/${role.id}/permission`, _parsePermission, config).then((res) => {
-
+        parseAccess(_parsePermission)
             dispatch(setSessionToken(res.data.sessionToken))
             showToast(ToastType.Success, "Success!")
         }).catch((error) => {
