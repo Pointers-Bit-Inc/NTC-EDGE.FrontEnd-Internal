@@ -573,7 +573,19 @@ const BasicInfo = (_props: any) => {
                                             <RemarkFn/>
 
                                         }
+                                        {(props.or)  ? <View style={styles.group3}>
+                                            <View style={styles.group}>
+                                                <View style={styles.rect}>
+                                                    <Text style={styles.header}>Official Receipt</Text>
+                                                </View>
+                                            </View>
 
+                                            <RowText label={"OR Number:"}
+                                                     applicant={userProfileForm?.["officialReceipt.orNumber"]}/>
+                                            <RowText label={"OR By:"}
+                                                     display={userProfileForm?.["officialReceipt.orBy.firstName"] + " " +  userProfileForm?.["officialReceipt.orBy.lastName"]}/>
+
+                                        </View> : <></>}
                                         {(applicant?.applicantName ||
                                             applicant?.companyName ||
                                             applicant?.suffix ||
@@ -609,6 +621,10 @@ const BasicInfo = (_props: any) => {
                                             <RowText label={"Height:"}
                                                      applicant={userProfileForm?.["applicant.height"]}/>
                                         </View> : <></>}
+
+
+
+
                                         {!!Object.values({...applicant?.address}).join("") ?
                                             <>
                                                 <View style={styles.divider}/>
@@ -744,7 +760,7 @@ const BasicInfo = (_props: any) => {
                                                    <Text style={styles.header}>Note</Text>
                                                </View>
                                            </View>
-                                        <View style={{paddingTop: 5}}>
+                                        <View style={{paddingVertical: 5}}>
                                             <Row  /*show={true}
 
                                       */        multiline={true}
@@ -768,7 +784,7 @@ const BasicInfo = (_props: any) => {
                                                 updateForm={applicantForm}
                                                 stateName={"note"}
                                                 edit={props.edit}
-                                                label={"Note"}
+                                                label={""}
                                                 applicant={userProfileForm?.["note"]}/>
                                         </View>
 

@@ -37,7 +37,7 @@ const Row = (props: { outlineStyle?: any, containerStyle?:any, inputStyle?: any,
     }
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) ?
         <View style={styles.group2}>
-            <Text style={styles.detail}>{props.label}</Text>
+            {props.label ? <Text style={styles.detail}>{props.label}</Text> : <></>}
             {SUPPORTED_FORMATS.indexOf(get_url_extension(applicantMemo)) !== -1 ? <Image source={applicantMemo} style={{width: "100%", height: 100}}/> : <Text style={styles.detailInput}>{applicantMemo} </Text>}
         </View> : <>
             {((props.edit && props.editable && props.showEdit) || edit) ? <InputField containerStyle={props.containerStyle} outlineStyle={props?.outlineStyle} inputStyle={props?.inputStyle} multiline={props.multiline}   onSubmitEditing={(event) => {

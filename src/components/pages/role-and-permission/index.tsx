@@ -1,6 +1,6 @@
 import {styles} from "@pages/activities/styles";
 import {isMobile} from "@pages/activities/isMobile";
-import {FlatList, Platform, ScrollView, TextInput, TouchableOpacity, View} from "react-native";
+import {Animated, FlatList, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
 import {isTablet} from "react-native-device-info";
 import Text from "@atoms/text"
 import NoActivity from "@assets/svg/noActivity";
@@ -32,6 +32,7 @@ import {
 import {disabledColor, successColor} from "@styles/color";
 import {InputField} from "@molecules/form-fields";
 import useRoleAndPermission from "../../../hooks/useRoleAndPermission";
+import Alert from "@atoms/alert";
 
 
 
@@ -52,14 +53,22 @@ export default function RoleAndPermissionPage(props:any){
         setCreateRoleInput,
         onCreateAccess,
         onParseAccess,
-        updateValid
+        updateValid,
+        animation,
+        onClose,
+        background,
+        success,
+        display,
+        alertConfirm,
+        alertCancel
     } = useRoleAndPermission(props.navigation);
 
 
 
     return (
         <View style={{backgroundColor:"#F8F8F8",flex:1,flexDirection:"row"}}>
-            <LeftSideWeb>
+
+         <LeftSideWeb>
                 <View style={styles.header}>
                     <Header title={"Roles & Permission"}>
                         <TouchableOpacity onPress={()=> {
@@ -116,6 +125,9 @@ export default function RoleAndPermissionPage(props:any){
 
                     </View>
             </LeftSideWeb>
+
+
+
             {
                 !(
                     (
@@ -133,10 +145,65 @@ export default function RoleAndPermissionPage(props:any){
 
             {
                 !lodash.isEmpty(role) ?  <View style={[{flex:1, backgroundColor: "#fff",}]}>
+                    <Animated.View
+                        pointerEvents="box-none"
+                        style={[
+                            styles.background,
+                            {
+                                backgroundColor: background,
+                            },
+                        ]}>
+                        <Animated.View
+                            style={[
+                                styles.background,
+                                {
+                                    transform: [{scale: display}, {translateY: success}],
+                                },
+                            ]}>
+                            <View style={styles.wrap}>
+                                <View style={styles.modalHeader} />
+                                <Text style={styles.headerText}>Successfully Updated!</Text>
+                                <Text style={styles.regularText}>
+
+                                </Text>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                    }}>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.buttonCancel]}
+                                        onPress={() => {
+                                            Animated.spring(animation, {
+                                                toValue: 0,
+                                                useNativeDriver: false,
+                                            }).start();
+                                            alertCancel()
+                                        }}>
+                                        <Text style={styles.buttonText}>Close</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.button}
+                                        onPress={() => {
+                                            Animated.spring(animation, {
+                                                toValue: 2,
+                                                useNativeDriver: false,
+                                            }).start(() => {
+                                                animation.setValue(0);
+                                            });
+                                            alertConfirm()
+                                        }}>
+                                        <Text style={styles.buttonText}>Confirm</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </Animated.View>
+                    </Animated.View>
                     <Header size={24} title={"Role: " + role?.name}/>
                     { role?.description ? <Header size={14} title={"Description:" + role?.description}/> : <></>}
                     <Header size={14} title={"Access:"}/>
+
                     <ScrollView style={{ borderTopWidth: 1, borderTopColor: disabledColor}}>
+
                         <View style={{padding: 20}}>
 
                             <View>
@@ -237,7 +304,7 @@ export default function RoleAndPermissionPage(props:any){
                             <Text style={[styles.text,  ]} size={14}>new token</Text>
 
                         </TouchableOpacity>*/}
-                        <TouchableOpacity disabled={!updateValid} style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={onParseAccess}>
+                        <TouchableOpacity disabled={!updateValid} style={{backgroundColor:  updateValid ? successColor : disabledColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={onParseAccess}>
 
                             <Text style={[styles.text, {color: "#fff"} ]} size={14}>Update</Text>
 
@@ -253,11 +320,7 @@ export default function RoleAndPermissionPage(props:any){
 
             {(createRole && lodash.isEmpty(role) && !isMobile) ? <View style={[{flex:1, backgroundColor: "#fff",}]}>
                 <Header size={24} title={ "Create Role and Permission"}>
-                    <TouchableOpacity onPress={()=>{
-                        setCreateRole(false)
-                        dispatch(setRole({}))
-                    }
-                    }>
+                    <TouchableOpacity onPress={onClose}>
                         <Text>Close</Text>
                     </TouchableOpacity>
                 </Header>

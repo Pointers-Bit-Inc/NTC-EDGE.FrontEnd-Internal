@@ -1,5 +1,5 @@
 import React from "react";
-import {ScrollView, TouchableOpacity, View} from "react-native";
+import {Animated, ScrollView, TouchableOpacity, View} from "react-native";
 import Header from "@molecules/header";
 import {setRole} from "../../../reducers/role/actions";
 import Text from "@atoms/text";
@@ -30,8 +30,67 @@ const CreateRoleAndPermissionScreen = (props) => {
         createRoleInput,
         setCreateRoleInput,
         onCreateAccess,
-    } = useRoleAndPermission();
+        background,
+        success,
+        alertConfirm,
+        alertCancel,
+        display,
+        animation
+    } = useRoleAndPermission(props.navigation);
     return <View style={[{flex:1, backgroundColor: "#fff",}]}>
+        <Animated.View
+            pointerEvents="box-none"
+            style={[
+                styles.background,
+                {
+                    backgroundColor: background,
+                },
+            ]}>
+            <Animated.View
+                style={[
+                    styles.background,
+                    {
+                        transform: [{scale: display}, {translateY: success}],
+                    },
+                ]}>
+                <View style={styles.wrap}>
+                    <View style={styles.modalHeader} />
+                    <Text style={styles.headerText}>Successfully Updated!</Text>
+                    <Text style={styles.regularText}>
+
+                    </Text>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                        }}>
+                        <TouchableOpacity
+                            style={[styles.button, styles.buttonCancel]}
+                            onPress={() => {
+                                Animated.spring(animation, {
+                                    toValue: 0,
+                                    useNativeDriver: false,
+                                }).start();
+                                alertCancel()
+                            }}>
+                            <Text style={styles.buttonText}>Close</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={() => {
+                                Animated.spring(animation, {
+                                    toValue: 2,
+                                    useNativeDriver: false,
+                                }).start(() => {
+                                    animation.setValue(0);
+                                });
+                                alertConfirm()
+                            }}>
+                            <Text style={styles.buttonText}>Confirm</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Animated.View>
+        </Animated.View>
         <Header size={24} title={ "Create Role and Permission"}>
             <TouchableOpacity onPress={()=>{
               if(props.navigation.canGoBack() && isMobile) props.navigation.goBack()

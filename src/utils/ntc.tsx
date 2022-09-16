@@ -368,7 +368,67 @@ const cleanNonNumericChars = (text) =>  {
 
     return text;
 }
+
+function isDiff(access: any[], originalAccess: any[]) {
+    var a = [], diff = [];
+
+    for (var i = 0; i < access.length; i++) {
+        a[access[i]] = true;
+    }
+
+    for (var i = 0; i < originalAccess.length; i++) {
+        if (a[originalAccess[i]]) {
+            delete a[originalAccess[i]];
+        } else {
+            a[originalAccess[i]] = true;
+        }
+    }
+
+    for (var k in a) {
+        diff.push(k);
+    }
+    return diff.length;
+}
+ const currency = (number: number) => {
+    var formatter = new Intl.NumberFormat('fil-PH', {
+        style: 'currency',
+        currency: 'PHP',
+    });
+    return formatter.format(number);
+};
+function toFixed(x) {
+    if (Math.abs(x) < 1.0) {
+        let e = parseInt(x.toString().split('e-')[1]);
+        if (e) {
+            x *= Math.pow(10,e-1);
+            x = '0.' + (new Array(e)).join('0') + x.toString().substring(2);
+        }
+    } else {
+        let e = parseInt(x.toString().split('+')[1]);
+        if (e > 20) {
+            e -= 20;
+            x /= Math.pow(10,e);
+            x += (new Array(e+1)).join('0');
+        }
+    }
+    return x;
+}
+
+function toFixedTrunc(x, n) {
+    x = toFixed(x)
+
+    // From here on the code is the same than the original answer
+    const v = (typeof x === 'string' ? x : x.toString()).split('.');
+    if (n <= 0) return v[0];
+    let f = v[1] || '';
+    if (f.length > n) return `${v[0]}.${f.substr(0,n)}`;
+    while (f.length < n) f += '0';
+    return `${v[0]}.${f}`
+}
 export {
+    toFixedTrunc,
+    currency,
+    isDiff,
     cleanNonNumericChars,
     generatePassword,
     transformToFeePayload,

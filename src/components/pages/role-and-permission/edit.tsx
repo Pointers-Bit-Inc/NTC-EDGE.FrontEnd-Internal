@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "@molecules/header";
-import {ScrollView, TouchableOpacity, View} from "react-native";
+import {Animated, ScrollView, TouchableOpacity, View} from "react-native";
 import {disabledColor, successColor} from "@styles/color";
 import {
     activity,
@@ -35,9 +35,68 @@ const EditRoleAndPermissionScreen = (props) => {
         access,
         setAccess,
         onParseAccess,
-        updateValid
+        updateValid,
+        background,
+        success,
+        alertConfirm,
+        alertCancel,
+        display,
+        animation
     } = useRoleAndPermission(props.navigation);
     return <View style={[{flex:1, backgroundColor: "#fff",}]}>
+        <Animated.View
+            pointerEvents="box-none"
+            style={[
+                styles.background,
+                {
+                    backgroundColor: background,
+                },
+            ]}>
+            <Animated.View
+                style={[
+                    styles.background,
+                    {
+                        transform: [{scale: display}, {translateY: success}],
+                    },
+                ]}>
+                <View style={styles.wrap}>
+                    <View style={styles.modalHeader} />
+                    <Text style={styles.headerText}>Successfully Updated!</Text>
+                    <Text style={styles.regularText}>
+
+                    </Text>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                        }}>
+                        <TouchableOpacity
+                            style={[styles.button, styles.buttonCancel]}
+                            onPress={() => {
+                                Animated.spring(animation, {
+                                    toValue: 0,
+                                    useNativeDriver: false,
+                                }).start();
+                                alertCancel()
+                            }}>
+                            <Text style={styles.buttonText}>Close</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={() => {
+                                Animated.spring(animation, {
+                                    toValue: 2,
+                                    useNativeDriver: false,
+                                }).start(() => {
+                                    animation.setValue(0);
+                                });
+                                alertConfirm()
+                            }}>
+                            <Text style={styles.buttonText}>Confirm</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Animated.View>
+        </Animated.View>
         <Header size={24} title={"Role: " + role?.name}>
             <TouchableOpacity onPress={()=>{
                 if(props.navigation.canGoBack() && isMobile) props.navigation.goBack()

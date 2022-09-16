@@ -6,6 +6,7 @@ import {fontValue} from "@pages/activities/fontValue";
 
 export default StyleSheet.create({
   alertContainerStyle: {
+
     backgroundColor: 'rgba(0,0,0,0.3)',
   },
   contentContainerStyle: {

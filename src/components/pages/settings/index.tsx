@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import { ActivityIndicator, Image, View } from 'react-native';
 import Text from '@atoms/text';

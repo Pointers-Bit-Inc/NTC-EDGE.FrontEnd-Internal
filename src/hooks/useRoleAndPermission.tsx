@@ -1,4 +1,4 @@
-import {TouchableOpacity, useWindowDimensions, View} from "react-native";
+import {Animated, Dimensions, TouchableOpacity, useWindowDimensions, View} from "react-native";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import axios from "axios";
@@ -32,7 +32,40 @@ import {setSessionToken} from "../reducers/user/actions";
 import lodash from "lodash";
 import {isMobile} from "@pages/activities/isMobile";
 import {fontValue} from "@pages/activities/fontValue";
+import {isDiff} from "../utils/ntc";
+
+
 const useRoleAndPermission =(navigation) => {
+
+
+    const [animation] = useState(() => new Animated.Value(0));
+
+    const background = animation.interpolate({
+        inputRange: [0, 0.2, 1.8, 2],
+        outputRange: [
+            'rgba(0,0,0,0)',
+            'rgba(0,0,0,.3)',
+            'rgba(0,0,0,.3)',
+            'rgba(0,0,0,0)',
+        ],
+        extrapolate: 'clamp',
+    });
+
+    const display = animation.interpolate({
+        inputRange: [0.2, 1],
+        outputRange: [0, 1],
+        extrapolate: 'clamp',
+    });
+
+    const {height} = Dimensions.get('window');
+
+    const success = animation.interpolate({
+        inputRange: [1.1, 2],
+        outputRange: [0, -height],
+        extrapolate: 'clamp',
+    });
+
+
     const dimensions = useWindowDimensions();
     const [value, setValue] = useState();
     const sessionToken = useSelector((state: RootStateOrAny) => state.user?.sessionToken);
@@ -317,15 +350,21 @@ const useRoleAndPermission =(navigation) => {
 
     }
 
+    const [alert, setAlert] = useState(false)
     const onParseAccess = () => {
         let _access = [...access]
         let _permission = {...permission}
         let _parsePermission = parsePermission(_access, _permission);
-
+        setAlert(false)
         axios.patch(BASE_URL + `/roles/${role.id}/permission`, _parsePermission, config).then((res) => {
-        parseAccess(_parsePermission)
+            setAlert(true)
+            Animated.spring(animation, {
+                toValue: 1,
+                useNativeDriver: false,
+            }).start();
             dispatch(setSessionToken(res.data.sessionToken))
-            showToast(ToastType.Success, "Success!")
+            //showToast(ToastType.Success, "Success!")
+            parseAccess(_parsePermission)
         }).catch((error) => {
             setLoading(false)
             let _err = '';
@@ -345,22 +384,22 @@ const useRoleAndPermission =(navigation) => {
 
     }
     const updateValid = useMemo(()=>{
-        let _bool = false
-        for (let i = 0; i < originalAccess.length; i++) {
-            for (let j = 0; j < access.length; j++) {
-                if(originalAccess[i] == access[j]){
-                    _bool = false
-                }else{
-                    _bool = true
-                }
-            }
-
-        }
-console.log(_bool)
-        return _bool
+        return isDiff(access, originalAccess);
     }, [access, originalAccess])
+    const onClose = () => {
+        setCreateRole(false)
+        dispatch(setRole({}))
+    };
+    const alertConfirm =  () => {
+        onClose()
+        setAlert(false)
+    };
 
+    const alertCancel = ()=>setAlert(false)
     return {
+        alertCancel,
+        alertConfirm,
+        onClose,
         dimensions,
         value,
         setValue,
@@ -376,7 +415,14 @@ console.log(_bool)
         setCreateRoleInput,
         onCreateAccess,
         onParseAccess,
-        updateValid
+        updateValid,
+        alert,
+        setAlert,
+        animation,
+        background,
+        success,
+        display
+
     };
 }
 

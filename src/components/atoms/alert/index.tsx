@@ -11,6 +11,7 @@ interface Props {
   onConfirm?: any;
   onCancel?: any;
   messageStyle?:any;
+  alertContainerStyle?:any;
 };
 
 const Alert: FC<Props> = ({
@@ -21,7 +22,8 @@ const Alert: FC<Props> = ({
   cancelText = '',
   onConfirm = () => {},
   onCancel = () => {},
-  messageStyle={}
+  messageStyle={},
+                            alertContainerStyle = {}
 }) => {
   return (
     <AwesomeAlert
@@ -37,7 +39,7 @@ const Alert: FC<Props> = ({
       showCancelButton={!!cancelText}
       onConfirmPressed={onConfirm}
       onCancelPressed={onCancel}
-      alertContainerStyle={styles.alertContainerStyle}
+      alertContainerStyle={[styles.alertContainerStyle, alertContainerStyle]}
       contentContainerStyle={styles.contentContainerStyle}
       contentStyle={styles.contentStyle}
       titleStyle={styles.titleStyle}

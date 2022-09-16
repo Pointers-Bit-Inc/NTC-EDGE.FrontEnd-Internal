@@ -177,6 +177,7 @@ console.log(paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.
                                       assignedPersonnel={assignedPersonnel}
                                       approvalHistory={approvalHistory}
                                       status={props.details.status}
+                                      or={props?.details?.officialReceipt}
                                       paymentHistory={props?.details?.paymentHistory}
                                       paymentStatus={props?.details?.paymentStatus}
                                       detailsStatus={props?.details?.status}
