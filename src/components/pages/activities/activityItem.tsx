@@ -197,11 +197,11 @@ const RenderApplication = ({applicationType}: any) => {
                     isMobile && !(
                         Platform?.isPad || isTablet())) ? applicationType : (
                     (
-                        applicationType).length > 25) ?
+                        applicationType)?.length > 25) ?
                     (
                         (
                             (
-                                applicationType).substring(0, 25 - 3)) + '...') :
+                                applicationType)?.substring(0, 25 - 3)) + '...') :
                     applicationType}
             </Text>
         </View>

@@ -57,7 +57,7 @@ export function ActivityItem(props:any) {
                                                         <View style={styles.rect32}>
                                                             <Text
                                                                 style={styles.application}>
-                                                                {props.activity.activityDetails.applicationType.length > 25 ? props.activity.activityDetails.applicationType.slice(0, 25).concat('...') : props.activity.activityDetails.applicationType}
+                                                                {props.activity.activityDetails.applicationType?.length > 25 ? props.activity.activityDetails.applicationType.slice(0, 25).concat('...') : props.activity.activityDetails.applicationType}
                                                             </Text>
                                                         </View>
                                                     </View>

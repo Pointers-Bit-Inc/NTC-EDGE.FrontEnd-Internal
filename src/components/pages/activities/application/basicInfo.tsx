@@ -573,7 +573,7 @@ const BasicInfo = (_props: any) => {
                                             <RemarkFn/>
 
                                         }
-                                        {(props.or)  ? <View style={styles.group3}>
+                                        {(props.or && user?.role?.key == CASHIER )  ? <View style={styles.group3}>
                                             <View style={styles.group}>
                                                 <View style={styles.rect}>
                                                     <Text style={styles.header}>Official Receipt</Text>

@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import axios from "axios";
 import {BASE_URL} from "../services/config";
-import {setAddRole, setDeleteRole, setRole, setRoles} from "../reducers/role/actions";
+import {setAddRole, setDeleteRole, setEditRole, setRole, setRoles} from "../reducers/role/actions";
 import {ToastType} from "@atoms/toast/ToastProvider";
 import {styles} from "@pages/activities/styles";
 import Text from "@atoms/text";
@@ -23,6 +23,9 @@ import {
     rolePermissionDelete,
     rolePermissionEdit,
     rolePermissionView,
+    tabAllPermission,
+    tabHistoryPermission,
+    tabPendingPermission,
     userCreate,
     userDelete,
     userEdit,
@@ -186,12 +189,17 @@ const useRoleAndPermission =(navigation) => {
             "edit": false,
             "delete": false,
             "create": false
-        }
+        },
+        "tabPermission": {
+            "all": false,
+            "pending": false,
+            "history": false
+        },
     }
     const [originalAccess, setOriginalAccess] = useState([])
 
 
-    const parseAccess = (_permission) => {
+    const parseAccess = (_permission: { tabPermission: any; chatPermission: any; qrCodePermission: any; resetPasswordPermission: any; rolePermission: any; userPermission: any; activityPermission: any; meetPermission: any; employeePermission: any; }) => {
         if (lodash.isEmpty(role)) return
 
         let p = []
@@ -250,6 +258,19 @@ const useRoleAndPermission =(navigation) => {
         if (_permission.qrCodePermission) {
             p.push(qrCodePermission)
         }
+        if(_permission.tabPermission.pending){
+            p.push(tabPendingPermission)
+        }
+        if(_permission.tabPermission.all){
+            p.push(tabAllPermission)
+        }
+        if(_permission.tabPermission.history){
+            p.push(tabHistoryPermission)
+        }
+
+
+
+
         setOriginalAccess(p)
         setAccess(p)
 
@@ -257,7 +278,9 @@ const useRoleAndPermission =(navigation) => {
 
     const [createRole, setCreateRole] = useState(false)
 
-    function parsePermission(_access: any[], _permission: { chatPermission: boolean;qrCodePermission: boolean; resetPasswordPermission: boolean; rolePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; userPermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; activityPermission: boolean; meetPermission: boolean; employeePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean } }) {
+    function parsePermission(_access: any[], _permission: {
+        tabPermission: {pending: boolean, all: boolean, history: boolean};
+        chatPermission: boolean;qrCodePermission: boolean; resetPasswordPermission: boolean; rolePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; userPermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; activityPermission: boolean; meetPermission: boolean; employeePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean } }) {
         if (_access.indexOf(chat) !== -1) {
             _permission.chatPermission = true
         }
@@ -314,7 +337,15 @@ const useRoleAndPermission =(navigation) => {
             _permission.qrCodePermission = true
         }
 
-
+        if (_access.indexOf(tabPendingPermission) !== -1) {
+            _permission.tabPermission.pending = true
+        }
+        if (_access.indexOf(tabAllPermission) !== -1) {
+            _permission.tabPermission.all = true
+        }
+        if (_access.indexOf(tabHistoryPermission) !== -1) {
+            _permission.tabPermission.history = true
+        }
         return _permission
 
     }
@@ -358,13 +389,16 @@ const useRoleAndPermission =(navigation) => {
         setAlert(false)
         axios.patch(BASE_URL + `/roles/${role.id}/permission`, _parsePermission, config).then((res) => {
             setAlert(true)
+            parseAccess(_parsePermission)
+            dispatch(setEditRole(res.data.doc))
+            dispatch(setSessionToken(res.data.sessionToken))
             Animated.spring(animation, {
                 toValue: 1,
                 useNativeDriver: false,
             }).start();
-            dispatch(setSessionToken(res.data.sessionToken))
+
             //showToast(ToastType.Success, "Success!")
-            parseAccess(_parsePermission)
+
         }).catch((error) => {
             setLoading(false)
             let _err = '';

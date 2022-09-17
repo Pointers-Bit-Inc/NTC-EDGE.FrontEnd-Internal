@@ -27,6 +27,7 @@ import useRoleAndPermission from "../../../hooks/useRoleAndPermission";
 import {CheckboxList} from "@atoms/checkboxlist/CheckboxList";
 import {setRole} from "../../../reducers/role/actions";
 import {isMobile} from "@pages/activities/isMobile";
+import RoleChecklist from "@pages/role-and-permission/RoleCheckList";
 
 const EditRoleAndPermissionScreen = (props) => {
     const {
@@ -111,92 +112,9 @@ const EditRoleAndPermissionScreen = (props) => {
         <ScrollView style={{ borderTopWidth: 1, borderTopColor: disabledColor}}>
             <View style={{padding: 20}}>
 
-                <View>
-
-                    <CheckboxList
-                        containerStyle={{flex: 1}}
-                        showCheckAll={false}
-                        value={access}
-                        onChange={(value)=>{
-
-                            setAccess(value)
-                        }
-                        }
-                        options={[
-                            { label: 'Chat', value: chat },
-                            { label: 'Meet', value: meet },
-                            { label: 'Activity', value: activity},
-                        ]}
-                    />
-                    <View style={{paddingTop: 10}}>
-                        <Text size={14} style={styles.text}>User</Text>
-                        <CheckboxList
-                            showCheckAll={false}
-                            value={access}
-                            onChange={(value)=>{
-
-                                setAccess(value)
-                            }
-                            }
-                            options={[
-                                { label: 'Create', value: userCreate },
-                                { label: 'Read', value: userView },
-                                { label: 'Update', value: userEdit },
-                                { label: 'Delete', value: userDelete },
-                            ]}
-                        />
-                    </View>
-                    <View style={{paddingTop: 10}}>
-                        <Text size={14} style={styles.text}>Employee</Text>
-                        <CheckboxList
-                            showCheckAll={false}
-                            value={access}
-                            onChange={(value)=>{
-
-                                setAccess(value)
-                            }
-                            }
-                            options={[
-                                { label: 'Create', value: employeeCreate },
-                                { label: 'Read', value: employeeView },
-                                { label: 'Update', value: employeeEdit },
-                                { label: 'Delete', value: employeeDelete },
-                            ]}
-                        />
-                    </View>
-                    <View style={{paddingTop: 10}}>
-                        <Text size={14} style={styles.text}>Role and Permission</Text>
-                        <CheckboxList
-                            size={12}
-                            showCheckAll={false}
-                            value={access}
-                            onChange={(value)=>{
-                                setAccess(value)
-                            }
-                            }
-                            options={[
-                                { label: 'Create', value: rolePermissionCreate },
-                                { label: 'Read', value: rolePermissionView },
-                                { label: 'Update', value: rolePermissionEdit },
-                                { label: 'Delete', value: rolePermissionDelete },
-                            ]}
-                        />
-                    </View>
-                </View>
-                <Text size={14} style={styles.text}>Misc.</Text>
-                <CheckboxList
-                    size={12}
-                    showCheckAll={false}
-                    value={access}
-                    onChange={(value)=>{
-                        setAccess(value)
-                    }
-                    }
-                    options={[
-                        { label: 'Reset Password', value: resetPasswordPermission },
-                        { label: 'Qr Code', value: qrCodePermission },
-                    ]}
-                />
+                <RoleChecklist value={access} onChange={(value) => {
+                    setAccess(value)
+                }}/>
             </View>
         </ScrollView>
         <View style={{

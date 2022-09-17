@@ -15,6 +15,9 @@ export const chat = "permission.chat",
     rolePermissionEdit = "permission.rolepermission.edit",
     rolePermissionView = "permission.rolepermission.view",
     resetPasswordPermission = "permission.resetpassword",
+    tabAllPermission = "permission.tab.all",
+    tabPendingPermission = "permission.tab.pending",
+    tabHistoryPermission = "permission.tab.history",
     qrCodePermission = "permission.qrcode";
 const InitialState = Record({
   roles: [],

@@ -757,11 +757,12 @@ const ActivitiesPage = (props) => {
                         </View>
 
 
-                        <Tab.Navigator  screenOptions={tabBarOptions} >
-                            <Tab.Screen name="All">{renderAllActivities}</Tab.Screen>
-                            <Tab.Screen name="Pending">{renderPending}</Tab.Screen>
-                            <Tab.Screen name="History">{renderHistory}</Tab.Screen>
-                        </Tab.Navigator>
+                        {user?.role?.permission?.tabPermission?.all || user?.role?.permission?.tabPermission?.pending || user?.role?.permission?.tabPermission?.history ?
+                            <Tab.Navigator  screenOptions={tabBarOptions} >
+                                {user?.role?.permission?.tabPermission?.all ? <Tab.Screen name="All">{renderAllActivities}</Tab.Screen> : null}
+                                {user?.role?.permission?.tabPermission?.pending ?<Tab.Screen name="Pending">{renderPending}</Tab.Screen> : null}
+                                {user?.role?.permission?.tabPermission?.history ?<Tab.Screen name="History">{renderHistory}</Tab.Screen> : null}
+                        </Tab.Navigator>: <></>}
 
                     </View>
                     {
