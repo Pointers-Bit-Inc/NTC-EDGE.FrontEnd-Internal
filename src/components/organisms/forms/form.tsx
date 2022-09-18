@@ -77,7 +77,7 @@ const FormField=({
                                     label="Select Item"
                                     data={ element.data }
                                     onSelect={ ({ value }) => {
-                                        if (value) onChange(id,value,'role')
+                                        if (value) onChange(id, value,'select', element?.stateName)
                                     } }/>
                     {
                         element?.hasValidation && (!!element?.error || !!element?.description) && (
@@ -176,7 +176,7 @@ const FormField=({
     const [layoutRef,setLayoutRef]=useState([]);
     for(let index=0; index<formElements.length; index++){
         if(formElements?.[index]?.type==="input"){
-            mapRef.push({id:formElements?.[index]?.id,ref:useRef()})
+            mapRef?.push({id:formElements?.[index]?.id,ref:useRef()})
         }
     }
     return (

@@ -33,7 +33,7 @@ const validatePhone = (text:string) => {
 }
 
 const validateText = (text:string) => {
-  return !!text.replace(/ /g, '');
+  return !!text?.replace(/ /g, '');
 }
 
 export {

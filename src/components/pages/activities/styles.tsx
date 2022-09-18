@@ -1,9 +1,9 @@
-import {Platform , StyleSheet} from "react-native";
+import {Dimensions, Platform, StyleSheet} from "react-native";
 import {Bold, Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import hairlineWidth = StyleSheet.hairlineWidth;
-import {errorColor, infoColor, primaryColor, successColor} from "@styles/color";
-
+import {errorColor, infoColor, outline, primaryColor, successColor, text} from "@styles/color";
+const { width } = Dimensions.get('window');
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -620,6 +620,37 @@ export const styles = StyleSheet.create({
     }, text: {
 
         fontFamily: Bold,
-    }
+    },
+    scheduleButton: {
+        backgroundColor: successColor,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10
+    },
+    dateCalendar: {color: "#6E7191", marginLeft: 10},
+    scheduleContainer: {
+        borderWidth: 1.5,
+        borderRadius: 10,
+        borderColor: outline.default,
+        ...Platform.select({
+            native: {
+                width: (width - 40) / 2,
+            },
+            web: {
+                marginRight: 15,
+                marginVertical: 15,
+            }
+        }),
+
+        padding: 5,
+    },
+    scheduleRow: { flexDirection: 'row',
+        alignItems: 'center',},
+    scheduleText: { color: text.default,
+        marginLeft: 5,
+        fontSize: fontValue(11),},
+    scheduleInnerSeparator: {
+        height: 10,
+    },
 
 });

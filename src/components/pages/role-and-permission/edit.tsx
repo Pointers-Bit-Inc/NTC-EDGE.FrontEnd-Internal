@@ -2,29 +2,9 @@ import React from "react";
 import Header from "@molecules/header";
 import {Animated, ScrollView, TouchableOpacity, View} from "react-native";
 import {disabledColor, successColor} from "@styles/color";
-import {
-    activity,
-    chat,
-    employeeCreate,
-    employeeDelete,
-    employeeEdit,
-    employeeView,
-    meet,
-    qrCodePermission,
-    resetPasswordPermission,
-    rolePermissionCreate,
-    rolePermissionDelete,
-    rolePermissionEdit,
-    rolePermissionView,
-    userCreate,
-    userDelete,
-    userEdit,
-    userView
-} from "../../../reducers/role/initialstate";
 import Text from "@atoms/text";
 import {styles} from "@pages/activities/styles";
 import useRoleAndPermission from "../../../hooks/useRoleAndPermission";
-import {CheckboxList} from "@atoms/checkboxlist/CheckboxList";
 import {setRole} from "../../../reducers/role/actions";
 import {isMobile} from "@pages/activities/isMobile";
 import RoleChecklist from "@pages/role-and-permission/RoleCheckList";
@@ -44,7 +24,7 @@ const EditRoleAndPermissionScreen = (props) => {
         display,
         animation
     } = useRoleAndPermission(props.navigation);
-    return <View style={[{flex:1, backgroundColor: "#fff",}]}>
+    return <View style={[{flex: 1, backgroundColor: "#fff",}]}>
         <Animated.View
             pointerEvents="box-none"
             style={[
@@ -61,7 +41,7 @@ const EditRoleAndPermissionScreen = (props) => {
                     },
                 ]}>
                 <View style={styles.wrap}>
-                    <View style={styles.modalHeader} />
+                    <View style={styles.modalHeader}/>
                     <Text style={styles.headerText}>Successfully Updated!</Text>
                     <Text style={styles.regularText}>
 
@@ -99,17 +79,17 @@ const EditRoleAndPermissionScreen = (props) => {
             </Animated.View>
         </Animated.View>
         <Header size={24} title={"Role: " + role?.name}>
-            <TouchableOpacity onPress={()=>{
-                if(props.navigation.canGoBack() && isMobile) props.navigation.goBack()
+            <TouchableOpacity onPress={() => {
+                if (props.navigation.canGoBack() && isMobile) props.navigation.goBack()
                 dispatch(setRole({}))
             }
             }>
                 <Text>Close</Text>
             </TouchableOpacity>
         </Header>
-        { role?.description ? <Header size={14} title={"Description:" + role?.description}/> : <></>}
+        {role?.description ? <Header size={14} title={"Description:" + role?.description}/> : <></>}
         <Header size={14} title={"Access:"}/>
-        <ScrollView style={{ borderTopWidth: 1, borderTopColor: disabledColor}}>
+        <ScrollView style={{borderTopWidth: 1, borderTopColor: disabledColor}}>
             <View style={{padding: 20}}>
 
                 <RoleChecklist value={access} onChange={(value) => {
@@ -121,19 +101,24 @@ const EditRoleAndPermissionScreen = (props) => {
 
             margin: 10,
             justifyContent: 'center',
-            alignItems: 'center',}}>
+            alignItems: 'center',
+        }}>
             {/* <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={newToken}>
 
                             <Text style={[styles.text,  ]} size={14}>new token</Text>
 
                         </TouchableOpacity>*/}
-            <TouchableOpacity disabled={!updateValid}  style={{backgroundColor: updateValid ? successColor : disabledColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={onParseAccess}>
+            <TouchableOpacity disabled={!updateValid} style={{
+                backgroundColor: updateValid ? successColor : disabledColor,
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+                borderRadius: 10
+            }} onPress={onParseAccess}>
 
-                <Text style={[styles.text, {color: "#fff"} ]} size={14}>Update</Text>
+                <Text style={[styles.text, {color: "#fff"}]} size={14}>Update</Text>
 
             </TouchableOpacity>
         </View>
-
 
 
     </View>

@@ -21,7 +21,7 @@ import {
     EVALUATOR, GROUP,
     MEET,
     MORE, REPORT, ROLEANDPERMISSION,
-    SCANQR,
+    SCANQR, SCHEDULE,
     SEARCH, SETTINGS, USERS,
 } from "../../../reducers/activity/initialstate";
 import {RootStateOrAny,useDispatch,useSelector} from "react-redux";
@@ -54,6 +54,7 @@ import UserNavigator from "../../../navigations/user";
 import Settings from "@pages/settings";
 import RoleAndPermissionNavigator from "../../../navigations/role-and-permission";
 import ConfigurationNavigator from "../../../navigations/configuration";
+import ScheduleNavigator from "../../../navigations/schedule";
 
 const {width}=Dimensions.get('window');
 
@@ -280,6 +281,7 @@ export default function TabBar({navigation,route}){
                                            <ScanQrIcon notification={false} width={fontValue(30)} height={fontValue(30)}
                                                        fill={isFocused ? focused : unfocused}/>)
                                        :
+
                                        label==MORE
                                        ?
                                        (
@@ -345,16 +347,17 @@ export default function TabBar({navigation,route}){
                 {user?.role?.permission?.meetPermission ? <Drawer.Screen options={{drawerLabel:MEET,headerShown:false}} name={MEET} component={MeetScreen}/> : <></>}
                 {(user?.role?.permission?.qrCodePermission && Platform.OS != "web") &&
                     <Drawer.Screen options={{drawerLabel:SCANQR,headerShown:false}} name={SCANQR} component={QrCodeScanner}/>}
-                {user?.role?.permission?.settingPermission?.view ?<Drawer.Screen options={{drawerLabel: SETTINGS, headerShown: false}} name={CONFIGURATION}
-                                component={ConfigurationNavigator}/> : <></>}
+
                  {/*<Drawer.Screen options={{drawerLabel:DASHBOARD,headerShown:false}} name={DASHBOARD} component={DashboardNavigator}/>*/}
                  {/*<Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/>*/}
                 {user?.role?.permission?.rolePermission?.view ? <Drawer.Screen options={{drawerLabel:ROLEANDPERMISSION,headerShown:false}} name={ROLEANDPERMISSION} component={RoleAndPermissionNavigator}/> : <></>}
                  {/*<Drawer.Screen options={{drawerLabel:GROUP,headerShown:false}} name={GROUP} component={GroupNavigator}/>*/}
+                {true ? <Drawer.Screen options={{drawerLabel:SCHEDULE,headerShown:false}} name={SCHEDULE} component={ScheduleNavigator}/> : <></>}
                 {user?.role?.permission?.employeePermission.view ? <Drawer.Screen options={{drawerLabel:EMPLOYEES,headerShown:false}} name={EMPLOYEES} component={EmployeeNavigator}/> : <></>}
                 {user?.role?.permission?.userPermission.view ? <Drawer.Screen options={{drawerLabel:USERS,headerShown:false}} name={USERS} component={UserNavigator}/>: <></>}
                  {/*<Drawer.Screen options={{drawerLabel:SETTINGS,headerShown:false}} name={SETTINGS} component={Settings}/>*/}
-
+                {user?.role?.permission?.settingPermission?.view ?<Drawer.Screen options={{drawerLabel: SETTINGS, headerShown: false}} name={CONFIGURATION}
+                                                                                 component={ConfigurationNavigator}/> : <></>}
              </Drawer.Navigator>}
             <AwesomeAlert
                 show={showAlert}

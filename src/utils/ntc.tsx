@@ -1,5 +1,74 @@
 import Moment from "moment";
-
+const regionList = [
+    {
+        "label": "Region I - Ilocos Region",
+        "value": "I"
+    },
+    {
+        "label": "Region II - Cagayan Valley",
+        "value": "II"
+    },
+    {
+        "label": "Region III - Central Luzon",
+        "value": "III"
+    },
+    {
+        "label": "Region IV-A - CALABARZON",
+        "value": "IV-A"
+    },
+    {
+        "label": "MIMAROPA Region",
+        "value": "IV-B"
+    },
+    {
+        "label": "Region V - Bicol Region",
+        "value": "V"
+    },
+    {
+        "label": "Region VI - Western Visayas",
+        "value": "VI"
+    },
+    {
+        "label": "Region VII - Central Visayas",
+        "value": "VII"
+    },
+    {
+        "label": "Region VIII - Eastern Visayas",
+        "value": "VIII"
+    },
+    {
+        "label": "Region IX - Zamboanga Peninsula",
+        "value": "IX"
+    },
+    {
+        "label": "Region X - Northern Mindanao",
+        "value": "X"
+    },
+    {
+        "label": "Region XI - Davao Region",
+        "value": "XI"
+    },
+    {
+        "label": "Region XII - SOCCSKSARGEN",
+        "value": "XII"
+    },
+    {
+        "label": "Region XIII - Caraga",
+        "value": "XIII"
+    },
+    {
+        "label": "NCR - National Capital Region",
+        "value": "NCR"
+    },
+    {
+        "label": "CAR - Cordillera Administrative Region",
+        "value": "CAR"
+    },
+    {
+        "label": "BARMM - Bangsamoro Autonomous Region in Muslim Mindanao",
+        "value": "BARMM"
+    }
+];
 const transformText = (text: string) => {
     if (text === 'examSeminar') return 'Exam/Seminar';
     else if (text === 'typeModel') return 'Type/Model';
@@ -370,6 +439,7 @@ const cleanNonNumericChars = (text) =>  {
 }
 
 function isDiff(access: any[], originalAccess: any[]) {
+
     var a = [], diff = [];
 
     for (var i = 0; i < access.length; i++) {
@@ -425,7 +495,19 @@ function toFixedTrunc(x, n) {
     while (f.length < n) f += '0';
     return `${v[0]}.${f}`
 }
+const recursionObject = (obj, fn) => {
+    for (const [key, value] of Object.entries(obj)) {
+        if( value && typeof value === "object"){
+            recursionObject(value, fn)
+        }else{
+            fn(value, key)
+        }
+    }
+
+}
 export {
+    recursionObject,
+    regionList,
     toFixedTrunc,
     currency,
     isDiff,

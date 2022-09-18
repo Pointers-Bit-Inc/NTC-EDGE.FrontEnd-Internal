@@ -10,7 +10,7 @@ import useRoleAndPermission from "../../../hooks/useRoleAndPermission";
 import {isMobile} from "@pages/activities/isMobile";
 import RoleChecklist from "@pages/role-and-permission/RoleCheckList";
 
-const CreateRoleAndPermissionScreen = (props) => {
+const CreateScheduleScreen = (props) => {
     const {
         dispatch,
         role,
@@ -130,4 +130,4 @@ const CreateRoleAndPermissionScreen = (props) => {
     </View>
 }
 
-export default CreateRoleAndPermissionScreen
+export default CreateScheduleScreen

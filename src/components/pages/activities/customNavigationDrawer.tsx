@@ -14,7 +14,7 @@ import {
     GROUP,
     MEET,
     REPORT,
-    ROLEANDPERMISSION, SCANQR,
+    ROLEANDPERMISSION, SCANQR, SCHEDULE,
     SEARCH, SETTINGS, USERS
 } from "../../../reducers/activity/initialstate";
 import {fontValue} from "@pages/activities/fontValue";
@@ -29,6 +29,7 @@ import EmployeeIcon from "@assets/svg/employeeIcon";
 import UserIcon from "@assets/svg/userIcon";
 import SettingIcon from "@assets/svg/SettingIcon";
 import ScanQrIcon from "@assets/svg/scanqrtabbar";
+import ScheduleIcon from "@assets/svg/scheduleIcon";
 
 const CustomSidebarMenu=(props:any)=>{
     const dispatch=useDispatch();
@@ -103,6 +104,10 @@ const CustomSidebarMenu=(props:any)=>{
                         case SCANQR:
                             tabIcon= <ScanQrIcon notification={false} width={fontValue(22)} height={fontValue(22)}
                                                  fill={focused ? "#113196" : "#6E7191"}/>
+                            break;
+                        case SCHEDULE:
+                            tabIcon= <ScheduleIcon notification={false} width={fontValue(35)} height={fontValue(35)}
+                                                 color={focused ? "#113196" : "#6E7191"}/>
                             break;
                         case USERS:
                             tabIcon=<UserIcon focused={focused} fill={focused ? "#113196" : "#6E7191"}/>;

@@ -36,37 +36,13 @@ import lodash from "lodash";
 import {isMobile} from "@pages/activities/isMobile";
 import {fontValue} from "@pages/activities/fontValue";
 import {isDiff} from "../utils/ntc";
+import useModalAnimation from "./useModalAnimation";
+
+
 
 
 const useRoleAndPermission =(navigation) => {
-
-
-    const [animation] = useState(() => new Animated.Value(0));
-
-    const background = animation.interpolate({
-        inputRange: [0, 0.2, 1.8, 2],
-        outputRange: [
-            'rgba(0,0,0,0)',
-            'rgba(0,0,0,.3)',
-            'rgba(0,0,0,.3)',
-            'rgba(0,0,0,0)',
-        ],
-        extrapolate: 'clamp',
-    });
-
-    const display = animation.interpolate({
-        inputRange: [0.2, 1],
-        outputRange: [0, 1],
-        extrapolate: 'clamp',
-    });
-
-    const {height} = Dimensions.get('window');
-
-    const success = animation.interpolate({
-        inputRange: [1.1, 2],
-        outputRange: [0, -height],
-        extrapolate: 'clamp',
-    });
+    const {animation, background, display, success} = useModalAnimation();
 
 
     const dimensions = useWindowDimensions();
