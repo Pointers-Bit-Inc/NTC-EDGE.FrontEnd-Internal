@@ -11,7 +11,7 @@ import {
     useWindowDimensions,
     View
 } from "react-native";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import axios from "axios";
 import Highlighter from "@pages/activities/search/highlighter";
@@ -322,6 +322,7 @@ const DataTable=(props)=>{
             description:false,
             hasValidation:true
         },
+
         {
 
             stateName:'profilePicture',
@@ -330,6 +331,20 @@ const DataTable=(props)=>{
         },
 
     ];
+
+   useEffect(()=>{
+       let _userProfileForm = [...userProfileForm]
+       let roleId = 6
+       const index =  _userProfileForm.findIndex((app) => app.id == roleId )
+
+       if(_userProfileForm[index].hasOwnProperty('data')){
+           _userProfileForm[index].data = props.filter
+       }
+
+       setUserProfileForm(_userProfileForm)
+
+   }, [props.filter])
+
     const [userProfileForm,setUserProfileForm]=useState(originalForm);
     const [state,setState]=useState('add');
     const user=useSelector((state:RootStateOrAny)=>state.user);

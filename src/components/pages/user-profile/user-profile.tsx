@@ -33,6 +33,7 @@ import {fontValue} from "@pages/activities/fontValue";
 import {isMobile} from "@pages/activities/isMobile";
 import useKeyboard from "../../../hooks/useKeyboard";
 import {removeEmpty} from "@pages/activities/script";
+import {regionList} from "../../../utils/ntc";
 
 const STATUSBAR_HEIGHT=StatusBar?.currentHeight;
 const {width,height}=Dimensions.get('window');
@@ -118,6 +119,7 @@ const UserProfileScreen=({navigation}:any)=>{
             value:user?.address||'',
             error:false,
         },
+
     ];
     const [userProfileForm,setUserProfileForm]=useState(originalForm);
     const onUpdateForm=(id:number,text:any,element?:string,_key?:string)=>{

@@ -1,8 +1,15 @@
-const { SET_EDIT_ROLE, SET_ROLES, SET_ROLE, SET_DELETE_ROLE , SET_ADD_ROLE} = require('./types').default;
+const { SET_ROLES_SELECT, SET_EDIT_ROLE, SET_ROLES, SET_ROLE, SET_DELETE_ROLE , SET_ADD_ROLE} = require('./types').default;
 
 export function setRoles(payload) {
   return {
     type: SET_ROLES,
+    payload,
+  };
+}
+
+export function setRolesSelect(payload) {
+  return {
+    type: SET_ROLES_SELECT,
     payload,
   };
 }

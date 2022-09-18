@@ -25,7 +25,8 @@ export const chat = "permission.chat",
     qrCodePermission = "permission.qrcode";
 const InitialState = Record({
   roles: [],
-  role:{}
+  role:{},
+  roles_select: []
 });
 
 export default InitialState;

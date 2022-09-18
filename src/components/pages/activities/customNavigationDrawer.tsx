@@ -30,6 +30,7 @@ import UserIcon from "@assets/svg/userIcon";
 import SettingIcon from "@assets/svg/SettingIcon";
 import ScanQrIcon from "@assets/svg/scanqrtabbar";
 import ScheduleIcon from "@assets/svg/scheduleIcon";
+import {isMobile} from "@pages/activities/isMobile";
 
 const CustomSidebarMenu=(props:any)=>{
     const dispatch=useDispatch();
@@ -106,7 +107,7 @@ const CustomSidebarMenu=(props:any)=>{
                                                  fill={focused ? "#113196" : "#6E7191"}/>
                             break;
                         case SCHEDULE:
-                            tabIcon= <ScheduleIcon notification={false} width={fontValue(35)} height={fontValue(35)}
+                            tabIcon= <ScheduleIcon notification={false} width={!isMobile ? fontValue(35) : fontValue(22)} height={!isMobile ? fontValue(35) :fontValue(22)}
                                                  color={focused ? "#113196" : "#6E7191"}/>
                             break;
                         case USERS:

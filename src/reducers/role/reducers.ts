@@ -3,7 +3,8 @@ const {
   SET_ROLE,
   SET_DELETE_ROLE,
   SET_ADD_ROLE,
-  SET_EDIT_ROLE
+  SET_EDIT_ROLE,
+    SET_ROLES_SELECT
 } = require('./types').default;
 
 const InitialState = require('./initialstate').default;
@@ -12,6 +13,10 @@ const initialState = new InitialState();
 
 export default function basket(state = initialState, action = {}) {
     switch (action.type) {
+        case SET_ROLES_SELECT : {
+            state = state.set('roles_select', action.payload);
+            return state
+        }
         case SET_ROLES: {
             state = state.set('roles', action.payload);
             return state

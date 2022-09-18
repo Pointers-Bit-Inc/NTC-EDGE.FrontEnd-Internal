@@ -5,5 +5,6 @@ export default keyMirror({
   SET_ROLE: null,
   SET_DELETE_ROLE: null,
   SET_ADD_ROLE: null,
-  SET_EDIT_ROLE: null
+  SET_EDIT_ROLE: null,
+  SET_ROLES_SELECT: null
 });
