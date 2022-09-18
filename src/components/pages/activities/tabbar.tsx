@@ -352,7 +352,7 @@ export default function TabBar({navigation,route}){
                  {/*<Drawer.Screen options={{drawerLabel:REPORT,headerShown:false}} name={REPORT} component={ReportNavigator}/>*/}
                 {user?.role?.permission?.rolePermission?.view ? <Drawer.Screen options={{drawerLabel:ROLEANDPERMISSION,headerShown:false}} name={ROLEANDPERMISSION} component={RoleAndPermissionNavigator}/> : <></>}
                  {/*<Drawer.Screen options={{drawerLabel:GROUP,headerShown:false}} name={GROUP} component={GroupNavigator}/>*/}
-                {true ? <Drawer.Screen options={{drawerLabel:SCHEDULE,headerShown:false}} name={SCHEDULE} component={ScheduleNavigator}/> : <></>}
+                {user?.role?.permission?.schedulePermission?.view ? <Drawer.Screen options={{drawerLabel:SCHEDULE,headerShown:false}} name={SCHEDULE} component={ScheduleNavigator}/> : <></>}
                 {user?.role?.permission?.employeePermission.view ? <Drawer.Screen options={{drawerLabel:EMPLOYEES,headerShown:false}} name={EMPLOYEES} component={EmployeeNavigator}/> : <></>}
                 {user?.role?.permission?.userPermission.view ? <Drawer.Screen options={{drawerLabel:USERS,headerShown:false}} name={USERS} component={UserNavigator}/>: <></>}
                  {/*<Drawer.Screen options={{drawerLabel:SETTINGS,headerShown:false}} name={SETTINGS} component={Settings}/>*/}
