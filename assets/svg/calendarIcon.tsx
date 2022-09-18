@@ -17,6 +17,7 @@ const CalendarDateIcon = (props) => (
             d="M31,7.8a4,4,0,0,0-4-4H5a4,4,0,0,0-4,4V27a4,4,0,0,0,4,4H27a4,4,0,0,0,4-4V7.8Zm-2,0V27a2,2,0,0,1-2,2H5a2,2,0,0,1-2-2V7.8a2,2,0,0,1,2-2H27a2,2,0,0,1,2,2Z"
             transform="translate(-1 -1)"
             fillRule="evenodd"
+            fill={props.color || "#000"}
         />
         <Path
             id="Path_220"
@@ -24,6 +25,7 @@ const CalendarDateIcon = (props) => (
             d="M8,2V7.6a1,1,0,1,0,2,0V2A1,1,0,0,0,8,2Z"
             transform="translate(-1 -1)"
             fillRule="evenodd"
+            fill={props.color || "#000"}
         />
         <Path
             id="Path_221"
@@ -31,6 +33,7 @@ const CalendarDateIcon = (props) => (
             d="M2,14.2H30v-2H2Z"
             transform="translate(-1 -1)"
             fillRule="evenodd"
+            fill={props.color || "#000"}
         />
         <Path
             id="Path_222"
@@ -38,6 +41,7 @@ const CalendarDateIcon = (props) => (
             d="M22,2V7.6a1,1,0,1,0,2,0V2a1,1,0,0,0-2,0Z"
             transform="translate(-1 -1)"
             fillRule="evenodd"
+            fill={props.color || "#000"}
         />
         <Circle
             id="Ellipse_2"
@@ -46,6 +50,7 @@ const CalendarDateIcon = (props) => (
             cy={1.505}
             r={1.505}
             transform="translate(5.795 15.595)"
+            fill={props.color || "#000"}
         />
         <Circle
             id="Ellipse_3"
@@ -54,6 +59,7 @@ const CalendarDateIcon = (props) => (
             cy={1.505}
             r={1.505}
             transform="translate(13.495 15.595)"
+            fill={props.color || "#000"}
         />
         <Circle
             id="Ellipse_4"
@@ -62,6 +68,7 @@ const CalendarDateIcon = (props) => (
             cy={1.505}
             r={1.505}
             transform="translate(21.195 15.595)"
+            fill={props.color || "#000"}
         />
         <Circle
             id="Ellipse_5"
@@ -70,6 +77,7 @@ const CalendarDateIcon = (props) => (
             cy={1.505}
             r={1.505}
             transform="translate(21.195 22.486)"
+            fill={props.color || "#000"}
         />
         <Circle
             id="Ellipse_6"
@@ -78,6 +86,7 @@ const CalendarDateIcon = (props) => (
             cy={1.505}
             r={1.505}
             transform="translate(13.495 22.486)"
+            fill={props.color || "#000"}
         />
         <Circle
             id="Ellipse_7"
@@ -86,6 +95,7 @@ const CalendarDateIcon = (props) => (
             cy={1.505}
             r={1.505}
             transform="translate(5.795 22.486)"
+            fill={props.color || "#000"}
         />
     </Svg>
 );

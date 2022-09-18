@@ -22,7 +22,7 @@ import {
     rolePermissionCreate,
     rolePermissionDelete,
     rolePermissionEdit,
-    rolePermissionView,
+    rolePermissionView, scheduleCreate, scheduleDelete, scheduleEdit, scheduleView,
     tabAllPermission,
     tabHistoryPermission,
     tabPendingPermission,
@@ -154,6 +154,12 @@ const useRoleAndPermission =(navigation) => {
             "delete": false,
             "create": false
         },
+        "schedulePermission": {
+            "view": false,
+            "edit": false,
+            "delete": false,
+            "create": false
+        },
         "employeePermission": {
             "view": false,
             "edit": false,
@@ -175,7 +181,9 @@ const useRoleAndPermission =(navigation) => {
     const [originalAccess, setOriginalAccess] = useState([])
 
 
-    const parseAccess = (_permission: { tabPermission: any; chatPermission: any; qrCodePermission: any; resetPasswordPermission: any; rolePermission: any; userPermission: any; activityPermission: any; meetPermission: any; employeePermission: any; }) => {
+    const parseAccess = (_permission: {
+        schedulePermission: any;
+        tabPermission: any; chatPermission: any; qrCodePermission: any; resetPasswordPermission: any; rolePermission: any; userPermission: any; activityPermission: any; meetPermission: any; employeePermission: any; }) => {
         if (lodash.isEmpty(role)) return
 
         let p = []
@@ -227,6 +235,18 @@ const useRoleAndPermission =(navigation) => {
         if (_permission.rolePermission.view) {
             p.push(rolePermissionView)
         }
+        if (_permission.schedulePermission.create) {
+            p.push(scheduleCreate)
+        }
+        if (_permission.schedulePermission.delete) {
+            p.push(scheduleDelete)
+        }
+        if (_permission.schedulePermission.edit) {
+            p.push(scheduleEdit)
+        }
+        if (_permission.schedulePermission.view) {
+            p.push(scheduleView)
+        }
         if (_permission.resetPasswordPermission) {
             p.push(resetPasswordPermission)
         }
@@ -255,6 +275,7 @@ const useRoleAndPermission =(navigation) => {
     const [createRole, setCreateRole] = useState(false)
 
     function parsePermission(_access: any[], _permission: {
+        schedulePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean };
         tabPermission: {pending: boolean, all: boolean, history: boolean};
         chatPermission: boolean;qrCodePermission: boolean; resetPasswordPermission: boolean; rolePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; userPermission: { view: boolean; edit: boolean; create: boolean; delete: boolean }; activityPermission: boolean; meetPermission: boolean; employeePermission: { view: boolean; edit: boolean; create: boolean; delete: boolean } }) {
         if (_access.indexOf(chat) !== -1) {
@@ -292,7 +313,18 @@ const useRoleAndPermission =(navigation) => {
             _permission.employeePermission.view = true
         }
 
-
+        if (_access.indexOf(scheduleCreate) !== -1) {
+            _permission.schedulePermission.create = true
+        }
+        if (_access.indexOf(scheduleDelete) !== -1) {
+            _permission.schedulePermission.delete = true
+        }
+        if (_access.indexOf(scheduleEdit) !== -1) {
+            _permission.schedulePermission.edit = true
+        }
+        if (_access.indexOf(scheduleView) !== -1) {
+            _permission.schedulePermission.view = true
+        }
         if (_access.indexOf(rolePermissionCreate) !== -1) {
             _permission.rolePermission.create = true
         }

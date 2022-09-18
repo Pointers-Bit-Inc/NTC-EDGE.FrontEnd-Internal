@@ -14,7 +14,7 @@ import MeetIcon from "@assets/svg/meettabbar";
 import ScanQrIcon from "@assets/svg/scanqrtabbar";
 import MoreTabBarIcon from "@assets/svg/moretabbar";
 import {
-    ACTIVITIES,
+    ACTIVITIES, ADMIN,
     CHAT,
     CHECKER, CONFIGURATION, DASHBOARD,
     DIRECTOR, EMPLOYEES,

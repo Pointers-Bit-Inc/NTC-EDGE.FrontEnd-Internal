@@ -7,7 +7,7 @@ const VenueIcon = (props) => (
         height="24"
         viewBox="0 0 16 16"
         xmlns="http://www.w3.org/2000/svg"
-        fill="currentColor"
+        fill={props.color || "currentColor"}
         className="bi bi-calendar4-event"
         {...props}
     >

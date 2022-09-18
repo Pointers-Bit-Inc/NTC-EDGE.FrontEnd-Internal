@@ -1,127 +1,87 @@
-import React from "react";
+import React, {useEffect, useMemo} from "react";
 import Header from "@molecules/header";
-import {Animated, ScrollView, TouchableOpacity, View} from "react-native";
+import {Animated, TouchableOpacity, View} from "react-native";
 import {disabledColor, successColor} from "@styles/color";
 import Text from "@atoms/text";
 import {styles} from "@pages/activities/styles";
-import useRoleAndPermission from "../../../hooks/useRoleAndPermission";
-import {setRole} from "../../../reducers/role/actions";
-import {isMobile} from "@pages/activities/isMobile";
-import RoleChecklist from "@pages/role-and-permission/RoleCheckList";
+import ScheduleCreateEdit from "@pages/schedule/ScheduleCreateEdit";
+import useSchedule from "../../../hooks/useSchedule";
+import {setSchedule} from "../../../reducers/schedule/actions";
+import parseSchedule from "@pages/schedule/parseSchedule";
 
 const EditScheduleScreen = (props) => {
     const {
-        dispatch,
-        role,
-        access,
-        setAccess,
-        onParseAccess,
-        updateValid,
+        dimensions,
+        animation,
         background,
-        success,
-        alertConfirm,
-        alertCancel,
         display,
-        animation
-    } = useRoleAndPermission(props.navigation);
+        success,
+        onClose,
+        formValue,
+        onUpdateForm,
+        handleStartPress,
+        handleEndPress,
+        onUpdateCreateSchedule,
+        onDateChange,
+        updateValid,
+        schedule,
+        originalForm,
+        setFormValue,setOriginalForm
+    } = useSchedule(props);
+
+    useEffect(()=>{
+        let _originalForm = [...JSON.parse(JSON.stringify(originalForm))]
+        parseSchedule(_originalForm, schedule);
+        setOriginalForm(_originalForm)
+        let __originalForm = [...JSON.parse(JSON.stringify(originalForm))]
+        parseSchedule(__originalForm, schedule)
+        setFormValue(__originalForm)
+
+    }, [])
+
     return <View style={[{flex: 1, backgroundColor: "#fff",}]}>
-    <Animated.View
-        pointerEvents="box-none"
-    style={[
-            styles.background,
-    {
-        backgroundColor: background,
-    },
-]}>
-    <Animated.View
-        style={[
-            styles.background,
-    {
-        transform: [{scale: display}, {translateY: success}],
-    },
-]}>
-    <View style={styles.wrap}>
-    <View style={styles.modalHeader}/>
-    <Text style={styles.headerText}>Successfully Updated!</Text>
-    <Text style={styles.regularText}>
 
-        </Text>
-        <View
-    style={{
-        flexDirection: 'row',
-    }}>
-    <TouchableOpacity
-        style={[styles.button, styles.buttonCancel]}
-    onPress={() => {
-        Animated.spring(animation, {
-            toValue: 0,
-            useNativeDriver: false,
-        }).start();
-        alertCancel()
-    }}>
-    <Text style={styles.buttonText}>Close</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-    style={styles.button}
-    onPress={() => {
-        Animated.spring(animation, {
-            toValue: 2,
-            useNativeDriver: false,
-        }).start(() => {
-            animation.setValue(0);
-        });
-        alertConfirm()
-    }}>
-    <Text style={styles.buttonText}>Confirm</Text>
-        </TouchableOpacity>
-        </View>
-        </View>
-        </Animated.View>
-        </Animated.View>
-        <Header size={24} title={"Role: " + role?.name}>
-    <TouchableOpacity onPress={() => {
-        if (props.navigation.canGoBack() && isMobile) props.navigation.goBack()
-        dispatch(setRole({}))
-    }
-}>
-    <Text>Close</Text>
-    </TouchableOpacity>
-    </Header>
-    {role?.description ? <Header size={14} title={"Description:" + role?.description}/> : <></>}
-    <Header size={14} title={"Access:"}/>
-    <ScrollView style={{borderTopWidth: 1, borderTopColor: disabledColor}}>
-    <View style={{padding: 20}}>
+        <Header size={24} title={"Schedule: "}>
+            <TouchableOpacity onPress={onClose}>
+                <Text>Close</Text>
+            </TouchableOpacity>
+        </Header>
 
-    <RoleChecklist value={access} onChange={(value) => {
-        setAccess(value)
-    }}/>
-    </View>
-    </ScrollView>
-    <View style={{
 
-        margin: 10,
+        <ScheduleCreateEdit formElements={formValue} onChange={onUpdateForm} onPress={handleStartPress}
+                            onPress1={handleEndPress} backgroundColor={background} scale={display}
+                            translateY={success} onPress2={() => {
+            Animated.spring(animation, {
+                toValue: 0,
+                useNativeDriver: false,
+            }).start();
+        }} dimensions={dimensions} onDateChange={onDateChange}/>
+        <View style={{
+
+            margin: 10,
             justifyContent: 'center',
             alignItems: 'center',
-    }}>
-    {/* <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={newToken}>
+        }}>
+            {/* <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={newToken}>
 
                             <Text style={[styles.text,  ]} size={14}>new token</Text>
 
                         </TouchableOpacity>*/}
-    <TouchableOpacity disabled={!updateValid} style={{
-        backgroundColor: updateValid ? successColor : disabledColor,
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            borderRadius: 10
-    }} onPress={onParseAccess}>
+            <TouchableOpacity onPress={() => onUpdateCreateSchedule('patch')} disabled={!updateValid}
+                              style={{
+                                  backgroundColor: updateValid ? successColor : disabledColor,
+                                  paddingVertical: 10,
+                                  paddingHorizontal: 20,
+                                  borderRadius: 10
+                              }}>
 
-    <Text style={[styles.text, {color: "#fff"}]} size={14}>Update</Text>
+                <Text style={[styles.text, {color: "#fff"}]} size={14}>Update Schedule</Text>
 
-        </TouchableOpacity>
+            </TouchableOpacity>
         </View>
 
 
-        </View>
+    </View>
 }
 
 

@@ -387,7 +387,7 @@ const ActivitiesPage = (props) => {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.items}
             data={item?.activity}
-            estimatedItemSize={300}
+
             renderItem={(act, i) => {
                 return getRenderItem(act, i, index)
             }

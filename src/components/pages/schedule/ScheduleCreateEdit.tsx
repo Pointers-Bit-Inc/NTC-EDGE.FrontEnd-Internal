@@ -10,6 +10,7 @@ import {px} from "../../../utils/normalized";
 import CloseIcon from "@assets/svg/close";
 import React from "react";
 import CalendarPicker from 'react-native-calendar-picker';
+import {isMobile} from "@pages/activities/isMobile";
 function ScheduleCreateEdit(props: {
     formElements: ({ stateName: string; id: number; label: string; error: boolean; type: string; value: any } | { data: ({ label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string } | { label: string; value: string })[]; stateName: string; id: number; label: string; error: boolean; type: string; value: any } | { stateName: string; id: number; label: string; error: boolean; type: string; value: any } | { stateName: string; id: number; label: string; error: boolean; type: string; value: any })[], onChange: (id: number, text: any, element?: string, _key?: string) => void, onPress: () => void, onPress1: () => void, backgroundColor: Animated.AnimatedInterpolation, scale: Animated.AnimatedInterpolation, translateY: Animated.AnimatedInterpolation, onPress2: () => void, dimensions: ScaledSize, onDateChange: (date, type) => void
 }) {
@@ -24,11 +25,11 @@ function ScheduleCreateEdit(props: {
             />
 
 
-            <View>
+
                 <View
 
                     style={{
-                        flex: 1,
+
                         flexDirection: "row",
                         justifyContent: "space-between",
                         alignItems: "center",
@@ -57,7 +58,7 @@ function ScheduleCreateEdit(props: {
                                 <CalendarDateIcon fill={"#6E7191"} width={21} height={21}/>
                             </View>
 
-                            <Text style={styles.dateCalendar}>
+                            <Text size={14} style={styles.dateCalendar}>
                                 {props.formElements?.[2]?.value ? dayjs(props.formElements?.[2]?.value).format("YYYY-MM-DD") : ""}
                             </Text>
                         </View>
@@ -85,7 +86,7 @@ function ScheduleCreateEdit(props: {
                                 <CalendarDateIcon fill={"#6E7191"} width={21} height={21}/>
                             </View>
 
-                            <Text style={styles.dateCalendar}>
+                            <Text size={14} style={styles.dateCalendar}>
                                 {props.formElements?.[3]?.value ? dayjs(props.formElements?.[3].value).format("YYYY-MM-DD") : ""}
                             </Text>
                         </View>
@@ -95,7 +96,6 @@ function ScheduleCreateEdit(props: {
 
 
             </View>
-        </View>
 
 
         <Animated.View
@@ -116,8 +116,7 @@ function ScheduleCreateEdit(props: {
                 <View style={styles.wrap}>
                     <View style={styles.modalHeader}/>
                     <View style={{
-                        paddingHorizontal: 20,
-                        flex: 1,
+                        padding: 20,
                         flexDirection: "row",
                         justifyContent: "flex-end"
                     }}>
@@ -134,7 +133,7 @@ function ScheduleCreateEdit(props: {
 
                         width={props.dimensions.width * 0.5}
                         height={props.dimensions.height * 0.8}
-                        headerWrapperStyle={{width: "100%"}}
+                        headerWrapperStyle={!isMobile ? {width: "100%"} : {}}
                         startFromMonday={true}
                         allowRangeSelection={true}
                         todayBackgroundColor="#f2e6ff"

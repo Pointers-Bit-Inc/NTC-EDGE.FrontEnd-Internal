@@ -12,7 +12,13 @@ import {
     rolePermissionCreate,
     rolePermissionDelete,
     rolePermissionEdit,
-    rolePermissionView, tabAllPermission, tabHistoryPermission, tabPendingPermission,
+    rolePermissionView,
+    scheduleCreate, scheduleDelete,
+    scheduleEdit,
+    scheduleView,
+    tabAllPermission,
+    tabHistoryPermission,
+    tabPendingPermission,
     userCreate,
     userDelete,
     userEdit,
@@ -110,6 +116,20 @@ function RoleChecklist(props: { value: any[], onChange: (value) => void }) {
                 {label: "All", value: tabAllPermission},
                 {label: "Pending", value: tabPendingPermission},
                 {label: "History", value: tabHistoryPermission},
+            ]}
+        />
+        <Text size={14} style={styles.text}>Schedule</Text>
+        <CheckboxList
+            size={12}
+            showCheckAll={false}
+            value={props.value}
+            onChange={props.onChange
+            }
+            options={[
+                {label: "Create", value: scheduleCreate},
+                {label: "Read", value: scheduleView},
+                {label: "Update", value: scheduleEdit},
+                {label: "Delete", value: scheduleDelete},
             ]}
         />
     </View>;

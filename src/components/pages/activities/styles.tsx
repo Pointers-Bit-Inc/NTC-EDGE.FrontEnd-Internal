@@ -12,6 +12,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     background: {
+
         zIndex: 1,
         position: 'absolute',
         left: 0,
@@ -634,7 +635,8 @@ export const styles = StyleSheet.create({
         borderColor: outline.default,
         ...Platform.select({
             native: {
-                width: (width - 40) / 2,
+                marginRight: 15,
+                marginVertical: 15,
             },
             web: {
                 marginRight: 15,

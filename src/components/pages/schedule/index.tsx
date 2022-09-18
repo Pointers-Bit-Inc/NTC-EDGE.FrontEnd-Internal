@@ -1,289 +1,49 @@
 import {styles} from "@pages/activities/styles";
 import {isMobile} from "@pages/activities/isMobile";
-import {
-    Animated,
-    FlatList,
-    Platform,
-    ScrollView,
-    TextInput,
-    TouchableOpacity,
-    useWindowDimensions,
-    View
-} from "react-native";
+import {Animated, FlatList, Platform, TextInput, TouchableOpacity, View} from "react-native";
 import {isTablet} from "react-native-device-info";
 import Text from "@atoms/text"
 import NoActivity from "@assets/svg/noActivity";
 import {fontValue} from "@pages/activities/fontValue";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React from "react";
 import Header from "@molecules/header";
 import SearchIcon from "@assets/svg/search";
 import LeftSideWeb from "@atoms/left-side-web";
 import lodash from "lodash";
-import _ from "lodash";
-import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
-import CalendarPicker from 'react-native-calendar-picker';
-import {disabledColor, infoColor, input, successColor} from "@styles/color";
-import FormField from "@organisms/forms/form";
-import {validateText} from "../../../utils/form-validations";
-import {px} from "../../../utils/normalized";
-import CalendarDateIcon from "@assets/svg/calendarIcon";
-import dayjs from "dayjs";
-import useModalAnimation from "../../../hooks/useModalAnimation";
-import CloseIcon from "@assets/svg/close";
-import {isDiff, recursionObject, regionList} from "../../../utils/ntc";
-import axios from "axios";
-import {BASE_URL} from "../../../services/config";
-import {ToastType} from "@atoms/toast/ToastProvider";
-import {useToast} from "../../../hooks/useToast";
-import {setEditSchedule, setSchedule, setSchedules} from "../../../reducers/schedule/actions";
-import moment from "moment";
-import ClockIcon from "@assets/svg/clockicon";
-import VenueIcon from "@assets/svg/venueicon";
-import RegionIcon from "@assets/svg/regionIcon";
-import {setEditRole, setRole} from "../../../reducers/role/actions";
+import {disabledColor, input, successColor} from "@styles/color";
+import {setSchedule} from "../../../reducers/schedule/actions";
 import ScheduleCreateEdit from "@pages/schedule/ScheduleCreateEdit";
-import {setSessionToken} from "../../../reducers/user/actions";
+import useSchedule from "../../../hooks/useSchedule";
 
 const {text, background} = input;
 
 
-function parseSchedule(_originalForm: any[], item) {
-    for (let i = 0; i < _originalForm.length; i++) {
-        for (const [key, value] of Object.entries(item)) {
-            if (_originalForm[i].stateName == key) {
-                if (_.isObject(value)) {
-                    recursionObject(value, (val, key) => {
-                        if (key == _originalForm[i].subStateName) {
-                            _originalForm[i].value = val
-                        }
-                    })
-                } else {
-                    _originalForm[i].value = value
-                }
-
-            }
-        }
-    }
-}
-
 export default function SchedulePage(props: any) {
-    const dimensions = useWindowDimensions();
-    const {animation, background, display, success} = useModalAnimation();
-    const dispatch = useDispatch();
-    const page = 1
-    const schedules = useSelector((state: RootStateOrAny) => state.schedule.schedules);
-    const schedule = useSelector((state: RootStateOrAny) => state.schedule.schedule);
-    const user = useSelector((state: RootStateOrAny) => state.user);
-    const [value, setValue] = useState()
-    const [createSchedule, setCreateSchedule] = useState(false)
-    const [loading, setLoading] = useState(false)
-
-    function onClose() {
-        setCreateSchedule(false)
-    }
-
-    const [originalForm, setOriginalForm] = useState([
-        {
-            id: 1,
-            stateName: "venue",
-            label: 'Venue',
-            value: "",
-            error: false,
-            type: 'input',
-        },
-        {
-            id: 2,
-            stateName: "region",
-            subStateName: 'value',
-            label: 'Region',
-
-            value: user?.employeeDetails?.region || "",
-            error: false,
-            type: 'select',
-            data: regionList
-        },
-        {
-            id: 3,
-            stateName: "dateStart",
-            label: 'dateStart',
-            value:  "",
-            error: false,
-            type: '',
-        },
-        {
-            id: 4,
-            stateName: "dateEnd",
-            label: 'dateEnd',
-            value: "",
-            error: false,
-            type: '',
-        }
-    ]);
-    const [formValue, setFormValue] = useState(originalForm);
-
-
-    const onUpdateForm = (id: number, text: any, element?: string, _key?: string) => {
-
-        const index = formValue?.findIndex(app => app?.id == id);
-        let newArr = [...formValue];
-        newArr[index]['value'] = text;
-        if (typeof text == "string") {
-            newArr[index]['error'] = !validateText(text);
-        }
-
-        setFormValue(newArr)
-    };
-
-    function handleStartPress() {
-        Animated.spring(animation, {
-            toValue: 1,
-            useNativeDriver: false,
-        }).start();
-
-    }
-
-    function handleInputClear1() {
-
-    }
-
-    function handleEndPress() {
-
-    }
-
-    const fetchSchedules = () => {
-        setLoading(true);
-        axios.get(BASE_URL + `/schedules?${user?.employeeDetails?.region || "" ? "region=" + user?.employeeDetails?.region + "&" : ""}page=` + page, {
-            headers: {
-                Authorization: "Bearer ".concat(user.sessionToken)
-            }
-        }).then((response) => {
-            dispatch(setSchedules(response.data))
-            setLoading(false);
-        }).catch((response) => {
-
-            console.log(response.response)
-        })
-    }
-
-    useEffect(() => {
-        return fetchSchedules()
-    }, [schedules.length == 0])
-    const config = useMemo(() => {
-        return {
-            headers: {
-                Authorization: "Bearer ".concat(user?.sessionToken)
-            }
-        };
-    }, [user?.sessionToken])
-
-
-    const isValid = () => {
-        var valid = true;
-
-        formValue?.forEach((up: any) => {
-
-            if ((!up?.value || up?.error)) {
-
-
-                valid = false;
-                return;
-            }
-        });
-        return valid;
-    };
-
-    const {showToast} = useToast();
-
-    function onUpdateCreateSchedule(method = "post") {
-        if (!isValid()) return
-        axios[method ? 'post' : 'patch'](BASE_URL + "/schedules", _(formValue).map(v => [v.stateName, v.value]).fromPairs().value(), config).then((res) => {
-            showToast(ToastType.Success, "Success! ")
-        }).catch((error) => {
-
-            let _err = '';
-
-            for (const err in error?.response?.data?.errors) {
-                _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
-            }
-            if (_err || error?.response?.data?.message || error?.response?.statusText || (typeof error?.response?.data == "string" || typeof error == "string")) {
-                showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data || error)
-            } else {
-                showToast(ToastType.Error, error?.message || 'Something went wrong.');
-            }
-
-
-        })
-
-    }
-
-    const onDateChange = (date, type) => {
-        if (type === 'END_DATE') {
-            onUpdateForm(4, date, '', 'dateEnd')
-
-        } else {
-            onUpdateForm(4, null, '', 'dateEnd')
-            onUpdateForm(3, date, '', 'dateStart')
-        }
-    }
-
-
-
-    const onItemPress = useCallback((item) => {
-
-        dispatch(setSchedule(item))
-        let _originalForm = [...JSON.parse(JSON.stringify(originalForm))]
-        parseSchedule(_originalForm, item)
-        setFormValue(_originalForm)
-
-
-
-
-        if(isMobile){
-            props.navigation.push("EditScheduleScreen")
-        }
-
-    }, [formValue])
-    const updateValid = useMemo(()=>{
-        return isDiff(_.map(formValue, 'value'), _.map(originalForm, 'value'));
-    }, [formValue, originalForm])
-    const renderListItem = ({item}) => {
-        return <TouchableOpacity onPress={() => {
-            let _originalForm = [...JSON.parse(JSON.stringify(originalForm))]
-            parseSchedule(_originalForm, item);
-            setOriginalForm(_originalForm)
-            onItemPress(item)
-        }}><View style={[
-            styles?.scheduleContainer,
-        ]}>
-            <View style={styles?.scheduleRow}>
-                <RegionIcon color={"#000"}/>
-                <Text style={styles?.scheduleText}>{item?.region?.label}</Text>
-            </View>
-            <View style={styles?.scheduleInnerSeparator}/>
-            <View style={styles?.scheduleRow}>
-                <VenueIcon/>
-                <Text style={styles?.scheduleText}>{item.venue}</Text>
-            </View>
-            <View style={styles?.scheduleInnerSeparator}/>
-            <View style={styles?.scheduleRow}>
-                <View style={[styles?.scheduleRow, {flex: 1}]}>
-                    <CalendarDateIcon width={24} height={24}/>
-                    <Text style={styles?.scheduleText}>{moment(item?.dateStart).format('ddd DD MMMM YYYY')}</Text>
-                </View>
-                <View style={styles?.scheduleInnerSeparator}/>
-                <View style={[styles?.scheduleRow, {flex: 1}]}>
-                    <ClockIcon/>
-                    <Text style={styles?.scheduleText}>{moment(item?.dateStart).format('LT')}</Text>
-                </View>
-            </View>
-
-        </View>
-        </TouchableOpacity>
-    }
-    const schedulesMemo = useMemo(() => {
-        return schedules
-    }, [schedules])
-
+    const {
+        dimensions,
+        animation,
+        background,
+        display,
+        success,
+        dispatch,
+        schedule,
+        value,
+        setValue,
+        createSchedule,
+        setCreateSchedule,
+        onClose,
+        formValue,
+        setFormValue,
+        onUpdateForm,
+        handleStartPress,
+        handleEndPress,
+        onUpdateCreateSchedule,
+        onDateChange,
+        updateValid,
+        renderListItem,
+        schedulesMemo,
+        listEmptyComponent
+    } = useSchedule(props);
 
     return (
         <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
@@ -292,13 +52,19 @@ export default function SchedulePage(props: any) {
                 <View style={styles.header}>
                     <Header title={"Schedules"}>
                         <TouchableOpacity onPress={() => {
-
+                            let _formValue = [...formValue]
+                            for (let i = 0; i < _formValue.length; i++) {
+                                _formValue[i].value = ""
+                            }
+                            setFormValue(_formValue)
                             dispatch(setSchedule([]))
                             if (isMobile) {
                                 props.navigation.push('CreateScheduleScreen')
                             } else {
                                 setCreateSchedule(true)
                             }
+
+
                         }}>
                             <Text style={{fontSize: fontValue(12)}}>Add a New Schedule</Text>
                         </TouchableOpacity>
@@ -330,6 +96,7 @@ export default function SchedulePage(props: any) {
                 </View>
                 <View style={{flex: 1}}>
                     <FlatList
+                        ListEmptyComponent={listEmptyComponent}
                         data={schedulesMemo}
                         contentContainerStyle={{padding: 10,}}
                         renderItem={renderListItem}
@@ -358,20 +125,20 @@ export default function SchedulePage(props: any) {
                 !lodash.isEmpty(schedule) && Platform.OS == "web" ? <View style={[{flex: 1, backgroundColor: "#fff",}]}>
 
                     <Header size={24} title={"Schedule: "}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={onClose}>
                             <Text>Close</Text>
                         </TouchableOpacity>
                     </Header>
 
 
-                        <ScheduleCreateEdit formElements={formValue} onChange={onUpdateForm} onPress={handleStartPress}
-                                            onPress1={handleEndPress} backgroundColor={background} scale={display}
-                                            translateY={success} onPress2={() => {
-                            Animated.spring(animation, {
-                                toValue: 0,
-                                useNativeDriver: false,
-                            }).start();
-                        }} dimensions={dimensions} onDateChange={onDateChange}/>
+                    <ScheduleCreateEdit formElements={formValue} onChange={onUpdateForm} onPress={handleStartPress}
+                                        onPress1={handleEndPress} backgroundColor={background} scale={display}
+                                        translateY={success} onPress2={() => {
+                        Animated.spring(animation, {
+                            toValue: 0,
+                            useNativeDriver: false,
+                        }).start();
+                    }} dimensions={dimensions} onDateChange={onDateChange}/>
                     <View style={{
 
                         margin: 10,
@@ -383,12 +150,13 @@ export default function SchedulePage(props: any) {
                             <Text style={[styles.text,  ]} size={14}>new token</Text>
 
                         </TouchableOpacity>*/}
-                        <TouchableOpacity onPress={() => onUpdateCreateSchedule('patch')}  disabled={!updateValid} style={{
-                            backgroundColor: updateValid ? successColor : disabledColor,
-                            paddingVertical: 10,
-                            paddingHorizontal: 20,
-                            borderRadius: 10
-                        }}>
+                        <TouchableOpacity onPress={() => onUpdateCreateSchedule('patch')} disabled={!updateValid}
+                                          style={{
+                                              backgroundColor: updateValid ? successColor : disabledColor,
+                                              paddingVertical: 10,
+                                              paddingHorizontal: 20,
+                                              borderRadius: 10
+                                          }}>
 
                             <Text style={[styles.text, {color: "#fff"}]} size={14}>Update Schedule</Text>
 

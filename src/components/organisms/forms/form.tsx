@@ -47,7 +47,7 @@ const FormField=({
             case "text":
                 return <Text key={id} {...styleProps} {...otherProps} >{otherProps.label}</Text>;
             case "input":
-                return !element.hidden && <InputField key={id}  {...styleProps} {...otherProps}
+                return !element.hidden ? <InputField key={id}  {...styleProps} {...otherProps}
                                    onEndEditing={(e:any)=>{
                                        onChange(id,e.nativeEvent.text,'input')
                                    }
@@ -69,7 +69,7 @@ const FormField=({
                                        mapRef?.[mapRef.findIndex(e=>e?.id==id)+1]?.ref?.current?.focus();
                                        onChange(id,event.nativeEvent.text,'input',element?.stateName);
                                        handleEvent ? handleEvent(layoutRef?.find((layout)=>layout?.["id"]==id)?.layout) : null
-                                   }}/>;
+                                   }}/> : null;
             case "select":
                 return <View style={{paddingBottom: 22}}>
                     <CustomDropdown key={id}
@@ -80,7 +80,7 @@ const FormField=({
                                         if (value) onChange(id, value,'select', element?.stateName)
                                     } }/>
                     {
-                        element?.hasValidation && (!!element?.error || !!element?.description) && (
+                        element?.hasValidation && (!!element?.error || !!element?.description) ? (
                             <View>
                                 <Text
                                     style={[
@@ -91,7 +91,7 @@ const FormField=({
                                     {element?.description}
                                 </Text>
                             </View>
-                        )
+                        ) : null
                     }
                 </View>;
 
@@ -184,7 +184,7 @@ const FormField=({
 
             {formElements.map((element:any,key:number)=>{
 
-                return element.type!='submit'&&element.type&&(
+                return element.type!='submit'&&element.type?(
                     <Fragment key={element.id + key}>
                         <View onLayout={(event)=>{
                             const layout=event.nativeEvent.layout;
@@ -201,7 +201,7 @@ const FormField=({
                         </View>
                     </Fragment>
 
-                );
+                ) : null;
             })}
         </>
     );
