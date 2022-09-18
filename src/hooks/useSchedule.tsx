@@ -2,7 +2,13 @@ import {Animated, TouchableOpacity, useWindowDimensions, View} from "react-nativ
 import useModalAnimation from "./useModalAnimation";
 import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {setAddSchedule, setEditSchedule, setSchedule, setSchedules} from "../reducers/schedule/actions";
+import {
+    setAddSchedule,
+    setDeleteSchedule,
+    setEditSchedule,
+    setSchedule,
+    setSchedules
+} from "../reducers/schedule/actions";
 import {isDiff, regionList} from "../utils/ntc";
 import {validateText} from "../utils/form-validations";
 import axios from "axios";
@@ -21,8 +27,8 @@ import ClockIcon from "@assets/svg/clockicon";
 import useMemoizedFn from "./useMemoizedFn";
 import listEmpty from "@pages/activities/listEmpty";
 import _ from "lodash";
-import {setAddRole, setEditRole} from "../reducers/role/actions";
-import {setEdit} from "../reducers/application/actions";
+import CloseIcon from "@assets/svg/close";
+
 function useSchedule(props: any) {
     const dimensions = useWindowDimensions();
     const {animation, background, display, success} = useModalAnimation();
@@ -38,7 +44,7 @@ function useSchedule(props: any) {
     function onClose() {
         dispatch(setSchedule({}))
         setCreateSchedule(false)
-        if(props.navigation.canGoBack())props.navigation.goBack()
+        if (props.navigation.canGoBack()) props.navigation.goBack()
     }
 
     const [originalForm, setOriginalForm] = useState([
@@ -157,18 +163,18 @@ function useSchedule(props: any) {
 
     function onUpdateCreateSchedule(method = "post") {
 
-        if(!isValid()) return
+        if (!isValid()) return
         axios[method == "post" ? 'post' : 'patch'](BASE_URL + "/schedules" + (method == "post" ? "" : "/" + schedule.id), _(formValue).map(v => [v.stateName, v.value]).fromPairs().value(), config).then((res) => {
 
-          if(method == "patch"){
-              dispatch(setEditSchedule(res.data.doc))
-          }else if(method == "post"){
-              dispatch(setAddSchedule(res.data))
-          }
+            if (method == "patch") {
+                dispatch(setEditSchedule(res.data.doc))
+            } else if (method == "post") {
+                dispatch(setAddSchedule(res.data))
+            }
 
-          if(isMobile && props.navigation.canGoBack()){
-              props.navigation.goBack()
-          }
+            if (isMobile && props.navigation.canGoBack()) {
+                props.navigation.goBack()
+            }
 
             showToast(ToastType.Success, "Success! ")
         }).catch((error) => {
@@ -179,7 +185,7 @@ function useSchedule(props: any) {
                 _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
             }
             if (_err || error?.response?.data?.message || error?.response?.statusText || (typeof error?.response?.data == "string" || typeof error == "string")) {
-               showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data || error)
+                showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data || error)
             } else {
                 showToast(ToastType.Error, error?.message || 'Something went wrong.');
             }
@@ -189,6 +195,26 @@ function useSchedule(props: any) {
 
     }
 
+    const onDelete = (id) => {
+        axios.delete(BASE_URL + "/schedules/" + id, config).then(() => {
+            showToast(ToastType.Success, "Success! ")
+            dispatch(setDeleteSchedule(id))
+        }).catch((error) => {
+            setLoading(false)
+            let _err = '';
+
+            for (const err in error?.response?.data?.errors) {
+                _err += error?.response?.data?.errors?.[err]?.toString() + "\n";
+            }
+            if (_err || error?.response?.data?.message || error?.response?.statusText || (typeof error?.response?.data == "string" || typeof error == "string")) {
+                showToast(ToastType.Error, _err || error?.response?.data?.message || error?.response?.statusText || error?.response?.data || error)
+            } else {
+                showToast(ToastType.Error, error?.message || 'Something went wrong.');
+            }
+
+
+        })
+    }
     const onDateChange = (date, type) => {
         if (type === 'END_DATE') {
             onUpdateForm(4, date, '', 'dateEnd')
@@ -218,7 +244,7 @@ function useSchedule(props: any) {
     }, [formValue, originalForm])
     const renderListItem = ({item}) => {
         return <TouchableOpacity onPress={() => {
-            if(!isMobile){
+            if (!isMobile) {
                 let _originalForm = [...JSON.parse(JSON.stringify(originalForm))]
                 parseSchedule(_originalForm, item);
                 setOriginalForm(_originalForm)
@@ -228,27 +254,39 @@ function useSchedule(props: any) {
         }}><View style={[
             styles?.scheduleContainer,
         ]}>
-            <View style={styles?.scheduleRow}>
-                <RegionIcon color={"#000"}/>
-                <Text style={styles?.scheduleText}>{item?.region?.label}</Text>
-            </View>
-            <View style={styles?.scheduleInnerSeparator}/>
-            <View style={styles?.scheduleRow}>
-                <VenueIcon color={"#000"}/>
-                <Text style={styles?.scheduleText}>{item.venue}</Text>
-            </View>
-            <View style={styles?.scheduleInnerSeparator}/>
-            <View style={styles?.scheduleRow}>
-                <View style={[styles?.scheduleRow, {flex: 1}]}>
-                    <CalendarDateIcon width={24} height={24}/>
-                    <Text style={styles?.scheduleText}>{moment(item?.dateStart).format('ddd DD MMMM YYYY')}</Text>
+            <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                <View style={{flex: 0.95}}>
+                    <View style={styles?.scheduleRow}>
+                        <RegionIcon color={"#000"}/>
+                        <Text style={styles?.scheduleText}>{item?.region?.label}</Text>
+                    </View>
+                    <View style={styles?.scheduleInnerSeparator}/>
+                    <View style={styles?.scheduleRow}>
+                        <VenueIcon color={"#000"}/>
+                        <Text style={styles?.scheduleText}>{item.venue}</Text>
+                    </View>
+                    <View style={styles?.scheduleInnerSeparator}/>
+                    <View style={styles?.scheduleRow}>
+                        <View style={[styles?.scheduleRow, {flex: 1}]}>
+                            <CalendarDateIcon width={24} height={24}/>
+                            <Text
+                                style={styles?.scheduleText}>{moment(item?.dateStart).format('ddd DD MMMM YYYY')}</Text>
+                        </View>
+                        <View style={styles?.scheduleInnerSeparator}/>
+                        <View style={[styles?.scheduleRow, {flex: 1}]}>
+                            <ClockIcon/>
+                            <Text style={styles?.scheduleText}>{moment(item?.dateStart).format('LT')}</Text>
+                        </View>
+                    </View>
                 </View>
-                <View style={styles?.scheduleInnerSeparator}/>
-                <View style={[styles?.scheduleRow, {flex: 1}]}>
-                    <ClockIcon/>
-                    <Text style={styles?.scheduleText}>{moment(item?.dateStart).format('LT')}</Text>
+                <View style={{flex: 0.05}}>
+                    <TouchableOpacity onPress={()=>onDelete(item.id)}>
+                        <CloseIcon/>
+                    </TouchableOpacity>
                 </View>
+
             </View>
+
 
         </View>
         </TouchableOpacity>
