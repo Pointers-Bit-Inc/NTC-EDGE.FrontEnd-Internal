@@ -188,79 +188,79 @@ const useRoleAndPermission =(navigation) => {
 
         let p = []
 
-        if (_permission.chatPermission) {
+        if (_permission?.chatPermission) {
 
             p.push(chat)
         }
-        if (_permission.meetPermission) {
+        if (_permission?.meetPermission) {
             p.push(meet)
         }
-        if (_permission.activityPermission) {
+        if (_permission?.activityPermission) {
             p.push(activity)
         }
-        if (_permission.userPermission.create) {
+        if (_permission?.userPermission?.create) {
             p.push(userCreate)
         }
-        if (_permission.userPermission.delete) {
+        if (_permission?.userPermission?.delete) {
             p.push(userDelete)
         }
-        if (_permission.userPermission.edit) {
+        if (_permission?.userPermission?.edit) {
             p.push(userEdit)
         }
-        if (_permission.userPermission.view) {
+        if (_permission?.userPermission?.view) {
             p.push(userView)
         }
 
-        if (_permission.employeePermission.create) {
+        if (_permission?.employeePermission?.create) {
             p.push(employeeCreate)
         }
-        if (_permission.employeePermission.delete) {
+        if (_permission?.employeePermission?.delete) {
             p.push(employeeDelete)
         }
-        if (_permission.employeePermission.edit) {
+        if (_permission?.employeePermission?.edit) {
             p.push(employeeEdit)
         }
-        if (_permission.employeePermission.view) {
+        if (_permission?.employeePermission?.view) {
             p.push(employeeView)
         }
-        if (_permission.rolePermission.create) {
+        if (_permission?.rolePermission?.create) {
             p.push(rolePermissionCreate)
         }
-        if (_permission.rolePermission.delete) {
+        if (_permission?.rolePermission?.delete) {
             p.push(rolePermissionDelete)
         }
-        if (_permission.rolePermission.edit) {
+        if (_permission?.rolePermission?.edit) {
             p.push(rolePermissionEdit)
         }
-        if (_permission.rolePermission.view) {
+        if (_permission?.rolePermission?.view) {
             p.push(rolePermissionView)
         }
-        if (_permission.schedulePermission.create) {
+        if (_permission?.schedulePermission?.create) {
             p.push(scheduleCreate)
         }
-        if (_permission.schedulePermission.delete) {
+        if (_permission?.schedulePermission?.delete) {
             p.push(scheduleDelete)
         }
-        if (_permission.schedulePermission.edit) {
+        if (_permission?.schedulePermission?.edit) {
             p.push(scheduleEdit)
         }
-        if (_permission.schedulePermission.view) {
+        if (_permission?.schedulePermission?.view) {
             p.push(scheduleView)
         }
-        if (_permission.resetPasswordPermission) {
+        if (_permission?.resetPasswordPermission) {
             p.push(resetPasswordPermission)
         }
 
-        if (_permission.qrCodePermission) {
+        if (_permission?.qrCodePermission) {
             p.push(qrCodePermission)
         }
-        if(_permission.tabPermission.pending){
+        if(_permission?.tabPermission?.pending){
             p.push(tabPendingPermission)
         }
-        if(_permission.tabPermission.all){
+        if(_permission?.tabPermission?.all){
             p.push(tabAllPermission)
         }
-        if(_permission.tabPermission.history){
+        if(_permission?.tabPermission?.history){
             p.push(tabHistoryPermission)
         }
 
