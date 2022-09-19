@@ -33,7 +33,7 @@ const Row = (props: { outlineStyle?: any, containerStyle?:any, inputStyle?: any,
     const [cloneValue, setCloneValue] = useSafeState(props.applicant)
     const SUPPORTED_FORMATS = ["jpg", "jpeg", "png"];
     function get_url_extension(url: string) {
-        return url?.split(/[#?]/)?.[0]?.split('.')?.pop()?.trim();
+        return url?.split?.(/[#?]/)?.[0]?.split?.('.')?.pop()?.trim();
     }
     return (!edit ? (props.show && (props.display || props.applicant) && !props.edit) || (edit) : !edit) ?
         <View style={styles.group2}>

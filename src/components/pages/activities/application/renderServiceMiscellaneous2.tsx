@@ -89,7 +89,6 @@ const RenderServiceMiscellaneous=(props)=>{
     let service=JSON.parse(JSON.stringify(props.service||{}));
 
 
-
     const flatten=(obj)=>{
         var result={};
          (
@@ -111,7 +110,7 @@ const RenderServiceMiscellaneous=(props)=>{
                         break;
                     default:
                         let date = new RegExp(/^\d{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])$/)
-                        result[p]= date.test(e) && Date.parse(e)>0 ? moment(e)?.format('LL') : (e?.replace(/undefined/g,'') || e) ;
+                        result[p]= date?.test(e) && Date.parse(e)>0 ? moment(e)?.format('LL') : (typeof e == 'string' ? e?.replace(/undefined/g,'') || e : e) ;
                         break;
                 }
             })(obj);
@@ -126,8 +125,9 @@ const RenderServiceMiscellaneous=(props)=>{
     ], []);
     let _renderParent=(item:any)=>{
         const [keys,value]=item.item;
+
         var index,prevValue,nextValue,findIndex;
-        findIndex=keys?.split(".")?.reverse()?.map((key,index)=>{
+        findIndex=keys?.split?.(".")?.reverse()?.map((key,index)=>{
             return key
         }).findIndex((name)=>{
             return !isNaN(parseInt(name))
@@ -138,9 +138,9 @@ const RenderServiceMiscellaneous=(props)=>{
             nextValue=keys?.split?.(".")?.reverse()?.[findIndex+1];
         } else{
 
-            prevValue=keys?.split?.(".")?.[keys?.split(".")?.length-1];
-            index=keys?.split?.(".")?.[keys?.split(".")?.length];
-            nextValue=keys?.split?.(".")?.[keys?.split(".")?.length-2]||keys?.split?.(".")?.[0];
+            prevValue=keys?.split?.(".")?.[keys?.split?.(".")?.length-1];
+            index=keys?.split?.(".")?.[keys?.split?.(".")?.length];
+            nextValue=keys?.split?.(".")?.[keys?.split?.(".")?.length-2]||keys?.split?.(".")?.[0];
         }
 
 
@@ -156,7 +156,7 @@ const RenderServiceMiscellaneous=(props)=>{
                 edit={props.edit}
                 label={prevValue ? `${transformText(prevValue)}:` : ""}
                 display={value}
-                applicant={props?.userProfileForm?.["service." + keys]}/> : (transformText(keys?.split?.(".")?.[keys?.split(".")?.length-1]) == "Unit" &&  transformText(keys?.split?.(".")?.[keys?.split(".")?.length-2]) == "Bandwidth" && props.edit)  ? <View style={{paddingBottom: 20}}>
+                applicant={props?.userProfileForm?.["service." + keys]}/> : (transformText(keys?.split?.(".")?.[keys?.split?.(".")?.length-1]) == "Unit" &&  transformText(keys?.split?.(".")?.[keys?.split?.(".")?.length-2]) == "Bandwidth" && props.edit)  ? <View style={{paddingBottom: 20}}>
                 <CustomDropdown value={props?.userProfileForm?.["service." + keys]}
                                 label="Select Item"
                                 data={ bandwidthUnits }
@@ -168,9 +168,9 @@ const RenderServiceMiscellaneous=(props)=>{
                 updateForm={props.updateForm}
                 stateName={"service." + keys}
                 edit={props.edit}
-                label={prevValue ? `${transformText(keys?.split?.(".")?.[keys?.split(".")?.length-1])}:` : ""}
-                display={value}
-                applicant={props?.userProfileForm?.["service." + keys]}/>
+                label={prevValue ? `${transformText(keys?.split?.(".")?.[keys?.split?.(".")?.length-1])}:` : ""}
+                display={value.toString()}
+                applicant={props?.userProfileForm?.["service." + keys] || value}/>
             }
         </View>)
 

@@ -1,34 +1,247 @@
 import {styles} from "@pages/activities/styles";
 import {isMobile} from "@pages/activities/isMobile";
-import {FlatList, Platform, ScrollView, Text, TextInput, useWindowDimensions, View} from "react-native";
+import {
+    FlatList,
+    Platform,
+    ScrollView,
+    Text,
+    TextInput,
+    Image,
+    TouchableOpacity,
+    useWindowDimensions,
+    View
+} from "react-native";
 import {isTablet} from "react-native-device-info";
 import NoActivity from "@assets/svg/noActivity";
 import {fontValue} from "@pages/activities/fontValue";
-import React, {useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import LeftSideWeb from "@atoms/left-side-web";
 import Header from "@molecules/header";
 import SearchIcon from "@assets/svg/search";
-import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous";
+import RenderServiceMiscellaneous from "@pages/activities/application/renderServiceMiscellaneous2";
+import {UploadIcon} from "@atoms/icon";
+import {disabledColor, successColor, text} from "@styles/color";
+import * as ImagePicker from "expo-image-picker";
+import {BASE_URL} from "../../../services/config";
+import {RootStateOrAny, useDispatch, useSelector} from "react-redux";
+import axios from "axios";
+import {setRegion, setRegions} from "../../../reducers/configuration/actions";
+import RegionIcon from "@assets/svg/regionIcon";
+import CloseIcon from "@assets/svg/close";
+import lodash from "lodash";
+import {isDiff} from "../../../utils/ntc";
+import parseSchedule from "@pages/schedule/parseSchedule";
+import {validateText} from "../../../utils/form-validations";
 
-export default function ConfigurationPage(props:any){
-    const dimensions=useWindowDimensions();
-    const [value,setValue]=useState();
+export default function ConfigurationPage(props: any) {
+    const dimensions = useWindowDimensions();
+    const dispatch = useDispatch();
+    const [value, setValue] = useState();
+    const [page, setPage] = useState(1)
+    const [loading, setLoading] = useState(false)
+    const sessionToken = useSelector((state: RootStateOrAny) => state.user.sessionToken);
+    const [createRegion, setCreateRegion] = useState(false)
+
+    async function onPress(position) {
+        let picker = await ImagePicker.launchImageLibraryAsync({
+            presentationStyle: 0
+        });
+        if (!picker.cancelled) {
+
+            let uri = picker?.uri;
+            let split = uri?.split('/');
+            let name = split?.[split?.length - 1];
+            let mimeType = name?.split('.')?.[1] || picker?.type;
+
+            let _file = {
+                name,
+                mimeType,
+                uri,
+            };
+            let base64 = _file?.uri;
+            let mime = isMobile ? _file?.mimeType : base64?.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+            let mimeResult: any = null;
+            if (mime && mime.length) {
+                mimeResult = isMobile ? mime : mime[1];
+            }
+            let _mimeType = isMobile ? mime : mimeResult?.split("/")?.[1];
+
+            await fetch(base64)
+                .then(res => {
+
+                    return res?.blob()
+                })
+                .then(blob => {
+
+                    const fd = new FormData();
+                    const file = isMobile ? {
+                        name: _file?.name,
+                        type: 'application/octet-stream',
+                        uri: _file?.uri,
+                    } : new File([blob], (
+                        _file?.name + "." + _mimeType || _file?.mimeType));
+
+                    fd.append('profilePicture', file, (
+                        _file?.name + "." + _mimeType || _file?.mimeType));
+
+                    const API_URL = `${BASE_URL}/regions/${region?._id}/${position}/upload-signature`;
+
+                    fetch(API_URL, {
+                        method: 'POST', body: fd, headers: {
+                            'Authorization': `Bearer ${sessionToken}`,
+                        }
+                    })
+                        .then(res => {
+
+                            return res?.json()
+                        })
+                })
+        }
+    }
+
+    const regions = useSelector((state: RootStateOrAny) => state.configuration.regions);
+
+    const region = useSelector((state: RootStateOrAny) => state.configuration.region);
+    const fetchConfigurations = () => {
+        setLoading(true);
+        axios.get(BASE_URL + "/regions?page=" + page, {
+            headers: {
+                Authorization: "Bearer ".concat(sessionToken)
+            }
+        }).then((response) => {
+            dispatch(setRegions(response.data))
+            setLoading(false);
+        }).catch((response) => {
+
+            console.log(response.response)
+        })
+    }
+    const regionsMemo = useMemo(() => {
+        return regions
+    }, [regions])
+
+    useEffect(() => {
+        return fetchConfigurations()
+    }, [regions.length == 0])
+
+    function onDelete(id) {
+
+    }
+
+    const onItemPress = useCallback((item) => {
+
+        dispatch(setRegion(item))
+        let _originalForm = [...JSON.parse(JSON.stringify(originalForm))]
+        parseSchedule(_originalForm, item)
+        setFormValue(_originalForm)
+
+
+        if (isMobile) {
+            props.navigation.push("EditConfigurationScreen")
+        }
+
+    }, [formValue])
+    const renderListItem = ({item}) => {
+        return <TouchableOpacity onPress={() => {
+            if (!isMobile) {
+                let _originalForm = [...JSON.parse(JSON.stringify(originalForm))]
+                parseSchedule(_originalForm, item);
+                setOriginalForm(_originalForm)
+            }
+            onItemPress(item)
+
+        }}><View style={[
+            styles?.scheduleContainer,
+        ]}>
+            <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                <View style={{flex: 0.95}}>
+                    <View style={styles?.scheduleRow}>
+                        <RegionIcon color={"#000"}/>
+                        <Text style={styles?.scheduleText}>{item?.label}</Text>
+                    </View>
+                </View>
+                <View style={{flex: 0.05}}>
+                    <TouchableOpacity onPress={() => onDelete(item.id)}>
+                        <CloseIcon/>
+                    </TouchableOpacity>
+                </View>
+
+            </View>
+
+
+        </View>
+        </TouchableOpacity>
+    }
+
+
+    function onUpdateCreateRegion(post: string) {
+
+    }
+
+    const [originalForm, setOriginalForm] = useState([
+        {
+            id: 1,
+            stateName: "commissioner",
+            label: 'Commissioner',
+            value: "",
+            error: false,
+            type: '',
+        },
+        {
+            id: 1,
+            stateName: "director",
+            label: 'Director',
+            value: "",
+            error: false,
+            type: '',
+        },
+    ]);
+    const [formValue, setFormValue] = useState(originalForm);
+    const updateValid = useMemo(() => {
+        return isDiff(lodash.map(formValue, 'value'), lodash.map(originalForm, 'value'));
+    }, [formValue, originalForm])
+
+    const onUpdateForm = (id: number, text: any, element?: string, _key?: string) => {
+
+        const index = formValue?.findIndex(app => app?.id == id);
+        let newArr = [...formValue];
+        newArr[index]['value'] = text;
+        if (typeof text == "string") {
+            newArr[index]['error'] = !validateText(text);
+        }
+
+        setFormValue(newArr)
+    };
+
+    const onClose = () => {
+        setCreateRegion(false)
+        dispatch(setRegion({}))
+    };
+console.log(region?.configuration?.director?.signature)
+    const [edit, setEdit] = useState(false)
     return (
         <View style={{backgroundColor: "#F8F8F8", flex: 1, flexDirection: "row"}}>
             <LeftSideWeb>
                 <View style={styles.header}>
-                    <Header title={"Group"}/>
-                    <View style={{marginHorizontal:26,}}>
+                    <Header title={"Configurations"}>
+                        <TouchableOpacity onPress={() => {
+                            setEdit(edit => !edit)
+
+                        }}>
+                            <Text>Edit</Text>
+                        </TouchableOpacity>
+                    </Header>
+                    <View style={{marginHorizontal: 26,}}>
 
                         <View style={{
-                            paddingTop:14,
-                            paddingBottom:12,
-                            alignItems:"center",
-                            justifyContent:"space-between",
-                            flexDirection:"row",
+                            paddingTop: 14,
+                            paddingBottom: 12,
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            flexDirection: "row",
                         }}>
-                            <View style={{flex:1,paddingRight:15}}>
-                                <TextInput value={value} onChangeText={text=>{
+                            <View style={{flex: 1, paddingRight: 15}}>
+                                <TextInput value={value} onChangeText={text => {
                                     setValue(text)
                                 }} placeholderTextColor={"#6E7191"} placeholder={"Search"} style={styles.search}/>
                                 <View style={styles.searchIcon}>
@@ -37,18 +250,22 @@ export default function ConfigurationPage(props:any){
                             </View>
 
 
-
-
-
-
                         </View>
 
 
                     </View>
+
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={{flex: 1}}>
                     <ScrollView>
-                        <RenderServiceMiscellaneous service={{
+
+                        <FlatList
+                            data={regionsMemo}
+                            contentContainerStyle={{padding: 10,}}
+                            renderItem={renderListItem}
+                            keyExtractor={item => item._id}
+                        />
+                        <RenderServiceMiscellaneous edit={edit} service={{
                             // SERVICE 1
                             "ExaminationFee": {
                                 "ExamFee": 50,
@@ -1422,7 +1639,7 @@ export default function ConfigurationPage(props:any){
                 !(
                     (
                         isMobile && !(
-                            Platform?.isPad || isTablet()))) && dimensions?.width > 768 &&
+                            Platform?.isPad || isTablet()))) && (!createRegion) && lodash.isEmpty(region) && dimensions?.width > 768 &&
                 <View style={[{flex: 1, justifyContent: "center", alignItems: "center"}]}>
 
                     <NoActivity/>
@@ -1432,7 +1649,98 @@ export default function ConfigurationPage(props:any){
 
                 </View>
             }
+            {
+                !lodash.isEmpty(region) && Platform.OS == "web" ? <View style={[{flex: 1, backgroundColor: "#fff",}]}>
 
+                    <Header size={24} title={"Region: "}>
+                        <TouchableOpacity onPress={onClose}>
+                            <Text>Close</Text>
+                        </TouchableOpacity>
+                    </Header>
+
+
+                    <View style={{
+
+                       flex: 1
+
+                    }}>
+                        <View style={{padding: 20, justifyContent: 'space-between', alignItems: 'center',}}>
+                            <View style={styles.border}>
+                                <Image  resizeMode={"contain"} source={region?.configuration?.director?.signature || require('@assets/avatar.png')} style={{height: 200, width: 200}}/>
+                            </View>
+                            <TouchableOpacity onPress={() => onPress('director')}>
+                                <View style={styles.uploadSignature}>
+                                    <UploadIcon color={text.info}/>
+                                    <Text>Director Signature</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{padding: 20, justifyContent: 'space-between', alignItems: 'center',}}>
+                        <TouchableOpacity onPress={() => onPress('commissioner')}>
+                            <View style={styles.border}>
+                                <Image resizeMode={"contain"} source={region?.configuration?.commissioner?.signature || require('@assets/avatar.png')} style={{height: 200, width: 200}}/>
+                            </View>
+                            <View style={styles.uploadSignature}>
+                                <UploadIcon color={text.info}/>
+                                <Text>Commissioner Signature</Text>
+                            </View>
+                        </TouchableOpacity>
+                        </View>
+                    </View>
+                        {/* <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={newToken}>
+
+                            <Text style={[styles.text,  ]} size={14}>new token</Text>
+
+                        </TouchableOpacity>*/}
+                        <View style={{alignItems: "center"}}>
+                            <TouchableOpacity onPress={() => onUpdateCreateRegion('patch')} disabled={!updateValid}
+                                              style={{
+                                                  backgroundColor: updateValid ? successColor : disabledColor,
+                                                  paddingVertical: 10,
+                                                  paddingHorizontal: 20,
+                                                  borderRadius: 10
+                                              }}>
+
+                                <Text style={[styles.text, {color: "#fff"}]} size={14}>Update Region</Text>
+
+                            </TouchableOpacity>
+                        </View>
+
+
+
+
+                </View> : <></>
+            }
+
+
+            {(createRegion && lodash.isEmpty(region) && !isMobile) ?
+                <View style={[{flex: 1, backgroundColor: "#fff",}]}>
+                    <Header size={24} title={"Create Region"}>
+                        <TouchableOpacity onPress={onClose}>
+                            <Text>Close</Text>
+                        </TouchableOpacity>
+                    </Header>
+
+                    <View style={{
+                        bottom: 0,
+                        margin: 10,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        {/* <TouchableOpacity style={{backgroundColor: successColor, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10}} onPress={newToken}>
+
+                            <Text style={[styles.text,  ]} size={14}>new token</Text>
+
+                        </TouchableOpacity>*/}
+                        <TouchableOpacity onPress={() => onUpdateCreateRegion('post')} style={styles.scheduleButton}>
+
+                            <Text style={[styles.text, {color: "#fff"}]} size={14}>Create Region</Text>
+
+                        </TouchableOpacity>
+                    </View>
+                </View> : <></>
+
+            }
         </View>
     )
 }

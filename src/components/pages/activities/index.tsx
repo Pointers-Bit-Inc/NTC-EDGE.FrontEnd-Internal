@@ -80,6 +80,8 @@ import {Regular, Regular500} from "@styles/font";
 import {FlashList} from "@shopify/flash-list";
 import SplitIcon from "@assets/svg/SplitIcon";
 import useSafeState from "../../../hooks/useSafeState";
+import axios from "axios";
+import {BASE_URL} from "../../../services/config";
 
 const TAB_BAR_HEIGHT = 48;
 const OVERLAY_VISIBILITY_OFFSET = 32;
@@ -387,7 +389,7 @@ const ActivitiesPage = (props) => {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.items}
             data={item?.activity}
-
+            estimatedItemSize={300}
             renderItem={(act, i) => {
                 return getRenderItem(act, i, index)
             }

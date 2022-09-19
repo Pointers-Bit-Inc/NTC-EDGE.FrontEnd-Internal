@@ -129,7 +129,10 @@ const UserProfileScreen=({navigation}:any)=>{
         if(_key=='password') newArr[index]['error']= !validatePassword(text)?.isValid;
         else if(_key==='email') newArr[index]['error']= !validateEmail(text);
         else if(_key==='contactNumber') newArr[index]['error']= !validatePhone(text);
-        else newArr[index]['error']= !validateText(text);
+        else if (typeof text == "string") {
+            newArr[index]['error']= !validateText(text);
+        }
+
         setUserProfileForm(newArr);
     };
     const onPress=async(id?:number,type?:string|number)=>{

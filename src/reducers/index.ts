@@ -10,6 +10,7 @@ import meeting from './meeting/reducers';
 import role from './role/reducers';
 import layout from "./layout/reducers";
 import schedule from "./schedule/reducers";
+import configuration from "./configuration/reducers";
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
@@ -24,5 +25,6 @@ export default combineReducers({
   channel,
   meeting,
   role,
-  schedule
+  schedule,
+  configuration
 });

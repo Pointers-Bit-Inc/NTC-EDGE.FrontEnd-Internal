@@ -2,7 +2,7 @@ import {Dimensions, Platform, StyleSheet} from "react-native";
 import {Bold, Regular} from "@styles/font";
 import {fontValue} from "@pages/activities/fontValue";
 import hairlineWidth = StyleSheet.hairlineWidth;
-import {errorColor, infoColor, outline, primaryColor, successColor, text} from "@styles/color";
+import {disabledColor, errorColor, infoColor, outline, primaryColor, successColor, text} from "@styles/color";
 const { width } = Dimensions.get('window');
 export const styles = StyleSheet.create({
     container: {
@@ -653,6 +653,8 @@ export const styles = StyleSheet.create({
         fontSize: fontValue(11),},
     scheduleInnerSeparator: {
         height: 10,
-    },
+    }, uploadSignature: {paddingVertical: 10, flexDirection: "row", alignItems: "center"},
+    border: {borderRadius: 10, borderWidth: 1, borderColor: disabledColor}
+
 
 });
