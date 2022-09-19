@@ -88,6 +88,7 @@ const ApplicationDetails = (props: any) => {
 
     const rightLayoutComponent= useSelector((state: RootStateOrAny) => state.application?.rightLayoutComponent);
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalORVisible, setModalORVisible] = useState(false);
     return <View style={{flex:1}}>
         {(props.loading && Platform.OS != "web") && <LoadingModal saved={props?.saved}  loading={props.loading}/>}
         <KeyboardAvoidingView
@@ -137,6 +138,23 @@ const ApplicationDetails = (props: any) => {
 
                         </Pressable>
                         <PdfDownload url={props?.documents}/>
+                    </View>
+                }
+
+                {
+                    props?.or?.pdf  &&
+                    <View style={{paddingVertical: 10}}>
+                        <Pressable onPress={() => setModalORVisible(true)}>
+                            <View style={{flexDirection: "row"}}>
+                                <View style={{paddingRight: fontValue(10)}}>
+                                    <FileOutlineIcon height={fontValue(20)} width={fontValue(16)}/>
+                                </View>
+                                <Text
+                                    style={requirementStyles.text}>Official Receipt</Text>
+                            </View>
+
+                        </Pressable>
+                        <PdfDownload url={props?.or?.pdf}/>
                     </View>
                 }
 
@@ -214,6 +232,60 @@ const ApplicationDetails = (props: any) => {
             </View>
 
         </Modal>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalORVisible}
+                onRequestClose={() => {
+                    setModalORVisible(!modalVisible);
+                }}
+            >
+                <View style={{flex: 1, paddingTop: 44}}>
+                    <View style={[{flex: 1,}, isMobile || dimensions?.width < 768 ? {} : {
+                        alignItems: "flex-end",
+                        top: rightLayoutComponent?.top
+                    }]}>
+                        <OnBackdropPress styles={{}} onPressOut={() => setModalVisible(!modalVisible)}/>
+                        <OnBackdropPress styles={isMobile || dimensions?.width < 768 ? {} : {
+                            alignSelf: "flex-end",
+                            width: rightLayoutComponent?.width || undefined,
+                            backgroundColor: "rgba(0, 0, 0, 0)"
+                        }} onPressOut={() => setModalVisible(!modalVisible)}/>
+
+                        <View style={{zIndex: 2, flexDirection: "row", justifyContent: "flex-end",}}>
+                            <View style={{padding: 20, backgroundColor: "rgba(0,0,0,0.7)"}}>
+
+                                <Pressable
+                                    onPress={() => setModalORVisible(false)}
+                                >
+                                    <Text style={{
+                                        fontFamily: Regular500,
+                                        fontSize: RFValue(14 * (!isMobile ? 0.7 : 1)),
+                                        color: "#fff"
+                                    }}>Close</Text>
+                                </Pressable>
+                            </View>
+
+                        </View>
+
+                        <View style={{flex: 1, marginTop: -Constants?.statusBarHeight * 2, position: "absolute"}}>
+
+                            <ScrollView>
+                                <OnBackdropPress
+                                    styles={isMobile || dimensions?.width < 768 ? {backgroundColor: "rgba(0, 0, 0, 0)"} : {
+                                        alignSelf: "flex-end",
+                                        width: rightLayoutComponent?.width || "100%",
+                                        backgroundColor: "rgba(0, 0, 0, 0.5)"
+                                    }} onPressOut={() => setModalVisible(!modalVisible)}/>
+                                <PdfViewr width={rightLayoutComponent?.width}
+                                          height={rightLayoutComponent?.height} requirement={props?.or?.pdf}/>
+                            </ScrollView>
+
+                        </View>
+                    </View>
+                </View>
+
+            </Modal>
     </ScrollView></KeyboardAvoidingView>
 </View>
 

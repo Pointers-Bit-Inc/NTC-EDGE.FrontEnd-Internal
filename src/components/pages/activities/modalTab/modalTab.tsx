@@ -195,6 +195,7 @@ console.log(paymentIndex == index  && !(user?.role?.key==CASHIER || user?.role?.
                                                editBtn={props.editBtn}
                                                updateApplication={props.updateApplication}
                                                hasChanges={props.hasChanges}
+                                               or={props?.details?.officialReceipt}
                                                paymentStatus={paymentStatus}
                                                createdAt={createdAt}
                                                service={service}
