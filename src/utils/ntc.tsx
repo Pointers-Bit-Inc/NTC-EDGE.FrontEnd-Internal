@@ -460,8 +460,11 @@ function isDiff(access: any[], originalAccess: any[]) {
     return diff.length;
 }
  const currency = (number: number) => {
-
-    return "₱" + number
+    var formatter = new Intl.NumberFormat('fil-PH', {
+        style: 'currency',
+        currency: 'PHP',
+    });
+    return formatter.format(number);
 };
 function toFixed(x) {
     if (Math.abs(x) < 1.0) {
