@@ -54,7 +54,7 @@ function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, 
         </View>
         <View
             style={[styles.status, {
-                justifyContent: props.assignedPersonnel?._id || props.personnel ? 'space-between' : "center",
+                justifyContent: props.assignedPersonnel?._id || props?.personnel ? 'space-between' : "center",
                 paddingBottom: !!(([CASHIER].indexOf(props.user?.role?.key) != -1 ? props.paymentHistory?.remarks : props.approvalHistory?.remarks) || (props.historyMemo.length)) ? 7.5 : 0
             }]}>
 
@@ -64,7 +64,7 @@ function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, 
                     alignItems: "center",
                     justifyContent: "center",
                     backgroundColor: remarkColor(
-                        getStatusText(props.props, props.personnel)
+                        getStatusText(props.props, props?.personnel)
                     ),
                     borderRadius: fontValue(30),
                     paddingHorizontal: fontValue(3),
@@ -92,22 +92,22 @@ function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, 
                     numberOfLines={1}
                 >
                     {
-                        getStatusText(props.props, props.personnel)?.toUpperCase()
+                        getStatusText(props.props, props?.personnel)?.toUpperCase()
                     }
                 </CustomText>
             </View>
 
 
-            {props.personnel != undefined &&
+            {props?.personnel != undefined &&
             (
-                getStatusText(props.props, props.personnel) == APPROVED ? getStatusText(props.props, props.personnel) : (!excludeStatus(props.props, props.personnel) || ([CASHIER].indexOf(props.user?.role?.key) != -1 ? !!(props.paymentHistory1?.remarks || props.paymentHistory1?.[0]?.remarks) : (props.approvalHistory?.remarks || props.approvalHistory?.[0]?.remarks)))) ?
+                getStatusText(props.props, props?.personnel) == APPROVED ? getStatusText(props.props, props?.personnel) : (!excludeStatus(props.props, props?.personnel) || ([CASHIER].indexOf(props.user?.role?.key) != -1 ? !!(props.paymentHistory1?.remarks || props.paymentHistory1?.[0]?.remarks) : (props.approvalHistory?.remarks || props.approvalHistory?.[0]?.remarks)))) ?
                 <View style={{alignItems: "flex-end"}}>
 
                     <Text style={{color: "#808196"}}>by</Text>
                     <CustomText
                         style={{fontSize: fontValue(12), flex: 1, color: "#37405B"}}>
                         {(
-                            props.personnel !== undefined ? `${props.personnel?.firstName} ${props.personnel?.lastName}` : ``)}
+                            props?.personnel !== undefined ? `${props?.personnel?.firstName} ${props?.personnel?.lastName}` : ``)}
 
                     </CustomText>
                 </View>
@@ -126,7 +126,7 @@ function Status(_props: { user: any, paymentHistory: any, approvalHistory: any, 
                     <CustomText
                         style={{fontSize: fontValue(12), flex: 1, color: "#37405B"}}>
                         {(
-                            props.personnel !== undefined ? `${props.personnel?.firstName} ${props.personnel?.lastName}` : ``)}
+                            props?.personnel !== undefined ? `${props?.personnel?.firstName} ${props?.personnel?.lastName}` : ``)}
 
                     </CustomText>
                 </View>)}
@@ -400,7 +400,7 @@ const BasicInfo = (_props: any) => {
                                             <Text style={[{
                                                 fontSize: fontValue(10),
                                                 color: "#37405B"
-                                            }]}>{`${item.personnel?.firstName} ${item.personnel?.lastName}`}</Text>
+                                            }]}>{`${item?.personnel?.firstName} ${item?.personnel?.lastName}`}</Text>
                                         </View>
 
                                         <View
